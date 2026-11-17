@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import { Plus_Jakarta_Sans, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
+import { getPublicOrigin } from '@/lib/academy/site';
 
 const appSans = Plus_Jakarta_Sans({
   variable: '--font-app-sans',
@@ -17,6 +18,7 @@ const appMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: getPublicOrigin() ? new URL(getPublicOrigin()!) : undefined,
   title: 'Full-Stack Engineering Academy · v1.1',
   description:
     'Enterprise full-stack curriculum workspace: 28 tracks, 111 modules, 889 planned topics, 303 indexed references, and interactive authored sample labs.',

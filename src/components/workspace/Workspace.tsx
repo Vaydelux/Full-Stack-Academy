@@ -187,6 +187,10 @@ export default function Workspace() {
 
   useEffect(() => {
     hydrate();
+    // Deep-link a documentation article into its corresponding interactive lesson.
+    // Store selection still validates against the canonical curriculum catalog.
+    const deepLink = new URLSearchParams(window.location.search).get('lesson');
+    if (deepLink) useAcademy.getState().selectLesson(deepLink);
     const t = setTimeout(() => setBooted(true), 750);
     return () => clearTimeout(t);
   }, [hydrate]);

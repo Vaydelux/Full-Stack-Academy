@@ -63,3 +63,11 @@ npm run build       # Production Next.js build
 - CI quality gates are in `.github/workflows/academy-quality.yml`.
 
 See `docs/RELEASE_GATE.md` for the unresolved production/SEO/browser-testing work. Do not present 889 planned topics as 889 published lessons.
+
+
+## Phase 2a: Real learning and reference routes
+
+Browse `/learn`, `/learn/track/06`, `/learn/06.01.01`, `/reference`, and `/reference/zod-safeparse`.
+These are server-rendered, individually addressable pages with dynamic titles and detailed instructional content. Published lessons link back to `/?lesson=<id>` for live practice.
+
+Planned topics remain browsable but are marked `noindex`; they are **not** included as authored content in the sitemap. Set `NEXT_PUBLIC_SITE_URL` (HTTPS) to enable production canonical URLs and sitemap entries. This is an incremental upgrade of the existing reader, not yet a Fumadocs/MDX migration. See `docs/COURSE_CONTENT_ROUTING.md`.
