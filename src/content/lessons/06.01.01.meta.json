@@ -1,0 +1,38 @@
+{
+  "id": "06.01.01",
+  "title": "JSX: Describe a UI without manually building the DOM",
+  "description": "Learn JSX through a precise mental model, four runnable steps, a typed React skills-card lab and a regression exercise.",
+  "trackId": "06",
+  "moduleId": "06.01",
+  "level": "Beginner",
+  "estimatedMinutes": 45,
+  "status": "authored",
+  "reviewedAt": "2026-11-18",
+  "stack": {
+    "react": "19",
+    "typescript": "5"
+  },
+  "prerequisites": [],
+  "objectives": [
+    "Describe how JSX becomes JavaScript element calls",
+    "Create a semantic component returning valid JSX",
+    "Use JS expressions and stable list keys",
+    "Explain JSX attributes and styles",
+    "Verify a React component through automated rendering tests"
+  ],
+  "labId": "lab.react.jsx-skill-card",
+  "sources": [
+    {
+      "label": "React: Writing Markup with JSX",
+      "url": "https://react.dev/learn/writing-markup-with-jsx"
+    },
+    {
+      "label": "React: JavaScript in JSX",
+      "url": "https://react.dev/learn/javascript-in-jsx-with-curly-braces"
+    },
+    {
+      "label": "React: Rendering Lists",
+      "url": "https://react.dev/learn/rendering-lists"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "id": "lab.react.jsx-skill-card",
+  "lessonId": "06.01.01",
+  "title": "Build a semantic typed React skill card",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/jsx-skill-card/starter/SkillCard.tsx",
+  "solution": "labs/jsx-skill-card/solution/SkillCard.tsx",
+  "tests": "labs/jsx-skill-card/solution.test.tsx",
+  "verify": [
+    "npm run test:labs"
+  ],
+  "expected": "Heading and level render, list uses stable record IDs, empty state is accessible.",
+  "security": "Fixtures are static trusted source. Learner code is never executed on the course server."
+}
