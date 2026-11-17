@@ -5,6 +5,8 @@ import { AUTHORED_LESSONS, AUTHORED_LESSON_IDS } from '@/lib/academy/authored-co
 import { lessonMap, moduleMap } from '@/lib/academy/curriculum';
 import { CodeBlock, DocNotice, DocSection, DocShell } from '@/components/course/DocShell';
 import { getPublicOrigin } from '@/lib/academy/site';
+import JSXLessonMDX from '@/content/lessons/06.01.01.mdx';
+import jsxLessonMeta from '@/content/lessons/06.01.01.meta.json';
 
 type LessonPageProps = { params: Promise<{ lessonId: string }> };
 
@@ -16,10 +18,11 @@ export async function generateMetadata({ params }: LessonPageProps): Promise<Met
   const { lessonId } = await params;
   const lesson = lessonMap.get(lessonId);
   const authored = AUTHORED_LESSONS[lessonId];
+  const mdxMeta = lessonId === jsxLessonMeta.id ? jsxLessonMeta : null;
   if (!lesson) return { title: 'Lesson not found', robots: { index: false } };
   return {
-    title: `${authored?.headline ?? lesson.title} | Full-Stack Engineering Academy`,
-    description: authored?.subtitle ?? `Planned lesson: ${lesson.title}. This topic has not yet been authored or reviewed.`,
+    title: `${mdxMeta?.title ?? authored?.headline ?? lesson.title} | Full-Stack Engineering Academy`,
+    description: mdxMeta?.description ?? authored?.subtitle ?? `Planned lesson: ${lesson.title}. This topic has not yet been authored or reviewed.`,
     robots: { index: Boolean(authored), follow: true },
     alternates: authored && getPublicOrigin() ? { canonical: `/learn/${lessonId}` } : undefined,
   };
@@ -46,6 +49,15 @@ export default async function LessonPage({ params }: LessonPageProps) {
           <DocNotice><strong>Planned lesson — not published.</strong> This entry is part of the long-term curriculum. It does not yet have a verified tutorial, runnable lab, or grading evidence, so it cannot be marked complete.</DocNotice>
           <p className="text-sm leading-7 text-slate-600 dark:text-slate-300">For now, use the module context and the linked official documentation. This topic will be updated after its examples, exercises, and editorial checks are complete.</p>
           <a href={lesson.referenceUrl} target="_blank" rel="noopener noreferrer" className="text-sm font-semibold text-cyan-700 hover:underline dark:text-[#7DEBFF]">Read official documentation</a>
+        </div>
+      ) : lessonId === jsxLessonMeta.id ? (
+        <div className="mt-6">
+          <p className="mb-5 text-xs text-slate-500">
+            MDX lesson · React {jsxLessonMeta.stack.react} / TypeScript {jsxLessonMeta.stack.typescript} · Last reviewed {jsxLessonMeta.reviewedAt} · ~{jsxLessonMeta.estimatedMinutes} min
+          </p>
+          <article aria-label="Guided JSX tutorial" className="max-w-none">
+            <JSXLessonMDX />
+          </article>
         </div>
       ) : (
         <>

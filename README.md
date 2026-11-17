@@ -71,3 +71,12 @@ Browse `/learn`, `/learn/track/06`, `/learn/06.01.01`, `/reference`, and `/refer
 These are server-rendered, individually addressable pages with dynamic titles and detailed instructional content. Published lessons link back to `/?lesson=<id>` for live practice.
 
 Planned topics remain browsable but are marked `noindex`; they are **not** included as authored content in the sitemap. Set `NEXT_PUBLIC_SITE_URL` (HTTPS) to enable production canonical URLs and sitemap entries. This is an incremental upgrade of the existing reader, not yet a Fumadocs/MDX migration. See `docs/COURSE_CONTENT_ROUTING.md`.
+
+
+## Phase 2b: MDX publishing system
+
+The first authored lesson now lives in `src/content/lessons/06.01.01.mdx` with strict sidecar metadata. It demonstrates reusable lesson components and an accessible client-side quiz. The corresponding `labs/jsx-skill-card` folder includes a starter, an instructor solution and runnable React server-rendering tests.
+
+Run `npm run verify:content` and `npm run test:labs` to validate the lesson. MDX is compiled only from reviewed repository source. The existing live workspace is preserved and is intentionally separate from server-side execution of arbitrary learner code.
+
+Full guide: `docs/MDX_AUTHORING_PIPELINE.md`.

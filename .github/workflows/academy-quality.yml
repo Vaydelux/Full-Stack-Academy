@@ -36,5 +36,9 @@ jobs:
         run: npm test
       - name: Validate curriculum package
         run: npm run validate
+      - name: Validate publishable MDX metadata and lab fixtures
+        run: npm run verify:content
+      - name: Test checked-in React lab solution
+        run: npm run test:labs
       - name: Production build
         run: npm run build
