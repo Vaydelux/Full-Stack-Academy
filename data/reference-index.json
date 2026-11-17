@@ -1,0 +1,2429 @@
+{
+  "version": "1.0",
+  "entries": [
+    {
+      "id": "web-html-document",
+      "category": "Web & HTML",
+      "title": "HTML document",
+      "slug": "html-document",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "web-html",
+      "category": "Web & HTML",
+      "title": "html",
+      "slug": "html",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "web-head",
+      "category": "Web & HTML",
+      "title": "head",
+      "slug": "head",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "web-meta",
+      "category": "Web & HTML",
+      "title": "meta",
+      "slug": "meta",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "web-link",
+      "category": "Web & HTML",
+      "title": "link",
+      "slug": "link",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "web-script",
+      "category": "Web & HTML",
+      "title": "script",
+      "slug": "script",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "web-article",
+      "category": "Web & HTML",
+      "title": "article",
+      "slug": "article",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "web-section",
+      "category": "Web & HTML",
+      "title": "section",
+      "slug": "section",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "web-nav",
+      "category": "Web & HTML",
+      "title": "nav",
+      "slug": "nav",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "web-main",
+      "category": "Web & HTML",
+      "title": "main",
+      "slug": "main",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "web-aside",
+      "category": "Web & HTML",
+      "title": "aside",
+      "slug": "aside",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "web-button",
+      "category": "Web & HTML",
+      "title": "button",
+      "slug": "button",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "web-form",
+      "category": "Web & HTML",
+      "title": "form",
+      "slug": "form",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "web-input",
+      "category": "Web & HTML",
+      "title": "input",
+      "slug": "input",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "web-label",
+      "category": "Web & HTML",
+      "title": "label",
+      "slug": "label",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "web-fieldset",
+      "category": "Web & HTML",
+      "title": "fieldset",
+      "slug": "fieldset",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "web-dialog",
+      "category": "Web & HTML",
+      "title": "dialog",
+      "slug": "dialog",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "web-details",
+      "category": "Web & HTML",
+      "title": "details",
+      "slug": "details",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "web-picture",
+      "category": "Web & HTML",
+      "title": "picture",
+      "slug": "picture",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "web-img",
+      "category": "Web & HTML",
+      "title": "img",
+      "slug": "img",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "web-a",
+      "category": "Web & HTML",
+      "title": "a",
+      "slug": "a",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "web-aria-label",
+      "category": "Web & HTML",
+      "title": "aria-label",
+      "slug": "aria-label",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "web-tabindex",
+      "category": "Web & HTML",
+      "title": "tabindex",
+      "slug": "tabindex",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "web-fetch",
+      "category": "Web & HTML",
+      "title": "fetch",
+      "slug": "fetch",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "web-request",
+      "category": "Web & HTML",
+      "title": "Request",
+      "slug": "request",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "web-response",
+      "category": "Web & HTML",
+      "title": "Response",
+      "slug": "response",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "web-url",
+      "category": "Web & HTML",
+      "title": "URL",
+      "slug": "url",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "web-urlsearchparams",
+      "category": "Web & HTML",
+      "title": "URLSearchParams",
+      "slug": "urlsearchparams",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "web-abortcontroller",
+      "category": "Web & HTML",
+      "title": "AbortController",
+      "slug": "abortcontroller",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "web-localstorage",
+      "category": "Web & HTML",
+      "title": "localStorage",
+      "slug": "localstorage",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "web-indexeddb",
+      "category": "Web & HTML",
+      "title": "IndexedDB",
+      "slug": "indexeddb",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "web-service-worker",
+      "category": "Web & HTML",
+      "title": "Service Worker",
+      "slug": "service-worker",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "web-cors",
+      "category": "Web & HTML",
+      "title": "CORS",
+      "slug": "cors",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "web-csp",
+      "category": "Web & HTML",
+      "title": "CSP",
+      "slug": "csp",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "css-display",
+      "category": "CSS",
+      "title": "display",
+      "slug": "display",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "css-position",
+      "category": "CSS",
+      "title": "position",
+      "slug": "position",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "css-z-index",
+      "category": "CSS",
+      "title": "z-index",
+      "slug": "z-index",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "css-box-sizing",
+      "category": "CSS",
+      "title": "box-sizing",
+      "slug": "box-sizing",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "css-grid-template-columns",
+      "category": "CSS",
+      "title": "grid-template-columns",
+      "slug": "grid-template-columns",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "css-flex",
+      "category": "CSS",
+      "title": "flex",
+      "slug": "flex",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "css-gap",
+      "category": "CSS",
+      "title": "gap",
+      "slug": "gap",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "css-clamp",
+      "category": "CSS",
+      "title": "clamp()",
+      "slug": "clamp",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "css-min",
+      "category": "CSS",
+      "title": "min()",
+      "slug": "min",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "css-max",
+      "category": "CSS",
+      "title": "max()",
+      "slug": "max",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "css-var",
+      "category": "CSS",
+      "title": "var()",
+      "slug": "var",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "css-media",
+      "category": "CSS",
+      "title": "@media",
+      "slug": "media",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "css-container",
+      "category": "CSS",
+      "title": "@container",
+      "slug": "container",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "css-layer",
+      "category": "CSS",
+      "title": "@layer",
+      "slug": "layer",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "css-has",
+      "category": "CSS",
+      "title": ":has()",
+      "slug": "has",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "css-focus-visible",
+      "category": "CSS",
+      "title": ":focus-visible",
+      "slug": "focus-visible",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "css-prefers-reduced-motion",
+      "category": "CSS",
+      "title": "prefers-reduced-motion",
+      "slug": "prefers-reduced-motion",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "css-color-scheme",
+      "category": "CSS",
+      "title": "color-scheme",
+      "slug": "color-scheme",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "css-font-display",
+      "category": "CSS",
+      "title": "font-display",
+      "slug": "font-display",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "css-contain",
+      "category": "CSS",
+      "title": "contain",
+      "slug": "contain",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "css-content-visibility",
+      "category": "CSS",
+      "title": "content-visibility",
+      "slug": "content-visibility",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "css-animation",
+      "category": "CSS",
+      "title": "animation",
+      "slug": "animation",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "css-transition",
+      "category": "CSS",
+      "title": "transition",
+      "slug": "transition",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "javascript-const",
+      "category": "JavaScript",
+      "title": "const",
+      "slug": "const",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "javascript-let",
+      "category": "JavaScript",
+      "title": "let",
+      "slug": "let",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "javascript-async",
+      "category": "JavaScript",
+      "title": "async",
+      "slug": "async",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "javascript-await",
+      "category": "JavaScript",
+      "title": "await",
+      "slug": "await",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "javascript-promise",
+      "category": "JavaScript",
+      "title": "Promise",
+      "slug": "promise",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "javascript-promise-all",
+      "category": "JavaScript",
+      "title": "Promise.all",
+      "slug": "promise-all",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "javascript-promise-allsettled",
+      "category": "JavaScript",
+      "title": "Promise.allSettled",
+      "slug": "promise-allsettled",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "javascript-array-map",
+      "category": "JavaScript",
+      "title": "Array.map",
+      "slug": "array-map",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "javascript-array-filter",
+      "category": "JavaScript",
+      "title": "Array.filter",
+      "slug": "array-filter",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "javascript-array-reduce",
+      "category": "JavaScript",
+      "title": "Array.reduce",
+      "slug": "array-reduce",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "javascript-array-find",
+      "category": "JavaScript",
+      "title": "Array.find",
+      "slug": "array-find",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "javascript-object-entries",
+      "category": "JavaScript",
+      "title": "Object.entries",
+      "slug": "object-entries",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "javascript-map",
+      "category": "JavaScript",
+      "title": "Map",
+      "slug": "map",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "javascript-set",
+      "category": "JavaScript",
+      "title": "Set",
+      "slug": "set",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "javascript-json-parse",
+      "category": "JavaScript",
+      "title": "JSON.parse",
+      "slug": "json-parse",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "javascript-json-stringify",
+      "category": "JavaScript",
+      "title": "JSON.stringify",
+      "slug": "json-stringify",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "javascript-try-catch",
+      "category": "JavaScript",
+      "title": "try/catch",
+      "slug": "try-catch",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "javascript-throw",
+      "category": "JavaScript",
+      "title": "throw",
+      "slug": "throw",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "javascript-import",
+      "category": "JavaScript",
+      "title": "import",
+      "slug": "import",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "javascript-export",
+      "category": "JavaScript",
+      "title": "export",
+      "slug": "export",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "javascript-eventtarget",
+      "category": "JavaScript",
+      "title": "EventTarget",
+      "slug": "eventtarget",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "javascript-addeventlistener",
+      "category": "JavaScript",
+      "title": "addEventListener",
+      "slug": "addeventlistener",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "javascript-queuemicrotask",
+      "category": "JavaScript",
+      "title": "queueMicrotask",
+      "slug": "queuemicrotask",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "javascript-structuredclone",
+      "category": "JavaScript",
+      "title": "structuredClone",
+      "slug": "structuredclone",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "javascript-abortsignal",
+      "category": "JavaScript",
+      "title": "AbortSignal",
+      "slug": "abortsignal",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "typescript-type",
+      "category": "TypeScript",
+      "title": "type",
+      "slug": "type",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "typescript-interface",
+      "category": "TypeScript",
+      "title": "interface",
+      "slug": "interface",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "typescript-unknown",
+      "category": "TypeScript",
+      "title": "unknown",
+      "slug": "unknown",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "typescript-never",
+      "category": "TypeScript",
+      "title": "never",
+      "slug": "never",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "typescript-union",
+      "category": "TypeScript",
+      "title": "union",
+      "slug": "union",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "typescript-intersection",
+      "category": "TypeScript",
+      "title": "intersection",
+      "slug": "intersection",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "typescript-generics",
+      "category": "TypeScript",
+      "title": "generics",
+      "slug": "generics",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "typescript-keyof",
+      "category": "TypeScript",
+      "title": "keyof",
+      "slug": "keyof",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "typescript-typeof",
+      "category": "TypeScript",
+      "title": "typeof",
+      "slug": "typeof",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "typescript-infer",
+      "category": "TypeScript",
+      "title": "infer",
+      "slug": "infer",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "typescript-satisfies",
+      "category": "TypeScript",
+      "title": "satisfies",
+      "slug": "satisfies",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "typescript-as-const",
+      "category": "TypeScript",
+      "title": "as const",
+      "slug": "as-const",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "typescript-partial",
+      "category": "TypeScript",
+      "title": "Partial",
+      "slug": "partial",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "typescript-pick",
+      "category": "TypeScript",
+      "title": "Pick",
+      "slug": "pick",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "typescript-omit",
+      "category": "TypeScript",
+      "title": "Omit",
+      "slug": "omit",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "typescript-record",
+      "category": "TypeScript",
+      "title": "Record",
+      "slug": "record",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "typescript-returntype",
+      "category": "TypeScript",
+      "title": "ReturnType",
+      "slug": "returntype",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "typescript-awaited",
+      "category": "TypeScript",
+      "title": "Awaited",
+      "slug": "awaited",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "typescript-discriminated-unions",
+      "category": "TypeScript",
+      "title": "Discriminated unions",
+      "slug": "discriminated-unions",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "typescript-type-guards",
+      "category": "TypeScript",
+      "title": "Type guards",
+      "slug": "type-guards",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "typescript-tsconfig-strict",
+      "category": "TypeScript",
+      "title": "tsconfig strict",
+      "slug": "tsconfig-strict",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "typescript-nodenext",
+      "category": "TypeScript",
+      "title": "NodeNext",
+      "slug": "nodenext",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "react-jsx",
+      "category": "React",
+      "title": "JSX",
+      "slug": "jsx",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "react-component",
+      "category": "React",
+      "title": "Component",
+      "slug": "component",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "react-props",
+      "category": "React",
+      "title": "props",
+      "slug": "props",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "react-children",
+      "category": "React",
+      "title": "children",
+      "slug": "children",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "react-key",
+      "category": "React",
+      "title": "key",
+      "slug": "key",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "react-usestate",
+      "category": "React",
+      "title": "useState",
+      "slug": "usestate",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "react-usereducer",
+      "category": "React",
+      "title": "useReducer",
+      "slug": "usereducer",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "react-useeffect",
+      "category": "React",
+      "title": "useEffect",
+      "slug": "useeffect",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "react-uselayouteffect",
+      "category": "React",
+      "title": "useLayoutEffect",
+      "slug": "uselayouteffect",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "react-useref",
+      "category": "React",
+      "title": "useRef",
+      "slug": "useref",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "react-usecontext",
+      "category": "React",
+      "title": "useContext",
+      "slug": "usecontext",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "react-usememo",
+      "category": "React",
+      "title": "useMemo",
+      "slug": "usememo",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "react-usecallback",
+      "category": "React",
+      "title": "useCallback",
+      "slug": "usecallback",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "react-usetransition",
+      "category": "React",
+      "title": "useTransition",
+      "slug": "usetransition",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "react-usedeferredvalue",
+      "category": "React",
+      "title": "useDeferredValue",
+      "slug": "usedeferredvalue",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "react-useoptimistic",
+      "category": "React",
+      "title": "useOptimistic",
+      "slug": "useoptimistic",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "react-useactionstate",
+      "category": "React",
+      "title": "useActionState",
+      "slug": "useactionstate",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "react-suspense",
+      "category": "React",
+      "title": "Suspense",
+      "slug": "suspense",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "react-error-boundaries",
+      "category": "React",
+      "title": "Error boundaries",
+      "slug": "error-boundaries",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "react-context",
+      "category": "React",
+      "title": "Context",
+      "slug": "context",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "react-custom-hooks",
+      "category": "React",
+      "title": "Custom hooks",
+      "slug": "custom-hooks",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "react-react-memo",
+      "category": "React",
+      "title": "React.memo",
+      "slug": "react-memo",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "next.js-page-tsx",
+      "category": "Next.js",
+      "title": "page.tsx",
+      "slug": "page-tsx",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "next.js-layout-tsx",
+      "category": "Next.js",
+      "title": "layout.tsx",
+      "slug": "layout-tsx",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "next.js-loading-tsx",
+      "category": "Next.js",
+      "title": "loading.tsx",
+      "slug": "loading-tsx",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "next.js-error-tsx",
+      "category": "Next.js",
+      "title": "error.tsx",
+      "slug": "error-tsx",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "next.js-not-found-tsx",
+      "category": "Next.js",
+      "title": "not-found.tsx",
+      "slug": "not-found-tsx",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "next.js-route-ts",
+      "category": "Next.js",
+      "title": "route.ts",
+      "slug": "route-ts",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "next.js-route-groups",
+      "category": "Next.js",
+      "title": "route groups",
+      "slug": "route-groups",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "next.js-dynamic-segments",
+      "category": "Next.js",
+      "title": "dynamic segments",
+      "slug": "dynamic-segments",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "next.js-generatemetadata",
+      "category": "Next.js",
+      "title": "generateMetadata",
+      "slug": "generatemetadata",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "next.js-generatestaticparams",
+      "category": "Next.js",
+      "title": "generateStaticParams",
+      "slug": "generatestaticparams",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "next.js-server-components",
+      "category": "Next.js",
+      "title": "Server Components",
+      "slug": "server-components",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "next.js-client-components",
+      "category": "Next.js",
+      "title": "Client Components",
+      "slug": "client-components",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "next.js-server-actions",
+      "category": "Next.js",
+      "title": "Server Actions",
+      "slug": "server-actions",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "next.js-use-cache",
+      "category": "Next.js",
+      "title": "use cache",
+      "slug": "use-cache",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "next.js-cachetag",
+      "category": "Next.js",
+      "title": "cacheTag",
+      "slug": "cachetag",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "next.js-revalidatetag",
+      "category": "Next.js",
+      "title": "revalidateTag",
+      "slug": "revalidatetag",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "next.js-redirect",
+      "category": "Next.js",
+      "title": "redirect",
+      "slug": "redirect",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "next.js-notfound",
+      "category": "Next.js",
+      "title": "notFound",
+      "slug": "notfound",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "next.js-cookies",
+      "category": "Next.js",
+      "title": "cookies",
+      "slug": "cookies",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "next.js-headers",
+      "category": "Next.js",
+      "title": "headers",
+      "slug": "headers",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "next.js-image",
+      "category": "Next.js",
+      "title": "Image",
+      "slug": "image",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "next.js-link",
+      "category": "Next.js",
+      "title": "Link",
+      "slug": "link",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "next.js-fetch-caching",
+      "category": "Next.js",
+      "title": "fetch caching",
+      "slug": "fetch-caching",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "next.js-next-js-proxy",
+      "category": "Next.js",
+      "title": "Next.js Proxy",
+      "slug": "next-js-proxy",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "nestjs-module",
+      "category": "NestJS",
+      "title": "@Module",
+      "slug": "module",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "nestjs-controller",
+      "category": "NestJS",
+      "title": "@Controller",
+      "slug": "controller",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "nestjs-get",
+      "category": "NestJS",
+      "title": "@Get",
+      "slug": "get",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "nestjs-post",
+      "category": "NestJS",
+      "title": "@Post",
+      "slug": "post",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "nestjs-injectable",
+      "category": "NestJS",
+      "title": "@Injectable",
+      "slug": "injectable",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "nestjs-inject",
+      "category": "NestJS",
+      "title": "@Inject",
+      "slug": "inject",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "nestjs-useguards",
+      "category": "NestJS",
+      "title": "@UseGuards",
+      "slug": "useguards",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "nestjs-canactivate",
+      "category": "NestJS",
+      "title": "CanActivate",
+      "slug": "canactivate",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "nestjs-executioncontext",
+      "category": "NestJS",
+      "title": "ExecutionContext",
+      "slug": "executioncontext",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "nestjs-pipetransform",
+      "category": "NestJS",
+      "title": "PipeTransform",
+      "slug": "pipetransform",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "nestjs-exceptionfilter",
+      "category": "NestJS",
+      "title": "ExceptionFilter",
+      "slug": "exceptionfilter",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "nestjs-nestinterceptor",
+      "category": "NestJS",
+      "title": "NestInterceptor",
+      "slug": "nestinterceptor",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "nestjs-middleware",
+      "category": "NestJS",
+      "title": "Middleware",
+      "slug": "middleware",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "nestjs-app-guard",
+      "category": "NestJS",
+      "title": "APP_GUARD",
+      "slug": "app-guard",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "nestjs-fastifyadapter",
+      "category": "NestJS",
+      "title": "FastifyAdapter",
+      "slug": "fastifyadapter",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "nestjs-configmodule",
+      "category": "NestJS",
+      "title": "ConfigModule",
+      "slug": "configmodule",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "nestjs-testingmodule",
+      "category": "NestJS",
+      "title": "TestingModule",
+      "slug": "testingmodule",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "nestjs-bullmodule",
+      "category": "NestJS",
+      "title": "BullModule",
+      "slug": "bullmodule",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "nestjs-websocketgateway",
+      "category": "NestJS",
+      "title": "WebSocketGateway",
+      "slug": "websocketgateway",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "nestjs-terminus-health",
+      "category": "NestJS",
+      "title": "Terminus health",
+      "slug": "terminus-health",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "zod-z-string",
+      "category": "Zod",
+      "title": "z.string",
+      "slug": "z-string",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "zod-z-number",
+      "category": "Zod",
+      "title": "z.number",
+      "slug": "z-number",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "zod-z-boolean",
+      "category": "Zod",
+      "title": "z.boolean",
+      "slug": "z-boolean",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "zod-z-object",
+      "category": "Zod",
+      "title": "z.object",
+      "slug": "z-object",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "zod-z-array",
+      "category": "Zod",
+      "title": "z.array",
+      "slug": "z-array",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "zod-z-enum",
+      "category": "Zod",
+      "title": "z.enum",
+      "slug": "z-enum",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "zod-z-literal",
+      "category": "Zod",
+      "title": "z.literal",
+      "slug": "z-literal",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "zod-z-union",
+      "category": "Zod",
+      "title": "z.union",
+      "slug": "z-union",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "zod-z-discriminatedunion",
+      "category": "Zod",
+      "title": "z.discriminatedUnion",
+      "slug": "z-discriminatedunion",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "zod-z-optional",
+      "category": "Zod",
+      "title": "z.optional",
+      "slug": "z-optional",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "zod-z-nullable",
+      "category": "Zod",
+      "title": "z.nullable",
+      "slug": "z-nullable",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "zod-z-default",
+      "category": "Zod",
+      "title": "z.default",
+      "slug": "z-default",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "zod-z-coerce",
+      "category": "Zod",
+      "title": "z.coerce",
+      "slug": "z-coerce",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "zod-z-transform",
+      "category": "Zod",
+      "title": "z.transform",
+      "slug": "z-transform",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "zod-z-refine",
+      "category": "Zod",
+      "title": "z.refine",
+      "slug": "z-refine",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "zod-z-superrefine",
+      "category": "Zod",
+      "title": "z.superRefine",
+      "slug": "z-superrefine",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "zod-safeparse",
+      "category": "Zod",
+      "title": "safeParse",
+      "slug": "safeparse",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "zod-z-infer",
+      "category": "Zod",
+      "title": "z.infer",
+      "slug": "z-infer",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "zod-z-strictobject",
+      "category": "Zod",
+      "title": "z.strictObject",
+      "slug": "z-strictobject",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "postgresql-select",
+      "category": "PostgreSQL",
+      "title": "SELECT",
+      "slug": "select",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "postgresql-insert",
+      "category": "PostgreSQL",
+      "title": "INSERT",
+      "slug": "insert",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "postgresql-update",
+      "category": "PostgreSQL",
+      "title": "UPDATE",
+      "slug": "update",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "postgresql-delete",
+      "category": "PostgreSQL",
+      "title": "DELETE",
+      "slug": "delete",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "postgresql-join",
+      "category": "PostgreSQL",
+      "title": "JOIN",
+      "slug": "join",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "postgresql-group-by",
+      "category": "PostgreSQL",
+      "title": "GROUP BY",
+      "slug": "group-by",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "postgresql-having",
+      "category": "PostgreSQL",
+      "title": "HAVING",
+      "slug": "having",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "postgresql-order-by",
+      "category": "PostgreSQL",
+      "title": "ORDER BY",
+      "slug": "order-by",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "postgresql-limit",
+      "category": "PostgreSQL",
+      "title": "LIMIT",
+      "slug": "limit",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "postgresql-offset",
+      "category": "PostgreSQL",
+      "title": "OFFSET",
+      "slug": "offset",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "postgresql-with",
+      "category": "PostgreSQL",
+      "title": "WITH",
+      "slug": "with",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "postgresql-on-conflict",
+      "category": "PostgreSQL",
+      "title": "ON CONFLICT",
+      "slug": "on-conflict",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "postgresql-returning",
+      "category": "PostgreSQL",
+      "title": "RETURNING",
+      "slug": "returning",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "postgresql-begin",
+      "category": "PostgreSQL",
+      "title": "BEGIN",
+      "slug": "begin",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "postgresql-commit",
+      "category": "PostgreSQL",
+      "title": "COMMIT",
+      "slug": "commit",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "postgresql-rollback",
+      "category": "PostgreSQL",
+      "title": "ROLLBACK",
+      "slug": "rollback",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "postgresql-explain-analyze",
+      "category": "PostgreSQL",
+      "title": "EXPLAIN ANALYZE",
+      "slug": "explain-analyze",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "postgresql-create-index",
+      "category": "PostgreSQL",
+      "title": "CREATE INDEX",
+      "slug": "create-index",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "postgresql-unique",
+      "category": "PostgreSQL",
+      "title": "UNIQUE",
+      "slug": "unique",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "postgresql-foreign-key",
+      "category": "PostgreSQL",
+      "title": "FOREIGN KEY",
+      "slug": "foreign-key",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "postgresql-check",
+      "category": "PostgreSQL",
+      "title": "CHECK",
+      "slug": "check",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "postgresql-jsonb",
+      "category": "PostgreSQL",
+      "title": "jsonb",
+      "slug": "jsonb",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "postgresql-transaction-isolation",
+      "category": "PostgreSQL",
+      "title": "transaction isolation",
+      "slug": "transaction-isolation",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "postgresql-mvcc",
+      "category": "PostgreSQL",
+      "title": "MVCC",
+      "slug": "mvcc",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "postgresql-row-level-security",
+      "category": "PostgreSQL",
+      "title": "row level security",
+      "slug": "row-level-security",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "postgresql-pg-trgm",
+      "category": "PostgreSQL",
+      "title": "pg_trgm",
+      "slug": "pg-trgm",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "postgresql-gin-index",
+      "category": "PostgreSQL",
+      "title": "GIN index",
+      "slug": "gin-index",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "prisma-model",
+      "category": "Prisma",
+      "title": "model",
+      "slug": "model",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "prisma-id",
+      "category": "Prisma",
+      "title": "@id",
+      "slug": "id",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "prisma-default",
+      "category": "Prisma",
+      "title": "@default",
+      "slug": "default",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "prisma-unique",
+      "category": "Prisma",
+      "title": "@unique",
+      "slug": "unique",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "prisma-index",
+      "category": "Prisma",
+      "title": "@@index",
+      "slug": "index",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "prisma-relation",
+      "category": "Prisma",
+      "title": "@relation",
+      "slug": "relation",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "prisma-enum",
+      "category": "Prisma",
+      "title": "enum",
+      "slug": "enum",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "prisma-findmany",
+      "category": "Prisma",
+      "title": "findMany",
+      "slug": "findmany",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "prisma-findunique",
+      "category": "Prisma",
+      "title": "findUnique",
+      "slug": "findunique",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "prisma-create",
+      "category": "Prisma",
+      "title": "create",
+      "slug": "create",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "prisma-update",
+      "category": "Prisma",
+      "title": "update",
+      "slug": "update",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "prisma-upsert",
+      "category": "Prisma",
+      "title": "upsert",
+      "slug": "upsert",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "prisma-delete",
+      "category": "Prisma",
+      "title": "delete",
+      "slug": "delete",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "prisma-select",
+      "category": "Prisma",
+      "title": "select",
+      "slug": "select",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "prisma-include",
+      "category": "Prisma",
+      "title": "include",
+      "slug": "include",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "prisma-where",
+      "category": "Prisma",
+      "title": "where",
+      "slug": "where",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "prisma-orderby",
+      "category": "Prisma",
+      "title": "orderBy",
+      "slug": "orderby",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "prisma-cursor",
+      "category": "Prisma",
+      "title": "cursor",
+      "slug": "cursor",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "prisma-transaction",
+      "category": "Prisma",
+      "title": "$transaction",
+      "slug": "transaction",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "prisma-queryraw",
+      "category": "Prisma",
+      "title": "$queryRaw",
+      "slug": "queryraw",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "prisma-prismaclient",
+      "category": "Prisma",
+      "title": "PrismaClient",
+      "slug": "prismaclient",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "prisma-prisma-migrate",
+      "category": "Prisma",
+      "title": "Prisma Migrate",
+      "slug": "prisma-migrate",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "prisma-driver-adapter",
+      "category": "Prisma",
+      "title": "driver adapter",
+      "slug": "driver-adapter",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "prisma-prisma-config-ts",
+      "category": "Prisma",
+      "title": "prisma.config.ts",
+      "slug": "prisma-config-ts",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "supabase-createbrowserclient",
+      "category": "Supabase",
+      "title": "createBrowserClient",
+      "slug": "createbrowserclient",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "supabase-createserverclient",
+      "category": "Supabase",
+      "title": "createServerClient",
+      "slug": "createserverclient",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "supabase-signinwithpassword",
+      "category": "Supabase",
+      "title": "signInWithPassword",
+      "slug": "signinwithpassword",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "supabase-signinwithoauth",
+      "category": "Supabase",
+      "title": "signInWithOAuth",
+      "slug": "signinwithoauth",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "supabase-getclaims",
+      "category": "Supabase",
+      "title": "getClaims",
+      "slug": "getclaims",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "supabase-getuser",
+      "category": "Supabase",
+      "title": "getUser",
+      "slug": "getuser",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "supabase-signout",
+      "category": "Supabase",
+      "title": "signOut",
+      "slug": "signout",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "supabase-onauthstatechange",
+      "category": "Supabase",
+      "title": "onAuthStateChange",
+      "slug": "onauthstatechange",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "supabase-rls-policy",
+      "category": "Supabase",
+      "title": "RLS policy",
+      "slug": "rls-policy",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "supabase-auth-uid",
+      "category": "Supabase",
+      "title": "auth.uid",
+      "slug": "auth-uid",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "supabase-storage-bucket",
+      "category": "Supabase",
+      "title": "Storage bucket",
+      "slug": "storage-bucket",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "supabase-createsignedurl",
+      "category": "Supabase",
+      "title": "createSignedUrl",
+      "slug": "createsignedurl",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "supabase-createsigneduploadurl",
+      "category": "Supabase",
+      "title": "createSignedUploadUrl",
+      "slug": "createsigneduploadurl",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "supabase-realtime-channel",
+      "category": "Supabase",
+      "title": "Realtime channel",
+      "slug": "realtime-channel",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "supabase-broadcast",
+      "category": "Supabase",
+      "title": "Broadcast",
+      "slug": "broadcast",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "supabase-presence",
+      "category": "Supabase",
+      "title": "Presence",
+      "slug": "presence",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "supabase-service-role-key",
+      "category": "Supabase",
+      "title": "Service role key",
+      "slug": "service-role-key",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "redis-get",
+      "category": "Redis & BullMQ",
+      "title": "GET",
+      "slug": "get",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "redis-set",
+      "category": "Redis & BullMQ",
+      "title": "SET",
+      "slug": "set",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "redis-set-ex",
+      "category": "Redis & BullMQ",
+      "title": "SET EX",
+      "slug": "set-ex",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "redis-del",
+      "category": "Redis & BullMQ",
+      "title": "DEL",
+      "slug": "del",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "redis-expire",
+      "category": "Redis & BullMQ",
+      "title": "EXPIRE",
+      "slug": "expire",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "redis-ttl",
+      "category": "Redis & BullMQ",
+      "title": "TTL",
+      "slug": "ttl",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "redis-incr",
+      "category": "Redis & BullMQ",
+      "title": "INCR",
+      "slug": "incr",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "redis-mget",
+      "category": "Redis & BullMQ",
+      "title": "MGET",
+      "slug": "mget",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "redis-hset",
+      "category": "Redis & BullMQ",
+      "title": "HSET",
+      "slug": "hset",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "redis-hget",
+      "category": "Redis & BullMQ",
+      "title": "HGET",
+      "slug": "hget",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "redis-sadd",
+      "category": "Redis & BullMQ",
+      "title": "SADD",
+      "slug": "sadd",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "redis-zadd",
+      "category": "Redis & BullMQ",
+      "title": "ZADD",
+      "slug": "zadd",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "redis-scan",
+      "category": "Redis & BullMQ",
+      "title": "SCAN",
+      "slug": "scan",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "redis-eval",
+      "category": "Redis & BullMQ",
+      "title": "EVAL",
+      "slug": "eval",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "redis-redis-persistence",
+      "category": "Redis & BullMQ",
+      "title": "Redis persistence",
+      "slug": "redis-persistence",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "redis-eviction",
+      "category": "Redis & BullMQ",
+      "title": "Eviction",
+      "slug": "eviction",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "redis-bullmq-queue",
+      "category": "Redis & BullMQ",
+      "title": "BullMQ Queue",
+      "slug": "bullmq-queue",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "redis-worker",
+      "category": "Redis & BullMQ",
+      "title": "Worker",
+      "slug": "worker",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "redis-job",
+      "category": "Redis & BullMQ",
+      "title": "Job",
+      "slug": "job",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "redis-backoff",
+      "category": "Redis & BullMQ",
+      "title": "backoff",
+      "slug": "backoff",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "redis-attempts",
+      "category": "Redis & BullMQ",
+      "title": "attempts",
+      "slug": "attempts",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "redis-deduplication",
+      "category": "Redis & BullMQ",
+      "title": "deduplication",
+      "slug": "deduplication",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "redis-flows",
+      "category": "Redis & BullMQ",
+      "title": "Flows",
+      "slug": "flows",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "redis-repeatable-jobs",
+      "category": "Redis & BullMQ",
+      "title": "Repeatable jobs",
+      "slug": "repeatable-jobs",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "redis-queueevents",
+      "category": "Redis & BullMQ",
+      "title": "QueueEvents",
+      "slug": "queueevents",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "testing-vitest-describe",
+      "category": "Testing & Operations",
+      "title": "Vitest describe",
+      "slug": "vitest-describe",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "testing-vitest-test",
+      "category": "Testing & Operations",
+      "title": "Vitest test",
+      "slug": "vitest-test",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "testing-expect",
+      "category": "Testing & Operations",
+      "title": "expect",
+      "slug": "expect",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "testing-vi-mock",
+      "category": "Testing & Operations",
+      "title": "vi.mock",
+      "slug": "vi-mock",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "testing-playwright-test",
+      "category": "Testing & Operations",
+      "title": "Playwright test",
+      "slug": "playwright-test",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "testing-page-getbyrole",
+      "category": "Testing & Operations",
+      "title": "page.getByRole",
+      "slug": "page-getbyrole",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "testing-beforeeach",
+      "category": "Testing & Operations",
+      "title": "beforeEach",
+      "slug": "beforeeach",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "testing-k6-check",
+      "category": "Testing & Operations",
+      "title": "k6 check",
+      "slug": "k6-check",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "testing-dockerfile",
+      "category": "Testing & Operations",
+      "title": "Dockerfile",
+      "slug": "dockerfile",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "testing-docker-compose",
+      "category": "Testing & Operations",
+      "title": "docker compose",
+      "slug": "docker-compose",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "testing-github-actions-job",
+      "category": "Testing & Operations",
+      "title": "GitHub Actions job",
+      "slug": "github-actions-job",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "testing-opentelemetry-span",
+      "category": "Testing & Operations",
+      "title": "OpenTelemetry Span",
+      "slug": "opentelemetry-span",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "testing-pino-logger",
+      "category": "Testing & Operations",
+      "title": "Pino logger",
+      "slug": "pino-logger",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "testing-sentry-event",
+      "category": "Testing & Operations",
+      "title": "Sentry event",
+      "slug": "sentry-event",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "testing-slo",
+      "category": "Testing & Operations",
+      "title": "SLO",
+      "slug": "slo",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "testing-sli",
+      "category": "Testing & Operations",
+      "title": "SLI",
+      "slug": "sli",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "testing-runbook",
+      "category": "Testing & Operations",
+      "title": "runbook",
+      "slug": "runbook",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "testing-adr",
+      "category": "Testing & Operations",
+      "title": "ADR",
+      "slug": "adr",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "testing-idempotency-key",
+      "category": "Testing & Operations",
+      "title": "idempotency key",
+      "slug": "idempotency-key",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "testing-csp",
+      "category": "Testing & Operations",
+      "title": "CSP",
+      "slug": "csp",
+      "status": "index",
+      "lessonCrossReferences": []
+    },
+    {
+      "id": "testing-owasp-asvs",
+      "category": "Testing & Operations",
+      "title": "OWASP ASVS",
+      "slug": "owasp-asvs",
+      "status": "index",
+      "lessonCrossReferences": []
+    }
+  ]
+}

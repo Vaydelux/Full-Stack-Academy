@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Fullstack Academy Preview Sandbox</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; min-height: 100%; }
+  body {
+    font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    background:
+      radial-gradient(900px 480px at 18% -10%, rgba(0, 240, 255, 0.09), transparent 60%),
+      radial-gradient(760px 420px at 92% 112%, rgba(138, 43, 226, 0.11), transparent 55%),
+      #0b0d14;
+    color: #e7ecf5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 22px;
+  }
+  #root { width: 100%; display: flex; justify-content: center; }
+
+  .card {
+    background: rgba(255, 255, 255, 0.035);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 28px 32px;
+    text-align: left;
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    width: 100%;
+    max-width: 420px;
+  }
+  .card h1, .card h2 {
+    margin: 0 0 8px;
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: #f2f6ff;
+  }
+  .card p { margin: 6px 0; font-size: 14px; line-height: 1.55; }
+  .badge {
+    display: inline-block;
+    margin-bottom: 10px;
+    padding: 3px 9px;
+    border-radius: 999px;
+    border: 1px solid rgba(0, 240, 255, 0.35);
+    background: rgba(0, 240, 255, 0.1);
+    color: #7debff;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .list {
+    list-style: none;
+    padding: 0;
+    margin: 14px 0 0;
+    display: grid;
+    gap: 8px;
+  }
+  .list li {
+    padding: 9px 12px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.025);
+    font-size: 13px;
+    color: #dbe4f3;
+  }
+  .form-field {
+    display: grid;
+    gap: 6px;
+    margin-top: 12px;
+  }
+  label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #9fb0cb;
+  }
+  input {
+    width: 100%;
+    padding: 9px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    background: rgba(9, 10, 15, 0.85);
+    color: #f2f6ff;
+    font-size: 13px;
+    outline: none;
+  }
+  input:focus {
+    border-color: rgba(0, 240, 255, 0.55);
+    box-shadow: 0 0 0 3px rgba(0, 240, 255, 0.12);
+  }
+  .value {
+    font-family: ui-monospace, 'JetBrains Mono', 'Fira Code', SFMono-Regular, monospace;
+    font-size: 46px;
+    line-height: 1.1;
+    font-weight: 700;
+    color: #00f0ff;
+    text-shadow: 0 0 28px rgba(0, 240, 255, 0.4);
+    margin: 10px 0 4px;
+  }
+  .row { display: flex; gap: 10px; justify-content: flex-start; margin-top: 16px; flex-wrap: wrap; }
+  button {
+    appearance: none;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    margin-top: 12px;
+    padding: 9px 16px;
+    border-radius: 10px;
+    border: 1px solid rgba(0, 240, 255, 0.35);
+    background: rgba(0, 240, 255, 0.1);
+    color: #bdf3ff;
+    cursor: pointer;
+    transition: all 0.18s ease;
+  }
+  button:hover {
+    background: rgba(0, 240, 255, 0.18);
+    box-shadow: 0 0 22px rgba(0, 240, 255, 0.25);
+    transform: translateY(-1px);
+  }
+  button:active { transform: translateY(1px) scale(0.98); }
+  .muted { color: #8b95ab; font-size: 13px; margin: 8px 0 0; line-height: 1.55; }
+</style>
+</head>
+<body>
+  <div id="root"></div>
+  <script src="/preview-babel.js"></script>
+  <script type="module" src="/preview-vendor.mjs"></script>
+  <script type="module">
+    const post = (msg) => {
+      try { parent.postMessage({ ...msg, source: 'academy-preview' }, '*'); } catch (e) { /* noop */ }
+    };
+
+    function fmt(v) {
+      if (typeof v === 'string') return v;
+      if (v instanceof Error) return v.message;
+      if (typeof v === 'function') return '[Function ' + (v.name || 'anonymous') + ']';
+      if (v === undefined) return 'undefined';
+      try {
+        const s = JSON.stringify(v, (_k, val) => (typeof val === 'function' ? '[Function]' : val));
+        return s === undefined ? String(v) : s;
+      } catch (e) { return String(v); }
+    }
+    ['log', 'info', 'warn', 'error'].forEach((level) => {
+      const orig = console[level].bind(console);
+      console[level] = (...args) => {
+        orig(...args);
+        post({ type: 'CONSOLE', level, text: args.map(fmt).join(' ') });
+      };
+    });
+    window.addEventListener('error', (e) =>
+      post({ type: 'CONSOLE', level: 'error', text: String(e.message || 'Runtime error') })
+    );
+    window.addEventListener('unhandledrejection', (e) =>
+      post({ type: 'CONSOLE', level: 'error', text: 'Unhandled rejection: ' + fmt(e.reason) })
+    );
+
+    let hookLog = [];
+    let renderCount = 0;
+    let scheduled = false;
+    let hookCallIdx = 0;
+
+    const BaseReact = window.React;
+    const ReactDOM = window.ReactDOM;
+    const _useState = BaseReact.useState;
+    const React = Object.assign({}, BaseReact, {
+      useState: (init) => {
+        if (hookCallIdx === 0) hookLog = [];
+        const r = _useState(init);
+        hookLog[hookCallIdx++] = r[0];
+        scheduleReport();
+        Promise.resolve().then(() => { hookCallIdx = 0; });
+        return r;
+      },
+    });
+    window.React = React;
+
+    ['useState', 'useEffect', 'useMemo', 'useRef', 'useCallback', 'useReducer', 'useContext', 'useLayoutEffect', 'useId'].forEach((hookName) => {
+      try { if (typeof React[hookName] === 'function') window[hookName] = React[hookName].bind(React); } catch (e) { /* noop */ }
+    });
+
+    function safeVal(v) {
+      if (typeof v === 'function') return '[fn]';
+      if (typeof v === 'object' && v !== null) {
+        try { return JSON.parse(JSON.stringify(v)); } catch (e) { return '[obj]'; }
+      }
+      return v;
+    }
+    function scheduleReport() {
+      if (scheduled) return;
+      scheduled = true;
+      requestAnimationFrame(() => {
+        scheduled = false;
+        post({ type: 'STATE', hooks: hookLog.map(safeVal), renders: renderCount });
+      });
+    }
+
+    function detectEntryName(rawCode) {
+      const md = rawCode.match(/export\s+default\s+(?:async\s+)?function\s+([A-Za-z_$][\w$]*)/);
+      if (md) return md[1];
+      const mc = rawCode.match(/export\s+default\s+(?!function\b|class\b)([A-Za-z_$][\w$]*)\s*;?/);
+      if (mc) return mc[1];
+      const named = rawCode.match(/export\s+function\s+([A-Z][A-Za-z0-9_$]*)/);
+      if (named) return named[1];
+      const decl = rawCode.match(/function\s+([A-Z][A-Za-z0-9_$]*)\s*\(/);
+      if (decl) return decl[1];
+      return 'App';
+    }
+
+    function run(rawCode) {
+      try {
+        const entry = detectEntryName(rawCode);
+        let code = rawCode.replace(/^\s*import\b[^\n]*\n/gm, '');
+        code = code.replace(/export\s+default\s+/g, '');
+        code = code.replace(/export\s+/g, '');
+
+        const out = Babel.transform(code, {
+          presets: [['react', { runtime: 'classic' }], 'typescript'],
+          filename: 'Sandbox.tsx',
+        }).code;
+
+        if (window.__root) { try { window.__root.unmount(); } catch (e) { /* noop */ } window.__root = null; }
+        document.getElementById('root').innerHTML = '';
+        delete window.__academyEntry;
+        hookLog = [];
+        renderCount = 0;
+
+        const entryName = /^[A-Za-z_$][\w$]*$/.test(entry) ? entry : 'App';
+        const finalCode =
+          out +
+          '\n;window.__academyEntry = (typeof ' + entryName + ' !== "undefined") ? ' + entryName + ' : null;';
+
+        let scriptError = null;
+        const onScriptError = (e) => {
+          scriptError = String((e && e.message) || 'Script error');
+        };
+        window.addEventListener('error', onScriptError);
+        try {
+          const s = document.createElement('script');
+          s.textContent = finalCode;
+          document.body.appendChild(s);
+          s.remove();
+        } finally {
+          window.removeEventListener('error', onScriptError);
+        }
+        if (scriptError) throw new Error(scriptError);
+
+        const entryComp = window.__academyEntry;
+        if (!entryComp) {
+          throw new Error('No React component found. Export a component such as: export default function TeamCard() { ... }');
+        }
+
+        const countingComp = function (...args) {
+          renderCount += 1;
+          scheduleReport();
+          return entryComp.apply(null, args);
+        };
+        try {
+          Object.defineProperty(countingComp, 'name', { value: entryComp.name || 'Entry' });
+          Object.defineProperty(countingComp, 'displayName', { value: entryComp.name || 'Entry' });
+        } catch (e) { /* noop */ }
+
+        const defaultProps = entryName === 'SkillCard'
+          ? {
+              title: 'Core Frontend Stack',
+              level: 'Beginner',
+              skills: [
+                { id: 'sk-ts', label: 'TypeScript strict boundaries' },
+                { id: 'sk-react', label: 'React 19 components' },
+                { id: 'sk-zod', label: 'Zod runtime schemas' },
+              ],
+            }
+          : undefined;
+
+        window.__root = ReactDOM.createRoot(document.getElementById('root'));
+        window.__root.render(React.createElement(countingComp, defaultProps));
+        post({ type: 'STATUS', status: 'ok' });
+        scheduleReport();
+      } catch (err) {
+        post({ type: 'STATUS', status: 'error', message: String((err && err.message) || err) });
+        scheduleReport();
+      }
+    }
+
+    window.addEventListener('message', (e) => {
+      const d = e.data;
+      if (!d || d.source !== 'academy-parent') return;
+      if (d.type === 'RUN') run(String(d.code || ''));
+    });
+
+    post({ type: 'READY' });
+  </script>
+</body>
+</html>

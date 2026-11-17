@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Fullstack Academy: an interactive proof of concept for a modern, hands-on engineering curriculum." />
+  <title>Fullstack Academy — Interactive Course Prototype</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body data-theme="light">
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar" aria-label="Course sidebar">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">✳</span>
+        <span><strong>FULLSTACK</strong><small>ACADEMY · PREVIEW</small></span>
+        <button class="icon-btn mobile-close" id="close-sidebar" aria-label="Close navigation">✕</button>
+      </div>
+      <div class="sidestats">
+        <div class="stat-head"><span>Sample lesson progress</span><strong id="progress-tally">0 / 4</strong></div>
+        <div class="progress-bar"><span id="progress-fill"></span></div>
+        <small id="progress-subline">889 topics mapped · 4 authored samples</small>
+      </div>
+      <div class="sidebar-tabs" role="tablist" aria-label="Sidebar views">
+        <button class="active" data-sidebar-tab="curriculum" aria-selected="true" role="tab">Curriculum</button>
+        <button data-sidebar-tab="reference" aria-selected="false" role="tab">References</button>
+        <button data-sidebar-tab="notes" aria-selected="false" role="tab">My Notes</button>
+      </div>
+      <label class="search-wrap"><span aria-hidden="true">⌕</span><input id="search" placeholder="Search 889 topics or 303 references…" aria-label="Search curriculum or references" /><kbd>/</kbd></label>
+      <div class="sidebar-actions">
+        <button id="jump-unfinished">↗ Continue learning</button>
+        <button id="open-arena">◈ Bug Hunt Arena</button>
+      </div>
+      <div class="sidebar-list" id="sidebar-list" tabindex="0" aria-live="polite"></div>
+      <div class="sidebar-foot"><span class="status-dot"></span> Curriculum v1.1 <span class="separator">·</span> Draft prototype</div>
+    </aside>
+    <div class="main-shell">
+      <header class="topbar">
+        <button id="open-sidebar" class="icon-btn mobile-open" aria-label="Open navigation">☰</button>
+        <div class="breadcrumbs" id="breadcrumbs">ACADEMY <span>/</span> LEARN</div>
+        <div class="topbar-actions">
+          <button class="text-btn" id="toggle-theme">◐ <span>Theme</span></button>
+          <button class="text-btn" id="backup-btn">↓ <span>Backup</span></button>
+          <button class="text-btn" id="import-btn">↑ <span>Restore</span></button>
+          <input id="import-file" type="file" accept="application/json" hidden />
+          <span class="top-avatar" aria-hidden="true">F</span>
+        </div>
+      </header>
+      <main id="main-content" tabindex="-1"></main>
+      <footer class="main-footer"><span>Purpose-built course prototype · Not a deployed production course</span><span>Original learning content · Updated Nov 2026</span></footer>
+    </div>
+    <aside class="right-rail" id="right-rail" aria-label="Lesson utilities">
+      <div class="right-sticky">
+        <div class="rail-label">ON THIS PAGE</div>
+        <nav id="local-toc" class="toc"></nav>
+        <div class="rail-divider"></div>
+        <div class="rail-label">QUICK NOTE</div>
+        <textarea id="quick-note" rows="6" placeholder="Write what clicked, what broke, or what to revisit…" aria-label="Private note for current lesson"></textarea>
+        <div class="note-feedback" id="note-feedback">Saved locally on this device</div>
+        <div class="rail-divider"></div>
+        <div class="rail-label">KEYBOARD</div>
+        <div class="shortcut"><span>Search</span><kbd>/</kbd></div>
+        <div class="shortcut"><span>Next lesson</span><kbd>]</kbd></div>
+        <div class="shortcut"><span>Previous lesson</span><kbd>[</kbd></div>
+        <div class="rail-divider"></div>
+        <div class="privacy-note">◈ Your notes and progress stay in this browser. Use Backup to export them.</div>
+      </div>
+    </aside>
+  </div>
+  <script src="catalog.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

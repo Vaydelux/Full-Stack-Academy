@@ -1,0 +1,130 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-app-sans), ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: var(--font-app-mono), ui-monospace, 'JetBrains Mono', 'Fira Code', SFMono-Regular, monospace;
+}
+
+:root {
+  --radius: 0.625rem;
+  --background: #f8f9fc;
+  --foreground: #1a2434;
+}
+
+.dark {
+  --background: #090a0f;
+  --foreground: #e2e8f0;
+}
+
+@layer base {
+  * {
+    border-color: rgba(255, 255, 255, 0.08);
+  }
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-feature-settings: 'ss01', 'cv01';
+  }
+}
+
+/* ---------- Spatial & Editorial custom utilities ---------- */
+
+::selection {
+  background: rgba(0, 240, 255, 0.22);
+  color: #eafcff;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148, 163, 184, 0.24) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.2);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 240, 255, 0.32);
+  background-clip: content-box;
+}
+
+.text-glow-cyan {
+  text-shadow: 0 0 14px rgba(0, 240, 255, 0.45);
+}
+
+/* Syntax highlighting tokens */
+.tok-plain { color: #d9e2f0; }
+.tok-kw { color: #b388ff; }
+.tok-hook { color: #00f0ff; }
+.tok-comp { color: #b388ff; }
+.tok-tag { color: #7ddceb; }
+.tok-str { color: #34d399; }
+.tok-num { color: #67e8f9; }
+.tok-fn { color: #5eead4; }
+.tok-com { color: #64748b; font-style: italic; }
+.tok-op { color: #9aa5b8; }
+
+@keyframes nl-playhead {
+  0%, 100% { box-shadow: 0 0 6px 1px rgba(0, 240, 255, 0.55); }
+  50% { box-shadow: 0 0 14px 3px rgba(0, 240, 255, 0.85); }
+}
+
+.nl-playhead {
+  animation: nl-playhead 1.8s ease-in-out infinite;
+}
+
+@keyframes nl-linepulse {
+  0% { background: rgba(0, 240, 255, 0.28); }
+  100% { background: transparent; }
+}
+
+.nl-linepulse {
+  animation: nl-linepulse 1.4s ease-out forwards;
+}
+
+.nl-code-caret {
+  caret-color: #00f0ff;
+}
+
+/* Light editorial theme overrides (preserves spatial layout in light mode) */
+html.light body {
+  background-color: #f8f9fc;
+  color: #1a2434;
+}
+
+html.light .academy-shell {
+  background-color: #f8f9fc;
+  color: #1a2434;
+}
+
+html.light .academy-surface {
+  background-color: rgba(255, 255, 255, 0.92);
+  border-color: #e4e9f0;
+}
+
+html.light .academy-panel {
+  background-color: #ffffff;
+  border-color: #e4e9f0;
+}
+
+html.light .academy-subtle {
+  background-color: #f1f4fa;
+  border-color: #e2e8f0;
+}
