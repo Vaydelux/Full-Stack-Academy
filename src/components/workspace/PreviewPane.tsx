@@ -444,6 +444,7 @@ function IdorSimulator() {
 
 export default function PreviewPane() {
   const activeSampleId = useAcademy((s) => s.activeSampleId);
+  const selectedLessonId = useAcademy((s) => s.selectedLessonId);
   const viewport = useAcademy((s) => s.viewport);
   const setViewport = useAcademy((s) => s.setViewport);
   const previewStatus = useAcademy((s) => s.previewStatus);
@@ -457,7 +458,7 @@ export default function PreviewPane() {
   const runToken = useAcademy((s) => s.runToken);
 
   const sample = AUTHORED_LESSONS[activeSampleId] ?? AUTHORED_LESSONS['06.01.01'];
-  const isReactLive = sample.sandboxMode === 'react-live';
+  const isReactLive = Boolean(AUTHORED_LESSONS[selectedLessonId]) && sample.sandboxMode === 'react-live';
 
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const readyRef = useRef(false);
@@ -465,12 +466,16 @@ export default function PreviewPane() {
 
   useEffect(() => {
     if (!isReactLive) {
+      readyRef.current = false;
+      gotStatusRef.current = false;
       setPreviewStatus('ready');
       return;
     }
     const onMessage = (e: MessageEvent) => {
+      // An opaque-origin sandbox sends origin "null". A marker alone is not authentication.
+      if (e.source !== iframeRef.current?.contentWindow || e.origin !== 'null') return;
       const d = e.data;
-      if (!d || d.source !== 'academy-preview') return;
+      if (!d || typeof d !== 'object' || d.source !== 'academy-preview') return;
       if (d.type === 'READY') {
         readyRef.current = true;
         setPreviewStatus('ready');
@@ -534,6 +539,16 @@ export default function PreviewPane() {
       );
     }
   };
+
+  if (!AUTHORED_LESSONS[selectedLessonId]) {
+    return (
+      <section role="status" className="flex min-h-0 flex-1 flex-col items-center justify-center gap-3 bg-slate-50 p-6 text-center dark:bg-[#070810]">
+        <Terminal className="h-7 w-7 text-slate-400" aria-hidden="true" />
+        <h2 className="text-sm font-bold text-slate-800 dark:text-slate-200">Lab not published yet</h2>
+        <p className="max-w-sm text-xs leading-relaxed text-slate-600 dark:text-slate-400">This is a planned curriculum topic. A runnable preview will appear here only when its lesson and tests have been authored. Select an authored sample to practice now.</p>
+      </section>
+    );
+  }
 
   const statusDot =
     previewStatus === 'ready'
@@ -631,7 +646,7 @@ export default function PreviewPane() {
                   ref={iframeRef}
                   src="/preview.html"
                   title="Live React JSX Sandbox"
-                  sandbox="allow-scripts allow-same-origin"
+                  sandbox="allow-scripts"
                   className="h-full w-full border-0 bg-[#0B0D14]"
                 />
               </motion.div>

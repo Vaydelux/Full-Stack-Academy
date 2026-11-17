@@ -71,7 +71,7 @@ export const TRACK_GROUPS: TrackGroup[] = [
     id: 'app-dev',
     name: 'Application development',
     subjects: 'Zod, forms, TanStack Query, Zustand, APIs',
-    trackIds: ['09', '10'],
+    trackIds: ['09'],
     accent: '#10B981',
   },
   {

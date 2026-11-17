@@ -221,11 +221,10 @@ export default function Workspace() {
         return;
       }
       const target = e.target as HTMLElement | null;
+      // Preserve keyboard activation and navigation inside interactive widgets.
       if (
-        target &&
-        (target.tagName === 'TEXTAREA' ||
-          target.tagName === 'INPUT' ||
-          target.isContentEditable)
+        e.altKey || e.metaKey || e.ctrlKey ||
+        target?.closest('input, textarea, select, button, a, [contenteditable], [role="dialog"], [role="slider"], [role="listbox"], [role="combobox"]')
       ) {
         return;
       }

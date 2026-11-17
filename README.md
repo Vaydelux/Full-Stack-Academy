@@ -52,3 +52,14 @@ npm test            # Node curriculum & hygiene test suite
 npm run validate    # Python catalog & prototype consistency validator
 npm run build       # Production Next.js build
 ```
+
+
+## November 2026 reader hardening
+
+- Live JSX executes in an opaque-origin iframe without `allow-same-origin`; messages are checked against the active frame, source origin and parent origin. The module bundle has explicit CORS for sandbox loading.
+- Planned lessons do not display the previous sample's code or preview.
+- Progress backups are schema-validated and restored as an exact checkpoint, with invalid completion records discarded. Local completion remains **self-assessed** rather than independently graded.
+- Keyboard shortcuts avoid forms, dialogs, links, buttons, and sliders.
+- CI quality gates are in `.github/workflows/academy-quality.yml`.
+
+See `docs/RELEASE_GATE.md` for the unresolved production/SEO/browser-testing work. Do not present 889 planned topics as 889 published lessons.
