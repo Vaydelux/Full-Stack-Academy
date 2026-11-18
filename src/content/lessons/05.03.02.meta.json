@@ -1,0 +1,38 @@
+{
+  "id": "05.03.02",
+  "title": "Package boundaries and exports",
+  "description": "Practice package boundaries and exports with a local package graph or manifests, an intentionally failing starter and independent Node tests without cloud deployments.",
+  "trackId": "05",
+  "moduleId": "05.03",
+  "level": "Beginner",
+  "estimatedMinutes": 60,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "05.03.01"
+  ],
+  "objectives": [
+    "Explain package boundaries and exports through an explicit package/graph contract",
+    "Reproduce the broken workspace/build policy using offline inputs",
+    "Verify corrected boundaries with local Node/TypeScript tests and state what requires pnpm or turbo"
+  ],
+  "labId": "lab.foundation.mono-package-exports",
+  "sources": [
+    {
+      "label": "Official pnpm/Turborepo documentation",
+      "url": "https://nodejs.org/api/packages.html#package-entry-points"
+    },
+    {
+      "label": "Official tooling reference",
+      "url": "https://pnpm.io/workspaces"
+    }
+  ],
+  "rubric": [
+    "I identify the real package boundaries and exports configuration or graph risk.",
+    "I demonstrate a failing starter and correct local behavior.",
+    "I distinguish a static model from an actual pnpm/Turborepo installation or build."
+  ]
+}

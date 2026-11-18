@@ -1,0 +1,1 @@
+export function solve(paths){if(!Array.isArray(paths))throw new TypeError('Paths required');return paths.filter(path=>/^(apps|packages)\/[^/]+\/package\.json$/.test(path)).map(path=>path.slice(0,-'/package.json'.length)).sort();}

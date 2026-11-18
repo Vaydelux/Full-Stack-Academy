@@ -1,0 +1,91 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Explain lab web api shared contracts monorepo through an explicit package/graph contract","Reproduce the broken workspace/build policy using offline inputs","Verify corrected boundaries with local Node/TypeScript tests and state what requires pnpm or turbo"]} />
+
+## The problem we're solving
+
+Web and API packages duplicate the request model, so schema drift produces incompatible client and server behavior. This offline workshop is part of the Git/monorepo track; no workspace installation, external package query or Vercel build runs when reading the lesson.
+
+## Build the mental model
+
+A shared contracts package centralizes public transport types and runtime parsing. The API must validate unknown input, while the web package imports the shared type rather than re-declaring it. pnpm workspace and turbo task configs describe build intent; local tests compile the actual three-package TS source, while package installation/publishing/deployment remain separate gates.
+
+**Predict before running:** Both web and API consume the same checked-in shared model, and malformed data never reaches the domain.
+
+## Prerequisites and preflight
+
+Continue from [the previous canonical topic](/learn/05.03.07). Use Node.js 24 and the repository's locked dependencies. Review `labs/mono-contracts-capstone/starter/solution.mjs` and `labs/mono-contracts-capstone/solution.test.mjs`. The starter is intentionally wrong; instructor code is a reference after your own attempt.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the workspace or package-graph defect" file="labs/mono-contracts-capstone/starter/solution.mjs" expected="The uncorrected starter fails the deterministic input/output tests.">
+
+```js
+export function solve(input){return input;}
+```
+
+**Predict before running:** Web and API packages duplicate the request model, so schema drift produces incompatible client and server behavior.
+
+**Why it fails:** A shared contracts package centralizes public transport types and runtime parsing. The API must validate unknown input, while the web package imports the shared type rather than re-declaring it. pnpm workspace and turbo task configs describe build intent; local tests compile the actual three-package TS source, while package installation/publishing/deployment remain separate gates.
+
+**Proof:** Run `ACADEMY_LAB_TARGET=starter npm run lab:mono-contracts-capstone` in Bash or set the same variable temporarily in PowerShell. Identify the missing edge, unsafe path, cache input or validation.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the explicit workspace contract" file="labs/mono-contracts-capstone/starter/solution.mjs" expected={"Both web and API consume the same checked-in shared model, and malformed data never reaches the domain."}>
+
+Preserve the exported `solve` entry and implement the smallest correct policy, noting whether this example is a simplified model rather than an actual pnpm/turbo invocation.
+
+```js
+export function solve(input){if(!input||typeof input!=='object'||typeof input.id!=='string'||!input.id.trim()||!Number.isInteger(input.qty)||input.qty<0)return null;return {id:input.id.trim(),qty:input.qty};}
+```
+
+**Predict before running:** Both web and API consume the same checked-in shared model, and malformed data never reaches the domain.
+
+**Why the repair works:** A shared contracts package centralizes public transport types and runtime parsing. The API must validate unknown input, while the web package imports the shared type rather than re-declaring it. pnpm workspace and turbo task configs describe build intent; local tests compile the actual three-package TS source, while package installation/publishing/deployment remain separate gates.
+
+**Proof:** Use the same checked-in Node test and discuss which additional real-tool integration checks a production monorepo would require.
+
+</LessonStep>
+
+<LessonStep number={3} title="Test the graph, manifests and failure cases" file="labs/mono-contracts-capstone/solution.test.mjs" expected="Local assertions prove deterministic workspace behavior, including one negative test.">
+
+```js
+assert.deepEqual(solve({id:' A ',qty:3}),{id:'A',qty:3});assert.equal(solve({id:'A',qty:-1}),null);assert.equal(solve(null),null);
+```
+
+**Predict before running:** An invalid workspace path, missing export or changed dependency is rejected instead of silently accepted.
+
+**Why this matters:** A passing local model does not automatically validate actual pnpm-lock.yaml resolution, Turbo remote cache, package publishing or deployment.
+
+**Proof:** Run `npm run lab:mono-contracts-capstone` and compare the repaired starter with the reviewed instructor result.
+
+</LessonStep>
+
+## Explore and verify
+
+Where available, inspect a sample pnpm-workspace.yaml, package.json exports map, shared tsconfig or turbo task graph. For production adoption, lock Node/pnpm versions, run `pnpm install --frozen-lockfile`, run `turbo run build test` in a throwaway workspace, and check package consumer exports. These commands are guidance only and are **not automatically executed** by the academy.
+
+<Misconception claim="A valid-looking workspace configuration proves every package can install, compile and deploy." correction={"A shared contracts package centralizes public transport types and runtime parsing. The API must validate unknown input, while the web package imports the shared type rather than re-declaring it. pnpm workspace and turbo task configs describe build intent; local tests compile the actual three-package TS source, while package installation/publishing/deployment remain separate gates."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+Use the failing input to locate the missing package boundary, wrong task order, unsafe cache key or incompatible manifest. Fix the specific invariant rather than claiming a toolchain passed without invoking that toolchain.
+
+<KnowledgeCheck question={"Why share DTO contracts between web and API packages?"} choices={["To prevent all runtime validation","To reduce schema drift while still validating untrusted input at runtime","To automatically deploy both packages","To make private fields public"]} correctIndex={1} explanation={"A shared contracts package centralizes public transport types and runtime parsing. The API must validate unknown input, while the web package imports the shared type rather than re-declaring it. pnpm workspace and turbo task configs describe build intent; local tests compile the actual three-package TS source, while package installation/publishing/deployment remain separate gates."} misconception="Workspace manifests describe intent; real package-manager and build-engine checks need separate execution." lessonId="05.03.08" />
+
+## Guided local lab
+
+Repair `labs/mono-contracts-capstone/starter/solution.mjs`, run the corresponding local verifier and inspect fixture manifests. The capstone additionally includes actual three-package TypeScript source compiled in the test process. No GitHub Actions workflow or Vercel deployment is triggered by the lessons.
+
+<LabGate lessonId="05.03.08" labId="lab.foundation.mono-contracts-capstone" commands={["npm ci","npm run lab:mono-contracts-capstone"]} interactive={false} />
+
+## Reflect
+
+Which boundary is a TypeScript type-only guarantee? Which is a runtime value, package export, lockfile or build-cache guarantee? What concrete pnpm/Turborepo command would you need before claiming the workspace is release-ready?
+
+## Official references
+
+- [Primary official monorepo documentation](https://pnpm.io/workspaces)
+- [Supporting official reference](https://turborepo.dev/docs/crafting-your-repository/structuring-a-repository)

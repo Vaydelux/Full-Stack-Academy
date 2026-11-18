@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.mono-cache-graph",
+  "lessonId": "05.03.05",
+  "title": "Build graph and cache",
+  "runtime": "node-24-synthetic-workspace-model",
+  "status": "authored",
+  "starter": "labs/mono-cache-graph/starter/solution.mjs",
+  "solution": "labs/mono-cache-graph/solution/solution.mjs",
+  "tests": "labs/mono-cache-graph/solution.test.mjs",
+  "verify": [
+    "npm run lab:mono-cache-graph"
+  ],
+  "expected": "The build graph and cache package graph or manifest contract is tested locally with no network or hosted build.",
+  "security": "Synthetic local workspace and pinned fixture versions only; no registry fetch, private packages, credentials, Vercel deployment, remote caching or npm publishing."
+}

@@ -1,0 +1,91 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Explain shared ts config through an explicit package/graph contract","Reproduce the broken workspace/build policy using offline inputs","Verify corrected boundaries with local Node/TypeScript tests and state what requires pnpm or turbo"]} />
+
+## The problem we're solving
+
+An application inherits a shared tsconfig but disables strict mode and quietly accepts an implicit-any parameter. This offline workshop is part of the Git/monorepo track; no workspace installation, external package query or Vercel build runs when reading the lesson.
+
+## Build the mental model
+
+A shared TypeScript preset reduces drift across packages, while each consumer extends the preset from a real path. Inherited compiler options can be overridden, so a security-sensitive strict baseline should be verified in actual effective configs. This lab models key overrides, while tsc --showConfig is the authoritative resolver.
+
+**Predict before running:** Safe overrides preserve strict typing, but loosening strictness is explicitly rejected.
+
+## Prerequisites and preflight
+
+Continue from [the previous canonical topic](/learn/05.03.02). Use Node.js 24 and the repository's locked dependencies. Examine the checked-in sample `labs/mono-shared-tsconfig/tsconfig.base.json` and explain why this is configuration evidence, not proof that pnpm or Turbo ran. Review `labs/mono-shared-tsconfig/starter/solution.mjs` and `labs/mono-shared-tsconfig/solution.test.mjs`. The starter is intentionally wrong; instructor code is a reference after your own attempt.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the workspace or package-graph defect" file="labs/mono-shared-tsconfig/starter/solution.mjs" expected="The uncorrected starter fails the deterministic input/output tests.">
+
+```js
+export function solve(base,local){return {...base,...local};}
+```
+
+**Predict before running:** An application inherits a shared tsconfig but disables strict mode and quietly accepts an implicit-any parameter.
+
+**Why it fails:** A shared TypeScript preset reduces drift across packages, while each consumer extends the preset from a real path. Inherited compiler options can be overridden, so a security-sensitive strict baseline should be verified in actual effective configs. This lab models key overrides, while tsc --showConfig is the authoritative resolver.
+
+**Proof:** Run `ACADEMY_LAB_TARGET=starter npm run lab:mono-shared-tsconfig` in Bash or set the same variable temporarily in PowerShell. Identify the missing edge, unsafe path, cache input or validation.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the explicit workspace contract" file="labs/mono-shared-tsconfig/starter/solution.mjs" expected={"Safe overrides preserve strict typing, but loosening strictness is explicitly rejected."}>
+
+Preserve the exported `solve` entry and implement the smallest correct policy, noting whether this example is a simplified model rather than an actual pnpm/turbo invocation.
+
+```js
+export function solve(base,local){if(!base||!local)throw new TypeError('Configs required');const merged={...base,...local};if(merged.strict!==true||merged.noUncheckedIndexedAccess!==true)throw new Error('Unsafe override');return merged;}
+```
+
+**Predict before running:** Safe overrides preserve strict typing, but loosening strictness is explicitly rejected.
+
+**Why the repair works:** A shared TypeScript preset reduces drift across packages, while each consumer extends the preset from a real path. Inherited compiler options can be overridden, so a security-sensitive strict baseline should be verified in actual effective configs. This lab models key overrides, while tsc --showConfig is the authoritative resolver.
+
+**Proof:** Use the same checked-in Node test and discuss which additional real-tool integration checks a production monorepo would require.
+
+</LessonStep>
+
+<LessonStep number={3} title="Test the graph, manifests and failure cases" file="labs/mono-shared-tsconfig/solution.test.mjs" expected="Local assertions prove deterministic workspace behavior, including one negative test.">
+
+```js
+const base={strict:true,noUncheckedIndexedAccess:true,target:'ES2022'};assert.deepEqual(solve(base,{target:'ES2023'}),{strict:true,noUncheckedIndexedAccess:true,target:'ES2023'});assert.throws(()=>solve(base,{strict:false}),/Unsafe override/);
+```
+
+**Predict before running:** An invalid workspace path, missing export or changed dependency is rejected instead of silently accepted.
+
+**Why this matters:** A passing local model does not automatically validate actual pnpm-lock.yaml resolution, Turbo remote cache, package publishing or deployment.
+
+**Proof:** Run `npm run lab:mono-shared-tsconfig` and compare the repaired starter with the reviewed instructor result.
+
+</LessonStep>
+
+## Explore and verify
+
+Where available, inspect a sample pnpm-workspace.yaml, package.json exports map, shared tsconfig or turbo task graph. For production adoption, lock Node/pnpm versions, run `pnpm install --frozen-lockfile`, run `turbo run build test` in a throwaway workspace, and check package consumer exports. These commands are guidance only and are **not automatically executed** by the academy.
+
+<Misconception claim="A valid-looking workspace configuration proves every package can install, compile and deploy." correction={"A shared TypeScript preset reduces drift across packages, while each consumer extends the preset from a real path. Inherited compiler options can be overridden, so a security-sensitive strict baseline should be verified in actual effective configs. This lab models key overrides, while tsc --showConfig is the authoritative resolver."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+Use the failing input to locate the missing package boundary, wrong task order, unsafe cache key or incompatible manifest. Fix the specific invariant rather than claiming a toolchain passed without invoking that toolchain.
+
+<KnowledgeCheck question={"Can a consuming tsconfig override inherited compilerOptions?"} choices={["No","Yes, and tooling should verify the effective options","Only in React projects","Only for file names"]} correctIndex={1} explanation={"A shared TypeScript preset reduces drift across packages, while each consumer extends the preset from a real path. Inherited compiler options can be overridden, so a security-sensitive strict baseline should be verified in actual effective configs. This lab models key overrides, while tsc --showConfig is the authoritative resolver."} misconception="Workspace manifests describe intent; real package-manager and build-engine checks need separate execution." lessonId="05.03.03" />
+
+## Guided local lab
+
+Repair `labs/mono-shared-tsconfig/starter/solution.mjs`, run the corresponding local verifier and inspect fixture manifests. The capstone additionally includes actual three-package TypeScript source compiled in the test process. No GitHub Actions workflow or Vercel deployment is triggered by the lessons.
+
+<LabGate lessonId="05.03.03" labId="lab.foundation.mono-shared-tsconfig" commands={["npm ci","npm run lab:mono-shared-tsconfig"]} interactive={false} />
+
+## Reflect
+
+Which boundary is a TypeScript type-only guarantee? Which is a runtime value, package export, lockfile or build-cache guarantee? What concrete pnpm/Turborepo command would you need before claiming the workspace is release-ready?
+
+## Official references
+
+- [Primary official monorepo documentation](https://www.typescriptlang.org/tsconfig/extends.html)
+- [Supporting official reference](https://www.typescriptlang.org/tsconfig/strict.html)
