@@ -1,0 +1,37 @@
+{
+  "id": "00.01.01",
+  "title": "What runs in a browser vs on a server?",
+  "description": "Trace browser and server execution, inspect delivered assets, and build a local HTTP application that keeps private data on the server.",
+  "trackId": "00",
+  "moduleId": "00.01",
+  "level": "Beginner",
+  "estimatedMinutes": 35,
+  "status": "authored",
+  "reviewedAt": "2026-11-18",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [],
+  "objectives": [
+    "Identify which environment executes given code",
+    "Explain why public browser code must not contain credentials",
+    "Build a server that returns HTML and a separate browser script",
+    "Verify that private values are excluded from public responses"
+  ],
+  "labId": "lab.foundation.browser-server",
+  "sources": [
+    {
+      "label": "MDN: How the web works",
+      "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Getting_started/Web_standards/How_the_web_works"
+    },
+    {
+      "label": "Node.js 24: HTTP",
+      "url": "https://nodejs.org/download/release/latest-v24.x/docs/api/http.html"
+    }
+  ],
+  "rubric": [
+    "I inspected the document and JavaScript in the Network panel.",
+    "I completed the starter and passed the local acceptance tests.",
+    "I confirmed that the private sentinel is absent from responses."
+  ]
+}

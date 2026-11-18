@@ -1,0 +1,114 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Identify which environment executes given code","Explain why public browser code must not contain credentials","Build a server that returns HTML and a separate browser script","Verify that private values are excluded from public responses"]} />
+
+## The problem we're solving
+
+A button changes a heading, while another button saves a shared record. Both feel like one application, but different processes perform the work. Confusing the environments makes developers try to access the DOM in Node.js, or expose private credentials in the browser.
+
+## Build the mental model
+
+A browser runs downloaded JavaScript and renders HTML and CSS. A server receives requests, applies business rules, and returns data or documents. Both can use JavaScript, but their APIs and trust boundaries differ: the browser has the DOM, while Node has server APIs such as filesystem access. The user controls the browser and can inspect any data it receives. Authorization therefore belongs on the server.
+
+**Predict first:** Does every button click need a network request? No. A local DOM update needs no additional server communication; a shared database update normally does.
+
+Install Node.js 24 and Git, clone the repository, and confirm `node --version`. No account or API key is needed.
+
+<LessonStep number={1} title="Serve an HTML document" file="labs/browser-server/starter/server.mjs" expected="A local server returns the Runtime boundary heading.">
+
+Keep the starter's import and direct-execution block; replace the request handler with this stage:
+
+```js
+export function createApp() {
+  return createServer((req, res) => {
+    if (req.method === 'GET' && req.url === '/') {
+      res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+      return res.end('<h1>Runtime boundary</h1>');
+    }
+    res.writeHead(404);
+    res.end('Not found');
+  });
+}
+```
+
+Run `node labs/browser-server/starter/server.mjs` and open `http://127.0.0.1:3101`. The terminal is the server process; the browser is a client. Stop it with Ctrl+C before restarting after edits.
+
+</LessonStep>
+
+<LessonStep number={2} title="Deliver browser code separately" file="labs/browser-server/starter/server.mjs" expected="The button changes text without another network request.">
+
+Replace the root response body with this document:
+
+```html
+<!doctype html>
+<html lang="en">
+  <meta charset="utf-8">
+  <title>Runtime lab</title>
+  <body>
+    <h1>Runtime boundary</h1>
+    <button id="action">Try browser code</button>
+    <p id="result"></p>
+    <script src="/app.js" defer></script>
+  </body>
+</html>
+```
+
+Insert this route before the fallback:
+
+```js
+if (req.method === 'GET' && req.url === '/app.js') {
+  res.writeHead(200, { 'Content-Type': 'text/javascript; charset=utf-8' });
+  return res.end("document.querySelector('#action').addEventListener('click', () => { document.querySelector('#result').textContent = 'Browser code ran'; });");
+}
+```
+
+The server sends the JavaScript as text, and the browser executes it. The defer attribute waits for document parsing. In Network, reload and inspect the HTML and script response. Click the button and observe that no new request is necessary.
+
+</LessonStep>
+
+<LessonStep number={3} title="Protect a server-side value" file="labs/browser-server/starter/server.mjs" expected="The status endpoint returns a boolean without revealing the synthetic private value.">
+
+Add `const PRIVATE_VALUE = 'server-only-demo-value';` at module scope. Add this route before the fallback:
+
+```js
+if (req.method === 'GET' && req.url === '/api/status') {
+  res.writeHead(200, { 'Content-Type': 'application/json' });
+  return res.end(JSON.stringify({ ready: PRIVATE_VALUE.length > 0 }));
+}
+```
+
+Visit the status endpoint and inspect its response. A boolean exposes the status without the underlying value. Never put real credentials in course fixtures; production secrets must be provided by protected configuration.
+
+</LessonStep>
+
+<Misconception claim="A password in a JavaScript file is safe if the UI hides it." correction="A browser can inspect downloaded code and responses. Keep credentials on the server and authorize every request." />
+
+## Bug Hunt: A hidden value
+
+A developer adds the private value to a JSON response because a debugging panel needs it and hides the panel with CSS. Inspect the Network response: the value is still disclosed. Remove the extra field, return only the boolean and run your boundary tests. CSS is not access control.
+
+<KnowledgeCheck question="Where should a database password live?" choices={["In CSS","In browser JavaScript","Only in the trusted server environment","In a JSON response"]} correctIndex={2} explanation="The browser can inspect code and responses it receives. Keep credentials server-side." misconception="Hidden UI or obfuscated JavaScript cannot protect credentials." lessonId="00.01.01" />
+
+## Guided lab
+
+Open `labs/browser-server/starter/server.mjs` in the academy repository. Implement the routes using the lesson and run the tests against your starter. The instructor solution is in `solution/server.mjs`. The ordinary test command verifies the instructor solution; to verify your work in PowerShell run:
+
+```powershell
+$env:ACADEMY_LAB_TARGET = 'starter'
+npm run lab:browser-server
+Remove-Item Env:ACADEMY_LAB_TARGET
+```
+
+In bash use `ACADEMY_LAB_TARGET=starter npm run lab:browser-server`. Initially the incomplete starter should fail. Implement the requirements, run the tests again, and compare with the solution after your attempt.
+
+<LabGate lessonId="00.01.01" labId="lab.foundation.browser-server" commands={["npm ci","npm run lab:browser-server"]} interactive={false} />
+
+## Reflect
+
+Explain why data in a server variable is not automatically visible in DevTools, but that same data in an HTTP response is.
+
+## Official references
+
+- [MDN: How the web works](https://developer.mozilla.org/en-US/docs/Learn_web_development/Getting_started/Web_standards/How_the_web_works)
+- [Node.js 24: HTTP](https://nodejs.org/download/release/latest-v24.x/docs/api/http.html)

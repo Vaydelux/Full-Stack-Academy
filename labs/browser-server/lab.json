@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.browser-server",
+  "lessonId": "00.01.01",
+  "title": "What runs in a browser vs on a server?",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/browser-server/starter/server.mjs",
+  "solution": "labs/browser-server/solution/server.mjs",
+  "tests": "labs/browser-server/solution.test.mjs",
+  "verify": [
+    "npm run lab:browser-server"
+  ],
+  "expected": "I completed the starter and passed the local acceptance tests.",
+  "security": "Synthetic data and loopback only. No secret or account needed."
+}

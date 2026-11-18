@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.request-lifecycle",
+  "lessonId": "00.01.02",
+  "title": "Client–server lifecycle: follow a real request",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/request-lifecycle/starter/server.mjs",
+  "solution": "labs/request-lifecycle/solution/server.mjs",
+  "tests": "labs/request-lifecycle/solution.test.mjs",
+  "verify": [
+    "npm run lab:request-lifecycle"
+  ],
+  "expected": "I completed the starter and passed its acceptance tests.",
+  "security": "Synthetic data and loopback only. No secret or account needed."
+}
