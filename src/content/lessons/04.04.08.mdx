@@ -1,0 +1,91 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Explain the package or tooling contract behind lab typed package release","Repair a concrete module/toolchain bug without weakening type safety","Verify exported behavior, configuration or declarations using local TypeScript tests"]} />
+
+## The problem we're solving
+
+A package advertises a public API but ships stale export paths and no deterministic typed release verification. This is a local repository/package-development lesson. A passing fixture alone is not a published npm release and does not create a Vercel deployment.
+
+## Build the mental model
+
+A typed package release must align source exports, generated JavaScript, declaration files, package exports map and versioned runtime requirements. A local package blueprint is not the same as publishing to npm; build and test artifacts offline first, then validate consumers and release only when configured.
+
+**Predict before running:** Only a versioned package manifest with the expected public JS entry is accepted by the local release gate.
+
+## Prerequisites and preflight
+
+Continue from [the previous lesson](/learn/04.04.07). Open `labs/ts-typed-release/starter/solution.ts`, the corrected instructor file and any adjacent JSON/tooling fixtures. Node 24 and TypeScript 5 are pinned in the academy; use the repository's existing tsx and tsc tools. No npm publishing credentials are needed.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the broken module or release contract" file="labs/ts-typed-release/starter/solution.ts" expected="The initial package/tooling assumption fails at least one reviewed assertion.">
+
+```ts
+export type Release={name:string;version:string;exports:string[]};export function solve(raw:Release){return {ok:true,entry:raw.exports[0]};}
+```
+
+**Predict before running:** A package advertises a public API but ships stale export paths and no deterministic typed release verification.
+
+**Why it fails:** A typed package release must align source exports, generated JavaScript, declaration files, package exports map and versioned runtime requirements. A local package blueprint is not the same as publishing to npm; build and test artifacts offline first, then validate consumers and release only when configured.
+
+**Proof:** Run the starter tests and inspect the relevant module, manifest, or type declaration contract.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the exported TypeScript API or build policy" file="labs/ts-typed-release/starter/solution.ts" expected={"Only a versioned package manifest with the expected public JS entry is accepted by the local release gate."}>
+
+Preserve the public `solve` contract and make the output match the reviewed tooling requirements.
+
+```ts
+export type Release=Readonly<{name:string;version:string;exports:readonly string[]}>;export function solve(raw:unknown):{ok:true;entry:string}|{ok:false;error:string}{if(!raw||typeof raw!=='object'||!('name' in raw)||typeof raw.name!=='string'||!raw.name.startsWith('@academy/')||!('version' in raw)||typeof raw.version!=='string'||!/^\d+\.\d+\.\d+$/.test(raw.version)||!('exports' in raw)||!Array.isArray(raw.exports)||!raw.exports.includes('./dist/index.js'))return {ok:false,error:'invalid-manifest'};return {ok:true,entry:'./dist/index.js'};}
+```
+
+**Predict before running:** Only a versioned package manifest with the expected public JS entry is accepted by the local release gate.
+
+**Why the repair works:** A typed package release must align source exports, generated JavaScript, declaration files, package exports map and versioned runtime requirements. A local package blueprint is not the same as publishing to npm; build and test artifacts offline first, then validate consumers and release only when configured.
+
+**Proof:** Check the emitted or computed result instead of assuming package metadata validates itself.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify the package-boundary assertions" file="labs/ts-typed-release/solution.test.mjs" expected="Runtime examples pass with a valid strict TypeScript build and local configuration checks.">
+
+```ts
+assert.deepEqual(solve({name:'@academy/core',version:'1.0.0',exports:['./dist/index.js']}),{ok:true,entry:'./dist/index.js'});assert.deepEqual(solve({name:'@academy/core',version:'dev',exports:[]}),{ok:false,error:'invalid-manifest'});assert.deepEqual(solve(null),{ok:false,error:'invalid-manifest'});
+```
+
+**Predict before running:** Reviewed public behavior holds, invalid inputs and malformed package descriptions fail, and no real release is published.
+
+**Why it matters:** A package consumer sees emitted types, runtime modules, and the exports map, not the author's internal folder names.
+
+**Proof:** Run `npm run lab:ts-typed-release`, `npm run typecheck`, and inspect the sample artifact if present.
+
+</LessonStep>
+
+## Explore and verify
+
+Compare what the TypeScript compiler can statically prove with what Node.js resolves at runtime. Modules and public declaration files are build artifacts; configured npm publication, signed provenance and integration tests are separate engineering gates. Do not treat a local manifest as deployable until the paths have real output.
+
+<Misconception claim="A valid TypeScript source file and a package.json automatically produce a tested distributable package." correction={"A typed package release must align source exports, generated JavaScript, declaration files, package exports map and versioned runtime requirements. A local package blueprint is not the same as publishing to npm; build and test artifacts offline first, then validate consumers and release only when configured."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+Find the smallest broken import, declaration, dependency graph, or public exports contract. Repair it while keeping the student's module compileable. If the fixture demonstrates a blueprint rather than a publishable artifact, state that limitation and the build/consumer test still required.
+
+<KnowledgeCheck question={"What must be checked before publishing a typed package?"} choices={["Only that its source file exists","Exports, emitted JS and declarations, version and consumer tests","That README screenshots look correct","That GitHub Actions runs on every branch"]} correctIndex={1} explanation={"A typed package release must align source exports, generated JavaScript, declaration files, package exports map and versioned runtime requirements. A local package blueprint is not the same as publishing to npm; build and test artifacts offline first, then validate consumers and release only when configured."} misconception="Static package metadata must agree with compiled outputs and real runtime resolution." lessonId="04.04.08" />
+
+## Guided local lab
+
+Edit `labs/ts-typed-release/starter/solution.ts`, compare with `labs/ts-typed-release/solution/solution.ts`, and run the same test file against both. Additional JSON examples illustrate configuration only; they do not trigger npm publishing, deployment or database setup.
+
+<LabGate lessonId="04.04.08" labId="lab.foundation.ts-typed-release" commands={["npm ci","npm run lab:ts-typed-release"]} interactive={false} />
+
+## Reflect
+
+What did the client of this module actually import? What would fail in a consumer package with different moduleResolution or Node mode? Which compiler output and release checks are still needed before publishing outside this repo?
+
+## Official references
+
+- [Official TypeScript package guide](https://www.typescriptlang.org/docs/handbook/declaration-files/publishing.html)
+- [Official Node.js or TypeScript reference](https://nodejs.org/api/packages.html#package-entry-points)

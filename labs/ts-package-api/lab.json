@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.ts-package-api",
+  "lessonId": "04.04.04",
+  "title": "Public package API design",
+  "runtime": "typescript-5-node-24-tsx",
+  "status": "authored",
+  "starter": "labs/ts-package-api/starter/solution.ts",
+  "solution": "labs/ts-package-api/solution/solution.ts",
+  "tests": "labs/ts-package-api/solution.test.mjs",
+  "verify": [
+    "npm run lab:ts-package-api"
+  ],
+  "expected": "The public package api design local toolchain contract has runnable test evidence without publishing packages.",
+  "security": "No publishing credentials, third-party calls, remote builds, user account data, telemetry or Vercel consumption."
+}

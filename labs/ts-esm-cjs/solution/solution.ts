@@ -1,0 +1,1 @@
+export function solve(file:string,packageType:'module'|'commonjs'='module'):'esm'|'cjs'|null{if(file.endsWith('.mjs'))return 'esm';if(file.endsWith('.cjs'))return 'cjs';if(file.endsWith('.js'))return packageType==='module'?'esm':'cjs';return null;}

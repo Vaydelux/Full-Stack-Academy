@@ -1,0 +1,39 @@
+{
+  "id": "04.04.03",
+  "title": "Import organization and type-only imports",
+  "description": "Practice import organization and type-only imports through an offline typed package/tooling scenario with runnable instructor tests, strict compilation and reviewed configuration evidence.",
+  "trackId": "04",
+  "moduleId": "04.04",
+  "level": "Beginner",
+  "estimatedMinutes": 60,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "node": "24",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "04.04.02"
+  ],
+  "objectives": [
+    "Explain the package or tooling contract behind import organization and type-only imports",
+    "Repair a concrete module/toolchain bug without weakening type safety",
+    "Verify exported behavior, configuration or declarations using local TypeScript tests"
+  ],
+  "labId": "lab.foundation.ts-imports",
+  "sources": [
+    {
+      "label": "Official TypeScript handbook",
+      "url": "https://www.typescriptlang.org/docs/handbook/modules/reference.html"
+    },
+    {
+      "label": "Official tooling or Node reference",
+      "url": "https://www.typescriptlang.org/tsconfig/verbatimModuleSyntax.html"
+    }
+  ],
+  "rubric": [
+    "I can describe how import organization and type-only imports affects consumers of a package.",
+    "I repair the starter without publishing code or relying on cloud actions.",
+    "I check observable type/runtime behavior and note what is not yet a production release."
+  ]
+}

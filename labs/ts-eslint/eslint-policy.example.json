@@ -1,0 +1,7 @@
+{
+  "rules": {
+    "@typescript-eslint/no-explicit-any": "error",
+    "@typescript-eslint/no-unsafe-assignment": "error"
+  },
+  "note": "Illustrative TypeScript-aware lint policy; integrate with an actual parser and plugin before using."
+}

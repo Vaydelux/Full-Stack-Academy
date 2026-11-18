@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.ts-eslint",
+  "lessonId": "04.04.06",
+  "title": "ESLint rules and safe typing",
+  "runtime": "typescript-5-node-24-tsx",
+  "status": "authored",
+  "starter": "labs/ts-eslint/starter/solution.ts",
+  "solution": "labs/ts-eslint/solution/solution.ts",
+  "tests": "labs/ts-eslint/solution.test.mjs",
+  "verify": [
+    "npm run lab:ts-eslint"
+  ],
+  "expected": "The eslint rules and safe typing local toolchain contract has runnable test evidence without publishing packages.",
+  "security": "No publishing credentials, third-party calls, remote builds, user account data, telemetry or Vercel consumption."
+}
