@@ -1,0 +1,39 @@
+{
+  "id": "01.01.04",
+  "title": "Heading hierarchy",
+  "description": "Design an understandable reading outline with real headings and section nesting, without using text size or styling as a substitute for semantics.",
+  "trackId": "01",
+  "moduleId": "01.01",
+  "level": "Beginner",
+  "estimatedMinutes": 40,
+  "status": "authored",
+  "reviewedAt": "2026-11-18",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "01.01.03"
+  ],
+  "objectives": [
+    "Distinguish heading levels from visual font sizes",
+    "Write a logical page title, section headings and subsections",
+    "Use IDs and section labels to connect structure meaningfully",
+    "Inspect heading navigation and avoid empty or misleading headings"
+  ],
+  "labId": "lab.foundation.html-headings",
+  "sources": [
+    {
+      "label": "MDN heading elements",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/Heading_Elements"
+    },
+    {
+      "label": "WAI page headings tutorial",
+      "url": "https://www.w3.org/WAI/tutorials/page-structure/headings/"
+    }
+  ],
+  "rubric": [
+    "I wrote a meaningful page title and two logical major sections.",
+    "I inspected the heading outline and connected section labels to actual headings.",
+    "I passed heading order and section-label tests."
+  ]
+}

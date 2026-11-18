@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.html-landmarks",
+  "lessonId": "01.01.03",
+  "title": "Semantic landmarks",
+  "runtime": "browser-html-and-node-24",
+  "status": "authored",
+  "starter": "labs/html-landmarks/starter/index.html",
+  "solution": "labs/html-landmarks/solution/index.html",
+  "tests": "labs/html-landmarks/solution.test.mjs",
+  "verify": [
+    "npm run lab:html-landmarks"
+  ],
+  "expected": "I passed landmark-label and fragment-target checks.",
+  "security": "Local static HTML only. No secrets, remote APIs, production data, or server-side learner execution. Structural assertions are supplemented by Chromium browser smoke tests."
+}

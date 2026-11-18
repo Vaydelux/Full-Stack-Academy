@@ -1,0 +1,88 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Place character encoding, viewport and title inside head","Write a concise document title and a descriptive summary","Explain canonical URL and Open Graph metadata without promising rankings","Test that page metadata is parseable and consistent"]} />
+
+## The problem we're solving
+
+Search results show a meaningless page title, social shares display a generic label, and the mobile page shrinks unexpectedly. These can be independent document metadata problems rather than layout bugs.
+
+## Build the mental model
+
+The `head` includes character encoding, viewport settings, page title and metadata for user agents. The title is visible in the browser tab and often used by search results; a description is a hint, not a guarantee of a search snippet. The canonical link communicates a preferred URL when equivalent pages exist; only use an accurate URL for the actual deployed page. Open Graph properties are for social previews but services may ignore or cache them. `utf-8` should appear early. The metadata in this exercise uses `example.com` as a **placeholder** and must be replaced with a real canonical URL before publishing a production site.
+
+**Predict before running:** Does setting `meta name=description` guarantee that a search engine uses your exact text in every result? No. Search engines may choose contextual snippets.
+
+## Prerequisites
+
+Complete [the previous lesson](/learn/01.01.01) or review its objectives. A browser, text editor, Node.js 24 and this repository are enough. These examples are intentionally standalone and avoid remote services, account credentials or arbitrary browser scripts.
+
+<LessonStep number={1} title={"Declare encoding and mobile viewport"} file="labs/html-metadata/starter/index.html" expected={"The document has explicit UTF-8 decoding and a responsive layout viewport."}>
+
+Start from a complete document and put both declarations in head before page content.
+
+```html
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+```
+
+</LessonStep>
+
+<LessonStep number={2} title={"Add a meaningful title and summary"} file="labs/html-metadata/starter/index.html" expected={"The browser title identifies this page rather than the whole site generically."}>
+
+Write a unique title and describe the page accurately; avoid repeating keywords without useful context.
+
+```html
+<title>Visitor guide | Community workshop</title>
+<meta name="description" content="Find workshop hours, resources, and the steps for attending your first session.">
+```
+
+</LessonStep>
+
+<LessonStep number={3} title={"Provide a canonical URL and social preview fields"} file="labs/html-metadata/starter/index.html" expected={"The canonical uses an absolute HTTPS URL and the social title matches the document title."}>
+
+Use an illustrative HTTPS URL and matching social title; in a real app compute the exact public URL at build time.
+
+```html
+<link rel="canonical" href="https://example.com/workshop/visitor-guide">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Visitor guide | Community workshop">
+<meta property="og:description" content="Hours, resources, and first-session guidance.">
+```
+
+</LessonStep>
+
+## Explore it yourself
+
+Open `labs/html-metadata/starter/index.html` directly in a browser. Use DevTools Elements to compare the DOM tree with the source and inspect the accessibility tree. Change one element, reload and note the effect; do not treat a page that merely renders as evidence of complete semantics.
+
+<Misconception claim={"Adding a meta description automatically makes a page rank higher."} correction={"Metadata helps describe a page, but search rankings depend on many factors and engines may override snippets."} />
+
+## Bug Hunt: diagnose before changing markup
+
+A canonical link points at `http://localhost:3000` in a public build. This can confuse indexing and sharing. Replace the placeholder with the exact public HTTPS URL and test the emitted metadata on production.
+
+<KnowledgeCheck question={"What is the purpose of a canonical link?"} choices={["To encrypt browser traffic","To indicate a preferred URL for equivalent page content","To trigger a CSS breakpoint","To replace the HTML title"]} correctIndex={1} explanation={"A canonical link expresses the preferred URL for canonicalization."} misconception={"It does not enforce navigation or HTTPS."} lessonId="01.01.02" />
+
+## Guided HTML lab
+
+Complete `labs/html-metadata/starter/index.html` using the lesson steps. The worked implementation is in `labs/html-metadata/solution/index.html`. Run the acceptance tests **against your starter**, not just the instructor solution:
+
+```powershell
+$env:ACADEMY_LAB_TARGET = 'starter'
+npm run lab:html-metadata
+Remove-Item Env:ACADEMY_LAB_TARGET
+```
+
+On Bash: `ACADEMY_LAB_TARGET=starter npm run lab:html-metadata`. The tests should fail initially; make them pass by implementing the markup. Static tests cover specific structural contracts; the repository's Chromium smoke test checks parsed DOM behavior. No remote grading occurs, so completion remains self-assessed.
+
+<LabGate lessonId="01.01.02" labId="lab.foundation.html-metadata" commands={["npm ci","npm run lab:html-metadata"]} interactive={false} />
+
+## Reflect
+
+Explain what the browser inferred automatically versus what you explicitly wrote. Note one accessibility or metadata bug you could now recognize, and record evidence from the DOM or browser inspector.
+
+## Official references
+
+- [MDN: HTML head metadata](https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Structuring_content/Webpage_metadata)
+- [Google: canonical URLs](https://developers.google.com/search/docs/crawling-indexing/consolidate-duplicate-urls)

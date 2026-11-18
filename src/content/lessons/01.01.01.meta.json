@@ -1,0 +1,39 @@
+{
+  "id": "01.01.01",
+  "title": "HTML document anatomy",
+  "description": "Build a complete HTML document from the doctype to the body, understanding parsing order, the document language and the main content boundary.",
+  "trackId": "01",
+  "moduleId": "01.01",
+  "level": "Beginner",
+  "estimatedMinutes": 40,
+  "status": "authored",
+  "reviewedAt": "2026-11-18",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "00.03.08"
+  ],
+  "objectives": [
+    "Identify the HTML doctype, root element, head and body",
+    "Explain the purpose of charset, viewport and document title",
+    "Write an HTML page without a framework or JavaScript dependency",
+    "Inspect the browser's parsed document tree in DevTools"
+  ],
+  "labId": "lab.foundation.html-anatomy",
+  "sources": [
+    {
+      "label": "MDN HTML document and structure",
+      "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Structuring_content/Basic_HTML_syntax"
+    },
+    {
+      "label": "WHATWG HTML document standard",
+      "url": "https://html.spec.whatwg.org/multipage/semantics.html#the-html-element"
+    }
+  ],
+  "rubric": [
+    "I created the document skeleton and set an appropriate document language.",
+    "I inspected the actual DOM and explained the difference between metadata and visible content.",
+    "I passed the standards-mode and semantic-structure checks."
+  ]
+}

@@ -1,0 +1,93 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Choose native semantic regions instead of generic div wrappers","Ensure a single main landmark and descriptive navigation label","Implement a working skip-to-content link","Name complementary content and preserve landmarks in the DOM"]} />
+
+## The problem we're solving
+
+A reader using landmark navigation hears only generic groups because everything is a `div`. A keyboard user must tab through every navigation link before reaching the article.
+
+## Build the mental model
+
+HTML landmark elements communicate document roles: `header` may represent a banner in the page context; `nav` provides navigation; `main` identifies primary content; `aside` offers complementary content; `footer` provides closing information. Their implicit accessibility roles are better than redundant `role` attributes. Most pages have only one primary `main`. If multiple navigation regions exist, give each a descriptive accessible label. A skip link provides a keyboard shortcut to primary content. Check that the target exists and focus behavior works in a real browser, not just a text regex.
+
+**Predict before running:** If a skip link targets an ID that is absent, it is visible markup but cannot help reach main content. Test the fragment target.
+
+## Prerequisites
+
+Complete [the previous lesson](/learn/01.01.02) or review its objectives. A browser, text editor, Node.js 24 and this repository are enough. These examples are intentionally standalone and avoid remote services, account credentials or arbitrary browser scripts.
+
+<LessonStep number={1} title={"Identify document regions"} file="labs/html-landmarks/starter/index.html" expected={"The accessibility tree contains meaningful navigation and main landmarks."}>
+
+Start with `header`, `nav`, `main`, `aside` and `footer` instead of anonymous containers.
+
+```html
+<header><p>Community workshop</p></header>
+<nav aria-label="Primary navigation">
+  <a href="#overview">Overview</a>
+  <a href="#resources">Resources</a>
+</nav>
+<main id="main-content"><h1 id="overview">Learn the basics</h1></main>
+```
+
+</LessonStep>
+
+<LessonStep number={2} title={"Add a skip link before repeated navigation"} file="labs/html-landmarks/starter/index.html" expected={"Keyboard users can follow the fragment directly to the main content region."}>
+
+Put the first focusable link at the top of body and point it at the existing main ID.
+
+```html
+<a href="#main-content">Skip to main content</a>
+<!-- main later must include id="main-content" -->
+```
+
+</LessonStep>
+
+<LessonStep number={3} title={"Name complementary content and close the page"} file="labs/html-landmarks/starter/index.html" expected={"Main, navigation and complementary content have distinct accessible contexts."}>
+
+Use an aside with its own heading, along with a footer outside the main article.
+
+```html
+<aside aria-labelledby="resources-heading">
+  <h2 id="resources-heading">Further resources</h2>
+  <p>Read the workshop handbook.</p>
+</aside>
+<footer><p>Community learning resources.</p></footer>
+```
+
+</LessonStep>
+
+## Explore it yourself
+
+Open `labs/html-landmarks/starter/index.html` directly in a browser. Use DevTools Elements to compare the DOM tree with the source and inspect the accessibility tree. Change one element, reload and note the effect; do not treat a page that merely renders as evidence of complete semantics.
+
+<Misconception claim={"Adding `role=main` to every layout div improves accessibility."} correction={"Native elements already have useful roles; multiple competing main landmarks make navigation confusing."} />
+
+## Bug Hunt: diagnose before changing markup
+
+A skip link says `href=#content`, but the main region has `id=main-content`. Fix the ID mismatch, then use the keyboard to confirm the skip link reaches the intended region.
+
+<KnowledgeCheck question={"Which element marks the primary unique content of the document?"} choices={["`aside`","`footer`","`main`","`nav`"]} correctIndex={2} explanation={"Main represents the document's central content."} misconception={"Complementary and navigational regions serve different purposes."} lessonId="01.01.03" />
+
+## Guided HTML lab
+
+Complete `labs/html-landmarks/starter/index.html` using the lesson steps. The worked implementation is in `labs/html-landmarks/solution/index.html`. Run the acceptance tests **against your starter**, not just the instructor solution:
+
+```powershell
+$env:ACADEMY_LAB_TARGET = 'starter'
+npm run lab:html-landmarks
+Remove-Item Env:ACADEMY_LAB_TARGET
+```
+
+On Bash: `ACADEMY_LAB_TARGET=starter npm run lab:html-landmarks`. The tests should fail initially; make them pass by implementing the markup. Static tests cover specific structural contracts; the repository's Chromium smoke test checks parsed DOM behavior. No remote grading occurs, so completion remains self-assessed.
+
+<LabGate lessonId="01.01.03" labId="lab.foundation.html-landmarks" commands={["npm ci","npm run lab:html-landmarks"]} interactive={false} />
+
+## Reflect
+
+Explain what the browser inferred automatically versus what you explicitly wrote. Note one accessibility or metadata bug you could now recognize, and record evidence from the DOM or browser inspector.
+
+## Official references
+
+- [MDN HTML sections and outlines](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/main)
+- [WAI page regions tutorial](https://www.w3.org/WAI/tutorials/page-structure/regions/)
