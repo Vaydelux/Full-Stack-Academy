@@ -1,6 +1,6 @@
 {
   "id": "05.02.03",
-  "title": "Code ownership",
+  "title": "Code ownership rules",
   "description": "Practice code ownership using a checkable offline policy or disposable Git repository, a failing starter, and an independently verified repair.",
   "trackId": "05",
   "moduleId": "05.02",

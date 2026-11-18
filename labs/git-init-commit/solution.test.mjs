@@ -1,7 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createGitSandbox} from '../git-sandbox/harness.mjs';
-import {solve} from './'+(process.env.ACADEMY_LAB_TARGET==='starter'?'starter':'solution')+'/solution.mjs';
+const target=process.env.ACADEMY_LAB_TARGET==='starter'?'starter':'solution';
+const {solve}=await import(new URL('./'+target+'/solution.mjs',import.meta.url));
 test("init clone status add commit — real local Git history contract",()=>{
 const sandbox=createGitSandbox();
 try{const {git,write,read,bareRemote,commitBase}=sandbox;
