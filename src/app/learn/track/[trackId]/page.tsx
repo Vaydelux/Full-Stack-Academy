@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { AUTHORED_LESSONS } from '@/lib/academy/authored-content';
+import { isPublishedLesson } from '@/lib/academy/published';
 import { lessonsByModule, modulesByTrack, tracks, trackMap } from '@/lib/academy/curriculum';
 import { DocShell, DocNotice } from '@/components/course/DocShell';
 
@@ -44,7 +44,7 @@ export default async function TrackPage({ params }: TrackPageProps) {
             <p className="mt-1 text-xs leading-6 text-slate-500">{module.outcome}</p>
             <ol className="mt-4 space-y-1.5">
               {(lessonsByModule.get(module.id) ?? []).map((lesson) => {
-                const published = Boolean(AUTHORED_LESSONS[lesson.id]);
+                const published = isPublishedLesson(lesson.id);
                 return (
                   <li key={lesson.id}>
                     <Link href={`/learn/${lesson.id}`} className="flex items-start gap-3 rounded-lg p-2 hover:bg-slate-100 dark:hover:bg-white/[0.05]">

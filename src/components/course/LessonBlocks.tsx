@@ -43,7 +43,7 @@ export function Misconception({ claim, correction }: { claim: string; correction
   );
 }
 
-export function LabGate({ lessonId, labId, commands }: { lessonId: string; labId: string; commands: string[] }) {
+export function LabGate({ lessonId, labId, commands, interactive = true }: { lessonId: string; labId: string; commands: string[]; interactive?: boolean }) {
   return (
     <section className="my-7 rounded-2xl border border-emerald-500/25 bg-emerald-500/[0.06] p-5">
       <h2 className="text-base font-bold">Try it yourself — verified lab path</h2>
@@ -53,9 +53,9 @@ export function LabGate({ lessonId, labId, commands }: { lessonId: string; labId
         The article does not execute server commands on the website.
       </p>
       <pre className="my-3 overflow-auto rounded-lg bg-[#0B0D14] p-4 text-xs leading-6 text-white"><code>{commands.join('\n')}</code></pre>
-      <Link href={`/?lesson=${encodeURIComponent(lessonId)}&mode=practice`} className="inline-flex rounded-lg bg-emerald-700 px-4 py-2 text-xs font-bold text-white hover:bg-emerald-600">
+      {interactive ? <Link href={`/?lesson=${encodeURIComponent(lessonId)}&mode=practice`} className="inline-flex rounded-lg bg-emerald-700 px-4 py-2 text-xs font-bold text-white hover:bg-emerald-600">
         Open the browser-safe interactive exercise
-      </Link>
+      </Link> : <p className="text-sm font-medium text-emerald-700 dark:text-emerald-300">Run this lab locally in Node.js. No browser simulation or server-side execution.</p>}
       <p className="mt-3 text-xs text-slate-600 dark:text-slate-400">
         Lab results are verified locally by the developer. Course progress currently remains self-assessed in this browser.
       </p>

@@ -34,9 +34,9 @@ test('planned topics are explicitly noindex; only published content enters sitem
   const lesson = read('src/app/learn/[lessonId]/page.tsx');
   const ref = read('src/app/reference/[referenceId]/page.tsx');
   const sitemap = read('src/app/sitemap.ts');
-  assert.match(lesson, /robots: \{ index: Boolean\(authored\), follow: true \}/);
+  assert.match(lesson, /robots: \{ index: Boolean\(authored \|\| mdxMeta\), follow: true \}/);
   assert.match(ref, /robots: \{ index: Boolean\(authored\), follow: true \}/);
-  assert.match(sitemap, /AUTHORED_LESSON_IDS/);
+  assert.match(sitemap, /PUBLISHED_LESSON_IDS/);
   assert.match(sitemap, /AUTHORED_REFERENCES/);
   assert.doesNotMatch(sitemap, /summary\.plannedLessons/);
 });

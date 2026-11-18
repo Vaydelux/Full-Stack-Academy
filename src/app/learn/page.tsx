@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { AUTHORED_LESSON_IDS, AUTHORED_LESSONS } from '@/lib/academy/authored-content';
+import { AUTHORED_LESSONS } from '@/lib/academy/authored-content';
+import { MDX_METADATA, PUBLISHED_LESSON_IDS } from '@/lib/academy/published';
 import { modulesByTrack, summary, trackMap, TRACK_GROUPS } from '@/lib/academy/curriculum';
 import { DocShell } from '@/components/course/DocShell';
 
@@ -18,15 +19,16 @@ export default function CourseIndex() {
         {summary.tracks} tracks, {summary.modules} modules and {summary.plannedLessons} mapped topics. Only published lessons contain verified teaching material; the remaining topics are explicitly marked as planned.
       </p>
       <section aria-labelledby="published-title" className="mt-9">
-        <h2 id="published-title" className="mb-4 text-xl font-bold">Currently authored interactive lessons</h2>
+        <h2 id="published-title" className="mb-4 text-xl font-bold">Start with available lessons</h2>
         <div className="grid gap-3 sm:grid-cols-2">
-          {AUTHORED_LESSON_IDS.map((id) => {
+          {PUBLISHED_LESSON_IDS.map((id) => {
             const lesson = AUTHORED_LESSONS[id];
+            const meta = MDX_METADATA.get(id);
             return (
               <Link href={`/learn/${id}`} key={id} className="rounded-xl border border-slate-200 bg-white p-4 transition-colors hover:border-cyan-500 dark:border-white/10 dark:bg-white/[0.03]">
-                <p className="text-xs font-mono text-cyan-700 dark:text-[#7DEBFF]">{id} · {lesson.level} · ~{lesson.estMinutes} min</p>
-                <h3 className="mt-2 font-bold">{lesson.headline}</h3>
-                <p className="mt-2 text-xs leading-6 text-slate-600 dark:text-slate-400">{lesson.subtitle}</p>
+                <p className="text-xs font-mono text-cyan-700 dark:text-[#7DEBFF]">{id} · {meta?.level ?? lesson.level} · ~{meta?.estimatedMinutes ?? lesson.estMinutes} min</p>
+                <h3 className="mt-2 font-bold">{meta?.title ?? lesson.headline}</h3>
+                <p className="mt-2 text-xs leading-6 text-slate-600 dark:text-slate-400">{meta?.description ?? lesson.subtitle}</p>
               </Link>
             );
           })}
