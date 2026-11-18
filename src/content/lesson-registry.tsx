@@ -39,6 +39,15 @@ import Forms5 from './lessons/01.02.05.mdx';
 import Forms6 from './lessons/01.02.06.mdx';
 import Forms7 from './lessons/01.02.07.mdx';
 import Forms8 from './lessons/01.02.08.mdx';
+import Accessibility1 from './lessons/01.03.01.mdx';
+import Accessibility2 from './lessons/01.03.02.mdx';
+import Accessibility3 from './lessons/01.03.03.mdx';
+import Accessibility4 from './lessons/01.03.04.mdx';
+import Accessibility5 from './lessons/01.03.05.mdx';
+import Accessibility6 from './lessons/01.03.06.mdx';
+import Accessibility7 from './lessons/01.03.07.mdx';
+import Accessibility8 from './lessons/01.03.08.mdx';
+import Accessibility9 from './lessons/01.03.09.mdx';
 export function LessonArticle({lessonId}: {lessonId:string}) {
   switch (lessonId) {
     case '00.01.01': return <BrowserLesson />;
@@ -81,6 +90,15 @@ export function LessonArticle({lessonId}: {lessonId:string}) {
     case '01.02.06': return <Forms6 />;
     case '01.02.07': return <Forms7 />;
     case '01.02.08': return <Forms8 />;
+    case '01.03.01': return <Accessibility1 />;
+    case '01.03.02': return <Accessibility2 />;
+    case '01.03.03': return <Accessibility3 />;
+    case '01.03.04': return <Accessibility4 />;
+    case '01.03.05': return <Accessibility5 />;
+    case '01.03.06': return <Accessibility6 />;
+    case '01.03.07': return <Accessibility7 />;
+    case '01.03.08': return <Accessibility8 />;
+    case '01.03.09': return <Accessibility9 />;
     case '06.01.01': return <JSXLessonMDX />;
     default: return null;
   }

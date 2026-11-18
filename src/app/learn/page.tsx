@@ -17,6 +17,7 @@ export default function CourseIndex() {
     { id: '00.03', title: 'Learning & debugging', description: 'Reproduce, isolate, diagnose, and document problems with evidence.' },
     { id: '01.01', title: 'HTML document structure', description: 'Create semantic, accessible, responsive content pages without a framework.' },
     { id: '01.02', title: 'HTML forms & validation', description: 'Use native controls, browser validation and accessible interactions without a backend.' },
+    { id: '01.03', title: 'Accessibility foundations', description: 'Practice keyboard access, focus, naming, readable contrast, alternatives and motion preferences.' },
   ];
   return (
     <DocShell>

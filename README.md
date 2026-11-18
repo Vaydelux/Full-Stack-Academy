@@ -108,3 +108,7 @@ Eight HTML tutorials teach document structure, metadata, native landmarks, headi
 ## HTML Forms & Validation (01.02) — release candidate
 
 Eight browser-native tutorials with standalone HTML/JS starter/solution fixtures cover labeling, constraint validation, GET vs POST semantics, no-script fallback, safe local file previews, modal/non-modal disclosure, native form event defaults, and inaccessible-form repair. JavaScript examples use synthetic information and do not send real submissions. Browser smoke checks native constraints, accessible names, keyboard interactions, mobile layout and explicit fallback behavior. Not production until release gates pass.
+
+## Accessibility Foundations (01.03) — release candidate
+
+Nine authored lessons and local starter/solution projects with accessible keyboard navigation, focus restoration, landmarks and status regions, W3C WCAG 2.2 principles, WCAG contrast ratio calculator, names and descriptions, original diagram alternatives plus accessible table, reduced-motion controls and a keyboard audit capstone. Node contract tests and Chromium keyboard/accessibility smoke added. These are educational checks and **not a formal WCAG 2.2 conformance audit**. Publication counts and production release are pending green CI, preview verification and merge.

@@ -9,9 +9,9 @@
     "productionUrl": "https://fullstack-academy-ecru.vercel.app/"
   },
   "development": {
-    "branch": null,
-    "lastMergedPr": 8,
-    "state": "production-verified"
+    "branch": "feat/accessibility-foundations-20261118",
+    "headNote": "Nine Accessibility Foundations lessons authored; full gates and Vercel preview pending",
+    "state": "in-review"
   },
   "snapshot": {
     "tracks": 28,
@@ -20,15 +20,16 @@
     "indexedReferences": 303,
     "authoredReferenceDrafts": 4,
     "authoredInteractiveModels": 4,
-    "authoredMdxLessons": 41,
-    "publishedLessons": 44,
-    "labFixtures": 41,
+    "authoredMdxLessons": 50,
+    "publishedLessons": 53,
+    "labFixtures": 50,
     "completeModules": [
       "00.01",
       "00.02",
       "00.03",
       "01.01",
-      "01.02"
+      "01.02",
+      "01.03"
     ]
   },
   "security": {
@@ -36,6 +37,6 @@
     "devHighFindings": 14,
     "exceptionExpires": "2026-12-02"
   },
-  "nextMilestone": "01.03",
-  "status": "released"
+  "nextMilestone": "01.04",
+  "status": "release-candidate"
 }
