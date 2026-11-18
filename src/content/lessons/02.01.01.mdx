@@ -1,0 +1,97 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Distinguish descendant and child selectors","Choose a targeted selector without overmatching","Observe the computed style of nested versus direct items"]} />
+
+## The problem we're solving
+
+A card highlights every nested item when only direct children should be styled. Our task is to repair the actual style behavior, not just make a static screenshot look convincing. This workshop uses synthetic content in a standalone offline HTML file; it needs no account, cloud API or deployed preview.
+
+## Build the mental model
+
+A selector is a matching query over elements. The space combinator matches descendants; > matches immediate children; + matches the next adjacent sibling; ~ matches subsequent siblings. Classes express component intent more safely than deep structural chains.
+
+**Predict before running:** Only the direct tag should receive the colored background.
+
+## Prerequisites and preflight
+
+Continue from [Web APIs & Security](/learn/01.04.08). Open `labs/css-selectors/starter/index.html` in a browser and inspect the CSS rules using the Elements / Computed Styles panel. Have local Node.js 24 available for the test script and choose a 320px device viewport for the final check. The starter intentionally demonstrates the flaw, while the solution supplies the target behavior.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce and inspect the failing state" file="labs/css-selectors/starter/index.html" expected="The descendant selector colors both direct and nested tags.">
+
+Start from the intentionally incorrect declaration and inspect the matched and computed styles. Before making changes, determine which element owns the value and whether a CSS rule is matched but overridden.
+
+```css
+.card .tag { background: #0c567a; color: white; }
+```
+
+**Predict before running:** The descendant selector colors both direct and nested tags.
+
+**Why it fails:** A selector is a matching query over elements. The space combinator matches descendants; > matches immediate children; + matches the next adjacent sibling; ~ matches subsequent siblings. Classes express component intent more safely than deep structural chains.
+
+**Proof:** Open DevTools, select the target element, and confirm the failing computed property. Write the observed value before replacing the rule.
+
+</LessonStep>
+
+<LessonStep number={2} title="Apply the targeted CSS repair" file="labs/css-selectors/starter/index.html" expected="Only the direct tag should receive the colored background.">
+
+Replace the incorrect rule with the following CSS. Keep the native HTML controls and all semantic content unchanged.
+
+```css
+.card > .tag { background: #0c567a; color: white; }
+```
+
+**Predict before running:** Only the direct tag should receive the colored background.
+
+**Why it works:** A selector is a matching query over elements. The space combinator matches descendants; > matches immediate children; + matches the next adjacent sibling; ~ matches subsequent siblings. Classes express component intent more safely than deep structural chains.
+
+**Proof:** getComputedStyle on direct and nested tags returns different background colors.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify responsiveness and interaction" file="labs/css-selectors/starter/index.html" expected="The repaired solution works at narrow and wide viewports without hiding keyboard focus or producing horizontal overflow.">
+
+Use DevTools Responsive Design Mode: select a 320px width, then a wide desktop width. Inspect the relevant computed style again. Where the lab includes a button or writing-direction toggle, test it using Tab and Enter.
+
+```js
+const target = document.querySelector('.card');
+console.log(getComputedStyle(target).boxSizing);
+console.log(document.documentElement.scrollWidth <= innerWidth);
+```
+
+**Predict before running:** A visible computed property changes as described, but the document remains scrollable normally with no unwanted horizontal overflow.
+
+**Why it works:** Browser-computed styles and measured dimensions describe actual rendered rules, rather than assuming the presence of source text is enough.
+
+**Proof:** Compare the computed result with the instructor solution and record one failing case from the original starter.
+
+</LessonStep>
+
+## Explore and verify
+
+Use Chromium and Firefox when available; browser engines can expose subtle differences in focus heuristics and text metrics. Use synthetic content only. Confirm the result at 320px, at a wider viewport and with keyboard navigation; for directional labs, toggle RTL. A local Node assertion checks the instructor's expected CSS declarations, while browser inspection is needed to prove their effect. This lesson does not upload work or grant a server-verified grade.
+
+<Misconception claim="If CSS text exists in the stylesheet, the browser must display the desired result." correction="Selectors must match; the cascade must select the rule; geometry, font sizing, direction and interaction state determine actual rendering. Verify computed styles and browser behavior." />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+The descendant selector colors both direct and nested tags. Copy the starter, record the affected element and computed property, then apply the smallest correction and rerun the same viewport and input sequence. Explain why changing markup semantics or adding a blanket `!important` rule would be a poor substitute for diagnosing the matching declaration.
+
+<KnowledgeCheck question="Which combinator matches only immediate children?" choices={["The descendant space","The > child combinator","The ~ subsequent sibling combinator","The + adjacent sibling combinator"]} correctIndex={1} explanation="A selector is a matching query over elements. The space combinator matches descendants; > matches immediate children; + matches the next adjacent sibling; ~ matches subsequent siblings. Classes express component intent more safely than deep structural chains." misconception="A screenshot or a selector's apparent strength is not a complete explanation of CSS behavior." lessonId="02.01.01" />
+
+## Guided local lab
+
+Repair `labs/css-selectors/starter/index.html` using the three steps, and compare with `labs/css-selectors/solution/index.html`. The Node verifier checks the instructor solution by default. Check your repaired starter using `ACADEMY_LAB_TARGET=starter npm run lab:css-selectors` in Bash, or set and remove that environment variable in PowerShell before and after the command. The unrepaired starter should fail the instructor-behavior assertions.
+
+<LabGate lessonId="02.01.01" labId="lab.foundation.css-selectors" commands={["npm ci","npm run lab:css-selectors"]} interactive={false} />
+
+## Reflect
+
+What changed? Why is it more correct? When would you use a different CSS strategy? Record an actual computed value, a browser you did not test, and a real-world constraint that could change this solution. The lab is offline educational practice, not a WCAG conformance certificate.
+
+## Official references
+
+- [MDN concept guide](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_selectors/Selectors_and_combinators)
+- [MDN CSS reference](https://developer.mozilla.org/en-US/docs/Web/CSS/Child_combinator)

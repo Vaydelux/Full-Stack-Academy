@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.css-layers",
+  "lessonId": "02.01.03",
+  "title": "Cascade layers",
+  "runtime": "browser-html-and-node-24",
+  "status": "authored",
+  "starter": "labs/css-layers/starter/index.html",
+  "solution": "labs/css-layers/solution/index.html",
+  "tests": "labs/css-layers/solution.test.mjs",
+  "verify": [
+    "npm run lab:css-layers"
+  ],
+  "expected": "Declare a deliberate layer order.",
+  "security": "Offline local HTML/CSS fixture with synthetic content; no credentials, network requests, external scripts, real user data or uploads."
+}

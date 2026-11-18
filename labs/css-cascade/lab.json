@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.css-cascade",
+  "lessonId": "02.01.02",
+  "title": "Cascade specificity and inheritance",
+  "runtime": "browser-html-and-node-24",
+  "status": "authored",
+  "starter": "labs/css-cascade/starter/index.html",
+  "solution": "labs/css-cascade/solution/index.html",
+  "tests": "labs/css-cascade/solution.test.mjs",
+  "verify": [
+    "npm run lab:css-cascade"
+  ],
+  "expected": "Separate inherited values from direct declarations.",
+  "security": "Offline local HTML/CSS fixture with synthetic content; no credentials, network requests, external scripts, real user data or uploads."
+}

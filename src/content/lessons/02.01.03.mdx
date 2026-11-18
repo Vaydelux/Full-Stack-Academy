@@ -1,0 +1,97 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Declare a deliberate layer order","Explain normal versus important layer priority","Style a component without specificity escalation"]} />
+
+## The problem we're solving
+
+A reset selector repeatedly overrides component styles, so developers keep adding specificity. Our task is to repair the actual style behavior, not just make a static screenshot look convincing. This workshop uses synthetic content in a standalone offline HTML file; it needs no account, cloud API or deployed preview.
+
+## Build the mental model
+
+Cascade layers establish an explicit priority before specificity is compared. Among normal author declarations, later declared layers take precedence over earlier ones. For important declarations, layer precedence reverses; unlayered normal author styles outrank layered normal author styles.
+
+**Predict before running:** The action button uses the components layer's dark teal background.
+
+## Prerequisites and preflight
+
+Continue from [the previous CSS lesson](/learn/02.01.02). Open `labs/css-layers/starter/index.html` in a browser and inspect the CSS rules using the Elements / Computed Styles panel. Have local Node.js 24 available for the test script and choose a 320px device viewport for the final check. The starter intentionally demonstrates the flaw, while the solution supplies the target behavior.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce and inspect the failing state" file="labs/css-layers/starter/index.html" expected="The component layer omits background, so the button inherits the reset background.">
+
+Start from the intentionally incorrect declaration and inspect the matched and computed styles. Before making changes, determine which element owns the value and whether a CSS rule is matched but overridden.
+
+```css
+@layer reset, components; @layer reset { button { background: #ddd; color: #222; } } @layer components { .action { color: #fff; } }
+```
+
+**Predict before running:** The component layer omits background, so the button inherits the reset background.
+
+**Why it fails:** Cascade layers establish an explicit priority before specificity is compared. Among normal author declarations, later declared layers take precedence over earlier ones. For important declarations, layer precedence reverses; unlayered normal author styles outrank layered normal author styles.
+
+**Proof:** Open DevTools, select the target element, and confirm the failing computed property. Write the observed value before replacing the rule.
+
+</LessonStep>
+
+<LessonStep number={2} title="Apply the targeted CSS repair" file="labs/css-layers/starter/index.html" expected="The action button uses the components layer's dark teal background.">
+
+Replace the incorrect rule with the following CSS. Keep the native HTML controls and all semantic content unchanged.
+
+```css
+@layer reset, components; @layer reset { button { background: #ddd; color: #222; } } @layer components { .action { background: #075e7b; color: #fff; } }
+```
+
+**Predict before running:** The action button uses the components layer's dark teal background.
+
+**Why it works:** Cascade layers establish an explicit priority before specificity is compared. Among normal author declarations, later declared layers take precedence over earlier ones. For important declarations, layer precedence reverses; unlayered normal author styles outrank layered normal author styles.
+
+**Proof:** getComputedStyle(action).backgroundColor matches the component layer's value.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify responsiveness and interaction" file="labs/css-layers/starter/index.html" expected="The repaired solution works at narrow and wide viewports without hiding keyboard focus or producing horizontal overflow.">
+
+Use DevTools Responsive Design Mode: select a 320px width, then a wide desktop width. Inspect the relevant computed style again. Where the lab includes a button or writing-direction toggle, test it using Tab and Enter.
+
+```js
+const target = document.querySelector('.card');
+console.log(getComputedStyle(target).boxSizing);
+console.log(document.documentElement.scrollWidth <= innerWidth);
+```
+
+**Predict before running:** A visible computed property changes as described, but the document remains scrollable normally with no unwanted horizontal overflow.
+
+**Why it works:** Browser-computed styles and measured dimensions describe actual rendered rules, rather than assuming the presence of source text is enough.
+
+**Proof:** Compare the computed result with the instructor solution and record one failing case from the original starter.
+
+</LessonStep>
+
+## Explore and verify
+
+Use Chromium and Firefox when available; browser engines can expose subtle differences in focus heuristics and text metrics. Use synthetic content only. Confirm the result at 320px, at a wider viewport and with keyboard navigation; for directional labs, toggle RTL. A local Node assertion checks the instructor's expected CSS declarations, while browser inspection is needed to prove their effect. This lesson does not upload work or grant a server-verified grade.
+
+<Misconception claim="If CSS text exists in the stylesheet, the browser must display the desired result." correction="Selectors must match; the cascade must select the rule; geometry, font sizing, direction and interaction state determine actual rendering. Verify computed styles and browser behavior." />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+The component layer omits background, so the button inherits the reset background. Copy the starter, record the affected element and computed property, then apply the smallest correction and rerun the same viewport and input sequence. Explain why changing markup semantics or adding a blanket `!important` rule would be a poor substitute for diagnosing the matching declaration.
+
+<KnowledgeCheck question="For normal author declarations, which named layer wins if both match?" choices={["The first declared layer","The later declared layer","The selector with more class names regardless of layer","Both layers are ignored"]} correctIndex={1} explanation="Cascade layers establish an explicit priority before specificity is compared. Among normal author declarations, later declared layers take precedence over earlier ones. For important declarations, layer precedence reverses; unlayered normal author styles outrank layered normal author styles." misconception="A screenshot or a selector's apparent strength is not a complete explanation of CSS behavior." lessonId="02.01.03" />
+
+## Guided local lab
+
+Repair `labs/css-layers/starter/index.html` using the three steps, and compare with `labs/css-layers/solution/index.html`. The Node verifier checks the instructor solution by default. Check your repaired starter using `ACADEMY_LAB_TARGET=starter npm run lab:css-layers` in Bash, or set and remove that environment variable in PowerShell before and after the command. The unrepaired starter should fail the instructor-behavior assertions.
+
+<LabGate lessonId="02.01.03" labId="lab.foundation.css-layers" commands={["npm ci","npm run lab:css-layers"]} interactive={false} />
+
+## Reflect
+
+What changed? Why is it more correct? When would you use a different CSS strategy? Record an actual computed value, a browser you did not test, and a real-world constraint that could change this solution. The lab is offline educational practice, not a WCAG conformance certificate.
+
+## Official references
+
+- [MDN concept guide](https://developer.mozilla.org/en-US/docs/Web/CSS/@layer)
+- [MDN CSS reference](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_cascade/Cascade)

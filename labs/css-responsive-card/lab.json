@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.css-responsive-card",
+  "lessonId": "02.01.08",
+  "title": "Lab responsive content card",
+  "runtime": "browser-html-and-node-24",
+  "status": "authored",
+  "starter": "labs/css-responsive-card/starter/index.html",
+  "solution": "labs/css-responsive-card/solution/index.html",
+  "tests": "labs/css-responsive-card/solution.test.mjs",
+  "verify": [
+    "npm run lab:css-responsive-card"
+  ],
+  "expected": "Build a card that fits a 320px viewport.",
+  "security": "Offline local HTML/CSS fixture with synthetic content; no credentials, network requests, external scripts, real user data or uploads."
+}

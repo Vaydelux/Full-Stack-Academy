@@ -1,0 +1,38 @@
+{
+  "id": "02.01.05",
+  "title": "Units and typography",
+  "description": "Practice units and typography with an offline CSS debugging exercise, computed-style verification, keyboard-friendly examples and a tested instructor solution.",
+  "trackId": "02",
+  "moduleId": "02.01",
+  "level": "Beginner",
+  "estimatedMinutes": 45,
+  "status": "authored",
+  "reviewedAt": "2026-11-18",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "02.01.04"
+  ],
+  "objectives": [
+    "Choose rem instead of brittle fixed-size text",
+    "Build a bounded fluid heading with clamp",
+    "Keep line length readable as text scales"
+  ],
+  "labId": "lab.foundation.css-typography",
+  "sources": [
+    {
+      "label": "MDN concept guide",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/clamp"
+    },
+    {
+      "label": "MDN CSS reference",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/font-size"
+    }
+  ],
+  "rubric": [
+    "I can explain how units and typography affects rendered browser output.",
+    "I reproduced and repaired the failing CSS without unrelated changes.",
+    "I checked the instructor behavior in DevTools and a narrow viewport."
+  ]
+}

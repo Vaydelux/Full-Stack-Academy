@@ -1,0 +1,97 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Separate inherited values from direct declarations","Explain specificity without overusing !important","Inspect the winning computed color and its declaration"]} />
+
+## The problem we're solving
+
+A component's text remains gray even after its developer writes a class selector to color the headline. Our task is to repair the actual style behavior, not just make a static screenshot look convincing. This workshop uses synthetic content in a standalone offline HTML file; it needs no account, cloud API or deployed preview.
+
+## Build the mental model
+
+The cascade resolves origin and importance, cascade layers, specificity, scoping proximity and source order; inheritance applies only when no cascaded value is set on the element. A direct author declaration wins over an inherited property from a parent, irrespective of that parent's specificity.
+
+**Predict before running:** The headline is blue-green even though the card's paragraph stays gray.
+
+## Prerequisites and preflight
+
+Continue from [the previous CSS lesson](/learn/02.01.01). Open `labs/css-cascade/starter/index.html` in a browser and inspect the CSS rules using the Elements / Computed Styles panel. Have local Node.js 24 available for the test script and choose a 320px device viewport for the final check. The starter intentionally demonstrates the flaw, while the solution supplies the target behavior.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce and inspect the failing state" file="labs/css-cascade/starter/index.html" expected="Only the parent color is changed, but the h2 still owns its direct gray declaration.">
+
+Start from the intentionally incorrect declaration and inspect the matched and computed styles. Before making changes, determine which element owns the value and whether a CSS rule is matched but overridden.
+
+```css
+.card { color: #075e7b; }
+```
+
+**Predict before running:** Only the parent color is changed, but the h2 still owns its direct gray declaration.
+
+**Why it fails:** The cascade resolves origin and importance, cascade layers, specificity, scoping proximity and source order; inheritance applies only when no cascaded value is set on the element. A direct author declaration wins over an inherited property from a parent, irrespective of that parent's specificity.
+
+**Proof:** Open DevTools, select the target element, and confirm the failing computed property. Write the observed value before replacing the rule.
+
+</LessonStep>
+
+<LessonStep number={2} title="Apply the targeted CSS repair" file="labs/css-cascade/starter/index.html" expected="The headline is blue-green even though the card's paragraph stays gray.">
+
+Replace the incorrect rule with the following CSS. Keep the native HTML controls and all semantic content unchanged.
+
+```css
+.card .headline { color: #075e7b; }
+```
+
+**Predict before running:** The headline is blue-green even though the card's paragraph stays gray.
+
+**Why it works:** The cascade resolves origin and importance, cascade layers, specificity, scoping proximity and source order; inheritance applies only when no cascaded value is set on the element. A direct author declaration wins over an inherited property from a parent, irrespective of that parent's specificity.
+
+**Proof:** getComputedStyle(headline).color differs from the card's paragraph color.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify responsiveness and interaction" file="labs/css-cascade/starter/index.html" expected="The repaired solution works at narrow and wide viewports without hiding keyboard focus or producing horizontal overflow.">
+
+Use DevTools Responsive Design Mode: select a 320px width, then a wide desktop width. Inspect the relevant computed style again. Where the lab includes a button or writing-direction toggle, test it using Tab and Enter.
+
+```js
+const target = document.querySelector('.card');
+console.log(getComputedStyle(target).boxSizing);
+console.log(document.documentElement.scrollWidth <= innerWidth);
+```
+
+**Predict before running:** A visible computed property changes as described, but the document remains scrollable normally with no unwanted horizontal overflow.
+
+**Why it works:** Browser-computed styles and measured dimensions describe actual rendered rules, rather than assuming the presence of source text is enough.
+
+**Proof:** Compare the computed result with the instructor solution and record one failing case from the original starter.
+
+</LessonStep>
+
+## Explore and verify
+
+Use Chromium and Firefox when available; browser engines can expose subtle differences in focus heuristics and text metrics. Use synthetic content only. Confirm the result at 320px, at a wider viewport and with keyboard navigation; for directional labs, toggle RTL. A local Node assertion checks the instructor's expected CSS declarations, while browser inspection is needed to prove their effect. This lesson does not upload work or grant a server-verified grade.
+
+<Misconception claim="If CSS text exists in the stylesheet, the browser must display the desired result." correction="Selectors must match; the cascade must select the rule; geometry, font sizing, direction and interaction state determine actual rendering. Verify computed styles and browser behavior." />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+Only the parent color is changed, but the h2 still owns its direct gray declaration. Copy the starter, record the affected element and computed property, then apply the smallest correction and rerun the same viewport and input sequence. Explain why changing markup semantics or adding a blanket `!important` rule would be a poor substitute for diagnosing the matching declaration.
+
+<KnowledgeCheck question="What happens if a parent has a high-specificity color but a child sets its own color?" choices={["The parent's specificity always wins","The child's direct color is used under ordinary cascade conditions","The colors are averaged","Both colors are ignored"]} correctIndex={1} explanation="The cascade resolves origin and importance, cascade layers, specificity, scoping proximity and source order; inheritance applies only when no cascaded value is set on the element. A direct author declaration wins over an inherited property from a parent, irrespective of that parent's specificity." misconception="A screenshot or a selector's apparent strength is not a complete explanation of CSS behavior." lessonId="02.01.02" />
+
+## Guided local lab
+
+Repair `labs/css-cascade/starter/index.html` using the three steps, and compare with `labs/css-cascade/solution/index.html`. The Node verifier checks the instructor solution by default. Check your repaired starter using `ACADEMY_LAB_TARGET=starter npm run lab:css-cascade` in Bash, or set and remove that environment variable in PowerShell before and after the command. The unrepaired starter should fail the instructor-behavior assertions.
+
+<LabGate lessonId="02.01.02" labId="lab.foundation.css-cascade" commands={["npm ci","npm run lab:css-cascade"]} interactive={false} />
+
+## Reflect
+
+What changed? Why is it more correct? When would you use a different CSS strategy? Record an actual computed value, a browser you did not test, and a real-world constraint that could change this solution. The lab is offline educational practice, not a WCAG conformance certificate.
+
+## Official references
+
+- [MDN concept guide](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_cascade/Cascade)
+- [MDN CSS reference](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_cascade/Specificity)

@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.css-typography",
+  "lessonId": "02.01.05",
+  "title": "Units and typography",
+  "runtime": "browser-html-and-node-24",
+  "status": "authored",
+  "starter": "labs/css-typography/starter/index.html",
+  "solution": "labs/css-typography/solution/index.html",
+  "tests": "labs/css-typography/solution.test.mjs",
+  "verify": [
+    "npm run lab:css-typography"
+  ],
+  "expected": "Choose rem instead of brittle fixed-size text.",
+  "security": "Offline local HTML/CSS fixture with synthetic content; no credentials, network requests, external scripts, real user data or uploads."
+}

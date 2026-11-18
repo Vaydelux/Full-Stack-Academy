@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.css-selectors",
+  "lessonId": "02.01.01",
+  "title": "Selectors and combinators",
+  "runtime": "browser-html-and-node-24",
+  "status": "authored",
+  "starter": "labs/css-selectors/starter/index.html",
+  "solution": "labs/css-selectors/solution/index.html",
+  "tests": "labs/css-selectors/solution.test.mjs",
+  "verify": [
+    "npm run lab:css-selectors"
+  ],
+  "expected": "Distinguish descendant and child selectors.",
+  "security": "Offline local HTML/CSS fixture with synthetic content; no credentials, network requests, external scripts, real user data or uploads."
+}
