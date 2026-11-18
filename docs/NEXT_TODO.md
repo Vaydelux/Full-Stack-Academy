@@ -1,42 +1,42 @@
 # Full-Stack Academy — Next TODO
 
-**Updated:** 2026-11-18 · **Verified production:** `main@2e11d08` · **Active next milestone:** `01.02`.
+**Updated:** 2026-11-18 · **Last verified production:** `main@4067cce`.  
+**Priority milestone:** Module `01.03` Accessibility (nine canonical topics). Publication count is from `docs/checkpoint.json`; the catalog's 889 planned topics are not 889 finished lessons.
 
-## P0 — Module 01.02: HTML Forms & Validation
-- [x] `01.02.01` Labels, controls and fieldsets — explicit programmatic labels, grouped choices, helpful instructions; use actual browser accessibility assertions.
-- [x] `01.02.02` Input types and native validation — required, min/max, pattern, email, and constraint validation messages; validate on server again in production.
-- [x] `01.02.03` Buttons and form submissions — submit vs button/reset defaults, GET/POST semantics, named fields, safe synthetic endpoints.
-- [x] `01.02.04` Progressive enhancement — a functional form without JavaScript, enhanced with optional client script and clear error/success states.
-- [x] `01.02.05` File inputs — accept hints, file size/type validation, multipart form, no unsafe client-file assumptions; browser fixture only.
-- [x] `01.02.06` Dialog, popover and details — native keyboard behavior, focus semantics, disclosure vs modal, appropriate close interactions.
-- [x] `01.02.07` Native events and default behavior — submit, input, change, preventDefault, propagation; test keyboard defaults and accessible feedback.
-- [x] `01.02.08` Bug Hunt inaccessible form — fix an intentionally flawed standalone form and verify labels, focus, errors and mobile layout in Chromium.
-- [x] Authored each lesson: reviewed MDX, strict metadata, three or more guided steps, legitimate HTTPS official references, prediction, quiz, bug hunt, starter, worked solution, tests and completion rubric.
-- [x] Registered metadata and MDX components in both registries; ensure new routes indexable and the next planned module noindex; update sitemap and beginner navigation.
-- [x] Updated `docs/checkpoint.json` with branch counts; checkpoint CI verification pending. Security exception still requires review by 2026-12-02.
-- [ ] Pass GitHub audit + lint + typecheck + repository tests + content/checkpoint + lab suites + production build + Chromium; verify exact-head Vercel preview and mobile/keyboard behavior before merge.
-- [ ] Confirm production READY and main commit SHA after merge; reconcile the checkpoint.
+## P0 — Module 01.03: Accessibility
+- [ ] `01.03.01` Keyboard-first navigation — tab order, visible focus, skip links, activation patterns; Chromium keyboard tests.
+- [ ] `01.03.02` Focus management — modal focus restoration, DOM updates, native tab boundaries; no custom traps by default.
+- [ ] `01.03.03` Screen reader semantics — meaningful landmarks, heading structure, status/alert roles; inspect accessibility tree.
+- [ ] `01.03.04` WCAG principles — perceivable, operable, understandable, robust; relate requirements to real testable user journeys rather than claim automatic conformance.
+- [ ] `01.03.05` Color contrast — compute WCAG contrast, test text and focus visibility; provide visual alternatives rather than relying on hue alone.
+- [ ] `01.03.06` Accessible names and descriptions — labels, aria-labelledby/aria-describedby, naming precedence and localized instructions.
+- [ ] `01.03.07` Images and alternative text — informative vs decorative images, diagrams, complex figures, meaningful accessible descriptions.
+- [ ] `01.03.08` Reduced motion — CSS prefers-reduced-motion, pause/stop, avoid unwanted animation and respect OS preference.
+- [ ] `01.03.09` Lab keyboard audit — repair a representative document and confirm responsive keyboard navigation, focus, labels and semantic errors in real Chromium.
+- [ ] Each lesson needs strict metadata, MDX explanation, 3+ guided steps, official HTTPS sources, predict-first example, misconception, bug hunt, knowledge check, starter and solution fixtures, executable tests and accurate rubric.
+- [ ] Register published lesson metadata and MDX routes, update sitemap and learning cards; next planned module remains noindex.
+- [ ] Run `npm run checkpoint:write`, update handoff documents and audit the upcoming exception expiration.
+- [ ] CI gate: lint, TypeScript, repository tests, curriculum, MDX metadata/content, checkpoint consistency, all labs, Next production build, Chromium browser interactions, dependency audit and Vercel preview.
+- [ ] Merge only on green; verify production main SHA and READY; finalize checkpoint.
 
-## Next after release: Module 01.03 — Accessibility
-- [ ] Author nine exact canonical topics `01.03.01`–`01.03.09`: keyboard navigation, focus, screen reader semantics, WCAG, contrast, accessible names, images, reduced motion, keyboard audit lab. Publish only complete, verified lessons.
+## P1 — Security, reliability, and quality
+- [ ] **By 2026-12-02 UTC:** re-evaluate the dev-only Picomatch GHSA-fc5q-39xc-vjpf advisory and end its expiring exception when compatible fixed packages exist. Do not force-downgrade Next/ESLint in ways that break compatibility.
+- [ ] Expand verified reference entries (currently four drafted out of 303 indexed) using syntax, behavior, errors, safe tested examples and official references.
+- [ ] Improve real-device assistive technology audit coverage; automated Chromium checks do not certify compliance.
+- [ ] Maintain isolation: no student arbitrary code/MDX executed on trusted server and no fabricated claims of submissions or progress sync.
 
-## P1 — Release safety and content quality
-- [ ] **By 2026-12-02 UTC:** review `GHSA-fc5q-39xc-vjpf` Picomatch development-only exception and remove once compatible fixed releases are available. Never force-downgrade the Next.js ESLint toolchain untested.
-- [ ] Maintain a safe local-first practice model; no arbitrary code execution in the Next.js server or untrusted remote MDX compilation.
-- [ ] Improve semantic accessibility audits (keyboard and assistive-tech), automated dead source-link checks, and quiz answer plausibility.
-- [ ] Grow the independently browsable reference encyclopedia with verified syntax and runnable examples; only publish finished articles.
-
-## P2 — Subsequent milestones
-- [ ] Complete remaining HTML & Web Platform modules after `01.02`.
-- [ ] Teach CSS, JS, TS, React/Next.js, NestJS/Fastify, PostgreSQL/Prisma/Supabase, security, deployment, observability and the CollabSpace capstone as planned.
-- [ ] Consider signed progress sync or hosted grading only after a privacy, security and cost analysis.
+## P2 — Later curriculum
+- [ ] Complete remaining HTML/Web Platform modules after `01.03`; then CSS, JavaScript, TypeScript, React/Next.js, APIs, databases, security, deployment and full-stack capstone.
+- [ ] Consolidate older README v1.1 descriptions and progressively improve navigation without recreating a crowded interface.
+- [ ] Design signed cloud progress or remote grading only after privacy, authorization, compute and cost analysis.
 
 ## Definition of done
-A module is released only when every canonical lesson is genuinely authored and indexed, each local fixture and browser interaction is tested, the full CI and audit are green, preview is verified, and `main` production READY SHA matches the merged release. Clearly distinguish self-assessed practice from independently verified instructor tests.
+All canonical IDs of a module have complete lesson bodies and local tests, are registered and indexable; planned pages stay noindex; GitHub quality + audit checks and Vercel preview pass; the merged `main` SHA is served as READY in production; checkpoint is updated. Any manual screen-reader checks not performed must remain clearly identified as unverified.
 
 ## Recently completed
-- [x] `00.01`, `00.02`, `00.03`: entire 24-lesson Orientation & Foundations track.
-- [x] `01.01`: HTML Document Structure, eight lessons with standalone HTML fixtures and responsive accessible capstone.
-- [x] PR #6 merged; its head passed 18 repository tests, 80 lab tests, 33 MDX validations and Chromium browser checks.
-- [x] Production READY for `main@2e11d08` and live capstone page confirmed.
-- [x] Machine-readable checkpoint maintained and enforced by CI.
+- [x] Orientation 00.01, 00.02, 00.03 — 24 authored lessons.
+- [x] HTML Document Structure 01.01 — eight standalone HTML labs.
+- [x] HTML Forms & Validation 01.02 — eight browser-native labs, including inaccessible-form repair.
+- [x] PR #8 merged with 18 repository tests, 104 lab tests, 41 MDX validations and Chromium verification passed on head.
+- [x] Live production `/learn/01.02.08` confirmed HTTP 200; Vercel READY `main@4067cce`.
+- [x] Durable AI handoff maintained with CI-checkable publication counts.
