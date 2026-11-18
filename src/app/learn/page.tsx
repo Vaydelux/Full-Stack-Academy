@@ -16,6 +16,7 @@ export default function CourseIndex() {
     { id: '00.02', title: 'Developer toolchain', description: 'Prepare a reproducible environment and ship a tested project.' },
     { id: '00.03', title: 'Learning & debugging', description: 'Reproduce, isolate, diagnose, and document problems with evidence.' },
     { id: '01.01', title: 'HTML document structure', description: 'Create semantic, accessible, responsive content pages without a framework.' },
+    { id: '01.02', title: 'HTML forms & validation', description: 'Use native controls, browser validation and accessible interactions without a backend.' },
   ];
   return (
     <DocShell>

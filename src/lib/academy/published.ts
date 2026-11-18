@@ -37,8 +37,17 @@ import html6 from '@/content/lessons/01.01.06.meta.json';
 import html7 from '@/content/lessons/01.01.07.meta.json';
 import html8 from '@/content/lessons/01.01.08.meta.json';
 
-export const MDX_METADATA = new Map([browser, lifecycle, foundation3, foundation4, foundation5, foundation6, foundation7, foundation8, toolchain1, toolchain2, toolchain3, toolchain4, toolchain5, toolchain6, toolchain7, toolchain8, debugging1, debugging2, debugging3, debugging4, debugging5, debugging6, debugging7, debugging8, html1, html2, html3, html4, html5, html6, html7, html8, jsx].map(meta => [meta.id, meta]));
-export const LOCAL_LAB_LESSONS = [browser, lifecycle, foundation3, foundation4, foundation5, foundation6, foundation7, foundation8, toolchain1, toolchain2, toolchain3, toolchain4, toolchain5, toolchain6, toolchain7, toolchain8, debugging1, debugging2, debugging3, debugging4, debugging5, debugging6, debugging7, debugging8, html1, html2, html3, html4, html5, html6, html7, html8];
+import forms1 from '@/content/lessons/01.02.01.meta.json';
+import forms2 from '@/content/lessons/01.02.02.meta.json';
+import forms3 from '@/content/lessons/01.02.03.meta.json';
+import forms4 from '@/content/lessons/01.02.04.meta.json';
+import forms5 from '@/content/lessons/01.02.05.meta.json';
+import forms6 from '@/content/lessons/01.02.06.meta.json';
+import forms7 from '@/content/lessons/01.02.07.meta.json';
+import forms8 from '@/content/lessons/01.02.08.meta.json';
+
+export const MDX_METADATA = new Map([browser, lifecycle, foundation3, foundation4, foundation5, foundation6, foundation7, foundation8, toolchain1, toolchain2, toolchain3, toolchain4, toolchain5, toolchain6, toolchain7, toolchain8, debugging1, debugging2, debugging3, debugging4, debugging5, debugging6, debugging7, debugging8, html1, html2, html3, html4, html5, html6, html7, html8, forms1, forms2, forms3, forms4, forms5, forms6, forms7, forms8, jsx].map(meta => [meta.id, meta]));
+export const LOCAL_LAB_LESSONS = [browser, lifecycle, foundation3, foundation4, foundation5, foundation6, foundation7, foundation8, toolchain1, toolchain2, toolchain3, toolchain4, toolchain5, toolchain6, toolchain7, toolchain8, debugging1, debugging2, debugging3, debugging4, debugging5, debugging6, debugging7, debugging8, html1, html2, html3, html4, html5, html6, html7, html8, forms1, forms2, forms3, forms4, forms5, forms6, forms7, forms8];
 export const PUBLISHED_LESSON_IDS = [...new Set([...AUTHORED_LESSON_IDS, ...MDX_METADATA.keys()])].sort();
 export const isPublishedLesson = (id: string) => PUBLISHED_LESSON_IDS.includes(id);
 export function lessonRubric(id: string): string[] | undefined {
