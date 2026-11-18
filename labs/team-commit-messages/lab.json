@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.team-commit-messages",
+  "lessonId": "05.02.02",
+  "title": "Commit message conventions",
+  "runtime": "node-24-policy-and-local-git",
+  "status": "authored",
+  "starter": "labs/team-commit-messages/starter/solution.mjs",
+  "solution": "labs/team-commit-messages/solution/solution.mjs",
+  "tests": "labs/team-commit-messages/solution.test.mjs",
+  "verify": [
+    "npm run lab:team-commit-messages"
+  ],
+  "expected": "Offline commit message conventions scenarios demonstrate reviewed policy decisions without calling a remote service.",
+  "security": "All examples run offline with synthetic names, SHAs and placeholders. No actual secret, GitHub account, deployments, arbitrary network calls, service tokens or external writes."
+}

@@ -1,0 +1,38 @@
+{
+  "id": "05.02.06",
+  "title": "Semantic versioning",
+  "description": "Practice semantic versioning using a checkable offline policy or disposable Git repository, a failing starter, and an independently verified repair.",
+  "trackId": "05",
+  "moduleId": "05.02",
+  "level": "Beginner",
+  "estimatedMinutes": 55,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "05.02.05"
+  ],
+  "objectives": [
+    "Explain semantic versioning as an engineering policy, not a magic Git behavior",
+    "Reproduce the insufficient starter policy with concrete counterexamples",
+    "Apply the rule to representative team inputs and document real hosting limitations"
+  ],
+  "labId": "lab.foundation.team-semver",
+  "sources": [
+    {
+      "label": "Official team engineering reference",
+      "url": "https://semver.org/"
+    },
+    {
+      "label": "Official collaboration or release reference",
+      "url": "https://docs.npmjs.com/about-semantic-versioning"
+    }
+  ],
+  "rubric": [
+    "I reproduce the semantic versioning policy failure.",
+    "I can explain which policy is enforced locally versus by a Git host.",
+    "I demonstrate a passing repaired implementation and one negative edge case."
+  ]
+}

@@ -1,0 +1,1 @@
+export function solve(input){if(!input||typeof input!=='object'||typeof input.id!=='string'||!input.id.trim()||!Number.isInteger(input.qty)||input.qty<0)return null;return {id:input.id.trim(),qty:input.qty};}

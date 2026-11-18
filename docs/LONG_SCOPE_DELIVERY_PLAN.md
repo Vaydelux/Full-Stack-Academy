@@ -27,6 +27,15 @@ After the CSS-track candidate, a distinct branch `feat/js-ts-two-track-offline` 
 - **Verification debt:** JS async cancellation/retry uses injected offline transport, TS type tests compile through strict tsc, and browser DOM exercises require Chromium. Do not present these as live network or hosted code-execution features.
 - **Release hold:** Vercel remains intentionally suppressed, PRs remain draft/unmerged, and GitHub CI is not a Vercel deployment. A separate hosted release gate is required on explicit owner authorization.
 
+## Git track completion candidate — 2026-11-19
+
+- Current **offline candidate** `feat/05-git-monorepo-offline`: `05.01` Everyday Git (8), `05.02` Team Engineering (8), `05.03` pnpm & Turborepo (8), 24 lessons total.
+- Three-module Git batch raises candidate coverage from 157 to **181** lesson IDs, from 154 to **178** MDX/labs, and from 19 to **22** complete modules. Production remains 61 IDs.
+- The track's Git examples execute against fresh temporary local Git repositories, never the user's own files. Team policy tests simulate provider rules; actual CODEOWNERS/provider approval is **not** exercised.
+- The monorepo capstone contains local `apps/api`, `apps/web`, `packages/contracts` TS sources, workspace manifests and a strict TypeScript build check. This is **not** a successful pnpm install, Turbo caching experiment or published npm package.
+- Remaining React + Next.js program: 80 canonical topic IDs, including the **existing** authored `06.01.01`; 79 additional lesson IDs remain to author. All 104 IDs across tracks `05–07` form the complete program.
+- Don't merge the stacked work into main while Vercel is paused. Qualify offline batches, record exact-head CI, and make deployment a separate owner-approved release phase.
+
 ## Quality gate for every large batch
 
 1. **Scope freeze:** Select exact IDs from `data/curriculum.json`, agree on module outcomes, define a realistic demonstrable capstone. Track risks and prerequisites.

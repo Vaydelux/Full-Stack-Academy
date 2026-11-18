@@ -1,0 +1,1 @@
+export function solve({git,write}){git(['switch','-c','feature/offline-lab']);write('feature.md','Implemented\n');git(['add','feature.md']);git(['commit','--quiet','-m','feat: add offline walkthrough']);git(['diff','--check','main...feature/offline-lab']);git(['switch','main']);git(['merge','--no-ff','--quiet','-m','merge: reviewed offline feature','feature/offline-lab']);}

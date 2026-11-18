@@ -1,0 +1,91 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Explain pnpm workspace layout through an explicit package/graph contract","Reproduce the broken workspace/build policy using offline inputs","Verify corrected boundaries with local Node/TypeScript tests and state what requires pnpm or turbo"]} />
+
+## The problem we're solving
+
+A workspace selector accidentally includes ordinary folders and misses one of the actual packages. This offline workshop is part of the Git/monorepo track; no workspace installation, external package query or Vercel build runs when reading the lesson.
+
+## Build the mental model
+
+pnpm-workspace.yaml specifies package globs that identify workspace package manifests. A workspace is a dependency installation and linking boundary, not simply every folder under apps. This lab checks an intentionally small explicit convention for apps/* and packages/*; the real pnpm resolver supports broader glob rules and exclusions.
+
+**Predict before running:** Only direct apps/* and packages/* package manifests become workspace members.
+
+## Prerequisites and preflight
+
+Continue from [the previous canonical topic](/learn/05.02.08). Use Node.js 24 and the repository's locked dependencies. Examine the checked-in sample `labs/mono-workspace/pnpm-workspace.yaml` and explain why this is configuration evidence, not proof that pnpm or Turbo ran. Review `labs/mono-workspace/starter/solution.mjs` and `labs/mono-workspace/solution.test.mjs`. The starter is intentionally wrong; instructor code is a reference after your own attempt.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the workspace or package-graph defect" file="labs/mono-workspace/starter/solution.mjs" expected="The uncorrected starter fails the deterministic input/output tests.">
+
+```js
+export function solve(paths){return paths.filter(x=>x.startsWith('apps/'));}
+```
+
+**Predict before running:** A workspace selector accidentally includes ordinary folders and misses one of the actual packages.
+
+**Why it fails:** pnpm-workspace.yaml specifies package globs that identify workspace package manifests. A workspace is a dependency installation and linking boundary, not simply every folder under apps. This lab checks an intentionally small explicit convention for apps/* and packages/*; the real pnpm resolver supports broader glob rules and exclusions.
+
+**Proof:** Run `ACADEMY_LAB_TARGET=starter npm run lab:mono-workspace` in Bash or set the same variable temporarily in PowerShell. Identify the missing edge, unsafe path, cache input or validation.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the explicit workspace contract" file="labs/mono-workspace/starter/solution.mjs" expected={"Only direct apps/* and packages/* package manifests become workspace members."}>
+
+Preserve the exported `solve` entry and implement the smallest correct policy, noting whether this example is a simplified model rather than an actual pnpm/turbo invocation.
+
+```js
+export function solve(paths){if(!Array.isArray(paths))throw new TypeError('Paths required');return paths.filter(path=>/^(apps|packages)\/[^/]+\/package\.json$/.test(path)).map(path=>path.slice(0,-'/package.json'.length)).sort();}
+```
+
+**Predict before running:** Only direct apps/* and packages/* package manifests become workspace members.
+
+**Why the repair works:** pnpm-workspace.yaml specifies package globs that identify workspace package manifests. A workspace is a dependency installation and linking boundary, not simply every folder under apps. This lab checks an intentionally small explicit convention for apps/* and packages/*; the real pnpm resolver supports broader glob rules and exclusions.
+
+**Proof:** Use the same checked-in Node test and discuss which additional real-tool integration checks a production monorepo would require.
+
+</LessonStep>
+
+<LessonStep number={3} title="Test the graph, manifests and failure cases" file="labs/mono-workspace/solution.test.mjs" expected="Local assertions prove deterministic workspace behavior, including one negative test.">
+
+```js
+const paths=['apps/web/package.json','apps/web/README.md','apps/api/package.json','packages/contracts/package.json','notes/package.json','apps/nested/tool/package.json'];assert.deepEqual(solve(paths),['apps/api','apps/web','packages/contracts']);assert.deepEqual(solve([]),[]);
+```
+
+**Predict before running:** An invalid workspace path, missing export or changed dependency is rejected instead of silently accepted.
+
+**Why this matters:** A passing local model does not automatically validate actual pnpm-lock.yaml resolution, Turbo remote cache, package publishing or deployment.
+
+**Proof:** Run `npm run lab:mono-workspace` and compare the repaired starter with the reviewed instructor result.
+
+</LessonStep>
+
+## Explore and verify
+
+Where available, inspect a sample pnpm-workspace.yaml, package.json exports map, shared tsconfig or turbo task graph. For production adoption, lock Node/pnpm versions, run `pnpm install --frozen-lockfile`, run `turbo run build test` in a throwaway workspace, and check package consumer exports. These commands are guidance only and are **not automatically executed** by the academy.
+
+<Misconception claim="A valid-looking workspace configuration proves every package can install, compile and deploy." correction={"pnpm-workspace.yaml specifies package globs that identify workspace package manifests. A workspace is a dependency installation and linking boundary, not simply every folder under apps. This lab checks an intentionally small explicit convention for apps/* and packages/*; the real pnpm resolver supports broader glob rules and exclusions."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+Use the failing input to locate the missing package boundary, wrong task order, unsafe cache key or incompatible manifest. Fix the specific invariant rather than claiming a toolchain passed without invoking that toolchain.
+
+<KnowledgeCheck question={"Which file normally defines pnpm workspace package globs?"} choices={["pnpm-workspace.yaml","tsconfig.json","README.md","vite.config.ts"]} correctIndex={0} explanation={"pnpm-workspace.yaml specifies package globs that identify workspace package manifests. A workspace is a dependency installation and linking boundary, not simply every folder under apps. This lab checks an intentionally small explicit convention for apps/* and packages/*; the real pnpm resolver supports broader glob rules and exclusions."} misconception="Workspace manifests describe intent; real package-manager and build-engine checks need separate execution." lessonId="05.03.01" />
+
+## Guided local lab
+
+Repair `labs/mono-workspace/starter/solution.mjs`, run the corresponding local verifier and inspect fixture manifests. The capstone additionally includes actual three-package TypeScript source compiled in the test process. No GitHub Actions workflow or Vercel deployment is triggered by the lessons.
+
+<LabGate lessonId="05.03.01" labId="lab.foundation.mono-workspace" commands={["npm ci","npm run lab:mono-workspace"]} interactive={false} />
+
+## Reflect
+
+Which boundary is a TypeScript type-only guarantee? Which is a runtime value, package export, lockfile or build-cache guarantee? What concrete pnpm/Turborepo command would you need before claiming the workspace is release-ready?
+
+## Official references
+
+- [Primary official monorepo documentation](https://pnpm.io/pnpm-workspace_yaml)
+- [Supporting official reference](https://pnpm.io/workspaces)

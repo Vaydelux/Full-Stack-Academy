@@ -1,0 +1,1 @@
+export function solve({git,write}){write('.gitignore','.env.local\n');git(['rm','--cached','.env.local']);git(['add','.gitignore']);git(['commit','--quiet','-m','security: stop tracking local environment file']);}

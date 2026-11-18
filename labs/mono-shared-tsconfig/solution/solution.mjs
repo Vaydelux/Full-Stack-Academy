@@ -1,0 +1,1 @@
+export function solve(base,local){if(!base||!local)throw new TypeError('Configs required');const merged={...base,...local};if(merged.strict!==true||merged.noUncheckedIndexedAccess!==true)throw new Error('Unsafe override');return merged;}

@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.mono-package-exports",
+  "lessonId": "05.03.02",
+  "title": "Package boundaries and exports",
+  "runtime": "node-24-synthetic-workspace-model",
+  "status": "authored",
+  "starter": "labs/mono-package-exports/starter/solution.mjs",
+  "solution": "labs/mono-package-exports/solution/solution.mjs",
+  "tests": "labs/mono-package-exports/solution.test.mjs",
+  "verify": [
+    "npm run lab:mono-package-exports"
+  ],
+  "expected": "The package boundaries and exports package graph or manifest contract is tested locally with no network or hosted build.",
+  "security": "Synthetic local workspace and pinned fixture versions only; no registry fetch, private packages, credentials, Vercel deployment, remote caching or npm publishing."
+}

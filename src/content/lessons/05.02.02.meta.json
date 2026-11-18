@@ -1,0 +1,38 @@
+{
+  "id": "05.02.02",
+  "title": "Commit message conventions",
+  "description": "Practice commit message conventions using a checkable offline policy or disposable Git repository, a failing starter, and an independently verified repair.",
+  "trackId": "05",
+  "moduleId": "05.02",
+  "level": "Beginner",
+  "estimatedMinutes": 55,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "05.02.01"
+  ],
+  "objectives": [
+    "Explain commit message conventions as an engineering policy, not a magic Git behavior",
+    "Reproduce the insufficient starter policy with concrete counterexamples",
+    "Apply the rule to representative team inputs and document real hosting limitations"
+  ],
+  "labId": "lab.foundation.team-commit-messages",
+  "sources": [
+    {
+      "label": "Official team engineering reference",
+      "url": "https://www.conventionalcommits.org/en/v1.0.0/"
+    },
+    {
+      "label": "Official collaboration or release reference",
+      "url": "https://git-scm.com/docs/git-commit"
+    }
+  ],
+  "rubric": [
+    "I reproduce the commit message conventions policy failure.",
+    "I can explain which policy is enforced locally versus by a Git host.",
+    "I demonstrate a passing repaired implementation and one negative edge case."
+  ]
+}

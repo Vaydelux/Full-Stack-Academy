@@ -52,6 +52,8 @@ jobs:
         run: npm run checkpoint:check
       - name: Test checked-in React lab solution
         run: npm run test:labs
+      - name: Verify broken student starters fail with actual assertions
+        run: npm run test:red-starters
       - name: Production build
         run: npm run build
       - name: Cache Playwright browser

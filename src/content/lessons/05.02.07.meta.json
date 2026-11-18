@@ -1,0 +1,38 @@
+{
+  "id": "05.02.07",
+  "title": "Changelogs and releases",
+  "description": "Practice changelogs and releases using a checkable offline policy or disposable Git repository, a failing starter, and an independently verified repair.",
+  "trackId": "05",
+  "moduleId": "05.02",
+  "level": "Beginner",
+  "estimatedMinutes": 55,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "05.02.06"
+  ],
+  "objectives": [
+    "Explain changelogs and releases as an engineering policy, not a magic Git behavior",
+    "Reproduce the insufficient starter policy with concrete counterexamples",
+    "Apply the rule to representative team inputs and document real hosting limitations"
+  ],
+  "labId": "lab.foundation.team-changelog",
+  "sources": [
+    {
+      "label": "Official team engineering reference",
+      "url": "https://keepachangelog.com/en/1.1.0/"
+    },
+    {
+      "label": "Official collaboration or release reference",
+      "url": "https://www.conventionalcommits.org/en/v1.0.0/"
+    }
+  ],
+  "rubric": [
+    "I reproduce the changelogs and releases policy failure.",
+    "I can explain which policy is enforced locally versus by a Git host.",
+    "I demonstrate a passing repaired implementation and one negative edge case."
+  ]
+}

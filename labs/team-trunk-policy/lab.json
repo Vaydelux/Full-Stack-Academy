@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.team-trunk-policy",
+  "lessonId": "05.02.01",
+  "title": "Trunk-based development",
+  "runtime": "node-24-policy-and-local-git",
+  "status": "authored",
+  "starter": "labs/team-trunk-policy/starter/solution.mjs",
+  "solution": "labs/team-trunk-policy/solution/solution.mjs",
+  "tests": "labs/team-trunk-policy/solution.test.mjs",
+  "verify": [
+    "npm run lab:team-trunk-policy"
+  ],
+  "expected": "Offline trunk-based development scenarios demonstrate reviewed policy decisions without calling a remote service.",
+  "security": "All examples run offline with synthetic names, SHAs and placeholders. No actual secret, GitHub account, deployments, arbitrary network calls, service tokens or external writes."
+}

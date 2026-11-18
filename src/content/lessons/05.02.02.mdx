@@ -1,0 +1,91 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Explain commit message conventions as an engineering policy, not a magic Git behavior","Reproduce the insufficient starter policy with concrete counterexamples","Apply the rule to representative team inputs and document real hosting limitations"]} />
+
+## The problem we're solving
+
+Release automation cannot classify a commit titled update because it lacks a structured intent. The lesson uses synthetic local data; passing its test does not configure actual branch protection or trigger a release.
+
+## Build the mental model
+
+Conventional Commits defines a parseable type, optional scope, breaking-change marker and description. This enables changelog tooling and review clarity but is not a security boundary. Validate first-line syntax and reject empty descriptions without pretending that a valid title proves quality.
+
+**Predict before running:** Conventional titles yield structured intent; ambiguous or empty messages fail.
+
+## Prerequisites and preflight
+
+Continue from [the previous lesson](/learn/05.02.01). Compare `labs/team-commit-messages/starter/solution.mjs`, the instructor module and the actual test. Node 24 runs the verifier without GitHub credentials, hosted CI or a Vercel deployment.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce a misleading team policy" file="labs/team-commit-messages/starter/solution.mjs" expected="At least one test falsifies the original policy decision.">
+
+```js
+export function solve(message){return {type:'feat',description:message};}
+```
+
+**Predict before running:** Release automation cannot classify a commit titled update because it lacks a structured intent.
+
+**Why it fails:** Conventional Commits defines a parseable type, optional scope, breaking-change marker and description. This enables changelog tooling and review clarity but is not a security boundary. Validate first-line syntax and reject empty descriptions without pretending that a valid title proves quality.
+
+**Proof:** Run `ACADEMY_LAB_TARGET=starter npm run lab:team-commit-messages` locally. Identify which case would mislead a real reviewer or releaser.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the explicit review or release contract" file="labs/team-commit-messages/starter/solution.mjs" expected={"Conventional titles yield structured intent; ambiguous or empty messages fail."}>
+
+Prefer an explicit result and a narrow, auditable policy; do not invent remote approvals or call an external API.
+
+```js
+export function solve(message){if(typeof message!=='string')return null;const match=/^(feat|fix|docs|refactor|perf|test|chore)(?:\(([a-z0-9-]+)\))?(!)?: (\S.*)$/.exec(message.trim());return match?{type:match[1],scope:match[2]??null,breaking:Boolean(match[3]),description:match[4]}:null;}
+```
+
+**Predict before running:** Conventional titles yield structured intent; ambiguous or empty messages fail.
+
+**Why the repair works:** Conventional Commits defines a parseable type, optional scope, breaking-change marker and description. This enables changelog tooling and review clarity but is not a security boundary. Validate first-line syntax and reject empty descriptions without pretending that a valid title proves quality.
+
+**Proof:** Run the same independent test after editing; a green result demonstrates this local policy only.
+
+</LessonStep>
+
+<LessonStep number={3} title="Test both positive and negative outcomes" file="labs/team-commit-messages/solution.test.mjs" expected="Passes a precise expected-output contract and rejects a misleading or invalid case.">
+
+```js
+assert.deepEqual(solve('feat(api): add endpoint'),{type:'feat',scope:'api',breaking:false,description:'add endpoint'});assert.deepEqual(solve('fix!: remove legacy client'),{type:'fix',scope:null,breaking:true,description:'remove legacy client'});assert.equal(solve('update'),null);assert.equal(solve('feat: '),null);
+```
+
+**Predict before running:** The corrected policy distinguishes reviewable, unreviewed and invalid inputs.
+
+**Why it matters:** Branch protection, reviewer permissions, remote signatures and provenance are external guarantees; local policy simulation cannot establish them.
+
+**Proof:** Run `npm run lab:team-commit-messages` and inspect the failure messages when targeting the starter.
+
+</LessonStep>
+
+## Explore and verify
+
+Examine which claims require a real Git provider, peer review, or release manager. Separate static analysis from runtime security: a formatted commit message, changelog or status result is not proof of secure code. Avoid public deployment while the academy's release hold remains active.
+
+<Misconception claim="Passing a local review policy automatically proves a hosted pull request is approved and safe to merge." correction={"Conventional Commits defines a parseable type, optional scope, breaking-change marker and description. This enables changelog tooling and review clarity but is not a security boundary. Validate first-line syntax and reject empty descriptions without pretending that a valid title proves quality."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+Use the concrete counterexample in the test, identify the missing condition, and correct the smallest rule. Discuss whether human judgement, a required status check, a provider-owned setting, or real credential rotation is still needed.
+
+<KnowledgeCheck question={"What does feat!: commonly signal in Conventional Commits?"} choices={["An urgent private patch","A breaking change","An unsigned commit","A Git rebase"]} correctIndex={1} explanation={"Conventional Commits defines a parseable type, optional scope, breaking-change marker and description. This enables changelog tooling and review clarity but is not a security boundary. Validate first-line syntax and reject empty descriptions without pretending that a valid title proves quality."} misconception="Review and release workflows need explicit evidence and trust boundaries." lessonId="05.02.02" />
+
+## Guided local lab
+
+Edit `labs/team-commit-messages/starter/solution.mjs`, compare with the instructor after your own attempt, and run the same offline test. The exercise never changes real repository settings or executes remote CI.
+
+<LabGate lessonId="05.02.02" labId="lab.foundation.team-commit-messages" commands={["npm ci","npm run lab:team-commit-messages"]} interactive={false} />
+
+## Reflect
+
+How could a passing but stale CI check or a misleading review note affect production? What local evidence would you collect, and what separate hosted review or security action must happen before release?
+
+## Official references
+
+- [Primary official reference](https://www.conventionalcommits.org/en/v1.0.0/)
+- [Supporting official reference](https://git-scm.com/docs/git-commit)

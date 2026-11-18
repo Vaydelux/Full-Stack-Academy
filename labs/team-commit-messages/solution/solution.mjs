@@ -1,0 +1,1 @@
+export function solve(message){if(typeof message!=='string')return null;const match=/^(feat|fix|docs|refactor|perf|test|chore)(?:\(([a-z0-9-]+)\))?(!)?: (\S.*)$/.exec(message.trim());return match?{type:match[1],scope:match[2]??null,breaking:Boolean(match[3]),description:match[4]}:null;}

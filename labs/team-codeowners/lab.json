@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.team-codeowners",
+  "lessonId": "05.02.03",
+  "title": "Code ownership",
+  "runtime": "node-24-policy-and-local-git",
+  "status": "authored",
+  "starter": "labs/team-codeowners/starter/solution.mjs",
+  "solution": "labs/team-codeowners/solution/solution.mjs",
+  "tests": "labs/team-codeowners/solution.test.mjs",
+  "verify": [
+    "npm run lab:team-codeowners"
+  ],
+  "expected": "Offline code ownership scenarios demonstrate reviewed policy decisions without calling a remote service.",
+  "security": "All examples run offline with synthetic names, SHAs and placeholders. No actual secret, GitHub account, deployments, arbitrary network calls, service tokens or external writes."
+}

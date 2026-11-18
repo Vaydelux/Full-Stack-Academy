@@ -1,0 +1,1 @@
+export function solve(branches,{maxAgeDays=2}={}){if(!Array.isArray(branches)||!Number.isFinite(maxAgeDays)||maxAgeDays<0)throw new TypeError('Valid branch policy required');return branches.filter(b=>b.name!=='main'&&(!b.reviewed||b.ageDays>maxAgeDays||b.hasConflicts)).map(b=>({branch:b.name,reason:b.hasConflicts?'conflicts':!b.reviewed?'unreviewed':'stale'}));}

@@ -1,0 +1,1 @@
+export function solve(pkg,subpath){if(!pkg||typeof pkg.exports!=='object'||typeof subpath!=='string')return null;const entry=pkg.exports[subpath];return typeof entry==='string'?entry:entry&&typeof entry==='object'?entry.default??null:null;}

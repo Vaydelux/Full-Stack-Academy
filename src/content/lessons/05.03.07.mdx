@@ -1,0 +1,91 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Explain dependency upgrades through an explicit package/graph contract","Reproduce the broken workspace/build policy using offline inputs","Verify corrected boundaries with local Node/TypeScript tests and state what requires pnpm or turbo"]} />
+
+## The problem we're solving
+
+An automated dependency update is treated as risk-free even when a new major version can break public APIs. This offline workshop is part of the Git/monorepo track; no workspace installation, external package query or Vercel build runs when reading the lesson.
+
+## Build the mental model
+
+SemVer categorizes compatibility expectations, not security guarantees. Review changelogs, advisories, peer-dependency constraints and integration tests before updating; pin tested versions in the lockfile. This exercise analyzes synthetic pinned versions only and does not pretend to query today's registry.
+
+**Predict before running:** Major/minor/patch changes are classified accurately, while downgrades and unchanged pins are explicit.
+
+## Prerequisites and preflight
+
+Continue from [the previous canonical topic](/learn/05.03.06). Use Node.js 24 and the repository's locked dependencies. Review `labs/mono-upgrades/starter/solution.mjs` and `labs/mono-upgrades/solution.test.mjs`. The starter is intentionally wrong; instructor code is a reference after your own attempt.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the workspace or package-graph defect" file="labs/mono-upgrades/starter/solution.mjs" expected="The uncorrected starter fails the deterministic input/output tests.">
+
+```js
+export function solve(current,next){return 'patch';}
+```
+
+**Predict before running:** An automated dependency update is treated as risk-free even when a new major version can break public APIs.
+
+**Why it fails:** SemVer categorizes compatibility expectations, not security guarantees. Review changelogs, advisories, peer-dependency constraints and integration tests before updating; pin tested versions in the lockfile. This exercise analyzes synthetic pinned versions only and does not pretend to query today's registry.
+
+**Proof:** Run `ACADEMY_LAB_TARGET=starter npm run lab:mono-upgrades` in Bash or set the same variable temporarily in PowerShell. Identify the missing edge, unsafe path, cache input or validation.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the explicit workspace contract" file="labs/mono-upgrades/starter/solution.mjs" expected={"Major/minor/patch changes are classified accurately, while downgrades and unchanged pins are explicit."}>
+
+Preserve the exported `solve` entry and implement the smallest correct policy, noting whether this example is a simplified model rather than an actual pnpm/turbo invocation.
+
+```js
+export function solve(current,next){if(!/^\d+\.\d+\.\d+$/.test(current)||!/^\d+\.\d+\.\d+$/.test(next))throw new TypeError('Stable versions required');const a=current.split('.').map(Number),b=next.split('.').map(Number);if(b[0]<a[0]||(b[0]===a[0]&&b[1]<a[1])||(b[0]===a[0]&&b[1]===a[1]&&b[2]<a[2]))return 'downgrade';if(b[0]!==a[0])return 'major';if(b[1]!==a[1])return 'minor';if(b[2]!==a[2])return 'patch';return 'unchanged';}
+```
+
+**Predict before running:** Major/minor/patch changes are classified accurately, while downgrades and unchanged pins are explicit.
+
+**Why the repair works:** SemVer categorizes compatibility expectations, not security guarantees. Review changelogs, advisories, peer-dependency constraints and integration tests before updating; pin tested versions in the lockfile. This exercise analyzes synthetic pinned versions only and does not pretend to query today's registry.
+
+**Proof:** Use the same checked-in Node test and discuss which additional real-tool integration checks a production monorepo would require.
+
+</LessonStep>
+
+<LessonStep number={3} title="Test the graph, manifests and failure cases" file="labs/mono-upgrades/solution.test.mjs" expected="Local assertions prove deterministic workspace behavior, including one negative test.">
+
+```js
+assert.equal(solve('1.2.3','2.0.0'),'major');assert.equal(solve('1.2.3','1.3.0'),'minor');assert.equal(solve('1.2.3','1.2.4'),'patch');assert.equal(solve('2.0.0','1.9.0'),'downgrade');assert.equal(solve('1.2.3','1.2.3'),'unchanged');
+```
+
+**Predict before running:** An invalid workspace path, missing export or changed dependency is rejected instead of silently accepted.
+
+**Why this matters:** A passing local model does not automatically validate actual pnpm-lock.yaml resolution, Turbo remote cache, package publishing or deployment.
+
+**Proof:** Run `npm run lab:mono-upgrades` and compare the repaired starter with the reviewed instructor result.
+
+</LessonStep>
+
+## Explore and verify
+
+Where available, inspect a sample pnpm-workspace.yaml, package.json exports map, shared tsconfig or turbo task graph. For production adoption, lock Node/pnpm versions, run `pnpm install --frozen-lockfile`, run `turbo run build test` in a throwaway workspace, and check package consumer exports. These commands are guidance only and are **not automatically executed** by the academy.
+
+<Misconception claim="A valid-looking workspace configuration proves every package can install, compile and deploy." correction={"SemVer categorizes compatibility expectations, not security guarantees. Review changelogs, advisories, peer-dependency constraints and integration tests before updating; pin tested versions in the lockfile. This exercise analyzes synthetic pinned versions only and does not pretend to query today's registry."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+Use the failing input to locate the missing package boundary, wrong task order, unsafe cache key or incompatible manifest. Fix the specific invariant rather than claiming a toolchain passed without invoking that toolchain.
+
+<KnowledgeCheck question={"What additional review does a major dependency upgrade deserve?"} choices={["None if lockfile exists","Compatibility notes, API breaks and integration tests","Only a prettier README","Automatic production deployment"]} correctIndex={1} explanation={"SemVer categorizes compatibility expectations, not security guarantees. Review changelogs, advisories, peer-dependency constraints and integration tests before updating; pin tested versions in the lockfile. This exercise analyzes synthetic pinned versions only and does not pretend to query today's registry."} misconception="Workspace manifests describe intent; real package-manager and build-engine checks need separate execution." lessonId="05.03.07" />
+
+## Guided local lab
+
+Repair `labs/mono-upgrades/starter/solution.mjs`, run the corresponding local verifier and inspect fixture manifests. The capstone additionally includes actual three-package TypeScript source compiled in the test process. No GitHub Actions workflow or Vercel deployment is triggered by the lessons.
+
+<LabGate lessonId="05.03.07" labId="lab.foundation.mono-upgrades" commands={["npm ci","npm run lab:mono-upgrades"]} interactive={false} />
+
+## Reflect
+
+Which boundary is a TypeScript type-only guarantee? Which is a runtime value, package export, lockfile or build-cache guarantee? What concrete pnpm/Turborepo command would you need before claiming the workspace is release-ready?
+
+## Official references
+
+- [Primary official monorepo documentation](https://pnpm.io/cli/update)
+- [Supporting official reference](https://semver.org/)

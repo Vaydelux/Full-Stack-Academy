@@ -1,0 +1,91 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Explain bug hunt accidental secret commit as an engineering policy, not a magic Git behavior","Reproduce the insufficient starter policy with concrete counterexamples","Apply the rule to representative team inputs and document real hosting limitations"]} />
+
+## The problem we're solving
+
+A synthetic .env.local file was already committed; writing a new .gitignore rule falsely reassures the team that the past exposure has been removed. The lesson uses synthetic local data; passing its test does not configure actual branch protection or trigger a release.
+
+## Build the mental model
+
+Ignore patterns do not untrack already committed files or erase historical blobs. A local safe response stages removal from the index, preserves the ignored local file and documents remediation. If a real secret was exposed, revoke/rotate it immediately and coordinate history rewriting carefully because forks and clones may retain copies.
+
+**Predict before running:** The synthetic local file remains on disk but is absent from the current index; old history still contains it.
+
+## Prerequisites and preflight
+
+Continue from [the previous lesson](/learn/05.02.07). Compare `labs/team-secret-exposure/starter/solution.mjs`, the instructor module and the actual test. Node 24 runs the verifier without GitHub credentials, hosted CI or a Vercel deployment.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce a misleading team policy" file="labs/team-secret-exposure/starter/solution.mjs" expected="At least one test falsifies the original policy decision.">
+
+```js
+export function solve({git,write}){write('.gitignore','.env.local\n');git(['add','.gitignore']);git(['commit','--quiet','-m','chore: ignore secrets']);}
+```
+
+**Predict before running:** A synthetic .env.local file was already committed; writing a new .gitignore rule falsely reassures the team that the past exposure has been removed.
+
+**Why it fails:** Ignore patterns do not untrack already committed files or erase historical blobs. A local safe response stages removal from the index, preserves the ignored local file and documents remediation. If a real secret was exposed, revoke/rotate it immediately and coordinate history rewriting carefully because forks and clones may retain copies.
+
+**Proof:** Run `ACADEMY_LAB_TARGET=starter npm run lab:team-secret-exposure` locally. Identify which case would mislead a real reviewer or releaser.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the explicit review or release contract" file="labs/team-secret-exposure/starter/solution.mjs" expected={"The synthetic local file remains on disk but is absent from the current index; old history still contains it."}>
+
+Prefer an explicit result and a narrow, auditable policy; do not invent remote approvals or call an external API.
+
+```js
+export function solve({git,write}){write('.gitignore','.env.local\n');git(['rm','--cached','.env.local']);git(['add','.gitignore']);git(['commit','--quiet','-m','security: stop tracking local environment file']);}
+```
+
+**Predict before running:** The synthetic local file remains on disk but is absent from the current index; old history still contains it.
+
+**Why the repair works:** Ignore patterns do not untrack already committed files or erase historical blobs. A local safe response stages removal from the index, preserves the ignored local file and documents remediation. If a real secret was exposed, revoke/rotate it immediately and coordinate history rewriting carefully because forks and clones may retain copies.
+
+**Proof:** Run the same independent test after editing; a green result demonstrates this local policy only.
+
+</LessonStep>
+
+<LessonStep number={3} title="Test both positive and negative outcomes" file="labs/team-secret-exposure/solution.test.mjs" expected="Passes a precise expected-output contract and rejects a misleading or invalid case.">
+
+```js
+const gitTest=()=>{const s=createGitSandbox();try{const {git,write,commitBase}=s;commitBase();write('.env.local','DEMO_FAKE_TOKEN=training_only_not_a_secret\n');git(['add','.env.local']);git(['commit','--quiet','-m','test: accidentally track fake environment']);solve(s);assert.equal(git(['ls-files','.env.local']).stdout.trim(),'');assert.equal(git(['check-ignore','.env.local']).stdout.trim(),'.env.local');assert.equal(s.exists('.env.local'),true);assert.match(git(['show','HEAD~1:.env.local']).stdout,/training_only_not_a_secret/);}finally{s.cleanup();}};gitTest();
+```
+
+**Predict before running:** The corrected policy distinguishes reviewable, unreviewed and invalid inputs.
+
+**Why it matters:** Branch protection, reviewer permissions, remote signatures and provenance are external guarantees; local policy simulation cannot establish them.
+
+**Proof:** Run `npm run lab:team-secret-exposure` and inspect the failure messages when targeting the starter.
+
+</LessonStep>
+
+## Explore and verify
+
+Examine which claims require a real Git provider, peer review, or release manager. Separate static analysis from runtime security: a formatted commit message, changelog or status result is not proof of secure code. Avoid public deployment while the academy's release hold remains active.
+
+<Misconception claim="Passing a local review policy automatically proves a hosted pull request is approved and safe to merge." correction={"Ignore patterns do not untrack already committed files or erase historical blobs. A local safe response stages removal from the index, preserves the ignored local file and documents remediation. If a real secret was exposed, revoke/rotate it immediately and coordinate history rewriting carefully because forks and clones may retain copies."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+Use the concrete counterexample in the test, identify the missing condition, and correct the smallest rule. Discuss whether human judgement, a required status check, a provider-owned setting, or real credential rotation is still needed.
+
+<KnowledgeCheck question={"Does adding a tracked secret path to .gitignore remove it from past commits?"} choices={["Yes","No; untrack, revoke real credentials and coordinate historical cleanup","Only if pnpm is installed","Only after a Vercel deployment"]} correctIndex={1} explanation={"Ignore patterns do not untrack already committed files or erase historical blobs. A local safe response stages removal from the index, preserves the ignored local file and documents remediation. If a real secret was exposed, revoke/rotate it immediately and coordinate history rewriting carefully because forks and clones may retain copies."} misconception="Review and release workflows need explicit evidence and trust boundaries." lessonId="05.02.08" />
+
+## Guided local lab
+
+Edit `labs/team-secret-exposure/starter/solution.mjs`, compare with the instructor after your own attempt, and run the same offline test. The exercise never changes real repository settings or executes remote CI.
+
+<LabGate lessonId="05.02.08" labId="lab.foundation.team-secret-exposure" commands={["npm ci","npm run lab:team-secret-exposure"]} interactive={false} />
+
+## Reflect
+
+How could a passing but stale CI check or a misleading review note affect production? What local evidence would you collect, and what separate hosted review or security action must happen before release?
+
+## Official references
+
+- [Primary official reference](https://git-scm.com/docs/git-rm)
+- [Supporting official reference](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/removing-sensitive-data-from-a-repository)

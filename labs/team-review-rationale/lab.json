@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.team-review-rationale",
+  "lessonId": "05.02.04",
+  "title": "Review comments and rationale",
+  "runtime": "node-24-policy-and-local-git",
+  "status": "authored",
+  "starter": "labs/team-review-rationale/starter/solution.mjs",
+  "solution": "labs/team-review-rationale/solution/solution.mjs",
+  "tests": "labs/team-review-rationale/solution.test.mjs",
+  "verify": [
+    "npm run lab:team-review-rationale"
+  ],
+  "expected": "Offline review comments and rationale scenarios demonstrate reviewed policy decisions without calling a remote service.",
+  "security": "All examples run offline with synthetic names, SHAs and placeholders. No actual secret, GitHub account, deployments, arbitrary network calls, service tokens or external writes."
+}

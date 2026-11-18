@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.team-required-checks",
+  "lessonId": "05.02.05",
+  "title": "CI status checks",
+  "runtime": "node-24-policy-and-local-git",
+  "status": "authored",
+  "starter": "labs/team-required-checks/starter/solution.mjs",
+  "solution": "labs/team-required-checks/solution/solution.mjs",
+  "tests": "labs/team-required-checks/solution.test.mjs",
+  "verify": [
+    "npm run lab:team-required-checks"
+  ],
+  "expected": "Offline ci status checks scenarios demonstrate reviewed policy decisions without calling a remote service.",
+  "security": "All examples run offline with synthetic names, SHAs and placeholders. No actual secret, GitHub account, deployments, arbitrary network calls, service tokens or external writes."
+}

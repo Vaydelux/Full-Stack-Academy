@@ -1,0 +1,38 @@
+{
+  "id": "05.01.05",
+  "title": "Pull requests and code review",
+  "description": "Practice pull requests and code review using a fresh temporary local Git repository, deliberately failing starter and real command assertions without hosted services.",
+  "trackId": "05",
+  "moduleId": "05.01",
+  "level": "Beginner",
+  "estimatedMinutes": 55,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "05.01.04"
+  ],
+  "objectives": [
+    "Explain the Git history/index rule involved in pull requests and code review",
+    "Reproduce the starter's incorrect repository state in a disposable local repository",
+    "Apply the instructor fix and verify actual Git refs, file contents or status"
+  ],
+  "labId": "lab.foundation.git-review",
+  "sources": [
+    {
+      "label": "Official Git documentation",
+      "url": "https://git-scm.com/docs/git-diff"
+    },
+    {
+      "label": "Official Git or GitHub collaboration guide",
+      "url": "https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/reviewing-changes-in-pull-requests/about-pull-request-reviews"
+    }
+  ],
+  "rubric": [
+    "I reproduce an actual local git pull requests and code review failure.",
+    "I explain the relevant branch, index, history and file state.",
+    "I verify fixed refs, commits or ignored paths and name the remaining hosted review gate."
+  ]
+}

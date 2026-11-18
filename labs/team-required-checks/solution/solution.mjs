@@ -1,0 +1,1 @@
+export function solve(required,checks,head){if(!Array.isArray(required)||!Array.isArray(checks)||typeof head!=='string'||!head)return false;return required.every(name=>checks.some(c=>c.name===name&&c.sha===head&&c.status==='success'));}

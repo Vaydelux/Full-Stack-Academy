@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.git-feature-capstone",
+  "lessonId": "05.01.08",
+  "title": "Lab tracked feature change",
+  "runtime": "node-24-local-git-cli",
+  "status": "authored",
+  "starter": "labs/git-feature-capstone/starter/solution.mjs",
+  "solution": "labs/git-feature-capstone/solution/solution.mjs",
+  "tests": "labs/git-feature-capstone/solution.test.mjs",
+  "verify": [
+    "npm run lab:git-feature-capstone"
+  ],
+  "expected": "A disposable Git repository demonstrates the correct lab tracked feature change history and index state through CLI assertions.",
+  "security": "Local temporary repository only; git network protocols restricted to file, no GitHub credentials, personal secrets, remote fetches, external deploys or destructive operations on the user's working tree."
+}

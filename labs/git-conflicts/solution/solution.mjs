@@ -1,0 +1,1 @@
+export function solve({git,write}){const result=git(['merge','feature','--no-commit'],{allowFailure:true});if(result.status===0)throw new Error('Expected teaching conflict');write('message.txt','Base line\nMain note\nFeature note\n');git(['add','message.txt']);git(['commit','--quiet','-m','merge: resolve both notes']);}

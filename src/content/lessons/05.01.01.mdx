@@ -1,0 +1,93 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Explain the Git history/index rule involved in init clone status add commit","Reproduce the starter's incorrect repository state in a disposable local repository","Apply the instructor fix and verify actual Git refs, file contents or status"]} />
+
+## The problem we're solving
+
+A learner edits a feature file but commits only README, so the intended change never enters history. This lesson is an offline, repeatable source-control exercise; it never touches the learner's actual project repository or opens a hosted pull request.
+
+## Build the mental model
+
+A working tree contains current files, the index stages selected snapshots, and commits record staged content. Use git status to see all three states and git show to confirm a change actually entered HEAD. Clone copies repository history; this lab begins in a local initialized repository to avoid remote dependencies.
+
+**Predict before running:** The intended lesson.txt becomes part of HEAD and the working tree has no uncommitted changes.
+
+## Prerequisites and preflight
+
+Continue from [the previous canonical topic](/learn/04.04.08). Ensure Git is available on PATH alongside Node.js 24. The local verifier creates a disposable repository in the OS temporary folder, configures a synthetic author, executes the exercise, and deletes the folder. Inspect `labs/git-init-commit/starter/solution.mjs`, the instructor solution, and `labs/git-init-commit/solution.test.mjs` before editing.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the source-control mistake" file="labs/git-init-commit/starter/solution.mjs" expected="The starter fails one or more real Git assertions on its disposable repository.">
+
+```js
+export function solve({git}){git(['add','README.md']);git(['commit','--quiet','-m','feat: ship note']);}
+```
+
+**Predict before running:** A learner edits a feature file but commits only README, so the intended change never enters history.
+
+**Why it fails:** A working tree contains current files, the index stages selected snapshots, and commits record staged content. Use git status to see all three states and git show to confirm a change actually entered HEAD. Clone copies repository history; this lab begins in a local initialized repository to avoid remote dependencies.
+
+**Proof:** Run the starter through the local harness using `ACADEMY_LAB_TARGET=starter npm run lab:git-init-commit` in Bash (or the matching PowerShell environment setting). Inspect the reported Git file or ref mismatch.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the Git workflow" file="labs/git-init-commit/starter/solution.mjs" expected={"The intended lesson.txt becomes part of HEAD and the working tree has no uncommitted changes."}>
+
+Preserve the exported `solve` contract; call the local `git` helper with explicit argument arrays rather than issuing shell strings. The instructor workflow is:
+
+```js
+export function solve({git}){git(['add','lesson.txt']);git(['commit','--quiet','-m','feat: ship note']);}
+```
+
+**Predict before running:** The intended lesson.txt becomes part of HEAD and the working tree has no uncommitted changes.
+
+**Why it works:** A working tree contains current files, the index stages selected snapshots, and commits record staged content. Use git status to see all three states and git show to confirm a change actually entered HEAD. Clone copies repository history; this lab begins in a local initialized repository to avoid remote dependencies.
+
+**Proof:** The same deterministic fixture should now satisfy the intended history, index and working-tree state.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify command results and explain risks" file="labs/git-init-commit/solution.test.mjs" expected="Actual Git history, refs, index or file contents match the expected state.">
+
+The following assertions exercise a freshly initialized repository rather than comparing source strings:
+
+```js
+assert.equal(git(['show','HEAD:lesson.txt']).stdout,'Commit this learning note.\n');assert.equal(git(['status','--porcelain']).stdout.trim(),'');
+```
+
+**Predict before running:** The corrected command order changes the relevant repository state while preserving the baseline.
+
+**Why it matters:** A green file syntax check cannot prove correct Git commit ancestry, staged file contents or remote refs.
+
+**Proof:** Run `npm run lab:git-init-commit`; compare output with the starter-target failure. No GitHub Action or Vercel preview is needed for this fixture.
+
+</LessonStep>
+
+## Explore and verify
+
+Run `git status`, `git log --oneline --graph`, `git diff`, or `git show` as appropriate in a disposable clone. The exercises deliberately avoid real credentials, network remotes and destructive commands against your own worktree. Code review and branch protection require a separate hosting workflow.
+
+<Misconception claim="Git state changes are automatically uploaded, reviewed and safe for collaborators." correction={"A working tree contains current files, the index stages selected snapshots, and commits record staged content. Use git status to see all three states and git show to confirm a change actually entered HEAD. Clone copies repository history; this lab begins in a local initialized repository to avoid remote dependencies."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+Locate the wrong index, branch, history or file state. Explain the smallest counterexample, then change only the commands that violate the intended workflow. Never substitute a hard reset or force push when a safer reversible history operation is appropriate.
+
+<KnowledgeCheck question={"What does git add do before a commit?"} choices={["Push files to a remote","Stage selected file content in the index","Merge two branches","Delete the working tree"]} correctIndex={1} explanation={"A working tree contains current files, the index stages selected snapshots, and commits record staged content. Use git status to see all three states and git show to confirm a change actually entered HEAD. Clone copies repository history; this lab begins in a local initialized repository to avoid remote dependencies."} misconception="A local commit or diff is not proof of a hosted review or release." lessonId="05.01.01" />
+
+## Guided local lab
+
+Edit `labs/git-init-commit/starter/solution.mjs`, verify it on a fresh temporary Git repo, then compare with the instructor. The tests run locally, not in an arbitrary-code cloud sandbox; never run modified student code from an untrusted source. No real Git remote, PR, CI approval or Vercel deployment is created.
+
+<LabGate lessonId="05.01.01" labId="lab.foundation.git-init-commit" commands={["npm ci","npm run lab:git-init-commit"]} interactive={false} />
+
+## Reflect
+
+What changed in the index versus the commit graph? Which action could have damaged a shared branch? What additional peer review or repository protection belongs outside this local exercise?
+
+## Official references
+
+- [Official Git reference](https://git-scm.com/docs/git-add)
+- [Official collaboration/security guide](https://git-scm.com/docs/git-commit)

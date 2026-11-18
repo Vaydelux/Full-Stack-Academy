@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.team-changelog",
+  "lessonId": "05.02.07",
+  "title": "Changelogs and releases",
+  "runtime": "node-24-policy-and-local-git",
+  "status": "authored",
+  "starter": "labs/team-changelog/starter/solution.mjs",
+  "solution": "labs/team-changelog/solution/solution.mjs",
+  "tests": "labs/team-changelog/solution.test.mjs",
+  "verify": [
+    "npm run lab:team-changelog"
+  ],
+  "expected": "Offline changelogs and releases scenarios demonstrate reviewed policy decisions without calling a remote service.",
+  "security": "All examples run offline with synthetic names, SHAs and placeholders. No actual secret, GitHub account, deployments, arbitrary network calls, service tokens or external writes."
+}

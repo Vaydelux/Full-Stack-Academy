@@ -1,0 +1,38 @@
+{
+  "id": "05.02.03",
+  "title": "Code ownership rules",
+  "description": "Practice code ownership using a checkable offline policy or disposable Git repository, a failing starter, and an independently verified repair.",
+  "trackId": "05",
+  "moduleId": "05.02",
+  "level": "Beginner",
+  "estimatedMinutes": 55,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "05.02.02"
+  ],
+  "objectives": [
+    "Explain code ownership as an engineering policy, not a magic Git behavior",
+    "Reproduce the insufficient starter policy with concrete counterexamples",
+    "Apply the rule to representative team inputs and document real hosting limitations"
+  ],
+  "labId": "lab.foundation.team-codeowners",
+  "sources": [
+    {
+      "label": "Official team engineering reference",
+      "url": "https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners"
+    },
+    {
+      "label": "Official collaboration or release reference",
+      "url": "https://git-scm.com/docs/gitignore"
+    }
+  ],
+  "rubric": [
+    "I reproduce the code ownership policy failure.",
+    "I can explain which policy is enforced locally versus by a Git host.",
+    "I demonstrate a passing repaired implementation and one negative edge case."
+  ]
+}

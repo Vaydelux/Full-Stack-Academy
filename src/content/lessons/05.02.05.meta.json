@@ -1,0 +1,38 @@
+{
+  "id": "05.02.05",
+  "title": "CI status checks",
+  "description": "Practice ci status checks using a checkable offline policy or disposable Git repository, a failing starter, and an independently verified repair.",
+  "trackId": "05",
+  "moduleId": "05.02",
+  "level": "Beginner",
+  "estimatedMinutes": 55,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "05.02.04"
+  ],
+  "objectives": [
+    "Explain ci status checks as an engineering policy, not a magic Git behavior",
+    "Reproduce the insufficient starter policy with concrete counterexamples",
+    "Apply the rule to representative team inputs and document real hosting limitations"
+  ],
+  "labId": "lab.foundation.team-required-checks",
+  "sources": [
+    {
+      "label": "Official team engineering reference",
+      "url": "https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches"
+    },
+    {
+      "label": "Official collaboration or release reference",
+      "url": "https://docs.github.com/en/rest/commits/statuses"
+    }
+  ],
+  "rubric": [
+    "I reproduce the ci status checks policy failure.",
+    "I can explain which policy is enforced locally versus by a Git host.",
+    "I demonstrate a passing repaired implementation and one negative edge case."
+  ]
+}

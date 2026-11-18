@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.mono-contracts-capstone",
+  "lessonId": "05.03.08",
+  "title": "Lab web API shared contracts monorepo",
+  "runtime": "node-24-typescript-5-workspace-example",
+  "status": "authored",
+  "starter": "labs/mono-contracts-capstone/starter/solution.mjs",
+  "solution": "labs/mono-contracts-capstone/solution/solution.mjs",
+  "tests": "labs/mono-contracts-capstone/solution.test.mjs",
+  "verify": [
+    "npm run lab:mono-contracts-capstone"
+  ],
+  "expected": "The lab web api shared contracts monorepo package graph or manifest contract is tested locally with no network or hosted build.",
+  "security": "Synthetic local workspace and pinned fixture versions only; no registry fetch, private packages, credentials, Vercel deployment, remote caching or npm publishing."
+}

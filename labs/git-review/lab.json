@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.git-review",
+  "lessonId": "05.01.05",
+  "title": "Pull requests and code review",
+  "runtime": "node-24-local-git-cli",
+  "status": "authored",
+  "starter": "labs/git-review/starter/solution.mjs",
+  "solution": "labs/git-review/solution/solution.mjs",
+  "tests": "labs/git-review/solution.test.mjs",
+  "verify": [
+    "npm run lab:git-review"
+  ],
+  "expected": "A disposable Git repository demonstrates the correct pull requests and code review history and index state through CLI assertions.",
+  "security": "Local temporary repository only; git network protocols restricted to file, no GitHub credentials, personal secrets, remote fetches, external deploys or destructive operations on the user's working tree."
+}

@@ -1,0 +1,38 @@
+{
+  "id": "05.03.05",
+  "title": "Build graph and cache",
+  "description": "Practice build graph and cache with a local package graph or manifests, an intentionally failing starter and independent Node tests without cloud deployments.",
+  "trackId": "05",
+  "moduleId": "05.03",
+  "level": "Beginner",
+  "estimatedMinutes": 60,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "05.03.04"
+  ],
+  "objectives": [
+    "Explain build graph and cache through an explicit package/graph contract",
+    "Reproduce the broken workspace/build policy using offline inputs",
+    "Verify corrected boundaries with local Node/TypeScript tests and state what requires pnpm or turbo"
+  ],
+  "labId": "lab.foundation.mono-cache-graph",
+  "sources": [
+    {
+      "label": "Official pnpm/Turborepo documentation",
+      "url": "https://turborepo.dev/docs/crafting-your-repository/caching"
+    },
+    {
+      "label": "Official tooling reference",
+      "url": "https://turborepo.dev/docs/reference/configuration"
+    }
+  ],
+  "rubric": [
+    "I identify the real build graph and cache configuration or graph risk.",
+    "I demonstrate a failing starter and correct local behavior.",
+    "I distinguish a static model from an actual pnpm/Turborepo installation or build."
+  ]
+}

@@ -1,0 +1,91 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Explain lockfile discipline through an explicit package/graph contract","Reproduce the broken workspace/build policy using offline inputs","Verify corrected boundaries with local Node/TypeScript tests and state what requires pnpm or turbo"]} />
+
+## The problem we're solving
+
+A package version changes but a lock snapshot still lists an older dependency, and the workspace reports reproducibility anyway. This offline workshop is part of the Git/monorepo track; no workspace installation, external package query or Vercel build runs when reading the lesson.
+
+## Build the mental model
+
+A committed pnpm-lock.yaml records resolved package dependency metadata for reproducible installs. pnpm install --frozen-lockfile should reject manifest/lockfile mismatches in CI. This simplified structured snapshot validates exact direct-dependency consistency; it is not a full pnpm lockfile parser or supply-chain audit.
+
+**Predict before running:** The policy fails on stale, missing or additional direct dependency pins, even though the snapshot is not a real lock parser.
+
+## Prerequisites and preflight
+
+Continue from [the previous canonical topic](/learn/05.03.05). Use Node.js 24 and the repository's locked dependencies. Review `labs/mono-lockfile/starter/solution.mjs` and `labs/mono-lockfile/solution.test.mjs`. The starter is intentionally wrong; instructor code is a reference after your own attempt.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the workspace or package-graph defect" file="labs/mono-lockfile/starter/solution.mjs" expected="The uncorrected starter fails the deterministic input/output tests.">
+
+```js
+export function solve(manifest,lock){return Object.keys(lock).length>0;}
+```
+
+**Predict before running:** A package version changes but a lock snapshot still lists an older dependency, and the workspace reports reproducibility anyway.
+
+**Why it fails:** A committed pnpm-lock.yaml records resolved package dependency metadata for reproducible installs. pnpm install --frozen-lockfile should reject manifest/lockfile mismatches in CI. This simplified structured snapshot validates exact direct-dependency consistency; it is not a full pnpm lockfile parser or supply-chain audit.
+
+**Proof:** Run `ACADEMY_LAB_TARGET=starter npm run lab:mono-lockfile` in Bash or set the same variable temporarily in PowerShell. Identify the missing edge, unsafe path, cache input or validation.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the explicit workspace contract" file="labs/mono-lockfile/starter/solution.mjs" expected={"The policy fails on stale, missing or additional direct dependency pins, even though the snapshot is not a real lock parser."}>
+
+Preserve the exported `solve` entry and implement the smallest correct policy, noting whether this example is a simplified model rather than an actual pnpm/turbo invocation.
+
+```js
+export function solve(manifest,lock){if(!manifest||!lock||typeof manifest!=='object'||typeof lock!=='object')return false;const direct={...manifest.dependencies,...manifest.devDependencies};return Object.keys(direct).length===Object.keys(lock).length&&Object.entries(direct).every(([name,version])=>lock[name]===version);}
+```
+
+**Predict before running:** The policy fails on stale, missing or additional direct dependency pins, even though the snapshot is not a real lock parser.
+
+**Why the repair works:** A committed pnpm-lock.yaml records resolved package dependency metadata for reproducible installs. pnpm install --frozen-lockfile should reject manifest/lockfile mismatches in CI. This simplified structured snapshot validates exact direct-dependency consistency; it is not a full pnpm lockfile parser or supply-chain audit.
+
+**Proof:** Use the same checked-in Node test and discuss which additional real-tool integration checks a production monorepo would require.
+
+</LessonStep>
+
+<LessonStep number={3} title="Test the graph, manifests and failure cases" file="labs/mono-lockfile/solution.test.mjs" expected="Local assertions prove deterministic workspace behavior, including one negative test.">
+
+```js
+const manifest={dependencies:{react:'19.0.0'},devDependencies:{typescript:'5.9.0'}};assert.equal(solve(manifest,{react:'19.0.0',typescript:'5.9.0'}),true);assert.equal(solve(manifest,{react:'18.0.0',typescript:'5.9.0'}),false);assert.equal(solve(manifest,{react:'19.0.0'}),false);
+```
+
+**Predict before running:** An invalid workspace path, missing export or changed dependency is rejected instead of silently accepted.
+
+**Why this matters:** A passing local model does not automatically validate actual pnpm-lock.yaml resolution, Turbo remote cache, package publishing or deployment.
+
+**Proof:** Run `npm run lab:mono-lockfile` and compare the repaired starter with the reviewed instructor result.
+
+</LessonStep>
+
+## Explore and verify
+
+Where available, inspect a sample pnpm-workspace.yaml, package.json exports map, shared tsconfig or turbo task graph. For production adoption, lock Node/pnpm versions, run `pnpm install --frozen-lockfile`, run `turbo run build test` in a throwaway workspace, and check package consumer exports. These commands are guidance only and are **not automatically executed** by the academy.
+
+<Misconception claim="A valid-looking workspace configuration proves every package can install, compile and deploy." correction={"A committed pnpm-lock.yaml records resolved package dependency metadata for reproducible installs. pnpm install --frozen-lockfile should reject manifest/lockfile mismatches in CI. This simplified structured snapshot validates exact direct-dependency consistency; it is not a full pnpm lockfile parser or supply-chain audit."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+Use the failing input to locate the missing package boundary, wrong task order, unsafe cache key or incompatible manifest. Fix the specific invariant rather than claiming a toolchain passed without invoking that toolchain.
+
+<KnowledgeCheck question={"What is a primary benefit of committing a lockfile?"} choices={["Keeping resolved dependency versions reproducible","Automatically closing all security findings","Replacing code review","Hiding private keys"]} correctIndex={0} explanation={"A committed pnpm-lock.yaml records resolved package dependency metadata for reproducible installs. pnpm install --frozen-lockfile should reject manifest/lockfile mismatches in CI. This simplified structured snapshot validates exact direct-dependency consistency; it is not a full pnpm lockfile parser or supply-chain audit."} misconception="Workspace manifests describe intent; real package-manager and build-engine checks need separate execution." lessonId="05.03.06" />
+
+## Guided local lab
+
+Repair `labs/mono-lockfile/starter/solution.mjs`, run the corresponding local verifier and inspect fixture manifests. The capstone additionally includes actual three-package TypeScript source compiled in the test process. No GitHub Actions workflow or Vercel deployment is triggered by the lessons.
+
+<LabGate lessonId="05.03.06" labId="lab.foundation.mono-lockfile" commands={["npm ci","npm run lab:mono-lockfile"]} interactive={false} />
+
+## Reflect
+
+Which boundary is a TypeScript type-only guarantee? Which is a runtime value, package export, lockfile or build-cache guarantee? What concrete pnpm/Turborepo command would you need before claiming the workspace is release-ready?
+
+## Official references
+
+- [Primary official monorepo documentation](https://pnpm.io/cli/install)
+- [Supporting official reference](https://pnpm.io/lockfile)

@@ -1,0 +1,1 @@
+export function solve(manifest,lock){if(!manifest||!lock||typeof manifest!=='object'||typeof lock!=='object')return false;const direct={...manifest.dependencies,...manifest.devDependencies};return Object.keys(direct).length===Object.keys(lock).length&&Object.entries(direct).every(([name,version])=>lock[name]===version);}

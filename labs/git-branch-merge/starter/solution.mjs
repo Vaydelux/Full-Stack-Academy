@@ -1,0 +1,1 @@
+export function solve({git,write}){git(['switch','-c','feature/ui']);write('feature.txt','Ready\n');git(['add','feature.txt']);git(['commit','--quiet','-m','feat: add UI']);}

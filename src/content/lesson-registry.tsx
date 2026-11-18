@@ -153,6 +153,31 @@ import TsTooling6 from './lessons/04.04.06.mdx';
 import TsTooling7 from './lessons/04.04.07.mdx';
 import TsTooling8 from './lessons/04.04.08.mdx';
 
+import GitDaily1 from './lessons/05.01.01.mdx';
+import GitDaily2 from './lessons/05.01.02.mdx';
+import GitDaily3 from './lessons/05.01.03.mdx';
+import GitDaily4 from './lessons/05.01.04.mdx';
+import GitDaily5 from './lessons/05.01.05.mdx';
+import GitDaily6 from './lessons/05.01.06.mdx';
+import GitDaily7 from './lessons/05.01.07.mdx';
+import GitDaily8 from './lessons/05.01.08.mdx';
+import GitTeam1 from './lessons/05.02.01.mdx';
+import GitTeam2 from './lessons/05.02.02.mdx';
+import GitTeam3 from './lessons/05.02.03.mdx';
+import GitTeam4 from './lessons/05.02.04.mdx';
+import GitTeam5 from './lessons/05.02.05.mdx';
+import GitTeam6 from './lessons/05.02.06.mdx';
+import GitTeam7 from './lessons/05.02.07.mdx';
+import GitTeam8 from './lessons/05.02.08.mdx';
+import GitMono1 from './lessons/05.03.01.mdx';
+import GitMono2 from './lessons/05.03.02.mdx';
+import GitMono3 from './lessons/05.03.03.mdx';
+import GitMono4 from './lessons/05.03.04.mdx';
+import GitMono5 from './lessons/05.03.05.mdx';
+import GitMono6 from './lessons/05.03.06.mdx';
+import GitMono7 from './lessons/05.03.07.mdx';
+import GitMono8 from './lessons/05.03.08.mdx';
+
 export function LessonArticle({lessonId}: {lessonId:string}) {
   switch (lessonId) {
     case '00.01.01': return <BrowserLesson />;
@@ -308,6 +333,30 @@ export function LessonArticle({lessonId}: {lessonId:string}) {
     case '04.04.06': return <TsTooling6 />;
     case '04.04.07': return <TsTooling7 />;
     case '04.04.08': return <TsTooling8 />;
+    case '05.01.01': return <GitDaily1 />;
+    case '05.01.02': return <GitDaily2 />;
+    case '05.01.03': return <GitDaily3 />;
+    case '05.01.04': return <GitDaily4 />;
+    case '05.01.05': return <GitDaily5 />;
+    case '05.01.06': return <GitDaily6 />;
+    case '05.01.07': return <GitDaily7 />;
+    case '05.01.08': return <GitDaily8 />;
+    case '05.02.01': return <GitTeam1 />;
+    case '05.02.02': return <GitTeam2 />;
+    case '05.02.03': return <GitTeam3 />;
+    case '05.02.04': return <GitTeam4 />;
+    case '05.02.05': return <GitTeam5 />;
+    case '05.02.06': return <GitTeam6 />;
+    case '05.02.07': return <GitTeam7 />;
+    case '05.02.08': return <GitTeam8 />;
+    case '05.03.01': return <GitMono1 />;
+    case '05.03.02': return <GitMono2 />;
+    case '05.03.03': return <GitMono3 />;
+    case '05.03.04': return <GitMono4 />;
+    case '05.03.05': return <GitMono5 />;
+    case '05.03.06': return <GitMono6 />;
+    case '05.03.07': return <GitMono7 />;
+    case '05.03.08': return <GitMono8 />;
     case '06.01.01': return <JSXLessonMDX />;
     default: return null;
   }

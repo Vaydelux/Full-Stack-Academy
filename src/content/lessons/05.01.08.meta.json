@@ -1,0 +1,38 @@
+{
+  "id": "05.01.08",
+  "title": "Lab tracked feature change",
+  "description": "Practice lab tracked feature change using a fresh temporary local Git repository, deliberately failing starter and real command assertions without hosted services.",
+  "trackId": "05",
+  "moduleId": "05.01",
+  "level": "Beginner",
+  "estimatedMinutes": 85,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "05.01.07"
+  ],
+  "objectives": [
+    "Explain the Git history/index rule involved in lab tracked feature change",
+    "Reproduce the starter's incorrect repository state in a disposable local repository",
+    "Apply the instructor fix and verify actual Git refs, file contents or status"
+  ],
+  "labId": "lab.foundation.git-feature-capstone",
+  "sources": [
+    {
+      "label": "Official Git documentation",
+      "url": "https://git-scm.com/book/en/v2/Git-Branching-Basic-Branching-and-Merging"
+    },
+    {
+      "label": "Official Git or GitHub collaboration guide",
+      "url": "https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests"
+    }
+  ],
+  "rubric": [
+    "I reproduce an actual local git lab tracked feature change failure.",
+    "I explain the relevant branch, index, history and file state.",
+    "I verify fixed refs, commits or ignored paths and name the remaining hosted review gate."
+  ]
+}
