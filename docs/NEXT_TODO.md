@@ -1,32 +1,34 @@
 # Full-Stack Academy — Next TODO
 
-**Updated:** 2026-11-19 · **Offline batch:** CSS track `02.01` through `02.04` · **Target PR:** #14 (draft / do not merge) · **Vercel:** no builds/previews, existing production unchanged.
+**Batch:** JS + TS whole tracks, 64 new lessons, 8 new complete modules · **Branch:** `feat/js-ts-two-track-offline` · **Status:** offline candidate, **no Vercel deployment**, no merges.
 
-## P0 — Verify all 32 CSS lessons as one batch
+## P0 — Exact-head qualification of 03 + 04 tracks
 
-- [x] Module `02.01` — CSS Fundamentals (8 authored lessons and local labs; previously passed CI).
-- [x] Module `02.02` — Layout Engineering (Flexbox, Grid, intrinsic sizes, stacking, scrolling, container queries, breakpoints, sticky bug hunt).
-- [x] Module `02.03` — Modern CSS & Design Systems (tokens, contrast, color schemes, reduced motion, nesting, :has, scope, themed component kit).
-- [x] Module `02.04` — Performance & Accessibility (layout/paint, selector audits, transforms, CLS, scroll motion, DevTools, visual regression, 100-point QA capstone).
-- [x] All 24 new lessons have MDX, strict metadata, three guided steps, misconception, quiz, bug hunt, two official sources and offline starter/solution/Node test.
-- [x] Added interactive Chromium assertions, typed publication registration, local verifier commands, and reproducible QA rubric/baseline files.
-- [ ] Run **exact-head** GitHub CI: npm ci, dependency audit, lint, typecheck, repository tests, content/checkpoint validation, 90 offline lab fixtures and Next build, then isolated Chromium behavior.
-- [ ] Fix all discovered regressions and re-run until green; a syntax-level Node assertion does not replace real browser behavior.
-- [ ] Keep PR #14 **draft and unmerged**, do not enable Vercel previews/builds, and do not change the live site while releases are on hold.
-- [ ] Manual review remains required for physical screen readers, 200% zoom, real font-loading CLS and performance traces; do not claim automatic certification.
+- [x] `03.01` Language Essentials (8), `03.02` Intermediate JavaScript (8), `03.03` Asynchrony & Runtime (8), `03.04` Browser Interaction (8).
+- [x] `04.01` TypeScript Language Foundations (8), `04.02` Advanced Types (8), `04.03` Runtime Boundaries (8), `04.04` Maintainable TS Projects (8).
+- [x] Author 64 new structured MDX lessons, metadata, offline intentionally defective starters, repaired instructor modules, tests and strict TypeScript examples.
+- [x] Browser Interaction track additionally includes real local HTML pages with native controls, event delegation, safe text output, tabs, URL state, browser storage, and performance entry recording.
+- [x] Advanced TypeScript labs include compiler-negative assertions using `@ts-expect-error`; selected tooling labs include real tsc declaration output in tests. Zod validation runs offline.
+- [x] Register 64 MDX modules and metadata, lab commands, Chromium browser verification, machine checkpoint.
+- [ ] Run exact-head CI (**no Vercel deployment**): lint, TypeScript strict typecheck, repository tests, content validation, checkpoint, all labs, Next production compilation in GitHub and Chromium across new and existing lessons.
+- [ ] Fix failures and rerun; do not weaken tests to hide defects or silently skip inaccessible browser behaviors.
+- [ ] Keep this batch as a draft PR and **unmerged** while release hold is active; production still has 61 lessons.
 
-## P1 — Deepening the entire academy, not rushing individual releases
+## P1 — Next larger coherent batch, after current tests pass
 
-- [ ] Next batch: `03.01`–`03.04` JavaScript Deep Foundations, **32 canonical topic IDs**, independent local lab checks and one batch gate. User requests larger coherent increments, not skipped pedagogy.
-- [ ] Next batch after that: `04.01`–`04.04` TypeScript & Type-System Design, **32 canonical topic IDs**.
-- [ ] Continue React/Next, backend/data, testing/security/DevOps, and capstone batches in the precise catalog order.
-- [ ] Broaden the technical reference encyclopedia: 303 indexed subjects versus 4 genuinely authored drafts.
-- [ ] Re-evaluate the **14 high dev-only Picomatch reports by 2026-12-02 UTC**. The exception is temporary, not a patch.
+- [ ] Track `05` Git, Collaboration & Monorepos (3 modules, 24 lessons).
+- [ ] Track `06` React Fundamentals & Mental Models (5 modules, 40 lessons), including existing interactive sample parity.
+- [ ] Track `07` Next.js App Router & SEO (5 modules, 40 lessons).
+- [ ] Work in one **104-lesson delivery program with track-level checkpoints**; do not claim all 104 lessons exist until individually authored, tested and reviewed.
+- [ ] Continue tracks `08`–`27` with real reference and capstone evidence.
+- [ ] Expand reference encyclopedia: 303 indexed, only four authored draft pages.
+- [ ] Re-evaluate 14 high dev-only Picomatch reports before temporary exception expiry 2026-12-02 UTC.
 
-## P2 — Release when explicitly resumed
+## Release gate (deliberately paused)
 
-- [ ] Lift the Vercel ignored-build/preview-disable settings only when the owner opts in.
-- [ ] Verify exact-head Vercel preview and manual browser/accessibility criteria; merge only after release gate, then verify production READY at the merged main SHA.
-- [ ] Publish truthful counts: branch after this batch **93 lessons** (90 MDX; 4 interactive models and one duplicate ID), **90 lab fixtures**, **11 complete modules**. Live production still **61 lesson IDs**.
+- [ ] Resume Vercel only on explicit owner authorization; prior project settings use ignored build step `exit 0` and disabled preview deployments.
+- [ ] Review a staged release only after deployment resume; do not merge an unreviewed or failing PR.
+- [ ] Perform real-device keyboard/screen reader testing, browser storage policy review, actual performance profiling and accessibility QA.
+- [ ] Distinguish counts: branch includes 154 MDX bodies, 157 published IDs, 154 lab fixtures, 19 complete modules; **live production remains 61 IDs**.
 
-Read `docs/LONG_SCOPE_DELIVERY_PLAN.md` for the multi-track batching strategy and quality gates. Never imply all 889 catalog topics or 303 references are already written.
+See `docs/LONG_SCOPE_DELIVERY_PLAN.md` and `docs/JS_TS_BATCH_ACCEPTANCE.md` for handoff and gates.

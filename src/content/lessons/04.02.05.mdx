@@ -1,0 +1,95 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Model discriminated unions and exhaustiveness using TypeScript's type operators","Reproduce a runtime defect despite valid-looking types","Validate safe usage with compiler-negative assertions and local tests"]} />
+
+## The problem we're solving
+
+An inventory command treats a remove operation as an addition because its implementation ignores the discriminant. This advanced-types lab requires both compile-time evidence and meaningful runtime behavior; TypeScript's erased types alone cannot fix logic bugs.
+
+## Build the mental model
+
+A discriminated union uses a shared literal field to select a known variant. A switch narrows fields per case, and a never fallback makes missing variants apparent at compile time. External inputs still need validation before casting them as a domain command.
+
+**Predict before running:** Remove commands decrease stock while invalid underflows raise explicit errors.
+
+## Prerequisites and preflight
+
+Continue from [the previous lesson](/learn/04.02.04). Open `labs/ts-discriminated/starter/solution.ts`, `labs/ts-discriminated/solution.test.mjs`, and `labs/ts-discriminated/typecheck.ts`. The project compiles under strict TypeScript 5; use `npm run typecheck` and `npm run lab:ts-discriminated`. The negative type test contains deliberate compiler errors justified by `@ts-expect-error`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the unsafe implementation" file="labs/ts-discriminated/starter/solution.ts" expected="The implementation is type-correct enough to compile but fails the reviewed runtime contract.">
+
+```ts
+export type Command={kind:'add';amount:number}|{kind:'remove';amount:number};export function solve(stock:number,command:Command):number{return stock+command.amount;}
+```
+
+**Predict before running:** An inventory command treats a remove operation as an addition because its implementation ignores the discriminant.
+
+**Why it fails:** A discriminated union uses a shared literal field to select a known variant. A switch narrows fields per case, and a never fallback makes missing variants apparent at compile time. External inputs still need validation before casting them as a domain command.
+
+**Proof:** Run the student target `ACADEMY_LAB_TARGET=starter npm run lab:ts-discriminated` and capture the failing assertion.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the correct type/runtime relationship" file="labs/ts-discriminated/starter/solution.ts" expected={"Remove commands decrease stock while invalid underflows raise explicit errors."}>
+
+Preserve exported `solve` and tighten the behavior without adding an unsound `as any` cast.
+
+```ts
+export type Command={kind:'add';amount:number}|{kind:'remove';amount:number};export function solve(stock:number,command:Command):number{if(!Number.isFinite(stock)||!Number.isFinite(command.amount)||command.amount<0)throw new TypeError('Invalid stock command');switch(command.kind){case 'add':return stock+command.amount;case 'remove':if(stock<command.amount)throw new RangeError('Insufficient stock');return stock-command.amount;default:{const exhaustive:never=command;return exhaustive;}}}
+```
+
+**Predict before running:** Remove commands decrease stock while invalid underflows raise explicit errors.
+
+**Why the fix works:** A discriminated union uses a shared literal field to select a known variant. A switch narrows fields per case, and a never fallback makes missing variants apparent at compile time. External inputs still need validation before casting them as a domain command.
+
+**Proof:** The same Node test now passes; the separate compiler-negative test rejects invalid static usage.
+
+</LessonStep>
+
+<LessonStep number={3} title="Run type-level and runtime assertions" file="labs/ts-discriminated/typecheck.ts" expected="The compiler checks invalid type uses and the runtime assertions prove the intended behavior.">
+
+```ts
+import {solve} from './solution/solution';
+solve(5,{kind:'remove',amount:2});
+// @ts-expect-error invalid discriminant must be rejected
+solve(5,{kind:'replace',amount:2});
+
+```
+
+**Predict before running:** The negative statements produce errors only where `@ts-expect-error` explicitly documents the rejection.
+
+**Why this matters:** An untested type signature can silently widen or accept unsafe input; compiler tests guard the API contract separately from runtime tests.
+
+**Proof:** Run `npm run typecheck` and `npm run lab:ts-discriminated` on the instructor solution.
+
+</LessonStep>
+
+## Explore and verify
+
+Test one wrong runtime value passed through `unknown`, even if the function's typed caller could not normally create it. TypeScript is structural and erased; actual validation, authorization and serialization remain system responsibilities.
+
+<Misconception claim="A type operator or assertion automatically changes runtime data to satisfy the declared type." correction={"A discriminated union uses a shared literal field to select a known variant. A switch narrows fields per case, and a never fallback makes missing variants apparent at compile time. External inputs still need validation before casting them as a domain command."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+Show a concrete typed call that appears valid but the starter executes incorrectly. Replace the wrong operation or unsafe assertion; do not weaken compiler checks. Discuss the difference between a compiler-invalid call and an untrusted runtime object.
+
+<KnowledgeCheck question={"What is the purpose of a common kind field in a union?"} choices={["To mark a response as cached","To narrow variants and support exhaustive branching","To encrypt fields","To force all variants to share every field"]} correctIndex={1} explanation={"A discriminated union uses a shared literal field to select a known variant. A switch narrows fields per case, and a never fallback makes missing variants apparent at compile time. External inputs still need validation before casting them as a domain command."} misconception="Type-level transformations are not runtime sanitizers or validators." lessonId="04.02.05" />
+
+## Guided local lab
+
+Use the same offline `solution.test.mjs` to verify your edited starter and the instructor solution; `typecheck.ts` is a separate compilation gate. The academy does not execute arbitrary user TypeScript on its server or award remote grades.
+
+<LabGate lessonId="04.02.05" labId="lab.foundation.ts-discriminated" commands={["npm ci","npm run lab:ts-discriminated"]} interactive={false} />
+
+## Reflect
+
+Which invariant can the type system prove? Which must be checked after a network or storage boundary? Explain one production bug that a return type alone would not catch.
+
+## Official references
+
+- [TypeScript handbook — concept](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#discriminated-unions)
+- [Official type-system reference](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#exhaustiveness-checking)

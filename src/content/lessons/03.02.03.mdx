@@ -1,0 +1,91 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Explain how prototypes and classes manages value or object identity","Reproduce a failure with independent tests and a concrete counterexample","Implement the repaired ESM contract and check edge cases without hidden shared state"]} />
+
+## The problem we're solving
+
+A shared cart method writes into an exposed array, allowing outside callers to change totals without going through validation. The practice fixture uses Node 24 ESM and synthetic data, not an external service or browser deployment.
+
+## Build the mental model
+
+Classes are syntax over JavaScript's prototype-based method model. Private fields protect instance state at runtime, while methods can enforce invariants. Freezing a returned snapshot prevents accidental external array mutation; it does not freeze arbitrary nested objects.
+
+**Predict before running:** Each Basket owns validated private entries, and callers cannot push directly into its internal array.
+
+## Prerequisites and preflight
+
+Work from [the previous lesson](/learn/03.02.02). Inspect `labs/js-prototypes/starter/solution.mjs` and `labs/js-prototypes/solution.test.mjs`. Run `ACADEMY_LAB_TARGET=starter npm run lab:js-prototypes` in Bash or use the equivalent temporary environment variable in PowerShell. The initial test is meant to fail.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce an identity, module, or state failure" file="labs/js-prototypes/starter/solution.mjs" expected="At least one assertion reproduces the reported defect.">
+
+```js
+export class Basket{items=[];add(item){this.items.push(item);}total(){return this.items.reduce((s,x)=>s+x.price,0);}}export function solve(rows){const cart=new Basket();for(const r of rows)cart.add(r);return cart.total();}
+```
+
+**Predict before running:** A shared cart method writes into an exposed array, allowing outside callers to change totals without going through validation.
+
+**Why this fails:** Classes are syntax over JavaScript's prototype-based method model. Private fields protect instance state at runtime, while methods can enforce invariants. Freezing a returned snapshot prevents accidental external array mutation; it does not freeze arbitrary nested objects.
+
+**Proof:** Run the starter-target tests and identify the input where the observed value differs from the expected value.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the semantic boundary" file="labs/js-prototypes/starter/solution.mjs" expected={"Each Basket owns validated private entries, and callers cannot push directly into its internal array."}>
+
+Implement the corrected behavior using the relevant lexical, prototype, module or copying rule. Preserve the named `solve` export.
+
+```js
+export class Basket{#items=[];add(item){if(!item||!Number.isFinite(item.price)||item.price<0)throw new TypeError('Invalid price');this.#items.push({price:item.price});return this;}total(){return this.#items.reduce((sum,x)=>sum+x.price,0);}snapshot(){return Object.freeze(this.#items.map(x=>x.price));}}export function solve(rows){const cart=new Basket();for(const r of rows)cart.add(r);return cart.total();}
+```
+
+**Predict before running:** Each Basket owns validated private entries, and callers cannot push directly into its internal array.
+
+**Why the repair works:** Classes are syntax over JavaScript's prototype-based method model. Private fields protect instance state at runtime, while methods can enforce invariants. Freezing a returned snapshot prevents accidental external array mutation; it does not freeze arbitrary nested objects.
+
+**Proof:** Compare independent instances, object identity or errors under the same test file.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify the contract with executable assertions" file="labs/js-prototypes/solution.test.mjs" expected="The reviewed solution passes distinct positive, edge and failure cases.">
+
+```js
+assert.equal(solve([{price:2},{price:3}]),5);assert.throws(()=>solve([{price:-1}]),TypeError);const {Basket}=await import(new URL('./'+target+'/solution.mjs',import.meta.url));const b=new Basket();b.add({price:4});assert.equal(b.total(),4);assert.throws(()=>b.snapshot().push(5),TypeError);
+```
+
+**Predict before running:** Changing object identity or error handling fixes the failing assertions without changing unrelated behavior.
+
+**Why it matters:** Code that looks plausible can still violate module boundaries or state isolation. Repeatability is stronger evidence than a screenshot.
+
+**Proof:** Run `npm run lab:js-prototypes` and compare the results with the repaired student starter.
+
+</LessonStep>
+
+## Explore and verify
+
+Try a second independent object or call order, and verify the absence of global state leaks. ESM imports are explicit dependencies; do not interpret a successful local test as a network security guarantee.
+
+<Misconception claim="Methods, objects and exports behave identically regardless of their owner or call site." correction={"Classes are syntax over JavaScript's prototype-based method model. Private fields protect instance state at runtime, while methods can enforce invariants. Freezing a returned snapshot prevents accidental external array mutation; it does not freeze arbitrary nested objects."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+Start with the smallest failing input from the test. Record which object, binding or module is unexpectedly shared or lost. Patch that contract rather than changing expected outputs. For each test, identify what would fail if the original bug returned.
+
+<KnowledgeCheck question={"What does a JavaScript class private field #items guarantee?"} choices={["Compile-time only visibility","Runtime private access restricted to class code","All returned object values are deeply frozen","No prototype is created"]} correctIndex={1} explanation={"Classes are syntax over JavaScript's prototype-based method model. Private fields protect instance state at runtime, while methods can enforce invariants. Freezing a returned snapshot prevents accidental external array mutation; it does not freeze arbitrary nested objects."} misconception="State ownership and module boundaries are observable contracts, not formatting preferences." lessonId="03.02.03" />
+
+## Guided local lab
+
+Work in `labs/js-prototypes/starter/solution.mjs`. Compare it to `labs/js-prototypes/solution/solution.mjs` after attempting the repair; the same offline `solution.test.mjs` file tests both. The starter must become green when fixed; no remote grading or server persistence is implied.
+
+<LabGate lessonId="03.02.03" labId="lab.foundation.js-prototypes" commands={["npm ci","npm run lab:js-prototypes"]} interactive={false} />
+
+## Reflect
+
+Why did the starting implementation fail? Which language guarantee is now exercised? What would change if two workers, separate browser tabs, or network storage entered the architecture?
+
+## Official references
+
+- [MDN JavaScript primary reference](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes/Private_elements)
+- [MDN supporting documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Inheritance_and_the_prototype_chain)

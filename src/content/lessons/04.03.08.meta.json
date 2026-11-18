@@ -1,0 +1,40 @@
+{
+  "id": "04.03.08",
+  "title": "Lab schema-first API data",
+  "description": "Secure lab schema-first api data boundaries through runtime validation, typed results and local TypeScript tests rather than trusting erased annotations.",
+  "trackId": "04",
+  "moduleId": "04.03",
+  "level": "Beginner",
+  "estimatedMinutes": 85,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "node": "24",
+    "typescript": "5",
+    "zod": "4"
+  },
+  "prerequisites": [
+    "04.03.07"
+  ],
+  "objectives": [
+    "Distinguish static typing from runtime trust in lab schema-first api data",
+    "Validate unknown input or normalize transport data before constructing a domain value",
+    "Verify rejected and accepted cases with runnable tests plus compiler checks"
+  ],
+  "labId": "lab.foundation.ts-schema-api",
+  "sources": [
+    {
+      "label": "Official TypeScript / Zod reference",
+      "url": "https://zod.dev/api"
+    },
+    {
+      "label": "Official supplemental documentation",
+      "url": "https://www.typescriptlang.org/docs/handbook/2/narrowing.html"
+    }
+  ],
+  "rubric": [
+    "I can identify the untrusted runtime boundary in lab schema-first api data.",
+    "I reject at least one malformed input and validate one successful case.",
+    "I avoid unchecked type assertions in public API contracts."
+  ]
+}

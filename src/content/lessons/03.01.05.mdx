@@ -1,0 +1,91 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Explain the functions and closures behavior using a runnable example","Reproduce the starter defect and repair it with tested JavaScript","Verify ordinary, edge and invalid inputs without mutating unrelated state"]} />
+
+## The problem we're solving
+
+Two independent click counters unexpectedly share one mutable module-level count. This workshop uses independent local modules and synthetic data; the code can be run with Node.js 24 without an account, network request, credential, or Vercel build.
+
+## Build the mental model
+
+A closure retains access to its lexical environment after its outer function returns. Factory-local state gives each instance independent behavior; exposed methods can return values without leaking the private mutable binding.
+
+**Predict before running:** Two created counters retain different private values regardless of call order.
+
+## Prerequisites and preflight
+
+Continue from [the previous lesson](/learn/03.01.04). Inspect `labs/js-closures/starter/solution.mjs` and `labs/js-closures/solution.test.mjs`. Run the student's starter tests first using `ACADEMY_LAB_TARGET=starter npm run lab:js-closures` in Bash (or set/clear the same environment variable in PowerShell). The untouched starter is intentionally red; do not edit the instructor solution.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the failing contract" file="labs/js-closures/starter/solution.mjs" expected="The starter should fail at least one of the same executable assertions that the instructor solution passes.">
+
+Study the defect and predict what the tests will report. Run the starter verifier before modifying any code.
+
+```js
+let shared=0;export function solve(start=0){shared=start;return {increment(){return ++shared;},value(){return shared;}};}
+```
+
+**Why it fails:** Two independent click counters unexpectedly share one mutable module-level count.
+
+**Proof:** Compare the actual assertion failure with the predicted input/output behavior. A syntax-valid file is not necessarily a correct program.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the underlying language rule" file="labs/js-closures/starter/solution.mjs" expected={"Two created counters retain different private values regardless of call order."}>
+
+Replace the defective implementation with an explicit, minimal solution. Preserve the exported function name so the same tests exercise both versions.
+
+```js
+export function solve(start=0){if(!Number.isInteger(start))throw new TypeError('Integer start required');let count=start;return Object.freeze({increment(){return ++count;},value(){return count;}});}
+```
+
+**Why it works:** A closure retains access to its lexical environment after its outer function returns. Factory-local state gives each instance independent behavior; exposed methods can return values without leaking the private mutable binding.
+
+**Proof:** Run the starter verifier again and compare the results with the instructor implementation.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify edge cases and write down the contract" file="labs/js-closures/solution.test.mjs" expected="All reviewed input/output assertions pass; the original failing case is explained rather than hidden.">
+
+The following assertions are executable Node tests, not pseudocode. Do not alter tests to disguise a broken starter.
+
+```js
+const a=solve(2),b=solve(10);assert.equal(a.increment(),3);assert.equal(b.value(),10);assert.equal(b.increment(),11);assert.equal(a.value(),3);assert.throws(()=>solve(1.5),TypeError);
+```
+
+**Predict before running:** Two created counters retain different private values regardless of call order.
+
+**Why it matters:** Observable input/output contracts make language assumptions testable, repeatable and independent of a browser deployment.
+
+**Proof:** Run `npm run lab:js-closures` on the checked-in instructor solution and the same test with the student starter target.
+
+</LessonStep>
+
+## Explore and verify
+
+Use strict equality and immutable inputs where appropriate. Explain the boundary between what JavaScript guarantees and what this specific exercise tests; Node's green test result is not evidence that a whole production application is secure.
+
+<Misconception claim="A snippet that executes without a syntax error must be correct for every input." correction={"A closure retains access to its lexical environment after its outer function returns. Factory-local state gives each instance independent behavior; exposed methods can return values without leaking the private mutable binding."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+The buggy export is intentionally close to the correct implementation. Give one concrete counterexample from the included tests, trace the wrong state or conversion, patch only the relevant function, and rerun with another edge case. Do not depend on global state or mock an API that is never called.
+
+<KnowledgeCheck question={"Where does a function closure find a captured variable?"} choices={["Only on globalThis","In its lexical environment","In the most recent caller stack","From a cookie"]} correctIndex={1} explanation={"A closure retains access to its lexical environment after its outer function returns. Factory-local state gives each instance independent behavior; exposed methods can return values without leaking the private mutable binding."} misconception="JavaScript truthiness, assignment and state ownership must be tested at the actual boundary." lessonId="03.01.05" />
+
+## Guided local lab
+
+Work in `labs/js-closures/starter/solution.mjs`; compare with `labs/js-closures/solution/solution.mjs` only after attempting the repair. The same test file drives both versions via `ACADEMY_LAB_TARGET`. Tests are checked in and offline; this is not cloud grading or saved server progress.
+
+<LabGate lessonId="03.01.05" labId="lab.foundation.js-closures" commands={["npm ci","npm run lab:js-closures"]} interactive={false} />
+
+## Reflect
+
+What input falsified the original implementation? Which language rule caused it? What additional edge case would strengthen the test? Name one production boundary—validation, authorization or concurrent state—that this small fixture does not cover.
+
+## Official references
+
+- [MDN JavaScript documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Closures)
+- [MDN conceptual reference](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions)

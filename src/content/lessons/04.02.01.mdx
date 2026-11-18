@@ -1,0 +1,96 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Model generics and constraints using TypeScript's type operators","Reproduce a runtime defect despite valid-looking types","Validate safe usage with compiler-negative assertions and local tests"]} />
+
+## The problem we're solving
+
+A reusable selector returns the first record instead of the record with the requested ID, and the API accepts objects without IDs. This advanced-types lab requires both compile-time evidence and meaningful runtime behavior; TypeScript's erased types alone cannot fix logic bugs.
+
+## Build the mental model
+
+A generic preserves a relationship between input and output types. `T extends {id:string}` constrains the required property while retaining extra fields in the returned item. At runtime, find must still check the requested ID rather than trusting the type parameter.
+
+**Predict before running:** The generic function returns the matching item with all of its original extra properties.
+
+## Prerequisites and preflight
+
+Continue from [the previous lesson](/learn/04.01.08). Open `labs/ts-generics/starter/solution.ts`, `labs/ts-generics/solution.test.mjs`, and `labs/ts-generics/typecheck.ts`. The project compiles under strict TypeScript 5; use `npm run typecheck` and `npm run lab:ts-generics`. The negative type test contains deliberate compiler errors justified by `@ts-expect-error`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the unsafe implementation" file="labs/ts-generics/starter/solution.ts" expected="The implementation is type-correct enough to compile but fails the reviewed runtime contract.">
+
+```ts
+export function solve<T extends {id:string}>(items:readonly T[],id:string):T|undefined{return items[0];}
+```
+
+**Predict before running:** A reusable selector returns the first record instead of the record with the requested ID, and the API accepts objects without IDs.
+
+**Why it fails:** A generic preserves a relationship between input and output types. `T extends {id:string}` constrains the required property while retaining extra fields in the returned item. At runtime, find must still check the requested ID rather than trusting the type parameter.
+
+**Proof:** Run the student target `ACADEMY_LAB_TARGET=starter npm run lab:ts-generics` and capture the failing assertion.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the correct type/runtime relationship" file="labs/ts-generics/starter/solution.ts" expected={"The generic function returns the matching item with all of its original extra properties."}>
+
+Preserve exported `solve` and tighten the behavior without adding an unsound `as any` cast.
+
+```ts
+export function solve<T extends {id:string}>(items:readonly T[],id:string):T|undefined{return items.find(item=>item.id===id);}
+```
+
+**Predict before running:** The generic function returns the matching item with all of its original extra properties.
+
+**Why the fix works:** A generic preserves a relationship between input and output types. `T extends {id:string}` constrains the required property while retaining extra fields in the returned item. At runtime, find must still check the requested ID rather than trusting the type parameter.
+
+**Proof:** The same Node test now passes; the separate compiler-negative test rejects invalid static usage.
+
+</LessonStep>
+
+<LessonStep number={3} title="Run type-level and runtime assertions" file="labs/ts-generics/typecheck.ts" expected="The compiler checks invalid type uses and the runtime assertions prove the intended behavior.">
+
+```ts
+import {solve} from './solution/solution';
+const found=solve([{id:'a',score:5}],'a');
+if(found){const count:number=found.score;void count;}
+// @ts-expect-error generic constraint requires an id field
+solve([{score:5}],'a');
+
+```
+
+**Predict before running:** The negative statements produce errors only where `@ts-expect-error` explicitly documents the rejection.
+
+**Why this matters:** An untested type signature can silently widen or accept unsafe input; compiler tests guard the API contract separately from runtime tests.
+
+**Proof:** Run `npm run typecheck` and `npm run lab:ts-generics` on the instructor solution.
+
+</LessonStep>
+
+## Explore and verify
+
+Test one wrong runtime value passed through `unknown`, even if the function's typed caller could not normally create it. TypeScript is structural and erased; actual validation, authorization and serialization remain system responsibilities.
+
+<Misconception claim="A type operator or assertion automatically changes runtime data to satisfy the declared type." correction={"A generic preserves a relationship between input and output types. T extends {id:string} constrains the required property while retaining extra fields in the returned item. At runtime, find must still check the requested ID rather than trusting the type parameter."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+Show a concrete typed call that appears valid but the starter executes incorrectly. Replace the wrong operation or unsafe assertion; do not weaken compiler checks. Discuss the difference between a compiler-invalid call and an untrusted runtime object.
+
+<KnowledgeCheck question={"What does T extends {id:string} require?"} choices={["T must be exactly one-field object","T must have an id string, but may have other fields","T is any unvalidated JSON","All records must have the same ID"]} correctIndex={1} explanation={"A generic preserves a relationship between input and output types. T extends {id:string} constrains the required property while retaining extra fields in the returned item. At runtime, find must still check the requested ID rather than trusting the type parameter."} misconception="Type-level transformations are not runtime sanitizers or validators." lessonId="04.02.01" />
+
+## Guided local lab
+
+Use the same offline `solution.test.mjs` to verify your edited starter and the instructor solution; `typecheck.ts` is a separate compilation gate. The academy does not execute arbitrary user TypeScript on its server or award remote grades.
+
+<LabGate lessonId="04.02.01" labId="lab.foundation.ts-generics" commands={["npm ci","npm run lab:ts-generics"]} interactive={false} />
+
+## Reflect
+
+Which invariant can the type system prove? Which must be checked after a network or storage boundary? Explain one production bug that a return type alone would not catch.
+
+## Official references
+
+- [TypeScript handbook — concept](https://www.typescriptlang.org/docs/handbook/2/generics.html)
+- [Official type-system reference](https://www.typescriptlang.org/docs/handbook/2/objects.html)

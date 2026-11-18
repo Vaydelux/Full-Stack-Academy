@@ -1,0 +1,38 @@
+{
+  "id": "03.01.01",
+  "title": "let const and scope",
+  "description": "Study let const and scope with a self-contained Node.js ESM debugging exercise, runnable student starter, tested instructor solution and official references.",
+  "trackId": "03",
+  "moduleId": "03.01",
+  "level": "Beginner",
+  "estimatedMinutes": 55,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "02.04.08"
+  ],
+  "objectives": [
+    "Explain the let const and scope behavior using a runnable example",
+    "Reproduce the starter defect and repair it with tested JavaScript",
+    "Verify ordinary, edge and invalid inputs without mutating unrelated state"
+  ],
+  "labId": "lab.foundation.js-scope",
+  "sources": [
+    {
+      "label": "MDN JavaScript reference",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/let"
+    },
+    {
+      "label": "MDN language guide",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/const"
+    }
+  ],
+  "rubric": [
+    "I can explain the underlying let const and scope rule, not only paste code.",
+    "I demonstrate a red starter and a green instructor solution with meaningful input assertions.",
+    "I preserve input data or state boundaries and document an untested case."
+  ]
+}

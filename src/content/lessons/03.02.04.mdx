@@ -1,0 +1,91 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Explain how this binding and callbacks manages value or object identity","Reproduce a failure with independent tests and a concrete counterexample","Implement the repaired ESM contract and check edge cases without hidden shared state"]} />
+
+## The problem we're solving
+
+An extracted method loses its original receiver and fails when invoked as a callback. The practice fixture uses Node 24 ESM and synthetic data, not an external service or browser deployment.
+
+## Build the mental model
+
+An ordinary function's this depends on its call site; extracting obj.method as a bare function loses the base object. bind creates a function with a fixed receiver, while arrow functions use lexical this. Prefer explicit parameters where context can be passed without implicit binding.
+
+**Predict before running:** The detached callback still reads the reporter's prefix because the receiver was bound.
+
+## Prerequisites and preflight
+
+Work from [the previous lesson](/learn/03.02.03). Inspect `labs/js-this-binding/starter/solution.mjs` and `labs/js-this-binding/solution.test.mjs`. Run `ACADEMY_LAB_TARGET=starter npm run lab:js-this-binding` in Bash or use the equivalent temporary environment variable in PowerShell. The initial test is meant to fail.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce an identity, module, or state failure" file="labs/js-this-binding/starter/solution.mjs" expected="At least one assertion reproduces the reported defect.">
+
+```js
+export function solve(reporter){return reporter.format;}
+```
+
+**Predict before running:** An extracted method loses its original receiver and fails when invoked as a callback.
+
+**Why this fails:** An ordinary function's this depends on its call site; extracting obj.method as a bare function loses the base object. bind creates a function with a fixed receiver, while arrow functions use lexical this. Prefer explicit parameters where context can be passed without implicit binding.
+
+**Proof:** Run the starter-target tests and identify the input where the observed value differs from the expected value.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the semantic boundary" file="labs/js-this-binding/starter/solution.mjs" expected={"The detached callback still reads the reporter's prefix because the receiver was bound."}>
+
+Implement the corrected behavior using the relevant lexical, prototype, module or copying rule. Preserve the named `solve` export.
+
+```js
+export function solve(reporter){if(!reporter||typeof reporter.format!=='function')throw new TypeError('Reporter required');return reporter.format.bind(reporter);}
+```
+
+**Predict before running:** The detached callback still reads the reporter's prefix because the receiver was bound.
+
+**Why the repair works:** An ordinary function's this depends on its call site; extracting obj.method as a bare function loses the base object. bind creates a function with a fixed receiver, while arrow functions use lexical this. Prefer explicit parameters where context can be passed without implicit binding.
+
+**Proof:** Compare independent instances, object identity or errors under the same test file.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify the contract with executable assertions" file="labs/js-this-binding/solution.test.mjs" expected="The reviewed solution passes distinct positive, edge and failure cases.">
+
+```js
+const reporter={prefix:'lesson',format(value){return this.prefix+':'+value;}};const callback=solve(reporter);assert.equal(callback('css'),'lesson:css');assert.equal([2].map(callback)[0],'lesson:2');assert.throws(()=>solve({}),TypeError);
+```
+
+**Predict before running:** Changing object identity or error handling fixes the failing assertions without changing unrelated behavior.
+
+**Why it matters:** Code that looks plausible can still violate module boundaries or state isolation. Repeatability is stronger evidence than a screenshot.
+
+**Proof:** Run `npm run lab:js-this-binding` and compare the results with the repaired student starter.
+
+</LessonStep>
+
+## Explore and verify
+
+Try a second independent object or call order, and verify the absence of global state leaks. ESM imports are explicit dependencies; do not interpret a successful local test as a network security guarantee.
+
+<Misconception claim="Methods, objects and exports behave identically regardless of their owner or call site." correction={"An ordinary function's this depends on its call site; extracting obj.method as a bare function loses the base object. bind creates a function with a fixed receiver, while arrow functions use lexical this. Prefer explicit parameters where context can be passed without implicit binding."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+Start with the smallest failing input from the test. Record which object, binding or module is unexpectedly shared or lost. Patch that contract rather than changing expected outputs. For each test, identify what would fail if the original bug returned.
+
+<KnowledgeCheck question={"How does Function.prototype.bind affect an ordinary function?"} choices={["It permanently changes the original method's source","It returns a new function with an explicit this value","It changes the prototype of the receiver","It moves execution into a worker"]} correctIndex={1} explanation={"An ordinary function's this depends on its call site; extracting obj.method as a bare function loses the base object. bind creates a function with a fixed receiver, while arrow functions use lexical this. Prefer explicit parameters where context can be passed without implicit binding."} misconception="State ownership and module boundaries are observable contracts, not formatting preferences." lessonId="03.02.04" />
+
+## Guided local lab
+
+Work in `labs/js-this-binding/starter/solution.mjs`. Compare it to `labs/js-this-binding/solution/solution.mjs` after attempting the repair; the same offline `solution.test.mjs` file tests both. The starter must become green when fixed; no remote grading or server persistence is implied.
+
+<LabGate lessonId="03.02.04" labId="lab.foundation.js-this-binding" commands={["npm ci","npm run lab:js-this-binding"]} interactive={false} />
+
+## Reflect
+
+Why did the starting implementation fail? Which language guarantee is now exercised? What would change if two workers, separate browser tabs, or network storage entered the architecture?
+
+## Official references
+
+- [MDN JavaScript primary reference](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind)
+- [MDN supporting documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this)

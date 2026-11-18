@@ -1,0 +1,91 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Distinguish static typing from runtime trust in branded ids and validation","Validate unknown input or normalize transport data before constructing a domain value","Verify rejected and accepted cases with runnable tests plus compiler checks"]} />
+
+## The problem we're solving
+
+Two IDs with the same string representation are accidentally interchangeable in business logic. In a full-stack application, this boundary can lead to incorrect data or information disclosure even if the TypeScript project compiles successfully.
+
+## Build the mental model
+
+A branded intersection type can distinguish IDs statically without changing their runtime string representation. Branded values should only be created through a validating constructor; a cast alone cannot prove the format. Brands do not encrypt or authorize access to resources.
+
+**Predict before running:** Only IDs matching the reviewed format are branded; arbitrary strings and other resource prefixes are rejected.
+
+## Prerequisites and preflight
+
+Continue from [the previous topic](/learn/04.03.03). Inspect `labs/ts-brands/starter/solution.ts`, `labs/ts-brands/solution/solution.ts`, and the Node/tsx tests. This lab uses local synthetic data, pinned TypeScript and Zod versions where applicable; no database credentials, remote API or deployment are needed.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce a broken trust boundary" file="labs/ts-brands/starter/solution.ts" expected="Malformed values are accepted, leaked or crash the unchecked starter.">
+
+```ts
+export type UserId=string&{readonly __brand:'UserId'};export function solve(raw:string):UserId|null{return raw as UserId;}
+```
+
+**Predict before running:** Two IDs with the same string representation are accidentally interchangeable in business logic.
+
+**Why it fails:** A branded intersection type can distinguish IDs statically without changing their runtime string representation. Branded values should only be created through a validating constructor; a cast alone cannot prove the format. Brands do not encrypt or authorize access to resources.
+
+**Proof:** Run the starter-target verifier; record the exact unsupported assumption, not just the stack trace.
+
+</LessonStep>
+
+<LessonStep number={2} title="Validate and map a trusted domain value" file="labs/ts-brands/starter/solution.ts" expected={"Only IDs matching the reviewed format are branded; arbitrary strings and other resource prefixes are rejected."}>
+
+Use unknown at the boundary, a runtime predicate or strict schema and a public result type. Handle expected invalid data explicitly.
+
+```ts
+export type UserId=string&{readonly __brand:'UserId'};export function solve(raw:string):UserId|null{if(typeof raw!=='string'||!/^usr_[a-z0-9]{3,16}$/.test(raw))return null;return raw as UserId;}
+```
+
+**Predict before running:** Only IDs matching the reviewed format are branded; arbitrary strings and other resource prefixes are rejected.
+
+**Why the repair works:** A branded intersection type can distinguish IDs statically without changing their runtime string representation. Branded values should only be created through a validating constructor; a cast alone cannot prove the format. Brands do not encrypt or authorize access to resources.
+
+**Proof:** Compare clean and malformed cases against the verified instructor module.
+
+</LessonStep>
+
+<LessonStep number={3} title="Exercise the successful and rejected cases" file="labs/ts-brands/solution.test.mjs" expected="The same offline tests distinguish valid and invalid input without hidden network state.">
+
+```ts
+assert.equal(solve('usr_abc'),'usr_abc');assert.equal(solve('project_abc'),null);assert.equal(solve('usr_'),null);assert.equal(solve('usr_123456'), 'usr_123456');
+```
+
+**Predict before running:** Invalid external input never enters the typed domain as though it had passed validation.
+
+**Why this matters:** A compiler's assurances apply to typed source relationships, not arbitrary strings from a network or storage boundary.
+
+**Proof:** Run `npm run lab:ts-brands`, then `npm run typecheck` for compile-time contracts.
+
+</LessonStep>
+
+## Explore and verify
+
+Use boundary-oriented reasoning: the outer layer receives unknown, the parser enforces shape and units, and only then may a domain function use a trusted type. Separate validation from authorization; a successful schema parse never proves the actor has permission.
+
+<Misconception claim="A DTO interface or as assertion proves the runtime value has the fields or access rights claimed." correction={"A branded intersection type can distinguish IDs statically without changing their runtime string representation. Branded values should only be created through a validating constructor; a cast alone cannot prove the format. Brands do not encrypt or authorize access to resources."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+Find the smallest malformed payload that reveals the starter's flaw, whether a missing property, malformed date, unexpected field or wrong unit. Record the old and new behavior. Verify that the corrected implementation avoids throwing on expected invalid input unless that is the explicitly documented contract.
+
+<KnowledgeCheck question={"What does a branded ID enforce automatically?"} choices={["Runtime authorization","Compile-time distinction between compatible-looking string IDs","Encryption of the ID","Network tenancy checks"]} correctIndex={1} explanation={"A branded intersection type can distinguish IDs statically without changing their runtime string representation. Branded values should only be created through a validating constructor; a cast alone cannot prove the format. Brands do not encrypt or authorize access to resources."} misconception="Static types neither parse network data nor authorize operations." lessonId="04.03.04" />
+
+## Guided local lab
+
+Work in `labs/ts-brands/starter/solution.ts`, compare with the instructor after debugging, and use `ACADEMY_LAB_TARGET=starter` to run the same offline tests. Where provided, `typecheck.ts` adds compile-time rejection cases. This lab does not persist or grade submissions in the cloud.
+
+<LabGate lessonId="04.03.04" labId="lab.foundation.ts-brands" commands={["npm ci","npm run lab:ts-brands"]} interactive={false} />
+
+## Reflect
+
+Which fields and units did you validate? Why is compile-time typing insufficient here? What additional authentication, authorization, rate limiting or auditing would a production endpoint require?
+
+## Official references
+
+- [Official type or schema reference](https://www.typescriptlang.org/docs/handbook/2/objects.html#intersection-types)
+- [Official supporting material](https://www.typescriptlang.org/docs/handbook/2/everyday-types.html)

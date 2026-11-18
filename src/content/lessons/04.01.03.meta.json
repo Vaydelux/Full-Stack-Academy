@@ -1,0 +1,39 @@
+{
+  "id": "04.01.03",
+  "title": "Union intersection and literal types",
+  "description": "Learn union intersection and literal types with a strict TypeScript source module, failing starter, tested instructor solution and concrete runtime boundary.",
+  "trackId": "04",
+  "moduleId": "04.01",
+  "level": "Beginner",
+  "estimatedMinutes": 55,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "node": "24",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "04.01.02"
+  ],
+  "objectives": [
+    "Explain the compile-time contract for union intersection and literal types",
+    "Replace an unsound assertion or incorrect implementation with a runtime-safe model",
+    "Verify typed code with strict TypeScript and executable local assertions"
+  ],
+  "labId": "lab.foundation.ts-unions",
+  "sources": [
+    {
+      "label": "TypeScript handbook",
+      "url": "https://www.typescriptlang.org/docs/handbook/2/everyday-types.html#union-types"
+    },
+    {
+      "label": "Official TypeScript or JavaScript reference",
+      "url": "https://www.typescriptlang.org/docs/handbook/2/objects.html#intersection-types"
+    }
+  ],
+  "rubric": [
+    "I explain what TypeScript verifies and what it erases at runtime.",
+    "I repair the union intersection and literal types bug while keeping strict compilation valid.",
+    "I demonstrate one success and one invalid-input case in the offline verifier."
+  ]
+}

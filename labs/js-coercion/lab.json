@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.js-coercion",
+  "lessonId": "03.01.02",
+  "title": "Primitive types and coercion",
+  "runtime": "node-24-esm",
+  "status": "authored",
+  "starter": "labs/js-coercion/starter/solution.mjs",
+  "solution": "labs/js-coercion/solution/solution.mjs",
+  "tests": "labs/js-coercion/solution.test.mjs",
+  "verify": [
+    "npm run lab:js-coercion"
+  ],
+  "expected": "The repaired primitive types and coercion function satisfies real input/output and failure-boundary assertions.",
+  "security": "Fully offline Node.js exercise, synthetic data only, no remote request, API key, account, telemetry or uploaded work."
+}

@@ -1,0 +1,96 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Explain forms and validation in real browser state and semantics","Repair the broken DOM interaction without unsafe HTML insertion","Verify the interaction via local Node assertions and Chromium behavioral checks"]} />
+
+## The problem we're solving
+
+A form accepts whitespace-only names and reloads the page before showing a useful validation result. Browser Interaction topics require both executable JavaScript logic and a real local HTML document. The fixture uses synthetic content with no external scripts, endpoints or data uploads.
+
+## Build the mental model
+
+Native form controls provide name, label and constraint APIs; submit events can be enhanced with preventDefault. Trim user input, validate the intended shape, and send feedback to a real status region. Client validation improves UX but never replaces server validation.
+
+**Predict before running:** Whitespace and one-character values are rejected, while a valid name yields safe text feedback.
+
+## Prerequisites and preflight
+
+Continue from [the previous lesson](/learn/03.04.02). Open `labs/js-forms/starter/index.html` in a modern browser, and inspect the DOM, active element, URL and accessibility tree as relevant. Node.js 24 runs the isolated logic assertions; Chromium provides behavior checks across real DOM interactions. Avoid editing the instructor fixture.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the browser interaction defect" file="labs/js-forms/starter/index.html" expected={"A form accepts whitespace-only names and reloads the page before showing a useful validation result."}>
+
+Observe the starter with keyboard and pointer input, then inspect what actually changes in the DOM. The sample contains the following intentionally defective handler:
+
+```js
+document.querySelector('#form').addEventListener('submit',event=>{event.preventDefault();document.querySelector('#status').textContent=document.querySelector('#name').value.length>0?'Accepted':'Invalid';});
+```
+
+**Predict before running:** A form accepts whitespace-only names and reloads the page before showing a useful validation result.
+
+**Why it fails:** Native form controls provide name, label and constraint APIs; submit events can be enhanced with preventDefault. Trim user input, validate the intended shape, and send feedback to a real status region. Client validation improves UX but never replaces server validation.
+
+**Proof:** Submit spaces and verify the validation message; submit Ada and verify the accepted output.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the browser-safe interaction" file="labs/js-forms/starter/index.html" expected={"Whitespace and one-character values are rejected, while a valid name yields safe text feedback."}>
+
+Replace the defective handler without discarding native elements or semantics. For untrusted content use `textContent`, not an unsafe HTML sink.
+
+```js
+document.querySelector('#form').addEventListener('submit',event=>{event.preventDefault();const value=document.querySelector('#name').value;document.querySelector('#status').textContent=value.trim().length>=2?'Accepted: '+value.trim():'Please enter at least two nonspace characters.';});
+```
+
+**Predict before running:** Whitespace and one-character values are rejected, while a valid name yields safe text feedback.
+
+**Why the repair works:** Native form controls provide name, label and constraint APIs; submit events can be enhanced with preventDefault. Trim user input, validate the intended shape, and send feedback to a real status region. Client validation improves UX but never replaces server validation.
+
+**Proof:** Compare the resulting DOM and accessibility state to the instructor `solution/index.html` using the same input.
+
+</LessonStep>
+
+<LessonStep number={3} title="Test the state and boundary cases" file="labs/js-forms/solution.test.mjs" expected="Local logic tests and browser behavior checks agree under normal and edge cases.">
+
+The core logic has a separate module with executable assertions, while the HTML fixture validates DOM binding and keyboard interactions.
+
+```js
+export function solve(value){return typeof value==='string'&&value.trim().length>=2;}
+assert.equal(solve('Ada'),true);assert.equal(solve('   '),false);assert.equal(solve('A'),false);assert.equal(solve(null),false);
+```
+
+**Predict before running:** Whitespace and one-character values are rejected, while a valid name yields safe text feedback.
+
+**Why it matters:** A passing algorithmic unit test does not prove its DOM wiring; use Chromium to exercise the actual handler.
+
+**Proof:** Submit spaces and verify the validation message; submit Ada and verify the accepted output.
+
+</LessonStep>
+
+## Explore and verify
+
+Test browser refresh, narrow widths, Tab and Enter where applicable, and the difference between browser storage and remote persistence. Check event listener scope, validation, and content injection risks. Any performance timings are measured at runtime rather than invented.
+
+<Misconception claim="If a pure JavaScript function returns the right value, the browser widget must also be accessible and secure." correction={"Native form controls provide name, label and constraint APIs; submit events can be enhanced with preventDefault. Trim user input, validate the intended shape, and send feedback to a real status region. Client validation improves UX but never replaces server validation."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+Start from the visible broken behavior. Identify the missing DOM update, event delegation, validation, URL state, storage policy or safe DOM sink. Repair the smallest handler. Demonstrate before/after behavior and keyboard input with the same test sequence.
+
+<KnowledgeCheck question={"Why must the submit handler trim a name in this example?"} choices={["Whitespace-only input otherwise passes a naive length check","trim makes all inputs safe for SQL","It disables built-in constraint validation","It sends the name to the server"]} correctIndex={0} explanation={"Native form controls provide name, label and constraint APIs; submit events can be enhanced with preventDefault. Trim user input, validate the intended shape, and send feedback to a real status region. Client validation improves UX but never replaces server validation."} misconception="DOM updates and accessibility behavior require browser observation beyond code syntax." lessonId="03.04.03" />
+
+## Guided local lab
+
+Edit `labs/js-forms/starter/index.html`; compare with `labs/js-forms/solution/index.html`. Run the Node contract verifier with `npm run lab:js-forms` (or target the starter with `ACADEMY_LAB_TARGET=starter`). The academy Chromium smoke test covers actual browser behavior. No cloud API, automated public grading or server persistence is provided.
+
+<LabGate lessonId="03.04.03" labId="lab.foundation.js-forms" commands={["npm ci","npm run lab:js-forms"]} interactive={false} />
+
+## Reflect
+
+Which native browser facility did the starter ignore? What could a malicious input, cancelled request, page refresh, or keyboard user reveal? Name a browser-engine limitation not exercised by this local fixture.
+
+## Official references
+
+- [Browser API reference](https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Forms/Form_validation)
+- [Official supporting reference](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormElement/submit_event)

@@ -1,0 +1,91 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Explain the package or tooling contract behind declaration generation and public types","Repair a concrete module/toolchain bug without weakening type safety","Verify exported behavior, configuration or declarations using local TypeScript tests"]} />
+
+## The problem we're solving
+
+A library emits JavaScript but neglects declaration output, leaving downstream TypeScript consumers with no documented public contract. This is a local repository/package-development lesson. A passing fixture alone is not a published npm release and does not create a Vercel deployment.
+
+## Build the mental model
+
+Declaration files describe the exported API at compile time. tsc can emit .d.ts using declaration plus emitDeclarationOnly; avoid exposing internal types and ensure declaration paths match package exports. The compiler test should inspect actual emitted declarations rather than simply searching a handwritten file.
+
+**Predict before running:** The exported typed function returns a numeric result and a generated .d.ts exposes PublicPoint and solve.
+
+## Prerequisites and preflight
+
+Continue from [the previous lesson](/learn/04.04.06). Open `labs/ts-declarations/starter/solution.ts`, the corrected instructor file and any adjacent JSON/tooling fixtures. Node 24 and TypeScript 5 are pinned in the academy; use the repository's existing tsx and tsc tools. No npm publishing credentials are needed.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the broken module or release contract" file="labs/ts-declarations/starter/solution.ts" expected="The initial package/tooling assumption fails at least one reviewed assertion.">
+
+```ts
+export function solve(value:number){return String(value);}
+```
+
+**Predict before running:** A library emits JavaScript but neglects declaration output, leaving downstream TypeScript consumers with no documented public contract.
+
+**Why it fails:** Declaration files describe the exported API at compile time. tsc can emit .d.ts using declaration plus emitDeclarationOnly; avoid exposing internal types and ensure declaration paths match package exports. The compiler test should inspect actual emitted declarations rather than simply searching a handwritten file.
+
+**Proof:** Run the starter tests and inspect the relevant module, manifest, or type declaration contract.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the exported TypeScript API or build policy" file="labs/ts-declarations/starter/solution.ts" expected={"The exported typed function returns a numeric result and a generated .d.ts exposes PublicPoint and solve."}>
+
+Preserve the public `solve` contract and make the output match the reviewed tooling requirements.
+
+```ts
+export interface PublicPoint{readonly x:number;readonly y:number};export function solve(value:PublicPoint):number{return value.x+value.y;}
+```
+
+**Predict before running:** The exported typed function returns a numeric result and a generated .d.ts exposes PublicPoint and solve.
+
+**Why the repair works:** Declaration files describe the exported API at compile time. tsc can emit .d.ts using declaration plus emitDeclarationOnly; avoid exposing internal types and ensure declaration paths match package exports. The compiler test should inspect actual emitted declarations rather than simply searching a handwritten file.
+
+**Proof:** Check the emitted or computed result instead of assuming package metadata validates itself.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify the package-boundary assertions" file="labs/ts-declarations/solution.test.mjs" expected="Runtime examples pass with a valid strict TypeScript build and local configuration checks.">
+
+```ts
+assert.equal(solve({x:2,y:3}),5);assert.equal(solve({x:0,y:0}),0);
+```
+
+**Predict before running:** Reviewed public behavior holds, invalid inputs and malformed package descriptions fail, and no real release is published.
+
+**Why it matters:** A package consumer sees emitted types, runtime modules, and the exports map, not the author's internal folder names.
+
+**Proof:** Run `npm run lab:ts-declarations`, `npm run typecheck`, and inspect the sample artifact if present.
+
+</LessonStep>
+
+## Explore and verify
+
+Compare what the TypeScript compiler can statically prove with what Node.js resolves at runtime. Modules and public declaration files are build artifacts; configured npm publication, signed provenance and integration tests are separate engineering gates. Do not treat a local manifest as deployable until the paths have real output.
+
+<Misconception claim="A valid TypeScript source file and a package.json automatically produce a tested distributable package." correction={"Declaration files describe the exported API at compile time. tsc can emit .d.ts using declaration plus emitDeclarationOnly; avoid exposing internal types and ensure declaration paths match package exports. The compiler test should inspect actual emitted declarations rather than simply searching a handwritten file."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+Find the smallest broken import, declaration, dependency graph, or public exports contract. Repair it while keeping the student's module compileable. If the fixture demonstrates a blueprint rather than a publishable artifact, state that limitation and the build/consumer test still required.
+
+<KnowledgeCheck question={"What is a .d.ts declaration file used for?"} choices={["Running JavaScript instructions","Describing public TypeScript types without runtime implementation","Storing production secrets","Compiling CSS stylesheets"]} correctIndex={1} explanation={"Declaration files describe the exported API at compile time. tsc can emit .d.ts using declaration plus emitDeclarationOnly; avoid exposing internal types and ensure declaration paths match package exports. The compiler test should inspect actual emitted declarations rather than simply searching a handwritten file."} misconception="Static package metadata must agree with compiled outputs and real runtime resolution." lessonId="04.04.07" />
+
+## Guided local lab
+
+Edit `labs/ts-declarations/starter/solution.ts`, compare with `labs/ts-declarations/solution/solution.ts`, and run the same test file against both. Additional JSON examples illustrate configuration only; they do not trigger npm publishing, deployment or database setup.
+
+<LabGate lessonId="04.04.07" labId="lab.foundation.ts-declarations" commands={["npm ci","npm run lab:ts-declarations"]} interactive={false} />
+
+## Reflect
+
+What did the client of this module actually import? What would fail in a consumer package with different moduleResolution or Node mode? Which compiler output and release checks are still needed before publishing outside this repo?
+
+## Official references
+
+- [Official TypeScript package guide](https://www.typescriptlang.org/docs/handbook/declaration-files/introduction.html)
+- [Official Node.js or TypeScript reference](https://www.typescriptlang.org/tsconfig/emitDeclarationOnly.html)

@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.ts-typed-errors",
+  "lessonId": "04.03.03",
+  "title": "Type-safe errors and Result patterns",
+  "runtime": "typescript-5-zod4-node-24-tsx",
+  "status": "authored",
+  "starter": "labs/ts-typed-errors/starter/solution.ts",
+  "solution": "labs/ts-typed-errors/solution/solution.ts",
+  "tests": "labs/ts-typed-errors/solution.test.mjs",
+  "verify": [
+    "npm run lab:ts-typed-errors"
+  ],
+  "expected": "The type-safe errors and result patterns boundary validates real input before returning a typed domain value.",
+  "security": "Offline synthetic payloads only, no server, accounts, keys, external HTTP, PII, uploads or hosted execution."
+}

@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.ts-utilities",
+  "lessonId": "04.02.06",
+  "title": "Utility types and public projections",
+  "runtime": "typescript-5-node-24-tsx",
+  "status": "authored",
+  "starter": "labs/ts-utilities/starter/solution.ts",
+  "solution": "labs/ts-utilities/solution/solution.ts",
+  "tests": "labs/ts-utilities/solution.test.mjs",
+  "verify": [
+    "npm run lab:ts-utilities"
+  ],
+  "expected": "The utility types and public projections contract passes runtime assertions and compiler-negative checks.",
+  "security": "Fully offline synthetic data, no external scripts, deployments, private data, accounts or uploaded code."
+}

@@ -1,0 +1,91 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Explain the package or tooling contract behind eslint rules and safe typing","Repair a concrete module/toolchain bug without weakening type safety","Verify exported behavior, configuration or declarations using local TypeScript tests"]} />
+
+## The problem we're solving
+
+A helper uses unchecked any for a request object, bypassing type safety and accepting malformed IDs. This is a local repository/package-development lesson. A passing fixture alone is not a published npm release and does not create a Vercel deployment.
+
+## Build the mental model
+
+TypeScript-aware ESLint rules can reject explicit any and unsafe operations, complementing strict compiler checks. Linting is static guidance, not input validation; start with unknown and narrow at runtime. In a larger monorepo, scope rules by file and avoid globally weakening them to silence a lesson.
+
+**Predict before running:** The implementation uses unknown rather than any and handles invalid objects without property access crashes.
+
+## Prerequisites and preflight
+
+Continue from [the previous lesson](/learn/04.04.05). Open `labs/ts-eslint/starter/solution.ts`, the corrected instructor file and any adjacent JSON/tooling fixtures. Node 24 and TypeScript 5 are pinned in the academy; use the repository's existing tsx and tsc tools. No npm publishing credentials are needed.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the broken module or release contract" file="labs/ts-eslint/starter/solution.ts" expected="The initial package/tooling assumption fails at least one reviewed assertion.">
+
+```ts
+export function solve(raw:unknown):string{return (raw as {id:string}).id.toUpperCase();}
+```
+
+**Predict before running:** A helper uses unchecked any for a request object, bypassing type safety and accepting malformed IDs.
+
+**Why it fails:** TypeScript-aware ESLint rules can reject explicit any and unsafe operations, complementing strict compiler checks. Linting is static guidance, not input validation; start with unknown and narrow at runtime. In a larger monorepo, scope rules by file and avoid globally weakening them to silence a lesson.
+
+**Proof:** Run the starter tests and inspect the relevant module, manifest, or type declaration contract.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the exported TypeScript API or build policy" file="labs/ts-eslint/starter/solution.ts" expected={"The implementation uses unknown rather than any and handles invalid objects without property access crashes."}>
+
+Preserve the public `solve` contract and make the output match the reviewed tooling requirements.
+
+```ts
+export function solve(raw:unknown):string{if(!raw||typeof raw!=='object'||!('id' in raw)||typeof raw.id!=='string')return 'INVALID';return raw.id.toUpperCase();}
+```
+
+**Predict before running:** The implementation uses unknown rather than any and handles invalid objects without property access crashes.
+
+**Why the repair works:** TypeScript-aware ESLint rules can reject explicit any and unsafe operations, complementing strict compiler checks. Linting is static guidance, not input validation; start with unknown and narrow at runtime. In a larger monorepo, scope rules by file and avoid globally weakening them to silence a lesson.
+
+**Proof:** Check the emitted or computed result instead of assuming package metadata validates itself.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify the package-boundary assertions" file="labs/ts-eslint/solution.test.mjs" expected="Runtime examples pass with a valid strict TypeScript build and local configuration checks.">
+
+```ts
+assert.equal(solve({id:'abc'}),'ABC');assert.equal(solve({id:2}),'INVALID');assert.equal(solve(null),'INVALID');
+```
+
+**Predict before running:** Reviewed public behavior holds, invalid inputs and malformed package descriptions fail, and no real release is published.
+
+**Why it matters:** A package consumer sees emitted types, runtime modules, and the exports map, not the author's internal folder names.
+
+**Proof:** Run `npm run lab:ts-eslint`, `npm run typecheck`, and inspect the sample artifact if present.
+
+</LessonStep>
+
+## Explore and verify
+
+Compare what the TypeScript compiler can statically prove with what Node.js resolves at runtime. Modules and public declaration files are build artifacts; configured npm publication, signed provenance and integration tests are separate engineering gates. Do not treat a local manifest as deployable until the paths have real output.
+
+<Misconception claim="A valid TypeScript source file and a package.json automatically produce a tested distributable package." correction={"TypeScript-aware ESLint rules can reject explicit any and unsafe operations, complementing strict compiler checks. Linting is static guidance, not input validation; start with unknown and narrow at runtime. In a larger monorepo, scope rules by file and avoid globally weakening them to silence a lesson."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+Find the smallest broken import, declaration, dependency graph, or public exports contract. Repair it while keeping the student's module compileable. If the fixture demonstrates a blueprint rather than a publishable artifact, state that limitation and the build/consumer test still required.
+
+<KnowledgeCheck question={"How should a function initially type untrusted data?"} choices={["any to silence all diagnostics","unknown, then narrow at runtime","never for every value","object without checking members"]} correctIndex={1} explanation={"TypeScript-aware ESLint rules can reject explicit any and unsafe operations, complementing strict compiler checks. Linting is static guidance, not input validation; start with unknown and narrow at runtime. In a larger monorepo, scope rules by file and avoid globally weakening them to silence a lesson."} misconception="Static package metadata must agree with compiled outputs and real runtime resolution." lessonId="04.04.06" />
+
+## Guided local lab
+
+Edit `labs/ts-eslint/starter/solution.ts`, compare with `labs/ts-eslint/solution/solution.ts`, and run the same test file against both. Additional JSON examples illustrate configuration only; they do not trigger npm publishing, deployment or database setup.
+
+<LabGate lessonId="04.04.06" labId="lab.foundation.ts-eslint" commands={["npm ci","npm run lab:ts-eslint"]} interactive={false} />
+
+## Reflect
+
+What did the client of this module actually import? What would fail in a consumer package with different moduleResolution or Node mode? Which compiler output and release checks are still needed before publishing outside this repo?
+
+## Official references
+
+- [Official TypeScript package guide](https://typescript-eslint.io/rules/no-explicit-any/)
+- [Official Node.js or TypeScript reference](https://www.typescriptlang.org/docs/handbook/2/narrowing.html)

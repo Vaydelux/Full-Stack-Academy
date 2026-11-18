@@ -1,0 +1,91 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Predict promises and async await behavior before executing an asynchronous operation","Diagnose the starter's race, ordering or error-handling defect","Prove cancellation, ordering or failure behavior with deterministic offline tests"]} />
+
+## The problem we're solving
+
+An async workflow returns an unresolved promise as its result and never converts task rejection into a useful error outcome. This lab uses local Node.js timers, Promises and injected mock transport rather than relying on external APIs or a deployed site.
+
+## Build the mental model
+
+An async function always returns a Promise. await unwraps fulfillment and throws on rejection; catching at the correct boundary lets the caller distinguish success from a controlled error without swallowing unrelated failures.
+
+**Predict before running:** The successful task yields its actual value, and rejected tasks become explicit error results.
+
+## Prerequisites and preflight
+
+Continue from [the prior module topic](/learn/03.03.02). Inspect `labs/js-async-await/starter/solution.mjs` and the named test cases in `labs/js-async-await/solution.test.mjs`. Start by running `ACADEMY_LAB_TARGET=starter npm run lab:js-async-await` in Bash (or the equivalent temporary PowerShell environment setting). The intentionally defective starter should fail at least one assertion.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the async ordering or failure" file="labs/js-async-await/starter/solution.mjs" expected="The starter fails the reviewed contract under deterministic local scheduling.">
+
+```js
+export async function solve(task){try{return {ok:true,value:task()};}catch{return {ok:false,error:'failed'};}}
+```
+
+**Predict before running:** An async workflow returns an unresolved promise as its result and never converts task rejection into a useful error outcome.
+
+**Why it fails:** An async function always returns a Promise. await unwraps fulfillment and throws on rejection; catching at the correct boundary lets the caller distinguish success from a controlled error without swallowing unrelated failures.
+
+**Proof:** Inspect the concrete failure; do not rely on flaky sleeps or remote HTTP services to demonstrate ordering.
+
+</LessonStep>
+
+<LessonStep number={2} title="Apply the async boundary and handle errors" file="labs/js-async-await/starter/solution.mjs" expected={"The successful task yields its actual value, and rejected tasks become explicit error results."}>
+
+Make the smallest meaningful correction and preserve the `solve` module contract. For transport cases, keep request functions injectable so the same test can simulate success, failure, timeout and cancellation.
+
+```js
+export async function solve(task){if(typeof task!=='function')throw new TypeError('Task required');try{return {ok:true,value:await task()};}catch(error){return {ok:false,error:error instanceof Error?error.message:'unknown-error'};}}
+```
+
+**Predict before running:** The successful task yields its actual value, and rejected tasks become explicit error results.
+
+**Why it works:** An async function always returns a Promise. await unwraps fulfillment and throws on rejection; catching at the correct boundary lets the caller distinguish success from a controlled error without swallowing unrelated failures.
+
+**Proof:** Verify that all promises settle and timer/listener cleanup occurs even after failure.
+
+</LessonStep>
+
+<LessonStep number={3} title="Exercise the executable regression cases" file="labs/js-async-await/solution.test.mjs" expected="Success, failure and scheduling tests pass deterministically without network traffic.">
+
+```js
+assert.deepEqual(await solve(async()=>42),{ok:true,value:42});assert.deepEqual(await solve(async()=>{throw new Error('offline');}),{ok:false,error:'offline'});await assert.rejects(()=>solve(null),TypeError);
+```
+
+**Predict before running:** The reviewed cases expose the original bug and continue to pass after repair.
+
+**Why these assertions matter:** An asynchronous API requires explicit state transitions; a resolved promise is not proof that race or cancellation semantics are correct.
+
+**Proof:** Run `npm run lab:js-async-await` and record the exact observed result.
+
+</LessonStep>
+
+## Explore and verify
+
+Use injected transport or a controlled deferred promise. For a real production client, add error budgets, backoff/jitter, idempotency and telemetry separately; this exercise does not claim those features unless demonstrated. Cancellation requests do not forcibly stop uncooperative functions.
+
+<Misconception claim="All asynchronous work completes in start order and AbortController automatically stops arbitrary functions." correction={"An async function always returns a Promise. await unwraps fulfillment and throws on rejection; catching at the correct boundary lets the caller distinguish success from a controlled error without swallowing unrelated failures."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+Start with the smallest rejected Promise, delayed result or cancellation edge. Identify which task begins, which microtask or timer runs, and which result should be accepted. Confirm the corrected function settles instead of hanging indefinitely.
+
+<KnowledgeCheck question={"What does await do when its promise rejects?"} choices={["Return undefined silently","Throw the rejection inside the async function","Stop JavaScript execution permanently","Change the promise into a callback"]} correctIndex={1} explanation={"An async function always returns a Promise. await unwraps fulfillment and throws on rejection; catching at the correct boundary lets the caller distinguish success from a controlled error without swallowing unrelated failures."} misconception="A local async test measures the observed sequence; it does not guarantee real network timing." lessonId="03.03.03" />
+
+## Guided local lab
+
+Repair `labs/js-async-await/starter/solution.mjs` and compare with the instructor's `labs/js-async-await/solution/solution.mjs` after reproducing the failure. Both are tested by the same offline file. The lab provides no remote request execution and does not award a server-verified grade.
+
+<LabGate lessonId="03.03.03" labId="lab.foundation.js-async-await" commands={["npm ci","npm run lab:js-async-await"]} interactive={false} />
+
+## Reflect
+
+Which asynchronous dependency created the bug? What would happen if a request stalled, failed with HTTP 403, or was cancelled after a new request started? Describe one system-level mitigation not covered by the fixture.
+
+## Official references
+
+- [MDN asynchronous programming reference](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function)
+- [Official supporting documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/await)

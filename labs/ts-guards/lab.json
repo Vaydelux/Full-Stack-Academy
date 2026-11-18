@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.ts-guards",
+  "lessonId": "04.01.06",
+  "title": "Narrowing and type guards",
+  "runtime": "typescript-5-node-24-tsx",
+  "status": "authored",
+  "starter": "labs/ts-guards/starter/solution.ts",
+  "solution": "labs/ts-guards/solution/solution.ts",
+  "tests": "labs/ts-guards/solution.test.mjs",
+  "verify": [
+    "npm run lab:ts-guards"
+  ],
+  "expected": "The typed narrowing and type guards solution passes strict compilation plus real runtime assertions.",
+  "security": "Local TypeScript modules with synthetic data; no external network, API key, browser storage, account, telemetry or uploaded user data."
+}

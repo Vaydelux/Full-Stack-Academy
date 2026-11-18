@@ -1,0 +1,39 @@
+{
+  "id": "04.01.02",
+  "title": "Type inference and annotations",
+  "description": "Learn type inference and annotations with a strict TypeScript source module, failing starter, tested instructor solution and concrete runtime boundary.",
+  "trackId": "04",
+  "moduleId": "04.01",
+  "level": "Beginner",
+  "estimatedMinutes": 55,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "node": "24",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "04.01.01"
+  ],
+  "objectives": [
+    "Explain the compile-time contract for type inference and annotations",
+    "Replace an unsound assertion or incorrect implementation with a runtime-safe model",
+    "Verify typed code with strict TypeScript and executable local assertions"
+  ],
+  "labId": "lab.foundation.ts-inference",
+  "sources": [
+    {
+      "label": "TypeScript handbook",
+      "url": "https://www.typescriptlang.org/docs/handbook/2/everyday-types.html"
+    },
+    {
+      "label": "Official TypeScript or JavaScript reference",
+      "url": "https://www.typescriptlang.org/docs/handbook/type-inference.html"
+    }
+  ],
+  "rubric": [
+    "I explain what TypeScript verifies and what it erases at runtime.",
+    "I repair the type inference and annotations bug while keeping strict compilation valid.",
+    "I demonstrate one success and one invalid-input case in the offline verifier."
+  ]
+}

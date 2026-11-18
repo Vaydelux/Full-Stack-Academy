@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.js-dom",
+  "lessonId": "03.04.01",
+  "title": "DOM selection and events",
+  "runtime": "browser-html-node-24",
+  "status": "authored",
+  "starter": "labs/js-dom/starter/index.html",
+  "solution": "labs/js-dom/solution/index.html",
+  "tests": "labs/js-dom/solution.test.mjs",
+  "verify": [
+    "npm run lab:js-dom"
+  ],
+  "expected": "The dom selection and events interaction works with real DOM or native browser facilities, and local unit tests pass.",
+  "security": "Standalone synthetic HTML and local JS; no remote scripts/requests, tokens, external user data, telemetry or uploads."
+}

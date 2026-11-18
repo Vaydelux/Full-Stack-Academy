@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.ts-typed-release",
+  "lessonId": "04.04.08",
+  "title": "Lab typed package release",
+  "runtime": "typescript-5-node-24-tsx",
+  "status": "authored",
+  "starter": "labs/ts-typed-release/starter/solution.ts",
+  "solution": "labs/ts-typed-release/solution/solution.ts",
+  "tests": "labs/ts-typed-release/solution.test.mjs",
+  "verify": [
+    "npm run lab:ts-typed-release"
+  ],
+  "expected": "The lab typed package release local toolchain contract has runnable test evidence without publishing packages.",
+  "security": "No publishing credentials, third-party calls, remote builds, user account data, telemetry or Vercel consumption."
+}

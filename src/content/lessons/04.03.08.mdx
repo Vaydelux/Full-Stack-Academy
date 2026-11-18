@@ -1,0 +1,91 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Distinguish static typing from runtime trust in lab schema-first api data","Validate unknown input or normalize transport data before constructing a domain value","Verify rejected and accepted cases with runnable tests plus compiler checks"]} />
+
+## The problem we're solving
+
+An API handler trusts a request body as TypeScript, accepts unknown fields, and returns a domain object even when required values are invalid. In a full-stack application, this boundary can lead to incorrect data or information disclosure even if the TypeScript project compiles successfully.
+
+## Build the mental model
+
+A schema-first boundary validates unknown data before constructing domain types. Zod 4 strictObject rejects unknown keys; safeParse gives a typed discriminated result. An educational local contract does not implement authentication, authorization or production transaction guarantees.
+
+**Predict before running:** Only strict validated API request bodies enter the domain; extra keys and invalid quantities are rejected.
+
+## Prerequisites and preflight
+
+Continue from [the previous topic](/learn/04.03.07). Inspect `labs/ts-schema-api/starter/solution.ts`, `labs/ts-schema-api/solution/solution.ts`, and the Node/tsx tests. This lab uses local synthetic data, pinned TypeScript and Zod versions where applicable; no database credentials, remote API or deployment are needed.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce a broken trust boundary" file="labs/ts-schema-api/starter/solution.ts" expected="Malformed values are accepted, leaked or crash the unchecked starter.">
+
+```ts
+type Request={sku:string;qty:number};export function solve(raw:unknown){return {ok:true,data:raw as Request};}
+```
+
+**Predict before running:** An API handler trusts a request body as TypeScript, accepts unknown fields, and returns a domain object even when required values are invalid.
+
+**Why it fails:** A schema-first boundary validates unknown data before constructing domain types. Zod 4 strictObject rejects unknown keys; safeParse gives a typed discriminated result. An educational local contract does not implement authentication, authorization or production transaction guarantees.
+
+**Proof:** Run the starter-target verifier; record the exact unsupported assumption, not just the stack trace.
+
+</LessonStep>
+
+<LessonStep number={2} title="Validate and map a trusted domain value" file="labs/ts-schema-api/starter/solution.ts" expected={"Only strict validated API request bodies enter the domain; extra keys and invalid quantities are rejected."}>
+
+Use unknown at the boundary, a runtime predicate or strict schema and a public result type. Handle expected invalid data explicitly.
+
+```ts
+import {z} from 'zod';const Schema=z.strictObject({sku:z.string().min(1).max(40),qty:z.number().int().nonnegative().max(100000)});export type InventoryRequest=z.infer<typeof Schema>;export function solve(raw:unknown):{ok:true;data:InventoryRequest}|{ok:false;error:'invalid-body'}{const parsed=Schema.safeParse(raw);return parsed.success?{ok:true,data:parsed.data}:{ok:false,error:'invalid-body'};}
+```
+
+**Predict before running:** Only strict validated API request bodies enter the domain; extra keys and invalid quantities are rejected.
+
+**Why the repair works:** A schema-first boundary validates unknown data before constructing domain types. Zod 4 strictObject rejects unknown keys; safeParse gives a typed discriminated result. An educational local contract does not implement authentication, authorization or production transaction guarantees.
+
+**Proof:** Compare clean and malformed cases against the verified instructor module.
+
+</LessonStep>
+
+<LessonStep number={3} title="Exercise the successful and rejected cases" file="labs/ts-schema-api/solution.test.mjs" expected="The same offline tests distinguish valid and invalid input without hidden network state.">
+
+```ts
+assert.deepEqual(solve({sku:'SKU-1',qty:3}),{ok:true,data:{sku:'SKU-1',qty:3}});assert.deepEqual(solve({sku:'SKU-1',qty:-1}),{ok:false,error:'invalid-body'});assert.deepEqual(solve({sku:'SKU-1',qty:3,admin:true}),{ok:false,error:'invalid-body'});assert.deepEqual(solve(null),{ok:false,error:'invalid-body'});
+```
+
+**Predict before running:** Invalid external input never enters the typed domain as though it had passed validation.
+
+**Why this matters:** A compiler's assurances apply to typed source relationships, not arbitrary strings from a network or storage boundary.
+
+**Proof:** Run `npm run lab:ts-schema-api`, then `npm run typecheck` for compile-time contracts.
+
+</LessonStep>
+
+## Explore and verify
+
+Use boundary-oriented reasoning: the outer layer receives unknown, the parser enforces shape and units, and only then may a domain function use a trusted type. Separate validation from authorization; a successful schema parse never proves the actor has permission.
+
+<Misconception claim="A DTO interface or as assertion proves the runtime value has the fields or access rights claimed." correction={"A schema-first boundary validates unknown data before constructing domain types. Zod 4 strictObject rejects unknown keys; safeParse gives a typed discriminated result. An educational local contract does not implement authentication, authorization or production transaction guarantees."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+Find the smallest malformed payload that reveals the starter's flaw, whether a missing property, malformed date, unexpected field or wrong unit. Record the old and new behavior. Verify that the corrected implementation avoids throwing on expected invalid input unless that is the explicitly documented contract.
+
+<KnowledgeCheck question={"What is the purpose of strict schema parsing at an API boundary?"} choices={["Infer types without inspecting data","Reject unknown or malformed input before domain logic","Automatically authorize the caller","Perform SQL transactions"]} correctIndex={1} explanation={"A schema-first boundary validates unknown data before constructing domain types. Zod 4 strictObject rejects unknown keys; safeParse gives a typed discriminated result. An educational local contract does not implement authentication, authorization or production transaction guarantees."} misconception="Static types neither parse network data nor authorize operations." lessonId="04.03.08" />
+
+## Guided local lab
+
+Work in `labs/ts-schema-api/starter/solution.ts`, compare with the instructor after debugging, and use `ACADEMY_LAB_TARGET=starter` to run the same offline tests. Where provided, `typecheck.ts` adds compile-time rejection cases. This lab does not persist or grade submissions in the cloud.
+
+<LabGate lessonId="04.03.08" labId="lab.foundation.ts-schema-api" commands={["npm ci","npm run lab:ts-schema-api"]} interactive={false} />
+
+## Reflect
+
+Which fields and units did you validate? Why is compile-time typing insufficient here? What additional authentication, authorization, rate limiting or auditing would a production endpoint require?
+
+## Official references
+
+- [Official type or schema reference](https://zod.dev/api)
+- [Official supporting material](https://www.typescriptlang.org/docs/handbook/2/narrowing.html)

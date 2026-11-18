@@ -1,0 +1,1 @@
+export type Result={ok:true;email:string}|{ok:false;error:string};export function solve(raw:unknown):Result{if(!raw||typeof raw!=='object'||!('email' in raw)||typeof raw.email!=='string')return {ok:false,error:'missing-email'};const email=raw.email.trim().toLowerCase();if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))return {ok:false,error:'invalid-email'};return {ok:true,email};}

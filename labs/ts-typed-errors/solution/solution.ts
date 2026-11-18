@@ -1,0 +1,1 @@
+export type Result={ok:true;value:string}|{ok:false;error:string};export function solve(input:unknown):Result{if(typeof input==='string'&&input.trim())return {ok:true,value:input.trim()};if(input instanceof Error)return {ok:false,error:input.name==='TypeError'?'invalid-type':'operation-failed'};return {ok:false,error:'invalid-input'};}

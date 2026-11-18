@@ -1,0 +1,1 @@
+export function solve(text) { if (typeof text!=='string'||text.trim()==='') return {ok:false,reason:'empty-or-not-text'};const number=Number(text.trim());return Number.isFinite(number)?{ok:true,value:number}:{ok:false,reason:'not-finite'}; }

@@ -1,0 +1,91 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Predict abortcontroller and cancellation behavior before executing an asynchronous operation","Diagnose the starter's race, ordering or error-handling defect","Prove cancellation, ordering or failure behavior with deterministic offline tests"]} />
+
+## The problem we're solving
+
+An operation keeps resolving its result after the consumer cancels the request. This lab uses local Node.js timers, Promises and injected mock transport rather than relying on external APIs or a deployed site.
+
+## Build the mental model
+
+AbortController exposes a signal that communicating APIs may observe. Aborting does not automatically stop arbitrary code; your wrapper must listen, propagate the reason, reject promptly, and detach listeners on settlement. A pre-aborted signal must prevent work from starting.
+
+**Predict before running:** A pre-cancelled operation never runs; an in-flight operation rejects when cancellation is signaled.
+
+## Prerequisites and preflight
+
+Continue from [the prior module topic](/learn/03.03.04). Inspect `labs/js-abort/starter/solution.mjs` and the named test cases in `labs/js-abort/solution.test.mjs`. Start by running `ACADEMY_LAB_TARGET=starter npm run lab:js-abort` in Bash (or the equivalent temporary PowerShell environment setting). The intentionally defective starter should fail at least one assertion.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the async ordering or failure" file="labs/js-abort/starter/solution.mjs" expected="The starter fails the reviewed contract under deterministic local scheduling.">
+
+```js
+export function solve(signal,worker){return Promise.resolve().then(()=>worker(signal));}
+```
+
+**Predict before running:** An operation keeps resolving its result after the consumer cancels the request.
+
+**Why it fails:** AbortController exposes a signal that communicating APIs may observe. Aborting does not automatically stop arbitrary code; your wrapper must listen, propagate the reason, reject promptly, and detach listeners on settlement. A pre-aborted signal must prevent work from starting.
+
+**Proof:** Inspect the concrete failure; do not rely on flaky sleeps or remote HTTP services to demonstrate ordering.
+
+</LessonStep>
+
+<LessonStep number={2} title="Apply the async boundary and handle errors" file="labs/js-abort/starter/solution.mjs" expected={"A pre-cancelled operation never runs; an in-flight operation rejects when cancellation is signaled."}>
+
+Make the smallest meaningful correction and preserve the `solve` module contract. For transport cases, keep request functions injectable so the same test can simulate success, failure, timeout and cancellation.
+
+```js
+export function solve(signal,worker){if(!signal||typeof worker!=='function')return Promise.reject(new TypeError('Signal and worker required'));if(signal.aborted)return Promise.reject(signal.reason??new Error('aborted'));return new Promise((resolve,reject)=>{let settled=false;const finish=(fn,value)=>{if(settled)return;settled=true;signal.removeEventListener('abort',onAbort);fn(value);};const onAbort=()=>finish(reject,signal.reason??new Error('aborted'));signal.addEventListener('abort',onAbort,{once:true});Promise.resolve().then(()=>{if(!signal.aborted)return worker(signal);throw signal.reason??new Error('aborted');}).then(v=>finish(resolve,v),e=>finish(reject,e));});}
+```
+
+**Predict before running:** A pre-cancelled operation never runs; an in-flight operation rejects when cancellation is signaled.
+
+**Why it works:** AbortController exposes a signal that communicating APIs may observe. Aborting does not automatically stop arbitrary code; your wrapper must listen, propagate the reason, reject promptly, and detach listeners on settlement. A pre-aborted signal must prevent work from starting.
+
+**Proof:** Verify that all promises settle and timer/listener cleanup occurs even after failure.
+
+</LessonStep>
+
+<LessonStep number={3} title="Exercise the executable regression cases" file="labs/js-abort/solution.test.mjs" expected="Success, failure and scheduling tests pass deterministically without network traffic.">
+
+```js
+const c=new AbortController();assert.equal(await solve(c.signal,async()=>5),5);const d=new AbortController();d.abort(new Error('stopped'));let called=false;await assert.rejects(()=>solve(d.signal,()=>{called=true;}),/stopped/);assert.equal(called,false);const e=new AbortController();let finish;const pending=solve(e.signal,()=>new Promise(resolve=>{finish=resolve;}));await Promise.resolve();e.abort(new Error('cancelled'));await assert.rejects(()=>pending,/cancelled/);finish?.(42);
+```
+
+**Predict before running:** The reviewed cases expose the original bug and continue to pass after repair.
+
+**Why these assertions matter:** An asynchronous API requires explicit state transitions; a resolved promise is not proof that race or cancellation semantics are correct.
+
+**Proof:** Run `npm run lab:js-abort` and record the exact observed result.
+
+</LessonStep>
+
+## Explore and verify
+
+Use injected transport or a controlled deferred promise. For a real production client, add error budgets, backoff/jitter, idempotency and telemetry separately; this exercise does not claim those features unless demonstrated. Cancellation requests do not forcibly stop uncooperative functions.
+
+<Misconception claim="All asynchronous work completes in start order and AbortController automatically stops arbitrary functions." correction={"AbortController exposes a signal that communicating APIs may observe. Aborting does not automatically stop arbitrary code; your wrapper must listen, propagate the reason, reject promptly, and detach listeners on settlement. A pre-aborted signal must prevent work from starting."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+Start with the smallest rejected Promise, delayed result or cancellation edge. Identify which task begins, which microtask or timer runs, and which result should be accepted. Confirm the corrected function settles instead of hanging indefinitely.
+
+<KnowledgeCheck question={"Does AbortController automatically interrupt all JavaScript functions?"} choices={["Yes, even CPU loops","No, the operation must observe and honor the signal","Only in Node.js","Only if the callback is synchronous"]} correctIndex={1} explanation={"AbortController exposes a signal that communicating APIs may observe. Aborting does not automatically stop arbitrary code; your wrapper must listen, propagate the reason, reject promptly, and detach listeners on settlement. A pre-aborted signal must prevent work from starting."} misconception="A local async test measures the observed sequence; it does not guarantee real network timing." lessonId="03.03.05" />
+
+## Guided local lab
+
+Repair `labs/js-abort/starter/solution.mjs` and compare with the instructor's `labs/js-abort/solution/solution.mjs` after reproducing the failure. Both are tested by the same offline file. The lab provides no remote request execution and does not award a server-verified grade.
+
+<LabGate lessonId="03.03.05" labId="lab.foundation.js-abort" commands={["npm ci","npm run lab:js-abort"]} interactive={false} />
+
+## Reflect
+
+Which asynchronous dependency created the bug? What would happen if a request stalled, failed with HTTP 403, or was cancelled after a new request started? Describe one system-level mitigation not covered by the fixture.
+
+## Official references
+
+- [MDN asynchronous programming reference](https://developer.mozilla.org/en-US/docs/Web/API/AbortController)
+- [Official supporting documentation](https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal)

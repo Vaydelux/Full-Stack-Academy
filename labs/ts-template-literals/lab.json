@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.ts-template-literals",
+  "lessonId": "04.02.07",
+  "title": "Template literal types",
+  "runtime": "typescript-5-node-24-tsx",
+  "status": "authored",
+  "starter": "labs/ts-template-literals/starter/solution.ts",
+  "solution": "labs/ts-template-literals/solution/solution.ts",
+  "tests": "labs/ts-template-literals/solution.test.mjs",
+  "verify": [
+    "npm run lab:ts-template-literals"
+  ],
+  "expected": "The template literal types contract passes runtime assertions and compiler-negative checks.",
+  "security": "Fully offline synthetic data, no external scripts, deployments, private data, accounts or uploaded code."
+}

@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.ts-imports",
+  "lessonId": "04.04.03",
+  "title": "Import organization and type-only imports",
+  "runtime": "typescript-5-node-24-tsx",
+  "status": "authored",
+  "starter": "labs/ts-imports/starter/solution.ts",
+  "solution": "labs/ts-imports/solution/solution.ts",
+  "tests": "labs/ts-imports/solution.test.mjs",
+  "verify": [
+    "npm run lab:ts-imports"
+  ],
+  "expected": "The import organization and type-only imports local toolchain contract has runnable test evidence without publishing packages.",
+  "security": "No publishing credentials, third-party calls, remote builds, user account data, telemetry or Vercel consumption."
+}

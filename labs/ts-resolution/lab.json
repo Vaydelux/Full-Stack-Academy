@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.ts-resolution",
+  "lessonId": "04.04.01",
+  "title": "tsconfig references and module resolution",
+  "runtime": "typescript-5-node-24-tsx",
+  "status": "authored",
+  "starter": "labs/ts-resolution/starter/solution.ts",
+  "solution": "labs/ts-resolution/solution/solution.ts",
+  "tests": "labs/ts-resolution/solution.test.mjs",
+  "verify": [
+    "npm run lab:ts-resolution"
+  ],
+  "expected": "The tsconfig references and module resolution local toolchain contract has runnable test evidence without publishing packages.",
+  "security": "No publishing credentials, third-party calls, remote builds, user account data, telemetry or Vercel consumption."
+}

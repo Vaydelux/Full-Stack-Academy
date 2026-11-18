@@ -1,0 +1,96 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Explain event delegation in real browser state and semantics","Repair the broken DOM interaction without unsafe HTML insertion","Verify the interaction via local Node assertions and Chromium behavioral checks"]} />
+
+## The problem we're solving
+
+Newly added list items do not respond to click because listeners were attached only to existing children. Browser Interaction topics require both executable JavaScript logic and a real local HTML document. The fixture uses synthetic content with no external scripts, endpoints or data uploads.
+
+## Build the mental model
+
+Bubbling allows an ancestor listener to handle interactions from current and future descendants. Find the closest relevant target and check it belongs to the expected list before processing untrusted DOM content. Native buttons remain accessible to keyboard users.
+
+**Predict before running:** A newly inserted B button works through the original ancestor listener.
+
+## Prerequisites and preflight
+
+Continue from [the previous lesson](/learn/03.04.01). Open `labs/js-delegation/starter/index.html` in a modern browser, and inspect the DOM, active element, URL and accessibility tree as relevant. Node.js 24 runs the isolated logic assertions; Chromium provides behavior checks across real DOM interactions. Avoid editing the instructor fixture.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the browser interaction defect" file="labs/js-delegation/starter/index.html" expected={"Newly added list items do not respond to click because listeners were attached only to existing children."}>
+
+Observe the starter with keyboard and pointer input, then inspect what actually changes in the DOM. The sample contains the following intentionally defective handler:
+
+```js
+document.querySelectorAll('#items button').forEach(b=>b.addEventListener('click',()=>{document.querySelector('#status').textContent=b.dataset.name;}));document.querySelector('#append').addEventListener('click',()=>{const li=document.createElement('li');const b=document.createElement('button');b.type='button';b.dataset.name='B';b.textContent='Select B';li.append(b);document.querySelector('#items').append(li);});
+```
+
+**Predict before running:** Newly added list items do not respond to click because listeners were attached only to existing children.
+
+**Why it fails:** Bubbling allows an ancestor listener to handle interactions from current and future descendants. Find the closest relevant target and check it belongs to the expected list before processing untrusted DOM content. Native buttons remain accessible to keyboard users.
+
+**Proof:** Append B, select B and verify the output says B; then select A and verify A still works.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the browser-safe interaction" file="labs/js-delegation/starter/index.html" expected={"A newly inserted B button works through the original ancestor listener."}>
+
+Replace the defective handler without discarding native elements or semantics. For untrusted content use `textContent`, not an unsafe HTML sink.
+
+```js
+const list=document.querySelector('#items');list.addEventListener('click',event=>{const button=event.target.closest('button[data-name]');if(!button||!list.contains(button))return;document.querySelector('#status').textContent=button.dataset.name;});document.querySelector('#append').addEventListener('click',()=>{const li=document.createElement('li');const b=document.createElement('button');b.type='button';b.dataset.name='B';b.textContent='Select B';li.append(b);list.append(li);});
+```
+
+**Predict before running:** A newly inserted B button works through the original ancestor listener.
+
+**Why the repair works:** Bubbling allows an ancestor listener to handle interactions from current and future descendants. Find the closest relevant target and check it belongs to the expected list before processing untrusted DOM content. Native buttons remain accessible to keyboard users.
+
+**Proof:** Compare the resulting DOM and accessibility state to the instructor `solution/index.html` using the same input.
+
+</LessonStep>
+
+<LessonStep number={3} title="Test the state and boundary cases" file="labs/js-delegation/solution.test.mjs" expected="Local logic tests and browser behavior checks agree under normal and edge cases.">
+
+The core logic has a separate module with executable assertions, while the HTML fixture validates DOM binding and keyboard interactions.
+
+```js
+export function solve(items){if(!Array.isArray(items))throw new TypeError('Array required');return items.length;}
+assert.equal(solve(['a','b']),2);assert.equal(solve([]),0);assert.throws(()=>solve(null),TypeError);
+```
+
+**Predict before running:** A newly inserted B button works through the original ancestor listener.
+
+**Why it matters:** A passing algorithmic unit test does not prove its DOM wiring; use Chromium to exercise the actual handler.
+
+**Proof:** Append B, select B and verify the output says B; then select A and verify A still works.
+
+</LessonStep>
+
+## Explore and verify
+
+Test browser refresh, narrow widths, Tab and Enter where applicable, and the difference between browser storage and remote persistence. Check event listener scope, validation, and content injection risks. Any performance timings are measured at runtime rather than invented.
+
+<Misconception claim="If a pure JavaScript function returns the right value, the browser widget must also be accessible and secure." correction={"Bubbling allows an ancestor listener to handle interactions from current and future descendants. Find the closest relevant target and check it belongs to the expected list before processing untrusted DOM content. Native buttons remain accessible to keyboard users."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+Start from the visible broken behavior. Identify the missing DOM update, event delegation, validation, URL state, storage policy or safe DOM sink. Repair the smallest handler. Demonstrate before/after behavior and keyboard input with the same test sequence.
+
+<KnowledgeCheck question={"Why is a parent event listener useful for dynamically created child buttons?"} choices={["It captures bubbling events from future descendants","It clones all child listeners","It disables keyboard interaction","It changes button semantics"]} correctIndex={0} explanation={"Bubbling allows an ancestor listener to handle interactions from current and future descendants. Find the closest relevant target and check it belongs to the expected list before processing untrusted DOM content. Native buttons remain accessible to keyboard users."} misconception="DOM updates and accessibility behavior require browser observation beyond code syntax." lessonId="03.04.02" />
+
+## Guided local lab
+
+Edit `labs/js-delegation/starter/index.html`; compare with `labs/js-delegation/solution/index.html`. Run the Node contract verifier with `npm run lab:js-delegation` (or target the starter with `ACADEMY_LAB_TARGET=starter`). The academy Chromium smoke test covers actual browser behavior. No cloud API, automated public grading or server persistence is provided.
+
+<LabGate lessonId="03.04.02" labId="lab.foundation.js-delegation" commands={["npm ci","npm run lab:js-delegation"]} interactive={false} />
+
+## Reflect
+
+Which native browser facility did the starter ignore? What could a malicious input, cancelled request, page refresh, or keyboard user reveal? Name a browser-engine limitation not exercised by this local fixture.
+
+## Official references
+
+- [Browser API reference](https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/Event_bubbling)
+- [Official supporting reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/closest)

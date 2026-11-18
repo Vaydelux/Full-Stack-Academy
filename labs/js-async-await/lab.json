@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.js-async-await",
+  "lessonId": "03.03.03",
+  "title": "Promises and async await",
+  "runtime": "node-24-esm-async",
+  "status": "authored",
+  "starter": "labs/js-async-await/starter/solution.mjs",
+  "solution": "labs/js-async-await/solution/solution.mjs",
+  "tests": "labs/js-async-await/solution.test.mjs",
+  "verify": [
+    "npm run lab:js-async-await"
+  ],
+  "expected": "The promises and async await module handles correct execution order, failures and cancellation within an offline test.",
+  "security": "Injected synthetic transport, no public HTTP calls, keys, accounts, user records, external scripts or telemetry."
+}

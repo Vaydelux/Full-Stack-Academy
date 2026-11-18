@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.ts-strict",
+  "lessonId": "04.01.01",
+  "title": "Setup and strict tsconfig",
+  "runtime": "typescript-5-node-24-tsx",
+  "status": "authored",
+  "starter": "labs/ts-strict/starter/solution.ts",
+  "solution": "labs/ts-strict/solution/solution.ts",
+  "tests": "labs/ts-strict/solution.test.mjs",
+  "verify": [
+    "npm run lab:ts-strict"
+  ],
+  "expected": "The typed setup and strict tsconfig solution passes strict compilation plus real runtime assertions.",
+  "security": "Local TypeScript modules with synthetic data; no external network, API key, browser storage, account, telemetry or uploaded user data."
+}

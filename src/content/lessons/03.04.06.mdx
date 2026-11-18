@@ -1,0 +1,96 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Explain browser performance profiling in real browser state and semantics","Repair the broken DOM interaction without unsafe HTML insertion","Verify the interaction via local Node assertions and Chromium behavioral checks"]} />
+
+## The problem we're solving
+
+A UI claims every operation is fast without measuring work or identifying the action being timed. Browser Interaction topics require both executable JavaScript logic and a real local HTML document. The fixture uses synthetic content with no external scripts, endpoints or data uploads.
+
+## Build the mental model
+
+performance.mark and performance.measure capture named durations for a specific execution; they do not establish statistically significant performance across hardware. Measure representative work, clean up marks, and inspect DevTools Performance before making a real-world claim. Never fabricate a fixed milliseconds result.
+
+**Predict before running:** The UI reports an actual local measurement and checksum instead of an invented performance result.
+
+## Prerequisites and preflight
+
+Continue from [the previous lesson](/learn/03.04.05). Open `labs/js-profiling/starter/index.html` in a modern browser, and inspect the DOM, active element, URL and accessibility tree as relevant. Node.js 24 runs the isolated logic assertions; Chromium provides behavior checks across real DOM interactions. Avoid editing the instructor fixture.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the browser interaction defect" file="labs/js-profiling/starter/index.html" expected={"A UI claims every operation is fast without measuring work or identifying the action being timed."}>
+
+Observe the starter with keyboard and pointer input, then inspect what actually changes in the DOM. The sample contains the following intentionally defective handler:
+
+```js
+document.querySelector('#measure').addEventListener('click',()=>document.querySelector('#status').textContent='Always 0 ms, perfectly fast.');
+```
+
+**Predict before running:** A UI claims every operation is fast without measuring work or identifying the action being timed.
+
+**Why it fails:** performance.mark and performance.measure capture named durations for a specific execution; they do not establish statistically significant performance across hardware. Measure representative work, clean up marks, and inspect DevTools Performance before making a real-world claim. Never fabricate a fixed milliseconds result.
+
+**Proof:** Press the button, inspect the real PerformanceEntry duration and ensure marks are cleaned up.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the browser-safe interaction" file="labs/js-profiling/starter/index.html" expected={"The UI reports an actual local measurement and checksum instead of an invented performance result."}>
+
+Replace the defective handler without discarding native elements or semantics. For untrusted content use `textContent`, not an unsafe HTML sink.
+
+```js
+document.querySelector('#measure').addEventListener('click',()=>{performance.mark('course-start');let total=0;for(let i=0;i<10000;i++)total+=i;performance.mark('course-end');performance.measure('course-calculation','course-start','course-end');const entry=performance.getEntriesByName('course-calculation','measure').at(-1);document.querySelector('#status').textContent='Measured local calculation; checksum '+total+', duration '+entry.duration.toFixed(3)+' ms in this browser.';performance.clearMarks('course-start');performance.clearMarks('course-end');performance.clearMeasures('course-calculation');});
+```
+
+**Predict before running:** The UI reports an actual local measurement and checksum instead of an invented performance result.
+
+**Why the repair works:** performance.mark and performance.measure capture named durations for a specific execution; they do not establish statistically significant performance across hardware. Measure representative work, clean up marks, and inspect DevTools Performance before making a real-world claim. Never fabricate a fixed milliseconds result.
+
+**Proof:** Compare the resulting DOM and accessibility state to the instructor `solution/index.html` using the same input.
+
+</LessonStep>
+
+<LessonStep number={3} title="Test the state and boundary cases" file="labs/js-profiling/solution.test.mjs" expected="Local logic tests and browser behavior checks agree under normal and edge cases.">
+
+The core logic has a separate module with executable assertions, while the HTML fixture validates DOM binding and keyboard interactions.
+
+```js
+export function solve(values){if(!Array.isArray(values)||values.some(x=>!Number.isFinite(x)))throw new TypeError('Numbers required');return {sum:values.reduce((a,b)=>a+b,0),count:values.length};}
+assert.deepEqual(solve([1,2,3]),{sum:6,count:3});assert.deepEqual(solve([]),{sum:0,count:0});assert.throws(()=>solve([NaN]),TypeError);
+```
+
+**Predict before running:** The UI reports an actual local measurement and checksum instead of an invented performance result.
+
+**Why it matters:** A passing algorithmic unit test does not prove its DOM wiring; use Chromium to exercise the actual handler.
+
+**Proof:** Press the button, inspect the real PerformanceEntry duration and ensure marks are cleaned up.
+
+</LessonStep>
+
+## Explore and verify
+
+Test browser refresh, narrow widths, Tab and Enter where applicable, and the difference between browser storage and remote persistence. Check event listener scope, validation, and content injection risks. Any performance timings are measured at runtime rather than invented.
+
+<Misconception claim="If a pure JavaScript function returns the right value, the browser widget must also be accessible and secure." correction={"performance.mark and performance.measure capture named durations for a specific execution; they do not establish statistically significant performance across hardware. Measure representative work, clean up marks, and inspect DevTools Performance before making a real-world claim. Never fabricate a fixed milliseconds result."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+Start from the visible broken behavior. Identify the missing DOM update, event delegation, validation, URL state, storage policy or safe DOM sink. Repair the smallest handler. Demonstrate before/after behavior and keyboard input with the same test sequence.
+
+<KnowledgeCheck question={"What does performance.measure provide?"} choices={["A guaranteed production p95 latency","A named duration between performance timeline marks","Automatic Web Vitals certification","A constant zero for every browser"]} correctIndex={1} explanation={"performance.mark and performance.measure capture named durations for a specific execution; they do not establish statistically significant performance across hardware. Measure representative work, clean up marks, and inspect DevTools Performance before making a real-world claim. Never fabricate a fixed milliseconds result."} misconception="DOM updates and accessibility behavior require browser observation beyond code syntax." lessonId="03.04.06" />
+
+## Guided local lab
+
+Edit `labs/js-profiling/starter/index.html`; compare with `labs/js-profiling/solution/index.html`. Run the Node contract verifier with `npm run lab:js-profiling` (or target the starter with `ACADEMY_LAB_TARGET=starter`). The academy Chromium smoke test covers actual browser behavior. No cloud API, automated public grading or server persistence is provided.
+
+<LabGate lessonId="03.04.06" labId="lab.foundation.js-profiling" commands={["npm ci","npm run lab:js-profiling"]} interactive={false} />
+
+## Reflect
+
+Which native browser facility did the starter ignore? What could a malicious input, cancelled request, page refresh, or keyboard user reveal? Name a browser-engine limitation not exercised by this local fixture.
+
+## Official references
+
+- [Browser API reference](https://developer.mozilla.org/en-US/docs/Web/API/Performance/measure)
+- [Official supporting reference](https://developer.mozilla.org/en-US/docs/Web/API/Performance/mark)

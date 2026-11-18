@@ -1,0 +1,38 @@
+{
+  "id": "03.04.07",
+  "title": "Security of innerHTML",
+  "description": "Practice security of innerhtml through a self-contained HTML browser interaction, a failing starter, a corrected solution and repeatable regression checks.",
+  "trackId": "03",
+  "moduleId": "03.04",
+  "level": "Beginner",
+  "estimatedMinutes": 55,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "03.04.06"
+  ],
+  "objectives": [
+    "Explain security of innerhtml in real browser state and semantics",
+    "Repair the broken DOM interaction without unsafe HTML insertion",
+    "Verify the interaction via local Node assertions and Chromium behavioral checks"
+  ],
+  "labId": "lab.foundation.js-safe-dom",
+  "sources": [
+    {
+      "label": "Official MDN or WAI guide",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/API/Node/textContent"
+    },
+    {
+      "label": "Official browser API or accessibility reference",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/API/Element/innerHTML"
+    }
+  ],
+  "rubric": [
+    "I can reproduce the original security of innerhtml failure.",
+    "I can explain the DOM state and keyboard semantics of the repair.",
+    "I validate the page in a real browser, not only through source-text checks."
+  ]
+}

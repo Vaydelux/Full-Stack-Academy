@@ -1,0 +1,1 @@
+export class Basket{items=[];add(item){this.items.push(item);}total(){return this.items.reduce((s,x)=>s+x.price,0);}}export function solve(rows){const cart=new Basket();for(const r of rows)cart.add(r);return cart.total();}

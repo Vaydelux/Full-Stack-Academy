@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.ts-esm-cjs",
+  "lessonId": "04.04.02",
+  "title": "ESM and CommonJS interoperability",
+  "runtime": "typescript-5-node-24-tsx",
+  "status": "authored",
+  "starter": "labs/ts-esm-cjs/starter/solution.ts",
+  "solution": "labs/ts-esm-cjs/solution/solution.ts",
+  "tests": "labs/ts-esm-cjs/solution.test.mjs",
+  "verify": [
+    "npm run lab:ts-esm-cjs"
+  ],
+  "expected": "The esm and commonjs interoperability local toolchain contract has runnable test evidence without publishing packages.",
+  "security": "No publishing credentials, third-party calls, remote builds, user account data, telemetry or Vercel consumption."
+}

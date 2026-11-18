@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.js-this-binding",
+  "lessonId": "03.02.04",
+  "title": "this binding and callbacks",
+  "runtime": "node-24-esm",
+  "status": "authored",
+  "starter": "labs/js-this-binding/starter/solution.mjs",
+  "solution": "labs/js-this-binding/solution/solution.mjs",
+  "tests": "labs/js-this-binding/solution.test.mjs",
+  "verify": [
+    "npm run lab:js-this-binding"
+  ],
+  "expected": "Solve the this binding and callbacks bug with independently tested module and state behavior.",
+  "security": "Offline synthetic JavaScript practice; no credentials, remote requests, production data or uploads."
+}

@@ -1,0 +1,1 @@
+export async function solve(task){if(typeof task!=='function')throw new TypeError('Task required');try{return {ok:true,value:await task()};}catch(error){return {ok:false,error:error instanceof Error?error.message:'unknown-error'};}}

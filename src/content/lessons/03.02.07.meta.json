@@ -1,0 +1,38 @@
+{
+  "id": "03.02.07",
+  "title": "Immutability and object copying",
+  "description": "Investigate immutability and object copying in an offline ES module with reproducible Node.js assertions, a failing starter and a reviewed instructor implementation.",
+  "trackId": "03",
+  "moduleId": "03.02",
+  "level": "Beginner",
+  "estimatedMinutes": 55,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "03.02.06"
+  ],
+  "objectives": [
+    "Explain how immutability and object copying manages value or object identity",
+    "Reproduce a failure with independent tests and a concrete counterexample",
+    "Implement the repaired ESM contract and check edge cases without hidden shared state"
+  ],
+  "labId": "lab.foundation.js-immutability",
+  "sources": [
+    {
+      "label": "MDN concept reference",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax"
+    },
+    {
+      "label": "Language reference",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/freeze"
+    }
+  ],
+  "rubric": [
+    "I can show one failing starter input for immutability and object copying.",
+    "I use lexical scope, object boundaries and module exports deliberately.",
+    "I verified passing instructor assertions and an invalid-input case."
+  ]
+}

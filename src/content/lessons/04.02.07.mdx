@@ -1,0 +1,98 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Model template literal types using TypeScript's type operators","Reproduce a runtime defect despite valid-looking types","Validate safe usage with compiler-negative assertions and local tests"]} />
+
+## The problem we're solving
+
+A key validator accepts any string containing a colon, including unrecognized prefixes and empty identifiers. This advanced-types lab requires both compile-time evidence and meaningful runtime behavior; TypeScript's erased types alone cannot fix logic bugs.
+
+## Build the mental model
+
+Template literal types encode string shape patterns in the type system, such as `course:${string}` and `topic:${string}`. The type does not validate runtime strings; a user-defined guard must still check the permitted prefix and nonempty payload.
+
+**Predict before running:** Recognized namespaces with nonempty identifiers pass; unrelated prefixes and empty values fail.
+
+## Prerequisites and preflight
+
+Continue from [the previous lesson](/learn/04.02.06). Open `labs/ts-template-literals/starter/solution.ts`, `labs/ts-template-literals/solution.test.mjs`, and `labs/ts-template-literals/typecheck.ts`. The project compiles under strict TypeScript 5; use `npm run typecheck` and `npm run lab:ts-template-literals`. The negative type test contains deliberate compiler errors justified by `@ts-expect-error`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the unsafe implementation" file="labs/ts-template-literals/starter/solution.ts" expected="The implementation is type-correct enough to compile but fails the reviewed runtime contract.">
+
+```ts
+export type Key=`course:${string}`|`topic:${string}`;export function solve(raw:string):raw is Key{return raw.includes(':');}
+```
+
+**Predict before running:** A key validator accepts any string containing a colon, including unrecognized prefixes and empty identifiers.
+
+**Why it fails:** Template literal types encode string shape patterns in the type system, such as `course:${string}` and `topic:${string}`. The type does not validate runtime strings; a user-defined guard must still check the permitted prefix and nonempty payload.
+
+**Proof:** Run the student target `ACADEMY_LAB_TARGET=starter npm run lab:ts-template-literals` and capture the failing assertion.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the correct type/runtime relationship" file="labs/ts-template-literals/starter/solution.ts" expected={"Recognized namespaces with nonempty identifiers pass; unrelated prefixes and empty values fail."}>
+
+Preserve exported `solve` and tighten the behavior without adding an unsound `as any` cast.
+
+```ts
+export type Key=`course:${string}`|`topic:${string}`;export function solve(raw:string):raw is Key{return typeof raw==='string'&&(/^(course|topic):[^\s:][^\s]*$/.test(raw));}
+```
+
+**Predict before running:** Recognized namespaces with nonempty identifiers pass; unrelated prefixes and empty values fail.
+
+**Why the fix works:** Template literal types encode string shape patterns in the type system, such as `course:${string}` and `topic:${string}`. The type does not validate runtime strings; a user-defined guard must still check the permitted prefix and nonempty payload.
+
+**Proof:** The same Node test now passes; the separate compiler-negative test rejects invalid static usage.
+
+</LessonStep>
+
+<LessonStep number={3} title="Run type-level and runtime assertions" file="labs/ts-template-literals/typecheck.ts" expected="The compiler checks invalid type uses and the runtime assertions prove the intended behavior.">
+
+```ts
+import {solve} from './solution/solution';
+import type {Key} from './solution/solution';
+let candidate:string='course:css';
+if(solve(candidate)){const trusted:Key=candidate;void trusted;}
+// @ts-expect-error invalid key namespace
+const invalid:Key='admin:all';
+void invalid;
+
+```
+
+**Predict before running:** The negative statements produce errors only where `@ts-expect-error` explicitly documents the rejection.
+
+**Why this matters:** An untested type signature can silently widen or accept unsafe input; compiler tests guard the API contract separately from runtime tests.
+
+**Proof:** Run `npm run typecheck` and `npm run lab:ts-template-literals` on the instructor solution.
+
+</LessonStep>
+
+## Explore and verify
+
+Test one wrong runtime value passed through `unknown`, even if the function's typed caller could not normally create it. TypeScript is structural and erased; actual validation, authorization and serialization remain system responsibilities.
+
+<Misconception claim="A type operator or assertion automatically changes runtime data to satisfy the declared type." correction={"Template literal types encode string shape patterns in the type system, such as course:${string} and topic:${string}. The type does not validate runtime strings; a user-defined guard must still check the permitted prefix and nonempty payload."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+Show a concrete typed call that appears valid but the starter executes incorrectly. Replace the wrong operation or unsafe assertion; do not weaken compiler checks. Discuss the difference between a compiler-invalid call and an untrusted runtime object.
+
+<KnowledgeCheck question={"What does a template literal type guarantee for a runtime string from the network?"} choices={["It validates network input automatically","It describes a compile-time shape; runtime validation is still necessary","It signs the value cryptographically","It converts all strings to UUIDs"]} correctIndex={1} explanation={"Template literal types encode string shape patterns in the type system, such as course:${string} and topic:${string}. The type does not validate runtime strings; a user-defined guard must still check the permitted prefix and nonempty payload."} misconception="Type-level transformations are not runtime sanitizers or validators." lessonId="04.02.07" />
+
+## Guided local lab
+
+Use the same offline `solution.test.mjs` to verify your edited starter and the instructor solution; `typecheck.ts` is a separate compilation gate. The academy does not execute arbitrary user TypeScript on its server or award remote grades.
+
+<LabGate lessonId="04.02.07" labId="lab.foundation.ts-template-literals" commands={["npm ci","npm run lab:ts-template-literals"]} interactive={false} />
+
+## Reflect
+
+Which invariant can the type system prove? Which must be checked after a network or storage boundary? Explain one production bug that a return type alone would not catch.
+
+## Official references
+
+- [TypeScript handbook — concept](https://www.typescriptlang.org/docs/handbook/2/template-literal-types.html)
+- [Official type-system reference](https://www.typescriptlang.org/docs/handbook/2/narrowing.html)

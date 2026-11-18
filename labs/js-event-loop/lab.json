@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.js-event-loop",
+  "lessonId": "03.03.01",
+  "title": "Call stack and event loop",
+  "runtime": "node-24-esm-async",
+  "status": "authored",
+  "starter": "labs/js-event-loop/starter/solution.mjs",
+  "solution": "labs/js-event-loop/solution/solution.mjs",
+  "tests": "labs/js-event-loop/solution.test.mjs",
+  "verify": [
+    "npm run lab:js-event-loop"
+  ],
+  "expected": "The call stack and event loop module handles correct execution order, failures and cancellation within an offline test.",
+  "security": "Injected synthetic transport, no public HTTP calls, keys, accounts, user records, external scripts or telemetry."
+}

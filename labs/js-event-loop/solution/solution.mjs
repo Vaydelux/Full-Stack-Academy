@@ -1,0 +1,1 @@
+export async function solve(){const events=['sync'];setTimeout(()=>events.push('timer'),0);Promise.resolve().then(()=>events.push('promise'));events.push('end-sync');await new Promise(resolve=>setTimeout(resolve,10));return events;}

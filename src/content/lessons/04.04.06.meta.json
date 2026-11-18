@@ -1,0 +1,39 @@
+{
+  "id": "04.04.06",
+  "title": "ESLint rules and safe typing",
+  "description": "Practice eslint rules and safe typing through an offline typed package/tooling scenario with runnable instructor tests, strict compilation and reviewed configuration evidence.",
+  "trackId": "04",
+  "moduleId": "04.04",
+  "level": "Beginner",
+  "estimatedMinutes": 60,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "node": "24",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "04.04.05"
+  ],
+  "objectives": [
+    "Explain the package or tooling contract behind eslint rules and safe typing",
+    "Repair a concrete module/toolchain bug without weakening type safety",
+    "Verify exported behavior, configuration or declarations using local TypeScript tests"
+  ],
+  "labId": "lab.foundation.ts-eslint",
+  "sources": [
+    {
+      "label": "Official TypeScript handbook",
+      "url": "https://typescript-eslint.io/rules/no-explicit-any/"
+    },
+    {
+      "label": "Official tooling or Node reference",
+      "url": "https://www.typescriptlang.org/docs/handbook/2/narrowing.html"
+    }
+  ],
+  "rubric": [
+    "I can describe how eslint rules and safe typing affects consumers of a package.",
+    "I repair the starter without publishing code or relying on cloud actions.",
+    "I check observable type/runtime behavior and note what is not yet a production release."
+  ]
+}

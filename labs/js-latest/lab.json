@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.js-latest",
+  "lessonId": "03.03.07",
+  "title": "Race conditions and latest result",
+  "runtime": "node-24-esm-async",
+  "status": "authored",
+  "starter": "labs/js-latest/starter/solution.mjs",
+  "solution": "labs/js-latest/solution/solution.mjs",
+  "tests": "labs/js-latest/solution.test.mjs",
+  "verify": [
+    "npm run lab:js-latest"
+  ],
+  "expected": "The race conditions and latest result module handles correct execution order, failures and cancellation within an offline test.",
+  "security": "Injected synthetic transport, no public HTTP calls, keys, accounts, user records, external scripts or telemetry."
+}

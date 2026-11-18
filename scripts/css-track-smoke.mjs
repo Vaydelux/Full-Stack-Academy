@@ -20,8 +20,8 @@ export async function verifyCssTrack({ page, base, assert, wait }) {
       assert.equal(await page.locator('meta[name="robots"][content*="noindex"]').count(),0,'Newly authored lesson must be indexed: ' + id);
     }
   }
-  await page.goto(base + '/learn/03.01.01');
-  assert.ok(await page.locator('meta[name="robots"][content*="noindex"]').count() > 0, 'Unauthored JavaScript lesson must remain noindex');
+  await page.goto(base + '/learn/05.01.01');
+  assert.ok(await page.locator('meta[name="robots"][content*="noindex"]').count() > 0, 'Next unauthored Git lesson must remain noindex');
 
   await page.setViewportSize({width:320,height:800});
   for (const group of groups) {

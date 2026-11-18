@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.js-equality",
+  "lessonId": "03.01.03",
+  "title": "Equality and truthiness",
+  "runtime": "node-24-esm",
+  "status": "authored",
+  "starter": "labs/js-equality/starter/solution.mjs",
+  "solution": "labs/js-equality/solution/solution.mjs",
+  "tests": "labs/js-equality/solution.test.mjs",
+  "verify": [
+    "npm run lab:js-equality"
+  ],
+  "expected": "The repaired equality and truthiness function satisfies real input/output and failure-boundary assertions.",
+  "security": "Fully offline Node.js exercise, synthetic data only, no remote request, API key, account, telemetry or uploaded work."
+}

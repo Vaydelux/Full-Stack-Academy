@@ -1,0 +1,38 @@
+{
+  "id": "03.03.05",
+  "title": "AbortController and cancellation",
+  "description": "Practice abortcontroller and cancellation using injected asynchronous operations, deterministic Node 24 tests, cancellation and failure cases with no external network dependency.",
+  "trackId": "03",
+  "moduleId": "03.03",
+  "level": "Beginner",
+  "estimatedMinutes": 55,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "03.03.04"
+  ],
+  "objectives": [
+    "Predict abortcontroller and cancellation behavior before executing an asynchronous operation",
+    "Diagnose the starter's race, ordering or error-handling defect",
+    "Prove cancellation, ordering or failure behavior with deterministic offline tests"
+  ],
+  "labId": "lab.foundation.js-abort",
+  "sources": [
+    {
+      "label": "MDN async reference",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/API/AbortController"
+    },
+    {
+      "label": "MDN JavaScript or browser reference",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal"
+    }
+  ],
+  "rubric": [
+    "I can explain the scheduler, cancellation or failure rule in abortcontroller and cancellation.",
+    "I reproduce a failing starter with a real Promise or injected transport.",
+    "I verify the success and failure paths without public network calls."
+  ]
+}

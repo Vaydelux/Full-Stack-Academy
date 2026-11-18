@@ -1,0 +1,1 @@
+export function solve(config:{module:string;moduleResolution:string}):boolean{return (config.module==='NodeNext'&&config.moduleResolution==='NodeNext')||(config.module==='ESNext'&&config.moduleResolution==='Bundler');}

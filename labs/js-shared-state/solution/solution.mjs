@@ -1,0 +1,1 @@
+export function solve(initial=[]){if(!Array.isArray(initial))throw new TypeError('Array required');const entries=[...initial];return Object.freeze({add(v){entries.push(v);return entries.length;},read(){return [...entries];}});}

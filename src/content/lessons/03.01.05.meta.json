@@ -1,0 +1,38 @@
+{
+  "id": "03.01.05",
+  "title": "Functions and closures",
+  "description": "Study functions and closures with a self-contained Node.js ESM debugging exercise, runnable student starter, tested instructor solution and official references.",
+  "trackId": "03",
+  "moduleId": "03.01",
+  "level": "Beginner",
+  "estimatedMinutes": 55,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "03.01.04"
+  ],
+  "objectives": [
+    "Explain the functions and closures behavior using a runnable example",
+    "Reproduce the starter defect and repair it with tested JavaScript",
+    "Verify ordinary, edge and invalid inputs without mutating unrelated state"
+  ],
+  "labId": "lab.foundation.js-closures",
+  "sources": [
+    {
+      "label": "MDN JavaScript reference",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Closures"
+    },
+    {
+      "label": "MDN language guide",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions"
+    }
+  ],
+  "rubric": [
+    "I can explain the underlying functions and closures rule, not only paste code.",
+    "I demonstrate a red starter and a green instructor solution with meaningful input assertions.",
+    "I preserve input data or state boundaries and document an untested case."
+  ]
+}

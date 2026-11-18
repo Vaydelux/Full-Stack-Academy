@@ -1,0 +1,96 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Model utility types and public projections using TypeScript's type operators","Reproduce a runtime defect despite valid-looking types","Validate safe usage with compiler-negative assertions and local tests"]} />
+
+## The problem we're solving
+
+A response helper exposes secret internal fields by spreading a full user object into a public API result. This advanced-types lab requires both compile-time evidence and meaningful runtime behavior; TypeScript's erased types alone cannot fix logic bugs.
+
+## Build the mental model
+
+Pick, Omit, Partial, Required and Readonly transform compile-time shapes; they do not strip runtime properties automatically. Construct an explicit public projection instead of returning raw objects with a type assertion.
+
+**Predict before running:** The returned object contains only explicitly public fields, even at runtime.
+
+## Prerequisites and preflight
+
+Continue from [the previous lesson](/learn/04.02.05). Open `labs/ts-utilities/starter/solution.ts`, `labs/ts-utilities/solution.test.mjs`, and `labs/ts-utilities/typecheck.ts`. The project compiles under strict TypeScript 5; use `npm run typecheck` and `npm run lab:ts-utilities`. The negative type test contains deliberate compiler errors justified by `@ts-expect-error`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the unsafe implementation" file="labs/ts-utilities/starter/solution.ts" expected="The implementation is type-correct enough to compile but fails the reviewed runtime contract.">
+
+```ts
+type User={id:string;name:string;secret:string};export type Public=Pick<User,'id'|'name'>;export function solve(user:Readonly<User>):Public{return user;}
+```
+
+**Predict before running:** A response helper exposes secret internal fields by spreading a full user object into a public API result.
+
+**Why it fails:** Pick, Omit, Partial, Required and Readonly transform compile-time shapes; they do not strip runtime properties automatically. Construct an explicit public projection instead of returning raw objects with a type assertion.
+
+**Proof:** Run the student target `ACADEMY_LAB_TARGET=starter npm run lab:ts-utilities` and capture the failing assertion.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the correct type/runtime relationship" file="labs/ts-utilities/starter/solution.ts" expected={"The returned object contains only explicitly public fields, even at runtime."}>
+
+Preserve exported `solve` and tighten the behavior without adding an unsound `as any` cast.
+
+```ts
+type User={id:string;name:string;secret:string};export type Public=Pick<User,'id'|'name'>;export function solve(user:Readonly<User>):Public{return {id:user.id,name:user.name};}
+```
+
+**Predict before running:** The returned object contains only explicitly public fields, even at runtime.
+
+**Why the fix works:** Pick, Omit, Partial, Required and Readonly transform compile-time shapes; they do not strip runtime properties automatically. Construct an explicit public projection instead of returning raw objects with a type assertion.
+
+**Proof:** The same Node test now passes; the separate compiler-negative test rejects invalid static usage.
+
+</LessonStep>
+
+<LessonStep number={3} title="Run type-level and runtime assertions" file="labs/ts-utilities/typecheck.ts" expected="The compiler checks invalid type uses and the runtime assertions prove the intended behavior.">
+
+```ts
+import {solve} from './solution/solution';
+const publicUser=solve({id:'u',name:'Ada',secret:'secret'});
+const id:string=publicUser.id;void id;
+// @ts-expect-error public projection must not expose secret
+publicUser.secret;
+
+```
+
+**Predict before running:** The negative statements produce errors only where `@ts-expect-error` explicitly documents the rejection.
+
+**Why this matters:** An untested type signature can silently widen or accept unsafe input; compiler tests guard the API contract separately from runtime tests.
+
+**Proof:** Run `npm run typecheck` and `npm run lab:ts-utilities` on the instructor solution.
+
+</LessonStep>
+
+## Explore and verify
+
+Test one wrong runtime value passed through `unknown`, even if the function's typed caller could not normally create it. TypeScript is structural and erased; actual validation, authorization and serialization remain system responsibilities.
+
+<Misconception claim="A type operator or assertion automatically changes runtime data to satisfy the declared type." correction={"Pick, Omit, Partial, Required and Readonly transform compile-time shapes; they do not strip runtime properties automatically. Construct an explicit public projection instead of returning raw objects with a type assertion."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+Show a concrete typed call that appears valid but the starter executes incorrectly. Replace the wrong operation or unsafe assertion; do not weaken compiler checks. Discuss the difference between a compiler-invalid call and an untrusted runtime object.
+
+<KnowledgeCheck question={"Does TypeScript Omit remove a property at runtime?"} choices={["Yes, from every object","No, explicitly construct the runtime projection","Only in a Next.js server component","Only if the property is optional"]} correctIndex={1} explanation={"Pick, Omit, Partial, Required and Readonly transform compile-time shapes; they do not strip runtime properties automatically. Construct an explicit public projection instead of returning raw objects with a type assertion."} misconception="Type-level transformations are not runtime sanitizers or validators." lessonId="04.02.06" />
+
+## Guided local lab
+
+Use the same offline `solution.test.mjs` to verify your edited starter and the instructor solution; `typecheck.ts` is a separate compilation gate. The academy does not execute arbitrary user TypeScript on its server or award remote grades.
+
+<LabGate lessonId="04.02.06" labId="lab.foundation.ts-utilities" commands={["npm ci","npm run lab:ts-utilities"]} interactive={false} />
+
+## Reflect
+
+Which invariant can the type system prove? Which must be checked after a network or storage boundary? Explain one production bug that a return type alone would not catch.
+
+## Official references
+
+- [TypeScript handbook — concept](https://www.typescriptlang.org/docs/handbook/utility-types.html)
+- [Official type-system reference](https://www.typescriptlang.org/docs/handbook/2/objects.html)

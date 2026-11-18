@@ -1,0 +1,1 @@
+export async function solve(){const out=['sync'];queueMicrotask(()=>out.push('queueMicrotask'));Promise.resolve().then(()=>out.push('promise'));setTimeout(()=>out.push('timer'),0);await new Promise(resolve=>setTimeout(resolve,10));return out;}

@@ -1,0 +1,1 @@
+type Settings={theme:'light'|'dark'};export function solve(raw:unknown):string{if(!raw||typeof raw!=='object'||!('theme' in raw)||(raw.theme!=='light'&&raw.theme!=='dark'))return 'INVALID';const data:Settings={theme:raw.theme};return data.theme.toUpperCase();}

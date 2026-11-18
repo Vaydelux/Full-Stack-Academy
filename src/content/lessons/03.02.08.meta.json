@@ -1,0 +1,38 @@
+{
+  "id": "03.02.08",
+  "title": "Bug Hunt shared mutable state",
+  "description": "Investigate bug hunt shared mutable state in an offline ES module with reproducible Node.js assertions, a failing starter and a reviewed instructor implementation.",
+  "trackId": "03",
+  "moduleId": "03.02",
+  "level": "Beginner",
+  "estimatedMinutes": 75,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "03.02.07"
+  ],
+  "objectives": [
+    "Explain how bug hunt shared mutable state manages value or object identity",
+    "Reproduce a failure with independent tests and a concrete counterexample",
+    "Implement the repaired ESM contract and check edge cases without hidden shared state"
+  ],
+  "labId": "lab.foundation.js-shared-state",
+  "sources": [
+    {
+      "label": "MDN concept reference",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Closures"
+    },
+    {
+      "label": "Language reference",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice"
+    }
+  ],
+  "rubric": [
+    "I can show one failing starter input for bug hunt shared mutable state.",
+    "I use lexical scope, object boundaries and module exports deliberately.",
+    "I verified passing instructor assertions and an invalid-input case."
+  ]
+}

@@ -1,0 +1,1 @@
+export function* solve(start,stop,step=1){if(![start,stop,step].every(Number.isFinite)||step===0)throw new RangeError('Finite nonzero step required');for(let x=start;step>0?x<stop:x>stop;x+=step)yield x;}

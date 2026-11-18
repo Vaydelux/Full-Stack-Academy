@@ -1,0 +1,38 @@
+{
+  "id": "03.03.03",
+  "title": "Promises and async await",
+  "description": "Practice promises and async await using injected asynchronous operations, deterministic Node 24 tests, cancellation and failure cases with no external network dependency.",
+  "trackId": "03",
+  "moduleId": "03.03",
+  "level": "Beginner",
+  "estimatedMinutes": 55,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "03.03.02"
+  ],
+  "objectives": [
+    "Predict promises and async await behavior before executing an asynchronous operation",
+    "Diagnose the starter's race, ordering or error-handling defect",
+    "Prove cancellation, ordering or failure behavior with deterministic offline tests"
+  ],
+  "labId": "lab.foundation.js-async-await",
+  "sources": [
+    {
+      "label": "MDN async reference",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function"
+    },
+    {
+      "label": "MDN JavaScript or browser reference",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/await"
+    }
+  ],
+  "rubric": [
+    "I can explain the scheduler, cancellation or failure rule in promises and async await.",
+    "I reproduce a failing starter with a real Promise or injected transport.",
+    "I verify the success and failure paths without public network calls."
+  ]
+}

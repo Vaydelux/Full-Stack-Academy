@@ -1,0 +1,39 @@
+{
+  "id": "04.02.05",
+  "title": "Discriminated unions and exhaustiveness",
+  "description": "Investigate discriminated unions and exhaustiveness through strict TypeScript, runnable instructor and student modules, plus compile-time negative tests and runtime assertions.",
+  "trackId": "04",
+  "moduleId": "04.02",
+  "level": "Beginner",
+  "estimatedMinutes": 60,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "node": "24",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "04.02.04"
+  ],
+  "objectives": [
+    "Model discriminated unions and exhaustiveness using TypeScript's type operators",
+    "Reproduce a runtime defect despite valid-looking types",
+    "Validate safe usage with compiler-negative assertions and local tests"
+  ],
+  "labId": "lab.foundation.ts-discriminated",
+  "sources": [
+    {
+      "label": "Official TypeScript handbook",
+      "url": "https://www.typescriptlang.org/docs/handbook/2/narrowing.html#discriminated-unions"
+    },
+    {
+      "label": "Official type-system reference",
+      "url": "https://www.typescriptlang.org/docs/handbook/2/narrowing.html#exhaustiveness-checking"
+    }
+  ],
+  "rubric": [
+    "I can explain the type-level operation used in discriminated unions and exhaustiveness.",
+    "I can show one compile-time invalid use and one runtime failure from the starter.",
+    "I repaired the implementation and verified both compiler and Node assertions."
+  ]
+}

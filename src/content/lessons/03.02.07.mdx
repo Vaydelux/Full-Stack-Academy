@@ -1,0 +1,91 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Explain how immutability and object copying manages value or object identity","Reproduce a failure with independent tests and a concrete counterexample","Implement the repaired ESM contract and check edge cases without hidden shared state"]} />
+
+## The problem we're solving
+
+A stock update mutates a nested location object and changes the original snapshot held by another UI component. The practice fixture uses Node 24 ESM and synthetic data, not an external service or browser deployment.
+
+## Build the mental model
+
+Object spread is shallow. To update a nested object without affecting previous snapshots, copy each layer along the updated path. Validate the requested change and avoid treating Object.freeze on the top level as deep immutability.
+
+**Predict before running:** The update returns a fresh location map and never modifies the previous stock snapshot.
+
+## Prerequisites and preflight
+
+Work from [the previous lesson](/learn/03.02.06). Inspect `labs/js-immutability/starter/solution.mjs` and `labs/js-immutability/solution.test.mjs`. Run `ACADEMY_LAB_TARGET=starter npm run lab:js-immutability` in Bash or use the equivalent temporary environment variable in PowerShell. The initial test is meant to fail.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce an identity, module, or state failure" file="labs/js-immutability/starter/solution.mjs" expected="At least one assertion reproduces the reported defect.">
+
+```js
+export function solve(stock,warehouse,delta){stock.locations[warehouse]=(stock.locations[warehouse]||0)+delta;return stock;}
+```
+
+**Predict before running:** A stock update mutates a nested location object and changes the original snapshot held by another UI component.
+
+**Why this fails:** Object spread is shallow. To update a nested object without affecting previous snapshots, copy each layer along the updated path. Validate the requested change and avoid treating Object.freeze on the top level as deep immutability.
+
+**Proof:** Run the starter-target tests and identify the input where the observed value differs from the expected value.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the semantic boundary" file="labs/js-immutability/starter/solution.mjs" expected={"The update returns a fresh location map and never modifies the previous stock snapshot."}>
+
+Implement the corrected behavior using the relevant lexical, prototype, module or copying rule. Preserve the named `solve` export.
+
+```js
+export function solve(stock,warehouse,delta){if(!stock||typeof stock.locations!=='object'||typeof warehouse!=='string'||!warehouse||!Number.isInteger(delta))throw new TypeError('Invalid adjustment');const current=stock.locations[warehouse]??0;const next=current+delta;if(next<0)throw new RangeError('Negative stock');return {...stock,locations:{...stock.locations,[warehouse]:next}};}
+```
+
+**Predict before running:** The update returns a fresh location map and never modifies the previous stock snapshot.
+
+**Why the repair works:** Object spread is shallow. To update a nested object without affecting previous snapshots, copy each layer along the updated path. Validate the requested change and avoid treating Object.freeze on the top level as deep immutability.
+
+**Proof:** Compare independent instances, object identity or errors under the same test file.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify the contract with executable assertions" file="labs/js-immutability/solution.test.mjs" expected="The reviewed solution passes distinct positive, edge and failure cases.">
+
+```js
+const before={sku:'x',locations:{A:4,B:2}};const after=solve(before,'A',-2);assert.deepEqual(after.locations,{A:2,B:2});assert.equal(before.locations.A,4);assert.notEqual(after.locations,before.locations);assert.throws(()=>solve(before,'A',-10),RangeError);
+```
+
+**Predict before running:** Changing object identity or error handling fixes the failing assertions without changing unrelated behavior.
+
+**Why it matters:** Code that looks plausible can still violate module boundaries or state isolation. Repeatability is stronger evidence than a screenshot.
+
+**Proof:** Run `npm run lab:js-immutability` and compare the results with the repaired student starter.
+
+</LessonStep>
+
+## Explore and verify
+
+Try a second independent object or call order, and verify the absence of global state leaks. ESM imports are explicit dependencies; do not interpret a successful local test as a network security guarantee.
+
+<Misconception claim="Methods, objects and exports behave identically regardless of their owner or call site." correction={"Object spread is shallow. To update a nested object without affecting previous snapshots, copy each layer along the updated path. Validate the requested change and avoid treating Object.freeze on the top level as deep immutability."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+Start with the smallest failing input from the test. Record which object, binding or module is unexpectedly shared or lost. Patch that contract rather than changing expected outputs. For each test, identify what would fail if the original bug returned.
+
+<KnowledgeCheck question={"How many layers must be copied for an immutable nested update?"} choices={["Only the root object","Each modified path layer","Only the leaf property value","None if strict mode is enabled"]} correctIndex={1} explanation={"Object spread is shallow. To update a nested object without affecting previous snapshots, copy each layer along the updated path. Validate the requested change and avoid treating Object.freeze on the top level as deep immutability."} misconception="State ownership and module boundaries are observable contracts, not formatting preferences." lessonId="03.02.07" />
+
+## Guided local lab
+
+Work in `labs/js-immutability/starter/solution.mjs`. Compare it to `labs/js-immutability/solution/solution.mjs` after attempting the repair; the same offline `solution.test.mjs` file tests both. The starter must become green when fixed; no remote grading or server persistence is implied.
+
+<LabGate lessonId="03.02.07" labId="lab.foundation.js-immutability" commands={["npm ci","npm run lab:js-immutability"]} interactive={false} />
+
+## Reflect
+
+Why did the starting implementation fail? Which language guarantee is now exercised? What would change if two workers, separate browser tabs, or network storage entered the architecture?
+
+## Official references
+
+- [MDN JavaScript primary reference](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax)
+- [MDN supporting documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/freeze)

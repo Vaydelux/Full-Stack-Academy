@@ -1,0 +1,1 @@
+export type First<T extends readonly unknown[]>=T extends readonly [infer H,...unknown[]]?H:T[number]|undefined;export function solve<T extends readonly unknown[]>(items:T):First<T>{return items[0] as First<T>;}

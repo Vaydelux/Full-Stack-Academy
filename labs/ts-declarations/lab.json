@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.ts-declarations",
+  "lessonId": "04.04.07",
+  "title": "Declaration generation and public types",
+  "runtime": "typescript-5-node-24-tsx",
+  "status": "authored",
+  "starter": "labs/ts-declarations/starter/solution.ts",
+  "solution": "labs/ts-declarations/solution/solution.ts",
+  "tests": "labs/ts-declarations/solution.test.mjs",
+  "verify": [
+    "npm run lab:ts-declarations"
+  ],
+  "expected": "The declaration generation and public types local toolchain contract has runnable test evidence without publishing packages.",
+  "security": "No publishing credentials, third-party calls, remote builds, user account data, telemetry or Vercel consumption."
+}

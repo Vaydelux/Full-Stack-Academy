@@ -1,0 +1,91 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Distinguish static typing from runtime trust in dtos vs domain types","Validate unknown input or normalize transport data before constructing a domain value","Verify rejected and accepted cases with runnable tests plus compiler checks"]} />
+
+## The problem we're solving
+
+A public API DTO with price in cents is used as a domain money value without checking integer units or currency. In a full-stack application, this boundary can lead to incorrect data or information disclosure even if the TypeScript project compiles successfully.
+
+## Build the mental model
+
+DTOs represent transport contracts, while domain types encode normalized business meaning. Validate the DTO and map only allowed fields into a stable domain model. Never trust a TypeScript interface to enforce positive amounts, permitted currency, or tenant authorization.
+
+**Predict before running:** Cents are normalized into domain units only after integer and currency validation.
+
+## Prerequisites and preflight
+
+Continue from [the previous topic](/learn/04.03.05). Inspect `labs/ts-dtos/starter/solution.ts`, `labs/ts-dtos/solution/solution.ts`, and the Node/tsx tests. This lab uses local synthetic data, pinned TypeScript and Zod versions where applicable; no database credentials, remote API or deployment are needed.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce a broken trust boundary" file="labs/ts-dtos/starter/solution.ts" expected="Malformed values are accepted, leaked or crash the unchecked starter.">
+
+```ts
+type DTO={id:string;priceCents:number;currency:string};export function solve(raw:unknown){const dto=raw as DTO;return {id:dto.id,price:dto.priceCents,currency:dto.currency};}
+```
+
+**Predict before running:** A public API DTO with price in cents is used as a domain money value without checking integer units or currency.
+
+**Why it fails:** DTOs represent transport contracts, while domain types encode normalized business meaning. Validate the DTO and map only allowed fields into a stable domain model. Never trust a TypeScript interface to enforce positive amounts, permitted currency, or tenant authorization.
+
+**Proof:** Run the starter-target verifier; record the exact unsupported assumption, not just the stack trace.
+
+</LessonStep>
+
+<LessonStep number={2} title="Validate and map a trusted domain value" file="labs/ts-dtos/starter/solution.ts" expected={"Cents are normalized into domain units only after integer and currency validation."}>
+
+Use unknown at the boundary, a runtime predicate or strict schema and a public result type. Handle expected invalid data explicitly.
+
+```ts
+type DTO={id:string;priceCents:number;currency:'PHP'|'USD'};export type Domain=Readonly<{id:string;price:number;currency:DTO['currency']}>;export function solve(raw:unknown):Domain|null{if(!raw||typeof raw!=='object'||!('id' in raw)||typeof raw.id!=='string'||!raw.id||!('priceCents' in raw)||typeof raw.priceCents!=='number'||!Number.isSafeInteger(raw.priceCents)||raw.priceCents<0||!('currency' in raw)||(raw.currency!=='PHP'&&raw.currency!=='USD'))return null;return Object.freeze({id:raw.id,price:raw.priceCents/100,currency:raw.currency});}
+```
+
+**Predict before running:** Cents are normalized into domain units only after integer and currency validation.
+
+**Why the repair works:** DTOs represent transport contracts, while domain types encode normalized business meaning. Validate the DTO and map only allowed fields into a stable domain model. Never trust a TypeScript interface to enforce positive amounts, permitted currency, or tenant authorization.
+
+**Proof:** Compare clean and malformed cases against the verified instructor module.
+
+</LessonStep>
+
+<LessonStep number={3} title="Exercise the successful and rejected cases" file="labs/ts-dtos/solution.test.mjs" expected="The same offline tests distinguish valid and invalid input without hidden network state.">
+
+```ts
+assert.deepEqual(solve({id:'p1',priceCents:1250,currency:'PHP'}),{id:'p1',price:12.5,currency:'PHP'});assert.equal(solve({id:'p1',priceCents:1.5,currency:'PHP'}),null);assert.equal(solve({id:'p1',priceCents:100,currency:'BTC'}),null);
+```
+
+**Predict before running:** Invalid external input never enters the typed domain as though it had passed validation.
+
+**Why this matters:** A compiler's assurances apply to typed source relationships, not arbitrary strings from a network or storage boundary.
+
+**Proof:** Run `npm run lab:ts-dtos`, then `npm run typecheck` for compile-time contracts.
+
+</LessonStep>
+
+## Explore and verify
+
+Use boundary-oriented reasoning: the outer layer receives unknown, the parser enforces shape and units, and only then may a domain function use a trusted type. Separate validation from authorization; a successful schema parse never proves the actor has permission.
+
+<Misconception claim="A DTO interface or as assertion proves the runtime value has the fields or access rights claimed." correction={"DTOs represent transport contracts, while domain types encode normalized business meaning. Validate the DTO and map only allowed fields into a stable domain model. Never trust a TypeScript interface to enforce positive amounts, permitted currency, or tenant authorization."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+Find the smallest malformed payload that reveals the starter's flaw, whether a missing property, malformed date, unexpected field or wrong unit. Record the old and new behavior. Verify that the corrected implementation avoids throwing on expected invalid input unless that is the explicitly documented contract.
+
+<KnowledgeCheck question={"Why should a DTO be mapped rather than exposed directly?"} choices={["To normalize and validate transport data at the domain boundary","To skip all runtime checks","To make JSON deeply immutable automatically","To encrypt money values"]} correctIndex={0} explanation={"DTOs represent transport contracts, while domain types encode normalized business meaning. Validate the DTO and map only allowed fields into a stable domain model. Never trust a TypeScript interface to enforce positive amounts, permitted currency, or tenant authorization."} misconception="Static types neither parse network data nor authorize operations." lessonId="04.03.06" />
+
+## Guided local lab
+
+Work in `labs/ts-dtos/starter/solution.ts`, compare with the instructor after debugging, and use `ACADEMY_LAB_TARGET=starter` to run the same offline tests. Where provided, `typecheck.ts` adds compile-time rejection cases. This lab does not persist or grade submissions in the cloud.
+
+<LabGate lessonId="04.03.06" labId="lab.foundation.ts-dtos" commands={["npm ci","npm run lab:ts-dtos"]} interactive={false} />
+
+## Reflect
+
+Which fields and units did you validate? Why is compile-time typing insufficient here? What additional authentication, authorization, rate limiting or auditing would a production endpoint require?
+
+## Official references
+
+- [Official type or schema reference](https://www.typescriptlang.org/docs/handbook/2/objects.html)
+- [Official supporting material](https://zod.dev/basics)

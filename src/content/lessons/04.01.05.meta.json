@@ -1,0 +1,39 @@
+{
+  "id": "04.01.05",
+  "title": "Optional nullable and undefined",
+  "description": "Learn optional nullable and undefined with a strict TypeScript source module, failing starter, tested instructor solution and concrete runtime boundary.",
+  "trackId": "04",
+  "moduleId": "04.01",
+  "level": "Beginner",
+  "estimatedMinutes": 55,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "node": "24",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "04.01.04"
+  ],
+  "objectives": [
+    "Explain the compile-time contract for optional nullable and undefined",
+    "Replace an unsound assertion or incorrect implementation with a runtime-safe model",
+    "Verify typed code with strict TypeScript and executable local assertions"
+  ],
+  "labId": "lab.foundation.ts-nullish",
+  "sources": [
+    {
+      "label": "TypeScript handbook",
+      "url": "https://www.typescriptlang.org/docs/handbook/2/everyday-types.html#null-and-undefined"
+    },
+    {
+      "label": "Official TypeScript or JavaScript reference",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Nullish_coalescing"
+    }
+  ],
+  "rubric": [
+    "I explain what TypeScript verifies and what it erases at runtime.",
+    "I repair the optional nullable and undefined bug while keeping strict compilation valid.",
+    "I demonstrate one success and one invalid-input case in the offline verifier."
+  ]
+}

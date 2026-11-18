@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.ts-dtos",
+  "lessonId": "04.03.06",
+  "title": "DTOs vs domain types",
+  "runtime": "typescript-5-zod4-node-24-tsx",
+  "status": "authored",
+  "starter": "labs/ts-dtos/starter/solution.ts",
+  "solution": "labs/ts-dtos/solution/solution.ts",
+  "tests": "labs/ts-dtos/solution.test.mjs",
+  "verify": [
+    "npm run lab:ts-dtos"
+  ],
+  "expected": "The dtos vs domain types boundary validates real input before returning a typed domain value.",
+  "security": "Offline synthetic payloads only, no server, accounts, keys, external HTTP, PII, uploads or hosted execution."
+}
