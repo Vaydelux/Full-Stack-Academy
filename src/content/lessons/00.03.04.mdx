@@ -1,0 +1,93 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Use Console, Network and Performance panels for distinct questions","Inspect status and Content-Type without logging response secrets","Measure an async request with injected clocks in a deterministic test","Distinguish a network exception from a valid HTTP error response"]} />
+
+## The problem we're solving
+
+A fetch returns status 404, but the application reports 'Network unavailable.' Another request takes far longer than expected, yet no one captured timing. A useful diagnostic separates HTTP status, transport errors and elapsed time.
+
+## Build the mental model
+
+The Console records JavaScript errors and selected application logs. Network shows requests, statuses, payload metadata and waterfall timing. Performance profiles main-thread activity and marks. An HTTP error response is not a failed connection; fetch normally resolves for 404/500. Timings need a monotonic clock for elapsed durations: performance.now() is preferable to Date.now(). Logs should contain route templates, status and duration but not bearer tokens, cookies or sensitive bodies. This local lab makes a reusable probe with a fake clock so CI is deterministic.
+
+**Predict before running:** If fetch resolves with status 404, should a probe classify it as transport failure? No. It is an HTTP response with ok:false.
+
+## Prerequisites
+
+Complete [the previous lesson](/learn/00.03.03), install Node.js 24, and work in a trusted local checkout. Keep debugging evidence synthetic or redacted. There are no external accounts, API keys, or paid services required.
+
+<LessonStep number={1} title={"Inspect Console and Network"} file="labs/network-observation/starter/exercise.mjs" expected={"A 404 is recorded with ok:false when the server actually responded."}>
+
+Open a browser page and DevTools. Filter Network by Fetch/XHR; inspect the last request's method, status and timing. Console errors are often effects of a failed request, not the source.
+
+```js
+const response = await fetch('/some-route');
+console.log({ status: response.status, ok: response.ok });
+// Avoid logging tokens, cookies, or response bodies from real accounts.
+```
+
+</LessonStep>
+
+<LessonStep number={2} title={"Record a bounded timing measurement"} file="labs/network-observation/starter/exercise.mjs" expected={"The probe reports status, type and elapsed milliseconds without revealing response contents."}>
+
+Use an injected clock so tests simulate elapsed time without waiting; do not treat Date.now clock changes as reliable latency measurements.
+
+```js
+export async function probeRequest(request, now = () => performance.now()) {
+  const start=now();
+  try {
+    const res=await request();
+    return {kind:'http',status:res.status,ok:res.ok,
+      durationMs:Math.max(0,Math.round(now()-start)),
+      contentType:res.headers.get('content-type')};
+  } catch {
+    return {kind:'network-error',status:null,ok:false,
+      durationMs:Math.max(0,Math.round(now()-start)),contentType:null};
+  }
+}
+```
+
+</LessonStep>
+
+<LessonStep number={3} title={"Verify an HTTP error and a transport error"} file="labs/network-observation/starter/exercise.mjs" expected={"HTTP 404 remains an HTTP response; a thrown request becomes network-error."}>
+
+Pass a fake response and then a throwing function. Use a monotonic fake clock for predictable output, and add the results to your issue's diagnostic evidence.
+
+```js
+let t=0;
+const clock=()=>t;
+const result=await probeRequest(async()=>{t+=15;return new Response('missing',{status:404});},clock);
+console.log(result); // kind=http, status=404, ok=false, durationMs=15
+```
+
+</LessonStep>
+
+## Bug Hunt: identify and verify the repair
+
+A developer logs the entire response headers and body for diagnostics, accidentally exposing a bearer token in shared logs. Replace that with an allowlisted status, media type and duration diagnostic.
+
+<KnowledgeCheck question={"What is the correct classification when an HTTP request returns status 500?"} choices={["A transport failure by definition","A valid HTTP response with server-error status","A browser syntax error","Proof the DNS server is down"]} correctIndex={1} explanation={"HTTP 500 is a response; transport failure means no usable response was delivered."} misconception={"Status codes and connection failures require different handling."} lessonId="00.03.04" />
+
+## Guided lab and independent validation
+
+Open `labs/network-observation/starter/exercise.mjs` and implement the exercise. The instructor reference is in `labs/network-observation/solution/exercise.mjs`. From the repository root, use the following commands to test **your starter** rather than the instructor solution:
+
+```powershell
+$env:ACADEMY_LAB_TARGET = 'starter'
+npm run lab:network-observation
+Remove-Item Env:ACADEMY_LAB_TARGET
+```
+
+In Bash: `ACADEMY_LAB_TARGET=starter npm run lab:network-observation`. Tests should fail initially, then pass after your repair. The default lab command tests the reviewed instructor solution. Automated tests do not validate your manual debugger or DevTools actions; those remain self-assessed.
+
+<LabGate lessonId="00.03.04" labId="lab.foundation.network-observation" commands={["npm ci","npm run lab:network-observation"]} interactive={false} />
+
+## Reflect
+
+State the original symptom, the evidence you collected, the smallest failing case, the root cause, the repair and the regression test. Avoid changing unrelated features and redact credentials before sharing a report.
+
+## Official references
+
+- [Chrome Network panel reference](https://developer.chrome.com/docs/devtools/network/reference/)
+- [MDN Performance API](https://developer.mozilla.org/en-US/docs/Web/API/Performance_API)

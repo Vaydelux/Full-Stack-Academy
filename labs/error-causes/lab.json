@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.error-causes",
+  "lessonId": "00.03.01",
+  "title": "Read error messages from bottom up",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/error-causes/starter/exercise.mjs",
+  "solution": "labs/error-causes/solution/exercise.mjs",
+  "tests": "labs/error-causes/solution.test.mjs",
+  "verify": [
+    "npm run lab:error-causes"
+  ],
+  "expected": "I passed the bounded and cyclic error-chain regression tests.",
+  "security": "Local deterministic fixtures. No user code runs on the course server; never disclose private logs."
+}

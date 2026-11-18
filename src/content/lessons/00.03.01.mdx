@@ -1,0 +1,93 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Distinguish an error message, stack frame and nested cause","Locate an actionable stack frame instead of blaming every caller","Walk a bounded Error.cause chain safely, including circular references","Turn an observed stack trace into a focused debugging hypothesis"]} />
+
+## The problem we're solving
+
+A page fails with 'Unable to load dashboard,' but the real failure started when configuration was missing. Guessing at the last visible UI symptom wastes effort and encourages random fixes.
+
+## Build the mental model
+
+An Error has a name, message, and usually a stack showing where it was thrown followed by callers. The top stack frame often points closest to the throw; it is not universally the 'bottom line.' An Error.cause chain records higher-level error wrappers; following it toward the deepest cause can reveal the originating failure. Console output order varies by runtime and formatting. Diagnose the cause chain first, identify the first relevant application frame, then reproduce the failure. Never paste logs containing credentials or personal data.
+
+**Predict before running:** If Error('Load failed', {cause:new TypeError('missing config')}) is thrown, which message most directly names the originating failure? 'missing config', while the wrapper provides operation context.
+
+## Prerequisites
+
+Complete [the previous lesson](/learn/00.02.08), install Node.js 24, and work in a trusted local checkout. Keep debugging evidence synthetic or redacted. There are no external accounts, API keys, or paid services required.
+
+<LessonStep number={1} title={"Construct a reproducible error"} file="labs/error-causes/starter/exercise.mjs" expected={"The wrapper says 'Unable to load dashboard' and the cause says 'missing config'."}>
+
+Write two errors with a causal link. Run the snippet in Node 24; inspect name, message, stack and cause.
+
+```js
+const underlying = new TypeError('missing config');
+const wrapped = new Error('Unable to load dashboard', { cause: underlying });
+console.log(wrapped.message);
+console.log(wrapped.cause?.message);
+```
+
+</LessonStep>
+
+<LessonStep number={2} title={"Trace causes without looping"} file="labs/error-causes/starter/exercise.mjs" expected={"The chain includes wrapper first and deepest originating error last."}>
+
+Implement traceCauses in your starter. Stop after eight levels and track visited errors; Error.cause can be arbitrary and even cyclic.
+
+```js
+export function traceCauses(error, maxDepth = 8) {
+  const chain = [], seen = new Set();
+  let current = error;
+  while (current instanceof Error && !seen.has(current) && chain.length < maxDepth) {
+    seen.add(current);
+    chain.push({ name: current.name, message: current.message });
+    current = current.cause;
+  }
+  return chain;
+}
+```
+
+</LessonStep>
+
+<LessonStep number={3} title={"Select a useful application frame"} file="labs/error-causes/starter/exercise.mjs" expected={"A matching lab frame is returned; a stack containing only Node internals returns null."}>
+
+A stack entry is a formatted string, not a reliable structured API. For this exercise, locate a line containing a lab path; return null if no such frame appears.
+
+```js
+export function firstLabFrame(stack) {
+  return String(stack ?? '').split('\n').slice(1)
+    .map(line => line.trim())
+    .find(line => line.includes('/labs/') || line.includes('\\labs\\')) ?? null;
+}
+```
+
+</LessonStep>
+
+## Bug Hunt: identify and verify the repair
+
+The team sees a TypeError inside an Error.cause chain, but edits the dashboard CSS. Confirm the missing configuration in a local reproducible fixture, then repair configuration validation. Redact the error before sharing.
+
+<KnowledgeCheck question={"When investigating nested JavaScript errors, what is the best first step?"} choices={["Ignore the stack and rewrite the UI","Examine the originating cause and first relevant application frame","Assume the bottom stack line is always the fault","Send the complete unredacted production log to everyone"]} correctIndex={1} explanation={"A cause chain and actionable frame identify where to reproduce the failure."} misconception={"The stack display order and cause-chain direction are distinct."} lessonId="00.03.01" />
+
+## Guided lab and independent validation
+
+Open `labs/error-causes/starter/exercise.mjs` and implement the exercise. The instructor reference is in `labs/error-causes/solution/exercise.mjs`. From the repository root, use the following commands to test **your starter** rather than the instructor solution:
+
+```powershell
+$env:ACADEMY_LAB_TARGET = 'starter'
+npm run lab:error-causes
+Remove-Item Env:ACADEMY_LAB_TARGET
+```
+
+In Bash: `ACADEMY_LAB_TARGET=starter npm run lab:error-causes`. Tests should fail initially, then pass after your repair. The default lab command tests the reviewed instructor solution. Automated tests do not validate your manual debugger or DevTools actions; those remain self-assessed.
+
+<LabGate lessonId="00.03.01" labId="lab.foundation.error-causes" commands={["npm ci","npm run lab:error-causes"]} interactive={false} />
+
+## Reflect
+
+State the original symptom, the evidence you collected, the smallest failing case, the root cause, the repair and the regression test. Avoid changing unrelated features and redact credentials before sharing a report.
+
+## Official references
+
+- [Node.js Error reference](https://nodejs.org/api/errors.html)
+- [MDN Error cause](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/cause)

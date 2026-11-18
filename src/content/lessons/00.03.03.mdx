@@ -1,0 +1,90 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Configure a debugger for an ES module in Node.js","Pause at a conditional breakpoint and inspect function state","Use a watch expression to inspect intermediate calculations","Repair a verified bug and protect the fix with regression tests"]} />
+
+## The problem we're solving
+
+An invoice of two units priced at 250 centavos each shows a subtotal of 252 instead of 500. Logging more values is possible, but a debugger lets you pause exactly where a wrong expression is evaluated.
+
+## Build the mental model
+
+A breakpoint pauses execution before or at an operation. Stepping over executes the next statement without entering calls; stepping into follows a call; stepping out resumes to the caller. Watch expressions calculate values while paused. Conditional breakpoints limit noise to matching cases. The built-in Node inspector can expose debugging control; keep it bound to loopback and never deploy an accessible inspector to production. For money, use integer minor units; tax is represented here in basis points (100 basis points = 1%).
+
+**Predict before running:** Why is priceCents + quantity wrong for two items? It adds quantities to prices instead of multiplying units by the unit price.
+
+## Prerequisites
+
+Complete [the previous lesson](/learn/00.03.02), install Node.js 24, and work in a trusted local checkout. Keep debugging evidence synthetic or redacted. There are no external accounts, API keys, or paid services required.
+
+<LessonStep number={1} title={"Reproduce the incorrect subtotal"} file="labs/debugger-watches/starter/exercise.mjs" expected={"The starter fails an invoice-total assertion."}>
+
+Open the starter and run its tests with ACADEMY_LAB_TARGET=starter. The starter deliberately contains the addition bug. Copy the failing assertion into your issue note.
+
+```js
+// Buggy starter snippet:
+const lineTotal = item.priceCents + item.quantity;
+// For 250 cents and 2 items: 252, but the correct result is 500.
+```
+
+</LessonStep>
+
+<LessonStep number={2} title={"Attach a debugger and watch the values"} file="labs/debugger-watches/starter/exercise.mjs" expected={"Execution pauses in your local debugger and displays quantity and price values."}>
+
+Set a breakpoint on lineTotal in your editor. In VS Code choose Run and Debug > JavaScript Debug Terminal, or run Node with --inspect-brk=127.0.0.1:9229 in a trusted local terminal and attach. Watch item.priceCents, item.quantity and lineTotal.
+
+```js
+node --inspect-brk=127.0.0.1:9229 labs/debugger-watches/starter/exercise.mjs
+# Or set a breakpoint in VS Code and use Run and Debug on the file.
+```
+
+</LessonStep>
+
+<LessonStep number={3} title={"Correct the calculation and validate inputs"} file="labs/debugger-watches/starter/exercise.mjs" expected={"Two units at 250 cents have subtotal 500; at 10% tax, total is 550."}>
+
+Replace addition with multiplication. Reject invalid quantities, cents and tax rates to avoid silently rendering NaN or negative totals.
+
+```js
+export function invoiceTotal(items, taxBasisPoints = 0) {
+  if (!Number.isSafeInteger(taxBasisPoints) || taxBasisPoints < 0 || taxBasisPoints > 10000) throw new Error('Invalid tax rate');
+  let subtotalCents = 0;
+  for (const item of items) {
+    if (!Number.isSafeInteger(item.quantity) || item.quantity < 1 || !Number.isSafeInteger(item.priceCents) || item.priceCents < 0) throw new Error('Invalid line item');
+    subtotalCents += item.quantity * item.priceCents;
+    if (!Number.isSafeInteger(subtotalCents)) throw new Error('Unsafe total');
+  }
+  const taxCents = Math.round(subtotalCents * taxBasisPoints / 10000);
+  return { subtotalCents, taxCents, totalCents: subtotalCents + taxCents };
+}
+```
+
+</LessonStep>
+
+## Bug Hunt: identify and verify the repair
+
+A developer corrects the total on the UI with a display-only adjustment. The server calculation remains wrong. Fix the underlying arithmetic function and run the same regression tests at the source of the incorrect value.
+
+<KnowledgeCheck question={"Which watch expression exposes the bug for priceCents=250 and quantity=2?"} choices={["item.priceCents + item.quantity","window.innerWidth","document.title","process.cwd()"]} correctIndex={0} explanation={"Watching the wrong expression shows 252 instead of the required multiplication result 500."} misconception={"The debugger is useful only if you watch the values around the failing branch."} lessonId="00.03.03" />
+
+## Guided lab and independent validation
+
+Open `labs/debugger-watches/starter/exercise.mjs` and implement the exercise. The instructor reference is in `labs/debugger-watches/solution/exercise.mjs`. From the repository root, use the following commands to test **your starter** rather than the instructor solution:
+
+```powershell
+$env:ACADEMY_LAB_TARGET = 'starter'
+npm run lab:debugger-watches
+Remove-Item Env:ACADEMY_LAB_TARGET
+```
+
+In Bash: `ACADEMY_LAB_TARGET=starter npm run lab:debugger-watches`. Tests should fail initially, then pass after your repair. The default lab command tests the reviewed instructor solution. Automated tests do not validate your manual debugger or DevTools actions; those remain self-assessed.
+
+<LabGate lessonId="00.03.03" labId="lab.foundation.debugger-watches" commands={["npm ci","npm run lab:debugger-watches"]} interactive={false} />
+
+## Reflect
+
+State the original symptom, the evidence you collected, the smallest failing case, the root cause, the repair and the regression test. Avoid changing unrelated features and redact credentials before sharing a report.
+
+## Official references
+
+- [Chrome DevTools breakpoints](https://developer.chrome.com/docs/devtools/javascript/breakpoints)
+- [Node.js inspector debugger](https://nodejs.org/api/debugger.html)

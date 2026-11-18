@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.minimal-repro",
+  "lessonId": "00.03.02",
+  "title": "Reproduce minimize and isolate bugs",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/minimal-repro/starter/exercise.mjs",
+  "solution": "labs/minimal-repro/solution/exercise.mjs",
+  "tests": "labs/minimal-repro/solution.test.mjs",
+  "verify": [
+    "npm run lab:minimal-repro"
+  ],
+  "expected": "I passed the minimal-case and invalid-input regression tests.",
+  "security": "Local deterministic fixtures. No user code runs on the course server; never disclose private logs."
+}
