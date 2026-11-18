@@ -22,7 +22,7 @@ Work from [the previous lesson](/learn/03.01.08). Inspect `labs/js-iterators/sta
 <LessonStep number={1} title="Reproduce an identity, module, or state failure" file="labs/js-iterators/starter/solution.mjs" expected="At least one assertion reproduces the reported defect.">
 
 ```js
-export function* solve(start,stop,step=1){for(let x=start;x<=stop;x+=step)yield x;}
+export function* solve(start,stop,step=1){if(step===0)throw new RangeError('Zero step');for(let x=start;x<=stop;x+=step)yield x;}
 ```
 
 **Predict before running:** A numeric generator includes the end boundary and never rejects a zero step, which can trap callers in an infinite loop.

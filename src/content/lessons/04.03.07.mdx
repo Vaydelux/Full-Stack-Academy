@@ -22,7 +22,7 @@ Continue from [the previous topic](/learn/04.03.06). Inspect `labs/ts-type-tests
 <LessonStep number={1} title="Reproduce a broken trust boundary" file="labs/ts-type-tests/starter/solution.ts" expected="Malformed values are accepted, leaked or crash the unchecked starter.">
 
 ```ts
-export type First<T extends readonly unknown[]>=unknown;export function solve<T extends readonly unknown[]>(items:T):First<T>{return items[0];}
+export type First<T extends readonly unknown[]>=unknown;export function solve<T extends readonly unknown[]>(items:T):First<T>{return undefined;}
 ```
 
 **Predict before running:** A generic first-element helper is widened to unknown, and callers lose the concrete element type without a compiler regression test.
