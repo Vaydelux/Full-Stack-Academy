@@ -1,0 +1,103 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Diagnose the modern selectors including has issue from observed CSS behavior","Apply the correct CSS rule to preserve accessibility and maintainability","Verify the result using computed styles and relevant interaction states"]} />
+
+## The problem we're solving
+
+Checking a selection box styles only the checkbox, while the surrounding panel should visibly indicate selected state. We will repair a specific CSS behavior in an offline component so that a future design system has predictable boundaries. There is no external font, image or API dependency.
+
+## Build the mental model
+
+The relational :has() pseudo-class matches an element based on conditions among related elements. A component can style itself when a descendant input is checked. Use :has() where it communicates state cleanly; keep proper label associations and do not treat CSS appearance as a substitute for form semantics.
+
+**Predict before running:** Checking the box changes the card's border while preserving the checkbox's native state.
+
+## Prerequisites and preflight
+
+Continue from [the previous canonical lesson](/learn/02.03.05). Open `labs/css-has/starter/index.html` locally in Chromium or another modern CSS browser, and inspect Styles/Computed in DevTools. Node.js 24 runs the static fixture tests; a private account or cloud deployment is not required.
+
+## Guided implementation
+
+<LessonStep number={1} title="Identify the failed state and its cause" file="labs/css-has/starter/index.html" expected={"The original selector changes only the input's border rather than the containing panel."}>
+
+Open the starter and inspect the element before editing the code. For theme or selector lessons, interact with the native control so the problem is actually observable.
+
+```css
+.demo input:checked { border: 4px solid #075e7b; }
+```
+
+**Predict before running:** The original selector changes only the input's border rather than the containing panel.
+
+**Why the naïve approach fails:** The relational :has() pseudo-class matches an element based on conditions among related elements. A component can style itself when a descendant input is checked. Use :has() where it communicates state cleanly; keep proper label associations and do not treat CSS appearance as a substitute for form semantics.
+
+**Proof:** Compare the panel's border width before and after checking its native checkbox. Record the original computed value or missing state transition.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the theme, selector, or state rule" file="labs/css-has/starter/index.html" expected={"Checking the box changes the card's border while preserving the checkbox's native state."}>
+
+Replace only the defective style block with this instructor implementation. Preserve native labels, buttons and focus order. Do not use blanket `!important` overrides to hide a state problem.
+
+```css
+.demo:has(input:checked) { border: 4px solid #075e7b; background: #e2f5fa; } .demo input:focus-visible { outline: 3px solid #c45105; outline-offset: 3px; }
+```
+
+**Predict before running:** Checking the box changes the card's border while preserving the checkbox's native state.
+
+**Why the repair works:** The relational :has() pseudo-class matches an element based on conditions among related elements. A component can style itself when a descendant input is checked. Use :has() where it communicates state cleanly; keep proper label associations and do not treat CSS appearance as a substitute for form semantics.
+
+**Proof:** Compare the computed style against the unchanged starter using the exact same browser setting.
+
+</LessonStep>
+
+<LessonStep number={3} title="Test adjacent states and regression limits" file="labs/css-has/starter/index.html" expected="The intended state is measurable without regressing keyboard access, viewport sizing or legibility.">
+
+At a 320px viewport and a wide layout, inspect the affected component; where relevant, toggle checked state, reduced motion, dark preference, local tokens or writing direction. Do not infer appearance from a CSS source string alone.
+
+```js
+const box = document.querySelector('#demo');
+const style = getComputedStyle(box);
+console.log({ background: style.backgroundColor, color: style.color, overflow: document.documentElement.scrollWidth > innerWidth });
+```
+
+**Predict before running:** The corrected component's computed state is consistent with the browser preference or native input state, and there is no unexpected horizontal page overflow.
+
+**Why it works:** Computed styles combine the cascade, media features, supported CSS functions and the current DOM state.
+
+**Proof:** Compare the panel's border width before and after checking its native checkbox.
+
+</LessonStep>
+
+## Explore and verify
+
+A syntactically valid color, selector or animation is not necessarily accessible or performant. Test color contrast for actual foreground/background pairs; preserve focus, reduced-motion behavior and narrow layouts. The Node fixture assertions check reviewed CSS patterns, and Chromium independently checks representative rendered behavior. Neither constitutes a full multi-device accessibility certification.
+
+<Misconception claim="Using modern CSS syntax automatically guarantees a secure, accessible and scoped component." correction={"The relational :has() pseudo-class matches an element based on conditions among related elements. A component can style itself when a descendant input is checked. Use :has() where it communicates state cleanly; keep proper label associations and do not treat CSS appearance as a substitute for form semantics."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Original defect:** The original selector changes only the input's border rather than the containing panel.
+
+**Expected repair:** Checking the box changes the card's border while preserving the checkbox's native state.
+
+Capture a concrete computed style or interaction state in the starter. Trace the rule that wins the cascade; apply the minimum fix; repeat the original interaction. Explain one limitation of the fixture, such as a browser preference or external font setting not exercised.
+
+<KnowledgeCheck question={"What does .demo:has(input:checked) select?"} choices={["Every checked input anywhere","A .demo element containing a matching checked input","Only a sibling of the checked input","The checkbox's parent without checking its class"]} correctIndex={1} explanation={"The :has() condition is evaluated relative to each candidate .demo element."} misconception="A stylesheet containing the intended rule is not proof that it matches, wins the cascade or renders accessibly." lessonId="02.03.06" />
+
+## Guided local lab
+
+Repair `labs/css-has/starter/index.html` and compare against `labs/css-has/solution/index.html`. Execute `npm run lab:css-has` for the instructor checks. In Bash use `ACADEMY_LAB_TARGET=starter npm run lab:css-has` to test your fix; in PowerShell set and clear that environment variable around the command. The untouched starter is intentionally expected to fail.
+
+**Hints:** Inspect which rule is matched; inspect computed values before and after the relevant interaction; compare selector scope and media state; then consult the repaired CSS.
+
+<LabGate lessonId="02.03.06" labId="lab.foundation.css-has" commands={["npm ci","npm run lab:css-has"]} interactive={false} />
+
+## Reflect
+
+What changed? Why is the repaired component more predictable? Where would a design token, CSS Module or Shadow DOM be a better alternative? Describe an untested browser state and how you would verify it before public release.
+
+## Official references
+
+- [MDN CSS concepts](https://developer.mozilla.org/en-US/docs/Web/CSS/:has)
+- [Official CSS accessibility or design reference](https://developer.mozilla.org/en-US/docs/Web/CSS/:checked)

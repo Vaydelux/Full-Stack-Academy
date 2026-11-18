@@ -1,0 +1,38 @@
+{
+  "id": "02.03.08",
+  "title": "Lab themed component kit",
+  "description": "Investigate and repair lab themed component kit in a self-contained design-system exercise with state checks, official sources and honest browser test criteria.",
+  "trackId": "02",
+  "moduleId": "02.03",
+  "level": "Beginner",
+  "estimatedMinutes": 80,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "02.03.07"
+  ],
+  "objectives": [
+    "Diagnose the lab themed component kit issue from observed CSS behavior",
+    "Apply the correct CSS rule to preserve accessibility and maintainability",
+    "Verify the result using computed styles and relevant interaction states"
+  ],
+  "labId": "lab.foundation.css-theme-kit",
+  "sources": [
+    {
+      "label": "MDN CSS design guide",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_custom_properties"
+    },
+    {
+      "label": "Official CSS or W3C reference",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_containment/Container_size_and_style_queries"
+    }
+  ],
+  "rubric": [
+    "I reproduced the original lab themed component kit defect with a concrete observation.",
+    "I can explain when the repaired CSS matches and why it wins.",
+    "I tested keyboard, color or container state as relevant and documented a limit."
+  ]
+}

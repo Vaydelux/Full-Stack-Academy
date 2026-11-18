@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.css-color-contrast",
+  "lessonId": "02.03.02",
+  "title": "Color spaces and contrast",
+  "runtime": "browser-html-and-node-24",
+  "status": "authored",
+  "starter": "labs/css-color-contrast/starter/index.html",
+  "solution": "labs/css-color-contrast/solution/index.html",
+  "tests": "labs/css-color-contrast/solution.test.mjs",
+  "verify": [
+    "npm run lab:css-color-contrast"
+  ],
+  "expected": "The corrected color spaces and contrast pattern has a measurable style or interaction-state effect.",
+  "security": "Self-contained HTML/CSS/JS with synthetic content, native controls and no external scripts, remote requests, API keys, personal data or uploads."
+}

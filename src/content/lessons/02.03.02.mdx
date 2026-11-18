@@ -1,0 +1,103 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Diagnose the color spaces and contrast issue from observed CSS behavior","Apply the correct CSS rule to preserve accessibility and maintainability","Verify the result using computed styles and relevant interaction states"]} />
+
+## The problem we're solving
+
+A subtitle uses very pale text on white, making it unreadable despite a visually clean design. We will repair a specific CSS behavior in an offline component so that a future design system has predictable boundaries. There is no external font, image or API dependency.
+
+## Build the mental model
+
+Colors can be expressed in sRGB and perceptual spaces such as OKLCH; perceptual uniformity does not itself guarantee WCAG contrast. For ordinary text, the WCAG 2 contrast ratio target at AA is 4.5:1. Confirm computed foreground/background colors, alpha compositing and contrast rather than relying only on designer intuition.
+
+**Predict before running:** The subtitle has visibly darker foreground text against the white background, and the accent uses OKLCH color syntax.
+
+## Prerequisites and preflight
+
+Continue from [the previous canonical lesson](/learn/02.03.01). Open `labs/css-color-contrast/starter/index.html` locally in Chromium or another modern CSS browser, and inspect Styles/Computed in DevTools. Node.js 24 runs the static fixture tests; a private account or cloud deployment is not required.
+
+## Guided implementation
+
+<LessonStep number={1} title="Identify the failed state and its cause" file="labs/css-color-contrast/starter/index.html" expected={"Very light #dce1e5 foreground text has insufficient contrast against white."}>
+
+Open the starter and inspect the element before editing the code. For theme or selector lessons, interact with the native control so the problem is actually observable.
+
+```css
+.subtitle { color: #dce1e5; background: #ffffff; } .accent { color: #075e7b; }
+```
+
+**Predict before running:** Very light #dce1e5 foreground text has insufficient contrast against white.
+
+**Why the naïve approach fails:** Colors can be expressed in sRGB and perceptual spaces such as OKLCH; perceptual uniformity does not itself guarantee WCAG contrast. For ordinary text, the WCAG 2 contrast ratio target at AA is 4.5:1. Confirm computed foreground/background colors, alpha compositing and contrast rather than relying only on designer intuition.
+
+**Proof:** Inspect computed subtitle foreground and background, then verify the contrast ratio using WCAG relative luminance. Record the original computed value or missing state transition.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the theme, selector, or state rule" file="labs/css-color-contrast/starter/index.html" expected={"The subtitle has visibly darker foreground text against the white background, and the accent uses OKLCH color syntax."}>
+
+Replace only the defective style block with this instructor implementation. Preserve native labels, buttons and focus order. Do not use blanket `!important` overrides to hide a state problem.
+
+```css
+.subtitle { color: #18344a; background: #ffffff; } .accent { color: oklch(40% 0.10 235); border-block-end: 2px solid color-mix(in oklch, #075e7b 65%, white); }
+```
+
+**Predict before running:** The subtitle has visibly darker foreground text against the white background, and the accent uses OKLCH color syntax.
+
+**Why the repair works:** Colors can be expressed in sRGB and perceptual spaces such as OKLCH; perceptual uniformity does not itself guarantee WCAG contrast. For ordinary text, the WCAG 2 contrast ratio target at AA is 4.5:1. Confirm computed foreground/background colors, alpha compositing and contrast rather than relying only on designer intuition.
+
+**Proof:** Compare the computed style against the unchanged starter using the exact same browser setting.
+
+</LessonStep>
+
+<LessonStep number={3} title="Test adjacent states and regression limits" file="labs/css-color-contrast/starter/index.html" expected="The intended state is measurable without regressing keyboard access, viewport sizing or legibility.">
+
+At a 320px viewport and a wide layout, inspect the affected component; where relevant, toggle checked state, reduced motion, dark preference, local tokens or writing direction. Do not infer appearance from a CSS source string alone.
+
+```js
+const box = document.querySelector('#demo');
+const style = getComputedStyle(box);
+console.log({ background: style.backgroundColor, color: style.color, overflow: document.documentElement.scrollWidth > innerWidth });
+```
+
+**Predict before running:** The corrected component's computed state is consistent with the browser preference or native input state, and there is no unexpected horizontal page overflow.
+
+**Why it works:** Computed styles combine the cascade, media features, supported CSS functions and the current DOM state.
+
+**Proof:** Inspect computed subtitle foreground and background, then verify the contrast ratio using WCAG relative luminance.
+
+</LessonStep>
+
+## Explore and verify
+
+A syntactically valid color, selector or animation is not necessarily accessible or performant. Test color contrast for actual foreground/background pairs; preserve focus, reduced-motion behavior and narrow layouts. The Node fixture assertions check reviewed CSS patterns, and Chromium independently checks representative rendered behavior. Neither constitutes a full multi-device accessibility certification.
+
+<Misconception claim="Using modern CSS syntax automatically guarantees a secure, accessible and scoped component." correction={"Colors can be expressed in sRGB and perceptual spaces such as OKLCH; perceptual uniformity does not itself guarantee WCAG contrast. For ordinary text, the WCAG 2 contrast ratio target at AA is 4.5:1. Confirm computed foreground/background colors, alpha compositing and contrast rather than relying only on designer intuition."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Original defect:** Very light #dce1e5 foreground text has insufficient contrast against white.
+
+**Expected repair:** The subtitle has visibly darker foreground text against the white background, and the accent uses OKLCH color syntax.
+
+Capture a concrete computed style or interaction state in the starter. Trace the rule that wins the cascade; apply the minimum fix; repeat the original interaction. Explain one limitation of the fixture, such as a browser preference or external font setting not exercised.
+
+<KnowledgeCheck question={"Does OKLCH automatically guarantee accessible contrast?"} choices={["Yes, every OKLCH pair passes WCAG","Only when chroma exceeds a threshold","No; actual foreground/background contrast must be measured","Only on OLED displays"]} correctIndex={2} explanation={"A perceptual color space is useful for design decisions but does not replace WCAG contrast measurement."} misconception="A stylesheet containing the intended rule is not proof that it matches, wins the cascade or renders accessibly." lessonId="02.03.02" />
+
+## Guided local lab
+
+Repair `labs/css-color-contrast/starter/index.html` and compare against `labs/css-color-contrast/solution/index.html`. Execute `npm run lab:css-color-contrast` for the instructor checks. In Bash use `ACADEMY_LAB_TARGET=starter npm run lab:css-color-contrast` to test your fix; in PowerShell set and clear that environment variable around the command. The untouched starter is intentionally expected to fail.
+
+**Hints:** Inspect which rule is matched; inspect computed values before and after the relevant interaction; compare selector scope and media state; then consult the repaired CSS.
+
+<LabGate lessonId="02.03.02" labId="lab.foundation.css-color-contrast" commands={["npm ci","npm run lab:css-color-contrast"]} interactive={false} />
+
+## Reflect
+
+What changed? Why is the repaired component more predictable? Where would a design token, CSS Module or Shadow DOM be a better alternative? Describe an untested browser state and how you would verify it before public release.
+
+## Official references
+
+- [MDN CSS concepts](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value/oklch)
+- [Official CSS accessibility or design reference](https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html)
