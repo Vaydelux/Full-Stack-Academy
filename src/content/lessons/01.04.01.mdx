@@ -52,7 +52,7 @@ item.textContent = input.value;
 list.replaceChildren(item);
 ```
 
-**Predict before running:** Typing <img src=x onerror=alert(1)> should display text, not produce an image node.
+**Predict before running:** Typing `<img src=x onerror=alert(1)>` should display text, not produce an image node.
 
 **Why it works:** textContent does not parse strings as HTML, so it prevents HTML injection in this rendering path.
 
@@ -92,7 +92,7 @@ Start with the intentionally failing starter and complete all steps. Open the so
 
 ## Bug Hunt: reproduce, diagnose and repair
 
-The starter assigns the input to innerHTML. Reproduce with the literal string <strong>unsafe</strong>: it becomes an element. Replace this path with createElement and textContent, and confirm no STRONG node appears.
+The starter assigns the input to innerHTML. Reproduce with the literal string `<strong>unsafe</strong>`: it becomes an element. Replace this path with createElement and textContent, and confirm no STRONG node appears.
 
 First document the original symptom; then make the smallest fix, predict the observable difference, and rerun the exact scenario. Prefer an observable behavior check over screenshots alone.
 
