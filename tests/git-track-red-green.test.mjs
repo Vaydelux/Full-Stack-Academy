@@ -21,9 +21,12 @@ for(const lesson of lessons){
   const args=slug==='mono-contracts-capstone'
     ?['--import=tsx','--test',testPath]
     :['--test',testPath];
+  // node:test sets NODE_TEST_CONTEXT for its own workers; inheriting it makes nested --test silently skip files.
+  const childEnv={...process.env,ACADEMY_LAB_TARGET:'starter',GIT_TERMINAL_PROMPT:'0',GIT_ALLOW_PROTOCOL:'file'};
+  delete childEnv.NODE_TEST_CONTEXT;
   const result=spawnSync(process.execPath,args,{
    cwd:root,
-   env:{...process.env,ACADEMY_LAB_TARGET:'starter',GIT_TERMINAL_PROMPT:'0',GIT_ALLOW_PROTOCOL:'file'},
+   env:childEnv,
    encoding:'utf8',timeout:12000,maxBuffer:1024*1024,windowsHide:true
   });
   assert.equal(result.error,undefined,'Starter verifier failed to launch');
