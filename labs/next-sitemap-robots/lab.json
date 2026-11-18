@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.next-sitemap-robots",
+  "lessonId": "07.04.03",
+  "title": "Sitemap and robots",
+  "runtime": "next16-offline-contract-and-tsx-source",
+  "status": "authored",
+  "starter": "labs/next-sitemap-robots/starter/solution.ts",
+  "solution": "labs/next-sitemap-robots/solution/solution.ts",
+  "tests": "labs/next-sitemap-robots/solution.test.mjs",
+  "verify": [
+    "npm run lab:next-sitemap-robots"
+  ],
+  "expected": "The correct local contract passes independent assertions; end-to-end framework behavior is a separate QA gate.",
+  "security": "Uses synthetic fixture data, no secrets, uploaded code execution, remote endpoints, publishing, Vercel or hosted grading."
+}

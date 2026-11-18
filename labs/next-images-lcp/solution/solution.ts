@@ -1,0 +1,1 @@
+export function solve(width:number,height:number):number{if(!Number.isFinite(width)||!Number.isFinite(height)||width<=0||height<=0)throw new TypeError('Positive dimensions required');return width/height;}

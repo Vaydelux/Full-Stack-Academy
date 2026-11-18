@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.next-web-vitals",
+  "lessonId": "07.04.06",
+  "title": "Core Web Vitals",
+  "runtime": "next16-offline-contract-and-tsx-source",
+  "status": "authored",
+  "starter": "labs/next-web-vitals/starter/solution.ts",
+  "solution": "labs/next-web-vitals/solution/solution.ts",
+  "tests": "labs/next-web-vitals/solution.test.mjs",
+  "verify": [
+    "npm run lab:next-web-vitals"
+  ],
+  "expected": "The correct local contract passes independent assertions; end-to-end framework behavior is a separate QA gate.",
+  "security": "Uses synthetic fixture data, no secrets, uploaded code execution, remote endpoints, publishing, Vercel or hosted grading."
+}

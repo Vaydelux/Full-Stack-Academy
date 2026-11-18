@@ -1,0 +1,1 @@
+export function solve(slug:string){const normalized=slug.trim().toLowerCase().replace(/\s+/g,'-');if(!/^[a-z0-9-]{1,80}$/.test(normalized))throw new TypeError('Safe slug required');return '/lessons/'+normalized;}

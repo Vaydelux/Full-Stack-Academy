@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.next-content-architecture",
+  "lessonId": "07.04.07",
+  "title": "Content architecture for discoverability",
+  "runtime": "next16-offline-contract-and-tsx-source",
+  "status": "authored",
+  "starter": "labs/next-content-architecture/starter/solution.ts",
+  "solution": "labs/next-content-architecture/solution/solution.ts",
+  "tests": "labs/next-content-architecture/solution.test.mjs",
+  "verify": [
+    "npm run lab:next-content-architecture"
+  ],
+  "expected": "The correct local contract passes independent assertions; end-to-end framework behavior is a separate QA gate.",
+  "security": "Uses synthetic fixture data, no secrets, uploaded code execution, remote endpoints, publishing, Vercel or hosted grading."
+}

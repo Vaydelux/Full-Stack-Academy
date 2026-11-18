@@ -1,0 +1,1 @@
+export function solve(page:{published:boolean;title:string;canonical:string}){const issues:string[]=[];if(!page.published)issues.push('not-published');if(page.title.trim().length<3)issues.push('missing-title');if(!/^https:\/\//.test(page.canonical))issues.push('invalid-canonical');return {index:page.published&&issues.length===0,issues};}

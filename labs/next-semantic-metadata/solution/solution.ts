@@ -1,0 +1,1 @@
+export function solve(title:string,description:string){const t=title.trim(),d=description.trim();if(t.length<3||d.length<20)throw new TypeError('Meaningful metadata required');return {title:t+' | Academy',description:d};}

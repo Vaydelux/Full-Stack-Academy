@@ -1,0 +1,97 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Diagnose the core web vitals failure through a real example","Repair the learner fixture with a precise invariant and explicit edge cases","Verify the result offline and distinguish those checks from framework end-to-end tests"]} />
+
+## The problem we're solving
+
+A report declares a page fast based only on backend response latency, ignoring LCP, INP and CLS measured in the browser. This local fixture isolates a concrete failure before we introduce any external state or deployment.
+
+## Build the mental model
+
+Core Web Vitals combine loading responsiveness and visual stability. Use field data over representative users and apply official thresholds: LCP at most 2.5 seconds, INP at most 200 milliseconds, CLS at most 0.1 for good experiences. Lab values are synthetic only.
+
+**Predict before running:** The repaired implementation respects its documented contract.
+
+## Prerequisites and preflight
+
+Continue from [the preceding lesson](/learn/07.04.05). Inspect `labs/next-web-vitals/starter/solution.ts`, the instructor solution and `labs/next-web-vitals/solution.test.mjs`. Run `npm run lab:next-web-vitals` with repository-installed Node.js 24, TypeScript and tsx. The Next.js source example is illustrative code under labs, not an active App Router route. Its pure helper tests do not boot a Next server.
+
+<LessonStep number={1} title="Reproduce the defective starter" file="labs/next-web-vitals/starter/solution.ts" expected="The intentionally flawed starter fails a real assertion.">
+
+Observe the following implementation, identify the overlooked case, and predict which assertion reveals it.
+
+```ts
+
+export function solve(lcp:number,inp:number,cls:number){return 'good';}
+
+```
+
+**Why it fails:** Core Web Vitals combine loading responsiveness and visual stability. Use field data over representative users and apply official thresholds: LCP at most 2.5 seconds, INP at most 200 milliseconds, CLS at most 0.1 for good experiences. Lab values are synthetic only.
+
+**Proof:** Run `ACADEMY_LAB_TARGET=starter npm run lab:next-web-vitals` in Bash, or set the variable for the command in PowerShell. Do not modify the instructor fixture.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the implementation contract" file="labs/next-web-vitals/starter/solution.ts" expected={"Positive and negative cases behave predictably."}>
+
+Make the smallest semantic correction; do not weaken the assertions or convert invalid data into a fake success.
+
+```ts
+
+export function solve(lcp:number,inp:number,cls:number){if([lcp,inp,cls].some(x=>!Number.isFinite(x)||x<0))throw new TypeError('Invalid metrics');return lcp<=2500&&inp<=200&&cls<=0.1?'good':'needs-work';}
+
+```
+
+**Why it works:** Core Web Vitals combine loading responsiveness and visual stability. Use field data over representative users and apply official thresholds: LCP at most 2.5 seconds, INP at most 200 milliseconds, CLS at most 0.1 for good experiences. Lab values are synthetic only.
+
+**Proof:** Run the same local assertions and compare the before/after outputs.
+
+</LessonStep>
+
+<LessonStep number={3} title="Inspect the Next.js App Router source" file="labs/next-web-vitals/example.tsx" expected="The framework-oriented sample illustrates the same invariant.">
+
+The Next.js 16 example demonstrates an App Router convention. The offline test checks its supporting contract and sample presence, not route execution or production caching.
+
+```tsx
+
+// Illustrative client-side metric mapping; measure actual field telemetry separately.
+export type Metrics={lcpMs:number;inpMs:number;cls:number};
+export function classify(m:Metrics){return m.lcpMs<=2500&&m.inpMs<=200&&m.cls<=0.1?'good':'needs-work';}
+
+```
+
+**Predict before running:** The corrected sample handles the reviewed case.
+
+**Proof:** Run `npm run lab:next-web-vitals`. To certify real navigation or mutation behavior, also exercise an isolated app in a browser or test server.
+
+</LessonStep>
+
+## Explore and verify
+
+Change a valid input into an invalid one, then inspect which layer should reject it. Check accessibility, cleanup and data ownership as appropriate.
+
+<Misconception claim={"Passing a typecheck or SSR initial render proves every interactive path."} correction={"Core Web Vitals combine loading responsiveness and visual stability. Use field data over representative users and apply official thresholds: LCP at most 2.5 seconds, INP at most 200 milliseconds, CLS at most 0.1 for good experiences. Lab values are synthetic only."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+Identify the smallest counterexample, repair the root cause and verify the same input now behaves correctly. Describe the missing browser or server integration check.
+
+<KnowledgeCheck question={"Which group represents Core Web Vitals?"} choices={["LCP, INP, CLS","Only server CPU utilization","Only bundle size","Git commit count and PR age"]} correctIndex={0} explanation={"Core Web Vitals combine loading responsiveness and visual stability. Use field data over representative users and apply official thresholds: LCP at most 2.5 seconds, INP at most 200 milliseconds, CLS at most 0.1 for good experiences. Lab values are synthetic only."} misconception="Offline tests have explicit boundaries." lessonId="07.04.06" />
+
+## Guided local lab
+
+Edit `labs/next-web-vitals/starter/solution.ts`. The test imports the selected target and confirms actual return values. It checks an application-specific example without running Next.js itself. The academy does not execute arbitrary learner code on the server.
+
+<LabGate lessonId="07.04.06" labId="lab.foundation.next-web-vitals" commands={["npm ci","npm run lab:next-web-vitals"]} interactive={false} />
+
+## Reflect
+
+Which invariant did the original implementation violate? Which test proves the fix, and what would still require a full browser or Next.js integration environment?
+
+## Official references
+
+- [Official concept](https://nextjs.org/docs/app/guides/production-checklist)
+
+- [Official supporting reference](https://web.dev/articles/vitals)

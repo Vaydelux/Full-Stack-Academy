@@ -1,0 +1,1 @@
+export function solve(origin:string,path:string,tracking:string){const base=new URL(origin);if(base.protocol!=='https:'||!path.startsWith('/')||path.startsWith('//'))throw new TypeError('Safe canonical URL required');return new URL(path,base).toString();}

@@ -1,0 +1,98 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Diagnose the lab seo audit failure through a real example","Repair the learner fixture with a precise invariant and explicit edge cases","Verify the result offline and distinguish those checks from framework end-to-end tests"]} />
+
+## The problem we're solving
+
+An automated audit labels placeholder pages as indexable and ignores missing titles and inconsistent canonical URLs. This local fixture isolates a concrete failure before we introduce any external state or deployment.
+
+## Build the mental model
+
+A useful SEO release gate checks published status, indexing directives, canonical URL consistency and semantic metadata together. Static checks cannot establish actual rankings or Search Console status, so follow with a hosted crawl after deployment is authorized.
+
+**Predict before running:** The repaired implementation respects its documented contract.
+
+## Prerequisites and preflight
+
+Continue from [the preceding lesson](/learn/07.04.07). Inspect `labs/next-seo-audit/starter/solution.ts`, the instructor solution and `labs/next-seo-audit/solution.test.mjs`. Run `npm run lab:next-seo-audit` with repository-installed Node.js 24, TypeScript and tsx. The Next.js source example is illustrative code under labs, not an active App Router route. Its pure helper tests do not boot a Next server.
+
+<LessonStep number={1} title="Reproduce the defective starter" file="labs/next-seo-audit/starter/solution.ts" expected="The intentionally flawed starter fails a real assertion.">
+
+Observe the following implementation, identify the overlooked case, and predict which assertion reveals it.
+
+```ts
+
+export function solve(page:{published:boolean;title:string;canonical:string}){return {index:true,issues:[] as string[]};}
+
+```
+
+**Why it fails:** A useful SEO release gate checks published status, indexing directives, canonical URL consistency and semantic metadata together. Static checks cannot establish actual rankings or Search Console status, so follow with a hosted crawl after deployment is authorized.
+
+**Proof:** Run `ACADEMY_LAB_TARGET=starter npm run lab:next-seo-audit` in Bash, or set the variable for the command in PowerShell. Do not modify the instructor fixture.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the implementation contract" file="labs/next-seo-audit/starter/solution.ts" expected={"Positive and negative cases behave predictably."}>
+
+Make the smallest semantic correction; do not weaken the assertions or convert invalid data into a fake success.
+
+```ts
+
+export function solve(page:{published:boolean;title:string;canonical:string}){const issues:string[]=[];if(!page.published)issues.push('not-published');if(page.title.trim().length<3)issues.push('missing-title');if(!/^https:\/\//.test(page.canonical))issues.push('invalid-canonical');return {index:page.published&&issues.length===0,issues};}
+
+```
+
+**Why it works:** A useful SEO release gate checks published status, indexing directives, canonical URL consistency and semantic metadata together. Static checks cannot establish actual rankings or Search Console status, so follow with a hosted crawl after deployment is authorized.
+
+**Proof:** Run the same local assertions and compare the before/after outputs.
+
+</LessonStep>
+
+<LessonStep number={3} title="Inspect the Next.js App Router source" file="labs/next-seo-audit/example.tsx" expected="The framework-oriented sample illustrates the same invariant.">
+
+The Next.js 16 example demonstrates an App Router convention. The offline test checks its supporting contract and sample presence, not route execution or production caching.
+
+```tsx
+
+import React from 'react';
+import type {Metadata} from 'next';
+export const metadata:Metadata={title:'SEO Audit | Academy',robots:{index:false,follow:true}};
+export default function AuditGuide(){return <main><h1>SEO audit checklist</h1><p>Verify published URLs, canonical targets and meaningful metadata.</p></main>;}
+
+```
+
+**Predict before running:** The corrected sample handles the reviewed case.
+
+**Proof:** Run `npm run lab:next-seo-audit`. To certify real navigation or mutation behavior, also exercise an isolated app in a browser or test server.
+
+</LessonStep>
+
+## Explore and verify
+
+Change a valid input into an invalid one, then inspect which layer should reject it. Check accessibility, cleanup and data ownership as appropriate.
+
+<Misconception claim={"Passing a typecheck or SSR initial render proves every interactive path."} correction={"A useful SEO release gate checks published status, indexing directives, canonical URL consistency and semantic metadata together. Static checks cannot establish actual rankings or Search Console status, so follow with a hosted crawl after deployment is authorized."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+Identify the smallest counterexample, repair the root cause and verify the same input now behaves correctly. Describe the missing browser or server integration check.
+
+<KnowledgeCheck question={"Can an offline metadata test prove a page ranks in search engines?"} choices={["No; a crawl and real search visibility are separate","Yes, always","Only if CSS passes","Only with a Next.js logo"]} correctIndex={0} explanation={"A useful SEO release gate checks published status, indexing directives, canonical URL consistency and semantic metadata together. Static checks cannot establish actual rankings or Search Console status, so follow with a hosted crawl after deployment is authorized."} misconception="Offline tests have explicit boundaries." lessonId="07.04.08" />
+
+## Guided local lab
+
+Edit `labs/next-seo-audit/starter/solution.ts`. The test imports the selected target and confirms actual return values. It checks an application-specific example without running Next.js itself. The academy does not execute arbitrary learner code on the server.
+
+<LabGate lessonId="07.04.08" labId="lab.foundation.next-seo-audit" commands={["npm ci","npm run lab:next-seo-audit"]} interactive={false} />
+
+## Reflect
+
+Which invariant did the original implementation violate? Which test proves the fix, and what would still require a full browser or Next.js integration environment?
+
+## Official references
+
+- [Official concept](https://nextjs.org/docs/app/guides/production-checklist)
+
+- [Official supporting reference](https://nextjs.org/docs/app/api-reference/file-conventions/metadata/sitemap)

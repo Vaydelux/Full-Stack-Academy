@@ -1,0 +1,98 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Diagnose the canonical and open graph failure through a real example","Repair the learner fixture with a precise invariant and explicit edge cases","Verify the result offline and distinguish those checks from framework end-to-end tests"]} />
+
+## The problem we're solving
+
+Tracking query parameters generate separate canonical URLs for the same article, fragmenting search indexing. This local fixture isolates a concrete failure before we introduce any external state or deployment.
+
+## Build the mental model
+
+A canonical URL identifies the preferred public document independent of marketing parameters. Open Graph describes social previews, using an absolute image URL and accurate title. Canonical metadata cannot repair inaccessible or duplicate page content by itself.
+
+**Predict before running:** The repaired implementation respects its documented contract.
+
+## Prerequisites and preflight
+
+Continue from [the preceding lesson](/learn/07.04.01). Inspect `labs/next-canonical-og/starter/solution.ts`, the instructor solution and `labs/next-canonical-og/solution.test.mjs`. Run `npm run lab:next-canonical-og` with repository-installed Node.js 24, TypeScript and tsx. The Next.js source example is illustrative code under labs, not an active App Router route. Its pure helper tests do not boot a Next server.
+
+<LessonStep number={1} title="Reproduce the defective starter" file="labs/next-canonical-og/starter/solution.ts" expected="The intentionally flawed starter fails a real assertion.">
+
+Observe the following implementation, identify the overlooked case, and predict which assertion reveals it.
+
+```ts
+
+export function solve(origin:string,path:string,tracking:string){return origin+path+'?utm='+tracking;}
+
+```
+
+**Why it fails:** A canonical URL identifies the preferred public document independent of marketing parameters. Open Graph describes social previews, using an absolute image URL and accurate title. Canonical metadata cannot repair inaccessible or duplicate page content by itself.
+
+**Proof:** Run `ACADEMY_LAB_TARGET=starter npm run lab:next-canonical-og` in Bash, or set the variable for the command in PowerShell. Do not modify the instructor fixture.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the implementation contract" file="labs/next-canonical-og/starter/solution.ts" expected={"Positive and negative cases behave predictably."}>
+
+Make the smallest semantic correction; do not weaken the assertions or convert invalid data into a fake success.
+
+```ts
+
+export function solve(origin:string,path:string,tracking:string){const base=new URL(origin);if(base.protocol!=='https:'||!path.startsWith('/')||path.startsWith('//'))throw new TypeError('Safe canonical URL required');return new URL(path,base).toString();}
+
+```
+
+**Why it works:** A canonical URL identifies the preferred public document independent of marketing parameters. Open Graph describes social previews, using an absolute image URL and accurate title. Canonical metadata cannot repair inaccessible or duplicate page content by itself.
+
+**Proof:** Run the same local assertions and compare the before/after outputs.
+
+</LessonStep>
+
+<LessonStep number={3} title="Inspect the Next.js App Router source" file="labs/next-canonical-og/example.tsx" expected="The framework-oriented sample illustrates the same invariant.">
+
+The Next.js 16 example demonstrates an App Router convention. The offline test checks its supporting contract and sample presence, not route execution or production caching.
+
+```tsx
+
+import React from 'react';
+import type {Metadata} from 'next';
+export const metadata:Metadata={alternates:{canonical:'https://academy.example/learn/react'},openGraph:{title:'React Lessons',description:'Practical React 19 training.',url:'https://academy.example/learn/react',images:[{url:'https://academy.example/og/react.png',width:1200,height:630}]}};
+export default function ReactLessons(){return <main><h1>React lessons</h1></main>;}
+
+```
+
+**Predict before running:** The corrected sample handles the reviewed case.
+
+**Proof:** Run `npm run lab:next-canonical-og`. To certify real navigation or mutation behavior, also exercise an isolated app in a browser or test server.
+
+</LessonStep>
+
+## Explore and verify
+
+Change a valid input into an invalid one, then inspect which layer should reject it. Check accessibility, cleanup and data ownership as appropriate.
+
+<Misconception claim={"Passing a typecheck or SSR initial render proves every interactive path."} correction={"A canonical URL identifies the preferred public document independent of marketing parameters. Open Graph describes social previews, using an absolute image URL and accurate title. Canonical metadata cannot repair inaccessible or duplicate page content by itself."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+Identify the smallest counterexample, repair the root cause and verify the same input now behaves correctly. Describe the missing browser or server integration check.
+
+<KnowledgeCheck question={"What should a canonical URL normally omit?"} choices={["Tracking query parameters not part of document identity","The actual route path","The HTTPS scheme","The public host"]} correctIndex={0} explanation={"A canonical URL identifies the preferred public document independent of marketing parameters. Open Graph describes social previews, using an absolute image URL and accurate title. Canonical metadata cannot repair inaccessible or duplicate page content by itself."} misconception="Offline tests have explicit boundaries." lessonId="07.04.02" />
+
+## Guided local lab
+
+Edit `labs/next-canonical-og/starter/solution.ts`. The test imports the selected target and confirms actual return values. It checks an application-specific example without running Next.js itself. The academy does not execute arbitrary learner code on the server.
+
+<LabGate lessonId="07.04.02" labId="lab.foundation.next-canonical-og" commands={["npm ci","npm run lab:next-canonical-og"]} interactive={false} />
+
+## Reflect
+
+Which invariant did the original implementation violate? Which test proves the fix, and what would still require a full browser or Next.js integration environment?
+
+## Official references
+
+- [Official concept](https://nextjs.org/docs/app/api-reference/functions/generate-metadata)
+
+- [Official supporting reference](https://nextjs.org/docs/app/getting-started/metadata-and-og-images)

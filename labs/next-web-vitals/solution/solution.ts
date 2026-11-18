@@ -1,0 +1,1 @@
+export function solve(lcp:number,inp:number,cls:number){if([lcp,inp,cls].some(x=>!Number.isFinite(x)||x<0))throw new TypeError('Invalid metrics');return lcp<=2500&&inp<=200&&cls<=0.1?'good':'needs-work';}
