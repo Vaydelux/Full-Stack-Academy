@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.react-semantic-queries",
+  "lessonId": "06.05.02",
+  "title": "Accessible queries",
+  "runtime": "react19-tsx-ssr-local",
+  "status": "authored",
+  "starter": "labs/react-semantic-queries/starter/solution.ts",
+  "solution": "labs/react-semantic-queries/solution/solution.ts",
+  "tests": "labs/react-semantic-queries/solution.test.mjs",
+  "verify": [
+    "npm run lab:react-semantic-queries"
+  ],
+  "expected": "The correct local contract passes independent assertions; end-to-end framework behavior is a separate QA gate.",
+  "security": "Uses synthetic fixture data, no secrets, uploaded code execution, remote endpoints, publishing, Vercel or hosted grading."
+}

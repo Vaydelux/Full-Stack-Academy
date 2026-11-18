@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.react-memo",
+  "lessonId": "06.05.05",
+  "title": "React.memo when warranted",
+  "runtime": "react19-tsx-ssr-local",
+  "status": "authored",
+  "starter": "labs/react-memo/starter/solution.ts",
+  "solution": "labs/react-memo/solution/solution.ts",
+  "tests": "labs/react-memo/solution.test.mjs",
+  "verify": [
+    "npm run lab:react-memo"
+  ],
+  "expected": "The correct local contract passes independent assertions; end-to-end framework behavior is a separate QA gate.",
+  "security": "Uses synthetic fixture data, no secrets, uploaded code execution, remote endpoints, publishing, Vercel or hosted grading."
+}

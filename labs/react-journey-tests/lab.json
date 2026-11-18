@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.react-journey-tests",
+  "lessonId": "06.05.03",
+  "title": "Test user journeys",
+  "runtime": "react19-tsx-ssr-local",
+  "status": "authored",
+  "starter": "labs/react-journey-tests/starter/solution.ts",
+  "solution": "labs/react-journey-tests/solution/solution.ts",
+  "tests": "labs/react-journey-tests/solution.test.mjs",
+  "verify": [
+    "npm run lab:react-journey-tests"
+  ],
+  "expected": "The correct local contract passes independent assertions; end-to-end framework behavior is a separate QA gate.",
+  "security": "Uses synthetic fixture data, no secrets, uploaded code execution, remote endpoints, publishing, Vercel or hosted grading."
+}

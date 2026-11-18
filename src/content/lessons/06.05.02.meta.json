@@ -1,0 +1,40 @@
+{
+  "id": "06.05.02",
+  "title": "Accessible queries",
+  "description": "Investigate accessible queries in React 19 with a defective starter, repaired instructor module, executable offline contract and framework example.",
+  "trackId": "06",
+  "moduleId": "06.05",
+  "level": "Beginner",
+  "estimatedMinutes": 60,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "react": "19",
+    "typescript": "5",
+    "node": "24"
+  },
+  "prerequisites": [
+    "06.05.01"
+  ],
+  "objectives": [
+    "Diagnose the accessible queries failure through a real example",
+    "Repair the learner fixture with a precise invariant and explicit edge cases",
+    "Verify the result offline and distinguish those checks from framework end-to-end tests"
+  ],
+  "labId": "lab.foundation.react-semantic-queries",
+  "sources": [
+    {
+      "label": "Official framework documentation",
+      "url": "https://testing-library.com/docs/queries/about/"
+    },
+    {
+      "label": "Supporting official API guidance",
+      "url": "https://testing-library.com/docs/queries/byrole/"
+    }
+  ],
+  "rubric": [
+    "I can reproduce the specific accessible queries failure in the learner starter",
+    "I can explain one positive and one negative case without a hosted service",
+    "I can identify which behavior still requires a browser or Next.js request integration test"
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.react-memo-hooks",
+  "lessonId": "06.05.06",
+  "title": "useMemo and useCallback tradeoffs",
+  "runtime": "react19-tsx-ssr-local",
+  "status": "authored",
+  "starter": "labs/react-memo-hooks/starter/solution.ts",
+  "solution": "labs/react-memo-hooks/solution/solution.ts",
+  "tests": "labs/react-memo-hooks/solution.test.mjs",
+  "verify": [
+    "npm run lab:react-memo-hooks"
+  ],
+  "expected": "The correct local contract passes independent assertions; end-to-end framework behavior is a separate QA gate.",
+  "security": "Uses synthetic fixture data, no secrets, uploaded code execution, remote endpoints, publishing, Vercel or hosted grading."
+}

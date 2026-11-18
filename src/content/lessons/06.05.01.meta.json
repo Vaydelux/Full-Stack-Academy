@@ -1,0 +1,40 @@
+{
+  "id": "06.05.01",
+  "title": "React Testing Library",
+  "description": "Investigate react testing library in React 19 with a defective starter, repaired instructor module, executable offline contract and framework example.",
+  "trackId": "06",
+  "moduleId": "06.05",
+  "level": "Beginner",
+  "estimatedMinutes": 60,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "react": "19",
+    "typescript": "5",
+    "node": "24"
+  },
+  "prerequisites": [
+    "06.04.08"
+  ],
+  "objectives": [
+    "Diagnose the react testing library failure through a real example",
+    "Repair the learner fixture with a precise invariant and explicit edge cases",
+    "Verify the result offline and distinguish those checks from framework end-to-end tests"
+  ],
+  "labId": "lab.foundation.react-rtl-overview",
+  "sources": [
+    {
+      "label": "Official framework documentation",
+      "url": "https://testing-library.com/docs/react-testing-library/intro/"
+    },
+    {
+      "label": "Supporting official API guidance",
+      "url": "https://react.dev/learn/writing-markup-with-jsx"
+    }
+  ],
+  "rubric": [
+    "I can reproduce the specific react testing library failure in the learner starter",
+    "I can explain one positive and one negative case without a hosted service",
+    "I can identify which behavior still requires a browser or Next.js request integration test"
+  ]
+}

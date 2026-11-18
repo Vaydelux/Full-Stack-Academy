@@ -1,0 +1,1 @@
+export function solve(durations:readonly number[]){if(durations.some(n=>!Number.isFinite(n)||n<0))throw new TypeError('Invalid durations');return durations.length?durations.reduce((a,b)=>a+b,0)/durations.length:0;}

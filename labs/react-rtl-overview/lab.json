@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.react-rtl-overview",
+  "lessonId": "06.05.01",
+  "title": "React Testing Library",
+  "runtime": "react19-tsx-ssr-local",
+  "status": "authored",
+  "starter": "labs/react-rtl-overview/starter/solution.ts",
+  "solution": "labs/react-rtl-overview/solution/solution.ts",
+  "tests": "labs/react-rtl-overview/solution.test.mjs",
+  "verify": [
+    "npm run lab:react-rtl-overview"
+  ],
+  "expected": "The correct local contract passes independent assertions; end-to-end framework behavior is a separate QA gate.",
+  "security": "Uses synthetic fixture data, no secrets, uploaded code execution, remote endpoints, publishing, Vercel or hosted grading."
+}

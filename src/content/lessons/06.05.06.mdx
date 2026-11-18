@@ -1,0 +1,99 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Diagnose the usememo and usecallback tradeoffs failure through a real example","Repair the learner fixture with a precise invariant and explicit edge cases","Verify the result offline and distinguish those checks from framework end-to-end tests"]} />
+
+## The problem we're solving
+
+A filtered list is unnecessarily recalculated during unrelated state updates, yet a memoization attempt closes over a stale query. This local fixture isolates a concrete failure before we introduce any external state or deployment.
+
+## Build the mental model
+
+useMemo caches a calculated value and useCallback caches a function identity between renders, subject to dependencies. Profile first and include every reactive dependency; both are performance hints, not correctness guarantees.
+
+**Predict before running:** The repaired implementation respects its documented contract.
+
+## Prerequisites and preflight
+
+Continue from [the preceding lesson](/learn/06.05.05). Inspect `labs/react-memo-hooks/starter/solution.ts`, the instructor solution and `labs/react-memo-hooks/solution.test.mjs`. Run `npm run lab:react-memo-hooks` with repository-installed Node.js 24, TypeScript and tsx. The React component is also rendered to static initial HTML by the test; event handlers and effects need browser tests.
+
+<LessonStep number={1} title="Reproduce the defective starter" file="labs/react-memo-hooks/starter/solution.ts" expected="The intentionally flawed starter fails a real assertion.">
+
+Observe the following implementation, identify the overlooked case, and predict which assertion reveals it.
+
+```ts
+
+export function solve(names:readonly string[],query:string){return [...names];}
+
+```
+
+**Why it fails:** useMemo caches a calculated value and useCallback caches a function identity between renders, subject to dependencies. Profile first and include every reactive dependency; both are performance hints, not correctness guarantees.
+
+**Proof:** Run `ACADEMY_LAB_TARGET=starter npm run lab:react-memo-hooks` in Bash, or set the variable for the command in PowerShell. Do not modify the instructor fixture.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the implementation contract" file="labs/react-memo-hooks/starter/solution.ts" expected={"Positive and negative cases behave predictably."}>
+
+Make the smallest semantic correction; do not weaken the assertions or convert invalid data into a fake success.
+
+```ts
+
+export function solve(names:readonly string[],query:string){return names.filter(name=>name.toLowerCase().includes(query.trim().toLowerCase()));}
+
+```
+
+**Why it works:** useMemo caches a calculated value and useCallback caches a function identity between renders, subject to dependencies. Profile first and include every reactive dependency; both are performance hints, not correctness guarantees.
+
+**Proof:** Run the same local assertions and compare the before/after outputs.
+
+</LessonStep>
+
+<LessonStep number={3} title="Inspect the React component" file="labs/react-memo-hooks/solution/Widget.tsx" expected="The framework-oriented sample illustrates the same invariant.">
+
+This is an actual React 19 component, which the lab renders to initial HTML. Interactions after hydration are not certified by an SSR check.
+
+```tsx
+
+'use client';
+import React,{useMemo,useCallback,useState} from 'react';
+import {solve} from './solution';
+const names=['React','Next','Redux'];
+export function Workshop(){const [query,setQuery]=useState('rea');const [other,setOther]=useState(0);const visible=useMemo(()=>solve(names,query),[query]);const update=useCallback(()=>setOther(n=>n+1),[]);return <section aria-label="Memo hooks"><label>Filter <input value={query} onChange={e=>setQuery(e.target.value)} /></label><button type="button" onClick={update}>Unrelated update</button><output>{visible.join(', ')} {other}</output></section>;}
+
+```
+
+**Predict before running:** The corrected sample handles the reviewed case.
+
+**Proof:** Run `npm run lab:react-memo-hooks`. To certify real navigation or mutation behavior, also exercise an isolated app in a browser or test server.
+
+</LessonStep>
+
+## Explore and verify
+
+Change a valid input into an invalid one, then inspect which layer should reject it. Check accessibility, cleanup and data ownership as appropriate.
+
+<Misconception claim={"Passing a typecheck or SSR initial render proves every interactive path."} correction={"useMemo caches a calculated value and useCallback caches a function identity between renders, subject to dependencies. Profile first and include every reactive dependency; both are performance hints, not correctness guarantees."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+Identify the smallest counterexample, repair the root cause and verify the same input now behaves correctly. Describe the missing browser or server integration check.
+
+<KnowledgeCheck question={"What must be included for correct useMemo dependencies?"} choices={["Reactive values read by the calculation","Only its function name","No dependencies ever","Only values from refs"]} correctIndex={0} explanation={"useMemo caches a calculated value and useCallback caches a function identity between renders, subject to dependencies. Profile first and include every reactive dependency; both are performance hints, not correctness guarantees."} misconception="Offline tests have explicit boundaries." lessonId="06.05.06" />
+
+## Guided local lab
+
+Edit `labs/react-memo-hooks/starter/solution.ts`. The test imports the selected target and confirms actual return values. It also renders the corresponding component with React DOM Server. The academy does not execute arbitrary learner code on the server.
+
+<LabGate lessonId="06.05.06" labId="lab.foundation.react-memo-hooks" commands={["npm ci","npm run lab:react-memo-hooks"]} interactive={false} />
+
+## Reflect
+
+Which invariant did the original implementation violate? Which test proves the fix, and what would still require a full browser or Next.js integration environment?
+
+## Official references
+
+- [Official concept](https://react.dev/reference/react/useMemo)
+
+- [Official supporting reference](https://react.dev/reference/react/useCallback)

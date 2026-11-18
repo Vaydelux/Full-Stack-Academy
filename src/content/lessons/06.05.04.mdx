@@ -1,0 +1,98 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Diagnose the react devtools profiler failure through a real example","Repair the learner fixture with a precise invariant and explicit edge cases","Verify the result offline and distinguish those checks from framework end-to-end tests"]} />
+
+## The problem we're solving
+
+A performance dashboard labels every render as a bottleneck without measuring or grouping actual render durations. This local fixture isolates a concrete failure before we introduce any external state or deployment.
+
+## Build the mental model
+
+React Profiler reports timing for measured commits; DevTools helps locate slow renders. Record actual measurements under representative workloads instead of declaring fixed millisecond results. Development profiling and production behavior can differ.
+
+**Predict before running:** The repaired implementation respects its documented contract.
+
+## Prerequisites and preflight
+
+Continue from [the preceding lesson](/learn/06.05.03). Inspect `labs/react-profiler/starter/solution.ts`, the instructor solution and `labs/react-profiler/solution.test.mjs`. Run `npm run lab:react-profiler` with repository-installed Node.js 24, TypeScript and tsx. The React component is also rendered to static initial HTML by the test; event handlers and effects need browser tests.
+
+<LessonStep number={1} title="Reproduce the defective starter" file="labs/react-profiler/starter/solution.ts" expected="The intentionally flawed starter fails a real assertion.">
+
+Observe the following implementation, identify the overlooked case, and predict which assertion reveals it.
+
+```ts
+
+export function solve(durations:readonly number[]){return 0;}
+
+```
+
+**Why it fails:** React Profiler reports timing for measured commits; DevTools helps locate slow renders. Record actual measurements under representative workloads instead of declaring fixed millisecond results. Development profiling and production behavior can differ.
+
+**Proof:** Run `ACADEMY_LAB_TARGET=starter npm run lab:react-profiler` in Bash, or set the variable for the command in PowerShell. Do not modify the instructor fixture.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the implementation contract" file="labs/react-profiler/starter/solution.ts" expected={"Positive and negative cases behave predictably."}>
+
+Make the smallest semantic correction; do not weaken the assertions or convert invalid data into a fake success.
+
+```ts
+
+export function solve(durations:readonly number[]){if(durations.some(n=>!Number.isFinite(n)||n<0))throw new TypeError('Invalid durations');return durations.length?durations.reduce((a,b)=>a+b,0)/durations.length:0;}
+
+```
+
+**Why it works:** React Profiler reports timing for measured commits; DevTools helps locate slow renders. Record actual measurements under representative workloads instead of declaring fixed millisecond results. Development profiling and production behavior can differ.
+
+**Proof:** Run the same local assertions and compare the before/after outputs.
+
+</LessonStep>
+
+<LessonStep number={3} title="Inspect the React component" file="labs/react-profiler/solution/Widget.tsx" expected="The framework-oriented sample illustrates the same invariant.">
+
+This is an actual React 19 component, which the lab renders to initial HTML. Interactions after hydration are not certified by an SSR check.
+
+```tsx
+
+'use client';
+import React,{Profiler,useState} from 'react';
+import {solve} from './solution';
+export function Workshop(){const [count,setCount]=useState(0);return <Profiler id="workshop" onRender={(_id,_phase,_duration)=>{}}><section aria-label="Profiler demo"><button type="button" onClick={()=>setCount(c=>c+1)}>Update</button><output>{count}</output><small>Example mean duration: {solve([4,8])}</small></section></Profiler>;}
+
+```
+
+**Predict before running:** The corrected sample handles the reviewed case.
+
+**Proof:** Run `npm run lab:react-profiler`. To certify real navigation or mutation behavior, also exercise an isolated app in a browser or test server.
+
+</LessonStep>
+
+## Explore and verify
+
+Change a valid input into an invalid one, then inspect which layer should reject it. Check accessibility, cleanup and data ownership as appropriate.
+
+<Misconception claim={"Passing a typecheck or SSR initial render proves every interactive path."} correction={"React Profiler reports timing for measured commits; DevTools helps locate slow renders. Record actual measurements under representative workloads instead of declaring fixed millisecond results. Development profiling and production behavior can differ."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+Identify the smallest counterexample, repair the root cause and verify the same input now behaves correctly. Describe the missing browser or server integration check.
+
+<KnowledgeCheck question={"What should justify a React performance optimization?"} choices={["Actual profiling evidence","The number of lines in a file","Using more hooks automatically","A constant invented timing"]} correctIndex={0} explanation={"React Profiler reports timing for measured commits; DevTools helps locate slow renders. Record actual measurements under representative workloads instead of declaring fixed millisecond results. Development profiling and production behavior can differ."} misconception="Offline tests have explicit boundaries." lessonId="06.05.04" />
+
+## Guided local lab
+
+Edit `labs/react-profiler/starter/solution.ts`. The test imports the selected target and confirms actual return values. It also renders the corresponding component with React DOM Server. The academy does not execute arbitrary learner code on the server.
+
+<LabGate lessonId="06.05.04" labId="lab.foundation.react-profiler" commands={["npm ci","npm run lab:react-profiler"]} interactive={false} />
+
+## Reflect
+
+Which invariant did the original implementation violate? Which test proves the fix, and what would still require a full browser or Next.js integration environment?
+
+## Official references
+
+- [Official concept](https://react.dev/reference/react/Profiler)
+
+- [Official supporting reference](https://react.dev/reference/react/memo)

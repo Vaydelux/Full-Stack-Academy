@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.react-profiler",
+  "lessonId": "06.05.04",
+  "title": "React DevTools profiler",
+  "runtime": "react19-tsx-ssr-local",
+  "status": "authored",
+  "starter": "labs/react-profiler/starter/solution.ts",
+  "solution": "labs/react-profiler/solution/solution.ts",
+  "tests": "labs/react-profiler/solution.test.mjs",
+  "verify": [
+    "npm run lab:react-profiler"
+  ],
+  "expected": "The correct local contract passes independent assertions; end-to-end framework behavior is a separate QA gate.",
+  "security": "Uses synthetic fixture data, no secrets, uploaded code execution, remote endpoints, publishing, Vercel or hosted grading."
+}

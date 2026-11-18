@@ -1,0 +1,40 @@
+{
+  "id": "06.05.08",
+  "title": "Bug Hunt unstable keys",
+  "description": "Investigate bug hunt unstable keys in React 19 with a defective starter, repaired instructor module, executable offline contract and framework example.",
+  "trackId": "06",
+  "moduleId": "06.05",
+  "level": "Beginner",
+  "estimatedMinutes": 85,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "react": "19",
+    "typescript": "5",
+    "node": "24"
+  },
+  "prerequisites": [
+    "06.05.07"
+  ],
+  "objectives": [
+    "Diagnose the bug hunt unstable keys failure through a real example",
+    "Repair the learner fixture with a precise invariant and explicit edge cases",
+    "Verify the result offline and distinguish those checks from framework end-to-end tests"
+  ],
+  "labId": "lab.foundation.react-unstable-keys",
+  "sources": [
+    {
+      "label": "Official framework documentation",
+      "url": "https://react.dev/learn/rendering-lists"
+    },
+    {
+      "label": "Supporting official API guidance",
+      "url": "https://react.dev/learn/preserving-and-resetting-state"
+    }
+  ],
+  "rubric": [
+    "I can reproduce the specific bug hunt unstable keys failure in the learner starter",
+    "I can explain one positive and one negative case without a hosted service",
+    "I can identify which behavior still requires a browser or Next.js request integration test"
+  ]
+}
