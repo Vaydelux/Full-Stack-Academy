@@ -54,7 +54,7 @@ try {
   await page.goto(base + '/reference/zod-safeparse');
   await wait(page.getByRole('heading',{name:/Zod 4: schema.safeParse/}));
   await page.goto(base + '/learn/02.02.01');
-  assert.match(await page.locator('meta[name="robots"]').first().getAttribute('content'), /noindex/);
+  assert.ok(await page.locator('meta[name="robots"][content*="noindex"]').count() > 0, 'Planned curriculum topic must have a noindex directive');
   await wait(page.getByText('Planned lesson — not published.', {exact:true}));
   await page.goto(base + '/learn/00.01.01');
   await wait(page.getByRole('heading',{name:'What runs in a browser vs on a server?',exact:true}));
@@ -354,7 +354,7 @@ try {
   await wait(page.getByRole('heading', { name: "The problem we're solving" }));
   assert.equal(await page.locator('meta[name="robots"][content*="noindex"]').count(), 0, 'Published CSS lessons must be indexable');
   await page.goto(base + '/learn/02.02.01');
-  assert.match(await page.locator('meta[name="robots"]').first().getAttribute('content'), /noindex/, 'Unauthored CSS module remains noindex');
+  assert.ok(await page.locator('meta[name="robots"][content*="noindex"]').count() > 0, 'Unauthored CSS module remains noindex');
   const cssLab = slug => new URL('../labs/' + slug + '/solution/index.html', import.meta.url).href;
   const cssSlugs = ["css-selectors","css-cascade","css-layers","css-box-model","css-typography","css-logical","css-states","css-responsive-card"];
   for (const slug of cssSlugs) {
