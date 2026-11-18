@@ -17,7 +17,7 @@ Complete [the previous lesson](/learn/00.02.06) or review its objectives. Use No
 
 <LessonStep number={1} title={"Initialize an isolated repository"} file="labs/git-ssh-setup/starter/.gitignore" expected={"The scratch folder is a repository and contains local identity settings."}>
 
-Run the commands inside labs/git-ssh-setup/starter in a terminal after confirming it is not already a separate Git repo. For the exercise use synthetic name and email. Do not change your main project's global configuration.
+Copy labs/git-ssh-setup/starter to a new disposable folder outside the academy repository. Run the commands in that copy. For the exercise use synthetic name and email. Do not change your main project's global configuration.
 
 ```powershell
 git init
@@ -31,7 +31,7 @@ git config --local user.email
 
 <LessonStep number={2} title={"Ignore local secrets and make a commit"} file="labs/git-ssh-setup/starter/.gitignore" expected={"README.md is committed; .env.local is ignored."}>
 
-Create .gitignore with the rules below. Stage only the files you intend to commit. Inspect git status and git diff --cached before git commit -m "Initialize local lab". A .gitignore cannot remove data that was committed earlier.
+Create .gitignore with the rules below in both the starter fixture and your disposable copy. Then run `git add README.md .gitignore`, `git status`, `git diff --cached`, and `git commit -m "Initialize local lab"` in the disposable copy. A .gitignore cannot remove data that was committed earlier.
 
 ```text
 .env
@@ -44,7 +44,7 @@ node_modules/
 
 <LessonStep number={3} title={"Understand SSH without modifying credentials"} file="labs/git-ssh-setup/starter/.gitignore" expected={"You can identify the public key file and describe host-key verification."}>
 
-If you choose to configure your own GitHub access, follow the official GitHub guide. Check for existing keys before creating one. Choose a new unused path if you need another key, use a passphrase, and upload only the .pub file. The following commands show the workflow; do not overwrite an existing key. Compare GitHub's published host fingerprint before accepting a prompt. This is optional manual practice, not required for automated tests.
+If you choose to configure your own GitHub access, follow the official GitHub guide. Check for existing keys before creating one. Choose a new unused path if you need another key, use a passphrase, and upload only the .pub file. Confirm the key file does not already exist before running the example. The following commands show the workflow; do not overwrite an existing key. Compare GitHub's published host fingerprint before accepting a prompt. This is optional manual practice, not required for automated tests.
 
 ```bash
 # Example only: use a new path, not an existing key:

@@ -88,3 +88,7 @@ The home workspace opens in Read lesson mode. Curriculum, search and notes remai
 ## First foundations lessons
 
 All eight computing and internet foundations lessons (00.01.01–00.01.08) use local Node.js lab fixtures rather than simulating server code in a React iframe. Learners can verify starter code via the documented ACADEMY_LAB_TARGET setting. The course has twelve authored lessons (four existing interactive samples and eight local foundations labs). Module 00.01 is fully authored; subsequent orientation modules remain planned. Run all lab tests with `npm run test:labs`.
+
+## Developer Toolchain (00.02)
+
+Eight complete lessons teach VS Code, PowerShell/Bash/WSL, Node runtime, package manager locks, scripts, configuration, Git/SSH and a workstation capstone. Each includes local starter and solution fixtures and acceptance tests. The catalog groups available lessons by module. Use Node.js 24 and Git to run the local exercises. npm remains the academy's package manager; pnpm is taught separately. The course now has 20 authored lessons (16 orientation lessons and four interactive samples). Manual workstation operations are self-assessed, not automatically certified.

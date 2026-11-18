@@ -9,7 +9,7 @@ A project runs on the author's laptop but fails for a teammate after installing 
 
 ## Build the mental model
 
-package.json records scripts, version constraints and direct dependencies. A lockfile records resolved versions and usually integrity metadata. A caret range such as ^1.2.3 allows compatible minor and patch releases until the next major for a nonzero major. npm install may update the lockfile; npm ci requires a matching npm lock and starts from a clean node_modules. pnpm uses its own lockfile and a content-addressed store with linked dependency layouts. Choose one manager per project; the academy uses npm, while our full-stack architecture may use pnpm in a monorepo. Node 24 does not bundle Corepack by default; follow pnpm's official installation options if you use it. Install scripts can run code, so review dependencies before installation.
+package.json records scripts, version constraints and direct dependencies. A lockfile records resolved versions and usually integrity metadata. A caret range such as `^1.2.3` allows compatible minor and patch releases until the next major for a nonzero major. npm install may update the lockfile; npm ci requires a matching npm lock and starts from a clean node_modules. pnpm uses its own lockfile and a content-addressed store with linked dependency layouts. Choose one manager per project; the academy uses npm, while our full-stack architecture may use pnpm in a monorepo. Node 24 does not bundle Corepack by default; follow pnpm's official installation options if you use it. Install scripts can run code, so review dependencies before installation.
 
 ## Before you begin
 

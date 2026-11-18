@@ -55,7 +55,7 @@ Create .vscode/extensions.json. Verify the marketplace publisher and permissions
 
 <LessonStep number={4} title={"Verify the configuration"} file="labs/vscode-workspace/starter/.vscode/settings.json" expected={"The starter passes the two configuration tests."}>
 
-Return to the academy root in a separate terminal and run the starter acceptance command below. Open a small JS file and verify the indentation. Project editor settings should not grant extra trust or embed a local executable path.
+Return to the academy root in a separate terminal and use the starter-mode acceptance command in Guided lab. Open a small JS file and verify the indentation. Project editor settings should not grant extra trust or embed a local executable path.
 
 ```powershell
 npm run lab:vscode-workspace
@@ -65,13 +65,13 @@ npm run lab:vscode-workspace
 
 ## Explore it yourself
 
-Use Ctrl+Shift+P to open the Command Palette, Ctrl+P to locate files, and Ctrl+` to toggle the terminal. Inspect Preferences: Open Workspace Settings (JSON). Compare changes with Git diff. Exercise the same commands from a terminal outside VS Code; your build must not depend on an extension.
+Use Ctrl+Shift+P to open the Command Palette, Ctrl+P to locate files, and the Toggle Terminal command to open the terminal. Inspect Preferences: Open Workspace Settings (JSON). Compare changes with Git diff. Exercise the same commands from a terminal outside VS Code; your build must not depend on an extension.
 
 <Misconception claim={"Installing more extensions automatically makes a development environment better."} correction={"Each extension adds maintenance, resource and trust costs. Select only the tools needed by the project."} />
 
 ## Bug Hunt: diagnose before you change code
 
-An extension setting points to C:\Users\someone\node.exe. It works on one PC and fails everywhere else. Remove the machine-specific path, install Node using your documented runtime setup, and keep executable discovery on PATH.
+An extension setting points to a machine-specific path such as `C:\Users\someone\node.exe`. It works on one PC and fails everywhere else. Remove the machine-specific path, install Node using your documented runtime setup, and keep executable discovery on PATH.
 
 <KnowledgeCheck question={"Where should project-wide indentation settings live?"} choices={["A private environment file","The shared workspace settings file","A global OS registry entry","An API response"]} correctIndex={1} explanation={"Workspace settings can be reviewed and shared with the project."} misconception={"User settings are individual preferences."} lessonId="00.02.01" />
 
