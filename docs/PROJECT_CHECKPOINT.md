@@ -1,37 +1,47 @@
-# Academy Project Checkpoint
+# Full-Stack Academy — Project Checkpoint
 
-**Checkpoint date:** 2026-11-18 (Asia/Manila).  
-**Last verified production baseline:** `main` at `cd7f33bb0c524887c8b6e05a8dd2c90867fd6439`; Vercel production deployment `dpl_7u1f3atULEvoE1tmNX2bokzXCJBB` was **READY**.  
-**Development branch:** `feat/learning-debugging-checkpoint` (work in progress; NOT a production release).
+**Status:** Production verified · **Updated:** 2026-11-18 (Asia/Manila)  
+**Repository:** https://github.com/Vaydelux/Full-Stack-Academy  
+**Production:** https://fullstack-academy-ecru.vercel.app/  
+**Production main SHA:** `16c2effac03aa47bad666e62fc82b6b8ecc9d48e`  
+**Vercel READY deployment:** `dpl_77jkFMZ8grSpsYbiVx6JyTp8phnn`  
+**Latest merged work:** PR #4: https://github.com/Vaydelux/Full-Stack-Academy/pull/4  
+**PR source CI:** https://github.com/Vaydelux/Full-Stack-Academy/actions/runs/44276089359 (passed); main-branch CI: https://github.com/Vaydelux/Full-Stack-Academy/actions/runs/44276409479 (verify actual status before claiming).
 
-## Goal and boundaries
-Enterprise-quality, accessible, reference-driven, hands-on Full-Stack Engineering Academy. Keep a simple reading-first user experience, progressively disclosed practice/notes, and topic/subtopic course structure. Do not mistake a catalog's **planned** topics for completed tutorials.
+## What is completed (verified)
+- Curriculum map: **28 tracks / 111 modules / 889 topic IDs**. These are topics in the roadmap, **not 889 published tutorials**.
+- Published authored lessons: **28** = 4 interactive sample models + 25 MDX lesson files, with one overlapping JSX lesson.
+- Local executable lab manifests: **25**. Four authored reference drafts across **303 indexed subjects**.
+- Entire Orientation & Computing Foundations track is authored and released:
+  - `00.01` Computing & Internet Mental Models — 8/8 lessons.
+  - `00.02` Developer Toolchain — 8/8 lessons.
+  - `00.03` Learning & Debugging Process — 8/8 lessons.
+- Reading-first Next.js/React/Tailwind experience, accessible curriculum navigation, dedicated lesson/reference routes, private local progress, self-assessed quizzes, isolated browser JSX execution, SEO/noindex safeguards.
+- Head `4a8ee797` passed lint, strict typecheck, **18 repository tests, 63 executable lab tests, 25 MDX content validations, checkpoint count verification, Next production build and Chromium smoke test**. No additional paid services were required.
+- Vercel production is `READY` at the merged SHA, and `/learn/00.03.08` returned HTTP 200 with an indexed authored lesson and a completion section.
 
-## Verified production baseline
-- Curriculum: 28 tracks / 111 modules / 889 topic IDs. Reference index: 303 subjects.
-- Published: Production baseline at cd7f33b: 20 authored lessons = 4 interactive models plus 17 MDX lesson bodies with one overlapping JSX lesson; 16 local foundations/toolchain labs + one JSX lab = 17 lab manifests. **Feature branch (unreleased): 28 authored lessons, 25 MDX bodies, 25 lab fixtures once CI passes.**
-- Modules `00.01` (computing/internet) and `00.02` (developer toolchain) are released. Module `00.03` is now authored on the feature branch, not yet verified/released.
-- Four drafted technical reference articles (Zod safeParse, Prisma transaction, Nest guards, Redis SET).
-- PRs #1, #2, #3 merged. Latest production verification: GitHub Actions run `44243836026` success.
-- App: Next.js/React/Tailwind, static trusted MDX, independently indexed course and reference routes, Zustand local progress, no required backend.
-- Responsive reading-first workspace, isolated browser JSX preview, server-side routes for published MDX, planned pages `noindex`, sitemap excludes unpublished lessons.
-- Dependency review: no known runtime vulnerabilities in audit; **14 dev-only high alerts** trace to Picomatch advisory, explicitly accepted only through **2026-12-02 UTC**. See `docs/DEPENDENCY_SECURITY_REVIEW.md` and audit job. **Not patched.**
+## Current architecture (do not assume more exists)
+- Next.js 16 App Router, React 19, Tailwind 4, trusted authored MDX, Zustand local progress; npm lockfile; Node 24 CI.
+- `data/curriculum.json`: canonical lesson IDs; `data/reference-index.json`: reference subject index.
+- `src/content/lessons/<id>.mdx` + adjacent `.meta.json`: teaching content; `src/content/lesson-registry.tsx` and `src/lib/academy/published.ts`: actual publication registration.
+- `labs/<slug>`: starter, instructor solution, tests, manifest. Never execute arbitrary student code on the Next.js server.
+- Backend teaching architecture (NestJS/Fastify, PostgreSQL/Supabase, Prisma, Zod, Redis/BullMQ) is **not an implemented academy backend**. No cloud grading or multi-device account progress.
+- Exact progress snapshot is checked against repository files by `npm run checkpoint:check`. Generate a new snapshot after changing content with `npm run checkpoint:write`.
 
-## Active milestone
-`00.03` Learning & Debugging Process: eight catalog IDs `00.03.01`–`00.03.08` have new MDX and executable lab fixtures on the feature branch. **Must validate CI, browser, runtime audit and preview, then merge and confirm production.** See `docs/NEXT_TODO.md`. See `docs/NEXT_TODO.md`.
+## Security and operational notes
+- Production `npm audit --omit=dev` reported **zero known advisories** in last review; full audit reported **14 high findings** in dev-only Picomatch dependencies. Not patched. Scoped exception expires **2026-12-02 UTC**, as described in `docs/DEPENDENCY_SECURITY_REVIEW.md`. This remains a P1 obligation; do not forget it.
+- GitHub Actions `.github/workflows/academy-quality.yml` runs the primary quality and security gates. Vercel auto-deploys `main`.
+- Future work must preserve planned `noindex`, static trusted MDX, and local-first learning. Do not overbuild the layout; prioritize lesson quality and browser accessibility.
 
-## Source of truth
-- Machine-checkable counts and release details: `docs/checkpoint.json`, checked by `npm run checkpoint:check`.
-- Lesson IDs and topic names: `data/curriculum.json`. Reference subjects: `data/reference-index.json`.
-- Published lesson imports: `src/content/lesson-registry.tsx`; metadata: `src/lib/academy/published.ts`.
-- Lab fixtures: `labs/*/lab.json` plus `starter/`, `solution/`, `solution.test.mjs`.
-- Production/CI: `.github/workflows/academy-quality.yml` and Vercel project for `Vaydelux/Full-Stack-Academy`.
+## Next milestone — start here
+**`01.01` HTML & Web Platform → Document Structure**, eight exact catalog IDs:
+`01.01.01` HTML document anatomy; `01.01.02` Head and metadata; `01.01.03` Semantic landmarks; `01.01.04` Heading hierarchy; `01.01.05` Text lists and quotations; `01.01.06` Links and navigation; `01.01.07` Images and responsive media; `01.01.08` Lab accessible content page.
 
-## Known limitations and debt
-1. Only local, self-assessed progress. No signed grading or multi-device sync.
-2. Content volume is early-stage; the next most useful task is finishing the **full module** rather than claiming whole-course completion.
-3. Existing `README.md` carries older v1.1 descriptions and should eventually be condensed/reconciled with these canonical handoff docs.
-4. Existing MDX registry is manual; consider typed generated registration only after thorough migration/test coverage.
-5. User-generated/remote MDX and untrusted code must never execute on the Next.js server. Sandbox origin isolation and browser verification remain release gates.
+Each new lesson needs an MDX tutorial, official sources, meaningful exercise, starter/solution tests, validated metadata, navigation/progress integration, and browser verification. Follow the ordered checklist in `docs/NEXT_TODO.md`.
 
-**When work resumes:** check current `main`, active PRs and green CI, then use `docs/NEXT_TODO.md`. Explicitly update this checkpoint with new release SHAs and evidence; do not copy stale values forward.
+## Handoff protocol for another AI
+1. Read `AGENTS.md` and `docs/NEXT_TODO.md`, then inspect **current** `main`, open PRs, last CI run and Vercel deployment. This snapshot is a historical commit anchor, not proof that the repository has not changed since.
+2. Branch from current `main`. Work one module at a time; do not label planned entries authored.
+3. After all code and tests, run `npm run checkpoint:write`, update this checkpoint and task list, and commit all three.
+4. Do not merge before audit, lint, typecheck, repository tests, catalog/content/checkpoint validation, lab tests, production build, Chromium smoke, and preview review all pass.
+5. After merge, verify actual production SHA and update the checkpoint again. Do not invent a completed check or share production credentials.

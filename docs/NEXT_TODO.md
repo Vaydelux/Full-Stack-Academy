@@ -1,32 +1,43 @@
-# Next TODO — prioritized handoff queue
+# Next TODO — Full-Stack Academy
 
-**Updated:** 2026-11-18. **Current focus:** Module 00.03. Tasks show actual states; do not infer completion from planned curriculum.
+**Updated:** 2026-11-18 · **Current production:** `main@16c2eff` · **Next module:** `01.01`.  
+**Rule:** Mark a task complete only when repository evidence supports it. Keep this file current in every milestone PR.
 
-## P0 — Release next complete module (00.03)
-- [x] `00.03.01` Read error messages from bottom up — real nested-error fixture, stack/cause diagnosis, regression tests.
-- [x] `00.03.02` Reproduce, minimize and isolate bugs — deterministic reduction fixture + isolated reproduction tests.
-- [x] `00.03.03` Debugger breakpoints and watches — buggy code to repair, VS Code/Node inspector guide, regression test.
-- [x] `00.03.04` Console, Network and Performance panels — instrument/diagnose safe local requests; deterministic timing tests.
-- [x] `00.03.05` Asking good technical questions — reproduce/report bug with redacted environment and minimal example.
-- [x] `00.03.06` Reading changelogs and docs — semver compatibility and upgrade decision exercise.
-- [x] `00.03.07` Experiment logs and architecture notes — ADR and repeatable hypothesis/evidence artifact.
-- [x] `00.03.08` Bug Hunt: environment mismatch — capstone diagnosis and repair under different environment inputs.
-- [x] Ensure *each*: MDX lesson, metadata, lab manifest, starter, solution, executable regression tests, official sources, knowledge check, rubric (source files authored; CI validation still pending).
-- [x] Register all published IDs in curriculum UI, metadata, sitemap, next-lesson navigation; verify planned pages still `noindex` (implementation committed; browser verification pending).
-- [x] Updated `docs/checkpoint.json` for 28 lessons / 25 MDX / 25 labs and updated human checkpoint; run `npm run checkpoint:check` in CI to confirm.
-- [ ] PR checks: audit + lint + typecheck + unit + catalog + content + checkpoint + lab tests + production build + Chromium.
-- [ ] Vercel preview review, merge only after green, verify new main SHA/production READY, update handoff.
+## P0 — HTML & Web Platform / Module 01.01: Document Structure
+- [ ] `01.01.01` HTML document anatomy — doctype, html/head/body, parse order, minimal valid page.
+- [ ] `01.01.02` Head and metadata — charset, viewport, title, description, canonical and social metadata.
+- [ ] `01.01.03` Semantic landmarks — header, nav, main, footer, aside and accessible page regions.
+- [ ] `01.01.04` Heading hierarchy — meaningful headings and document outline without visual hierarchy hacks.
+- [ ] `01.01.05` Text, lists and quotations — semantic paragraphs, lists, figure and blockquote.
+- [ ] `01.01.06` Links and navigation — anchors, safe external links, meaningful names, keyboard focus.
+- [ ] `01.01.07` Images and responsive media — alt text, figure, width/height, sizes/srcset, loading behavior.
+- [ ] `01.01.08` Lab: accessible content page — build an integrated semantic responsive content page and run meaningful static/accessibility tests.
+- [ ] Add for each lesson: verified MDX, strict metadata, at least three guided steps, accurate official references, predict-first exercise, quiz, bug hunt, starter, solution, runnable tests, completion rubric.
+- [ ] Register published lesson metadata, route and navigation. Planned/unauthored topics must remain `noindex`; sitemap must include only truly authored content.
+- [ ] Update `docs/checkpoint.json` by running `npm run checkpoint:write`, update `docs/PROJECT_CHECKPOINT.md`, and revise this TODO.
+- [ ] Verify CI (audit/lint/typecheck/repository tests/catalog+content+checkpoint/labs/build/Chromium), Vercel preview, and mobile/keyboard UX before merge.
+- [ ] Merge only after all blocking checks pass. Confirm Vercel production SHA/READY and record release evidence.
 
-## P1 — Security and reliability
-- [ ] **By 2026-12-02 UTC** review GHSA-fc5q-39xc-vjpf Picomatch development dependency exception; remove promptly when compatible fix exists. Never use `npm audit fix --force` blindly.
-- [ ] Check that browser code preview uses isolated origin, does not run untrusted server-side code, and remains functional on mobile.
-- [ ] Improve reference source URL checks and authored-vs-planned cross-links.
+## P1 — Security / Reliability / Pedagogy
+- [ ] **Deadline: 2026-12-02 UTC:** re-check and resolve Picomatch dev-dependency advisory GHSA-fc5q-39xc-vjpf. Replace the expiring allowlisted exception as soon as compatible fixed versions exist; do not use force downgrades without compatibility testing.
+- [ ] Improve content link verification and quiz quality (avoid generic trick answers). Require actual learner-facing expected output.
+- [ ] Expand reference articles using a stable contract: syntax, parameters, defaults, returns/errors, tested example, anti-pattern, security/performance notes, official documentation and lesson links.
+- [ ] Keep the reading-first UI and accessible navigation. Avoid adding features that crowd the beginner experience.
 
-## P2 — Next content after module 00.03
-- [ ] Start Track `01`: HTML/Web Platform. Author **one entire module at a time** with labs and verification.
-- [ ] Expand 4 drafted reference entries toward 303 indexed references using reusable syntax/parameters/errors/examples/source contracts.
-- [ ] Consolidate stale README v1.1 descriptions, introduce clearer learning paths and review cycles.
-- [ ] Later: authenticated sync and advanced code grading **only** after privacy, sandboxing, and costs are designed.
+## P2 — Subsequent milestones
+- [ ] `01.02` HTML Forms & Validation; then remaining HTML modules.
+- [ ] CSS deep fundamentals, JavaScript, TypeScript, React/Next.js, NestJS/Fastify, PostgreSQL/Prisma/Supabase, security, deployment, observability, and enterprise capstone per `CURRICULUM_MASTER.md`.
+- [ ] Plan multi-device sync and sandboxed automated code grading **only** after designing privacy, authorization, compute limits and sustainable cost.
+- [ ] Consolidate historical README v1.1 language and build navigation for learning paths and references without inflating UI complexity.
 
-## Definition of done (per module)
-**A published module is done only when** every catalog ID has a reviewed MDX body and strict metadata; runnable instructor solution and meaningful starter tests; route is indexed, navigation accessible, and progress honest; security audit passes; CI, production build, and Chromium pass; preview verified; merged and deployed. Document evidence and SHA in the checkpoint. Do not label a PR build as production.
+## Definition of done
+A module is released only when all eight canonical topics are genuinely authored, each lab and its tests execute, catalog and published metadata agree, planned pages remain noindex, CI and the preview pass, and the merge is reflected by a verified production deployment and updated checkpoint. A green CI run is not equivalent to learner device testing; state those limits explicitly.
+
+## Recently completed (released)
+- [x] `00.01`: Computing and internet foundations, 8 lessons.
+- [x] `00.02`: Developer toolchain, 8 lessons.
+- [x] `00.03`: Learning and debugging process, 8 lessons.
+- [x] 4 interactive sample lessons and 4 drafted reference pages retained.
+- [x] Stable machine-readable progress checkpoint with CI verification.
+- [x] PR #4 merged; 18 repository tests, 63 lab tests, content/production build/Chromium passed.
+- [x] Vercel production READY at `main@16c2eff`.

@@ -3,13 +3,15 @@
   "updatedAt": "2026-11-18",
   "baseline": {
     "branch": "main",
-    "sha": "cd7f33bb0c524887c8b6e05a8dd2c90867fd6439",
-    "vercelDeploymentId": "dpl_7u1f3atULEvoE1tmNX2bokzXCJBB",
-    "ciRun": 44243836026
+    "sha": "16c2effac03aa47bad666e62fc82b6b8ecc9d48e",
+    "vercelDeploymentId": "dpl_77jkFMZ8grSpsYbiVx6JyTp8phnn",
+    "ciRun": 44276089359,
+    "productionUrl": "https://fullstack-academy-ecru.vercel.app/"
   },
   "development": {
-    "branch": "feat/learning-debugging-checkpoint",
-    "state": "PR candidate, CI not yet verified"
+    "branch": null,
+    "lastMergedPr": 4,
+    "state": "production-verified"
   },
   "snapshot": {
     "tracks": 28,
@@ -33,5 +35,5 @@
     "exceptionExpires": "2026-12-02"
   },
   "nextMilestone": "01.01",
-  "status": "release-candidate"
+  "status": "released"
 }
