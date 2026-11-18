@@ -128,7 +128,8 @@ export async function verifyCssTrack({ page, base, assert, wait }) {
   await page.emulateMedia({reducedMotion:'no-preference'});
   await open('css-transform-opacity');
   await page.getByRole('button',{name:'Toggle notification'}).click();
-  assert.equal((await computed('#toast','opacity')).trim(),'1','Toast open state uses opacity');
+  await page.waitForFunction(() => getComputedStyle(document.querySelector('#toast')).opacity === '1', { timeout: 5000 });
+  assert.equal((await computed('#toast','opacity')).trim(),'1','Toast open state uses opacity after its transition settles');
   assert.ok((await computed('#toast','transition-property')).includes('transform'),'Toast animates transform, not width for users who allow motion');
   await page.emulateMedia({reducedMotion:'reduce'});
   assert.equal((await computed('#toast','transition-duration')).trim(),'0s','Toast disables animation for reduced motion');
