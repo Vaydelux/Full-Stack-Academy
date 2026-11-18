@@ -1,0 +1,109 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Diagnose why intrinsic sizing min max clamp fails in a realistic component","Apply a minimal CSS repair without breaking native HTML semantics","Verify computed styles at narrow and wide widths with repeatable tests"]} />
+
+## The problem we're solving
+
+A fixed-width reading panel extends beyond small screens and looks awkwardly stretched on a large monitor. The goal is a predictable local repair, not a decorative mockup. The HTML fixture is fully offline and has an intentionally failing starter plus an instructor solution.
+
+## Build the mental model
+
+min(), max() and clamp() are CSS value functions, not JavaScript functions. min(100%, 42rem) lets a panel fit its container and caps its width. clamp() supplies lower/preferred/upper bounds, but not every combination is automatically accessible: zoom and font scaling still need tests.
+
+**Predict before running:** The reading panel never exceeds its parent and stays capped near 42rem on a large screen.
+
+## Prerequisites and preflight
+
+Continue from [the previous canonical lesson](/learn/02.02.02). Open `labs/css-intrinsic/starter/index.html` in a browser, select the example in DevTools Elements, and inspect Computed Styles. Use Node.js 24 to execute the repository tests; no Vercel, credentials, telemetry or backend is required.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the actual defect" file="labs/css-intrinsic/starter/index.html" expected={"The hardcoded 900px inline width produces horizontal overflow on a phone."}>
+
+Use the original CSS from the starter. Resist the temptation to add `!important` until you know which computed property is causing the failure.
+
+```css
+.demo { inline-size: 900px; padding: 3rem; }
+```
+
+**Predict before running:** The hardcoded 900px inline width produces horizontal overflow on a phone.
+
+**Why it fails:** min(), max() and clamp() are CSS value functions, not JavaScript functions. min(100%, 42rem) lets a panel fit its container and caps its width. clamp() supplies lower/preferred/upper bounds, but not every combination is automatically accessible: zoom and font scaling still need tests.
+
+**Proof:** Compare computed inlineSize at 320px and 1100px; inspect padding at both sizes. Record the value in the starter before moving on.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the rule, not the screenshot" file="labs/css-intrinsic/starter/index.html" expected={"The reading panel never exceeds its parent and stays capped near 42rem on a large screen."}>
+
+Replace the defective declaration with this rule from the instructor implementation. Do not change the semantic markup or hide overflow simply to mask a layout defect.
+
+```css
+.demo { inline-size: min(100%, 42rem); padding: clamp(0.75rem, 2vw, 1.75rem); margin-inline: auto; }
+```
+
+**Predict before running:** The reading panel never exceeds its parent and stays capped near 42rem on a large screen.
+
+**Why it works:** min(), max() and clamp() are CSS value functions, not JavaScript functions. min(100%, 42rem) lets a panel fit its container and caps its width. clamp() supplies lower/preferred/upper bounds, but not every combination is automatically accessible: zoom and font scaling still need tests.
+
+**Proof:** Compare the properties and geometry with `labs/css-intrinsic/solution/index.html`, using DevTools, not merely text-searching the CSS source.
+
+</LessonStep>
+
+<LessonStep number={3} title="Measure and regression-check the behavior" file="labs/css-intrinsic/starter/index.html" expected="Narrow and wide states remain usable, with no unexpected horizontal overflow.">
+
+Open Responsive Design Mode at 320px and 1100px. For applicable lessons, scroll, inspect an accessible scrolling region or constrain the query container while keeping the viewport fixed.
+
+```js
+const root = document.documentElement;
+const surface = document.querySelector('#demo');
+console.log({
+  fitsViewport: root.scrollWidth <= innerWidth,
+  display: getComputedStyle(surface).display,
+  inlineSize: surface.getBoundingClientRect().width
+});
+```
+
+**Predict before running:** A specific layout value changes as expected, and the repaired surface stays within its available width.
+
+**Why it works:** Browser computed styles and bounding boxes reflect selector matching, layout algorithm and containing-block constraints.
+
+**Proof:** Compare computed inlineSize at 320px and 1100px; inspect padding at both sizes.
+
+</LessonStep>
+
+## Explore and verify
+
+Compare keyboard-only navigation and browser text zoom with the repaired solution. When a property needs a wide viewport or a long scroll area, validate those exact conditions rather than assuming a 320px screenshot proves everything. The Node lab tests enforce instructor CSS structure; the Chromium smoke test checks real behavior. Neither is a formal assistive-technology certification.
+
+<Misconception claim="A stronger selector or higher z-index will fix any CSS layout bug." correction={"min(), max() and clamp() are CSS value functions, not JavaScript functions. min(100%, 42rem) lets a panel fit its container and caps its width. clamp() supplies lower/preferred/upper bounds, but not every combination is automatically accessible: zoom and font scaling still need tests."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Symptom:** The hardcoded 900px inline width produces horizontal overflow on a phone.
+
+**Failure cause:** A fixed-width reading panel extends beyond small screens and looks awkwardly stretched on a large monitor.
+
+**Repair evidence:** The reading panel never exceeds its parent and stays capped near 42rem on a large screen.
+
+First write down the original Computed Styles observation; change only the relevant CSS. Repeat the same width, focus and scrolling scenario, then add the regression result to your notes. A passing test is evidence for the exercised conditions, not a guarantee against all device configurations.
+
+<KnowledgeCheck question={"What does width: min(100%, 42rem) express?"} choices={["At least 42rem wide","Exactly 42rem on every viewport","Use the smaller of available 100% and 42rem","The CSS function has no width semantics"]} correctIndex={2} explanation={"min() selects the smaller computed value; the percentage is relative to the containing block."} misconception="A declaration existing in source is not sufficient; the browser must match and compute it in the tested context." lessonId="02.02.03" />
+
+## Guided local lab
+
+Repair `labs/css-intrinsic/starter/index.html` and compare with `labs/css-intrinsic/solution/index.html`. Run `npm run lab:css-intrinsic` to check the instructor solution. For your own edited starter, run `ACADEMY_LAB_TARGET=starter npm run lab:css-intrinsic` in Bash, or set the same environment variable temporarily in PowerShell. An untouched starter is expected to fail the instructor assertions.
+
+**Hints:** Inspect the first surprising computed property; then check the containing block or layout algorithm; only then compare to the target declaration in the solution.
+
+<LabGate lessonId="02.02.03" labId="lab.foundation.css-intrinsic" commands={["npm ci","npm run lab:css-intrinsic"]} interactive={false} />
+
+## Reflect
+
+What changed in the browser and why? What alternative solution would you reject under these constraints? Which untested viewport, browser engine or accessibility setting could invalidate the result? Do not claim server-side grading or automatic persistence.
+
+## Official references
+
+- [MDN concept and layout guidance](https://developer.mozilla.org/en-US/docs/Web/CSS/min)
+- [MDN API or property reference](https://developer.mozilla.org/en-US/docs/Web/CSS/clamp)

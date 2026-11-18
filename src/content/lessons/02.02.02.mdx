@@ -1,0 +1,109 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Diagnose why css grid tracks and areas fails in a realistic component","Apply a minimal CSS repair without breaking native HTML semantics","Verify computed styles at narrow and wide widths with repeatable tests"]} />
+
+## The problem we're solving
+
+A desktop two-column sidebar layout spills outside a phone because its track widths are fixed in pixels. The goal is a predictable local repair, not a decorative mockup. The HTML fixture is fully offline and has an intentionally failing starter plus an instructor solution.
+
+## Build the mental model
+
+Grid defines two-dimensional row and column tracks, while grid-template-areas connects semantic regions to explicit placements. minmax(0, 1fr) allows long content to shrink within the track. Name areas and switch to a single track when content no longer fits.
+
+**Predict before running:** The phone uses one track; desktop uses two fluid tracks without horizontal overflow.
+
+## Prerequisites and preflight
+
+Continue from [the previous canonical lesson](/learn/02.02.01). Open `labs/css-grid-areas/starter/index.html` in a browser, select the example in DevTools Elements, and inspect Computed Styles. Use Node.js 24 to execute the repository tests; no Vercel, credentials, telemetry or backend is required.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the actual defect" file="labs/css-grid-areas/starter/index.html" expected={"A 900px minimum grid layout stays too wide for a phone."}>
+
+Use the original CSS from the starter. Resist the temptation to add `!important` until you know which computed property is causing the failure.
+
+```css
+.demo { display: grid; grid-template-columns: 600px 300px; grid-template-areas: "content sidebar"; gap: 1rem; } .content { grid-area: content; } .sidebar { grid-area: sidebar; }
+```
+
+**Predict before running:** A 900px minimum grid layout stays too wide for a phone.
+
+**Why it fails:** Grid defines two-dimensional row and column tracks, while grid-template-areas connects semantic regions to explicit placements. minmax(0, 1fr) allows long content to shrink within the track. Name areas and switch to a single track when content no longer fits.
+
+**Proof:** Inspect the computed gridTemplateColumns at 320px and 1100px and confirm each grid area placement. Record the value in the starter before moving on.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the rule, not the screenshot" file="labs/css-grid-areas/starter/index.html" expected={"The phone uses one track; desktop uses two fluid tracks without horizontal overflow."}>
+
+Replace the defective declaration with this rule from the instructor implementation. Do not change the semantic markup or hide overflow simply to mask a layout defect.
+
+```css
+.demo { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); grid-template-areas: "content sidebar"; gap: 1rem; } .content { grid-area: content; min-inline-size: 0; } .sidebar { grid-area: sidebar; min-inline-size: 0; } @media (max-width: 38rem) { .demo { grid-template-columns: minmax(0, 1fr); grid-template-areas: "content" "sidebar"; } }
+```
+
+**Predict before running:** The phone uses one track; desktop uses two fluid tracks without horizontal overflow.
+
+**Why it works:** Grid defines two-dimensional row and column tracks, while grid-template-areas connects semantic regions to explicit placements. minmax(0, 1fr) allows long content to shrink within the track. Name areas and switch to a single track when content no longer fits.
+
+**Proof:** Compare the properties and geometry with `labs/css-grid-areas/solution/index.html`, using DevTools, not merely text-searching the CSS source.
+
+</LessonStep>
+
+<LessonStep number={3} title="Measure and regression-check the behavior" file="labs/css-grid-areas/starter/index.html" expected="Narrow and wide states remain usable, with no unexpected horizontal overflow.">
+
+Open Responsive Design Mode at 320px and 1100px. For applicable lessons, scroll, inspect an accessible scrolling region or constrain the query container while keeping the viewport fixed.
+
+```js
+const root = document.documentElement;
+const surface = document.querySelector('#demo');
+console.log({
+  fitsViewport: root.scrollWidth <= innerWidth,
+  display: getComputedStyle(surface).display,
+  inlineSize: surface.getBoundingClientRect().width
+});
+```
+
+**Predict before running:** A specific layout value changes as expected, and the repaired surface stays within its available width.
+
+**Why it works:** Browser computed styles and bounding boxes reflect selector matching, layout algorithm and containing-block constraints.
+
+**Proof:** Inspect the computed gridTemplateColumns at 320px and 1100px and confirm each grid area placement.
+
+</LessonStep>
+
+## Explore and verify
+
+Compare keyboard-only navigation and browser text zoom with the repaired solution. When a property needs a wide viewport or a long scroll area, validate those exact conditions rather than assuming a 320px screenshot proves everything. The Node lab tests enforce instructor CSS structure; the Chromium smoke test checks real behavior. Neither is a formal assistive-technology certification.
+
+<Misconception claim="A stronger selector or higher z-index will fix any CSS layout bug." correction={"Grid defines two-dimensional row and column tracks, while grid-template-areas connects semantic regions to explicit placements. minmax(0, 1fr) allows long content to shrink within the track. Name areas and switch to a single track when content no longer fits."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Symptom:** A 900px minimum grid layout stays too wide for a phone.
+
+**Failure cause:** A desktop two-column sidebar layout spills outside a phone because its track widths are fixed in pixels.
+
+**Repair evidence:** The phone uses one track; desktop uses two fluid tracks without horizontal overflow.
+
+First write down the original Computed Styles observation; change only the relevant CSS. Repeat the same width, focus and scrolling scenario, then add the regression result to your notes. A passing test is evidence for the exercised conditions, not a guarantee against all device configurations.
+
+<KnowledgeCheck question={"Which grid track definition can shrink to zero without preserving an implicit content minimum?"} choices={["minmax(0, 1fr)","900px","auto always","1fr always forbids shrinking"]} correctIndex={0} explanation={"minmax(0, 1fr) explicitly supplies a zero minimum while distributing remaining space."} misconception="A declaration existing in source is not sufficient; the browser must match and compute it in the tested context." lessonId="02.02.02" />
+
+## Guided local lab
+
+Repair `labs/css-grid-areas/starter/index.html` and compare with `labs/css-grid-areas/solution/index.html`. Run `npm run lab:css-grid-areas` to check the instructor solution. For your own edited starter, run `ACADEMY_LAB_TARGET=starter npm run lab:css-grid-areas` in Bash, or set the same environment variable temporarily in PowerShell. An untouched starter is expected to fail the instructor assertions.
+
+**Hints:** Inspect the first surprising computed property; then check the containing block or layout algorithm; only then compare to the target declaration in the solution.
+
+<LabGate lessonId="02.02.02" labId="lab.foundation.css-grid-areas" commands={["npm ci","npm run lab:css-grid-areas"]} interactive={false} />
+
+## Reflect
+
+What changed in the browser and why? What alternative solution would you reject under these constraints? Which untested viewport, browser engine or accessibility setting could invalidate the result? Do not claim server-side grading or automatic persistence.
+
+## Official references
+
+- [MDN concept and layout guidance](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_grid_layout/Basic_concepts_of_grid_layout)
+- [MDN API or property reference](https://developer.mozilla.org/en-US/docs/Web/CSS/grid-template-areas)

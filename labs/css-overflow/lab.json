@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.css-overflow",
+  "lessonId": "02.02.05",
+  "title": "Overflow and scroll containers",
+  "runtime": "browser-html-and-node-24",
+  "status": "authored",
+  "starter": "labs/css-overflow/starter/index.html",
+  "solution": "labs/css-overflow/solution/index.html",
+  "tests": "labs/css-overflow/solution.test.mjs",
+  "verify": [
+    "npm run lab:css-overflow"
+  ],
+  "expected": "I can diagnose the overflow and scroll containers bug and demonstrate the repaired computed CSS behavior.",
+  "security": "Synthetic offline HTML/CSS practice. No third-party assets, remote fetches, user accounts, API tokens, analytics or data uploads."
+}

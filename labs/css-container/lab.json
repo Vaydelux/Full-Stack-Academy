@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.css-container",
+  "lessonId": "02.02.06",
+  "title": "Container queries",
+  "runtime": "browser-html-and-node-24",
+  "status": "authored",
+  "starter": "labs/css-container/starter/index.html",
+  "solution": "labs/css-container/solution/index.html",
+  "tests": "labs/css-container/solution.test.mjs",
+  "verify": [
+    "npm run lab:css-container"
+  ],
+  "expected": "I can diagnose the container queries bug and demonstrate the repaired computed CSS behavior.",
+  "security": "Synthetic offline HTML/CSS practice. No third-party assets, remote fetches, user accounts, API tokens, analytics or data uploads."
+}

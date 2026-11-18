@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.css-flexbox",
+  "lessonId": "02.02.01",
+  "title": "Flexbox mental model",
+  "runtime": "browser-html-and-node-24",
+  "status": "authored",
+  "starter": "labs/css-flexbox/starter/index.html",
+  "solution": "labs/css-flexbox/solution/index.html",
+  "tests": "labs/css-flexbox/solution.test.mjs",
+  "verify": [
+    "npm run lab:css-flexbox"
+  ],
+  "expected": "I can diagnose the flexbox mental model bug and demonstrate the repaired computed CSS behavior.",
+  "security": "Synthetic offline HTML/CSS practice. No third-party assets, remote fetches, user accounts, API tokens, analytics or data uploads."
+}

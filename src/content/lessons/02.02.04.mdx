@@ -1,0 +1,109 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Diagnose why positioning and stacking contexts fails in a realistic component","Apply a minimal CSS repair without breaking native HTML semantics","Verify computed styles at narrow and wide widths with repeatable tests"]} />
+
+## The problem we're solving
+
+A badge meant to sit in its card corner instead sticks to the viewport and overlaps navigation. The goal is a predictable local repair, not a decorative mockup. The HTML fixture is fully offline and has an intentionally failing starter plus an instructor solution.
+
+## Build the mental model
+
+An absolutely positioned element uses the containing block established by its positioned ancestor, whereas fixed positioning usually follows the viewport (subject to transformed ancestors). z-index participates in stacking contexts; a large numeric value cannot escape a lower ancestor stacking context. Keep the card positioned and its overlay local.
+
+**Predict before running:** The badge is positioned inside the panel corner, not attached to the window.
+
+## Prerequisites and preflight
+
+Continue from [the previous canonical lesson](/learn/02.02.03). Open `labs/css-position/starter/index.html` in a browser, select the example in DevTools Elements, and inspect Computed Styles. Use Node.js 24 to execute the repository tests; no Vercel, credentials, telemetry or backend is required.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the actual defect" file="labs/css-position/starter/index.html" expected={"The fixed badge sits at the browser viewport corner and can cover unrelated interface elements."}>
+
+Use the original CSS from the starter. Resist the temptation to add `!important` until you know which computed property is causing the failure.
+
+```css
+.demo { position: static; min-block-size: 12rem; } .badge { position: fixed; inset-block-start: 0; inset-inline-end: 0; z-index: 99999; }
+```
+
+**Predict before running:** The fixed badge sits at the browser viewport corner and can cover unrelated interface elements.
+
+**Why it fails:** An absolutely positioned element uses the containing block established by its positioned ancestor, whereas fixed positioning usually follows the viewport (subject to transformed ancestors). z-index participates in stacking contexts; a large numeric value cannot escape a lower ancestor stacking context. Keep the card positioned and its overlay local.
+
+**Proof:** Compare the badge bounding box with the demo bounding box; inspect position and stacking-context sources. Record the value in the starter before moving on.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the rule, not the screenshot" file="labs/css-position/starter/index.html" expected={"The badge is positioned inside the panel corner, not attached to the window."}>
+
+Replace the defective declaration with this rule from the instructor implementation. Do not change the semantic markup or hide overflow simply to mask a layout defect.
+
+```css
+.demo { position: relative; min-block-size: 12rem; isolation: isolate; } .badge { position: absolute; inset-block-start: 0.75rem; inset-inline-end: 0.75rem; z-index: 2; }
+```
+
+**Predict before running:** The badge is positioned inside the panel corner, not attached to the window.
+
+**Why it works:** An absolutely positioned element uses the containing block established by its positioned ancestor, whereas fixed positioning usually follows the viewport (subject to transformed ancestors). z-index participates in stacking contexts; a large numeric value cannot escape a lower ancestor stacking context. Keep the card positioned and its overlay local.
+
+**Proof:** Compare the properties and geometry with `labs/css-position/solution/index.html`, using DevTools, not merely text-searching the CSS source.
+
+</LessonStep>
+
+<LessonStep number={3} title="Measure and regression-check the behavior" file="labs/css-position/starter/index.html" expected="Narrow and wide states remain usable, with no unexpected horizontal overflow.">
+
+Open Responsive Design Mode at 320px and 1100px. For applicable lessons, scroll, inspect an accessible scrolling region or constrain the query container while keeping the viewport fixed.
+
+```js
+const root = document.documentElement;
+const surface = document.querySelector('#demo');
+console.log({
+  fitsViewport: root.scrollWidth <= innerWidth,
+  display: getComputedStyle(surface).display,
+  inlineSize: surface.getBoundingClientRect().width
+});
+```
+
+**Predict before running:** A specific layout value changes as expected, and the repaired surface stays within its available width.
+
+**Why it works:** Browser computed styles and bounding boxes reflect selector matching, layout algorithm and containing-block constraints.
+
+**Proof:** Compare the badge bounding box with the demo bounding box; inspect position and stacking-context sources.
+
+</LessonStep>
+
+## Explore and verify
+
+Compare keyboard-only navigation and browser text zoom with the repaired solution. When a property needs a wide viewport or a long scroll area, validate those exact conditions rather than assuming a 320px screenshot proves everything. The Node lab tests enforce instructor CSS structure; the Chromium smoke test checks real behavior. Neither is a formal assistive-technology certification.
+
+<Misconception claim="A stronger selector or higher z-index will fix any CSS layout bug." correction={"An absolutely positioned element uses the containing block established by its positioned ancestor, whereas fixed positioning usually follows the viewport (subject to transformed ancestors). z-index participates in stacking contexts; a large numeric value cannot escape a lower ancestor stacking context. Keep the card positioned and its overlay local."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Symptom:** The fixed badge sits at the browser viewport corner and can cover unrelated interface elements.
+
+**Failure cause:** A badge meant to sit in its card corner instead sticks to the viewport and overlaps navigation.
+
+**Repair evidence:** The badge is positioned inside the panel corner, not attached to the window.
+
+First write down the original Computed Styles observation; change only the relevant CSS. Repeat the same width, focus and scrolling scenario, then add the regression result to your notes. A passing test is evidence for the exercised conditions, not a guarantee against all device configurations.
+
+<KnowledgeCheck question={"An absolute child usually positions itself relative to which element?"} choices={["The viewport regardless of ancestors","Its nearest ancestor establishing a containing block","The most recently focused input","The element with the highest z-index"]} correctIndex={1} explanation={"A positioned ancestor establishes the expected containing block for ordinary absolute positioning."} misconception="A declaration existing in source is not sufficient; the browser must match and compute it in the tested context." lessonId="02.02.04" />
+
+## Guided local lab
+
+Repair `labs/css-position/starter/index.html` and compare with `labs/css-position/solution/index.html`. Run `npm run lab:css-position` to check the instructor solution. For your own edited starter, run `ACADEMY_LAB_TARGET=starter npm run lab:css-position` in Bash, or set the same environment variable temporarily in PowerShell. An untouched starter is expected to fail the instructor assertions.
+
+**Hints:** Inspect the first surprising computed property; then check the containing block or layout algorithm; only then compare to the target declaration in the solution.
+
+<LabGate lessonId="02.02.04" labId="lab.foundation.css-position" commands={["npm ci","npm run lab:css-position"]} interactive={false} />
+
+## Reflect
+
+What changed in the browser and why? What alternative solution would you reject under these constraints? Which untested viewport, browser engine or accessibility setting could invalidate the result? Do not claim server-side grading or automatic persistence.
+
+## Official references
+
+- [MDN concept and layout guidance](https://developer.mozilla.org/en-US/docs/Web/CSS/position)
+- [MDN API or property reference](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_positioned_layout/Stacking_context)

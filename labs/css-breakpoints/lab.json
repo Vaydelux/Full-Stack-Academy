@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.css-breakpoints",
+  "lessonId": "02.02.07",
+  "title": "Responsive breakpoints",
+  "runtime": "browser-html-and-node-24",
+  "status": "authored",
+  "starter": "labs/css-breakpoints/starter/index.html",
+  "solution": "labs/css-breakpoints/solution/index.html",
+  "tests": "labs/css-breakpoints/solution.test.mjs",
+  "verify": [
+    "npm run lab:css-breakpoints"
+  ],
+  "expected": "I can diagnose the responsive breakpoints bug and demonstrate the repaired computed CSS behavior.",
+  "security": "Synthetic offline HTML/CSS practice. No third-party assets, remote fetches, user accounts, API tokens, analytics or data uploads."
+}

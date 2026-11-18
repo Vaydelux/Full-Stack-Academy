@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.css-sticky-debug",
+  "lessonId": "02.02.08",
+  "title": "Bug Hunt broken sticky sidebar",
+  "runtime": "browser-html-and-node-24",
+  "status": "authored",
+  "starter": "labs/css-sticky-debug/starter/index.html",
+  "solution": "labs/css-sticky-debug/solution/index.html",
+  "tests": "labs/css-sticky-debug/solution.test.mjs",
+  "verify": [
+    "npm run lab:css-sticky-debug"
+  ],
+  "expected": "I can diagnose the bug hunt broken sticky sidebar bug and demonstrate the repaired computed CSS behavior.",
+  "security": "Synthetic offline HTML/CSS practice. No third-party assets, remote fetches, user accounts, API tokens, analytics or data uploads."
+}
