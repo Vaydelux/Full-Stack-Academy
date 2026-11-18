@@ -1,0 +1,93 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Explain the Git history/index rule involved in gitignore and secrets","Reproduce the starter's incorrect repository state in a disposable local repository","Apply the instructor fix and verify actual Git refs, file contents or status"]} />
+
+## The problem we're solving
+
+A local environment file holding a synthetic placeholder is accidentally added to the index alongside legitimate source files. This lesson is an offline, repeatable source-control exercise; it never touches the learner's actual project repository or opens a hosted pull request.
+
+## Build the mental model
+
+A .gitignore pattern prevents untracked files matching it from being added by broad staging. It does not stop tracking a file already committed or staged. Use git check-ignore and git ls-files to verify policies, and rotate real credentials immediately after exposure; never assume deleting a commit erases copies.
+
+**Predict before running:** The local fake environment file remains untracked and is excluded by .gitignore.
+
+## Prerequisites and preflight
+
+Continue from [the previous canonical topic](/learn/05.01.06). Ensure Git is available on PATH alongside Node.js 24. The local verifier creates a disposable repository in the OS temporary folder, configures a synthetic author, executes the exercise, and deletes the folder. Inspect `labs/git-ignore-secrets/starter/solution.mjs`, the instructor solution, and `labs/git-ignore-secrets/solution.test.mjs` before editing.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the source-control mistake" file="labs/git-ignore-secrets/starter/solution.mjs" expected="The starter fails one or more real Git assertions on its disposable repository.">
+
+```js
+export function solve({git,write}){write('README.md','# Online example\n');git(['add','-A']);git(['commit','--quiet','-m','chore: save project']);}
+```
+
+**Predict before running:** A local environment file holding a synthetic placeholder is accidentally added to the index alongside legitimate source files.
+
+**Why it fails:** A .gitignore pattern prevents untracked files matching it from being added by broad staging. It does not stop tracking a file already committed or staged. Use git check-ignore and git ls-files to verify policies, and rotate real credentials immediately after exposure; never assume deleting a commit erases copies.
+
+**Proof:** Run the starter through the local harness using `ACADEMY_LAB_TARGET=starter npm run lab:git-ignore-secrets` in Bash (or the matching PowerShell environment setting). Inspect the reported Git file or ref mismatch.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the Git workflow" file="labs/git-ignore-secrets/starter/solution.mjs" expected={"The local fake environment file remains untracked and is excluded by .gitignore."}>
+
+Preserve the exported `solve` contract; call the local `git` helper with explicit argument arrays rather than issuing shell strings. The instructor workflow is:
+
+```js
+export function solve({git,write}){write('.gitignore','.env.local\nnode_modules/\n');write('README.md','# Offline example\n');git(['add','-A']);git(['commit','--quiet','-m','chore: ignore local configuration']);}
+```
+
+**Predict before running:** The local fake environment file remains untracked and is excluded by .gitignore.
+
+**Why it works:** A .gitignore pattern prevents untracked files matching it from being added by broad staging. It does not stop tracking a file already committed or staged. Use git check-ignore and git ls-files to verify policies, and rotate real credentials immediately after exposure; never assume deleting a commit erases copies.
+
+**Proof:** The same deterministic fixture should now satisfy the intended history, index and working-tree state.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify command results and explain risks" file="labs/git-ignore-secrets/solution.test.mjs" expected="Actual Git history, refs, index or file contents match the expected state.">
+
+The following assertions exercise a freshly initialized repository rather than comparing source strings:
+
+```js
+assert.equal(git(['check-ignore','.env.local']).stdout.trim(),'.env.local');assert.equal(git(['ls-files','.env.local']).stdout.trim(),'');assert.equal(git(['show','HEAD:.gitignore']).stdout.includes('.env.local'),true);
+```
+
+**Predict before running:** The corrected command order changes the relevant repository state while preserving the baseline.
+
+**Why it matters:** A green file syntax check cannot prove correct Git commit ancestry, staged file contents or remote refs.
+
+**Proof:** Run `npm run lab:git-ignore-secrets`; compare output with the starter-target failure. No GitHub Action or Vercel preview is needed for this fixture.
+
+</LessonStep>
+
+## Explore and verify
+
+Run `git status`, `git log --oneline --graph`, `git diff`, or `git show` as appropriate in a disposable clone. The exercises deliberately avoid real credentials, network remotes and destructive commands against your own worktree. Code review and branch protection require a separate hosting workflow.
+
+<Misconception claim="Git state changes are automatically uploaded, reviewed and safe for collaborators." correction={"A .gitignore pattern prevents untracked files matching it from being added by broad staging. It does not stop tracking a file already committed or staged. Use git check-ignore and git ls-files to verify policies, and rotate real credentials immediately after exposure; never assume deleting a commit erases copies."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+Locate the wrong index, branch, history or file state. Explain the smallest counterexample, then change only the commands that violate the intended workflow. Never substitute a hard reset or force push when a safer reversible history operation is appropriate.
+
+<KnowledgeCheck question={"Does adding a previously committed file to .gitignore remove it from history?"} choices={["Yes, retroactively","No, tracking and history require separate remediation","Only if the repository is private","Only with pnpm"]} correctIndex={1} explanation={"A .gitignore pattern prevents untracked files matching it from being added by broad staging. It does not stop tracking a file already committed or staged. Use git check-ignore and git ls-files to verify policies, and rotate real credentials immediately after exposure; never assume deleting a commit erases copies."} misconception="A local commit or diff is not proof of a hosted review or release." lessonId="05.01.07" />
+
+## Guided local lab
+
+Edit `labs/git-ignore-secrets/starter/solution.mjs`, verify it on a fresh temporary Git repo, then compare with the instructor. The tests run locally, not in an arbitrary-code cloud sandbox; never run modified student code from an untrusted source. No real Git remote, PR, CI approval or Vercel deployment is created.
+
+<LabGate lessonId="05.01.07" labId="lab.foundation.git-ignore-secrets" commands={["npm ci","npm run lab:git-ignore-secrets"]} interactive={false} />
+
+## Reflect
+
+What changed in the index versus the commit graph? Which action could have damaged a shared branch? What additional peer review or repository protection belongs outside this local exercise?
+
+## Official references
+
+- [Official Git reference](https://git-scm.com/docs/gitignore)
+- [Official collaboration/security guide](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/removing-sensitive-data-from-a-repository)

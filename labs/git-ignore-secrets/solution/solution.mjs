@@ -1,0 +1,1 @@
+export function solve({git,write}){write('.gitignore','.env.local\nnode_modules/\n');write('README.md','# Offline example\n');git(['add','-A']);git(['commit','--quiet','-m','chore: ignore local configuration']);}

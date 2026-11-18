@@ -1,0 +1,38 @@
+{
+  "id": "05.01.03",
+  "title": "Reset restore and revert",
+  "description": "Practice reset restore and revert using a fresh temporary local Git repository, deliberately failing starter and real command assertions without hosted services.",
+  "trackId": "05",
+  "moduleId": "05.01",
+  "level": "Beginner",
+  "estimatedMinutes": 55,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "05.01.02"
+  ],
+  "objectives": [
+    "Explain the Git history/index rule involved in reset restore and revert",
+    "Reproduce the starter's incorrect repository state in a disposable local repository",
+    "Apply the instructor fix and verify actual Git refs, file contents or status"
+  ],
+  "labId": "lab.foundation.git-revert",
+  "sources": [
+    {
+      "label": "Official Git documentation",
+      "url": "https://git-scm.com/docs/git-revert"
+    },
+    {
+      "label": "Official Git or GitHub collaboration guide",
+      "url": "https://git-scm.com/docs/git-reset"
+    }
+  ],
+  "rubric": [
+    "I reproduce an actual local git reset restore and revert failure.",
+    "I explain the relevant branch, index, history and file state.",
+    "I verify fixed refs, commits or ignored paths and name the remaining hosted review gate."
+  ]
+}

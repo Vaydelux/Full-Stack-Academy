@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.git-revert",
+  "lessonId": "05.01.03",
+  "title": "Reset restore and revert",
+  "runtime": "node-24-local-git-cli",
+  "status": "authored",
+  "starter": "labs/git-revert/starter/solution.mjs",
+  "solution": "labs/git-revert/solution/solution.mjs",
+  "tests": "labs/git-revert/solution.test.mjs",
+  "verify": [
+    "npm run lab:git-revert"
+  ],
+  "expected": "A disposable Git repository demonstrates the correct reset restore and revert history and index state through CLI assertions.",
+  "security": "Local temporary repository only; git network protocols restricted to file, no GitHub credentials, personal secrets, remote fetches, external deploys or destructive operations on the user's working tree."
+}

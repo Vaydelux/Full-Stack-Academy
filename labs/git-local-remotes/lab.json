@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.git-local-remotes",
+  "lessonId": "05.01.04",
+  "title": "Remote repositories and push",
+  "runtime": "node-24-local-git-cli",
+  "status": "authored",
+  "starter": "labs/git-local-remotes/starter/solution.mjs",
+  "solution": "labs/git-local-remotes/solution/solution.mjs",
+  "tests": "labs/git-local-remotes/solution.test.mjs",
+  "verify": [
+    "npm run lab:git-local-remotes"
+  ],
+  "expected": "A disposable Git repository demonstrates the correct remote repositories and push history and index state through CLI assertions.",
+  "security": "Local temporary repository only; git network protocols restricted to file, no GitHub credentials, personal secrets, remote fetches, external deploys or destructive operations on the user's working tree."
+}

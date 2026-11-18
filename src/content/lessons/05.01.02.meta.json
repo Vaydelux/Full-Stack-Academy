@@ -1,0 +1,38 @@
+{
+  "id": "05.01.02",
+  "title": "Branches merge and rebase",
+  "description": "Practice branches merge and rebase using a fresh temporary local Git repository, deliberately failing starter and real command assertions without hosted services.",
+  "trackId": "05",
+  "moduleId": "05.01",
+  "level": "Beginner",
+  "estimatedMinutes": 55,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "05.01.01"
+  ],
+  "objectives": [
+    "Explain the Git history/index rule involved in branches merge and rebase",
+    "Reproduce the starter's incorrect repository state in a disposable local repository",
+    "Apply the instructor fix and verify actual Git refs, file contents or status"
+  ],
+  "labId": "lab.foundation.git-branch-merge",
+  "sources": [
+    {
+      "label": "Official Git documentation",
+      "url": "https://git-scm.com/docs/git-merge"
+    },
+    {
+      "label": "Official Git or GitHub collaboration guide",
+      "url": "https://git-scm.com/docs/git-rebase"
+    }
+  ],
+  "rubric": [
+    "I reproduce an actual local git branches merge and rebase failure.",
+    "I explain the relevant branch, index, history and file state.",
+    "I verify fixed refs, commits or ignored paths and name the remaining hosted review gate."
+  ]
+}

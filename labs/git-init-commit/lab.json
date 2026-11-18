@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.git-init-commit",
+  "lessonId": "05.01.01",
+  "title": "init clone status add commit",
+  "runtime": "node-24-local-git-cli",
+  "status": "authored",
+  "starter": "labs/git-init-commit/starter/solution.mjs",
+  "solution": "labs/git-init-commit/solution/solution.mjs",
+  "tests": "labs/git-init-commit/solution.test.mjs",
+  "verify": [
+    "npm run lab:git-init-commit"
+  ],
+  "expected": "A disposable Git repository demonstrates the correct init clone status add commit history and index state through CLI assertions.",
+  "security": "Local temporary repository only; git network protocols restricted to file, no GitHub credentials, personal secrets, remote fetches, external deploys or destructive operations on the user's working tree."
+}

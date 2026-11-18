@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.git-conflicts",
+  "lessonId": "05.01.06",
+  "title": "Resolve merge conflicts",
+  "runtime": "node-24-local-git-cli",
+  "status": "authored",
+  "starter": "labs/git-conflicts/starter/solution.mjs",
+  "solution": "labs/git-conflicts/solution/solution.mjs",
+  "tests": "labs/git-conflicts/solution.test.mjs",
+  "verify": [
+    "npm run lab:git-conflicts"
+  ],
+  "expected": "A disposable Git repository demonstrates the correct resolve merge conflicts history and index state through CLI assertions.",
+  "security": "Local temporary repository only; git network protocols restricted to file, no GitHub credentials, personal secrets, remote fetches, external deploys or destructive operations on the user's working tree."
+}

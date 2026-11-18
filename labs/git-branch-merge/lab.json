@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.git-branch-merge",
+  "lessonId": "05.01.02",
+  "title": "Branches merge and rebase",
+  "runtime": "node-24-local-git-cli",
+  "status": "authored",
+  "starter": "labs/git-branch-merge/starter/solution.mjs",
+  "solution": "labs/git-branch-merge/solution/solution.mjs",
+  "tests": "labs/git-branch-merge/solution.test.mjs",
+  "verify": [
+    "npm run lab:git-branch-merge"
+  ],
+  "expected": "A disposable Git repository demonstrates the correct branches merge and rebase history and index state through CLI assertions.",
+  "security": "Local temporary repository only; git network protocols restricted to file, no GitHub credentials, personal secrets, remote fetches, external deploys or destructive operations on the user's working tree."
+}

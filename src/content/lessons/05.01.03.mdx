@@ -1,0 +1,93 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Explain the Git history/index rule involved in reset restore and revert","Reproduce the starter's incorrect repository state in a disposable local repository","Apply the instructor fix and verify actual Git refs, file contents or status"]} />
+
+## The problem we're solving
+
+A shared branch already contains a faulty settings commit and someone proposes discarding history with reset --hard. This lesson is an offline, repeatable source-control exercise; it never touches the learner's actual project repository or opens a hosted pull request.
+
+## Build the mental model
+
+Restore changes the working tree/index, reset moves the current branch ref and can discard local changes, and revert creates a new commit that inverses an earlier commit. For shared history, revert preserves the audit trail without rewriting everyone's refs.
+
+**Predict before running:** A new revert commit restores safe settings while preserving the earlier bad commit in history.
+
+## Prerequisites and preflight
+
+Continue from [the previous canonical topic](/learn/05.01.02). Ensure Git is available on PATH alongside Node.js 24. The local verifier creates a disposable repository in the OS temporary folder, configures a synthetic author, executes the exercise, and deletes the folder. Inspect `labs/git-revert/starter/solution.mjs`, the instructor solution, and `labs/git-revert/solution.test.mjs` before editing.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the source-control mistake" file="labs/git-revert/starter/solution.mjs" expected="The starter fails one or more real Git assertions on its disposable repository.">
+
+```js
+export function solve({git}){git(['reset','--hard','HEAD~1']);}
+```
+
+**Predict before running:** A shared branch already contains a faulty settings commit and someone proposes discarding history with reset --hard.
+
+**Why it fails:** Restore changes the working tree/index, reset moves the current branch ref and can discard local changes, and revert creates a new commit that inverses an earlier commit. For shared history, revert preserves the audit trail without rewriting everyone's refs.
+
+**Proof:** Run the starter through the local harness using `ACADEMY_LAB_TARGET=starter npm run lab:git-revert` in Bash (or the matching PowerShell environment setting). Inspect the reported Git file or ref mismatch.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the Git workflow" file="labs/git-revert/starter/solution.mjs" expected={"A new revert commit restores safe settings while preserving the earlier bad commit in history."}>
+
+Preserve the exported `solve` contract; call the local `git` helper with explicit argument arrays rather than issuing shell strings. The instructor workflow is:
+
+```js
+export function solve({git}){git(['revert','--no-edit','HEAD']);}
+```
+
+**Predict before running:** A new revert commit restores safe settings while preserving the earlier bad commit in history.
+
+**Why it works:** Restore changes the working tree/index, reset moves the current branch ref and can discard local changes, and revert creates a new commit that inverses an earlier commit. For shared history, revert preserves the audit trail without rewriting everyone's refs.
+
+**Proof:** The same deterministic fixture should now satisfy the intended history, index and working-tree state.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify command results and explain risks" file="labs/git-revert/solution.test.mjs" expected="Actual Git history, refs, index or file contents match the expected state.">
+
+The following assertions exercise a freshly initialized repository rather than comparing source strings:
+
+```js
+assert.equal(read('settings.txt'),'safe\n');assert.equal(git(['rev-list','--count','HEAD']).stdout.trim(),'4');assert.match(git(['log','-1','--pretty=%s']).stdout,/Revert/);
+```
+
+**Predict before running:** The corrected command order changes the relevant repository state while preserving the baseline.
+
+**Why it matters:** A green file syntax check cannot prove correct Git commit ancestry, staged file contents or remote refs.
+
+**Proof:** Run `npm run lab:git-revert`; compare output with the starter-target failure. No GitHub Action or Vercel preview is needed for this fixture.
+
+</LessonStep>
+
+## Explore and verify
+
+Run `git status`, `git log --oneline --graph`, `git diff`, or `git show` as appropriate in a disposable clone. The exercises deliberately avoid real credentials, network remotes and destructive commands against your own worktree. Code review and branch protection require a separate hosting workflow.
+
+<Misconception claim="Git state changes are automatically uploaded, reviewed and safe for collaborators." correction={"Restore changes the working tree/index, reset moves the current branch ref and can discard local changes, and revert creates a new commit that inverses an earlier commit. For shared history, revert preserves the audit trail without rewriting everyone's refs."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+Locate the wrong index, branch, history or file state. Explain the smallest counterexample, then change only the commands that violate the intended workflow. Never substitute a hard reset or force push when a safer reversible history operation is appropriate.
+
+<KnowledgeCheck question={"What is usually safer for undoing a bad commit already shared with a team?"} choices={["git reset --hard HEAD~1 followed by force push","git revert, which creates a new commit","Deleting .git","Editing a GitHub release note only"]} correctIndex={1} explanation={"Restore changes the working tree/index, reset moves the current branch ref and can discard local changes, and revert creates a new commit that inverses an earlier commit. For shared history, revert preserves the audit trail without rewriting everyone's refs."} misconception="A local commit or diff is not proof of a hosted review or release." lessonId="05.01.03" />
+
+## Guided local lab
+
+Edit `labs/git-revert/starter/solution.mjs`, verify it on a fresh temporary Git repo, then compare with the instructor. The tests run locally, not in an arbitrary-code cloud sandbox; never run modified student code from an untrusted source. No real Git remote, PR, CI approval or Vercel deployment is created.
+
+<LabGate lessonId="05.01.03" labId="lab.foundation.git-revert" commands={["npm ci","npm run lab:git-revert"]} interactive={false} />
+
+## Reflect
+
+What changed in the index versus the commit graph? Which action could have damaged a shared branch? What additional peer review or repository protection belongs outside this local exercise?
+
+## Official references
+
+- [Official Git reference](https://git-scm.com/docs/git-revert)
+- [Official collaboration/security guide](https://git-scm.com/docs/git-reset)
