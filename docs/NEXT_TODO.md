@@ -1,32 +1,32 @@
 # Full-Stack Academy — Next TODO
 
-**Updated:** 2026-11-18 · **Active branch:** `feat/02-01-css-fundamentals-offline` · **Deployment mode:** intentionally skipped; production remains on previously released content.
+**Updated:** 2026-11-19 · **Offline batch:** CSS track `02.01` through `02.04` · **Target PR:** #14 (draft / do not merge) · **Vercel:** no builds/previews, existing production unchanged.
 
-## P0 — Verify Module 02.01 offline (unreleased)
+## P0 — Verify all 32 CSS lessons as one batch
 
-- [x] Author all eight CSS Fundamentals lessons with strict metadata, prediction, guided steps, quizzes, bug hunts, reviewed official HTTPS links and self-assessment.
-- [x] Add eight local HTML starter/solution sets, local Node regression tests and focused browser-rendering assertions.
-- [x] Register eight authored lessons in MDX/metadata publication registries; update lab scripts.
-- [x] Record development-only snapshot: 66 MDX, 69 published IDs, 66 labs, eight complete modules.
-- [ ] Run exact-head checks: npm ci, lint, typecheck, test, validate, verify:content, checkpoint:check, test:labs, build, browser-smoke and dependency audit.
-- [ ] Review source and verify keyboard, RTL, zoom, 320px viewport on an actual device if possible; automated Chromium does not constitute a WCAG audit.
-- [ ] Keep this branch unmerged **while Vercel releases are paused**; no Vercel preview or production deployment should be created. User will decide when to resume release and quota consumption.
-- [ ] Once release is explicitly resumed, re-run gates, inspect exact-head staging, merge through a reviewed PR, and record production READY.
+- [x] Module `02.01` — CSS Fundamentals (8 authored lessons and local labs; previously passed CI).
+- [x] Module `02.02` — Layout Engineering (Flexbox, Grid, intrinsic sizes, stacking, scrolling, container queries, breakpoints, sticky bug hunt).
+- [x] Module `02.03` — Modern CSS & Design Systems (tokens, contrast, color schemes, reduced motion, nesting, :has, scope, themed component kit).
+- [x] Module `02.04` — Performance & Accessibility (layout/paint, selector audits, transforms, CLS, scroll motion, DevTools, visual regression, 100-point QA capstone).
+- [x] All 24 new lessons have MDX, strict metadata, three guided steps, misconception, quiz, bug hunt, two official sources and offline starter/solution/Node test.
+- [x] Added interactive Chromium assertions, typed publication registration, local verifier commands, and reproducible QA rubric/baseline files.
+- [ ] Run **exact-head** GitHub CI: npm ci, dependency audit, lint, typecheck, repository tests, content/checkpoint validation, 90 offline lab fixtures and Next build, then isolated Chromium behavior.
+- [ ] Fix all discovered regressions and re-run until green; a syntax-level Node assertion does not replace real browser behavior.
+- [ ] Keep PR #14 **draft and unmerged**, do not enable Vercel previews/builds, and do not change the live site while releases are on hold.
+- [ ] Manual review remains required for physical screen readers, 200% zoom, real font-loading CLS and performance traces; do not claim automatic certification.
 
-## P1 — Security and content quality
+## P1 — Deepening the entire academy, not rushing individual releases
 
-- [ ] Re-evaluate the 14 high development-only Picomatch findings by 2026-12-02 UTC; temporary exception does not remove vulnerabilities.
-- [ ] Expand authored reference encyclopedia (4 drafted from 303 indexed subjects).
-- [ ] Add actual manual screen-reader, keyboard, and responsive device test evidence.
-- [ ] Improve verified lesson depth and accessibility; never claim an unauthored topic is published.
+- [ ] Next batch: `03.01`–`03.04` JavaScript Deep Foundations, **32 canonical topic IDs**, independent local lab checks and one batch gate. User requests larger coherent increments, not skipped pedagogy.
+- [ ] Next batch after that: `04.01`–`04.04` TypeScript & Type-System Design, **32 canonical topic IDs**.
+- [ ] Continue React/Next, backend/data, testing/security/DevOps, and capstone batches in the precise catalog order.
+- [ ] Broaden the technical reference encyclopedia: 303 indexed subjects versus 4 genuinely authored drafts.
+- [ ] Re-evaluate the **14 high dev-only Picomatch reports by 2026-12-02 UTC**. The exception is temporary, not a patch.
 
-## P2 — Next after CSS Fundamentals
+## P2 — Release when explicitly resumed
 
-- [ ] Author the next canonical module `02.02` as defined in `data/curriculum.json`.
-- [ ] Continue JavaScript, TypeScript, React, Next.js, API/backend, persistence, authentication, security, deployment and end-to-end capstone in canonical order.
+- [ ] Lift the Vercel ignored-build/preview-disable settings only when the owner opts in.
+- [ ] Verify exact-head Vercel preview and manual browser/accessibility criteria; merge only after release gate, then verify production READY at the merged main SHA.
+- [ ] Publish truthful counts: branch after this batch **93 lessons** (90 MDX; 4 interactive models and one duplicate ID), **90 lab fixtures**, **11 complete modules**. Live production still **61 lesson IDs**.
 
-## Released baseline
-
-- PR #12 released seven complete modules through `01.04` (61 published IDs, 58 MDX, 58 labs).
-- PR #13 reconciled the documentation checkpoint; main was `d7e8203` when this branch was created.
-- **Do not conflate unpublished branch content with what production visitors can access.**
+Read `docs/LONG_SCOPE_DELIVERY_PLAN.md` for the multi-track batching strategy and quality gates. Never imply all 889 catalog topics or 303 references are already written.

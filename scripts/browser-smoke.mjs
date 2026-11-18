@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { verifyCssTrack } from './css-track-smoke.mjs';
 import { createRequire } from 'node:module';
 import path from 'node:path';
 
@@ -53,7 +54,7 @@ try {
   await wait(page.getByText('Correct — you identified the concept.'));
   await page.goto(base + '/reference/zod-safeparse');
   await wait(page.getByRole('heading',{name:/Zod 4: schema.safeParse/}));
-  await page.goto(base + '/learn/02.02.01');
+  await page.goto(base + '/learn/03.01.01');
   assert.ok(await page.locator('meta[name="robots"][content*="noindex"]').count() > 0, 'Planned curriculum topic must have a noindex directive');
   await wait(page.getByText('Planned lesson — not published.', {exact:true}));
   await page.goto(base + '/learn/00.01.01');
@@ -291,7 +292,7 @@ try {
   await page.goto(base + '/learn/01.04.01');
   await wait(page.getByRole('heading', { name: "The problem we're solving" }));
   assert.equal(await page.locator('meta[name="robots"][content*="noindex"]').count(),0,'Published Web APIs lesson must be indexable');
-  await page.goto(base + '/learn/02.02.01');
+  await page.goto(base + '/learn/03.01.01');
   assert.ok(await page.locator('meta[name="robots"][content*="noindex"]').count() > 0, 'Future CSS module must remain noindex');
   const webLab = slug => new URL('../labs/'+slug+'/solution/index.html', import.meta.url).href;
   const webSlugs = ['web-dom','web-fetch-json','web-url','web-storage','web-permissions','web-cors','web-csp','web-devtools'];
@@ -353,7 +354,7 @@ try {
   await page.goto(base + '/learn/02.01.01');
   await wait(page.getByRole('heading', { name: "The problem we're solving" }));
   assert.equal(await page.locator('meta[name="robots"][content*="noindex"]').count(), 0, 'Published CSS lessons must be indexable');
-  await page.goto(base + '/learn/02.02.01');
+  await page.goto(base + '/learn/03.01.01');
   assert.ok(await page.locator('meta[name="robots"][content*="noindex"]').count() > 0, 'Unauthored CSS module remains noindex');
   const cssLab = slug => new URL('../labs/' + slug + '/solution/index.html', import.meta.url).href;
   const cssSlugs = ["css-selectors","css-cascade","css-layers","css-box-model","css-typography","css-logical","css-states","css-responsive-card"];
@@ -387,6 +388,8 @@ try {
   assert.equal(await page.locator('#card').evaluate(el => getComputedStyle(el).borderRightWidth), '4px', 'RTL capstone accent');
   await page.getByRole('button', { name: 'Join study session' }).click();
   await wait(page.getByRole('status').getByText('Local registration preview only.'));
+
+  await verifyCssTrack({ page, base, assert, wait });
 
   await page.goto(base+'/?lesson=06.01.01&mode=practice');
   await wait(btn('Practice'));
