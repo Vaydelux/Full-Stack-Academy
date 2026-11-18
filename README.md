@@ -52,3 +52,35 @@ npm test            # Node curriculum & hygiene test suite
 npm run validate    # Python catalog & prototype consistency validator
 npm run build       # Production Next.js build
 ```
+
+
+## November 2026 reader hardening
+
+- Live JSX executes in an opaque-origin iframe without `allow-same-origin`; messages are checked against the active frame, source origin and parent origin. The module bundle has explicit CORS for sandbox loading.
+- Planned lessons do not display the previous sample's code or preview.
+- Progress backups are schema-validated and restored as an exact checkpoint, with invalid completion records discarded. Local completion remains **self-assessed** rather than independently graded.
+- Keyboard shortcuts avoid forms, dialogs, links, buttons, and sliders.
+- CI quality gates are in `.github/workflows/academy-quality.yml`.
+
+See `docs/RELEASE_GATE.md` for the unresolved production/SEO/browser-testing work. Do not present 889 planned topics as 889 published lessons.
+
+
+## Phase 2a: Real learning and reference routes
+
+Browse `/learn`, `/learn/track/06`, `/learn/06.01.01`, `/reference`, and `/reference/zod-safeparse`.
+These are server-rendered, individually addressable pages with dynamic titles and detailed instructional content. Published lessons link back to `/?lesson=<id>` for live practice.
+
+Planned topics remain browsable but are marked `noindex`; they are **not** included as authored content in the sitemap. Set `NEXT_PUBLIC_SITE_URL` (HTTPS) to enable production canonical URLs and sitemap entries. This is an incremental upgrade of the existing reader, not yet a Fumadocs/MDX migration. See `docs/COURSE_CONTENT_ROUTING.md`.
+
+
+## Phase 2b: MDX publishing system
+
+The first authored lesson now lives in `src/content/lessons/06.01.01.mdx` with strict sidecar metadata. It demonstrates reusable lesson components and an accessible client-side quiz. The corresponding `labs/jsx-skill-card` folder includes a starter, an instructor solution and runnable React server-rendering tests.
+
+Run `npm run verify:content` and `npm run test:labs` to validate the lesson. MDX is compiled only from reviewed repository source. The existing live workspace is preserved and is intentionally separate from server-side execution of arbitrary learner code.
+
+Full guide: `docs/MDX_AUTHORING_PIPELINE.md`.
+
+## Reading-first experience
+
+The home workspace opens in Read lesson mode. Curriculum, search and notes remain available; the editable code preview, timeline and console are mounted in Practice mode only. The previous always-open three-pane layout is replaced with a focused two-panel practice area. Article routes remain independently accessible. Mobile provides a collapsible curriculum and Code/Output tabs.

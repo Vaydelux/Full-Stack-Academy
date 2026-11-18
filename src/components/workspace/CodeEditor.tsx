@@ -22,6 +22,7 @@ const SHARED_FONT =
 
 export default function CodeEditor() {
   const activeSampleId = useAcademy((s) => s.activeSampleId);
+  const selectedLessonId = useAcademy((s) => s.selectedLessonId);
   const code = useAcademy((s) => s.code);
   const hijacked = useAcademy((s) => s.hijacked);
   const isPlaying = useAcademy((s) => s.isPlaying);
@@ -98,6 +99,16 @@ export default function CodeEditor() {
 
   const gutterWidth =
     lineCount >= 100 ? 'w-14' : lineCount >= 10 ? 'w-11' : 'w-9';
+
+  if (!AUTHORED_LESSONS[selectedLessonId]) {
+    return (
+      <section role="status" className="flex min-h-0 flex-1 flex-col items-center justify-center gap-3 bg-[#0B0D14] p-6 text-center">
+        <FileCode2 className="h-7 w-7 text-slate-500" aria-hidden="true" />
+        <h2 className="text-sm font-bold text-slate-200">No lab code for this topic yet</h2>
+        <p className="max-w-sm text-xs leading-relaxed text-slate-400">This lesson is planned, not published. The editor will become available when its exercises and expected output have been verified.</p>
+      </section>
+    );
+  }
 
   return (
     <div className="flex min-h-0 flex-1 flex-col bg-[#0B0D14]">

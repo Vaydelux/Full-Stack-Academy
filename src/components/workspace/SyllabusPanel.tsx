@@ -80,7 +80,7 @@ export function ProgressRing({
 /* Syllabus Panel                                                      */
 /* ------------------------------------------------------------------ */
 
-export default function SyllabusPanel() {
+export default function SyllabusPanel({ fullHeight = false, onNavigate }: { fullHeight?: boolean; onNavigate?: () => void } = {}) {
   const open = useAcademy((s) => s.syllabusOpen);
   const toggle = useAcademy((s) => s.toggleSyllabus);
   const sidebarTab = useAcademy((s) => s.sidebarTab);
@@ -92,9 +92,12 @@ export default function SyllabusPanel() {
   const selectedLessonId = useAcademy((s) => s.selectedLessonId);
   const selectedReferenceId = useAcademy((s) => s.selectedReferenceId);
   const activeView = useAcademy((s) => s.activeView);
-  const selectLesson = useAcademy((s) => s.selectLesson);
-  const selectReference = useAcademy((s) => s.selectReference);
-  const jumpToNextUnfinished = useAcademy((s) => s.jumpToNextUnfinished);
+  const chooseLesson = useAcademy((s) => s.selectLesson);
+  const chooseReference = useAcademy((s) => s.selectReference);
+  const resume = useAcademy((s) => s.jumpToNextUnfinished);
+  const selectLesson = (id: string) => { chooseLesson(id); onNavigate?.(); };
+  const selectReference = (id: string) => { chooseReference(id); onNavigate?.(); };
+  const jumpToNextUnfinished = () => { resume(); onNavigate?.(); };
   const progress = useAcademy((s) => s.progress);
   const expandedTrack = useAcademy((s) => s.expandedTrack);
   const setExpandedTrack = useAcademy((s) => s.setExpandedTrack);
@@ -135,29 +138,30 @@ export default function SyllabusPanel() {
   return (
     <section
       aria-label="Curriculum and reference navigation"
-      className="shrink-0 border-b border-slate-200 bg-white/75 backdrop-blur-xl dark:border-white/[0.06] dark:bg-white/[0.015]"
+      className={fullHeight ? "flex min-h-0 flex-1 flex-col overflow-hidden" : "shrink-0 border-b border-slate-200 bg-white/75 dark:border-white/10"}
     >
       <button
         type="button"
-        onClick={toggle}
-        aria-expanded={open}
+        onClick={fullHeight ? undefined : toggle}
+        disabled={fullHeight}
+        aria-expanded={open || fullHeight}
         className="flex w-full items-center gap-2 px-4 py-2.5 text-left transition-colors hover:bg-slate-100/80 dark:hover:bg-white/[0.03]"
       >
-        {open ? (
+        {(open || fullHeight) ? (
           <ChevronDown className="h-3.5 w-3.5 text-slate-500" />
         ) : (
           <ChevronRight className="h-3.5 w-3.5 text-slate-500" />
         )}
-        <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-600 dark:text-slate-400">
+        <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-600 dark:text-slate-400">
           Catalog &amp; Reference
         </span>
-        <span className="ml-auto font-mono text-[10px] text-slate-500">
+        <span className="ml-auto font-mono text-[11px] text-slate-500">
           {summary.tracks} tracks · {summary.plannedLessons} topics
         </span>
       </button>
 
-      {open && (
-        <div className="flex max-h-[42vh] flex-col px-3 pb-3">
+      {(open || fullHeight) && (
+        <div className={fullHeight ? "flex min-h-0 flex-1 flex-col px-3 pb-3" : "flex max-h-[42vh] flex-col px-3 pb-3"}>
           {/* Progress & Continue */}
           <div className="mb-2.5 flex items-center gap-2.5 rounded-xl border border-slate-200 bg-slate-50/90 px-3 py-2 dark:border-white/[0.07] dark:bg-white/[0.02]">
             <ProgressRing percent={pct} size={28} stroke={2.5} color="#10B981">
@@ -166,10 +170,10 @@ export default function SyllabusPanel() {
               </span>
             </ProgressRing>
             <div className="min-w-0 flex-1">
-              <div className="text-[11px] font-semibold text-slate-800 dark:text-slate-200">
+              <div className="text-xs font-semibold text-slate-800 dark:text-slate-200">
                 {doneCount} / {AUTHORED_LESSON_IDS.length} authored samples
               </div>
-              <div className="truncate text-[10px] text-slate-500">
+              <div className="truncate text-[11px] text-slate-500">
                 {summary.plannedLessons} topics mapped · {summary.referenceSubjects} references
               </div>
             </div>
@@ -177,9 +181,9 @@ export default function SyllabusPanel() {
               type="button"
               onClick={jumpToNextUnfinished}
               title="Open next authored sample lesson"
-              className="flex shrink-0 items-center gap-1 rounded-lg border border-[#0284c7]/30 bg-[#0284c7]/10 px-2 py-1 text-[10px] font-semibold text-[#0284c7] hover:bg-[#0284c7]/20 dark:border-[#00F0FF]/30 dark:bg-[#00F0FF]/10 dark:text-[#7DEBFF]"
+              className="flex shrink-0 items-center gap-1 rounded-lg border border-[#0284c7]/30 bg-[#0284c7]/10 px-2 py-1 text-[11px] font-semibold text-[#0284c7] hover:bg-[#0284c7]/20 dark:border-[#00F0FF]/30 dark:bg-[#00F0FF]/10 dark:text-[#7DEBFF]"
             >
-              Sample
+              Continue
               <ArrowRight className="h-3 w-3" />
             </button>
           </div>
@@ -200,7 +204,7 @@ export default function SyllabusPanel() {
                   key={tab.id}
                   type="button"
                   onClick={() => setSidebarTab(tab.id)}
-                  className={`flex flex-1 items-center justify-center gap-1 rounded-md py-1 text-[11px] font-medium transition-colors ${
+                  className={`flex flex-1 items-center justify-center gap-1 rounded-md py-1 text-xs font-medium transition-colors ${
                     active
                       ? 'bg-white text-slate-900 shadow-xs dark:bg-white/[0.08] dark:text-slate-100 dark:shadow-none'
                       : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-300'
@@ -223,7 +227,7 @@ export default function SyllabusPanel() {
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder={sidebarTab === 'reference' ? 'Filter 303 references...' : 'Filter 889 topics...'}
                   aria-label="Filter navigation list"
-                  className="min-w-0 flex-1 bg-transparent text-[11px] text-slate-800 outline-none placeholder:text-slate-400 dark:text-slate-200"
+                  className="min-w-0 flex-1 bg-transparent text-xs text-slate-800 outline-none placeholder:text-slate-400 dark:text-slate-200"
                 />
               </div>
               <button
@@ -231,7 +235,7 @@ export default function SyllabusPanel() {
                 onClick={() => setOnlyAuthored(!onlyAuthored)}
                 aria-pressed={onlyAuthored}
                 title="Toggle between all planned entries and authored drafts only"
-                className={`flex shrink-0 items-center gap-1 rounded-lg border px-2 py-1 text-[10px] font-semibold transition-colors ${
+                className={`flex shrink-0 items-center gap-1 rounded-lg border px-2 py-1 text-[11px] font-semibold transition-colors ${
                   onlyAuthored
                     ? 'border-emerald-500/40 bg-emerald-500/15 text-emerald-700 dark:text-[#6EE7B7]'
                     : 'border-slate-200 bg-white text-slate-500 hover:text-slate-800 dark:border-white/[0.08] dark:bg-white/[0.03] dark:hover:text-slate-200'
@@ -248,8 +252,8 @@ export default function SyllabusPanel() {
             {sidebarTab === 'notes' && (
               <div className="space-y-1">
                 {noteIds.length === 0 ? (
-                  <p className="py-4 text-center text-[11px] text-slate-500">
-                    Notes written in the right drawer appear here and stay saved in localStorage.
+                  <p className="py-4 text-center text-xs text-slate-500">
+                    Notes written with the Notes button appear here and stay saved in this browser.
                   </p>
                 ) : (
                   noteIds.map((id) => {
@@ -261,10 +265,10 @@ export default function SyllabusPanel() {
                         onClick={() => selectLesson(id)}
                         className="w-full rounded-lg border border-slate-200 bg-white px-2.5 py-2 text-left hover:border-[#0284c7]/40 dark:border-white/[0.06] dark:bg-white/[0.02] dark:hover:border-[#00F0FF]/35"
                       >
-                        <div className="truncate text-[11px] font-semibold text-slate-800 dark:text-slate-200">
+                        <div className="break-words text-xs font-semibold text-slate-800 dark:text-slate-200">
                           {id} · {l?.title ?? 'Lesson note'}
                         </div>
-                        <div className="mt-0.5 truncate text-[10px] text-slate-500">
+                        <div className="mt-0.5 truncate text-[11px] text-slate-500">
                           {progress.notes[id]}
                         </div>
                       </button>
@@ -290,10 +294,10 @@ export default function SyllabusPanel() {
                           : 'hover:bg-slate-100 dark:hover:bg-white/[0.04]'
                       }`}
                     >
-                      <span className="min-w-0 flex-1 truncate text-[11px] font-medium text-slate-800 dark:text-slate-200">
+                      <span className="min-w-0 flex-1 truncate text-xs font-medium text-slate-800 dark:text-slate-200">
                         {ref.title}
                       </span>
-                      <span className="truncate text-[10px] text-slate-500">{ref.category}</span>
+                      <span className="truncate text-[11px] text-slate-500">{ref.category}</span>
                       {authored && (
                         <span className="shrink-0 rounded border border-emerald-500/30 bg-emerald-500/10 px-1.5 py-0.5 text-[9px] font-bold text-emerald-700 dark:text-[#6EE7B7]">
                           draft
@@ -330,10 +334,10 @@ export default function SyllabusPanel() {
                         <CircleDashed className="h-3.5 w-3.5 shrink-0 text-slate-400 dark:text-slate-600" />
                       )}
                       <div className="min-w-0 flex-1">
-                        <div className="truncate text-[11px] font-medium text-slate-800 dark:text-slate-200">
+                        <div className="truncate text-xs font-medium text-slate-800 dark:text-slate-200">
                           {l.id} · {l.title}
                         </div>
-                        <div className="truncate text-[10px] text-slate-500">{l.module}</div>
+                        <div className="truncate text-[11px] text-slate-500">{l.module}</div>
                       </div>
                       <span
                         className={`shrink-0 rounded px-1.5 py-0.5 text-[9px] font-semibold ${
@@ -348,7 +352,7 @@ export default function SyllabusPanel() {
                   );
                 })}
                 {filteredLessons.length === 0 && (
-                  <p className="py-4 text-center text-[11px] text-slate-500">No matching topics.</p>
+                  <p className="py-4 text-center text-xs text-slate-500">No matching topics.</p>
                 )}
               </div>
             )}
@@ -372,14 +376,14 @@ export default function SyllabusPanel() {
                             : 'border-transparent hover:border-slate-200 hover:bg-slate-100/70 dark:hover:border-white/[0.08] dark:hover:bg-white/[0.03]'
                         }`}
                       >
-                        <span className="rounded bg-[#0284c7]/10 px-1.5 py-0.5 font-mono text-[10px] font-bold text-[#0284c7] dark:bg-[#00F0FF]/12 dark:text-[#7DEBFF]">
+                        <span className="rounded bg-[#0284c7]/10 px-1.5 py-0.5 font-mono text-[11px] font-bold text-[#0284c7] dark:bg-[#00F0FF]/12 dark:text-[#7DEBFF]">
                           {track.id}
                         </span>
                         <div className="min-w-0 flex-1">
-                          <div className="truncate text-[11px] font-semibold text-slate-800 dark:text-slate-200">
+                          <div className="break-words text-xs font-semibold text-slate-800 dark:text-slate-200">
                             {track.title}
                           </div>
-                          <div className="text-[10px] text-slate-500">
+                          <div className="text-[11px] text-slate-500">
                             {trackMods.length} modules · {trackTopicCount} topics
                           </div>
                         </div>
@@ -401,7 +405,7 @@ export default function SyllabusPanel() {
                                   type="button"
                                   onClick={() => setExpandedModule(isOpenMod ? '' : mod.id)}
                                   aria-expanded={isOpenMod}
-                                  className="flex w-full items-center gap-1.5 rounded-lg px-2 py-1 text-left text-[11px] font-semibold text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-white/[0.04]"
+                                  className="flex w-full items-center gap-1.5 rounded-lg px-2 py-1 text-left text-xs font-semibold text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-white/[0.04]"
                                 >
                                   {isOpenMod ? (
                                     <ChevronDown className="h-3 w-3 shrink-0 text-slate-400" />
@@ -425,7 +429,7 @@ export default function SyllabusPanel() {
                                           <button
                                             type="button"
                                             onClick={() => selectLesson(l.id)}
-                                            className={`flex w-full items-center gap-1.5 rounded-md px-2 py-1 text-left text-[11px] transition-colors ${
+                                            className={`flex w-full items-center gap-1.5 rounded-md px-2 py-1 text-left text-xs transition-colors ${
                                               active
                                                 ? 'bg-[#00F0FF]/12 font-semibold text-[#0284c7] dark:text-[#7DEBFF]'
                                                 : 'text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-white/[0.04]'

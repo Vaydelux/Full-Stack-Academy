@@ -65,13 +65,41 @@ const EMPTY_PROGRESS: PersistedProgress = {
   theme: 'dark',
 };
 
+// Validate learner-owned progress after local hydration and backup restore.
+export function normalizeProgress(input: PersistedProgress): PersistedProgress {
+  const complete: Record<string, boolean> = {};
+  const quizzes: Record<string, boolean> = {};
+  const rubrics: Record<string, number[]> = {};
+  for (const id of AUTHORED_LESSON_IDS) {
+    const lesson = AUTHORED_LESSONS[id];
+    const valid = [...new Set((input.rubrics[id] ?? []).filter(
+      (index) => Number.isInteger(index) && index >= 0 && index < lesson.challenge.rubric.length
+    ))].sort((a, b) => a - b);
+    if (valid.length) rubrics[id] = valid;
+    if (input.quizzes[id] === true) quizzes[id] = true;
+    if (input.complete[id] === true && quizzes[id] &&
+      lesson.challenge.rubric.every((_, index) => valid.includes(index))) {
+      complete[id] = true;
+    }
+  }
+  const notes: Record<string, string> = {};
+  const reflections: Record<string, string> = {};
+  for (const [id, note] of Object.entries(input.notes)) {
+    if (lessonMap.has(id)) notes[id] = note.slice(0, 20000);
+  }
+  for (const [id, reflection] of Object.entries(input.reflections)) {
+    if (lessonMap.has(id)) reflections[id] = reflection.slice(0, 20000);
+  }
+  return { complete, quizzes, rubrics, notes, reflections, theme: input.theme };
+}
+
 function loadPersisted(): PersistedProgress {
   if (typeof window === 'undefined') return EMPTY_PROGRESS;
   try {
     const raw = window.localStorage.getItem(STORAGE_KEY);
     if (!raw) return EMPTY_PROGRESS;
     const parsed = BackupDataSchema.safeParse(JSON.parse(raw));
-    return parsed.success ? parsed.data : EMPTY_PROGRESS;
+    return parsed.success ? normalizeProgress(parsed.data) : EMPTY_PROGRESS;
   } catch {
     return EMPTY_PROGRESS;
   }
@@ -263,7 +291,7 @@ export const useAcademy = create<AcademyStore>((set, get) => ({
   runToken: 0,
 
   drawerTab: 'console',
-  drawerOpen: true,
+  drawerOpen: false,
   drawerHeight: 230,
   syllabusOpen: true,
   mobileTab: 'docs',
@@ -277,7 +305,7 @@ export const useAcademy = create<AcademyStore>((set, get) => ({
     set({ progress: loaded, hydrated: true });
   },
 
-  setActiveView: (activeView) => set({ activeView }),
+  setActiveView: (activeView) => set({ activeView, ...(activeView !== 'lesson' ? { isPlaying: false, mobileTab: 'docs' as const } : {}) }),
 
   selectLesson: (lessonId) =>
     set((s) => {
@@ -292,6 +320,7 @@ export const useAcademy = create<AcademyStore>((set, get) => ({
           activeView: 'lesson',
           isPlaying: false,
           selectedLine: null,
+          previewError: null,
           mobileTab: 'docs',
         };
       }
@@ -319,6 +348,7 @@ export const useAcademy = create<AcademyStore>((set, get) => ({
     set({
       selectedReferenceId: refId,
       activeView: 'reference',
+      isPlaying: false,
       mobileTab: 'docs',
     }),
 
@@ -336,11 +366,12 @@ export const useAcademy = create<AcademyStore>((set, get) => ({
   },
 
   /* timeline */
-  play: () => set({ isPlaying: true }),
+  play: () => set((s) => AUTHORED_LESSONS[s.selectedLessonId] && s.activeView === 'lesson' ? { isPlaying: true } : {}),
   pause: () => set({ isPlaying: false }),
-  togglePlay: () => set((s) => ({ isPlaying: !s.isPlaying })),
+  togglePlay: () => set((s) => AUTHORED_LESSONS[s.selectedLessonId] && s.activeView === 'lesson' ? { isPlaying: !s.isPlaying } : {}),
   tick: (dt) =>
     set((s) => {
+      if (!AUTHORED_LESSONS[s.selectedLessonId] || s.activeView !== 'lesson') return { isPlaying: false };
       const sample = getActiveSample(s.activeSampleId);
       const t = Math.min(s.currentTime + dt * s.speed, sample.duration);
       const atEnd = t >= sample.duration;
@@ -352,6 +383,7 @@ export const useAcademy = create<AcademyStore>((set, get) => ({
     }),
   seek: (t) =>
     set((s) => {
+      if (!AUTHORED_LESSONS[s.selectedLessonId] || s.activeView !== 'lesson') return {};
       const sample = getActiveSample(s.activeSampleId);
       const clamped = Math.min(Math.max(t, 0), sample.duration);
       return { currentTime: clamped, ...stepChangePatch(s, clamped, true) };
@@ -385,7 +417,12 @@ export const useAcademy = create<AcademyStore>((set, get) => ({
 
   loadSnippet: (code, title, lessonId) =>
     set((s) => ({
-      ...(lessonId && AUTHORED_LESSONS[lessonId] ? { activeSampleId: lessonId, selectedLessonId: lessonId } : {}),
+      ...(lessonId && AUTHORED_LESSONS[lessonId] ? {
+        activeSampleId: lessonId, selectedLessonId: lessonId, activeView: 'lesson' as const,
+        expandedTrack: lessonMap.get(lessonId)?.trackId ?? s.expandedTrack,
+        expandedModule: lessonMap.get(lessonId)?.moduleId ?? s.expandedModule,
+        ...(s.activeSampleId !== lessonId ? { currentTime: 0, activeStepId: AUTHORED_LESSONS[lessonId].steps[0].id } : {}),
+      } : {}),
       code,
       hijacked: true,
       isPlaying: false,
@@ -536,33 +573,19 @@ export const useAcademy = create<AcademyStore>((set, get) => ({
   },
 
   importBackupJson: (raw) => {
+    if (raw.length > 2_000_000) return { ok: false, error: 'Backup exceeds the 2 MB import limit.' };
     try {
       const parsedJson: unknown = JSON.parse(raw);
       const result = BackupFileSchema.safeParse(parsedJson);
       if (!result.success) {
         return { ok: false, error: 'Backup JSON does not match expected v1 schema.' };
       }
-      const incoming = result.data.data;
-      set((s) => {
-        // Restrict completions to authored sample IDs only (never falsely complete planned lessons)
-        const allowedSet = new Set<string>(AUTHORED_LESSON_IDS);
-        const filteredComplete: Record<string, boolean> = { ...s.progress.complete };
-        for (const [k, v] of Object.entries(incoming.complete)) {
-          if (allowedSet.has(k) && v) filteredComplete[k] = true;
-        }
-        const merged: PersistedProgress = {
-          complete: filteredComplete,
-          quizzes: { ...s.progress.quizzes, ...incoming.quizzes },
-          rubrics: { ...s.progress.rubrics, ...incoming.rubrics },
-          notes: { ...s.progress.notes, ...incoming.notes },
-          reflections: { ...s.progress.reflections, ...incoming.reflections },
-          theme: incoming.theme,
-        };
-        savePersisted(merged);
-        return {
-          progress: merged,
-          toast: { id: ++toastId, msg: 'Progress backup restored locally', tone: 'success' },
-        };
+      // Import replaces state, rather than preserving existing invalid completions.
+      const restored = normalizeProgress(result.data.data);
+      savePersisted(restored);
+      set({
+        progress: restored,
+        toast: { id: ++toastId, msg: 'Progress backup restored locally', tone: 'success' },
       });
       return { ok: true };
     } catch (err) {

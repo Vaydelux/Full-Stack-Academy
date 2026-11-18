@@ -128,3 +128,16 @@ html.light .academy-subtle {
   background-color: #f1f4fa;
   border-color: #e2e8f0;
 }
+
+
+/* Reading-first layout: prose is the primary surface, not a dashboard. */
+.academy-reading { font-size: 15px; line-height: 1.75; }
+.academy-reading p, .academy-reading li { font-size: 14px; line-height: 1.8; }
+.academy-reading h1 { font-size: clamp(1.75rem, 3vw, 2.35rem); line-height: 1.2; }
+.academy-reading h2 { line-height: 1.45; }
+.academy-reading pre { font-size: 13px; line-height: 1.7; }
+.academy-reading pre, .academy-reading table { max-width: 100%; }
+:focus-visible { outline: 2px solid #0891b2; outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}

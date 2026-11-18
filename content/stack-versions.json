@@ -1,0 +1,10 @@
+{
+  "node": "24",
+  "typescript": "5",
+  "react": "19",
+  "next": "16",
+  "nestjs": "12",
+  "prisma": "7",
+  "zod": "4",
+  "postgresql": "17"
+}

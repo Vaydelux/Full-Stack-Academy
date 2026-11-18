@@ -1,0 +1,189 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={[
+  "Describe how JSX becomes JavaScript element calls.",
+  "Create a semantic React component that returns valid JSX.",
+  "Embed expressions and render lists using stable data keys.",
+  "Use JSX attributes correctly, including className and htmlFor.",
+  "Run automated HTML-rendering tests to prove a component works."
+]} />
+
+## The problem we're solving
+
+Imagine a user interface that lists an engineering team's members. With imperative DOM code, you might manually call `document.createElement()`, set each element's text, append it to the page, and repeat that work whenever the data changes. The DOM operations are not inherently wrong, but your application logic becomes mixed with instructions for updating the screen.
+
+**JSX solves a readability problem.** It lets you describe the desired tree of React elements using syntax that looks similar to HTML. That description becomes JavaScript during a build transformation. React then decides how to update the rendered UI.
+
+JSX is not a browser-native template language, nor is it an HTML string. With the modern automatic transform, the compiler generally emits calls to `jsx()` and `jsxs()` from React's JSX runtime. The classic runtime instead uses `React.createElement()`. Understanding that distinction helps explain why your source can look like markup but still evaluate JavaScript expressions.
+
+## Build the mental model
+
+1. **Write a component.** A function receives props and returns a JSX description.
+2. **Compile JSX.** A compiler turns the JSX syntax into ordinary JavaScript element-creation calls.
+3. **React renders.** React calls components, evaluates their returned elements and reconciles changes.
+4. **React commits.** In a browser application, React applies the necessary DOM updates.
+
+**Predict before you run:** What happens to `{2 + 3}` inside a JSX paragraph? You get the value `5`, because braces contain a JavaScript expression. What about `style={{ color: 'red' }}`? The outer braces embed an expression; the inner braces create the object used as the style prop.
+
+<LessonStep number={1} title="Write a component returning markup" file="src/components/TeamCard.tsx" expected="A semantic article containing a heading and description.">
+
+Create a component that returns one root element. `article` is appropriate here because the component is a self-contained card.
+
+```tsx
+export function TeamCard() {
+  return (
+    <article>
+      <h2>Engineering team</h2>
+      <p>People who build the product together.</p>
+    </article>
+  );
+}
+```
+
+Use `<TeamCard />` from your application's root React component. If you render a component as a lowercase `<teamcard />`, React treats it as an HTML-like element name instead of calling your function. That is why component names begin with a capital letter.
+
+**Try breaking it:** Remove the closing `</article>` tag. Your compiler should report invalid JSX syntax. Restore the tag and confirm the error disappears.
+
+</LessonStep>
+
+<LessonStep number={2} title="Embed JavaScript expressions" file="src/components/TeamCard.tsx" expected="The UI displays Platform Crew, 4 people contribute, and Small team.">
+
+JSX text is static until you embed an expression. Variables, arithmetic, function calls, conditionals and array mappings can appear inside curly braces.
+
+```tsx
+export function TeamCard() {
+  const teamName = 'Platform Crew';
+  const members = 4;
+
+  return (
+    <article>
+      <h2>{teamName}</h2>
+      <p>{members} people contribute.</p>
+      <p>{members >= 5 ? 'Large team' : 'Small team'}</p>
+    </article>
+  );
+}
+```
+
+**Predict before you run:** Change `members` to `7`. The conditional expression should display "Large team". Expressions produce values; a full `if` statement cannot be inserted directly inside JSX braces because an `if` statement is not an expression.
+
+</LessonStep>
+
+<LessonStep number={3} title="Render lists with stable keys" file="src/components/TeamCard.tsx" expected="A heading followed by three list items, with consistent identity if order changes.">
+
+Arrays become UI with `.map()`. When lists can reorder, insert, or remove items, use a persistent identifier from each data record as the React key.
+
+```tsx
+type Person = { id: string; name: string; role: string };
+
+const people: Person[] = [
+  { id: 'p-1', name: 'Ava', role: 'Frontend' },
+  { id: 'p-2', name: 'Noel', role: 'Backend' },
+  { id: 'p-3', name: 'Mika', role: 'Platform' },
+];
+
+export function TeamCard() {
+  return (
+    <article>
+      <h2>Platform Crew</h2>
+      <ul>
+        {people.map((person) => (
+          <li key={person.id}>
+            <strong>{person.name}</strong> — {person.role}
+          </li>
+        ))}
+      </ul>
+    </article>
+  );
+}
+```
+
+Keys are used by React to match elements across renders; they are not rendered as a DOM attribute. If you use the array position as a key, text inputs and other stateful items can appear attached to the wrong records after reordering.
+
+</LessonStep>
+
+<LessonStep number={4} title="Use JSX attributes, style values and state" file="src/components/SampleForm.tsx" expected="A labeled input whose typed value is reflected immediately in the preview.">
+
+HTML attributes and JSX props overlap but aren't identical. `className` replaces `class`; `htmlFor` replaces `for`; and `style` receives a JavaScript object.
+
+```tsx
+'use client';
+import { useState } from 'react';
+
+export function SampleForm() {
+  const [name, setName] = useState('Ava');
+
+  return (
+    <div className="form-field">
+      <label htmlFor="display-name">Display name</label>
+      <input
+        id="display-name"
+        value={name}
+        onChange={(event) => setName(event.target.value)}
+        style={{ borderRadius: 8 }}
+      />
+      <p>Live preview: {name || 'Anonymous'}</p>
+    </div>
+  );
+}
+```
+
+The `'use client'` directive shown here is required when this component is rendered as a Client Component in the Next.js App Router; it is not needed for a normal Vite React component. It is not what causes JSX to compile—the JSX compiler is responsible for that.
+
+</LessonStep>
+
+<Misconception
+  claim="JSX is HTML inside JavaScript, so every HTML attribute and tag syntax works without modification."
+  correction="JSX is a JavaScript syntax extension. Its syntax is transformed before the browser runs it, and its property names and expression rules have specific conventions."
+/>
+
+<KnowledgeCheck
+  question="What does a modern React build generally do with JSX source code?"
+  choices={[
+    "Browsers execute JSX natively, with no transformation.",
+    "Tooling compiles JSX into JavaScript calls understood by React.",
+    "It converts components into plain CSS classes.",
+    "React sends the JSX source text directly to the DOM as HTML."
+  ]}
+  correctIndex={1}
+  explanation="Correct. JSX is syntax transformed into JavaScript element calls; React later renders and commits UI changes."
+  misconception="Revisit the four-step mental model. The browser runs JavaScript produced by the compiler, not raw JSX."
+/>
+
+## Guided lab: Build a typed SkillCard
+
+Your task is to implement a `SkillCard` with a title, level, and an array of skills. Use a semantic heading, description, and `ul` list. Use `skill.id` as a stable key, not the array index.
+
+The repository contains:
+
+- `labs/jsx-skill-card/starter/SkillCard.tsx` — your starting point.
+- `labs/jsx-skill-card/solution/SkillCard.tsx` — the reviewed worked example.
+- `labs/jsx-skill-card/solution.test.tsx` — the acceptance tests.
+- `labs/jsx-skill-card/lab.json` — version and verification metadata.
+
+**Acceptance criteria:** All supplied text renders, the number of list items matches the input array, labels stay associated with their corresponding data items, and an empty list produces an accessible empty-state message.
+
+<LabGate lessonId="06.01.01" labId="lab.react.jsx-skill-card" commands={["npm ci", "npm run test:labs"]} />
+
+## Bug Hunt Arena: The shifting form values
+
+**Symptom:** A list of editable skills looks correct on the first render. After inserting a skill at the beginning, an existing text input appears next to the wrong skill.
+
+**Root cause to investigate:** `key={index}` makes identity depend on position. React may reuse a DOM subtree for a different list item when order changes.
+
+**Repair:** Use a stable persistent identifier such as `key={skill.id}`. Verify both insertion and reordering, rather than only testing the initial list.
+
+**Regression test idea:** Simulate items changing order while preserving their stable IDs, and check that the rendered content and input state still match their source records.
+
+## Reflect
+
+How is describing the desired element tree different from manipulating DOM nodes directly? When could imperative DOM operations still be justified—for example, managing a third-party canvas or chart library?
+
+## Official references
+
+- [Writing Markup with JSX](https://react.dev/learn/writing-markup-with-jsx)
+- [JavaScript in JSX with Curly Braces](https://react.dev/learn/javascript-in-jsx-with-curly-braces)
+- [Rendering Lists](https://react.dev/learn/rendering-lists)
+
+Your lesson is ready for practice when you can **explain the transform**, **write the component without copying**, **pass the lab tests**, and **diagnose the unstable-key bug**. The interactive reader's self-assessed completion is separate from these runnable checks.

@@ -87,6 +87,7 @@ function CodeCard({
               Step
             </button>
           )}
+          {loadLessonId && (
           <button
             type="button"
             onClick={() => loadSnippet(code, file, loadLessonId)}
@@ -95,6 +96,7 @@ function CodeCard({
             Load in Editor
             <ArrowUpRight className="h-2.5 w-2.5" />
           </button>
+          )}
           <button
             type="button"
             onClick={copy}
@@ -407,6 +409,7 @@ function AuthoredLessonView({ lesson }: { lesson: AuthoredLesson }) {
             type="button"
             onClick={() => {
               seek(0);
+              useAcademy.getState().setMobileTab('editor');
               play();
             }}
             className="flex items-center gap-1.5 rounded-lg border border-[#0284c7]/40 bg-[#0284c7]/12 px-3 py-1.5 text-xs font-semibold text-[#0284c7] hover:bg-[#0284c7]/20 dark:border-[#00F0FF]/35 dark:bg-[#00F0FF]/12 dark:text-[#7DEBFF]"
@@ -498,7 +501,7 @@ function AuthoredLessonView({ lesson }: { lesson: AuthoredLesson }) {
                 code={step.code}
                 file={step.file}
                 loadLessonId={lesson.id}
-                onJumpStep={() => applyStep(step.id)}
+                onJumpStep={() => { applyStep(step.id); useAcademy.getState().setMobileTab('editor'); }}
               />
               <p className="text-[11px] text-slate-500">
                 <strong className="text-slate-700 dark:text-slate-300">Expected:</strong> {step.expected}
@@ -1147,7 +1150,8 @@ export default function DocsPane() {
       </div>
 
       {/* Scrollable reading column */}
-      <div className="min-h-0 flex-1 overflow-y-auto px-5 pt-5">
+      <div key={`${activeView}:${selectedLessonId}:${selectedReferenceId}`} className="min-h-0 flex-1 overflow-y-auto px-5 pt-7 sm:px-8">
+        <div className="academy-reading mx-auto max-w-[760px]">
         {activeView === 'overview' && <OverviewView />}
         {activeView === 'arena' && <ArenaView />}
         {activeView === 'capstone' && <CapstoneView />}
@@ -1160,6 +1164,7 @@ export default function DocsPane() {
           ) : (
             <OverviewView />
           ))}
+        </div>
       </div>
     </div>
   );

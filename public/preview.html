@@ -130,7 +130,7 @@
   <script type="module" src="/preview-vendor.mjs"></script>
   <script type="module">
     const post = (msg) => {
-      try { parent.postMessage({ ...msg, source: 'academy-preview' }, '*'); } catch (e) { /* noop */ }
+      try { parent.postMessage({ ...msg, source: 'academy-preview' }, new URL(window.location.href).origin); } catch (e) { /* noop */ }
     };
 
     function fmt(v) {
@@ -229,8 +229,8 @@
 
         const entryName = /^[A-Za-z_$][\w$]*$/.test(entry) ? entry : 'App';
         const finalCode =
-          out +
-          '\n;window.__academyEntry = (typeof ' + entryName + ' !== "undefined") ? ' + entryName + ' : null;';
+          '(function () {\n' + out +
+          '\n;window.__academyEntry = (typeof ' + entryName + ' !== "undefined") ? ' + entryName + ' : null;\n})();';
 
         let scriptError = null;
         const onScriptError = (e) => {
@@ -285,9 +285,17 @@
     }
 
     window.addEventListener('message', (e) => {
+      // Only the actual same-origin host may send executable code.
+      if (e.source !== parent || e.origin !== new URL(window.location.href).origin) return;
       const d = e.data;
-      if (!d || d.source !== 'academy-parent') return;
-      if (d.type === 'RUN') run(String(d.code || ''));
+      if (!d || typeof d !== 'object' || d.source !== 'academy-parent') return;
+      if (d.type === 'RUN') {
+        if (typeof d.code !== 'string' || d.code.length > 65536) {
+          post({ type: 'STATUS', status: 'error', message: 'Sandbox input must be code under 64 KiB.' });
+          return;
+        }
+        run(d.code);
+      }
     });
 
     post({ type: 'READY' });
