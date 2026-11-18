@@ -1,5 +1,6 @@
 import type { MetadataRoute } from 'next';
-import { AUTHORED_LESSON_IDS, AUTHORED_REFERENCES } from '@/lib/academy/authored-content';
+import { AUTHORED_REFERENCES } from '@/lib/academy/authored-content';
+import { PUBLISHED_LESSON_IDS } from '@/lib/academy/published';
 import { tracks } from '@/lib/academy/curriculum';
 import { getPublicOrigin } from '@/lib/academy/site';
 
@@ -17,7 +18,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'monthly' as const,
       priority: 0.6,
     })),
-    ...AUTHORED_LESSON_IDS.map((id) => ({
+    ...PUBLISHED_LESSON_IDS.map((id) => ({
       url: url(`/learn/${id}`),
       changeFrequency: 'monthly' as const,
       priority: 0.8,

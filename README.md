@@ -84,3 +84,7 @@ Full guide: `docs/MDX_AUTHORING_PIPELINE.md`.
 ## Reading-first experience
 
 The home workspace opens in Read lesson mode. Curriculum, search and notes remain available; the editable code preview, timeline and console are mounted in Practice mode only. The previous always-open three-pane layout is replaced with a focused two-panel practice area. Article routes remain independently accessible. Mobile provides a collapsible curriculum and Code/Output tabs.
+
+## First foundations lessons
+
+All eight computing and internet foundations lessons (00.01.01–00.01.08) use local Node.js lab fixtures rather than simulating server code in a React iframe. Learners can verify starter code via the documented ACADEMY_LAB_TARGET setting. The course has twelve authored lessons (four existing interactive samples and eight local foundations labs). Module 00.01 is fully authored; subsequent orientation modules remain planned. Run all lab tests with `npm run test:labs`.

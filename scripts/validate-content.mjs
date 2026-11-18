@@ -29,7 +29,8 @@ const LessonMeta = z.strictObject({
   stack: z.record(z.string(), z.string().min(1)),
   prerequisites: z.array(z.string()),
   objectives: z.array(z.string().min(15)).min(3).max(8),
-  labId: z.string().min(5),
+  labId: z.string().regex(/^lab\.(react|foundation)\.[a-z0-9-]+$/),
+  rubric: z.array(z.string().min(15)).min(3).max(8).optional(),
   sources: z.array(VerifySource).min(2),
 });
 const LabSchema = z.strictObject({
@@ -69,6 +70,9 @@ for (const name of metaFiles) {
   assert.equal(meta.moduleId, entry.moduleId);
   assert.equal(meta.level, entry.level);
   assert.equal(name, `${meta.id}.meta.json`);
+  if (meta.labId.startsWith('lab.foundation.')) assert.ok(meta.rubric?.length, 'Local labs need a completion rubric');
+  assert.ok(read('src/content/lesson-registry.tsx').includes(`./lessons/${meta.id}.mdx`), `No MDX registry entry: ${meta.id}`);
+  assert.ok(read('src/lib/academy/published.ts').includes(`lessons/${meta.id}.meta.json`), `No metadata registry entry: ${meta.id}`);
   for (const [technology, major] of Object.entries(meta.stack)) {
     assert.equal(versions[technology], major, `Unpinned/mismatched ${technology} version in ${meta.id}`);
   }
@@ -90,7 +94,7 @@ for (const name of metaFiles) {
     assert.ok(body.includes(source.url), `Official reference is not linked in lesson: ${source.url}`);
   }
 
-  const lab = LabSchema.parse(json(`labs/${meta.labId.replaceAll('lab.react.', '')}/lab.json`));
+  const lab = LabSchema.parse(json(`labs/${meta.labId.split('.').at(-1)}/lab.json`));
   assert.equal(lab.id, meta.labId);
   assert.equal(lab.lessonId, meta.id);
   for (const asset of [lab.starter,lab.solution,lab.tests]) safeFile(asset);

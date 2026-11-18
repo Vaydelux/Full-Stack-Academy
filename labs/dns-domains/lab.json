@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.dns-domains",
+  "lessonId": "00.01.03",
+  "title": "DNS, domains and IP addresses",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/dns-domains/starter/exercise.mjs",
+  "solution": "labs/dns-domains/solution/exercise.mjs",
+  "tests": "labs/dns-domains/solution.test.mjs",
+  "verify": [
+    "npm run lab:dns-domains"
+  ],
+  "expected": "I completed the lab and passed the deterministic DNS tests.",
+  "security": "Synthetic data only; local loopback or deterministic test doubles. Never execute learner code on course services."
+}

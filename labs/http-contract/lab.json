@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.http-contract",
+  "lessonId": "00.01.05",
+  "title": "HTTP requests and responses",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/http-contract/starter/exercise.mjs",
+  "solution": "labs/http-contract/solution/exercise.mjs",
+  "tests": "labs/http-contract/solution.test.mjs",
+  "verify": [
+    "npm run lab:http-contract"
+  ],
+  "expected": "I completed the request handler and passed its contract tests.",
+  "security": "Synthetic data only; local loopback or deterministic test doubles. Never execute learner code on course services."
+}

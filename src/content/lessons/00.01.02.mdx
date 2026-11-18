@@ -1,0 +1,130 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Describe the request and response lifecycle","Identify methods, paths, headers, bodies and status codes","Implement and exercise a JSON endpoint in Node.js","Distinguish HTTP error responses from connection failures"]} />
+
+## The problem we're solving
+
+A page says "Loading projects..." forever. Rather than changing CSS, find the stage that failed. The browser may not send a request, the server may reject it, or the interface may misinterpret an error response.
+
+## Build the mental model
+
+A user action triggers a request. The client selects a destination and establishes or reuses a connection. It sends a method, target, headers and optionally a body. The server routes the request, validates input, performs permitted work, and returns a status, headers and a body. The client reads the response and updates the interface. A connection failure can occur before an HTTP response exists.
+
+**Predict first:** A response contains JSON and has status 404. Does JSON make it successful? No. Status and body must be interpreted together.
+
+Use Node.js 24 and complete lesson 00.01.01 first. This lab listens on loopback only, so it needs no public DNS or TLS service.
+
+<LessonStep number={1} title="Create a GET endpoint" file="labs/request-lifecycle/starter/server.mjs" expected="GET /api/projects returns 200 and a project array.">
+
+Keep the starter imports and the direct-execution block. Replace the function with a route and a shared response helper:
+
+```js
+const projects = [{ id: 'p1', name: 'Platform' }];
+function json(res, status, body) {
+  res.writeHead(status, {
+    'Content-Type': 'application/json; charset=utf-8',
+    'Cache-Control': 'no-store',
+  });
+  res.end(JSON.stringify(body));
+}
+export function createApp() {
+  return createServer((req, res) => {
+    const pathname = new URL(req.url, 'http://127.0.0.1').pathname;
+    if (pathname === '/api/projects' && req.method === 'GET') {
+      return json(res, 200, { projects });
+    }
+    return json(res, 404, { error: 'Not found' });
+  });
+}
+```
+
+Run `node labs/request-lifecycle/starter/server.mjs` and visit `http://127.0.0.1:3102/api/projects`. The client receives serialized JSON, not a reference to the server's object.
+
+</LessonStep>
+
+<LessonStep number={2} title="Inspect the request" file="Browser Network and Console" expected="The method is GET, status 200, and Content-Type is application/json.">
+
+Open DevTools Network, reload, and inspect Headers, Response and Timing. Then use the console on this local origin:
+
+```js
+const response = await fetch('/api/projects');
+console.log(response.status, response.ok);
+console.log(await response.json());
+```
+
+Expected: 200, true, and a project object. Visit the missing route to see a 404 while the connection still works. A consumed response body cannot be parsed a second time without cloning it first.
+
+</LessonStep>
+
+<LessonStep number={3} title="Handle unknown paths and methods" file="labs/request-lifecycle/starter/server.mjs" expected="Missing paths return 404; POST to projects returns 405 with Allow: GET.">
+
+Replace the handler's routing logic with:
+
+```js
+const pathname = new URL(req.url, 'http://127.0.0.1').pathname;
+if (pathname !== '/api/projects') {
+  return json(res, 404, { error: 'Not found' });
+}
+if (req.method !== 'GET') {
+  res.setHeader('Allow', 'GET');
+  return json(res, 405, { error: 'Method not allowed' });
+}
+return json(res, 200, { projects });
+```
+
+Restart the server. In the local page console, run `fetch('/api/projects', { method: 'POST' })` and inspect Network. The method is intentionally unsupported; no data is mutated.
+
+</LessonStep>
+
+<LessonStep number={4} title="Handle success and error on the client" file="Browser console" expected="The helper prints projects for 200 and reports an HTTP error for 404.">
+
+```js
+async function loadProjects(path = '/api/projects') {
+  try {
+    const response = await fetch(path);
+    if (!response.ok) throw new Error('HTTP ' + response.status);
+    const data = await response.json();
+    console.log(data.projects);
+  } catch (error) {
+    console.error('Could not load projects:', error.message);
+  }
+}
+await loadProjects();
+await loadProjects('/api/missing');
+```
+
+A connection failure also reaches catch. In real applications distinguish HTTP errors, connection failures and invalid data shapes. Later lessons introduce runtime schema validation.
+
+</LessonStep>
+
+<Misconception claim="If fetch resolves, the HTTP operation succeeded." correction="Fetch normally resolves for a completed HTTP error response. Check response.ok or status and validate the response body." />
+
+## Bug Hunt: Infinite loading
+
+A component assumes every response has a projects array. The missing route returns an error object, so rendering throws and the loader remains visible. Inspect Network before changing the component. Check response.ok, display the error, and clear loading in a finally block. Test failure paths as well as success.
+
+<KnowledgeCheck question="fetch receives a normal HTTP 404 response. What happens?" choices={["It always rejects","It normally resolves, but response.ok is false","It automatically retries","It always returns successful data"]} correctIndex={1} explanation="An HTTP error is still a response. Check its status before using the data." misconception="Network failures and HTTP error responses are distinct." lessonId="00.01.02" />
+
+## Guided lab
+
+Open `labs/request-lifecycle/starter/server.mjs` in the academy repository. Implement the routes using the lesson and run the tests against your starter. The instructor solution is in `solution/server.mjs`. The ordinary test command verifies the instructor solution; to verify your work in PowerShell run:
+
+```powershell
+$env:ACADEMY_LAB_TARGET = 'starter'
+npm run lab:request-lifecycle
+Remove-Item Env:ACADEMY_LAB_TARGET
+```
+
+In bash use `ACADEMY_LAB_TARGET=starter npm run lab:request-lifecycle`. Initially the incomplete starter should fail. Implement the requirements, run the tests again, and compare with the solution after your attempt.
+
+<LabGate lessonId="00.01.02" labId="lab.foundation.request-lifecycle" commands={["npm ci","npm run lab:request-lifecycle"]} interactive={false} />
+
+## Reflect
+
+Explain how you would distinguish a failed connection from a 404 response, and where in DevTools you would find the evidence.
+
+## Official references
+
+- [MDN: Overview of HTTP](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Overview)
+- [Node.js 24: HTTP](https://nodejs.org/download/release/latest-v24.x/docs/api/http.html)

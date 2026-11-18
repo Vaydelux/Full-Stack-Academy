@@ -53,9 +53,30 @@ try {
   await wait(page.getByText('Correct — you identified the concept.'));
   await page.goto(base + '/reference/zod-safeparse');
   await wait(page.getByRole('heading',{name:/Zod 4: schema.safeParse/}));
-  await page.goto(base + '/learn/00.01.01');
+  await page.goto(base + '/learn/00.02.01');
   assert.match(await page.locator('meta[name="robots"]').getAttribute('content'), /noindex/);
   await wait(page.getByText('Planned lesson — not published.', {exact:true}));
+  await page.goto(base + '/learn/00.01.01');
+  await wait(page.getByRole('heading',{name:'What runs in a browser vs on a server?',exact:true}));
+  await page.getByRole('radio',{name:/Only in the trusted server environment/}).check();
+  await btn('Check answer').click();
+  const gate = page.getByRole('region',{name:'Lesson completion'});
+  assert.equal(await btn('Mark complete').isEnabled(),false);
+  for (const checkbox of await gate.getByRole('checkbox').all()) await checkbox.check();
+  await btn('Mark complete').click();
+  await wait(btn('Completed'));
+  await page.reload({waitUntil:'networkidle'});
+  await wait(btn('Completed'));
+  await page.getByRole('link',{name:/Next: Client server lifecycle/}).click();
+  await wait(page.getByRole('heading',{name:'Client–server lifecycle: follow a real request',exact:true}));
+  for (const id of ["00.01.03","00.01.04","00.01.05","00.01.06","00.01.07","00.01.08"]) {
+    const result = await page.goto(base+'/learn/'+id);
+    assert.equal(result.status(),200);
+    assert.match(await page.locator('meta[name="robots"]').getAttribute('content'), /^index/);
+    await wait(page.getByRole('region',{name:'Lesson completion'}));
+    await wait(page.getByRole('heading',{name:'Build the mental model',exact:true}));
+    assert.equal(await page.getByRole('button',{name:'Mark complete'}).isEnabled(), false);
+  }
   await page.setViewportSize({width: 390,height:844});
   await page.goto(base+'/?lesson=06.01.01&mode=practice');
   await wait(btn('Practice'));

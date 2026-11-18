@@ -4,11 +4,11 @@ import { create } from 'zustand';
 import * as z from 'zod';
 import {
   AUTHORED_LESSONS,
-  AUTHORED_LESSON_IDS,
   diffLines,
   getStepAtTime,
 } from './authored-content';
 import { lessonMap, references } from './curriculum';
+import { PUBLISHED_LESSON_IDS, lessonRubric } from './published';
 import type {
   ConsoleEntry,
   PreviewStatus,
@@ -70,15 +70,15 @@ export function normalizeProgress(input: PersistedProgress): PersistedProgress {
   const complete: Record<string, boolean> = {};
   const quizzes: Record<string, boolean> = {};
   const rubrics: Record<string, number[]> = {};
-  for (const id of AUTHORED_LESSON_IDS) {
-    const lesson = AUTHORED_LESSONS[id];
+  for (const id of PUBLISHED_LESSON_IDS) {
+    const rubric = lessonRubric(id) ?? [];
     const valid = [...new Set((input.rubrics[id] ?? []).filter(
-      (index) => Number.isInteger(index) && index >= 0 && index < lesson.challenge.rubric.length
+      (index) => Number.isInteger(index) && index >= 0 && index < rubric.length
     ))].sort((a, b) => a - b);
     if (valid.length) rubrics[id] = valid;
     if (input.quizzes[id] === true) quizzes[id] = true;
     if (input.complete[id] === true && quizzes[id] &&
-      lesson.challenge.rubric.every((_, index) => valid.includes(index))) {
+      rubric.every((_, index) => valid.includes(index))) {
       complete[id] = true;
     }
   }
@@ -361,7 +361,7 @@ export const useAcademy = create<AcademyStore>((set, get) => ({
 
   jumpToNextUnfinished: () => {
     const { progress, selectLesson } = get();
-    const nextId = AUTHORED_LESSON_IDS.find((id) => !progress.complete[id]) ?? AUTHORED_LESSON_IDS[0];
+    const nextId = PUBLISHED_LESSON_IDS.find((id) => !progress.complete[id]) ?? PUBLISHED_LESSON_IDS[0];
     selectLesson(nextId);
   },
 
@@ -529,6 +529,7 @@ export const useAcademy = create<AcademyStore>((set, get) => ({
         else current.add(index);
         return {
           ...prev,
+          complete: { ...prev.complete, [lessonId]: Boolean(prev.complete[lessonId] && (lessonRubric(lessonId) ?? []).every((_,i)=>current.has(i))) },
           rubrics: { ...prev.rubrics, [lessonId]: [...current] },
         };
       })
@@ -552,18 +553,18 @@ export const useAcademy = create<AcademyStore>((set, get) => ({
 
   markLessonComplete: (lessonId) =>
     set((s) => {
-      const authored = AUTHORED_LESSONS[lessonId];
-      if (!authored) return {};
+      const criteria = lessonRubric(lessonId);
+      if (!criteria?.length) return {};
       const quizOk = Boolean(s.progress.quizzes[lessonId]);
       const rubric = s.progress.rubrics[lessonId] ?? [];
-      const rubricOk = authored.challenge.rubric.every((_, idx) => rubric.includes(idx));
+      const rubricOk = criteria.every((_, idx) => rubric.includes(idx));
       if (!quizOk || !rubricOk) return {};
       return {
         ...updateAndSaveProgress(s, (prev) => ({
           ...prev,
           complete: { ...prev.complete, [lessonId]: true },
         })),
-        toast: { id: ++toastId, msg: `Sample lesson ${lessonId} marked complete`, tone: 'success' },
+        toast: { id: ++toastId, msg: `Lesson ${lessonId} marked complete`, tone: 'success' },
       };
     }),
 

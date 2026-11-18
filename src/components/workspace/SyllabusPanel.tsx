@@ -15,8 +15,6 @@ import {
   StickyNote,
 } from 'lucide-react';
 import {
-  AUTHORED_LESSONS,
-  AUTHORED_LESSON_IDS,
   findAuthoredReference,
 } from '@/lib/academy/authored-content';
 import {
@@ -29,6 +27,7 @@ import {
   summary,
   tracks,
 } from '@/lib/academy/curriculum';
+import { PUBLISHED_LESSON_IDS, isPublishedLesson } from '@/lib/academy/published';
 import { useAcademy } from '@/lib/academy/store';
 
 /* ------------------------------------------------------------------ */
@@ -104,8 +103,8 @@ export default function SyllabusPanel({ fullHeight = false, onNavigate }: { full
   const expandedModule = useAcademy((s) => s.expandedModule);
   const setExpandedModule = useAcademy((s) => s.setExpandedModule);
 
-  const doneCount = AUTHORED_LESSON_IDS.filter((id) => progress.complete[id]).length;
-  const pct = Math.round((doneCount / AUTHORED_LESSON_IDS.length) * 100);
+  const doneCount = PUBLISHED_LESSON_IDS.filter((id) => progress.complete[id]).length;
+  const pct = Math.round((doneCount / PUBLISHED_LESSON_IDS.length) * 100);
 
   const noteIds = useMemo(
     () => Object.keys(progress.notes).filter((id) => progress.notes[id]?.trim().length > 0),
@@ -118,7 +117,7 @@ export default function SyllabusPanel({ fullHeight = false, onNavigate }: { full
     if (!q && !onlyAuthored) return [];
     return lessons
       .filter((l) => {
-        if (onlyAuthored && !AUTHORED_LESSONS[l.id]) return false;
+        if (onlyAuthored && !isPublishedLesson(l.id)) return false;
         if (!q) return true;
         return `${l.id} ${l.title} ${l.track} ${l.module}`.toLowerCase().includes(q);
       })
@@ -171,7 +170,7 @@ export default function SyllabusPanel({ fullHeight = false, onNavigate }: { full
             </ProgressRing>
             <div className="min-w-0 flex-1">
               <div className="text-xs font-semibold text-slate-800 dark:text-slate-200">
-                {doneCount} / {AUTHORED_LESSON_IDS.length} authored samples
+                {doneCount} / {PUBLISHED_LESSON_IDS.length} available lessons
               </div>
               <div className="truncate text-[11px] text-slate-500">
                 {summary.plannedLessons} topics mapped · {summary.referenceSubjects} references
@@ -180,7 +179,7 @@ export default function SyllabusPanel({ fullHeight = false, onNavigate }: { full
             <button
               type="button"
               onClick={jumpToNextUnfinished}
-              title="Open next authored sample lesson"
+              title="Open next available lesson"
               className="flex shrink-0 items-center gap-1 rounded-lg border border-[#0284c7]/30 bg-[#0284c7]/10 px-2 py-1 text-[11px] font-semibold text-[#0284c7] hover:bg-[#0284c7]/20 dark:border-[#00F0FF]/30 dark:bg-[#00F0FF]/10 dark:text-[#7DEBFF]"
             >
               Continue
@@ -312,7 +311,7 @@ export default function SyllabusPanel({ fullHeight = false, onNavigate }: { full
             {sidebarTab === 'curriculum' && (q || onlyAuthored) && (
               <div className="space-y-1">
                 {filteredLessons.map((l) => {
-                  const authored = Boolean(AUTHORED_LESSONS[l.id]);
+                  const authored = isPublishedLesson(l.id);
                   const done = Boolean(progress.complete[l.id]);
                   const active = activeView === 'lesson' && selectedLessonId === l.id;
                   return (
@@ -346,7 +345,7 @@ export default function SyllabusPanel({ fullHeight = false, onNavigate }: { full
                             : 'text-slate-400'
                         }`}
                       >
-                        {done ? 'done' : authored ? 'sample' : 'planned'}
+                        {done ? 'done' : authored ? 'ready' : 'planned'}
                       </span>
                     </button>
                   );
@@ -363,7 +362,7 @@ export default function SyllabusPanel({ fullHeight = false, onNavigate }: { full
                   const isOpenTrack = expandedTrack === track.id;
                   const trackMods = modulesByTrack.get(track.id) ?? [];
                   const trackTopicCount = (lessonsByTrack.get(track.id) ?? []).length;
-                  const hasSample = (lessonsByTrack.get(track.id) ?? []).some((l) => Boolean(AUTHORED_LESSONS[l.id]));
+                  const hasSample = (lessonsByTrack.get(track.id) ?? []).some((l) => isPublishedLesson(l.id));
                   return (
                     <li key={track.id}>
                       <button
@@ -421,7 +420,7 @@ export default function SyllabusPanel({ fullHeight = false, onNavigate }: { full
                                 {isOpenMod && (
                                   <ul className="my-0.5 ml-3 space-y-0.5 border-l border-slate-200 pl-2 dark:border-white/[0.06]">
                                     {modLessons.map((l) => {
-                                      const authored = Boolean(AUTHORED_LESSONS[l.id]);
+                                      const authored = isPublishedLesson(l.id);
                                       const done = Boolean(progress.complete[l.id]);
                                       const active = activeView === 'lesson' && selectedLessonId === l.id;
                                       return (

@@ -10,8 +10,17 @@
     "typecheck": "tsc --noEmit",
     "validate": "python validate_package.py",
     "test": "node --test tests/academy.test.mjs tests/hardening.test.mjs tests/course-routes.test.mjs tests/content.test.mjs",
-    "test:labs": "tsx --test labs/jsx-skill-card/solution.test.tsx",
-    "verify:content": "node scripts/validate-content.mjs"
+    "test:labs": "tsx --test labs/jsx-skill-card/solution.test.tsx labs/browser-server/solution.test.mjs labs/request-lifecycle/solution.test.mjs labs/dns-domains/solution.test.mjs labs/tcp-tls-https/solution.test.mjs labs/http-contract/solution.test.mjs labs/api-json/solution.test.mjs labs/cookies-sessions/solution.test.mjs labs/devtools-trace/solution.test.mjs",
+    "verify:content": "node scripts/validate-content.mjs",
+    "lab:browser-server": "node --test labs/browser-server/solution.test.mjs",
+    "lab:request-lifecycle": "node --test labs/request-lifecycle/solution.test.mjs",
+    "lab:dns-domains": "node --test labs/dns-domains/solution.test.mjs",
+    "lab:tcp-tls-https": "node --test labs/tcp-tls-https/solution.test.mjs",
+    "lab:http-contract": "node --test labs/http-contract/solution.test.mjs",
+    "lab:api-json": "node --test labs/api-json/solution.test.mjs",
+    "lab:cookies-sessions": "node --test labs/cookies-sessions/solution.test.mjs",
+    "lab:devtools-trace": "node --test labs/devtools-trace/solution.test.mjs",
+    "audit:dependencies": "node scripts/audit-dependencies.mjs"
   },
   "dependencies": {
     "clsx": "^2.1.1",

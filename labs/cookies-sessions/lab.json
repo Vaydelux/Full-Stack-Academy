@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.cookies-sessions",
+  "lessonId": "00.01.07",
+  "title": "Cookies, sessions and browser storage",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/cookies-sessions/starter/exercise.mjs",
+  "solution": "labs/cookies-sessions/solution/exercise.mjs",
+  "tests": "labs/cookies-sessions/solution.test.mjs",
+  "verify": [
+    "npm run lab:cookies-sessions"
+  ],
+  "expected": "I tested cookie attributes, expiration and revoked sessions.",
+  "security": "Synthetic data only; local loopback or deterministic test doubles. Never execute learner code on course services."
+}
