@@ -1,0 +1,92 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Write exact steps that reproduce the failure reliably","Hold environment and input constant while changing one factor","Shrink a failing input without losing the failure","Turn the minimal counterexample into an automated regression test"]} />
+
+## The problem we're solving
+
+A bug appears only in a 500-character input, and nobody knows which characters matter. Every attempted fix changes many things at once, so the team cannot tell which factor caused the failure.
+
+## Build the mental model
+
+A minimal reproducer removes unrelated state while preserving the observed failure. Start with an expected result, actual result, exact environment and failing input. Hold the failure predicate constant while reducing the case. A greedy one-character deletion pass is a useful beginner technique; it produces a locally minimal result, not necessarily the globally shortest possible input. Keep deterministic seeds, fixed versions and independent experiments. A regression test should fail before the repair and pass afterward.
+
+**Predict before running:** If the bug is triggered only when a string contains BUG, which characters in 'helloBUGworld' are indispensable? B, U and G in that order.
+
+## Prerequisites
+
+Complete [the previous lesson](/learn/00.03.01), install Node.js 24, and work in a trusted local checkout. Keep debugging evidence synthetic or redacted. There are no external accounts, API keys, or paid services required.
+
+<LessonStep number={1} title={"Define a deterministic failure predicate"} file="labs/minimal-repro/starter/exercise.mjs" expected={"The bug predicate is repeatable with no network or clock dependence."}>
+
+Express the bug as a boolean test rather than describing it vaguely. The marker is synthetic and is not user input from a real service.
+
+```js
+const fails = input => input.includes('BUG');
+console.log(fails('helloBUGworld')); // true
+console.log(fails('helloWORLD')); // false
+```
+
+</LessonStep>
+
+<LessonStep number={2} title={"Remove irrelevant characters"} file="labs/minimal-repro/starter/exercise.mjs" expected={"minimizeRepro('helloBUGworld', fails) returns 'BUG'."}>
+
+Start from a confirmed failing input and delete characters only if the bug still reproduces. Limit input size so the algorithm cannot consume unbounded time.
+
+```js
+export function minimizeRepro(input, fails) {
+  if (typeof input !== 'string' || input.length > 2000 || !fails(input)) {
+    throw new Error('Provide a bounded, failing string');
+  }
+  let current = input;
+  for (let index = 0; index < current.length;) {
+    const candidate = current.slice(0,index) + current.slice(index+1);
+    if (fails(candidate)) current=candidate;
+    else index++;
+  }
+  return current;
+}
+```
+
+</LessonStep>
+
+<LessonStep number={3} title={"Prove a minimal counterexample"} file="labs/minimal-repro/starter/exercise.mjs" expected={"The fixture proves the reduced case still fails and deleting any character stops this predicate."}>
+
+Run the lab tests, then change the example to a second input. Record the smallest failing input and the expected fixed behavior as a new regression test.
+
+```js
+const minimal = minimizeRepro('helloBUGworld', s => s.includes('BUG'));
+console.log(minimal); // BUG
+// After the bug is fixed, test that the original input no longer triggers the bad outcome.
+```
+
+</LessonStep>
+
+## Bug Hunt: identify and verify the repair
+
+The reducer deletes characters without checking whether the failure still occurs. The result looks small but no longer fails. Restore the predicate check after each candidate deletion, then add a regression assertion.
+
+<KnowledgeCheck question={"What must remain true when reducing a failing test case?"} choices={["The input stays the same length","The original failure still reproduces","The final input contains every original variable","The fix is applied before the reproducer exists"]} correctIndex={1} explanation={"A minimal reproducer removes unrelated details while preserving the same failure."} misconception={"Shorter inputs are only useful when they still reproduce the observed bug."} lessonId="00.03.02" />
+
+## Guided lab and independent validation
+
+Open `labs/minimal-repro/starter/exercise.mjs` and implement the exercise. The instructor reference is in `labs/minimal-repro/solution/exercise.mjs`. From the repository root, use the following commands to test **your starter** rather than the instructor solution:
+
+```powershell
+$env:ACADEMY_LAB_TARGET = 'starter'
+npm run lab:minimal-repro
+Remove-Item Env:ACADEMY_LAB_TARGET
+```
+
+In Bash: `ACADEMY_LAB_TARGET=starter npm run lab:minimal-repro`. Tests should fail initially, then pass after your repair. The default lab command tests the reviewed instructor solution. Automated tests do not validate your manual debugger or DevTools actions; those remain self-assessed.
+
+<LabGate lessonId="00.03.02" labId="lab.foundation.minimal-repro" commands={["npm ci","npm run lab:minimal-repro"]} interactive={false} />
+
+## Reflect
+
+State the original symptom, the evidence you collected, the smallest failing case, the root cause, the repair and the regression test. Avoid changing unrelated features and redact credentials before sharing a report.
+
+## Official references
+
+- [MDN Debugging JavaScript](https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Testing/Introduction)
+- [Chrome DevTools debugging](https://developer.chrome.com/docs/devtools/javascript/)

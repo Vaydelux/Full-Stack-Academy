@@ -1,0 +1,78 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Record a falsifiable hypothesis with controlled conditions","Separate observations from inferences and generalizations","Write a consistent Architecture Decision Record (ADR)","Document tradeoffs and a concrete rollback condition"]} />
+
+## The problem we're solving
+
+A team repeatedly debates caching without documenting the original experiment. A short record of what was observed and why a decision was proposed prevents repeated guesswork.
+
+## Build the mental model
+
+An experiment log preserves the hypothesis, environment, procedure, measurements and limitations. An ADR records context, decision status, tradeoffs and reversal strategy. Proposed is not the same as accepted. One local synthetic benchmark does not prove performance under production traffic. Never include secret configuration values or customer data in committed experiment logs.
+
+**Predict before running:** A fast warm-cache local benchmark is evidence only for that tested workload, not a guarantee that every production operation is faster.
+
+## Prerequisites
+
+Complete [the previous lesson](/learn/00.03.06). Use Node.js 24, the checked-in starter, and synthetic data. Do not upload sensitive logs to the course or a public issue tracker.
+
+<LessonStep number={1} title={"Write a measurable hypothesis"} file="labs/architecture-notes/starter/exercise.mjs" expected={"State workload, expected change and measurement conditions before running the experiment."}>
+
+Implement the following example in the starter fixture, then compare its output with the stated expected result.
+
+```js
+const experiment={hypothesis:'Cache lowers warm lookup median',environment:'Node 24, synthetic data',method:'30 repeat lookups',observed:'12ms baseline, 7ms cached',limitations:'Not representative of production'};
+```
+
+</LessonStep>
+
+<LessonStep number={2} title={"Validate a decision record"} file="labs/architecture-notes/starter/exercise.mjs" expected={"An ADR cannot be accepted with missing context or rollback notes."}>
+
+Implement the following example in the starter fixture, then compare its output with the stated expected result.
+
+```js
+for(const key of ['title','context','decision','tradeoffs','rollback'])if(typeof adr[key]!=='string'||!adr[key].trim())throw new Error('Missing '+key);
+if(!['proposed','accepted'].includes(adr.status))throw new Error('Invalid status');
+```
+
+</LessonStep>
+
+<LessonStep number={3} title={"Format a reviewable ADR"} file="labs/architecture-notes/starter/exercise.mjs" expected={"The output shows status, context, decision, tradeoffs and rollback explicitly."}>
+
+Implement the following example in the starter fixture, then compare its output with the stated expected result.
+
+```js
+export function formatADR(adr){if(!/^\d{4}$/.test(adr.id)||!['proposed','accepted'].includes(adr.status))throw new Error('Invalid ADR');for(const key of ['title','context','decision','tradeoffs','rollback'])if(!adr[key]?.trim())throw new Error('Missing '+key);return `# ADR-${adr.id}: ${adr.title}\nStatus: ${adr.status}\n\n## Context\n${adr.context}\n\n## Decision\n${adr.decision}\n\n## Tradeoffs\n${adr.tradeoffs}\n\n## Rollback\n${adr.rollback}`;}
+```
+
+</LessonStep>
+
+## Bug Hunt: isolate and repair
+
+A proposed ADR claims 'Redis is always faster' after one tiny local test. Document dataset, limitations and alternatives, and keep status proposed until the evidence is reviewed.
+
+<KnowledgeCheck question={"Which content belongs in an ADR?"} choices={["Only a preferred technology","Context, decision, tradeoffs and rollback","Private developer credentials","An unsupported universal performance claim"]} correctIndex={1} explanation={"Tradeoffs and reversal conditions help future engineers understand the decision."} misconception={"An ADR is not merely a preference note."} lessonId="00.03.07" />
+
+## Guided lab
+
+Open `labs/architecture-notes/starter/exercise.mjs`; the instructor reference is in `labs/architecture-notes/solution/exercise.mjs`. The normal test command validates the solution. Test your edited starter from the repository root using PowerShell:
+
+```powershell
+$env:ACADEMY_LAB_TARGET = 'starter'
+npm run lab:architecture-notes
+Remove-Item Env:ACADEMY_LAB_TARGET
+```
+
+In Bash: `ACADEMY_LAB_TARGET=starter npm run lab:architecture-notes`. The incomplete starter should fail until you implement it. Manual documentation/review steps are self-assessed, not automatically certified.
+
+<LabGate lessonId="00.03.07" labId="lab.foundation.architecture-notes" commands={["npm ci","npm run lab:architecture-notes"]} interactive={false} />
+
+## Reflect
+
+Write a short handoff: symptoms, confirmed evidence, hypothesis, correction, tests run and remaining unknowns. Never assert a result you did not reproduce.
+
+## Official references
+
+- [Architecture Decision Records reference](https://adr.github.io/)
+- [GitHub issues and project decisions](https://docs.github.com/en/issues/tracking-your-work-with-issues/about-issues)

@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.network-observation",
+  "lessonId": "00.03.04",
+  "title": "Console network and performance panels",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/network-observation/starter/exercise.mjs",
+  "solution": "labs/network-observation/solution/exercise.mjs",
+  "tests": "labs/network-observation/solution.test.mjs",
+  "verify": [
+    "npm run lab:network-observation"
+  ],
+  "expected": "I passed deterministic timing and sensitive-data regression tests.",
+  "security": "Local deterministic fixtures. No user code runs on the course server; never disclose private logs."
+}

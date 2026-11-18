@@ -1,0 +1,80 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Inspect Node and package-manager versions before editing application code","Identify missing lockfiles and required environment names","Generate a safe diagnostics report without printing environment values","Verify the corrected environment by running clean-install checks"]} />
+
+## The problem we're solving
+
+A colleague runs Node 22 and pnpm on an npm project requiring Node 24; package-lock.json is missing. 'Works on my machine' is an environment claim, not a reason to rewrite the app.
+
+## Build the mental model
+
+Compare the actual runtime and toolchain against the documented contract: Node major, package manager, lockfile presence and required environment variable names. A variable's presence does not prove its value is correct, and its value should never enter a shared report. First fix the contract, then use a clean locked install and regression tests. Do not copy node_modules between Windows and WSL or upload credentials into a bug report.
+
+**Predict before running:** Changing the React code cannot satisfy a Node engine major mismatch. Fix the runtime and retry the same test.
+
+## Prerequisites
+
+Complete [the previous lesson](/learn/00.03.07). Use Node.js 24, the checked-in starter, and synthetic data. Do not upload sensitive logs to the course or a public issue tracker.
+
+<LessonStep number={1} title={"Capture expected and observed conditions"} file="labs/environment-mismatch/starter/exercise.mjs" expected={"The actual machine demonstrates three independent blockers."}>
+
+Implement the following example in the starter fixture, then compare its output with the stated expected result.
+
+```js
+const expected={nodeMajor:24,manager:'npm',files:['package-lock.json'],variables:['APP_MODE']};
+const actual={nodeVersion:'v22.9.0',manager:'pnpm',files:[],environment:{APP_MODE:'development',PRIVATE_TOKEN:'never-log'}};
+```
+
+</LessonStep>
+
+<LessonStep number={2} title={"Classify mismatches without leaking values"} file="labs/environment-mismatch/starter/exercise.mjs" expected={"The report lists only categories, names and requirements."}>
+
+Implement the following example in the starter fixture, then compare its output with the stated expected result.
+
+```js
+export function diagnoseEnvironment(required,actual){const issues=[];const major=/^v?(\d+)\./.exec(actual.nodeVersion)?.[1];if(Number(major)!==required.nodeMajor)issues.push('node-major');if(actual.manager!==required.manager)issues.push('package-manager');for(const name of required.files)if(!actual.files.includes(name))issues.push('missing-file:'+name);for(const name of required.variables)if(!(name in actual.environment))issues.push('missing-variable:'+name);return {ready:issues.length===0,issues};}
+```
+
+</LessonStep>
+
+<LessonStep number={3} title={"Repeat verification on the repaired environment"} file="labs/environment-mismatch/starter/exercise.mjs" expected={"The corrected snapshot reports ready with an empty issues list."}>
+
+Implement the following example in the starter fixture, then compare its output with the stated expected result.
+
+```js
+const fixed={nodeVersion:'v24.1.0',manager:'npm',files:['package-lock.json'],environment:{APP_MODE:'test'}};
+console.log(diagnoseEnvironment(expected,fixed));
+// Then in your actual terminal: node --version; npm ci; npm test; npm run build.
+```
+
+</LessonStep>
+
+## Bug Hunt: isolate and repair
+
+A teammate copies node_modules from Windows into WSL. Restore one consistent runtime environment, use the correct package manager and run a clean locked install.
+
+<KnowledgeCheck question={"What should you check first when a project fails only on a teammate's machine?"} choices={["UI colors","Runtime, manager, lockfile and configuration presence","Disable TLS checks","Delete all source code"]} correctIndex={1} explanation={"Environment mismatches can block a correct codebase before it runs."} misconception={"Not every failure is caused by application source."} lessonId="00.03.08" />
+
+## Guided lab
+
+Open `labs/environment-mismatch/starter/exercise.mjs`; the instructor reference is in `labs/environment-mismatch/solution/exercise.mjs`. The normal test command validates the solution. Test your edited starter from the repository root using PowerShell:
+
+```powershell
+$env:ACADEMY_LAB_TARGET = 'starter'
+npm run lab:environment-mismatch
+Remove-Item Env:ACADEMY_LAB_TARGET
+```
+
+In Bash: `ACADEMY_LAB_TARGET=starter npm run lab:environment-mismatch`. The incomplete starter should fail until you implement it. Manual documentation/review steps are self-assessed, not automatically certified.
+
+<LabGate lessonId="00.03.08" labId="lab.foundation.environment-mismatch" commands={["npm ci","npm run lab:environment-mismatch"]} interactive={false} />
+
+## Reflect
+
+Write a short handoff: symptoms, confirmed evidence, hypothesis, correction, tests run and remaining unknowns. Never assert a result you did not reproduce.
+
+## Official references
+
+- [npm ci reference](https://docs.npmjs.com/cli/v11/commands/npm-ci)
+- [Node.js process API](https://nodejs.org/api/process.html)

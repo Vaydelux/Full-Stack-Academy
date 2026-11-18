@@ -1,0 +1,2 @@
+export function parseVersion(version){const m=/^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/.exec(version);if(!m)throw new Error('Stable X.Y.Z required');const parts=m.slice(1).map(Number);if(parts.some(v=>!Number.isSafeInteger(v)))throw new Error('Unsafe version');return parts;}
+export function classifyUpgrade(from,to){const a=parseVersion(from),b=parseVersion(to);for(let i=0;i<3;i++)if(a[i]!==b[i])return a[i]>b[i]?'downgrade':['major-review','minor-review','patch-review'][i];return 'same-version';}

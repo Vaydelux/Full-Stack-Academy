@@ -14,6 +14,7 @@ export default function CourseIndex() {
   const learningModules = [
     { id: '00.01', title: 'Computing & internet foundations', description: 'Understand how applications and the web work.' },
     { id: '00.02', title: 'Developer toolchain', description: 'Prepare a reproducible environment and ship a tested project.' },
+    { id: '00.03', title: 'Learning & debugging', description: 'Reproduce, isolate, diagnose, and document problems with evidence.' },
   ];
   return (
     <DocShell>

@@ -1,0 +1,39 @@
+{
+  "id": "00.03.08",
+  "title": "Bug Hunt environment mismatch",
+  "description": "Diagnose a clean-checkout failure by comparing Node major, package manager, lockfile and required configuration without exposing secret values.",
+  "trackId": "00",
+  "moduleId": "00.03",
+  "level": "Beginner",
+  "estimatedMinutes": 55,
+  "status": "authored",
+  "reviewedAt": "2026-11-18",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "00.03.07"
+  ],
+  "objectives": [
+    "Inspect Node and package-manager versions before editing application code",
+    "Identify missing lockfiles and required environment names",
+    "Generate a safe diagnostics report without printing environment values",
+    "Verify the corrected environment by running clean-install checks"
+  ],
+  "labId": "lab.foundation.environment-mismatch",
+  "sources": [
+    {
+      "label": "npm ci reference",
+      "url": "https://docs.npmjs.com/cli/v11/commands/npm-ci"
+    },
+    {
+      "label": "Node.js process API",
+      "url": "https://nodejs.org/api/process.html"
+    }
+  ],
+  "rubric": [
+    "I identified runtime and package manager differences independently.",
+    "I reproduced a corrected configuration without leaking private values.",
+    "I passed environment mismatch and secret-redaction regression tests."
+  ]
+}

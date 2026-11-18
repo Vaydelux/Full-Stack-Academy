@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.technical-questions",
+  "lessonId": "00.03.05",
+  "title": "Asking good technical questions",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/technical-questions/starter/exercise.mjs",
+  "solution": "labs/technical-questions/solution/exercise.mjs",
+  "tests": "labs/technical-questions/solution.test.mjs",
+  "verify": [
+    "npm run lab:technical-questions"
+  ],
+  "expected": "I passed formatting, validation and basic secret-redaction tests.",
+  "security": "Local deterministic fixtures. No production secrets or remote learner code execution."
+}

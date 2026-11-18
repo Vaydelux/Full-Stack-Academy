@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.changelog-reading",
+  "lessonId": "00.03.06",
+  "title": "Reading changelogs and docs",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/changelog-reading/starter/exercise.mjs",
+  "solution": "labs/changelog-reading/solution/exercise.mjs",
+  "tests": "labs/changelog-reading/solution.test.mjs",
+  "verify": [
+    "npm run lab:changelog-reading"
+  ],
+  "expected": "I passed strict version parsing and upgrade classification tests.",
+  "security": "Local deterministic fixtures. No production secrets or remote learner code execution."
+}

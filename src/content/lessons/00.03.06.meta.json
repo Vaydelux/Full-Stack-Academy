@@ -1,0 +1,39 @@
+{
+  "id": "00.03.06",
+  "title": "Reading changelogs and docs",
+  "description": "Compare installed package versions against official migration notes and implement strict stable-version upgrade classification.",
+  "trackId": "00",
+  "moduleId": "00.03",
+  "level": "Beginner",
+  "estimatedMinutes": 40,
+  "status": "authored",
+  "reviewedAt": "2026-11-18",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "00.03.05"
+  ],
+  "objectives": [
+    "Find the installed version from the lockfile rather than guessing",
+    "Compare major/minor/patch release components",
+    "Identify migrations and deprecations from official documentation",
+    "Write regression tests before applying dependency upgrades"
+  ],
+  "labId": "lab.foundation.changelog-reading",
+  "sources": [
+    {
+      "label": "Semantic Versioning specification",
+      "url": "https://semver.org/"
+    },
+    {
+      "label": "npm package lock reference",
+      "url": "https://docs.npmjs.com/cli/v11/configuring-npm/package-lock-json"
+    }
+  ],
+  "rubric": [
+    "I confirmed a resolved version in the package lockfile.",
+    "I reviewed official migration and deprecation notes.",
+    "I passed strict version parsing and upgrade classification tests."
+  ]
+}

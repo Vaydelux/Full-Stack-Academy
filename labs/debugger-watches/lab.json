@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.debugger-watches",
+  "lessonId": "00.03.03",
+  "title": "Debugger breakpoints and watches",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/debugger-watches/starter/exercise.mjs",
+  "solution": "labs/debugger-watches/solution/exercise.mjs",
+  "tests": "labs/debugger-watches/solution.test.mjs",
+  "verify": [
+    "npm run lab:debugger-watches"
+  ],
+  "expected": "I corrected the calculation and passed positive and negative test cases.",
+  "security": "Local deterministic fixtures. No user code runs on the course server; never disclose private logs."
+}

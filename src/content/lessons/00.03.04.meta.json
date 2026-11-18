@@ -1,0 +1,39 @@
+{
+  "id": "00.03.04",
+  "title": "Console network and performance panels",
+  "description": "Separate transport failure, HTTP error and slow requests using browser DevTools and a deterministically timed response probe.",
+  "trackId": "00",
+  "moduleId": "00.03",
+  "level": "Beginner",
+  "estimatedMinutes": 45,
+  "status": "authored",
+  "reviewedAt": "2026-11-18",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "00.03.03"
+  ],
+  "objectives": [
+    "Use Console, Network and Performance panels for distinct questions",
+    "Inspect status and Content-Type without logging response secrets",
+    "Measure an async request with injected clocks in a deterministic test",
+    "Distinguish a network exception from a valid HTTP error response"
+  ],
+  "labId": "lab.foundation.network-observation",
+  "sources": [
+    {
+      "label": "Chrome Network panel reference",
+      "url": "https://developer.chrome.com/docs/devtools/network/reference/"
+    },
+    {
+      "label": "MDN Performance API",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/API/Performance_API"
+    }
+  ],
+  "rubric": [
+    "I inspected Console, Network and Performance for the same request.",
+    "I distinguished HTTP failure from network failure and recorded duration.",
+    "I passed deterministic timing and sensitive-data regression tests."
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.architecture-notes",
+  "lessonId": "00.03.07",
+  "title": "Experiment logs and architecture notes",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/architecture-notes/starter/exercise.mjs",
+  "solution": "labs/architecture-notes/solution/exercise.mjs",
+  "tests": "labs/architecture-notes/solution.test.mjs",
+  "verify": [
+    "npm run lab:architecture-notes"
+  ],
+  "expected": "I passed decision format and missing-field regression tests.",
+  "security": "Local deterministic fixtures. No production secrets or remote learner code execution."
+}
