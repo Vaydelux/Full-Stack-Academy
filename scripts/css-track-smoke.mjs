@@ -1,6 +1,7 @@
 // Exact-head offline Chromium verification for all three CSS track expansion modules.
 // This is a real browser check of static local fixtures, not a remote deployment or WCAG certificate.
 export async function verifyCssTrack({ page, base, assert, wait }) {
+  const originalViewport = page.viewportSize();
   const groups = [
     { module: '02.02', slugs: ['css-flexbox','css-grid-areas','css-intrinsic','css-position','css-overflow','css-container','css-breakpoints','css-sticky-debug'] },
     { module: '02.03', slugs: ['css-theme-tokens','css-color-contrast','css-dark-schemes','css-transitions','css-nesting','css-has','css-component-scope','css-theme-kit'] },
@@ -169,6 +170,6 @@ export async function verifyCssTrack({ page, base, assert, wait }) {
   await wait(page.getByRole('status').getByText('Local QA interaction passed.'));
 
   await page.emulateMedia({colorScheme:'light',reducedMotion:'reduce'});
-  await page.setViewportSize({width:1440,height:900});
+  if (originalViewport) await page.setViewportSize(originalViewport);
   console.log('CSS track smoke passed: 24 local labs, narrow/wide layout, sticky, tokens, contrast, dark, RTL, motion, focus and capstones');
 }
