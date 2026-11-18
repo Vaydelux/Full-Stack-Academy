@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.next-invalidation",
+  "lessonId": "07.03.04",
+  "title": "Revalidation and invalidation",
+  "runtime": "next16-offline-contract-and-tsx-source",
+  "status": "authored",
+  "starter": "labs/next-invalidation/starter/solution.ts",
+  "solution": "labs/next-invalidation/solution/solution.ts",
+  "tests": "labs/next-invalidation/solution.test.mjs",
+  "verify": [
+    "npm run lab:next-invalidation"
+  ],
+  "expected": "The correct local contract passes independent assertions; end-to-end framework behavior is a separate QA gate.",
+  "security": "Uses synthetic fixture data, no secrets, uploaded code execution, remote endpoints, publishing, Vercel or hosted grading."
+}

@@ -1,0 +1,41 @@
+{
+  "id": "07.03.08",
+  "title": "Lab publish and revalidate",
+  "description": "Investigate lab publish and revalidate in Next.js 16 with a defective starter, repaired instructor module, executable offline contract and framework example.",
+  "trackId": "07",
+  "moduleId": "07.03",
+  "level": "Beginner",
+  "estimatedMinutes": 85,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "next": "16",
+    "react": "19",
+    "typescript": "5",
+    "node": "24"
+  },
+  "prerequisites": [
+    "07.03.07"
+  ],
+  "objectives": [
+    "Diagnose the lab publish and revalidate failure through a real example",
+    "Repair the learner fixture with a precise invariant and explicit edge cases",
+    "Verify the result offline and distinguish those checks from framework end-to-end tests"
+  ],
+  "labId": "lab.foundation.next-publish-revalidate",
+  "sources": [
+    {
+      "label": "Official framework documentation",
+      "url": "https://nextjs.org/docs/app/getting-started/revalidating"
+    },
+    {
+      "label": "Supporting official API guidance",
+      "url": "https://nextjs.org/docs/app/api-reference/functions/updateTag"
+    }
+  ],
+  "rubric": [
+    "I can reproduce the specific lab publish and revalidate failure in the learner starter",
+    "I can explain one positive and one negative case without a hosted service",
+    "I can identify which behavior still requires a browser or Next.js request integration test"
+  ]
+}

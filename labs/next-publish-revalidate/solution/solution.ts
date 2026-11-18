@@ -1,0 +1,1 @@
+export function solve(raw:{title:string;published:boolean}){if(!raw.title.trim()||raw.published)return {published:false,invalidate:[] as string[]};return {published:true,invalidate:['catalog:academy']};}

@@ -1,0 +1,97 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Diagnose the use cache and cache tags failure through a real example","Repair the learner fixture with a precise invariant and explicit edge cases","Verify the result offline and distinguish those checks from framework end-to-end tests"]} />
+
+## The problem we're solving
+
+A cached catalog is impossible to invalidate surgically because it has no meaningful tag. This local fixture isolates a concrete failure before we introduce any external state or deployment.
+
+## Build the mental model
+
+With Cache Components enabled, use cache declares an explicit cached scope, cacheLife sets a lifetime and cacheTag attaches domain tags. Avoid user-specific data in global cache keys and choose stable, bounded tags that map to real mutations.
+
+**Predict before running:** The repaired implementation respects its documented contract.
+
+## Prerequisites and preflight
+
+Continue from [the preceding lesson](/learn/07.03.02). Inspect `labs/next-cache-tags/starter/solution.ts`, the instructor solution and `labs/next-cache-tags/solution.test.mjs`. Run `npm run lab:next-cache-tags` with repository-installed Node.js 24, TypeScript and tsx. The Next.js source example is illustrative code under labs, not an active App Router route. Its pure helper tests do not boot a Next server.
+
+<LessonStep number={1} title="Reproduce the defective starter" file="labs/next-cache-tags/starter/solution.ts" expected="The intentionally flawed starter fails a real assertion.">
+
+Observe the following implementation, identify the overlooked case, and predict which assertion reveals it.
+
+```ts
+
+export function solve(domain:string){return 'all';}
+
+```
+
+**Why it fails:** With Cache Components enabled, use cache declares an explicit cached scope, cacheLife sets a lifetime and cacheTag attaches domain tags. Avoid user-specific data in global cache keys and choose stable, bounded tags that map to real mutations.
+
+**Proof:** Run `ACADEMY_LAB_TARGET=starter npm run lab:next-cache-tags` in Bash, or set the variable for the command in PowerShell. Do not modify the instructor fixture.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the implementation contract" file="labs/next-cache-tags/starter/solution.ts" expected={"Positive and negative cases behave predictably."}>
+
+Make the smallest semantic correction; do not weaken the assertions or convert invalid data into a fake success.
+
+```ts
+
+export function solve(domain:string){if(!/^[a-z0-9-]{1,40}$/.test(domain))throw new TypeError('Invalid cache domain');return 'catalog:'+domain;}
+
+```
+
+**Why it works:** With Cache Components enabled, use cache declares an explicit cached scope, cacheLife sets a lifetime and cacheTag attaches domain tags. Avoid user-specific data in global cache keys and choose stable, bounded tags that map to real mutations.
+
+**Proof:** Run the same local assertions and compare the before/after outputs.
+
+</LessonStep>
+
+<LessonStep number={3} title="Inspect the Next.js App Router source" file="labs/next-cache-tags/example.tsx" expected="The framework-oriented sample illustrates the same invariant.">
+
+The Next.js 16 example demonstrates an App Router convention. The offline test checks its supporting contract and sample presence, not route execution or production caching.
+
+```tsx
+
+import {cacheTag,cacheLife} from 'next/cache';
+// Cache Components example; requires cacheComponents: true.
+export async function getCourseCatalog(){'use cache';cacheTag('catalog:academy');cacheLife('hours');return [{id:'react',title:'React 19'}];}
+
+```
+
+**Predict before running:** The corrected sample handles the reviewed case.
+
+**Proof:** Run `npm run lab:next-cache-tags`. To certify real navigation or mutation behavior, also exercise an isolated app in a browser or test server.
+
+</LessonStep>
+
+## Explore and verify
+
+Change a valid input into an invalid one, then inspect which layer should reject it. Check accessibility, cleanup and data ownership as appropriate.
+
+<Misconception claim={"Passing a typecheck or SSR initial render proves every interactive path."} correction={"With Cache Components enabled, use cache declares an explicit cached scope, cacheLife sets a lifetime and cacheTag attaches domain tags. Avoid user-specific data in global cache keys and choose stable, bounded tags that map to real mutations."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+Identify the smallest counterexample, repair the root cause and verify the same input now behaves correctly. Describe the missing browser or server integration check.
+
+<KnowledgeCheck question={"What does cacheTag provide in a use cache scope?"} choices={["A label to support targeted invalidation","Automatic user authorization","Browser cookie encryption","Automatic database transactions"]} correctIndex={0} explanation={"With Cache Components enabled, use cache declares an explicit cached scope, cacheLife sets a lifetime and cacheTag attaches domain tags. Avoid user-specific data in global cache keys and choose stable, bounded tags that map to real mutations."} misconception="Offline tests have explicit boundaries." lessonId="07.03.03" />
+
+## Guided local lab
+
+Edit `labs/next-cache-tags/starter/solution.ts`. The test imports the selected target and confirms actual return values. It checks an application-specific example without running Next.js itself. The academy does not execute arbitrary learner code on the server.
+
+<LabGate lessonId="07.03.03" labId="lab.foundation.next-cache-tags" commands={["npm ci","npm run lab:next-cache-tags"]} interactive={false} />
+
+## Reflect
+
+Which invariant did the original implementation violate? Which test proves the fix, and what would still require a full browser or Next.js integration environment?
+
+## Official references
+
+- [Official concept](https://nextjs.org/docs/app/api-reference/functions/cacheTag)
+
+- [Official supporting reference](https://nextjs.org/docs/app/api-reference/directives/use-cache)

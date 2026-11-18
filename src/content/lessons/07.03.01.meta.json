@@ -1,0 +1,41 @@
+{
+  "id": "07.03.01",
+  "title": "Fetch behavior in Next.js 16",
+  "description": "Investigate fetch behavior in next.js 16 in Next.js 16 with a defective starter, repaired instructor module, executable offline contract and framework example.",
+  "trackId": "07",
+  "moduleId": "07.03",
+  "level": "Beginner",
+  "estimatedMinutes": 60,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "next": "16",
+    "react": "19",
+    "typescript": "5",
+    "node": "24"
+  },
+  "prerequisites": [
+    "07.02.08"
+  ],
+  "objectives": [
+    "Diagnose the fetch behavior in next.js 16 failure through a real example",
+    "Repair the learner fixture with a precise invariant and explicit edge cases",
+    "Verify the result offline and distinguish those checks from framework end-to-end tests"
+  ],
+  "labId": "lab.foundation.next-fetch-policy",
+  "sources": [
+    {
+      "label": "Official framework documentation",
+      "url": "https://nextjs.org/docs/app/getting-started/fetching-data"
+    },
+    {
+      "label": "Supporting official API guidance",
+      "url": "https://nextjs.org/docs/app/guides/caching-without-cache-components"
+    }
+  ],
+  "rubric": [
+    "I can reproduce the specific fetch behavior in next.js 16 failure in the learner starter",
+    "I can explain one positive and one negative case without a hosted service",
+    "I can identify which behavior still requires a browser or Next.js request integration test"
+  ]
+}

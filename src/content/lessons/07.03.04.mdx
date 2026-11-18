@@ -1,0 +1,98 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Diagnose the revalidation and invalidation failure through a real example","Repair the learner fixture with a precise invariant and explicit edge cases","Verify the result offline and distinguish those checks from framework end-to-end tests"]} />
+
+## The problem we're solving
+
+A mutation always purges the entire site cache instead of invalidating only the affected course data. This local fixture isolates a concrete failure before we introduce any external state or deployment.
+
+## Build the mental model
+
+Choose invalidation to match consistency needs: updateTag in Server Actions for read-your-own-writes, revalidateTag with profile max for stale-while-revalidate, and revalidatePath when a route path is the right unit. Perform an authorized successful write before invalidating.
+
+**Predict before running:** The repaired implementation respects its documented contract.
+
+## Prerequisites and preflight
+
+Continue from [the preceding lesson](/learn/07.03.03). Inspect `labs/next-invalidation/starter/solution.ts`, the instructor solution and `labs/next-invalidation/solution.test.mjs`. Run `npm run lab:next-invalidation` with repository-installed Node.js 24, TypeScript and tsx. The Next.js source example is illustrative code under labs, not an active App Router route. Its pure helper tests do not boot a Next server.
+
+<LessonStep number={1} title="Reproduce the defective starter" file="labs/next-invalidation/starter/solution.ts" expected="The intentionally flawed starter fails a real assertion.">
+
+Observe the following implementation, identify the overlooked case, and predict which assertion reveals it.
+
+```ts
+
+export function solve(mutation:'publish'|'edit'|'other'){return '/';}
+
+```
+
+**Why it fails:** Choose invalidation to match consistency needs: updateTag in Server Actions for read-your-own-writes, revalidateTag with profile max for stale-while-revalidate, and revalidatePath when a route path is the right unit. Perform an authorized successful write before invalidating.
+
+**Proof:** Run `ACADEMY_LAB_TARGET=starter npm run lab:next-invalidation` in Bash, or set the variable for the command in PowerShell. Do not modify the instructor fixture.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the implementation contract" file="labs/next-invalidation/starter/solution.ts" expected={"Positive and negative cases behave predictably."}>
+
+Make the smallest semantic correction; do not weaken the assertions or convert invalid data into a fake success.
+
+```ts
+
+export function solve(mutation:'publish'|'edit'|'other'){return mutation==='publish'?'catalog:academy':mutation==='edit'?'catalog:course':'none';}
+
+```
+
+**Why it works:** Choose invalidation to match consistency needs: updateTag in Server Actions for read-your-own-writes, revalidateTag with profile max for stale-while-revalidate, and revalidatePath when a route path is the right unit. Perform an authorized successful write before invalidating.
+
+**Proof:** Run the same local assertions and compare the before/after outputs.
+
+</LessonStep>
+
+<LessonStep number={3} title="Inspect the Next.js App Router source" file="labs/next-invalidation/example.tsx" expected="The framework-oriented sample illustrates the same invariant.">
+
+The Next.js 16 example demonstrates an App Router convention. The offline test checks its supporting contract and sample presence, not route execution or production caching.
+
+```tsx
+
+import {updateTag,revalidateTag} from 'next/cache';
+// Demonstration only: real persistence/authorization must run before this action.
+export async function afterAuthorizedPublish(){'use server';updateTag('catalog:academy');}
+export async function backgroundCatalogRefresh(){revalidateTag('catalog:academy','max');}
+
+```
+
+**Predict before running:** The corrected sample handles the reviewed case.
+
+**Proof:** Run `npm run lab:next-invalidation`. To certify real navigation or mutation behavior, also exercise an isolated app in a browser or test server.
+
+</LessonStep>
+
+## Explore and verify
+
+Change a valid input into an invalid one, then inspect which layer should reject it. Check accessibility, cleanup and data ownership as appropriate.
+
+<Misconception claim={"Passing a typecheck or SSR initial render proves every interactive path."} correction={"Choose invalidation to match consistency needs: updateTag in Server Actions for read-your-own-writes, revalidateTag with profile max for stale-while-revalidate, and revalidatePath when a route path is the right unit. Perform an authorized successful write before invalidating."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+Identify the smallest counterexample, repair the root cause and verify the same input now behaves correctly. Describe the missing browser or server integration check.
+
+<KnowledgeCheck question={"Which invalidation API is designed for read-your-own-writes in Server Actions?"} choices={["updateTag","setTimeout","localStorage.clear","A React ref"]} correctIndex={0} explanation={"Choose invalidation to match consistency needs: updateTag in Server Actions for read-your-own-writes, revalidateTag with profile max for stale-while-revalidate, and revalidatePath when a route path is the right unit. Perform an authorized successful write before invalidating."} misconception="Offline tests have explicit boundaries." lessonId="07.03.04" />
+
+## Guided local lab
+
+Edit `labs/next-invalidation/starter/solution.ts`. The test imports the selected target and confirms actual return values. It checks an application-specific example without running Next.js itself. The academy does not execute arbitrary learner code on the server.
+
+<LabGate lessonId="07.03.04" labId="lab.foundation.next-invalidation" commands={["npm ci","npm run lab:next-invalidation"]} interactive={false} />
+
+## Reflect
+
+Which invariant did the original implementation violate? Which test proves the fix, and what would still require a full browser or Next.js integration environment?
+
+## Official references
+
+- [Official concept](https://nextjs.org/docs/app/getting-started/revalidating)
+
+- [Official supporting reference](https://nextjs.org/docs/app/api-reference/functions/updateTag)

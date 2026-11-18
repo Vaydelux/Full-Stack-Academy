@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.next-cache-boundaries",
+  "lessonId": "07.03.02",
+  "title": "Explicit cache boundaries",
+  "runtime": "next16-offline-contract-and-tsx-source",
+  "status": "authored",
+  "starter": "labs/next-cache-boundaries/starter/solution.ts",
+  "solution": "labs/next-cache-boundaries/solution/solution.ts",
+  "tests": "labs/next-cache-boundaries/solution.test.mjs",
+  "verify": [
+    "npm run lab:next-cache-boundaries"
+  ],
+  "expected": "The correct local contract passes independent assertions; end-to-end framework behavior is a separate QA gate.",
+  "security": "Uses synthetic fixture data, no secrets, uploaded code execution, remote endpoints, publishing, Vercel or hosted grading."
+}

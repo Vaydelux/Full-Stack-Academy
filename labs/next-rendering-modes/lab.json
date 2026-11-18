@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.next-rendering-modes",
+  "lessonId": "07.03.06",
+  "title": "ISR vs SSR vs static",
+  "runtime": "next16-offline-contract-and-tsx-source",
+  "status": "authored",
+  "starter": "labs/next-rendering-modes/starter/solution.ts",
+  "solution": "labs/next-rendering-modes/solution/solution.ts",
+  "tests": "labs/next-rendering-modes/solution.test.mjs",
+  "verify": [
+    "npm run lab:next-rendering-modes"
+  ],
+  "expected": "The correct local contract passes independent assertions; end-to-end framework behavior is a separate QA gate.",
+  "security": "Uses synthetic fixture data, no secrets, uploaded code execution, remote endpoints, publishing, Vercel or hosted grading."
+}
