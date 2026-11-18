@@ -1,0 +1,39 @@
+{
+  "id": "01.03.04",
+  "title": "WCAG principles and practical checks",
+  "description": "Apply Perceivable, Operable, Understandable and Robust principles to a local page and document bounded accessibility findings without claiming WCAG certification.",
+  "trackId": "01",
+  "moduleId": "01.03",
+  "level": "Beginner",
+  "estimatedMinutes": 60,
+  "status": "authored",
+  "reviewedAt": "2026-11-18",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "01.03.03"
+  ],
+  "objectives": [
+    "Explain the four POUR principles with practical examples",
+    "Link accessibility observations to testable behavior rather than style preferences",
+    "Produce a bounded self-assessment instead of a conformance claim",
+    "Use native grouped controls and clear feedback"
+  ],
+  "labId": "lab.foundation.a11y-wcag",
+  "sources": [
+    {
+      "label": "W3C WCAG 2.2 Recommendation",
+      "url": "https://www.w3.org/TR/WCAG22/"
+    },
+    {
+      "label": "WAI Accessibility Principles",
+      "url": "https://www.w3.org/WAI/fundamentals/accessibility-principles/"
+    }
+  ],
+  "rubric": [
+    "I explained each POUR principle with one concrete testable observation.",
+    "I produced an honest preliminary self-assessment without compliance claims.",
+    "I reviewed the normative criteria needed for a fuller audit."
+  ]
+}

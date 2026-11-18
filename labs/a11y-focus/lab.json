@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.a11y-focus",
+  "lessonId": "01.03.02",
+  "title": "Focus management and restoration",
+  "runtime": "browser-html-and-node-24",
+  "status": "authored",
+  "starter": "labs/a11y-focus/starter/index.html",
+  "solution": "labs/a11y-focus/solution/index.html",
+  "tests": "labs/a11y-focus/solution.test.mjs",
+  "verify": [
+    "npm run lab:a11y-focus"
+  ],
+  "expected": "I confirmed focus returns to the opener and passed browser tests.",
+  "security": "Synthetic offline document; no remote code execution, real accounts or private inputs. Static checks require complementary Chromium keyboard and browser semantics tests."
+}

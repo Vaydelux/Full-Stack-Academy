@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.a11y-wcag",
+  "lessonId": "01.03.04",
+  "title": "WCAG principles and practical checks",
+  "runtime": "browser-html-and-node-24",
+  "status": "authored",
+  "starter": "labs/a11y-wcag/starter/index.html",
+  "solution": "labs/a11y-wcag/solution/index.html",
+  "tests": "labs/a11y-wcag/solution.test.mjs",
+  "verify": [
+    "npm run lab:a11y-wcag"
+  ],
+  "expected": "I reviewed the normative criteria needed for a fuller audit.",
+  "security": "Synthetic offline document; no remote code execution, real accounts or private inputs. Static checks require complementary Chromium keyboard and browser semantics tests."
+}

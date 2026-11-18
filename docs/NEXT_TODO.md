@@ -4,20 +4,23 @@
 **Priority milestone:** Module `01.03` Accessibility (nine canonical topics). Publication count is from `docs/checkpoint.json`; the catalog's 889 planned topics are not 889 finished lessons.
 
 ## P0 — Module 01.03: Accessibility
-- [ ] `01.03.01` Keyboard-first navigation — tab order, visible focus, skip links, activation patterns; Chromium keyboard tests.
-- [ ] `01.03.02` Focus management — modal focus restoration, DOM updates, native tab boundaries; no custom traps by default.
-- [ ] `01.03.03` Screen reader semantics — meaningful landmarks, heading structure, status/alert roles; inspect accessibility tree.
-- [ ] `01.03.04` WCAG principles — perceivable, operable, understandable, robust; relate requirements to real testable user journeys rather than claim automatic conformance.
-- [ ] `01.03.05` Color contrast — compute WCAG contrast, test text and focus visibility; provide visual alternatives rather than relying on hue alone.
-- [ ] `01.03.06` Accessible names and descriptions — labels, aria-labelledby/aria-describedby, naming precedence and localized instructions.
-- [ ] `01.03.07` Images and alternative text — informative vs decorative images, diagrams, complex figures, meaningful accessible descriptions.
-- [ ] `01.03.08` Reduced motion — CSS prefers-reduced-motion, pause/stop, avoid unwanted animation and respect OS preference.
-- [ ] `01.03.09` Lab keyboard audit — repair a representative document and confirm responsive keyboard navigation, focus, labels and semantic errors in real Chromium.
-- [ ] Each lesson needs strict metadata, MDX explanation, 3+ guided steps, official HTTPS sources, predict-first example, misconception, bug hunt, knowledge check, starter and solution fixtures, executable tests and accurate rubric.
-- [ ] Register published lesson metadata and MDX routes, update sitemap and learning cards; next planned module remains noindex.
-- [ ] Run `npm run checkpoint:write`, update handoff documents and audit the upcoming exception expiration.
+- [x] `01.03.01` Keyboard-first navigation — tab order, visible focus, skip links, activation patterns; Chromium keyboard tests.
+- [x] `01.03.02` Focus management — modal focus restoration, DOM updates, native tab boundaries; no custom traps by default.
+- [x] `01.03.03` Screen reader semantics — meaningful landmarks, heading structure, status/alert roles; inspect accessibility tree.
+- [x] `01.03.04` WCAG principles — perceivable, operable, understandable, robust; relate requirements to real testable user journeys rather than claim automatic conformance.
+- [x] `01.03.05` Color contrast — compute WCAG contrast, test text and focus visibility; provide visual alternatives rather than relying on hue alone.
+- [x] `01.03.06` Accessible names and descriptions — labels, aria-labelledby/aria-describedby, naming precedence and localized instructions.
+- [x] `01.03.07` Images and alternative text — informative vs decorative images, diagrams, complex figures, meaningful accessible descriptions.
+- [x] `01.03.08` Reduced motion — CSS prefers-reduced-motion, pause/stop, avoid unwanted animation and respect OS preference.
+- [x] `01.03.09` Lab keyboard audit — repair a representative document and confirm responsive keyboard navigation, focus, labels and semantic errors in real Chromium.
+- [x] Authored each lesson with strict metadata, MDX explanation, 3+ guided steps, official HTTPS sources, predict-first example, misconception, bug hunt, knowledge check, starter and solution fixtures, executable tests and accurate rubric.
+- [x] Registered published lesson metadata and MDX routes, update sitemap and learning cards; next planned module remains noindex.
+- [x] Updated `docs/checkpoint.json` for 53 lessons / 50 MDX / 50 labs, plus handoff documents; CI checkpoint verification still required. The security exception remains pending.
 - [ ] CI gate: lint, TypeScript, repository tests, curriculum, MDX metadata/content, checkpoint consistency, all labs, Next production build, Chromium browser interactions, dependency audit and Vercel preview.
 - [ ] Merge only on green; verify production main SHA and READY; finalize checkpoint.
+
+## Next after 01.03 release: Module 01.04 — Web APIs & Security
+- [ ] Eight topics `01.04.01`–`01.04.08`: DOM/rendering, Fetch/JSON, URL APIs, storage/cookies, permissions/clipboard, same-origin/CORS, CSP/isolation and DevTools request lab. Preserve security boundaries.
 
 ## P1 — Security, reliability, and quality
 - [ ] **By 2026-12-02 UTC:** re-evaluate the dev-only Picomatch GHSA-fc5q-39xc-vjpf advisory and end its expiring exception when compatible fixed packages exist. Do not force-downgrade Next/ESLint in ways that break compatibility.

@@ -1,0 +1,39 @@
+{
+  "id": "01.03.09",
+  "title": "Lab keyboard audit and repair capstone",
+  "description": "Repair an intentionally inaccessible standalone workshop page across keyboard navigation, focus, names, contrast, image alternatives and reduced-motion behavior.",
+  "trackId": "01",
+  "moduleId": "01.03",
+  "level": "Beginner",
+  "estimatedMinutes": 85,
+  "status": "authored",
+  "reviewedAt": "2026-11-18",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "01.03.08"
+  ],
+  "objectives": [
+    "Repair skip links, semantic controls and visible focus",
+    "Make fields, image alternatives and status feedback understandable",
+    "Verify native modal closure and focus restoration",
+    "Test reduced motion, mobile layout and honest local-only form submission"
+  ],
+  "labId": "lab.foundation.a11y-keyboard-audit",
+  "sources": [
+    {
+      "label": "WAI Easy Checks",
+      "url": "https://www.w3.org/WAI/test-evaluate/preliminary/"
+    },
+    {
+      "label": "WAI ARIA APG Keyboard Interface",
+      "url": "https://www.w3.org/WAI/ARIA/apg/practices/keyboard-interface/"
+    }
+  ],
+  "rubric": [
+    "I repaired real keyboard and focus defects, not just styles.",
+    "I tested semantic names, alt text, motion and mobile layout in Chromium.",
+    "I recorded verified behavior and limits without claiming formal WCAG certification."
+  ]
+}

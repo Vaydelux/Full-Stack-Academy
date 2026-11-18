@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.a11y-contrast",
+  "lessonId": "01.03.05",
+  "title": "Color contrast and readable text",
+  "runtime": "browser-html-and-node-24",
+  "status": "authored",
+  "starter": "labs/a11y-contrast/starter/index.html",
+  "solution": "labs/a11y-contrast/solution/index.html",
+  "tests": "labs/a11y-contrast/solution.test.mjs",
+  "verify": [
+    "npm run lab:a11y-contrast"
+  ],
+  "expected": "I explained why a two-color checker does not certify the rest of a page.",
+  "security": "Offline HTML accessibility fixture with original local assets. No real personal data, remote grading or untrusted execution on the academy server; browser checks do not establish WCAG conformance."
+}

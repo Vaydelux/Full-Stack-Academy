@@ -28,12 +28,18 @@ Canonical catalog is in `data/curriculum.json`. Actual publication is in `src/co
 
 Run `npm run checkpoint:check` to ensure `docs/checkpoint.json` matches the authored inventory; after changing publications run `npm run checkpoint:write`. Keep this checkpoint and `docs/NEXT_TODO.md` synchronized for future AI handoffs.
 
+## Development branch status — 01.03 (not yet production)
+- Nine new authored MDX lessons, with standalone HTML/CSS/JS starter and instructor solution fixtures and real Node contract tests. Topics: keyboard, focus, accessibility-tree semantics, WCAG POUR, contrast calculator, names, image alternatives, reduced motion and keyboard audit capstone.
+- In-branch inventory is **53 authored lesson IDs, 50 MDX files, 50 local lab manifests, six complete modules**. CI must confirm through `npm run checkpoint:check`.
+- Browser smoke was expanded to verify real keyboard behavior, native modal focus return, accessible names, contrast thresholds, original local SVG images, reduced-motion emulation and mobile layout. Actual screen-reader certification remains unperformed.
+- Verified production baseline and SHA above are unchanged until release gates and the merged main deployment pass.
+
 ## Active security risk
 - The last audit found **zero known runtime dependency vulnerabilities**, but **14 high-severity build/dev toolchain findings** related to Picomatch GHSA-fc5q-39xc-vjpf. This is *not patched*. A narrow documented exception expires **2026-12-02 UTC**; see `docs/DEPENDENCY_SECURITY_REVIEW.md`. Review promptly and fail closed for new findings.
 - Client-side HTML constraints are educational and cannot replace trusted server validation. All new forms are explicitly synthetic/offline. No production file upload endpoints, registration submission, or remote persistence are implemented.
 - Browser smoke covers Chrome behavior, keyboard focus and mobile layout; a full real-device screen reader audit has **not** been completed. Avoid claiming WCAG conformance from structural tests alone.
 
-## Immediate next module: `01.03` Accessibility
+## Current candidate: `01.03` Accessibility (next after release: `01.04` Web APIs & Security)
 The exact **nine** catalog topics:
 1. `01.03.01` Keyboard-first navigation
 2. `01.03.02` Focus management
@@ -45,7 +51,7 @@ The exact **nine** catalog topics:
 8. `01.03.08` Reduced motion
 9. `01.03.09` Lab keyboard audit
 
-Each needs genuine MDX instruction, meaningful starter/solution fixture, executable tests, official documentation, bug hunt, quiz and an honest self-assessment rubric. Use actual keyboard and accessibility-tree browser checks; do not invent formal assistive-technology certification.
+All nine now have genuine MDX, meaningful starter/solution fixtures, executable tests, official source links, bug hunts, quizzes and rubrics **on the feature branch only**. Run the full CI and verify production before marking released. Use actual keyboard and accessibility-tree browser checks; do not invent formal assistive-technology certification.
 
 ## Successor AI procedure
 1. First read `AGENTS.md`, `docs/NEXT_TODO.md`, `docs/checkpoint.json` and this file. Verify current `main`, open PRs, CI and Vercel SHA; this checkpoint is an anchor, not proof that nothing changed afterward.

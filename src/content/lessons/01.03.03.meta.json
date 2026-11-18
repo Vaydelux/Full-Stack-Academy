@@ -1,0 +1,39 @@
+{
+  "id": "01.03.03",
+  "title": "Screen reader semantics and landmarks",
+  "description": "Use native landmarks, logical headings and restrained status/alert semantics to improve meaningful accessibility-tree output.",
+  "trackId": "01",
+  "moduleId": "01.03",
+  "level": "Beginner",
+  "estimatedMinutes": 50,
+  "status": "authored",
+  "reviewedAt": "2026-11-18",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "01.03.02"
+  ],
+  "objectives": [
+    "Create accessible landmarks with clear names and a single main area",
+    "Write a meaningful heading hierarchy",
+    "Expose non-urgent updates using role=status",
+    "Distinguish browser accessibility-tree checks from actual screen-reader verification"
+  ],
+  "labId": "lab.foundation.a11y-semantics",
+  "sources": [
+    {
+      "label": "WAI Page Regions",
+      "url": "https://www.w3.org/WAI/tutorials/page-structure/regions/"
+    },
+    {
+      "label": "MDN status role",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Roles/status_role"
+    }
+  ],
+  "rubric": [
+    "I identified navigation and main landmarks through browser roles.",
+    "I produced a coherent heading list and descriptive region names.",
+    "I tested the local status and stated limits of automated screen-reader testing."
+  ]
+}

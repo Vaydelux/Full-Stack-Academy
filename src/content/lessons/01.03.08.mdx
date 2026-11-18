@@ -1,0 +1,92 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Write a reduced-motion media query that turns off nonessential animation","Provide a manually usable pause/resume button","Test computed animation names under both motion preferences","Keep essential information visible without animation"]} />
+
+## The problem we're solving
+
+A looping indicator runs continuously, even when the operating system requests reduced motion. Someone argues that the animation is 'only decorative,' ignoring potential vestibular discomfort and user preferences.
+
+## Build the mental model
+
+The prefers-reduced-motion media feature allows a person to request less motion. Disable or substantially simplify nonessential animation when the user requests reduce; do not hide critical information when animation is removed. A separate pause control is useful even if the OS preference is not set. For auto-starting, long or parallel moving content WCAG 2.2 SC 2.2.2 can require a pause/stop/hide mechanism under specified conditions. Respect native buttons and visible textual status; animation should never be the sole signal of progress. Test both reduced-motion and no-preference environments in Chromium.
+
+**Predict before running:** With emulated reduced motion, the demo indicator should have animation-name none while the status text remains readable.
+
+## Prerequisites
+
+Complete [the previous lesson](/learn/01.03.07). Use Node.js 24 and a local browser; keep all practice synthetic. Inspect real focus, computed styles, roles and names in Chromium. A passing browser smoke run is **not** a formal accessibility conformance certificate.
+
+<LessonStep number={1} title={"Build an optional animation"} file="labs/a11y-reduced-motion/starter/index.html" expected={"The message remains understandable even if the indicator is hidden."}>
+
+Use a contained indicator with descriptive text beside it; animation is not the only meaning.
+
+```html
+<span class="indicator" aria-hidden="true"></span>
+<p>Workshop status: ready for practice.</p>
+<style>@keyframes float{50%{transform:translateY(-8px)}}
+.indicator{animation:float 2s ease-in-out infinite}</style>
+```
+
+</LessonStep>
+
+<LessonStep number={2} title={"Honor the user's OS preference"} file="labs/a11y-reduced-motion/starter/index.html" expected={"The indicator does not animate when reduced motion is requested."}>
+
+An explicit reduced-motion rule disables the indicator's movement.
+
+```css
+@media (prefers-reduced-motion: reduce){
+  .indicator{animation:none}
+}
+```
+
+</LessonStep>
+
+<LessonStep number={3} title={"Provide an independent pause button"} file="labs/a11y-reduced-motion/starter/index.html" expected={"The reader can pause motion without changing OS settings."}>
+
+The pause button changes a class and announces the new state.
+
+```js
+document.querySelector('#motion-toggle').addEventListener('click',()=>{
+  const paused=document.documentElement.classList.toggle('is-paused');
+  document.querySelector('#motion-toggle').textContent=paused?'Resume animation':'Pause animation';
+  document.querySelector('#motion-status').textContent=paused?'Animation paused.':'Animation not manually paused.';
+});
+```
+
+</LessonStep>
+
+## Explore it yourself
+
+Open `labs/a11y-reduced-motion/starter/index.html` in Chromium and perform the lesson's keyboard and visual checks. Compare against the checked-in instructor implementation in `labs/a11y-reduced-motion/solution/index.html`. Test at 390px and desktop widths, and emulate OS reduced motion where appropriate. Record exactly what you observed and which screen-reader/device checks remain unperformed.
+
+<Misconception claim={"A reduced-motion preference means hiding useful status messages."} correction={"Remove nonessential movement while keeping the information visible and meaningful."} />
+
+## Bug Hunt: reproduce and repair the barrier
+
+A CSS animation never checks reduced motion and the only indicator of success is bouncing. Add static text, a media query and a pause control, then test computed styles with reduced motion emulation.
+
+<KnowledgeCheck question={"What should happen to nonessential animations when prefers-reduced-motion is reduce?"} choices={["Increase speed","Disable or substantially reduce motion without hiding information","Remove all text labels","Ignore the setting"]} correctIndex={1} explanation={"Honor the preference while preserving the message independent of movement."} misconception={"Reduced motion does not mean suppressing important information."} lessonId="01.03.08" />
+
+## Guided local lab
+
+Implement the repair in `labs/a11y-reduced-motion/starter/index.html`, and refer to `labs/a11y-reduced-motion/solution/index.html` when needed. The reference assets and scripts are bundled locally. To test the **starter** in PowerShell:
+
+```powershell
+$env:ACADEMY_LAB_TARGET = 'starter'
+npm run lab:a11y-reduced-motion
+Remove-Item Env:ACADEMY_LAB_TARGET
+```
+
+In Bash run `ACADEMY_LAB_TARGET=starter npm run lab:a11y-reduced-motion`. The deliberately incomplete starter should fail first; improve it and rerun. Instructors' solution tests and Chromium interactions are automated. Manual assistive-technology observation stays self-assessed.
+
+<LabGate lessonId="01.03.08" labId="lab.foundation.a11y-reduced-motion" commands={["npm ci","npm run lab:a11y-reduced-motion"]} interactive={false} />
+
+## Reflect
+
+Write down the failing scenario, semantic or interaction repair, tested evidence, remaining limitations and a meaningful next test. Avoid broad accessibility or WCAG claims without evidence of the applicable criteria.
+
+## Official references
+
+- [MDN prefers-reduced-motion](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion)
+- [W3C Pause Stop Hide](https://www.w3.org/WAI/WCAG22/Understanding/pause-stop-hide.html)

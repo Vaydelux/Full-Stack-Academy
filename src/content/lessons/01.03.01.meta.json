@@ -1,0 +1,39 @@
+{
+  "id": "01.03.01",
+  "title": "Keyboard-first navigation",
+  "description": "Create a logical keyboard path using native links, a skip link, visible focus and activation that works without mouse-only event handlers.",
+  "trackId": "01",
+  "moduleId": "01.03",
+  "level": "Beginner",
+  "estimatedMinutes": 50,
+  "status": "authored",
+  "reviewedAt": "2026-11-18",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "01.02.08"
+  ],
+  "objectives": [
+    "Build a logical DOM-based keyboard traversal path",
+    "Use a skip link that reaches a focusable main region",
+    "Use semantic buttons for actions and anchors for navigation",
+    "Inspect visible focus and activate controls with keyboard input"
+  ],
+  "labId": "lab.foundation.a11y-keyboard",
+  "sources": [
+    {
+      "label": "WAI Keyboard Interface Practices",
+      "url": "https://www.w3.org/WAI/ARIA/apg/practices/keyboard-interface/"
+    },
+    {
+      "label": "WAI Skip Navigation",
+      "url": "https://www.w3.org/WAI/WCAG22/Techniques/general/G1"
+    }
+  ],
+  "rubric": [
+    "I navigated the whole page using only keyboard controls.",
+    "I verified a functional skip link and visible focus indicator.",
+    "I passed static and Chromium keyboard activation tests."
+  ]
+}

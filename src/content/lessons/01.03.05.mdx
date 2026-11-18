@@ -1,0 +1,87 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Explain why text contrast affects visual readability","Implement luminance and WCAG contrast ratio for opaque hex colors","Distinguish 4.5:1 normal and 3:1 large text thresholds","Avoid overstating what a two-color calculator certifies"]} />
+
+## The problem we're solving
+
+A pale cyan label looks attractive against white but is difficult to read. Someone tries to fix it by adding a shadow without measuring contrast and declares the design accessible.
+
+## Build the mental model
+
+WCAG 2.2 SC 1.4.3 has a minimum 4.5:1 contrast for ordinary text and 3:1 for large-scale text, with specified exceptions. Large-scale text means at least 18pt or 14pt bold in CSS terms (roughly 24px or about 18.66px bold at 96dpi). Required non-text UI indicators and graphics have other criteria such as 1.4.11. Relative luminance uses gamma-corrected sRGB values; a naive arithmetic average of RGB channels is wrong. This exercise handles **opaque six-digit hex colors only**, not transparency, gradients, dynamic backgrounds or a full page audit. A passing pair does not establish WCAG conformance.
+
+**Predict before running:** Pure black (#000000) against white (#ffffff) is 21:1, not 1:1. A gray around #777777 on white is just under the 4.5:1 normal-text threshold.
+
+## Prerequisites
+
+Complete [the previous lesson](/learn/01.03.04). Use Node.js 24 and a local browser; keep all practice synthetic. Inspect real focus, computed styles, roles and names in Chromium. A passing browser smoke run is **not** a formal accessibility conformance certificate.
+
+<LessonStep number={1} title={"Convert sRGB channel values to linear light"} file="labs/a11y-contrast/starter/index.html" expected={"The normalized channel values represent relative linear light."}>
+
+Parse a strict six-digit color and apply the sRGB transfer function, not a simple RGB average.
+
+```js
+const linear=v=>v<=0.04045?v/12.92:((v+0.055)/1.055)**2.4;
+// For #ffffff, each channel is 1; for #000000, each channel is 0.
+```
+
+</LessonStep>
+
+<LessonStep number={2} title={"Compute relative luminance and contrast"} file="labs/a11y-contrast/starter/index.html" expected={"Black/white produces 21:1; the order of the colors does not matter."}>
+
+Weight the corrected channels and compare lighter and darker luminance with the 0.05 offset.
+
+```js
+const luminance=(r,g,b)=>0.2126*r+0.7152*g+0.0722*b;
+const ratio=(light,dark)=>(Math.max(light,dark)+0.05)/(Math.min(light,dark)+0.05);
+```
+
+</LessonStep>
+
+<LessonStep number={3} title={"Provide a bounded interactive checker"} file="labs/a11y-contrast/starter/index.html" expected={"The calculator shows a measured ratio and qualified text thresholds."}>
+
+Show whether the pair meets 4.5:1 ordinary-text and 3:1 large-text thresholds; disclose limited scope.
+
+```js
+const value=contrastRatio('#000000','#ffffff');
+console.log(value.toFixed(2)); // 21.00
+// Only opaque six-digit hex colors are supported.
+```
+
+</LessonStep>
+
+## Explore it yourself
+
+Open `labs/a11y-contrast/starter/index.html` in Chromium and perform the lesson's keyboard and visual checks. Compare against the checked-in instructor implementation in `labs/a11y-contrast/solution/index.html`. Test at 390px and desktop widths, and emulate OS reduced motion where appropriate. Record exactly what you observed and which screen-reader/device checks remain unperformed.
+
+<Misconception claim={"If two hexadecimal colors pass 4.5:1, the whole page is WCAG 2.2 compliant."} correction={"Color contrast is only one criterion; real page accessibility depends on focus, content, interaction and many other requirements."} />
+
+## Bug Hunt: reproduce and repair the barrier
+
+The contrast tool averages raw RGB values and reports #777777 on white as passing AA normal text. Use gamma-corrected sRGB luminance, then test known boundary pairs.
+
+<KnowledgeCheck question={"What is WCAG 2.2's minimum contrast for ordinary text under SC 1.4.3?"} choices={["1.5:1","3:1","4.5:1","21:1"]} correctIndex={2} explanation={"WCAG 2.2 AA's contrast minimum is 4.5:1 for normal text, with exceptions."} misconception={"Large text has a different 3:1 minimum under that criterion."} lessonId="01.03.05" />
+
+## Guided local lab
+
+Implement the repair in `labs/a11y-contrast/starter/index.html`, and refer to `labs/a11y-contrast/solution/index.html` when needed. The reference assets and scripts are bundled locally. To test the **starter** in PowerShell:
+
+```powershell
+$env:ACADEMY_LAB_TARGET = 'starter'
+npm run lab:a11y-contrast
+Remove-Item Env:ACADEMY_LAB_TARGET
+```
+
+In Bash run `ACADEMY_LAB_TARGET=starter npm run lab:a11y-contrast`. The deliberately incomplete starter should fail first; improve it and rerun. Instructors' solution tests and Chromium interactions are automated. Manual assistive-technology observation stays self-assessed.
+
+<LabGate lessonId="01.03.05" labId="lab.foundation.a11y-contrast" commands={["npm ci","npm run lab:a11y-contrast"]} interactive={false} />
+
+## Reflect
+
+Write down the failing scenario, semantic or interaction repair, tested evidence, remaining limitations and a meaningful next test. Avoid broad accessibility or WCAG claims without evidence of the applicable criteria.
+
+## Official references
+
+- [W3C WCAG 2.2 contrast minimum](https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html)
+- [W3C non-text contrast](https://www.w3.org/WAI/WCAG22/Understanding/non-text-contrast)

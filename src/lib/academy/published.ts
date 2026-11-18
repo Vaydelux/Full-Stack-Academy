@@ -46,8 +46,18 @@ import forms6 from '@/content/lessons/01.02.06.meta.json';
 import forms7 from '@/content/lessons/01.02.07.meta.json';
 import forms8 from '@/content/lessons/01.02.08.meta.json';
 
-export const MDX_METADATA = new Map([browser, lifecycle, foundation3, foundation4, foundation5, foundation6, foundation7, foundation8, toolchain1, toolchain2, toolchain3, toolchain4, toolchain5, toolchain6, toolchain7, toolchain8, debugging1, debugging2, debugging3, debugging4, debugging5, debugging6, debugging7, debugging8, html1, html2, html3, html4, html5, html6, html7, html8, forms1, forms2, forms3, forms4, forms5, forms6, forms7, forms8, jsx].map(meta => [meta.id, meta]));
-export const LOCAL_LAB_LESSONS = [browser, lifecycle, foundation3, foundation4, foundation5, foundation6, foundation7, foundation8, toolchain1, toolchain2, toolchain3, toolchain4, toolchain5, toolchain6, toolchain7, toolchain8, debugging1, debugging2, debugging3, debugging4, debugging5, debugging6, debugging7, debugging8, html1, html2, html3, html4, html5, html6, html7, html8, forms1, forms2, forms3, forms4, forms5, forms6, forms7, forms8];
+import accessibility1 from '@/content/lessons/01.03.01.meta.json';
+import accessibility2 from '@/content/lessons/01.03.02.meta.json';
+import accessibility3 from '@/content/lessons/01.03.03.meta.json';
+import accessibility4 from '@/content/lessons/01.03.04.meta.json';
+import accessibility5 from '@/content/lessons/01.03.05.meta.json';
+import accessibility6 from '@/content/lessons/01.03.06.meta.json';
+import accessibility7 from '@/content/lessons/01.03.07.meta.json';
+import accessibility8 from '@/content/lessons/01.03.08.meta.json';
+import accessibility9 from '@/content/lessons/01.03.09.meta.json';
+
+export const MDX_METADATA = new Map([browser, lifecycle, foundation3, foundation4, foundation5, foundation6, foundation7, foundation8, toolchain1, toolchain2, toolchain3, toolchain4, toolchain5, toolchain6, toolchain7, toolchain8, debugging1, debugging2, debugging3, debugging4, debugging5, debugging6, debugging7, debugging8, html1, html2, html3, html4, html5, html6, html7, html8, forms1, forms2, forms3, forms4, forms5, forms6, forms7, forms8, accessibility1, accessibility2, accessibility3, accessibility4, accessibility5, accessibility6, accessibility7, accessibility8, accessibility9, jsx].map(meta => [meta.id, meta]));
+export const LOCAL_LAB_LESSONS = [browser, lifecycle, foundation3, foundation4, foundation5, foundation6, foundation7, foundation8, toolchain1, toolchain2, toolchain3, toolchain4, toolchain5, toolchain6, toolchain7, toolchain8, debugging1, debugging2, debugging3, debugging4, debugging5, debugging6, debugging7, debugging8, html1, html2, html3, html4, html5, html6, html7, html8, forms1, forms2, forms3, forms4, forms5, forms6, forms7, forms8, accessibility1, accessibility2, accessibility3, accessibility4, accessibility5, accessibility6, accessibility7, accessibility8, accessibility9];
 export const PUBLISHED_LESSON_IDS = [...new Set([...AUTHORED_LESSON_IDS, ...MDX_METADATA.keys()])].sort();
 export const isPublishedLesson = (id: string) => PUBLISHED_LESSON_IDS.includes(id);
 export function lessonRubric(id: string): string[] | undefined {

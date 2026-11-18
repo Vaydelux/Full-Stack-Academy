@@ -1,0 +1,39 @@
+{
+  "id": "01.03.07",
+  "title": "Images and meaningful alternative text",
+  "description": "Choose contextual alternatives for informative diagrams, suppress redundant decoration and accompany complex visual data with an accessible table.",
+  "trackId": "01",
+  "moduleId": "01.03",
+  "level": "Beginner",
+  "estimatedMinutes": 50,
+  "status": "authored",
+  "reviewedAt": "2026-11-18",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "01.03.06"
+  ],
+  "objectives": [
+    "Write meaningful alt text for an informative diagram",
+    "Use empty alt for a decorative illustration",
+    "Provide tabular data for a complex chart",
+    "Verify images load from local sources and communicate the intended trend"
+  ],
+  "labId": "lab.foundation.a11y-image-alt",
+  "sources": [
+    {
+      "label": "WAI Images Tutorial",
+      "url": "https://www.w3.org/WAI/tutorials/images/"
+    },
+    {
+      "label": "WAI Complex Images",
+      "url": "https://www.w3.org/WAI/tutorials/images/complex/"
+    }
+  ],
+  "rubric": [
+    "I wrote contextual alt text and excluded decorative images from announcements.",
+    "I provided a semantic data table for the chart values.",
+    "I verified local image loading and accessibility roles in Chromium."
+  ]
+}

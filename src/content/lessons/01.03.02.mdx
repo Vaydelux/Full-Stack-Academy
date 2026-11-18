@@ -1,0 +1,93 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Open a named native modal dialog with predictable initial focus","Explain why focus should remain inside a modal interaction","Close on Escape and through an explicit button","Restore focus to the opener following dismissal"]} />
+
+## The problem we're solving
+
+A modal opens but keyboard focus remains behind it, then disappears after closing. People using keyboards or assistive technology lose the current reading position.
+
+## Build the mental model
+
+Focus is the browser's active interaction target. Native dialog.showModal() makes the rest of the document inert while modal, applies modal semantics and handles Escape dismissal. Provide a meaningful accessible name and a predictable initial focus target; after closure focus should return to the element that opened the dialog. Avoid arbitrary positive tabindex and custom keydown Tab traps. Use the dialog close event for reliable restoration. When dynamically updating content, move focus only when needed, not after every click.
+
+**Predict before running:** After a modal closes, users should be able to continue where they started, rather than having focus jump to the top of the document.
+
+## Prerequisites
+
+Complete [the previous lesson](/learn/01.03.01). Work in a trusted local checkout with Node.js 24 and Chromium. Browser role and focus tests are valuable but are not substitutes for actual screen-reader use or formal accessibility conformance testing.
+
+<LessonStep number={1} title={"Use a native modal and a descriptive title"} file="labs/a11y-focus/starter/index.html" expected={"The dialog is named and provides an explicit way to close."}>
+
+Make the heading the dialog's accessible name.
+
+```html
+<button type="button" id="open-dialog">Review workshop settings</button>
+<dialog id="settings" aria-labelledby="settings-title">
+  <h2 id="settings-title">Workshop settings</h2>
+  <button type="button" id="close-dialog">Close settings</button>
+</dialog>
+```
+
+</LessonStep>
+
+<LessonStep number={2} title={"Move initial focus and open with showModal"} file="labs/a11y-focus/starter/index.html" expected={"Keyboard focus is inside the modal while it is open."}>
+
+Let the browser enforce modal inertness; focus a descriptive heading using tabindex=-1.
+
+```js
+const opener=document.querySelector('#open-dialog');
+const dialog=document.querySelector('#settings');
+opener.addEventListener('click',()=>{
+  dialog.showModal();
+  document.querySelector('#settings-title').focus();
+});
+```
+
+</LessonStep>
+
+<LessonStep number={3} title={"Restore the trigger after any close path"} file="labs/a11y-focus/starter/index.html" expected={"After closing via Escape or the button, focus returns to Review workshop settings."}>
+
+Use the close event so both Escape and close-button behavior restore focus.
+
+```js
+dialog.addEventListener('close',()=>opener.focus());
+document.querySelector('#close-dialog').addEventListener('click',()=>dialog.close());
+```
+
+</LessonStep>
+
+## Explore it yourself
+
+Open `labs/a11y-focus/starter/index.html` locally, then inspect its DOM and accessibility tree in DevTools. Use Tab, Shift+Tab, Enter and Space to verify focus and activation. Compare the starter to `labs/a11y-focus/solution/index.html`. Record which behaviors were directly verified and which require a different device or assistive technology.
+
+<Misconception claim={"Every modal needs a custom JavaScript focus trap."} correction={"Native showModal provides browser modal behavior; custom traps often introduce keyboard bugs."} />
+
+## Bug Hunt: reproduce and fix a real accessibility defect
+
+The app hides a modal using display:none but never returns focus to the trigger. Replace the custom overlay with a native dialog and restore focus on close.
+
+<KnowledgeCheck question={"What is the most reliable event for restoring the opening button's focus after a dialog closes?"} choices={["`mouseover`","`close`","`resize`","`DOMContentLoaded`"]} correctIndex={1} explanation={"The dialog close event covers close-button dismissal and Escape closure."} misconception={"Restoring on a single click handler misses other dismissal paths."} lessonId="01.03.02" />
+
+## Guided local lab
+
+Repair `labs/a11y-focus/starter/index.html` using the three guided steps. The reference implementation is in `labs/a11y-focus/solution/index.html`. To test **your starter** rather than the instructor's solution, run:
+
+```powershell
+$env:ACADEMY_LAB_TARGET = 'starter'
+npm run lab:a11y-focus
+Remove-Item Env:ACADEMY_LAB_TARGET
+```
+
+In Bash use `ACADEMY_LAB_TARGET=starter npm run lab:a11y-focus`. The starter initially fails; make its assertions pass, then manually test the resulting page with keyboard/DevTools. Completion is self-assessed and makes no external submission or certification claim.
+
+<LabGate lessonId="01.03.02" labId="lab.foundation.a11y-focus" commands={["npm ci","npm run lab:a11y-focus"]} interactive={false} />
+
+## Reflect
+
+Describe one barrier, the exact reproduction, the native HTML or CSS repair and your observed browser outcome. Explain what your tests do **not** prove, including any unperformed assistive-technology checks.
+
+## Official references
+
+- [MDN dialog element](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/dialog)
+- [WAI Dialog Modal Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/)

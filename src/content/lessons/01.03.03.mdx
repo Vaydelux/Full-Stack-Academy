@@ -1,0 +1,93 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Create accessible landmarks with clear names and a single main area","Write a meaningful heading hierarchy","Expose non-urgent updates using role=status","Distinguish browser accessibility-tree checks from actual screen-reader verification"]} />
+
+## The problem we're solving
+
+A single-page tool has 50 generic divs and updates a progress label silently. Someone using landmarks cannot reach the main task quickly, and completion feedback is not announced.
+
+## Build the mental model
+
+The browser accessibility tree exposes roles, names and states inferred from native HTML and ARIA. Prefer elements such as header, nav, main, aside and footer for landmarks. Use one central main region and meaningful heading order. A polite live region announces a non-urgent update; role=alert is intended for important errors that require immediate attention, not routine news. Accessible output varies by browser and screen reader, and an automated role locator cannot certify all announcements. Inspect the accessibility tree and perform actual assistive-technology testing when possible.
+
+**Predict before running:** Adding role=alert to every message makes the page noisy, not necessarily more accessible. Routine updates should often use role=status.
+
+## Prerequisites
+
+Complete [the previous lesson](/learn/01.03.02). Work in a trusted local checkout with Node.js 24 and Chromium. Browser role and focus tests are valuable but are not substitutes for actual screen-reader use or formal accessibility conformance testing.
+
+<LessonStep number={1} title={"Give the page native navigable regions"} file="labs/a11y-semantics/starter/index.html" expected={"Landmark navigation can discover navigation, main and footer without custom roles."}>
+
+Use semantic landmarks and a named nav instead of generic divs.
+
+```html
+<header><p>Workshop resources</p></header>
+<nav aria-label="Resource navigation"><a href="#main-content">Read the guide</a></nav>
+<main id="main-content"><h1>Workshop resources</h1></main>
+<footer><p>Learning resources only.</p></footer>
+```
+
+</LessonStep>
+
+<LessonStep number={2} title={"Expose a stable heading hierarchy"} file="labs/a11y-semantics/starter/index.html" expected={"The page has a coherent heading hierarchy for navigation."}>
+
+Use h2 inside a section and h3 for nested material; avoid choosing levels solely for visual size.
+
+```html
+<section aria-labelledby="guide-title">
+  <h2 id="guide-title">Getting started</h2>
+  <p>Read the overview before beginning.</p>
+</section>
+```
+
+</LessonStep>
+
+<LessonStep number={3} title={"Announce local state politely"} file="labs/a11y-semantics/starter/index.html" expected={"Status content changes without moving focus or claiming persistent storage."}>
+
+Put routine feedback in a status region, and update its text after a native button is activated.
+
+```js
+<p id="progress" role="status" aria-live="polite">No section marked reviewed.</p>
+<button type="button" id="review">Mark guide reviewed</button>
+<script>document.querySelector('#review').addEventListener('click',()=>{
+  document.querySelector('#progress').textContent='Guide reviewed locally. Nothing saved.';
+});</script>
+```
+
+</LessonStep>
+
+## Explore it yourself
+
+Open `labs/a11y-semantics/starter/index.html` locally, then inspect its DOM and accessibility tree in DevTools. Use Tab, Shift+Tab, Enter and Space to verify focus and activation. Compare the starter to `labs/a11y-semantics/solution/index.html`. Record which behaviors were directly verified and which require a different device or assistive technology.
+
+<Misconception claim={"Adding ARIA roles to every native HTML element is necessary for accessibility."} correction={"Use native semantics by default; unnecessary ARIA can conflict with built-in meanings."} />
+
+## Bug Hunt: reproduce and fix a real accessibility defect
+
+A routine 'progress complete' banner is assigned role=alert and steals attention repeatedly. Use role=status and keep the focused control stable.
+
+<KnowledgeCheck question={"What is a good semantic choice for a routine progress update?"} choices={["`role=alert` for every update","`role=status` for non-urgent feedback","A silent div with no context","A mouse-only tooltip"]} correctIndex={1} explanation={"Status is designed for polite announcements of non-urgent changes."} misconception={"A status announcement is distinct from a high-priority error."} lessonId="01.03.03" />
+
+## Guided local lab
+
+Repair `labs/a11y-semantics/starter/index.html` using the three guided steps. The reference implementation is in `labs/a11y-semantics/solution/index.html`. To test **your starter** rather than the instructor's solution, run:
+
+```powershell
+$env:ACADEMY_LAB_TARGET = 'starter'
+npm run lab:a11y-semantics
+Remove-Item Env:ACADEMY_LAB_TARGET
+```
+
+In Bash use `ACADEMY_LAB_TARGET=starter npm run lab:a11y-semantics`. The starter initially fails; make its assertions pass, then manually test the resulting page with keyboard/DevTools. Completion is self-assessed and makes no external submission or certification claim.
+
+<LabGate lessonId="01.03.03" labId="lab.foundation.a11y-semantics" commands={["npm ci","npm run lab:a11y-semantics"]} interactive={false} />
+
+## Reflect
+
+Describe one barrier, the exact reproduction, the native HTML or CSS repair and your observed browser outcome. Explain what your tests do **not** prove, including any unperformed assistive-technology checks.
+
+## Official references
+
+- [WAI Page Regions](https://www.w3.org/WAI/tutorials/page-structure/regions/)
+- [MDN status role](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Roles/status_role)

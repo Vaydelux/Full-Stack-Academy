@@ -1,0 +1,87 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Provide visible input labels and separate optional help text","Name icon-only actions with a stable accessible name","Use aria-labelledby and aria-describedby deliberately","Test accessible name/description through Chromium role-based queries"]} />
+
+## The problem we're solving
+
+A search input is identified only by placeholder text and an icon-only add button is announced as 'button' with no purpose. Screen-reader and speech-input users cannot tell what these controls do.
+
+## Build the mental model
+
+The accessible name describes what a control is, while its accessible description supplies supporting instructions. Native visible labels are preferred for form inputs; aria-describedby can connect secondary instructions. aria-labelledby points at an element that names a control. For a truly icon-only button, aria-label can provide a name when no visible text exists, though showing visible button text is often better. Avoid conflicting duplicate naming mechanisms or using placeholder as the primary label. Test accessibility roles and names rather than relying on visual text alone.
+
+**Predict before running:** If a field has label 'Workshop keyword' and aria-describedby 'Enter a topic', what should its name be? Workshop keyword; the description is separate.
+
+## Prerequisites
+
+Complete [the previous lesson](/learn/01.03.05). Use Node.js 24 and a local browser; keep all practice synthetic. Inspect real focus, computed styles, roles and names in Chromium. A passing browser smoke run is **not** a formal accessibility conformance certificate.
+
+<LessonStep number={1} title={"Write an explicit label, not only a placeholder"} file="labs/a11y-names/starter/index.html" expected={"The input has a persistent accessible name and a separate description."}>
+
+Connect label and input through for/id and add a second instruction node.
+
+```html
+<label for="keyword">Workshop keyword</label>
+<p id="keyword-hint">Enter a short topic, for example CSS.</p>
+<input id="keyword" name="keyword" aria-describedby="keyword-hint" required>
+```
+
+</LessonStep>
+
+<LessonStep number={2} title={"Name an icon-only action"} file="labs/a11y-names/starter/index.html" expected={"Role-based queries find a button named Add workshop topic."}>
+
+Use a native button with a meaningful accessible name; the glyph is decoration.
+
+```html
+<button type="button" id="add-topic" aria-label="Add workshop topic"><span aria-hidden="true">+</span></button>
+```
+
+</LessonStep>
+
+<LessonStep number={3} title={"Announce the action without logging private field values"} file="labs/a11y-names/starter/index.html" expected={"The action reports honest local feedback while focus stays on the control."}>
+
+Keep the status scoped to a local demo and refrain from printing the entered keyword.
+
+```js
+document.querySelector('#add-topic').addEventListener('click',()=>{
+  document.querySelector('#result').textContent='Topic added to local preview only.';
+});
+```
+
+</LessonStep>
+
+## Explore it yourself
+
+Open `labs/a11y-names/starter/index.html` in Chromium and perform the lesson's keyboard and visual checks. Compare against the checked-in instructor implementation in `labs/a11y-names/solution/index.html`. Test at 390px and desktop widths, and emulate OS reduced motion where appropriate. Record exactly what you observed and which screen-reader/device checks remain unperformed.
+
+<Misconception claim={"An aria-describedby hint becomes the input's accessible name."} correction={"The input's label is the name; described-by is supplementary instructions and should not replace a name."} />
+
+## Bug Hunt: reproduce and repair the barrier
+
+A developer replaces a label with aria-describedby and wonders why the input remains unnamed. Restore a visible label for the field and reserve described-by for instructions.
+
+<KnowledgeCheck question={"Which property best supplies the name for an icon-only button when visible text isn't possible?"} choices={["`aria-label`","`aria-describedby` only","`title` on the page head","`className`"]} correctIndex={0} explanation={"aria-label can provide a name for a native icon-only button when no visible label exists."} misconception={"Visible text remains preferable where it fits the interface."} lessonId="01.03.06" />
+
+## Guided local lab
+
+Implement the repair in `labs/a11y-names/starter/index.html`, and refer to `labs/a11y-names/solution/index.html` when needed. The reference assets and scripts are bundled locally. To test the **starter** in PowerShell:
+
+```powershell
+$env:ACADEMY_LAB_TARGET = 'starter'
+npm run lab:a11y-names
+Remove-Item Env:ACADEMY_LAB_TARGET
+```
+
+In Bash run `ACADEMY_LAB_TARGET=starter npm run lab:a11y-names`. The deliberately incomplete starter should fail first; improve it and rerun. Instructors' solution tests and Chromium interactions are automated. Manual assistive-technology observation stays self-assessed.
+
+<LabGate lessonId="01.03.06" labId="lab.foundation.a11y-names" commands={["npm ci","npm run lab:a11y-names"]} interactive={false} />
+
+## Reflect
+
+Write down the failing scenario, semantic or interaction repair, tested evidence, remaining limitations and a meaningful next test. Avoid broad accessibility or WCAG claims without evidence of the applicable criteria.
+
+## Official references
+
+- [WAI Form Labels](https://www.w3.org/WAI/tutorials/forms/labels/)
+- [WAI APG Names and Descriptions](https://www.w3.org/WAI/ARIA/apg/practices/names-and-descriptions/)
