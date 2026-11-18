@@ -393,6 +393,8 @@ try {
 
   await page.goto(base+'/?lesson=06.01.01&mode=practice');
   await wait(btn('Practice'));
+  await btn('Practice').click();
+  await wait(btn('Output'));
   await btn('Output').click();
   await wait(page.frameLocator('iframe[title="Live React JSX Sandbox"]').getByRole('heading',{name:'Engineering team',exact:true}));
   await btn('Read lesson').click();
