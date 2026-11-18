@@ -1,0 +1,96 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Distinguish terminal application, shell and operating system","Navigate and inspect directories in PowerShell and Bash","Explain why Windows and WSL have distinct runtimes and paths","Build a portable path helper using Node filesystem APIs"]} />
+
+## The problem we're solving
+
+A tutorial says run export PORT=3000, but PowerShell reports that export is not recognized. The command is for a different shell. The terminal displays a shell; the shell interprets input; the operating system provides paths, processes and permissions.
+
+## Build the mental model
+
+PowerShell operates on objects and uses commands such as Get-Location and Get-ChildItem; Bash typically passes text through pipelines and uses pwd and ls. Windows paths have drive letters; POSIX paths use a root slash. WSL2 runs a Linux environment with its own PATH, installed Node, Git, permissions and filesystem. Prefer the Linux home filesystem for projects developed inside WSL; avoid reusing node_modules across Windows and Linux. Quoting differs: use argument arrays in programmatic process launches rather than concatenating shell strings. Relative paths resolve from the current working directory, not necessarily the script directory.
+
+## Before you begin
+
+Complete [the previous lesson](/learn/00.02.01) or review its objectives. Use Node.js 24, npm, Git and a trusted local checkout. Open a terminal at the repository root. Install the academy dependencies once with npm ci before running the academy's verifier. These exercises do not require cloud accounts or private credentials.
+
+<LessonStep number={1} title={"Find your shell and working directory"} file="labs/terminal-workflow/starter/exercise.mjs" expected={"Both the current folder and installed Node path can be inspected."}>
+
+In PowerShell run the first block. Get-Command shows which executable will run. In Bash use pwd, ls -la and command -v node. Do not paste shell-specific commands into another shell.
+
+```powershell
+Get-Location
+Get-ChildItem -Force
+Get-Command node
+node --version
+```
+
+</LessonStep>
+
+<LessonStep number={2} title={"Inspect safe paths"} file="labs/terminal-workflow/starter/exercise.mjs" expected={"A scratch directory is created and listed; the course repository remains untouched."}>
+
+In PowerShell use New-Item -ItemType Directory -Force with a new name. In Bash use mkdir -p. Use quotes for spaces. Avoid recursive deletion exercises; use a disposable temporary folder. For WSL, check wsl --list --verbose from PowerShell; installation is optional and may require elevated rights and a restart.
+
+```bash
+mkdir -p "$HOME/academy-scratch"
+cd "$HOME/academy-scratch"
+pwd
+ls -la
+```
+
+</LessonStep>
+
+<LessonStep number={3} title={"Implement a portable path helper"} file="labs/terminal-workflow/starter/exercise.mjs" expected={"A relative file resolves inside the supplied workspace and a parent escape is rejected."}>
+
+Use path.resolve and path.relative. For this lesson we enforce lexical containment only; symlinks can still escape a directory, so this is not a production authorization boundary.
+
+```js
+import path from 'node:path';
+export function within(root, name) {
+  if (path.isAbsolute(name)) throw new Error('Relative path required');
+  const base = path.resolve(root);
+  const target = path.resolve(base, name);
+  const relative = path.relative(base, target);
+  if (relative === '..' || relative.startsWith('..'+path.sep) || path.isAbsolute(relative)) throw new Error('Outside workspace');
+  return target;
+}
+```
+
+</LessonStep>
+
+## Explore it yourself
+
+If using WSL, run which node and node --version inside Linux, then Get-Command node in Windows. The executables may be different even if their versions match. Choose one environment per project. Use VS Code's WSL integration to open a Linux project from its Linux terminal. Native Windows development remains fully supported for these labs.
+
+<Misconception claim={"PowerShell, Bash and Windows Terminal are interchangeable."} correction={"Windows Terminal is a terminal host. PowerShell and Bash are shells with different syntax and runtime environments."} />
+
+## Bug Hunt: diagnose before you change code
+
+A script assumes the current directory equals its own directory. Running it from a parent produces missing-file errors. Print process.cwd(), inspect the shell location, and pass an explicit root or use a path derived from import.meta.url.
+
+<KnowledgeCheck question={"What determines the resolution of a relative path in most shell commands?"} choices={["The editor theme","The current working directory","The browser URL","The project README name"]} correctIndex={1} explanation={"Relative shell paths start at the working directory."} misconception={"A script's own location is a separate concept."} lessonId="00.02.02" />
+
+## Guided lab
+
+Open `labs/terminal-workflow/starter`. Complete the files using the steps above. The worked solution is in `labs/terminal-workflow/solution`. The ordinary npm command verifies the instructor solution, not your edits. Return to the academy root and test your own starter in PowerShell:
+
+```powershell
+$env:ACADEMY_LAB_TARGET = 'starter'
+npm run lab:terminal-workflow
+Remove-Item Env:ACADEMY_LAB_TARGET
+```
+
+In Bash use `ACADEMY_LAB_TARGET=starter npm run lab:terminal-workflow`. The starter should fail before you finish the exercise. Read the assertion output, fix the implementation, then compare it with the solution. Manual editor, shell and account-related steps remain self-assessed; tests verify only the local fixture.
+
+<LabGate lessonId="00.02.02" labId="lab.foundation.terminal-workflow" commands={["npm ci","npm run lab:terminal-workflow"]} interactive={false} />
+
+## Reflect
+
+Explain what you changed, why it belongs in the project or local machine, and how a teammate could reproduce it. Record the exact non-sensitive command or error that helped you diagnose a problem.
+
+## Official references
+
+- [Microsoft: PowerShell Get-Location](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.management/get-location)
+- [Microsoft: WSL development environment](https://learn.microsoft.com/en-us/windows/wsl/setup/environment)
+- [Node.js: Path](https://nodejs.org/download/release/latest-v24.x/docs/api/path.html)

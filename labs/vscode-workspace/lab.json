@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.vscode-workspace",
+  "lessonId": "00.02.01",
+  "title": "VS Code workspace and extensions",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/vscode-workspace/starter/.vscode/settings.json",
+  "solution": "labs/vscode-workspace/solution/.vscode/settings.json",
+  "tests": "labs/vscode-workspace/solution.test.mjs",
+  "verify": [
+    "npm run lab:vscode-workspace"
+  ],
+  "expected": "I ran the starter configuration tests successfully.",
+  "security": "Synthetic data and disposable local fixtures. No real credentials, remote mutation, or server-side learner execution."
+}

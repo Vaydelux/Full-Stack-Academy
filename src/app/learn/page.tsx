@@ -11,6 +11,10 @@ export const metadata: Metadata = {
 };
 
 export default function CourseIndex() {
+  const learningModules = [
+    { id: '00.01', title: 'Computing & internet foundations', description: 'Understand how applications and the web work.' },
+    { id: '00.02', title: 'Developer toolchain', description: 'Prepare a reproducible environment and ship a tested project.' },
+  ];
   return (
     <DocShell>
       <p className="text-xs font-bold uppercase tracking-[.2em] text-cyan-600 dark:text-[#7DEBFF]">Structured hands-on curriculum</p>
@@ -18,16 +22,25 @@ export default function CourseIndex() {
       <p className="mt-4 max-w-3xl text-sm leading-7 text-slate-600 dark:text-slate-300">
         {summary.tracks} tracks, {summary.modules} modules and {summary.plannedLessons} mapped topics. Only published lessons contain verified teaching material; the remaining topics are explicitly marked as planned.
       </p>
-      <section aria-label="Beginner learning path" className="mt-8 rounded-xl border border-cyan-600/25 bg-cyan-500/[0.05] p-5">
-        <p className="text-xs font-semibold text-cyan-700 dark:text-cyan-300">Start here · Module 00.01</p>
-        <h2 className="mt-2 text-xl font-bold">Computing &amp; internet foundations</h2>
-        <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">{LOCAL_LAB_LESSONS.length} authored lessons · {LOCAL_LAB_LESSONS.reduce((minutes, lesson) => minutes+lesson.estimatedMinutes, 0)} min estimated · Local hands-on practice</p>
-        <Link href="/learn/00.01.01" className="mt-4 inline-flex rounded-lg bg-cyan-700 px-4 py-2 text-sm font-semibold text-white">Start module</Link>
-        <Link href="/learn/track/00" className="ml-4 text-sm font-medium text-cyan-700 dark:text-cyan-300">View topics</Link>
+      <section aria-label="Beginner learning path" className="mt-8">
+        <h2 className="mb-3 text-xl font-bold">Start here</h2>
+        <div className="grid gap-3 sm:grid-cols-2">
+          {learningModules.map((module,index) => {
+            const lessons = LOCAL_LAB_LESSONS.filter(lesson => lesson.moduleId === module.id);
+            return <article key={module.id} className="rounded-xl border border-slate-200 bg-white p-5 dark:border-white/10 dark:bg-white/[0.03]">
+              <p className="text-xs font-semibold text-cyan-700 dark:text-cyan-300">Module {index+1} · {module.id}</p>
+              <h3 className="mt-2 text-lg font-bold">{module.title}</h3>
+              <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">{module.description}</p>
+              <p className="mt-3 text-xs text-slate-500">{lessons.length} lessons · {lessons.reduce((minutes, lesson) => minutes+lesson.estimatedMinutes, 0)} min · Local labs</p>
+              <Link href={`/learn/${module.id}.01`} className="mt-4 inline-flex rounded-lg bg-cyan-700 px-4 py-2 text-sm font-semibold text-white">Start module</Link>
+            </article>;
+          })}
+        </div>
       </section>
       <section aria-labelledby="published-title" className="mt-9">
-        <h2 id="published-title" className="mb-4 text-xl font-bold">Start with available lessons</h2>
-        <div className="grid gap-3 sm:grid-cols-2">
+        <details className="rounded-xl border border-slate-200 p-4 dark:border-white/10">
+        <summary id="published-title" className="cursor-pointer font-bold">All available lessons ({PUBLISHED_LESSON_IDS.length})</summary>
+        <div className="mt-4 grid gap-3 sm:grid-cols-2">
           {PUBLISHED_LESSON_IDS.map((id) => {
             const lesson = AUTHORED_LESSONS[id];
             const meta = MDX_METADATA.get(id);
@@ -40,6 +53,7 @@ export default function CourseIndex() {
             );
           })}
         </div>
+        </details>
       </section>
       <section aria-labelledby="tracks-title" className="mt-10">
         <h2 id="tracks-title" className="mb-4 text-xl font-bold">Tracks and subtopics</h2>

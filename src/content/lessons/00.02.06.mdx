@@ -1,0 +1,95 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Explain process environment variables and local dotenv files","Load configuration from a file without committing real credentials","Validate numeric and enum settings before using them","Prevent private settings from entering client-facing data and logs"]} />
+
+## The problem we're solving
+
+A server starts with PORT=banana and fails much later. Another developer marks a private token NEXT_PUBLIC_ to access it in React. Configuration should fail early, and private settings must stay in the trusted server environment.
+
+## Build the mental model
+
+Environment variables are string-valued process configuration. An .env file is a local text representation that a loader can read; it is not encryption. Node 24 supports --env-file and util.parseEnv. Existing process environment values take precedence when using Node's CLI env-file option. In Next.js, NEXT_PUBLIC_ variables referenced in client code can be inlined at build time, so treat them as public. Keep real secrets in a local ignored file or a deployment secret manager, provide a safe .env.example, and validate all required settings before starting. Do not print process.env or a full configuration object containing credentials.
+
+## Before you begin
+
+Complete [the previous lesson](/learn/00.02.05) or review its objectives. Use Node.js 24, npm, Git and a trusted local checkout. Open a terminal at the repository root. Install the academy dependencies once with npm ci before running the academy's verifier. These exercises do not require cloud accounts or private credentials.
+
+<LessonStep number={1} title={"Use safe synthetic settings"} file="labs/environment-config/starter/exercise.mjs" expected={"The demonstration file contains a local port, mode and fake token."}>
+
+Create a scratch config.demo.env in the lab starter directory (do not commit real secrets). Never put a real token in the course. For an actual app, ignore .env and local variants and commit a placeholder .env.example.
+
+```text
+PORT=3100
+APP_MODE=development
+PRIVATE_TOKEN=synthetic-demo-only
+```
+
+</LessonStep>
+
+<LessonStep number={2} title={"Load and validate values"} file="labs/environment-config/starter/exercise.mjs" expected={"Invalid ports, modes and missing tokens are rejected."}>
+
+Node's util.parseEnv parses dotenv text without mutating the current process. Validate the decimal input before converting it; Number('') would otherwise become zero. Only accept 1 to 65535.
+
+```js
+import {parseEnv} from 'node:util';
+export function parseConfig(text) {
+  const env=parseEnv(text);
+  const raw=env.PORT ?? '3100';
+  if(!/^\d+$/.test(raw)||Number(raw)<1||Number(raw)>65535)throw new Error('Invalid PORT');
+  const mode=env.APP_MODE ?? 'development';
+  if(!['development','test','production'].includes(mode))throw new Error('Invalid APP_MODE');
+  if(!env.PRIVATE_TOKEN?.trim())throw new Error('Missing PRIVATE_TOKEN');
+  return {port:Number(raw),mode,privateToken:env.PRIVATE_TOKEN};
+}
+```
+
+</LessonStep>
+
+<LessonStep number={3} title={"Expose only safe configuration"} file="labs/environment-config/starter/exercise.mjs" expected={"The output contains a port and mode but no private token."}>
+
+Explicitly map allowed values. In a real app, parse process.env at server startup and never include a token in a public configuration endpoint.
+
+```js
+export function publicConfig(config) {
+  return {port:config.port,mode:config.mode};
+}
+```
+
+</LessonStep>
+
+## Explore it yourself
+
+In PowerShell set $env:APP_MODE = 'test', inspect it using node -p process.env.APP_MODE, and remove it with Remove-Item Env:APP_MODE. In Bash use APP_MODE=test node -p 'process.env.APP_MODE'. Node's --env-file=config.demo.env flag loads a file before executing code. Run the command from the file's directory and inspect only non-sensitive fields.
+
+<Misconception claim={"Variables in .env files are encrypted or automatically private."} correction={"They are plain text. Privacy depends on where they are stored, which code reads them, and whether they are sent to clients."} />
+
+## Bug Hunt: diagnose before you change code
+
+A developer prefixes a database credential with NEXT_PUBLIC_ so a Client Component can read it. Remove the public reference, rotate the exposed credential, and move the database operation behind a server-side authorization boundary.
+
+<KnowledgeCheck question={"What should a configuration validator do with a port of banana?"} choices={["Coerce it silently","Expose the entire environment","Fail early with a clear error","Disable authentication"]} correctIndex={2} explanation={"Configuration errors should stop startup before traffic is served."} misconception={"Silent defaults can hide incorrect deployment configuration."} lessonId="00.02.06" />
+
+## Guided lab
+
+Open `labs/environment-config/starter`. Complete the files using the steps above. The worked solution is in `labs/environment-config/solution`. The ordinary npm command verifies the instructor solution, not your edits. Return to the academy root and test your own starter in PowerShell:
+
+```powershell
+$env:ACADEMY_LAB_TARGET = 'starter'
+npm run lab:environment-config
+Remove-Item Env:ACADEMY_LAB_TARGET
+```
+
+In Bash use `ACADEMY_LAB_TARGET=starter npm run lab:environment-config`. The starter should fail before you finish the exercise. Read the assertion output, fix the implementation, then compare it with the solution. Manual editor, shell and account-related steps remain self-assessed; tests verify only the local fixture.
+
+<LabGate lessonId="00.02.06" labId="lab.foundation.environment-config" commands={["npm ci","npm run lab:environment-config"]} interactive={false} />
+
+## Reflect
+
+Explain what you changed, why it belongs in the project or local machine, and how a teammate could reproduce it. Record the exact non-sensitive command or error that helped you diagnose a problem.
+
+## Official references
+
+- [Node.js: Environment variables](https://nodejs.org/download/release/latest-v24.x/docs/api/environment_variables.html)
+- [Node.js: Process](https://nodejs.org/download/release/latest-v24.x/docs/api/process.html)
+- [Next.js: Environment variables](https://nextjs.org/docs/app/guides/environment-variables)

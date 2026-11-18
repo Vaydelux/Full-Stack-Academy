@@ -7,6 +7,14 @@ import Foundation5 from './lessons/00.01.05.mdx';
 import Foundation6 from './lessons/00.01.06.mdx';
 import Foundation7 from './lessons/00.01.07.mdx';
 import Foundation8 from './lessons/00.01.08.mdx';
+import Toolchain1 from './lessons/00.02.01.mdx';
+import Toolchain2 from './lessons/00.02.02.mdx';
+import Toolchain3 from './lessons/00.02.03.mdx';
+import Toolchain4 from './lessons/00.02.04.mdx';
+import Toolchain5 from './lessons/00.02.05.mdx';
+import Toolchain6 from './lessons/00.02.06.mdx';
+import Toolchain7 from './lessons/00.02.07.mdx';
+import Toolchain8 from './lessons/00.02.08.mdx';
 export function LessonArticle({lessonId}: {lessonId:string}) {
   switch (lessonId) {
     case '00.01.01': return <BrowserLesson />;
@@ -17,6 +25,14 @@ export function LessonArticle({lessonId}: {lessonId:string}) {
     case '00.01.06': return <Foundation6 />;
     case '00.01.07': return <Foundation7 />;
     case '00.01.08': return <Foundation8 />;
+    case '00.02.01': return <Toolchain1 />;
+    case '00.02.02': return <Toolchain2 />;
+    case '00.02.03': return <Toolchain3 />;
+    case '00.02.04': return <Toolchain4 />;
+    case '00.02.05': return <Toolchain5 />;
+    case '00.02.06': return <Toolchain6 />;
+    case '00.02.07': return <Toolchain7 />;
+    case '00.02.08': return <Toolchain8 />;
     case '06.01.01': return <JSXLessonMDX />;
     default: return null;
   }

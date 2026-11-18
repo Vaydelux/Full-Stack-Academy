@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.node-runtime",
+  "lessonId": "00.02.03",
+  "title": "Node.js runtime vs browser engine",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/node-runtime/starter/exercise.mjs",
+  "solution": "labs/node-runtime/solution/exercise.mjs",
+  "tests": "labs/node-runtime/solution.test.mjs",
+  "verify": [
+    "npm run lab:node-runtime"
+  ],
+  "expected": "I implemented and tested the runtime capability probe.",
+  "security": "Synthetic data and disposable local fixtures. No real credentials, remote mutation, or server-side learner execution."
+}

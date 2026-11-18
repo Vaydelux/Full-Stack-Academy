@@ -1,0 +1,15 @@
+{
+  "name": "academy-workstation-lab",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24 <25"
+  },
+  "scripts": {
+    "check": "node --check app.mjs",
+    "test": "node --test",
+    "verify": "npm run check && npm test",
+    "start": "node --env-file=.env.example app.mjs"
+  }
+}

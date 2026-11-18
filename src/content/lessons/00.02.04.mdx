@@ -1,0 +1,93 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Distinguish package.json version intent from a resolved lockfile","Explain direct, transitive and development dependencies","Run a clean install inside a disposable exercise project","Compare npm ci with pnpm install frozen lockfile behavior"]} />
+
+## The problem we're solving
+
+A project runs on the author's laptop but fails for a teammate after installing dependencies. A compatible version range can resolve differently over time. Lockfiles capture the chosen dependency graph so installations can be repeated.
+
+## Build the mental model
+
+package.json records scripts, version constraints and direct dependencies. A lockfile records resolved versions and usually integrity metadata. A caret range such as `^1.2.3` allows compatible minor and patch releases until the next major for a nonzero major. npm install may update the lockfile; npm ci requires a matching npm lock and starts from a clean node_modules. pnpm uses its own lockfile and a content-addressed store with linked dependency layouts. Choose one manager per project; the academy uses npm, while our full-stack architecture may use pnpm in a monorepo. Node 24 does not bundle Corepack by default; follow pnpm's official installation options if you use it. Install scripts can run code, so review dependencies before installation.
+
+## Before you begin
+
+Complete [the previous lesson](/learn/00.02.03) or review its objectives. Use Node.js 24, npm, Git and a trusted local checkout. Open a terminal at the repository root. Install the academy dependencies once with npm ci before running the academy's verifier. These exercises do not require cloud accounts or private credentials.
+
+<LessonStep number={1} title={"Inspect the manifest"} file="labs/package-locks/starter/package.json" expected={"The exercise declares no external dependencies and a pinned Node major range."}>
+
+Open starter/package.json. Set private true, type module, engines.node to `>=24 <25`, and a test script. Keep this exercise dependency-free so its clean install is offline-capable.
+
+```json
+{
+  "name": "academy-lockfile-lab",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=24 <25" },
+  "scripts": { "test": "node --test" }
+}
+```
+
+</LessonStep>
+
+<LessonStep number={2} title={"Generate a lockfile and check the difference"} file="labs/package-locks/starter/package.json" expected={"A package-lock.json with lockfileVersion 3 is generated."}>
+
+Open a terminal in labs/package-locks/starter. Generate the lock, inspect its root packages entry, then install using ci. This fixture intentionally has no packages; no network dependency resolution is required. In real projects review install scripts rather than treating --ignore-scripts as universally suitable.
+
+```powershell
+npm install --package-lock-only --ignore-scripts --no-audit --no-fund
+npm ci --ignore-scripts --no-audit --no-fund
+npm test
+```
+
+</LessonStep>
+
+<LessonStep number={3} title={"Compare package-manager contracts"} file="labs/package-locks/starter/package.json" expected={"You can explain why a pnpm lock is not interchangeable with an npm lock."}>
+
+For a separate pnpm project, create its lock with pnpm install and commit pnpm-lock.yaml. In CI use the frozen mode. Do not run this against the npm-managed academy repository. Record the chosen package manager and version for each project.
+
+```bash
+# In a separate pnpm-managed project:
+pnpm --version
+pnpm install --frozen-lockfile
+```
+
+</LessonStep>
+
+## Explore it yourself
+
+Change the starter manifest's version temporarily, compare it to the lock root, regenerate the lock intentionally, then restore the lesson contract before testing. In a real project with dependencies, npm ci fails if the dependency declarations and lock disagree. Do not use npm audit fix --force blindly; inspect the proposed version and the breaking-change impact.
+
+<Misconception claim={"A lockfile is a cache that should be ignored by Git."} correction={"Application lockfiles are versioned inputs for repeatable installs. Commit them with intentional manifest changes."} />
+
+## Bug Hunt: diagnose before you change code
+
+A teammate runs pnpm in an npm-managed project and commits a second lockfile. Agree on the manager, remove the accidental lock only after verifying it is unneeded, then use the original manager's frozen-install command.
+
+<KnowledgeCheck question={"Which command is designed to install from an existing npm lockfile without updating it?"} choices={["npm init","npm ci","npm publish","npm search"]} correctIndex={1} explanation={"npm ci uses the existing compatible lock and cleans node_modules."} misconception={"npm install may change resolution."} lessonId="00.02.04" />
+
+## Guided lab
+
+Open `labs/package-locks/starter`. Complete the files using the steps above. The worked solution is in `labs/package-locks/solution`. The ordinary npm command verifies the instructor solution, not your edits. Return to the academy root and test your own starter in PowerShell:
+
+```powershell
+$env:ACADEMY_LAB_TARGET = 'starter'
+npm run lab:package-locks
+Remove-Item Env:ACADEMY_LAB_TARGET
+```
+
+In Bash use `ACADEMY_LAB_TARGET=starter npm run lab:package-locks`. The starter should fail before you finish the exercise. Read the assertion output, fix the implementation, then compare it with the solution. Manual editor, shell and account-related steps remain self-assessed; tests verify only the local fixture.
+
+<LabGate lessonId="00.02.04" labId="lab.foundation.package-locks" commands={["npm ci","npm run lab:package-locks"]} interactive={false} />
+
+## Reflect
+
+Explain what you changed, why it belongs in the project or local machine, and how a teammate could reproduce it. Record the exact non-sensitive command or error that helped you diagnose a problem.
+
+## Official references
+
+- [npm: package-lock.json](https://docs.npmjs.com/cli/v11/configuring-npm/package-lock-json)
+- [npm: npm ci](https://docs.npmjs.com/cli/v11/commands/npm-ci)
+- [pnpm: install](https://pnpm.io/cli/install)

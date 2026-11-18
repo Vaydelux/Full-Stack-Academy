@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.package-locks",
+  "lessonId": "00.02.04",
+  "title": "npm, pnpm and dependency lockfiles",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/package-locks/starter/package.json",
+  "solution": "labs/package-locks/solution/package.json",
+  "tests": "labs/package-locks/solution.test.mjs",
+  "verify": [
+    "npm run lab:package-locks"
+  ],
+  "expected": "I kept npm and pnpm installation workflows separate and passed the lab tests.",
+  "security": "Synthetic data and disposable local fixtures. No real credentials, remote mutation, or server-side learner execution."
+}

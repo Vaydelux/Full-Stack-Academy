@@ -1,0 +1,47 @@
+{
+  "id": "00.02.07",
+  "title": "Git setup and SSH authentication",
+  "description": "Configure Git identity in an isolated repository, inspect remotes and learn safe SSH key handling without uploading keys or mutating global configuration.",
+  "trackId": "00",
+  "moduleId": "00.02",
+  "level": "Beginner",
+  "estimatedMinutes": 45,
+  "status": "authored",
+  "reviewedAt": "2026-11-18",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "00.02.06"
+  ],
+  "objectives": [
+    "Separate commit author identity from remote authentication",
+    "Set local Git identity without modifying global settings",
+    "Explain the difference between public and private SSH keys",
+    "Create a local repository and verify a commit and safe ignore rules"
+  ],
+  "labId": "lab.foundation.git-ssh-setup",
+  "sources": [
+    {
+      "label": "Git: git-config",
+      "url": "https://git-scm.com/docs/git-config"
+    },
+    {
+      "label": "Git: git-remote",
+      "url": "https://git-scm.com/docs/git-remote"
+    },
+    {
+      "label": "GitHub: Generating a new SSH key",
+      "url": "https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent"
+    },
+    {
+      "label": "GitHub: Testing your SSH connection",
+      "url": "https://docs.github.com/en/authentication/connecting-to-github-with-ssh/testing-your-ssh-connection"
+    }
+  ],
+  "rubric": [
+    "I configured commit identity in a disposable local repository.",
+    "I committed the intended files and verified the secret ignore rules.",
+    "I explained public/private keys and host verification and passed the Git fixture tests."
+  ]
+}

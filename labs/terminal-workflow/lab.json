@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.terminal-workflow",
+  "lessonId": "00.02.02",
+  "title": "Terminal, PowerShell, Bash and WSL2",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/terminal-workflow/starter/exercise.mjs",
+  "solution": "labs/terminal-workflow/solution/exercise.mjs",
+  "tests": "labs/terminal-workflow/solution.test.mjs",
+  "verify": [
+    "npm run lab:terminal-workflow"
+  ],
+  "expected": "I implemented the path helper and passed its tests.",
+  "security": "Synthetic data and disposable local fixtures. No real credentials, remote mutation, or server-side learner execution."
+}

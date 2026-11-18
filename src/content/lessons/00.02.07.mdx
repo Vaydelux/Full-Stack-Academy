@@ -1,0 +1,94 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Separate commit author identity from remote authentication","Set local Git identity without modifying global settings","Explain the difference between public and private SSH keys","Create a local repository and verify a commit and safe ignore rules"]} />
+
+## The problem we're solving
+
+Git commits show the wrong author, but changing user.email does not fix push authentication. Commit metadata and access to a remote are distinct. A repository can contain valid commits even when it has no remote at all.
+
+## Build the mental model
+
+Git stores your commit author name and email as metadata; these do not grant access to GitHub. SSH authentication uses a private key kept on your machine and a public key registered with a service. Protect the private key with a passphrase and never paste it into a chat or repository. Verify the service's published host-key fingerprint before accepting a first-time host prompt. HTTPS with a credential manager is also valid; SSH is optional. Git config can be system, global, or repository-local. This exercise uses local settings in a temporary repo and does not modify global configuration or send data to a remote.
+
+## Before you begin
+
+Complete [the previous lesson](/learn/00.02.06) or review its objectives. Use Node.js 24, npm, Git and a trusted local checkout. Open a terminal at the repository root. Install the academy dependencies once with npm ci before running the academy's verifier. These exercises do not require cloud accounts or private credentials.
+
+<LessonStep number={1} title={"Initialize an isolated repository"} file="labs/git-ssh-setup/starter/.gitignore" expected={"The scratch folder is a repository and contains local identity settings."}>
+
+Copy labs/git-ssh-setup/starter to a new disposable folder outside the academy repository. Run the commands in that copy. For the exercise use synthetic name and email. Do not change your main project's global configuration.
+
+```powershell
+git init
+git config --local user.name "Academy Learner"
+git config --local user.email "learner@example.invalid"
+git config --local user.name
+git config --local user.email
+```
+
+</LessonStep>
+
+<LessonStep number={2} title={"Ignore local secrets and make a commit"} file="labs/git-ssh-setup/starter/.gitignore" expected={"README.md is committed; .env.local is ignored."}>
+
+Create .gitignore with the rules below in both the starter fixture and your disposable copy. Then run `git add README.md .gitignore`, `git status`, `git diff --cached`, and `git commit -m "Initialize local lab"` in the disposable copy. A .gitignore cannot remove data that was committed earlier.
+
+```text
+.env
+.env.*
+!.env.example
+node_modules/
+```
+
+</LessonStep>
+
+<LessonStep number={3} title={"Understand SSH without modifying credentials"} file="labs/git-ssh-setup/starter/.gitignore" expected={"You can identify the public key file and describe host-key verification."}>
+
+If you choose to configure your own GitHub access, follow the official GitHub guide. Check for existing keys before creating one. Choose a new unused path if you need another key, use a passphrase, and upload only the .pub file. Confirm the key file does not already exist before running the example. The following commands show the workflow; do not overwrite an existing key. Compare GitHub's published host fingerprint before accepting a prompt. This is optional manual practice, not required for automated tests.
+
+```bash
+# Example only: use a new path, not an existing key:
+ssh-keygen -t ed25519 -C "your-email@example.com" -f "$HOME/.ssh/academy_ed25519"
+# Register only academy_ed25519.pub with your account.
+# After configuring your SSH agent, test:
+ssh -T git@github.com
+```
+
+</LessonStep>
+
+## Explore it yourself
+
+Use git config --show-origin --get user.email to see where the effective value comes from. Use git remote -v to inspect URLs; the lab needs no remote. On Windows, Git for Windows and WSL can have different SSH clients and config files. Follow the GitHub guide for your chosen environment. Never disable StrictHostKeyChecking to make a connection work.
+
+<Misconception claim={"Setting Git user.name or email signs me into GitHub."} correction={"Commit identity is metadata. Remote authentication requires a valid credential such as SSH or a credential manager."} />
+
+## Bug Hunt: diagnose before you change code
+
+A developer mistakenly stages .env.local. If it has not been committed, unstage it and add ignore rules. If a real secret has been committed, rotate it first; removing the file alone does not remove the secret from history.
+
+<KnowledgeCheck question={"Which file can be registered with GitHub as an SSH public key?"} choices={["The unencrypted private key","A .pub public key file","The .env file","The repository lockfile"]} correctIndex={1} explanation={"Only the public key is shared. The private key stays protected."} misconception={"Never send your private key to a service or other person."} lessonId="00.02.07" />
+
+## Guided lab
+
+Open `labs/git-ssh-setup/starter`. Complete the files using the steps above. The worked solution is in `labs/git-ssh-setup/solution`. The ordinary npm command verifies the instructor solution, not your edits. Return to the academy root and test your own starter in PowerShell:
+
+```powershell
+$env:ACADEMY_LAB_TARGET = 'starter'
+npm run lab:git-ssh-setup
+Remove-Item Env:ACADEMY_LAB_TARGET
+```
+
+In Bash use `ACADEMY_LAB_TARGET=starter npm run lab:git-ssh-setup`. The starter should fail before you finish the exercise. Read the assertion output, fix the implementation, then compare it with the solution. Manual editor, shell and account-related steps remain self-assessed; tests verify only the local fixture.
+
+<LabGate lessonId="00.02.07" labId="lab.foundation.git-ssh-setup" commands={["npm ci","npm run lab:git-ssh-setup"]} interactive={false} />
+
+## Reflect
+
+Explain what you changed, why it belongs in the project or local machine, and how a teammate could reproduce it. Record the exact non-sensitive command or error that helped you diagnose a problem.
+
+## Official references
+
+- [Git: git-config](https://git-scm.com/docs/git-config)
+- [Git: git-remote](https://git-scm.com/docs/git-remote)
+- [GitHub: Generating a new SSH key](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent)
+- [GitHub: Testing your SSH connection](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/testing-your-ssh-connection)

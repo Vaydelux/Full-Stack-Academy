@@ -1,0 +1,43 @@
+{
+  "id": "00.02.06",
+  "title": "Environment variables and dotenv",
+  "description": "Load synthetic settings with Node's built-in dotenv support, validate configuration at startup, and separate public settings from private values.",
+  "trackId": "00",
+  "moduleId": "00.02",
+  "level": "Beginner",
+  "estimatedMinutes": 45,
+  "status": "authored",
+  "reviewedAt": "2026-11-18",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "00.02.05"
+  ],
+  "objectives": [
+    "Explain process environment variables and local dotenv files",
+    "Load configuration from a file without committing real credentials",
+    "Validate numeric and enum settings before using them",
+    "Prevent private settings from entering client-facing data and logs"
+  ],
+  "labId": "lab.foundation.environment-config",
+  "sources": [
+    {
+      "label": "Node.js: Environment variables",
+      "url": "https://nodejs.org/download/release/latest-v24.x/docs/api/environment_variables.html"
+    },
+    {
+      "label": "Node.js: Process",
+      "url": "https://nodejs.org/download/release/latest-v24.x/docs/api/process.html"
+    },
+    {
+      "label": "Next.js: Environment variables",
+      "url": "https://nextjs.org/docs/app/guides/environment-variables"
+    }
+  ],
+  "rubric": [
+    "I loaded a synthetic environment file and inspected only safe fields.",
+    "I validated configuration values, including invalid ports and missing tokens.",
+    "I passed tests proving private tokens are excluded from public output."
+  ]
+}

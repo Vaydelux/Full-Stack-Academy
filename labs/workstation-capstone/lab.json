@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.workstation-capstone",
+  "lessonId": "00.02.08",
+  "title": "Lab: build a reproducible developer workstation",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/workstation-capstone/starter/package.json",
+  "solution": "labs/workstation-capstone/solution/package.json",
+  "tests": "labs/workstation-capstone/solution.test.mjs",
+  "verify": [
+    "npm run lab:workstation-capstone"
+  ],
+  "expected": "I documented setup and passed the end-to-end workstation acceptance tests.",
+  "security": "Synthetic data and disposable local fixtures. No real credentials, remote mutation, or server-side learner execution."
+}

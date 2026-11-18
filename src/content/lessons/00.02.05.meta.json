@@ -1,0 +1,43 @@
+{
+  "id": "00.02.05",
+  "title": "Project scripts and reproducible installs",
+  "description": "Create portable package scripts and a clean installation workflow that fails when a syntax or test check fails, then verify it in an isolated copy.",
+  "trackId": "00",
+  "moduleId": "00.02",
+  "level": "Beginner",
+  "estimatedMinutes": 40,
+  "status": "authored",
+  "reviewedAt": "2026-11-18",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "00.02.04"
+  ],
+  "objectives": [
+    "Explain npm run scripts and execution exit codes",
+    "Create portable syntax-check and test commands",
+    "Combine checks using fail-fast behavior",
+    "Verify reproducibility in a fresh project directory"
+  ],
+  "labId": "lab.foundation.project-scripts",
+  "sources": [
+    {
+      "label": "npm: Scripts",
+      "url": "https://docs.npmjs.com/cli/v11/using-npm/scripts"
+    },
+    {
+      "label": "Node.js: Test runner",
+      "url": "https://nodejs.org/download/release/latest-v24.x/docs/api/test.html"
+    },
+    {
+      "label": "npm: npm ci",
+      "url": "https://docs.npmjs.com/cli/v11/commands/npm-ci"
+    }
+  ],
+  "rubric": [
+    "I created independent check, test and verification scripts.",
+    "I triggered a real test failure, inspected its exit code and repaired it.",
+    "I passed the clean-install verification tests."
+  ]
+}
