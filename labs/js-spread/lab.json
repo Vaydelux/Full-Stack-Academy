@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.js-spread",
+  "lessonId": "03.01.07",
+  "title": "Destructuring and spread",
+  "runtime": "node-24-esm",
+  "status": "authored",
+  "starter": "labs/js-spread/starter/solution.mjs",
+  "solution": "labs/js-spread/solution/solution.mjs",
+  "tests": "labs/js-spread/solution.test.mjs",
+  "verify": [
+    "npm run lab:js-spread"
+  ],
+  "expected": "The repaired destructuring and spread function satisfies real input/output and failure-boundary assertions.",
+  "security": "Fully offline Node.js exercise, synthetic data only, no remote request, API key, account, telemetry or uploaded work."
+}

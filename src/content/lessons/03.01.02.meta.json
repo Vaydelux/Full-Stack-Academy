@@ -1,0 +1,38 @@
+{
+  "id": "03.01.02",
+  "title": "Primitive types and coercion",
+  "description": "Study primitive types and coercion with a self-contained Node.js ESM debugging exercise, runnable student starter, tested instructor solution and official references.",
+  "trackId": "03",
+  "moduleId": "03.01",
+  "level": "Beginner",
+  "estimatedMinutes": 55,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "03.01.01"
+  ],
+  "objectives": [
+    "Explain the primitive types and coercion behavior using a runnable example",
+    "Reproduce the starter defect and repair it with tested JavaScript",
+    "Verify ordinary, edge and invalid inputs without mutating unrelated state"
+  ],
+  "labId": "lab.foundation.js-coercion",
+  "sources": [
+    {
+      "label": "MDN JavaScript reference",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number"
+    },
+    {
+      "label": "MDN language guide",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Grammar_and_types"
+    }
+  ],
+  "rubric": [
+    "I can explain the underlying primitive types and coercion rule, not only paste code.",
+    "I demonstrate a red starter and a green instructor solution with meaningful input assertions.",
+    "I preserve input data or state boundaries and document an untested case."
+  ]
+}

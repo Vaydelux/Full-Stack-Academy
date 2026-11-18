@@ -1,0 +1,1 @@
+export function solve(rows){if(!Array.isArray(rows))throw new TypeError('Expected rows');return rows.filter(r=>r&&typeof r.name==='string'&&r.name.trim()&&Number.isInteger(r.qty)&&r.qty>=0&&Number.isFinite(r.price)&&r.price>=0).map(r=>({name:r.name.trim(),total:Math.round(r.qty*r.price*100)/100})).sort((a,b)=>a.name.localeCompare(b.name));}

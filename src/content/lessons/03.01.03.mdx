@@ -1,0 +1,91 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Explain the equality and truthiness behavior using a runnable example","Reproduce the starter defect and repair it with tested JavaScript","Verify ordinary, edge and invalid inputs without mutating unrelated state"]} />
+
+## The problem we're solving
+
+A permission check treats the string 'false' as enabled because any nonempty string is truthy. This workshop uses independent local modules and synthetic data; the code can be run with Node.js 24 without an account, network request, credential, or Vercel build.
+
+## Build the mental model
+
+Truthy conversion and equality are different operations. === compares without coercion; Boolean('false') is true because the string has content. At a permission boundary accept only the literal boolean true, never loosely treat user input as authorization.
+
+**Predict before running:** Only the boolean literal true grants access; strings, numbers and false do not.
+
+## Prerequisites and preflight
+
+Continue from [the previous lesson](/learn/03.01.02). Inspect `labs/js-equality/starter/solution.mjs` and `labs/js-equality/solution.test.mjs`. Run the student's starter tests first using `ACADEMY_LAB_TARGET=starter npm run lab:js-equality` in Bash (or set/clear the same environment variable in PowerShell). The untouched starter is intentionally red; do not edit the instructor solution.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the failing contract" file="labs/js-equality/starter/solution.mjs" expected="The starter should fail at least one of the same executable assertions that the instructor solution passes.">
+
+Study the defect and predict what the tests will report. Run the starter verifier before modifying any code.
+
+```js
+export function solve(flag) { return Boolean(flag); }
+```
+
+**Why it fails:** A permission check treats the string 'false' as enabled because any nonempty string is truthy.
+
+**Proof:** Compare the actual assertion failure with the predicted input/output behavior. A syntax-valid file is not necessarily a correct program.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the underlying language rule" file="labs/js-equality/starter/solution.mjs" expected={"Only the boolean literal true grants access; strings, numbers and false do not."}>
+
+Replace the defective implementation with an explicit, minimal solution. Preserve the exported function name so the same tests exercise both versions.
+
+```js
+export function solve(flag) { return flag === true; }
+```
+
+**Why it works:** Truthy conversion and equality are different operations. === compares without coercion; Boolean('false') is true because the string has content. At a permission boundary accept only the literal boolean true, never loosely treat user input as authorization.
+
+**Proof:** Run the starter verifier again and compare the results with the instructor implementation.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify edge cases and write down the contract" file="labs/js-equality/solution.test.mjs" expected="All reviewed input/output assertions pass; the original failing case is explained rather than hidden.">
+
+The following assertions are executable Node tests, not pseudocode. Do not alter tests to disguise a broken starter.
+
+```js
+assert.equal(solve(true),true);assert.equal(solve(false),false);assert.equal(solve('false'),false);assert.equal(solve(1),false);assert.equal(solve('true'),false);
+```
+
+**Predict before running:** Only the boolean literal true grants access; strings, numbers and false do not.
+
+**Why it matters:** Observable input/output contracts make language assumptions testable, repeatable and independent of a browser deployment.
+
+**Proof:** Run `npm run lab:js-equality` on the checked-in instructor solution and the same test with the student starter target.
+
+</LessonStep>
+
+## Explore and verify
+
+Use strict equality and immutable inputs where appropriate. Explain the boundary between what JavaScript guarantees and what this specific exercise tests; Node's green test result is not evidence that a whole production application is secure.
+
+<Misconception claim="A snippet that executes without a syntax error must be correct for every input." correction={"Truthy conversion and equality are different operations. === compares without coercion; Boolean('false') is true because the string has content. At a permission boundary accept only the literal boolean true, never loosely treat user input as authorization."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+The buggy export is intentionally close to the correct implementation. Give one concrete counterexample from the included tests, trace the wrong state or conversion, patch only the relevant function, and rerun with another edge case. Do not depend on global state or mock an API that is never called.
+
+<KnowledgeCheck question={"Why is Boolean('false') true?"} choices={["The string spells a boolean literal","Any nonempty string is truthy","Boolean always returns true","The runtime reads the string as JSON"]} correctIndex={1} explanation={"Truthy conversion and equality are different operations. === compares without coercion; Boolean('false') is true because the string has content. At a permission boundary accept only the literal boolean true, never loosely treat user input as authorization."} misconception="JavaScript truthiness, assignment and state ownership must be tested at the actual boundary." lessonId="03.01.03" />
+
+## Guided local lab
+
+Work in `labs/js-equality/starter/solution.mjs`; compare with `labs/js-equality/solution/solution.mjs` only after attempting the repair. The same test file drives both versions via `ACADEMY_LAB_TARGET`. Tests are checked in and offline; this is not cloud grading or saved server progress.
+
+<LabGate lessonId="03.01.03" labId="lab.foundation.js-equality" commands={["npm ci","npm run lab:js-equality"]} interactive={false} />
+
+## Reflect
+
+What input falsified the original implementation? Which language rule caused it? What additional edge case would strengthen the test? Name one production boundary—validation, authorization or concurrent state—that this small fixture does not cover.
+
+## Official references
+
+- [MDN JavaScript documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Strict_equality)
+- [MDN conceptual reference](https://developer.mozilla.org/en-US/docs/Glossary/Truthy)

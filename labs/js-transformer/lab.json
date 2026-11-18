@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.js-transformer",
+  "lessonId": "03.01.08",
+  "title": "Lab data transformer",
+  "runtime": "node-24-esm",
+  "status": "authored",
+  "starter": "labs/js-transformer/starter/solution.mjs",
+  "solution": "labs/js-transformer/solution/solution.mjs",
+  "tests": "labs/js-transformer/solution.test.mjs",
+  "verify": [
+    "npm run lab:js-transformer"
+  ],
+  "expected": "The repaired lab data transformer function satisfies real input/output and failure-boundary assertions.",
+  "security": "Fully offline Node.js exercise, synthetic data only, no remote request, API key, account, telemetry or uploaded work."
+}

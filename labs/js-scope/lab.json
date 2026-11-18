@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.js-scope",
+  "lessonId": "03.01.01",
+  "title": "let const and scope",
+  "runtime": "node-24-esm",
+  "status": "authored",
+  "starter": "labs/js-scope/starter/solution.mjs",
+  "solution": "labs/js-scope/solution/solution.mjs",
+  "tests": "labs/js-scope/solution.test.mjs",
+  "verify": [
+    "npm run lab:js-scope"
+  ],
+  "expected": "The repaired let const and scope function satisfies real input/output and failure-boundary assertions.",
+  "security": "Fully offline Node.js exercise, synthetic data only, no remote request, API key, account, telemetry or uploaded work."
+}

@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.js-collections",
+  "lessonId": "03.01.06",
+  "title": "Arrays and objects",
+  "runtime": "node-24-esm",
+  "status": "authored",
+  "starter": "labs/js-collections/starter/solution.mjs",
+  "solution": "labs/js-collections/solution/solution.mjs",
+  "tests": "labs/js-collections/solution.test.mjs",
+  "verify": [
+    "npm run lab:js-collections"
+  ],
+  "expected": "The repaired arrays and objects function satisfies real input/output and failure-boundary assertions.",
+  "security": "Fully offline Node.js exercise, synthetic data only, no remote request, API key, account, telemetry or uploaded work."
+}

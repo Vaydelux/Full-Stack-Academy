@@ -1,0 +1,1 @@
+export function solve(items){if(!Array.isArray(items)||items.some(x=>!x||typeof x.name!=='string'||!Number.isFinite(x.price)))throw new TypeError('Invalid item');const sorted=[...items].sort((a,b)=>b.price-a.price);return {names:sorted.map(x=>x.name),total:items.reduce((sum,x)=>sum+x.price,0)};}

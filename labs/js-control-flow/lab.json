@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.js-control-flow",
+  "lessonId": "03.01.04",
+  "title": "Control flow and branching",
+  "runtime": "node-24-esm",
+  "status": "authored",
+  "starter": "labs/js-control-flow/starter/solution.mjs",
+  "solution": "labs/js-control-flow/solution/solution.mjs",
+  "tests": "labs/js-control-flow/solution.test.mjs",
+  "verify": [
+    "npm run lab:js-control-flow"
+  ],
+  "expected": "The repaired control flow and branching function satisfies real input/output and failure-boundary assertions.",
+  "security": "Fully offline Node.js exercise, synthetic data only, no remote request, API key, account, telemetry or uploaded work."
+}

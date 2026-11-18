@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.js-closures",
+  "lessonId": "03.01.05",
+  "title": "Functions and closures",
+  "runtime": "node-24-esm",
+  "status": "authored",
+  "starter": "labs/js-closures/starter/solution.mjs",
+  "solution": "labs/js-closures/solution/solution.mjs",
+  "tests": "labs/js-closures/solution.test.mjs",
+  "verify": [
+    "npm run lab:js-closures"
+  ],
+  "expected": "The repaired functions and closures function satisfies real input/output and failure-boundary assertions.",
+  "security": "Fully offline Node.js exercise, synthetic data only, no remote request, API key, account, telemetry or uploaded work."
+}

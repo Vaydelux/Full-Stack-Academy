@@ -1,0 +1,91 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Explain the let const and scope behavior using a runnable example","Reproduce the starter defect and repair it with tested JavaScript","Verify ordinary, edge and invalid inputs without mutating unrelated state"]} />
+
+## The problem we're solving
+
+An invoice accumulator leaks state between runs and mishandles shadowed block variables. This workshop uses independent local modules and synthetic data; the code can be run with Node.js 24 without an account, network request, credential, or Vercel build.
+
+## Build the mental model
+
+A let binding has block scope; const prevents rebinding, not mutation of referenced objects. A fresh function-local accumulator makes repeated calls independent; var is function-scoped and can blur intended boundaries.
+
+**Predict before running:** A separate call starts its accumulator at zero and refuses non-finite inputs.
+
+## Prerequisites and preflight
+
+Continue from [the previous lesson](/learn/02.04.08). Inspect `labs/js-scope/starter/solution.mjs` and `labs/js-scope/solution.test.mjs`. Run the student's starter tests first using `ACADEMY_LAB_TARGET=starter npm run lab:js-scope` in Bash (or set/clear the same environment variable in PowerShell). The untouched starter is intentionally red; do not edit the instructor solution.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the failing contract" file="labs/js-scope/starter/solution.mjs" expected="The starter should fail at least one of the same executable assertions that the instructor solution passes.">
+
+Study the defect and predict what the tests will report. Run the starter verifier before modifying any code.
+
+```js
+export function solve(values) { var total = 1; for (var i=0;i<values.length;i++) total+=values[i]; return total; }
+```
+
+**Why it fails:** An invoice accumulator leaks state between runs and mishandles shadowed block variables.
+
+**Proof:** Compare the actual assertion failure with the predicted input/output behavior. A syntax-valid file is not necessarily a correct program.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the underlying language rule" file="labs/js-scope/starter/solution.mjs" expected={"A separate call starts its accumulator at zero and refuses non-finite inputs."}>
+
+Replace the defective implementation with an explicit, minimal solution. Preserve the exported function name so the same tests exercise both versions.
+
+```js
+export function solve(values) { let total=0; for (const value of values) { if (!Number.isFinite(value)) throw new TypeError('Finite numbers required'); total+=value; } return total; }
+```
+
+**Why it works:** A let binding has block scope; const prevents rebinding, not mutation of referenced objects. A fresh function-local accumulator makes repeated calls independent; var is function-scoped and can blur intended boundaries.
+
+**Proof:** Run the starter verifier again and compare the results with the instructor implementation.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify edge cases and write down the contract" file="labs/js-scope/solution.test.mjs" expected="All reviewed input/output assertions pass; the original failing case is explained rather than hidden.">
+
+The following assertions are executable Node tests, not pseudocode. Do not alter tests to disguise a broken starter.
+
+```js
+assert.equal(solve([2,3]),5);assert.equal(solve([]),0);assert.equal(solve([1,1]),2);assert.throws(()=>solve([NaN]),TypeError);
+```
+
+**Predict before running:** A separate call starts its accumulator at zero and refuses non-finite inputs.
+
+**Why it matters:** Observable input/output contracts make language assumptions testable, repeatable and independent of a browser deployment.
+
+**Proof:** Run `npm run lab:js-scope` on the checked-in instructor solution and the same test with the student starter target.
+
+</LessonStep>
+
+## Explore and verify
+
+Use strict equality and immutable inputs where appropriate. Explain the boundary between what JavaScript guarantees and what this specific exercise tests; Node's green test result is not evidence that a whole production application is secure.
+
+<Misconception claim="A snippet that executes without a syntax error must be correct for every input." correction={"A let binding has block scope; const prevents rebinding, not mutation of referenced objects. A fresh function-local accumulator makes repeated calls independent; var is function-scoped and can blur intended boundaries."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+The buggy export is intentionally close to the correct implementation. Give one concrete counterexample from the included tests, trace the wrong state or conversion, patch only the relevant function, and rerun with another edge case. Do not depend on global state or mock an API that is never called.
+
+<KnowledgeCheck question={"Which declaration creates a block-scoped binding that may be reassigned?"} choices={["var","let","const","globalThis"]} correctIndex={1} explanation={"A let binding has block scope; const prevents rebinding, not mutation of referenced objects. A fresh function-local accumulator makes repeated calls independent; var is function-scoped and can blur intended boundaries."} misconception="JavaScript truthiness, assignment and state ownership must be tested at the actual boundary." lessonId="03.01.01" />
+
+## Guided local lab
+
+Work in `labs/js-scope/starter/solution.mjs`; compare with `labs/js-scope/solution/solution.mjs` only after attempting the repair. The same test file drives both versions via `ACADEMY_LAB_TARGET`. Tests are checked in and offline; this is not cloud grading or saved server progress.
+
+<LabGate lessonId="03.01.01" labId="lab.foundation.js-scope" commands={["npm ci","npm run lab:js-scope"]} interactive={false} />
+
+## Reflect
+
+What input falsified the original implementation? Which language rule caused it? What additional edge case would strengthen the test? Name one production boundary—validation, authorization or concurrent state—that this small fixture does not cover.
+
+## Official references
+
+- [MDN JavaScript documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/let)
+- [MDN conceptual reference](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/const)

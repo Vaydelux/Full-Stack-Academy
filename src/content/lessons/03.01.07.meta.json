@@ -1,0 +1,38 @@
+{
+  "id": "03.01.07",
+  "title": "Destructuring and spread",
+  "description": "Study destructuring and spread with a self-contained Node.js ESM debugging exercise, runnable student starter, tested instructor solution and official references.",
+  "trackId": "03",
+  "moduleId": "03.01",
+  "level": "Beginner",
+  "estimatedMinutes": 55,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "03.01.06"
+  ],
+  "objectives": [
+    "Explain the destructuring and spread behavior using a runnable example",
+    "Reproduce the starter defect and repair it with tested JavaScript",
+    "Verify ordinary, edge and invalid inputs without mutating unrelated state"
+  ],
+  "labId": "lab.foundation.js-spread",
+  "sources": [
+    {
+      "label": "MDN JavaScript reference",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax"
+    },
+    {
+      "label": "MDN language guide",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring"
+    }
+  ],
+  "rubric": [
+    "I can explain the underlying destructuring and spread rule, not only paste code.",
+    "I demonstrate a red starter and a green instructor solution with meaningful input assertions.",
+    "I preserve input data or state boundaries and document an untested case."
+  ]
+}
