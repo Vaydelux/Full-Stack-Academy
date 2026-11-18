@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.next-build-runtime",
+  "lessonId": "07.05.06",
+  "title": "Build and runtime diagnostics",
+  "runtime": "next16-offline-contract-and-tsx-source",
+  "status": "authored",
+  "starter": "labs/next-build-runtime/starter/solution.ts",
+  "solution": "labs/next-build-runtime/solution/solution.ts",
+  "tests": "labs/next-build-runtime/solution.test.mjs",
+  "verify": [
+    "npm run lab:next-build-runtime"
+  ],
+  "expected": "The correct local contract passes independent assertions; end-to-end framework behavior is a separate QA gate.",
+  "security": "Uses synthetic fixture data, no secrets, uploaded code execution, remote endpoints, publishing, Vercel or hosted grading."
+}

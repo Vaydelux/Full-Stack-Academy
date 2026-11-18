@@ -1,0 +1,1 @@
+export function solve(tenant:string,user:string,path:string){if(!tenant||!user||!path.startsWith('/')||path.startsWith('//'))throw new TypeError('Valid scope required');return JSON.stringify([tenant,user,path]);}

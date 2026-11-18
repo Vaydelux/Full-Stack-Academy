@@ -1,0 +1,97 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Diagnose the environment separation failure through a real example","Repair the learner fixture with a precise invariant and explicit edge cases","Verify the result offline and distinguish those checks from framework end-to-end tests"]} />
+
+## The problem we're solving
+
+A server API secret is placed under a NEXT_PUBLIC variable and copied into an environment file intended for client builds. This local fixture isolates a concrete failure before we introduce any external state or deployment.
+
+## Build the mental model
+
+Separate development, preview and production environments; expose only intentionally public settings with NEXT_PUBLIC. Server secrets should be accessed only from trusted server code, rotated after accidental exposure and never written into pages or diagnostic logs.
+
+**Predict before running:** The repaired implementation respects its documented contract.
+
+## Prerequisites and preflight
+
+Continue from [the preceding lesson](/learn/07.04.08). Inspect `labs/next-env-separation/starter/solution.ts`, the instructor solution and `labs/next-env-separation/solution.test.mjs`. Run `npm run lab:next-env-separation` with repository-installed Node.js 24, TypeScript and tsx. The Next.js source example is illustrative code under labs, not an active App Router route. Its pure helper tests do not boot a Next server.
+
+<LessonStep number={1} title="Reproduce the defective starter" file="labs/next-env-separation/starter/solution.ts" expected="The intentionally flawed starter fails a real assertion.">
+
+Observe the following implementation, identify the overlooked case, and predict which assertion reveals it.
+
+```ts
+
+export function solve(name:string){return true;}
+
+```
+
+**Why it fails:** Separate development, preview and production environments; expose only intentionally public settings with NEXT_PUBLIC. Server secrets should be accessed only from trusted server code, rotated after accidental exposure and never written into pages or diagnostic logs.
+
+**Proof:** Run `ACADEMY_LAB_TARGET=starter npm run lab:next-env-separation` in Bash, or set the variable for the command in PowerShell. Do not modify the instructor fixture.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the implementation contract" file="labs/next-env-separation/starter/solution.ts" expected={"Positive and negative cases behave predictably."}>
+
+Make the smallest semantic correction; do not weaken the assertions or convert invalid data into a fake success.
+
+```ts
+
+export function solve(name:string){if(!/^[A-Z][A-Z0-9_]+$/.test(name))throw new TypeError('Invalid name');return !name.startsWith('NEXT_PUBLIC_');}
+
+```
+
+**Why it works:** Separate development, preview and production environments; expose only intentionally public settings with NEXT_PUBLIC. Server secrets should be accessed only from trusted server code, rotated after accidental exposure and never written into pages or diagnostic logs.
+
+**Proof:** Run the same local assertions and compare the before/after outputs.
+
+</LessonStep>
+
+<LessonStep number={3} title="Inspect the Next.js App Router source" file="labs/next-env-separation/example.tsx" expected="The framework-oriented sample illustrates the same invariant.">
+
+The Next.js 16 example demonstrates an App Router convention. The offline test checks its supporting contract and sample presence, not route execution or production caching.
+
+```tsx
+
+import React from 'react';
+// Server Component example: check existence only, do not serialize the secret.
+export default function EnvStatus(){const ready=Boolean(process.env.INTERNAL_API_KEY);return <main><h1>Configuration health</h1><p role="status">{ready?'Private server integration configured':'Integration not configured'}</p></main>;}
+
+```
+
+**Predict before running:** The corrected sample handles the reviewed case.
+
+**Proof:** Run `npm run lab:next-env-separation`. To certify real navigation or mutation behavior, also exercise an isolated app in a browser or test server.
+
+</LessonStep>
+
+## Explore and verify
+
+Change a valid input into an invalid one, then inspect which layer should reject it. Check accessibility, cleanup and data ownership as appropriate.
+
+<Misconception claim={"Passing a typecheck or SSR initial render proves every interactive path."} correction={"Separate development, preview and production environments; expose only intentionally public settings with NEXT_PUBLIC. Server secrets should be accessed only from trusted server code, rotated after accidental exposure and never written into pages or diagnostic logs."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+Identify the smallest counterexample, repair the root cause and verify the same input now behaves correctly. Describe the missing browser or server integration check.
+
+<KnowledgeCheck question={"Which prefix makes an environment variable eligible for client bundling?"} choices={["NEXT_PUBLIC_","INTERNAL_","SECRET_","PRIVATE_"]} correctIndex={0} explanation={"Separate development, preview and production environments; expose only intentionally public settings with NEXT_PUBLIC. Server secrets should be accessed only from trusted server code, rotated after accidental exposure and never written into pages or diagnostic logs."} misconception="Offline tests have explicit boundaries." lessonId="07.05.01" />
+
+## Guided local lab
+
+Edit `labs/next-env-separation/starter/solution.ts`. The test imports the selected target and confirms actual return values. It checks an application-specific example without running Next.js itself. The academy does not execute arbitrary learner code on the server.
+
+<LabGate lessonId="07.05.01" labId="lab.foundation.next-env-separation" commands={["npm ci","npm run lab:next-env-separation"]} interactive={false} />
+
+## Reflect
+
+Which invariant did the original implementation violate? Which test proves the fix, and what would still require a full browser or Next.js integration environment?
+
+## Official references
+
+- [Official concept](https://nextjs.org/docs/app/guides/environment-variables)
+
+- [Official supporting reference](https://nextjs.org/docs/app/guides/production-checklist)

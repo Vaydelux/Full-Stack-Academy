@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.next-env-separation",
+  "lessonId": "07.05.01",
+  "title": "Environment separation",
+  "runtime": "next16-offline-contract-and-tsx-source",
+  "status": "authored",
+  "starter": "labs/next-env-separation/starter/solution.ts",
+  "solution": "labs/next-env-separation/solution/solution.ts",
+  "tests": "labs/next-env-separation/solution.test.mjs",
+  "verify": [
+    "npm run lab:next-env-separation"
+  ],
+  "expected": "The correct local contract passes independent assertions; end-to-end framework behavior is a separate QA gate.",
+  "security": "Uses synthetic fixture data, no secrets, uploaded code execution, remote endpoints, publishing, Vercel or hosted grading."
+}
