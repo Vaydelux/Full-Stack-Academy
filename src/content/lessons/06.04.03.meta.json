@@ -1,0 +1,40 @@
+{
+  "id": "06.04.03",
+  "title": "useTransition and responsive UX",
+  "description": "Investigate usetransition and responsive ux in React 19 with a defective starter, repaired instructor module, executable offline contract and framework example.",
+  "trackId": "06",
+  "moduleId": "06.04",
+  "level": "Beginner",
+  "estimatedMinutes": 60,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "react": "19",
+    "typescript": "5",
+    "node": "24"
+  },
+  "prerequisites": [
+    "06.04.02"
+  ],
+  "objectives": [
+    "Diagnose the usetransition and responsive ux failure through a real example",
+    "Repair the learner fixture with a precise invariant and explicit edge cases",
+    "Verify the result offline and distinguish those checks from framework end-to-end tests"
+  ],
+  "labId": "lab.foundation.react-transition",
+  "sources": [
+    {
+      "label": "Official framework documentation",
+      "url": "https://react.dev/reference/react/useTransition"
+    },
+    {
+      "label": "Supporting official API guidance",
+      "url": "https://react.dev/reference/react/startTransition"
+    }
+  ],
+  "rubric": [
+    "I can reproduce the specific usetransition and responsive ux failure in the learner starter",
+    "I can explain one positive and one negative case without a hosted service",
+    "I can identify which behavior still requires a browser or Next.js request integration test"
+  ]
+}

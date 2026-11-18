@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.react-boundaries",
+  "lessonId": "06.04.07",
+  "title": "Error boundaries and Suspense",
+  "runtime": "react19-tsx-ssr-local",
+  "status": "authored",
+  "starter": "labs/react-boundaries/starter/solution.ts",
+  "solution": "labs/react-boundaries/solution/solution.ts",
+  "tests": "labs/react-boundaries/solution.test.mjs",
+  "verify": [
+    "npm run lab:react-boundaries"
+  ],
+  "expected": "The correct local contract passes independent assertions; end-to-end framework behavior is a separate QA gate.",
+  "security": "Uses synthetic fixture data, no secrets, uploaded code execution, remote endpoints, publishing, Vercel or hosted grading."
+}

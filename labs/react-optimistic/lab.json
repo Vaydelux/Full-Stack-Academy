@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.react-optimistic",
+  "lessonId": "06.04.05",
+  "title": "useOptimistic in practice",
+  "runtime": "react19-tsx-ssr-local",
+  "status": "authored",
+  "starter": "labs/react-optimistic/starter/solution.ts",
+  "solution": "labs/react-optimistic/solution/solution.ts",
+  "tests": "labs/react-optimistic/solution.test.mjs",
+  "verify": [
+    "npm run lab:react-optimistic"
+  ],
+  "expected": "The correct local contract passes independent assertions; end-to-end framework behavior is a separate QA gate.",
+  "security": "Uses synthetic fixture data, no secrets, uploaded code execution, remote endpoints, publishing, Vercel or hosted grading."
+}

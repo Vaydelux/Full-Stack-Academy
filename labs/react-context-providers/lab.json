@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.react-context-providers",
+  "lessonId": "06.04.01",
+  "title": "Context and providers",
+  "runtime": "react19-tsx-ssr-local",
+  "status": "authored",
+  "starter": "labs/react-context-providers/starter/solution.ts",
+  "solution": "labs/react-context-providers/solution/solution.ts",
+  "tests": "labs/react-context-providers/solution.test.mjs",
+  "verify": [
+    "npm run lab:react-context-providers"
+  ],
+  "expected": "The correct local contract passes independent assertions; end-to-end framework behavior is a separate QA gate.",
+  "security": "Uses synthetic fixture data, no secrets, uploaded code execution, remote endpoints, publishing, Vercel or hosted grading."
+}

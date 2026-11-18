@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.react-action-state",
+  "lessonId": "06.04.06",
+  "title": "useActionState in practice",
+  "runtime": "react19-tsx-ssr-local",
+  "status": "authored",
+  "starter": "labs/react-action-state/starter/solution.ts",
+  "solution": "labs/react-action-state/solution/solution.ts",
+  "tests": "labs/react-action-state/solution.test.mjs",
+  "verify": [
+    "npm run lab:react-action-state"
+  ],
+  "expected": "The correct local contract passes independent assertions; end-to-end framework behavior is a separate QA gate.",
+  "security": "Uses synthetic fixture data, no secrets, uploaded code execution, remote endpoints, publishing, Vercel or hosted grading."
+}

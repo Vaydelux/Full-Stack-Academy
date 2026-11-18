@@ -1,0 +1,98 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Diagnose the useactionstate failure through a real example","Repair the learner fixture with a precise invariant and explicit edge cases","Verify the result offline and distinguish those checks from framework end-to-end tests"]} />
+
+## The problem we're solving
+
+An async form reports success even when the submitted name is blank, and its pending state is never exposed. This local fixture isolates a concrete failure before we introduce any external state or deployment.
+
+## Build the mental model
+
+useActionState coordinates a form Action's returned state and pending indicator. The Action receives previous state before form payload. Validate input at the boundary and return an explicit status; a server action still needs authorization and CSRF-safe design.
+
+**Predict before running:** The repaired implementation respects its documented contract.
+
+## Prerequisites and preflight
+
+Continue from [the preceding lesson](/learn/06.04.05). Inspect `labs/react-action-state/starter/solution.ts`, the instructor solution and `labs/react-action-state/solution.test.mjs`. Run `npm run lab:react-action-state` with repository-installed Node.js 24, TypeScript and tsx. The React component is also rendered to static initial HTML by the test; event handlers and effects need browser tests.
+
+<LessonStep number={1} title="Reproduce the defective starter" file="labs/react-action-state/starter/solution.ts" expected="The intentionally flawed starter fails a real assertion.">
+
+Observe the following implementation, identify the overlooked case, and predict which assertion reveals it.
+
+```ts
+
+export function solve(previous:{error:string},name:string){return {error:'',saved:name};}
+
+```
+
+**Why it fails:** useActionState coordinates a form Action's returned state and pending indicator. The Action receives previous state before form payload. Validate input at the boundary and return an explicit status; a server action still needs authorization and CSRF-safe design.
+
+**Proof:** Run `ACADEMY_LAB_TARGET=starter npm run lab:react-action-state` in Bash, or set the variable for the command in PowerShell. Do not modify the instructor fixture.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the implementation contract" file="labs/react-action-state/starter/solution.ts" expected={"Positive and negative cases behave predictably."}>
+
+Make the smallest semantic correction; do not weaken the assertions or convert invalid data into a fake success.
+
+```ts
+
+export function solve(previous:{error:string},name:string){const normalized=name.trim();return normalized.length>=2?{error:'',saved:normalized}:{error:'Enter at least two characters',saved:''};}
+
+```
+
+**Why it works:** useActionState coordinates a form Action's returned state and pending indicator. The Action receives previous state before form payload. Validate input at the boundary and return an explicit status; a server action still needs authorization and CSRF-safe design.
+
+**Proof:** Run the same local assertions and compare the before/after outputs.
+
+</LessonStep>
+
+<LessonStep number={3} title="Inspect the React component" file="labs/react-action-state/solution/Widget.tsx" expected="The framework-oriented sample illustrates the same invariant.">
+
+This is an actual React 19 component, which the lab renders to initial HTML. Interactions after hydration are not certified by an SSR check.
+
+```tsx
+
+'use client';
+import React,{useActionState} from 'react';
+import {solve} from './solution';
+export function Workshop(){const [state,action,pending]=useActionState(async(_previous:{error:string;saved:string},form:FormData)=>solve(_previous,String(form.get('name')??'')),{error:'',saved:''});return <form action={action} aria-label="Action state form"><label>Display name <input name="name" /></label><button type="submit" disabled={pending}>Save</button><output role="status">{state.error||state.saved||'Ready'}</output></form>;}
+
+```
+
+**Predict before running:** The corrected sample handles the reviewed case.
+
+**Proof:** Run `npm run lab:react-action-state`. To certify real navigation or mutation behavior, also exercise an isolated app in a browser or test server.
+
+</LessonStep>
+
+## Explore and verify
+
+Change a valid input into an invalid one, then inspect which layer should reject it. Check accessibility, cleanup and data ownership as appropriate.
+
+<Misconception claim={"Passing a typecheck or SSR initial render proves every interactive path."} correction={"useActionState coordinates a form Action's returned state and pending indicator. The Action receives previous state before form payload. Validate input at the boundary and return an explicit status; a server action still needs authorization and CSRF-safe design."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+Identify the smallest counterexample, repair the root cause and verify the same input now behaves correctly. Describe the missing browser or server integration check.
+
+<KnowledgeCheck question={"What is passed as the first argument to a useActionState reducer?"} choices={["The previous action state","A DOM element","A random timestamp","The API token"]} correctIndex={0} explanation={"useActionState coordinates a form Action's returned state and pending indicator. The Action receives previous state before form payload. Validate input at the boundary and return an explicit status; a server action still needs authorization and CSRF-safe design."} misconception="Offline tests have explicit boundaries." lessonId="06.04.06" />
+
+## Guided local lab
+
+Edit `labs/react-action-state/starter/solution.ts`. The test imports the selected target and confirms actual return values. It also renders the corresponding component with React DOM Server. The academy does not execute arbitrary learner code on the server.
+
+<LabGate lessonId="06.04.06" labId="lab.foundation.react-action-state" commands={["npm ci","npm run lab:react-action-state"]} interactive={false} />
+
+## Reflect
+
+Which invariant did the original implementation violate? Which test proves the fix, and what would still require a full browser or Next.js integration environment?
+
+## Official references
+
+- [Official concept](https://react.dev/reference/react/useActionState)
+
+- [Official supporting reference](https://react.dev/reference/react/useOptimistic)

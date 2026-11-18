@@ -1,0 +1,98 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Diagnose the error boundaries and suspense failure through a real example","Repair the learner fixture with a precise invariant and explicit edge cases","Verify the result offline and distinguish those checks from framework end-to-end tests"]} />
+
+## The problem we're solving
+
+A failed component throws and collapses the entire page without a localized fallback or recovery plan. This local fixture isolates a concrete failure before we introduce any external state or deployment.
+
+## Build the mental model
+
+Error boundaries catch render-time errors in their descendant tree, while Suspense shows a loading fallback when a child suspends. These solve different problems; boundaries do not automatically catch every event handler or async callback error.
+
+**Predict before running:** The repaired implementation respects its documented contract.
+
+## Prerequisites and preflight
+
+Continue from [the preceding lesson](/learn/06.04.06). Inspect `labs/react-boundaries/starter/solution.ts`, the instructor solution and `labs/react-boundaries/solution.test.mjs`. Run `npm run lab:react-boundaries` with repository-installed Node.js 24, TypeScript and tsx. The React component is also rendered to static initial HTML by the test; event handlers and effects need browser tests.
+
+<LessonStep number={1} title="Reproduce the defective starter" file="labs/react-boundaries/starter/solution.ts" expected="The intentionally flawed starter fails a real assertion.">
+
+Observe the following implementation, identify the overlooked case, and predict which assertion reveals it.
+
+```ts
+
+export function solve(error:unknown):string{return error instanceof Error?error.message:'ok';}
+
+```
+
+**Why it fails:** Error boundaries catch render-time errors in their descendant tree, while Suspense shows a loading fallback when a child suspends. These solve different problems; boundaries do not automatically catch every event handler or async callback error.
+
+**Proof:** Run `ACADEMY_LAB_TARGET=starter npm run lab:react-boundaries` in Bash, or set the variable for the command in PowerShell. Do not modify the instructor fixture.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the implementation contract" file="labs/react-boundaries/starter/solution.ts" expected={"Positive and negative cases behave predictably."}>
+
+Make the smallest semantic correction; do not weaken the assertions or convert invalid data into a fake success.
+
+```ts
+
+export function solve(error:unknown):string{return error==null?'ok':'Something went wrong';}
+
+```
+
+**Why it works:** Error boundaries catch render-time errors in their descendant tree, while Suspense shows a loading fallback when a child suspends. These solve different problems; boundaries do not automatically catch every event handler or async callback error.
+
+**Proof:** Run the same local assertions and compare the before/after outputs.
+
+</LessonStep>
+
+<LessonStep number={3} title="Inspect the React component" file="labs/react-boundaries/solution/Widget.tsx" expected="The framework-oriented sample illustrates the same invariant.">
+
+This is an actual React 19 component, which the lab renders to initial HTML. Interactions after hydration are not certified by an SSR check.
+
+```tsx
+
+import React,{Suspense} from 'react';
+import {solve} from './solution';
+class Boundary extends React.Component<{children:React.ReactNode},{failed:boolean}>{state={failed:false};static getDerivedStateFromError(){return {failed:true};}render(){return this.state.failed?<p role="alert">{solve(new Error('hidden'))}</p>:this.props.children;}}
+export function Workshop(){return <section aria-label="Error boundary"><Boundary><Suspense fallback={<p>Loading section</p>}><h2>Recoverable workspace</h2></Suspense></Boundary></section>;}
+
+```
+
+**Predict before running:** The corrected sample handles the reviewed case.
+
+**Proof:** Run `npm run lab:react-boundaries`. To certify real navigation or mutation behavior, also exercise an isolated app in a browser or test server.
+
+</LessonStep>
+
+## Explore and verify
+
+Change a valid input into an invalid one, then inspect which layer should reject it. Check accessibility, cleanup and data ownership as appropriate.
+
+<Misconception claim={"Passing a typecheck or SSR initial render proves every interactive path."} correction={"Error boundaries catch render-time errors in their descendant tree, while Suspense shows a loading fallback when a child suspends. These solve different problems; boundaries do not automatically catch every event handler or async callback error."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+Identify the smallest counterexample, repair the root cause and verify the same input now behaves correctly. Describe the missing browser or server integration check.
+
+<KnowledgeCheck question={"Do Suspense and Error Boundaries handle exactly the same condition?"} choices={["Yes","No, suspension and render errors require different fallbacks","Only in class components","Only in server actions"]} correctIndex={1} explanation={"Error boundaries catch render-time errors in their descendant tree, while Suspense shows a loading fallback when a child suspends. These solve different problems; boundaries do not automatically catch every event handler or async callback error."} misconception="Offline tests have explicit boundaries." lessonId="06.04.07" />
+
+## Guided local lab
+
+Edit `labs/react-boundaries/starter/solution.ts`. The test imports the selected target and confirms actual return values. It also renders the corresponding component with React DOM Server. The academy does not execute arbitrary learner code on the server.
+
+<LabGate lessonId="06.04.07" labId="lab.foundation.react-boundaries" commands={["npm ci","npm run lab:react-boundaries"]} interactive={false} />
+
+## Reflect
+
+Which invariant did the original implementation violate? Which test proves the fix, and what would still require a full browser or Next.js integration environment?
+
+## Official references
+
+- [Official concept](https://react.dev/reference/react/Suspense)
+
+- [Official supporting reference](https://react.dev/reference/react/Component#catching-rendering-errors-with-an-error-boundary)

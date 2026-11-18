@@ -1,0 +1,1 @@
+export type Comment=Readonly<{id:string;text:string}>;export function solve(list:readonly Comment[],entry:Comment,ok:boolean){if(!ok)return [...list];if(!entry.id.trim()||!entry.text.trim())throw new TypeError('Invalid comment');return list.some(x=>x.id===entry.id)?[...list]:[...list,{id:entry.id,text:entry.text.trim()}];}

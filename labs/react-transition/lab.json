@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.react-transition",
+  "lessonId": "06.04.03",
+  "title": "useTransition and responsive UX",
+  "runtime": "react19-tsx-ssr-local",
+  "status": "authored",
+  "starter": "labs/react-transition/starter/solution.ts",
+  "solution": "labs/react-transition/solution/solution.ts",
+  "tests": "labs/react-transition/solution.test.mjs",
+  "verify": [
+    "npm run lab:react-transition"
+  ],
+  "expected": "The correct local contract passes independent assertions; end-to-end framework behavior is a separate QA gate.",
+  "security": "Uses synthetic fixture data, no secrets, uploaded code execution, remote endpoints, publishing, Vercel or hosted grading."
+}

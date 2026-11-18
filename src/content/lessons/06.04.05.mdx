@@ -1,0 +1,98 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Diagnose the useoptimistic failure through a real example","Repair the learner fixture with a precise invariant and explicit edge cases","Verify the result offline and distinguish those checks from framework end-to-end tests"]} />
+
+## The problem we're solving
+
+A comment list shows an optimistic item permanently even after the mutation fails. This local fixture isolates a concrete failure before we introduce any external state or deployment.
+
+## Build the mental model
+
+useOptimistic projects temporary state while an Action is pending. Add the optimistic change inside an Action/Transition and reconcile to confirmed server state on success or failure. Never treat optimistic UI as server-side persistence or authorization.
+
+**Predict before running:** The repaired implementation respects its documented contract.
+
+## Prerequisites and preflight
+
+Continue from [the preceding lesson](/learn/06.04.04). Inspect `labs/react-optimistic/starter/solution.ts`, the instructor solution and `labs/react-optimistic/solution.test.mjs`. Run `npm run lab:react-optimistic` with repository-installed Node.js 24, TypeScript and tsx. The React component is also rendered to static initial HTML by the test; event handlers and effects need browser tests.
+
+<LessonStep number={1} title="Reproduce the defective starter" file="labs/react-optimistic/starter/solution.ts" expected="The intentionally flawed starter fails a real assertion.">
+
+Observe the following implementation, identify the overlooked case, and predict which assertion reveals it.
+
+```ts
+
+export type Entry={id:string;text:string};export function solve(base:Entry[],pending:Entry,accepted:boolean){return [...base,pending];}
+
+```
+
+**Why it fails:** useOptimistic projects temporary state while an Action is pending. Add the optimistic change inside an Action/Transition and reconcile to confirmed server state on success or failure. Never treat optimistic UI as server-side persistence or authorization.
+
+**Proof:** Run `ACADEMY_LAB_TARGET=starter npm run lab:react-optimistic` in Bash, or set the variable for the command in PowerShell. Do not modify the instructor fixture.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the implementation contract" file="labs/react-optimistic/starter/solution.ts" expected={"Positive and negative cases behave predictably."}>
+
+Make the smallest semantic correction; do not weaken the assertions or convert invalid data into a fake success.
+
+```ts
+
+export type Entry=Readonly<{id:string;text:string}>;export function solve(base:readonly Entry[],pending:Entry,accepted:boolean){return accepted?[...base,pending]:[...base];}
+
+```
+
+**Why it works:** useOptimistic projects temporary state while an Action is pending. Add the optimistic change inside an Action/Transition and reconcile to confirmed server state on success or failure. Never treat optimistic UI as server-side persistence or authorization.
+
+**Proof:** Run the same local assertions and compare the before/after outputs.
+
+</LessonStep>
+
+<LessonStep number={3} title="Inspect the React component" file="labs/react-optimistic/solution/Widget.tsx" expected="The framework-oriented sample illustrates the same invariant.">
+
+This is an actual React 19 component, which the lab renders to initial HTML. Interactions after hydration are not certified by an SSR check.
+
+```tsx
+
+'use client';
+import React,{useOptimistic,useState,useTransition} from 'react';
+import {solve,type Entry} from './solution';
+export function Workshop(){const [items,setItems]=useState<Entry[]>([{id:'a',text:'Hello'}]);const [shown,addOptimistic]=useOptimistic(items,(current:Entry[],entry:Entry)=>[...current,entry]);const [busy,startTransition]=useTransition();const add=()=>startTransition(async()=>{const pending={id:'b',text:'Pending'};addOptimistic(pending);await Promise.resolve();setItems(previous=>solve(previous,pending,true));});return <section aria-label="Optimistic comments"><button type="button" disabled={busy} onClick={add}>Add comment</button><ul>{shown.map(entry=><li key={entry.id}>{entry.text}</li>)}</ul></section>;}
+
+```
+
+**Predict before running:** The corrected sample handles the reviewed case.
+
+**Proof:** Run `npm run lab:react-optimistic`. To certify real navigation or mutation behavior, also exercise an isolated app in a browser or test server.
+
+</LessonStep>
+
+## Explore and verify
+
+Change a valid input into an invalid one, then inspect which layer should reject it. Check accessibility, cleanup and data ownership as appropriate.
+
+<Misconception claim={"Passing a typecheck or SSR initial render proves every interactive path."} correction={"useOptimistic projects temporary state while an Action is pending. Add the optimistic change inside an Action/Transition and reconcile to confirmed server state on success or failure. Never treat optimistic UI as server-side persistence or authorization."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+Identify the smallest counterexample, repair the root cause and verify the same input now behaves correctly. Describe the missing browser or server integration check.
+
+<KnowledgeCheck question={"What should happen to an optimistic update after a failed server mutation?"} choices={["Keep it forever","Reconcile/roll back to the confirmed server state","Force-refresh without feedback","Treat it as committed"]} correctIndex={1} explanation={"useOptimistic projects temporary state while an Action is pending. Add the optimistic change inside an Action/Transition and reconcile to confirmed server state on success or failure. Never treat optimistic UI as server-side persistence or authorization."} misconception="Offline tests have explicit boundaries." lessonId="06.04.05" />
+
+## Guided local lab
+
+Edit `labs/react-optimistic/starter/solution.ts`. The test imports the selected target and confirms actual return values. It also renders the corresponding component with React DOM Server. The academy does not execute arbitrary learner code on the server.
+
+<LabGate lessonId="06.04.05" labId="lab.foundation.react-optimistic" commands={["npm ci","npm run lab:react-optimistic"]} interactive={false} />
+
+## Reflect
+
+Which invariant did the original implementation violate? Which test proves the fix, and what would still require a full browser or Next.js integration environment?
+
+## Official references
+
+- [Official concept](https://react.dev/reference/react/useOptimistic)
+
+- [Official supporting reference](https://react.dev/reference/react/useTransition)

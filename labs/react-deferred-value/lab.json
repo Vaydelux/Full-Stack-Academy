@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.react-deferred-value",
+  "lessonId": "06.04.04",
+  "title": "useDeferredValue",
+  "runtime": "react19-tsx-ssr-local",
+  "status": "authored",
+  "starter": "labs/react-deferred-value/starter/solution.ts",
+  "solution": "labs/react-deferred-value/solution/solution.ts",
+  "tests": "labs/react-deferred-value/solution.test.mjs",
+  "verify": [
+    "npm run lab:react-deferred-value"
+  ],
+  "expected": "The correct local contract passes independent assertions; end-to-end framework behavior is a separate QA gate.",
+  "security": "Uses synthetic fixture data, no secrets, uploaded code execution, remote endpoints, publishing, Vercel or hosted grading."
+}

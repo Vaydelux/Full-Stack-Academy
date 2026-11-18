@@ -1,0 +1,4 @@
+'use client';
+import React,{useOptimistic,useState,useTransition} from 'react';
+import {solve,type Comment} from './solution';
+export function Workshop(){const [saved,setSaved]=useState<Comment[]>([{id:'a',text:'Hi'}]);const [draft,setDraft]=useState('Hello');const [optimistic,addOptimistic]=useOptimistic(saved,(state:Comment[],entry:Comment)=>[...state,entry]);const [busy,startTransition]=useTransition();const send=()=>startTransition(async()=>{const entry={id:'b',text:draft};addOptimistic(entry);await Promise.resolve();setSaved(list=>solve(list,entry,Boolean(draft.trim())));});return <section aria-label="Comment capstone"><h2>Optimistic comments</h2><label>Comment <input value={draft} onChange={e=>setDraft(e.target.value)} /></label><button type="button" disabled={busy} onClick={send}>Submit comment</button><ul>{optimistic.map(item=><li key={item.id}>{item.text}</li>)}</ul></section>;}
