@@ -1,0 +1,1 @@
+import {z} from 'zod';const ItemSchema=z.strictObject({id:z.string().min(1),qty:z.number().int().nonnegative()});export type Item=z.infer<typeof ItemSchema>;export function solve(raw:unknown):Item|null{const parsed=ItemSchema.safeParse(raw);return parsed.success?parsed.data:null;}

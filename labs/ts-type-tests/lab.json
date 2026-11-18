@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.ts-type-tests",
+  "lessonId": "04.03.07",
+  "title": "Type testing with tsd-style assertions",
+  "runtime": "typescript-5-zod4-node-24-tsx",
+  "status": "authored",
+  "starter": "labs/ts-type-tests/starter/solution.ts",
+  "solution": "labs/ts-type-tests/solution/solution.ts",
+  "tests": "labs/ts-type-tests/solution.test.mjs",
+  "verify": [
+    "npm run lab:ts-type-tests"
+  ],
+  "expected": "The type testing with tsd-style assertions boundary validates real input before returning a typed domain value.",
+  "security": "Offline synthetic payloads only, no server, accounts, keys, external HTTP, PII, uploads or hosted execution."
+}

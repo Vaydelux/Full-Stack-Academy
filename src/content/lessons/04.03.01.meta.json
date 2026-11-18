@@ -1,0 +1,39 @@
+{
+  "id": "04.03.01",
+  "title": "Compile-time types vs runtime values",
+  "description": "Secure compile-time types vs runtime values boundaries through runtime validation, typed results and local TypeScript tests rather than trusting erased annotations.",
+  "trackId": "04",
+  "moduleId": "04.03",
+  "level": "Beginner",
+  "estimatedMinutes": 60,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "node": "24",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "04.02.08"
+  ],
+  "objectives": [
+    "Distinguish static typing from runtime trust in compile-time types vs runtime values",
+    "Validate unknown input or normalize transport data before constructing a domain value",
+    "Verify rejected and accepted cases with runnable tests plus compiler checks"
+  ],
+  "labId": "lab.foundation.ts-runtime",
+  "sources": [
+    {
+      "label": "Official TypeScript / Zod reference",
+      "url": "https://www.typescriptlang.org/docs/handbook/2/everyday-types.html#type-assertions"
+    },
+    {
+      "label": "Official supplemental documentation",
+      "url": "https://www.typescriptlang.org/docs/handbook/2/narrowing.html"
+    }
+  ],
+  "rubric": [
+    "I can identify the untrusted runtime boundary in compile-time types vs runtime values.",
+    "I reject at least one malformed input and validate one successful case.",
+    "I avoid unchecked type assertions in public API contracts."
+  ]
+}

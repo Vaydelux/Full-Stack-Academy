@@ -1,0 +1,91 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Distinguish static typing from runtime trust in serialization boundaries and dates","Validate unknown input or normalize transport data before constructing a domain value","Verify rejected and accepted cases with runnable tests plus compiler checks"]} />
+
+## The problem we're solving
+
+Serialized event data contains a malformed date but is cast as a domain event and converted to ISO without validation. In a full-stack application, this boundary can lead to incorrect data or information disclosure even if the TypeScript project compiles successfully.
+
+## Build the mental model
+
+JSON has strings/numbers/objects but no native Date; serialization boundaries must parse dates and numbers explicitly. Date.parse can accept some noncanonical input, so enforce the contract's ISO format before conversion. JSON.parse itself does not validate application fields.
+
+**Predict before running:** Only canonical valid UTC dates cross into the domain; malformed dates return null.
+
+## Prerequisites and preflight
+
+Continue from [the previous topic](/learn/04.03.04). Inspect `labs/ts-serialization/starter/solution.ts`, `labs/ts-serialization/solution/solution.ts`, and the Node/tsx tests. This lab uses local synthetic data, pinned TypeScript and Zod versions where applicable; no database credentials, remote API or deployment are needed.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce a broken trust boundary" file="labs/ts-serialization/starter/solution.ts" expected="Malformed values are accepted, leaked or crash the unchecked starter.">
+
+```ts
+type Event={createdAt:string};export function solve(raw:unknown):string{return new Date((raw as Event).createdAt).toISOString();}
+```
+
+**Predict before running:** Serialized event data contains a malformed date but is cast as a domain event and converted to ISO without validation.
+
+**Why it fails:** JSON has strings/numbers/objects but no native Date; serialization boundaries must parse dates and numbers explicitly. Date.parse can accept some noncanonical input, so enforce the contract's ISO format before conversion. JSON.parse itself does not validate application fields.
+
+**Proof:** Run the starter-target verifier; record the exact unsupported assumption, not just the stack trace.
+
+</LessonStep>
+
+<LessonStep number={2} title="Validate and map a trusted domain value" file="labs/ts-serialization/starter/solution.ts" expected={"Only canonical valid UTC dates cross into the domain; malformed dates return null."}>
+
+Use unknown at the boundary, a runtime predicate or strict schema and a public result type. Handle expected invalid data explicitly.
+
+```ts
+export function solve(raw:unknown):string|null{if(!raw||typeof raw!=='object'||!('createdAt' in raw)||typeof raw.createdAt!=='string'||!/\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d\.\d{3}Z$/.test(raw.createdAt))return null;const date=new Date(raw.createdAt);if(!Number.isFinite(date.getTime())||date.toISOString()!==raw.createdAt)return null;return date.toISOString();}
+```
+
+**Predict before running:** Only canonical valid UTC dates cross into the domain; malformed dates return null.
+
+**Why the repair works:** JSON has strings/numbers/objects but no native Date; serialization boundaries must parse dates and numbers explicitly. Date.parse can accept some noncanonical input, so enforce the contract's ISO format before conversion. JSON.parse itself does not validate application fields.
+
+**Proof:** Compare clean and malformed cases against the verified instructor module.
+
+</LessonStep>
+
+<LessonStep number={3} title="Exercise the successful and rejected cases" file="labs/ts-serialization/solution.test.mjs" expected="The same offline tests distinguish valid and invalid input without hidden network state.">
+
+```ts
+assert.equal(solve({createdAt:'2026-11-19T01:00:00.000Z'}),'2026-11-19T01:00:00.000Z');assert.equal(solve({createdAt:'not-a-date'}),null);assert.equal(solve(null),null);
+```
+
+**Predict before running:** Invalid external input never enters the typed domain as though it had passed validation.
+
+**Why this matters:** A compiler's assurances apply to typed source relationships, not arbitrary strings from a network or storage boundary.
+
+**Proof:** Run `npm run lab:ts-serialization`, then `npm run typecheck` for compile-time contracts.
+
+</LessonStep>
+
+## Explore and verify
+
+Use boundary-oriented reasoning: the outer layer receives unknown, the parser enforces shape and units, and only then may a domain function use a trusted type. Separate validation from authorization; a successful schema parse never proves the actor has permission.
+
+<Misconception claim="A DTO interface or as assertion proves the runtime value has the fields or access rights claimed." correction={"JSON has strings/numbers/objects but no native Date; serialization boundaries must parse dates and numbers explicitly. Date.parse can accept some noncanonical input, so enforce the contract's ISO format before conversion. JSON.parse itself does not validate application fields."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+Find the smallest malformed payload that reveals the starter's flaw, whether a missing property, malformed date, unexpected field or wrong unit. Record the old and new behavior. Verify that the corrected implementation avoids throwing on expected invalid input unless that is the explicitly documented contract.
+
+<KnowledgeCheck question={"How are Date values normally represented in JSON?"} choices={["As native Date instances","As strings requiring explicit parsing","As branded IDs automatically","As timezone-aware JavaScript objects"]} correctIndex={1} explanation={"JSON has strings/numbers/objects but no native Date; serialization boundaries must parse dates and numbers explicitly. Date.parse can accept some noncanonical input, so enforce the contract's ISO format before conversion. JSON.parse itself does not validate application fields."} misconception="Static types neither parse network data nor authorize operations." lessonId="04.03.05" />
+
+## Guided local lab
+
+Work in `labs/ts-serialization/starter/solution.ts`, compare with the instructor after debugging, and use `ACADEMY_LAB_TARGET=starter` to run the same offline tests. Where provided, `typecheck.ts` adds compile-time rejection cases. This lab does not persist or grade submissions in the cloud.
+
+<LabGate lessonId="04.03.05" labId="lab.foundation.ts-serialization" commands={["npm ci","npm run lab:ts-serialization"]} interactive={false} />
+
+## Reflect
+
+Which fields and units did you validate? Why is compile-time typing insufficient here? What additional authentication, authorization, rate limiting or auditing would a production endpoint require?
+
+## Official references
+
+- [Official type or schema reference](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString)
+- [Official supporting material](https://www.typescriptlang.org/docs/handbook/2/narrowing.html)

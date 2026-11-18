@@ -1,0 +1,91 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Distinguish static typing from runtime trust in compile-time types vs runtime values","Validate unknown input or normalize transport data before constructing a domain value","Verify rejected and accepted cases with runnable tests plus compiler checks"]} />
+
+## The problem we're solving
+
+A product-price parser asserts JSON as a typed object and crashes when priceCents is missing. In a full-stack application, this boundary can lead to incorrect data or information disclosure even if the TypeScript project compiles successfully.
+
+## Build the mental model
+
+TypeScript annotations are erased during compilation, so an as assertion cannot validate JSON. Check structural fields at runtime before using numeric methods. Use unknown to force an explicit boundary rather than importing arbitrary data as a trusted domain object.
+
+**Predict before running:** Only nonnegative integral cents reach the formatter; invalid runtime values are rejected safely.
+
+## Prerequisites and preflight
+
+Continue from [the previous topic](/learn/04.02.08). Inspect `labs/ts-runtime/starter/solution.ts`, `labs/ts-runtime/solution/solution.ts`, and the Node/tsx tests. This lab uses local synthetic data, pinned TypeScript and Zod versions where applicable; no database credentials, remote API or deployment are needed.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce a broken trust boundary" file="labs/ts-runtime/starter/solution.ts" expected="Malformed values are accepted, leaked or crash the unchecked starter.">
+
+```ts
+type Product={priceCents:number};export function solve(raw:unknown):string{return (raw as Product).priceCents.toFixed(0);}
+```
+
+**Predict before running:** A product-price parser asserts JSON as a typed object and crashes when priceCents is missing.
+
+**Why it fails:** TypeScript annotations are erased during compilation, so an as assertion cannot validate JSON. Check structural fields at runtime before using numeric methods. Use unknown to force an explicit boundary rather than importing arbitrary data as a trusted domain object.
+
+**Proof:** Run the starter-target verifier; record the exact unsupported assumption, not just the stack trace.
+
+</LessonStep>
+
+<LessonStep number={2} title="Validate and map a trusted domain value" file="labs/ts-runtime/starter/solution.ts" expected={"Only nonnegative integral cents reach the formatter; invalid runtime values are rejected safely."}>
+
+Use unknown at the boundary, a runtime predicate or strict schema and a public result type. Handle expected invalid data explicitly.
+
+```ts
+type Product={priceCents:number};export function solve(raw:unknown):string{if(!raw||typeof raw!=='object'||!('priceCents' in raw)||typeof raw.priceCents!=='number'||!Number.isInteger(raw.priceCents)||raw.priceCents<0)return 'INVALID';const product:Product={priceCents:raw.priceCents};return product.priceCents.toFixed(0);}
+```
+
+**Predict before running:** Only nonnegative integral cents reach the formatter; invalid runtime values are rejected safely.
+
+**Why the repair works:** TypeScript annotations are erased during compilation, so an as assertion cannot validate JSON. Check structural fields at runtime before using numeric methods. Use unknown to force an explicit boundary rather than importing arbitrary data as a trusted domain object.
+
+**Proof:** Compare clean and malformed cases against the verified instructor module.
+
+</LessonStep>
+
+<LessonStep number={3} title="Exercise the successful and rejected cases" file="labs/ts-runtime/solution.test.mjs" expected="The same offline tests distinguish valid and invalid input without hidden network state.">
+
+```ts
+assert.equal(solve({priceCents:250}),'250');assert.equal(solve({}),'INVALID');assert.equal(solve({priceCents:NaN}),'INVALID');assert.equal(solve(null),'INVALID');
+```
+
+**Predict before running:** Invalid external input never enters the typed domain as though it had passed validation.
+
+**Why this matters:** A compiler's assurances apply to typed source relationships, not arbitrary strings from a network or storage boundary.
+
+**Proof:** Run `npm run lab:ts-runtime`, then `npm run typecheck` for compile-time contracts.
+
+</LessonStep>
+
+## Explore and verify
+
+Use boundary-oriented reasoning: the outer layer receives unknown, the parser enforces shape and units, and only then may a domain function use a trusted type. Separate validation from authorization; a successful schema parse never proves the actor has permission.
+
+<Misconception claim="A DTO interface or as assertion proves the runtime value has the fields or access rights claimed." correction={"TypeScript annotations are erased during compilation, so an as assertion cannot validate JSON. Check structural fields at runtime before using numeric methods. Use unknown to force an explicit boundary rather than importing arbitrary data as a trusted domain object."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+Find the smallest malformed payload that reveals the starter's flaw, whether a missing property, malformed date, unexpected field or wrong unit. Record the old and new behavior. Verify that the corrected implementation avoids throwing on expected invalid input unless that is the explicitly documented contract.
+
+<KnowledgeCheck question={"What runtime code does a TypeScript as assertion emit?"} choices={["A complete schema parser","No assertion check; the type operation is erased","An automatic database migration","A JSON validator"]} correctIndex={1} explanation={"TypeScript annotations are erased during compilation, so an as assertion cannot validate JSON. Check structural fields at runtime before using numeric methods. Use unknown to force an explicit boundary rather than importing arbitrary data as a trusted domain object."} misconception="Static types neither parse network data nor authorize operations." lessonId="04.03.01" />
+
+## Guided local lab
+
+Work in `labs/ts-runtime/starter/solution.ts`, compare with the instructor after debugging, and use `ACADEMY_LAB_TARGET=starter` to run the same offline tests. Where provided, `typecheck.ts` adds compile-time rejection cases. This lab does not persist or grade submissions in the cloud.
+
+<LabGate lessonId="04.03.01" labId="lab.foundation.ts-runtime" commands={["npm ci","npm run lab:ts-runtime"]} interactive={false} />
+
+## Reflect
+
+Which fields and units did you validate? Why is compile-time typing insufficient here? What additional authentication, authorization, rate limiting or auditing would a production endpoint require?
+
+## Official references
+
+- [Official type or schema reference](https://www.typescriptlang.org/docs/handbook/2/everyday-types.html#type-assertions)
+- [Official supporting material](https://www.typescriptlang.org/docs/handbook/2/narrowing.html)

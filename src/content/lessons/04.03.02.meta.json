@@ -1,0 +1,40 @@
+{
+  "id": "04.03.02",
+  "title": "Parsing unknown data with Zod",
+  "description": "Secure parsing unknown data with zod boundaries through runtime validation, typed results and local TypeScript tests rather than trusting erased annotations.",
+  "trackId": "04",
+  "moduleId": "04.03",
+  "level": "Beginner",
+  "estimatedMinutes": 60,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "node": "24",
+    "typescript": "5",
+    "zod": "4"
+  },
+  "prerequisites": [
+    "04.03.01"
+  ],
+  "objectives": [
+    "Distinguish static typing from runtime trust in parsing unknown data with zod",
+    "Validate unknown input or normalize transport data before constructing a domain value",
+    "Verify rejected and accepted cases with runnable tests plus compiler checks"
+  ],
+  "labId": "lab.foundation.ts-parse-unknown",
+  "sources": [
+    {
+      "label": "Official TypeScript / Zod reference",
+      "url": "https://zod.dev/basics"
+    },
+    {
+      "label": "Official supplemental documentation",
+      "url": "https://www.typescriptlang.org/docs/handbook/2/narrowing.html"
+    }
+  ],
+  "rubric": [
+    "I can identify the untrusted runtime boundary in parsing unknown data with zod.",
+    "I reject at least one malformed input and validate one successful case.",
+    "I avoid unchecked type assertions in public API contracts."
+  ]
+}

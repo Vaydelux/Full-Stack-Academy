@@ -1,0 +1,39 @@
+{
+  "id": "04.03.06",
+  "title": "DTOs vs domain types",
+  "description": "Secure dtos vs domain types boundaries through runtime validation, typed results and local TypeScript tests rather than trusting erased annotations.",
+  "trackId": "04",
+  "moduleId": "04.03",
+  "level": "Beginner",
+  "estimatedMinutes": 60,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "node": "24",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "04.03.05"
+  ],
+  "objectives": [
+    "Distinguish static typing from runtime trust in dtos vs domain types",
+    "Validate unknown input or normalize transport data before constructing a domain value",
+    "Verify rejected and accepted cases with runnable tests plus compiler checks"
+  ],
+  "labId": "lab.foundation.ts-dtos",
+  "sources": [
+    {
+      "label": "Official TypeScript / Zod reference",
+      "url": "https://www.typescriptlang.org/docs/handbook/2/objects.html"
+    },
+    {
+      "label": "Official supplemental documentation",
+      "url": "https://zod.dev/basics"
+    }
+  ],
+  "rubric": [
+    "I can identify the untrusted runtime boundary in dtos vs domain types.",
+    "I reject at least one malformed input and validate one successful case.",
+    "I avoid unchecked type assertions in public API contracts."
+  ]
+}

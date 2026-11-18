@@ -1,0 +1,91 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Distinguish static typing from runtime trust in type testing with tsd-style assertions","Validate unknown input or normalize transport data before constructing a domain value","Verify rejected and accepted cases with runnable tests plus compiler checks"]} />
+
+## The problem we're solving
+
+A generic first-element helper is widened to unknown, and callers lose the concrete element type without a compiler regression test. In a full-stack application, this boundary can lead to incorrect data or information disclosure even if the TypeScript project compiles successfully.
+
+## Build the mental model
+
+Type tests ensure a public API retains its intended compile-time relationship. Tools such as tsd can express this in dedicated packages, but the repository already has strict tsc and @ts-expect-error; use those to prove valid and invalid calls without installing another test dependency. Runtime assertions still cover the emitted code.
+
+**Predict before running:** The public type preserves tuple literal information and rejects impossible assignments during tsc.
+
+## Prerequisites and preflight
+
+Continue from [the previous topic](/learn/04.03.06). Inspect `labs/ts-type-tests/starter/solution.ts`, `labs/ts-type-tests/solution/solution.ts`, and the Node/tsx tests. This lab uses local synthetic data, pinned TypeScript and Zod versions where applicable; no database credentials, remote API or deployment are needed.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce a broken trust boundary" file="labs/ts-type-tests/starter/solution.ts" expected="Malformed values are accepted, leaked or crash the unchecked starter.">
+
+```ts
+export type First<T extends readonly unknown[]>=unknown;export function solve<T extends readonly unknown[]>(items:T):First<T>{return items[0];}
+```
+
+**Predict before running:** A generic first-element helper is widened to unknown, and callers lose the concrete element type without a compiler regression test.
+
+**Why it fails:** Type tests ensure a public API retains its intended compile-time relationship. Tools such as tsd can express this in dedicated packages, but the repository already has strict tsc and @ts-expect-error; use those to prove valid and invalid calls without installing another test dependency. Runtime assertions still cover the emitted code.
+
+**Proof:** Run the starter-target verifier; record the exact unsupported assumption, not just the stack trace.
+
+</LessonStep>
+
+<LessonStep number={2} title="Validate and map a trusted domain value" file="labs/ts-type-tests/starter/solution.ts" expected={"The public type preserves tuple literal information and rejects impossible assignments during tsc."}>
+
+Use unknown at the boundary, a runtime predicate or strict schema and a public result type. Handle expected invalid data explicitly.
+
+```ts
+export type First<T extends readonly unknown[]>=T extends readonly [infer H,...unknown[]]?H:T[number]|undefined;export function solve<T extends readonly unknown[]>(items:T):First<T>{return items[0] as First<T>;}
+```
+
+**Predict before running:** The public type preserves tuple literal information and rejects impossible assignments during tsc.
+
+**Why the repair works:** Type tests ensure a public API retains its intended compile-time relationship. Tools such as tsd can express this in dedicated packages, but the repository already has strict tsc and @ts-expect-error; use those to prove valid and invalid calls without installing another test dependency. Runtime assertions still cover the emitted code.
+
+**Proof:** Compare clean and malformed cases against the verified instructor module.
+
+</LessonStep>
+
+<LessonStep number={3} title="Exercise the successful and rejected cases" file="labs/ts-type-tests/solution.test.mjs" expected="The same offline tests distinguish valid and invalid input without hidden network state.">
+
+```ts
+assert.equal(solve([1,2]),1);assert.equal(solve(['a','b']),'a');assert.equal(solve([]),undefined);
+```
+
+**Predict before running:** Invalid external input never enters the typed domain as though it had passed validation.
+
+**Why this matters:** A compiler's assurances apply to typed source relationships, not arbitrary strings from a network or storage boundary.
+
+**Proof:** Run `npm run lab:ts-type-tests`, then `npm run typecheck` for compile-time contracts.
+
+</LessonStep>
+
+## Explore and verify
+
+Use boundary-oriented reasoning: the outer layer receives unknown, the parser enforces shape and units, and only then may a domain function use a trusted type. Separate validation from authorization; a successful schema parse never proves the actor has permission.
+
+<Misconception claim="A DTO interface or as assertion proves the runtime value has the fields or access rights claimed." correction={"Type tests ensure a public API retains its intended compile-time relationship. Tools such as tsd can express this in dedicated packages, but the repository already has strict tsc and @ts-expect-error; use those to prove valid and invalid calls without installing another test dependency. Runtime assertions still cover the emitted code."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+Find the smallest malformed payload that reveals the starter's flaw, whether a missing property, malformed date, unexpected field or wrong unit. Record the old and new behavior. Verify that the corrected implementation avoids throwing on expected invalid input unless that is the explicitly documented contract.
+
+<KnowledgeCheck question={"What is a TypeScript type-level regression test primarily checking?"} choices={["Runtime network latency","Assignability and inferred API contracts during compilation","DOM layout behavior","Production server logs"]} correctIndex={1} explanation={"Type tests ensure a public API retains its intended compile-time relationship. Tools such as tsd can express this in dedicated packages, but the repository already has strict tsc and @ts-expect-error; use those to prove valid and invalid calls without installing another test dependency. Runtime assertions still cover the emitted code."} misconception="Static types neither parse network data nor authorize operations." lessonId="04.03.07" />
+
+## Guided local lab
+
+Work in `labs/ts-type-tests/starter/solution.ts`, compare with the instructor after debugging, and use `ACADEMY_LAB_TARGET=starter` to run the same offline tests. Where provided, `typecheck.ts` adds compile-time rejection cases. This lab does not persist or grade submissions in the cloud.
+
+<LabGate lessonId="04.03.07" labId="lab.foundation.ts-type-tests" commands={["npm ci","npm run lab:ts-type-tests"]} interactive={false} />
+
+## Reflect
+
+Which fields and units did you validate? Why is compile-time typing insufficient here? What additional authentication, authorization, rate limiting or auditing would a production endpoint require?
+
+## Official references
+
+- [Official type or schema reference](https://www.typescriptlang.org/docs/handbook/2/conditional-types.html)
+- [Official supporting material](https://www.typescriptlang.org/docs/handbook/2/everyday-types.html)

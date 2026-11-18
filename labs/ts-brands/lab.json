@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.ts-brands",
+  "lessonId": "04.03.04",
+  "title": "Branded IDs and validation",
+  "runtime": "typescript-5-zod4-node-24-tsx",
+  "status": "authored",
+  "starter": "labs/ts-brands/starter/solution.ts",
+  "solution": "labs/ts-brands/solution/solution.ts",
+  "tests": "labs/ts-brands/solution.test.mjs",
+  "verify": [
+    "npm run lab:ts-brands"
+  ],
+  "expected": "The branded ids and validation boundary validates real input before returning a typed domain value.",
+  "security": "Offline synthetic payloads only, no server, accounts, keys, external HTTP, PII, uploads or hosted execution."
+}

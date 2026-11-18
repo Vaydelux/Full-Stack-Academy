@@ -1,0 +1,91 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Distinguish static typing from runtime trust in parsing unknown data with zod","Validate unknown input or normalize transport data before constructing a domain value","Verify rejected and accepted cases with runnable tests plus compiler checks"]} />
+
+## The problem we're solving
+
+A request body is trusted as a TypeScript interface, so a negative quantity is silently accepted. In a full-stack application, this boundary can lead to incorrect data or information disclosure even if the TypeScript project compiles successfully.
+
+## Build the mental model
+
+unknown is the correct starting type for untrusted input. Zod 4 schemas perform actual runtime checks and safeParse returns success/data or failure/error without throwing for expected invalid data. Strict schemas may also reject unrecognized keys when that is part of the contract.
+
+**Predict before running:** Valid data becomes a typed record, while negative counts and extra fields fail the runtime schema.
+
+## Prerequisites and preflight
+
+Continue from [the previous topic](/learn/04.03.01). Inspect `labs/ts-parse-unknown/starter/solution.ts`, `labs/ts-parse-unknown/solution/solution.ts`, and the Node/tsx tests. This lab uses local synthetic data, pinned TypeScript and Zod versions where applicable; no database credentials, remote API or deployment are needed.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce a broken trust boundary" file="labs/ts-parse-unknown/starter/solution.ts" expected="Malformed values are accepted, leaked or crash the unchecked starter.">
+
+```ts
+type Item={id:string;qty:number};export function solve(raw:unknown):Item|null{return raw as Item;}
+```
+
+**Predict before running:** A request body is trusted as a TypeScript interface, so a negative quantity is silently accepted.
+
+**Why it fails:** unknown is the correct starting type for untrusted input. Zod 4 schemas perform actual runtime checks and safeParse returns success/data or failure/error without throwing for expected invalid data. Strict schemas may also reject unrecognized keys when that is part of the contract.
+
+**Proof:** Run the starter-target verifier; record the exact unsupported assumption, not just the stack trace.
+
+</LessonStep>
+
+<LessonStep number={2} title="Validate and map a trusted domain value" file="labs/ts-parse-unknown/starter/solution.ts" expected={"Valid data becomes a typed record, while negative counts and extra fields fail the runtime schema."}>
+
+Use unknown at the boundary, a runtime predicate or strict schema and a public result type. Handle expected invalid data explicitly.
+
+```ts
+import {z} from 'zod';const ItemSchema=z.strictObject({id:z.string().min(1),qty:z.number().int().nonnegative()});export type Item=z.infer<typeof ItemSchema>;export function solve(raw:unknown):Item|null{const parsed=ItemSchema.safeParse(raw);return parsed.success?parsed.data:null;}
+```
+
+**Predict before running:** Valid data becomes a typed record, while negative counts and extra fields fail the runtime schema.
+
+**Why the repair works:** unknown is the correct starting type for untrusted input. Zod 4 schemas perform actual runtime checks and safeParse returns success/data or failure/error without throwing for expected invalid data. Strict schemas may also reject unrecognized keys when that is part of the contract.
+
+**Proof:** Compare clean and malformed cases against the verified instructor module.
+
+</LessonStep>
+
+<LessonStep number={3} title="Exercise the successful and rejected cases" file="labs/ts-parse-unknown/solution.test.mjs" expected="The same offline tests distinguish valid and invalid input without hidden network state.">
+
+```ts
+assert.deepEqual(solve({id:'a',qty:2}),{id:'a',qty:2});assert.equal(solve({id:'a',qty:-1}),null);assert.equal(solve({id:'a',qty:2,admin:true}),null);assert.equal(solve(null),null);
+```
+
+**Predict before running:** Invalid external input never enters the typed domain as though it had passed validation.
+
+**Why this matters:** A compiler's assurances apply to typed source relationships, not arbitrary strings from a network or storage boundary.
+
+**Proof:** Run `npm run lab:ts-parse-unknown`, then `npm run typecheck` for compile-time contracts.
+
+</LessonStep>
+
+## Explore and verify
+
+Use boundary-oriented reasoning: the outer layer receives unknown, the parser enforces shape and units, and only then may a domain function use a trusted type. Separate validation from authorization; a successful schema parse never proves the actor has permission.
+
+<Misconception claim="A DTO interface or as assertion proves the runtime value has the fields or access rights claimed." correction={"unknown is the correct starting type for untrusted input. Zod 4 schemas perform actual runtime checks and safeParse returns success/data or failure/error without throwing for expected invalid data. Strict schemas may also reject unrecognized keys when that is part of the contract."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+Find the smallest malformed payload that reveals the starter's flaw, whether a missing property, malformed date, unexpected field or wrong unit. Record the old and new behavior. Verify that the corrected implementation avoids throwing on expected invalid input unless that is the explicitly documented contract.
+
+<KnowledgeCheck question={"What does Zod safeParse return for invalid data?"} choices={["A success object with coerced random values","A failure result with validation issues","A syntax exception for every invalid field","An unchecked TypeScript cast"]} correctIndex={1} explanation={"unknown is the correct starting type for untrusted input. Zod 4 schemas perform actual runtime checks and safeParse returns success/data or failure/error without throwing for expected invalid data. Strict schemas may also reject unrecognized keys when that is part of the contract."} misconception="Static types neither parse network data nor authorize operations." lessonId="04.03.02" />
+
+## Guided local lab
+
+Work in `labs/ts-parse-unknown/starter/solution.ts`, compare with the instructor after debugging, and use `ACADEMY_LAB_TARGET=starter` to run the same offline tests. Where provided, `typecheck.ts` adds compile-time rejection cases. This lab does not persist or grade submissions in the cloud.
+
+<LabGate lessonId="04.03.02" labId="lab.foundation.ts-parse-unknown" commands={["npm ci","npm run lab:ts-parse-unknown"]} interactive={false} />
+
+## Reflect
+
+Which fields and units did you validate? Why is compile-time typing insufficient here? What additional authentication, authorization, rate limiting or auditing would a production endpoint require?
+
+## Official references
+
+- [Official type or schema reference](https://zod.dev/basics)
+- [Official supporting material](https://www.typescriptlang.org/docs/handbook/2/narrowing.html)

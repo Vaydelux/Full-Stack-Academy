@@ -1,0 +1,39 @@
+{
+  "id": "04.03.03",
+  "title": "Type-safe errors and Result patterns",
+  "description": "Secure type-safe errors and result patterns boundaries through runtime validation, typed results and local TypeScript tests rather than trusting erased annotations.",
+  "trackId": "04",
+  "moduleId": "04.03",
+  "level": "Beginner",
+  "estimatedMinutes": 60,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "node": "24",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "04.03.02"
+  ],
+  "objectives": [
+    "Distinguish static typing from runtime trust in type-safe errors and result patterns",
+    "Validate unknown input or normalize transport data before constructing a domain value",
+    "Verify rejected and accepted cases with runnable tests plus compiler checks"
+  ],
+  "labId": "lab.foundation.ts-typed-errors",
+  "sources": [
+    {
+      "label": "Official TypeScript / Zod reference",
+      "url": "https://www.typescriptlang.org/tsconfig/useUnknownInCatchVariables.html"
+    },
+    {
+      "label": "Official supplemental documentation",
+      "url": "https://www.typescriptlang.org/docs/handbook/2/narrowing.html"
+    }
+  ],
+  "rubric": [
+    "I can identify the untrusted runtime boundary in type-safe errors and result patterns.",
+    "I reject at least one malformed input and validate one successful case.",
+    "I avoid unchecked type assertions in public API contracts."
+  ]
+}

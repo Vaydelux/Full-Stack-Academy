@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.ts-serialization",
+  "lessonId": "04.03.05",
+  "title": "Serialization boundaries and dates",
+  "runtime": "typescript-5-zod4-node-24-tsx",
+  "status": "authored",
+  "starter": "labs/ts-serialization/starter/solution.ts",
+  "solution": "labs/ts-serialization/solution/solution.ts",
+  "tests": "labs/ts-serialization/solution.test.mjs",
+  "verify": [
+    "npm run lab:ts-serialization"
+  ],
+  "expected": "The serialization boundaries and dates boundary validates real input before returning a typed domain value.",
+  "security": "Offline synthetic payloads only, no server, accounts, keys, external HTTP, PII, uploads or hosted execution."
+}

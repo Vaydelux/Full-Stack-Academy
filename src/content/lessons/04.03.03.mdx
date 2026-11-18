@@ -1,0 +1,91 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Distinguish static typing from runtime trust in type-safe errors and result patterns","Validate unknown input or normalize transport data before constructing a domain value","Verify rejected and accepted cases with runnable tests plus compiler checks"]} />
+
+## The problem we're solving
+
+An error handler leaks raw error objects and assumes every caught rejection is an Error instance. In a full-stack application, this boundary can lead to incorrect data or information disclosure even if the TypeScript project compiles successfully.
+
+## Build the mental model
+
+A JavaScript catch value is unknown. Narrow Error safely and map expected failures to a discriminated Result; never echo arbitrary objects or internal stack traces to the client. Unexpected failures may need structured logging at the application boundary.
+
+**Predict before running:** Expected failures produce safe public error codes without leaking sensitive rejection text.
+
+## Prerequisites and preflight
+
+Continue from [the previous topic](/learn/04.03.02). Inspect `labs/ts-typed-errors/starter/solution.ts`, `labs/ts-typed-errors/solution/solution.ts`, and the Node/tsx tests. This lab uses local synthetic data, pinned TypeScript and Zod versions where applicable; no database credentials, remote API or deployment are needed.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce a broken trust boundary" file="labs/ts-typed-errors/starter/solution.ts" expected="Malformed values are accepted, leaked or crash the unchecked starter.">
+
+```ts
+export type Result={ok:true;value:string}|{ok:false;error:string};export function solve(input:unknown):Result{return {ok:false,error:String(input)};}
+```
+
+**Predict before running:** An error handler leaks raw error objects and assumes every caught rejection is an Error instance.
+
+**Why it fails:** A JavaScript catch value is unknown. Narrow Error safely and map expected failures to a discriminated Result; never echo arbitrary objects or internal stack traces to the client. Unexpected failures may need structured logging at the application boundary.
+
+**Proof:** Run the starter-target verifier; record the exact unsupported assumption, not just the stack trace.
+
+</LessonStep>
+
+<LessonStep number={2} title="Validate and map a trusted domain value" file="labs/ts-typed-errors/starter/solution.ts" expected={"Expected failures produce safe public error codes without leaking sensitive rejection text."}>
+
+Use unknown at the boundary, a runtime predicate or strict schema and a public result type. Handle expected invalid data explicitly.
+
+```ts
+export type Result={ok:true;value:string}|{ok:false;error:string};export function solve(input:unknown):Result{if(typeof input==='string'&&input.trim())return {ok:true,value:input.trim()};if(input instanceof Error)return {ok:false,error:input.name==='TypeError'?'invalid-type':'operation-failed'};return {ok:false,error:'invalid-input'};}
+```
+
+**Predict before running:** Expected failures produce safe public error codes without leaking sensitive rejection text.
+
+**Why the repair works:** A JavaScript catch value is unknown. Narrow Error safely and map expected failures to a discriminated Result; never echo arbitrary objects or internal stack traces to the client. Unexpected failures may need structured logging at the application boundary.
+
+**Proof:** Compare clean and malformed cases against the verified instructor module.
+
+</LessonStep>
+
+<LessonStep number={3} title="Exercise the successful and rejected cases" file="labs/ts-typed-errors/solution.test.mjs" expected="The same offline tests distinguish valid and invalid input without hidden network state.">
+
+```ts
+assert.deepEqual(solve(' ok '),{ok:true,value:'ok'});assert.deepEqual(solve(new TypeError('password=secret')),{ok:false,error:'invalid-type'});assert.deepEqual(solve({password:'secret'}),{ok:false,error:'invalid-input'});
+```
+
+**Predict before running:** Invalid external input never enters the typed domain as though it had passed validation.
+
+**Why this matters:** A compiler's assurances apply to typed source relationships, not arbitrary strings from a network or storage boundary.
+
+**Proof:** Run `npm run lab:ts-typed-errors`, then `npm run typecheck` for compile-time contracts.
+
+</LessonStep>
+
+## Explore and verify
+
+Use boundary-oriented reasoning: the outer layer receives unknown, the parser enforces shape and units, and only then may a domain function use a trusted type. Separate validation from authorization; a successful schema parse never proves the actor has permission.
+
+<Misconception claim="A DTO interface or as assertion proves the runtime value has the fields or access rights claimed." correction={"A JavaScript catch value is unknown. Narrow Error safely and map expected failures to a discriminated Result; never echo arbitrary objects or internal stack traces to the client. Unexpected failures may need structured logging at the application boundary."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+Find the smallest malformed payload that reveals the starter's flaw, whether a missing property, malformed date, unexpected field or wrong unit. Record the old and new behavior. Verify that the corrected implementation avoids throwing on expected invalid input unless that is the explicitly documented contract.
+
+<KnowledgeCheck question={"What is the safest type for a caught JavaScript value before narrowing?"} choices={["any by default without checks","unknown","always Error","always string"]} correctIndex={1} explanation={"A JavaScript catch value is unknown. Narrow Error safely and map expected failures to a discriminated Result; never echo arbitrary objects or internal stack traces to the client. Unexpected failures may need structured logging at the application boundary."} misconception="Static types neither parse network data nor authorize operations." lessonId="04.03.03" />
+
+## Guided local lab
+
+Work in `labs/ts-typed-errors/starter/solution.ts`, compare with the instructor after debugging, and use `ACADEMY_LAB_TARGET=starter` to run the same offline tests. Where provided, `typecheck.ts` adds compile-time rejection cases. This lab does not persist or grade submissions in the cloud.
+
+<LabGate lessonId="04.03.03" labId="lab.foundation.ts-typed-errors" commands={["npm ci","npm run lab:ts-typed-errors"]} interactive={false} />
+
+## Reflect
+
+Which fields and units did you validate? Why is compile-time typing insufficient here? What additional authentication, authorization, rate limiting or auditing would a production endpoint require?
+
+## Official references
+
+- [Official type or schema reference](https://www.typescriptlang.org/tsconfig/useUnknownInCatchVariables.html)
+- [Official supporting material](https://www.typescriptlang.org/docs/handbook/2/narrowing.html)

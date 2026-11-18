@@ -1,0 +1,1 @@
+export function solve(raw:unknown):string|null{if(!raw||typeof raw!=='object'||!('createdAt' in raw)||typeof raw.createdAt!=='string'||!/\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d\.\d{3}Z$/.test(raw.createdAt))return null;const date=new Date(raw.createdAt);if(!Number.isFinite(date.getTime())||date.toISOString()!==raw.createdAt)return null;return date.toISOString();}

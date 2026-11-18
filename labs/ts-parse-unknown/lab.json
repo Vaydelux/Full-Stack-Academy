@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.ts-parse-unknown",
+  "lessonId": "04.03.02",
+  "title": "Parsing unknown data with Zod",
+  "runtime": "typescript-5-zod4-node-24-tsx",
+  "status": "authored",
+  "starter": "labs/ts-parse-unknown/starter/solution.ts",
+  "solution": "labs/ts-parse-unknown/solution/solution.ts",
+  "tests": "labs/ts-parse-unknown/solution.test.mjs",
+  "verify": [
+    "npm run lab:ts-parse-unknown"
+  ],
+  "expected": "The parsing unknown data with zod boundary validates real input before returning a typed domain value.",
+  "security": "Offline synthetic payloads only, no server, accounts, keys, external HTTP, PII, uploads or hosted execution."
+}

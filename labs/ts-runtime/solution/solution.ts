@@ -1,0 +1,1 @@
+type Product={priceCents:number};export function solve(raw:unknown):string{if(!raw||typeof raw!=='object'||!('priceCents' in raw)||typeof raw.priceCents!=='number'||!Number.isInteger(raw.priceCents)||raw.priceCents<0)return 'INVALID';const product:Product={priceCents:raw.priceCents};return product.priceCents.toFixed(0);}

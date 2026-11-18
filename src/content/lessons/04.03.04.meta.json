@@ -1,0 +1,39 @@
+{
+  "id": "04.03.04",
+  "title": "Branded IDs and validation",
+  "description": "Secure branded ids and validation boundaries through runtime validation, typed results and local TypeScript tests rather than trusting erased annotations.",
+  "trackId": "04",
+  "moduleId": "04.03",
+  "level": "Beginner",
+  "estimatedMinutes": 60,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "node": "24",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "04.03.03"
+  ],
+  "objectives": [
+    "Distinguish static typing from runtime trust in branded ids and validation",
+    "Validate unknown input or normalize transport data before constructing a domain value",
+    "Verify rejected and accepted cases with runnable tests plus compiler checks"
+  ],
+  "labId": "lab.foundation.ts-brands",
+  "sources": [
+    {
+      "label": "Official TypeScript / Zod reference",
+      "url": "https://www.typescriptlang.org/docs/handbook/2/objects.html#intersection-types"
+    },
+    {
+      "label": "Official supplemental documentation",
+      "url": "https://www.typescriptlang.org/docs/handbook/2/everyday-types.html"
+    }
+  ],
+  "rubric": [
+    "I can identify the untrusted runtime boundary in branded ids and validation.",
+    "I reject at least one malformed input and validate one successful case.",
+    "I avoid unchecked type assertions in public API contracts."
+  ]
+}
