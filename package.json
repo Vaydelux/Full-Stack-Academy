@@ -10,7 +10,7 @@
     "typecheck": "tsc --noEmit",
     "validate": "python validate_package.py",
     "test": "node --test tests/academy.test.mjs tests/hardening.test.mjs tests/course-routes.test.mjs tests/content.test.mjs",
-    "test:labs": "tsx --test labs/jsx-skill-card/solution.test.tsx labs/browser-server/solution.test.mjs labs/request-lifecycle/solution.test.mjs labs/dns-domains/solution.test.mjs labs/tcp-tls-https/solution.test.mjs labs/http-contract/solution.test.mjs labs/api-json/solution.test.mjs labs/cookies-sessions/solution.test.mjs labs/devtools-trace/solution.test.mjs labs/vscode-workspace/solution.test.mjs labs/terminal-workflow/solution.test.mjs labs/node-runtime/solution.test.mjs labs/package-locks/solution.test.mjs labs/project-scripts/solution.test.mjs labs/environment-config/solution.test.mjs labs/git-ssh-setup/solution.test.mjs labs/workstation-capstone/solution.test.mjs",
+    "test:labs": "tsx --test labs/jsx-skill-card/solution.test.tsx labs/browser-server/solution.test.mjs labs/request-lifecycle/solution.test.mjs labs/dns-domains/solution.test.mjs labs/tcp-tls-https/solution.test.mjs labs/http-contract/solution.test.mjs labs/api-json/solution.test.mjs labs/cookies-sessions/solution.test.mjs labs/devtools-trace/solution.test.mjs labs/vscode-workspace/solution.test.mjs labs/terminal-workflow/solution.test.mjs labs/node-runtime/solution.test.mjs labs/package-locks/solution.test.mjs labs/project-scripts/solution.test.mjs labs/environment-config/solution.test.mjs labs/git-ssh-setup/solution.test.mjs labs/workstation-capstone/solution.test.mjs labs/error-causes/solution.test.mjs labs/minimal-repro/solution.test.mjs labs/debugger-watches/solution.test.mjs labs/network-observation/solution.test.mjs labs/technical-questions/solution.test.mjs labs/changelog-reading/solution.test.mjs labs/architecture-notes/solution.test.mjs labs/environment-mismatch/solution.test.mjs",
     "verify:content": "node scripts/validate-content.mjs",
     "lab:browser-server": "node --test labs/browser-server/solution.test.mjs",
     "lab:request-lifecycle": "node --test labs/request-lifecycle/solution.test.mjs",
@@ -31,7 +31,15 @@
     "lab:workstation-capstone": "node --test labs/workstation-capstone/solution.test.mjs",
     "checkpoint:check": "node scripts/checkpoint-status.mjs --check",
     "checkpoint:write": "node scripts/checkpoint-status.mjs --write",
-    "checkpoint:show": "node scripts/checkpoint-status.mjs"
+    "checkpoint:show": "node scripts/checkpoint-status.mjs",
+    "lab:error-causes": "node --test labs/error-causes/solution.test.mjs",
+    "lab:minimal-repro": "node --test labs/minimal-repro/solution.test.mjs",
+    "lab:debugger-watches": "node --test labs/debugger-watches/solution.test.mjs",
+    "lab:network-observation": "node --test labs/network-observation/solution.test.mjs",
+    "lab:technical-questions": "node --test labs/technical-questions/solution.test.mjs",
+    "lab:changelog-reading": "node --test labs/changelog-reading/solution.test.mjs",
+    "lab:architecture-notes": "node --test labs/architecture-notes/solution.test.mjs",
+    "lab:environment-mismatch": "node --test labs/environment-mismatch/solution.test.mjs"
   },
   "dependencies": {
     "clsx": "^2.1.1",

@@ -96,3 +96,7 @@ Eight complete lessons teach VS Code, PowerShell/Bash/WSL, Node runtime, package
 ## Current project handoff and progress
 
 The canonical multi-agent handoff is [AGENTS.md](AGENTS.md), [docs/PROJECT_CHECKPOINT.md](docs/PROJECT_CHECKPOINT.md), [docs/NEXT_TODO.md](docs/NEXT_TODO.md), and machine-checked [docs/checkpoint.json](docs/checkpoint.json). Run `npm run checkpoint:check` to verify authored/published counts; after changing the publication inventory, run `npm run checkpoint:write` and commit the generated snapshot. The earlier v1.1 overview sections remain historical and do not supersede these handoff files.
+
+## Learning & Debugging Process (00.03) — release candidate
+
+Eight authored MDX lessons cover nested errors, minimal bug reproduction, debugger watches, Network and Performance tools, technical questions, changelogs, experiment/ADR records, and environment mismatch troubleshooting. All have local test fixtures. **Do not claim live production availability until PR CI and deployment are verified.** Project checkpoints: `AGENTS.md`, `docs/PROJECT_CHECKPOINT.md`, `docs/NEXT_TODO.md`, and `docs/checkpoint.json`.

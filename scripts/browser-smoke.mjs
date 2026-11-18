@@ -53,7 +53,7 @@ try {
   await wait(page.getByText('Correct — you identified the concept.'));
   await page.goto(base + '/reference/zod-safeparse');
   await wait(page.getByRole('heading',{name:/Zod 4: schema.safeParse/}));
-  await page.goto(base + '/learn/00.03.01');
+  await page.goto(base + '/learn/01.01.01');
   assert.match(await page.locator('meta[name="robots"]').getAttribute('content'), /noindex/);
   await wait(page.getByText('Planned lesson — not published.', {exact:true}));
   await page.goto(base + '/learn/00.01.01');
@@ -69,7 +69,7 @@ try {
   await wait(btn('Completed'));
   await page.getByRole('link',{name:/Next: Client server lifecycle/}).click();
   await wait(page.getByRole('heading',{name:'Client–server lifecycle: follow a real request',exact:true}));
-  for (const id of ["00.01.03","00.01.04","00.01.05","00.01.06","00.01.07","00.01.08","00.02.01","00.02.02","00.02.03","00.02.04","00.02.05","00.02.06","00.02.07","00.02.08"]) {
+  for (const id of ["00.01.03","00.01.04","00.01.05","00.01.06","00.01.07","00.01.08","00.02.01","00.02.02","00.02.03","00.02.04","00.02.05","00.02.06","00.02.07","00.02.08","00.03.01","00.03.02","00.03.03","00.03.04","00.03.05","00.03.06","00.03.07","00.03.08"]) {
     const result = await page.goto(base+'/learn/'+id);
     assert.equal(result.status(),200);
     assert.match(await page.locator('meta[name="robots"]').getAttribute('content'), /^index/);

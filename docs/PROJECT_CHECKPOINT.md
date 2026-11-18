@@ -9,8 +9,8 @@ Enterprise-quality, accessible, reference-driven, hands-on Full-Stack Engineerin
 
 ## Verified production baseline
 - Curriculum: 28 tracks / 111 modules / 889 topic IDs. Reference index: 303 subjects.
-- Published: 20 authored lessons = 4 interactive models plus 17 MDX lesson bodies with one overlapping JSX lesson; 16 local foundations/toolchain labs + one JSX lab = 17 lab manifests.
-- Modules `00.01` (computing/internet) and `00.02` (developer toolchain) fully authored; `00.03` not authored at baseline.
+- Published: Production baseline at cd7f33b: 20 authored lessons = 4 interactive models plus 17 MDX lesson bodies with one overlapping JSX lesson; 16 local foundations/toolchain labs + one JSX lab = 17 lab manifests. **Feature branch (unreleased): 28 authored lessons, 25 MDX bodies, 25 lab fixtures once CI passes.**
+- Modules `00.01` (computing/internet) and `00.02` (developer toolchain) are released. Module `00.03` is now authored on the feature branch, not yet verified/released.
 - Four drafted technical reference articles (Zod safeParse, Prisma transaction, Nest guards, Redis SET).
 - PRs #1, #2, #3 merged. Latest production verification: GitHub Actions run `44243836026` success.
 - App: Next.js/React/Tailwind, static trusted MDX, independently indexed course and reference routes, Zustand local progress, no required backend.
@@ -18,7 +18,7 @@ Enterprise-quality, accessible, reference-driven, hands-on Full-Stack Engineerin
 - Dependency review: no known runtime vulnerabilities in audit; **14 dev-only high alerts** trace to Picomatch advisory, explicitly accepted only through **2026-12-02 UTC**. See `docs/DEPENDENCY_SECURITY_REVIEW.md` and audit job. **Not patched.**
 
 ## Active milestone
-`00.03` Learning & Debugging Process: eight exact catalog IDs `00.03.01`–`00.03.08`. Add meaningful, runnable local labs and step-by-step MDX; register; verify; do not merge ahead of tests. See `docs/NEXT_TODO.md`.
+`00.03` Learning & Debugging Process: eight catalog IDs `00.03.01`–`00.03.08` have new MDX and executable lab fixtures on the feature branch. **Must validate CI, browser, runtime audit and preview, then merge and confirm production.** See `docs/NEXT_TODO.md`. See `docs/NEXT_TODO.md`.
 
 ## Source of truth
 - Machine-checkable counts and release details: `docs/checkpoint.json`, checked by `npm run checkpoint:check`.

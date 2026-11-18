@@ -8,7 +8,8 @@
     "ciRun": 44243836026
   },
   "development": {
-    "branch": "feat/learning-debugging-checkpoint"
+    "branch": "feat/learning-debugging-checkpoint",
+    "state": "PR candidate, CI not yet verified"
   },
   "snapshot": {
     "tracks": 28,
@@ -17,12 +18,13 @@
     "indexedReferences": 303,
     "authoredReferenceDrafts": 4,
     "authoredInteractiveModels": 4,
-    "authoredMdxLessons": 17,
-    "publishedLessons": 20,
-    "labFixtures": 17,
+    "authoredMdxLessons": 25,
+    "publishedLessons": 28,
+    "labFixtures": 25,
     "completeModules": [
       "00.01",
-      "00.02"
+      "00.02",
+      "00.03"
     ]
   },
   "security": {
@@ -30,6 +32,6 @@
     "devHighFindings": 14,
     "exceptionExpires": "2026-12-02"
   },
-  "nextMilestone": "00.03",
-  "status": "active"
+  "nextMilestone": "01.01",
+  "status": "release-candidate"
 }

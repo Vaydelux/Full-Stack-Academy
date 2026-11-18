@@ -15,6 +15,14 @@ import Toolchain5 from './lessons/00.02.05.mdx';
 import Toolchain6 from './lessons/00.02.06.mdx';
 import Toolchain7 from './lessons/00.02.07.mdx';
 import Toolchain8 from './lessons/00.02.08.mdx';
+import Debugging1 from './lessons/00.03.01.mdx';
+import Debugging2 from './lessons/00.03.02.mdx';
+import Debugging3 from './lessons/00.03.03.mdx';
+import Debugging4 from './lessons/00.03.04.mdx';
+import Debugging5 from './lessons/00.03.05.mdx';
+import Debugging6 from './lessons/00.03.06.mdx';
+import Debugging7 from './lessons/00.03.07.mdx';
+import Debugging8 from './lessons/00.03.08.mdx';
 export function LessonArticle({lessonId}: {lessonId:string}) {
   switch (lessonId) {
     case '00.01.01': return <BrowserLesson />;
@@ -33,6 +41,14 @@ export function LessonArticle({lessonId}: {lessonId:string}) {
     case '00.02.06': return <Toolchain6 />;
     case '00.02.07': return <Toolchain7 />;
     case '00.02.08': return <Toolchain8 />;
+    case '00.03.01': return <Debugging1 />;
+    case '00.03.02': return <Debugging2 />;
+    case '00.03.03': return <Debugging3 />;
+    case '00.03.04': return <Debugging4 />;
+    case '00.03.05': return <Debugging5 />;
+    case '00.03.06': return <Debugging6 />;
+    case '00.03.07': return <Debugging7 />;
+    case '00.03.08': return <Debugging8 />;
     case '06.01.01': return <JSXLessonMDX />;
     default: return null;
   }
