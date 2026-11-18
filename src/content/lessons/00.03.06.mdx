@@ -19,31 +19,31 @@ Complete [the previous lesson](/learn/00.03.05). Use Node.js 24, the checked-in 
 
 <LessonStep number={1} title={"Inspect actual dependency versions"} file="labs/changelog-reading/starter/exercise.mjs" expected={"Compare the package manifest's range to the version in the lockfile."}>
 
-node -p "require('./package.json').dependencies.next"
-// Then inspect package-lock.json: packages['node_modules/next'].version
+Implement the following example in the starter fixture, then compare its output with the stated expected result.
 
 ```js
-undefined
+node -p "require('./package.json').dependencies.next"
+// Then inspect package-lock.json: packages['node_modules/next'].version
 ```
 
 </LessonStep>
 
 <LessonStep number={2} title={"Parse only stable release identifiers"} file="labs/changelog-reading/starter/exercise.mjs" expected={"Invalid ranges, prerelease versions and unsafe numeric components are rejected."}>
 
-export function parseVersion(version){const m=/^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/.exec(version);if(!m)throw new Error('Stable X.Y.Z required');const parts=m.slice(1).map(Number);if(parts.some(v=>!Number.isSafeInteger(v)))throw new Error('Unsafe version');return parts;}
+Implement the following example in the starter fixture, then compare its output with the stated expected result.
 
 ```js
-undefined
+export function parseVersion(version){const m=/^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/.exec(version);if(!m)throw new Error('Stable X.Y.Z required');const parts=m.slice(1).map(Number);if(parts.some(v=>!Number.isSafeInteger(v)))throw new Error('Unsafe version');return parts;}
 ```
 
 </LessonStep>
 
 <LessonStep number={3} title={"Classify upgrade risk without claiming compatibility"} file="labs/changelog-reading/starter/exercise.mjs" expected={"A major, minor or patch change is classified; downgrades are separate."}>
 
-export function classifyUpgrade(from,to){const a=parseVersion(from),b=parseVersion(to);for(let i=0;i<3;i++)if(a[i]!==b[i])return a[i]>b[i]?'downgrade':['major-review','minor-review','patch-review'][i];return 'same-version';}
+Implement the following example in the starter fixture, then compare its output with the stated expected result.
 
 ```js
-undefined
+export function classifyUpgrade(from,to){const a=parseVersion(from),b=parseVersion(to);for(let i=0;i<3;i++)if(a[i]!==b[i])return a[i]>b[i]?'downgrade':['major-review','minor-review','patch-review'][i];return 'same-version';}
 ```
 
 </LessonStep>

@@ -19,32 +19,32 @@ Complete [the previous lesson](/learn/00.03.04). Use Node.js 24, the checked-in 
 
 <LessonStep number={1} title={"Record a controlled reproduction"} file="labs/technical-questions/starter/exercise.mjs" expected={"Use synthetic environment information and only steps that another developer can repeat."}>
 
-const issue={title:'Projects route fails',environment:'Node 24, local server',steps:['Start server','GET /api/projects'],expected:'HTTP 200',actual:'HTTP 404',evidence:'request-id demo-1'};
+Implement the following example in the starter fixture, then compare its output with the stated expected result.
 
 ```js
-undefined
+const issue={title:'Projects route fails',environment:'Node 24, local server',steps:['Start server','GET /api/projects'],expected:'HTTP 200',actual:'HTTP 404',evidence:'request-id demo-1'};
 ```
 
 </LessonStep>
 
 <LessonStep number={2} title={"Validate complete evidence"} file="labs/technical-questions/starter/exercise.mjs" expected={"Reject missing required fields or an empty steps array instead of generating a misleading report."}>
 
-for(const key of ['title','environment','expected','actual','evidence']) { if(typeof issue[key]!=='string'||!issue[key].trim())throw new Error('Missing '+key); }
-if(!Array.isArray(issue.steps)||!issue.steps.length)throw new Error('Missing steps');
+Implement the following example in the starter fixture, then compare its output with the stated expected result.
 
 ```js
-undefined
+for(const key of ['title','environment','expected','actual','evidence']) { if(typeof issue[key]!=='string'||!issue[key].trim())throw new Error('Missing '+key); }
+if(!Array.isArray(issue.steps)||!issue.steps.length)throw new Error('Missing steps');
 ```
 
 </LessonStep>
 
 <LessonStep number={3} title={"Sanitize and format the issue"} file="labs/technical-questions/starter/exercise.mjs" expected={"The report contains numbered steps, expected/actual headings and no obvious bearer token."}>
 
-export function redact(text){return String(text).replace(/Bearer\s+[^\s]+/gi,'Bearer [REDACTED]').replace(/\b(token|password|secret)\s*[:=]\s*[^\s,;]+/gi,'$1=[REDACTED]');}
-// Apply redact() to each supplied field before formatting.
+Implement the following example in the starter fixture, then compare its output with the stated expected result.
 
 ```js
-undefined
+export function redact(text){return String(text).replace(/Bearer\s+[^\s]+/gi,'Bearer [REDACTED]').replace(/\b(token|password|secret)\s*[:=]\s*[^\s,;]+/gi,'$1=[REDACTED]');}
+// Apply redact() to each supplied field before formatting.
 ```
 
 </LessonStep>

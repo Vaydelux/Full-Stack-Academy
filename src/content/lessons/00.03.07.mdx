@@ -19,31 +19,31 @@ Complete [the previous lesson](/learn/00.03.06). Use Node.js 24, the checked-in 
 
 <LessonStep number={1} title={"Write a measurable hypothesis"} file="labs/architecture-notes/starter/exercise.mjs" expected={"State workload, expected change and measurement conditions before running the experiment."}>
 
-const experiment={hypothesis:'Cache lowers warm lookup median',environment:'Node 24, synthetic data',method:'30 repeat lookups',observed:'12ms baseline, 7ms cached',limitations:'Not representative of production'};
+Implement the following example in the starter fixture, then compare its output with the stated expected result.
 
 ```js
-undefined
+const experiment={hypothesis:'Cache lowers warm lookup median',environment:'Node 24, synthetic data',method:'30 repeat lookups',observed:'12ms baseline, 7ms cached',limitations:'Not representative of production'};
 ```
 
 </LessonStep>
 
 <LessonStep number={2} title={"Validate a decision record"} file="labs/architecture-notes/starter/exercise.mjs" expected={"An ADR cannot be accepted with missing context or rollback notes."}>
 
-for(const key of ['title','context','decision','tradeoffs','rollback'])if(typeof adr[key]!=='string'||!adr[key].trim())throw new Error('Missing '+key);
-if(!['proposed','accepted'].includes(adr.status))throw new Error('Invalid status');
+Implement the following example in the starter fixture, then compare its output with the stated expected result.
 
 ```js
-undefined
+for(const key of ['title','context','decision','tradeoffs','rollback'])if(typeof adr[key]!=='string'||!adr[key].trim())throw new Error('Missing '+key);
+if(!['proposed','accepted'].includes(adr.status))throw new Error('Invalid status');
 ```
 
 </LessonStep>
 
 <LessonStep number={3} title={"Format a reviewable ADR"} file="labs/architecture-notes/starter/exercise.mjs" expected={"The output shows status, context, decision, tradeoffs and rollback explicitly."}>
 
-export function formatADR(adr){if(!/^\d{4}$/.test(adr.id)||!['proposed','accepted'].includes(adr.status))throw new Error('Invalid ADR');for(const key of ['title','context','decision','tradeoffs','rollback'])if(!adr[key]?.trim())throw new Error('Missing '+key);return `# ADR-${adr.id}: ${adr.title}\nStatus: ${adr.status}\n\n## Context\n${adr.context}\n\n## Decision\n${adr.decision}\n\n## Tradeoffs\n${adr.tradeoffs}\n\n## Rollback\n${adr.rollback}`;}
+Implement the following example in the starter fixture, then compare its output with the stated expected result.
 
 ```js
-undefined
+export function formatADR(adr){if(!/^\d{4}$/.test(adr.id)||!['proposed','accepted'].includes(adr.status))throw new Error('Invalid ADR');for(const key of ['title','context','decision','tradeoffs','rollback'])if(!adr[key]?.trim())throw new Error('Missing '+key);return `# ADR-${adr.id}: ${adr.title}\nStatus: ${adr.status}\n\n## Context\n${adr.context}\n\n## Decision\n${adr.decision}\n\n## Tradeoffs\n${adr.tradeoffs}\n\n## Rollback\n${adr.rollback}`;}
 ```
 
 </LessonStep>
