@@ -3,15 +3,15 @@
   "updatedAt": "2026-11-18",
   "baseline": {
     "branch": "main",
-    "sha": "4067cce97beab756526274263231529b7999b96d",
-    "vercelDeploymentId": "dpl_5m1VbZ11wn8mUC3jaL9eyJyFnzBy",
-    "ciRun": 44286064144,
+    "sha": "ae2211354e6f96d2cc731537a1d489cdee72750c",
+    "vercelDeploymentId": "dpl_2ZeCD6utrwhsiUegYkydU7fb9fkT",
+    "ciRun": 44292786322,
     "productionUrl": "https://fullstack-academy-ecru.vercel.app/"
   },
   "development": {
-    "branch": "feat/accessibility-foundations-20261118",
-    "headNote": "Nine Accessibility Foundations lessons authored; full gates and Vercel preview pending",
-    "state": "in-review"
+    "branch": null,
+    "lastMergedPr": 10,
+    "state": "production-verified"
   },
   "snapshot": {
     "tracks": 28,
@@ -38,5 +38,5 @@
     "exceptionExpires": "2026-12-02"
   },
   "nextMilestone": "01.04",
-  "status": "release-candidate"
+  "status": "released"
 }
