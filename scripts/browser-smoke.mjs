@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { verifyCssTrack } from './css-track-smoke.mjs';
 import { verifyJsTsBatch } from './js-ts-batch-smoke.mjs';
+import { verifyGitTrack } from './git-track-smoke.mjs';
 import { createRequire } from 'node:module';
 import path from 'node:path';
 
@@ -393,6 +394,8 @@ try {
   await verifyCssTrack({ page, base, assert, wait });
 
   await verifyJsTsBatch({ page, base, assert, wait });
+
+  await verifyGitTrack({page,base,assert,wait});
 
   await page.goto(base+'/?lesson=06.01.01&mode=practice');
   await wait(btn('Practice'));

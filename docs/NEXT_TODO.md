@@ -1,34 +1,30 @@
 # Full-Stack Academy — Next TODO
 
-**Batch:** JS + TS whole tracks, 64 new lessons, 8 new complete modules · **Branch:** `feat/js-ts-two-track-offline` · **Status:** offline candidate, **no Vercel deployment**, no merges.
+**Development checkpoint:** full canonical Git/Collaboration/Monorepos track `05.01`–`05.03` (24 lessons) authored on `feat/05-git-monorepo-offline`. **No Vercel deploy**, no merge. Baseline production remains 61 published lesson IDs.
 
-## P0 — Exact-head qualification of 03 + 04 tracks
+## P0 — Verify full Git track on its exact branch HEAD
 
-- [x] `03.01` Language Essentials (8), `03.02` Intermediate JavaScript (8), `03.03` Asynchrony & Runtime (8), `03.04` Browser Interaction (8).
-- [x] `04.01` TypeScript Language Foundations (8), `04.02` Advanced Types (8), `04.03` Runtime Boundaries (8), `04.04` Maintainable TS Projects (8).
-- [x] Author 64 new structured MDX lessons, metadata, offline intentionally defective starters, repaired instructor modules, tests and strict TypeScript examples.
-- [x] Browser Interaction track additionally includes real local HTML pages with native controls, event delegation, safe text output, tabs, URL state, browser storage, and performance entry recording.
-- [x] Advanced TypeScript labs include compiler-negative assertions using `@ts-expect-error`; selected tooling labs include real tsc declaration output in tests. Zod validation runs offline.
-- [x] Register 64 MDX modules and metadata, lab commands, Chromium browser verification, machine checkpoint.
-- [ ] Run exact-head CI (**no Vercel deployment**): lint, TypeScript strict typecheck, repository tests, content validation, checkpoint, all labs, Next production compilation in GitHub and Chromium across new and existing lessons.
-- [ ] Fix failures and rerun; do not weaken tests to hide defects or silently skip inaccessible browser behaviors.
-- [ ] Keep this batch as a draft PR and **unmerged** while release hold is active; production still has 61 lessons.
+- [x] `05.01 — Everyday Git`: eight lessons with temporary local repositories; real status/index/commit history, merge ancestry, revert vs reset, bare-remote push, conflict resolution, .gitignore and feature capstone
+- [x] `05.02 — Team Engineering`: trunk age/review policies, conventional commits, simplified CODEOWNERS, review comments, exact-SHA CI checks, stable SemVer, changelogs, tracked-secret remediation with real Git history
+- [x] `05.03 — pnpm & Turborepo`: workspaces, public package exports, shared TS config, graph ordering, cache keys, direct-lockfile checks, upgrade policy and 3-package shared-contract capstone
+- [x] Twenty-four full MDX lessons and metadata, red starter/green instructor exercise modules, independent lab tests, new package/TypeScript capstone fixtures and browser route checks
+- [x] Publish registries, lab commands, content checkpoint and long-scope handoff updated; **all are branch-only**
+- [ ] Pass exact-head CI: strict lint/types, content/checkpoint, all local lab tests, repository tests, Next build and integrated Chromium smoke
+- [ ] Verify intentionally broken starters fail safely; check Git commands operate only in disposable local repos and do not contact remote networks
+- [ ] Keep PR #14 and #15 unmerged; open a draft stacked PR for track 05, no hosting preview
 
-## P1 — Next larger coherent batch, after current tests pass
+## P1 — Large-scope React + Next.js program
 
-- [ ] Track `05` Git, Collaboration & Monorepos (3 modules, 24 lessons).
-- [ ] Track `06` React Fundamentals & Mental Models (5 modules, 40 lessons), including existing interactive sample parity.
-- [ ] Track `07` Next.js App Router & SEO (5 modules, 40 lessons).
-- [ ] Work in one **104-lesson delivery program with track-level checkpoints**; do not claim all 104 lessons exist until individually authored, tested and reviewed.
-- [ ] Continue tracks `08`–`27` with real reference and capstone evidence.
-- [ ] Expand reference encyclopedia: 303 indexed, only four authored draft pages.
-- [ ] Re-evaluate 14 high dev-only Picomatch reports before temporary exception expiry 2026-12-02 UTC.
+- [ ] `06.01–06.05` React (40 canonical topic IDs, **one already-authored interactive sample** `06.01.01`); create or deepen 39 remaining topics with DOM/component tests and realistic sample apps
+- [ ] `07.01–07.05` Next.js App Router & SEO (40 canonical topics), focusing on route/layout/data/caching/auth/server-client runtime behavior with isolated demos
+- [ ] Combined track `05–07` program covers **104 canonical IDs**, of which **24 Git IDs now authored here**, one existing React JSX sample, and 79 additional React+Next lessons remain planned
+- [ ] Scope/checkpoint by complete modules or tracks, not tiny releases; keep one exact-head quality gate for each batch
+- [ ] Expand encyclopedia: 303 reference index subjects but only 4 authored reference drafts
 
-## Release gate (deliberately paused)
+## P2 — Security and eventual release
 
-- [ ] Resume Vercel only on explicit owner authorization; prior project settings use ignored build step `exit 0` and disabled preview deployments.
-- [ ] Review a staged release only after deployment resume; do not merge an unreviewed or failing PR.
-- [ ] Perform real-device keyboard/screen reader testing, browser storage policy review, actual performance profiling and accessibility QA.
-- [ ] Distinguish counts: branch includes 154 MDX bodies, 157 published IDs, 154 lab fixtures, 19 complete modules; **live production remains 61 IDs**.
+- [ ] Revisit **14 high dev-only Picomatch audit findings** before exception expiry **2026-12-02 UTC**; no broad dependency upgrade without verification
+- [ ] Real screen readers, keyboard and 200% zoom, performance trace, real pnpm install and Turbo cache verification remain untested release conditions
+- [ ] Resume Vercel only when explicitly requested. A passing GitHub CI job is **not** a hosted release; do not merge or deploy while hold stands
 
-See `docs/LONG_SCOPE_DELIVERY_PLAN.md` and `docs/JS_TS_BATCH_ACCEPTANCE.md` for handoff and gates.
+**Branch candidate snapshot:** 181 published IDs (178 MDX, 178 local labs), 22 complete modules, 889 catalog topic IDs, 708 catalog IDs planned. **Live baseline: 61 published IDs.** See `docs/GIT_TRACK_ACCEPTANCE.md` and `docs/LONG_SCOPE_DELIVERY_PLAN.md`.
