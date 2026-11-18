@@ -42,10 +42,15 @@ jobs:
         run: npm run test:labs
       - name: Production build
         run: npm run build
+      - name: Cache Playwright browser
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: academy-chromium-1.56.1-ubuntu24
       - name: Install isolated browser verifier
         run: |
           npm install --prefix "$RUNNER_TEMP/academy-browser" --no-audit --no-fund --save-exact playwright@1.56.1
-          "$RUNNER_TEMP/academy-browser/node_modules/.bin/playwright" install --with-deps chromium
+          "$RUNNER_TEMP/academy-browser/node_modules/.bin/playwright" install chromium
       - name: Test the production build in Chromium
         run: |
           npm run start -- --hostname 127.0.0.1 --port 3100 > "$RUNNER_TEMP/academy-server.log" 2>&1 &

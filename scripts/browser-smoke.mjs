@@ -62,9 +62,10 @@ try {
   await btn('Output').click();
   await wait(page.frameLocator('iframe[title="Live React JSX Sandbox"]').getByRole('heading',{name:'Engineering team',exact:true}));
   await btn('Read lesson').click();
-  await btn('Curriculum').click();
+  await btn('Toggle curriculum navigation').click();
   await wait(page.getByLabel('Filter navigation list'));
-  await btn('Curriculum').click();
+  await btn('Toggle curriculum navigation').click();
+  assert.equal(await btn('Toggle curriculum navigation').getAttribute('aria-expanded'), 'false');
   assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth <= window.innerWidth), 'Mobile page must not overflow horizontally');
   assert.deepEqual(errors, [], 'No unhandled page errors');
   console.log('Browser smoke passed: reader, practice, JSX reruns, notes, search, MDX quiz, references, noindex, mobile');

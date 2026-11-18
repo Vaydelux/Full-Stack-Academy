@@ -149,7 +149,7 @@ export default function Workspace() {
       <CommandSearchModal />
       <div className="flex min-h-0 flex-1 flex-col lg:flex-row">
         <div className="flex shrink-0 items-center justify-between border-b border-slate-200 bg-white px-4 py-2 lg:hidden dark:border-white/10 dark:bg-[#15161c]">
-          <button type="button" aria-expanded={mobileNav} aria-controls="academy-navigation" onClick={() => setMobileNav(v => !v)}
+          <button type="button" aria-label="Toggle curriculum navigation" aria-expanded={mobileNav} aria-controls="academy-navigation" onClick={() => setMobileNav(v => !v)}
             className="flex min-h-9 items-center gap-2 text-sm font-semibold">
             <Menu size={17} aria-hidden="true" /> Curriculum
           </button>
