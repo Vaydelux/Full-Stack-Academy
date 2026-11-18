@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.next-dynamic-params",
+  "lessonId": "07.01.03",
+  "title": "Dynamic route params",
+  "runtime": "next16-offline-contract-and-tsx-source",
+  "status": "authored",
+  "starter": "labs/next-dynamic-params/starter/solution.ts",
+  "solution": "labs/next-dynamic-params/solution/solution.ts",
+  "tests": "labs/next-dynamic-params/solution.test.mjs",
+  "verify": [
+    "npm run lab:next-dynamic-params"
+  ],
+  "expected": "The correct local contract passes independent assertions; end-to-end framework behavior is a separate QA gate.",
+  "security": "Uses synthetic fixture data, no secrets, uploaded code execution, remote endpoints, publishing, Vercel or hosted grading."
+}

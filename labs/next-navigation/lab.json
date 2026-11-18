@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.next-navigation",
+  "lessonId": "07.01.06",
+  "title": "Navigation and prefetch",
+  "runtime": "next16-offline-contract-and-tsx-source",
+  "status": "authored",
+  "starter": "labs/next-navigation/starter/solution.ts",
+  "solution": "labs/next-navigation/solution/solution.ts",
+  "tests": "labs/next-navigation/solution.test.mjs",
+  "verify": [
+    "npm run lab:next-navigation"
+  ],
+  "expected": "The correct local contract passes independent assertions; end-to-end framework behavior is a separate QA gate.",
+  "security": "Uses synthetic fixture data, no secrets, uploaded code execution, remote endpoints, publishing, Vercel or hosted grading."
+}

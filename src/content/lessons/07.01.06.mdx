@@ -1,0 +1,97 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Diagnose the navigation and prefetch failure through a real example","Repair the learner fixture with a precise invariant and explicit edge cases","Verify the result offline and distinguish those checks from framework end-to-end tests"]} />
+
+## The problem we're solving
+
+A route link is implemented with window.location, forcing full reloads and losing client-side navigation benefits. This local fixture isolates a concrete failure before we introduce any external state or deployment.
+
+## Build the mental model
+
+Next.js Link supports client-side navigation and optional prefetch when appropriate. Programmatic navigation belongs in useRouter inside a Client Component. Disable prefetch selectively for expensive or sensitive paths, not blindly for every link.
+
+**Predict before running:** The repaired implementation respects its documented contract.
+
+## Prerequisites and preflight
+
+Continue from [the preceding lesson](/learn/07.01.05). Inspect `labs/next-navigation/starter/solution.ts`, the instructor solution and `labs/next-navigation/solution.test.mjs`. Run `npm run lab:next-navigation` with repository-installed Node.js 24, TypeScript and tsx. The Next.js source example is illustrative code under labs, not an active App Router route. Its pure helper tests do not boot a Next server.
+
+<LessonStep number={1} title="Reproduce the defective starter" file="labs/next-navigation/starter/solution.ts" expected="The intentionally flawed starter fails a real assertion.">
+
+Observe the following implementation, identify the overlooked case, and predict which assertion reveals it.
+
+```ts
+
+export function solve(href:string){return 'https://example.invalid'+href;}
+
+```
+
+**Why it fails:** Next.js Link supports client-side navigation and optional prefetch when appropriate. Programmatic navigation belongs in useRouter inside a Client Component. Disable prefetch selectively for expensive or sensitive paths, not blindly for every link.
+
+**Proof:** Run `ACADEMY_LAB_TARGET=starter npm run lab:next-navigation` in Bash, or set the variable for the command in PowerShell. Do not modify the instructor fixture.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the implementation contract" file="labs/next-navigation/starter/solution.ts" expected={"Positive and negative cases behave predictably."}>
+
+Make the smallest semantic correction; do not weaken the assertions or convert invalid data into a fake success.
+
+```ts
+
+export function solve(href:string){if(!/^\/[a-z0-9/_-]*$/.test(href)||href.startsWith('//'))throw new TypeError('Unsafe local path');return href;}
+
+```
+
+**Why it works:** Next.js Link supports client-side navigation and optional prefetch when appropriate. Programmatic navigation belongs in useRouter inside a Client Component. Disable prefetch selectively for expensive or sensitive paths, not blindly for every link.
+
+**Proof:** Run the same local assertions and compare the before/after outputs.
+
+</LessonStep>
+
+<LessonStep number={3} title="Inspect the Next.js App Router source" file="labs/next-navigation/example.tsx" expected="The framework-oriented sample illustrates the same invariant.">
+
+The Next.js 16 example demonstrates an App Router convention. The offline test checks its supporting contract and sample presence, not route execution or production caching.
+
+```tsx
+
+import React from 'react';
+import Link from 'next/link';
+export default function Navigation(){return <nav aria-label="Academy sections"><Link href="/learn" prefetch={false}>Lessons</Link><Link href="/reference">References</Link></nav>;}
+
+```
+
+**Predict before running:** The corrected sample handles the reviewed case.
+
+**Proof:** Run `npm run lab:next-navigation`. To certify real navigation or mutation behavior, also exercise an isolated app in a browser or test server.
+
+</LessonStep>
+
+## Explore and verify
+
+Change a valid input into an invalid one, then inspect which layer should reject it. Check accessibility, cleanup and data ownership as appropriate.
+
+<Misconception claim={"Passing a typecheck or SSR initial render proves every interactive path."} correction={"Next.js Link supports client-side navigation and optional prefetch when appropriate. Programmatic navigation belongs in useRouter inside a Client Component. Disable prefetch selectively for expensive or sensitive paths, not blindly for every link."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+Identify the smallest counterexample, repair the root cause and verify the same input now behaves correctly. Describe the missing browser or server integration check.
+
+<KnowledgeCheck question={"What is the recommended declarative route link in Next App Router?"} choices={["next/link Link","window.location.reload for every click","A hand-written iframe","An arbitrary fetch call"]} correctIndex={0} explanation={"Next.js Link supports client-side navigation and optional prefetch when appropriate. Programmatic navigation belongs in useRouter inside a Client Component. Disable prefetch selectively for expensive or sensitive paths, not blindly for every link."} misconception="Offline tests have explicit boundaries." lessonId="07.01.06" />
+
+## Guided local lab
+
+Edit `labs/next-navigation/starter/solution.ts`. The test imports the selected target and confirms actual return values. It checks an application-specific example without running Next.js itself. The academy does not execute arbitrary learner code on the server.
+
+<LabGate lessonId="07.01.06" labId="lab.foundation.next-navigation" commands={["npm ci","npm run lab:next-navigation"]} interactive={false} />
+
+## Reflect
+
+Which invariant did the original implementation violate? Which test proves the fix, and what would still require a full browser or Next.js integration environment?
+
+## Official references
+
+- [Official concept](https://nextjs.org/docs/app/getting-started/linking-and-navigating)
+
+- [Official supporting reference](https://nextjs.org/docs/app/api-reference/components/link)

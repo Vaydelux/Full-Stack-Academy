@@ -1,0 +1,98 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Diagnose the metadata and favicons failure through a real example","Repair the learner fixture with a precise invariant and explicit edge cases","Verify the result offline and distinguish those checks from framework end-to-end tests"]} />
+
+## The problem we're solving
+
+Every article shares the generic homepage title because its route never defines specific metadata. This local fixture isolates a concrete failure before we introduce any external state or deployment.
+
+## Build the mental model
+
+The Next.js Metadata API can describe titles, descriptions, canonical links and social previews per route. Static exports are suitable for fixed pages; generateMetadata supports async route-specific values. Icons are supplied with file conventions or metadata definitions.
+
+**Predict before running:** The repaired implementation respects its documented contract.
+
+## Prerequisites and preflight
+
+Continue from [the preceding lesson](/learn/07.01.06). Inspect `labs/next-metadata-icons/starter/solution.ts`, the instructor solution and `labs/next-metadata-icons/solution.test.mjs`. Run `npm run lab:next-metadata-icons` with repository-installed Node.js 24, TypeScript and tsx. The Next.js source example is illustrative code under labs, not an active App Router route. Its pure helper tests do not boot a Next server.
+
+<LessonStep number={1} title="Reproduce the defective starter" file="labs/next-metadata-icons/starter/solution.ts" expected="The intentionally flawed starter fails a real assertion.">
+
+Observe the following implementation, identify the overlooked case, and predict which assertion reveals it.
+
+```ts
+
+export function solve(title:string){return {title:'Home'};}
+
+```
+
+**Why it fails:** The Next.js Metadata API can describe titles, descriptions, canonical links and social previews per route. Static exports are suitable for fixed pages; generateMetadata supports async route-specific values. Icons are supplied with file conventions or metadata definitions.
+
+**Proof:** Run `ACADEMY_LAB_TARGET=starter npm run lab:next-metadata-icons` in Bash, or set the variable for the command in PowerShell. Do not modify the instructor fixture.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the implementation contract" file="labs/next-metadata-icons/starter/solution.ts" expected={"Positive and negative cases behave predictably."}>
+
+Make the smallest semantic correction; do not weaken the assertions or convert invalid data into a fake success.
+
+```ts
+
+export function solve(title:string){const value=title.trim();if(!value)throw new TypeError('Page title required');return {title:value+' | Academy',description:'Study '+value+' with practical lessons.'};}
+
+```
+
+**Why it works:** The Next.js Metadata API can describe titles, descriptions, canonical links and social previews per route. Static exports are suitable for fixed pages; generateMetadata supports async route-specific values. Icons are supplied with file conventions or metadata definitions.
+
+**Proof:** Run the same local assertions and compare the before/after outputs.
+
+</LessonStep>
+
+<LessonStep number={3} title="Inspect the Next.js App Router source" file="labs/next-metadata-icons/example.tsx" expected="The framework-oriented sample illustrates the same invariant.">
+
+The Next.js 16 example demonstrates an App Router convention. The offline test checks its supporting contract and sample presence, not route execution or production caching.
+
+```tsx
+
+import React from 'react';
+import type {Metadata} from 'next';
+export const metadata:Metadata={title:'React Lessons | Academy',description:'Structured React 19 lessons with offline exercises.',icons:{icon:'/favicon.ico'}};
+export default function ReactPage(){return <main><h1>React lessons</h1></main>;}
+
+```
+
+**Predict before running:** The corrected sample handles the reviewed case.
+
+**Proof:** Run `npm run lab:next-metadata-icons`. To certify real navigation or mutation behavior, also exercise an isolated app in a browser or test server.
+
+</LessonStep>
+
+## Explore and verify
+
+Change a valid input into an invalid one, then inspect which layer should reject it. Check accessibility, cleanup and data ownership as appropriate.
+
+<Misconception claim={"Passing a typecheck or SSR initial render proves every interactive path."} correction={"The Next.js Metadata API can describe titles, descriptions, canonical links and social previews per route. Static exports are suitable for fixed pages; generateMetadata supports async route-specific values. Icons are supplied with file conventions or metadata definitions."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+Identify the smallest counterexample, repair the root cause and verify the same input now behaves correctly. Describe the missing browser or server integration check.
+
+<KnowledgeCheck question={"Where is a route-specific title commonly declared in App Router?"} choices={["Metadata API export or generateMetadata","Only in CSS","A localStorage value","A hidden form input"]} correctIndex={0} explanation={"The Next.js Metadata API can describe titles, descriptions, canonical links and social previews per route. Static exports are suitable for fixed pages; generateMetadata supports async route-specific values. Icons are supplied with file conventions or metadata definitions."} misconception="Offline tests have explicit boundaries." lessonId="07.01.07" />
+
+## Guided local lab
+
+Edit `labs/next-metadata-icons/starter/solution.ts`. The test imports the selected target and confirms actual return values. It checks an application-specific example without running Next.js itself. The academy does not execute arbitrary learner code on the server.
+
+<LabGate lessonId="07.01.07" labId="lab.foundation.next-metadata-icons" commands={["npm ci","npm run lab:next-metadata-icons"]} interactive={false} />
+
+## Reflect
+
+Which invariant did the original implementation violate? Which test proves the fix, and what would still require a full browser or Next.js integration environment?
+
+## Official references
+
+- [Official concept](https://nextjs.org/docs/app/api-reference/functions/generate-metadata)
+
+- [Official supporting reference](https://nextjs.org/docs/app/api-reference/file-conventions/metadata/app-icons)

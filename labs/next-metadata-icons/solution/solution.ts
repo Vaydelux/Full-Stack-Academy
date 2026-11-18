@@ -1,0 +1,1 @@
+export function solve(title:string){const value=title.trim();if(!value)throw new TypeError('Page title required');return {title:value+' | Academy',description:'Study '+value+' with practical lessons.'};}

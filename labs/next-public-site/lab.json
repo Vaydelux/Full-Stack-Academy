@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.next-public-site",
+  "lessonId": "07.01.08",
+  "title": "Lab public site",
+  "runtime": "next16-offline-contract-and-tsx-source",
+  "status": "authored",
+  "starter": "labs/next-public-site/starter/solution.ts",
+  "solution": "labs/next-public-site/solution/solution.ts",
+  "tests": "labs/next-public-site/solution.test.mjs",
+  "verify": [
+    "npm run lab:next-public-site"
+  ],
+  "expected": "The correct local contract passes independent assertions; end-to-end framework behavior is a separate QA gate.",
+  "security": "Uses synthetic fixture data, no secrets, uploaded code execution, remote endpoints, publishing, Vercel or hosted grading."
+}

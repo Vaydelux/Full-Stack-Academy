@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.next-loading-errors",
+  "lessonId": "07.01.04",
+  "title": "Loading and error boundaries",
+  "runtime": "next16-offline-contract-and-tsx-source",
+  "status": "authored",
+  "starter": "labs/next-loading-errors/starter/solution.ts",
+  "solution": "labs/next-loading-errors/solution/solution.ts",
+  "tests": "labs/next-loading-errors/solution.test.mjs",
+  "verify": [
+    "npm run lab:next-loading-errors"
+  ],
+  "expected": "The correct local contract passes independent assertions; end-to-end framework behavior is a separate QA gate.",
+  "security": "Uses synthetic fixture data, no secrets, uploaded code execution, remote endpoints, publishing, Vercel or hosted grading."
+}

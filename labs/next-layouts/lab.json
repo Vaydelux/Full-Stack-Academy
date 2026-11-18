@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.next-layouts",
+  "lessonId": "07.01.02",
+  "title": "Layouts, pages and templates",
+  "runtime": "next16-offline-contract-and-tsx-source",
+  "status": "authored",
+  "starter": "labs/next-layouts/starter/solution.ts",
+  "solution": "labs/next-layouts/solution/solution.ts",
+  "tests": "labs/next-layouts/solution.test.mjs",
+  "verify": [
+    "npm run lab:next-layouts"
+  ],
+  "expected": "The correct local contract passes independent assertions; end-to-end framework behavior is a separate QA gate.",
+  "security": "Uses synthetic fixture data, no secrets, uploaded code execution, remote endpoints, publishing, Vercel or hosted grading."
+}

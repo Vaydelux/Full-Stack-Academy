@@ -1,0 +1,1 @@
+export function solve(slugs:readonly string[]):string[]{if(new Set(slugs).size!==slugs.length||slugs.some(s=>!/^[a-z0-9-]+$/.test(s)))throw new TypeError('Unique safe slugs required');return slugs.map(s=>'/'+s);}
