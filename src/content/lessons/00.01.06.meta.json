@@ -1,0 +1,40 @@
+{
+  "id": "00.01.06",
+  "title": "APIs and JSON: data across a boundary",
+  "description": "Practice JSON serialization, decoding, runtime schema validation and public response shaping with a small Zod 4 API contract.",
+  "trackId": "00",
+  "moduleId": "00.01",
+  "level": "Beginner",
+  "estimatedMinutes": 45,
+  "status": "authored",
+  "reviewedAt": "2026-11-18",
+  "stack": {
+    "node": "24",
+    "zod": "4"
+  },
+  "prerequisites": [
+    "00.01.05"
+  ],
+  "objectives": [
+    "Distinguish a JavaScript object from serialized JSON",
+    "Identify values that JSON cannot represent directly",
+    "Validate unknown data with a runtime schema",
+    "Return an explicit public representation without leaking private fields"
+  ],
+  "labId": "lab.foundation.api-json",
+  "sources": [
+    {
+      "label": "MDN: Working with JSON",
+      "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/JSON"
+    },
+    {
+      "label": "Zod: Basic usage",
+      "url": "https://zod.dev/basics"
+    }
+  ],
+  "rubric": [
+    "I demonstrated parsing valid and invalid JSON syntax.",
+    "I rejected wrong price types and unexpected fields using Zod.",
+    "I completed the lab and checked that private fields stay out of responses."
+  ]
+}

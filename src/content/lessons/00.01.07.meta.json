@@ -1,0 +1,43 @@
+{
+  "id": "00.01.07",
+  "title": "Cookies, sessions and browser storage",
+  "description": "Understand how browser state, cookies and server-side sessions differ by testing an expiring in-memory session and secure cookie header.",
+  "trackId": "00",
+  "moduleId": "00.01",
+  "level": "Beginner",
+  "estimatedMinutes": 45,
+  "status": "authored",
+  "reviewedAt": "2026-11-18",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "00.01.06"
+  ],
+  "objectives": [
+    "Distinguish cookies, localStorage, sessionStorage and server-side records",
+    "Explain HttpOnly, Secure, SameSite and cookie expiration",
+    "Create an opaque random session identifier and enforce expiration",
+    "Explain why client-provided identity values never grant access"
+  ],
+  "labId": "lab.foundation.cookies-sessions",
+  "sources": [
+    {
+      "label": "MDN: Set-Cookie",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Set-Cookie"
+    },
+    {
+      "label": "MDN: Web Storage API",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API"
+    },
+    {
+      "label": "Node.js: Crypto",
+      "url": "https://nodejs.org/download/release/latest-v24.x/docs/api/crypto.html"
+    }
+  ],
+  "rubric": [
+    "I compared cookies, localStorage and sessionStorage using documentation.",
+    "I explained why session IDs are not trusted user IDs.",
+    "I tested cookie attributes, expiration and revoked sessions."
+  ]
+}

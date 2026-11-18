@@ -1,0 +1,39 @@
+{
+  "id": "00.01.03",
+  "title": "DNS, domains and IP addresses",
+  "description": "Understand domain names, URL components, address resolution and caching by building and testing a hostname inspection tool.",
+  "trackId": "00",
+  "moduleId": "00.01",
+  "level": "Beginner",
+  "estimatedMinutes": 35,
+  "status": "authored",
+  "reviewedAt": "2026-11-18",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "00.01.02"
+  ],
+  "objectives": [
+    "Separate URL origin, hostname, port and path",
+    "Explain recursive DNS lookup and the role of A and AAAA records",
+    "Inspect resolved IPv4 and IPv6 addresses with Node.js",
+    "Diagnose resolution errors without assuming a web server is down"
+  ],
+  "labId": "lab.foundation.dns-domains",
+  "sources": [
+    {
+      "label": "MDN: What is a domain name?",
+      "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Howto/Web_mechanics/What_is_a_domain_name"
+    },
+    {
+      "label": "Node.js: DNS",
+      "url": "https://nodejs.org/download/release/latest-v24.x/docs/api/dns.html"
+    }
+  ],
+  "rubric": [
+    "I separated the host and path of a URL with a non-default port.",
+    "I inspected localhost DNS resolution and explained address families.",
+    "I completed the lab and passed the deterministic DNS tests."
+  ]
+}

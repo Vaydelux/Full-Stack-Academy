@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.tcp-tls-https",
+  "lessonId": "00.01.04",
+  "title": "TCP, TLS and HTTPS",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/tcp-tls-https/starter/exercise.mjs",
+  "solution": "labs/tcp-tls-https/solution/exercise.mjs",
+  "tests": "labs/tcp-tls-https/solution.test.mjs",
+  "verify": [
+    "npm run lab:tcp-tls-https"
+  ],
+  "expected": "I ran the loopback TCP and certificate hostname tests.",
+  "security": "Synthetic data only; local loopback or deterministic test doubles. Never execute learner code on course services."
+}

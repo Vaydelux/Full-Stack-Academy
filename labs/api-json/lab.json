@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.api-json",
+  "lessonId": "00.01.06",
+  "title": "APIs and JSON: data across a boundary",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/api-json/starter/exercise.mjs",
+  "solution": "labs/api-json/solution/exercise.mjs",
+  "tests": "labs/api-json/solution.test.mjs",
+  "verify": [
+    "npm run lab:api-json"
+  ],
+  "expected": "I completed the lab and checked that private fields stay out of responses.",
+  "security": "Synthetic data only; local loopback or deterministic test doubles. Never execute learner code on course services."
+}

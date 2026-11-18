@@ -1,0 +1,99 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Distinguish a JavaScript object from serialized JSON","Identify values that JSON cannot represent directly","Validate unknown data with a runtime schema","Return an explicit public representation without leaking private fields"]} />
+
+## The problem we're solving
+
+Your frontend expects a product price as a number, but an external API returns a string. TypeScript types disappear at runtime; a type assertion will not repair an invalid response. API boundaries need a defined representation and validation.
+
+## Build the mental model
+
+An API is a contract between consumers and a provider. JSON is a text format covering objects, arrays, strings, finite numbers, booleans and null. It does not preserve functions, undefined, Date types, BigInt or object identity; JSON.stringify can omit object properties with undefined and throws for BigInt by default. Parse text, then check the shape. Zod safeParse returns a discriminated success/failure result instead of throwing for ordinary validation failures. A public data transfer object explicitly selects fields rather than serializing a database row with private properties.
+
+**Predict first:** Does JSON.parse guarantee that a product has a valid numeric price? No. It guarantees only that the syntax parses.
+
+## Prerequisites
+
+Complete [the previous lesson](/learn/00.01.05), install Node.js 24, and clone the academy repository. Work from the repository root. Open the starter fixture and replace its TODO functions with your implementation; do not append duplicate exports. These examples are educational and not production-ready authentication or network services.
+
+<LessonStep number={1} title={"Serialize and parse a message"} file="labs/api-json/starter/exercise.mjs" expected={"JSON text becomes data and malformed text is rejected."}>
+
+Define a safe boundary for syntax errors. The returned data is untrusted until validated; never use eval to decode JSON.
+
+```js
+export function decode(text) {
+  try { return {ok:true,value:JSON.parse(text)}; }
+  catch { return {ok:false,error:'invalid-json'}; }
+}
+```
+
+</LessonStep>
+
+<LessonStep number={2} title={"Define a runtime schema"} file="labs/api-json/starter/exercise.mjs" expected={"Valid product data passes. Strings in a numeric field and unknown keys fail."}>
+
+Use Zod 4 strictObject to make the inbound contract explicit. Prices use integer centavos to avoid floating-point currency rounding in this exercise.
+
+```js
+import * as z from 'zod';
+const Product = z.strictObject({
+  id:z.string().min(1),
+  name:z.string().trim().min(1).max(120),
+  priceCentavos:z.number().int().nonnegative().max(Number.MAX_SAFE_INTEGER)
+});
+export function parseProduct(text) {
+  const parsed=decode(text);
+  if(!parsed.ok) return parsed;
+  const result=Product.safeParse(parsed.value);
+  return result.success ? {ok:true,value:result.data} : {ok:false,error:'invalid-product'};
+}
+```
+
+</LessonStep>
+
+<LessonStep number={3} title={"Shape a public response"} file="labs/api-json/starter/exercise.mjs" expected={"Only id, name and priceCentavos are included; acquisition cost and other fields are absent."}>
+
+A public response is an allowlist, not a blacklist that must know every future private field. This helper assumes an already trusted validated row; in production combine it with authorization.
+
+```js
+export function publicProduct(row) {
+  return {id:row.id,name:row.name,priceCentavos:row.priceCentavos};
+}
+```
+
+</LessonStep>
+
+## Explore it yourself
+
+Open a terminal and compare `JSON.stringify({missing:undefined,date:new Date('2026-01-01T00:00:00Z')})` with the original object. Inspect the resulting string. Try `JSON.stringify({value:1n})` and observe the error. Later lessons add TypeScript inference, OpenAPI and API client generation.
+
+<Misconception claim={"JSON is the same as a JavaScript object and TypeScript validates incoming values."} correction={"JSON is serialized text; TypeScript is compile-time checking, while runtime schemas validate incoming data."} />
+
+## Bug Hunt: diagnose before you change code
+
+A developer uses a type assertion for the response, then calculates a price from the string '1200'. This may concatenate or produce incorrect arithmetic. Define an integer schema, reject an invalid type, and map explicit response fields.
+
+<KnowledgeCheck question={"Which step proves an unknown JSON object fits your product contract?"} choices={["JSON.parse alone","A TypeScript assertion","A successful runtime schema validation","JSON.stringify alone"]} correctIndex={2} explanation={"A runtime schema checks the actual values."} misconception={"Syntax parsing does not validate business structure."} lessonId="00.01.06" />
+
+## Guided lab
+
+Open `labs/api-json/starter/exercise.mjs`. Complete the functions and run the tests against your starter. The worked solution is `labs/api-json/solution/exercise.mjs`. The ordinary npm command tests the instructor solution. To exercise your work in PowerShell:
+
+```powershell
+$env:ACADEMY_LAB_TARGET = 'starter'
+npm run lab:api-json
+Remove-Item Env:ACADEMY_LAB_TARGET
+```
+
+On bash use `ACADEMY_LAB_TARGET=starter npm run lab:api-json`. The starter should initially fail. Resolve each failure, then compare the solution with your work. Check the acceptance criteria below only after completing the exercise.
+
+<LabGate lessonId="00.01.06" labId="lab.foundation.api-json" commands={["npm ci","npm run lab:api-json"]} interactive={false} />
+
+## Reflect
+
+Explain the main failure in the Bug Hunt to a teammate, name the layer or trust boundary responsible, and describe the evidence you would use to confirm the repair. Keep your own note of what you found difficult.
+
+## Official references
+
+- [MDN: Working with JSON](https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/JSON)
+- [Zod: Basic usage](https://zod.dev/basics)

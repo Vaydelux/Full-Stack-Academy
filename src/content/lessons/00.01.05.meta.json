@@ -1,0 +1,43 @@
+{
+  "id": "00.01.05",
+  "title": "HTTP requests and responses",
+  "description": "Learn HTTP methods, headers, body formats, status codes and safe error semantics by testing a small request-response handler.",
+  "trackId": "00",
+  "moduleId": "00.01",
+  "level": "Beginner",
+  "estimatedMinutes": 45,
+  "status": "authored",
+  "reviewedAt": "2026-11-18",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "00.01.04"
+  ],
+  "objectives": [
+    "Explain the meaning of GET, POST, PUT, PATCH and DELETE",
+    "Choose accurate HTTP statuses and response media types",
+    "Return a predictable error representation for invalid requests",
+    "Test HTTP contracts without running an external server"
+  ],
+  "labId": "lab.foundation.http-contract",
+  "sources": [
+    {
+      "label": "MDN: HTTP request methods",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Methods"
+    },
+    {
+      "label": "MDN: HTTP response status codes",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status"
+    },
+    {
+      "label": "MDN: Request",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/API/Request"
+    }
+  ],
+  "rubric": [
+    "I explained safe and idempotent HTTP method semantics.",
+    "I distinguished media type, malformed body and invalid input errors.",
+    "I completed the request handler and passed its contract tests."
+  ]
+}

@@ -1,0 +1,93 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Separate URL origin, hostname, port and path","Explain recursive DNS lookup and the role of A and AAAA records","Inspect resolved IPv4 and IPv6 addresses with Node.js","Diagnose resolution errors without assuming a web server is down"]} />
+
+## The problem we're solving
+
+Your deployed app works on one domain but another says the name cannot be resolved. Rebuilding React will not repair a missing DNS record. First identify whether the failure is name resolution, network routing, TLS, or the HTTP application.
+
+## Build the mental model
+
+A domain is a human-readable name in a hierarchical naming system. A URL also contains a scheme, optional port, path, query and fragment. DNS translates names into records such as A (IPv4), AAAA (IPv6), and CNAME (canonical name aliases). A recursive resolver may cache a response for its TTL; it may obtain answers from authoritative servers. A name can resolve to several addresses, and a CDN can return different addresses by location. Resolving a name does not prove an HTTP service is reachable. Node's dns.lookup uses operating-system name resolution (including local hosts configuration), while dns.resolve4 queries DNS records. They are not interchangeable.
+
+**Predict first:** Does changing /api/projects in a URL change the DNS lookup? No. DNS resolves the hostname, not the request path.
+
+## Prerequisites
+
+Complete [the previous lesson](/learn/00.01.02), install Node.js 24, and clone the academy repository. Work from the repository root. Open the starter fixture and replace its TODO functions with your implementation; do not append duplicate exports. These examples are educational and not production-ready authentication or network services.
+
+<LessonStep number={1} title={"Inspect URL components"} file="labs/dns-domains/starter/exercise.mjs" expected={"The parsed result contains hostname, scheme and port, never the path as a hostname."}>
+
+Use the built-in URL parser instead of splitting on slashes. Explicit ports and IPv6 literals otherwise cause subtle bugs.
+
+```js
+export function inspect(input) {
+  const url = new URL(input);
+  if (!['http:', 'https:'].includes(url.protocol)) throw new Error('HTTP(S) only');
+  return {hostname: url.hostname, protocol: url.protocol, port: url.port || (url.protocol === 'https:' ? '443' : '80'), path: url.pathname};
+}
+```
+
+</LessonStep>
+
+<LessonStep number={2} title={"Resolve through the operating system"} file="labs/dns-domains/starter/exercise.mjs" expected={"localhost resolves to one or more addresses; the exact IPv4/IPv6 order can vary."}>
+
+Import lookup from node:dns/promises. Use all:true and retain each address family. Run this command on your own machine; the lab's unit tests inject a fake resolver so CI does not depend on public DNS.
+
+```js
+import { lookup } from 'node:dns/promises';
+export async function resolveHost(hostname, resolver = lookup) {
+  return await resolver(hostname, { all: true });
+}
+```
+
+</LessonStep>
+
+<LessonStep number={3} title={"Diagnose a failed lookup"} file="labs/dns-domains/starter/exercise.mjs" expected={"An ENOTFOUND error is distinguished from other resolver failures."}>
+
+Return a structured diagnostic rather than pretending an empty list means the remote service is down. Do not use this educational inspector as an SSRF allowlist; resolving once does not safely authorize a later connection.
+
+```js
+export async function diagnose(hostname, resolver = lookup) {
+  try { return { ok: true, addresses: await resolveHost(hostname, resolver) }; }
+  catch (error) { return { ok: false, reason: error.code === 'ENOTFOUND' ? 'name-not-found' : 'lookup-failed' }; }
+}
+```
+
+</LessonStep>
+
+## Explore it yourself
+
+Try `node -e "require('node:dns').lookup('localhost',{all:true},console.log)"`. On Windows compare `Resolve-DnsName example.com` (requires a working external resolver). In a terminal, `nslookup example.com` can show DNS answers. Compare these with the URL in DevTools. DNS success is only one diagnostic layer; do not expect a particular public IP address.
+
+<Misconception claim={"A domain name is the same thing as a URL or a server IP."} correction={"A domain is just one part of a URL; it can resolve to multiple addresses, and an address can host many names."} />
+
+## Bug Hunt: diagnose before you change code
+
+A developer sends the entire URL https://example.com/api to a DNS lookup and gets an error. Pass only the hostname. If the lookup succeeds but the browser still fails, inspect connectivity and TLS separately.
+
+<KnowledgeCheck question={"Which field is used for a domain-name lookup?"} choices={["The URL pathname","The hostname","The query string","The fragment"]} correctIndex={1} explanation={"DNS resolves the hostname."} misconception={"A path identifies a resource at the HTTP layer."} lessonId="00.01.03" />
+
+## Guided lab
+
+Open `labs/dns-domains/starter/exercise.mjs`. Complete the functions and run the tests against your starter. The worked solution is `labs/dns-domains/solution/exercise.mjs`. The ordinary npm command tests the instructor solution. To exercise your work in PowerShell:
+
+```powershell
+$env:ACADEMY_LAB_TARGET = 'starter'
+npm run lab:dns-domains
+Remove-Item Env:ACADEMY_LAB_TARGET
+```
+
+On bash use `ACADEMY_LAB_TARGET=starter npm run lab:dns-domains`. The starter should initially fail. Resolve each failure, then compare the solution with your work. Check the acceptance criteria below only after completing the exercise.
+
+<LabGate lessonId="00.01.03" labId="lab.foundation.dns-domains" commands={["npm ci","npm run lab:dns-domains"]} interactive={false} />
+
+## Reflect
+
+Explain the main failure in the Bug Hunt to a teammate, name the layer or trust boundary responsible, and describe the evidence you would use to confirm the repair. Keep your own note of what you found difficult.
+
+## Official references
+
+- [MDN: What is a domain name?](https://developer.mozilla.org/en-US/docs/Learn_web_development/Howto/Web_mechanics/What_is_a_domain_name)
+- [Node.js: DNS](https://nodejs.org/download/release/latest-v24.x/docs/api/dns.html)
