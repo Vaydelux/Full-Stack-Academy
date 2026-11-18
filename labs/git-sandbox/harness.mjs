@@ -10,7 +10,7 @@ export function createGitSandbox(){
  const env={...process.env,GIT_TERMINAL_PROMPT:'0',GIT_CONFIG_NOSYSTEM:'1',GIT_CONFIG_GLOBAL:join(root,'empty-global'),GIT_ALLOW_PROTOCOL:'file',HOME:root};
  const git=(args,{allowFailure=false}={})=>{
   if(!Array.isArray(args)||args.some(x=>typeof x!=='string'||!x.trim()))throw new TypeError('Git arguments must be strings');
-  if(args.some(x=>/^(-C|--git-dir|--work-tree|--exec-path|-c)$/.test(x)))throw new Error('Git root overrides are not permitted');
+  if(args.some((arg,index)=>(index===0&&(arg==='-C'||arg==='-c'))||/^(--git-dir|--work-tree|--exec-path)(=|$)/.test(arg)))throw new Error('Git root overrides are not permitted');
   const p=spawnSync('git',args,{cwd,env,encoding:'utf8',timeout:12000,maxBuffer:1024*1024,windowsHide:true});
   if(p.error)throw p.error;
   const result={stdout:p.stdout||'',stderr:p.stderr||'',status:p.status};
