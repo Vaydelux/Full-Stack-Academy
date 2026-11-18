@@ -3,7 +3,7 @@
 import { useRef } from 'react';
 import Link from 'next/link';
 import { BookOpenText, Download, Ellipsis, Moon, Search, Sun, Upload } from 'lucide-react';
-import { AUTHORED_LESSON_IDS } from '@/lib/academy/authored-content';
+import { PUBLISHED_LESSON_IDS } from '@/lib/academy/published';
 import { useAcademy } from '@/lib/academy/store';
 
 export default function TopBar() {
@@ -16,7 +16,7 @@ export default function TopBar() {
   const showToast = useAcademy(s => s.showToast);
   const fileRef = useRef<HTMLInputElement>(null);
   const menuRef = useRef<HTMLDetailsElement>(null);
-  const done = AUTHORED_LESSON_IDS.filter(id => progress.complete[id]).length;
+  const done = PUBLISHED_LESSON_IDS.filter(id => progress.complete[id]).length;
   const closeMenu = () => { if (menuRef.current) menuRef.current.open = false; };
   const backup = () => {
     const url = URL.createObjectURL(new Blob([exportBackupJson()], { type: 'application/json' }));
@@ -48,7 +48,7 @@ export default function TopBar() {
         <Link href="/reference" className="hover:underline">Reference</Link>
       </nav>
       <div className="ml-auto flex shrink-0 items-center gap-2">
-        <span className="hidden text-xs tabular-nums text-slate-500 md:inline" title="Completed authored samples">{done}/{AUTHORED_LESSON_IDS.length} complete</span>
+        <span className="hidden text-xs tabular-nums text-slate-500 md:inline" title="Completed published lessons">{done}/{PUBLISHED_LESSON_IDS.length} complete</span>
         <button type="button" aria-label="Search curriculum and references" onClick={() => setCommandOpen(true)} className="flex min-h-10 items-center gap-2 rounded-lg px-2.5 text-sm text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-white/10"><Search size={18}/><span className="hidden lg:inline">Search</span></button>
         <button type="button" aria-label="Toggle color theme" onClick={toggleTheme} className="grid h-10 w-10 place-items-center rounded-lg hover:bg-slate-100 dark:hover:bg-white/10">{progress.theme === 'dark' ? <Sun size={18}/> : <Moon size={18}/>}</button>
         <details ref={menuRef} className="relative">

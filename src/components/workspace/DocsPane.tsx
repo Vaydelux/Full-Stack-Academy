@@ -1,6 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
+import { MDX_METADATA } from '@/lib/academy/published';
 import {
   ArrowUpRight,
   BookOpen,
@@ -795,6 +797,8 @@ function PlannedLessonView({ entry }: { entry: CurriculumLesson }) {
   const setActiveView = useAcademy((s) => s.setActiveView);
   const mod = moduleMap.get(entry.moduleId);
   const track = trackMap.get(entry.trackId);
+  const published = MDX_METADATA.get(entry.id);
+  if (published) return <article className="space-y-5 pb-16"><p className="text-sm text-slate-500">{entry.track} / {entry.module}</p><h1 className="text-3xl font-bold">{published.title}</h1><p>{published.description}</p><p>{published.estimatedMinutes} min · Local hands-on lab</p><Link href={`/learn/${entry.id}`} className="inline-flex rounded-lg bg-cyan-700 px-4 py-2 text-sm font-semibold text-white">Open full lesson</Link><p className="text-sm text-slate-500">Read the guided article, run the Node.js exercise locally and record your progress there.</p></article>;
 
   return (
     <div className="space-y-5 pb-16">

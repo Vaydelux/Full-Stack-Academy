@@ -3,8 +3,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { BookOpen, FileCode2, Search, X } from 'lucide-react';
-import { AUTHORED_LESSONS, findAuthoredReference } from '@/lib/academy/authored-content';
+import { findAuthoredReference } from '@/lib/academy/authored-content';
 import { lessons, references } from '@/lib/academy/curriculum';
+import { isPublishedLesson } from '@/lib/academy/published';
 import { useAcademy } from '@/lib/academy/store';
 
 function SearchModalPanel({ onClose }: { onClose: () => void }) {
@@ -23,7 +24,7 @@ function SearchModalPanel({ onClose }: { onClose: () => void }) {
     const matchedLessons = lessons
       .filter((l) =>
         !q
-          ? Boolean(AUTHORED_LESSONS[l.id])
+          ? isPublishedLesson(l.id)
           : `${l.id} ${l.title} ${l.track} ${l.module}`.toLowerCase().includes(q)
       )
       .slice(0, 24);
@@ -76,7 +77,7 @@ function SearchModalPanel({ onClose }: { onClose: () => void }) {
       <div className="max-h-[60vh] overflow-y-auto p-3">
         {!query.trim() && (
           <div className="mb-2 px-2 text-[10px] font-bold uppercase tracking-[0.16em] text-slate-500">
-            Showing authored sample lessons &amp; references · Type to search all 889 topics &amp; 303 subjects
+            Showing available lessons &amp; references · Type to search all 889 topics &amp; 303 subjects
           </div>
         )}
 
@@ -87,7 +88,7 @@ function SearchModalPanel({ onClose }: { onClose: () => void }) {
             </div>
             <div className="space-y-1">
               {results.matchedLessons.map((l) => {
-                const isAuthored = Boolean(AUTHORED_LESSONS[l.id]);
+                const isAuthored = isPublishedLesson(l.id);
                 return (
                   <button
                     key={l.id}
@@ -114,7 +115,7 @@ function SearchModalPanel({ onClose }: { onClose: () => void }) {
                           : 'border border-slate-200 bg-slate-100 text-slate-500 dark:border-white/[0.08] dark:bg-white/[0.04]'
                       }`}
                     >
-                      {isAuthored ? 'Authored sample' : 'Planned'}
+                      {isAuthored ? 'Available lesson' : 'Planned'}
                     </span>
                   </button>
                 );

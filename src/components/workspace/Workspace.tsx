@@ -156,6 +156,7 @@ export default function Workspace() {
           <Link href="/reference" className="text-sm font-medium text-cyan-700 dark:text-cyan-300">Reference library</Link>
         </div>
         <aside id="academy-navigation" className={`${mobileNav ? 'flex' : 'hidden'} h-[42dvh] max-h-[42dvh] min-h-0 shrink-0 flex-col overflow-hidden border-b border-slate-200 bg-white lg:flex lg:h-full lg:max-h-none lg:w-[300px] lg:border-b-0 lg:border-r dark:border-white/10 dark:bg-[#15161c]`}>
+          <Link href="/learn/00.01.01" className="mx-3 mt-3 rounded-xl border border-cyan-600/25 bg-cyan-500/[0.06] p-3 text-sm font-semibold text-cyan-800 dark:text-cyan-300">New to full-stack? Start here <span aria-hidden="true">→</span></Link>
           <SyllabusPanel fullHeight onNavigate={() => setMobileNav(false)} />
         </aside>
         <main id="academy-main" className="flex min-h-0 min-w-0 flex-1 flex-col">
