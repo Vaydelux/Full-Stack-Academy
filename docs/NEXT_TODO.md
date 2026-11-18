@@ -9,7 +9,7 @@
 - [x] Register MDX and metadata publication, scripts and Chromium coverage.
 - [x] Update machine-readable checkpoint counts for the *feature branch*; keep historical verified production SHA unchanged.
 - [ ] Confirm `npm ci`, dependency audit, lint, typecheck, repository tests, catalog/content/checkpoint verification, all local lab tests, production Next.js build and Chromium on the exact feature head.
-- [ ] Inspect Vercel preview of the exact feature head, published lesson routes, sitemap, noindex for planned `01.05` routes, console errors, and keyboard/mobile usability.
+- [ ] Inspect Vercel preview of the exact feature head, published lesson routes, sitemap, noindex for planned `02.01` routes, console errors, and keyboard/mobile usability.
 - [ ] Review the PR diff for security and pedagogy; merge **only if all release gates pass**. Then verify production deployment READY at the resulting main SHA and update the release checkpoint.
 
 ## P1 — Security and educational verification
@@ -21,7 +21,7 @@
 
 ## P2 — After module 01.04 release
 
-- [ ] Author the next canonical module `01.05` from `data/curriculum.json` (not merely a catalog placeholder).
+- [ ] Author the next canonical module `02.01 — CSS Fundamentals` from `data/curriculum.json` (not merely a catalog placeholder).
 - [ ] Continue CSS, JavaScript, TypeScript, React/Next.js, backend APIs, PostgreSQL, Supabase, security, deployment and the end-to-end capstone.
 
 ## Existing released foundation
