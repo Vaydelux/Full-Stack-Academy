@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.react-events",
+  "lessonId": "06.01.07",
+  "title": "Event handlers in practice",
+  "runtime": "react19-tsx-ssr-local",
+  "status": "authored",
+  "starter": "labs/react-events/starter/solution.ts",
+  "solution": "labs/react-events/solution/solution.ts",
+  "tests": "labs/react-events/solution.test.mjs",
+  "verify": [
+    "npm run lab:react-events"
+  ],
+  "expected": "The correct local contract passes independent assertions; end-to-end framework behavior is a separate QA gate.",
+  "security": "Uses synthetic fixture data, no secrets, uploaded code execution, remote endpoints, publishing, Vercel or hosted grading."
+}

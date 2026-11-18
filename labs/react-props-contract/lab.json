@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.react-props-contract",
+  "lessonId": "06.01.02",
+  "title": "Components and props",
+  "runtime": "react19-tsx-ssr-local",
+  "status": "authored",
+  "starter": "labs/react-props-contract/starter/solution.ts",
+  "solution": "labs/react-props-contract/solution/solution.ts",
+  "tests": "labs/react-props-contract/solution.test.mjs",
+  "verify": [
+    "npm run lab:react-props-contract"
+  ],
+  "expected": "The correct local contract passes independent assertions; end-to-end framework behavior is a separate QA gate.",
+  "security": "Uses synthetic fixture data, no secrets, uploaded code execution, remote endpoints, publishing, Vercel or hosted grading."
+}

@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.react-composition",
+  "lessonId": "06.01.03",
+  "title": "Composition and children",
+  "runtime": "react19-tsx-ssr-local",
+  "status": "authored",
+  "starter": "labs/react-composition/starter/solution.ts",
+  "solution": "labs/react-composition/solution/solution.ts",
+  "tests": "labs/react-composition/solution.test.mjs",
+  "verify": [
+    "npm run lab:react-composition"
+  ],
+  "expected": "The correct local contract passes independent assertions; end-to-end framework behavior is a separate QA gate.",
+  "security": "Uses synthetic fixture data, no secrets, uploaded code execution, remote endpoints, publishing, Vercel or hosted grading."
+}

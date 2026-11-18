@@ -1,0 +1,40 @@
+{
+  "id": "06.01.05",
+  "title": "Lists, keys and identity",
+  "description": "Investigate lists, keys and identity in React 19 with a defective starter, repaired instructor module, executable offline contract and framework example.",
+  "trackId": "06",
+  "moduleId": "06.01",
+  "level": "Beginner",
+  "estimatedMinutes": 60,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "react": "19",
+    "typescript": "5",
+    "node": "24"
+  },
+  "prerequisites": [
+    "06.01.04"
+  ],
+  "objectives": [
+    "Diagnose the lists, keys and identity failure through a real example",
+    "Repair the learner fixture with a precise invariant and explicit edge cases",
+    "Verify the result offline and distinguish those checks from framework end-to-end tests"
+  ],
+  "labId": "lab.foundation.react-list-identity",
+  "sources": [
+    {
+      "label": "Official framework documentation",
+      "url": "https://react.dev/learn/rendering-lists"
+    },
+    {
+      "label": "Supporting official API guidance",
+      "url": "https://react.dev/learn/preserving-and-resetting-state"
+    }
+  ],
+  "rubric": [
+    "I can reproduce the specific lists, keys and identity failure in the learner starter",
+    "I can explain one positive and one negative case without a hosted service",
+    "I can identify which behavior still requires a browser or Next.js request integration test"
+  ]
+}

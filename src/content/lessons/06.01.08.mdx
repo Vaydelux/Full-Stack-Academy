@@ -1,0 +1,99 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Diagnose the lab profile dashboard card failure through a real example","Repair the learner fixture with a precise invariant and explicit edge cases","Verify the result offline and distinguish those checks from framework end-to-end tests"]} />
+
+## The problem we're solving
+
+A public profile card spreads private account fields into its displayed view model. This local fixture isolates a concrete failure before we introduce any external state or deployment.
+
+## Build the mental model
+
+Construct a public projection and validate required data; TypeScript annotations do not strip runtime object fields. Use native buttons with a pressed state for interactive actions.
+
+**Predict before running:** The repaired implementation respects its documented contract.
+
+## Prerequisites and preflight
+
+Continue from [the preceding lesson](/learn/06.01.07). Inspect `labs/react-profile-card/starter/solution.ts`, the instructor solution and `labs/react-profile-card/solution.test.mjs`. Run `npm run lab:react-profile-card` with repository-installed Node.js 24, TypeScript and tsx. The React component is also rendered to static initial HTML by the test; event handlers and effects need browser tests.
+
+<LessonStep number={1} title="Reproduce the defective starter" file="labs/react-profile-card/starter/solution.ts" expected="The intentionally flawed starter fails a real assertion.">
+
+Observe the following implementation, identify the overlooked case, and predict which assertion reveals it.
+
+```ts
+
+export type Profile={id:string;name:string;role:string;secret?:string};export function solve(raw:Profile){return {...raw};}
+
+```
+
+**Why it fails:** Construct a public projection and validate required data; TypeScript annotations do not strip runtime object fields. Use native buttons with a pressed state for interactive actions.
+
+**Proof:** Run `ACADEMY_LAB_TARGET=starter npm run lab:react-profile-card` in Bash, or set the variable for the command in PowerShell. Do not modify the instructor fixture.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the implementation contract" file="labs/react-profile-card/starter/solution.ts" expected={"Positive and negative cases behave predictably."}>
+
+Make the smallest semantic correction; do not weaken the assertions or convert invalid data into a fake success.
+
+```ts
+
+export type Profile=Readonly<{id:string;name:string;role:string;secret?:string}>;export function solve(raw:Profile):Readonly<{id:string;name:string;role:string}>{if(!raw.id.trim()||!raw.name.trim()||!raw.role.trim())throw new TypeError('Invalid profile');return Object.freeze({id:raw.id,name:raw.name.trim(),role:raw.role.trim()});}
+
+```
+
+**Why it works:** Construct a public projection and validate required data; TypeScript annotations do not strip runtime object fields. Use native buttons with a pressed state for interactive actions.
+
+**Proof:** Run the same local assertions and compare the before/after outputs.
+
+</LessonStep>
+
+<LessonStep number={3} title="Inspect the React component" file="labs/react-profile-card/solution/Widget.tsx" expected="The framework-oriented sample illustrates the same invariant.">
+
+This is an actual React 19 component, which the lab renders to initial HTML. Interactions after hydration are not certified by an SSR check.
+
+```tsx
+
+'use client';
+import React,{useState} from 'react';
+import {solve} from './solution';
+const member=solve({id:'u1',name:'Ada',role:'Engineer'});
+export function Workshop(){const [following,setFollowing]=useState(false);return <article aria-label="Profile card"><h2>{member.name}</h2><p>{member.role}</p><button type="button" aria-pressed={following} onClick={()=>setFollowing(v=>!v)}>{following?'Following':'Follow'}</button></article>;}
+
+```
+
+**Predict before running:** The corrected sample handles the reviewed case.
+
+**Proof:** Run `npm run lab:react-profile-card`. To certify real navigation or mutation behavior, also exercise an isolated app in a browser or test server.
+
+</LessonStep>
+
+## Explore and verify
+
+Change a valid input into an invalid one, then inspect which layer should reject it. Check accessibility, cleanup and data ownership as appropriate.
+
+<Misconception claim={"Passing a typecheck or SSR initial render proves every interactive path."} correction={"Construct a public projection and validate required data; TypeScript annotations do not strip runtime object fields. Use native buttons with a pressed state for interactive actions."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+Identify the smallest counterexample, repair the root cause and verify the same input now behaves correctly. Describe the missing browser or server integration check.
+
+<KnowledgeCheck question={"How should a public card omit private fields?"} choices={["By casting to a public TypeScript interface","By explicitly constructing an allowlisted view object","By hiding fields with CSS","By passing every database field as a prop"]} correctIndex={1} explanation={"Construct a public projection and validate required data; TypeScript annotations do not strip runtime object fields. Use native buttons with a pressed state for interactive actions."} misconception="Offline tests have explicit boundaries." lessonId="06.01.08" />
+
+## Guided local lab
+
+Edit `labs/react-profile-card/starter/solution.ts`. The test imports the selected target and confirms actual return values. It also renders the corresponding component with React DOM Server. The academy does not execute arbitrary learner code on the server.
+
+<LabGate lessonId="06.01.08" labId="lab.foundation.react-profile-card" commands={["npm ci","npm run lab:react-profile-card"]} interactive={false} />
+
+## Reflect
+
+Which invariant did the original implementation violate? Which test proves the fix, and what would still require a full browser or Next.js integration environment?
+
+## Official references
+
+- [Official concept](https://react.dev/learn/passing-props-to-a-component)
+
+- [Official supporting reference](https://react.dev/learn/responding-to-events)

@@ -1,0 +1,98 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Diagnose the lists, keys and identity failure through a real example","Repair the learner fixture with a precise invariant and explicit edge cases","Verify the result offline and distinguish those checks from framework end-to-end tests"]} />
+
+## The problem we're solving
+
+Removing the first roster row causes later stateful rows to use keys from old positions. This local fixture isolates a concrete failure before we introduce any external state or deployment.
+
+## Build the mental model
+
+Stable unique keys tell React which sibling represents which domain object. Index-based keys break state identity when a list is reordered or filtered.
+
+**Predict before running:** The repaired implementation respects its documented contract.
+
+## Prerequisites and preflight
+
+Continue from [the preceding lesson](/learn/06.01.04). Inspect `labs/react-list-identity/starter/solution.ts`, the instructor solution and `labs/react-list-identity/solution.test.mjs`. Run `npm run lab:react-list-identity` with repository-installed Node.js 24, TypeScript and tsx. The React component is also rendered to static initial HTML by the test; event handlers and effects need browser tests.
+
+<LessonStep number={1} title="Reproduce the defective starter" file="labs/react-list-identity/starter/solution.ts" expected="The intentionally flawed starter fails a real assertion.">
+
+Observe the following implementation, identify the overlooked case, and predict which assertion reveals it.
+
+```ts
+
+export function solve(items:readonly {id:string}[]):string[]{return items.map((_,i)=>String(i));}
+
+```
+
+**Why it fails:** Stable unique keys tell React which sibling represents which domain object. Index-based keys break state identity when a list is reordered or filtered.
+
+**Proof:** Run `ACADEMY_LAB_TARGET=starter npm run lab:react-list-identity` in Bash, or set the variable for the command in PowerShell. Do not modify the instructor fixture.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the implementation contract" file="labs/react-list-identity/starter/solution.ts" expected={"Positive and negative cases behave predictably."}>
+
+Make the smallest semantic correction; do not weaken the assertions or convert invalid data into a fake success.
+
+```ts
+
+export function solve(items:readonly {id:string}[]):string[]{const keys=items.map(x=>x.id);if(keys.some(x=>!x)||new Set(keys).size!==keys.length)throw new Error('Unique keys required');return keys;}
+
+```
+
+**Why it works:** Stable unique keys tell React which sibling represents which domain object. Index-based keys break state identity when a list is reordered or filtered.
+
+**Proof:** Run the same local assertions and compare the before/after outputs.
+
+</LessonStep>
+
+<LessonStep number={3} title="Inspect the React component" file="labs/react-list-identity/solution/Widget.tsx" expected="The framework-oriented sample illustrates the same invariant.">
+
+This is an actual React 19 component, which the lab renders to initial HTML. Interactions after hydration are not certified by an SSR check.
+
+```tsx
+
+import React from 'react';
+import {solve} from './solution';
+const roster=[{id:'u2',name:'Lin'},{id:'u1',name:'Ada'}];
+export function Workshop(){const ids=solve(roster);return <section aria-label="Roster"><h2>Team roster</h2><ul>{roster.map((p,i)=><li key={ids[i]}>{p.name}</li>)}</ul></section>;}
+
+```
+
+**Predict before running:** The corrected sample handles the reviewed case.
+
+**Proof:** Run `npm run lab:react-list-identity`. To certify real navigation or mutation behavior, also exercise an isolated app in a browser or test server.
+
+</LessonStep>
+
+## Explore and verify
+
+Change a valid input into an invalid one, then inspect which layer should reject it. Check accessibility, cleanup and data ownership as appropriate.
+
+<Misconception claim={"Passing a typecheck or SSR initial render proves every interactive path."} correction={"Stable unique keys tell React which sibling represents which domain object. Index-based keys break state identity when a list is reordered or filtered."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+Identify the smallest counterexample, repair the root cause and verify the same input now behaves correctly. Describe the missing browser or server integration check.
+
+<KnowledgeCheck question={"Which key is best for reordered stateful rows?"} choices={["Array index","Fresh random key per render","Stable unique record identifier","CSS class name"]} correctIndex={2} explanation={"Stable unique keys tell React which sibling represents which domain object. Index-based keys break state identity when a list is reordered or filtered."} misconception="Offline tests have explicit boundaries." lessonId="06.01.05" />
+
+## Guided local lab
+
+Edit `labs/react-list-identity/starter/solution.ts`. The test imports the selected target and confirms actual return values. It also renders the corresponding component with React DOM Server. The academy does not execute arbitrary learner code on the server.
+
+<LabGate lessonId="06.01.05" labId="lab.foundation.react-list-identity" commands={["npm ci","npm run lab:react-list-identity"]} interactive={false} />
+
+## Reflect
+
+Which invariant did the original implementation violate? Which test proves the fix, and what would still require a full browser or Next.js integration environment?
+
+## Official references
+
+- [Official concept](https://react.dev/learn/rendering-lists)
+
+- [Official supporting reference](https://react.dev/learn/preserving-and-resetting-state)

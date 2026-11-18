@@ -1,0 +1,1 @@
+export type Profile=Readonly<{id:string;name:string;role:string;secret?:string}>;export function solve(raw:Profile):Readonly<{id:string;name:string;role:string}>{if(!raw.id.trim()||!raw.name.trim()||!raw.role.trim())throw new TypeError('Invalid profile');return Object.freeze({id:raw.id,name:raw.name.trim(),role:raw.role.trim()});}

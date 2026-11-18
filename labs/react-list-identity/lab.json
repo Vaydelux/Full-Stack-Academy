@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.react-list-identity",
+  "lessonId": "06.01.05",
+  "title": "Lists, keys and identity",
+  "runtime": "react19-tsx-ssr-local",
+  "status": "authored",
+  "starter": "labs/react-list-identity/starter/solution.ts",
+  "solution": "labs/react-list-identity/solution/solution.ts",
+  "tests": "labs/react-list-identity/solution.test.mjs",
+  "verify": [
+    "npm run lab:react-list-identity"
+  ],
+  "expected": "The correct local contract passes independent assertions; end-to-end framework behavior is a separate QA gate.",
+  "security": "Uses synthetic fixture data, no secrets, uploaded code execution, remote endpoints, publishing, Vercel or hosted grading."
+}

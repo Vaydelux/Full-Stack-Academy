@@ -1,0 +1,40 @@
+{
+  "id": "06.01.08",
+  "title": "Lab profile dashboard card",
+  "description": "Investigate lab profile dashboard card in React 19 with a defective starter, repaired instructor module, executable offline contract and framework example.",
+  "trackId": "06",
+  "moduleId": "06.01",
+  "level": "Beginner",
+  "estimatedMinutes": 85,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "react": "19",
+    "typescript": "5",
+    "node": "24"
+  },
+  "prerequisites": [
+    "06.01.07"
+  ],
+  "objectives": [
+    "Diagnose the lab profile dashboard card failure through a real example",
+    "Repair the learner fixture with a precise invariant and explicit edge cases",
+    "Verify the result offline and distinguish those checks from framework end-to-end tests"
+  ],
+  "labId": "lab.foundation.react-profile-card",
+  "sources": [
+    {
+      "label": "Official framework documentation",
+      "url": "https://react.dev/learn/passing-props-to-a-component"
+    },
+    {
+      "label": "Supporting official API guidance",
+      "url": "https://react.dev/learn/responding-to-events"
+    }
+  ],
+  "rubric": [
+    "I can reproduce the specific lab profile dashboard card failure in the learner starter",
+    "I can explain one positive and one negative case without a hosted service",
+    "I can identify which behavior still requires a browser or Next.js request integration test"
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.react-profile-card",
+  "lessonId": "06.01.08",
+  "title": "Lab profile dashboard card",
+  "runtime": "react19-tsx-ssr-local",
+  "status": "authored",
+  "starter": "labs/react-profile-card/starter/solution.ts",
+  "solution": "labs/react-profile-card/solution/solution.ts",
+  "tests": "labs/react-profile-card/solution.test.mjs",
+  "verify": [
+    "npm run lab:react-profile-card"
+  ],
+  "expected": "The correct local contract passes independent assertions; end-to-end framework behavior is a separate QA gate.",
+  "security": "Uses synthetic fixture data, no secrets, uploaded code execution, remote endpoints, publishing, Vercel or hosted grading."
+}

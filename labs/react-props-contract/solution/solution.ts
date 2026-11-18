@@ -1,0 +1,1 @@
+export type User=Readonly<{name:string;role:string}>;export function solve(user:User){if(!user.name.trim()||!user.role.trim())throw new TypeError('Missing fields');return user.name.trim()+' ('+user.role.trim()+')';}
