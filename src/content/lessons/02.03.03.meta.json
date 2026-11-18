@@ -1,0 +1,38 @@
+{
+  "id": "02.03.03",
+  "title": "Dark mode and color schemes",
+  "description": "Investigate and repair dark mode and color schemes in a self-contained design-system exercise with state checks, official sources and honest browser test criteria.",
+  "trackId": "02",
+  "moduleId": "02.03",
+  "level": "Beginner",
+  "estimatedMinutes": 50,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "02.03.02"
+  ],
+  "objectives": [
+    "Diagnose the dark mode and color schemes issue from observed CSS behavior",
+    "Apply the correct CSS rule to preserve accessibility and maintainability",
+    "Verify the result using computed styles and relevant interaction states"
+  ],
+  "labId": "lab.foundation.css-dark-schemes",
+  "sources": [
+    {
+      "label": "MDN CSS design guide",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/color-scheme"
+    },
+    {
+      "label": "Official CSS or W3C reference",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/color_value/light-dark"
+    }
+  ],
+  "rubric": [
+    "I reproduced the original dark mode and color schemes defect with a concrete observation.",
+    "I can explain when the repaired CSS matches and why it wins.",
+    "I tested keyboard, color or container state as relevant and documented a limit."
+  ]
+}

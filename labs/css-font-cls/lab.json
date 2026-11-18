@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.css-font-cls",
+  "lessonId": "02.04.04",
+  "title": "Font loading and CLS",
+  "runtime": "browser-html-and-node-24",
+  "status": "authored",
+  "starter": "labs/css-font-cls/starter/index.html",
+  "solution": "labs/css-font-cls/solution/index.html",
+  "tests": "labs/css-font-cls/solution.test.mjs",
+  "verify": [
+    "npm run lab:css-font-cls"
+  ],
+  "expected": "I can demonstrate and explain the repaired font loading and cls CSS behavior, without unsupported performance claims.",
+  "security": "Local synthetic HTML/CSS exercise without third-party assets, external requests, API keys, telemetry, accounts, uploaded media or personal data."
+}

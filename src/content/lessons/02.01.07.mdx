@@ -1,0 +1,97 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Implement visible keyboard focus with :focus-visible","Distinguish hover from focus","Preserve native disabled behavior and nonhover usability"]} />
+
+## The problem we're solving
+
+A button looks interactive on hover but has no keyboard focus indicator. Our task is to repair the actual style behavior, not just make a static screenshot look convincing. This workshop uses synthetic content in a standalone offline HTML file; it needs no account, cloud API or deployed preview.
+
+## Build the mental model
+
+:hover follows pointer hover; :focus-visible is a UA-informed indicator for keyboard-like focus and is not necessarily shown for every mouse click. :disabled matches natively disabled controls; [aria-disabled] is only semantic unless behavior is implemented. Never remove the focus outline without a replacement.
+
+**Predict before running:** Keyboard Tab gives the action a thick orange focus ring; hovering changes only its background.
+
+## Prerequisites and preflight
+
+Continue from [the previous CSS lesson](/learn/02.01.06). Open `labs/css-states/starter/index.html` in a browser and inspect the CSS rules using the Elements / Computed Styles panel. Have local Node.js 24 available for the test script and choose a 320px device viewport for the final check. The starter intentionally demonstrates the flaw, while the solution supplies the target behavior.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce and inspect the failing state" file="labs/css-states/starter/index.html" expected="The starter removes the focus outline, leaving no visible focus state.">
+
+Start from the intentionally incorrect declaration and inspect the matched and computed styles. Before making changes, determine which element owns the value and whether a CSS rule is matched but overridden.
+
+```css
+.action:focus-visible { outline: none; }
+```
+
+**Predict before running:** The starter removes the focus outline, leaving no visible focus state.
+
+**Why it fails:** :hover follows pointer hover; :focus-visible is a UA-informed indicator for keyboard-like focus and is not necessarily shown for every mouse click. :disabled matches natively disabled controls; [aria-disabled] is only semantic unless behavior is implemented. Never remove the focus outline without a replacement.
+
+**Proof:** Open DevTools, select the target element, and confirm the failing computed property. Write the observed value before replacing the rule.
+
+</LessonStep>
+
+<LessonStep number={2} title="Apply the targeted CSS repair" file="labs/css-states/starter/index.html" expected="Keyboard Tab gives the action a thick orange focus ring; hovering changes only its background.">
+
+Replace the incorrect rule with the following CSS. Keep the native HTML controls and all semantic content unchanged.
+
+```css
+.action:focus-visible { outline: 3px solid #c44804; outline-offset: 4px; }
+```
+
+**Predict before running:** Keyboard Tab gives the action a thick orange focus ring; hovering changes only its background.
+
+**Why it works:** :hover follows pointer hover; :focus-visible is a UA-informed indicator for keyboard-like focus and is not necessarily shown for every mouse click. :disabled matches natively disabled controls; [aria-disabled] is only semantic unless behavior is implemented. Never remove the focus outline without a replacement.
+
+**Proof:** Use Tab and inspect :focus-visible plus outlineWidth on the action button.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify responsiveness and interaction" file="labs/css-states/starter/index.html" expected="The repaired solution works at narrow and wide viewports without hiding keyboard focus or producing horizontal overflow.">
+
+Use DevTools Responsive Design Mode: select a 320px width, then a wide desktop width. Inspect the relevant computed style again. Where the lab includes a button or writing-direction toggle, test it using Tab and Enter.
+
+```js
+const target = document.querySelector('.card');
+console.log(getComputedStyle(target).boxSizing);
+console.log(document.documentElement.scrollWidth <= innerWidth);
+```
+
+**Predict before running:** A visible computed property changes as described, but the document remains scrollable normally with no unwanted horizontal overflow.
+
+**Why it works:** Browser-computed styles and measured dimensions describe actual rendered rules, rather than assuming the presence of source text is enough.
+
+**Proof:** Compare the computed result with the instructor solution and record one failing case from the original starter.
+
+</LessonStep>
+
+## Explore and verify
+
+Use Chromium and Firefox when available; browser engines can expose subtle differences in focus heuristics and text metrics. Use synthetic content only. Confirm the result at 320px, at a wider viewport and with keyboard navigation; for directional labs, toggle RTL. A local Node assertion checks the instructor's expected CSS declarations, while browser inspection is needed to prove their effect. This lesson does not upload work or grant a server-verified grade.
+
+<Misconception claim="If CSS text exists in the stylesheet, the browser must display the desired result." correction="Selectors must match; the cascade must select the rule; geometry, font sizing, direction and interaction state determine actual rendering. Verify computed styles and browser behavior." />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+The starter removes the focus outline, leaving no visible focus state. Copy the starter, record the affected element and computed property, then apply the smallest correction and rerun the same viewport and input sequence. Explain why changing markup semantics or adding a blanket `!important` rule would be a poor substitute for diagnosing the matching declaration.
+
+<KnowledgeCheck question="Which state selector best supports a keyboard focus indicator?" choices={[":hover",":focus-visible",":disabled",":visited"]} correctIndex={1} explanation=":hover follows pointer hover; :focus-visible is a UA-informed indicator for keyboard-like focus and is not necessarily shown for every mouse click. :disabled matches natively disabled controls; [aria-disabled] is only semantic unless behavior is implemented. Never remove the focus outline without a replacement." misconception="A screenshot or a selector's apparent strength is not a complete explanation of CSS behavior." lessonId="02.01.07" />
+
+## Guided local lab
+
+Repair `labs/css-states/starter/index.html` using the three steps, and compare with `labs/css-states/solution/index.html`. The Node verifier checks the instructor solution by default. Check your repaired starter using `ACADEMY_LAB_TARGET=starter npm run lab:css-states` in Bash, or set and remove that environment variable in PowerShell before and after the command. The unrepaired starter should fail the instructor-behavior assertions.
+
+<LabGate lessonId="02.01.07" labId="lab.foundation.css-states" commands={["npm ci","npm run lab:css-states"]} interactive={false} />
+
+## Reflect
+
+What changed? Why is it more correct? When would you use a different CSS strategy? Record an actual computed value, a browser you did not test, and a real-world constraint that could change this solution. The lab is offline educational practice, not a WCAG conformance certificate.
+
+## Official references
+
+- [MDN concept guide](https://developer.mozilla.org/en-US/docs/Web/CSS/:focus-visible)
+- [MDN CSS reference](https://developer.mozilla.org/en-US/docs/Web/CSS/:disabled)

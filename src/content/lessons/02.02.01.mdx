@@ -1,0 +1,109 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Diagnose why flexbox mental model fails in a realistic component","Apply a minimal CSS repair without breaking native HTML semantics","Verify computed styles at narrow and wide widths with repeatable tests"]} />
+
+## The problem we're solving
+
+A row of topic chips overflows a narrow phone because its author treated Flexbox as an inflexible single line. The goal is a predictable local repair, not a decorative mockup. The HTML fixture is fully offline and has an intentionally failing starter plus an instructor solution.
+
+## Build the mental model
+
+Flexbox allocates one-dimensional space along the main axis, then aligns items on the cross axis. flex-wrap permits additional lines; gap creates layout spacing without edge-margin surprises. A flexible child may need min-inline-size: 0 to shrink when content is long.
+
+**Predict before running:** At a 320px viewport, the chips wrap into additional lines instead of creating a horizontal scrollbar.
+
+## Prerequisites and preflight
+
+Continue from [the previous canonical lesson](/learn/02.01.08). Open `labs/css-flexbox/starter/index.html` in a browser, select the example in DevTools Elements, and inspect Computed Styles. Use Node.js 24 to execute the repository tests; no Vercel, credentials, telemetry or backend is required.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the actual defect" file="labs/css-flexbox/starter/index.html" expected={"nowrap and fixed 15rem item widths exceed the available inline size."}>
+
+Use the original CSS from the starter. Resist the temptation to add `!important` until you know which computed property is causing the failure.
+
+```css
+.demo { display: flex; flex-wrap: nowrap; gap: 1rem; } .chip { flex: none; inline-size: 15rem; }
+```
+
+**Predict before running:** nowrap and fixed 15rem item widths exceed the available inline size.
+
+**Why it fails:** Flexbox allocates one-dimensional space along the main axis, then aligns items on the cross axis. flex-wrap permits additional lines; gap creates layout spacing without edge-margin surprises. A flexible child may need min-inline-size: 0 to shrink when content is long.
+
+**Proof:** Check display, flexWrap, gap, child flexBasis and documentElement.scrollWidth. Record the value in the starter before moving on.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the rule, not the screenshot" file="labs/css-flexbox/starter/index.html" expected={"At a 320px viewport, the chips wrap into additional lines instead of creating a horizontal scrollbar."}>
+
+Replace the defective declaration with this rule from the instructor implementation. Do not change the semantic markup or hide overflow simply to mask a layout defect.
+
+```css
+.demo { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; } .chip { flex: 1 1 9rem; min-inline-size: 0; }
+```
+
+**Predict before running:** At a 320px viewport, the chips wrap into additional lines instead of creating a horizontal scrollbar.
+
+**Why it works:** Flexbox allocates one-dimensional space along the main axis, then aligns items on the cross axis. flex-wrap permits additional lines; gap creates layout spacing without edge-margin surprises. A flexible child may need min-inline-size: 0 to shrink when content is long.
+
+**Proof:** Compare the properties and geometry with `labs/css-flexbox/solution/index.html`, using DevTools, not merely text-searching the CSS source.
+
+</LessonStep>
+
+<LessonStep number={3} title="Measure and regression-check the behavior" file="labs/css-flexbox/starter/index.html" expected="Narrow and wide states remain usable, with no unexpected horizontal overflow.">
+
+Open Responsive Design Mode at 320px and 1100px. For applicable lessons, scroll, inspect an accessible scrolling region or constrain the query container while keeping the viewport fixed.
+
+```js
+const root = document.documentElement;
+const surface = document.querySelector('#demo');
+console.log({
+  fitsViewport: root.scrollWidth <= innerWidth,
+  display: getComputedStyle(surface).display,
+  inlineSize: surface.getBoundingClientRect().width
+});
+```
+
+**Predict before running:** A specific layout value changes as expected, and the repaired surface stays within its available width.
+
+**Why it works:** Browser computed styles and bounding boxes reflect selector matching, layout algorithm and containing-block constraints.
+
+**Proof:** Check display, flexWrap, gap, child flexBasis and documentElement.scrollWidth.
+
+</LessonStep>
+
+## Explore and verify
+
+Compare keyboard-only navigation and browser text zoom with the repaired solution. When a property needs a wide viewport or a long scroll area, validate those exact conditions rather than assuming a 320px screenshot proves everything. The Node lab tests enforce instructor CSS structure; the Chromium smoke test checks real behavior. Neither is a formal assistive-technology certification.
+
+<Misconception claim="A stronger selector or higher z-index will fix any CSS layout bug." correction={"Flexbox allocates one-dimensional space along the main axis, then aligns items on the cross axis. flex-wrap permits additional lines; gap creates layout spacing without edge-margin surprises. A flexible child may need min-inline-size: 0 to shrink when content is long."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Symptom:** nowrap and fixed 15rem item widths exceed the available inline size.
+
+**Failure cause:** A row of topic chips overflows a narrow phone because its author treated Flexbox as an inflexible single line.
+
+**Repair evidence:** At a 320px viewport, the chips wrap into additional lines instead of creating a horizontal scrollbar.
+
+First write down the original Computed Styles observation; change only the relevant CSS. Repeat the same width, focus and scrolling scenario, then add the regression result to your notes. A passing test is evidence for the exercised conditions, not a guarantee against all device configurations.
+
+<KnowledgeCheck question={"What does flex-wrap: wrap enable?"} choices={["Every child becomes a block","Items may continue onto additional flex lines","Columns are created automatically like CSS Grid","The main axis always becomes vertical"]} correctIndex={1} explanation={"Wrapping creates multiple flex lines without changing the default row main axis."} misconception="A declaration existing in source is not sufficient; the browser must match and compute it in the tested context." lessonId="02.02.01" />
+
+## Guided local lab
+
+Repair `labs/css-flexbox/starter/index.html` and compare with `labs/css-flexbox/solution/index.html`. Run `npm run lab:css-flexbox` to check the instructor solution. For your own edited starter, run `ACADEMY_LAB_TARGET=starter npm run lab:css-flexbox` in Bash, or set the same environment variable temporarily in PowerShell. An untouched starter is expected to fail the instructor assertions.
+
+**Hints:** Inspect the first surprising computed property; then check the containing block or layout algorithm; only then compare to the target declaration in the solution.
+
+<LabGate lessonId="02.02.01" labId="lab.foundation.css-flexbox" commands={["npm ci","npm run lab:css-flexbox"]} interactive={false} />
+
+## Reflect
+
+What changed in the browser and why? What alternative solution would you reject under these constraints? Which untested viewport, browser engine or accessibility setting could invalidate the result? Do not claim server-side grading or automatic persistence.
+
+## Official references
+
+- [MDN concept and layout guidance](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_flexible_box_layout/Basic_concepts_of_flexbox)
+- [MDN API or property reference](https://developer.mozilla.org/en-US/docs/Web/CSS/flex-wrap)

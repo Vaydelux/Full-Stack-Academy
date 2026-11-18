@@ -1,0 +1,38 @@
+{
+  "id": "02.01.04",
+  "title": "Box model and sizing",
+  "description": "Practice box model and sizing with an offline CSS debugging exercise, computed-style verification, keyboard-friendly examples and a tested instructor solution.",
+  "trackId": "02",
+  "moduleId": "02.01",
+  "level": "Beginner",
+  "estimatedMinutes": 45,
+  "status": "authored",
+  "reviewedAt": "2026-11-18",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "02.01.03"
+  ],
+  "objectives": [
+    "Measure the content, padding and border areas",
+    "Prevent an overflowing width calculation",
+    "Use border-box and logical maximum sizing"
+  ],
+  "labId": "lab.foundation.css-box-model",
+  "sources": [
+    {
+      "label": "MDN concept guide",
+      "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Styling_basics/Box_model"
+    },
+    {
+      "label": "MDN CSS reference",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/box-sizing"
+    }
+  ],
+  "rubric": [
+    "I can explain how box model and sizing affects rendered browser output.",
+    "I reproduced and repaired the failing CSS without unrelated changes.",
+    "I checked the instructor behavior in DevTools and a narrow viewport."
+  ]
+}

@@ -1,0 +1,97 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Measure the content, padding and border areas","Prevent an overflowing width calculation","Use border-box and logical maximum sizing"]} />
+
+## The problem we're solving
+
+A card set to 100% width overflows its small viewport after adding padding and borders. Our task is to repair the actual style behavior, not just make a static screenshot look convincing. This workshop uses synthetic content in a standalone offline HTML file; it needs no account, cloud API or deployed preview.
+
+## Build the mental model
+
+By default content-box adds padding and borders outside the declared width. border-box includes both in the declared width, but margins remain external. max-inline-size limits the card without relying on viewport-specific pixel calculations.
+
+**Predict before running:** The card's border box fits within the available inline size.
+
+## Prerequisites and preflight
+
+Continue from [the previous CSS lesson](/learn/02.01.03). Open `labs/css-box-model/starter/index.html` in a browser and inspect the CSS rules using the Elements / Computed Styles panel. Have local Node.js 24 available for the test script and choose a 320px device viewport for the final check. The starter intentionally demonstrates the flaw, while the solution supplies the target behavior.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce and inspect the failing state" file="labs/css-box-model/starter/index.html" expected="Content-box adds 4rem padding and border width beyond 100%.">
+
+Start from the intentionally incorrect declaration and inspect the matched and computed styles. Before making changes, determine which element owns the value and whether a CSS rule is matched but overridden.
+
+```css
+.card { box-sizing: content-box; inline-size: 100%; max-inline-size: 34rem; padding: 2rem; border: 3px solid #195472; }
+```
+
+**Predict before running:** Content-box adds 4rem padding and border width beyond 100%.
+
+**Why it fails:** By default content-box adds padding and borders outside the declared width. border-box includes both in the declared width, but margins remain external. max-inline-size limits the card without relying on viewport-specific pixel calculations.
+
+**Proof:** Open DevTools, select the target element, and confirm the failing computed property. Write the observed value before replacing the rule.
+
+</LessonStep>
+
+<LessonStep number={2} title="Apply the targeted CSS repair" file="labs/css-box-model/starter/index.html" expected="The card's border box fits within the available inline size.">
+
+Replace the incorrect rule with the following CSS. Keep the native HTML controls and all semantic content unchanged.
+
+```css
+.card { box-sizing: border-box; inline-size: 100%; max-inline-size: 34rem; padding: 2rem; border: 3px solid #195472; }
+```
+
+**Predict before running:** The card's border box fits within the available inline size.
+
+**Why it works:** By default content-box adds padding and borders outside the declared width. border-box includes both in the declared width, but margins remain external. max-inline-size limits the card without relying on viewport-specific pixel calculations.
+
+**Proof:** At 390px, documentElement.scrollWidth must be at most innerWidth.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify responsiveness and interaction" file="labs/css-box-model/starter/index.html" expected="The repaired solution works at narrow and wide viewports without hiding keyboard focus or producing horizontal overflow.">
+
+Use DevTools Responsive Design Mode: select a 320px width, then a wide desktop width. Inspect the relevant computed style again. Where the lab includes a button or writing-direction toggle, test it using Tab and Enter.
+
+```js
+const target = document.querySelector('.card');
+console.log(getComputedStyle(target).boxSizing);
+console.log(document.documentElement.scrollWidth <= innerWidth);
+```
+
+**Predict before running:** A visible computed property changes as described, but the document remains scrollable normally with no unwanted horizontal overflow.
+
+**Why it works:** Browser-computed styles and measured dimensions describe actual rendered rules, rather than assuming the presence of source text is enough.
+
+**Proof:** Compare the computed result with the instructor solution and record one failing case from the original starter.
+
+</LessonStep>
+
+## Explore and verify
+
+Use Chromium and Firefox when available; browser engines can expose subtle differences in focus heuristics and text metrics. Use synthetic content only. Confirm the result at 320px, at a wider viewport and with keyboard navigation; for directional labs, toggle RTL. A local Node assertion checks the instructor's expected CSS declarations, while browser inspection is needed to prove their effect. This lesson does not upload work or grant a server-verified grade.
+
+<Misconception claim="If CSS text exists in the stylesheet, the browser must display the desired result." correction="Selectors must match; the cascade must select the rule; geometry, font sizing, direction and interaction state determine actual rendering. Verify computed styles and browser behavior." />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+Content-box adds 4rem padding and border width beyond 100%. Copy the starter, record the affected element and computed property, then apply the smallest correction and rerun the same viewport and input sequence. Explain why changing markup semantics or adding a blanket `!important` rule would be a poor substitute for diagnosing the matching declaration.
+
+<KnowledgeCheck question="What does border-box include in the declared width?" choices={["Content only","Content, padding and borders","Margins but no borders","Only the border"]} correctIndex={1} explanation="By default content-box adds padding and borders outside the declared width. border-box includes both in the declared width, but margins remain external. max-inline-size limits the card without relying on viewport-specific pixel calculations." misconception="A screenshot or a selector's apparent strength is not a complete explanation of CSS behavior." lessonId="02.01.04" />
+
+## Guided local lab
+
+Repair `labs/css-box-model/starter/index.html` using the three steps, and compare with `labs/css-box-model/solution/index.html`. The Node verifier checks the instructor solution by default. Check your repaired starter using `ACADEMY_LAB_TARGET=starter npm run lab:css-box-model` in Bash, or set and remove that environment variable in PowerShell before and after the command. The unrepaired starter should fail the instructor-behavior assertions.
+
+<LabGate lessonId="02.01.04" labId="lab.foundation.css-box-model" commands={["npm ci","npm run lab:css-box-model"]} interactive={false} />
+
+## Reflect
+
+What changed? Why is it more correct? When would you use a different CSS strategy? Record an actual computed value, a browser you did not test, and a real-world constraint that could change this solution. The lab is offline educational practice, not a WCAG conformance certificate.
+
+## Official references
+
+- [MDN concept guide](https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Styling_basics/Box_model)
+- [MDN CSS reference](https://developer.mozilla.org/en-US/docs/Web/CSS/box-sizing)

@@ -1,0 +1,103 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Reproduce a concrete scroll animations and motion preferences failure in a browser","Apply a specific repair while preserving semantics and user preferences","Collect computed-style and interaction evidence and name unmeasured limits"]} />
+
+## The problem we're solving
+
+An always-on scroll animation distracts motion-sensitive learners and does not support browser preference changes. A code review should require a reproducible symptom and realistic verification, not only a polished image. The local fixture is synthetic, deterministic and offline.
+
+## Build the mental model
+
+Scroll-driven animations can use view() timelines in supporting browsers, but progressive enhancement is required. Decorative motion should be disabled or greatly reduced under prefers-reduced-motion. Scroll movement should never hide essential content or gate access to information.
+
+**Predict before running:** Reduced-motion mode has no running decoration; no-preference mode can animate without hiding reading content.
+
+## Prerequisites and preflight
+
+Continue from [the previous canonical CSS lesson](/learn/02.04.04). Open `labs/css-scroll-motion/starter/index.html` in Chromium; use DevTools Styles, Computed and Performance where needed. Node.js 24 runs the local fixture tests. No cloud build, server credentials or external data is needed.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the defect and collect a baseline" file="labs/css-scroll-motion/starter/index.html" expected={"The starter animates continuously even when the browser prefers reduced motion."}>
+
+Read the starter rule and measure its actual result. When the fixture has a button, toggle its state first; for motion lessons, emulate reduced-motion. Do not treat the existence of a CSS declaration as proof of performance.
+
+```css
+.indicator { animation: float 2s ease-in-out infinite; } @keyframes float { 50% { transform: translateY(-1rem); } }
+```
+
+**Predict before running:** The starter animates continuously even when the browser prefers reduced motion.
+
+**Why this fails:** Scroll-driven animations can use view() timelines in supporting browsers, but progressive enhancement is required. Decorative motion should be disabled or greatly reduced under prefers-reduced-motion. Scroll movement should never hide essential content or gate access to information.
+
+**Proof:** Emulate reduced motion in DevTools and inspect computed animationName; compare no-preference behavior and support for animation-timeline. Note the original state before editing.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the CSS and preserve user choice" file="labs/css-scroll-motion/starter/index.html" expected={"Reduced-motion mode has no running decoration; no-preference mode can animate without hiding reading content."}>
+
+Apply the narrowly targeted instructor change. This is an educational repair, not a claim that browsers will use a particular GPU layer, font-loading timeline or screen-reader announcement.
+
+```css
+@keyframes float { 50% { transform: translateY(-0.35rem); } } .indicator { animation: none; } @media (prefers-reduced-motion: no-preference) { .indicator { animation: float 2s ease-in-out infinite; } @supports (animation-timeline: view()) { .scroll-highlight { animation: float 1s linear both; animation-timeline: view(); } } } @media (prefers-reduced-motion: reduce) { .indicator, .scroll-highlight { animation: none; } }
+```
+
+**Predict before running:** Reduced-motion mode has no running decoration; no-preference mode can animate without hiding reading content.
+
+**Why this works:** Scroll-driven animations can use view() timelines in supporting browsers, but progressive enhancement is required. Decorative motion should be disabled or greatly reduced under prefers-reduced-motion. Scroll movement should never hide essential content or gate access to information.
+
+**Proof:** Compare rendered values and interactions to the original starter using the same viewport and browser emulation.
+
+</LessonStep>
+
+<LessonStep number={3} title="Regress across device and preference states" file="labs/css-scroll-motion/starter/index.html" expected="The corrected component is readable at phone size, keyboard accessible and respects relevant motion/theme preferences.">
+
+Check 320px and wide viewport geometry; keyboard Tab and focus; RTL if a logical property is used; reduced motion and dark preference when relevant. For browser performance, collect a trace with sufficient repeatability rather than inventing a timing.
+
+```js
+const root = document.documentElement;
+const demo = document.querySelector('#demo');
+console.log({ withinViewport: root.scrollWidth <= innerWidth, currentColor: getComputedStyle(demo).color, inlineSize: demo.getBoundingClientRect().width });
+```
+
+**Predict before running:** The repaired state is observable without forcing horizontal scroll, and the required preference-dependent declarations take effect.
+
+**Why it matters:** A renderer's behavior depends on actual geometry, animations and preferences, not an offline syntax scan.
+
+**Proof:** Emulate reduced motion in DevTools and inspect computed animationName; compare no-preference behavior and support for animation-timeline.
+
+</LessonStep>
+
+## Explore and verify
+
+Use DevTools to inspect computed styles and the Performance recording when making speed claims. Not every transform is composited; not every font loading strategy removes CLS; not every visually distinct control is accessible. The Node tests check instructor patterns; the isolated browser suite observes representative states. Manual assistive-technology and cross-browser checks remain outside the automated guarantee.
+
+<Misconception claim="A CSS refactor automatically improves measured browser performance and passes accessibility requirements." correction={"Scroll-driven animations can use view() timelines in supporting browsers, but progressive enhancement is required. Decorative motion should be disabled or greatly reduced under prefers-reduced-motion. Scroll movement should never hide essential content or gate access to information."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Defect:** The starter animates continuously even when the browser prefers reduced motion.
+
+**Expected output:** Reduced-motion mode has no running decoration; no-preference mode can animate without hiding reading content.
+
+Write the original computed value, smallest repair and verification method. If a field cannot be observed in this local fixture—such as real font download timing or an actual GPU composition layer—state that limitation rather than inventing measurements.
+
+<KnowledgeCheck question={"What must a motion-safe scroll animation do?"} choices={["Hide essential information until a scroll event","Respect reduced-motion preferences and preserve a nonanimated reading path","Use animation-timeline on every element","Require JavaScript permission to display text"]} correctIndex={1} explanation={"Decorative motion should not block content and should honor user preferences."} misconception="A static CSS string check is not a measured performance or accessibility audit." lessonId="02.04.05" />
+
+## Guided local lab
+
+Repair `labs/css-scroll-motion/starter/index.html` and compare with `labs/css-scroll-motion/solution/index.html`. Run `npm run lab:css-scroll-motion` to assert the instructor repair. To check your edited starter, run `ACADEMY_LAB_TARGET=starter npm run lab:css-scroll-motion` in Bash, or temporarily set the equivalent environment variable in PowerShell. An untouched starter is intentionally broken.
+
+**Hints:** Identify the failing computed property or browser state; inspect how it changes on interaction; review the repair's effect and decide which real-device check is still missing.
+
+<LabGate lessonId="02.04.05" labId="lab.foundation.css-scroll-motion" commands={["npm ci","npm run lab:css-scroll-motion"]} interactive={false} />
+
+## Reflect
+
+What changed, which observed condition improved, and what was merely assumed? Where would a slower animation or server-loaded font be appropriate? Document a possible regression and the next browser or accessibility check.
+
+## Official references
+
+- [Official CSS performance or developer reference](https://developer.mozilla.org/en-US/docs/Web/CSS/animation-timeline)
+- [Official supporting reference](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion)

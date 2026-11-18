@@ -1,0 +1,34 @@
+{
+  "title": "CSS UI QA 100-point review rubric",
+  "version": 1,
+  "description": "Manual review categories with sample automated checks; a score is not a WCAG audit or a performance metric.",
+  "dimensions": [
+    {
+      "id": "responsive",
+      "points": 20,
+      "criteria": "320px width and 200% zoom without content loss or horizontal page overflow"
+    },
+    {
+      "id": "keyboard",
+      "points": 20,
+      "criteria": "Keyboard access, visible focus and semantic controls"
+    },
+    {
+      "id": "direction",
+      "points": 20,
+      "criteria": "RTL and logical property behavior"
+    },
+    {
+      "id": "motion",
+      "points": 20,
+      "criteria": "Nonessential animation respects reduced motion"
+    },
+    {
+      "id": "theme",
+      "points": 20,
+      "criteria": "Light/dark preference and actual readable foreground/background contrast"
+    }
+  ],
+  "maxPoints": 100,
+  "disclaimer": "Record evidence and untested conditions; automated checks cover selected points only."
+}

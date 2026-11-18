@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.css-render-stages",
+  "lessonId": "02.04.01",
+  "title": "Layout paint and composition",
+  "runtime": "browser-html-and-node-24",
+  "status": "authored",
+  "starter": "labs/css-render-stages/starter/index.html",
+  "solution": "labs/css-render-stages/solution/index.html",
+  "tests": "labs/css-render-stages/solution.test.mjs",
+  "verify": [
+    "npm run lab:css-render-stages"
+  ],
+  "expected": "I can demonstrate and explain the repaired layout paint and composition CSS behavior, without unsupported performance claims.",
+  "security": "Local synthetic HTML/CSS exercise without third-party assets, external requests, API keys, telemetry, accounts, uploaded media or personal data."
+}

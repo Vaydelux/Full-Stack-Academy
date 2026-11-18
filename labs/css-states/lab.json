@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.css-states",
+  "lessonId": "02.01.07",
+  "title": "Pseudo classes and states",
+  "runtime": "browser-html-and-node-24",
+  "status": "authored",
+  "starter": "labs/css-states/starter/index.html",
+  "solution": "labs/css-states/solution/index.html",
+  "tests": "labs/css-states/solution.test.mjs",
+  "verify": [
+    "npm run lab:css-states"
+  ],
+  "expected": "Implement visible keyboard focus with :focus-visible.",
+  "security": "Offline local HTML/CSS fixture with synthetic content; no credentials, network requests, external scripts, real user data or uploads."
+}

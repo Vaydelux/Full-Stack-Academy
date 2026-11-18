@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.css-transform-opacity",
+  "lessonId": "02.04.03",
+  "title": "GPU-friendly transitions",
+  "runtime": "browser-html-and-node-24",
+  "status": "authored",
+  "starter": "labs/css-transform-opacity/starter/index.html",
+  "solution": "labs/css-transform-opacity/solution/index.html",
+  "tests": "labs/css-transform-opacity/solution.test.mjs",
+  "verify": [
+    "npm run lab:css-transform-opacity"
+  ],
+  "expected": "I can demonstrate and explain the repaired gpu-friendly transitions CSS behavior, without unsupported performance claims.",
+  "security": "Local synthetic HTML/CSS exercise without third-party assets, external requests, API keys, telemetry, accounts, uploaded media or personal data."
+}

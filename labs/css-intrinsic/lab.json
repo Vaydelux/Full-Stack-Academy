@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.css-intrinsic",
+  "lessonId": "02.02.03",
+  "title": "Intrinsic sizing min max clamp",
+  "runtime": "browser-html-and-node-24",
+  "status": "authored",
+  "starter": "labs/css-intrinsic/starter/index.html",
+  "solution": "labs/css-intrinsic/solution/index.html",
+  "tests": "labs/css-intrinsic/solution.test.mjs",
+  "verify": [
+    "npm run lab:css-intrinsic"
+  ],
+  "expected": "I can diagnose the intrinsic sizing min max clamp bug and demonstrate the repaired computed CSS behavior.",
+  "security": "Synthetic offline HTML/CSS practice. No third-party assets, remote fetches, user accounts, API tokens, analytics or data uploads."
+}

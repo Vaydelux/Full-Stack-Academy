@@ -1,0 +1,17 @@
+{
+  "title": "Visual comparison baseline",
+  "viewports": [
+    320,
+    1024
+  ],
+  "states": [
+    "normal",
+    "error"
+  ],
+  "browser": "Chromium",
+  "styleAssertions": {
+    "normalBorder": "#075e7b",
+    "errorBorder": "#aa2626"
+  },
+  "limitations": "This fixture checks state tokens; screenshot snapshots and manual diff review are a separate exercise."
+}

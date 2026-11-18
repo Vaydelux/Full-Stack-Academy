@@ -1,0 +1,38 @@
+{
+  "id": "02.02.08",
+  "title": "Bug Hunt broken sticky sidebar",
+  "description": "Learn bug hunt broken sticky sidebar by repairing a concrete CSS layout defect, inspecting computed styles and testing mobile and keyboard behavior in a self-contained offline lab.",
+  "trackId": "02",
+  "moduleId": "02.02",
+  "level": "Beginner",
+  "estimatedMinutes": 75,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "02.02.07"
+  ],
+  "objectives": [
+    "Diagnose why bug hunt broken sticky sidebar fails in a realistic component",
+    "Apply a minimal CSS repair without breaking native HTML semantics",
+    "Verify computed styles at narrow and wide widths with repeatable tests"
+  ],
+  "labId": "lab.foundation.css-sticky-debug",
+  "sources": [
+    {
+      "label": "MDN CSS layout guide",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/position"
+    },
+    {
+      "label": "MDN CSS property reference",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/overflow"
+    }
+  ],
+  "rubric": [
+    "I reproduced the bug hunt broken sticky sidebar failure before changing CSS.",
+    "I can explain why the final CSS rule changes actual layout behavior.",
+    "I verified the instructor solution in Chromium or DevTools and recorded a limit."
+  ]
+}

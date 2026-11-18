@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.css-visual-regression",
+  "lessonId": "02.04.07",
+  "title": "Visual regression basics",
+  "runtime": "browser-html-and-node-24",
+  "status": "authored",
+  "starter": "labs/css-visual-regression/starter/index.html",
+  "solution": "labs/css-visual-regression/solution/index.html",
+  "tests": "labs/css-visual-regression/solution.test.mjs",
+  "verify": [
+    "npm run lab:css-visual-regression"
+  ],
+  "expected": "I can demonstrate and explain the repaired visual regression basics CSS behavior, without unsupported performance claims.",
+  "security": "Local synthetic HTML/CSS exercise without third-party assets, external requests, API keys, telemetry, accounts, uploaded media or personal data."
+}

@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.css-box-model",
+  "lessonId": "02.01.04",
+  "title": "Box model and sizing",
+  "runtime": "browser-html-and-node-24",
+  "status": "authored",
+  "starter": "labs/css-box-model/starter/index.html",
+  "solution": "labs/css-box-model/solution/index.html",
+  "tests": "labs/css-box-model/solution.test.mjs",
+  "verify": [
+    "npm run lab:css-box-model"
+  ],
+  "expected": "Measure the content, padding and border areas.",
+  "security": "Offline local HTML/CSS fixture with synthetic content; no credentials, network requests, external scripts, real user data or uploads."
+}

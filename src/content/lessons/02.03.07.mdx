@@ -1,0 +1,103 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Diagnose the component-scoped css issue from observed CSS behavior","Apply the correct CSS rule to preserve accessibility and maintainability","Verify the result using computed styles and relevant interaction states"]} />
+
+## The problem we're solving
+
+A global title selector changes headings in unrelated components, causing a surprising regression. We will repair a specific CSS behavior in an offline component so that a future design system has predictable boundaries. There is no external font, image or API dependency.
+
+## Build the mental model
+
+An explicit component namespace reduces accidental style leakage, but a data attribute is only a naming convention, not isolation. CSS Modules generate scoped class names at build time; Shadow DOM adds a stronger style boundary with separate tradeoffs. Here a local data-component selector demonstrates the naming discipline.
+
+**Predict before running:** The course and article titles receive different colors despite sharing the item-title class.
+
+## Prerequisites and preflight
+
+Continue from [the previous canonical lesson](/learn/02.03.06). Open `labs/css-component-scope/starter/index.html` locally in Chromium or another modern CSS browser, and inspect Styles/Computed in DevTools. Node.js 24 runs the static fixture tests; a private account or cloud deployment is not required.
+
+## Guided implementation
+
+<LessonStep number={1} title="Identify the failed state and its cause" file="labs/css-component-scope/starter/index.html" expected={"The global selector makes both unrelated headings the same color."}>
+
+Open the starter and inspect the element before editing the code. For theme or selector lessons, interact with the native control so the problem is actually observable.
+
+```css
+.item-title { color: #075e7b; }
+```
+
+**Predict before running:** The global selector makes both unrelated headings the same color.
+
+**Why the naïve approach fails:** An explicit component namespace reduces accidental style leakage, but a data attribute is only a naming convention, not isolation. CSS Modules generate scoped class names at build time; Shadow DOM adds a stronger style boundary with separate tradeoffs. Here a local data-component selector demonstrates the naming discipline.
+
+**Proof:** Compare getComputedStyle(course-title).color and getComputedStyle(article-title).color. Record the original computed value or missing state transition.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the theme, selector, or state rule" file="labs/css-component-scope/starter/index.html" expected={"The course and article titles receive different colors despite sharing the item-title class."}>
+
+Replace only the defective style block with this instructor implementation. Preserve native labels, buttons and focus order. Do not use blanket `!important` overrides to hide a state problem.
+
+```css
+[data-component="course"] .item-title { color: #075e7b; } [data-component="article"] .item-title { color: #705194; }
+```
+
+**Predict before running:** The course and article titles receive different colors despite sharing the item-title class.
+
+**Why the repair works:** An explicit component namespace reduces accidental style leakage, but a data attribute is only a naming convention, not isolation. CSS Modules generate scoped class names at build time; Shadow DOM adds a stronger style boundary with separate tradeoffs. Here a local data-component selector demonstrates the naming discipline.
+
+**Proof:** Compare the computed style against the unchanged starter using the exact same browser setting.
+
+</LessonStep>
+
+<LessonStep number={3} title="Test adjacent states and regression limits" file="labs/css-component-scope/starter/index.html" expected="The intended state is measurable without regressing keyboard access, viewport sizing or legibility.">
+
+At a 320px viewport and a wide layout, inspect the affected component; where relevant, toggle checked state, reduced motion, dark preference, local tokens or writing direction. Do not infer appearance from a CSS source string alone.
+
+```js
+const box = document.querySelector('#demo');
+const style = getComputedStyle(box);
+console.log({ background: style.backgroundColor, color: style.color, overflow: document.documentElement.scrollWidth > innerWidth });
+```
+
+**Predict before running:** The corrected component's computed state is consistent with the browser preference or native input state, and there is no unexpected horizontal page overflow.
+
+**Why it works:** Computed styles combine the cascade, media features, supported CSS functions and the current DOM state.
+
+**Proof:** Compare getComputedStyle(course-title).color and getComputedStyle(article-title).color.
+
+</LessonStep>
+
+## Explore and verify
+
+A syntactically valid color, selector or animation is not necessarily accessible or performant. Test color contrast for actual foreground/background pairs; preserve focus, reduced-motion behavior and narrow layouts. The Node fixture assertions check reviewed CSS patterns, and Chromium independently checks representative rendered behavior. Neither constitutes a full multi-device accessibility certification.
+
+<Misconception claim="Using modern CSS syntax automatically guarantees a secure, accessible and scoped component." correction={"An explicit component namespace reduces accidental style leakage, but a data attribute is only a naming convention, not isolation. CSS Modules generate scoped class names at build time; Shadow DOM adds a stronger style boundary with separate tradeoffs. Here a local data-component selector demonstrates the naming discipline."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Original defect:** The global selector makes both unrelated headings the same color.
+
+**Expected repair:** The course and article titles receive different colors despite sharing the item-title class.
+
+Capture a concrete computed style or interaction state in the starter. Trace the rule that wins the cascade; apply the minimum fix; repeat the original interaction. Explain one limitation of the fixture, such as a browser preference or external font setting not exercised.
+
+<KnowledgeCheck question={"Does a data-component selector enforce the same isolation as Shadow DOM?"} choices={["Yes, both are browser security boundaries","No, it is a conventional selector namespace","Yes, JavaScript cannot select matching elements","Only when combined with !important"]} correctIndex={1} explanation={"Namespaced selectors reduce collisions but are not a browser-enforced encapsulation boundary."} misconception="A stylesheet containing the intended rule is not proof that it matches, wins the cascade or renders accessibly." lessonId="02.03.07" />
+
+## Guided local lab
+
+Repair `labs/css-component-scope/starter/index.html` and compare against `labs/css-component-scope/solution/index.html`. Execute `npm run lab:css-component-scope` for the instructor checks. In Bash use `ACADEMY_LAB_TARGET=starter npm run lab:css-component-scope` to test your fix; in PowerShell set and clear that environment variable around the command. The untouched starter is intentionally expected to fail.
+
+**Hints:** Inspect which rule is matched; inspect computed values before and after the relevant interaction; compare selector scope and media state; then consult the repaired CSS.
+
+<LabGate lessonId="02.03.07" labId="lab.foundation.css-component-scope" commands={["npm ci","npm run lab:css-component-scope"]} interactive={false} />
+
+## Reflect
+
+What changed? Why is the repaired component more predictable? Where would a design token, CSS Module or Shadow DOM be a better alternative? Describe an untested browser state and how you would verify it before public release.
+
+## Official references
+
+- [MDN CSS concepts](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_scoping)
+- [Official CSS accessibility or design reference](https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_shadow_DOM)

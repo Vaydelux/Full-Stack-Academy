@@ -1,0 +1,38 @@
+{
+  "id": "02.04.01",
+  "title": "Layout paint and composition",
+  "description": "Diagnose layout paint and composition using a real offline CSS fixture, guarded browser assertions, safe interaction states and a verified instructor repair.",
+  "trackId": "02",
+  "moduleId": "02.04",
+  "level": "Beginner",
+  "estimatedMinutes": 50,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "02.03.08"
+  ],
+  "objectives": [
+    "Reproduce a concrete layout paint and composition failure in a browser",
+    "Apply a specific repair while preserving semantics and user preferences",
+    "Collect computed-style and interaction evidence and name unmeasured limits"
+  ],
+  "labId": "lab.foundation.css-render-stages",
+  "sources": [
+    {
+      "label": "Official CSS or performance reference",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/transform"
+    },
+    {
+      "label": "Official browser or accessibility reference",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/left"
+    }
+  ],
+  "rubric": [
+    "I can reproduce the original layout paint and composition defect with evidence.",
+    "I can explain what the CSS solution changes without claiming unmeasured performance.",
+    "I verified the relevant browser state and identified manual accessibility checks."
+  ]
+}

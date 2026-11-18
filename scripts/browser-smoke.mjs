@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { verifyCssTrack } from './css-track-smoke.mjs';
 import { createRequire } from 'node:module';
 import path from 'node:path';
 
@@ -53,8 +54,8 @@ try {
   await wait(page.getByText('Correct — you identified the concept.'));
   await page.goto(base + '/reference/zod-safeparse');
   await wait(page.getByRole('heading',{name:/Zod 4: schema.safeParse/}));
-  await page.goto(base + '/learn/02.01.01');
-  assert.match(await page.locator('meta[name="robots"]').first().getAttribute('content'), /noindex/);
+  await page.goto(base + '/learn/03.01.01');
+  assert.ok(await page.locator('meta[name="robots"][content*="noindex"]').count() > 0, 'Planned curriculum topic must have a noindex directive');
   await wait(page.getByText('Planned lesson — not published.', {exact:true}));
   await page.goto(base + '/learn/00.01.01');
   await wait(page.getByRole('heading',{name:'What runs in a browser vs on a server?',exact:true}));
@@ -291,8 +292,8 @@ try {
   await page.goto(base + '/learn/01.04.01');
   await wait(page.getByRole('heading', { name: "The problem we're solving" }));
   assert.equal(await page.locator('meta[name="robots"][content*="noindex"]').count(),0,'Published Web APIs lesson must be indexable');
-  await page.goto(base + '/learn/02.01.01');
-  assert.match(await page.locator('meta[name="robots"]').first().getAttribute('content'), /noindex/, 'Planned next module must remain noindex');
+  await page.goto(base + '/learn/03.01.01');
+  assert.ok(await page.locator('meta[name="robots"][content*="noindex"]').count() > 0, 'Future CSS module must remain noindex');
   const webLab = slug => new URL('../labs/'+slug+'/solution/index.html', import.meta.url).href;
   const webSlugs = ['web-dom','web-fetch-json','web-url','web-storage','web-permissions','web-cors','web-csp','web-devtools'];
   for(const slug of webSlugs){
@@ -349,8 +350,51 @@ try {
   await page.getByRole('button',{name:'Simulate invalid JSON'}).click();
   await wait(page.getByRole('status').getByText(/JSON parsing failed after a successful response/));
 
+  // CSS Fundamentals: a full authored module with genuine offline styles and browser-rendered assertions.
+  await page.goto(base + '/learn/02.01.01');
+  await wait(page.getByRole('heading', { name: "The problem we're solving" }));
+  assert.equal(await page.locator('meta[name="robots"][content*="noindex"]').count(), 0, 'Published CSS lessons must be indexable');
+  await page.goto(base + '/learn/03.01.01');
+  assert.ok(await page.locator('meta[name="robots"][content*="noindex"]').count() > 0, 'Unauthored CSS module remains noindex');
+  const cssLab = slug => new URL('../labs/' + slug + '/solution/index.html', import.meta.url).href;
+  const cssSlugs = ["css-selectors","css-cascade","css-layers","css-box-model","css-typography","css-logical","css-states","css-responsive-card"];
+  for (const slug of cssSlugs) {
+    await page.goto(cssLab(slug));
+    assert.equal(await page.getByRole('main').count(), 1, 'CSS lab needs a main landmark: ' + slug);
+    assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), 'CSS lab must not overflow mobile viewport: ' + slug);
+  }
+  await page.goto(cssLab('css-selectors'));
+  assert.notEqual(await page.locator('#direct').evaluate(el => getComputedStyle(el).backgroundColor), await page.locator('#nested').evaluate(el => getComputedStyle(el).backgroundColor), 'Child selector must not style nested tag');
+  await page.goto(cssLab('css-cascade'));
+  assert.notEqual(await page.locator('#headline').evaluate(el => getComputedStyle(el).color), await page.locator('.card p').evaluate(el => getComputedStyle(el).color), 'Direct declaration should override inherited card color');
+  await page.goto(cssLab('css-layers'));
+  assert.equal(await page.locator('#action').evaluate(el => getComputedStyle(el).backgroundColor), 'rgb(7, 94, 123)', 'Component layer must win');
+  await page.goto(cssLab('css-box-model'));
+  assert.equal(await page.locator('#card').evaluate(el => getComputedStyle(el).boxSizing), 'border-box');
+  await page.goto(cssLab('css-typography'));
+  assert.ok(await page.locator('#headline').evaluate(el => parseFloat(getComputedStyle(el).fontSize)) >= 24, 'Fluid heading has a readable root-size floor');
+  await page.goto(cssLab('css-logical'));
+  assert.equal(await page.locator('#card').evaluate(el => getComputedStyle(el).borderRightWidth), '5px', 'RTL logical border must start on the right');
+  await page.getByRole('button', { name: 'Toggle writing direction' }).click();
+  assert.equal(await page.locator('#card').evaluate(el => getComputedStyle(el).borderLeftWidth), '5px', 'LTR logical border must start on the left');
+  await page.goto(cssLab('css-states'));
+  await page.keyboard.press('Tab');
+  await page.getByRole('button', { name: 'Select lesson' }).focus();
+  assert.equal(await page.locator('#action').evaluate(el => getComputedStyle(el).outlineStyle), 'solid', 'Action needs visible keyboard focus');
+  assert.equal(await page.getByRole('button', { name: 'Unavailable lesson' }).isDisabled(), true);
+  await page.goto(cssLab('css-responsive-card'));
+  assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), 'Capstone must not overflow mobile');
+  await page.getByRole('button', { name: 'Switch text direction' }).click();
+  assert.equal(await page.locator('#card').evaluate(el => getComputedStyle(el).borderRightWidth), '4px', 'RTL capstone accent');
+  await page.getByRole('button', { name: 'Join study session' }).click();
+  await wait(page.getByRole('status').getByText('Local registration preview only.'));
+
+  await verifyCssTrack({ page, base, assert, wait });
+
   await page.goto(base+'/?lesson=06.01.01&mode=practice');
   await wait(btn('Practice'));
+  await btn('Practice').click();
+  await wait(btn('Output'));
   await btn('Output').click();
   await wait(page.frameLocator('iframe[title="Live React JSX Sandbox"]').getByRole('heading',{name:'Engineering team',exact:true}));
   await btn('Read lesson').click();

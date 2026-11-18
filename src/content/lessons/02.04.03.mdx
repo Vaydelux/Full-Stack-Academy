@@ -1,0 +1,103 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Reproduce a concrete gpu-friendly transitions failure in a browser","Apply a specific repair while preserving semantics and user preferences","Collect computed-style and interaction evidence and name unmeasured limits"]} />
+
+## The problem we're solving
+
+A notification animates width and height, shifting neighboring content during its entrance. A code review should require a reproducible symptom and realistic verification, not only a polished image. The local fixture is synthetic, deterministic and offline.
+
+## Build the mental model
+
+Animating transform and opacity often avoids layout shifts from animating intrinsic size; GPU compositing is an implementation detail, not a universal guarantee. Keep transitions short, test reduced-motion preference and avoid indiscriminate will-change, which can consume memory and extra layers.
+
+**Predict before running:** The toast uses opacity and transform state changes without changing its declared width.
+
+## Prerequisites and preflight
+
+Continue from [the previous canonical CSS lesson](/learn/02.04.02). Open `labs/css-transform-opacity/starter/index.html` in Chromium; use DevTools Styles, Computed and Performance where needed. Node.js 24 runs the local fixture tests. No cloud build, server credentials or external data is needed.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the defect and collect a baseline" file="labs/css-transform-opacity/starter/index.html" expected={"The width animation changes the layout footprint and pushes nearby content."}>
+
+Read the starter rule and measure its actual result. When the fixture has a button, toggle its state first; for motion lessons, emulate reduced-motion. Do not treat the existence of a CSS declaration as proof of performance.
+
+```css
+.toast { width: 10rem; transition: width 2s ease; } .toast.is-open { width: 22rem; }
+```
+
+**Predict before running:** The width animation changes the layout footprint and pushes nearby content.
+
+**Why this fails:** Animating transform and opacity often avoids layout shifts from animating intrinsic size; GPU compositing is an implementation detail, not a universal guarantee. Keep transitions short, test reduced-motion preference and avoid indiscriminate will-change, which can consume memory and extra layers.
+
+**Proof:** Check computed transitionProperty and width before and after the toggle; profile affected frames if performance matters. Note the original state before editing.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the CSS and preserve user choice" file="labs/css-transform-opacity/starter/index.html" expected={"The toast uses opacity and transform state changes without changing its declared width."}>
+
+Apply the narrowly targeted instructor change. This is an educational repair, not a claim that browsers will use a particular GPU layer, font-loading timeline or screen-reader announcement.
+
+```css
+.toast { opacity: 0.6; transform: translateY(0.5rem) scale(0.98); transition: transform 180ms ease, opacity 180ms ease; } .toast.is-open { opacity: 1; transform: translateY(0) scale(1); } @media (prefers-reduced-motion: reduce) { .toast { transition: none; transform: none; } }
+```
+
+**Predict before running:** The toast uses opacity and transform state changes without changing its declared width.
+
+**Why this works:** Animating transform and opacity often avoids layout shifts from animating intrinsic size; GPU compositing is an implementation detail, not a universal guarantee. Keep transitions short, test reduced-motion preference and avoid indiscriminate will-change, which can consume memory and extra layers.
+
+**Proof:** Compare rendered values and interactions to the original starter using the same viewport and browser emulation.
+
+</LessonStep>
+
+<LessonStep number={3} title="Regress across device and preference states" file="labs/css-transform-opacity/starter/index.html" expected="The corrected component is readable at phone size, keyboard accessible and respects relevant motion/theme preferences.">
+
+Check 320px and wide viewport geometry; keyboard Tab and focus; RTL if a logical property is used; reduced motion and dark preference when relevant. For browser performance, collect a trace with sufficient repeatability rather than inventing a timing.
+
+```js
+const root = document.documentElement;
+const demo = document.querySelector('#demo');
+console.log({ withinViewport: root.scrollWidth <= innerWidth, currentColor: getComputedStyle(demo).color, inlineSize: demo.getBoundingClientRect().width });
+```
+
+**Predict before running:** The repaired state is observable without forcing horizontal scroll, and the required preference-dependent declarations take effect.
+
+**Why it matters:** A renderer's behavior depends on actual geometry, animations and preferences, not an offline syntax scan.
+
+**Proof:** Check computed transitionProperty and width before and after the toggle; profile affected frames if performance matters.
+
+</LessonStep>
+
+## Explore and verify
+
+Use DevTools to inspect computed styles and the Performance recording when making speed claims. Not every transform is composited; not every font loading strategy removes CLS; not every visually distinct control is accessible. The Node tests check instructor patterns; the isolated browser suite observes representative states. Manual assistive-technology and cross-browser checks remain outside the automated guarantee.
+
+<Misconception claim="A CSS refactor automatically improves measured browser performance and passes accessibility requirements." correction={"Animating transform and opacity often avoids layout shifts from animating intrinsic size; GPU compositing is an implementation detail, not a universal guarantee. Keep transitions short, test reduced-motion preference and avoid indiscriminate will-change, which can consume memory and extra layers."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Defect:** The width animation changes the layout footprint and pushes nearby content.
+
+**Expected output:** The toast uses opacity and transform state changes without changing its declared width.
+
+Write the original computed value, smallest repair and verification method. If a field cannot be observed in this local fixture—such as real font download timing or an actual GPU composition layer—state that limitation rather than inventing measurements.
+
+<KnowledgeCheck question={"Which animation pair is generally preferable to animating layout size?"} choices={["width and height","top and left","transform and opacity","padding and margin"]} correctIndex={2} explanation={"Transform and opacity often avoid layout reflow, though actual compositing behavior must be profiled."} misconception="A static CSS string check is not a measured performance or accessibility audit." lessonId="02.04.03" />
+
+## Guided local lab
+
+Repair `labs/css-transform-opacity/starter/index.html` and compare with `labs/css-transform-opacity/solution/index.html`. Run `npm run lab:css-transform-opacity` to assert the instructor repair. To check your edited starter, run `ACADEMY_LAB_TARGET=starter npm run lab:css-transform-opacity` in Bash, or temporarily set the equivalent environment variable in PowerShell. An untouched starter is intentionally broken.
+
+**Hints:** Identify the failing computed property or browser state; inspect how it changes on interaction; review the repair's effect and decide which real-device check is still missing.
+
+<LabGate lessonId="02.04.03" labId="lab.foundation.css-transform-opacity" commands={["npm ci","npm run lab:css-transform-opacity"]} interactive={false} />
+
+## Reflect
+
+What changed, which observed condition improved, and what was merely assumed? Where would a slower animation or server-loaded font be appropriate? Document a possible regression and the next browser or accessibility check.
+
+## Official references
+
+- [Official CSS performance or developer reference](https://developer.mozilla.org/en-US/docs/Web/CSS/transform)
+- [Official supporting reference](https://developer.mozilla.org/en-US/docs/Web/CSS/will-change)

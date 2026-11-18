@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.css-selector-perf",
+  "lessonId": "02.04.02",
+  "title": "Avoiding expensive selectors",
+  "runtime": "browser-html-and-node-24",
+  "status": "authored",
+  "starter": "labs/css-selector-perf/starter/index.html",
+  "solution": "labs/css-selector-perf/solution/index.html",
+  "tests": "labs/css-selector-perf/solution.test.mjs",
+  "verify": [
+    "npm run lab:css-selector-perf"
+  ],
+  "expected": "I can demonstrate and explain the repaired avoiding expensive selectors CSS behavior, without unsupported performance claims.",
+  "security": "Local synthetic HTML/CSS exercise without third-party assets, external requests, API keys, telemetry, accounts, uploaded media or personal data."
+}
