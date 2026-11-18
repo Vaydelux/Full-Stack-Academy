@@ -56,6 +56,14 @@ import WebPlatform5 from './lessons/01.04.05.mdx';
 import WebPlatform6 from './lessons/01.04.06.mdx';
 import WebPlatform7 from './lessons/01.04.07.mdx';
 import WebPlatform8 from './lessons/01.04.08.mdx';
+import CSS1 from './lessons/02.01.01.mdx';
+import CSS2 from './lessons/02.01.02.mdx';
+import CSS3 from './lessons/02.01.03.mdx';
+import CSS4 from './lessons/02.01.04.mdx';
+import CSS5 from './lessons/02.01.05.mdx';
+import CSS6 from './lessons/02.01.06.mdx';
+import CSS7 from './lessons/02.01.07.mdx';
+import CSS8 from './lessons/02.01.08.mdx';
 export function LessonArticle({lessonId}: {lessonId:string}) {
   switch (lessonId) {
     case '00.01.01': return <BrowserLesson />;
@@ -115,6 +123,14 @@ export function LessonArticle({lessonId}: {lessonId:string}) {
     case '01.04.06': return <WebPlatform6 />;
     case '01.04.07': return <WebPlatform7 />;
     case '01.04.08': return <WebPlatform8 />;
+    case '02.01.01': return <CSS1 />;
+    case '02.01.02': return <CSS2 />;
+    case '02.01.03': return <CSS3 />;
+    case '02.01.04': return <CSS4 />;
+    case '02.01.05': return <CSS5 />;
+    case '02.01.06': return <CSS6 />;
+    case '02.01.07': return <CSS7 />;
+    case '02.01.08': return <CSS8 />;
     case '06.01.01': return <JSXLessonMDX />;
     default: return null;
   }

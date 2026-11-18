@@ -1,3 +1,5 @@
+> **Offline development candidate — feat/02-01-css-fundamentals-offline (2026-11-18).** Eight 02.01 CSS Fundamentals lessons and their offline starter/solution/testing fixtures are authored on a feature branch. Publication counts below refer to branch state only, **not** production. Vercel automatic builds are intentionally skipped (Ignored Build Step `exit 0`; preview deployments disabled) to minimize quota use. No hosted preview or production deployment is requested. Baseline production release remains `394e6d0`; latest documentation-only main head on branch creation `d7e8203`. CI and independent manual browser/device review remain separate required verification gates.
+
 # Full-Stack Academy — Verified Project Checkpoint
 
 **Verified date:** 2026-11-18 (Asia/Manila)  

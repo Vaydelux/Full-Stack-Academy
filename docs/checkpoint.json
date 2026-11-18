@@ -9,9 +9,9 @@
     "productionUrl": "https://fullstack-academy-ecru.vercel.app/"
   },
   "development": {
-    "branch": null,
-    "lastMergedPr": 12,
-    "state": "production-verified"
+    "branch": "feat/02-01-css-fundamentals-offline",
+    "lastMergedPr": 13,
+    "state": "local-ci-unverified"
   },
   "snapshot": {
     "tracks": 28,
@@ -20,9 +20,9 @@
     "indexedReferences": 303,
     "authoredReferenceDrafts": 4,
     "authoredInteractiveModels": 4,
-    "authoredMdxLessons": 58,
-    "publishedLessons": 61,
-    "labFixtures": 58,
+    "authoredMdxLessons": 66,
+    "publishedLessons": 69,
+    "labFixtures": 66,
     "completeModules": [
       "00.01",
       "00.02",
@@ -30,7 +30,8 @@
       "01.01",
       "01.02",
       "01.03",
-      "01.04"
+      "01.04",
+      "02.01"
     ]
   },
   "security": {
@@ -38,6 +39,6 @@
     "devHighFindings": 14,
     "exceptionExpires": "2026-12-02"
   },
-  "nextMilestone": "02.01",
-  "status": "released"
+  "nextMilestone": "02.02",
+  "status": "unreleased-offline-development"
 }
