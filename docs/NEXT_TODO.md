@@ -1,20 +1,20 @@
 # Next TODO — Full-Stack Academy
 
-**Updated:** 2026-11-18 · **Current production:** `main@16c2eff` · **Next module:** `01.01`.  
+**Updated:** 2026-11-18 · **Current production:** `main@16c2eff` · **Next module:** `01.01` release candidate, followed by `01.02`.  
 **Rule:** Mark a task complete only when repository evidence supports it. Keep this file current in every milestone PR.
 
 ## P0 — HTML & Web Platform / Module 01.01: Document Structure
-- [ ] `01.01.01` HTML document anatomy — doctype, html/head/body, parse order, minimal valid page.
-- [ ] `01.01.02` Head and metadata — charset, viewport, title, description, canonical and social metadata.
-- [ ] `01.01.03` Semantic landmarks — header, nav, main, footer, aside and accessible page regions.
-- [ ] `01.01.04` Heading hierarchy — meaningful headings and document outline without visual hierarchy hacks.
-- [ ] `01.01.05` Text, lists and quotations — semantic paragraphs, lists, figure and blockquote.
-- [ ] `01.01.06` Links and navigation — anchors, safe external links, meaningful names, keyboard focus.
-- [ ] `01.01.07` Images and responsive media — alt text, figure, width/height, sizes/srcset, loading behavior.
-- [ ] `01.01.08` Lab: accessible content page — build an integrated semantic responsive content page and run meaningful static/accessibility tests.
-- [ ] Add for each lesson: verified MDX, strict metadata, at least three guided steps, accurate official references, predict-first exercise, quiz, bug hunt, starter, solution, runnable tests, completion rubric.
-- [ ] Register published lesson metadata, route and navigation. Planned/unauthored topics must remain `noindex`; sitemap must include only truly authored content.
-- [ ] Update `docs/checkpoint.json` by running `npm run checkpoint:write`, update `docs/PROJECT_CHECKPOINT.md`, and revise this TODO.
+- [x] `01.01.01` HTML document anatomy — doctype, html/head/body, parse order, minimal valid page.
+- [x] `01.01.02` Head and metadata — charset, viewport, title, description, canonical and social metadata.
+- [x] `01.01.03` Semantic landmarks — header, nav, main, footer, aside and accessible page regions.
+- [x] `01.01.04` Heading hierarchy — meaningful headings and document outline without visual hierarchy hacks.
+- [x] `01.01.05` Text, lists and quotations — semantic paragraphs, lists, figure and blockquote.
+- [x] `01.01.06` Links and navigation — anchors, safe external links, meaningful names, keyboard focus.
+- [x] `01.01.07` Images and responsive media — alt text, figure, width/height, sizes/srcset, loading behavior.
+- [x] `01.01.08` Lab: accessible content page — build an integrated semantic responsive content page and run meaningful static/accessibility tests.
+- [x] Authored for each lesson: verified MDX, strict metadata, at least three guided steps, accurate official references, predict-first exercise, quiz, bug hunt, starter, solution, runnable tests, completion rubric.
+- [x] Registered published lesson metadata, route and navigation. Planned/unauthored topics must remain `noindex`; sitemap must include only truly authored content.
+- [x] Updated `docs/checkpoint.json` to 36 published lessons / 33 MDX / 33 labs and revised handoff files; CI must confirm repository agreement.
 - [ ] Verify CI (audit/lint/typecheck/repository tests/catalog+content+checkpoint/labs/build/Chromium), Vercel preview, and mobile/keyboard UX before merge.
 - [ ] Merge only after all blocking checks pass. Confirm Vercel production SHA/READY and record release evidence.
 

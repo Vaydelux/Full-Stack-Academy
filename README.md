@@ -100,3 +100,7 @@ The canonical multi-agent handoff is [AGENTS.md](AGENTS.md), [docs/PROJECT_CHECK
 ## Learning & Debugging Process (00.03) — release candidate
 
 Eight authored MDX lessons cover nested errors, minimal bug reproduction, debugger watches, Network and Performance tools, technical questions, changelogs, experiment/ADR records, and environment mismatch troubleshooting. All have local test fixtures. **Do not claim live production availability until PR CI and deployment are verified.** Project checkpoints: `AGENTS.md`, `docs/PROJECT_CHECKPOINT.md`, `docs/NEXT_TODO.md`, and `docs/checkpoint.json`.
+
+## HTML Document Structure (01.01) — preview release candidate
+
+Eight HTML tutorials teach document structure, metadata, native landmarks, heading hierarchy, text/lists/quotations, descriptive links, responsive images, and a complete accessible content-page capstone. Every lesson includes a standalone offline HTML starter and instructor solution, Node structural tests and browser DevTools practice. The capstone also has responsive Chromium checks for real DOM, keyboard focus, local image loading, and mobile horizontal overflow. No cloud accounts or paid resources required. **PR preview content is not a production release until gates pass.**
