@@ -1,31 +1,34 @@
 # Full-Stack Academy — Next TODO
 
-**Development checkpoint:** full canonical Git/Collaboration/Monorepos track `05.01`–`05.03` (24 lessons) authored on `feat/05-git-monorepo-offline`. **No Vercel deploy**, no merge. Baseline production remains 61 published lesson IDs.
+**November 19, 2026 · Unreleased large-scope candidate:** Branch `feat/06-07-react-next-curriculum`, based on merged main `7e8f42d`. **No new GitHub Actions**, no Vercel build, no feature PR. Main already contains #14 CSS + #15 JS/TS + #16 Git under CI-skip merges.
 
-## P0 — Verify full Git track on its exact branch HEAD
+## Completed authoring scope: React + Next.js, 80 canonical topic IDs
 
-- [x] `05.01 — Everyday Git`: eight lessons with temporary local repositories; real status/index/commit history, merge ancestry, revert vs reset, bare-remote push, conflict resolution, .gitignore and feature capstone
-- [x] `05.02 — Team Engineering`: trunk age/review policies, conventional commits, simplified CODEOWNERS, review comments, exact-SHA CI checks, stable SemVer, changelogs, tracked-secret remediation with real Git history
-- [x] `05.03 — pnpm & Turborepo`: workspaces, public package exports, shared TS config, graph ordering, cache keys, direct-lockfile checks, upgrade policy and 3-package shared-contract capstone
-- [x] Twenty-four full MDX lessons and metadata, red starter/green instructor exercise modules, independent lab tests, new package/TypeScript capstone fixtures and browser route checks
-- [x] Publish registries, lab commands, content checkpoint and long-scope handoff updated; **all are branch-only**
-- [x] Prior exact-head CI passed at `88326b5` — run [44371495933](https://github.com/Vaydelux/Full-Stack-Academy/actions/runs/44371495933): lint, strict types, content/checkpoint, 322 local lab tests, 18 repo tests, Next build and all Chromium smoke
-- [x] Add automated red-starter checks for all 24 new labs against disposable local fixtures; run in final exact-head CI
-- [ ] Pass final exact-head CI with the newly added red-starter gate
-- [x] Keep PR #14 and #15 unmerged; open [draft PR #16](https://github.com/Vaydelux/Full-Stack-Academy/pull/16) for track 05 with zero Vercel feature deployments
+- [x] Existing `06.01.01` React JSX sample preserved
+- [x] Author **39 new React 19 topics**, `06.01.02`–`06.05.08`, with real instructor/starter TSX components, pure typed state contract modules and SSR initial-render tests
+- [x] Author **40 Next.js 16 topics**, `07.01.01`–`07.05.08`, with App Router code examples and offline architecture contract tests
+- [x] Cover all 10 complete modules: React elements, state, effects, concurrency, testing; Next App Router, RSC, caching, SEO, operations
+- [x] Register all 79 new MDX bodies, metadata, lab scripts and content checkpoint; preserve 06.01.01
+- [x] Retain `[skip ci]` commit messages, feature-branch-only work, no PR and no deployments
+- [ ] Run **local** `npm ci && npm run check:react-next:structure && npm run test:react-next:offline && npm run test:react-next:red && npm run lint && npm run typecheck && npm run build` when a clone/Node24/dependencies become available
+- [ ] Run isolated Chromium smoke for 80 authored routes plus prior CSS/JS/TS/Git regression
+- [ ] Repair actual test/build defects; content is **unverified** until the above runs
+- [ ] Do not merge large-scope branch or resume Vercel without explicit owner request
 
-## P1 — Large-scope React + Next.js program
+## Next strategic program after verification
 
-- [ ] `06.01–06.05` React (40 canonical topic IDs, **one already-authored interactive sample** `06.01.01`); create or deepen 39 remaining topics with DOM/component tests and realistic sample apps
-- [ ] `07.01–07.05` Next.js App Router & SEO (40 canonical topics), focusing on route/layout/data/caching/auth/server-client runtime behavior with isolated demos
-- [ ] Combined track `05–07` program covers **104 canonical IDs**, of which **24 Git IDs now authored here**, one existing React JSX sample, and 79 additional React+Next lessons remain planned
-- [ ] Scope/checkpoint by complete modules or tracks, not tiny releases; keep one exact-head quality gate for each batch
-- [ ] Expand encyclopedia: 303 reference index subjects but only 4 authored reference drafts
+- [ ] Track `08` — APIs/backend foundations (next canonical topic `08.01.01`)
+- [ ] Expand the remaining **629 planned topic IDs**, prioritizing complete adjacent tracks rather than random content additions
+- [ ] Expand encyclopedia: **303 index entries**, only **4 authored reference drafts**
+- [ ] Normalize and review actual Next.js 16 Cache Components examples against target project settings
+- [ ] Add browser-level React Testing Library interactions; current React fixtures prove initial SSR markup and pure state semantics, not hydrated UI behavior
+- [ ] Real Next App Router render/request/cache/route handler integration tests remain pending; standalone examples are not running server routes
 
-## P2 — Security and eventual release
+## Security and release blockers
 
-- [ ] Revisit **14 high dev-only Picomatch audit findings** before exception expiry **2026-12-02 UTC**; no broad dependency upgrade without verification
-- [ ] Real screen readers, keyboard and 200% zoom, performance trace, real pnpm install and Turbo cache verification remain untested release conditions
-- [ ] Resume Vercel only when explicitly requested. A passing GitHub CI job is **not** a hosted release; do not merge or deploy while hold stands
+- [ ] Reassess 14 high dev-tool Picomatch advisories before 2026-12-02 UTC exception expiry
+- [ ] Physical-device keyboard/assistive tech tests, authenticated data isolation, accessibility and actual performance traces
+- [ ] Keep Vercel on existing production build. Three merge-related Vercel webhook attempts were **canceled**; no production deployment of newly merged source
+- [ ] Favor local QA over GitHub Actions until owner re-enables it. Do not weaken tests to create false green status
 
-**Branch candidate snapshot:** 181 published IDs (178 MDX, 178 local labs), 22 complete modules, 889 catalog topic IDs, 708 catalog IDs planned. **Live baseline: 61 published IDs.** See `docs/GIT_TRACK_ACCEPTANCE.md` and `docs/LONG_SCOPE_DELIVERY_PLAN.md`.
+**Branch-only proposed counts:** 260 authored/published lesson IDs; 257 MDX + 257 offline lab manifests; 32 complete modules; 889 canonical topics. **Live deployment remains at 61 lesson IDs** because deployment is paused. `docs/checkpoint.json` and `docs/REACT_NEXT_OFFLINE_ACCEPTANCE.md` are handoff sources.
