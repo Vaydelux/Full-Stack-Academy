@@ -125,10 +125,13 @@ export async function verifyCssTrack({ page, base, assert, wait }) {
   assert.equal((await computed('#indicator','left')).trim(),'auto','Marker no longer animates left layout position');
   await open('css-selector-perf');
   assert.notEqual(await computed('#course-item','color'),await computed('#editor-item','color'),'CSS selectors must not leak between component namespaces');
+  await page.emulateMedia({reducedMotion:'no-preference'});
   await open('css-transform-opacity');
   await page.getByRole('button',{name:'Toggle notification'}).click();
   assert.equal((await computed('#toast','opacity')).trim(),'1','Toast open state uses opacity');
-  assert.ok((await computed('#toast','transition-property')).includes('transform'),'Toast animates transform, not width');
+  assert.ok((await computed('#toast','transition-property')).includes('transform'),'Toast animates transform, not width for users who allow motion');
+  await page.emulateMedia({reducedMotion:'reduce'});
+  assert.equal((await computed('#toast','transition-duration')).trim(),'0s','Toast disables animation for reduced motion');
   await open('css-font-cls');
   const sizes=await page.locator('#media').evaluate(el=>{const r=el.getBoundingClientRect();return {w:r.width,h:r.height}});
   assert.ok(Math.abs(sizes.h-sizes.w*9/16)<2,'Media region should reserve 16:9 aspect ratio');
