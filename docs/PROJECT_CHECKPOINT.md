@@ -1,4 +1,4 @@
-> **Offline multi-module candidate (2026-11-19).** The entire CSS track `02.01`–`02.04` is authored in branch `feat/02-01-css-fundamentals-offline`: 32 CSS lesson bodies and offline labs; **93 published IDs in branch metadata, NOT production**. The last verified application release still has **61** published IDs. This batch intentionally disables Vercel builds and preview deployments, and is not merged. Exact-head CI and real-device audit are separate release gates. Next planned module is `03.01 — JavaScript Deep Foundations`. See `docs/LONG_SCOPE_DELIVERY_PLAN.md` for larger progressive delivery batches.
+> **Offline candidate, 2026-11-19:** Following the complete CSS track, this branch adds **64 complete JavaScript and TypeScript lessons** (`03.01`–`04.04`) and their independent local tests. Machine-checked development metadata reports **154 MDX / 157 published lesson IDs / 154 labs / 19 complete modules**. All these branch counts are **UNRELEASED**; production still has **61 lesson IDs** and remains on the verified application release `394e6d0`. Vercel preview/build triggers remain suppressed; no production deployment, merge or quota-spending release was requested. This batch requires exact-head CI and manual device/accessibility review before release. Next canonical module is `05.01`.
 
 # Full-Stack Academy — Verified Project Checkpoint
 
@@ -8,7 +8,7 @@
 **Latest verified application release commit:** `394e6d0f620f4740912b0d50cbcbbf5aecc83e8e` — merged PR #12  
 **Production Vercel deployment:** `dpl_5CsySTxdf8iRD2zQ1wpL4xcTBstX` (**READY**, commit matches release)  
 **Post-merge main CI:** [run 44321173715](https://github.com/Vaydelux/Full-Stack-Academy/actions/runs/44321173715) — **verify and dependency-audit successful**.  
-**Next offline milestone after CSS batch:** `03.01 — JavaScript Deep Foundations` (not yet authored).
+**Next offline milestone after JS + TS batch:** `05.01 — Git, Collaboration & Monorepos` (not yet authored).
 
 > The release SHA above identifies the verified **application release**. Later documentation-only commits may update `main` and create a new Vercel deployment without changing lesson code. Always recheck current `main`, CI and production before a subsequent release.
 

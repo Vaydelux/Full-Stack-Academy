@@ -1,6 +1,6 @@
 # Full-Stack Academy — Multi-Module Offline Delivery Plan
 
-**Reviewed:** 2026-11-19 · **Product goal:** Complete the canonical 889-topic curriculum with usable exercises, maintainable references and truthful progress signals. **Release mode:** no Vercel deployments until owner resumes.
+**Reviewed:** 2026-11-19 (expanded two-track JS/TS batch) · **Product goal:** Complete the canonical 889-topic curriculum with usable exercises, maintainable references and truthful progress signals. **Release mode:** no Vercel deployments until owner resumes.
 
 ## Decision
 
@@ -16,6 +16,16 @@ The canonical source `data/curriculum.json` currently defines **28 tracks, 111 m
 - **Next JavaScript batch:** Track `03` = four modules, 32 canonical lessons; then track `04` TypeScript = four modules, 32 lessons.
 - **Follow-on tracks:** `05` Git and collaboration (24); `06` React (40); `07` Next.js (40); `08` UI/UX (32); `09` forms/Zod/state (32); `10`–`18` backend, PostgreSQL, Prisma, Supabase, security, caching, realtime and integration curricula; `19`–`23` QA, delivery, observability, performance and architecture; `24`–`27` mobile/advanced platforms, governance and capstone. Always use exact canonical IDs before writing.
 - **Separate reference program:** Author indexed subjects with syntax, return value, errors, examples, gotchas, security and last-reviewed source links; counts never increase merely by adding an index row.
+
+## Expanded offline batch — 2026-11-19
+
+After the CSS-track candidate, a distinct branch `feat/js-ts-two-track-offline` adds **64 canonical topics** across tracks `03` and `04`. Each lesson has a separate runnable starter/solution pair and a local regression test; `03.04` also has standalone browser HTML, while `04.02` has real strict compiler-negative assertions. The branch is **not production** and is not merged into the CSS PR.
+
+- **Branch-only candidate cumulative totals:** 19 complete modules, 157 authored/published IDs, 154 MDX bodies and 154 labs, while the released production count remains 61 IDs.
+- **Remaining catalog topics if this candidate passes:** 889 - 157 = **732 planned** (not yet authored). Four reference article drafts remain incomplete against 303 indexed reference subjects.
+- **Next larger program:** tracks `05` (24 topics) + `06` (40) + `07` (40) = 104 lessons as one long development program with independent track-level qualification. The scope is a plan, not completed work.
+- **Verification debt:** JS async cancellation/retry uses injected offline transport, TS type tests compile through strict tsc, and browser DOM exercises require Chromium. Do not present these as live network or hosted code-execution features.
+- **Release hold:** Vercel remains intentionally suppressed, PRs remain draft/unmerged, and GitHub CI is not a Vercel deployment. A separate hosted release gate is required on explicit owner authorization.
 
 ## Quality gate for every large batch
 
