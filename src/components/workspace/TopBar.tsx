@@ -1,214 +1,69 @@
 'use client';
 
 import { useRef } from 'react';
-import {
-  Bug,
-  Compass,
-  Download,
-  Flag,
-  Hexagon,
-  Moon,
-  Search,
-  Sun,
-  Upload,
-} from 'lucide-react';
+import Link from 'next/link';
+import { BookOpenText, Download, Ellipsis, Moon, Search, Sun, Upload } from 'lucide-react';
 import { AUTHORED_LESSON_IDS } from '@/lib/academy/authored-content';
-import { lessonMap, referenceMap } from '@/lib/academy/curriculum';
 import { useAcademy } from '@/lib/academy/store';
 
 export default function TopBar() {
-  const activeView = useAcademy((s) => s.activeView);
-  const selectedLessonId = useAcademy((s) => s.selectedLessonId);
-  const selectedReferenceId = useAcademy((s) => s.selectedReferenceId);
-  const progress = useAcademy((s) => s.progress);
-  const setActiveView = useAcademy((s) => s.setActiveView);
-  const setCommandOpen = useAcademy((s) => s.setCommandOpen);
-  const toggleTheme = useAcademy((s) => s.toggleTheme);
-  const exportBackupJson = useAcademy((s) => s.exportBackupJson);
-  const importBackupJson = useAcademy((s) => s.importBackupJson);
-  const showToast = useAcademy((s) => s.showToast);
-
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const doneCount = AUTHORED_LESSON_IDS.filter((id) => progress.complete[id]).length;
-  const currentLesson = lessonMap.get(selectedLessonId);
-  const currentRef = referenceMap.get(selectedReferenceId);
-
-  const breadcrumbTail =
-    activeView === 'overview'
-      ? 'Overview · v1.1'
-      : activeView === 'arena'
-        ? 'Bug Hunt Arena'
-        : activeView === 'capstone'
-          ? 'Capstone (13 Milestones)'
-          : activeView === 'reference'
-            ? `Reference / ${currentRef?.title ?? selectedReferenceId}`
-            : currentLesson
-              ? `${currentLesson.id} · ${currentLesson.title}`
-              : 'Lesson';
-
-  const handleBackup = () => {
-    const json = exportBackupJson();
-    const blob = new Blob([json], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'fullstack-academy-progress.json';
-    a.click();
+  const progress = useAcademy(s => s.progress);
+  const toggleTheme = useAcademy(s => s.toggleTheme);
+  const setActiveView = useAcademy(s => s.setActiveView);
+  const setCommandOpen = useAcademy(s => s.setCommandOpen);
+  const exportBackupJson = useAcademy(s => s.exportBackupJson);
+  const importBackupJson = useAcademy(s => s.importBackupJson);
+  const showToast = useAcademy(s => s.showToast);
+  const fileRef = useRef<HTMLInputElement>(null);
+  const menuRef = useRef<HTMLDetailsElement>(null);
+  const done = AUTHORED_LESSON_IDS.filter(id => progress.complete[id]).length;
+  const closeMenu = () => { if (menuRef.current) menuRef.current.open = false; };
+  const backup = () => {
+    const url = URL.createObjectURL(new Blob([exportBackupJson()], { type: 'application/json' }));
+    const link = document.createElement('a');
+    link.href = url; link.download = 'fullstack-academy-progress.json'; link.click();
     setTimeout(() => URL.revokeObjectURL(url), 1500);
-    showToast('Progress backup downloaded', 'success');
+    closeMenu(); showToast('Progress backup downloaded', 'success');
   };
-
-  const handleRestore = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const restore = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const text = await file.text();
-    const res = importBackupJson(text);
-    if (!res.ok) showToast(res.error ?? 'Invalid backup file', 'error');
-    e.target.value = '';
+    try {
+      if (file.size > 2_000_000) { showToast('Backup exceeds 2 MB import limit', 'error'); return; }
+      const result = importBackupJson(await file.text());
+      if (!result.ok) showToast(result.error ?? 'Invalid backup', 'error');
+    } catch { showToast('Unable to read backup file', 'error'); }
+    finally { e.target.value = ''; }
   };
-
+  const menuItem = 'flex min-h-10 w-full items-center gap-2 rounded-lg px-3 text-left text-sm text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-white/10';
   return (
-    <header className="relative z-30 flex h-12 shrink-0 items-center gap-2 border-b border-slate-200 bg-white/85 px-3 backdrop-blur-xl sm:px-4 dark:border-white/[0.06] dark:bg-black/45">
-      {/* Brand */}
-      <button
-        type="button"
-        onClick={() => setActiveView('overview')}
-        className="flex items-center gap-2.5 text-left transition-opacity hover:opacity-90"
-      >
-        <div className="relative flex h-7 w-7 items-center justify-center">
-          <Hexagon className="h-7 w-7 text-[#0284c7] dark:text-[#00F0FF]" strokeWidth={1.5} />
-          <span className="absolute h-2 w-2 rounded-full bg-gradient-to-br from-[#00F0FF] to-[#8A2BE2] shadow-[0_0_10px_rgba(0,240,255,0.75)]" />
-        </div>
-        <div className="leading-none">
-          <div className="text-[12px] font-bold tracking-[0.18em] text-slate-900 dark:text-slate-100">
-            FULL-STACK<span className="text-[#0284c7] dark:text-[#00F0FF] dark:text-glow-cyan">&nbsp;ACADEMY</span>
-          </div>
-          <div className="mt-0.5 hidden text-[9px] font-semibold uppercase tracking-[0.24em] text-slate-500 sm:block">
-            Enterprise curriculum · v1.1
-          </div>
-        </div>
+    <header className="relative z-40 flex min-h-14 shrink-0 items-center gap-3 border-b border-slate-200 bg-white px-4 dark:border-white/10 dark:bg-[#15161c]">
+      <a href="#academy-main" className="sr-only focus:not-sr-only focus:absolute focus:left-2 focus:top-2 focus:z-50 focus:rounded-md focus:bg-white focus:p-3 focus:text-slate-950">Skip to lesson</a>
+      <button type="button" onClick={() => setActiveView('overview')} className="flex min-w-0 items-center gap-2 text-left">
+        <BookOpenText className="shrink-0 text-cyan-700 dark:text-cyan-300" size={22} aria-hidden="true"/>
+        <span className="truncate text-sm font-extrabold tracking-tight">Full-Stack Academy</span>
       </button>
-
-      <div className="mx-1 hidden h-5 w-px bg-slate-200 md:block dark:bg-white/10" />
-
-      {/* Breadcrumb */}
-      <nav aria-label="Breadcrumb" className="hidden min-w-0 max-w-[260px] items-center gap-1.5 text-xs xl:flex">
-        <span className="shrink-0 text-slate-500">v1.1</span>
-        <span className="text-slate-400 dark:text-slate-600">/</span>
-        <span className="truncate font-medium text-slate-700 dark:text-slate-300">{breadcrumbTail}</span>
+      <nav aria-label="Main navigation" className="hidden items-center gap-5 pl-5 text-sm font-medium text-slate-600 sm:flex dark:text-slate-300">
+        <Link href="/learn" className="hover:underline">Courses</Link>
+        <Link href="/reference" className="hover:underline">Reference</Link>
       </nav>
-
-      {/* Search trigger */}
-      <div className="mx-auto hidden w-full max-w-xs md:block">
-        <button
-          type="button"
-          onClick={() => setCommandOpen(true)}
-          className="flex h-8 w-full items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 text-xs text-slate-500 transition-colors hover:border-[#0284c7]/40 hover:text-slate-800 dark:border-white/[0.08] dark:bg-white/[0.03] dark:hover:border-[#00F0FF]/35 dark:hover:text-slate-200"
-        >
-          <Search className="h-3.5 w-3.5 shrink-0" />
-          <span className="flex-1 truncate text-left">Search 889 topics or 303 references...</span>
-          <kbd className="rounded border border-slate-300 bg-white px-1.5 py-0.5 font-mono text-[10px] text-slate-500 dark:border-white/10 dark:bg-white/5 dark:text-slate-400">
-            /
-          </kbd>
-        </button>
-      </div>
-
-      {/* Right actions */}
-      <div className="ml-auto flex items-center gap-1.5">
-        <button
-          type="button"
-          onClick={() => setCommandOpen(true)}
-          aria-label="Search curriculum and references"
-          className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 bg-slate-50 text-slate-600 md:hidden dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-slate-300"
-        >
-          <Search className="h-3.5 w-3.5" />
-        </button>
-
-        <button
-          type="button"
-          onClick={() => setActiveView('overview')}
-          className={`hidden items-center gap-1.5 rounded-lg border px-2.5 py-1 text-[11px] font-medium transition-colors sm:flex ${
-            activeView === 'overview'
-              ? 'border-[#0284c7]/40 bg-[#0284c7]/10 text-[#0284c7] dark:border-[#00F0FF]/40 dark:bg-[#00F0FF]/12 dark:text-[#7DEBFF]'
-              : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300 dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-slate-300 dark:hover:border-white/20'
-          }`}
-        >
-          <Compass className="h-3.5 w-3.5" />
-          Overview
-        </button>
-
-        <button
-          type="button"
-          onClick={() => setActiveView('arena')}
-          className={`hidden items-center gap-1.5 rounded-lg border px-2.5 py-1 text-[11px] font-medium transition-colors sm:flex ${
-            activeView === 'arena'
-              ? 'border-[#8A2BE2]/50 bg-[#8A2BE2]/15 text-[#6d28d9] dark:text-[#C9A0FF]'
-              : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300 dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-slate-300 dark:hover:border-white/20'
-          }`}
-        >
-          <Bug className="h-3.5 w-3.5" />
-          Bug Hunt
-        </button>
-
-        <button
-          type="button"
-          onClick={() => setActiveView('capstone')}
-          className={`hidden items-center gap-1.5 rounded-lg border px-2.5 py-1 text-[11px] font-medium transition-colors lg:flex ${
-            activeView === 'capstone'
-              ? 'border-[#10B981]/50 bg-[#10B981]/15 text-[#047857] dark:text-[#6EE7B7]'
-              : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300 dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-slate-300 dark:hover:border-white/20'
-          }`}
-        >
-          <Flag className="h-3.5 w-3.5" />
-          Capstone
-        </button>
-
-        <span
-          title="Only authored sample lessons can be completed"
-          className="hidden items-center gap-1 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-2 py-1 font-mono text-[10px] font-semibold text-emerald-700 xl:flex dark:text-[#6EE7B7]"
-        >
-          {doneCount}/{AUTHORED_LESSON_IDS.length} samples
-        </span>
-
-        <button
-          type="button"
-          onClick={toggleTheme}
-          aria-label="Toggle color theme"
-          title={`Switch to ${progress.theme === 'dark' ? 'light' : 'dark'} theme`}
-          className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 transition-colors hover:border-slate-300 hover:text-slate-900 dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-slate-300 dark:hover:border-white/20 dark:hover:text-white"
-        >
-          {progress.theme === 'dark' ? <Sun className="h-3.5 w-3.5" /> : <Moon className="h-3.5 w-3.5" />}
-        </button>
-
-        <button
-          type="button"
-          onClick={handleBackup}
-          aria-label="Backup progress JSON"
-          title="Export progress and notes as JSON"
-          className="flex h-8 items-center gap-1 rounded-lg border border-slate-200 bg-white px-2 text-[11px] font-medium text-slate-600 transition-colors hover:border-slate-300 hover:text-slate-900 dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-slate-300 dark:hover:border-white/20"
-        >
-          <Download className="h-3.5 w-3.5" />
-          <span className="hidden lg:inline">Backup</span>
-        </button>
-
-        <button
-          type="button"
-          onClick={() => fileInputRef.current?.click()}
-          aria-label="Restore progress JSON"
-          title="Restore progress and notes from JSON backup"
-          className="flex h-8 items-center gap-1 rounded-lg border border-slate-200 bg-white px-2 text-[11px] font-medium text-slate-600 transition-colors hover:border-slate-300 hover:text-slate-900 dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-slate-300 dark:hover:border-white/20"
-        >
-          <Upload className="h-3.5 w-3.5" />
-          <span className="hidden lg:inline">Restore</span>
-        </button>
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept="application/json"
-          className="hidden"
-          onChange={handleRestore}
-        />
+      <div className="ml-auto flex shrink-0 items-center gap-2">
+        <span className="hidden text-xs tabular-nums text-slate-500 md:inline" title="Completed authored samples">{done}/{AUTHORED_LESSON_IDS.length} complete</span>
+        <button type="button" aria-label="Search curriculum and references" onClick={() => setCommandOpen(true)} className="flex min-h-10 items-center gap-2 rounded-lg px-2.5 text-sm text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-white/10"><Search size={18}/><span className="hidden lg:inline">Search</span></button>
+        <button type="button" aria-label="Toggle color theme" onClick={toggleTheme} className="grid h-10 w-10 place-items-center rounded-lg hover:bg-slate-100 dark:hover:bg-white/10">{progress.theme === 'dark' ? <Sun size={18}/> : <Moon size={18}/>}</button>
+        <details ref={menuRef} className="relative">
+          <summary aria-label="More options" className="grid h-10 w-10 cursor-pointer list-none place-items-center rounded-lg hover:bg-slate-100 dark:hover:bg-white/10"><Ellipsis size={21}/></summary>
+          <div className="absolute right-0 top-12 z-50 w-56 rounded-xl border border-slate-200 bg-white p-2 shadow-lg dark:border-white/15 dark:bg-[#1b1d25]">
+            <Link href="/learn" onClick={closeMenu} className={menuItem}>Course catalog</Link>
+            <Link href="/reference" onClick={closeMenu} className={menuItem}>Reference library</Link>
+            <button type="button" onClick={() => { setActiveView('arena'); closeMenu(); }} className={menuItem}>Bug Hunt Arena</button>
+            <button type="button" onClick={() => { setActiveView('capstone'); closeMenu(); }} className={menuItem}>Capstone</button>
+            <div className="my-1 border-t border-slate-200 dark:border-white/10"/>
+            <button type="button" onClick={backup} className={menuItem}><Download size={15}/> Backup progress</button>
+            <button type="button" onClick={() => { closeMenu(); fileRef.current?.click(); }} className={menuItem}><Upload size={15}/> Restore progress</button>
+          </div>
+        </details>
+        <input ref={fileRef} type="file" accept="application/json" className="hidden" onChange={restore}/>
       </div>
     </header>
   );

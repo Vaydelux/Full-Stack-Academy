@@ -291,7 +291,7 @@ export const useAcademy = create<AcademyStore>((set, get) => ({
   runToken: 0,
 
   drawerTab: 'console',
-  drawerOpen: true,
+  drawerOpen: false,
   drawerHeight: 230,
   syllabusOpen: true,
   mobileTab: 'docs',
@@ -305,7 +305,7 @@ export const useAcademy = create<AcademyStore>((set, get) => ({
     set({ progress: loaded, hydrated: true });
   },
 
-  setActiveView: (activeView) => set({ activeView, ...(activeView !== 'lesson' ? { isPlaying: false } : {}) }),
+  setActiveView: (activeView) => set({ activeView, ...(activeView !== 'lesson' ? { isPlaying: false, mobileTab: 'docs' as const } : {}) }),
 
   selectLesson: (lessonId) =>
     set((s) => {
@@ -417,7 +417,7 @@ export const useAcademy = create<AcademyStore>((set, get) => ({
 
   loadSnippet: (code, title, lessonId) =>
     set((s) => ({
-      ...(lessonId && AUTHORED_LESSONS[lessonId] ? { activeSampleId: lessonId, selectedLessonId: lessonId } : {}),
+      ...(lessonId && AUTHORED_LESSONS[lessonId] ? { activeSampleId: lessonId, selectedLessonId: lessonId, activeView: 'lesson' as const } : {}),
       code,
       hijacked: true,
       isPlaying: false,

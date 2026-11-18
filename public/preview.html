@@ -229,8 +229,8 @@
 
         const entryName = /^[A-Za-z_$][\w$]*$/.test(entry) ? entry : 'App';
         const finalCode =
-          out +
-          '\n;window.__academyEntry = (typeof ' + entryName + ' !== "undefined") ? ' + entryName + ' : null;';
+          '(function () {\n' + out +
+          '\n;window.__academyEntry = (typeof ' + entryName + ' !== "undefined") ? ' + entryName + ' : null;\n})();';
 
         let scriptError = null;
         const onScriptError = (e) => {

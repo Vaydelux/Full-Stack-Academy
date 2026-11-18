@@ -80,3 +80,7 @@ The first authored lesson now lives in `src/content/lessons/06.01.01.mdx` with s
 Run `npm run verify:content` and `npm run test:labs` to validate the lesson. MDX is compiled only from reviewed repository source. The existing live workspace is preserved and is intentionally separate from server-side execution of arbitrary learner code.
 
 Full guide: `docs/MDX_AUTHORING_PIPELINE.md`.
+
+## Reading-first experience
+
+The home workspace opens in Read lesson mode. Curriculum, search and notes remain available; the editable code preview, timeline and console are mounted in Practice mode only. The previous always-open three-pane layout is replaced with a focused two-panel practice area. Article routes remain independently accessible. Mobile provides a collapsible curriculum and Code/Output tabs.

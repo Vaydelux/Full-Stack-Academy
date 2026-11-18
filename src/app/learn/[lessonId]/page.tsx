@@ -63,7 +63,7 @@ export default async function LessonPage({ params }: LessonPageProps) {
         <>
           <div className="mt-6 flex flex-wrap items-center gap-3">
             <span className="rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-3 py-1.5 text-xs font-bold text-emerald-800 dark:text-emerald-300">Authored sample · ~{authored.estMinutes} min</span>
-            <Link href={`/?lesson=${encodeURIComponent(lessonId)}`} className="rounded-lg bg-cyan-700 px-4 py-2 text-xs font-bold text-white hover:bg-cyan-600 dark:bg-[#00F0FF] dark:text-[#090A0F]">
+            <Link href={`/?lesson=${encodeURIComponent(lessonId)}&mode=practice`} className="rounded-lg bg-cyan-700 px-4 py-2 text-xs font-bold text-white hover:bg-cyan-600 dark:bg-[#00F0FF] dark:text-[#090A0F]">
               Open interactive lab
             </Link>
           </div>
@@ -148,7 +148,7 @@ export default async function LessonPage({ params }: LessonPageProps) {
             </ul>
           </DocSection>
           <div className="mt-8">
-            <Link href={`/?lesson=${encodeURIComponent(lessonId)}`} className="rounded-lg bg-cyan-700 px-4 py-2 text-sm font-bold text-white hover:bg-cyan-600 dark:bg-[#00F0FF] dark:text-[#090A0F]">Practice in the interactive workspace</Link>
+            <Link href={`/?lesson=${encodeURIComponent(lessonId)}&mode=practice`} className="rounded-lg bg-cyan-700 px-4 py-2 text-sm font-bold text-white hover:bg-cyan-600 dark:bg-[#00F0FF] dark:text-[#090A0F]">Practice in the interactive workspace</Link>
           </div>
         </>
       )}

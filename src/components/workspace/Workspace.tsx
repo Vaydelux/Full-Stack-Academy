@@ -1,24 +1,11 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
-import {
-  BookOpenText,
-  CheckCircle2,
-  Code2,
-  Info,
-  MonitorPlay,
-  TriangleAlert,
-} from 'lucide-react';
-import {
-  AUTHORED_LESSONS,
-  AUTHORED_LESSON_IDS,
-} from '@/lib/academy/authored-content';
-import { summary } from '@/lib/academy/curriculum';
+import { BookOpenText, CheckCircle2, Code2, Info, Menu, MonitorPlay, StickyNote, TriangleAlert } from 'lucide-react';
+import { AUTHORED_LESSONS, AUTHORED_LESSON_IDS } from '@/lib/academy/authored-content';
 import { useAcademy } from '@/lib/academy/store';
-import AmbientBackground from './AmbientBackground';
-import BootSplash from './BootSplash';
 import CodeEditor from './CodeEditor';
 import CommandSearchModal from './CommandSearchModal';
 import ConsoleNotesDrawer from './ConsoleNotesDrawer';
@@ -27,18 +14,6 @@ import PreviewPane from './PreviewPane';
 import SyllabusPanel from './SyllabusPanel';
 import TimelineScrubber from './TimelineScrubber';
 import TopBar from './TopBar';
-
-function Handle() {
-  return (
-    <PanelResizeHandle className="group relative w-px bg-slate-200 transition-colors data-[resize-handle-state=drag]:bg-[#00F0FF]/70 data-[resize-handle-state=hover]:bg-[#00F0FF]/50 dark:bg-white/[0.07]">
-      <div className="absolute inset-y-0 -left-1 -right-1" />
-      <div className="absolute left-1/2 top-1/2 flex h-8 w-[5px] -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center gap-1 rounded-full opacity-0 transition-opacity group-hover:opacity-100">
-        <span className="h-1 w-1 rounded-full bg-[#00F0FF]" />
-        <span className="h-1 w-1 rounded-full bg-[#00F0FF]" />
-      </div>
-    </PanelResizeHandle>
-  );
-}
 
 function ToastLayer() {
   const toast = useAcademy((s) => s.toast);
@@ -80,110 +55,21 @@ function ToastLayer() {
   );
 }
 
-function StatusBar() {
-  const activeSampleId = useAcademy((s) => s.activeSampleId);
-  const previewStatus = useAcademy((s) => s.previewStatus);
-  const previewError = useAcademy((s) => s.previewError);
-  const cursor = useAcademy((s) => s.cursor);
-  const hijacked = useAcademy((s) => s.hijacked);
-  const isPlaying = useAcademy((s) => s.isPlaying);
-  const speed = useAcademy((s) => s.speed);
-
-  const sample = AUTHORED_LESSONS[activeSampleId] ?? AUTHORED_LESSONS['06.01.01'];
-
-  const statusText =
-    sample.sandboxMode !== 'react-live'
-      ? `Interactive ${sample.sandboxMode === 'zod-live' ? 'Zod 4 validator' : 'concept simulator'} ready`
-      : previewStatus === 'ready'
-        ? 'React JSX sandbox ready'
-        : previewStatus === 'error'
-          ? previewError
-            ? `Sandbox error — ${previewError.slice(0, 64)}`
-            : 'Sandbox error'
-          : 'Booting sandbox...';
-
-  return (
-    <footer className="relative z-20 flex h-7 shrink-0 items-center gap-3 border-t border-slate-200 bg-white/85 px-3 font-mono text-[10px] text-slate-500 backdrop-blur-xl dark:border-white/[0.06] dark:bg-black/50">
-      <span className="flex items-center gap-1.5">
-        <span
-          className={`h-1.5 w-1.5 rounded-full ${
-            previewStatus === 'ready' || sample.sandboxMode !== 'react-live'
-              ? 'bg-emerald-500'
-              : previewStatus === 'error'
-                ? 'bg-rose-400'
-                : 'bg-amber-300 animate-pulse'
-          }`}
-        />
-        <span className={`truncate ${previewStatus === 'error' ? 'text-rose-500 dark:text-rose-300' : ''}`}>
-          {statusText}
-        </span>
-      </span>
-      <span className="hidden text-slate-300 sm:inline dark:text-slate-700">|</span>
-      <span className="hidden truncate sm:inline">
-        {hijacked
-          ? 'Manual edit mode'
-          : isPlaying
-            ? `Playing ${sample.id} at ${speed}x`
-            : `${summary.tracks} tracks · ${summary.modules} modules · ${summary.plannedLessons} topics · ${summary.referenceSubjects} refs`}
-      </span>
-      <span className="ml-auto hidden items-center gap-3 md:flex">
-        <span>
-          Ln {cursor.ln}, Col {cursor.col}
-        </span>
-        <span className="text-slate-300 dark:text-slate-700">|</span>
-        <span className="text-[#0284c7] dark:text-[#7DEBFF]">v1.1</span>
-      </span>
-    </footer>
-  );
-}
-
-function MobileTabs() {
-  const mobileTab = useAcademy((s) => s.mobileTab);
-  const setMobileTab = useAcademy((s) => s.setMobileTab);
-  const tabs = [
-    { id: 'docs' as const, label: 'Docs & Catalog', icon: BookOpenText },
-    { id: 'editor' as const, label: 'Editor', icon: Code2 },
-    { id: 'output' as const, label: 'Output & Notes', icon: MonitorPlay },
-  ];
-  return (
-    <nav
-      aria-label="Workspace panes"
-      className="relative z-20 flex shrink-0 border-t border-slate-200 bg-white/90 backdrop-blur-xl lg:hidden dark:border-white/[0.06] dark:bg-black/60"
-    >
-      {tabs.map((t) => {
-        const Icon = t.icon;
-        const active = mobileTab === t.id;
-        return (
-          <button
-            key={t.id}
-            type="button"
-            onClick={() => setMobileTab(t.id)}
-            aria-pressed={active}
-            className={`relative flex flex-1 items-center justify-center gap-1.5 py-2 text-[11px] font-medium transition-colors ${
-              active ? 'text-[#0284c7] dark:text-[#7DEBFF]' : 'text-slate-500'
-            }`}
-          >
-            <Icon className="h-4 w-4" />
-            {t.label}
-            {active && (
-              <motion.span
-                layoutId="mobile-tab-glow"
-                className="absolute inset-x-6 top-0 h-px bg-[#00F0FF]"
-              />
-            )}
-          </button>
-        );
-      })}
-    </nav>
-  );
-}
 
 export default function Workspace() {
-  const [booted, setBooted] = useState(false);
-  const [isDesktop, setIsDesktop] = useState(true);
+  const [mobileNav, setMobileNav] = useState(false);
+  const [notesOpen, setNotesOpen] = useState(false);
   const hydrate = useAcademy((s) => s.hydrate);
   const theme = useAcademy((s) => s.progress.theme);
   const mobileTab = useAcademy((s) => s.mobileTab);
+  const setMobileTab = useAcademy((s) => s.setMobileTab);
+  const activeView = useAcademy((s) => s.activeView);
+  const lessonId = useAcademy((s) => s.selectedLessonId);
+  const note = useAcademy((s) => s.progress.notes[lessonId] ?? '');
+  const setNote = useAcademy((s) => s.setNote);
+  const pause = useAcademy((s) => s.pause);
+  const canPractice = activeView === 'lesson' && Boolean(AUTHORED_LESSONS[lessonId]);
+  const practicing = canPractice && mobileTab !== 'docs';
 
   useEffect(() => {
     hydrate();
@@ -191,8 +77,7 @@ export default function Workspace() {
     // Store selection still validates against the canonical curriculum catalog.
     const deepLink = new URLSearchParams(window.location.search).get('lesson');
     if (deepLink) useAcademy.getState().selectLesson(deepLink);
-    const t = setTimeout(() => setBooted(true), 750);
-    return () => clearTimeout(t);
+    if (deepLink && new URLSearchParams(window.location.search).get('mode') === 'practice' && AUTHORED_LESSONS[deepLink]) useAcademy.getState().setMobileTab('editor');
   }, [hydrate]);
 
   useEffect(() => {
@@ -200,14 +85,6 @@ export default function Workspace() {
     root.classList.toggle('dark', theme === 'dark');
     root.classList.toggle('light', theme === 'light');
   }, [theme]);
-
-  useEffect(() => {
-    const mq = window.matchMedia('(min-width: 1024px)');
-    const apply = () => setIsDesktop(mq.matches);
-    apply();
-    mq.addEventListener('change', apply);
-    return () => mq.removeEventListener('change', apply);
-  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -252,12 +129,12 @@ export default function Workspace() {
             (Math.max(0, idx) + AUTHORED_LESSON_IDS.length - 1) % AUTHORED_LESSON_IDS.length
           ]
         );
-      } else if (e.code === 'Space') {
+      } else if (e.code === 'Space' && s.mobileTab !== 'docs') {
         e.preventDefault();
         s.togglePlay();
-      } else if (e.key === 'ArrowLeft') {
+      } else if (e.key === 'ArrowLeft' && s.mobileTab !== 'docs') {
         s.seek(s.currentTime - 5);
-      } else if (e.key === 'ArrowRight') {
+      } else if (e.key === 'ArrowRight' && s.mobileTab !== 'docs') {
         s.seek(s.currentTime + 5);
       }
     };
@@ -265,77 +142,70 @@ export default function Workspace() {
     return () => window.removeEventListener('keydown', onKey);
   }, []);
 
-  if (!isDesktop) {
-    return (
-      <div className="academy-shell flex h-dvh flex-col">
-        <AmbientBackground />
-        <BootSplash done={booted} onSkip={() => setBooted(true)} />
-        <TopBar />
-        <CommandSearchModal />
-        <main className="flex min-h-0 flex-1 flex-col">
-          {mobileTab === 'docs' && (
-            <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
-              <SyllabusPanel />
-              <DocsPane />
-            </div>
+
+  return (
+    <div className="academy-shell flex h-dvh flex-col bg-slate-50 dark:bg-[#101116]">
+      <TopBar />
+      <CommandSearchModal />
+      <div className="flex min-h-0 flex-1 flex-col lg:flex-row">
+        <div className="flex shrink-0 items-center justify-between border-b border-slate-200 bg-white px-4 py-2 lg:hidden dark:border-white/10 dark:bg-[#15161c]">
+          <button type="button" aria-expanded={mobileNav} aria-controls="academy-navigation" onClick={() => setMobileNav(v => !v)}
+            className="flex min-h-9 items-center gap-2 text-sm font-semibold">
+            <Menu size={17} aria-hidden="true" /> Curriculum
+          </button>
+          <Link href="/reference" className="text-sm font-medium text-cyan-700 dark:text-cyan-300">Reference library</Link>
+        </div>
+        <aside id="academy-navigation" className={`${mobileNav ? 'flex' : 'hidden'} max-h-[42dvh] min-h-0 shrink-0 flex-col overflow-hidden border-b border-slate-200 bg-white lg:flex lg:h-full lg:max-h-none lg:w-[300px] lg:border-b-0 lg:border-r dark:border-white/10 dark:bg-[#15161c]`}>
+          <SyllabusPanel fullHeight />
+        </aside>
+        <main id="academy-main" className="flex min-h-0 min-w-0 flex-1 flex-col">
+          {canPractice && (
+            <nav aria-label="Learning mode" className="flex shrink-0 flex-wrap items-center gap-2 border-b border-slate-200 bg-white px-4 py-2 dark:border-white/10 dark:bg-[#15161c]">
+              <button type="button" aria-pressed={!practicing} onClick={() => { pause(); setMobileTab('docs'); }}
+                className={`flex min-h-9 items-center gap-2 rounded-lg px-3 text-sm font-semibold ${!practicing ? 'bg-slate-100 text-slate-900 dark:bg-white/10 dark:text-white' : 'text-slate-500'}`}>
+                <BookOpenText size={16} aria-hidden="true" /> Read lesson
+              </button>
+              <button type="button" aria-pressed={practicing} onClick={() => { setMobileNav(false); setMobileTab('editor'); }}
+                className={`flex min-h-9 items-center gap-2 rounded-lg px-3 text-sm font-semibold ${practicing ? 'bg-cyan-700 text-white dark:bg-cyan-300 dark:text-slate-950' : 'text-cyan-700 dark:text-cyan-300'}`}>
+                <Code2 size={16} aria-hidden="true" /> Practice
+              </button>
+              <button type="button" aria-expanded={notesOpen} onClick={() => setNotesOpen(v => !v)}
+                className="ml-auto flex min-h-9 items-center gap-2 rounded-lg px-3 text-sm font-medium text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-white/10">
+                <StickyNote size={16} aria-hidden="true" /> Notes
+              </button>
+              <Link href={`/learn/${lessonId}`} className="hidden text-xs font-medium text-slate-500 hover:underline sm:inline">Full article</Link>
+            </nav>
           )}
-          {mobileTab === 'editor' && (
-            <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
-              <CodeEditor />
-              <TimelineScrubber />
-            </div>
+          {notesOpen && canPractice && (
+            <section aria-label="Private lesson notes" className="shrink-0 border-b border-slate-200 bg-white px-4 py-3 dark:border-white/10 dark:bg-[#15161c]">
+              <label htmlFor="reading-note" className="text-xs font-semibold text-slate-500">Private notes · saved in this browser</label>
+              <textarea id="reading-note" value={note} onChange={e => setNote(lessonId, e.target.value)} rows={3} maxLength={20000}
+                className="mt-2 block w-full resize-y rounded-lg border border-slate-300 bg-transparent p-3 text-sm dark:border-white/15" />
+            </section>
           )}
-          {mobileTab === 'output' && (
-            <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
-              <PreviewPane />
-              <ConsoleNotesDrawer />
+          <div className={`min-h-0 flex-1 flex-col ${practicing ? 'hidden' : 'flex'}`}>
+            <DocsPane />
+          </div>
+          {practicing && (
+            <div className="flex min-h-0 min-w-0 flex-1 flex-col">
+              <nav aria-label="Practice panes" className="flex shrink-0 border-b border-slate-200 bg-white lg:hidden dark:border-white/10 dark:bg-[#15161c]">
+                <button type="button" aria-pressed={mobileTab === 'editor'} onClick={() => setMobileTab('editor')} className="flex flex-1 items-center justify-center gap-2 py-3 text-sm font-medium"><Code2 size={15} /> Code</button>
+                <button type="button" aria-pressed={mobileTab === 'output'} onClick={() => setMobileTab('output')} className="flex flex-1 items-center justify-center gap-2 py-3 text-sm font-medium"><MonitorPlay size={15} /> Output</button>
+              </nav>
+              <div className="grid min-h-0 min-w-0 flex-1 grid-cols-1 lg:grid-cols-2">
+                <div className={`min-h-0 min-w-0 flex-col ${mobileTab === 'editor' ? 'flex' : 'hidden'} lg:flex`}>
+                  <CodeEditor />
+                  <TimelineScrubber />
+                </div>
+                <div className={`min-h-0 min-w-0 flex-col border-slate-200 lg:border-l dark:border-white/10 ${mobileTab === 'output' ? 'flex' : 'hidden'} lg:flex`}>
+                  <PreviewPane />
+                  <ConsoleNotesDrawer />
+                </div>
+              </div>
             </div>
           )}
         </main>
-        <MobileTabs />
-        <StatusBar />
-        <ToastLayer />
       </div>
-    );
-  }
-
-  return (
-    <div className="academy-shell flex h-dvh flex-col">
-      <AmbientBackground />
-      <BootSplash done={booted} onSkip={() => setBooted(true)} />
-      <TopBar />
-      <CommandSearchModal />
-
-      <main className="min-h-0 flex-1">
-        <PanelGroup direction="horizontal" autoSaveId="academy-panes-v1" className="h-full">
-          <Panel defaultSize={34} minSize={24} maxSize={48}>
-            <div className="flex h-full flex-col overflow-hidden border-r border-slate-200 bg-white/50 dark:border-white/[0.06] dark:bg-white/[0.01]">
-              <SyllabusPanel />
-              <DocsPane />
-            </div>
-          </Panel>
-
-          <Handle />
-
-          <Panel defaultSize={36} minSize={24}>
-            <div className="flex h-full flex-col overflow-hidden">
-              <CodeEditor />
-              <TimelineScrubber />
-            </div>
-          </Panel>
-
-          <Handle />
-
-          <Panel defaultSize={30} minSize={22} maxSize={45}>
-            <div className="flex h-full flex-col overflow-hidden border-l border-slate-200 bg-white/50 dark:border-white/[0.06] dark:bg-white/[0.01]">
-              <PreviewPane />
-              <ConsoleNotesDrawer />
-            </div>
-          </Panel>
-        </PanelGroup>
-      </main>
-
-      <StatusBar />
       <ToastLayer />
     </div>
   );

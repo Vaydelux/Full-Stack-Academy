@@ -19,7 +19,7 @@ const appMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   metadataBase: getPublicOrigin() ? new URL(getPublicOrigin()!) : undefined,
-  title: 'Full-Stack Engineering Academy · v1.1',
+  title: 'Full-Stack Engineering Academy',
   description:
     'Enterprise full-stack curriculum workspace: 28 tracks, 111 modules, 889 planned topics, 303 indexed references, and interactive authored sample labs.',
 };

@@ -631,7 +631,6 @@ export default function PreviewPane() {
           <div className="h-full p-3">
             <AnimatePresence mode="wait">
               <motion.div
-                key={viewport}
                 initial={{ opacity: 0, scale: 0.98 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.98 }}
