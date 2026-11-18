@@ -15,10 +15,12 @@
 - [x] Git operations run in new temporary repositories via `labs/git-sandbox/harness.mjs`. The helper restricts network protocols and cleans directories.
 - [x] Local policy examples document deliberate simplifications (e.g. CODEOWNERS globs, lock snapshot vs actual pnpm-lock).
 - [x] TypeScript workspace capstone includes real modules, manifests, actual compiler and runtime tests; external pnpm/ Turbo commands are not claimed.
-- [ ] Exact HEAD CI must pass locked install, lint, TS typecheck, content, checkpoint, full labs, Next build, Chromium.
-- [ ] Review actual browser lesson visibility/noindex and existing CSS and JS/TS regressions.
+- [x] First exact-head CI passed all checks at `88326b5` ([run 44371495933](https://github.com/Vaydelux/Full-Stack-Academy/actions/runs/44371495933)); added further red-starter gate after this run
+- [x] Chromium verified Git routes/noindex, CSS and JS/TS interactions, reader/Practice and mobile regression at `88326b5`
 - [ ] Manual/editorial accessibility evaluation and actual pnpm workspace install are separate release gates.
-- [ ] Confirm zero Vercel feature deployments, leave draft PRs unmerged, preserve production SHA.
+- [x] Verified zero Git feature-branch Vercel deployments, three draft PRs unmerged, main production SHA unchanged
+
+- [ ] Re-run exact-head CI including the new 24 red-starter negative regression checks
 
 ## Nonclaims and risk register
 

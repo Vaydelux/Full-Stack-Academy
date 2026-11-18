@@ -9,9 +9,10 @@
 - [x] `05.03 — pnpm & Turborepo`: workspaces, public package exports, shared TS config, graph ordering, cache keys, direct-lockfile checks, upgrade policy and 3-package shared-contract capstone
 - [x] Twenty-four full MDX lessons and metadata, red starter/green instructor exercise modules, independent lab tests, new package/TypeScript capstone fixtures and browser route checks
 - [x] Publish registries, lab commands, content checkpoint and long-scope handoff updated; **all are branch-only**
-- [ ] Pass exact-head CI: strict lint/types, content/checkpoint, all local lab tests, repository tests, Next build and integrated Chromium smoke
-- [ ] Verify intentionally broken starters fail safely; check Git commands operate only in disposable local repos and do not contact remote networks
-- [ ] Keep PR #14 and #15 unmerged; open a draft stacked PR for track 05, no hosting preview
+- [x] Prior exact-head CI passed at `88326b5` — run [44371495933](https://github.com/Vaydelux/Full-Stack-Academy/actions/runs/44371495933): lint, strict types, content/checkpoint, 322 local lab tests, 18 repo tests, Next build and all Chromium smoke
+- [x] Add automated red-starter checks for all 24 new labs against disposable local fixtures; run in final exact-head CI
+- [ ] Pass final exact-head CI with the newly added red-starter gate
+- [x] Keep PR #14 and #15 unmerged; open [draft PR #16](https://github.com/Vaydelux/Full-Stack-Academy/pull/16) for track 05 with zero Vercel feature deployments
 
 ## P1 — Large-scope React + Next.js program
 

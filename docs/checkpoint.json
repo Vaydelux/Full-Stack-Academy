@@ -11,7 +11,7 @@
   "development": {
     "branch": "feat/05-git-monorepo-offline",
     "lastMergedPr": 13,
-    "state": "offline-git-track-pending-verification"
+    "state": "offline-git-track-verified-ci-additional-red-gate"
   },
   "snapshot": {
     "tracks": 28,
@@ -54,5 +54,5 @@
     "exceptionExpires": "2026-12-02"
   },
   "nextMilestone": "06.01",
-  "status": "unreleased-git-track-development"
+  "status": "unreleased-git-track-candidate"
 }
