@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.js-modules",
+  "lessonId": "03.02.05",
+  "title": "Modules and exports",
+  "runtime": "node-24-esm",
+  "status": "authored",
+  "starter": "labs/js-modules/starter/solution.mjs",
+  "solution": "labs/js-modules/solution/solution.mjs",
+  "tests": "labs/js-modules/solution.test.mjs",
+  "verify": [
+    "npm run lab:js-modules"
+  ],
+  "expected": "Solve the modules and exports bug with independently tested module and state behavior.",
+  "security": "Offline synthetic JavaScript practice; no credentials, remote requests, production data or uploads."
+}

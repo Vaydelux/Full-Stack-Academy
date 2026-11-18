@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.js-errors",
+  "lessonId": "03.02.06",
+  "title": "Error handling boundaries",
+  "runtime": "node-24-esm",
+  "status": "authored",
+  "starter": "labs/js-errors/starter/solution.mjs",
+  "solution": "labs/js-errors/solution/solution.mjs",
+  "tests": "labs/js-errors/solution.test.mjs",
+  "verify": [
+    "npm run lab:js-errors"
+  ],
+  "expected": "Solve the error handling boundaries bug with independently tested module and state behavior.",
+  "security": "Offline synthetic JavaScript practice; no credentials, remote requests, production data or uploads."
+}

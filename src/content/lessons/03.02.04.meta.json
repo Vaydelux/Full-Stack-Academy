@@ -1,0 +1,38 @@
+{
+  "id": "03.02.04",
+  "title": "this binding and callbacks",
+  "description": "Investigate this binding and callbacks in an offline ES module with reproducible Node.js assertions, a failing starter and a reviewed instructor implementation.",
+  "trackId": "03",
+  "moduleId": "03.02",
+  "level": "Beginner",
+  "estimatedMinutes": 55,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "03.02.03"
+  ],
+  "objectives": [
+    "Explain how this binding and callbacks manages value or object identity",
+    "Reproduce a failure with independent tests and a concrete counterexample",
+    "Implement the repaired ESM contract and check edge cases without hidden shared state"
+  ],
+  "labId": "lab.foundation.js-this-binding",
+  "sources": [
+    {
+      "label": "MDN concept reference",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind"
+    },
+    {
+      "label": "Language reference",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this"
+    }
+  ],
+  "rubric": [
+    "I can show one failing starter input for this binding and callbacks.",
+    "I use lexical scope, object boundaries and module exports deliberately.",
+    "I verified passing instructor assertions and an invalid-input case."
+  ]
+}

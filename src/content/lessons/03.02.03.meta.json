@@ -1,0 +1,38 @@
+{
+  "id": "03.02.03",
+  "title": "Prototypes and classes",
+  "description": "Investigate prototypes and classes in an offline ES module with reproducible Node.js assertions, a failing starter and a reviewed instructor implementation.",
+  "trackId": "03",
+  "moduleId": "03.02",
+  "level": "Beginner",
+  "estimatedMinutes": 55,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "03.02.02"
+  ],
+  "objectives": [
+    "Explain how prototypes and classes manages value or object identity",
+    "Reproduce a failure with independent tests and a concrete counterexample",
+    "Implement the repaired ESM contract and check edge cases without hidden shared state"
+  ],
+  "labId": "lab.foundation.js-prototypes",
+  "sources": [
+    {
+      "label": "MDN concept reference",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes/Private_elements"
+    },
+    {
+      "label": "Language reference",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Inheritance_and_the_prototype_chain"
+    }
+  ],
+  "rubric": [
+    "I can show one failing starter input for prototypes and classes.",
+    "I use lexical scope, object boundaries and module exports deliberately.",
+    "I verified passing instructor assertions and an invalid-input case."
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.js-shared-state",
+  "lessonId": "03.02.08",
+  "title": "Bug Hunt shared mutable state",
+  "runtime": "node-24-esm",
+  "status": "authored",
+  "starter": "labs/js-shared-state/starter/solution.mjs",
+  "solution": "labs/js-shared-state/solution/solution.mjs",
+  "tests": "labs/js-shared-state/solution.test.mjs",
+  "verify": [
+    "npm run lab:js-shared-state"
+  ],
+  "expected": "Solve the bug hunt shared mutable state bug with independently tested module and state behavior.",
+  "security": "Offline synthetic JavaScript practice; no credentials, remote requests, production data or uploads."
+}

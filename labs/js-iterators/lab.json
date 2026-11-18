@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.js-iterators",
+  "lessonId": "03.02.01",
+  "title": "Iterators and generators",
+  "runtime": "node-24-esm",
+  "status": "authored",
+  "starter": "labs/js-iterators/starter/solution.mjs",
+  "solution": "labs/js-iterators/solution/solution.mjs",
+  "tests": "labs/js-iterators/solution.test.mjs",
+  "verify": [
+    "npm run lab:js-iterators"
+  ],
+  "expected": "Solve the iterators and generators bug with independently tested module and state behavior.",
+  "security": "Offline synthetic JavaScript practice; no credentials, remote requests, production data or uploads."
+}

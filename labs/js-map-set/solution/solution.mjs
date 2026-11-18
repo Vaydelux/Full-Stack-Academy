@@ -1,0 +1,1 @@
+export function solve(rows){const seen=new WeakSet(),counts=new Map(),tags=new Set();for(const row of rows){if(!row||typeof row!=='object')throw new TypeError('Rows must be objects');if(seen.has(row))continue;seen.add(row);const tag=String(row.tag);tags.add(tag);counts.set(tag,(counts.get(tag)||0)+1);}return {tags:[...tags],counts:Object.fromEntries(counts)};}

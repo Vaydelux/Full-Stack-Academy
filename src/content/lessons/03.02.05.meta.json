@@ -1,0 +1,38 @@
+{
+  "id": "03.02.05",
+  "title": "Modules and exports",
+  "description": "Investigate modules and exports in an offline ES module with reproducible Node.js assertions, a failing starter and a reviewed instructor implementation.",
+  "trackId": "03",
+  "moduleId": "03.02",
+  "level": "Beginner",
+  "estimatedMinutes": 55,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "03.02.04"
+  ],
+  "objectives": [
+    "Explain how modules and exports manages value or object identity",
+    "Reproduce a failure with independent tests and a concrete counterexample",
+    "Implement the repaired ESM contract and check edge cases without hidden shared state"
+  ],
+  "labId": "lab.foundation.js-modules",
+  "sources": [
+    {
+      "label": "MDN concept reference",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules"
+    },
+    {
+      "label": "Language reference",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/export"
+    }
+  ],
+  "rubric": [
+    "I can show one failing starter input for modules and exports.",
+    "I use lexical scope, object boundaries and module exports deliberately.",
+    "I verified passing instructor assertions and an invalid-input case."
+  ]
+}

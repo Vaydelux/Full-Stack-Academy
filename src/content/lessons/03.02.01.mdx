@@ -1,0 +1,91 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Explain how iterators and generators manages value or object identity","Reproduce a failure with independent tests and a concrete counterexample","Implement the repaired ESM contract and check edge cases without hidden shared state"]} />
+
+## The problem we're solving
+
+A numeric generator includes the end boundary and never rejects a zero step, which can trap callers in an infinite loop. The practice fixture uses Node 24 ESM and synthetic data, not an external service or browser deployment.
+
+## Build the mental model
+
+An iterable exposes Symbol.iterator; a generator pauses at yield and resumes on demand. A half-open range excludes stop, and forward/backward steps require boundary conditions that make progress.
+
+**Predict before running:** A forward range is half-open, and a reverse range terminates safely.
+
+## Prerequisites and preflight
+
+Work from [the previous lesson](/learn/03.01.08). Inspect `labs/js-iterators/starter/solution.mjs` and `labs/js-iterators/solution.test.mjs`. Run `ACADEMY_LAB_TARGET=starter npm run lab:js-iterators` in Bash or use the equivalent temporary environment variable in PowerShell. The initial test is meant to fail.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce an identity, module, or state failure" file="labs/js-iterators/starter/solution.mjs" expected="At least one assertion reproduces the reported defect.">
+
+```js
+export function* solve(start,stop,step=1){for(let x=start;x<=stop;x+=step)yield x;}
+```
+
+**Predict before running:** A numeric generator includes the end boundary and never rejects a zero step, which can trap callers in an infinite loop.
+
+**Why this fails:** An iterable exposes Symbol.iterator; a generator pauses at yield and resumes on demand. A half-open range excludes stop, and forward/backward steps require boundary conditions that make progress.
+
+**Proof:** Run the starter-target tests and identify the input where the observed value differs from the expected value.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the semantic boundary" file="labs/js-iterators/starter/solution.mjs" expected={"A forward range is half-open, and a reverse range terminates safely."}>
+
+Implement the corrected behavior using the relevant lexical, prototype, module or copying rule. Preserve the named `solve` export.
+
+```js
+export function* solve(start,stop,step=1){if(![start,stop,step].every(Number.isFinite)||step===0)throw new RangeError('Finite nonzero step required');for(let x=start;step>0?x<stop:x>stop;x+=step)yield x;}
+```
+
+**Predict before running:** A forward range is half-open, and a reverse range terminates safely.
+
+**Why the repair works:** An iterable exposes Symbol.iterator; a generator pauses at yield and resumes on demand. A half-open range excludes stop, and forward/backward steps require boundary conditions that make progress.
+
+**Proof:** Compare independent instances, object identity or errors under the same test file.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify the contract with executable assertions" file="labs/js-iterators/solution.test.mjs" expected="The reviewed solution passes distinct positive, edge and failure cases.">
+
+```js
+assert.deepEqual([...solve(0,5,2)],[0,2,4]);assert.deepEqual([...solve(5,0,-2)],[5,3,1]);assert.deepEqual([...solve(2,2)],[]);assert.throws(()=>[...solve(0,2,0)],RangeError);
+```
+
+**Predict before running:** Changing object identity or error handling fixes the failing assertions without changing unrelated behavior.
+
+**Why it matters:** Code that looks plausible can still violate module boundaries or state isolation. Repeatability is stronger evidence than a screenshot.
+
+**Proof:** Run `npm run lab:js-iterators` and compare the results with the repaired student starter.
+
+</LessonStep>
+
+## Explore and verify
+
+Try a second independent object or call order, and verify the absence of global state leaks. ESM imports are explicit dependencies; do not interpret a successful local test as a network security guarantee.
+
+<Misconception claim="Methods, objects and exports behave identically regardless of their owner or call site." correction={"An iterable exposes Symbol.iterator; a generator pauses at yield and resumes on demand. A half-open range excludes stop, and forward/backward steps require boundary conditions that make progress."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+Start with the smallest failing input from the test. Record which object, binding or module is unexpectedly shared or lost. Patch that contract rather than changing expected outputs. For each test, identify what would fail if the original bug returned.
+
+<KnowledgeCheck question={"How does a generator suspend execution?"} choices={["By polling the event loop continuously","By yielding a value and retaining its execution state","By creating a new worker","By converting itself to an array"]} correctIndex={1} explanation={"An iterable exposes Symbol.iterator; a generator pauses at yield and resumes on demand. A half-open range excludes stop, and forward/backward steps require boundary conditions that make progress."} misconception="State ownership and module boundaries are observable contracts, not formatting preferences." lessonId="03.02.01" />
+
+## Guided local lab
+
+Work in `labs/js-iterators/starter/solution.mjs`. Compare it to `labs/js-iterators/solution/solution.mjs` after attempting the repair; the same offline `solution.test.mjs` file tests both. The starter must become green when fixed; no remote grading or server persistence is implied.
+
+<LabGate lessonId="03.02.01" labId="lab.foundation.js-iterators" commands={["npm ci","npm run lab:js-iterators"]} interactive={false} />
+
+## Reflect
+
+Why did the starting implementation fail? Which language guarantee is now exercised? What would change if two workers, separate browser tabs, or network storage entered the architecture?
+
+## Official references
+
+- [MDN JavaScript primary reference](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function*)
+- [MDN supporting documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Iterators_and_generators)

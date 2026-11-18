@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.js-prototypes",
+  "lessonId": "03.02.03",
+  "title": "Prototypes and classes",
+  "runtime": "node-24-esm",
+  "status": "authored",
+  "starter": "labs/js-prototypes/starter/solution.mjs",
+  "solution": "labs/js-prototypes/solution/solution.mjs",
+  "tests": "labs/js-prototypes/solution.test.mjs",
+  "verify": [
+    "npm run lab:js-prototypes"
+  ],
+  "expected": "Solve the prototypes and classes bug with independently tested module and state behavior.",
+  "security": "Offline synthetic JavaScript practice; no credentials, remote requests, production data or uploads."
+}

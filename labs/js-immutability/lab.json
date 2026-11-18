@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.js-immutability",
+  "lessonId": "03.02.07",
+  "title": "Immutability and object copying",
+  "runtime": "node-24-esm",
+  "status": "authored",
+  "starter": "labs/js-immutability/starter/solution.mjs",
+  "solution": "labs/js-immutability/solution/solution.mjs",
+  "tests": "labs/js-immutability/solution.test.mjs",
+  "verify": [
+    "npm run lab:js-immutability"
+  ],
+  "expected": "Solve the immutability and object copying bug with independently tested module and state behavior.",
+  "security": "Offline synthetic JavaScript practice; no credentials, remote requests, production data or uploads."
+}
