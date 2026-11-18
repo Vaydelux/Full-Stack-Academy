@@ -1,6 +1,6 @@
 {
   "id": "02.01.03",
-  "title": "Cascade layers",
+  "title": "Cascade layers and precedence",
   "description": "Practice cascade layers with an offline CSS debugging exercise, computed-style verification, keyboard-friendly examples and a tested instructor solution.",
   "trackId": "02",
   "moduleId": "02.01",
