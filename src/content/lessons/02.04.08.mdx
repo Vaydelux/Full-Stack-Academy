@@ -1,0 +1,103 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Reproduce a concrete lab 100 point ui qa failure in a browser","Apply a specific repair while preserving semantics and user preferences","Collect computed-style and interaction evidence and name unmeasured limits"]} />
+
+## The problem we're solving
+
+A UI card has been judged by a single desktop screenshot and misses mobile, RTL, keyboard, reduced-motion and dark-theme regressions. A code review should require a reproducible symptom and realistic verification, not only a polished image. The local fixture is synthetic, deterministic and offline.
+
+## Build the mental model
+
+A defensible UI QA gate separates five observable dimensions: responsive geometry, keyboard focus, directional styling, motion preference, and theme/contrast (20 points each in this local rubric). Automated checks can verify selected styles, but human inspection and assistive technology are still required for complete accessibility acceptance. A 100-point rubric is a review structure, not a measured performance score.
+
+**Predict before running:** The card fits 320px, RTL flips its accent border, keyboard focus is visible, and motion/color-scheme preferences have explicit rules.
+
+## Prerequisites and preflight
+
+Continue from [the previous canonical CSS lesson](/learn/02.04.07). Open `labs/css-ui-qa-capstone/starter/index.html` in Chromium; use DevTools Styles, Computed and Performance where needed. Node.js 24 runs the local fixture tests. No cloud build, server credentials or external data is needed.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the defect and collect a baseline" file="labs/css-ui-qa-capstone/starter/index.html" expected={"The original 900px panel overflows, uses physical LTR styles, hides focus and animates excessively."}>
+
+Read the starter rule and measure its actual result. When the fixture has a button, toggle its state first; for motion lessons, emulate reduced-motion. Do not treat the existence of a CSS declaration as proof of performance.
+
+```css
+.qa { inline-size: 900px; padding-left: 2rem; border-left: 4px solid #075e7b; background: #ffffff; color: #19354a; } .qa-action:focus-visible { outline: none; } .qa-action { transition: all 3s ease; }
+```
+
+**Predict before running:** The original 900px panel overflows, uses physical LTR styles, hides focus and animates excessively.
+
+**Why this fails:** A defensible UI QA gate separates five observable dimensions: responsive geometry, keyboard focus, directional styling, motion preference, and theme/contrast (20 points each in this local rubric). Automated checks can verify selected styles, but human inspection and assistive technology are still required for complete accessibility acceptance. A 100-point rubric is a review structure, not a measured performance score.
+
+**Proof:** Run the five-category rubric with computed style and browser interaction evidence; document any manual gaps. Note the original state before editing.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the CSS and preserve user choice" file="labs/css-ui-qa-capstone/starter/index.html" expected={"The card fits 320px, RTL flips its accent border, keyboard focus is visible, and motion/color-scheme preferences have explicit rules."}>
+
+Apply the narrowly targeted instructor change. This is an educational repair, not a claim that browsers will use a particular GPU layer, font-loading timeline or screen-reader announcement.
+
+```css
+.qa { box-sizing: border-box; inline-size: min(100%, 46rem); padding-inline: 1.25rem; border-inline-start: 4px solid #075e7b; background: light-dark(#ffffff, #172f44); color: light-dark(#19354a, #f8fafc); color-scheme: light dark; } .qa-action:focus-visible { outline: 3px solid #c45105; outline-offset: 3px; } .qa-action { transition: transform 160ms ease; } @media (prefers-reduced-motion: reduce) { .qa-action { transition: none; } }
+```
+
+**Predict before running:** The card fits 320px, RTL flips its accent border, keyboard focus is visible, and motion/color-scheme preferences have explicit rules.
+
+**Why this works:** A defensible UI QA gate separates five observable dimensions: responsive geometry, keyboard focus, directional styling, motion preference, and theme/contrast (20 points each in this local rubric). Automated checks can verify selected styles, but human inspection and assistive technology are still required for complete accessibility acceptance. A 100-point rubric is a review structure, not a measured performance score.
+
+**Proof:** Compare rendered values and interactions to the original starter using the same viewport and browser emulation.
+
+</LessonStep>
+
+<LessonStep number={3} title="Regress across device and preference states" file="labs/css-ui-qa-capstone/starter/index.html" expected="The corrected component is readable at phone size, keyboard accessible and respects relevant motion/theme preferences.">
+
+Check 320px and wide viewport geometry; keyboard Tab and focus; RTL if a logical property is used; reduced motion and dark preference when relevant. For browser performance, collect a trace with sufficient repeatability rather than inventing a timing.
+
+```js
+const root = document.documentElement;
+const demo = document.querySelector('#demo');
+console.log({ withinViewport: root.scrollWidth <= innerWidth, currentColor: getComputedStyle(demo).color, inlineSize: demo.getBoundingClientRect().width });
+```
+
+**Predict before running:** The repaired state is observable without forcing horizontal scroll, and the required preference-dependent declarations take effect.
+
+**Why it matters:** A renderer's behavior depends on actual geometry, animations and preferences, not an offline syntax scan.
+
+**Proof:** Run the five-category rubric with computed style and browser interaction evidence; document any manual gaps.
+
+</LessonStep>
+
+## Explore and verify
+
+Use DevTools to inspect computed styles and the Performance recording when making speed claims. Not every transform is composited; not every font loading strategy removes CLS; not every visually distinct control is accessible. The Node tests check instructor patterns; the isolated browser suite observes representative states. Manual assistive-technology and cross-browser checks remain outside the automated guarantee.
+
+<Misconception claim="A CSS refactor automatically improves measured browser performance and passes accessibility requirements." correction={"A defensible UI QA gate separates five observable dimensions: responsive geometry, keyboard focus, directional styling, motion preference, and theme/contrast (20 points each in this local rubric). Automated checks can verify selected styles, but human inspection and assistive technology are still required for complete accessibility acceptance. A 100-point rubric is a review structure, not a measured performance score."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Defect:** The original 900px panel overflows, uses physical LTR styles, hides focus and animates excessively.
+
+**Expected output:** The card fits 320px, RTL flips its accent border, keyboard focus is visible, and motion/color-scheme preferences have explicit rules.
+
+Write the original computed value, smallest repair and verification method. If a field cannot be observed in this local fixture—such as real font download timing or an actual GPU composition layer—state that limitation rather than inventing measurements.
+
+<KnowledgeCheck question={"What does a self-authored 100-point UI QA rubric prove by itself?"} choices={["That WCAG certification is automatic","That five areas were scored consistently, not that every device or assistive technology was tested","That page speed is exactly 100","That no more manual review is required"]} correctIndex={1} explanation={"A local rubric structures evidence; it cannot establish conformance, measured performance or device coverage alone."} misconception="A static CSS string check is not a measured performance or accessibility audit." lessonId="02.04.08" />
+
+## Guided local lab
+
+Repair `labs/css-ui-qa-capstone/starter/index.html` and compare with `labs/css-ui-qa-capstone/solution/index.html`. Run `npm run lab:css-ui-qa-capstone` to assert the instructor repair. To check your edited starter, run `ACADEMY_LAB_TARGET=starter npm run lab:css-ui-qa-capstone` in Bash, or temporarily set the equivalent environment variable in PowerShell. An untouched starter is intentionally broken.
+
+**Hints:** Identify the failing computed property or browser state; inspect how it changes on interaction; review the repair's effect and decide which real-device check is still missing.
+
+<LabGate lessonId="02.04.08" labId="lab.foundation.css-ui-qa-capstone" commands={["npm ci","npm run lab:css-ui-qa-capstone"]} interactive={false} />
+
+## Reflect
+
+What changed, which observed condition improved, and what was merely assumed? Where would a slower animation or server-loaded font be appropriate? Document a possible regression and the next browser or accessibility check.
+
+## Official references
+
+- [Official CSS performance or developer reference](https://www.w3.org/WAI/WCAG22/quickref/)
+- [Official supporting reference](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion)

@@ -1,0 +1,103 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Reproduce a concrete visual regression basics failure in a browser","Apply a specific repair while preserving semantics and user preferences","Collect computed-style and interaction evidence and name unmeasured limits"]} />
+
+## The problem we're solving
+
+A component looks correct in the default theme but its error state loses the expected red border after a CSS edit. A code review should require a reproducible symptom and realistic verification, not only a polished image. The local fixture is synthetic, deterministic and offline.
+
+## Build the mental model
+
+Visual regression compares a reviewed baseline and a new rendering at controlled viewport, browser, font and theme states. Pixel diffs can be noisy due to rendering environments; combine screenshots with semantic and computed-style assertions, then review intentional changes. This offline demo supplies deterministic state checks, not a full screenshot-diff engine.
+
+**Predict before running:** Normal state stays teal, and toggling error state produces a red border and pale red background.
+
+## Prerequisites and preflight
+
+Continue from [the previous canonical CSS lesson](/learn/02.04.06). Open `labs/css-visual-regression/starter/index.html` in Chromium; use DevTools Styles, Computed and Performance where needed. Node.js 24 runs the local fixture tests. No cloud build, server credentials or external data is needed.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the defect and collect a baseline" file="labs/css-visual-regression/starter/index.html" expected={"The original error-state rule repeats the normal theme and fails to visually distinguish errors."}>
+
+Read the starter rule and measure its actual result. When the fixture has a button, toggle its state first; for motion lessons, emulate reduced-motion. Do not treat the existence of a CSS declaration as proof of performance.
+
+```css
+.variant { border: 2px solid #075e7b; background: #f8fcff; } .variant[data-state="error"] { border: 2px solid #075e7b; background: #f8fcff; }
+```
+
+**Predict before running:** The original error-state rule repeats the normal theme and fails to visually distinguish errors.
+
+**Why this fails:** Visual regression compares a reviewed baseline and a new rendering at controlled viewport, browser, font and theme states. Pixel diffs can be noisy due to rendering environments; combine screenshots with semantic and computed-style assertions, then review intentional changes. This offline demo supplies deterministic state checks, not a full screenshot-diff engine.
+
+**Proof:** Compare computed border colors in normal and error states; capture controlled screenshots only if a snapshot tool is configured. Note the original state before editing.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the CSS and preserve user choice" file="labs/css-visual-regression/starter/index.html" expected={"Normal state stays teal, and toggling error state produces a red border and pale red background."}>
+
+Apply the narrowly targeted instructor change. This is an educational repair, not a claim that browsers will use a particular GPU layer, font-loading timeline or screen-reader announcement.
+
+```css
+.variant { border: 2px solid #075e7b; background: #f8fcff; } .variant[data-state="error"] { border-color: #aa2626; background: #fff1f2; }
+```
+
+**Predict before running:** Normal state stays teal, and toggling error state produces a red border and pale red background.
+
+**Why this works:** Visual regression compares a reviewed baseline and a new rendering at controlled viewport, browser, font and theme states. Pixel diffs can be noisy due to rendering environments; combine screenshots with semantic and computed-style assertions, then review intentional changes. This offline demo supplies deterministic state checks, not a full screenshot-diff engine.
+
+**Proof:** Compare rendered values and interactions to the original starter using the same viewport and browser emulation.
+
+</LessonStep>
+
+<LessonStep number={3} title="Regress across device and preference states" file="labs/css-visual-regression/starter/index.html" expected="The corrected component is readable at phone size, keyboard accessible and respects relevant motion/theme preferences.">
+
+Check 320px and wide viewport geometry; keyboard Tab and focus; RTL if a logical property is used; reduced motion and dark preference when relevant. For browser performance, collect a trace with sufficient repeatability rather than inventing a timing.
+
+```js
+const root = document.documentElement;
+const demo = document.querySelector('#demo');
+console.log({ withinViewport: root.scrollWidth <= innerWidth, currentColor: getComputedStyle(demo).color, inlineSize: demo.getBoundingClientRect().width });
+```
+
+**Predict before running:** The repaired state is observable without forcing horizontal scroll, and the required preference-dependent declarations take effect.
+
+**Why it matters:** A renderer's behavior depends on actual geometry, animations and preferences, not an offline syntax scan.
+
+**Proof:** Compare computed border colors in normal and error states; capture controlled screenshots only if a snapshot tool is configured.
+
+</LessonStep>
+
+## Explore and verify
+
+Use DevTools to inspect computed styles and the Performance recording when making speed claims. Not every transform is composited; not every font loading strategy removes CLS; not every visually distinct control is accessible. The Node tests check instructor patterns; the isolated browser suite observes representative states. Manual assistive-technology and cross-browser checks remain outside the automated guarantee.
+
+<Misconception claim="A CSS refactor automatically improves measured browser performance and passes accessibility requirements." correction={"Visual regression compares a reviewed baseline and a new rendering at controlled viewport, browser, font and theme states. Pixel diffs can be noisy due to rendering environments; combine screenshots with semantic and computed-style assertions, then review intentional changes. This offline demo supplies deterministic state checks, not a full screenshot-diff engine."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Defect:** The original error-state rule repeats the normal theme and fails to visually distinguish errors.
+
+**Expected output:** Normal state stays teal, and toggling error state produces a red border and pale red background.
+
+Write the original computed value, smallest repair and verification method. If a field cannot be observed in this local fixture—such as real font download timing or an actual GPU composition layer—state that limitation rather than inventing measurements.
+
+<KnowledgeCheck question={"What makes a visual-regression baseline reliable?"} choices={["Different fonts and browsers on each run","Stable environment, explicit states and reviewed intentional differences","Only counting CSS declarations","Disabling every interactive state"]} correctIndex={1} explanation={"Reproducible visual comparisons require controlled rendering conditions and review of intentional changes."} misconception="A static CSS string check is not a measured performance or accessibility audit." lessonId="02.04.07" />
+
+## Guided local lab
+
+Repair `labs/css-visual-regression/starter/index.html` and compare with `labs/css-visual-regression/solution/index.html`. Run `npm run lab:css-visual-regression` to assert the instructor repair. To check your edited starter, run `ACADEMY_LAB_TARGET=starter npm run lab:css-visual-regression` in Bash, or temporarily set the equivalent environment variable in PowerShell. An untouched starter is intentionally broken.
+
+**Hints:** Identify the failing computed property or browser state; inspect how it changes on interaction; review the repair's effect and decide which real-device check is still missing.
+
+<LabGate lessonId="02.04.07" labId="lab.foundation.css-visual-regression" commands={["npm ci","npm run lab:css-visual-regression"]} interactive={false} />
+
+## Reflect
+
+What changed, which observed condition improved, and what was merely assumed? Where would a slower animation or server-loaded font be appropriate? Document a possible regression and the next browser or accessibility check.
+
+## Official references
+
+- [Official CSS performance or developer reference](https://playwright.dev/docs/test-snapshots)
+- [Official supporting reference](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_cascade/Cascade)

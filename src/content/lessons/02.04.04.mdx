@@ -1,0 +1,103 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Reproduce a concrete font loading and cls failure in a browser","Apply a specific repair while preserving semantics and user preferences","Collect computed-style and interaction evidence and name unmeasured limits"]} />
+
+## The problem we're solving
+
+A page swaps typefaces and expands its heading area, while an image placeholder has no reserved height. A code review should require a reproducible symptom and realistic verification, not only a polished image. The local fixture is synthetic, deterministic and offline.
+
+## Build the mental model
+
+Layout shift can arise when web fonts change text metrics or media takes space after loading. font-display controls the font-loading swap behavior for @font-face; optional can avoid a late font replacement but might preserve fallback text. Size media explicitly and choose compatible fallback metrics; real CLS must be measured with performance tools, not claimed from one CSS rule.
+
+**Predict before running:** The media area reserves a 16:9 box and the heading has a deliberate fallback font/line-height policy.
+
+## Prerequisites and preflight
+
+Continue from [the previous canonical CSS lesson](/learn/02.04.03). Open `labs/css-font-cls/starter/index.html` in Chromium; use DevTools Styles, Computed and Performance where needed. Node.js 24 runs the local fixture tests. No cloud build, server credentials or external data is needed.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the defect and collect a baseline" file="labs/css-font-cls/starter/index.html" expected={"The media box has no intrinsic height and the fallback heading uses fragile typography."}>
+
+Read the starter rule and measure its actual result. When the fixture has a button, toggle its state first; for motion lessons, emulate reduced-motion. Do not treat the existence of a CSS declaration as proof of performance.
+
+```css
+.media { inline-size: 100%; } .headline { font-family: serif; line-height: 1; }
+```
+
+**Predict before running:** The media box has no intrinsic height and the fallback heading uses fragile typography.
+
+**Why this fails:** Layout shift can arise when web fonts change text metrics or media takes space after loading. font-display controls the font-loading swap behavior for @font-face; optional can avoid a late font replacement but might preserve fallback text. Size media explicitly and choose compatible fallback metrics; real CLS must be measured with performance tools, not claimed from one CSS rule.
+
+**Proof:** Compare media element height with width/1.777 and use DevTools Performance > Layout Shifts on a real font-loading page. Note the original state before editing.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the CSS and preserve user choice" file="labs/css-font-cls/starter/index.html" expected={"The media area reserves a 16:9 box and the heading has a deliberate fallback font/line-height policy."}>
+
+Apply the narrowly targeted instructor change. This is an educational repair, not a claim that browsers will use a particular GPU layer, font-loading timeline or screen-reader announcement.
+
+```css
+.media { inline-size: 100%; aspect-ratio: 16 / 9; } .headline { font-family: system-ui, sans-serif; line-height: 1.35; font-size-adjust: 0.5; }
+```
+
+**Predict before running:** The media area reserves a 16:9 box and the heading has a deliberate fallback font/line-height policy.
+
+**Why this works:** Layout shift can arise when web fonts change text metrics or media takes space after loading. font-display controls the font-loading swap behavior for @font-face; optional can avoid a late font replacement but might preserve fallback text. Size media explicitly and choose compatible fallback metrics; real CLS must be measured with performance tools, not claimed from one CSS rule.
+
+**Proof:** Compare rendered values and interactions to the original starter using the same viewport and browser emulation.
+
+</LessonStep>
+
+<LessonStep number={3} title="Regress across device and preference states" file="labs/css-font-cls/starter/index.html" expected="The corrected component is readable at phone size, keyboard accessible and respects relevant motion/theme preferences.">
+
+Check 320px and wide viewport geometry; keyboard Tab and focus; RTL if a logical property is used; reduced motion and dark preference when relevant. For browser performance, collect a trace with sufficient repeatability rather than inventing a timing.
+
+```js
+const root = document.documentElement;
+const demo = document.querySelector('#demo');
+console.log({ withinViewport: root.scrollWidth <= innerWidth, currentColor: getComputedStyle(demo).color, inlineSize: demo.getBoundingClientRect().width });
+```
+
+**Predict before running:** The repaired state is observable without forcing horizontal scroll, and the required preference-dependent declarations take effect.
+
+**Why it matters:** A renderer's behavior depends on actual geometry, animations and preferences, not an offline syntax scan.
+
+**Proof:** Compare media element height with width/1.777 and use DevTools Performance > Layout Shifts on a real font-loading page.
+
+</LessonStep>
+
+## Explore and verify
+
+Use DevTools to inspect computed styles and the Performance recording when making speed claims. Not every transform is composited; not every font loading strategy removes CLS; not every visually distinct control is accessible. The Node tests check instructor patterns; the isolated browser suite observes representative states. Manual assistive-technology and cross-browser checks remain outside the automated guarantee.
+
+<Misconception claim="A CSS refactor automatically improves measured browser performance and passes accessibility requirements." correction={"Layout shift can arise when web fonts change text metrics or media takes space after loading. font-display controls the font-loading swap behavior for @font-face; optional can avoid a late font replacement but might preserve fallback text. Size media explicitly and choose compatible fallback metrics; real CLS must be measured with performance tools, not claimed from one CSS rule."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Defect:** The media box has no intrinsic height and the fallback heading uses fragile typography.
+
+**Expected output:** The media area reserves a 16:9 box and the heading has a deliberate fallback font/line-height policy.
+
+Write the original computed value, smallest repair and verification method. If a field cannot be observed in this local fixture—such as real font download timing or an actual GPU composition layer—state that limitation rather than inventing measurements.
+
+<KnowledgeCheck question={"Which statement about font-display and CLS is accurate?"} choices={["font-display always makes CLS zero","Late font swaps may change text metrics; media sizing and font fallbacks also matter","A 1px border prevents any font shift","CLS can be proven from CSS alone without measuring rendered shifts"]} correctIndex={1} explanation={"CLS is a measured layout-shift metric; multiple sources of geometry change can contribute."} misconception="A static CSS string check is not a measured performance or accessibility audit." lessonId="02.04.04" />
+
+## Guided local lab
+
+Repair `labs/css-font-cls/starter/index.html` and compare with `labs/css-font-cls/solution/index.html`. Run `npm run lab:css-font-cls` to assert the instructor repair. To check your edited starter, run `ACADEMY_LAB_TARGET=starter npm run lab:css-font-cls` in Bash, or temporarily set the equivalent environment variable in PowerShell. An untouched starter is intentionally broken.
+
+**Hints:** Identify the failing computed property or browser state; inspect how it changes on interaction; review the repair's effect and decide which real-device check is still missing.
+
+<LabGate lessonId="02.04.04" labId="lab.foundation.css-font-cls" commands={["npm ci","npm run lab:css-font-cls"]} interactive={false} />
+
+## Reflect
+
+What changed, which observed condition improved, and what was merely assumed? Where would a slower animation or server-loaded font be appropriate? Document a possible regression and the next browser or accessibility check.
+
+## Official references
+
+- [Official CSS performance or developer reference](https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display)
+- [Official supporting reference](https://web.dev/articles/cls)

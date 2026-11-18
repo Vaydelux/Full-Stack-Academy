@@ -1,0 +1,103 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Reproduce a concrete layout paint and composition failure in a browser","Apply a specific repair while preserving semantics and user preferences","Collect computed-style and interaction evidence and name unmeasured limits"]} />
+
+## The problem we're solving
+
+A status tile slides by changing left, forcing a layout-related geometry change for every motion frame. A code review should require a reproducible symptom and realistic verification, not only a polished image. The local fixture is synthetic, deterministic and offline.
+
+## Build the mental model
+
+Rendering has distinct style, layout, paint and compositing work. Animating transform often avoids repeated layout calculation compared with changing left or width, but a browser may still paint or choose different layers. Do not claim an animation is GPU accelerated without inspecting the actual browser trace.
+
+**Predict before running:** The marker moves through transform without changing its layout position property; reduced motion disables interpolation.
+
+## Prerequisites and preflight
+
+Continue from [the previous canonical CSS lesson](/learn/02.03.08). Open `labs/css-render-stages/starter/index.html` in Chromium; use DevTools Styles, Computed and Performance where needed. Node.js 24 runs the local fixture tests. No cloud build, server credentials or external data is needed.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the defect and collect a baseline" file="labs/css-render-stages/starter/index.html" expected={"The starter animates left, requiring layout-related work as the value changes."}>
+
+Read the starter rule and measure its actual result. When the fixture has a button, toggle its state first; for motion lessons, emulate reduced-motion. Do not treat the existence of a CSS declaration as proof of performance.
+
+```css
+.indicator { position: relative; left: 0; transition: left 180ms ease; } .demo[data-active="true"] .indicator { left: 2rem; }
+```
+
+**Predict before running:** The starter animates left, requiring layout-related work as the value changes.
+
+**Why this fails:** Rendering has distinct style, layout, paint and compositing work. Animating transform often avoids repeated layout calculation compared with changing left or width, but a browser may still paint or choose different layers. Do not claim an animation is GPU accelerated without inspecting the actual browser trace.
+
+**Proof:** Check computed transform and left before and after the toggle; profile Layout and Paint in DevTools Performance to validate actual cost. Note the original state before editing.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the CSS and preserve user choice" file="labs/css-render-stages/starter/index.html" expected={"The marker moves through transform without changing its layout position property; reduced motion disables interpolation."}>
+
+Apply the narrowly targeted instructor change. This is an educational repair, not a claim that browsers will use a particular GPU layer, font-loading timeline or screen-reader announcement.
+
+```css
+.indicator { transform: translateX(0); transition: transform 180ms ease; } .demo[data-active="true"] .indicator { transform: translateX(2rem); } @media (prefers-reduced-motion: reduce) { .indicator { transition: none; } }
+```
+
+**Predict before running:** The marker moves through transform without changing its layout position property; reduced motion disables interpolation.
+
+**Why this works:** Rendering has distinct style, layout, paint and compositing work. Animating transform often avoids repeated layout calculation compared with changing left or width, but a browser may still paint or choose different layers. Do not claim an animation is GPU accelerated without inspecting the actual browser trace.
+
+**Proof:** Compare rendered values and interactions to the original starter using the same viewport and browser emulation.
+
+</LessonStep>
+
+<LessonStep number={3} title="Regress across device and preference states" file="labs/css-render-stages/starter/index.html" expected="The corrected component is readable at phone size, keyboard accessible and respects relevant motion/theme preferences.">
+
+Check 320px and wide viewport geometry; keyboard Tab and focus; RTL if a logical property is used; reduced motion and dark preference when relevant. For browser performance, collect a trace with sufficient repeatability rather than inventing a timing.
+
+```js
+const root = document.documentElement;
+const demo = document.querySelector('#demo');
+console.log({ withinViewport: root.scrollWidth <= innerWidth, currentColor: getComputedStyle(demo).color, inlineSize: demo.getBoundingClientRect().width });
+```
+
+**Predict before running:** The repaired state is observable without forcing horizontal scroll, and the required preference-dependent declarations take effect.
+
+**Why it matters:** A renderer's behavior depends on actual geometry, animations and preferences, not an offline syntax scan.
+
+**Proof:** Check computed transform and left before and after the toggle; profile Layout and Paint in DevTools Performance to validate actual cost.
+
+</LessonStep>
+
+## Explore and verify
+
+Use DevTools to inspect computed styles and the Performance recording when making speed claims. Not every transform is composited; not every font loading strategy removes CLS; not every visually distinct control is accessible. The Node tests check instructor patterns; the isolated browser suite observes representative states. Manual assistive-technology and cross-browser checks remain outside the automated guarantee.
+
+<Misconception claim="A CSS refactor automatically improves measured browser performance and passes accessibility requirements." correction={"Rendering has distinct style, layout, paint and compositing work. Animating transform often avoids repeated layout calculation compared with changing left or width, but a browser may still paint or choose different layers. Do not claim an animation is GPU accelerated without inspecting the actual browser trace."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Defect:** The starter animates left, requiring layout-related work as the value changes.
+
+**Expected output:** The marker moves through transform without changing its layout position property; reduced motion disables interpolation.
+
+Write the original computed value, smallest repair and verification method. If a field cannot be observed in this local fixture—such as real font download timing or an actual GPU composition layer—state that limitation rather than inventing measurements.
+
+<KnowledgeCheck question={"Which property often avoids repeated layout work when animating simple movement?"} choices={["left","width","transform","margin-left"]} correctIndex={2} explanation={"Transform can change visual position without changing the layout box, though compositing is browser-dependent."} misconception="A static CSS string check is not a measured performance or accessibility audit." lessonId="02.04.01" />
+
+## Guided local lab
+
+Repair `labs/css-render-stages/starter/index.html` and compare with `labs/css-render-stages/solution/index.html`. Run `npm run lab:css-render-stages` to assert the instructor repair. To check your edited starter, run `ACADEMY_LAB_TARGET=starter npm run lab:css-render-stages` in Bash, or temporarily set the equivalent environment variable in PowerShell. An untouched starter is intentionally broken.
+
+**Hints:** Identify the failing computed property or browser state; inspect how it changes on interaction; review the repair's effect and decide which real-device check is still missing.
+
+<LabGate lessonId="02.04.01" labId="lab.foundation.css-render-stages" commands={["npm ci","npm run lab:css-render-stages"]} interactive={false} />
+
+## Reflect
+
+What changed, which observed condition improved, and what was merely assumed? Where would a slower animation or server-loaded font be appropriate? Document a possible regression and the next browser or accessibility check.
+
+## Official references
+
+- [Official CSS performance or developer reference](https://developer.mozilla.org/en-US/docs/Web/CSS/transform)
+- [Official supporting reference](https://developer.mozilla.org/en-US/docs/Web/CSS/left)

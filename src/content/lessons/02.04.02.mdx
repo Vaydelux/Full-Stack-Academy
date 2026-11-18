@@ -1,0 +1,103 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Reproduce a concrete avoiding expensive selectors failure in a browser","Apply a specific repair while preserving semantics and user preferences","Collect computed-style and interaction evidence and name unmeasured limits"]} />
+
+## The problem we're solving
+
+A wide global selector styles unrelated cards, creating unnecessary matching scope and accidental regressions. A code review should require a reproducible symptom and realistic verification, not only a polished image. The local fixture is synthetic, deterministic and offline.
+
+## Build the mental model
+
+Selector cost depends on DOM shape, mutation patterns, and browser optimizations. Avoid blanket claims that one pseudo-class is always slow. Prefer stable component boundaries and measure actual style-recalculation work in DevTools; scoping makes both performance reasoning and maintainability easier.
+
+**Predict before running:** The learning-list item uses its own color while the editorial item has a separate style.
+
+## Prerequisites and preflight
+
+Continue from [the previous canonical CSS lesson](/learn/02.04.01). Open `labs/css-selector-perf/starter/index.html` in Chromium; use DevTools Styles, Computed and Performance where needed. Node.js 24 runs the local fixture tests. No cloud build, server credentials or external data is needed.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the defect and collect a baseline" file="labs/css-selector-perf/starter/index.html" expected={"The unscoped item selector forces identical styles on unrelated components."}>
+
+Read the starter rule and measure its actual result. When the fixture has a button, toggle its state first; for motion lessons, emulate reduced-motion. Do not treat the existence of a CSS declaration as proof of performance.
+
+```css
+.item { color: #075e7b; }
+```
+
+**Predict before running:** The unscoped item selector forces identical styles on unrelated components.
+
+**Why this fails:** Selector cost depends on DOM shape, mutation patterns, and browser optimizations. Avoid blanket claims that one pseudo-class is always slow. Prefer stable component boundaries and measure actual style-recalculation work in DevTools; scoping makes both performance reasoning and maintainability easier.
+
+**Proof:** Compare computed colors on the two items and record whether both match the broad selector. Note the original state before editing.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the CSS and preserve user choice" file="labs/css-selector-perf/starter/index.html" expected={"The learning-list item uses its own color while the editorial item has a separate style."}>
+
+Apply the narrowly targeted instructor change. This is an educational repair, not a claim that browsers will use a particular GPU layer, font-loading timeline or screen-reader announcement.
+
+```css
+[data-component="learning-list"] .item { color: #075e7b; } [data-component="editorial"] .item { color: #6b4778; }
+```
+
+**Predict before running:** The learning-list item uses its own color while the editorial item has a separate style.
+
+**Why this works:** Selector cost depends on DOM shape, mutation patterns, and browser optimizations. Avoid blanket claims that one pseudo-class is always slow. Prefer stable component boundaries and measure actual style-recalculation work in DevTools; scoping makes both performance reasoning and maintainability easier.
+
+**Proof:** Compare rendered values and interactions to the original starter using the same viewport and browser emulation.
+
+</LessonStep>
+
+<LessonStep number={3} title="Regress across device and preference states" file="labs/css-selector-perf/starter/index.html" expected="The corrected component is readable at phone size, keyboard accessible and respects relevant motion/theme preferences.">
+
+Check 320px and wide viewport geometry; keyboard Tab and focus; RTL if a logical property is used; reduced motion and dark preference when relevant. For browser performance, collect a trace with sufficient repeatability rather than inventing a timing.
+
+```js
+const root = document.documentElement;
+const demo = document.querySelector('#demo');
+console.log({ withinViewport: root.scrollWidth <= innerWidth, currentColor: getComputedStyle(demo).color, inlineSize: demo.getBoundingClientRect().width });
+```
+
+**Predict before running:** The repaired state is observable without forcing horizontal scroll, and the required preference-dependent declarations take effect.
+
+**Why it matters:** A renderer's behavior depends on actual geometry, animations and preferences, not an offline syntax scan.
+
+**Proof:** Compare computed colors on the two items and record whether both match the broad selector.
+
+</LessonStep>
+
+## Explore and verify
+
+Use DevTools to inspect computed styles and the Performance recording when making speed claims. Not every transform is composited; not every font loading strategy removes CLS; not every visually distinct control is accessible. The Node tests check instructor patterns; the isolated browser suite observes representative states. Manual assistive-technology and cross-browser checks remain outside the automated guarantee.
+
+<Misconception claim="A CSS refactor automatically improves measured browser performance and passes accessibility requirements." correction={"Selector cost depends on DOM shape, mutation patterns, and browser optimizations. Avoid blanket claims that one pseudo-class is always slow. Prefer stable component boundaries and measure actual style-recalculation work in DevTools; scoping makes both performance reasoning and maintainability easier."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Defect:** The unscoped item selector forces identical styles on unrelated components.
+
+**Expected output:** The learning-list item uses its own color while the editorial item has a separate style.
+
+Write the original computed value, smallest repair and verification method. If a field cannot be observed in this local fixture—such as real font download timing or an actual GPU composition layer—state that limitation rather than inventing measurements.
+
+<KnowledgeCheck question={"What is the safest claim about CSS selector performance?"} choices={["Every :has selector is always expensive","Measured behavior depends on selector, DOM, state changes and browser","All class selectors have zero cost","Selector cost is determined solely by source-code length"]} correctIndex={1} explanation={"The cost depends on what must match and when it is invalidated, so profiling beats blanket rules."} misconception="A static CSS string check is not a measured performance or accessibility audit." lessonId="02.04.02" />
+
+## Guided local lab
+
+Repair `labs/css-selector-perf/starter/index.html` and compare with `labs/css-selector-perf/solution/index.html`. Run `npm run lab:css-selector-perf` to assert the instructor repair. To check your edited starter, run `ACADEMY_LAB_TARGET=starter npm run lab:css-selector-perf` in Bash, or temporarily set the equivalent environment variable in PowerShell. An untouched starter is intentionally broken.
+
+**Hints:** Identify the failing computed property or browser state; inspect how it changes on interaction; review the repair's effect and decide which real-device check is still missing.
+
+<LabGate lessonId="02.04.02" labId="lab.foundation.css-selector-perf" commands={["npm ci","npm run lab:css-selector-perf"]} interactive={false} />
+
+## Reflect
+
+What changed, which observed condition improved, and what was merely assumed? Where would a slower animation or server-loaded font be appropriate? Document a possible regression and the next browser or accessibility check.
+
+## Official references
+
+- [Official CSS performance or developer reference](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_selectors/Selectors_and_combinators)
+- [Official supporting reference](https://developer.mozilla.org/en-US/docs/Web/CSS/:has)

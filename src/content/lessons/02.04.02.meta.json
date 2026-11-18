@@ -1,0 +1,38 @@
+{
+  "id": "02.04.02",
+  "title": "Avoiding expensive selectors",
+  "description": "Diagnose avoiding expensive selectors using a real offline CSS fixture, guarded browser assertions, safe interaction states and a verified instructor repair.",
+  "trackId": "02",
+  "moduleId": "02.04",
+  "level": "Beginner",
+  "estimatedMinutes": 50,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "02.04.01"
+  ],
+  "objectives": [
+    "Reproduce a concrete avoiding expensive selectors failure in a browser",
+    "Apply a specific repair while preserving semantics and user preferences",
+    "Collect computed-style and interaction evidence and name unmeasured limits"
+  ],
+  "labId": "lab.foundation.css-selector-perf",
+  "sources": [
+    {
+      "label": "Official CSS or performance reference",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_selectors/Selectors_and_combinators"
+    },
+    {
+      "label": "Official browser or accessibility reference",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/:has"
+    }
+  ],
+  "rubric": [
+    "I can reproduce the original avoiding expensive selectors defect with evidence.",
+    "I can explain what the CSS solution changes without claiming unmeasured performance.",
+    "I verified the relevant browser state and identified manual accessibility checks."
+  ]
+}

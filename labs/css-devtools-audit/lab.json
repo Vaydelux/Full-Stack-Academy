@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.css-devtools-audit",
+  "lessonId": "02.04.06",
+  "title": "CSS audit with DevTools",
+  "runtime": "browser-html-and-node-24",
+  "status": "authored",
+  "starter": "labs/css-devtools-audit/starter/index.html",
+  "solution": "labs/css-devtools-audit/solution/index.html",
+  "tests": "labs/css-devtools-audit/solution.test.mjs",
+  "verify": [
+    "npm run lab:css-devtools-audit"
+  ],
+  "expected": "I can demonstrate and explain the repaired css audit with devtools CSS behavior, without unsupported performance claims.",
+  "security": "Local synthetic HTML/CSS exercise without third-party assets, external requests, API keys, telemetry, accounts, uploaded media or personal data."
+}

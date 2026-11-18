@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.css-scroll-motion",
+  "lessonId": "02.04.05",
+  "title": "Scroll animations and motion preferences",
+  "runtime": "browser-html-and-node-24",
+  "status": "authored",
+  "starter": "labs/css-scroll-motion/starter/index.html",
+  "solution": "labs/css-scroll-motion/solution/index.html",
+  "tests": "labs/css-scroll-motion/solution.test.mjs",
+  "verify": [
+    "npm run lab:css-scroll-motion"
+  ],
+  "expected": "I can demonstrate and explain the repaired scroll animations and motion preferences CSS behavior, without unsupported performance claims.",
+  "security": "Local synthetic HTML/CSS exercise without third-party assets, external requests, API keys, telemetry, accounts, uploaded media or personal data."
+}

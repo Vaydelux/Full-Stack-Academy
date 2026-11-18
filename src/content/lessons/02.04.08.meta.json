@@ -1,0 +1,38 @@
+{
+  "id": "02.04.08",
+  "title": "Lab 100 point UI QA",
+  "description": "Diagnose lab 100 point ui qa using a real offline CSS fixture, guarded browser assertions, safe interaction states and a verified instructor repair.",
+  "trackId": "02",
+  "moduleId": "02.04",
+  "level": "Beginner",
+  "estimatedMinutes": 90,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "02.04.07"
+  ],
+  "objectives": [
+    "Reproduce a concrete lab 100 point ui qa failure in a browser",
+    "Apply a specific repair while preserving semantics and user preferences",
+    "Collect computed-style and interaction evidence and name unmeasured limits"
+  ],
+  "labId": "lab.foundation.css-ui-qa-capstone",
+  "sources": [
+    {
+      "label": "Official CSS or performance reference",
+      "url": "https://www.w3.org/WAI/WCAG22/quickref/"
+    },
+    {
+      "label": "Official browser or accessibility reference",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion"
+    }
+  ],
+  "rubric": [
+    "I can reproduce the original lab 100 point ui qa defect with evidence.",
+    "I can explain what the CSS solution changes without claiming unmeasured performance.",
+    "I verified the relevant browser state and identified manual accessibility checks."
+  ]
+}
