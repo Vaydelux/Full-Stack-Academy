@@ -1,0 +1,39 @@
+{
+  "id": "01.03.02",
+  "title": "Focus management and restoration",
+  "description": "Build a modal interaction that moves focus inside, dismisses on Escape and returns focus to its trigger without custom tab traps.",
+  "trackId": "01",
+  "moduleId": "01.03",
+  "level": "Beginner",
+  "estimatedMinutes": 55,
+  "status": "authored",
+  "reviewedAt": "2026-11-18",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "01.03.01"
+  ],
+  "objectives": [
+    "Open a named native modal dialog with predictable initial focus",
+    "Explain why focus should remain inside a modal interaction",
+    "Close on Escape and through an explicit button",
+    "Restore focus to the opener following dismissal"
+  ],
+  "labId": "lab.foundation.a11y-focus",
+  "sources": [
+    {
+      "label": "MDN dialog element",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/dialog"
+    },
+    {
+      "label": "WAI Dialog Modal Pattern",
+      "url": "https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/"
+    }
+  ],
+  "rubric": [
+    "I opened a native dialog and found initial keyboard focus inside it.",
+    "I tested both Escape and explicit close behavior.",
+    "I confirmed focus returns to the opener and passed browser tests."
+  ]
+}

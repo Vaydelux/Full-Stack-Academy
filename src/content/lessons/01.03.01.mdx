@@ -1,0 +1,91 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Build a logical DOM-based keyboard traversal path","Use a skip link that reaches a focusable main region","Use semantic buttons for actions and anchors for navigation","Inspect visible focus and activate controls with keyboard input"]} />
+
+## The problem we're solving
+
+The page uses clickable divs with pointer events, a hidden focus indicator and a long navigation area. Keyboard users cannot predict which element will activate or reach the article efficiently.
+
+## Build the mental model
+
+Links navigate; buttons perform actions. Native HTML exposes these roles and implements Enter and Space activation appropriately. Tabbing should follow meaningful DOM order, not a visual-only arrangement created with positive tabindex. A skip link must target an actual content element; a focusable target helps a keyboard user continue at the right point. Use CSS focus-visible to create a strong focus indicator and never remove outlines without an equivalent replacement. Use a pointer for optional convenience, not as the sole input method.
+
+**Predict before running:** A div styled as a button does not automatically receive focus or activate through Enter/Space. A native button does.
+
+## Prerequisites
+
+Complete [the previous lesson](/learn/01.02.08). Work in a trusted local checkout with Node.js 24 and Chromium. Browser role and focus tests are valuable but are not substitutes for actual screen-reader use or formal accessibility conformance testing.
+
+<LessonStep number={1} title={"Make the skip link the first keyboard target"} file="labs/a11y-keyboard/starter/index.html" expected={"Tab reaches the skip link before the navigation."}>
+
+Place the link before the navigation and point it at main.
+
+```html
+<a class="skip" href="#main-content">Skip to main content</a>
+<header><p>Workshop guide</p></header>
+<nav aria-label="Page navigation"><a href="#resources">Resources</a></nav>
+```
+
+</LessonStep>
+
+<LessonStep number={2} title={"Write native actions and visible focus styles"} file="labs/a11y-keyboard/starter/index.html" expected={"Tab and Enter or Space activate the native button."}>
+
+Use a button rather than an interactive div; keep focus visible.
+
+```html
+<main id="main-content" tabindex="-1">
+  <h1>Keyboard learning tour</h1>
+  <button type="button" id="reveal-tip">Show keyboard tip</button>
+</main>
+<style>button:focus-visible,a:focus-visible{outline:3px solid #d76300;outline-offset:4px}</style>
+```
+
+</LessonStep>
+
+<LessonStep number={3} title={"Use an accessible status, not an alert popup"} file="labs/a11y-keyboard/starter/index.html" expected={"The tip appears in a polite live region and works when the button is activated by keyboard."}>
+
+Display the result of the optional tip action without claiming form submission.
+
+```js
+document.querySelector('#reveal-tip').addEventListener('click',()=>{
+  document.querySelector('#tip').textContent='Tip: use Tab to move and Shift+Tab to go back.';
+});
+```
+
+</LessonStep>
+
+## Explore it yourself
+
+Open `labs/a11y-keyboard/starter/index.html` locally, then inspect its DOM and accessibility tree in DevTools. Use Tab, Shift+Tab, Enter and Space to verify focus and activation. Compare the starter to `labs/a11y-keyboard/solution/index.html`. Record which behaviors were directly verified and which require a different device or assistive technology.
+
+<Misconception claim={"If a control responds to mouse clicks, it is automatically keyboard accessible."} correction={"Native controls give predictable roles, focus behavior and keyboard activation; styled divs do not."} />
+
+## Bug Hunt: reproduce and fix a real accessibility defect
+
+A teammate adds `tabindex=4` to make a visually styled link appear first; the order becomes unpredictable across page changes. Restore semantic DOM order and use a real skip link.
+
+<KnowledgeCheck question={"Why should a page use a native button for an action?"} choices={["It is always smaller than a div","It supplies correct focus, role and keyboard activation","It prevents all JavaScript errors","It automatically stores user data"]} correctIndex={1} explanation={"Native controls provide the right accessibility behavior without reimplementing it."} misconception={"A custom clickable div needs manual focus, keyboard and role behavior."} lessonId="01.03.01" />
+
+## Guided local lab
+
+Repair `labs/a11y-keyboard/starter/index.html` using the three guided steps. The reference implementation is in `labs/a11y-keyboard/solution/index.html`. To test **your starter** rather than the instructor's solution, run:
+
+```powershell
+$env:ACADEMY_LAB_TARGET = 'starter'
+npm run lab:a11y-keyboard
+Remove-Item Env:ACADEMY_LAB_TARGET
+```
+
+In Bash use `ACADEMY_LAB_TARGET=starter npm run lab:a11y-keyboard`. The starter initially fails; make its assertions pass, then manually test the resulting page with keyboard/DevTools. Completion is self-assessed and makes no external submission or certification claim.
+
+<LabGate lessonId="01.03.01" labId="lab.foundation.a11y-keyboard" commands={["npm ci","npm run lab:a11y-keyboard"]} interactive={false} />
+
+## Reflect
+
+Describe one barrier, the exact reproduction, the native HTML or CSS repair and your observed browser outcome. Explain what your tests do **not** prove, including any unperformed assistive-technology checks.
+
+## Official references
+
+- [WAI Keyboard Interface Practices](https://www.w3.org/WAI/ARIA/apg/practices/keyboard-interface/)
+- [WAI Skip Navigation](https://www.w3.org/WAI/WCAG22/Techniques/general/G1)

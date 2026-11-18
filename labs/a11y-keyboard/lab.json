@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.a11y-keyboard",
+  "lessonId": "01.03.01",
+  "title": "Keyboard-first navigation",
+  "runtime": "browser-html-and-node-24",
+  "status": "authored",
+  "starter": "labs/a11y-keyboard/starter/index.html",
+  "solution": "labs/a11y-keyboard/solution/index.html",
+  "tests": "labs/a11y-keyboard/solution.test.mjs",
+  "verify": [
+    "npm run lab:a11y-keyboard"
+  ],
+  "expected": "I passed static and Chromium keyboard activation tests.",
+  "security": "Synthetic offline document; no remote code execution, real accounts or private inputs. Static checks require complementary Chromium keyboard and browser semantics tests."
+}

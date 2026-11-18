@@ -1,0 +1,94 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Explain the four POUR principles with practical examples","Link accessibility observations to testable behavior rather than style preferences","Produce a bounded self-assessment instead of a conformance claim","Use native grouped controls and clear feedback"]} />
+
+## The problem we're solving
+
+A team passes an automated lint rule and adds a 'WCAG compliant' badge, without checking keyboard access, understandable feedback or actual user journeys.
+
+## Build the mental model
+
+WCAG 2.2 organizes accessibility under four principles: Perceivable, Operable, Understandable and Robust (POUR). Specific normative success criteria have testable requirements and conformance levels A, AA and AAA. A preliminary checklist helps identify gaps but does not establish conformance. An audit must consider the entire scoped page/process, technology support, and relevant criteria, with human review and assistive-tech testing where appropriate. This lab groups example questions by POUR and records only a **local self-assessment**.
+
+**Predict before running:** Does checking four boxes prove a complex website meets every WCAG 2.2 AA criterion? No; it is not a conformance assessment.
+
+## Prerequisites
+
+Complete [the previous lesson](/learn/01.03.03). Work in a trusted local checkout with Node.js 24 and Chromium. Browser role and focus tests are valuable but are not substitutes for actual screen-reader use or formal accessibility conformance testing.
+
+<LessonStep number={1} title={"Identify one check for each POUR principle"} file="labs/a11y-wcag/starter/index.html" expected={"The learner can navigate four clearly named controls."}>
+
+Use a legend and four labeled checkboxes; a checklist is a starting point, not a certification.
+
+```html
+<fieldset><legend>Preliminary page review</legend>
+  <label><input type="checkbox" name="pour" value="perceivable"> Perceivable: text alternatives</label>
+  <label><input type="checkbox" name="pour" value="operable"> Operable: keyboard actions</label>
+  <label><input type="checkbox" name="pour" value="understandable"> Understandable: field instructions</label>
+  <label><input type="checkbox" name="pour" value="robust"> Robust: native semantics</label>
+</fieldset>
+```
+
+</LessonStep>
+
+<LessonStep number={2} title={"Make the feedback scoped and honest"} file="labs/a11y-wcag/starter/index.html" expected={"The result reports a local count without claiming certification."}>
+
+Count only the learner's checked observations without implying WCAG success.
+
+```js
+const chosen=document.querySelectorAll('input[name="pour"]:checked').length;
+const total=document.querySelectorAll('input[name="pour"]').length;
+document.querySelector('#result').textContent=chosen+' of '+total+' preliminary observations marked. Not a conformance audit.';
+```
+
+</LessonStep>
+
+<LessonStep number={3} title={"Inspect a real behavior for each principle"} file="labs/a11y-wcag/starter/index.html" expected={"You can explain the scope and limitations of each preliminary observation."}>
+
+Try keyboard navigation, image descriptions, clear instructions and HTML roles. Document what was checked and what remains untested.
+
+```html
+// Example: keyboard-only audit
+// 1. Press Tab and observe each visible focus indicator.
+// 2. Activate native buttons with Enter and Space.
+// 3. Record any missed focus or unlabeled inputs.
+// 4. Avoid an overall compliance claim from these four observations.
+```
+
+</LessonStep>
+
+## Explore it yourself
+
+Open `labs/a11y-wcag/starter/index.html` locally, then inspect its DOM and accessibility tree in DevTools. Use Tab, Shift+Tab, Enter and Space to verify focus and activation. Compare the starter to `labs/a11y-wcag/solution/index.html`. Record which behaviors were directly verified and which require a different device or assistive technology.
+
+<Misconception claim={"One passing automated accessibility checker proves WCAG 2.2 AA compliance."} correction={"Conformance requires reviewing applicable success criteria and complete user journeys; automation covers only some failures."} />
+
+## Bug Hunt: reproduce and fix a real accessibility defect
+
+The product page displays a compliance badge after the checklist is clicked. Remove unsupported claims and state the exact scope and outstanding checks.
+
+<KnowledgeCheck question={"Which set lists the WCAG principles?"} choices={["Plan, Observe, Undo, Retry","Perceivable, Operable, Understandable, Robust","Pretty, Optimized, Unique, Reactive","Public, Open, Universal, Responsive"]} correctIndex={1} explanation={"WCAG uses POUR as its organizing principles."} misconception={"Passing a principle-themed checklist does not establish conformance."} lessonId="01.03.04" />
+
+## Guided local lab
+
+Repair `labs/a11y-wcag/starter/index.html` using the three guided steps. The reference implementation is in `labs/a11y-wcag/solution/index.html`. To test **your starter** rather than the instructor's solution, run:
+
+```powershell
+$env:ACADEMY_LAB_TARGET = 'starter'
+npm run lab:a11y-wcag
+Remove-Item Env:ACADEMY_LAB_TARGET
+```
+
+In Bash use `ACADEMY_LAB_TARGET=starter npm run lab:a11y-wcag`. The starter initially fails; make its assertions pass, then manually test the resulting page with keyboard/DevTools. Completion is self-assessed and makes no external submission or certification claim.
+
+<LabGate lessonId="01.03.04" labId="lab.foundation.a11y-wcag" commands={["npm ci","npm run lab:a11y-wcag"]} interactive={false} />
+
+## Reflect
+
+Describe one barrier, the exact reproduction, the native HTML or CSS repair and your observed browser outcome. Explain what your tests do **not** prove, including any unperformed assistive-technology checks.
+
+## Official references
+
+- [W3C WCAG 2.2 Recommendation](https://www.w3.org/TR/WCAG22/)
+- [WAI Accessibility Principles](https://www.w3.org/WAI/fundamentals/accessibility-principles/)
