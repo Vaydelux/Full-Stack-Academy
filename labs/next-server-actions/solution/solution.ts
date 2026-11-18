@@ -1,0 +1,1 @@
+export function solve(raw:unknown):number{const qty=typeof raw==='string'?Number(raw):raw;if(typeof qty!=='number'||!Number.isSafeInteger(qty)||qty<1||qty>100)throw new TypeError('Invalid quantity');return qty;}

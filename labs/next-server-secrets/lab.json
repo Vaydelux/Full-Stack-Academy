@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.next-server-secrets",
+  "lessonId": "07.02.07",
+  "title": "Secret handling and server-only",
+  "runtime": "next16-offline-contract-and-tsx-source",
+  "status": "authored",
+  "starter": "labs/next-server-secrets/starter/solution.ts",
+  "solution": "labs/next-server-secrets/solution/solution.ts",
+  "tests": "labs/next-server-secrets/solution.test.mjs",
+  "verify": [
+    "npm run lab:next-server-secrets"
+  ],
+  "expected": "The correct local contract passes independent assertions; end-to-end framework behavior is a separate QA gate.",
+  "security": "Uses synthetic fixture data, no secrets, uploaded code execution, remote endpoints, publishing, Vercel or hosted grading."
+}

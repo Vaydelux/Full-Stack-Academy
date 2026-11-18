@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.next-route-handlers",
+  "lessonId": "07.02.05",
+  "title": "Route handlers and BFF",
+  "runtime": "next16-offline-contract-and-tsx-source",
+  "status": "authored",
+  "starter": "labs/next-route-handlers/starter/solution.ts",
+  "solution": "labs/next-route-handlers/solution/solution.ts",
+  "tests": "labs/next-route-handlers/solution.test.mjs",
+  "verify": [
+    "npm run lab:next-route-handlers"
+  ],
+  "expected": "The correct local contract passes independent assertions; end-to-end framework behavior is a separate QA gate.",
+  "security": "Uses synthetic fixture data, no secrets, uploaded code execution, remote endpoints, publishing, Vercel or hosted grading."
+}
