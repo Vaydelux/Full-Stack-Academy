@@ -1,0 +1,96 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Model keyof indexed access and typeof using TypeScript's type operators","Reproduce a runtime defect despite valid-looking types","Validate safe usage with compiler-negative assertions and local tests"]} />
+
+## The problem we're solving
+
+A helper claims to retrieve a requested property but always returns the object's first value, relying on a cast to hide the mismatch. This advanced-types lab requires both compile-time evidence and meaningful runtime behavior; TypeScript's erased types alone cannot fix logic bugs.
+
+## Build the mental model
+
+keyof T produces the property-key union of T; indexed access T[K] links a requested key to its value type. typeof can capture a runtime declaration's static type, but it does not make an incorrect runtime key lookup correct.
+
+**Predict before running:** The key/value type relationship is preserved and the requested property is actually returned.
+
+## Prerequisites and preflight
+
+Continue from [the previous lesson](/learn/04.02.01). Open `labs/ts-keyof/starter/solution.ts`, `labs/ts-keyof/solution.test.mjs`, and `labs/ts-keyof/typecheck.ts`. The project compiles under strict TypeScript 5; use `npm run typecheck` and `npm run lab:ts-keyof`. The negative type test contains deliberate compiler errors justified by `@ts-expect-error`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the unsafe implementation" file="labs/ts-keyof/starter/solution.ts" expected="The implementation is type-correct enough to compile but fails the reviewed runtime contract.">
+
+```ts
+export function solve<T extends object,K extends keyof T>(object:T,key:K):T[K]{return object[Object.keys(object)[0] as keyof T] as T[K];}
+```
+
+**Predict before running:** A helper claims to retrieve a requested property but always returns the object's first value, relying on a cast to hide the mismatch.
+
+**Why it fails:** keyof T produces the property-key union of T; indexed access T[K] links a requested key to its value type. typeof can capture a runtime declaration's static type, but it does not make an incorrect runtime key lookup correct.
+
+**Proof:** Run the student target `ACADEMY_LAB_TARGET=starter npm run lab:ts-keyof` and capture the failing assertion.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the correct type/runtime relationship" file="labs/ts-keyof/starter/solution.ts" expected={"The key/value type relationship is preserved and the requested property is actually returned."}>
+
+Preserve exported `solve` and tighten the behavior without adding an unsound `as any` cast.
+
+```ts
+export function solve<T extends object,K extends keyof T>(object:T,key:K):T[K]{return object[key];}
+```
+
+**Predict before running:** The key/value type relationship is preserved and the requested property is actually returned.
+
+**Why the fix works:** keyof T produces the property-key union of T; indexed access T[K] links a requested key to its value type. typeof can capture a runtime declaration's static type, but it does not make an incorrect runtime key lookup correct.
+
+**Proof:** The same Node test now passes; the separate compiler-negative test rejects invalid static usage.
+
+</LessonStep>
+
+<LessonStep number={3} title="Run type-level and runtime assertions" file="labs/ts-keyof/typecheck.ts" expected="The compiler checks invalid type uses and the runtime assertions prove the intended behavior.">
+
+```ts
+import {solve} from './solution/solution';
+const object={id:'a',count:5};
+const value:number=solve(object,'count');void value;
+// @ts-expect-error missing property does not satisfy keyof
+solve(object,'missing');
+
+```
+
+**Predict before running:** The negative statements produce errors only where `@ts-expect-error` explicitly documents the rejection.
+
+**Why this matters:** An untested type signature can silently widen or accept unsafe input; compiler tests guard the API contract separately from runtime tests.
+
+**Proof:** Run `npm run typecheck` and `npm run lab:ts-keyof` on the instructor solution.
+
+</LessonStep>
+
+## Explore and verify
+
+Test one wrong runtime value passed through `unknown`, even if the function's typed caller could not normally create it. TypeScript is structural and erased; actual validation, authorization and serialization remain system responsibilities.
+
+<Misconception claim="A type operator or assertion automatically changes runtime data to satisfy the declared type." correction={"keyof T produces the property-key union of T; indexed access T[K] links a requested key to its value type. typeof can capture a runtime declaration's static type, but it does not make an incorrect runtime key lookup correct."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+Show a concrete typed call that appears valid but the starter executes incorrectly. Replace the wrong operation or unsafe assertion; do not weaken compiler checks. Discuss the difference between a compiler-invalid call and an untrusted runtime object.
+
+<KnowledgeCheck question={"What does T[K] represent?"} choices={["A global JavaScript variable","The type of property K on T","A random property value","A runtime validation rule"]} correctIndex={1} explanation={"keyof T produces the property-key union of T; indexed access T[K] links a requested key to its value type. typeof can capture a runtime declaration's static type, but it does not make an incorrect runtime key lookup correct."} misconception="Type-level transformations are not runtime sanitizers or validators." lessonId="04.02.02" />
+
+## Guided local lab
+
+Use the same offline `solution.test.mjs` to verify your edited starter and the instructor solution; `typecheck.ts` is a separate compilation gate. The academy does not execute arbitrary user TypeScript on its server or award remote grades.
+
+<LabGate lessonId="04.02.02" labId="lab.foundation.ts-keyof" commands={["npm ci","npm run lab:ts-keyof"]} interactive={false} />
+
+## Reflect
+
+Which invariant can the type system prove? Which must be checked after a network or storage boundary? Explain one production bug that a return type alone would not catch.
+
+## Official references
+
+- [TypeScript handbook — concept](https://www.typescriptlang.org/docs/handbook/2/indexed-access-types.html)
+- [Official type-system reference](https://www.typescriptlang.org/docs/handbook/2/keyof-types.html)

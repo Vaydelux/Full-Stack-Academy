@@ -1,0 +1,94 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Model bug hunt unsafe type assertions using TypeScript's type operators","Reproduce a runtime defect despite valid-looking types","Validate safe usage with compiler-negative assertions and local tests"]} />
+
+## The problem we're solving
+
+A function asserts that arbitrary JSON contains a valid email and crashes when the payload is missing or malformed. This advanced-types lab requires both compile-time evidence and meaningful runtime behavior; TypeScript's erased types alone cannot fix logic bugs.
+
+## Build the mental model
+
+An as assertion changes what the compiler assumes, not what runtime data actually contains. Narrow unknown using guards and return a discriminated Result for expected validation failures. Avoid double casts as a substitute for schema parsing.
+
+**Predict before running:** Malformed payloads produce explicit validation failures without property-access crashes.
+
+## Prerequisites and preflight
+
+Continue from [the previous lesson](/learn/04.02.07). Open `labs/ts-unsafe-casts/starter/solution.ts`, `labs/ts-unsafe-casts/solution.test.mjs`, and `labs/ts-unsafe-casts/typecheck.ts`. The project compiles under strict TypeScript 5; use `npm run typecheck` and `npm run lab:ts-unsafe-casts`. The negative type test contains deliberate compiler errors justified by `@ts-expect-error`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the unsafe implementation" file="labs/ts-unsafe-casts/starter/solution.ts" expected="The implementation is type-correct enough to compile but fails the reviewed runtime contract.">
+
+```ts
+export type Result={ok:true;email:string}|{ok:false;error:string};export function solve(raw:unknown):Result{const user=raw as {email:string};return {ok:true,email:user.email.toLowerCase()};}
+```
+
+**Predict before running:** A function asserts that arbitrary JSON contains a valid email and crashes when the payload is missing or malformed.
+
+**Why it fails:** An as assertion changes what the compiler assumes, not what runtime data actually contains. Narrow unknown using guards and return a discriminated Result for expected validation failures. Avoid double casts as a substitute for schema parsing.
+
+**Proof:** Run the student target `ACADEMY_LAB_TARGET=starter npm run lab:ts-unsafe-casts` and capture the failing assertion.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the correct type/runtime relationship" file="labs/ts-unsafe-casts/starter/solution.ts" expected={"Malformed payloads produce explicit validation failures without property-access crashes."}>
+
+Preserve exported `solve` and tighten the behavior without adding an unsound `as any` cast.
+
+```ts
+export type Result={ok:true;email:string}|{ok:false;error:string};export function solve(raw:unknown):Result{if(!raw||typeof raw!=='object'||!('email' in raw)||typeof raw.email!=='string')return {ok:false,error:'missing-email'};const email=raw.email.trim().toLowerCase();if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))return {ok:false,error:'invalid-email'};return {ok:true,email};}
+```
+
+**Predict before running:** Malformed payloads produce explicit validation failures without property-access crashes.
+
+**Why the fix works:** An as assertion changes what the compiler assumes, not what runtime data actually contains. Narrow unknown using guards and return a discriminated Result for expected validation failures. Avoid double casts as a substitute for schema parsing.
+
+**Proof:** The same Node test now passes; the separate compiler-negative test rejects invalid static usage.
+
+</LessonStep>
+
+<LessonStep number={3} title="Run type-level and runtime assertions" file="labs/ts-unsafe-casts/typecheck.ts" expected="The compiler checks invalid type uses and the runtime assertions prove the intended behavior.">
+
+```ts
+import {solve} from './solution/solution';
+const result=solve({email:'hello@example.com'});
+if(result.ok){const email:string=result.email;void email;}else{const error:string=result.error;void error;}
+
+```
+
+**Predict before running:** The negative statements produce errors only where `@ts-expect-error` explicitly documents the rejection.
+
+**Why this matters:** An untested type signature can silently widen or accept unsafe input; compiler tests guard the API contract separately from runtime tests.
+
+**Proof:** Run `npm run typecheck` and `npm run lab:ts-unsafe-casts` on the instructor solution.
+
+</LessonStep>
+
+## Explore and verify
+
+Test one wrong runtime value passed through `unknown`, even if the function's typed caller could not normally create it. TypeScript is structural and erased; actual validation, authorization and serialization remain system responsibilities.
+
+<Misconception claim="A type operator or assertion automatically changes runtime data to satisfy the declared type." correction={"An as assertion changes what the compiler assumes, not what runtime data actually contains. Narrow unknown using guards and return a discriminated Result for expected validation failures. Avoid double casts as a substitute for schema parsing."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+Show a concrete typed call that appears valid but the starter executes incorrectly. Replace the wrong operation or unsafe assertion; do not weaken compiler checks. Discuss the difference between a compiler-invalid call and an untrusted runtime object.
+
+<KnowledgeCheck question={"What does a value as User assertion change at runtime?"} choices={["Nothing; assertions are erased","The JSON object shape","The server schema","The value's prototype"]} correctIndex={0} explanation={"An as assertion changes what the compiler assumes, not what runtime data actually contains. Narrow unknown using guards and return a discriminated Result for expected validation failures. Avoid double casts as a substitute for schema parsing."} misconception="Type-level transformations are not runtime sanitizers or validators." lessonId="04.02.08" />
+
+## Guided local lab
+
+Use the same offline `solution.test.mjs` to verify your edited starter and the instructor solution; `typecheck.ts` is a separate compilation gate. The academy does not execute arbitrary user TypeScript on its server or award remote grades.
+
+<LabGate lessonId="04.02.08" labId="lab.foundation.ts-unsafe-casts" commands={["npm ci","npm run lab:ts-unsafe-casts"]} interactive={false} />
+
+## Reflect
+
+Which invariant can the type system prove? Which must be checked after a network or storage boundary? Explain one production bug that a return type alone would not catch.
+
+## Official references
+
+- [TypeScript handbook — concept](https://www.typescriptlang.org/docs/handbook/2/everyday-types.html#type-assertions)
+- [Official type-system reference](https://www.typescriptlang.org/docs/handbook/2/narrowing.html)

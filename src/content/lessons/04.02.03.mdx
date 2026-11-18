@@ -1,0 +1,96 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Model mapped types and safe patches using TypeScript's type operators","Reproduce a runtime defect despite valid-looking types","Validate safe usage with compiler-negative assertions and local tests"]} />
+
+## The problem we're solving
+
+A typed patch helper accepts partial updates but returns the unmodified object, so the requested change is never applied. This advanced-types lab requires both compile-time evidence and meaningful runtime behavior; TypeScript's erased types alone cannot fix logic bugs.
+
+## Build the mental model
+
+Mapped types transform an existing type's property keys. A readonly optional patch can preserve key/value correspondence, while spreading target and patch returns a new shallow object. For nested objects, copy each modified layer separately.
+
+**Predict before running:** The patch changes only permitted fields while preserving the previous object's values.
+
+## Prerequisites and preflight
+
+Continue from [the previous lesson](/learn/04.02.02). Open `labs/ts-mapped/starter/solution.ts`, `labs/ts-mapped/solution.test.mjs`, and `labs/ts-mapped/typecheck.ts`. The project compiles under strict TypeScript 5; use `npm run typecheck` and `npm run lab:ts-mapped`. The negative type test contains deliberate compiler errors justified by `@ts-expect-error`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the unsafe implementation" file="labs/ts-mapped/starter/solution.ts" expected="The implementation is type-correct enough to compile but fails the reviewed runtime contract.">
+
+```ts
+export type Patch<T>={readonly [K in keyof T]?:T[K]};export function solve<T extends object>(target:T,patch:Patch<T>):T{return target;}
+```
+
+**Predict before running:** A typed patch helper accepts partial updates but returns the unmodified object, so the requested change is never applied.
+
+**Why it fails:** Mapped types transform an existing type's property keys. A readonly optional patch can preserve key/value correspondence, while spreading target and patch returns a new shallow object. For nested objects, copy each modified layer separately.
+
+**Proof:** Run the student target `ACADEMY_LAB_TARGET=starter npm run lab:ts-mapped` and capture the failing assertion.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the correct type/runtime relationship" file="labs/ts-mapped/starter/solution.ts" expected={"The patch changes only permitted fields while preserving the previous object's values."}>
+
+Preserve exported `solve` and tighten the behavior without adding an unsound `as any` cast.
+
+```ts
+export type Patch<T>={readonly [K in keyof T]?:T[K]};export function solve<T extends object>(target:T,patch:Patch<T>):T{return {...target,...patch};}
+```
+
+**Predict before running:** The patch changes only permitted fields while preserving the previous object's values.
+
+**Why the fix works:** Mapped types transform an existing type's property keys. A readonly optional patch can preserve key/value correspondence, while spreading target and patch returns a new shallow object. For nested objects, copy each modified layer separately.
+
+**Proof:** The same Node test now passes; the separate compiler-negative test rejects invalid static usage.
+
+</LessonStep>
+
+<LessonStep number={3} title="Run type-level and runtime assertions" file="labs/ts-mapped/typecheck.ts" expected="The compiler checks invalid type uses and the runtime assertions prove the intended behavior.">
+
+```ts
+import {solve} from './solution/solution';
+const result=solve({id:'a',count:2},{count:3});
+const count:number=result.count;void count;
+// @ts-expect-error a number property must not accept a string
+solve({id:'a',count:2},{count:'oops'});
+
+```
+
+**Predict before running:** The negative statements produce errors only where `@ts-expect-error` explicitly documents the rejection.
+
+**Why this matters:** An untested type signature can silently widen or accept unsafe input; compiler tests guard the API contract separately from runtime tests.
+
+**Proof:** Run `npm run typecheck` and `npm run lab:ts-mapped` on the instructor solution.
+
+</LessonStep>
+
+## Explore and verify
+
+Test one wrong runtime value passed through `unknown`, even if the function's typed caller could not normally create it. TypeScript is structural and erased; actual validation, authorization and serialization remain system responsibilities.
+
+<Misconception claim="A type operator or assertion automatically changes runtime data to satisfy the declared type." correction={"Mapped types transform an existing type's property keys. A readonly optional patch can preserve key/value correspondence, while spreading target and patch returns a new shallow object. For nested objects, copy each modified layer separately."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+Show a concrete typed call that appears valid but the starter executes incorrectly. Replace the wrong operation or unsafe assertion; do not weaken compiler checks. Discuss the difference between a compiler-invalid call and an untrusted runtime object.
+
+<KnowledgeCheck question={"What does a mapped type typically iterate over?"} choices={["keyof properties of a source type","Rows from a database query automatically","Only array indexes","Only symbol names"]} correctIndex={0} explanation={"Mapped types transform an existing type's property keys. A readonly optional patch can preserve key/value correspondence, while spreading target and patch returns a new shallow object. For nested objects, copy each modified layer separately."} misconception="Type-level transformations are not runtime sanitizers or validators." lessonId="04.02.03" />
+
+## Guided local lab
+
+Use the same offline `solution.test.mjs` to verify your edited starter and the instructor solution; `typecheck.ts` is a separate compilation gate. The academy does not execute arbitrary user TypeScript on its server or award remote grades.
+
+<LabGate lessonId="04.02.03" labId="lab.foundation.ts-mapped" commands={["npm ci","npm run lab:ts-mapped"]} interactive={false} />
+
+## Reflect
+
+Which invariant can the type system prove? Which must be checked after a network or storage boundary? Explain one production bug that a return type alone would not catch.
+
+## Official references
+
+- [TypeScript handbook — concept](https://www.typescriptlang.org/docs/handbook/2/mapped-types.html)
+- [Official type-system reference](https://www.typescriptlang.org/docs/handbook/2/generics.html)

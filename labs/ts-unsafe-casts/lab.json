@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.ts-unsafe-casts",
+  "lessonId": "04.02.08",
+  "title": "Bug Hunt unsafe type assertions",
+  "runtime": "typescript-5-node-24-tsx",
+  "status": "authored",
+  "starter": "labs/ts-unsafe-casts/starter/solution.ts",
+  "solution": "labs/ts-unsafe-casts/solution/solution.ts",
+  "tests": "labs/ts-unsafe-casts/solution.test.mjs",
+  "verify": [
+    "npm run lab:ts-unsafe-casts"
+  ],
+  "expected": "The bug hunt unsafe type assertions contract passes runtime assertions and compiler-negative checks.",
+  "security": "Fully offline synthetic data, no external scripts, deployments, private data, accounts or uploaded code."
+}

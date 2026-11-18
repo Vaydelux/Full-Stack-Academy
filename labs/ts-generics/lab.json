@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.ts-generics",
+  "lessonId": "04.02.01",
+  "title": "Generics and constraints",
+  "runtime": "typescript-5-node-24-tsx",
+  "status": "authored",
+  "starter": "labs/ts-generics/starter/solution.ts",
+  "solution": "labs/ts-generics/solution/solution.ts",
+  "tests": "labs/ts-generics/solution.test.mjs",
+  "verify": [
+    "npm run lab:ts-generics"
+  ],
+  "expected": "The generics and constraints contract passes runtime assertions and compiler-negative checks.",
+  "security": "Fully offline synthetic data, no external scripts, deployments, private data, accounts or uploaded code."
+}

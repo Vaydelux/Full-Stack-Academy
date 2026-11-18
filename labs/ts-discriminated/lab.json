@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.ts-discriminated",
+  "lessonId": "04.02.05",
+  "title": "Discriminated unions and exhaustiveness",
+  "runtime": "typescript-5-node-24-tsx",
+  "status": "authored",
+  "starter": "labs/ts-discriminated/starter/solution.ts",
+  "solution": "labs/ts-discriminated/solution/solution.ts",
+  "tests": "labs/ts-discriminated/solution.test.mjs",
+  "verify": [
+    "npm run lab:ts-discriminated"
+  ],
+  "expected": "The discriminated unions and exhaustiveness contract passes runtime assertions and compiler-negative checks.",
+  "security": "Fully offline synthetic data, no external scripts, deployments, private data, accounts or uploaded code."
+}

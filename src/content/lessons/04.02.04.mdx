@@ -1,0 +1,98 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Model conditional types and infer using TypeScript's type operators","Reproduce a runtime defect despite valid-looking types","Validate safe usage with compiler-negative assertions and local tests"]} />
+
+## The problem we're solving
+
+A typed wrapper declares the correct resolved type but returns an invented undefined value rather than unwrapping a Promise. This advanced-types lab requires both compile-time evidence and meaningful runtime behavior; TypeScript's erased types alone cannot fix logic bugs.
+
+## Build the mental model
+
+Conditional types choose one type branch based on assignability. The infer keyword can extract part of a related type, such as a Promise's resolved value. This extraction happens only during type checking; runtime Promise resolution still requires actual code.
+
+**Predict before running:** A Promise resolves to the expected value while the type-level Unwrap preserves its result type.
+
+## Prerequisites and preflight
+
+Continue from [the previous lesson](/learn/04.02.03). Open `labs/ts-conditional/starter/solution.ts`, `labs/ts-conditional/solution.test.mjs`, and `labs/ts-conditional/typecheck.ts`. The project compiles under strict TypeScript 5; use `npm run typecheck` and `npm run lab:ts-conditional`. The negative type test contains deliberate compiler errors justified by `@ts-expect-error`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the unsafe implementation" file="labs/ts-conditional/starter/solution.ts" expected="The implementation is type-correct enough to compile but fails the reviewed runtime contract.">
+
+```ts
+export type Unwrap<T>=T extends PromiseLike<infer R>?R:T;export async function solve<T>(value:T|PromiseLike<T>):Promise<T>{return undefined as T;}
+```
+
+**Predict before running:** A typed wrapper declares the correct resolved type but returns an invented undefined value rather than unwrapping a Promise.
+
+**Why it fails:** Conditional types choose one type branch based on assignability. The infer keyword can extract part of a related type, such as a Promise's resolved value. This extraction happens only during type checking; runtime Promise resolution still requires actual code.
+
+**Proof:** Run the student target `ACADEMY_LAB_TARGET=starter npm run lab:ts-conditional` and capture the failing assertion.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the correct type/runtime relationship" file="labs/ts-conditional/starter/solution.ts" expected={"A Promise resolves to the expected value while the type-level Unwrap preserves its result type."}>
+
+Preserve exported `solve` and tighten the behavior without adding an unsound `as any` cast.
+
+```ts
+export type Unwrap<T>=T extends PromiseLike<infer R>?R:T;export async function solve<T>(value:T|PromiseLike<T>):Promise<T>{return await value;}
+```
+
+**Predict before running:** A Promise resolves to the expected value while the type-level Unwrap preserves its result type.
+
+**Why the fix works:** Conditional types choose one type branch based on assignability. The infer keyword can extract part of a related type, such as a Promise's resolved value. This extraction happens only during type checking; runtime Promise resolution still requires actual code.
+
+**Proof:** The same Node test now passes; the separate compiler-negative test rejects invalid static usage.
+
+</LessonStep>
+
+<LessonStep number={3} title="Run type-level and runtime assertions" file="labs/ts-conditional/typecheck.ts" expected="The compiler checks invalid type uses and the runtime assertions prove the intended behavior.">
+
+```ts
+import {solve} from './solution/solution';
+import type {Unwrap} from './solution/solution';
+const p:Promise<number>=solve(Promise.resolve(7));void p;
+const value:Unwrap<Promise<string>>='text';void value;
+// @ts-expect-error inferred resolved string must not be a number
+const invalid:Unwrap<Promise<string>>=123;
+void invalid;
+
+```
+
+**Predict before running:** The negative statements produce errors only where `@ts-expect-error` explicitly documents the rejection.
+
+**Why this matters:** An untested type signature can silently widen or accept unsafe input; compiler tests guard the API contract separately from runtime tests.
+
+**Proof:** Run `npm run typecheck` and `npm run lab:ts-conditional` on the instructor solution.
+
+</LessonStep>
+
+## Explore and verify
+
+Test one wrong runtime value passed through `unknown`, even if the function's typed caller could not normally create it. TypeScript is structural and erased; actual validation, authorization and serialization remain system responsibilities.
+
+<Misconception claim="A type operator or assertion automatically changes runtime data to satisfy the declared type." correction={"Conditional types choose one type branch based on assignability. The infer keyword can extract part of a related type, such as a Promise's resolved value. This extraction happens only during type checking; runtime Promise resolution still requires actual code."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+Show a concrete typed call that appears valid but the starter executes incorrectly. Replace the wrong operation or unsafe assertion; do not weaken compiler checks. Discuss the difference between a compiler-invalid call and an untrusted runtime object.
+
+<KnowledgeCheck question={"Does the infer keyword unwrap a Promise at runtime?"} choices={["Yes, it schedules an event-loop task","No, it only extracts a type relationship during compilation","Only in React","Only in CommonJS modules"]} correctIndex={1} explanation={"Conditional types choose one type branch based on assignability. The infer keyword can extract part of a related type, such as a Promise's resolved value. This extraction happens only during type checking; runtime Promise resolution still requires actual code."} misconception="Type-level transformations are not runtime sanitizers or validators." lessonId="04.02.04" />
+
+## Guided local lab
+
+Use the same offline `solution.test.mjs` to verify your edited starter and the instructor solution; `typecheck.ts` is a separate compilation gate. The academy does not execute arbitrary user TypeScript on its server or award remote grades.
+
+<LabGate lessonId="04.02.04" labId="lab.foundation.ts-conditional" commands={["npm ci","npm run lab:ts-conditional"]} interactive={false} />
+
+## Reflect
+
+Which invariant can the type system prove? Which must be checked after a network or storage boundary? Explain one production bug that a return type alone would not catch.
+
+## Official references
+
+- [TypeScript handbook — concept](https://www.typescriptlang.org/docs/handbook/2/conditional-types.html)
+- [Official type-system reference](https://www.typescriptlang.org/docs/handbook/2/generics.html)

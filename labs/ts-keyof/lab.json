@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.ts-keyof",
+  "lessonId": "04.02.02",
+  "title": "keyof indexed access and typeof",
+  "runtime": "typescript-5-node-24-tsx",
+  "status": "authored",
+  "starter": "labs/ts-keyof/starter/solution.ts",
+  "solution": "labs/ts-keyof/solution/solution.ts",
+  "tests": "labs/ts-keyof/solution.test.mjs",
+  "verify": [
+    "npm run lab:ts-keyof"
+  ],
+  "expected": "The keyof indexed access and typeof contract passes runtime assertions and compiler-negative checks.",
+  "security": "Fully offline synthetic data, no external scripts, deployments, private data, accounts or uploaded code."
+}
