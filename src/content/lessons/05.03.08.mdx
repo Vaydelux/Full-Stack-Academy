@@ -65,6 +65,8 @@ assert.deepEqual(solve({id:' A ',qty:3}),{id:'A',qty:3});assert.equal(solve({id:
 
 ## Explore and verify
 
+The capstone also includes a **real three-package TypeScript workspace source tree**, separate from the policy helper: `labs/mono-contracts-capstone/solution/packages/contracts/src/index.ts` defines the runtime parser, `labs/mono-contracts-capstone/solution/apps/api/src/index.ts` calls it for untrusted requests, and `labs/mono-contracts-capstone/solution/apps/web/src/index.ts` consumes the shared type. The local verifier loads these source modules and runs the actual TypeScript compiler across all three packages. This checks the boundary without pretending `pnpm install`, Turbo build caching, declarations, npm publishing or deployment occurred.
+
 Where available, inspect a sample pnpm-workspace.yaml, package.json exports map, shared tsconfig or turbo task graph. For production adoption, lock Node/pnpm versions, run `pnpm install --frozen-lockfile`, run `turbo run build test` in a throwaway workspace, and check package consumer exports. These commands are guidance only and are **not automatically executed** by the academy.
 
 <Misconception claim="A valid-looking workspace configuration proves every package can install, compile and deploy." correction={"A shared contracts package centralizes public transport types and runtime parsing. The API must validate unknown input, while the web package imports the shared type rather than re-declaring it. pnpm workspace and turbo task configs describe build intent; local tests compile the actual three-package TS source, while package installation/publishing/deployment remain separate gates."} />
