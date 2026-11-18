@@ -1,0 +1,93 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Label file inputs and clearly describe accepted formats","Distinguish file chooser hints from enforceable server checks","Validate selected file type and size for a local preview","Explain multipart encoding and backend upload security requirements"]} />
+
+## The problem we're solving
+
+A form appears to accept only images using the accept attribute. Someone assumes this restriction is secure and sends unverified file bytes to a backend. The accept attribute is a selection hint, not a trust boundary.
+
+## Build the mental model
+
+The file input exposes a FileList after the user selects files. The `accept` attribute helps filter the chooser but does not enforce a security rule; MIME metadata and filenames can be spoofed. Client checks for size and type improve user experience but do not replace independent server-side content validation, malware screening, storage authorization and quotas. A real upload requires a POST endpoint and typically multipart/form-data. This offline lesson intentionally performs **no upload** and does not read file contents; it reports local selection metadata only.
+
+**Predict before running:** If a file picker says accept=image/png, can a malicious client still submit a file with another type? Yes. Validate again on the trusted server.
+
+## Prerequisites
+
+Complete [the previous lesson](/learn/01.02.04). Use an offline browser and the repository's HTML starter fixture with Node.js 24 for tests. No real user data, cloud accounts, or server-side submission is needed.
+
+<LessonStep number={1} title={"Declare explicit file selection guidance"} file="labs/forms-files/starter/index.html" expected={"The native file chooser gives format hints and an explicit accessible description."}>
+
+Attach a visible label, a hint ID and an accept list to the file input.
+
+```html
+<label for="attachment">Choose an example attachment</label>
+<p id="file-hint">PNG, JPEG or PDF; up to 1 MB. Nothing will be uploaded.</p>
+<input id="attachment" name="attachment" type="file" accept=".png,.jpg,.jpeg,.pdf,image/png,image/jpeg,application/pdf" aria-describedby="file-hint" required>
+```
+
+</LessonStep>
+
+<LessonStep number={2} title={"Validate selection metadata locally"} file="labs/forms-files/starter/index.html" expected={"An unsupported or too-large file is rejected by the local preview without reading its contents."}>
+
+Use the browser File object; do not trust its reported type as proof of safe server content.
+
+```js
+const file=document.querySelector('#attachment').files[0];
+const allowed=new Set(['image/png','image/jpeg','application/pdf']);
+if(file && allowed.has(file.type) && file.size <= 1_000_000){
+  console.log('File passes local hints, but has not been uploaded.');
+}
+```
+
+</LessonStep>
+
+<LessonStep number={3} title={"Keep the demonstration intentionally offline"} file="labs/forms-files/starter/index.html" expected={"The browser does not navigate or attempt an upload, even for a valid local selection."}>
+
+Intercept submission to avoid an unintended network request; display an accurate local status.
+
+```js
+form.addEventListener('submit',event=>{
+  event.preventDefault();
+  // Recheck the currently selected File and display only its filename and size.
+});
+// A real service must validate file content and authorization server-side.
+```
+
+</LessonStep>
+
+## Explore it yourself
+
+Open `labs/forms-files/starter/index.html` in Chromium and use only your keyboard for at least one complete interaction. Inspect the accessibility tree, form validity or event behavior relevant to the lesson. Compare with `labs/forms-files/solution/index.html`. When a file picker is involved use synthetic files only; never upload private content to a tutorial.
+
+<Misconception claim={"The accept attribute guarantees uploaded files are safe."} correction={"accept is only a browser file-chooser hint. A backend must validate content and enforce storage limits and authorization."} />
+
+## Bug Hunt: diagnose and repair the behavior
+
+A developer checks only the extension and uploads the file to public storage. Add server-side type and content validation, size limits, access checks and safe storage names before any real upload.
+
+<KnowledgeCheck question={"What does the accept attribute on a file input provide?"} choices={["A server-side security filter","A browser hint for selectable file formats","Automatic malware scanning","An encrypted upload"]} correctIndex={1} explanation={"The accept attribute guides file selection; it does not provide security enforcement."} misconception={"Client validation can be bypassed and metadata may be misleading."} lessonId="01.02.05" />
+
+## Guided local lab
+
+Implement the exercise in `labs/forms-files/starter/index.html`; instructor solution is in `labs/forms-files/solution/index.html`. Test **your starter** with:
+
+```powershell
+$env:ACADEMY_LAB_TARGET = 'starter'
+npm run lab:forms-files
+Remove-Item Env:ACADEMY_LAB_TARGET
+```
+
+In Bash: `ACADEMY_LAB_TARGET=starter npm run lab:forms-files`. The starter fails initially; pass its checks by repairing the actual markup and behavior. Default scripts test the instructor solution; the browser smoke suite separately checks behavior. Do not claim that a local preview saves or transmits data.
+
+<LabGate lessonId="01.02.05" labId="lab.foundation.forms-files" commands={["npm ci","npm run lab:forms-files"]} interactive={false} />
+
+## Reflect
+
+Record the original failure, expected browser behavior, actual observed result, and why the fix uses native semantics or targeted JavaScript. Explain what remains a real backend's responsibility.
+
+## Official references
+
+- [MDN file input](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/input/file)
+- [MDN sending form data](https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Forms/Sending_and_retrieving_form_data)

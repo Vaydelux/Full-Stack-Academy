@@ -1,0 +1,39 @@
+{
+  "id": "01.02.07",
+  "title": "Native events and default behavior",
+  "description": "Trace input, change and submit events and their default actions while preserving native constraints and accessible feedback.",
+  "trackId": "01",
+  "moduleId": "01.02",
+  "level": "Beginner",
+  "estimatedMinutes": 50,
+  "status": "authored",
+  "reviewedAt": "2026-11-18",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "01.02.06"
+  ],
+  "objectives": [
+    "Distinguish input from change and submit events",
+    "Observe event names without leaking private input values",
+    "Use preventDefault on a valid local form submission only",
+    "Preserve native keyboard behavior and independent button actions"
+  ],
+  "labId": "lab.foundation.forms-events",
+  "sources": [
+    {
+      "label": "MDN input event",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/API/Element/input_event"
+    },
+    {
+      "label": "MDN submit event",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormElement/submit_event"
+    }
+  ],
+  "rubric": [
+    "I observed input and change without logging field contents.",
+    "I used the form submit event and intentionally prevented only local submission.",
+    "I verified Enter-key behavior, helper buttons and accessible feedback."
+  ]
+}

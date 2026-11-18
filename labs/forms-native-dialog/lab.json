@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.forms-native-dialog",
+  "lessonId": "01.02.06",
+  "title": "Dialog popover and details",
+  "runtime": "browser-html-and-node-24",
+  "status": "authored",
+  "starter": "labs/forms-native-dialog/starter/index.html",
+  "solution": "labs/forms-native-dialog/solution/index.html",
+  "tests": "labs/forms-native-dialog/solution.test.mjs",
+  "verify": [
+    "npm run lab:forms-native-dialog"
+  ],
+  "expected": "I verified focus recovery, popover toggling and details expansion in a browser.",
+  "security": "Standalone offline HTML/browser exercise only. No uploads, remote submissions, account persistence, or arbitrary user code on server. Chromium tests real keyboard and validation behavior."
+}

@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.forms-events",
+  "lessonId": "01.02.07",
+  "title": "Native events and default behavior",
+  "runtime": "browser-html-and-node-24",
+  "status": "authored",
+  "starter": "labs/forms-events/starter/index.html",
+  "solution": "labs/forms-events/solution/index.html",
+  "tests": "labs/forms-events/solution.test.mjs",
+  "verify": [
+    "npm run lab:forms-events"
+  ],
+  "expected": "I verified Enter-key behavior, helper buttons and accessible feedback.",
+  "security": "Standalone offline HTML/browser exercise only. No uploads, remote submissions, account persistence, or arbitrary user code on server. Chromium tests real keyboard and validation behavior."
+}

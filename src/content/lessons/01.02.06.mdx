@@ -1,0 +1,92 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Choose details for inline disclosure and popover for lightweight help","Open a named modal dialog with showModal and an explicit close action","Verify Escape dismissal and focus restoration in Chromium","Avoid unnecessary custom focus traps or misleading dialog roles"]} />
+
+## The problem we're solving
+
+A simple hint uses a custom modal that steals keyboard focus and never closes on Escape. Another piece of inline documentation behaves like a modal even though it should not interrupt the page.
+
+## Build the mental model
+
+Use details/summary for inline disclosures, the Popover API for transient non-modal hints, and dialog.showModal() for interactions requiring a modal with background inertness. Native controls provide important keyboard and focus behavior, but accessible names and sensible close actions still matter. A modal dialog needs a descriptive name, and focus should return to the opener. The showModal method requires JavaScript; declarative popover buttons and details can work without it. A popover is not a substitute for a real modal.
+
+**Predict before running:** Does a native modal dialog make the rest of the page interactable while open? No: showModal makes the rest of the document inert to interaction.
+
+## Prerequisites
+
+Complete [the previous lesson](/learn/01.02.05). Use an offline browser and the repository's HTML starter fixture with Node.js 24 for tests. No real user data, cloud accounts, or server-side submission is needed.
+
+<LessonStep number={1} title={"Use details for optional inline explanation"} file="labs/forms-native-dialog/starter/index.html" expected={"The description expands and collapses through native summary activation."}>
+
+The summary remains visible and keyboard-operable even without JavaScript.
+
+```html
+<details>
+  <summary>What should I prepare?</summary>
+  <p>Bring a notebook and a clear question.</p>
+</details>
+```
+
+</LessonStep>
+
+<LessonStep number={2} title={"Create a non-modal help popover"} file="labs/forms-native-dialog/starter/index.html" expected={"The popover appears without locking access to the rest of the page."}>
+
+The popovertarget button controls a lightweight in-page hint.
+
+```html
+<button type="button" popovertarget="help-popover">Show quick tip</button>
+<div id="help-popover" popover="auto">Check the event schedule before arrival.</div>
+```
+
+</LessonStep>
+
+<LessonStep number={3} title={"Open and close a real named modal"} file="labs/forms-native-dialog/starter/index.html" expected={"The dialog receives modal focus and closes through its native form or Escape."}>
+
+Use showModal and a native method=dialog close form; Escape also requests dismissal.
+
+```js
+<button type="button" id="open-settings">Open settings</button>
+<dialog id="settings-dialog" aria-labelledby="settings-heading">
+  <h2 id="settings-heading">Workshop preferences</h2>
+  <form method="dialog"><button type="submit">Close settings</button></form>
+</dialog>
+<script>document.querySelector('#open-settings').addEventListener('click',()=>document.querySelector('#settings-dialog').showModal());</script>
+```
+
+</LessonStep>
+
+## Explore it yourself
+
+Open `labs/forms-native-dialog/starter/index.html` in Chromium and use only your keyboard for at least one complete interaction. Inspect the accessibility tree, form validity or event behavior relevant to the lesson. Compare with `labs/forms-native-dialog/solution/index.html`. When a file picker is involved use synthetic files only; never upload private content to a tutorial.
+
+<Misconception claim={"Every help message should be displayed as a modal dialog."} correction={"Non-modal hints and inline details reduce interruption and use native semantics appropriate to their purpose."} />
+
+## Bug Hunt: diagnose and repair the behavior
+
+A custom modal opens but the keyboard can still tab into controls behind it. Replace it with showModal on a named dialog, then test Escape closure and focus restoration.
+
+<KnowledgeCheck question={"Which native element is best for an optional inline text explanation?"} choices={["`details` with `summary`","A modal dialog for every paragraph","A radio input","A hidden iframe"]} correctIndex={0} explanation={"Details provides a native inline disclosure pattern without requiring JavaScript."} misconception={"A modal should be reserved for interruptions requiring a modal interaction."} lessonId="01.02.06" />
+
+## Guided local lab
+
+Implement the exercise in `labs/forms-native-dialog/starter/index.html`; instructor solution is in `labs/forms-native-dialog/solution/index.html`. Test **your starter** with:
+
+```powershell
+$env:ACADEMY_LAB_TARGET = 'starter'
+npm run lab:forms-native-dialog
+Remove-Item Env:ACADEMY_LAB_TARGET
+```
+
+In Bash: `ACADEMY_LAB_TARGET=starter npm run lab:forms-native-dialog`. The starter fails initially; pass its checks by repairing the actual markup and behavior. Default scripts test the instructor solution; the browser smoke suite separately checks behavior. Do not claim that a local preview saves or transmits data.
+
+<LabGate lessonId="01.02.06" labId="lab.foundation.forms-native-dialog" commands={["npm ci","npm run lab:forms-native-dialog"]} interactive={false} />
+
+## Reflect
+
+Record the original failure, expected browser behavior, actual observed result, and why the fix uses native semantics or targeted JavaScript. Explain what remains a real backend's responsibility.
+
+## Official references
+
+- [MDN dialog reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/dialog)
+- [MDN popover API](https://developer.mozilla.org/en-US/docs/Web/API/Popover_API)

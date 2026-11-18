@@ -1,0 +1,92 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Distinguish input from change and submit events","Observe event names without leaking private input values","Use preventDefault on a valid local form submission only","Preserve native keyboard behavior and independent button actions"]} />
+
+## The problem we're solving
+
+A form's click handler prevents every default action and stops keyboard submission. Another listener records raw email and password values to a debug log. Event handling should observe the correct event and prevent only the action you intend to replace.
+
+## Build the mental model
+
+The input event fires as a value is edited, while change generally represents a committed selection or edit and has different timing across controls. Submit belongs to a form rather than the clicked button, and normal validation prevents invalid submission. Event listeners can observe capture or bubble phases; stopPropagation affects other listeners and is not a substitute for preventDefault. Use preventDefault only when intentionally taking over a default action such as a local demo submission. A simple diagnostic should log event names and control identifiers, never private field contents.
+
+**Predict before running:** If a submit button is activated while a required field is empty, will the form's submit event necessarily fire? No: native validation ordinarily blocks submission first.
+
+## Prerequisites
+
+Complete [the previous lesson](/learn/01.02.06). Use an offline browser and the repository's HTML starter fixture with Node.js 24 for tests. No real user data, cloud accounts, or server-side submission is needed.
+
+<LessonStep number={1} title={"Attach listeners to the form and controls"} file="labs/forms-events/starter/index.html" expected={"The display reports which event occurred and its control name, not the entered data."}>
+
+Observe event names, not user-entered values.
+
+```js
+form.addEventListener('input',event=>{
+  status.textContent='Last event: input ('+event.target.name+')';
+});
+form.addEventListener('change',event=>{
+  status.textContent='Last event: change ('+event.target.name+')';
+});
+```
+
+</LessonStep>
+
+<LessonStep number={2} title={"Intercept only the local demo submission"} file="labs/forms-events/starter/index.html" expected={"Valid Enter and button submission show the same status, with no navigation."}>
+
+Use the form submit event rather than a button click to preserve Enter-key submission.
+
+```js
+form.addEventListener('submit',event=>{
+  event.preventDefault();
+  status.textContent='Local submission prevented; no data sent.';
+});
+```
+
+</LessonStep>
+
+<LessonStep number={3} title={"Keep helper buttons independent"} file="labs/forms-events/starter/index.html" expected={"The clear action leaves the form fields and URL intact."}>
+
+A helper button uses type=button so it cannot accidentally submit.
+
+```html
+<button type="submit">Review changes</button>
+<button type="button" id="clear-log">Clear event summary</button>
+```
+
+</LessonStep>
+
+## Explore it yourself
+
+Open `labs/forms-events/starter/index.html` in Chromium and use only your keyboard for at least one complete interaction. Inspect the accessibility tree, form validity or event behavior relevant to the lesson. Compare with `labs/forms-events/solution/index.html`. When a file picker is involved use synthetic files only; never upload private content to a tutorial.
+
+<Misconception claim={"Clicking a submit button and submitting a form are identical events."} correction={"Submit belongs to the form and can also be triggered by Enter; its native validation happens before normal submission."} />
+
+## Bug Hunt: diagnose and repair the behavior
+
+The developer listens only for button clicks. A user submits by pressing Enter and bypasses the debug status. Listen for the form's submit event and preserve native validation.
+
+<KnowledgeCheck question={"Which event is generally emitted as a text input is edited?"} choices={["`submit`","`input`","`load`","`close`"]} correctIndex={1} explanation={"Input reports editing changes, while submit represents a form submission attempt after native validation."} misconception={"Change timing differs depending on the type of control."} lessonId="01.02.07" />
+
+## Guided local lab
+
+Implement the exercise in `labs/forms-events/starter/index.html`; instructor solution is in `labs/forms-events/solution/index.html`. Test **your starter** with:
+
+```powershell
+$env:ACADEMY_LAB_TARGET = 'starter'
+npm run lab:forms-events
+Remove-Item Env:ACADEMY_LAB_TARGET
+```
+
+In Bash: `ACADEMY_LAB_TARGET=starter npm run lab:forms-events`. The starter fails initially; pass its checks by repairing the actual markup and behavior. Default scripts test the instructor solution; the browser smoke suite separately checks behavior. Do not claim that a local preview saves or transmits data.
+
+<LabGate lessonId="01.02.07" labId="lab.foundation.forms-events" commands={["npm ci","npm run lab:forms-events"]} interactive={false} />
+
+## Reflect
+
+Record the original failure, expected browser behavior, actual observed result, and why the fix uses native semantics or targeted JavaScript. Explain what remains a real backend's responsibility.
+
+## Official references
+
+- [MDN input event](https://developer.mozilla.org/en-US/docs/Web/API/Element/input_event)
+- [MDN submit event](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormElement/submit_event)

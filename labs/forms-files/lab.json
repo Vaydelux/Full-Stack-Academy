@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.forms-files",
+  "lessonId": "01.02.05",
+  "title": "File inputs",
+  "runtime": "browser-html-and-node-24",
+  "status": "authored",
+  "starter": "labs/forms-files/starter/index.html",
+  "solution": "labs/forms-files/solution/index.html",
+  "tests": "labs/forms-files/solution.test.mjs",
+  "verify": [
+    "npm run lab:forms-files"
+  ],
+  "expected": "I confirmed there is no network upload and identified server verification requirements.",
+  "security": "Standalone offline HTML/browser exercise only. No uploads, remote submissions, account persistence, or arbitrary user code on server. Chromium tests real keyboard and validation behavior."
+}
