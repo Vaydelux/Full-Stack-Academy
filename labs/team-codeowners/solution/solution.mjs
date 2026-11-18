@@ -1,0 +1,1 @@
+export function solve(file,rules){if(typeof file!=='string'||!Array.isArray(rules))throw new TypeError('Path/rules required');let owner=null;for(const rule of rules){const pattern=rule.pattern;const match=pattern==='*'||(pattern.endsWith('/**')?file.startsWith(pattern.slice(0,-2)):file===pattern.replace(/^\//,''));if(match)owner=rule.owner;}return owner;}

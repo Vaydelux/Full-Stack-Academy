@@ -1,0 +1,91 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Explain semantic versioning as an engineering policy, not a magic Git behavior","Reproduce the insufficient starter policy with concrete counterexamples","Apply the rule to representative team inputs and document real hosting limitations"]} />
+
+## The problem we're solving
+
+A version calculator treats every change as a patch, even when an incompatible API is removed. The lesson uses synthetic local data; passing its test does not configure actual branch protection or trigger a release.
+
+## Build the mental model
+
+Semantic Versioning expresses MAJOR.MINOR.PATCH for incompatible API changes, backward-compatible functionality and bug fixes respectively. Pre-1.0 has different stability expectations, so this lab explicitly models stable 1.0+ versions only and rejects ambiguous pre-release strings.
+
+**Predict before running:** Breaking changes bump the major, new compatible features bump minor, and fixes bump patch.
+
+## Prerequisites and preflight
+
+Continue from [the previous lesson](/learn/05.02.05). Compare `labs/team-semver/starter/solution.mjs`, the instructor module and the actual test. Node 24 runs the verifier without GitHub credentials, hosted CI or a Vercel deployment.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce a misleading team policy" file="labs/team-semver/starter/solution.mjs" expected="At least one test falsifies the original policy decision.">
+
+```js
+export function solve(version,change){const [a,b,c]=version.split('.').map(Number);return a+'.'+b+'.'+(c+1);}
+```
+
+**Predict before running:** A version calculator treats every change as a patch, even when an incompatible API is removed.
+
+**Why it fails:** Semantic Versioning expresses MAJOR.MINOR.PATCH for incompatible API changes, backward-compatible functionality and bug fixes respectively. Pre-1.0 has different stability expectations, so this lab explicitly models stable 1.0+ versions only and rejects ambiguous pre-release strings.
+
+**Proof:** Run `ACADEMY_LAB_TARGET=starter npm run lab:team-semver` locally. Identify which case would mislead a real reviewer or releaser.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the explicit review or release contract" file="labs/team-semver/starter/solution.mjs" expected={"Breaking changes bump the major, new compatible features bump minor, and fixes bump patch."}>
+
+Prefer an explicit result and a narrow, auditable policy; do not invent remote approvals or call an external API.
+
+```js
+export function solve(version,change){if(typeof version!=='string'||!['breaking','feature','fix'].includes(change)||!/^\d+\.\d+\.\d+$/.test(version))throw new TypeError('Stable semver and change required');const [major,minor,patch]=version.split('.').map(Number);if(major<1||![major,minor,patch].every(Number.isSafeInteger))throw new RangeError('Stable major >=1 required');return change==='breaking'?((major+1)+'.0.0'):change==='feature'?(major+'.'+(minor+1)+'.0'):(major+'.'+minor+'.'+(patch+1));}
+```
+
+**Predict before running:** Breaking changes bump the major, new compatible features bump minor, and fixes bump patch.
+
+**Why the repair works:** Semantic Versioning expresses MAJOR.MINOR.PATCH for incompatible API changes, backward-compatible functionality and bug fixes respectively. Pre-1.0 has different stability expectations, so this lab explicitly models stable 1.0+ versions only and rejects ambiguous pre-release strings.
+
+**Proof:** Run the same independent test after editing; a green result demonstrates this local policy only.
+
+</LessonStep>
+
+<LessonStep number={3} title="Test both positive and negative outcomes" file="labs/team-semver/solution.test.mjs" expected="Passes a precise expected-output contract and rejects a misleading or invalid case.">
+
+```js
+assert.equal(solve('1.4.2','breaking'),'2.0.0');assert.equal(solve('1.4.2','feature'),'1.5.0');assert.equal(solve('1.4.2','fix'),'1.4.3');assert.throws(()=>solve('0.5.0','breaking'),RangeError);
+```
+
+**Predict before running:** The corrected policy distinguishes reviewable, unreviewed and invalid inputs.
+
+**Why it matters:** Branch protection, reviewer permissions, remote signatures and provenance are external guarantees; local policy simulation cannot establish them.
+
+**Proof:** Run `npm run lab:team-semver` and inspect the failure messages when targeting the starter.
+
+</LessonStep>
+
+## Explore and verify
+
+Examine which claims require a real Git provider, peer review, or release manager. Separate static analysis from runtime security: a formatted commit message, changelog or status result is not proof of secure code. Avoid public deployment while the academy's release hold remains active.
+
+<Misconception claim="Passing a local review policy automatically proves a hosted pull request is approved and safe to merge." correction={"Semantic Versioning expresses MAJOR.MINOR.PATCH for incompatible API changes, backward-compatible functionality and bug fixes respectively. Pre-1.0 has different stability expectations, so this lab explicitly models stable 1.0+ versions only and rejects ambiguous pre-release strings."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+Use the concrete counterexample in the test, identify the missing condition, and correct the smallest rule. Discuss whether human judgement, a required status check, a provider-owned setting, or real credential rotation is still needed.
+
+<KnowledgeCheck question={"What SemVer bump typically represents a backwards-incompatible stable API change?"} choices={["Patch","Minor","Major","No change"]} correctIndex={2} explanation={"Semantic Versioning expresses MAJOR.MINOR.PATCH for incompatible API changes, backward-compatible functionality and bug fixes respectively. Pre-1.0 has different stability expectations, so this lab explicitly models stable 1.0+ versions only and rejects ambiguous pre-release strings."} misconception="Review and release workflows need explicit evidence and trust boundaries." lessonId="05.02.06" />
+
+## Guided local lab
+
+Edit `labs/team-semver/starter/solution.mjs`, compare with the instructor after your own attempt, and run the same offline test. The exercise never changes real repository settings or executes remote CI.
+
+<LabGate lessonId="05.02.06" labId="lab.foundation.team-semver" commands={["npm ci","npm run lab:team-semver"]} interactive={false} />
+
+## Reflect
+
+How could a passing but stale CI check or a misleading review note affect production? What local evidence would you collect, and what separate hosted review or security action must happen before release?
+
+## Official references
+
+- [Primary official reference](https://semver.org/)
+- [Supporting official reference](https://docs.npmjs.com/about-semantic-versioning)

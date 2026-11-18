@@ -1,0 +1,4 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+const {solve}=await import(new URL('./'+(process.env.ACADEMY_LAB_TARGET==='starter'?'starter':'solution')+'/solution.mjs',import.meta.url));
+test("Trunk-based development — policy regression",()=>{const branches=[{name:'main',ageDays:5,reviewed:true,hasConflicts:false},{name:'feature/old',ageDays:5,reviewed:true,hasConflicts:false},{name:'feature/new',ageDays:1,reviewed:true,hasConflicts:false},{name:'feature/conflict',ageDays:1,reviewed:true,hasConflicts:true},{name:'feature/unreviewed',ageDays:1,reviewed:false,hasConflicts:false}];assert.deepEqual(solve(branches),[{branch:'feature/old',reason:'stale'},{branch:'feature/conflict',reason:'conflicts'},{branch:'feature/unreviewed',reason:'unreviewed'}]);assert.deepEqual(solve([]),[]);});

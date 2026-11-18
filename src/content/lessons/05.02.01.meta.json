@@ -1,0 +1,38 @@
+{
+  "id": "05.02.01",
+  "title": "Trunk-based development",
+  "description": "Practice trunk-based development using a checkable offline policy or disposable Git repository, a failing starter, and an independently verified repair.",
+  "trackId": "05",
+  "moduleId": "05.02",
+  "level": "Beginner",
+  "estimatedMinutes": 55,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "05.01.08"
+  ],
+  "objectives": [
+    "Explain trunk-based development as an engineering policy, not a magic Git behavior",
+    "Reproduce the insufficient starter policy with concrete counterexamples",
+    "Apply the rule to representative team inputs and document real hosting limitations"
+  ],
+  "labId": "lab.foundation.team-trunk-policy",
+  "sources": [
+    {
+      "label": "Official team engineering reference",
+      "url": "https://trunkbaseddevelopment.com/"
+    },
+    {
+      "label": "Official collaboration or release reference",
+      "url": "https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches"
+    }
+  ],
+  "rubric": [
+    "I reproduce the trunk-based development policy failure.",
+    "I can explain which policy is enforced locally versus by a Git host.",
+    "I demonstrate a passing repaired implementation and one negative edge case."
+  ]
+}

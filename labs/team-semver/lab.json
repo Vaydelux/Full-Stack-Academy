@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.team-semver",
+  "lessonId": "05.02.06",
+  "title": "Semantic versioning",
+  "runtime": "node-24-policy-and-local-git",
+  "status": "authored",
+  "starter": "labs/team-semver/starter/solution.mjs",
+  "solution": "labs/team-semver/solution/solution.mjs",
+  "tests": "labs/team-semver/solution.test.mjs",
+  "verify": [
+    "npm run lab:team-semver"
+  ],
+  "expected": "Offline semantic versioning scenarios demonstrate reviewed policy decisions without calling a remote service.",
+  "security": "All examples run offline with synthetic names, SHAs and placeholders. No actual secret, GitHub account, deployments, arbitrary network calls, service tokens or external writes."
+}

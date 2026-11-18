@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.team-secret-exposure",
+  "lessonId": "05.02.08",
+  "title": "Bug Hunt accidental secret commit",
+  "runtime": "node-24-policy-and-local-git",
+  "status": "authored",
+  "starter": "labs/team-secret-exposure/starter/solution.mjs",
+  "solution": "labs/team-secret-exposure/solution/solution.mjs",
+  "tests": "labs/team-secret-exposure/solution.test.mjs",
+  "verify": [
+    "npm run lab:team-secret-exposure"
+  ],
+  "expected": "Offline bug hunt accidental secret commit scenarios demonstrate reviewed policy decisions without calling a remote service.",
+  "security": "All examples run offline with synthetic names, SHAs and placeholders. No actual secret, GitHub account, deployments, arbitrary network calls, service tokens or external writes."
+}

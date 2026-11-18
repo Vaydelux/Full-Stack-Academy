@@ -1,0 +1,91 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Explain review comments and rationale as an engineering policy, not a magic Git behavior","Reproduce the insufficient starter policy with concrete counterexamples","Apply the rule to representative team inputs and document real hosting limitations"]} />
+
+## The problem we're solving
+
+A code review says looks wrong without explaining the failure, impact or actionable correction. The lesson uses synthetic local data; passing its test does not configure actual branch protection or trigger a release.
+
+## Build the mental model
+
+Useful review comments connect an observable symptom to an impact and a specific repair or question, while distinguishing required changes from suggestions. An actionable review note does not need inflammatory language or subjective style preferences, and tooling alone cannot certify collaborative quality.
+
+**Predict before running:** A review comment cites a precise location, observed behavior, risk and proposed remediation.
+
+## Prerequisites and preflight
+
+Continue from [the previous lesson](/learn/05.02.03). Compare `labs/team-review-rationale/starter/solution.mjs`, the instructor module and the actual test. Node 24 runs the verifier without GitHub credentials, hosted CI or a Vercel deployment.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce a misleading team policy" file="labs/team-review-rationale/starter/solution.mjs" expected="At least one test falsifies the original policy decision.">
+
+```js
+export function solve(change){return 'LGTM';}
+```
+
+**Predict before running:** A code review says looks wrong without explaining the failure, impact or actionable correction.
+
+**Why it fails:** Useful review comments connect an observable symptom to an impact and a specific repair or question, while distinguishing required changes from suggestions. An actionable review note does not need inflammatory language or subjective style preferences, and tooling alone cannot certify collaborative quality.
+
+**Proof:** Run `ACADEMY_LAB_TARGET=starter npm run lab:team-review-rationale` locally. Identify which case would mislead a real reviewer or releaser.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the explicit review or release contract" file="labs/team-review-rationale/starter/solution.mjs" expected={"A review comment cites a precise location, observed behavior, risk and proposed remediation."}>
+
+Prefer an explicit result and a narrow, auditable policy; do not invent remote approvals or call an external API.
+
+```js
+export function solve(change){if(!change||typeof change.file!=='string'||!change.file.trim()||!Number.isInteger(change.line)||change.line<1||typeof change.symptom!=='string'||!change.symptom.trim()||typeof change.impact!=='string'||!change.impact.trim()||typeof change.proposal!=='string'||!change.proposal.trim())return null;return {location:change.file+':'+change.line,comment:'Observed: '+change.symptom+' Impact: '+change.impact+' Suggested change: '+change.proposal};}
+```
+
+**Predict before running:** A review comment cites a precise location, observed behavior, risk and proposed remediation.
+
+**Why the repair works:** Useful review comments connect an observable symptom to an impact and a specific repair or question, while distinguishing required changes from suggestions. An actionable review note does not need inflammatory language or subjective style preferences, and tooling alone cannot certify collaborative quality.
+
+**Proof:** Run the same independent test after editing; a green result demonstrates this local policy only.
+
+</LessonStep>
+
+<LessonStep number={3} title="Test both positive and negative outcomes" file="labs/team-review-rationale/solution.test.mjs" expected="Passes a precise expected-output contract and rejects a misleading or invalid case.">
+
+```js
+const reviewed=solve({file:'src/api.ts',line:14,symptom:'timeout not handled',impact:'request hangs',proposal:'abort at 3s'});assert.deepEqual(reviewed,{location:'src/api.ts:14',comment:'Observed: timeout not handled Impact: request hangs Suggested change: abort at 3s'});assert.equal(solve({file:'src/api.ts',line:14,symptom:'',impact:'bad',proposal:'fix'}),null);
+```
+
+**Predict before running:** The corrected policy distinguishes reviewable, unreviewed and invalid inputs.
+
+**Why it matters:** Branch protection, reviewer permissions, remote signatures and provenance are external guarantees; local policy simulation cannot establish them.
+
+**Proof:** Run `npm run lab:team-review-rationale` and inspect the failure messages when targeting the starter.
+
+</LessonStep>
+
+## Explore and verify
+
+Examine which claims require a real Git provider, peer review, or release manager. Separate static analysis from runtime security: a formatted commit message, changelog or status result is not proof of secure code. Avoid public deployment while the academy's release hold remains active.
+
+<Misconception claim="Passing a local review policy automatically proves a hosted pull request is approved and safe to merge." correction={"Useful review comments connect an observable symptom to an impact and a specific repair or question, while distinguishing required changes from suggestions. An actionable review note does not need inflammatory language or subjective style preferences, and tooling alone cannot certify collaborative quality."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+Use the concrete counterexample in the test, identify the missing condition, and correct the smallest rule. Discuss whether human judgement, a required status check, a provider-owned setting, or real credential rotation is still needed.
+
+<KnowledgeCheck question={"What makes a review comment most actionable?"} choices={["An unexplained thumbs-down","Concrete observation, impact and a suggested change","Only a broad stylistic opinion","Approval before checking the diff"]} correctIndex={1} explanation={"Useful review comments connect an observable symptom to an impact and a specific repair or question, while distinguishing required changes from suggestions. An actionable review note does not need inflammatory language or subjective style preferences, and tooling alone cannot certify collaborative quality."} misconception="Review and release workflows need explicit evidence and trust boundaries." lessonId="05.02.04" />
+
+## Guided local lab
+
+Edit `labs/team-review-rationale/starter/solution.mjs`, compare with the instructor after your own attempt, and run the same offline test. The exercise never changes real repository settings or executes remote CI.
+
+<LabGate lessonId="05.02.04" labId="lab.foundation.team-review-rationale" commands={["npm ci","npm run lab:team-review-rationale"]} interactive={false} />
+
+## Reflect
+
+How could a passing but stale CI check or a misleading review note affect production? What local evidence would you collect, and what separate hosted review or security action must happen before release?
+
+## Official references
+
+- [Primary official reference](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/reviewing-changes-in-pull-requests/about-pull-request-reviews)
+- [Supporting official reference](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/reviewing-changes-in-pull-requests/commenting-on-a-pull-request)

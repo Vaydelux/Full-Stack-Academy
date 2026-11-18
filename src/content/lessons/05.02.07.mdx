@@ -1,0 +1,91 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Explain changelogs and releases as an engineering policy, not a magic Git behavior","Reproduce the insufficient starter policy with concrete counterexamples","Apply the rule to representative team inputs and document real hosting limitations"]} />
+
+## The problem we're solving
+
+Release notes omit bug fixes and include internal build-maintenance commits as user-visible features. The lesson uses synthetic local data; passing its test does not configure actual branch protection or trigger a release.
+
+## Build the mental model
+
+A changelog summarizes user-visible changes grouped by version and category rather than reproducing the entire commit log. Conventional messages help classification, but release notes still require human editorial review for impact, migration steps and known issues. This example intentionally produces local Markdown only.
+
+**Predict before running:** The release notes include features and fixes grouped in readable sections, excluding purely internal chores.
+
+## Prerequisites and preflight
+
+Continue from [the previous lesson](/learn/05.02.06). Compare `labs/team-changelog/starter/solution.mjs`, the instructor module and the actual test. Node 24 runs the verifier without GitHub credentials, hosted CI or a Vercel deployment.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce a misleading team policy" file="labs/team-changelog/starter/solution.mjs" expected="At least one test falsifies the original policy decision.">
+
+```js
+export function solve(version,commits){return '# '+version+'\n'+commits.filter(c=>c.startsWith('feat:')).join('\n');}
+```
+
+**Predict before running:** Release notes omit bug fixes and include internal build-maintenance commits as user-visible features.
+
+**Why it fails:** A changelog summarizes user-visible changes grouped by version and category rather than reproducing the entire commit log. Conventional messages help classification, but release notes still require human editorial review for impact, migration steps and known issues. This example intentionally produces local Markdown only.
+
+**Proof:** Run `ACADEMY_LAB_TARGET=starter npm run lab:team-changelog` locally. Identify which case would mislead a real reviewer or releaser.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the explicit review or release contract" file="labs/team-changelog/starter/solution.mjs" expected={"The release notes include features and fixes grouped in readable sections, excluding purely internal chores."}>
+
+Prefer an explicit result and a narrow, auditable policy; do not invent remote approvals or call an external API.
+
+```js
+export function solve(version,commits){if(typeof version!=='string'||!Array.isArray(commits))throw new TypeError('Version/commits required');const items=commits.map(c=>/^(feat|fix): (.+)$/.exec(c)).filter(Boolean);const groups=[['feat','Added'],['fix','Fixed']];return ['## '+version,...groups.flatMap(([type,heading])=>{const lines=items.filter(m=>m[1]===type).map(m=>'- '+m[2]);return lines.length?['### '+heading,...lines]:[];})].join('\n')+'\n';}
+```
+
+**Predict before running:** The release notes include features and fixes grouped in readable sections, excluding purely internal chores.
+
+**Why the repair works:** A changelog summarizes user-visible changes grouped by version and category rather than reproducing the entire commit log. Conventional messages help classification, but release notes still require human editorial review for impact, migration steps and known issues. This example intentionally produces local Markdown only.
+
+**Proof:** Run the same independent test after editing; a green result demonstrates this local policy only.
+
+</LessonStep>
+
+<LessonStep number={3} title="Test both positive and negative outcomes" file="labs/team-changelog/solution.test.mjs" expected="Passes a precise expected-output contract and rejects a misleading or invalid case.">
+
+```js
+assert.equal(solve('1.2.0',['feat: add search','fix: repair login','chore: ci tuning']),'## 1.2.0\n### Added\n- add search\n### Fixed\n- repair login\n');assert.equal(solve('1.0.0',[]),'## 1.0.0\n');
+```
+
+**Predict before running:** The corrected policy distinguishes reviewable, unreviewed and invalid inputs.
+
+**Why it matters:** Branch protection, reviewer permissions, remote signatures and provenance are external guarantees; local policy simulation cannot establish them.
+
+**Proof:** Run `npm run lab:team-changelog` and inspect the failure messages when targeting the starter.
+
+</LessonStep>
+
+## Explore and verify
+
+Examine which claims require a real Git provider, peer review, or release manager. Separate static analysis from runtime security: a formatted commit message, changelog or status result is not proof of secure code. Avoid public deployment while the academy's release hold remains active.
+
+<Misconception claim="Passing a local review policy automatically proves a hosted pull request is approved and safe to merge." correction={"A changelog summarizes user-visible changes grouped by version and category rather than reproducing the entire commit log. Conventional messages help classification, but release notes still require human editorial review for impact, migration steps and known issues. This example intentionally produces local Markdown only."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+Use the concrete counterexample in the test, identify the missing condition, and correct the smallest rule. Discuss whether human judgement, a required status check, a provider-owned setting, or real credential rotation is still needed.
+
+<KnowledgeCheck question={"What should a high-quality changelog emphasize?"} choices={["Only raw Git SHAs","Meaningful user-visible additions, fixes, breaking changes and migration notes","Every local uncommitted file","Only GitHub Actions output"]} correctIndex={1} explanation={"A changelog summarizes user-visible changes grouped by version and category rather than reproducing the entire commit log. Conventional messages help classification, but release notes still require human editorial review for impact, migration steps and known issues. This example intentionally produces local Markdown only."} misconception="Review and release workflows need explicit evidence and trust boundaries." lessonId="05.02.07" />
+
+## Guided local lab
+
+Edit `labs/team-changelog/starter/solution.mjs`, compare with the instructor after your own attempt, and run the same offline test. The exercise never changes real repository settings or executes remote CI.
+
+<LabGate lessonId="05.02.07" labId="lab.foundation.team-changelog" commands={["npm ci","npm run lab:team-changelog"]} interactive={false} />
+
+## Reflect
+
+How could a passing but stale CI check or a misleading review note affect production? What local evidence would you collect, and what separate hosted review or security action must happen before release?
+
+## Official references
+
+- [Primary official reference](https://keepachangelog.com/en/1.1.0/)
+- [Supporting official reference](https://www.conventionalcommits.org/en/v1.0.0/)
