@@ -1,6 +1,6 @@
 {
   "id": "01.02.05",
-  "title": "File inputs",
+  "title": "File inputs and safe local previews",
   "description": "Use a labeled file control with accept hints, multipart semantics and defensive local file validation without uploading any content.",
   "trackId": "01",
   "moduleId": "01.02",
