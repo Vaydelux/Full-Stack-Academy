@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.js-delegation",
+  "lessonId": "03.04.02",
+  "title": "Event delegation",
+  "runtime": "browser-html-node-24",
+  "status": "authored",
+  "starter": "labs/js-delegation/starter/index.html",
+  "solution": "labs/js-delegation/solution/index.html",
+  "tests": "labs/js-delegation/solution.test.mjs",
+  "verify": [
+    "npm run lab:js-delegation"
+  ],
+  "expected": "The event delegation interaction works with real DOM or native browser facilities, and local unit tests pass.",
+  "security": "Standalone synthetic HTML and local JS; no remote scripts/requests, tokens, external user data, telemetry or uploads."
+}

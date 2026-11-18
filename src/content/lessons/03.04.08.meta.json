@@ -1,0 +1,38 @@
+{
+  "id": "03.04.08",
+  "title": "Lab accessible interactive widget",
+  "description": "Practice lab accessible interactive widget through a self-contained HTML browser interaction, a failing starter, a corrected solution and repeatable regression checks.",
+  "trackId": "03",
+  "moduleId": "03.04",
+  "level": "Beginner",
+  "estimatedMinutes": 80,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "03.04.07"
+  ],
+  "objectives": [
+    "Explain lab accessible interactive widget in real browser state and semantics",
+    "Repair the broken DOM interaction without unsafe HTML insertion",
+    "Verify the interaction via local Node assertions and Chromium behavioral checks"
+  ],
+  "labId": "lab.foundation.js-widget",
+  "sources": [
+    {
+      "label": "Official MDN or WAI guide",
+      "url": "https://www.w3.org/WAI/ARIA/apg/patterns/tabs/"
+    },
+    {
+      "label": "Official browser API or accessibility reference",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Roles/tab_role"
+    }
+  ],
+  "rubric": [
+    "I can reproduce the original lab accessible interactive widget failure.",
+    "I can explain the DOM state and keyboard semantics of the repair.",
+    "I validate the page in a real browser, not only through source-text checks."
+  ]
+}

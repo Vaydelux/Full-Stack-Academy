@@ -1,0 +1,96 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Explain dom selection and events in real browser state and semantics","Repair the broken DOM interaction without unsafe HTML insertion","Verify the interaction via local Node assertions and Chromium behavioral checks"]} />
+
+## The problem we're solving
+
+A click handler updates a variable but never updates the accessible output displayed in the document. Browser Interaction topics require both executable JavaScript logic and a real local HTML document. The fixture uses synthetic content with no external scripts, endpoints or data uploads.
+
+## Build the mental model
+
+querySelector locates a DOM element and addEventListener subscribes to an explicit event. Changing a JavaScript variable does not update the DOM until code assigns a safe property such as textContent. Native buttons already support keyboard activation.
+
+**Predict before running:** Activating the native button announces an incremented numerical status.
+
+## Prerequisites and preflight
+
+Continue from [the previous lesson](/learn/03.03.08). Open `labs/js-dom/starter/index.html` in a modern browser, and inspect the DOM, active element, URL and accessibility tree as relevant. Node.js 24 runs the isolated logic assertions; Chromium provides behavior checks across real DOM interactions. Avoid editing the instructor fixture.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the browser interaction defect" file="labs/js-dom/starter/index.html" expected={"A click handler updates a variable but never updates the accessible output displayed in the document."}>
+
+Observe the starter with keyboard and pointer input, then inspect what actually changes in the DOM. The sample contains the following intentionally defective handler:
+
+```js
+let count=0;document.querySelector('#add').addEventListener('click',()=>{count++;});
+```
+
+**Predict before running:** A click handler updates a variable but never updates the accessible output displayed in the document.
+
+**Why it fails:** querySelector locates a DOM element and addEventListener subscribes to an explicit event. Changing a JavaScript variable does not update the DOM until code assigns a safe property such as textContent. Native buttons already support keyboard activation.
+
+**Proof:** Click the button twice and inspect output.textContent; verify keyboard activation with Enter.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the browser-safe interaction" file="labs/js-dom/starter/index.html" expected={"Activating the native button announces an incremented numerical status."}>
+
+Replace the defective handler without discarding native elements or semantics. For untrusted content use `textContent`, not an unsafe HTML sink.
+
+```js
+let count=0;document.querySelector('#add').addEventListener('click',()=>{count++;document.querySelector('#status').textContent=String(count);});
+```
+
+**Predict before running:** Activating the native button announces an incremented numerical status.
+
+**Why the repair works:** querySelector locates a DOM element and addEventListener subscribes to an explicit event. Changing a JavaScript variable does not update the DOM until code assigns a safe property such as textContent. Native buttons already support keyboard activation.
+
+**Proof:** Compare the resulting DOM and accessibility state to the instructor `solution/index.html` using the same input.
+
+</LessonStep>
+
+<LessonStep number={3} title="Test the state and boundary cases" file="labs/js-dom/solution.test.mjs" expected="Local logic tests and browser behavior checks agree under normal and edge cases.">
+
+The core logic has a separate module with executable assertions, while the HTML fixture validates DOM binding and keyboard interactions.
+
+```js
+export function solve(count){if(!Number.isInteger(count)||count<0)throw new TypeError('Nonnegative count required');return count+1;}
+assert.equal(solve(0),1);assert.equal(solve(9),10);assert.throws(()=>solve(-1),TypeError);
+```
+
+**Predict before running:** Activating the native button announces an incremented numerical status.
+
+**Why it matters:** A passing algorithmic unit test does not prove its DOM wiring; use Chromium to exercise the actual handler.
+
+**Proof:** Click the button twice and inspect output.textContent; verify keyboard activation with Enter.
+
+</LessonStep>
+
+## Explore and verify
+
+Test browser refresh, narrow widths, Tab and Enter where applicable, and the difference between browser storage and remote persistence. Check event listener scope, validation, and content injection risks. Any performance timings are measured at runtime rather than invented.
+
+<Misconception claim="If a pure JavaScript function returns the right value, the browser widget must also be accessible and secure." correction={"querySelector locates a DOM element and addEventListener subscribes to an explicit event. Changing a JavaScript variable does not update the DOM until code assigns a safe property such as textContent. Native buttons already support keyboard activation."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+Start from the visible broken behavior. Identify the missing DOM update, event delegation, validation, URL state, storage policy or safe DOM sink. Repair the smallest handler. Demonstrate before/after behavior and keyboard input with the same test sequence.
+
+<KnowledgeCheck question={"How should dynamic plain text be written to a DOM node?"} choices={["Use textContent","Concatenate an HTML string into innerHTML","Write to a global variable only","Manipulate CSS selectors without DOM changes"]} correctIndex={0} explanation={"querySelector locates a DOM element and addEventListener subscribes to an explicit event. Changing a JavaScript variable does not update the DOM until code assigns a safe property such as textContent. Native buttons already support keyboard activation."} misconception="DOM updates and accessibility behavior require browser observation beyond code syntax." lessonId="03.04.01" />
+
+## Guided local lab
+
+Edit `labs/js-dom/starter/index.html`; compare with `labs/js-dom/solution/index.html`. Run the Node contract verifier with `npm run lab:js-dom` (or target the starter with `ACADEMY_LAB_TARGET=starter`). The academy Chromium smoke test covers actual browser behavior. No cloud API, automated public grading or server persistence is provided.
+
+<LabGate lessonId="03.04.01" labId="lab.foundation.js-dom" commands={["npm ci","npm run lab:js-dom"]} interactive={false} />
+
+## Reflect
+
+Which native browser facility did the starter ignore? What could a malicious input, cancelled request, page refresh, or keyboard user reveal? Name a browser-engine limitation not exercised by this local fixture.
+
+## Official references
+
+- [Browser API reference](https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelector)
+- [Official supporting reference](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener)

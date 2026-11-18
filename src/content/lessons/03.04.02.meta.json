@@ -1,0 +1,38 @@
+{
+  "id": "03.04.02",
+  "title": "Event delegation",
+  "description": "Practice event delegation through a self-contained HTML browser interaction, a failing starter, a corrected solution and repeatable regression checks.",
+  "trackId": "03",
+  "moduleId": "03.04",
+  "level": "Beginner",
+  "estimatedMinutes": 55,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "03.04.01"
+  ],
+  "objectives": [
+    "Explain event delegation in real browser state and semantics",
+    "Repair the broken DOM interaction without unsafe HTML insertion",
+    "Verify the interaction via local Node assertions and Chromium behavioral checks"
+  ],
+  "labId": "lab.foundation.js-delegation",
+  "sources": [
+    {
+      "label": "Official MDN or WAI guide",
+      "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/Event_bubbling"
+    },
+    {
+      "label": "Official browser API or accessibility reference",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/API/Element/closest"
+    }
+  ],
+  "rubric": [
+    "I can reproduce the original event delegation failure.",
+    "I can explain the DOM state and keyboard semantics of the repair.",
+    "I validate the page in a real browser, not only through source-text checks."
+  ]
+}

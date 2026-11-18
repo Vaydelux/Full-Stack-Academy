@@ -1,0 +1,1 @@
+export function solve(index,delta,count){if(!Number.isInteger(index)||!Number.isInteger(delta)||!Number.isInteger(count)||count<1)throw new TypeError('Integer tab state required');return ((index+delta)%count+count)%count;}

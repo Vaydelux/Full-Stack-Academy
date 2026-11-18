@@ -1,0 +1,96 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Explain url state and history api in real browser state and semantics","Repair the broken DOM interaction without unsafe HTML insertion","Verify the interaction via local Node assertions and Chromium behavioral checks"]} />
+
+## The problem we're solving
+
+A filter selection changes the UI but is lost on refresh because it is not represented in the URL. Browser Interaction topics require both executable JavaScript logic and a real local HTML document. The fixture uses synthetic content with no external scripts, endpoints or data uploads.
+
+## Build the mental model
+
+URL state makes a view reproducible and shareable. URLSearchParams handles encoding, and history.replaceState can update a fragment on the current document without navigation. A static file demo uses hash state to avoid file-origin restrictions; production apps should also handle back/forward popstate.
+
+**Predict before running:** Applying CSS & Web creates an encoded #filter= fragment and displays the selected filter.
+
+## Prerequisites and preflight
+
+Continue from [the previous lesson](/learn/03.04.03). Open `labs/js-history/starter/index.html` in a modern browser, and inspect the DOM, active element, URL and accessibility tree as relevant. Node.js 24 runs the isolated logic assertions; Chromium provides behavior checks across real DOM interactions. Avoid editing the instructor fixture.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the browser interaction defect" file="labs/js-history/starter/index.html" expected={"A filter selection changes the UI but is lost on refresh because it is not represented in the URL."}>
+
+Observe the starter with keyboard and pointer input, then inspect what actually changes in the DOM. The sample contains the following intentionally defective handler:
+
+```js
+document.querySelector('#apply').addEventListener('click',()=>{document.querySelector('#status').textContent=document.querySelector('#filter').value;});
+```
+
+**Predict before running:** A filter selection changes the UI but is lost on refresh because it is not represented in the URL.
+
+**Why it fails:** URL state makes a view reproducible and shareable. URLSearchParams handles encoding, and history.replaceState can update a fragment on the current document without navigation. A static file demo uses hash state to avoid file-origin restrictions; production apps should also handle back/forward popstate.
+
+**Proof:** Apply the filter, assert the fragment contains encoded characters, and confirm no page reload occurs.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the browser-safe interaction" file="labs/js-history/starter/index.html" expected={"Applying CSS & Web creates an encoded #filter= fragment and displays the selected filter."}>
+
+Replace the defective handler without discarding native elements or semantics. For untrusted content use `textContent`, not an unsafe HTML sink.
+
+```js
+const output=document.querySelector('#status');const apply=()=>{const value=document.querySelector('#filter').value.trim();history.replaceState(null,'','#filter='+encodeURIComponent(value));output.textContent='Filter: '+value;};document.querySelector('#apply').addEventListener('click',apply);window.addEventListener('hashchange',()=>{const raw=location.hash.slice('#filter='.length);output.textContent='Filter: '+decodeURIComponent(raw);});
+```
+
+**Predict before running:** Applying CSS & Web creates an encoded #filter= fragment and displays the selected filter.
+
+**Why the repair works:** URL state makes a view reproducible and shareable. URLSearchParams handles encoding, and history.replaceState can update a fragment on the current document without navigation. A static file demo uses hash state to avoid file-origin restrictions; production apps should also handle back/forward popstate.
+
+**Proof:** Compare the resulting DOM and accessibility state to the instructor `solution/index.html` using the same input.
+
+</LessonStep>
+
+<LessonStep number={3} title="Test the state and boundary cases" file="labs/js-history/solution.test.mjs" expected="Local logic tests and browser behavior checks agree under normal and edge cases.">
+
+The core logic has a separate module with executable assertions, while the HTML fixture validates DOM binding and keyboard interactions.
+
+```js
+export function solve(value){if(typeof value!=='string')throw new TypeError('String required');return '#filter='+encodeURIComponent(value.trim());}
+assert.equal(solve('web & css'),'#filter=web%20%26%20css');assert.equal(solve('  api  '),'#filter=api');assert.throws(()=>solve(null),TypeError);
+```
+
+**Predict before running:** Applying CSS & Web creates an encoded #filter= fragment and displays the selected filter.
+
+**Why it matters:** A passing algorithmic unit test does not prove its DOM wiring; use Chromium to exercise the actual handler.
+
+**Proof:** Apply the filter, assert the fragment contains encoded characters, and confirm no page reload occurs.
+
+</LessonStep>
+
+## Explore and verify
+
+Test browser refresh, narrow widths, Tab and Enter where applicable, and the difference between browser storage and remote persistence. Check event listener scope, validation, and content injection risks. Any performance timings are measured at runtime rather than invented.
+
+<Misconception claim="If a pure JavaScript function returns the right value, the browser widget must also be accessible and secure." correction={"URL state makes a view reproducible and shareable. URLSearchParams handles encoding, and history.replaceState can update a fragment on the current document without navigation. A static file demo uses hash state to avoid file-origin restrictions; production apps should also handle back/forward popstate."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+Start from the visible broken behavior. Identify the missing DOM update, event delegation, validation, URL state, storage policy or safe DOM sink. Repair the smallest handler. Demonstrate before/after behavior and keyboard input with the same test sequence.
+
+<KnowledgeCheck question={"Why store a filter in a URL fragment or search parameter?"} choices={["It makes state shareable and recoverable","It encrypts the filter","It guarantees server persistence","It automatically validates permissions"]} correctIndex={0} explanation={"URL state makes a view reproducible and shareable. URLSearchParams handles encoding, and history.replaceState can update a fragment on the current document without navigation. A static file demo uses hash state to avoid file-origin restrictions; production apps should also handle back/forward popstate."} misconception="DOM updates and accessibility behavior require browser observation beyond code syntax." lessonId="03.04.04" />
+
+## Guided local lab
+
+Edit `labs/js-history/starter/index.html`; compare with `labs/js-history/solution/index.html`. Run the Node contract verifier with `npm run lab:js-history` (or target the starter with `ACADEMY_LAB_TARGET=starter`). The academy Chromium smoke test covers actual browser behavior. No cloud API, automated public grading or server persistence is provided.
+
+<LabGate lessonId="03.04.04" labId="lab.foundation.js-history" commands={["npm ci","npm run lab:js-history"]} interactive={false} />
+
+## Reflect
+
+Which native browser facility did the starter ignore? What could a malicious input, cancelled request, page refresh, or keyboard user reveal? Name a browser-engine limitation not exercised by this local fixture.
+
+## Official references
+
+- [Browser API reference](https://developer.mozilla.org/en-US/docs/Web/API/History/replaceState)
+- [Official supporting reference](https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams)

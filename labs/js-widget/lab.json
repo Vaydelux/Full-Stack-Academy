@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.js-widget",
+  "lessonId": "03.04.08",
+  "title": "Lab accessible interactive widget",
+  "runtime": "browser-html-node-24",
+  "status": "authored",
+  "starter": "labs/js-widget/starter/index.html",
+  "solution": "labs/js-widget/solution/index.html",
+  "tests": "labs/js-widget/solution.test.mjs",
+  "verify": [
+    "npm run lab:js-widget"
+  ],
+  "expected": "The lab accessible interactive widget interaction works with real DOM or native browser facilities, and local unit tests pass.",
+  "security": "Standalone synthetic HTML and local JS; no remote scripts/requests, tokens, external user data, telemetry or uploads."
+}

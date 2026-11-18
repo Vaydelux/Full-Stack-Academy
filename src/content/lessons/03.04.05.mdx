@@ -1,0 +1,96 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Explain localstorage and indexeddb in real browser state and semantics","Repair the broken DOM interaction without unsafe HTML insertion","Verify the interaction via local Node assertions and Chromium behavioral checks"]} />
+
+## The problem we're solving
+
+A draft note disappears on refresh and the UI never distinguishes browser persistence from in-memory state. Browser Interaction topics require both executable JavaScript logic and a real local HTML document. The fixture uses synthetic content with no external scripts, endpoints or data uploads.
+
+## Build the mental model
+
+localStorage is synchronous string storage, while IndexedDB supports asynchronous structured object records and transactions. Both are origin-scoped and may be unavailable in private or file contexts. Catch storage exceptions and provide a clear in-memory fallback; never store secrets or assume cross-device sync.
+
+**Predict before running:** Saving reports whether localStorage, IndexedDB or memory fallback was available without making a remote request.
+
+## Prerequisites and preflight
+
+Continue from [the previous lesson](/learn/03.04.04). Open `labs/js-storage/starter/index.html` in a modern browser, and inspect the DOM, active element, URL and accessibility tree as relevant. Node.js 24 runs the isolated logic assertions; Chromium provides behavior checks across real DOM interactions. Avoid editing the instructor fixture.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the browser interaction defect" file="labs/js-storage/starter/index.html" expected={"A draft note disappears on refresh and the UI never distinguishes browser persistence from in-memory state."}>
+
+Observe the starter with keyboard and pointer input, then inspect what actually changes in the DOM. The sample contains the following intentionally defective handler:
+
+```js
+document.querySelector('#save').addEventListener('click',()=>document.querySelector('#status').textContent='Saved.');
+```
+
+**Predict before running:** A draft note disappears on refresh and the UI never distinguishes browser persistence from in-memory state.
+
+**Why it fails:** localStorage is synchronous string storage, while IndexedDB supports asynchronous structured object records and transactions. Both are origin-scoped and may be unavailable in private or file contexts. Catch storage exceptions and provide a clear in-memory fallback; never store secrets or assume cross-device sync.
+
+**Proof:** Save a note; inspect localStorage and IndexedDB stores if permitted by this browser's origin policy, and verify honest fallback feedback.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the browser-safe interaction" file="labs/js-storage/starter/index.html" expected={"Saving reports whether localStorage, IndexedDB or memory fallback was available without making a remote request."}>
+
+Replace the defective handler without discarding native elements or semantics. For untrusted content use `textContent`, not an unsafe HTML sink.
+
+```js
+document.querySelector('#save').addEventListener('click',async()=>{const value=document.querySelector('#note').value;let mode='memory';try{localStorage.setItem('academy-note',value);mode='localStorage';}catch{}if('indexedDB' in window){try{await new Promise((resolve,reject)=>{const request=indexedDB.open('academy-course-demo',1);request.onupgradeneeded=()=>{request.result.createObjectStore('notes');};request.onerror=()=>reject(request.error);request.onsuccess=()=>{const db=request.result;const tx=db.transaction('notes','readwrite');tx.objectStore('notes').put(value,'note');tx.oncomplete=()=>{db.close();resolve();};tx.onerror=()=>{db.close();reject(tx.error);};};});mode+=' + IndexedDB';}catch{}}document.querySelector('#status').textContent='Stored using '+mode+' (this browser only).';});
+```
+
+**Predict before running:** Saving reports whether localStorage, IndexedDB or memory fallback was available without making a remote request.
+
+**Why the repair works:** localStorage is synchronous string storage, while IndexedDB supports asynchronous structured object records and transactions. Both are origin-scoped and may be unavailable in private or file contexts. Catch storage exceptions and provide a clear in-memory fallback; never store secrets or assume cross-device sync.
+
+**Proof:** Compare the resulting DOM and accessibility state to the instructor `solution/index.html` using the same input.
+
+</LessonStep>
+
+<LessonStep number={3} title="Test the state and boundary cases" file="labs/js-storage/solution.test.mjs" expected="Local logic tests and browser behavior checks agree under normal and edge cases.">
+
+The core logic has a separate module with executable assertions, while the HTML fixture validates DOM binding and keyboard interactions.
+
+```js
+export function solve(value){if(typeof value!=='string'||value.length>200)throw new TypeError('Short text required');return {key:'academy-note',value:value.trim()};}
+assert.deepEqual(solve(' memo '),{key:'academy-note',value:'memo'});assert.throws(()=>solve('x'.repeat(201)),TypeError);assert.throws(()=>solve(null),TypeError);
+```
+
+**Predict before running:** Saving reports whether localStorage, IndexedDB or memory fallback was available without making a remote request.
+
+**Why it matters:** A passing algorithmic unit test does not prove its DOM wiring; use Chromium to exercise the actual handler.
+
+**Proof:** Save a note; inspect localStorage and IndexedDB stores if permitted by this browser's origin policy, and verify honest fallback feedback.
+
+</LessonStep>
+
+## Explore and verify
+
+Test browser refresh, narrow widths, Tab and Enter where applicable, and the difference between browser storage and remote persistence. Check event listener scope, validation, and content injection risks. Any performance timings are measured at runtime rather than invented.
+
+<Misconception claim="If a pure JavaScript function returns the right value, the browser widget must also be accessible and secure." correction={"localStorage is synchronous string storage, while IndexedDB supports asynchronous structured object records and transactions. Both are origin-scoped and may be unavailable in private or file contexts. Catch storage exceptions and provide a clear in-memory fallback; never store secrets or assume cross-device sync."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+Start from the visible broken behavior. Identify the missing DOM update, event delegation, validation, URL state, storage policy or safe DOM sink. Repair the smallest handler. Demonstrate before/after behavior and keyboard input with the same test sequence.
+
+<KnowledgeCheck question={"What is a key distinction between IndexedDB and localStorage?"} choices={["IndexedDB uses asynchronous transactions for structured data","Both always synchronize between devices","localStorage is an encrypted secrets vault","IndexedDB is synchronous string-only storage"]} correctIndex={0} explanation={"localStorage is synchronous string storage, while IndexedDB supports asynchronous structured object records and transactions. Both are origin-scoped and may be unavailable in private or file contexts. Catch storage exceptions and provide a clear in-memory fallback; never store secrets or assume cross-device sync."} misconception="DOM updates and accessibility behavior require browser observation beyond code syntax." lessonId="03.04.05" />
+
+## Guided local lab
+
+Edit `labs/js-storage/starter/index.html`; compare with `labs/js-storage/solution/index.html`. Run the Node contract verifier with `npm run lab:js-storage` (or target the starter with `ACADEMY_LAB_TARGET=starter`). The academy Chromium smoke test covers actual browser behavior. No cloud API, automated public grading or server persistence is provided.
+
+<LabGate lessonId="03.04.05" labId="lab.foundation.js-storage" commands={["npm ci","npm run lab:js-storage"]} interactive={false} />
+
+## Reflect
+
+Which native browser facility did the starter ignore? What could a malicious input, cancelled request, page refresh, or keyboard user reveal? Name a browser-engine limitation not exercised by this local fixture.
+
+## Official references
+
+- [Browser API reference](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API)
+- [Official supporting reference](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage)

@@ -1,0 +1,96 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Explain security of innerhtml in real browser state and semantics","Repair the broken DOM interaction without unsafe HTML insertion","Verify the interaction via local Node assertions and Chromium behavioral checks"]} />
+
+## The problem we're solving
+
+A preview inserts user text into innerHTML and unexpectedly creates clickable elements and script-capable markup. Browser Interaction topics require both executable JavaScript logic and a real local HTML document. The fixture uses synthetic content with no external scripts, endpoints or data uploads.
+
+## Build the mental model
+
+innerHTML interprets markup; it is an injection sink and needs a trusted sanitization model if markup is truly required. For ordinary user text, textContent treats markup characters as literal text. Avoid security claims based solely on a regex or strip-tags helper.
+
+**Predict before running:** Typing <strong>hello</strong> displays literal brackets and never creates a strong node.
+
+## Prerequisites and preflight
+
+Continue from [the previous lesson](/learn/03.04.06). Open `labs/js-safe-dom/starter/index.html` in a modern browser, and inspect the DOM, active element, URL and accessibility tree as relevant. Node.js 24 runs the isolated logic assertions; Chromium provides behavior checks across real DOM interactions. Avoid editing the instructor fixture.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the browser interaction defect" file="labs/js-safe-dom/starter/index.html" expected={"A preview inserts user text into innerHTML and unexpectedly creates clickable elements and script-capable markup."}>
+
+Observe the starter with keyboard and pointer input, then inspect what actually changes in the DOM. The sample contains the following intentionally defective handler:
+
+```js
+document.querySelector('#preview').addEventListener('click',()=>{document.querySelector('#status').innerHTML=document.querySelector('#text').value;});
+```
+
+**Predict before running:** A preview inserts user text into innerHTML and unexpectedly creates clickable elements and script-capable markup.
+
+**Why it fails:** innerHTML interprets markup; it is an injection sink and needs a trusted sanitization model if markup is truly required. For ordinary user text, textContent treats markup characters as literal text. Avoid security claims based solely on a regex or strip-tags helper.
+
+**Proof:** Preview markup-like text and confirm textContent matches the input while the status contains zero strong or img descendants.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the browser-safe interaction" file="labs/js-safe-dom/starter/index.html" expected={"Typing <strong>hello</strong> displays literal brackets and never creates a strong node."}>
+
+Replace the defective handler without discarding native elements or semantics. For untrusted content use `textContent`, not an unsafe HTML sink.
+
+```js
+document.querySelector('#preview').addEventListener('click',()=>{const value=document.querySelector('#text').value;document.querySelector('#status').textContent=value;});
+```
+
+**Predict before running:** Typing <strong>hello</strong> displays literal brackets and never creates a strong node.
+
+**Why the repair works:** innerHTML interprets markup; it is an injection sink and needs a trusted sanitization model if markup is truly required. For ordinary user text, textContent treats markup characters as literal text. Avoid security claims based solely on a regex or strip-tags helper.
+
+**Proof:** Compare the resulting DOM and accessibility state to the instructor `solution/index.html` using the same input.
+
+</LessonStep>
+
+<LessonStep number={3} title="Test the state and boundary cases" file="labs/js-safe-dom/solution.test.mjs" expected="Local logic tests and browser behavior checks agree under normal and edge cases.">
+
+The core logic has a separate module with executable assertions, while the HTML fixture validates DOM binding and keyboard interactions.
+
+```js
+export function solve(value){if(typeof value!=='string')throw new TypeError('Text required');return value;}
+assert.equal(solve('<img src=x onerror=alert(1)>'),'<img src=x onerror=alert(1)>');assert.throws(()=>solve(null),TypeError);
+```
+
+**Predict before running:** Typing <strong>hello</strong> displays literal brackets and never creates a strong node.
+
+**Why it matters:** A passing algorithmic unit test does not prove its DOM wiring; use Chromium to exercise the actual handler.
+
+**Proof:** Preview markup-like text and confirm textContent matches the input while the status contains zero strong or img descendants.
+
+</LessonStep>
+
+## Explore and verify
+
+Test browser refresh, narrow widths, Tab and Enter where applicable, and the difference between browser storage and remote persistence. Check event listener scope, validation, and content injection risks. Any performance timings are measured at runtime rather than invented.
+
+<Misconception claim="If a pure JavaScript function returns the right value, the browser widget must also be accessible and secure." correction={"innerHTML interprets markup; it is an injection sink and needs a trusted sanitization model if markup is truly required. For ordinary user text, textContent treats markup characters as literal text. Avoid security claims based solely on a regex or strip-tags helper."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+Start from the visible broken behavior. Identify the missing DOM update, event delegation, validation, URL state, storage policy or safe DOM sink. Repair the smallest handler. Demonstrate before/after behavior and keyboard input with the same test sequence.
+
+<KnowledgeCheck question={"Which API is appropriate for displaying untrusted plain text?"} choices={["innerHTML","textContent","outerHTML","insertAdjacentHTML"]} correctIndex={1} explanation={"innerHTML interprets markup; it is an injection sink and needs a trusted sanitization model if markup is truly required. For ordinary user text, textContent treats markup characters as literal text. Avoid security claims based solely on a regex or strip-tags helper."} misconception="DOM updates and accessibility behavior require browser observation beyond code syntax." lessonId="03.04.07" />
+
+## Guided local lab
+
+Edit `labs/js-safe-dom/starter/index.html`; compare with `labs/js-safe-dom/solution/index.html`. Run the Node contract verifier with `npm run lab:js-safe-dom` (or target the starter with `ACADEMY_LAB_TARGET=starter`). The academy Chromium smoke test covers actual browser behavior. No cloud API, automated public grading or server persistence is provided.
+
+<LabGate lessonId="03.04.07" labId="lab.foundation.js-safe-dom" commands={["npm ci","npm run lab:js-safe-dom"]} interactive={false} />
+
+## Reflect
+
+Which native browser facility did the starter ignore? What could a malicious input, cancelled request, page refresh, or keyboard user reveal? Name a browser-engine limitation not exercised by this local fixture.
+
+## Official references
+
+- [Browser API reference](https://developer.mozilla.org/en-US/docs/Web/API/Node/textContent)
+- [Official supporting reference](https://developer.mozilla.org/en-US/docs/Web/API/Element/innerHTML)

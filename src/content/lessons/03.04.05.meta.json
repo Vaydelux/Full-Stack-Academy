@@ -1,0 +1,38 @@
+{
+  "id": "03.04.05",
+  "title": "LocalStorage and IndexedDB",
+  "description": "Practice localstorage and indexeddb through a self-contained HTML browser interaction, a failing starter, a corrected solution and repeatable regression checks.",
+  "trackId": "03",
+  "moduleId": "03.04",
+  "level": "Beginner",
+  "estimatedMinutes": 55,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "03.04.04"
+  ],
+  "objectives": [
+    "Explain localstorage and indexeddb in real browser state and semantics",
+    "Repair the broken DOM interaction without unsafe HTML insertion",
+    "Verify the interaction via local Node assertions and Chromium behavioral checks"
+  ],
+  "labId": "lab.foundation.js-storage",
+  "sources": [
+    {
+      "label": "Official MDN or WAI guide",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API"
+    },
+    {
+      "label": "Official browser API or accessibility reference",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage"
+    }
+  ],
+  "rubric": [
+    "I can reproduce the original localstorage and indexeddb failure.",
+    "I can explain the DOM state and keyboard semantics of the repair.",
+    "I validate the page in a real browser, not only through source-text checks."
+  ]
+}
