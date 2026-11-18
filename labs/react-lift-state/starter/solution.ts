@@ -1,1 +1,1 @@
-export function solve(a:string,b:string){return {left:a,right:b};}
+export function solve(source:string){return {left:source,right:''};}
