@@ -31,7 +31,7 @@ In labs/project-scripts/starter/package.json add the scripts below. Keep the pac
 
 <LessonStep number={2} title={"Implement a small module and a real test"} file="labs/project-scripts/starter/package.json" expected={"The total function produces the expected numeric result."}>
 
-The app exports a pure function. Replace the TODO in app.mjs, then inspect total.test.mjs. A genuine test asserts behavior rather than merely printing a success message.
+The app exports a pure function. Replace the TODO in app.mjs, then inspect total.test.mjs. A genuine test asserts behavior rather than merely printing a success message. When testing a project from inside another Node test runner, remove the inherited internal NODE_TEST_CONTEXT variable before spawning an independent test process; otherwise a nested test may be skipped. Check both the exit code and the number of tests executed.
 
 ```js
 export function total(items) {
