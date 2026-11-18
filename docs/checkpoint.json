@@ -9,9 +9,9 @@
     "productionUrl": "https://fullstack-academy-ecru.vercel.app/"
   },
   "development": {
-    "branch": null,
-    "lastMergedPr": 4,
-    "state": "production-verified"
+    "branch": "feat/html-document-structure-20261118",
+    "headNote": "HTML Document Structure candidate pending CI, preview and merge",
+    "state": "in-review"
   },
   "snapshot": {
     "tracks": 28,
@@ -20,13 +20,14 @@
     "indexedReferences": 303,
     "authoredReferenceDrafts": 4,
     "authoredInteractiveModels": 4,
-    "authoredMdxLessons": 25,
-    "publishedLessons": 28,
-    "labFixtures": 25,
+    "authoredMdxLessons": 33,
+    "publishedLessons": 36,
+    "labFixtures": 33,
     "completeModules": [
       "00.01",
       "00.02",
-      "00.03"
+      "00.03",
+      "01.01"
     ]
   },
   "security": {
@@ -34,6 +35,6 @@
     "devHighFindings": 14,
     "exceptionExpires": "2026-12-02"
   },
-  "nextMilestone": "01.01",
-  "status": "released"
+  "nextMilestone": "01.02",
+  "status": "release-candidate"
 }

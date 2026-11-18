@@ -1,6 +1,6 @@
 # Full-Stack Academy — Project Checkpoint
 
-**Status:** Production verified · **Updated:** 2026-11-18 (Asia/Manila)  
+**Status:** Production baseline verified; HTML 01.01 release candidate on feature branch · **Updated:** 2026-11-18 (Asia/Manila)  
 **Repository:** https://github.com/Vaydelux/Full-Stack-Academy  
 **Production:** https://fullstack-academy-ecru.vercel.app/  
 **Production main SHA:** `16c2effac03aa47bad666e62fc82b6b8ecc9d48e`  
@@ -28,16 +28,21 @@
 - Backend teaching architecture (NestJS/Fastify, PostgreSQL/Supabase, Prisma, Zod, Redis/BullMQ) is **not an implemented academy backend**. No cloud grading or multi-device account progress.
 - Exact progress snapshot is checked against repository files by `npm run checkpoint:check`. Generate a new snapshot after changing content with `npm run checkpoint:write`.
 
+## Current feature-branch changes (not yet production)
+- `01.01` HTML Document Structure: eight new MDX tutorials with eight browser-native, standalone HTML starter/solution labs, local SVG illustrations, and structural + Chromium test coverage.
+- Branch authored counts **36 published lesson IDs / 33 MDX files / 33 lab manifests / four complete modules** once CI passes; these are **unreleased** until merged and production deployment verified.
+- `docs/checkpoint.json` contains the branch-local publication snapshot and will be checked in CI. The baseline production SHA above remains the last verified release.
+
 ## Security and operational notes
 - Production `npm audit --omit=dev` reported **zero known advisories** in last review; full audit reported **14 high findings** in dev-only Picomatch dependencies. Not patched. Scoped exception expires **2026-12-02 UTC**, as described in `docs/DEPENDENCY_SECURITY_REVIEW.md`. This remains a P1 obligation; do not forget it.
 - GitHub Actions `.github/workflows/academy-quality.yml` runs the primary quality and security gates. Vercel auto-deploys `main`.
 - Future work must preserve planned `noindex`, static trusted MDX, and local-first learning. Do not overbuild the layout; prioritize lesson quality and browser accessibility.
 
-## Next milestone — start here
-**`01.01` HTML & Web Platform → Document Structure**, eight exact catalog IDs:
+## Next milestone — release current HTML 01.01, then begin 01.02
+**Feature branch includes `01.01` HTML & Web Platform → Document Structure**, eight exact catalog IDs:
 `01.01.01` HTML document anatomy; `01.01.02` Head and metadata; `01.01.03` Semantic landmarks; `01.01.04` Heading hierarchy; `01.01.05` Text lists and quotations; `01.01.06` Links and navigation; `01.01.07` Images and responsive media; `01.01.08` Lab accessible content page.
 
-Each new lesson needs an MDX tutorial, official sources, meaningful exercise, starter/solution tests, validated metadata, navigation/progress integration, and browser verification. Follow the ordered checklist in `docs/NEXT_TODO.md`.
+Each new lesson now has an MDX tutorial, official sources, meaningful exercise, starter/solution tests, validated metadata and navigation. **CI/browser checks, preview and production deployment are pending.** After releasing this module, the next one is `01.02` HTML Forms & Validation. Follow the ordered checklist in `docs/NEXT_TODO.md`.
 
 ## Handoff protocol for another AI
 1. Read `AGENTS.md` and `docs/NEXT_TODO.md`, then inspect **current** `main`, open PRs, last CI run and Vercel deployment. This snapshot is a historical commit anchor, not proof that the repository has not changed since.

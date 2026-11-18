@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.html-anatomy",
+  "lessonId": "01.01.01",
+  "title": "HTML document anatomy",
+  "runtime": "browser-html-and-node-24",
+  "status": "authored",
+  "starter": "labs/html-anatomy/starter/index.html",
+  "solution": "labs/html-anatomy/solution/index.html",
+  "tests": "labs/html-anatomy/solution.test.mjs",
+  "verify": [
+    "npm run lab:html-anatomy"
+  ],
+  "expected": "I passed the standards-mode and semantic-structure checks.",
+  "security": "Local static HTML only. No secrets, remote APIs, production data, or server-side learner execution. Structural assertions are supplemented by Chromium browser smoke tests."
+}

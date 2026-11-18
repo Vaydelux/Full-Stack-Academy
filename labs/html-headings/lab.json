@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.html-headings",
+  "lessonId": "01.01.04",
+  "title": "Heading hierarchy",
+  "runtime": "browser-html-and-node-24",
+  "status": "authored",
+  "starter": "labs/html-headings/starter/index.html",
+  "solution": "labs/html-headings/solution/index.html",
+  "tests": "labs/html-headings/solution.test.mjs",
+  "verify": [
+    "npm run lab:html-headings"
+  ],
+  "expected": "I passed heading order and section-label tests.",
+  "security": "Local static HTML only. No secrets, remote APIs, production data, or server-side learner execution. Structural assertions are supplemented by Chromium browser smoke tests."
+}

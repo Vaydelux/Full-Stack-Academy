@@ -1,0 +1,39 @@
+{
+  "id": "01.01.03",
+  "title": "Semantic landmarks",
+  "description": "Create meaningful header, navigation, main, complementary and footer regions so assistive technologies can navigate an HTML page.",
+  "trackId": "01",
+  "moduleId": "01.01",
+  "level": "Beginner",
+  "estimatedMinutes": 45,
+  "status": "authored",
+  "reviewedAt": "2026-11-18",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "01.01.02"
+  ],
+  "objectives": [
+    "Choose native semantic regions instead of generic div wrappers",
+    "Ensure a single main landmark and descriptive navigation label",
+    "Implement a working skip-to-content link",
+    "Name complementary content and preserve landmarks in the DOM"
+  ],
+  "labId": "lab.foundation.html-landmarks",
+  "sources": [
+    {
+      "label": "MDN HTML sections and outlines",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/main"
+    },
+    {
+      "label": "WAI page regions tutorial",
+      "url": "https://www.w3.org/WAI/tutorials/page-structure/regions/"
+    }
+  ],
+  "rubric": [
+    "I used appropriate native landmarks and only one main region.",
+    "I verified that the skip link resolves to the intended main content.",
+    "I passed landmark-label and fragment-target checks."
+  ]
+}

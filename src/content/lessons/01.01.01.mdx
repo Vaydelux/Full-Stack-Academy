@@ -1,0 +1,100 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Identify the HTML doctype, root element, head and body","Explain the purpose of charset, viewport and document title","Write an HTML page without a framework or JavaScript dependency","Inspect the browser's parsed document tree in DevTools"]} />
+
+## The problem we're solving
+
+You received an HTML fragment containing only a heading. It renders, but it has no declared document language, metadata, or reliable mobile viewport. A full page needs more structure than content copied into a blank text file.
+
+## Build the mental model
+
+HTML is a document language, not a programming runtime. The HTML Living Standard defines a tree of elements that the browser parses into a DOM. `<!doctype html>` activates standards mode in modern browsers; it is not an HTML element. The `html` element is the root, `head` holds metadata not normally shown as body content, and `body` contains the document content. A meaningful `lang` helps pronunciation and language detection. Parsers can repair mistakes, which means 'it looks okay' is not proof of valid intentional structure. Use native elements first, then layer CSS and JavaScript as needed.
+
+**Predict before running:** If you put a `title` element in the body instead of the head, the browser may still recover, but the document structure is wrong and harder to maintain.
+
+## Prerequisites
+
+Complete [the previous lesson](/learn/00.03.08) or review its objectives. A browser, text editor, Node.js 24 and this repository are enough. These examples are intentionally standalone and avoid remote services, account credentials or arbitrary browser scripts.
+
+<LessonStep number={1} title={"Start with the standards-mode skeleton"} file="labs/html-anatomy/starter/index.html" expected={"The browser shows the title in its tab while the body initially remains empty."}>
+
+Create the doctype, root element and two document containers. Save it as `index.html` in the starter folder.
+
+```html
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Workshop guide</title>
+</head>
+<body>
+</body>
+</html>
+```
+
+</LessonStep>
+
+<LessonStep number={2} title={"Add a mobile-friendly viewport"} file="labs/html-anatomy/starter/index.html" expected={"The browser uses the device width as the CSS layout viewport rather than scaling a wide virtual viewport."}>
+
+The viewport meta tag is metadata and belongs inside head, not after body content.
+
+```html
+<meta name="viewport" content="width=device-width, initial-scale=1">
+```
+
+</LessonStep>
+
+<LessonStep number={3} title={"Write a single main content region"} file="labs/html-anatomy/starter/index.html" expected={"The DOM contains one main region, one primary heading, a section and a footer."}>
+
+Add content whose meaning is clear without CSS classes or JavaScript. Keep the heading hierarchy coherent.
+
+```html
+<header><p>Web foundations</p></header>
+<main id="content">
+  <h1>Build a useful web page</h1>
+  <p>A document that begins with structure is easier to use and maintain.</p>
+  <section aria-labelledby="reason">
+    <h2 id="reason">Why structure matters</h2>
+    <p>Headings and regions help readers locate information.</p>
+  </section>
+</main>
+<footer><p>End of the guide.</p></footer>
+```
+
+</LessonStep>
+
+## Explore it yourself
+
+Open `labs/html-anatomy/starter/index.html` directly in a browser. Use DevTools Elements to compare the DOM tree with the source and inspect the accessibility tree. Change one element, reload and note the effect; do not treat a page that merely renders as evidence of complete semantics.
+
+<Misconception claim={"Browsers repair malformed HTML, therefore document structure does not matter."} correction={"Error recovery makes old pages render, but explicit valid semantics are needed for predictable behavior and accessibility."} />
+
+## Bug Hunt: diagnose before changing markup
+
+The initial page starts directly with a `div` and has no document language. DevTools shows an auto-generated DOM, which hides the missing source structure. Add the doctype, root, head, body and language in the source.
+
+<KnowledgeCheck question={"Which declaration requests standards-mode HTML parsing?"} choices={["`<meta charset>`","`<!doctype html>`","`<main>`","`<title>`"]} correctIndex={1} explanation={"The HTML doctype is the standards-mode declaration."} misconception={"Viewport and charset metadata serve different roles."} lessonId="01.01.01" />
+
+## Guided HTML lab
+
+Complete `labs/html-anatomy/starter/index.html` using the lesson steps. The worked implementation is in `labs/html-anatomy/solution/index.html`. Run the acceptance tests **against your starter**, not just the instructor solution:
+
+```powershell
+$env:ACADEMY_LAB_TARGET = 'starter'
+npm run lab:html-anatomy
+Remove-Item Env:ACADEMY_LAB_TARGET
+```
+
+On Bash: `ACADEMY_LAB_TARGET=starter npm run lab:html-anatomy`. The tests should fail initially; make them pass by implementing the markup. Static tests cover specific structural contracts; the repository's Chromium smoke test checks parsed DOM behavior. No remote grading occurs, so completion remains self-assessed.
+
+<LabGate lessonId="01.01.01" labId="lab.foundation.html-anatomy" commands={["npm ci","npm run lab:html-anatomy"]} interactive={false} />
+
+## Reflect
+
+Explain what the browser inferred automatically versus what you explicitly wrote. Note one accessibility or metadata bug you could now recognize, and record evidence from the DOM or browser inspector.
+
+## Official references
+
+- [MDN HTML document and structure](https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Structuring_content/Basic_HTML_syntax)
+- [WHATWG HTML document standard](https://html.spec.whatwg.org/multipage/semantics.html#the-html-element)

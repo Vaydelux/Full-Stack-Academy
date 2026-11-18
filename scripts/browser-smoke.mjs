@@ -53,7 +53,7 @@ try {
   await wait(page.getByText('Correct — you identified the concept.'));
   await page.goto(base + '/reference/zod-safeparse');
   await wait(page.getByRole('heading',{name:/Zod 4: schema.safeParse/}));
-  await page.goto(base + '/learn/01.01.01');
+  await page.goto(base + '/learn/01.02.01');
   assert.match(await page.locator('meta[name="robots"]').getAttribute('content'), /noindex/);
   await wait(page.getByText('Planned lesson — not published.', {exact:true}));
   await page.goto(base + '/learn/00.01.01');
@@ -69,7 +69,7 @@ try {
   await wait(btn('Completed'));
   await page.getByRole('link',{name:/Next: Client server lifecycle/}).click();
   await wait(page.getByRole('heading',{name:'Client–server lifecycle: follow a real request',exact:true}));
-  for (const id of ["00.01.03","00.01.04","00.01.05","00.01.06","00.01.07","00.01.08","00.02.01","00.02.02","00.02.03","00.02.04","00.02.05","00.02.06","00.02.07","00.02.08","00.03.01","00.03.02","00.03.03","00.03.04","00.03.05","00.03.06","00.03.07","00.03.08"]) {
+  for (const id of ["00.01.03","00.01.04","00.01.05","00.01.06","00.01.07","00.01.08","00.02.01","00.02.02","00.02.03","00.02.04","00.02.05","00.02.06","00.02.07","00.02.08","00.03.01","00.03.02","00.03.03","00.03.04","00.03.05","00.03.06","00.03.07","00.03.08","01.01.01","01.01.02","01.01.03","01.01.04","01.01.05","01.01.06","01.01.07","01.01.08"]) {
     const result = await page.goto(base+'/learn/'+id);
     assert.equal(result.status(),200);
     assert.match(await page.locator('meta[name="robots"]').getAttribute('content'), /^index/);
@@ -77,6 +77,31 @@ try {
     await wait(page.getByRole('heading',{name:'Build the mental model',exact:true}));
     assert.equal(await page.getByRole('button',{name:'Mark complete'}).isEnabled(), false);
   }
+  // Real-browser verification of all standalone HTML instructor solutions.
+  const htmlLabSlugs = ["html-anatomy","html-metadata","html-landmarks","html-headings","html-text-lists","html-navigation","html-images","html-accessible-page"];
+  for (const slug of htmlLabSlugs) {
+    const labUrl = new URL('../labs/' + slug + '/solution/index.html', import.meta.url);
+    await page.goto(labUrl.href);
+    assert.equal(await page.locator('html').getAttribute('lang'), 'en', 'Missing document language: ' + slug);
+    assert.equal(await page.locator('main').count(), 1, 'One main landmark required: ' + slug);
+    assert.equal(await page.getByRole('heading',{level:1}).count(), 1, 'One clear page title required: ' + slug);
+  }
+  const capstoneUrl = new URL('../labs/html-accessible-page/solution/index.html', import.meta.url).href;
+  await page.goto(capstoneUrl);
+  await wait(page.getByRole('heading',{name:'Community Workshop Handbook',exact:true}));
+  await page.keyboard.press('Tab');
+  assert.equal(await page.evaluate(()=>document.activeElement?.textContent?.trim()), 'Skip to main content');
+  await page.keyboard.press('Enter');
+  assert.equal(await page.evaluate(()=>location.hash), '#main-content', 'Skip link must reach real main content');
+  await page.setViewportSize({width:390,height:844});
+  await page.goto(capstoneUrl);
+  await wait(page.getByRole('img',{name:/Teaching area on the left/}));
+  await page.getByRole('img',{name:/Teaching area on the left/}).scrollIntoViewIfNeeded();
+  assert.ok(await page.locator('figure img').evaluate(img => img.complete && img.naturalWidth>0), 'Local responsive image failed to load');
+  assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth <= window.innerWidth),'Standalone HTML must not overflow at mobile width');
+  await page.setViewportSize({width:1440,height:900});
+  await page.goto(capstoneUrl);
+  assert.ok(await page.locator('figure img').evaluate(img=>img.currentSrc.includes('workshop-wide.svg')),'Wide picture source was not selected at desktop width');
   await page.setViewportSize({width: 390,height:844});
   await page.goto(base+'/?lesson=06.01.01&mode=practice');
   await wait(btn('Practice'));

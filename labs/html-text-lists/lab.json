@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.html-text-lists",
+  "lessonId": "01.01.05",
+  "title": "Text lists and quotations",
+  "runtime": "browser-html-and-node-24",
+  "status": "authored",
+  "starter": "labs/html-text-lists/starter/index.html",
+  "solution": "labs/html-text-lists/solution/index.html",
+  "tests": "labs/html-text-lists/solution.test.mjs",
+  "verify": [
+    "npm run lab:html-text-lists"
+  ],
+  "expected": "I passed list-structure and attribution checks.",
+  "security": "Offline HTML exercise only. No remote grading, secrets, or user code on academy server. Static tests supplement actual Chromium DOM and keyboard checks."
+}

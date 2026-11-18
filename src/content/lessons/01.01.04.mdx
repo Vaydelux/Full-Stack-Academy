@@ -1,0 +1,95 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Distinguish heading levels from visual font sizes","Write a logical page title, section headings and subsections","Use IDs and section labels to connect structure meaningfully","Inspect heading navigation and avoid empty or misleading headings"]} />
+
+## The problem we're solving
+
+A tutorial looks polished but every section title is a bold paragraph; users who navigate by headings cannot find any of its sections.
+
+## Build the mental model
+
+Heading elements `h1` through `h6` identify hierarchical sections. `h1` usually names the page; `h2` identifies major sections and `h3` names subsections. Choosing levels by font size breaks the document outline; use CSS for appearance. Skipped levels are not universally forbidden by the HTML parser, but can make the hierarchy harder to follow. The HTML outline algorithm is not a substitute for thoughtful headings. A unique page-level heading is a reliable default for basic documents.
+
+**Predict before running:** If a small caption looks like a heading but isn't a section title, should it be an h4 only because its font is small? No.
+
+## Prerequisites
+
+Complete [the previous lesson](/learn/01.01.03) or review its objectives. A browser, text editor, Node.js 24 and this repository are enough. These examples are intentionally standalone and avoid remote services, account credentials or arbitrary browser scripts.
+
+<LessonStep number={1} title={"Create one descriptive page title"} file="labs/html-headings/starter/index.html" expected={"The heading list starts with one clear page-level title."}>
+
+Make the top-level title an h1 rather than a styled div. Make it specific to the document.
+
+```html
+<main>
+  <h1>Plan a community workshop</h1>
+</main>
+```
+
+</LessonStep>
+
+<LessonStep number={2} title={"Group major topics with h2"} file="labs/html-headings/starter/index.html" expected={"The hierarchy contains an h1 followed by meaningful h2 sections."}>
+
+Introduce two sections, each with an ID used in its parent section label.
+
+```html
+<section aria-labelledby="prepare">
+  <h2 id="prepare">Prepare the room</h2>
+  <p>Check the layout and equipment.</p>
+</section>
+<section aria-labelledby="session">
+  <h2 id="session">Run the session</h2>
+  <p>Welcome attendees and explain the plan.</p>
+</section>
+```
+
+</LessonStep>
+
+<LessonStep number={3} title={"Nest a focused subsection with h3"} file="labs/html-headings/starter/index.html" expected={"Heading navigation reveals the equipment check beneath the preparation topic."}>
+
+Use h3 only when describing a subtopic within a major section, not merely because it looks smaller.
+
+```html
+<section aria-labelledby="equipment">
+  <h3 id="equipment">Equipment check</h3>
+  <p>Inspect cables and power safely.</p>
+</section>
+```
+
+</LessonStep>
+
+## Explore it yourself
+
+Open `labs/html-headings/starter/index.html` directly in a browser. Use DevTools Elements to compare the DOM tree with the source and inspect the accessibility tree. Change one element, reload and note the effect; do not treat a page that merely renders as evidence of complete semantics.
+
+<Misconception claim={"A heading level is a visual typography preset."} correction={"Heading levels encode structural meaning; CSS controls how large or small each heading looks."} />
+
+## Bug Hunt: diagnose before changing markup
+
+A designer renders every headline as h1 for consistent font styling. The document loses its hierarchy. Keep one page h1, introduce h2 sections and use CSS classes for visual consistency.
+
+<KnowledgeCheck question={"How should a subsection inside an h2 section normally be marked?"} choices={["`h1` again","`h3` if it is a genuine subsection","A `span` with bold font only","`label`"]} correctIndex={1} explanation={"An h3 expresses a meaningful subsection beneath an h2."} misconception={"Appearance and document hierarchy should be designed separately."} lessonId="01.01.04" />
+
+## Guided HTML lab
+
+Complete `labs/html-headings/starter/index.html` using the lesson steps. The worked implementation is in `labs/html-headings/solution/index.html`. Run the acceptance tests **against your starter**, not just the instructor solution:
+
+```powershell
+$env:ACADEMY_LAB_TARGET = 'starter'
+npm run lab:html-headings
+Remove-Item Env:ACADEMY_LAB_TARGET
+```
+
+On Bash: `ACADEMY_LAB_TARGET=starter npm run lab:html-headings`. The tests should fail initially; make them pass by implementing the markup. Static tests cover specific structural contracts; the repository's Chromium smoke test checks parsed DOM behavior. No remote grading occurs, so completion remains self-assessed.
+
+<LabGate lessonId="01.01.04" labId="lab.foundation.html-headings" commands={["npm ci","npm run lab:html-headings"]} interactive={false} />
+
+## Reflect
+
+Explain what the browser inferred automatically versus what you explicitly wrote. Note one accessibility or metadata bug you could now recognize, and record evidence from the DOM or browser inspector.
+
+## Official references
+
+- [MDN heading elements](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/Heading_Elements)
+- [WAI page headings tutorial](https://www.w3.org/WAI/tutorials/page-structure/headings/)

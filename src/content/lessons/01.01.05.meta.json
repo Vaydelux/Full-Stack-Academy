@@ -1,0 +1,39 @@
+{
+  "id": "01.01.05",
+  "title": "Text lists and quotations",
+  "description": "Mark up paragraphs, ordered steps, unordered resources, definition terms, quotations and figures using their intended semantic elements.",
+  "trackId": "01",
+  "moduleId": "01.01",
+  "level": "Beginner",
+  "estimatedMinutes": 45,
+  "status": "authored",
+  "reviewedAt": "2026-11-18",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "01.01.04"
+  ],
+  "objectives": [
+    "Distinguish paragraphs from text containers and manual line breaks",
+    "Choose ordered, unordered and description lists by meaning",
+    "Represent an attributed quotation without inventing a source",
+    "Give a figure a useful caption independent of CSS styling"
+  ],
+  "labId": "lab.foundation.html-text-lists",
+  "sources": [
+    {
+      "label": "MDN HTML lists",
+      "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Structuring_content/Lists"
+    },
+    {
+      "label": "MDN blockquote",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/blockquote"
+    }
+  ],
+  "rubric": [
+    "I used correct paragraph and list semantics for unordered resources and ordered steps.",
+    "I represented quotation and caption semantics without misusing them for styling.",
+    "I passed list-structure and attribution checks."
+  ]
+}

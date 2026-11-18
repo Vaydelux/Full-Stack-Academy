@@ -1,0 +1,39 @@
+{
+  "id": "01.01.02",
+  "title": "Head and metadata",
+  "description": "Create meaningful page metadata, distinguish user-visible titles from search/social descriptions, and avoid canonical or viewport errors.",
+  "trackId": "01",
+  "moduleId": "01.01",
+  "level": "Beginner",
+  "estimatedMinutes": 40,
+  "status": "authored",
+  "reviewedAt": "2026-11-18",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "01.01.01"
+  ],
+  "objectives": [
+    "Place character encoding, viewport and title inside head",
+    "Write a concise document title and a descriptive summary",
+    "Explain canonical URL and Open Graph metadata without promising rankings",
+    "Test that page metadata is parseable and consistent"
+  ],
+  "labId": "lab.foundation.html-metadata",
+  "sources": [
+    {
+      "label": "MDN: HTML head metadata",
+      "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Structuring_content/Webpage_metadata"
+    },
+    {
+      "label": "Google: canonical URLs",
+      "url": "https://developers.google.com/search/docs/crawling-indexing/consolidate-duplicate-urls"
+    }
+  ],
+  "rubric": [
+    "I wrote meaningful title, viewport, description and encoding metadata.",
+    "I explained why canonical and social metadata are hints rather than guarantees.",
+    "I passed metadata location, uniqueness and consistency tests."
+  ]
+}

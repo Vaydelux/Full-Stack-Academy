@@ -1,0 +1,123 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Build a complete standalone HTML page from the eight module topics","Provide semantic landmarks, keyboard navigation and readable headings","Add responsive imagery with meaningful alternatives and layout-safe dimensions","Verify local assets and responsive behavior in Chromium, not just text assertions"]} />
+
+## The problem we're solving
+
+You know the individual HTML elements, but a real document needs them to work together. Build a small 'Community Workshop Handbook' that remains readable and navigable without external libraries or JavaScript.
+
+## Build the mental model
+
+A usable content page starts with a real document language, viewport, title and main region; then it organizes content into semantic sections and task-focused navigation. Links must target real content, images must have a useful alternative and reliable layout, and keyboard focus must be visible. Responsive layout is a progressive enhancement: HTML should make sense even if CSS fails. The capstone has no forms or custom widgets because this module is about document structure; later modules cover form validation and interactive behavior.
+
+**Predict before running:** If you disable the entire stylesheet, should the headings, ordered steps, links and image description still make sense? Yes. Semantic meaning comes from the document, not its paint.
+
+## Prerequisites
+
+Complete [the previous lesson](/learn/01.01.07) or review its objectives. Use a browser, VS Code and Node.js 24. These offline fixtures use illustrative workshop content, local media assets and no user data or external scripts.
+
+<LessonStep number={1} title={"Write an accessible document skeleton"} file="labs/html-accessible-page/starter/index.html" expected={"The document title is meaningful and keyboard navigation can skip repeated links."}>
+
+Set language, charset, viewport, title and a meaningful metadata description; use a skip link as the first body link.
+
+```html
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Community Workshop Handbook</title>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <!-- Add landmarks and content here. -->
+</body>
+</html>
+```
+
+</LessonStep>
+
+<LessonStep number={2} title={"Build content with actual semantic regions"} file="labs/html-accessible-page/starter/index.html" expected={"Navigation reaches genuine content and the reading hierarchy is coherent."}>
+
+Add header, navigation, main, sections, complementary tips and footer. All fragment targets must exist.
+
+```html
+<nav aria-label="Primary navigation">
+  <a href="#schedule">Session schedule</a>
+  <a href="#materials">Materials checklist</a>
+</nav>
+<main id="main-content" tabindex="-1">
+  <h1>Community Workshop Handbook</h1>
+  <section id="schedule" aria-labelledby="schedule-heading">
+    <h2 id="schedule-heading">Session schedule</h2>
+    <ol><li>Welcome and orientation</li><li>Guided practice</li><li>Questions and review</li></ol>
+  </section>
+</main>
+```
+
+</LessonStep>
+
+<LessonStep number={3} title={"Include image, quotation and complementary guidance"} file="labs/html-accessible-page/starter/index.html" expected={"The meaningful image is described and the quote remains readable without CSS."}>
+
+Use local responsive SVG diagrams, descriptive alt text and a caption; avoid extra outbound calls or scripts.
+
+```html
+<figure>
+  <picture><source media="(min-width: 48rem)" srcset="assets/workshop-wide.svg" type="image/svg+xml">
+    <img src="assets/workshop-small.svg" width="640" height="360" alt="Teaching area on the left, note-taking area on the right" decoding="async">
+  </picture>
+  <figcaption>Two areas support practice and reflection.</figcaption>
+</figure>
+<blockquote><p>Every question can help us improve the session.</p></blockquote>
+```
+
+</LessonStep>
+
+<LessonStep number={4} title={"Add readable responsive styling and test with the keyboard"} file="labs/html-accessible-page/starter/index.html" expected={"At 390px there is no horizontal overflow, the main region follows the skip link, and images load from local assets."}>
+
+Use a narrow-to-wide layout, visible focus ring and a skip link that becomes visible on focus. Then inspect the page at desktop and mobile widths.
+
+```css
+@media (min-width: 48rem) {.content-grid{grid-template-columns:minmax(0,2fr) minmax(15rem,1fr)}}
+a:focus-visible{outline:3px solid #ef7d24;outline-offset:4px}
+.skip-link{position:absolute;transform:translateY(-220%)}
+.skip-link:focus{transform:translateY(0)}
+```
+
+</LessonStep>
+
+## Explore it yourself
+
+Open `labs/html-accessible-page/starter/index.html` in the browser and inspect the rendered DOM and accessibility tree. Resize between 390px mobile and desktop widths where applicable. Navigate with Tab, Shift+Tab and Enter without a mouse. Document one real behavior you observed rather than relying solely on source inspection.
+
+<Misconception claim={"A page is accessible only if you install an accessibility library."} correction={"Native semantic HTML, meaningful text and visible keyboard focus provide a strong foundation without JavaScript; testing still matters."} />
+
+## Bug Hunt: identify the actual source of the problem
+
+The page passes a superficial static check but the skip link points to a non-existent target and the picture loads no image. Use browser DevTools, keyboard navigation and Chromium to verify the actual DOM and local asset paths.
+
+<KnowledgeCheck question={"Which outcome demonstrates semantic HTML still works without CSS?"} choices={["Text has a specific brand color","Document headings, links and lists retain their meaning and order","Animations run faster","All text becomes a button"]} correctIndex={1} explanation={"HTML encodes structure; layout and decoration are separate progressive enhancements."} misconception={"The absence of CSS should not erase information hierarchy."} lessonId="01.01.08" />
+
+## Guided HTML lab
+
+Complete `labs/html-accessible-page/starter/index.html` using the guided steps and check the reference implementation at `labs/html-accessible-page/solution/index.html` only when you need help. To test your actual starter from the academy root:
+
+```powershell
+$env:ACADEMY_LAB_TARGET = 'starter'
+npm run lab:html-accessible-page
+Remove-Item Env:ACADEMY_LAB_TARGET
+```
+
+For Bash, use `ACADEMY_LAB_TARGET=starter npm run lab:html-accessible-page`. The starter should fail before you implement the markup. The default command checks the instructor's solution. These assertions are structural; the production browser smoke suite checks real DOM and layout behavior separately. Completion remains self-assessed.
+
+<LabGate lessonId="01.01.08" labId="lab.foundation.html-accessible-page" commands={["npm ci","npm run lab:html-accessible-page"]} interactive={false} />
+
+## Reflect
+
+Record your HTML structure, the accessibility or responsive behavior verified in the browser, and a bug that the HTML parser did not automatically reveal. Name any limitations of your verification.
+
+## Official references
+
+- [WAI page structure tutorial](https://www.w3.org/WAI/tutorials/page-structure/)
+- [MDN responsive images guide](https://developer.mozilla.org/en-US/docs/Web/HTML/Guides/Responsive_images)
