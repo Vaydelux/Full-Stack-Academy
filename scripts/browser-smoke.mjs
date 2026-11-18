@@ -291,8 +291,8 @@ try {
   await page.goto(base + '/learn/01.04.01');
   await wait(page.getByRole('heading', { name: "The problem we're solving" }));
   assert.equal(await page.locator('meta[name="robots"][content*="noindex"]').count(),0,'Published Web APIs lesson must be indexable');
-  await page.goto(base + '/learn/02.01.01');
-  assert.match(await page.locator('meta[name="robots"]').first().getAttribute('content'), /noindex/, 'Planned next module must remain noindex');
+  await page.goto(base + '/learn/02.02.01');
+  assert.ok(await page.locator('meta[name="robots"][content*="noindex"]').count() > 0, 'Future CSS module must remain noindex');
   const webLab = slug => new URL('../labs/'+slug+'/solution/index.html', import.meta.url).href;
   const webSlugs = ['web-dom','web-fetch-json','web-url','web-storage','web-permissions','web-cors','web-csp','web-devtools'];
   for(const slug of webSlugs){
