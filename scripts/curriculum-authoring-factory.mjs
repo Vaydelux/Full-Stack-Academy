@@ -2,14 +2,14 @@ export function makeCourseFiles(r,moduleId,index){
 const id=`${moduleId}.${String(index+1).padStart(2,"0")}`,react=r.kind==="react",slug=(react?"react-":"next-")+r.slug,dir="labs/"+slug;
 const earlier=moduleId==="06.01"?"06.01.01":moduleId==="07.01"?"06.05.08":`${moduleId.slice(0,3)}${String(Number(moduleId.slice(3))-1).padStart(2,"0")}.08`;
 const prev=index?`${moduleId}.${String(index).padStart(2,"0")}`:earlier;
-if(!r.starter||!r.solution||!r.example||!r.mental||!r.assertions||!r.refs?.[1]||r.quiz?.length!==4)throw Error("Incomplete "+id);
+if(!r.starter||!r.solution||!r.example||!r.mental||!r.assertions||!r.refs?.[1]||r.quiz?.length!==5)throw Error("Incomplete "+id);
 const title=r.title.length>=15?r.title:r.title+" in practice";
 const goals=[`Diagnose the ${r.title.toLowerCase()} failure through a real example`,`Repair the learner fixture with a precise invariant and explicit edge cases`,`Verify the result offline and distinguish those checks from framework end-to-end tests`];
 const refs=r.refs.slice(0,3);
 const meta={id,title,description:`Investigate ${r.title.toLowerCase()} in ${react?"React 19":"Next.js 16"} with a defective starter, repaired instructor module, executable offline contract and framework example.`,trackId:react?"06":"07",moduleId,level:"Beginner",estimatedMinutes:index===7?85:60,status:"authored",reviewedAt:"2026-11-19",stack:react?{react:"19",typescript:"5",node:"24"}:{next:"16",react:"19",typescript:"5",node:"24"},prerequisites:[prev],objectives:goals,labId:"lab.foundation."+slug,sources:refs.map((url,i)=>({label:i===0?"Official framework documentation":"Supporting official API guidance",url})),rubric:[`I can reproduce the specific ${r.title.toLowerCase()} failure in the learner starter`,`I can explain one positive and one negative case without a hosted service`,`I can identify which behavior still requires a browser or Next.js request integration test`]};
 const lab={id:meta.labId,lessonId:id,title,runtime:react?"react19-tsx-ssr-local":"next16-offline-contract-and-tsx-source",status:"authored",starter:`${dir}/starter/solution.ts`,solution:`${dir}/solution/solution.ts`,tests:`${dir}/solution.test.mjs`,verify:["npm run lab:"+slug],expected:"The correct local contract passes independent assertions; end-to-end framework behavior is a separate QA gate.",security:"Uses synthetic fixture data, no secrets, uploaded code execution, remote endpoints, publishing, Vercel or hosted grading."};
 const prose=s=>String(s).replaceAll("{","&#123;").replaceAll("}","&#125;");
-const question=r.quiz[0],answers=r.quiz.slice(0,4),correct=r.correct??1;
+const question=r.quiz[0],answers=r.quiz.slice(1,5),correct=r.correct??1;
 const mdx=[
 "import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';",
 "import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';",
