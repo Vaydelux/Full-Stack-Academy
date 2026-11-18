@@ -1,0 +1,39 @@
+{
+  "id": "01.04.02",
+  "title": "Fetch API and JSON",
+  "description": "Distinguish HTTP error responses, rejected fetch promises, malformed JSON and user cancellation with a deterministic local transport demonstration.",
+  "trackId": "01",
+  "moduleId": "01.04",
+  "level": "Beginner",
+  "estimatedMinutes": 65,
+  "status": "authored",
+  "reviewedAt": "2026-11-18",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "01.04.01"
+  ],
+  "objectives": [
+    "Check Response.ok before parsing JSON",
+    "Distinguish transport failures from HTTP response errors",
+    "Catch malformed JSON without misleading success messages",
+    "Abort an in-flight operation and announce cancellation"
+  ],
+  "labId": "lab.foundation.web-fetch-json",
+  "sources": [
+    {
+      "label": "MDN Fetch API",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch"
+    },
+    {
+      "label": "MDN AbortController",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/API/AbortController"
+    }
+  ],
+  "rubric": [
+    "I verified HTTP 503 is not confused with a network failure.",
+    "I observed a JSON parse failure and a cancellation outcome.",
+    "I confirmed that every response is simulated locally without real network traffic."
+  ]
+}

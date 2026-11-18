@@ -1,0 +1,39 @@
+{
+  "id": "01.04.07",
+  "title": "CSP and browser isolation",
+  "description": "Separate Content Security Policy headers from iframe sandbox boundaries and validate postMessage events from an opaque-origin teaching frame.",
+  "trackId": "01",
+  "moduleId": "01.04",
+  "level": "Beginner",
+  "estimatedMinutes": 70,
+  "status": "authored",
+  "reviewedAt": "2026-11-18",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "01.04.06"
+  ],
+  "objectives": [
+    "Explain what script-src, object-src and base-uri restrict",
+    "Recognize why CSP is defense-in-depth rather than input sanitization",
+    "Use iframe sandbox without allow-same-origin for untrusted examples",
+    "Verify postMessage source, origin and payload before trusting an event"
+  ],
+  "labId": "lab.foundation.web-csp",
+  "sources": [
+    {
+      "label": "MDN Content Security Policy",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CSP"
+    },
+    {
+      "label": "MDN window.postMessage security",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage"
+    }
+  ],
+  "rubric": [
+    "I explained the difference between CSP headers and iframe sandbox attributes.",
+    "I confirmed the frame uses allow-scripts without allow-same-origin.",
+    "I verified message source, opaque origin and expected payload checks."
+  ]
+}

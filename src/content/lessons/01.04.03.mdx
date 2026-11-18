@@ -1,0 +1,117 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Construct absolute URLs from an explicit base","Use URLSearchParams to encode and read repeated keys","Validate the parsed origin before producing an internal link","Avoid open redirects and manual query-string concatenation"]} />
+
+## The problem we're solving
+
+A preview helper takes a user path and concatenates it into a URL. Special characters break query strings, repeated query keys disappear and an untrusted external URL can become an open redirect. We will parse and validate before presenting a generated link.
+
+## Build the mental model
+
+A URL object normalizes paths, percent encoding and query parameters. URLSearchParams.append retains repeated keys whereas set replaces previous values. An absolute attacker-supplied URL overrides the base, so compare the parsed origin to an explicit allowlisted origin before using it. The demo previews a URL as text; it never navigates.
+
+**Predict before running:** Appending tag twice yields two entries, but set would replace the first. An input such as https://outside.example/ is rejected.
+
+## Prerequisites and preflight
+
+Continue from [the previous lesson](/learn/01.04.02). Use a local repository checkout, Node.js 24, and Chromium. Open the browser console and use only synthetic input. The practice fixture is offline and requires no personal login, credential, cloud API, paid service or external data. The canonical catalog is a learning roadmap; only separately authored lessons are published.
+
+**Learning outcome:** Construct absolute URLs from an explicit base; Use URLSearchParams to encode and read repeated keys; Validate the parsed origin before producing an internal link; Avoid open redirects and manual query-string concatenation.
+
+## Guided implementation
+
+Work in `labs/web-url/starter/index.html`. Apply each change to the same file, then compare it with the instructor implementation in `labs/web-url/solution/index.html`. The complete solution is runnable by opening its index.html in a browser.
+
+<LessonStep number={1} title={"Parse relative input with a trusted base"} file="labs/web-url/starter/index.html" expected={"A relative /workshops path resolves inside the tutorial origin."}>
+
+Use an explicit HTTPS base so file:// tutorial hosting never controls the validation policy.
+
+```js
+const base = new URL('https://academy.example/');
+const url = new URL(input.value, base);
+```
+
+**Predict before running:** A relative /workshops path resolves inside the tutorial origin.
+
+**Why it works:** new URL handles relative resolution and percent encoding; concatenating strings does not.
+
+**Proof it works:** Preview /workshops and inspect the normalized URL.
+
+</LessonStep>
+
+
+<LessonStep number={2} title={"Reject external or unsafe destinations"} file="labs/web-url/starter/index.html" expected={"An external HTTPS origin or javascript: path is rejected."}>
+
+Check parsed origin before displaying or using a constructed link.
+
+```js
+if (url.origin !== base.origin) {
+  status.textContent = 'Rejected: origin outside the local tutorial policy.';
+  return;
+}
+```
+
+**Predict before running:** An external HTTPS origin or javascript: path is rejected.
+
+**Why it works:** A base URL is not an allowlist; validation must follow resolution.
+
+**Proof it works:** Enter https://outside.example/ and verify the rejected result.
+
+</LessonStep>
+
+
+<LessonStep number={3} title={"Handle repeated query keys"} file="labs/web-url/starter/index.html" expected={"Both tag values are retained and correctly encoded."}>
+
+Use append for multiple values, and getAll to inspect each one.
+
+```js
+url.searchParams.append('tag','web security');
+url.searchParams.append('tag','DOM & CSS');
+const tags = url.searchParams.getAll('tag');
+```
+
+**Predict before running:** Both tag values are retained and correctly encoded.
+
+**Why it works:** Query parameters form a multimap, not a single-value dictionary.
+
+**Proof it works:** Confirm two tags appear and the URL is printed as text only.
+
+</LessonStep>
+
+## Explore and verify
+
+Start with the intentionally failing starter and complete all steps. Open the solution and starter locally. Inspect the actual DOM, Console, Network or browser permission state relevant to this lesson; do not assume a source-code regex alone proves runtime behavior. At a narrow mobile viewport, check that buttons, form fields and status messages remain readable. Record the actual outcome and which claims are *simulated* rather than observed through a remote service.
+
+<Misconception claim={"Passing a trusted base into new URL always forces the resulting URL to that origin."} correction={"Absolute input URLs override the base. Validate the parsed result's origin and intended scheme."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+The starter interpolates a raw path and query string. Reproduce with spaces, ampersands and an external URL; repair with URL, URLSearchParams and parsed-origin validation.
+
+First document the original symptom; then make the smallest fix, predict the observable difference, and rerun the exact scenario. Prefer an observable behavior check over screenshots alone.
+
+<KnowledgeCheck question={"Which operation preserves two tag query parameters?"} choices={["url.searchParams.set twice","url.searchParams.append twice","String.replace on the URL","Remove the query separator"]} correctIndex={1} explanation={"append adds another key/value pair; set replaces existing pairs for the same key."} misconception={"Query keys are allowed to occur more than once."} lessonId="01.04.03" />
+
+## Guided local lab
+
+Repair `labs/web-url/starter/index.html` and compare with `labs/web-url/solution/index.html`. The default test targets the instructor solution. To test **your starter** instead, use:
+
+```powershell
+$env:ACADEMY_LAB_TARGET = 'starter'
+npm run lab:web-url
+Remove-Item Env:ACADEMY_LAB_TARGET
+```
+
+In Bash: `ACADEMY_LAB_TARGET=starter npm run lab:web-url`. The starter intentionally fails. After repair, its assertions should pass. The repository's isolated Chromium suite separately checks browser behaviors. Verification is local and does not grade or persist learner data on a server.
+
+<LabGate lessonId="01.04.03" labId="lab.foundation.web-url" commands={["npm ci","npm run lab:web-url"]} interactive={false} />
+
+## Reflect
+
+What changed? Why is it more correct or secure? Under what conditions would you choose a different pattern? Write a precise reproduction, actual evidence, one untested edge case and a follow-up browser or server test. Do not mistake this local training fixture for a production security or accessibility certification.
+
+## Official references
+
+- [MDN URL constructor](https://developer.mozilla.org/en-US/docs/Web/API/URL/URL)
+- [MDN URLSearchParams.append](https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams/append)

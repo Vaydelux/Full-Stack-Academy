@@ -1,0 +1,39 @@
+{
+  "id": "01.04.06",
+  "title": "Same-origin policy and CORS",
+  "description": "Apply the browser same-origin model and reason about preflight, explicit origins and credentials without disabling browser protections.",
+  "trackId": "01",
+  "moduleId": "01.04",
+  "level": "Beginner",
+  "estimatedMinutes": 65,
+  "status": "authored",
+  "reviewedAt": "2026-11-18",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "01.04.05"
+  ],
+  "objectives": [
+    "Define an origin using scheme host and port",
+    "Distinguish cross-origin requests from cross-origin response access",
+    "Explain CORS preflight and credential rules",
+    "Reject wildcard ACAO with credentials in a local policy exercise"
+  ],
+  "labId": "lab.foundation.web-cors",
+  "sources": [
+    {
+      "label": "MDN Same-origin policy",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/Security/Same-origin_policy"
+    },
+    {
+      "label": "MDN CORS",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS"
+    }
+  ],
+  "rubric": [
+    "I identified scheme, host and port as origin components.",
+    "I rejected wildcard CORS with credentials and accepted explicit match.",
+    "I explained preflight and why CORS is not authentication."
+  ]
+}

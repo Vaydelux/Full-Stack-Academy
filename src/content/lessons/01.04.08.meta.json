@@ -1,0 +1,39 @@
+{
+  "id": "01.04.08",
+  "title": "Lab DevTools request investigation",
+  "description": "Investigate a local synthetic request with DevTools, classify response failures, preserve redacted evidence and avoid depending on live third-party servers.",
+  "trackId": "01",
+  "moduleId": "01.04",
+  "level": "Beginner",
+  "estimatedMinutes": 85,
+  "status": "authored",
+  "reviewedAt": "2026-11-18",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "01.04.07"
+  ],
+  "objectives": [
+    "Inspect a local fetch entry and response metadata in DevTools",
+    "Distinguish a successful response, simulated HTTP error and JSON parse failure",
+    "Write a repeatable reproduction and redacted observation",
+    "Complete a deterministic offline request triage capstone"
+  ],
+  "labId": "lab.foundation.web-devtools",
+  "sources": [
+    {
+      "label": "MDN Fetch response handling",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch"
+    },
+    {
+      "label": "Chrome DevTools Network overview",
+      "url": "https://developer.chrome.com/docs/devtools/network/overview/"
+    }
+  ],
+  "rubric": [
+    "I inspected the locally generated fetch response in DevTools.",
+    "I distinguished real local fetch evidence from simulated HTTP error responses.",
+    "I documented one reproducible failure with sensitive values redacted."
+  ]
+}

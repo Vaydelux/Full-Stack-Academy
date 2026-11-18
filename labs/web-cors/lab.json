@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.web-cors",
+  "lessonId": "01.04.06",
+  "title": "Same-origin policy and CORS",
+  "runtime": "browser-html-and-node-24",
+  "status": "authored",
+  "starter": "labs/web-cors/starter/index.html",
+  "solution": "labs/web-cors/solution/index.html",
+  "tests": "labs/web-cors/solution.test.mjs",
+  "verify": [
+    "npm run lab:web-cors"
+  ],
+  "expected": "I identified scheme, host and port as origin components.",
+  "security": "Self-contained synthetic offline page; no user accounts, remote requests, access tokens or real user data. Node static checks require Chromium behavior verification."
+}

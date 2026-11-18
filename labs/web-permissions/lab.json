@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.web-permissions",
+  "lessonId": "01.04.05",
+  "title": "Permissions and clipboard",
+  "runtime": "browser-html-and-node-24",
+  "status": "authored",
+  "starter": "labs/web-permissions/starter/index.html",
+  "solution": "labs/web-permissions/solution/index.html",
+  "tests": "labs/web-permissions/solution.test.mjs",
+  "verify": [
+    "npm run lab:web-permissions"
+  ],
+  "expected": "I attempted a capability only from an explicit user action.",
+  "security": "Self-contained synthetic offline page; no user accounts, remote requests, access tokens or real user data. Node static checks require Chromium behavior verification."
+}

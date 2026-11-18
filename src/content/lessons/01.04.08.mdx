@@ -1,0 +1,121 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Inspect a local fetch entry and response metadata in DevTools","Distinguish a successful response, simulated HTTP error and JSON parse failure","Write a repeatable reproduction and redacted observation","Complete a deterministic offline request triage capstone"]} />
+
+## The problem we're solving
+
+A dashboard says its data load failed, but no one recorded whether the request reached the server, returned a non-2xx response or contained malformed JSON. Debugging from a red error banner alone leads to untestable guesses. We will build a repeatable local probe and record the exact evidence that distinguishes response, transport and parsing.
+
+## Build the mental model
+
+A request investigation follows trigger, request URL/method, response status, content type, body parse and UI outcome. DevTools Network and Console record different parts of this story. A Blob URL can be fetched locally without contacting a remote service; a new Response with 503 is a simulator, not an observed HTTP 503 over the network. Keep those distinctions honest. Real user tokens, cookies and query secrets should be removed from shared screenshots or logs.
+
+**Predict before running:** The Blob URL request resolves and parses valid JSON. Simulating a 503 Response should report 503; malformed JSON should report a parsing failure. Only the Blob fetch produces an actual fetch entry.
+
+## Prerequisites and preflight
+
+Continue from [the previous lesson](/learn/01.04.07). Use a local repository checkout, Node.js 24, and Chromium. Open the browser console and use only synthetic input. The practice fixture is offline and requires no personal login, credential, cloud API, paid service or external data. The canonical catalog is a learning roadmap; only separately authored lessons are published.
+
+**Learning outcome:** Inspect a local fetch entry and response metadata in DevTools; Distinguish a successful response, simulated HTTP error and JSON parse failure; Write a repeatable reproduction and redacted observation; Complete a deterministic offline request triage capstone.
+
+## Guided implementation
+
+Work in `labs/web-devtools/starter/index.html`. Apply each change to the same file, then compare it with the instructor implementation in `labs/web-devtools/solution/index.html`. The complete solution is runnable by opening its index.html in a browser.
+
+<LessonStep number={1} title={"Make a reproducible local fetch"} file="labs/web-devtools/starter/index.html" expected={"A local blob: fetch can appear in Network but does not contact an Internet API."}>
+
+Create a JSON Blob and object URL, fetch it, then revoke the URL.
+
+```js
+const blob = new Blob([JSON.stringify({items:['DOM','Fetch']})],
+  {type:'application/json'});
+const url = URL.createObjectURL(blob);
+try { const response = await fetch(url); /* inspect */ }
+finally { URL.revokeObjectURL(url); }
+```
+
+**Predict before running:** A local blob: fetch can appear in Network but does not contact an Internet API.
+
+**Why it works:** Isolating the transport makes test results deterministic and keeps real data out.
+
+**Proof it works:** Open Network, click Inspect local request, and filter for blob.
+
+</LessonStep>
+
+
+<LessonStep number={2} title={"Classify the response"} file="labs/web-devtools/starter/index.html" expected={"The valid Blob returns two entries; a constructed 503 Response does not."}>
+
+Check status before parsing; keep a simulated HTTP failure clearly labeled.
+
+```js
+if (!response.ok) throw new Error('HTTP ' + response.status);
+const payload = await response.json();
+status.textContent = payload.items.length + ' local entries';
+```
+
+**Predict before running:** The valid Blob returns two entries; a constructed 503 Response does not.
+
+**Why it works:** A non-2xx response and a JSON parsing exception are distinct debugging branches.
+
+**Proof it works:** Compare visible messages for the three local actions.
+
+</LessonStep>
+
+
+<LessonStep number={3} title={"Capture sanitized evidence"} file="labs/web-devtools/starter/index.html" expected={"A colleague should reproduce the behavior without using your session credentials."}>
+
+Write the trigger, protocol, status, response headers and exception; remove secret values.
+
+```js
+// Reproduction template:
+// Trigger: click Inspect local request
+// URL: blob:[redacted local identifier]
+// Observed: 200, application/json, 2 items
+// Limits: no remote API call; no server-side authorization tested
+```
+
+**Predict before running:** A colleague should reproduce the behavior without using your session credentials.
+
+**Why it works:** Good evidence separates directly observed browser facts from assumptions.
+
+**Proof it works:** Add one redacted observation to your notes and retest with a blank session.
+
+</LessonStep>
+
+## Explore and verify
+
+Start with the intentionally failing starter and complete all steps. Open the solution and starter locally. Inspect the actual DOM, Console, Network or browser permission state relevant to this lesson; do not assume a source-code regex alone proves runtime behavior. At a narrow mobile viewport, check that buttons, form fields and status messages remain readable. Record the actual outcome and which claims are *simulated* rather than observed through a remote service.
+
+<Misconception claim={"Every failed JSON load is a server-side HTTP failure."} correction={"The transport may fail, the HTTP status may be non-2xx, or parsing may fail after a successful response. Capture each stage separately."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+The starter claims all failures are HTTP 500 and leaks an unredacted full URL string to the report. Use explicit status classification and a sanitized, local-only description.
+
+First document the original symptom; then make the smallest fix, predict the observable difference, and rerun the exact scenario. Prefer an observable behavior check over screenshots alone.
+
+<KnowledgeCheck question={"Which action actually generates a fetch entry in this offline capstone?"} choices={["Constructing new Response with status 503","Parsing a broken JSON string","Calling fetch on a Blob object URL","Printing a status string"]} correctIndex={2} explanation={"fetch on a Blob object URL initiates a local browser fetch. Constructed Response objects simulate response semantics but do not make HTTP requests."} misconception={"A Response object is not proof that an HTTP server was contacted."} lessonId="01.04.08" />
+
+## Guided local lab
+
+Repair `labs/web-devtools/starter/index.html` and compare with `labs/web-devtools/solution/index.html`. The default test targets the instructor solution. To test **your starter** instead, use:
+
+```powershell
+$env:ACADEMY_LAB_TARGET = 'starter'
+npm run lab:web-devtools
+Remove-Item Env:ACADEMY_LAB_TARGET
+```
+
+In Bash: `ACADEMY_LAB_TARGET=starter npm run lab:web-devtools`. The starter intentionally fails. After repair, its assertions should pass. The repository's isolated Chromium suite separately checks browser behaviors. Verification is local and does not grade or persist learner data on a server.
+
+<LabGate lessonId="01.04.08" labId="lab.foundation.web-devtools" commands={["npm ci","npm run lab:web-devtools"]} interactive={false} />
+
+## Reflect
+
+What changed? Why is it more correct or secure? Under what conditions would you choose a different pattern? Write a precise reproduction, actual evidence, one untested edge case and a follow-up browser or server test. Do not mistake this local training fixture for a production security or accessibility certification.
+
+## Official references
+
+- [MDN Fetch response handling](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch)
+- [Chrome DevTools Network overview](https://developer.chrome.com/docs/devtools/network/overview/)

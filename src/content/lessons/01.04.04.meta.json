@@ -1,0 +1,39 @@
+{
+  "id": "01.04.04",
+  "title": "Web Storage and cookies",
+  "description": "Compare browser-local preference storage with server-controlled session cookies, including expiry, browser restrictions and credential-safety risks.",
+  "trackId": "01",
+  "moduleId": "01.04",
+  "level": "Beginner",
+  "estimatedMinutes": 55,
+  "status": "authored",
+  "reviewedAt": "2026-11-18",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "01.04.03"
+  ],
+  "objectives": [
+    "Explain localStorage and sessionStorage lifetime and origin boundaries",
+    "Explain HttpOnly, Secure and SameSite cookie attributes",
+    "Persist only a nonsensitive UI preference where storage is available",
+    "Handle blocked storage without losing basic page functionality"
+  ],
+  "labId": "lab.foundation.web-storage",
+  "sources": [
+    {
+      "label": "MDN Web Storage API",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API"
+    },
+    {
+      "label": "MDN Set-Cookie header",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Set-Cookie"
+    }
+  ],
+  "rubric": [
+    "I explained the origin and lifetime differences of Web Storage.",
+    "I demonstrated a safe theme preference with a storage-blocked fallback.",
+    "I did not store credentials or claim the offline page provides server authentication."
+  ]
+}

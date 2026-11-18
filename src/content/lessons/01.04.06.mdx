@@ -1,0 +1,117 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Define an origin using scheme host and port","Distinguish cross-origin requests from cross-origin response access","Explain CORS preflight and credential rules","Reject wildcard ACAO with credentials in a local policy exercise"]} />
+
+## The problem we're solving
+
+A frontend cannot read a cross-origin API response, so a teammate suggests disabling CORS in the browser. That would bypass a security boundary without fixing the server contract. Instead we will model which response headers allow a browser to expose a response to a requesting page.
+
+## Build the mental model
+
+Same-origin compares scheme, host and port. Browsers may send cross-origin requests, but scripts cannot freely read responses without authorization. CORS is a response-sharing protocol enforced by browsers, not user authentication or a server firewall. Non-simple requests may require OPTIONS preflight. A credentialed response cannot use wildcard Access-Control-Allow-Origin; it requires an explicit matching origin and Access-Control-Allow-Credentials: true. This offline exercise evaluates policy; it does not make cross-origin requests or change browser settings.
+
+**Predict before running:** For credentialed reads, ACAO:* plus ACAC:true is still invalid. An explicit matching origin with credentials allowed can pass.
+
+## Prerequisites and preflight
+
+Continue from [the previous lesson](/learn/01.04.05). Use a local repository checkout, Node.js 24, and Chromium. Open the browser console and use only synthetic input. The practice fixture is offline and requires no personal login, credential, cloud API, paid service or external data. The canonical catalog is a learning roadmap; only separately authored lessons are published.
+
+**Learning outcome:** Define an origin using scheme host and port; Distinguish cross-origin requests from cross-origin response access; Explain CORS preflight and credential rules; Reject wildcard ACAO with credentials in a local policy exercise.
+
+## Guided implementation
+
+Work in `labs/web-cors/starter/index.html`. Apply each change to the same file, then compare it with the instructor implementation in `labs/web-cors/solution/index.html`. The complete solution is runnable by opening its index.html in a browser.
+
+<LessonStep number={1} title={"Identify the requesting origin"} file="labs/web-cors/starter/index.html" expected={"Changing scheme or port can change origin."}>
+
+Build origin from parsed URL parts, not from a domain-name substring.
+
+```js
+const origin = new URL('https://app.example:443/').origin;
+// 'https://app.example'
+```
+
+**Predict before running:** Changing scheme or port can change origin.
+
+**Why it works:** An origin is not the same as the registrable domain.
+
+**Proof it works:** Compare http://app.example and https://app.example in DevTools mentally.
+
+</LessonStep>
+
+
+<LessonStep number={2} title={"Evaluate a credentialed CORS response"} file="labs/web-cors/starter/index.html" expected={"Wildcard origin with credentials must be rejected."}>
+
+Match the exact origin and the explicit credentials header.
+
+```js
+const permitted = allowOrigin === requestingOrigin &&
+  (!credentials || allowCredentials === true);
+```
+
+**Predict before running:** Wildcard origin with credentials must be rejected.
+
+**Why it works:** Credentialed CORS has tighter requirements than ordinary noncredentialed responses.
+
+**Proof it works:** Select Wildcard with credentials and click Evaluate CORS.
+
+</LessonStep>
+
+
+<LessonStep number={3} title={"Explain preflight without bypassing policy"} file="labs/web-cors/starter/index.html" expected={"The actual request proceeds only when the browser accepts relevant preflight response headers."}>
+
+Document the OPTIONS request and server decisions for methods or headers outside the safelist.
+
+```js
+// Preflight request sketch:
+// OPTIONS /resource
+// Origin: https://app.example
+// Access-Control-Request-Method: PUT
+// Access-Control-Request-Headers: content-type
+```
+
+**Predict before running:** The actual request proceeds only when the browser accepts relevant preflight response headers.
+
+**Why it works:** Preflight is a browser negotiation, not a replacement for authorization.
+
+**Proof it works:** Describe which response headers a server needs and why wildcard credentials cannot work.
+
+</LessonStep>
+
+## Explore and verify
+
+Start with the intentionally failing starter and complete all steps. Open the solution and starter locally. Inspect the actual DOM, Console, Network or browser permission state relevant to this lesson; do not assume a source-code regex alone proves runtime behavior. At a narrow mobile viewport, check that buttons, form fields and status messages remain readable. Record the actual outcome and which claims are *simulated* rather than observed through a remote service.
+
+<Misconception claim={"CORS prevents all cross-origin HTTP requests from reaching the server."} correction={"CORS primarily gates which cross-origin responses browser scripts may read. Servers still require real authorization and CSRF defenses where relevant."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+The starter treats Access-Control-Allow-Origin:* as sufficient even when credentials are included. Repair the condition and test explicit-origin versus wildcard scenarios.
+
+First document the original symptom; then make the smallest fix, predict the observable difference, and rerun the exact scenario. Prefer an observable behavior check over screenshots alone.
+
+<KnowledgeCheck question={"Can credentialed CORS expose a response with Access-Control-Allow-Origin: *?"} choices={["Yes if the browser is modern","Yes whenever Authorization exists","No, the response needs an explicit matching origin and ACAC true","Only if JavaScript turns off same-origin checks"]} correctIndex={2} explanation={"Browsers prohibit wildcard ACAO for credentialed cross-origin reads."} misconception={"CORS is a server/browser contract, not a feature disabled from frontend JavaScript."} lessonId="01.04.06" />
+
+## Guided local lab
+
+Repair `labs/web-cors/starter/index.html` and compare with `labs/web-cors/solution/index.html`. The default test targets the instructor solution. To test **your starter** instead, use:
+
+```powershell
+$env:ACADEMY_LAB_TARGET = 'starter'
+npm run lab:web-cors
+Remove-Item Env:ACADEMY_LAB_TARGET
+```
+
+In Bash: `ACADEMY_LAB_TARGET=starter npm run lab:web-cors`. The starter intentionally fails. After repair, its assertions should pass. The repository's isolated Chromium suite separately checks browser behaviors. Verification is local and does not grade or persist learner data on a server.
+
+<LabGate lessonId="01.04.06" labId="lab.foundation.web-cors" commands={["npm ci","npm run lab:web-cors"]} interactive={false} />
+
+## Reflect
+
+What changed? Why is it more correct or secure? Under what conditions would you choose a different pattern? Write a precise reproduction, actual evidence, one untested edge case and a follow-up browser or server test. Do not mistake this local training fixture for a production security or accessibility certification.
+
+## Official references
+
+- [MDN Same-origin policy](https://developer.mozilla.org/en-US/docs/Web/Security/Same-origin_policy)
+- [MDN CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS)

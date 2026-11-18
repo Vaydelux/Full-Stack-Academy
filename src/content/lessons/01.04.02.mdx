@@ -1,0 +1,124 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Check Response.ok before parsing JSON","Distinguish transport failures from HTTP response errors","Catch malformed JSON without misleading success messages","Abort an in-flight operation and announce cancellation"]} />
+
+## The problem we're solving
+
+A small client calls fetch, immediately parses JSON and shows success on every resolved promise. A 503 response still resolves, broken JSON can throw, and users cannot cancel. We will build a deterministic offline simulator that follows the same response and failure contracts without calling a live API.
+
+## Build the mental model
+
+fetch resolves to a Response even for HTTP errors such as 404 or 503; check response.ok and response.status explicitly. A network failure rejects the promise, and response.json() can independently reject when the body is not valid JSON. AbortController lets a caller signal that pending work is no longer needed. Here the transport returns locally constructed Response objects, so no real request, external server or API key is involved.
+
+**Predict before running:** A Response with status 503 has ok=false even though the promise resolves. JSON parsing of a malformed response fails separately.
+
+## Prerequisites and preflight
+
+Continue from [the previous lesson](/learn/01.04.01). Use a local repository checkout, Node.js 24, and Chromium. Open the browser console and use only synthetic input. The practice fixture is offline and requires no personal login, credential, cloud API, paid service or external data. The canonical catalog is a learning roadmap; only separately authored lessons are published.
+
+**Learning outcome:** Check Response.ok before parsing JSON; Distinguish transport failures from HTTP response errors; Catch malformed JSON without misleading success messages; Abort an in-flight operation and announce cancellation.
+
+## Guided implementation
+
+Work in `labs/web-fetch-json/starter/index.html`. Apply each change to the same file, then compare it with the instructor implementation in `labs/web-fetch-json/solution/index.html`. The complete solution is runnable by opening its index.html in a browser.
+
+<LessonStep number={1} title={"Handle HTTP status before JSON"} file="labs/web-fetch-json/starter/index.html" expected={"The HTTP-error demonstration should report HTTP 503, not claim a network outage."}>
+
+Read the Response contract before touching the body. This sample uses a local transport, not a real server.
+
+```js
+const response = await readDemo('http-error', signal);
+if (!response.ok) throw new Error('HTTP ' + response.status);
+const data = await response.json();
+```
+
+**Predict before running:** The HTTP-error demonstration should report HTTP 503, not claim a network outage.
+
+**Why it works:** A non-2xx HTTP response is different from a rejected transport promise.
+
+**Proof it works:** Click Simulate HTTP 503 and confirm the status explicitly mentions 503.
+
+</LessonStep>
+
+
+<LessonStep number={2} title={"Handle parse and network failures"} file="labs/web-fetch-json/starter/index.html" expected={"Malformed JSON should report a parse failure; a simulated transport error should report a transport failure."}>
+
+Catch the thrown parsing or transport error and display an accurate branch.
+
+```js
+try {
+  const response = await readDemo(mode, signal);
+  if (!response.ok) throw new Error('HTTP ' + response.status);
+  const data = await response.json();
+  status.textContent = data.items.length + ' sample items loaded locally.';
+} catch (error) {
+  status.textContent = error.name === 'AbortError' ? 'Request cancelled.' : 'Request failed: ' + error.message;
+}
+```
+
+**Predict before running:** Malformed JSON should report a parse failure; a simulated transport error should report a transport failure.
+
+**Why it works:** Not every failure means a server returned an error status.
+
+**Proof it works:** Trigger each local scenario and compare the visible status.
+
+</LessonStep>
+
+
+<LessonStep number={3} title={"Cancel and avoid stale UI work"} file="labs/web-fetch-json/starter/index.html" expected={"Cancellation should be reported without a fabricated successful fetch."}>
+
+Keep an AbortController for the current request, and abort it when cancellation is requested.
+
+```js
+let controller;
+function cancel(){
+  controller?.abort();
+}
+document.querySelector('#cancel').addEventListener('click', cancel);
+```
+
+**Predict before running:** Cancellation should be reported without a fabricated successful fetch.
+
+**Why it works:** A signal represents cancellation intent; the transport or consumer must honor it.
+
+**Proof it works:** Start Load sample JSON, quickly click Cancel request and verify the cancellation state.
+
+</LessonStep>
+
+## Explore and verify
+
+Start with the intentionally failing starter and complete all steps. Open the solution and starter locally. Inspect the actual DOM, Console, Network or browser permission state relevant to this lesson; do not assume a source-code regex alone proves runtime behavior. At a narrow mobile viewport, check that buttons, form fields and status messages remain readable. Record the actual outcome and which claims are *simulated* rather than observed through a remote service.
+
+<Misconception claim={"A resolved fetch promise always means HTTP success."} correction={"Fetch resolves on HTTP error responses. Only response.ok or status confirms the HTTP result, while parsing is a separate operation."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+The starter blindly calls response.json() then shows success for every response. Repair HTTP status checks and distinguish AbortError, parsing errors, and transport failures.
+
+First document the original symptom; then make the smallest fix, predict the observable difference, and rerun the exact scenario. Prefer an observable behavior check over screenshots alone.
+
+<KnowledgeCheck question={"What happens when fetch receives an HTTP 503 response?"} choices={["The promise always rejects as a network error","The promise resolves to a Response with ok=false","JSON parsing is guaranteed to succeed","AbortController is automatically invoked"]} correctIndex={1} explanation={"HTTP failure statuses are represented on Response. The promise typically rejects for transport or abort failures."} misconception={"HTTP responses and transport failures occupy different branches."} lessonId="01.04.02" />
+
+## Guided local lab
+
+Repair `labs/web-fetch-json/starter/index.html` and compare with `labs/web-fetch-json/solution/index.html`. The default test targets the instructor solution. To test **your starter** instead, use:
+
+```powershell
+$env:ACADEMY_LAB_TARGET = 'starter'
+npm run lab:web-fetch-json
+Remove-Item Env:ACADEMY_LAB_TARGET
+```
+
+In Bash: `ACADEMY_LAB_TARGET=starter npm run lab:web-fetch-json`. The starter intentionally fails. After repair, its assertions should pass. The repository's isolated Chromium suite separately checks browser behaviors. Verification is local and does not grade or persist learner data on a server.
+
+<LabGate lessonId="01.04.02" labId="lab.foundation.web-fetch-json" commands={["npm ci","npm run lab:web-fetch-json"]} interactive={false} />
+
+## Reflect
+
+What changed? Why is it more correct or secure? Under what conditions would you choose a different pattern? Write a precise reproduction, actual evidence, one untested edge case and a follow-up browser or server test. Do not mistake this local training fixture for a production security or accessibility certification.
+
+## Official references
+
+- [MDN Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch)
+- [MDN AbortController](https://developer.mozilla.org/en-US/docs/Web/API/AbortController)
