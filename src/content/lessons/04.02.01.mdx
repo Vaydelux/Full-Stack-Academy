@@ -9,7 +9,7 @@ A reusable selector returns the first record instead of the record with the requ
 
 ## Build the mental model
 
-A generic preserves a relationship between input and output types. T extends {id:string} constrains the required property while retaining extra fields in the returned item. At runtime, find must still check the requested ID rather than trusting the type parameter.
+A generic preserves a relationship between input and output types. `T extends {id:string}` constrains the required property while retaining extra fields in the returned item. At runtime, find must still check the requested ID rather than trusting the type parameter.
 
 **Predict before running:** The generic function returns the matching item with all of its original extra properties.
 
@@ -27,7 +27,7 @@ export function solve<T extends {id:string}>(items:readonly T[],id:string):T|und
 
 **Predict before running:** A reusable selector returns the first record instead of the record with the requested ID, and the API accepts objects without IDs.
 
-**Why it fails:** A generic preserves a relationship between input and output types. T extends {id:string} constrains the required property while retaining extra fields in the returned item. At runtime, find must still check the requested ID rather than trusting the type parameter.
+**Why it fails:** A generic preserves a relationship between input and output types. `T extends {id:string}` constrains the required property while retaining extra fields in the returned item. At runtime, find must still check the requested ID rather than trusting the type parameter.
 
 **Proof:** Run the student target `ACADEMY_LAB_TARGET=starter npm run lab:ts-generics` and capture the failing assertion.
 
@@ -43,7 +43,7 @@ export function solve<T extends {id:string}>(items:readonly T[],id:string):T|und
 
 **Predict before running:** The generic function returns the matching item with all of its original extra properties.
 
-**Why the fix works:** A generic preserves a relationship between input and output types. T extends {id:string} constrains the required property while retaining extra fields in the returned item. At runtime, find must still check the requested ID rather than trusting the type parameter.
+**Why the fix works:** A generic preserves a relationship between input and output types. `T extends {id:string}` constrains the required property while retaining extra fields in the returned item. At runtime, find must still check the requested ID rather than trusting the type parameter.
 
 **Proof:** The same Node test now passes; the separate compiler-negative test rejects invalid static usage.
 

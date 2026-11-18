@@ -9,7 +9,7 @@ A key validator accepts any string containing a colon, including unrecognized pr
 
 ## Build the mental model
 
-Template literal types encode string shape patterns in the type system, such as course:${string} and topic:${string}. The type does not validate runtime strings; a user-defined guard must still check the permitted prefix and nonempty payload.
+Template literal types encode string shape patterns in the type system, such as `course:${string}` and `topic:${string}`. The type does not validate runtime strings; a user-defined guard must still check the permitted prefix and nonempty payload.
 
 **Predict before running:** Recognized namespaces with nonempty identifiers pass; unrelated prefixes and empty values fail.
 
@@ -27,7 +27,7 @@ export type Key=`course:${string}`|`topic:${string}`;export function solve(raw:s
 
 **Predict before running:** A key validator accepts any string containing a colon, including unrecognized prefixes and empty identifiers.
 
-**Why it fails:** Template literal types encode string shape patterns in the type system, such as course:${string} and topic:${string}. The type does not validate runtime strings; a user-defined guard must still check the permitted prefix and nonempty payload.
+**Why it fails:** Template literal types encode string shape patterns in the type system, such as `course:${string}` and `topic:${string}`. The type does not validate runtime strings; a user-defined guard must still check the permitted prefix and nonempty payload.
 
 **Proof:** Run the student target `ACADEMY_LAB_TARGET=starter npm run lab:ts-template-literals` and capture the failing assertion.
 
@@ -43,7 +43,7 @@ export type Key=`course:${string}`|`topic:${string}`;export function solve(raw:s
 
 **Predict before running:** Recognized namespaces with nonempty identifiers pass; unrelated prefixes and empty values fail.
 
-**Why the fix works:** Template literal types encode string shape patterns in the type system, such as course:${string} and topic:${string}. The type does not validate runtime strings; a user-defined guard must still check the permitted prefix and nonempty payload.
+**Why the fix works:** Template literal types encode string shape patterns in the type system, such as `course:${string}` and `topic:${string}`. The type does not validate runtime strings; a user-defined guard must still check the permitted prefix and nonempty payload.
 
 **Proof:** The same Node test now passes; the separate compiler-negative test rejects invalid static usage.
 
