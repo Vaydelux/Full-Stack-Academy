@@ -1,0 +1,91 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Predict call stack and event loop behavior before executing an asynchronous operation","Diagnose the starter's race, ordering or error-handling defect","Prove cancellation, ordering or failure behavior with deterministic offline tests"]} />
+
+## The problem we're solving
+
+A developer expects a timer callback to execute before synchronous statements and an already-resolved promise reaction. This lab uses local Node.js timers, Promises and injected mock transport rather than relying on external APIs or a deployed site.
+
+## Build the mental model
+
+Synchronous code completes on the call stack; promise reactions run as microtasks at a microtask checkpoint; timer callbacks run in a later task. A scheduled timer never interrupts the current synchronous stack.
+
+**Predict before running:** The synchronous final step appears before the promise reaction, which appears before the timer.
+
+## Prerequisites and preflight
+
+Continue from [the prior module topic](/learn/03.02.08). Inspect `labs/js-event-loop/starter/solution.mjs` and the named test cases in `labs/js-event-loop/solution.test.mjs`. Start by running `ACADEMY_LAB_TARGET=starter npm run lab:js-event-loop` in Bash (or the equivalent temporary PowerShell environment setting). The intentionally defective starter should fail at least one assertion.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the async ordering or failure" file="labs/js-event-loop/starter/solution.mjs" expected="The starter fails the reviewed contract under deterministic local scheduling.">
+
+```js
+export async function solve(){const events=['sync'];events.push('timer');await Promise.resolve();events.push('promise');return events;}
+```
+
+**Predict before running:** A developer expects a timer callback to execute before synchronous statements and an already-resolved promise reaction.
+
+**Why it fails:** Synchronous code completes on the call stack; promise reactions run as microtasks at a microtask checkpoint; timer callbacks run in a later task. A scheduled timer never interrupts the current synchronous stack.
+
+**Proof:** Inspect the concrete failure; do not rely on flaky sleeps or remote HTTP services to demonstrate ordering.
+
+</LessonStep>
+
+<LessonStep number={2} title="Apply the async boundary and handle errors" file="labs/js-event-loop/starter/solution.mjs" expected={"The synchronous final step appears before the promise reaction, which appears before the timer."}>
+
+Make the smallest meaningful correction and preserve the `solve` module contract. For transport cases, keep request functions injectable so the same test can simulate success, failure, timeout and cancellation.
+
+```js
+export async function solve(){const events=['sync'];setTimeout(()=>events.push('timer'),0);Promise.resolve().then(()=>events.push('promise'));events.push('end-sync');await new Promise(resolve=>setTimeout(resolve,10));return events;}
+```
+
+**Predict before running:** The synchronous final step appears before the promise reaction, which appears before the timer.
+
+**Why it works:** Synchronous code completes on the call stack; promise reactions run as microtasks at a microtask checkpoint; timer callbacks run in a later task. A scheduled timer never interrupts the current synchronous stack.
+
+**Proof:** Verify that all promises settle and timer/listener cleanup occurs even after failure.
+
+</LessonStep>
+
+<LessonStep number={3} title="Exercise the executable regression cases" file="labs/js-event-loop/solution.test.mjs" expected="Success, failure and scheduling tests pass deterministically without network traffic.">
+
+```js
+assert.deepEqual(await solve(),['sync','end-sync','promise','timer']);
+```
+
+**Predict before running:** The reviewed cases expose the original bug and continue to pass after repair.
+
+**Why these assertions matter:** An asynchronous API requires explicit state transitions; a resolved promise is not proof that race or cancellation semantics are correct.
+
+**Proof:** Run `npm run lab:js-event-loop` and record the exact observed result.
+
+</LessonStep>
+
+## Explore and verify
+
+Use injected transport or a controlled deferred promise. For a real production client, add error budgets, backoff/jitter, idempotency and telemetry separately; this exercise does not claim those features unless demonstrated. Cancellation requests do not forcibly stop uncooperative functions.
+
+<Misconception claim="All asynchronous work completes in start order and AbortController automatically stops arbitrary functions." correction={"Synchronous code completes on the call stack; promise reactions run as microtasks at a microtask checkpoint; timer callbacks run in a later task. A scheduled timer never interrupts the current synchronous stack."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+Start with the smallest rejected Promise, delayed result or cancellation edge. Identify which task begins, which microtask or timer runs, and which result should be accepted. Confirm the corrected function settles instead of hanging indefinitely.
+
+<KnowledgeCheck question={"Which code executes while the current synchronous stack is active?"} choices={["A future timer callback","An already queued microtask","Statements on the current call stack","A network response handler"]} correctIndex={2} explanation={"Synchronous code completes on the call stack; promise reactions run as microtasks at a microtask checkpoint; timer callbacks run in a later task. A scheduled timer never interrupts the current synchronous stack."} misconception="A local async test measures the observed sequence; it does not guarantee real network timing." lessonId="03.03.01" />
+
+## Guided local lab
+
+Repair `labs/js-event-loop/starter/solution.mjs` and compare with the instructor's `labs/js-event-loop/solution/solution.mjs` after reproducing the failure. Both are tested by the same offline file. The lab provides no remote request execution and does not award a server-verified grade.
+
+<LabGate lessonId="03.03.01" labId="lab.foundation.js-event-loop" commands={["npm ci","npm run lab:js-event-loop"]} interactive={false} />
+
+## Reflect
+
+Which asynchronous dependency created the bug? What would happen if a request stalled, failed with HTTP 403, or was cancelled after a new request started? Describe one system-level mitigation not covered by the fixture.
+
+## Official references
+
+- [MDN asynchronous programming reference](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Event_loop)
+- [Official supporting documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)

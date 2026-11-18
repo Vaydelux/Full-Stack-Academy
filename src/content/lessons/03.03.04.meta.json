@@ -1,0 +1,38 @@
+{
+  "id": "03.03.04",
+  "title": "Promise.all and allSettled",
+  "description": "Practice promise.all and allsettled using injected asynchronous operations, deterministic Node 24 tests, cancellation and failure cases with no external network dependency.",
+  "trackId": "03",
+  "moduleId": "03.03",
+  "level": "Beginner",
+  "estimatedMinutes": 55,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "03.03.03"
+  ],
+  "objectives": [
+    "Predict promise.all and allsettled behavior before executing an asynchronous operation",
+    "Diagnose the starter's race, ordering or error-handling defect",
+    "Prove cancellation, ordering or failure behavior with deterministic offline tests"
+  ],
+  "labId": "lab.foundation.js-all-settled",
+  "sources": [
+    {
+      "label": "MDN async reference",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/allSettled"
+    },
+    {
+      "label": "MDN JavaScript or browser reference",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/all"
+    }
+  ],
+  "rubric": [
+    "I can explain the scheduler, cancellation or failure rule in promise.all and allsettled.",
+    "I reproduce a failing starter with a real Promise or injected transport.",
+    "I verify the success and failure paths without public network calls."
+  ]
+}

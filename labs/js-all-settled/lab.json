@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.js-all-settled",
+  "lessonId": "03.03.04",
+  "title": "Promise.all and allSettled",
+  "runtime": "node-24-esm-async",
+  "status": "authored",
+  "starter": "labs/js-all-settled/starter/solution.mjs",
+  "solution": "labs/js-all-settled/solution/solution.mjs",
+  "tests": "labs/js-all-settled/solution.test.mjs",
+  "verify": [
+    "npm run lab:js-all-settled"
+  ],
+  "expected": "The promise.all and allsettled module handles correct execution order, failures and cancellation within an offline test.",
+  "security": "Injected synthetic transport, no public HTTP calls, keys, accounts, user records, external scripts or telemetry."
+}

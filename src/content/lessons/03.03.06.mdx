@@ -1,0 +1,91 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Predict fetch timeouts and retries behavior before executing an asynchronous operation","Diagnose the starter's race, ordering or error-handling defect","Prove cancellation, ordering or failure behavior with deterministic offline tests"]} />
+
+## The problem we're solving
+
+A client retries a 404 response repeatedly and never stops after its maximum attempts. This lab uses local Node.js timers, Promises and injected mock transport rather than relying on external APIs or a deployed site.
+
+## Build the mental model
+
+Retries should be bounded and error-aware: transient 5xx or network failures may be retried, while most 4xx responses should fail immediately. Timeouts and cancellation are separate concerns; never retry an aborted request. Use injected transport to test policy without real network traffic.
+
+**Predict before running:** Transient failures receive bounded retries, but a 404 stops after one request.
+
+## Prerequisites and preflight
+
+Continue from [the prior module topic](/learn/03.03.05). Inspect `labs/js-retry/starter/solution.mjs` and the named test cases in `labs/js-retry/solution.test.mjs`. Start by running `ACADEMY_LAB_TARGET=starter npm run lab:js-retry` in Bash (or the equivalent temporary PowerShell environment setting). The intentionally defective starter should fail at least one assertion.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the async ordering or failure" file="labs/js-retry/starter/solution.mjs" expected="The starter fails the reviewed contract under deterministic local scheduling.">
+
+```js
+export async function solve(fetcher){let response;for(let i=0;i<10;i++)response=await fetcher();return response.data;}
+```
+
+**Predict before running:** A client retries a 404 response repeatedly and never stops after its maximum attempts.
+
+**Why it fails:** Retries should be bounded and error-aware: transient 5xx or network failures may be retried, while most 4xx responses should fail immediately. Timeouts and cancellation are separate concerns; never retry an aborted request. Use injected transport to test policy without real network traffic.
+
+**Proof:** Inspect the concrete failure; do not rely on flaky sleeps or remote HTTP services to demonstrate ordering.
+
+</LessonStep>
+
+<LessonStep number={2} title="Apply the async boundary and handle errors" file="labs/js-retry/starter/solution.mjs" expected={"Transient failures receive bounded retries, but a 404 stops after one request."}>
+
+Make the smallest meaningful correction and preserve the `solve` module contract. For transport cases, keep request functions injectable so the same test can simulate success, failure, timeout and cancellation.
+
+```js
+export async function solve(fetcher,{attempts=3,signal}={}){if(typeof fetcher!=='function'||!Number.isInteger(attempts)||attempts<1)throw new TypeError('Valid fetcher/attempts required');let last;for(let attempt=1;attempt<=attempts;attempt++){if(signal?.aborted)throw signal.reason??new Error('aborted');try{const response=await fetcher({attempt,signal});if(response.ok)return response.data;const error=new Error('HTTP '+response.status);if(response.status<500)throw Object.assign(error,{permanent:true});last=error;}catch(error){if(error.permanent||signal?.aborted)throw error;last=error;}}throw last;}
+```
+
+**Predict before running:** Transient failures receive bounded retries, but a 404 stops after one request.
+
+**Why it works:** Retries should be bounded and error-aware: transient 5xx or network failures may be retried, while most 4xx responses should fail immediately. Timeouts and cancellation are separate concerns; never retry an aborted request. Use injected transport to test policy without real network traffic.
+
+**Proof:** Verify that all promises settle and timer/listener cleanup occurs even after failure.
+
+</LessonStep>
+
+<LessonStep number={3} title="Exercise the executable regression cases" file="labs/js-retry/solution.test.mjs" expected="Success, failure and scheduling tests pass deterministically without network traffic.">
+
+```js
+let calls=0;const result=await solve(async()=>{calls++;return calls<3?{ok:false,status:503}:{ok:true,data:'done'};});assert.equal(result,'done');assert.equal(calls,3);let refused=0;await assert.rejects(()=>solve(async()=>{refused++;return {ok:false,status:404};}),/HTTP 404/);assert.equal(refused,1);await assert.rejects(()=>solve(async()=>{throw new Error('offline');},{attempts:2}),/offline/);
+```
+
+**Predict before running:** The reviewed cases expose the original bug and continue to pass after repair.
+
+**Why these assertions matter:** An asynchronous API requires explicit state transitions; a resolved promise is not proof that race or cancellation semantics are correct.
+
+**Proof:** Run `npm run lab:js-retry` and record the exact observed result.
+
+</LessonStep>
+
+## Explore and verify
+
+Use injected transport or a controlled deferred promise. For a real production client, add error budgets, backoff/jitter, idempotency and telemetry separately; this exercise does not claim those features unless demonstrated. Cancellation requests do not forcibly stop uncooperative functions.
+
+<Misconception claim="All asynchronous work completes in start order and AbortController automatically stops arbitrary functions." correction={"Retries should be bounded and error-aware: transient 5xx or network failures may be retried, while most 4xx responses should fail immediately. Timeouts and cancellation are separate concerns; never retry an aborted request. Use injected transport to test policy without real network traffic."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+Start with the smallest rejected Promise, delayed result or cancellation edge. Identify which task begins, which microtask or timer runs, and which result should be accepted. Confirm the corrected function settles instead of hanging indefinitely.
+
+<KnowledgeCheck question={"Which failure class is commonly a candidate for a bounded retry?"} choices={["Invalid authorization credentials","A transient HTTP 503 response","Malformed input shape","HTTP 404 for a missing resource"]} correctIndex={1} explanation={"Retries should be bounded and error-aware: transient 5xx or network failures may be retried, while most 4xx responses should fail immediately. Timeouts and cancellation are separate concerns; never retry an aborted request. Use injected transport to test policy without real network traffic."} misconception="A local async test measures the observed sequence; it does not guarantee real network timing." lessonId="03.03.06" />
+
+## Guided local lab
+
+Repair `labs/js-retry/starter/solution.mjs` and compare with the instructor's `labs/js-retry/solution/solution.mjs` after reproducing the failure. Both are tested by the same offline file. The lab provides no remote request execution and does not award a server-verified grade.
+
+<LabGate lessonId="03.03.06" labId="lab.foundation.js-retry" commands={["npm ci","npm run lab:js-retry"]} interactive={false} />
+
+## Reflect
+
+Which asynchronous dependency created the bug? What would happen if a request stalled, failed with HTTP 403, or was cancelled after a new request started? Describe one system-level mitigation not covered by the fixture.
+
+## Official references
+
+- [MDN asynchronous programming reference](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch)
+- [Official supporting documentation](https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal/timeout_static)

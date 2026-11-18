@@ -1,0 +1,91 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Predict microtasks and macrotasks behavior before executing an asynchronous operation","Diagnose the starter's race, ordering or error-handling defect","Prove cancellation, ordering or failure behavior with deterministic offline tests"]} />
+
+## The problem we're solving
+
+A trace puts a setTimeout callback before queueMicrotask and Promise.then reactions that were scheduled in the same turn. This lab uses local Node.js timers, Promises and injected mock transport rather than relying on external APIs or a deployed site.
+
+## Build the mental model
+
+Microtasks drain after the current task's synchronous work, before the next timer task. Overusing queueMicrotask can starve rendering because each queued microtask may schedule more microtasks. Use short isolated examples to reason about ordering, not timing claims.
+
+**Predict before running:** Both microtasks finish in registration order before a zero-delay timer callback.
+
+## Prerequisites and preflight
+
+Continue from [the prior module topic](/learn/03.03.01). Inspect `labs/js-microtasks/starter/solution.mjs` and the named test cases in `labs/js-microtasks/solution.test.mjs`. Start by running `ACADEMY_LAB_TARGET=starter npm run lab:js-microtasks` in Bash (or the equivalent temporary PowerShell environment setting). The intentionally defective starter should fail at least one assertion.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the async ordering or failure" file="labs/js-microtasks/starter/solution.mjs" expected="The starter fails the reviewed contract under deterministic local scheduling.">
+
+```js
+export async function solve(){const out=['sync'];out.push('timer');queueMicrotask(()=>out.push('microtask'));await Promise.resolve();return out;}
+```
+
+**Predict before running:** A trace puts a setTimeout callback before queueMicrotask and Promise.then reactions that were scheduled in the same turn.
+
+**Why it fails:** Microtasks drain after the current task's synchronous work, before the next timer task. Overusing queueMicrotask can starve rendering because each queued microtask may schedule more microtasks. Use short isolated examples to reason about ordering, not timing claims.
+
+**Proof:** Inspect the concrete failure; do not rely on flaky sleeps or remote HTTP services to demonstrate ordering.
+
+</LessonStep>
+
+<LessonStep number={2} title="Apply the async boundary and handle errors" file="labs/js-microtasks/starter/solution.mjs" expected={"Both microtasks finish in registration order before a zero-delay timer callback."}>
+
+Make the smallest meaningful correction and preserve the `solve` module contract. For transport cases, keep request functions injectable so the same test can simulate success, failure, timeout and cancellation.
+
+```js
+export async function solve(){const out=['sync'];queueMicrotask(()=>out.push('queueMicrotask'));Promise.resolve().then(()=>out.push('promise'));setTimeout(()=>out.push('timer'),0);await new Promise(resolve=>setTimeout(resolve,10));return out;}
+```
+
+**Predict before running:** Both microtasks finish in registration order before a zero-delay timer callback.
+
+**Why it works:** Microtasks drain after the current task's synchronous work, before the next timer task. Overusing queueMicrotask can starve rendering because each queued microtask may schedule more microtasks. Use short isolated examples to reason about ordering, not timing claims.
+
+**Proof:** Verify that all promises settle and timer/listener cleanup occurs even after failure.
+
+</LessonStep>
+
+<LessonStep number={3} title="Exercise the executable regression cases" file="labs/js-microtasks/solution.test.mjs" expected="Success, failure and scheduling tests pass deterministically without network traffic.">
+
+```js
+assert.deepEqual(await solve(),['sync','queueMicrotask','promise','timer']);
+```
+
+**Predict before running:** The reviewed cases expose the original bug and continue to pass after repair.
+
+**Why these assertions matter:** An asynchronous API requires explicit state transitions; a resolved promise is not proof that race or cancellation semantics are correct.
+
+**Proof:** Run `npm run lab:js-microtasks` and record the exact observed result.
+
+</LessonStep>
+
+## Explore and verify
+
+Use injected transport or a controlled deferred promise. For a real production client, add error budgets, backoff/jitter, idempotency and telemetry separately; this exercise does not claim those features unless demonstrated. Cancellation requests do not forcibly stop uncooperative functions.
+
+<Misconception claim="All asynchronous work completes in start order and AbortController automatically stops arbitrary functions." correction={"Microtasks drain after the current task's synchronous work, before the next timer task. Overusing queueMicrotask can starve rendering because each queued microtask may schedule more microtasks. Use short isolated examples to reason about ordering, not timing claims."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+Start with the smallest rejected Promise, delayed result or cancellation edge. Identify which task begins, which microtask or timer runs, and which result should be accepted. Confirm the corrected function settles instead of hanging indefinitely.
+
+<KnowledgeCheck question={"When do microtasks normally run relative to a newly scheduled timer?"} choices={["Before current synchronous code","After the current task but before the next timer task","Only after every queued timer completes","Only during animation frames"]} correctIndex={1} explanation={"Microtasks drain after the current task's synchronous work, before the next timer task. Overusing queueMicrotask can starve rendering because each queued microtask may schedule more microtasks. Use short isolated examples to reason about ordering, not timing claims."} misconception="A local async test measures the observed sequence; it does not guarantee real network timing." lessonId="03.03.02" />
+
+## Guided local lab
+
+Repair `labs/js-microtasks/starter/solution.mjs` and compare with the instructor's `labs/js-microtasks/solution/solution.mjs` after reproducing the failure. Both are tested by the same offline file. The lab provides no remote request execution and does not award a server-verified grade.
+
+<LabGate lessonId="03.03.02" labId="lab.foundation.js-microtasks" commands={["npm ci","npm run lab:js-microtasks"]} interactive={false} />
+
+## Reflect
+
+Which asynchronous dependency created the bug? What would happen if a request stalled, failed with HTTP 403, or was cancelled after a new request started? Describe one system-level mitigation not covered by the fixture.
+
+## Official references
+
+- [MDN asynchronous programming reference](https://developer.mozilla.org/en-US/docs/Web/API/HTML_DOM_API/Microtask_guide)
+- [Official supporting documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Event_loop)

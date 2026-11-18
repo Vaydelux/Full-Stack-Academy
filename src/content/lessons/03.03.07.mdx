@@ -1,0 +1,91 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Predict race conditions and latest result behavior before executing an asynchronous operation","Diagnose the starter's race, ordering or error-handling defect","Prove cancellation, ordering or failure behavior with deterministic offline tests"]} />
+
+## The problem we're solving
+
+An older slow search response overwrites a newer fast one, showing stale UI data. This lab uses local Node.js timers, Promises and injected mock transport rather than relying on external APIs or a deployed site.
+
+## Build the mental model
+
+Async operations may resolve in a different order than they started. A monotonically increasing request token lets the consumer accept only its latest result. This guards UI state but does not cancel network work unless paired with a signal.
+
+**Predict before running:** The new result is accepted and the late old result is discarded without corrupting visible state.
+
+## Prerequisites and preflight
+
+Continue from [the prior module topic](/learn/03.03.06). Inspect `labs/js-latest/starter/solution.mjs` and the named test cases in `labs/js-latest/solution.test.mjs`. Start by running `ACADEMY_LAB_TARGET=starter npm run lab:js-latest` in Bash (or the equivalent temporary PowerShell environment setting). The intentionally defective starter should fail at least one assertion.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the async ordering or failure" file="labs/js-latest/starter/solution.mjs" expected="The starter fails the reviewed contract under deterministic local scheduling.">
+
+```js
+export function solve(){return async task=>({accepted:true,value:await task()});}
+```
+
+**Predict before running:** An older slow search response overwrites a newer fast one, showing stale UI data.
+
+**Why it fails:** Async operations may resolve in a different order than they started. A monotonically increasing request token lets the consumer accept only its latest result. This guards UI state but does not cancel network work unless paired with a signal.
+
+**Proof:** Inspect the concrete failure; do not rely on flaky sleeps or remote HTTP services to demonstrate ordering.
+
+</LessonStep>
+
+<LessonStep number={2} title="Apply the async boundary and handle errors" file="labs/js-latest/starter/solution.mjs" expected={"The new result is accepted and the late old result is discarded without corrupting visible state."}>
+
+Make the smallest meaningful correction and preserve the `solve` module contract. For transport cases, keep request functions injectable so the same test can simulate success, failure, timeout and cancellation.
+
+```js
+export function solve(){let current=0;return async task=>{const id=++current;const value=await task();return id===current?{accepted:true,value}:{accepted:false,value:null};};}
+```
+
+**Predict before running:** The new result is accepted and the late old result is discarded without corrupting visible state.
+
+**Why it works:** Async operations may resolve in a different order than they started. A monotonically increasing request token lets the consumer accept only its latest result. This guards UI state but does not cancel network work unless paired with a signal.
+
+**Proof:** Verify that all promises settle and timer/listener cleanup occurs even after failure.
+
+</LessonStep>
+
+<LessonStep number={3} title="Exercise the executable regression cases" file="labs/js-latest/solution.test.mjs" expected="Success, failure and scheduling tests pass deterministically without network traffic.">
+
+```js
+const latest=solve();let resolveOld;const old=latest(()=>new Promise(resolve=>{resolveOld=resolve;}));const now=latest(async()=>2);assert.deepEqual(await now,{accepted:true,value:2});resolveOld(1);assert.deepEqual(await old,{accepted:false,value:null});const another=solve();assert.deepEqual(await another(async()=>3),{accepted:true,value:3});
+```
+
+**Predict before running:** The reviewed cases expose the original bug and continue to pass after repair.
+
+**Why these assertions matter:** An asynchronous API requires explicit state transitions; a resolved promise is not proof that race or cancellation semantics are correct.
+
+**Proof:** Run `npm run lab:js-latest` and record the exact observed result.
+
+</LessonStep>
+
+## Explore and verify
+
+Use injected transport or a controlled deferred promise. For a real production client, add error budgets, backoff/jitter, idempotency and telemetry separately; this exercise does not claim those features unless demonstrated. Cancellation requests do not forcibly stop uncooperative functions.
+
+<Misconception claim="All asynchronous work completes in start order and AbortController automatically stops arbitrary functions." correction={"Async operations may resolve in a different order than they started. A monotonically increasing request token lets the consumer accept only its latest result. This guards UI state but does not cancel network work unless paired with a signal."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+Start with the smallest rejected Promise, delayed result or cancellation edge. Identify which task begins, which microtask or timer runs, and which result should be accepted. Confirm the corrected function settles instead of hanging indefinitely.
+
+<KnowledgeCheck question={"Why can an earlier request overwrite a newer one?"} choices={["JavaScript always processes network responses FIFO","Asynchronous operations can finish in a different order from their start order","The browser reverses all arrays","await disables race conditions"]} correctIndex={1} explanation={"Async operations may resolve in a different order than they started. A monotonically increasing request token lets the consumer accept only its latest result. This guards UI state but does not cancel network work unless paired with a signal."} misconception="A local async test measures the observed sequence; it does not guarantee real network timing." lessonId="03.03.07" />
+
+## Guided local lab
+
+Repair `labs/js-latest/starter/solution.mjs` and compare with the instructor's `labs/js-latest/solution/solution.mjs` after reproducing the failure. Both are tested by the same offline file. The lab provides no remote request execution and does not award a server-verified grade.
+
+<LabGate lessonId="03.03.07" labId="lab.foundation.js-latest" commands={["npm ci","npm run lab:js-latest"]} interactive={false} />
+
+## Reflect
+
+Which asynchronous dependency created the bug? What would happen if a request stalled, failed with HTTP 403, or was cancelled after a new request started? Describe one system-level mitigation not covered by the fixture.
+
+## Official references
+
+- [MDN asynchronous programming reference](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/await)
+- [Official supporting documentation](https://developer.mozilla.org/en-US/docs/Web/API/AbortController)

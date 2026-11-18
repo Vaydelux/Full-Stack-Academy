@@ -1,0 +1,91 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Predict promise.all and allsettled behavior before executing an asynchronous operation","Diagnose the starter's race, ordering or error-handling defect","Prove cancellation, ordering or failure behavior with deterministic offline tests"]} />
+
+## The problem we're solving
+
+A dashboard loses the successful tasks whenever one independent request rejects. This lab uses local Node.js timers, Promises and injected mock transport rather than relying on external APIs or a deployed site.
+
+## Build the mental model
+
+Promise.all rejects when any input rejects, making it useful for all-or-nothing dependencies; Promise.allSettled returns individual fulfillment/rejection results, which is better for independent work. Choose intentionally instead of pretending partial failures are successes.
+
+**Predict before running:** Independent successful results are preserved even when a sibling task fails.
+
+## Prerequisites and preflight
+
+Continue from [the prior module topic](/learn/03.03.03). Inspect `labs/js-all-settled/starter/solution.mjs` and the named test cases in `labs/js-all-settled/solution.test.mjs`. Start by running `ACADEMY_LAB_TARGET=starter npm run lab:js-all-settled` in Bash (or the equivalent temporary PowerShell environment setting). The intentionally defective starter should fail at least one assertion.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the async ordering or failure" file="labs/js-all-settled/starter/solution.mjs" expected="The starter fails the reviewed contract under deterministic local scheduling.">
+
+```js
+export async function solve(tasks){return await Promise.all(tasks.map(task=>task()));}
+```
+
+**Predict before running:** A dashboard loses the successful tasks whenever one independent request rejects.
+
+**Why it fails:** Promise.all rejects when any input rejects, making it useful for all-or-nothing dependencies; Promise.allSettled returns individual fulfillment/rejection results, which is better for independent work. Choose intentionally instead of pretending partial failures are successes.
+
+**Proof:** Inspect the concrete failure; do not rely on flaky sleeps or remote HTTP services to demonstrate ordering.
+
+</LessonStep>
+
+<LessonStep number={2} title="Apply the async boundary and handle errors" file="labs/js-all-settled/starter/solution.mjs" expected={"Independent successful results are preserved even when a sibling task fails."}>
+
+Make the smallest meaningful correction and preserve the `solve` module contract. For transport cases, keep request functions injectable so the same test can simulate success, failure, timeout and cancellation.
+
+```js
+export async function solve(tasks){if(!Array.isArray(tasks)||tasks.some(t=>typeof t!=='function'))throw new TypeError('Function tasks required');const outcomes=await Promise.allSettled(tasks.map(task=>Promise.resolve().then(task)));return {values:outcomes.filter(o=>o.status==='fulfilled').map(o=>o.value),errors:outcomes.filter(o=>o.status==='rejected').map(o=>String(o.reason instanceof Error?o.reason.message:o.reason))};}
+```
+
+**Predict before running:** Independent successful results are preserved even when a sibling task fails.
+
+**Why it works:** Promise.all rejects when any input rejects, making it useful for all-or-nothing dependencies; Promise.allSettled returns individual fulfillment/rejection results, which is better for independent work. Choose intentionally instead of pretending partial failures are successes.
+
+**Proof:** Verify that all promises settle and timer/listener cleanup occurs even after failure.
+
+</LessonStep>
+
+<LessonStep number={3} title="Exercise the executable regression cases" file="labs/js-all-settled/solution.test.mjs" expected="Success, failure and scheduling tests pass deterministically without network traffic.">
+
+```js
+const tasks=[async()=>1,async()=>{throw new Error('nope');},async()=>3];assert.deepEqual(await solve(tasks),{values:[1,3],errors:['nope']});assert.deepEqual(await solve([]),{values:[],errors:[]});await assert.rejects(()=>solve([null]),TypeError);
+```
+
+**Predict before running:** The reviewed cases expose the original bug and continue to pass after repair.
+
+**Why these assertions matter:** An asynchronous API requires explicit state transitions; a resolved promise is not proof that race or cancellation semantics are correct.
+
+**Proof:** Run `npm run lab:js-all-settled` and record the exact observed result.
+
+</LessonStep>
+
+## Explore and verify
+
+Use injected transport or a controlled deferred promise. For a real production client, add error budgets, backoff/jitter, idempotency and telemetry separately; this exercise does not claim those features unless demonstrated. Cancellation requests do not forcibly stop uncooperative functions.
+
+<Misconception claim="All asynchronous work completes in start order and AbortController automatically stops arbitrary functions." correction={"Promise.all rejects when any input rejects, making it useful for all-or-nothing dependencies; Promise.allSettled returns individual fulfillment/rejection results, which is better for independent work. Choose intentionally instead of pretending partial failures are successes."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+Start with the smallest rejected Promise, delayed result or cancellation edge. Identify which task begins, which microtask or timer runs, and which result should be accepted. Confirm the corrected function settles instead of hanging indefinitely.
+
+<KnowledgeCheck question={"Which combinator returns each individual outcome even after some inputs reject?"} choices={["Promise.all","Promise.allSettled","Promise.race","Promise.reject"]} correctIndex={1} explanation={"Promise.all rejects when any input rejects, making it useful for all-or-nothing dependencies; Promise.allSettled returns individual fulfillment/rejection results, which is better for independent work. Choose intentionally instead of pretending partial failures are successes."} misconception="A local async test measures the observed sequence; it does not guarantee real network timing." lessonId="03.03.04" />
+
+## Guided local lab
+
+Repair `labs/js-all-settled/starter/solution.mjs` and compare with the instructor's `labs/js-all-settled/solution/solution.mjs` after reproducing the failure. Both are tested by the same offline file. The lab provides no remote request execution and does not award a server-verified grade.
+
+<LabGate lessonId="03.03.04" labId="lab.foundation.js-all-settled" commands={["npm ci","npm run lab:js-all-settled"]} interactive={false} />
+
+## Reflect
+
+Which asynchronous dependency created the bug? What would happen if a request stalled, failed with HTTP 403, or was cancelled after a new request started? Describe one system-level mitigation not covered by the fixture.
+
+## Official references
+
+- [MDN asynchronous programming reference](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/allSettled)
+- [Official supporting documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/all)
