@@ -1,0 +1,39 @@
+{
+  "id": "01.01.07",
+  "title": "Images and responsive media",
+  "description": "Provide meaningful image descriptions, aspect-ratio dimensions, responsive sources and image loading hints without breaking offline rendering.",
+  "trackId": "01",
+  "moduleId": "01.01",
+  "level": "Beginner",
+  "estimatedMinutes": 55,
+  "status": "authored",
+  "reviewedAt": "2026-11-18",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "01.01.06"
+  ],
+  "objectives": [
+    "Choose informative alt text for meaningful images and empty alt for decoration",
+    "Prevent layout shifts by declaring intrinsic width and height",
+    "Explain picture, srcset and sizes in responsive image selection",
+    "Test that image resources load in a standalone local HTML document"
+  ],
+  "labId": "lab.foundation.html-images",
+  "sources": [
+    {
+      "label": "MDN responsive images",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Guides/Responsive_images"
+    },
+    {
+      "label": "WAI images tutorial",
+      "url": "https://www.w3.org/WAI/tutorials/images/"
+    }
+  ],
+  "rubric": [
+    "I added meaningful alt text, dimensions and captions for informative media.",
+    "I tested a responsive picture and used empty alt for purely decorative art.",
+    "I passed image-source and responsive-markup tests."
+  ]
+}

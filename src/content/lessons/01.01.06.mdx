@@ -1,0 +1,90 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Write anchors with descriptive visible text and valid targets","Connect fragment navigation to real section IDs","Choose when new-tab navigation is justified and apply safe rel values","Verify skip links and keyboard focus order using an actual browser"]} />
+
+## The problem we're solving
+
+Every link says 'Click here,' so a reader using a links list has no idea which resource each link opens. Another link uses `href=#` and jumps to the top instead of the intended section.
+
+## Build the mental model
+
+An `a` element with an `href` provides navigation. Its accessible name should describe its destination or action, even when the surrounding sentence is not read. Fragment links target elements with matching IDs. `nav` groups major navigation links; do not wrap every inline reference in a nav region. Avoid opening new tabs without reason. When a new tab is necessary, `target=_blank` and `rel=noopener` prevent the opened page from controlling the opener; `noreferrer` also suppresses referrer data. Modern browsers often apply implicit noopener, but being explicit communicates intent. Browser focus, not just CSS, determines keyboard usability.
+
+**Predict before running:** Why is `href='#schedule'` broken if the target section has `id='sessions'`? The fragment ID does not match; the link is not connected to the intended content.
+
+## Prerequisites
+
+Complete [the previous lesson](/learn/01.01.05) or review its objectives. Use a browser, VS Code and Node.js 24. These offline fixtures use illustrative workshop content, local media assets and no user data or external scripts.
+
+<LessonStep number={1} title={"Create navigation with useful link labels"} file="labs/html-navigation/starter/index.html" expected={"A links list clearly identifies two destinations."}>
+
+Describe destinations using the link text, not generic 'read more' repeated everywhere.
+
+```html
+<nav aria-label="Page navigation">
+  <a href="#schedule">Workshop schedule</a>
+  <a href="#materials">Required materials</a>
+</nav>
+```
+
+</LessonStep>
+
+<LessonStep number={2} title={"Connect fragments and provide a skip link"} file="labs/html-navigation/starter/index.html" expected={"Clicking the schedule link reaches its actual section; the skip link reaches main."}>
+
+Each link's fragment must match an actual section ID. Place the skip link first.
+
+```html
+<a href="#main-content">Skip to main content</a>
+<main id="main-content">
+  <section id="schedule"><h2>Workshop schedule</h2></section>
+  <section id="materials"><h2>Required materials</h2></section>
+</main>
+```
+
+</LessonStep>
+
+<LessonStep number={3} title={"Provide external references safely"} file="labs/html-navigation/starter/index.html" expected={"The destination is meaningful and cannot receive a window.opener reference."}>
+
+Use a real HTTPS reference and disclose that it opens in a new tab.
+
+```html
+<a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a" target="_blank" rel="noopener noreferrer">HTML anchor documentation (opens in a new tab)</a>
+```
+
+</LessonStep>
+
+## Explore it yourself
+
+Open `labs/html-navigation/starter/index.html` in the browser and inspect the rendered DOM and accessibility tree. Resize between 390px mobile and desktop widths where applicable. Navigate with Tab, Shift+Tab and Enter without a mouse. Document one real behavior you observed rather than relying solely on source inspection.
+
+<Misconception claim={"Any anchor is accessible as long as its underline is visible."} correction={"Useful link text, working targets, focus access and predictable navigation all matter."} />
+
+## Bug Hunt: identify the actual source of the problem
+
+An external reference uses `target=_blank` without explaining the new tab, and the skip link target is absent. Add an explicit notice, safe rel values and the actual main ID, then keyboard-test both links.
+
+<KnowledgeCheck question={"What makes a page-fragment link work?"} choices={["Matching the URL fragment to a unique element ID","Adding `target=_blank`","Giving every link the same label","Using a hash without a target"]} correctIndex={0} explanation={"A fragment anchor navigates to an element with that ID."} misconception={"A visually styled link is not useful if its destination is missing."} lessonId="01.01.06" />
+
+## Guided HTML lab
+
+Complete `labs/html-navigation/starter/index.html` using the guided steps and check the reference implementation at `labs/html-navigation/solution/index.html` only when you need help. To test your actual starter from the academy root:
+
+```powershell
+$env:ACADEMY_LAB_TARGET = 'starter'
+npm run lab:html-navigation
+Remove-Item Env:ACADEMY_LAB_TARGET
+```
+
+For Bash, use `ACADEMY_LAB_TARGET=starter npm run lab:html-navigation`. The starter should fail before you implement the markup. The default command checks the instructor's solution. These assertions are structural; the production browser smoke suite checks real DOM and layout behavior separately. Completion remains self-assessed.
+
+<LabGate lessonId="01.01.06" labId="lab.foundation.html-navigation" commands={["npm ci","npm run lab:html-navigation"]} interactive={false} />
+
+## Reflect
+
+Record your HTML structure, the accessibility or responsive behavior verified in the browser, and a bug that the HTML parser did not automatically reveal. Name any limitations of your verification.
+
+## Official references
+
+- [MDN HTML a element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a)
+- [WAI link purpose tutorial](https://www.w3.org/WAI/WCAG22/Understanding/link-purpose-in-context.html)

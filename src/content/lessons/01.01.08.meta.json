@@ -1,0 +1,39 @@
+{
+  "id": "01.01.08",
+  "title": "Lab accessible content page",
+  "description": "Combine document structure, metadata, landmarks, headings, lists, links and responsive images into a responsive accessible handbook without JavaScript or a backend.",
+  "trackId": "01",
+  "moduleId": "01.01",
+  "level": "Beginner",
+  "estimatedMinutes": 75,
+  "status": "authored",
+  "reviewedAt": "2026-11-18",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "01.01.07"
+  ],
+  "objectives": [
+    "Build a complete standalone HTML page from the eight module topics",
+    "Provide semantic landmarks, keyboard navigation and readable headings",
+    "Add responsive imagery with meaningful alternatives and layout-safe dimensions",
+    "Verify local assets and responsive behavior in Chromium, not just text assertions"
+  ],
+  "labId": "lab.foundation.html-accessible-page",
+  "sources": [
+    {
+      "label": "WAI page structure tutorial",
+      "url": "https://www.w3.org/WAI/tutorials/page-structure/"
+    },
+    {
+      "label": "MDN responsive images guide",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Guides/Responsive_images"
+    }
+  ],
+  "rubric": [
+    "I completed a coherent standalone page containing all document-structure topics.",
+    "I tested keyboard focus, skip-link behavior and image loading at desktop and mobile widths.",
+    "I passed local structural tests and understood the separate browser verification boundary."
+  ]
+}

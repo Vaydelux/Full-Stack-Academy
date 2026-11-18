@@ -1,0 +1,102 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Distinguish paragraphs from text containers and manual line breaks","Choose ordered, unordered and description lists by meaning","Represent an attributed quotation without inventing a source","Give a figure a useful caption independent of CSS styling"]} />
+
+## The problem we're solving
+
+A checklist is written as one long paragraph separated by newlines. It looks like a list after styling, but browsers and screen readers don't know which lines are individual items.
+
+## Build the mental model
+
+HTML conveys relationships through elements. `p` represents a paragraph; `ul` groups items where order is not significant; `ol` represents a meaningful sequence; `dl`, `dt`, and `dd` describe terms and their descriptions. A `blockquote` marks an extended quotation and `cite` identifies a creative work's title; it should not be used solely for indentation. A `figure` with `figcaption` describes a self-contained illustration, example or excerpt—not only photographs. Choose based on information meaning, then style with CSS.
+
+**Predict before running:** If a sequence must be followed in order, should you use `ul` because its bullets look smaller? No; use `ol` and style it separately.
+
+## Prerequisites
+
+Complete [the previous lesson](/learn/01.01.04) or review its objectives. Use a browser, VS Code and Node.js 24. These offline fixtures use illustrative workshop content, local media assets and no user data or external scripts.
+
+<LessonStep number={1} title={"Write readable paragraphs and unordered resources"} file="labs/html-text-lists/starter/index.html" expected={"Three distinct list items can be navigated as a list."}>
+
+Use paragraphs for prose, then a list of resources that have no intrinsic sequence.
+
+```html
+<p>Start with a clear session goal, then gather the tools you need.</p>
+<ul>
+  <li>Notebook for questions</li>
+  <li>Accessible workshop guide</li>
+  <li>Quiet space for reflection</li>
+</ul>
+```
+
+</LessonStep>
+
+<LessonStep number={2} title={"Add an ordered procedure and a glossary"} file="labs/html-text-lists/starter/index.html" expected={"A reader can identify a sequence and a definition list."}>
+
+Use `ol` for sequential steps; provide `dt` and `dd` relationships when defining terms.
+
+```html
+<ol>
+  <li>Read the introduction.</li>
+  <li>Try a local example.</li>
+  <li>Explain the outcome to a peer.</li>
+</ol>
+<dl>
+  <dt>Markup</dt><dd>Document structure represented using elements.</dd>
+</dl>
+```
+
+</LessonStep>
+
+<LessonStep number={3} title={"Quote and caption material appropriately"} file="labs/html-text-lists/starter/index.html" expected={"The quotation, attribution and code figure have separate semantic roles."}>
+
+Do not fake a public figure quote. This example attributes original workshop handbook text.
+
+```html
+<blockquote>
+  <p>A useful workshop makes space for questions and different approaches.</p>
+</blockquote>
+<p>From <cite>Workshop Handbook</cite>.</p>
+<figure>
+  <pre><code>&lt;main&gt;Your article&lt;/main&gt;</code></pre>
+  <figcaption>Example: one main region for the article.</figcaption>
+</figure>
+```
+
+</LessonStep>
+
+## Explore it yourself
+
+Open `labs/html-text-lists/starter/index.html` in the browser and inspect the rendered DOM and accessibility tree. Resize between 390px mobile and desktop widths where applicable. Navigate with Tab, Shift+Tab and Enter without a mouse. Document one real behavior you observed rather than relying solely on source inspection.
+
+<Misconception claim={"A `blockquote` is an easy way to indent any paragraph."} correction={"Blockquotes communicate quoted content. Use CSS for indentation when the content is not a quotation."} />
+
+## Bug Hunt: identify the actual source of the problem
+
+A list of numbered steps is typed with literal `1.` and `<br>` in a paragraph. Replace it with a semantic `ol` and check that the screen reader can report the list length.
+
+<KnowledgeCheck question={"Which element best describes a sequence of steps?"} choices={["`ul`","`ol`","`blockquote`","`aside`"]} correctIndex={1} explanation={"An ordered list expresses a sequence where item order matters."} misconception={"An unordered list is for items whose order is not significant."} lessonId="01.01.05" />
+
+## Guided HTML lab
+
+Complete `labs/html-text-lists/starter/index.html` using the guided steps and check the reference implementation at `labs/html-text-lists/solution/index.html` only when you need help. To test your actual starter from the academy root:
+
+```powershell
+$env:ACADEMY_LAB_TARGET = 'starter'
+npm run lab:html-text-lists
+Remove-Item Env:ACADEMY_LAB_TARGET
+```
+
+For Bash, use `ACADEMY_LAB_TARGET=starter npm run lab:html-text-lists`. The starter should fail before you implement the markup. The default command checks the instructor's solution. These assertions are structural; the production browser smoke suite checks real DOM and layout behavior separately. Completion remains self-assessed.
+
+<LabGate lessonId="01.01.05" labId="lab.foundation.html-text-lists" commands={["npm ci","npm run lab:html-text-lists"]} interactive={false} />
+
+## Reflect
+
+Record your HTML structure, the accessibility or responsive behavior verified in the browser, and a bug that the HTML parser did not automatically reveal. Name any limitations of your verification.
+
+## Official references
+
+- [MDN HTML lists](https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Structuring_content/Lists)
+- [MDN blockquote](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/blockquote)

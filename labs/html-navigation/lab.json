@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.html-navigation",
+  "lessonId": "01.01.06",
+  "title": "Links and navigation",
+  "runtime": "browser-html-and-node-24",
+  "status": "authored",
+  "starter": "labs/html-navigation/starter/index.html",
+  "solution": "labs/html-navigation/solution/index.html",
+  "tests": "labs/html-navigation/solution.test.mjs",
+  "verify": [
+    "npm run lab:html-navigation"
+  ],
+  "expected": "I passed external-link safety and anchor-target checks.",
+  "security": "Offline HTML exercise only. No remote grading, secrets, or user code on academy server. Static tests supplement actual Chromium DOM and keyboard checks."
+}

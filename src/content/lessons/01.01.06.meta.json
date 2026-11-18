@@ -1,0 +1,39 @@
+{
+  "id": "01.01.06",
+  "title": "Links and navigation",
+  "description": "Build descriptive keyboard-accessible links, working page fragments, a semantic navigation region and safe external navigation.",
+  "trackId": "01",
+  "moduleId": "01.01",
+  "level": "Beginner",
+  "estimatedMinutes": 45,
+  "status": "authored",
+  "reviewedAt": "2026-11-18",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "01.01.05"
+  ],
+  "objectives": [
+    "Write anchors with descriptive visible text and valid targets",
+    "Connect fragment navigation to real section IDs",
+    "Choose when new-tab navigation is justified and apply safe rel values",
+    "Verify skip links and keyboard focus order using an actual browser"
+  ],
+  "labId": "lab.foundation.html-navigation",
+  "sources": [
+    {
+      "label": "MDN HTML a element",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a"
+    },
+    {
+      "label": "WAI link purpose tutorial",
+      "url": "https://www.w3.org/WAI/WCAG22/Understanding/link-purpose-in-context.html"
+    }
+  ],
+  "rubric": [
+    "I wrote descriptive links and verified every fragment points at a real ID.",
+    "I tested keyboard navigation and the skip link in a browser.",
+    "I passed external-link safety and anchor-target checks."
+  ]
+}

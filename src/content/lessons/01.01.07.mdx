@@ -1,0 +1,89 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Choose informative alt text for meaningful images and empty alt for decoration","Prevent layout shifts by declaring intrinsic width and height","Explain picture, srcset and sizes in responsive image selection","Test that image resources load in a standalone local HTML document"]} />
+
+## The problem we're solving
+
+A tutorial uses an image with no alternate text or dimensions. On slow connections it can shift the layout, and readers who cannot see the diagram lose the instructional context.
+
+## Build the mental model
+
+Meaningful images need an alt description conveying what matters in context, not a generic 'image' label. Decorative images can use empty alt text so screen readers skip them. Width and height establish an intrinsic aspect ratio and reduce unexpected layout movement. `srcset` and `sizes` help the browser select image resources; `picture` with `source` allows art direction. `loading=lazy` is useful for below-the-fold images, but avoid lazily loading critical hero content when it hurts perceived speed. SVG assets here are simple, original local illustrations with no external requests or tracking.
+
+**Predict before running:** Should a purely decorative flourish repeat the entire paragraph in alt text? No. Use `alt=''` for decoration when the adjacent text already conveys the meaning.
+
+## Prerequisites
+
+Complete [the previous lesson](/learn/01.01.06) or review its objectives. Use a browser, VS Code and Node.js 24. These offline fixtures use illustrative workshop content, local media assets and no user data or external scripts.
+
+<LessonStep number={1} title={"Add a meaningful figure image"} file="labs/html-images/starter/index.html" expected={"The figure has a meaningful description and reserves a 16:9 ratio."}>
+
+Use a local SVG diagram; describe the arrangement shown, not merely the format.
+
+```html
+<figure>
+  <img src="assets/responsive-small.svg" width="640" height="360" alt="Workshop layout with a teaching area on the left and notes on the right">
+  <figcaption>Example: two areas support different learning activities.</figcaption>
+</figure>
+```
+
+</LessonStep>
+
+<LessonStep number={2} title={"Offer responsive sources"} file="labs/html-images/starter/index.html" expected={"The fallback image works without source selection, and responsive resources remain local."}>
+
+Provide art-directed wide media and a fallback source; browsers choose based on viewport and capabilities.
+
+```html
+<picture>
+  <source media="(min-width: 48rem)" srcset="assets/responsive-wide.svg" type="image/svg+xml">
+  <img src="assets/responsive-small.svg" srcset="assets/responsive-small.svg 640w, assets/responsive-wide.svg 960w" sizes="(max-width: 48rem) 100vw, 640px" width="640" height="360" alt="Workshop layout with a teaching area on the left and notes on the right" loading="lazy" decoding="async">
+</picture>
+```
+
+</LessonStep>
+
+<LessonStep number={3} title={"Keep decorative images separate from content"} file="labs/html-images/starter/index.html" expected={"The decorative image is ignored by accessible image listings."}>
+
+A decorative accent does not need spoken detail; retain explicit dimensions.
+
+```html
+<img src="assets/responsive-small.svg" width="64" height="36" alt="" aria-hidden="true">
+```
+
+</LessonStep>
+
+## Explore it yourself
+
+Open `labs/html-images/starter/index.html` in the browser and inspect the rendered DOM and accessibility tree. Resize between 390px mobile and desktop widths where applicable. Navigate with Tab, Shift+Tab and Enter without a mouse. Document one real behavior you observed rather than relying solely on source inspection.
+
+<Misconception claim={"Alt text should always describe every pixel in an image."} correction={"Alt text explains the image's relevant meaning. Decorative content can use empty alt to avoid unnecessary repetition."} />
+
+## Bug Hunt: identify the actual source of the problem
+
+A meaningful diagram has `alt='image'` and no intrinsic dimensions. Write a useful description and width/height, then confirm the responsive variant loads at mobile and desktop viewport sizes.
+
+<KnowledgeCheck question={"Which alt text best serves a meaningful workshop layout diagram?"} choices={["`image`","`decorative picture`","`Workshop layout with teaching area left and notes right`","An empty alt attribute for all images"]} correctIndex={2} explanation={"A useful description conveys information the diagram provides."} misconception={"Decorative images are different from informative ones."} lessonId="01.01.07" />
+
+## Guided HTML lab
+
+Complete `labs/html-images/starter/index.html` using the guided steps and check the reference implementation at `labs/html-images/solution/index.html` only when you need help. To test your actual starter from the academy root:
+
+```powershell
+$env:ACADEMY_LAB_TARGET = 'starter'
+npm run lab:html-images
+Remove-Item Env:ACADEMY_LAB_TARGET
+```
+
+For Bash, use `ACADEMY_LAB_TARGET=starter npm run lab:html-images`. The starter should fail before you implement the markup. The default command checks the instructor's solution. These assertions are structural; the production browser smoke suite checks real DOM and layout behavior separately. Completion remains self-assessed.
+
+<LabGate lessonId="01.01.07" labId="lab.foundation.html-images" commands={["npm ci","npm run lab:html-images"]} interactive={false} />
+
+## Reflect
+
+Record your HTML structure, the accessibility or responsive behavior verified in the browser, and a bug that the HTML parser did not automatically reveal. Name any limitations of your verification.
+
+## Official references
+
+- [MDN responsive images](https://developer.mozilla.org/en-US/docs/Web/HTML/Guides/Responsive_images)
+- [WAI images tutorial](https://www.w3.org/WAI/tutorials/images/)

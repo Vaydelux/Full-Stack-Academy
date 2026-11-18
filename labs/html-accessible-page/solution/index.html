@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Community Workshop Handbook</title>
+  <meta name="description" content="A practical workshop handbook with schedule, materials, and accessible learning resources.">
+  <style>
+    :root{color-scheme:light;--ink:#172f43;--link:#07537d;--paper:#f6fafc;--card:#fff;--line:#c5d8e2}
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--paper);color:var(--ink);font:1rem/1.65 system-ui,sans-serif}
+    a{color:var(--link);text-underline-offset:.18em}
+    a:focus-visible{outline:3px solid #ef7d24;outline-offset:4px}
+    .skip-link{position:absolute;top:.5rem;left:.5rem;transform:translateY(-220%);padding:.65rem 1rem;background:#fff;border:2px solid var(--ink);z-index:2}
+    .skip-link:focus{transform:translateY(0)}
+    .site-header,.page-footer{background:#e1f1f7;padding:1rem max(1rem,calc((100vw - 70rem)/2))}
+    .site-header p{margin:0;font-weight:750}
+    nav{display:flex;flex-wrap:wrap;gap:.75rem 1.25rem;padding:.65rem max(1rem,calc((100vw - 70rem)/2))}
+    .page{max-width:70rem;margin:auto;padding:1rem}
+    .content-grid{display:grid;gap:1rem;grid-template-columns:minmax(0,1fr)}
+    .content-card,.tips{min-width:0;background:var(--card);border:1px solid var(--line);border-radius:.8rem;padding:clamp(1rem,3vw,1.75rem)}
+    h1,h2,h3{line-height:1.25}
+    h1{font-size:clamp(1.8rem,5vw,2.6rem)}
+    img{display:block;max-width:100%;height:auto;border-radius:.6rem}
+    figure{margin:1.25rem 0}
+    figcaption{font-size:.92rem;margin-top:.5rem}
+    blockquote{border-inline-start:.3rem solid #12749c;padding-inline-start:1rem;margin-inline:0}
+    @media (min-width: 48rem){.content-grid{grid-template-columns:minmax(0,2fr) minmax(15rem,1fr)}}
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <header class="site-header"><p>Community learning</p></header>
+  <nav aria-label="Primary navigation">
+    <a href="#schedule">Session schedule</a>
+    <a href="#materials">Materials checklist</a>
+    <a href="#resources">Learning resources</a>
+  </nav>
+  <div class="page content-grid">
+    <main id="main-content" tabindex="-1" class="content-card">
+      <h1>Community Workshop Handbook</h1>
+      <p>Use this guide to prepare for a practical community workshop and find the materials that help you participate.</p>
+      <figure>
+        <picture>
+          <source media="(min-width: 48rem)" srcset="assets/workshop-wide.svg" type="image/svg+xml">
+          <img src="assets/workshop-small.svg" width="640" height="360" alt="Teaching area on the left and note-taking area on the right" decoding="async">
+        </picture>
+        <figcaption>Two spaces support practice and reflection.</figcaption>
+      </figure>
+      <section id="schedule" aria-labelledby="schedule-heading">
+        <h2 id="schedule-heading">Session schedule</h2>
+        <ol><li>Welcome and orientation</li><li>Guided practice</li><li>Questions and review</li></ol>
+      </section>
+      <section id="materials" aria-labelledby="materials-heading">
+        <h2 id="materials-heading">Materials checklist</h2>
+        <ul><li>Notebook</li><li>Workshop guide</li><li>Something to write with</li></ul>
+      </section>
+      <section id="resources" aria-labelledby="resources-heading">
+        <h2 id="resources-heading">Learning resources</h2>
+        <p>Explore the <a href="https://developer.mozilla.org/en-US/docs/Web/HTML" target="_blank" rel="noopener noreferrer">MDN HTML reference (opens in a new tab)</a> after the session.</p>
+        <blockquote><p>Every question can help us improve the session.</p></blockquote>
+        <p>From <cite>Community Workshop Handbook</cite>.</p>
+      </section>
+    </main>
+    <aside class="tips" aria-labelledby="tips-heading">
+      <h2 id="tips-heading">Before you arrive</h2>
+      <p>Review the session schedule, prepare your questions and bring the materials checklist.</p>
+      <h3>Need more help?</h3>
+      <p>Ask the workshop coordinator before the session starts.</p>
+    </aside>
+  </div>
+  <footer class="page-footer"><p>Community Workshop Handbook — learning resources.</p></footer>
+</body>
+</html>
