@@ -1,0 +1,88 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Distinguish JavaScript language features from host APIs","Inspect Node version, platform and runtime capabilities","Explain ES modules and CommonJS in existing projects","Write a capability probe that works with explicit inputs"]} />
+
+## The problem we're solving
+
+A package works in your Node CLI but fails when bundled for a browser because it imports node:fs. Another example tries to access document during server rendering. Both use JavaScript, but not the same host APIs.
+
+## Build the mental model
+
+The JavaScript language is specified by ECMAScript. Engines execute it; hosts expose additional APIs. Node uses V8 and provides process, filesystem, TCP and module loading APIs. Browsers expose the DOM and storage, and modern Node also has Fetch, URL and other web-standard APIs. A shared API does not make the environments identical. Use Node 24 LTS for the academy baseline and inspect the actual patch version. The .mjs extension declares an ES module; .cjs declares CommonJS; package.json type controls .js interpretation. ESM uses import/export; CJS uses require/module.exports.
+
+## Before you begin
+
+Complete [the previous lesson](/learn/00.02.02) or review its objectives. Use Node.js 24, npm, Git and a trusted local checkout. Open a terminal at the repository root. Install the academy dependencies once with npm ci before running the academy's verifier. These exercises do not require cloud accounts or private credentials.
+
+<LessonStep number={1} title={"Inspect the current runtime"} file="labs/node-runtime/starter/exercise.mjs" expected={"Node prints its own version, OS and architecture."}>
+
+Run this in your terminal. Compare with typeof document and typeof process in a browser console. Do not infer security permissions from a capability check.
+
+```powershell
+node -p "JSON.stringify({version:process.version,platform:process.platform,arch:process.arch,dom:typeof document})"
+```
+
+</LessonStep>
+
+<LessonStep number={2} title={"Distinguish module formats and APIs"} file="labs/node-runtime/starter/exercise.mjs" expected={"A .mjs file imports Node-only functionality successfully; a browser bundle cannot import it directly."}>
+
+Create a scratch .mjs file and run it with node. Compare with a .cjs file using require('node:path'). Keep server-only imports outside browser components.
+
+```js
+import { basename } from 'node:path';
+console.log(basename(process.cwd()));
+console.log(typeof document);
+console.log(typeof fetch);
+```
+
+</LessonStep>
+
+<LessonStep number={3} title={"Build a runtime capability probe"} file="labs/node-runtime/starter/exercise.mjs" expected={"The probe can be tested with synthetic browser, Node and unknown hosts."}>
+
+Provide an optional host object so unit tests need neither a real browser nor global overrides. Check capabilities individually; a hybrid host may expose both.
+
+```js
+export function inspectRuntime(host=globalThis) {
+  const version=host.process?.versions?.node;
+  return { node:typeof version==='string', dom:typeof host.document?.createElement==='function', fetch:typeof host.fetch==='function', nodeVersion:typeof version==='string'?version:null };
+}
+```
+
+</LessonStep>
+
+## Explore it yourself
+
+Check node --version and then use node -p process.execPath. If the installed major differs from 24, use a trusted installer or version manager. Pin a major in project configuration and document the exact version tested. Never run a random downloaded install script merely because a tutorial lists it.
+
+<Misconception claim={"Any JavaScript file works identically in Node and the browser."} correction={"The language overlaps, but host APIs, module resolution, and execution boundaries differ."} />
+
+## Bug Hunt: diagnose before you change code
+
+A React component imports a filesystem helper that is intended only for server use. Move that operation to a trusted server module and call an authorized API; pass only the permitted result to the browser.
+
+<KnowledgeCheck question={"Which API is normally specific to a browser DOM?"} choices={["JSON.parse","Array.map","document.createElement","Math.max"]} correctIndex={2} explanation={"document is provided by browser-like hosts, not ordinary Node execution."} misconception={"Language built-ins are independent of the DOM."} lessonId="00.02.03" />
+
+## Guided lab
+
+Open `labs/node-runtime/starter`. Complete the files using the steps above. The worked solution is in `labs/node-runtime/solution`. The ordinary npm command verifies the instructor solution, not your edits. Return to the academy root and test your own starter in PowerShell:
+
+```powershell
+$env:ACADEMY_LAB_TARGET = 'starter'
+npm run lab:node-runtime
+Remove-Item Env:ACADEMY_LAB_TARGET
+```
+
+In Bash use `ACADEMY_LAB_TARGET=starter npm run lab:node-runtime`. The starter should fail before you finish the exercise. Read the assertion output, fix the implementation, then compare it with the solution. Manual editor, shell and account-related steps remain self-assessed; tests verify only the local fixture.
+
+<LabGate lessonId="00.02.03" labId="lab.foundation.node-runtime" commands={["npm ci","npm run lab:node-runtime"]} interactive={false} />
+
+## Reflect
+
+Explain what you changed, why it belongs in the project or local machine, and how a teammate could reproduce it. Record the exact non-sensitive command or error that helped you diagnose a problem.
+
+## Official references
+
+- [Node.js: Introduction](https://nodejs.org/en/learn/getting-started/introduction-to-nodejs)
+- [Node.js: Process](https://nodejs.org/download/release/latest-v24.x/docs/api/process.html)
+- [MDN: Web APIs](https://developer.mozilla.org/en-US/docs/Web/API)

@@ -1,0 +1,89 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Explain npm run scripts and execution exit codes","Create portable syntax-check and test commands","Combine checks using fail-fast behavior","Verify reproducibility in a fresh project directory"]} />
+
+## The problem we're solving
+
+Your README says run three commands to release, but the third runs even when tests fail. Worse, your commands depend on Windows-only shell syntax. A repeatable project gives everyone the same entry points and returns useful exit codes.
+
+## Build the mental model
+
+package scripts are named project commands. npm run adds local node_modules/.bin to PATH and runs scripts from the package root. Exit code zero signals success; nonzero signals failure. Use && to run a later check only when the earlier one succeeded (npm's default Windows cmd and POSIX shells support this). Prefer Node scripts for cross-platform filesystem and environment tasks instead of shell-specific syntax. npm ci validates the lock; it does not prove your application works. A separate verification script must run real tests. Do not make destructive or publishing actions implicit in a test script.
+
+## Before you begin
+
+Complete [the previous lesson](/learn/00.02.04) or review its objectives. Use Node.js 24, npm, Git and a trusted local checkout. Open a terminal at the repository root. Install the academy dependencies once with npm ci before running the academy's verifier. These exercises do not require cloud accounts or private credentials.
+
+<LessonStep number={1} title={"Define project scripts"} file="labs/project-scripts/starter/package.json" expected={"npm run check validates syntax, npm test runs tests, and npm run verify runs both."}>
+
+In labs/project-scripts/starter/package.json add the scripts below. Keep the package identity and lockfile. The fixture has no external packages.
+
+```json
+"scripts": {
+  "check": "node --check app.mjs",
+  "test": "node --test",
+  "verify": "npm run check && npm test"
+}
+```
+
+</LessonStep>
+
+<LessonStep number={2} title={"Implement a small module and a real test"} file="labs/project-scripts/starter/package.json" expected={"The total function produces the expected numeric result."}>
+
+The app exports a pure function. Replace the TODO in app.mjs, then inspect total.test.mjs. A genuine test asserts behavior rather than merely printing a success message.
+
+```js
+export function total(items) {
+  return items.reduce((sum, item) => sum + item, 0);
+}
+```
+
+</LessonStep>
+
+<LessonStep number={3} title={"Reproduce success and failure"} file="labs/project-scripts/starter/package.json" expected={"A broken implementation makes verify return nonzero; restoring it makes the command succeed."}>
+
+Run npm ci then npm run verify from the starter directory. Temporarily change the initial sum to 1, see the assertion fail, and restore the correct function. In PowerShell inspect $LASTEXITCODE immediately after the command; in Bash use echo $?.
+
+```powershell
+npm ci --ignore-scripts --no-audit --no-fund
+npm run verify
+```
+
+</LessonStep>
+
+## Explore it yourself
+
+Separate dev, build, start, lint, typecheck and test scripts in larger projects. The release command should not be the only way to test. For a new checkout the typical sequence is install locked dependencies, validate, test, build, and then deploy explicitly. This lab proves the first three pieces without a cloud service.
+
+<Misconception claim={"If npm run followed by a command prints output, the check passed."} correction={"Exit codes and assertions—not the amount of console output—determine success."} />
+
+## Bug Hunt: diagnose before you change code
+
+A verify script is written as npm run check; npm test. In a compatible shell a semicolon does not require the preceding check to succeed. Use && or a programmatic runner that exits on the first failed step.
+
+<KnowledgeCheck question={"Which script stops before testing if the syntax check fails?"} choices={["npm run check && npm test","npm run check; npm test","echo success","npm install"]} correctIndex={0} explanation={"&& runs the next command only if the earlier command succeeds."} misconception={"A semicolon generally sequences commands regardless of success."} lessonId="00.02.05" />
+
+## Guided lab
+
+Open `labs/project-scripts/starter`. Complete the files using the steps above. The worked solution is in `labs/project-scripts/solution`. The ordinary npm command verifies the instructor solution, not your edits. Return to the academy root and test your own starter in PowerShell:
+
+```powershell
+$env:ACADEMY_LAB_TARGET = 'starter'
+npm run lab:project-scripts
+Remove-Item Env:ACADEMY_LAB_TARGET
+```
+
+In Bash use `ACADEMY_LAB_TARGET=starter npm run lab:project-scripts`. The starter should fail before you finish the exercise. Read the assertion output, fix the implementation, then compare it with the solution. Manual editor, shell and account-related steps remain self-assessed; tests verify only the local fixture.
+
+<LabGate lessonId="00.02.05" labId="lab.foundation.project-scripts" commands={["npm ci","npm run lab:project-scripts"]} interactive={false} />
+
+## Reflect
+
+Explain what you changed, why it belongs in the project or local machine, and how a teammate could reproduce it. Record the exact non-sensitive command or error that helped you diagnose a problem.
+
+## Official references
+
+- [npm: Scripts](https://docs.npmjs.com/cli/v11/using-npm/scripts)
+- [Node.js: Test runner](https://nodejs.org/download/release/latest-v24.x/docs/api/test.html)
+- [npm: npm ci](https://docs.npmjs.com/cli/v11/commands/npm-ci)

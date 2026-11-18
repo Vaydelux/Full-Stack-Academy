@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.git-ssh-setup",
+  "lessonId": "00.02.07",
+  "title": "Git setup and SSH authentication",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/git-ssh-setup/starter/.gitignore",
+  "solution": "labs/git-ssh-setup/solution/.gitignore",
+  "tests": "labs/git-ssh-setup/solution.test.mjs",
+  "verify": [
+    "npm run lab:git-ssh-setup"
+  ],
+  "expected": "I explained public/private keys and host verification and passed the Git fixture tests.",
+  "security": "Synthetic data and disposable local fixtures. No real credentials, remote mutation, or server-side learner execution."
+}

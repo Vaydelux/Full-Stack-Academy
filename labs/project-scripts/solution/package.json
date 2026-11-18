@@ -1,0 +1,11 @@
+{
+  "name": "academy-scripts-lab",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check": "node --check app.mjs",
+    "test": "node --test",
+    "verify": "npm run check && npm test"
+  }
+}

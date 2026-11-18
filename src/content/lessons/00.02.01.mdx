@@ -1,0 +1,100 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Open a project folder and distinguish workspace from user settings","Create shared editor preferences without machine-specific paths","Choose extensions by publisher, maintenance and actual project needs","Test a workspace configuration and identify unsafe settings"]} />
+
+## The problem we're solving
+
+A teammate opens your repository and immediately gets inconsistent formatting and broken tasks. Your settings live only on your machine. Putting a minimal project-owned configuration in version control makes the experience repeatable without forcing personal preferences on everyone.
+
+## Build the mental model
+
+A VS Code workspace is the folder or multi-root workspace currently opened. User settings apply across your editor; workspace settings usually override them for the project. A folder's .vscode/settings.json records shared settings, extensions.json recommends extensions without silently installing them, and tasks.json describes local tasks. Extensions and tasks can execute code, so inspect unfamiliar projects in Restricted Mode before trusting them. Do not commit machine-specific absolute paths or secrets. Editor settings are convenience; lint and tests must also work in a terminal and CI.
+
+## Before you begin
+
+Complete [the previous lesson](/learn/00.01.08) or review its objectives. Use Node.js 24, npm, Git and a trusted local checkout. Open a terminal at the repository root. Install the academy dependencies once with npm ci before running the academy's verifier. These exercises do not require cloud accounts or private credentials.
+
+<LessonStep number={1} title={"Create a workspace"} file="labs/vscode-workspace/starter/.vscode/settings.json" expected={"The Explorer opens the lab directory, not a single loose file."}>
+
+From the repository root run the command below, or use File > Open Folder. The lab has a starter folder; open its directory and inspect hidden configuration files. Keep unfamiliar folders untrusted until you inspect them.
+
+```powershell
+code labs/vscode-workspace/starter
+```
+
+</LessonStep>
+
+<LessonStep number={2} title={"Set shared editing rules"} file="labs/vscode-workspace/starter/.vscode/settings.json" expected={"Files save using UTF-8 and LF, with two-space indentation."}>
+
+Create .vscode/settings.json inside the starter workspace. JSON without comments is used here so the verifier can parse it. Personal choices such as font size remain user settings.
+
+```json
+{
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "files.encoding": "utf8",
+  "files.eol": "\n",
+  "editor.formatOnSave": false
+}
+```
+
+</LessonStep>
+
+<LessonStep number={3} title={"Recommend focused extensions"} file="labs/vscode-workspace/starter/.vscode/settings.json" expected={"The workspace recommends the ESLint and Prettier extensions, but does not auto-install them."}>
+
+Create .vscode/extensions.json. Verify the marketplace publisher and permissions before installing. ESLint checks rules; Prettier formats text. Do not enable both tools as competing formatters without configuring them.
+
+```json
+{
+  "recommendations": ["dbaeumer.vscode-eslint", "esbenp.prettier-vscode"]
+}
+```
+
+</LessonStep>
+
+<LessonStep number={4} title={"Verify the configuration"} file="labs/vscode-workspace/starter/.vscode/settings.json" expected={"The starter passes the two configuration tests."}>
+
+Return to the academy root in a separate terminal and run the starter acceptance command below. Open a small JS file and verify the indentation. Project editor settings should not grant extra trust or embed a local executable path.
+
+```powershell
+npm run lab:vscode-workspace
+```
+
+</LessonStep>
+
+## Explore it yourself
+
+Use Ctrl+Shift+P to open the Command Palette, Ctrl+P to locate files, and Ctrl+` to toggle the terminal. Inspect Preferences: Open Workspace Settings (JSON). Compare changes with Git diff. Exercise the same commands from a terminal outside VS Code; your build must not depend on an extension.
+
+<Misconception claim={"Installing more extensions automatically makes a development environment better."} correction={"Each extension adds maintenance, resource and trust costs. Select only the tools needed by the project."} />
+
+## Bug Hunt: diagnose before you change code
+
+An extension setting points to C:\Users\someone\node.exe. It works on one PC and fails everywhere else. Remove the machine-specific path, install Node using your documented runtime setup, and keep executable discovery on PATH.
+
+<KnowledgeCheck question={"Where should project-wide indentation settings live?"} choices={["A private environment file","The shared workspace settings file","A global OS registry entry","An API response"]} correctIndex={1} explanation={"Workspace settings can be reviewed and shared with the project."} misconception={"User settings are individual preferences."} lessonId="00.02.01" />
+
+## Guided lab
+
+Open `labs/vscode-workspace/starter`. Complete the files using the steps above. The worked solution is in `labs/vscode-workspace/solution`. The ordinary npm command verifies the instructor solution, not your edits. Return to the academy root and test your own starter in PowerShell:
+
+```powershell
+$env:ACADEMY_LAB_TARGET = 'starter'
+npm run lab:vscode-workspace
+Remove-Item Env:ACADEMY_LAB_TARGET
+```
+
+In Bash use `ACADEMY_LAB_TARGET=starter npm run lab:vscode-workspace`. The starter should fail before you finish the exercise. Read the assertion output, fix the implementation, then compare it with the solution. Manual editor, shell and account-related steps remain self-assessed; tests verify only the local fixture.
+
+<LabGate lessonId="00.02.01" labId="lab.foundation.vscode-workspace" commands={["npm ci","npm run lab:vscode-workspace"]} interactive={false} />
+
+## Reflect
+
+Explain what you changed, why it belongs in the project or local machine, and how a teammate could reproduce it. Record the exact non-sensitive command or error that helped you diagnose a problem.
+
+## Official references
+
+- [VS Code: Workspaces](https://code.visualstudio.com/docs/editing/workspaces/workspaces)
+- [VS Code: Workspace Trust](https://code.visualstudio.com/docs/editing/workspaces/workspace-trust)
+- [VS Code: Extension Marketplace](https://code.visualstudio.com/docs/configure/extensions/extension-marketplace)

@@ -1,0 +1,117 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Assemble a project with a documented runtime and package manager","Check in portable editor settings and a dependency lock","Validate configuration and tests with one reproducible command","Prove a clean copy works without private credentials or cloud accounts"]} />
+
+## The problem we're solving
+
+A project is not reproducible just because the original developer can start it. Someone on a clean Windows machine or Linux environment must be able to clone, install, validate and test using documented prerequisites. This capstone makes that evidence concrete.
+
+## Build the mental model
+
+Configuration must be explicit: runtime version, package manager, lockfile, scripts, local settings, safe examples, and a clear README. The app must validate its config and return a failing exit code when checks fail. The commit should include the lockfile and exclude real secrets, generated outputs and node_modules. This starter is a tiny dependency-free Node project so the verification can run in a temporary copy without network access. A real production workstation may also use a version manager, Docker and service credentials; those are not necessary for this checkpoint.
+
+## Before you begin
+
+Complete [the previous lesson](/learn/00.02.07) or review its objectives. Use Node.js 24, npm, Git and a trusted local checkout. Open a terminal at the repository root. Install the academy dependencies once with npm ci before running the academy's verifier. These exercises do not require cloud accounts or private credentials.
+
+<LessonStep number={1} title={"Make the project environment explicit"} file="labs/workstation-capstone/starter/package.json" expected={"The starter contains a Node major contract, npm lockfile and workspace settings."}>
+
+In labs/workstation-capstone/starter inspect .node-version, package.json and .vscode/settings.json. Set the runtime major to 24 and ensure engines.node is `>=24 <25`. Update the scripts to match the example. Keep the package name and version unchanged.
+
+```json
+"scripts": {
+  "check": "node --check app.mjs",
+  "test": "node --test",
+  "verify": "npm run check && npm test",
+  "start": "node --env-file=.env.example app.mjs"
+}
+```
+
+</LessonStep>
+
+<LessonStep number={2} title={"Implement safe config and the project entry point"} file="labs/workstation-capstone/starter/package.json" expected={"npm start prints a ready message using a non-secret mode and validated port."}>
+
+Replace the starter app.mjs with the following. This is a CLI demonstration, not an HTTP service. Keep .env.example synthetic and ignore .env and other local variants.
+
+```js
+import {pathToFileURL} from 'node:url';
+export function config(env) {
+  const port=env.PORT??'3100';
+  if(!/^\d+$/.test(port)||Number(port)<1||Number(port)>65535)throw new Error('Invalid PORT');
+  const mode=env.APP_MODE??'development';
+  if(!['development','test','production'].includes(mode))throw new Error('Invalid APP_MODE');
+  return {port:Number(port),mode};
+}
+if(process.argv[1]&&import.meta.url===pathToFileURL(process.argv[1]).href){
+  const value=config(process.env);
+  console.log('Ready on '+value.port+' ('+value.mode+')');
+}
+```
+
+</LessonStep>
+
+<LessonStep number={3} title={"Recreate the project from a clean copy"} file="labs/workstation-capstone/starter/package.json" expected={"The solution installs, checks, tests and starts from an isolated directory."}>
+
+Run these commands from the starter project folder. Create the lockfile intentionally before ci if you changed the manifest. The course acceptance test copies the fixture into an OS temporary directory and runs the same steps; it never modifies your global setup.
+
+```powershell
+npm install --package-lock-only --ignore-scripts --no-audit --no-fund
+npm ci --ignore-scripts --no-audit --no-fund
+npm run verify
+npm start
+```
+
+</LessonStep>
+
+<LessonStep number={4} title={"Record a handoff"} file="labs/workstation-capstone/starter/package.json" expected={"A teammate can find the commands and expected output without asking you."}>
+
+Write a README with Node 24, npm, the commands above, an example output Ready on 3100 (development), and instructions for resolving an invalid PORT. Check git status before staging. Never include your real .env, private SSH keys or node_modules.
+
+```text
+# Reproduction checklist
+# node --version   -> v24.x
+# npm --version
+# npm ci
+# npm run verify
+# npm start
+```
+
+</LessonStep>
+
+## Explore it yourself
+
+For independent practice copy only the starter files to a new directory. Open that directory in VS Code, inspect Workspace Trust, perform the clean install, run verification and capture the non-sensitive output. Break PORT in your local environment and observe startup failure; clear that environment variable afterward. This is not yet a production deployment.
+
+<Misconception claim={"A working node_modules directory should be committed so everyone gets the same install."} correction={"Commit the manifest, lockfile and source; reproduce node_modules from the chosen package manager."} />
+
+## Bug Hunt: diagnose before you change code
+
+A project starts only if a developer's personal environment variables already exist. Provide a safe example, validate startup configuration and document the commands. The clean-copy test must not depend on their machine.
+
+<KnowledgeCheck question={"Which evidence best demonstrates that another developer can reproduce the project?"} choices={["A screenshot of the original terminal","A committed node_modules directory","A clean-copy locked install followed by passing tests and startup","A successful npm publish"]} correctIndex={2} explanation={"A clean-copy test removes the original machine's hidden state."} misconception={"The lockfile alone is insufficient; validate actual behavior."} lessonId="00.02.08" />
+
+## Guided lab
+
+Open `labs/workstation-capstone/starter`. Complete the files using the steps above. The worked solution is in `labs/workstation-capstone/solution`. The ordinary npm command verifies the instructor solution, not your edits. Return to the academy root and test your own starter in PowerShell:
+
+```powershell
+$env:ACADEMY_LAB_TARGET = 'starter'
+npm run lab:workstation-capstone
+Remove-Item Env:ACADEMY_LAB_TARGET
+```
+
+In Bash use `ACADEMY_LAB_TARGET=starter npm run lab:workstation-capstone`. The starter should fail before you finish the exercise. Read the assertion output, fix the implementation, then compare it with the solution. Manual editor, shell and account-related steps remain self-assessed; tests verify only the local fixture.
+
+<LabGate lessonId="00.02.08" labId="lab.foundation.workstation-capstone" commands={["npm ci","npm run lab:workstation-capstone"]} interactive={false} />
+
+## Reflect
+
+Explain what you changed, why it belongs in the project or local machine, and how a teammate could reproduce it. Record the exact non-sensitive command or error that helped you diagnose a problem.
+
+## Official references
+
+- [Node.js: Download](https://nodejs.org/en/download)
+- [npm: npm ci](https://docs.npmjs.com/cli/v11/commands/npm-ci)
+- [VS Code: Workspace Trust](https://code.visualstudio.com/docs/editing/workspaces/workspace-trust)
+- [Git: gitignore](https://git-scm.com/docs/gitignore)
