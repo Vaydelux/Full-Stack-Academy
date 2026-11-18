@@ -1,1 +1,1 @@
-export function solve(raw:any):string{return raw.id.toUpperCase();}
+export function solve(raw:unknown):string{return (raw as {id:string}).id.toUpperCase();}

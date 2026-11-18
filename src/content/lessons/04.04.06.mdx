@@ -22,7 +22,7 @@ Continue from [the previous lesson](/learn/04.04.05). Open `labs/ts-eslint/start
 <LessonStep number={1} title="Reproduce the broken module or release contract" file="labs/ts-eslint/starter/solution.ts" expected="The initial package/tooling assumption fails at least one reviewed assertion.">
 
 ```ts
-export function solve(raw:any):string{return raw.id.toUpperCase();}
+export function solve(raw:unknown):string{return (raw as {id:string}).id.toUpperCase();}
 ```
 
 **Predict before running:** A helper uses unchecked any for a request object, bypassing type safety and accepting malformed IDs.

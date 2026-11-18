@@ -3,9 +3,9 @@
 export async function verifyJsTsBatch({page,base,assert,wait}) {
   const originalViewport = page.viewportSize();
   const modules = ['03.01','03.02','03.03','03.04','04.01','04.02','04.03','04.04'];
-  for (const module of modules) {
+  for (const trackModule of modules) {
     for (const suffix of ['01','08']) {
-      const id = module + '.' + suffix;
+      const id = trackModule + '.' + suffix;
       const result = await page.goto(base+'/learn/'+id);
       assert.equal(result.status(),200,'Published JS/TS route must load: '+id);
       await wait(page.getByRole('heading',{name:"The problem we're solving"}));
