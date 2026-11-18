@@ -42,3 +42,18 @@ jobs:
         run: npm run test:labs
       - name: Production build
         run: npm run build
+      - name: Install isolated browser verifier
+        run: |
+          npm install --prefix "$RUNNER_TEMP/academy-browser" --no-audit --no-fund --save-exact playwright@1.56.1
+          "$RUNNER_TEMP/academy-browser/node_modules/.bin/playwright" install --with-deps chromium
+      - name: Test the production build in Chromium
+        run: |
+          npm run start -- --hostname 127.0.0.1 --port 3100 > "$RUNNER_TEMP/academy-server.log" 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          for i in $(seq 1 60); do
+            if curl --silent --fail http://127.0.0.1:3100/ > /dev/null; then break; fi
+            sleep 1
+          done
+          ACADEMY_BROWSER_ROOT="$RUNNER_TEMP/academy-browser" node scripts/browser-smoke.mjs
+

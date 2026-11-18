@@ -53,7 +53,7 @@ export function LabGate({ lessonId, labId, commands }: { lessonId: string; labId
         The article does not execute server commands on the website.
       </p>
       <pre className="my-3 overflow-auto rounded-lg bg-[#0B0D14] p-4 text-xs leading-6 text-white"><code>{commands.join('\n')}</code></pre>
-      <Link href={`/?lesson=${encodeURIComponent(lessonId)}`} className="inline-flex rounded-lg bg-emerald-700 px-4 py-2 text-xs font-bold text-white hover:bg-emerald-600">
+      <Link href={`/?lesson=${encodeURIComponent(lessonId)}&mode=practice`} className="inline-flex rounded-lg bg-emerald-700 px-4 py-2 text-xs font-bold text-white hover:bg-emerald-600">
         Open the browser-safe interactive exercise
       </Link>
       <p className="mt-3 text-xs text-slate-600 dark:text-slate-400">

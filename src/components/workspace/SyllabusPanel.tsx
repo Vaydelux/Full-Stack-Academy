@@ -80,7 +80,7 @@ export function ProgressRing({
 /* Syllabus Panel                                                      */
 /* ------------------------------------------------------------------ */
 
-export default function SyllabusPanel({ fullHeight = false }: { fullHeight?: boolean } = {}) {
+export default function SyllabusPanel({ fullHeight = false, onNavigate }: { fullHeight?: boolean; onNavigate?: () => void } = {}) {
   const open = useAcademy((s) => s.syllabusOpen);
   const toggle = useAcademy((s) => s.toggleSyllabus);
   const sidebarTab = useAcademy((s) => s.sidebarTab);
@@ -92,9 +92,12 @@ export default function SyllabusPanel({ fullHeight = false }: { fullHeight?: boo
   const selectedLessonId = useAcademy((s) => s.selectedLessonId);
   const selectedReferenceId = useAcademy((s) => s.selectedReferenceId);
   const activeView = useAcademy((s) => s.activeView);
-  const selectLesson = useAcademy((s) => s.selectLesson);
-  const selectReference = useAcademy((s) => s.selectReference);
-  const jumpToNextUnfinished = useAcademy((s) => s.jumpToNextUnfinished);
+  const chooseLesson = useAcademy((s) => s.selectLesson);
+  const chooseReference = useAcademy((s) => s.selectReference);
+  const resume = useAcademy((s) => s.jumpToNextUnfinished);
+  const selectLesson = (id: string) => { chooseLesson(id); onNavigate?.(); };
+  const selectReference = (id: string) => { chooseReference(id); onNavigate?.(); };
+  const jumpToNextUnfinished = () => { resume(); onNavigate?.(); };
   const progress = useAcademy((s) => s.progress);
   const expandedTrack = useAcademy((s) => s.expandedTrack);
   const setExpandedTrack = useAcademy((s) => s.setExpandedTrack);

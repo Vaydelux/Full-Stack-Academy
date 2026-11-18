@@ -155,8 +155,8 @@ export default function Workspace() {
           </button>
           <Link href="/reference" className="text-sm font-medium text-cyan-700 dark:text-cyan-300">Reference library</Link>
         </div>
-        <aside id="academy-navigation" className={`${mobileNav ? 'flex' : 'hidden'} max-h-[42dvh] min-h-0 shrink-0 flex-col overflow-hidden border-b border-slate-200 bg-white lg:flex lg:h-full lg:max-h-none lg:w-[300px] lg:border-b-0 lg:border-r dark:border-white/10 dark:bg-[#15161c]`}>
-          <SyllabusPanel fullHeight />
+        <aside id="academy-navigation" className={`${mobileNav ? 'flex' : 'hidden'} h-[42dvh] max-h-[42dvh] min-h-0 shrink-0 flex-col overflow-hidden border-b border-slate-200 bg-white lg:flex lg:h-full lg:max-h-none lg:w-[300px] lg:border-b-0 lg:border-r dark:border-white/10 dark:bg-[#15161c]`}>
+          <SyllabusPanel fullHeight onNavigate={() => setMobileNav(false)} />
         </aside>
         <main id="academy-main" className="flex min-h-0 min-w-0 flex-1 flex-col">
           {canPractice && (

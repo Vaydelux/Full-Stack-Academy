@@ -478,14 +478,9 @@ export default function PreviewPane() {
       if (!d || typeof d !== 'object' || d.source !== 'academy-preview') return;
       if (d.type === 'READY') {
         readyRef.current = true;
-        setPreviewStatus('ready');
-        const currentCode = useAcademy.getState().code;
-        window.setTimeout(() => {
-          iframeRef.current?.contentWindow?.postMessage(
-            { source: 'academy-parent', type: 'RUN', code: currentCode },
-            '*'
-          );
-        }, 100);
+        iframeRef.current?.contentWindow?.postMessage(
+          { source: 'academy-parent', type: 'RUN', code: useAcademy.getState().code }, '*'
+        );
       } else if (d.type === 'STATUS') {
         gotStatusRef.current = true;
         if (d.status === 'ok') setPreviewStatus('ready');
@@ -506,7 +501,8 @@ export default function PreviewPane() {
     let tries = 0;
     let timer: ReturnType<typeof setTimeout>;
     const attempt = () => {
-      if (gotStatusRef.current || tries >= 15) return;
+      if (gotStatusRef.current) return;
+      if (tries >= 15) { setPreviewStatus('error', 'Preview did not initialize. Reopen Practice or reload the page.'); return; }
       tries += 1;
       const currentCode = useAcademy.getState().code;
       iframeRef.current?.contentWindow?.postMessage(
@@ -517,7 +513,7 @@ export default function PreviewPane() {
     };
     timer = setTimeout(attempt, 250);
     return () => clearTimeout(timer);
-  }, [isReactLive]);
+  }, [isReactLive, setPreviewStatus]);
 
   useEffect(() => {
     if (!isReactLive || !gotStatusRef.current) return;
@@ -532,11 +528,8 @@ export default function PreviewPane() {
 
   const reload = () => {
     requestRun();
-    if (isReactLive && readyRef.current) {
-      iframeRef.current?.contentWindow?.postMessage(
-        { source: 'academy-parent', type: 'RUN', code: useAcademy.getState().code },
-        '*'
-      );
+    if (isReactLive && !readyRef.current && iframeRef.current) {
+      iframeRef.current.src = '/preview.html';
     }
   };
 

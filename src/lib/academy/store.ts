@@ -417,7 +417,12 @@ export const useAcademy = create<AcademyStore>((set, get) => ({
 
   loadSnippet: (code, title, lessonId) =>
     set((s) => ({
-      ...(lessonId && AUTHORED_LESSONS[lessonId] ? { activeSampleId: lessonId, selectedLessonId: lessonId, activeView: 'lesson' as const } : {}),
+      ...(lessonId && AUTHORED_LESSONS[lessonId] ? {
+        activeSampleId: lessonId, selectedLessonId: lessonId, activeView: 'lesson' as const,
+        expandedTrack: lessonMap.get(lessonId)?.trackId ?? s.expandedTrack,
+        expandedModule: lessonMap.get(lessonId)?.moduleId ?? s.expandedModule,
+        ...(s.activeSampleId !== lessonId ? { currentTime: 0, activeStepId: AUTHORED_LESSONS[lessonId].steps[0].id } : {}),
+      } : {}),
       code,
       hijacked: true,
       isPlaying: false,

@@ -87,6 +87,7 @@ function CodeCard({
               Step
             </button>
           )}
+          {loadLessonId && (
           <button
             type="button"
             onClick={() => loadSnippet(code, file, loadLessonId)}
@@ -95,6 +96,7 @@ function CodeCard({
             Load in Editor
             <ArrowUpRight className="h-2.5 w-2.5" />
           </button>
+          )}
           <button
             type="button"
             onClick={copy}
