@@ -1,0 +1,98 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Diagnose the reducers and state machines failure through a real example","Repair the learner fixture with a precise invariant and explicit edge cases","Verify the result offline and distinguish those checks from framework end-to-end tests"]} />
+
+## The problem we're solving
+
+A form reducer accepts submit events before any input has been validated, entering a success state with empty data. This local fixture isolates a concrete failure before we introduce any external state or deployment.
+
+## Build the mental model
+
+A reducer maps previous state and an action into a new state. Discriminated action variants make allowed transitions explicit and enable exhaustive handling. Reducers should remain pure and not mutate state or perform network calls.
+
+**Predict before running:** The repaired implementation respects its documented contract.
+
+## Prerequisites and preflight
+
+Continue from [the preceding lesson](/learn/06.02.06). Inspect `labs/react-reducers/starter/solution.ts`, the instructor solution and `labs/react-reducers/solution.test.mjs`. Run `npm run lab:react-reducers` with repository-installed Node.js 24, TypeScript and tsx. The React component is also rendered to static initial HTML by the test; event handlers and effects need browser tests.
+
+<LessonStep number={1} title="Reproduce the defective starter" file="labs/react-reducers/starter/solution.ts" expected="The intentionally flawed starter fails a real assertion.">
+
+Observe the following implementation, identify the overlooked case, and predict which assertion reveals it.
+
+```ts
+
+export type State={status:'editing'|'submitted';value:string};export type Action={type:'change';value:string}|{type:'submit'};export function solve(s:State,a:Action):State{return a.type==='change'?{...s,value:a.value}:{...s,status:'submitted'};}
+
+```
+
+**Why it fails:** A reducer maps previous state and an action into a new state. Discriminated action variants make allowed transitions explicit and enable exhaustive handling. Reducers should remain pure and not mutate state or perform network calls.
+
+**Proof:** Run `ACADEMY_LAB_TARGET=starter npm run lab:react-reducers` in Bash, or set the variable for the command in PowerShell. Do not modify the instructor fixture.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the implementation contract" file="labs/react-reducers/starter/solution.ts" expected={"Positive and negative cases behave predictably."}>
+
+Make the smallest semantic correction; do not weaken the assertions or convert invalid data into a fake success.
+
+```ts
+
+export type State={status:'editing'|'submitted';value:string};export type Action={type:'change';value:string}|{type:'submit'};export function solve(s:State,a:Action):State{switch(a.type){case 'change':return {status:'editing',value:a.value};case 'submit':return s.value.trim()?{...s,status:'submitted'}:s;}}
+
+```
+
+**Why it works:** A reducer maps previous state and an action into a new state. Discriminated action variants make allowed transitions explicit and enable exhaustive handling. Reducers should remain pure and not mutate state or perform network calls.
+
+**Proof:** Run the same local assertions and compare the before/after outputs.
+
+</LessonStep>
+
+<LessonStep number={3} title="Inspect the React component" file="labs/react-reducers/solution/Widget.tsx" expected="The framework-oriented sample illustrates the same invariant.">
+
+This is an actual React 19 component, which the lab renders to initial HTML. Interactions after hydration are not certified by an SSR check.
+
+```tsx
+
+'use client';
+import React,{useReducer} from 'react';
+import {solve} from './solution';
+export function Workshop(){const [s,dispatch]=useReducer(solve,{status:'editing' as const,value:''});return <form onSubmit={e=>{e.preventDefault();dispatch({type:'submit'});}}><label>Title <input value={s.value} onChange={e=>dispatch({type:'change',value:e.target.value})} /></label><button type="submit">Submit</button><output role="status">{s.status}</output></form>;}
+
+```
+
+**Predict before running:** The corrected sample handles the reviewed case.
+
+**Proof:** Run `npm run lab:react-reducers`. To certify real navigation or mutation behavior, also exercise an isolated app in a browser or test server.
+
+</LessonStep>
+
+## Explore and verify
+
+Change a valid input into an invalid one, then inspect which layer should reject it. Check accessibility, cleanup and data ownership as appropriate.
+
+<Misconception claim={"Passing a typecheck or SSR initial render proves every interactive path."} correction={"A reducer maps previous state and an action into a new state. Discriminated action variants make allowed transitions explicit and enable exhaustive handling. Reducers should remain pure and not mutate state or perform network calls."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+Identify the smallest counterexample, repair the root cause and verify the same input now behaves correctly. Describe the missing browser or server integration check.
+
+<KnowledgeCheck question={"What is the main purpose of useReducer?"} choices={["Define explicit pure state transitions from actions","Bypass React rendering","Mutate state in place","Run side effects in render"]} correctIndex={0} explanation={"A reducer maps previous state and an action into a new state. Discriminated action variants make allowed transitions explicit and enable exhaustive handling. Reducers should remain pure and not mutate state or perform network calls."} misconception="Offline tests have explicit boundaries." lessonId="06.02.07" />
+
+## Guided local lab
+
+Edit `labs/react-reducers/starter/solution.ts`. The test imports the selected target and confirms actual return values. It also renders the corresponding component with React DOM Server. The academy does not execute arbitrary learner code on the server.
+
+<LabGate lessonId="06.02.07" labId="lab.foundation.react-reducers" commands={["npm ci","npm run lab:react-reducers"]} interactive={false} />
+
+## Reflect
+
+Which invariant did the original implementation violate? Which test proves the fix, and what would still require a full browser or Next.js integration environment?
+
+## Official references
+
+- [Official concept](https://react.dev/learn/extracting-state-logic-into-a-reducer)
+
+- [Official supporting reference](https://react.dev/learn/choosing-the-state-structure)

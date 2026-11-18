@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.react-lift-state",
+  "lessonId": "06.02.06",
+  "title": "Lifting state up",
+  "runtime": "react19-tsx-ssr-local",
+  "status": "authored",
+  "starter": "labs/react-lift-state/starter/solution.ts",
+  "solution": "labs/react-lift-state/solution/solution.ts",
+  "tests": "labs/react-lift-state/solution.test.mjs",
+  "verify": [
+    "npm run lab:react-lift-state"
+  ],
+  "expected": "The correct local contract passes independent assertions; end-to-end framework behavior is a separate QA gate.",
+  "security": "Uses synthetic fixture data, no secrets, uploaded code execution, remote endpoints, publishing, Vercel or hosted grading."
+}

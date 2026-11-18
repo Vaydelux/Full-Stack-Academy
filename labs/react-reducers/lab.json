@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.react-reducers",
+  "lessonId": "06.02.07",
+  "title": "Reducers and state machines",
+  "runtime": "react19-tsx-ssr-local",
+  "status": "authored",
+  "starter": "labs/react-reducers/starter/solution.ts",
+  "solution": "labs/react-reducers/solution/solution.ts",
+  "tests": "labs/react-reducers/solution.test.mjs",
+  "verify": [
+    "npm run lab:react-reducers"
+  ],
+  "expected": "The correct local contract passes independent assertions; end-to-end framework behavior is a separate QA gate.",
+  "security": "Uses synthetic fixture data, no secrets, uploaded code execution, remote endpoints, publishing, Vercel or hosted grading."
+}

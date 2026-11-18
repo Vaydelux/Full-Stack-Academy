@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.react-functional-updates",
+  "lessonId": "06.02.02",
+  "title": "Batching and functional updates",
+  "runtime": "react19-tsx-ssr-local",
+  "status": "authored",
+  "starter": "labs/react-functional-updates/starter/solution.ts",
+  "solution": "labs/react-functional-updates/solution/solution.ts",
+  "tests": "labs/react-functional-updates/solution.test.mjs",
+  "verify": [
+    "npm run lab:react-functional-updates"
+  ],
+  "expected": "The correct local contract passes independent assertions; end-to-end framework behavior is a separate QA gate.",
+  "security": "Uses synthetic fixture data, no secrets, uploaded code execution, remote endpoints, publishing, Vercel or hosted grading."
+}

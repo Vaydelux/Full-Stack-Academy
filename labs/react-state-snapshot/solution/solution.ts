@@ -1,0 +1,1 @@
+export function solve(count:number,increments:number):number{if(!Number.isInteger(increments)||increments<0)throw new TypeError('Nonnegative count required');let n=count;for(let i=0;i<increments;i++)n+=1;return n;}

@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.react-state-snapshot",
+  "lessonId": "06.02.01",
+  "title": "useState state snapshots",
+  "runtime": "react19-tsx-ssr-local",
+  "status": "authored",
+  "starter": "labs/react-state-snapshot/starter/solution.ts",
+  "solution": "labs/react-state-snapshot/solution/solution.ts",
+  "tests": "labs/react-state-snapshot/solution.test.mjs",
+  "verify": [
+    "npm run lab:react-state-snapshot"
+  ],
+  "expected": "The correct local contract passes independent assertions; end-to-end framework behavior is a separate QA gate.",
+  "security": "Uses synthetic fixture data, no secrets, uploaded code execution, remote endpoints, publishing, Vercel or hosted grading."
+}

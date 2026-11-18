@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.react-stale-closure",
+  "lessonId": "06.02.08",
+  "title": "Bug Hunt stale closure",
+  "runtime": "react19-tsx-ssr-local",
+  "status": "authored",
+  "starter": "labs/react-stale-closure/starter/solution.ts",
+  "solution": "labs/react-stale-closure/solution/solution.ts",
+  "tests": "labs/react-stale-closure/solution.test.mjs",
+  "verify": [
+    "npm run lab:react-stale-closure"
+  ],
+  "expected": "The correct local contract passes independent assertions; end-to-end framework behavior is a separate QA gate.",
+  "security": "Uses synthetic fixture data, no secrets, uploaded code execution, remote endpoints, publishing, Vercel or hosted grading."
+}

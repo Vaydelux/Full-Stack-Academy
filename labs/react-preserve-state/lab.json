@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.react-preserve-state",
+  "lessonId": "06.02.05",
+  "title": "Component state preservation",
+  "runtime": "react19-tsx-ssr-local",
+  "status": "authored",
+  "starter": "labs/react-preserve-state/starter/solution.ts",
+  "solution": "labs/react-preserve-state/solution/solution.ts",
+  "tests": "labs/react-preserve-state/solution.test.mjs",
+  "verify": [
+    "npm run lab:react-preserve-state"
+  ],
+  "expected": "The correct local contract passes independent assertions; end-to-end framework behavior is a separate QA gate.",
+  "security": "Uses synthetic fixture data, no secrets, uploaded code execution, remote endpoints, publishing, Vercel or hosted grading."
+}

@@ -1,0 +1,40 @@
+{
+  "id": "06.02.04",
+  "title": "Updating arrays and objects",
+  "description": "Investigate updating arrays and objects in React 19 with a defective starter, repaired instructor module, executable offline contract and framework example.",
+  "trackId": "06",
+  "moduleId": "06.02",
+  "level": "Beginner",
+  "estimatedMinutes": 60,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "react": "19",
+    "typescript": "5",
+    "node": "24"
+  },
+  "prerequisites": [
+    "06.02.03"
+  ],
+  "objectives": [
+    "Diagnose the updating arrays and objects failure through a real example",
+    "Repair the learner fixture with a precise invariant and explicit edge cases",
+    "Verify the result offline and distinguish those checks from framework end-to-end tests"
+  ],
+  "labId": "lab.foundation.react-immutable-updates",
+  "sources": [
+    {
+      "label": "Official framework documentation",
+      "url": "https://react.dev/learn/updating-arrays-in-state"
+    },
+    {
+      "label": "Supporting official API guidance",
+      "url": "https://react.dev/learn/updating-objects-in-state"
+    }
+  ],
+  "rubric": [
+    "I can reproduce the specific updating arrays and objects failure in the learner starter",
+    "I can explain one positive and one negative case without a hosted service",
+    "I can identify which behavior still requires a browser or Next.js request integration test"
+  ]
+}

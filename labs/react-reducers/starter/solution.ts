@@ -1,0 +1,1 @@
+export type State={status:'editing'|'submitted';value:string};export type Action={type:'change';value:string}|{type:'submit'};export function solve(s:State,a:Action):State{return a.type==='change'?{...s,value:a.value}:{...s,status:'submitted'};}

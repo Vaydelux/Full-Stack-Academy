@@ -1,0 +1,1 @@
+export function solve(rows:readonly Readonly<{id:string;qty:number}>[],id:string,qty:number){if(!Number.isInteger(qty)||qty<0)throw new TypeError('Invalid qty');return rows.map(row=>row.id===id?{...row,qty}:row);}

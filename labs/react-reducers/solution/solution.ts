@@ -1,0 +1,1 @@
+export type State={status:'editing'|'submitted';value:string};export type Action={type:'change';value:string}|{type:'submit'};export function solve(s:State,a:Action):State{switch(a.type){case 'change':return {status:'editing',value:a.value};case 'submit':return s.value.trim()?{...s,status:'submitted'}:s;}}

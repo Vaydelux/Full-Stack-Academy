@@ -1,0 +1,98 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Diagnose the component state preservation failure through a real example","Repair the learner fixture with a precise invariant and explicit edge cases","Verify the result offline and distinguish those checks from framework end-to-end tests"]} />
+
+## The problem we're solving
+
+A selection resets when a list is filtered because the application tracks a row position rather than the row's stable identity. This local fixture isolates a concrete failure before we introduce any external state or deployment.
+
+## Build the mental model
+
+React preserves state for the same component type and position, unless keys or tree placement identify a different instance. Track selected records by stable ID and intentionally change a key when a reset is desired.
+
+**Predict before running:** The repaired implementation respects its documented contract.
+
+## Prerequisites and preflight
+
+Continue from [the preceding lesson](/learn/06.02.04). Inspect `labs/react-preserve-state/starter/solution.ts`, the instructor solution and `labs/react-preserve-state/solution.test.mjs`. Run `npm run lab:react-preserve-state` with repository-installed Node.js 24, TypeScript and tsx. The React component is also rendered to static initial HTML by the test; event handlers and effects need browser tests.
+
+<LessonStep number={1} title="Reproduce the defective starter" file="labs/react-preserve-state/starter/solution.ts" expected="The intentionally flawed starter fails a real assertion.">
+
+Observe the following implementation, identify the overlooked case, and predict which assertion reveals it.
+
+```ts
+
+export function solve(ids:readonly string[],selectedIndex:number):string|null{return ids[selectedIndex]??null;}
+
+```
+
+**Why it fails:** React preserves state for the same component type and position, unless keys or tree placement identify a different instance. Track selected records by stable ID and intentionally change a key when a reset is desired.
+
+**Proof:** Run `ACADEMY_LAB_TARGET=starter npm run lab:react-preserve-state` in Bash, or set the variable for the command in PowerShell. Do not modify the instructor fixture.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the implementation contract" file="labs/react-preserve-state/starter/solution.ts" expected={"Positive and negative cases behave predictably."}>
+
+Make the smallest semantic correction; do not weaken the assertions or convert invalid data into a fake success.
+
+```ts
+
+export function solve(ids:readonly string[],selectedId:string):string|null{return ids.includes(selectedId)?selectedId:null;}
+
+```
+
+**Why it works:** React preserves state for the same component type and position, unless keys or tree placement identify a different instance. Track selected records by stable ID and intentionally change a key when a reset is desired.
+
+**Proof:** Run the same local assertions and compare the before/after outputs.
+
+</LessonStep>
+
+<LessonStep number={3} title="Inspect the React component" file="labs/react-preserve-state/solution/Widget.tsx" expected="The framework-oriented sample illustrates the same invariant.">
+
+This is an actual React 19 component, which the lab renders to initial HTML. Interactions after hydration are not certified by an SSR check.
+
+```tsx
+
+'use client';
+import React,{useState} from 'react';
+import {solve} from './solution';
+export function Workshop(){const [selectedId,setSelectedId]=useState('a');const [flip,setFlip]=useState(false);const ids=flip?['a','b']:['b','a'];return <section aria-label="Stable selection"><button type="button" onClick={()=>setFlip(v=>!v)}>Reorder</button><ul>{ids.map(id=><li key={id}><button type="button" onClick={()=>setSelectedId(id)}>{id}</button></li>)}</ul><output>Selected: {solve(ids,selectedId)}</output></section>;}
+
+```
+
+**Predict before running:** The corrected sample handles the reviewed case.
+
+**Proof:** Run `npm run lab:react-preserve-state`. To certify real navigation or mutation behavior, also exercise an isolated app in a browser or test server.
+
+</LessonStep>
+
+## Explore and verify
+
+Change a valid input into an invalid one, then inspect which layer should reject it. Check accessibility, cleanup and data ownership as appropriate.
+
+<Misconception claim={"Passing a typecheck or SSR initial render proves every interactive path."} correction={"React preserves state for the same component type and position, unless keys or tree placement identify a different instance. Track selected records by stable ID and intentionally change a key when a reset is desired."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+Identify the smallest counterexample, repair the root cause and verify the same input now behaves correctly. Describe the missing browser or server integration check.
+
+<KnowledgeCheck question={"Which factor influences whether component state is preserved?"} choices={["Stable position and key identity","The length of the CSS class","The user's browser language only","The current fetch URL only"]} correctIndex={0} explanation={"React preserves state for the same component type and position, unless keys or tree placement identify a different instance. Track selected records by stable ID and intentionally change a key when a reset is desired."} misconception="Offline tests have explicit boundaries." lessonId="06.02.05" />
+
+## Guided local lab
+
+Edit `labs/react-preserve-state/starter/solution.ts`. The test imports the selected target and confirms actual return values. It also renders the corresponding component with React DOM Server. The academy does not execute arbitrary learner code on the server.
+
+<LabGate lessonId="06.02.05" labId="lab.foundation.react-preserve-state" commands={["npm ci","npm run lab:react-preserve-state"]} interactive={false} />
+
+## Reflect
+
+Which invariant did the original implementation violate? Which test proves the fix, and what would still require a full browser or Next.js integration environment?
+
+## Official references
+
+- [Official concept](https://react.dev/learn/preserving-and-resetting-state)
+
+- [Official supporting reference](https://react.dev/learn/rendering-lists)

@@ -1,0 +1,40 @@
+{
+  "id": "06.02.08",
+  "title": "Bug Hunt stale closure",
+  "description": "Investigate bug hunt stale closure in React 19 with a defective starter, repaired instructor module, executable offline contract and framework example.",
+  "trackId": "06",
+  "moduleId": "06.02",
+  "level": "Beginner",
+  "estimatedMinutes": 85,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "react": "19",
+    "typescript": "5",
+    "node": "24"
+  },
+  "prerequisites": [
+    "06.02.07"
+  ],
+  "objectives": [
+    "Diagnose the bug hunt stale closure failure through a real example",
+    "Repair the learner fixture with a precise invariant and explicit edge cases",
+    "Verify the result offline and distinguish those checks from framework end-to-end tests"
+  ],
+  "labId": "lab.foundation.react-stale-closure",
+  "sources": [
+    {
+      "label": "Official framework documentation",
+      "url": "https://react.dev/learn/state-as-a-snapshot"
+    },
+    {
+      "label": "Supporting official API guidance",
+      "url": "https://react.dev/learn/queueing-a-series-of-state-updates"
+    }
+  ],
+  "rubric": [
+    "I can reproduce the specific bug hunt stale closure failure in the learner starter",
+    "I can explain one positive and one negative case without a hosted service",
+    "I can identify which behavior still requires a browser or Next.js request integration test"
+  ]
+}

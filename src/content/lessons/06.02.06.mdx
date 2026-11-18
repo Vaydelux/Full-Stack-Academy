@@ -1,0 +1,99 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Diagnose the lifting state up failure through a real example","Repair the learner fixture with a precise invariant and explicit edge cases","Verify the result offline and distinguish those checks from framework end-to-end tests"]} />
+
+## The problem we're solving
+
+Two text fields keep disconnected local copies, so their preview panels disagree about the same value. This local fixture isolates a concrete failure before we introduce any external state or deployment.
+
+## Build the mental model
+
+When sibling components need the same source of truth, move the state to their nearest shared owner and pass values and callbacks down through props. Do not synchronize two independent copies using cascading Effects.
+
+**Predict before running:** The repaired implementation respects its documented contract.
+
+## Prerequisites and preflight
+
+Continue from [the preceding lesson](/learn/06.02.05). Inspect `labs/react-lift-state/starter/solution.ts`, the instructor solution and `labs/react-lift-state/solution.test.mjs`. Run `npm run lab:react-lift-state` with repository-installed Node.js 24, TypeScript and tsx. The React component is also rendered to static initial HTML by the test; event handlers and effects need browser tests.
+
+<LessonStep number={1} title="Reproduce the defective starter" file="labs/react-lift-state/starter/solution.ts" expected="The intentionally flawed starter fails a real assertion.">
+
+Observe the following implementation, identify the overlooked case, and predict which assertion reveals it.
+
+```ts
+
+export function solve(a:string,b:string){return {left:a,right:b};}
+
+```
+
+**Why it fails:** When sibling components need the same source of truth, move the state to their nearest shared owner and pass values and callbacks down through props. Do not synchronize two independent copies using cascading Effects.
+
+**Proof:** Run `ACADEMY_LAB_TARGET=starter npm run lab:react-lift-state` in Bash, or set the variable for the command in PowerShell. Do not modify the instructor fixture.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the implementation contract" file="labs/react-lift-state/starter/solution.ts" expected={"Positive and negative cases behave predictably."}>
+
+Make the smallest semantic correction; do not weaken the assertions or convert invalid data into a fake success.
+
+```ts
+
+export function solve(source:string){const value=source.trim();return {left:value,right:value};}
+
+```
+
+**Why it works:** When sibling components need the same source of truth, move the state to their nearest shared owner and pass values and callbacks down through props. Do not synchronize two independent copies using cascading Effects.
+
+**Proof:** Run the same local assertions and compare the before/after outputs.
+
+</LessonStep>
+
+<LessonStep number={3} title="Inspect the React component" file="labs/react-lift-state/solution/Widget.tsx" expected="The framework-oriented sample illustrates the same invariant.">
+
+This is an actual React 19 component, which the lab renders to initial HTML. Interactions after hydration are not certified by an SSR check.
+
+```tsx
+
+'use client';
+import React,{useState} from 'react';
+import {solve} from './solution';
+function Preview({value}:{value:string}){return <output>{value}</output>;}
+export function Workshop(){const [value,setValue]=useState('shared');const views=solve(value);return <section aria-label="Shared state"><label>Message <input value={value} onChange={e=>setValue(e.target.value)} /></label><Preview value={views.left}/><Preview value={views.right}/></section>;}
+
+```
+
+**Predict before running:** The corrected sample handles the reviewed case.
+
+**Proof:** Run `npm run lab:react-lift-state`. To certify real navigation or mutation behavior, also exercise an isolated app in a browser or test server.
+
+</LessonStep>
+
+## Explore and verify
+
+Change a valid input into an invalid one, then inspect which layer should reject it. Check accessibility, cleanup and data ownership as appropriate.
+
+<Misconception claim={"Passing a typecheck or SSR initial render proves every interactive path."} correction={"When sibling components need the same source of truth, move the state to their nearest shared owner and pass values and callbacks down through props. Do not synchronize two independent copies using cascading Effects."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+Identify the smallest counterexample, repair the root cause and verify the same input now behaves correctly. Describe the missing browser or server integration check.
+
+<KnowledgeCheck question={"Where should shared mutable UI state generally live?"} choices={["In one nearest common ancestor","As two unsynchronized sibling copies","In a random DOM node","In the CSS stylesheet"]} correctIndex={0} explanation={"When sibling components need the same source of truth, move the state to their nearest shared owner and pass values and callbacks down through props. Do not synchronize two independent copies using cascading Effects."} misconception="Offline tests have explicit boundaries." lessonId="06.02.06" />
+
+## Guided local lab
+
+Edit `labs/react-lift-state/starter/solution.ts`. The test imports the selected target and confirms actual return values. It also renders the corresponding component with React DOM Server. The academy does not execute arbitrary learner code on the server.
+
+<LabGate lessonId="06.02.06" labId="lab.foundation.react-lift-state" commands={["npm ci","npm run lab:react-lift-state"]} interactive={false} />
+
+## Reflect
+
+Which invariant did the original implementation violate? Which test proves the fix, and what would still require a full browser or Next.js integration environment?
+
+## Official references
+
+- [Official concept](https://react.dev/learn/sharing-state-between-components)
+
+- [Official supporting reference](https://react.dev/learn/choosing-the-state-structure)
