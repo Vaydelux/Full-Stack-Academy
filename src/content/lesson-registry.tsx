@@ -48,6 +48,14 @@ import Accessibility6 from './lessons/01.03.06.mdx';
 import Accessibility7 from './lessons/01.03.07.mdx';
 import Accessibility8 from './lessons/01.03.08.mdx';
 import Accessibility9 from './lessons/01.03.09.mdx';
+import WebPlatform1 from './lessons/01.04.01.mdx';
+import WebPlatform2 from './lessons/01.04.02.mdx';
+import WebPlatform3 from './lessons/01.04.03.mdx';
+import WebPlatform4 from './lessons/01.04.04.mdx';
+import WebPlatform5 from './lessons/01.04.05.mdx';
+import WebPlatform6 from './lessons/01.04.06.mdx';
+import WebPlatform7 from './lessons/01.04.07.mdx';
+import WebPlatform8 from './lessons/01.04.08.mdx';
 export function LessonArticle({lessonId}: {lessonId:string}) {
   switch (lessonId) {
     case '00.01.01': return <BrowserLesson />;
@@ -99,6 +107,14 @@ export function LessonArticle({lessonId}: {lessonId:string}) {
     case '01.03.07': return <Accessibility7 />;
     case '01.03.08': return <Accessibility8 />;
     case '01.03.09': return <Accessibility9 />;
+    case '01.04.01': return <WebPlatform1 />;
+    case '01.04.02': return <WebPlatform2 />;
+    case '01.04.03': return <WebPlatform3 />;
+    case '01.04.04': return <WebPlatform4 />;
+    case '01.04.05': return <WebPlatform5 />;
+    case '01.04.06': return <WebPlatform6 />;
+    case '01.04.07': return <WebPlatform7 />;
+    case '01.04.08': return <WebPlatform8 />;
     case '06.01.01': return <JSXLessonMDX />;
     default: return null;
   }

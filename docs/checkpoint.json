@@ -9,9 +9,9 @@
     "productionUrl": "https://fullstack-academy-ecru.vercel.app/"
   },
   "development": {
-    "branch": null,
+    "branch": "feat/01-04-web-apis-security",
     "lastMergedPr": 10,
-    "state": "production-verified"
+    "state": "in-review-unverified"
   },
   "snapshot": {
     "tracks": 28,
@@ -20,16 +20,17 @@
     "indexedReferences": 303,
     "authoredReferenceDrafts": 4,
     "authoredInteractiveModels": 4,
-    "authoredMdxLessons": 50,
-    "publishedLessons": 53,
-    "labFixtures": 50,
+    "authoredMdxLessons": 58,
+    "publishedLessons": 61,
+    "labFixtures": 58,
     "completeModules": [
       "00.01",
       "00.02",
       "00.03",
       "01.01",
       "01.02",
-      "01.03"
+      "01.03",
+      "01.04"
     ]
   },
   "security": {
@@ -38,5 +39,5 @@
     "exceptionExpires": "2026-12-02"
   },
   "nextMilestone": "01.04",
-  "status": "released"
+  "status": "unreleased-pr-candidate"
 }
