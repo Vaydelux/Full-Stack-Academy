@@ -1,61 +1,60 @@
-# Full-Stack Academy — verified production release checkpoint
+# Full-Stack Academy — Verified Project Checkpoint
 
-**Updated:** 2026-11-18 (Asia/Manila)  
+**Verified date:** 2026-11-18 (Asia/Manila)  
 **Repo:** https://github.com/Vaydelux/Full-Stack-Academy  
-**Production:** https://fullstack-academy-ecru.vercel.app/  
-**Verified `main` SHA:** `4067cce97beab756526274263231529b7999b96d`  
-**Vercel READY production deployment:** `dpl_5m1VbZ11wn8mUC3jaL9eyJyFnzBy`  
-**Last curriculum merge:** PR #8 — https://github.com/Vaydelux/Full-Stack-Academy/pull/8  
-**PR qualification run:** https://github.com/Vaydelux/Full-Stack-Academy/actions/runs/44286064144 — passed. Main push run `44286406423` was active when this checkpoint was prepared; verify independently before claiming its result.
+**Live:** https://fullstack-academy-ecru.vercel.app/  
+**Verified production main:** `ae2211354e6f96d2cc731537a1d489cdee72750c`  
+**Vercel READY deployment:** `dpl_2ZeCD6utrwhsiUegYkydU7fb9fkT`  
+**Curriculum merge:** PR #10 — https://github.com/Vaydelux/Full-Stack-Academy/pull/10  
+**CI:** [PR head run 44292336961](https://github.com/Vaydelux/Full-Stack-Academy/actions/runs/44292336961) and [post-merge main run 44292786322](https://github.com/Vaydelux/Full-Stack-Academy/actions/runs/44292786322) — both passed.
 
-## Production scope confirmed
-- Full curriculum catalog: **28 tracks**, **111 modules**, **889 planned lesson/topic IDs**, **303 reference entries**. These catalog totals are not authored publication counts.
-- **44 actually authored lesson IDs**: four interactive sample models plus 41 MDX lesson bodies, with one overlapping JSX ID.
-- **41 local lab fixture manifests**, four drafted reference entries and **five complete modules**:
-  - `00.01` Computing & Internet Mental Models (8/8)
-  - `00.02` Developer Toolchain (8/8)
-  - `00.03` Learning & Debugging Process (8/8)
-  - `01.01` HTML Document Structure (8/8)
-  - `01.02` HTML Forms & Validation (8/8)
-- Latest release includes eight actual HTML/JavaScript form exercises: labels and fieldsets, native validation, GET submissions, no-script fallback, file picker preview, dialog/popover/details, native events, and inaccessible-form bug hunt.
-- Verification on PR head: 18 repository tests, **104 executable lab tests**, **41 MDX/metadata/fixture validations**, machine-checked progress snapshot, ESLint, TypeScript, Next production build, isolated Chromium smoke and dependency audit **passed**.
-- Vercel production was READY for merged `main` SHA and the live `/learn/01.02.08` route returned HTTP 200 with indexable published metadata and a completion section. Planned `01.03.01` remains noindex until actually authored.
+## Scope verified
+- Planned curriculum (not authored pages): **28 tracks**, **111 modules**, **889 topic IDs** and **303 reference index subjects**.
+- Actually authored: **53 lesson IDs** = 4 interactive sample models plus 50 MDX lesson bodies with one overlapping JSX ID; **50 local lab fixtures** and **4 authored reference drafts**.
+- Six fully authored and released modules:
+  - `00.01` Computing & Internet Mental Models — 8 of 8
+  - `00.02` Developer Toolchain — 8 of 8
+  - `00.03` Learning & Debugging Process — 8 of 8
+  - `01.01` HTML Document Structure — 8 of 8
+  - `01.02` HTML Forms & Validation — 8 of 8
+  - `01.03` Accessibility Foundations — 9 of 9
+- Latest verified PR: **18 repository tests**, **131 local lab tests**, **50 MDX content/metadata/fixture validations**, checkpoint consistency, lint, TypeScript, Next.js build, isolated Chromium smoke and audited dependencies all passed.
+- Live `/learn/01.03.09` returned HTTP 200, included completion controls and was indexable. Preview showed all nine lesson URLs, matching sitemap, with `01.04.01` planned/noindex.
 
-## Technical architecture and boundaries
-Next.js 16 App Router + React 19 + Tailwind 4, trusted repository-controlled MDX, Zustand browser-local self-assessed progress, reusable lesson and reference routes, reading-first navigation and an isolated browser React JSX sandbox. The academy does **not** provide authenticated backend accounts, remote code grading, cross-device progress sync or an implemented Supabase/NestJS service. These technologies are future *teaching topics*, not current academy platform capabilities.
+## Accessibility module details
+New lessons cover keyboard-first navigation, modal focus restoration, semantic landmarks and status, WCAG 2.2 POUR principles, a **tested gamma-corrected sRGB contrast calculator**, named controls and descriptions, original local image alternatives and table, reduced-motion CSS plus pause control, and integrated keyboard audit repair.
 
-Canonical catalog is in `data/curriculum.json`. Actual publication is in `src/content/lessons/<id>.mdx` and `.meta.json`, wired through `src/lib/academy/published.ts` and `src/content/lesson-registry.tsx`. Every local lab lives in `labs/<slug>/` with starter, solution, tests and lab.json. `scripts/browser-smoke.mjs` tests actual Chromium behavior; static Node tests assert fixture contracts. **Never execute untrusted learner HTML, MDX or arbitrary code on the Next.js server.**
+**Important limit:** these are structured learning fixtures with automated Chromium interactions, not a full independent WCAG conformance assessment. Screen-reader behavior varies by platform, and real-device assistive-technology checks have **not** been completed. Do not claim the academy is WCAG certified.
 
-Run `npm run checkpoint:check` to ensure `docs/checkpoint.json` matches the authored inventory; after changing publications run `npm run checkpoint:write`. Keep this checkpoint and `docs/NEXT_TODO.md` synchronized for future AI handoffs.
+## Architecture and guardrails
+Next.js 16 App Router, React 19, Tailwind 4, compile-time trusted MDX, Zustand browser-local self-assessed progress, isolated JSX preview sandbox and local-only HTML practice. There is **no** implemented authenticated academy backend, cross-device saved progress, cloud grading, real form upload or arbitrary learner-code execution on Next.js. Next.js, NestJS, Supabase, Prisma and related technologies are planned *teaching tracks*, not all current platform services.
 
-## Development branch status — 01.03 (not yet production)
-- Nine new authored MDX lessons, with standalone HTML/CSS/JS starter and instructor solution fixtures and real Node contract tests. Topics: keyboard, focus, accessibility-tree semantics, WCAG POUR, contrast calculator, names, image alternatives, reduced motion and keyboard audit capstone.
-- In-branch inventory is **53 authored lesson IDs, 50 MDX files, 50 local lab manifests, six complete modules**. CI must confirm through `npm run checkpoint:check`.
-- Browser smoke was expanded to verify real keyboard behavior, native modal focus return, accessible names, contrast thresholds, original local SVG images, reduced-motion emulation and mobile layout. Actual screen-reader certification remains unperformed.
-- Verified production baseline and SHA above are unchanged until release gates and the merged main deployment pass.
+Source of truth:
+- `data/curriculum.json` — all catalog IDs
+- `data/reference-index.json` — reference subjects
+- `src/content/lessons/<id>.mdx` and `.meta.json` — genuinely authored tutorials
+- `src/content/lesson-registry.tsx` and `src/lib/academy/published.ts` — published route and metadata registration
+- `labs/<slug>/` — local starter, instructor solution, test and lab manifest
+- `scripts/browser-smoke.mjs` — Chromium behavior
+- `docs/checkpoint.json` — `npm run checkpoint:check` verified machine-readable count
 
-## Active security risk
-- The last audit found **zero known runtime dependency vulnerabilities**, but **14 high-severity build/dev toolchain findings** related to Picomatch GHSA-fc5q-39xc-vjpf. This is *not patched*. A narrow documented exception expires **2026-12-02 UTC**; see `docs/DEPENDENCY_SECURITY_REVIEW.md`. Review promptly and fail closed for new findings.
-- Client-side HTML constraints are educational and cannot replace trusted server validation. All new forms are explicitly synthetic/offline. No production file upload endpoints, registration submission, or remote persistence are implemented.
-- Browser smoke covers Chrome behavior, keyboard focus and mobile layout; a full real-device screen reader audit has **not** been completed. Avoid claiming WCAG conformance from structural tests alone.
+Never compile untrusted remote/learner MDX on the server, claim submitted data is persisted without real backend acknowledgment, or label unauthored catalog topics published.
 
-## Current candidate: `01.03` Accessibility (next after release: `01.04` Web APIs & Security)
-The exact **nine** catalog topics:
-1. `01.03.01` Keyboard-first navigation
-2. `01.03.02` Focus management
-3. `01.03.03` Screen reader semantics
-4. `01.03.04` WCAG principles
-5. `01.03.05` Color contrast
-6. `01.03.06` Accessible names and descriptions
-7. `01.03.07` Images and alternative text
-8. `01.03.08` Reduced motion
-9. `01.03.09` Lab keyboard audit
+## Known risk and tasks
+- Development-only Picomatch dependency advisory `GHSA-fc5q-39xc-vjpf`: **14 high findings in full dev graph**, scoped temporary security exception expiring **2026-12-02 UTC**. **Not resolved yet.** Last runtime-only audit found **zero known findings**. See `docs/DEPENDENCY_SECURITY_REVIEW.md`.
+- Publication covers 53 of 889 planned topics, and four of 303 reference subjects are drafted; do not confuse index coverage with authored content.
+- No real-device screen reader audit, independent accessibility certificate, authenticated sync, or remote code execution grading.
+- Historical README v1.1 descriptions still need consolidation without crowding the UI.
 
-All nine now have genuine MDX, meaningful starter/solution fixtures, executable tests, official source links, bug hunts, quizzes and rubrics **on the feature branch only**. Run the full CI and verify production before marking released. Use actual keyboard and accessibility-tree browser checks; do not invent formal assistive-technology certification.
+## Next milestone `01.04` — Web APIs & Security
+Eight canonical topics, in exact order: `01.04.01` DOM and rendering tree; `01.04.02` Fetch API and JSON; `01.04.03` URL and URLSearchParams; `01.04.04` Web Storage and cookies; `01.04.05` Permissions and clipboard; `01.04.06` Same-origin policy and CORS; `01.04.07` CSP and browser isolation; `01.04.08` Lab DevTools request investigation.
 
-## Successor AI procedure
-1. First read `AGENTS.md`, `docs/NEXT_TODO.md`, `docs/checkpoint.json` and this file. Verify current `main`, open PRs, CI and Vercel SHA; this checkpoint is an anchor, not proof that nothing changed afterward.
-2. Branch from the current `main`. Author one complete module at a time, preserving the calm reading-first interface and accurate planned/published distinctions.
-3. Register every new authored MDX and metadata, keep planned routes noindex and sitemap restricted to actually published lessons.
-4. Update `docs/PROJECT_CHECKPOINT.md`, `docs/NEXT_TODO.md` and run `npm run checkpoint:write`. Commit the generated snapshot.
-5. Require npm ci, lint, typecheck, repository tests, curriculum, content, checkpoint, all local labs, build, Chromium, audit and exact-head Vercel preview before merge. Check READY production at the merged SHA afterward. Never fabricate results or credentials.
+Prefer deterministic local fixtures that **do not** fetch real user data or ask learners to bypass origin/permission security. Teach browser security distinctions accurately. Read `docs/NEXT_TODO.md` for detailed criteria.
+
+## Instructions to the next AI
+1. Read `AGENTS.md`, this checkpoint, `docs/NEXT_TODO.md`, `docs/checkpoint.json`, `docs/DEPENDENCY_SECURITY_REVIEW.md`.
+2. Recheck current GitHub `main`, open PRs, CI and Vercel READY SHA; this checkpoint is a historical anchor, not proof nothing changed afterward.
+3. Branch from current main; author a **complete module** with MDX, strict metadata, 3+ guided steps, quiz, bug hunt, W3C/MDN sources and a meaningful local starter/solution/tests for each topic.
+4. Register each new authored MDX and metadata in both registries, keep unauthored routes noindex and sitemap limited to truly published material. Maintain the reading-first non-overwhelming UI.
+5. Update this checkpoint, `docs/NEXT_TODO.md` and run `npm run checkpoint:write`; commit the machine-readable snapshot.
+6. Require dependency audit, lint, typecheck, repository/content/checkpoint/fixture tests, production build, Chromium and Vercel preview on exact head. Merge only on green. Confirm production READY on merged SHA and update the checkpoint. Disclose any unperformed device/manual checks.
