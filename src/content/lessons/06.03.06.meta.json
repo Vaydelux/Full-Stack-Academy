@@ -1,0 +1,40 @@
+{
+  "id": "06.03.06",
+  "title": "DOM refs and focus",
+  "description": "Investigate dom refs and focus in React 19 with a defective starter, repaired instructor module, executable offline contract and framework example.",
+  "trackId": "06",
+  "moduleId": "06.03",
+  "level": "Beginner",
+  "estimatedMinutes": 60,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "react": "19",
+    "typescript": "5",
+    "node": "24"
+  },
+  "prerequisites": [
+    "06.03.05"
+  ],
+  "objectives": [
+    "Diagnose the dom refs and focus failure through a real example",
+    "Repair the learner fixture with a precise invariant and explicit edge cases",
+    "Verify the result offline and distinguish those checks from framework end-to-end tests"
+  ],
+  "labId": "lab.foundation.react-dom-focus",
+  "sources": [
+    {
+      "label": "Official framework documentation",
+      "url": "https://react.dev/reference/react/useRef"
+    },
+    {
+      "label": "Supporting official API guidance",
+      "url": "https://react.dev/learn/manipulating-the-dom-with-refs"
+    }
+  ],
+  "rubric": [
+    "I can reproduce the specific dom refs and focus failure in the learner starter",
+    "I can explain one positive and one negative case without a hosted service",
+    "I can identify which behavior still requires a browser or Next.js request integration test"
+  ]
+}

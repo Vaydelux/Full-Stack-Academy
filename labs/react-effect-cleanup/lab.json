@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.react-effect-cleanup",
+  "lessonId": "06.03.03",
+  "title": "Effect cleanup in practice",
+  "runtime": "react19-tsx-ssr-local",
+  "status": "authored",
+  "starter": "labs/react-effect-cleanup/starter/solution.ts",
+  "solution": "labs/react-effect-cleanup/solution/solution.ts",
+  "tests": "labs/react-effect-cleanup/solution.test.mjs",
+  "verify": [
+    "npm run lab:react-effect-cleanup"
+  ],
+  "expected": "The correct local contract passes independent assertions; end-to-end framework behavior is a separate QA gate.",
+  "security": "Uses synthetic fixture data, no secrets, uploaded code execution, remote endpoints, publishing, Vercel or hosted grading."
+}

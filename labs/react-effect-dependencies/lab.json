@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.react-effect-dependencies",
+  "lessonId": "06.03.04",
+  "title": "Dependency management",
+  "runtime": "react19-tsx-ssr-local",
+  "status": "authored",
+  "starter": "labs/react-effect-dependencies/starter/solution.ts",
+  "solution": "labs/react-effect-dependencies/solution/solution.ts",
+  "tests": "labs/react-effect-dependencies/solution.test.mjs",
+  "verify": [
+    "npm run lab:react-effect-dependencies"
+  ],
+  "expected": "The correct local contract passes independent assertions; end-to-end framework behavior is a separate QA gate.",
+  "security": "Uses synthetic fixture data, no secrets, uploaded code execution, remote endpoints, publishing, Vercel or hosted grading."
+}

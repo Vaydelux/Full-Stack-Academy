@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.react-timer-shortcut",
+  "lessonId": "06.03.08",
+  "title": "Lab reliable timer and keyboard shortcut",
+  "runtime": "react19-tsx-ssr-local",
+  "status": "authored",
+  "starter": "labs/react-timer-shortcut/starter/solution.ts",
+  "solution": "labs/react-timer-shortcut/solution/solution.ts",
+  "tests": "labs/react-timer-shortcut/solution.test.mjs",
+  "verify": [
+    "npm run lab:react-timer-shortcut"
+  ],
+  "expected": "The correct local contract passes independent assertions; end-to-end framework behavior is a separate QA gate.",
+  "security": "Uses synthetic fixture data, no secrets, uploaded code execution, remote endpoints, publishing, Vercel or hosted grading."
+}

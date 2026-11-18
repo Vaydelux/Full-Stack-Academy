@@ -1,0 +1,1 @@
+export type Timer={running:boolean;seconds:number};export function solve(state:Timer,action:'start'|'stop'|'tick'):Timer{if(action==='tick')return state.running?{...state,seconds:state.seconds+1}:state;return {...state,running:action==='start'};}

@@ -1,0 +1,98 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Diagnose the useref mutable values failure through a real example","Repair the learner fixture with a precise invariant and explicit edge cases","Verify the result offline and distinguish those checks from framework end-to-end tests"]} />
+
+## The problem we're solving
+
+An implementation assumes changing a ref value triggers a render, so the displayed count never updates. This local fixture isolates a concrete failure before we introduce any external state or deployment.
+
+## Build the mental model
+
+useRef persists a mutable container between renders but changes to current do not schedule rendering. Store timer IDs, external handles or previous values in refs; use state for values that must update the screen.
+
+**Predict before running:** The repaired implementation respects its documented contract.
+
+## Prerequisites and preflight
+
+Continue from [the preceding lesson](/learn/06.03.04). Inspect `labs/react-mutable-refs/starter/solution.ts`, the instructor solution and `labs/react-mutable-refs/solution.test.mjs`. Run `npm run lab:react-mutable-refs` with repository-installed Node.js 24, TypeScript and tsx. The React component is also rendered to static initial HTML by the test; event handlers and effects need browser tests.
+
+<LessonStep number={1} title="Reproduce the defective starter" file="labs/react-mutable-refs/starter/solution.ts" expected="The intentionally flawed starter fails a real assertion.">
+
+Observe the following implementation, identify the overlooked case, and predict which assertion reveals it.
+
+```ts
+
+export function solve(refCount:number):{renders:number;value:number}{return {renders:1,value:refCount+1};}
+
+```
+
+**Why it fails:** useRef persists a mutable container between renders but changes to current do not schedule rendering. Store timer IDs, external handles or previous values in refs; use state for values that must update the screen.
+
+**Proof:** Run `ACADEMY_LAB_TARGET=starter npm run lab:react-mutable-refs` in Bash, or set the variable for the command in PowerShell. Do not modify the instructor fixture.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the implementation contract" file="labs/react-mutable-refs/starter/solution.ts" expected={"Positive and negative cases behave predictably."}>
+
+Make the smallest semantic correction; do not weaken the assertions or convert invalid data into a fake success.
+
+```ts
+
+export function solve(refCount:number):{renders:number;value:number}{return {renders:0,value:refCount+1};}
+
+```
+
+**Why it works:** useRef persists a mutable container between renders but changes to current do not schedule rendering. Store timer IDs, external handles or previous values in refs; use state for values that must update the screen.
+
+**Proof:** Run the same local assertions and compare the before/after outputs.
+
+</LessonStep>
+
+<LessonStep number={3} title="Inspect the React component" file="labs/react-mutable-refs/solution/Widget.tsx" expected="The framework-oriented sample illustrates the same invariant.">
+
+This is an actual React 19 component, which the lab renders to initial HTML. Interactions after hydration are not certified by an SSR check.
+
+```tsx
+
+'use client';
+import React,{useRef,useState} from 'react';
+import {solve} from './solution';
+export function Workshop(){const ref=useRef(0);const [visible,setVisible]=useState(0);return <section aria-label="Ref counter"><button type="button" onClick={()=>{ref.current=solve(ref.current).value;setVisible(ref.current);}}>Commit ref to screen</button><output>{visible}</output></section>;}
+
+```
+
+**Predict before running:** The corrected sample handles the reviewed case.
+
+**Proof:** Run `npm run lab:react-mutable-refs`. To certify real navigation or mutation behavior, also exercise an isolated app in a browser or test server.
+
+</LessonStep>
+
+## Explore and verify
+
+Change a valid input into an invalid one, then inspect which layer should reject it. Check accessibility, cleanup and data ownership as appropriate.
+
+<Misconception claim={"Passing a typecheck or SSR initial render proves every interactive path."} correction={"useRef persists a mutable container between renders but changes to current do not schedule rendering. Store timer IDs, external handles or previous values in refs; use state for values that must update the screen."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+Identify the smallest counterexample, repair the root cause and verify the same input now behaves correctly. Describe the missing browser or server integration check.
+
+<KnowledgeCheck question={"Does updating ref.current cause a React render?"} choices={["Always","No; only state/props/context changes schedule needed rendering","Only on tablets","Only when the ref is null"]} correctIndex={1} explanation={"useRef persists a mutable container between renders but changes to current do not schedule rendering. Store timer IDs, external handles or previous values in refs; use state for values that must update the screen."} misconception="Offline tests have explicit boundaries." lessonId="06.03.05" />
+
+## Guided local lab
+
+Edit `labs/react-mutable-refs/starter/solution.ts`. The test imports the selected target and confirms actual return values. It also renders the corresponding component with React DOM Server. The academy does not execute arbitrary learner code on the server.
+
+<LabGate lessonId="06.03.05" labId="lab.foundation.react-mutable-refs" commands={["npm ci","npm run lab:react-mutable-refs"]} interactive={false} />
+
+## Reflect
+
+Which invariant did the original implementation violate? Which test proves the fix, and what would still require a full browser or Next.js integration environment?
+
+## Official references
+
+- [Official concept](https://react.dev/reference/react/useRef)
+
+- [Official supporting reference](https://react.dev/learn/referencing-values-with-refs)

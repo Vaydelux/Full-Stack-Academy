@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.react-effect-sync",
+  "lessonId": "06.03.02",
+  "title": "useEffect external synchronization",
+  "runtime": "react19-tsx-ssr-local",
+  "status": "authored",
+  "starter": "labs/react-effect-sync/starter/solution.ts",
+  "solution": "labs/react-effect-sync/solution/solution.ts",
+  "tests": "labs/react-effect-sync/solution.test.mjs",
+  "verify": [
+    "npm run lab:react-effect-sync"
+  ],
+  "expected": "The correct local contract passes independent assertions; end-to-end framework behavior is a separate QA gate.",
+  "security": "Uses synthetic fixture data, no secrets, uploaded code execution, remote endpoints, publishing, Vercel or hosted grading."
+}

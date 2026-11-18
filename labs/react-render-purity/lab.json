@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.react-render-purity",
+  "lessonId": "06.03.01",
+  "title": "Render purity in practice",
+  "runtime": "react19-tsx-ssr-local",
+  "status": "authored",
+  "starter": "labs/react-render-purity/starter/solution.ts",
+  "solution": "labs/react-render-purity/solution/solution.ts",
+  "tests": "labs/react-render-purity/solution.test.mjs",
+  "verify": [
+    "npm run lab:react-render-purity"
+  ],
+  "expected": "The correct local contract passes independent assertions; end-to-end framework behavior is a separate QA gate.",
+  "security": "Uses synthetic fixture data, no secrets, uploaded code execution, remote endpoints, publishing, Vercel or hosted grading."
+}

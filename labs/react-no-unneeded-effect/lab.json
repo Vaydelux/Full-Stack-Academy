@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.react-no-unneeded-effect",
+  "lessonId": "06.03.07",
+  "title": "Avoiding unnecessary Effects",
+  "runtime": "react19-tsx-ssr-local",
+  "status": "authored",
+  "starter": "labs/react-no-unneeded-effect/starter/solution.ts",
+  "solution": "labs/react-no-unneeded-effect/solution/solution.ts",
+  "tests": "labs/react-no-unneeded-effect/solution.test.mjs",
+  "verify": [
+    "npm run lab:react-no-unneeded-effect"
+  ],
+  "expected": "The correct local contract passes independent assertions; end-to-end framework behavior is a separate QA gate.",
+  "security": "Uses synthetic fixture data, no secrets, uploaded code execution, remote endpoints, publishing, Vercel or hosted grading."
+}
