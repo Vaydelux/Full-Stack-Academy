@@ -1,0 +1,79 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Write exact reproduction steps and identify the failing environment","Separate observed behavior from guesses and hypotheses","Build an actionable issue containing expected and actual results","Remove obvious secrets before sharing diagnostic evidence"]} />
+
+## The problem we're solving
+
+A teammate reports 'the site is broken' with no URL, environment, steps or status code. The next developer cannot reproduce it and may waste time rewriting unrelated components.
+
+## Build the mental model
+
+An actionable issue includes a title, environment, deterministic reproduction steps, expected behavior, actual behavior, and sanitized evidence. State uncertainty rather than inventing observations. A simple redactor cannot guarantee privacy: manually review every log and screenshot before sharing. Never include real tokens, private account data, or an unredacted production HAR.
+
+**Predict before running:** A two-step report that reproduces GET /api/projects returning 404 is more useful than 'API broken' because it provides a falsifiable claim.
+
+## Prerequisites
+
+Complete [the previous lesson](/learn/00.03.04). Use Node.js 24, the checked-in starter, and synthetic data. Do not upload sensitive logs to the course or a public issue tracker.
+
+<LessonStep number={1} title={"Record a controlled reproduction"} file="labs/technical-questions/starter/exercise.mjs" expected={"Use synthetic environment information and only steps that another developer can repeat."}>
+
+const issue={title:'Projects route fails',environment:'Node 24, local server',steps:['Start server','GET /api/projects'],expected:'HTTP 200',actual:'HTTP 404',evidence:'request-id demo-1'};
+
+```js
+undefined
+```
+
+</LessonStep>
+
+<LessonStep number={2} title={"Validate complete evidence"} file="labs/technical-questions/starter/exercise.mjs" expected={"Reject missing required fields or an empty steps array instead of generating a misleading report."}>
+
+for(const key of ['title','environment','expected','actual','evidence']) { if(typeof issue[key]!=='string'||!issue[key].trim())throw new Error('Missing '+key); }
+if(!Array.isArray(issue.steps)||!issue.steps.length)throw new Error('Missing steps');
+
+```js
+undefined
+```
+
+</LessonStep>
+
+<LessonStep number={3} title={"Sanitize and format the issue"} file="labs/technical-questions/starter/exercise.mjs" expected={"The report contains numbered steps, expected/actual headings and no obvious bearer token."}>
+
+export function redact(text){return String(text).replace(/Bearer\s+[^\s]+/gi,'Bearer [REDACTED]').replace(/\b(token|password|secret)\s*[:=]\s*[^\s,;]+/gi,'$1=[REDACTED]');}
+// Apply redact() to each supplied field before formatting.
+
+```js
+undefined
+```
+
+</LessonStep>
+
+## Bug Hunt: isolate and repair
+
+A developer copies their full Authorization header into a report. Remove it, rotate any exposed real credential, and include only a synthetic request ID and the status instead.
+
+<KnowledgeCheck question={"Which makes an issue actionable?"} choices={["An unredacted access token","Exact steps and expected/actual results","Only 'broken'","A guess about the framework"]} correctIndex={1} explanation={"Reproducible evidence can be confirmed by another developer."} misconception={"A vague symptom is not enough to isolate the root cause."} lessonId="00.03.05" />
+
+## Guided lab
+
+Open `labs/technical-questions/starter/exercise.mjs`; the instructor reference is in `labs/technical-questions/solution/exercise.mjs`. The normal test command validates the solution. Test your edited starter from the repository root using PowerShell:
+
+```powershell
+$env:ACADEMY_LAB_TARGET = 'starter'
+npm run lab:technical-questions
+Remove-Item Env:ACADEMY_LAB_TARGET
+```
+
+In Bash: `ACADEMY_LAB_TARGET=starter npm run lab:technical-questions`. The incomplete starter should fail until you implement it. Manual documentation/review steps are self-assessed, not automatically certified.
+
+<LabGate lessonId="00.03.05" labId="lab.foundation.technical-questions" commands={["npm ci","npm run lab:technical-questions"]} interactive={false} />
+
+## Reflect
+
+Write a short handoff: symptoms, confirmed evidence, hypothesis, correction, tests run and remaining unknowns. Never assert a result you did not reproduce.
+
+## Official references
+
+- [GitHub creating issues](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/creating-an-issue)
+- [Chrome DevTools Network reference](https://developer.chrome.com/docs/devtools/network/reference/)

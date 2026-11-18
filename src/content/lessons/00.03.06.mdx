@@ -1,0 +1,78 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Find the installed version from the lockfile rather than guessing","Compare major/minor/patch release components","Identify migrations and deprecations from official documentation","Write regression tests before applying dependency upgrades"]} />
+
+## The problem we're solving
+
+A copied tutorial targets a different major version and the build breaks. Updating random files won't help until you confirm which API version the project actually uses.
+
+## Build the mental model
+
+The manifest records an allowed version range; the lockfile records a resolved dependency version. Semantic Versioning gives a useful major/minor/patch convention, but real packages may not follow it perfectly. A major upgrade warrants migration review; even patch changes need tests. This lab deliberately supports stable X.Y.Z releases only, not ranges, prereleases or build metadata. Never use 'npm audit fix --force' without examining its proposed breaking changes.
+
+**Predict before running:** A change from 1.9.7 to 2.0.0 should trigger migration review, even if a package manager can install it.
+
+## Prerequisites
+
+Complete [the previous lesson](/learn/00.03.05). Use Node.js 24, the checked-in starter, and synthetic data. Do not upload sensitive logs to the course or a public issue tracker.
+
+<LessonStep number={1} title={"Inspect actual dependency versions"} file="labs/changelog-reading/starter/exercise.mjs" expected={"Compare the package manifest's range to the version in the lockfile."}>
+
+node -p "require('./package.json').dependencies.next"
+// Then inspect package-lock.json: packages['node_modules/next'].version
+
+```js
+undefined
+```
+
+</LessonStep>
+
+<LessonStep number={2} title={"Parse only stable release identifiers"} file="labs/changelog-reading/starter/exercise.mjs" expected={"Invalid ranges, prerelease versions and unsafe numeric components are rejected."}>
+
+export function parseVersion(version){const m=/^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/.exec(version);if(!m)throw new Error('Stable X.Y.Z required');const parts=m.slice(1).map(Number);if(parts.some(v=>!Number.isSafeInteger(v)))throw new Error('Unsafe version');return parts;}
+
+```js
+undefined
+```
+
+</LessonStep>
+
+<LessonStep number={3} title={"Classify upgrade risk without claiming compatibility"} file="labs/changelog-reading/starter/exercise.mjs" expected={"A major, minor or patch change is classified; downgrades are separate."}>
+
+export function classifyUpgrade(from,to){const a=parseVersion(from),b=parseVersion(to);for(let i=0;i<3;i++)if(a[i]!==b[i])return a[i]>b[i]?'downgrade':['major-review','minor-review','patch-review'][i];return 'same-version';}
+
+```js
+undefined
+```
+
+</LessonStep>
+
+## Bug Hunt: isolate and repair
+
+A developer force-downgrades eslint-config-next to resolve an advisory while leaving Next.js 16 intact. Compare supported versions, review the security alert, and run lint, TypeScript, tests and build.
+
+<KnowledgeCheck question={"When should you read migration notes?"} choices={["Only when the UI is broken","Before a major version upgrade","Never for dependencies","Only after deleting the lockfile"]} correctIndex={1} explanation={"Migration notes help identify incompatible API changes."} misconception={"Version numbers alone do not prove that an upgrade will work."} lessonId="00.03.06" />
+
+## Guided lab
+
+Open `labs/changelog-reading/starter/exercise.mjs`; the instructor reference is in `labs/changelog-reading/solution/exercise.mjs`. The normal test command validates the solution. Test your edited starter from the repository root using PowerShell:
+
+```powershell
+$env:ACADEMY_LAB_TARGET = 'starter'
+npm run lab:changelog-reading
+Remove-Item Env:ACADEMY_LAB_TARGET
+```
+
+In Bash: `ACADEMY_LAB_TARGET=starter npm run lab:changelog-reading`. The incomplete starter should fail until you implement it. Manual documentation/review steps are self-assessed, not automatically certified.
+
+<LabGate lessonId="00.03.06" labId="lab.foundation.changelog-reading" commands={["npm ci","npm run lab:changelog-reading"]} interactive={false} />
+
+## Reflect
+
+Write a short handoff: symptoms, confirmed evidence, hypothesis, correction, tests run and remaining unknowns. Never assert a result you did not reproduce.
+
+## Official references
+
+- [Semantic Versioning specification](https://semver.org/)
+- [npm package lock reference](https://docs.npmjs.com/cli/v11/configuring-npm/package-lock-json)

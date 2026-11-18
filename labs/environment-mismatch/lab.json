@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.environment-mismatch",
+  "lessonId": "00.03.08",
+  "title": "Bug Hunt environment mismatch",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/environment-mismatch/starter/exercise.mjs",
+  "solution": "labs/environment-mismatch/solution/exercise.mjs",
+  "tests": "labs/environment-mismatch/solution.test.mjs",
+  "verify": [
+    "npm run lab:environment-mismatch"
+  ],
+  "expected": "I passed environment mismatch and secret-redaction regression tests.",
+  "security": "Local deterministic fixtures. No production secrets or remote learner code execution."
+}

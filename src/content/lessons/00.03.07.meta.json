@@ -1,0 +1,39 @@
+{
+  "id": "00.03.07",
+  "title": "Experiment logs and architecture notes",
+  "description": "Document hypotheses, measured evidence and architecture decisions with reviewable ADR status, tradeoffs and rollback plans.",
+  "trackId": "00",
+  "moduleId": "00.03",
+  "level": "Beginner",
+  "estimatedMinutes": 45,
+  "status": "authored",
+  "reviewedAt": "2026-11-18",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "00.03.06"
+  ],
+  "objectives": [
+    "Record a falsifiable hypothesis with controlled conditions",
+    "Separate observations from inferences and generalizations",
+    "Write a consistent Architecture Decision Record (ADR)",
+    "Document tradeoffs and a concrete rollback condition"
+  ],
+  "labId": "lab.foundation.architecture-notes",
+  "sources": [
+    {
+      "label": "Architecture Decision Records reference",
+      "url": "https://adr.github.io/"
+    },
+    {
+      "label": "GitHub issues and project decisions",
+      "url": "https://docs.github.com/en/issues/tracking-your-work-with-issues/about-issues"
+    }
+  ],
+  "rubric": [
+    "I recorded a falsifiable experiment, controls and limitations.",
+    "I created an ADR with explicit status and rollback instructions.",
+    "I passed decision format and missing-field regression tests."
+  ]
+}
