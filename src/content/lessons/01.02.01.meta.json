@@ -1,0 +1,39 @@
+{
+  "id": "01.02.01",
+  "title": "Labels controls and fieldsets",
+  "description": "Create accessible text controls, help text and grouped radio inputs; verify every programmatic label and native form control relationship.",
+  "trackId": "01",
+  "moduleId": "01.02",
+  "level": "Beginner",
+  "estimatedMinutes": 45,
+  "status": "authored",
+  "reviewedAt": "2026-11-18",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "01.01.08"
+  ],
+  "objectives": [
+    "Associate every form control with visible accessible labels",
+    "Group related radio choices in a fieldset with a legend",
+    "Connect optional instructions through aria-describedby",
+    "Distinguish an input id from its submitted name"
+  ],
+  "labId": "lab.foundation.forms-labels",
+  "sources": [
+    {
+      "label": "MDN label element",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/label"
+    },
+    {
+      "label": "WAI labeling form controls",
+      "url": "https://www.w3.org/WAI/tutorials/forms/labels/"
+    }
+  ],
+  "rubric": [
+    "I implemented persistent labels for every field.",
+    "I created a fieldset and legend with correctly grouped exclusive choices.",
+    "I checked accessible names, descriptions and local lab assertions."
+  ]
+}

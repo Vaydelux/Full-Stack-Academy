@@ -1,0 +1,39 @@
+{
+  "id": "01.02.02",
+  "title": "Input types and validation",
+  "description": "Use email, number and text constraints with the browser's built-in validation model; distinguish helpful client feedback from authoritative server validation.",
+  "trackId": "01",
+  "moduleId": "01.02",
+  "level": "Beginner",
+  "estimatedMinutes": 50,
+  "status": "authored",
+  "reviewedAt": "2026-11-18",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "01.02.01"
+  ],
+  "objectives": [
+    "Select appropriate native input types and constraints",
+    "Explain how checkValidity and reportValidity differ",
+    "Observe invalid form behavior without sending a request",
+    "Describe why backend validation must repeat all security-critical checks"
+  ],
+  "labId": "lab.foundation.forms-constraints",
+  "sources": [
+    {
+      "label": "MDN constraint validation guide",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Guides/Constraint_validation"
+    },
+    {
+      "label": "MDN reportValidity",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormElement/reportValidity"
+    }
+  ],
+  "rubric": [
+    "I added appropriate types and browser constraints to each input.",
+    "I tested at least one invalid and one valid case using the browser's validity API.",
+    "I explained why backend validation remains mandatory."
+  ]
+}

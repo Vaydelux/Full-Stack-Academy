@@ -1,0 +1,96 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Provide a usable no-JavaScript form submission destination","Enhance with a progressive status message, not fabricated persistence","Avoid accidental suppression of native constraint validation","Check the enabled and disabled JavaScript paths in a real browser"]} />
+
+## The problem we're solving
+
+A form requires JavaScript to render its submit button. When scripts fail to load, the user has no working path forward. The HTML should establish a baseline action before optional enhancements.
+
+## Build the mental model
+
+Progressive enhancement starts with semantic HTML and working browser defaults. The form's action and method express baseline behavior; JavaScript may intercept the submit for a local preview and render accessible feedback. If scripting is blocked, the browser can still navigate to a usable local confirmation page. This exercise is a demonstration only: the bundled static receipt cannot store messages or verify delivery. A real service should implement server-side validation, CSRF controls where applicable, rate limits and a real response. Only prevent default after establishing a working enhancement; avoid telling the learner that a preview equals a saved operation.
+
+**Predict before running:** With JavaScript disabled, a form with an action, method, named controls and submit button should still perform its baseline navigation.
+
+## Prerequisites
+
+Complete [the previous lesson](/learn/01.02.03). Work with Node.js 24 and a local browser on the checked-in form fixtures. These examples deliberately use only synthetic data and cannot create accounts or transmit registrations.
+
+<LessonStep number={1} title={"Implement the baseline first"} file="labs/forms-enhancement/starter/index.html" expected={"With scripts disabled, valid submission reaches a local confirmation page."}>
+
+The HTML form has an explicit local action and named required field.
+
+```html
+<form id="question-form" action="receipt.html" method="get">
+  <label for="question">Question</label>
+  <textarea id="question" name="question" required></textarea>
+  <button type="submit">Preview question</button>
+</form>
+```
+
+</LessonStep>
+
+<LessonStep number={2} title={"Include a meaningful fallback receipt"} file="labs/forms-enhancement/starter/index.html" expected={"A learner receives a usable destination even if JavaScript is disabled."}>
+
+The receipt tells the truth: a local demonstration, not a delivered message.
+
+```html
+<main>
+  <h1>Local question preview</h1>
+  <p>This static page cannot receive or store your submission.</p>
+  <a href="index.html">Return to the question</a>
+</main>
+```
+
+</LessonStep>
+
+<LessonStep number={3} title={"Optionally enhance after the form has been built"} file="labs/forms-enhancement/starter/index.html" expected={"With scripts enabled, the page stays in place and displays an accurate, accessible local status."}>
+
+Attach submit handling after the HTML exists, then set a visible live-region status.
+
+```js
+const form=document.querySelector('#question-form');
+form.addEventListener('submit',event=>{
+  event.preventDefault();
+  const question=new FormData(form).get('question');
+  document.querySelector('#status').textContent='Local preview ready ('+String(question).length+' characters). Nothing sent.';
+});
+```
+
+</LessonStep>
+
+## Explore it yourself
+
+Open `labs/forms-enhancement/starter/index.html` in a browser and inspect its accessible labels, form validity and navigation from DevTools. Try keyboard-only interaction and record which browser behavior occurs before JavaScript executes. Compare results against `labs/forms-enhancement/solution/index.html`. A browser may display localized error strings; test the constraint state instead of comparing exact wording.
+
+<Misconception claim={"Progressive enhancement means replacing native form submission entirely with JavaScript."} correction={"Start with a functional native path, then add enhancements that do not falsely claim a request was processed."} />
+
+## Bug Hunt: identify the root cause
+
+An engineer sets `action=''` and removes the submit button because JavaScript always handles it in local testing. With scripts blocked, the user cannot complete the action. Restore a meaningful fallback and test JavaScript-disabled Chromium navigation.
+
+<KnowledgeCheck question={"What should happen when enhancement JavaScript is disabled?"} choices={["The form becomes unusable","The native form follows its configured action and method","The browser invents a server response","Required constraints stop working forever"]} correctIndex={1} explanation={"A native HTML form can submit without JavaScript when a real destination is configured."} misconception={"The static receipt is a demo endpoint, not a production service."} lessonId="01.02.04" />
+
+## Guided local lab
+
+Edit `labs/forms-enhancement/starter/index.html`. The instructor solution is in `labs/forms-enhancement/solution/index.html`. Run **your starter's** tests with PowerShell:
+
+```powershell
+$env:ACADEMY_LAB_TARGET = 'starter'
+npm run lab:forms-enhancement
+Remove-Item Env:ACADEMY_LAB_TARGET
+```
+
+For Bash: `ACADEMY_LAB_TARGET=starter npm run lab:forms-enhancement`. The incomplete starter is expected to fail first. Default commands test the instructor solution; Chromium smoke tests the real browser behavior separately. Completion is self-assessed, not a remote grading or persisted submission.
+
+<LabGate lessonId="01.02.04" labId="lab.foundation.forms-enhancement" commands={["npm ci","npm run lab:forms-enhancement"]} interactive={false} />
+
+## Reflect
+
+Write down which rules are browser defaults, which are accessibility conventions, and what a real backend would still need to validate or process. Share only synthetic form values and non-sensitive test output.
+
+## Official references
+
+- [MDN forms progressive enhancement](https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Forms/Sending_and_retrieving_form_data)
+- [MDN constraint validation](https://developer.mozilla.org/en-US/docs/Web/HTML/Guides/Constraint_validation)

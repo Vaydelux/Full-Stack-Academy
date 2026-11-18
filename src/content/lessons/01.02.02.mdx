@@ -1,0 +1,93 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Select appropriate native input types and constraints","Explain how checkValidity and reportValidity differ","Observe invalid form behavior without sending a request","Describe why backend validation must repeat all security-critical checks"]} />
+
+## The problem we're solving
+
+A form accepts an invalid email and impossible seat count because every field is an unconstrained text box. The team then assumes a JavaScript alert is a reliable security validation layer.
+
+## Build the mental model
+
+Native constraints include `required`, `type=email`, `min`, `max`, `minlength`, and `pattern` where supported. The browser checks applicable constraints before a normal submit event. `checkValidity()` returns a result and can dispatch invalid events; `reportValidity()` also displays built-in validation UI. A submission bypassed with `form.submit()` can skip validation. These APIs improve user experience but cannot validate trust: a server must revalidate and authorize every submitted value. Constraints need clear labels and visible instructions.
+
+**Predict before running:** If a required email field is empty, the form's submit handler should not run during normal interactive validation, even if JavaScript is installed.
+
+## Prerequisites
+
+Complete [the previous lesson](/learn/01.02.01). Work with Node.js 24 and a local browser on the checked-in form fixtures. These examples deliberately use only synthetic data and cannot create accounts or transmit registrations.
+
+<LessonStep number={1} title={"Use meaningful input types"} file="labs/forms-constraints/starter/index.html" expected={"The browser rejects empty email and seat values outside the range."}>
+
+Use email and number inputs for different data, with required constraints.
+
+```html
+<label for="email">Contact email</label>
+<input id="email" name="email" type="email" autocomplete="email" required>
+<label for="seats">Seats</label>
+<input id="seats" name="seats" type="number" min="1" max="4" step="1" required>
+```
+
+</LessonStep>
+
+<LessonStep number={2} title={"Constrain short text and show guidance"} file="labs/forms-constraints/starter/index.html" expected={"Lowercase and two-character values are invalid, and the description explains the rule."}>
+
+Use minlength and a pattern for a code: this example requires exactly three uppercase letters.
+
+```html
+<label for="code">Workshop code</label>
+<p id="code-hint">Exactly three uppercase letters (e.g., WEB).</p>
+<input id="code" name="code" pattern="[A-Z]{3}" minlength="3" maxlength="3" aria-describedby="code-hint" required>
+```
+
+</LessonStep>
+
+<LessonStep number={3} title={"Use the browser validity API without spoofing server acceptance"} file="labs/forms-constraints/starter/index.html" expected={"Invalid values are blocked by the browser; valid values show an explicit local-only status."}>
+
+Use checkValidity for a local preview and prevent form navigation for a valid demo submission.
+
+```js
+const form=document.querySelector('#booking');
+form.addEventListener('submit',event=>{
+  event.preventDefault();
+  document.querySelector('#message').textContent='Valid browser input; not saved.';
+});
+// In DevTools: form.checkValidity() / form.reportValidity()
+```
+
+</LessonStep>
+
+## Explore it yourself
+
+Open `labs/forms-constraints/starter/index.html` in a browser and inspect its accessible labels, form validity and navigation from DevTools. Try keyboard-only interaction and record which browser behavior occurs before JavaScript executes. Compare results against `labs/forms-constraints/solution/index.html`. A browser may display localized error strings; test the constraint state instead of comparing exact wording.
+
+<Misconception claim={"Browser validation is a sufficient defense against malicious form values."} correction={"Client-side constraints are user experience features; a server must validate and authorize independently."} />
+
+## Bug Hunt: identify the root cause
+
+The UI calls `form.submit()` directly in a click listener. This skips normal interactive constraint checks. Use a native submit button, or `requestSubmit()` when programmatic submission is necessary.
+
+<KnowledgeCheck question={"Which API requests browser validation messages?"} choices={["`form.submit()`","`form.reportValidity()`","`window.location.reload()`","`form.reset()`"]} correctIndex={1} explanation={"reportValidity checks constraints and reports user-facing invalid-field guidance."} misconception={"submit may bypass validation and the submit event."} lessonId="01.02.02" />
+
+## Guided local lab
+
+Edit `labs/forms-constraints/starter/index.html`. The instructor solution is in `labs/forms-constraints/solution/index.html`. Run **your starter's** tests with PowerShell:
+
+```powershell
+$env:ACADEMY_LAB_TARGET = 'starter'
+npm run lab:forms-constraints
+Remove-Item Env:ACADEMY_LAB_TARGET
+```
+
+For Bash: `ACADEMY_LAB_TARGET=starter npm run lab:forms-constraints`. The incomplete starter is expected to fail first. Default commands test the instructor solution; Chromium smoke tests the real browser behavior separately. Completion is self-assessed, not a remote grading or persisted submission.
+
+<LabGate lessonId="01.02.02" labId="lab.foundation.forms-constraints" commands={["npm ci","npm run lab:forms-constraints"]} interactive={false} />
+
+## Reflect
+
+Write down which rules are browser defaults, which are accessibility conventions, and what a real backend would still need to validate or process. Share only synthetic form values and non-sensitive test output.
+
+## Official references
+
+- [MDN constraint validation guide](https://developer.mozilla.org/en-US/docs/Web/HTML/Guides/Constraint_validation)
+- [MDN reportValidity](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormElement/reportValidity)

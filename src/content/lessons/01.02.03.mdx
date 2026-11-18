@@ -1,0 +1,89 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Use explicit submit, button and reset types","Explain named form controls and successful submissions","Compare GET query encoding with POST body semantics","Inspect a real safe local GET navigation without a backend"]} />
+
+## The problem we're solving
+
+A 'Show help' button inside a form unexpectedly submits it. A reset button erases filled fields, and a server receives nothing because the controls have IDs but no `name` attributes.
+
+## Build the mental model
+
+Buttons inside forms default to submit unless a type is specified. Choose `type=submit` for submission, `type=button` for local actions and `type=reset` only when intentionally clearing input. Successful form controls submit their `name` and value; disabled fields are omitted. GET encodes form data into the URL and is appropriate for safe search queries, not secrets. POST sends a request body and can change server state; this lesson stays offline. The local example navigates to a bundled static receipt with a query string, demonstrating GET encoding without storing data on a server.
+
+**Predict before running:** What happens when a `<button>` lacks `type` inside a form? It acts as a submit control unless other context changes its association.
+
+## Prerequisites
+
+Complete [the previous lesson](/learn/01.02.02). Work with Node.js 24 and a local browser on the checked-in form fixtures. These examples deliberately use only synthetic data and cannot create accounts or transmit registrations.
+
+<LessonStep number={1} title={"Name controls that participate in submission"} file="labs/forms-submission/starter/index.html" expected={"The query appears as q=... in the resulting navigation URL."}>
+
+Give the keyword field a stable name; a label's for attribute still targets its ID.
+
+```html
+<form action="receipt.html" method="get">
+  <label for="query">Search workshops</label>
+  <input id="query" name="q" required>
+</form>
+```
+
+</LessonStep>
+
+<LessonStep number={2} title={"Make button behavior explicit"} file="labs/forms-submission/starter/index.html" expected={"The help action leaves the input and location unchanged."}>
+
+Use submit for navigation, button for a non-submitting helper and reset only when clearly requested.
+
+```html
+<button type="submit">Search</button>
+<button type="button" id="help">Explain search</button>
+<button type="reset">Clear form</button>
+```
+
+</LessonStep>
+
+<LessonStep number={3} title={"Inspect GET navigation in your browser"} file="labs/forms-submission/starter/index.html" expected={"The browser navigates to receipt.html?q=HTML+forms with no remote request."}>
+
+Use the bundled receipt.html file so no server receives or persists data.
+
+```html
+<!-- In the solution, the GET form targets local receipt.html. -->
+<!-- Search for 'HTML forms' then inspect the URL query parameter. -->
+```
+
+</LessonStep>
+
+## Explore it yourself
+
+Open `labs/forms-submission/starter/index.html` in a browser and inspect its accessible labels, form validity and navigation from DevTools. Try keyboard-only interaction and record which browser behavior occurs before JavaScript executes. Compare results against `labs/forms-submission/solution/index.html`. A browser may display localized error strings; test the constraint state instead of comparing exact wording.
+
+<Misconception claim={"A button inside a form is only a visual control until JavaScript is added."} correction={"Without an explicit type, buttons inside forms are usually submit buttons, including helper controls."} />
+
+## Bug Hunt: identify the root cause
+
+A help button unexpectedly triggers GET navigation because it has no `type`. Change it to `type=button`, test by clicking it, and confirm location remains on the form.
+
+<KnowledgeCheck question={"Which button type avoids submitting a form for a help action?"} choices={["`type=submit`","`type=button`","No type needed","`type=reset`"]} correctIndex={1} explanation={"A type=button control does not submit by default."} misconception={"Reset has separate behavior and can discard entered data."} lessonId="01.02.03" />
+
+## Guided local lab
+
+Edit `labs/forms-submission/starter/index.html`. The instructor solution is in `labs/forms-submission/solution/index.html`. Run **your starter's** tests with PowerShell:
+
+```powershell
+$env:ACADEMY_LAB_TARGET = 'starter'
+npm run lab:forms-submission
+Remove-Item Env:ACADEMY_LAB_TARGET
+```
+
+For Bash: `ACADEMY_LAB_TARGET=starter npm run lab:forms-submission`. The incomplete starter is expected to fail first. Default commands test the instructor solution; Chromium smoke tests the real browser behavior separately. Completion is self-assessed, not a remote grading or persisted submission.
+
+<LabGate lessonId="01.02.03" labId="lab.foundation.forms-submission" commands={["npm ci","npm run lab:forms-submission"]} interactive={false} />
+
+## Reflect
+
+Write down which rules are browser defaults, which are accessibility conventions, and what a real backend would still need to validate or process. Share only synthetic form values and non-sensitive test output.
+
+## Official references
+
+- [MDN button element](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/button)
+- [MDN sending form data](https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Forms/Sending_and_retrieving_form_data)
