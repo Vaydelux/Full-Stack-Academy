@@ -3,15 +3,15 @@
   "updatedAt": "2026-11-18",
   "baseline": {
     "branch": "main",
-    "sha": "2e11d08544a466a0ee1528bba896f219c59a72f7",
-    "vercelDeploymentId": "dpl_ATN8vMstSCqfAUK91JyjXpY8uGtF",
-    "ciRun": 44279720886,
+    "sha": "4067cce97beab756526274263231529b7999b96d",
+    "vercelDeploymentId": "dpl_5m1VbZ11wn8mUC3jaL9eyJyFnzBy",
+    "ciRun": 44286064144,
     "productionUrl": "https://fullstack-academy-ecru.vercel.app/"
   },
   "development": {
-    "branch": "feat/html-forms-validation-20261118",
-    "headNote": "HTML Forms & Validation release candidate: verification and preview pending",
-    "state": "in-review"
+    "branch": null,
+    "lastMergedPr": 8,
+    "state": "production-verified"
   },
   "snapshot": {
     "tracks": 28,
@@ -37,5 +37,5 @@
     "exceptionExpires": "2026-12-02"
   },
   "nextMilestone": "01.03",
-  "status": "release-candidate"
+  "status": "released"
 }
