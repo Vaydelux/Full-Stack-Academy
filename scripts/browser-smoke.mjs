@@ -54,7 +54,7 @@ try {
   await page.goto(base + '/reference/zod-safeparse');
   await wait(page.getByRole('heading',{name:/Zod 4: schema.safeParse/}));
   await page.goto(base + '/learn/01.05.01');
-  assert.match(await page.locator('meta[name="robots"]').getAttribute('content'), /noindex/);
+  assert.match(await page.locator('meta[name="robots"]').first().getAttribute('content'), /noindex/);
   await wait(page.getByText('Planned lesson — not published.', {exact:true}));
   await page.goto(base + '/learn/00.01.01');
   await wait(page.getByRole('heading',{name:'What runs in a browser vs on a server?',exact:true}));
@@ -72,7 +72,7 @@ try {
   for (const id of ["00.01.03","00.01.04","00.01.05","00.01.06","00.01.07","00.01.08","00.02.01","00.02.02","00.02.03","00.02.04","00.02.05","00.02.06","00.02.07","00.02.08","00.03.01","00.03.02","00.03.03","00.03.04","00.03.05","00.03.06","00.03.07","00.03.08","01.01.01","01.01.02","01.01.03","01.01.04","01.01.05","01.01.06","01.01.07","01.01.08","01.02.01","01.02.02","01.02.03","01.02.04","01.02.05","01.02.06","01.02.07","01.02.08","01.03.01","01.03.02","01.03.03","01.03.04","01.03.05","01.03.06","01.03.07","01.03.08","01.03.09"]) {
     const result = await page.goto(base+'/learn/'+id);
     assert.equal(result.status(),200);
-    assert.match(await page.locator('meta[name="robots"]').getAttribute('content'), /^index/);
+    assert.match(await page.locator('meta[name="robots"]').first().getAttribute('content'), /^index/);
     await wait(page.getByRole('region',{name:'Lesson completion'}));
     await wait(page.getByRole('heading',{name:'Build the mental model',exact:true}));
     assert.equal(await page.getByRole('button',{name:'Mark complete'}).isEnabled(), false);
@@ -292,7 +292,7 @@ try {
   await wait(page.getByRole('heading', { name: "The problem we're solving" }));
   assert.equal(await page.locator('meta[name="robots"][content*="noindex"]').count(),0,'Published Web APIs lesson must be indexable');
   await page.goto(base + '/learn/01.05.01');
-  assert.match(await page.locator('meta[name="robots"]').getAttribute('content'), /noindex/, 'Planned next module must remain noindex');
+  assert.match(await page.locator('meta[name="robots"]').first().getAttribute('content'), /noindex/, 'Planned next module must remain noindex');
   const webLab = slug => new URL('../labs/'+slug+'/solution/index.html', import.meta.url).href;
   const webSlugs = ['web-dom','web-fetch-json','web-url','web-storage','web-permissions','web-cors','web-csp','web-devtools'];
   for(const slug of webSlugs){
