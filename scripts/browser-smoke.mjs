@@ -53,7 +53,7 @@ try {
   await wait(page.getByText('Correct — you identified the concept.'));
   await page.goto(base + '/reference/zod-safeparse');
   await wait(page.getByRole('heading',{name:/Zod 4: schema.safeParse/}));
-  await page.goto(base + '/learn/01.04.01');
+  await page.goto(base + '/learn/01.05.01');
   assert.match(await page.locator('meta[name="robots"]').getAttribute('content'), /noindex/);
   await wait(page.getByText('Planned lesson — not published.', {exact:true}));
   await page.goto(base + '/learn/00.01.01');
