@@ -1,0 +1,1 @@
+type Person={name:string};function isPerson(value:unknown):value is Person{return !!value&&typeof value==='object'&&'name' in value&&typeof value.name==='string';}export function solve(value:unknown):string{return isPerson(value)?value.name.toUpperCase():'UNKNOWN';}

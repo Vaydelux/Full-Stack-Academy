@@ -1,0 +1,91 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Explain the compile-time contract for interfaces vs type aliases","Replace an unsound assertion or incorrect implementation with a runtime-safe model","Verify typed code with strict TypeScript and executable local assertions"]} />
+
+## The problem we're solving
+
+A UI formatter forgets a user's optional display name and drops the public role field from the response. The checked-in examples are TypeScript 5 modules targeting the repository's strict compiler settings. Node 24 plus the installed tsx runner execute the instructor tests without a remote environment.
+
+## Build the mental model
+
+Interfaces describe extensible object shapes; type aliases can express unions, intersections and mapped combinations. The language is structurally typed: a value's members matter more than its declared label. Neither interface nor type alias performs runtime checks.
+
+**Predict before running:** The output retains user-facing name and the exact permitted role.
+
+## Prerequisites and preflight
+
+Continue from [the previous canonical lesson](/learn/04.01.03). Inspect `labs/ts-interfaces/starter/solution.ts` and `labs/ts-interfaces/solution.test.mjs`. Use `npm run typecheck` to check TypeScript, and `ACADEMY_LAB_TARGET=starter npm run lab:ts-interfaces` in Bash to run intentionally failing student behavior (PowerShell supports setting that environment variable for a single session).
+
+## Guided implementation
+
+<LessonStep number={1} title="Identify the unsound assumption" file="labs/ts-interfaces/starter/solution.ts" expected="The starter typechecks but produces an incorrect runtime value for one reviewed input.">
+
+```ts
+interface PublicUser{id:string;displayName?:string;role:'reader'|'editor'};type Label={label:string;role:string};export function solve(user:PublicUser):Label{return {label:user.id,role:'reader'};}
+```
+
+**Predict before running:** A UI formatter forgets a user's optional display name and drops the public role field from the response.
+
+**Why it fails:** Interfaces describe extensible object shapes; type aliases can express unions, intersections and mapped combinations. The language is structurally typed: a value's members matter more than its declared label. Neither interface nor type alias performs runtime checks.
+
+**Proof:** Run the starter-target tests; a passing TypeScript compilation alone cannot establish semantic correctness.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the typed repair" file="labs/ts-interfaces/starter/solution.ts" expected={"The output retains user-facing name and the exact permitted role."}>
+
+Preserve exported `solve`; narrow unknown inputs and maintain the intended inferred/annotated return contract.
+
+```ts
+interface PublicUser{id:string;displayName?:string;role:'reader'|'editor'};type Label={label:string;role:PublicUser['role']};export function solve(user:PublicUser):Label{if(!user||typeof user.id!=='string'||(user.role!=='reader'&&user.role!=='editor'))throw new TypeError('Invalid public user');return {label:user.displayName?.trim()||user.id,role:user.role};}
+```
+
+**Predict before running:** The output retains user-facing name and the exact permitted role.
+
+**Why it works:** Interfaces describe extensible object shapes; type aliases can express unions, intersections and mapped combinations. The language is structurally typed: a value's members matter more than its declared label. Neither interface nor type alias performs runtime checks.
+
+**Proof:** Compare the repaired student's output with the instructor solution under the same typed test cases.
+
+</LessonStep>
+
+<LessonStep number={3} title="Exercise runtime and compiler contracts" file="labs/ts-interfaces/solution.test.mjs" expected="The reviewed solution has a passing strict TypeScript compile and actual regression assertions.">
+
+```ts
+assert.deepEqual(solve({id:'x',displayName:'Ada',role:'editor'}),{label:'Ada',role:'editor'});assert.deepEqual(solve({id:'y',role:'reader'}),{label:'y',role:'reader'});assert.throws(()=>solve({id:'z',role:'root'}),TypeError);
+```
+
+**Predict before running:** Correct runtime behavior and a valid static type signature are separate, both required.
+
+**Why it matters:** TypeScript cannot block malformed JSON after the source has been compiled; user input still needs runtime guards.
+
+**Proof:** Run `npm run lab:ts-interfaces` then `npm run typecheck`.
+
+</LessonStep>
+
+## Explore and verify
+
+Try one input that a tempting `as` assertion would accept incorrectly. Compare unknown, null and valid values. Compiler diagnostics prove type assignability within the checked source; tests demonstrate the actual emitted program behavior, not cloud grading.
+
+<Misconception claim="Compiling with TypeScript means all runtime input has been validated." correction={"Interfaces describe extensible object shapes; type aliases can express unions, intersections and mapped combinations. The language is structurally typed: a value's members matter more than its declared label. Neither interface nor type alias performs runtime checks."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+Identify the smallest input where the starter violates its return contract. Fix the language assumption, not the expected tests. Explain whether the failure is caught at compile time or only at runtime.
+
+<KnowledgeCheck question={"Do TypeScript interfaces automatically validate API responses?"} choices={["Yes, after JSON.parse","No, interfaces vanish at runtime","Only in production mode","Only when values are readonly"]} correctIndex={1} explanation={"Interfaces describe extensible object shapes; type aliases can express unions, intersections and mapped combinations. The language is structurally typed: a value's members matter more than its declared label. Neither interface nor type alias performs runtime checks."} misconception="Type annotations are erased and do not validate external data at runtime." lessonId="04.01.04" />
+
+## Guided local lab
+
+Edit `labs/ts-interfaces/starter/solution.ts`; compare with `labs/ts-interfaces/solution/solution.ts` once your independent tests pass. The Node + tsx tests load the target TS module directly. No external deployment or server-scored grades are required.
+
+<LabGate lessonId="04.01.04" labId="lab.foundation.ts-interfaces" commands={["npm ci","npm run lab:ts-interfaces"]} interactive={false} />
+
+## Reflect
+
+Which part of the bug could the compiler have caught? What runtime validator or test does the application still need? Identify a practical boundary in a full-stack API where incorrect trust in TypeScript could create security risk.
+
+## Official references
+
+- [TypeScript official handbook](https://www.typescriptlang.org/docs/handbook/2/objects.html)
+- [Official supporting reference](https://www.typescriptlang.org/docs/handbook/2/everyday-types.html#type-aliases)

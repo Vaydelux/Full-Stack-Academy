@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.ts-overloads",
+  "lessonId": "04.01.07",
+  "title": "Functions and overloads",
+  "runtime": "typescript-5-node-24-tsx",
+  "status": "authored",
+  "starter": "labs/ts-overloads/starter/solution.ts",
+  "solution": "labs/ts-overloads/solution/solution.ts",
+  "tests": "labs/ts-overloads/solution.test.mjs",
+  "verify": [
+    "npm run lab:ts-overloads"
+  ],
+  "expected": "The typed functions and overloads solution passes strict compilation plus real runtime assertions.",
+  "security": "Local TypeScript modules with synthetic data; no external network, API key, browser storage, account, telemetry or uploaded user data."
+}

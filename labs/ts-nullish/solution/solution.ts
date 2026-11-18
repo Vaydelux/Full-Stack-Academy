@@ -1,0 +1,1 @@
+export function solve(value:number|null|undefined,fallback=10):number{if(!Number.isFinite(fallback))throw new TypeError('Finite fallback required');const selected=value??fallback;if(!Number.isFinite(selected))throw new TypeError('Finite selected value required');return selected;}

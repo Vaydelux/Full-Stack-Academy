@@ -1,0 +1,91 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Explain the compile-time contract for lab typed task model","Replace an unsound assertion or incorrect implementation with a runtime-safe model","Verify typed code with strict TypeScript and executable local assertions"]} />
+
+## The problem we're solving
+
+A task importer trusts an unknown payload and converts negative estimates into valid tasks. The checked-in examples are TypeScript 5 modules targeting the repository's strict compiler settings. Node 24 plus the installed tsx runner execute the instructor tests without a remote environment.
+
+## Build the mental model
+
+A typed domain model is a useful compile-time contract, but external payloads must be checked as unknown before building the model. Use a small discriminated status union, explicit ID validation, and typed immutable output so invalid input never becomes a valid Task by assertion.
+
+**Predict before running:** Only complete, validated tasks enter the domain model and the returned record is frozen.
+
+## Prerequisites and preflight
+
+Continue from [the previous canonical lesson](/learn/04.01.07). Inspect `labs/ts-task-model/starter/solution.ts` and `labs/ts-task-model/solution.test.mjs`. Use `npm run typecheck` to check TypeScript, and `ACADEMY_LAB_TARGET=starter npm run lab:ts-task-model` in Bash to run intentionally failing student behavior (PowerShell supports setting that environment variable for a single session).
+
+## Guided implementation
+
+<LessonStep number={1} title="Identify the unsound assumption" file="labs/ts-task-model/starter/solution.ts" expected="The starter typechecks but produces an incorrect runtime value for one reviewed input.">
+
+```ts
+type Task={id:string;title:string;minutes:number;status:'todo'|'done'};export function solve(raw:unknown):Task{return raw as Task;}
+```
+
+**Predict before running:** A task importer trusts an unknown payload and converts negative estimates into valid tasks.
+
+**Why it fails:** A typed domain model is a useful compile-time contract, but external payloads must be checked as unknown before building the model. Use a small discriminated status union, explicit ID validation, and typed immutable output so invalid input never becomes a valid Task by assertion.
+
+**Proof:** Run the starter-target tests; a passing TypeScript compilation alone cannot establish semantic correctness.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the typed repair" file="labs/ts-task-model/starter/solution.ts" expected={"Only complete, validated tasks enter the domain model and the returned record is frozen."}>
+
+Preserve exported `solve`; narrow unknown inputs and maintain the intended inferred/annotated return contract.
+
+```ts
+export type Task=Readonly<{id:string;title:string;minutes:number;status:'todo'|'done'}>;export function solve(raw:unknown):Task|null{if(!raw||typeof raw!=='object'||!('id' in raw)||typeof raw.id!=='string'||!raw.id.trim()||!('title' in raw)||typeof raw.title!=='string'||!raw.title.trim()||!('minutes' in raw)||typeof raw.minutes!=='number'||!Number.isInteger(raw.minutes)||raw.minutes<0||!('status' in raw)||(raw.status!=='todo'&&raw.status!=='done'))return null;return Object.freeze({id:raw.id.trim(),title:raw.title.trim(),minutes:raw.minutes,status:raw.status});}
+```
+
+**Predict before running:** Only complete, validated tasks enter the domain model and the returned record is frozen.
+
+**Why it works:** A typed domain model is a useful compile-time contract, but external payloads must be checked as unknown before building the model. Use a small discriminated status union, explicit ID validation, and typed immutable output so invalid input never becomes a valid Task by assertion.
+
+**Proof:** Compare the repaired student's output with the instructor solution under the same typed test cases.
+
+</LessonStep>
+
+<LessonStep number={3} title="Exercise runtime and compiler contracts" file="labs/ts-task-model/solution.test.mjs" expected="The reviewed solution has a passing strict TypeScript compile and actual regression assertions.">
+
+```ts
+assert.deepEqual(solve({id:'t1',title:'Plan',minutes:30,status:'todo'}),{id:'t1',title:'Plan',minutes:30,status:'todo'});assert.equal(solve({id:'t2',title:'Bad',minutes:-1,status:'todo'}),null);assert.equal(solve({id:'t3',title:'Bad',minutes:3,status:'unknown'}),null);assert.equal(solve(null),null);
+```
+
+**Predict before running:** Correct runtime behavior and a valid static type signature are separate, both required.
+
+**Why it matters:** TypeScript cannot block malformed JSON after the source has been compiled; user input still needs runtime guards.
+
+**Proof:** Run `npm run lab:ts-task-model` then `npm run typecheck`.
+
+</LessonStep>
+
+## Explore and verify
+
+Try one input that a tempting `as` assertion would accept incorrectly. Compare unknown, null and valid values. Compiler diagnostics prove type assignability within the checked source; tests demonstrate the actual emitted program behavior, not cloud grading.
+
+<Misconception claim="Compiling with TypeScript means all runtime input has been validated." correction={"A typed domain model is a useful compile-time contract, but external payloads must be checked as unknown before building the model. Use a small discriminated status union, explicit ID validation, and typed immutable output so invalid input never becomes a valid Task by assertion."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+Identify the smallest input where the starter violates its return contract. Fix the language assumption, not the expected tests. Explain whether the failure is caught at compile time or only at runtime.
+
+<KnowledgeCheck question={"Why must a typed task model parse unknown input?"} choices={["Interfaces validate JSON at runtime","Unknown external data has not satisfied a runtime schema","TypeScript makes network requests","A readonly type encrypts fields"]} correctIndex={1} explanation={"A typed domain model is a useful compile-time contract, but external payloads must be checked as unknown before building the model. Use a small discriminated status union, explicit ID validation, and typed immutable output so invalid input never becomes a valid Task by assertion."} misconception="Type annotations are erased and do not validate external data at runtime." lessonId="04.01.08" />
+
+## Guided local lab
+
+Edit `labs/ts-task-model/starter/solution.ts`; compare with `labs/ts-task-model/solution/solution.ts` once your independent tests pass. The Node + tsx tests load the target TS module directly. No external deployment or server-scored grades are required.
+
+<LabGate lessonId="04.01.08" labId="lab.foundation.ts-task-model" commands={["npm ci","npm run lab:ts-task-model"]} interactive={false} />
+
+## Reflect
+
+Which part of the bug could the compiler have caught? What runtime validator or test does the application still need? Identify a practical boundary in a full-stack API where incorrect trust in TypeScript could create security risk.
+
+## Official references
+
+- [TypeScript official handbook](https://www.typescriptlang.org/docs/handbook/2/narrowing.html)
+- [Official supporting reference](https://www.typescriptlang.org/docs/handbook/2/objects.html)

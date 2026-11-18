@@ -1,0 +1,39 @@
+{
+  "id": "04.01.07",
+  "title": "Functions and overloads",
+  "description": "Learn functions and overloads with a strict TypeScript source module, failing starter, tested instructor solution and concrete runtime boundary.",
+  "trackId": "04",
+  "moduleId": "04.01",
+  "level": "Beginner",
+  "estimatedMinutes": 55,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "node": "24",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "04.01.06"
+  ],
+  "objectives": [
+    "Explain the compile-time contract for functions and overloads",
+    "Replace an unsound assertion or incorrect implementation with a runtime-safe model",
+    "Verify typed code with strict TypeScript and executable local assertions"
+  ],
+  "labId": "lab.foundation.ts-overloads",
+  "sources": [
+    {
+      "label": "TypeScript handbook",
+      "url": "https://www.typescriptlang.org/docs/handbook/2/functions.html#function-overloads"
+    },
+    {
+      "label": "Official TypeScript or JavaScript reference",
+      "url": "https://www.typescriptlang.org/docs/handbook/2/narrowing.html"
+    }
+  ],
+  "rubric": [
+    "I explain what TypeScript verifies and what it erases at runtime.",
+    "I repair the functions and overloads bug while keeping strict compilation valid.",
+    "I demonstrate one success and one invalid-input case in the offline verifier."
+  ]
+}

@@ -1,0 +1,1 @@
+export function solve(raw:string):number{if(typeof raw!=='string'||raw.trim()==='')throw new TypeError('A numeric string is required');const value=Number(raw.trim());if(!Number.isFinite(value))throw new TypeError('Finite number required');return value;}

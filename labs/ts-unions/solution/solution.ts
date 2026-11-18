@@ -1,0 +1,1 @@
+type Tier='basic'|'pro';type User={id:string}&{tier:Tier};export function solve(user:User):string{if(!user||typeof user.id!=='string'||(user.tier!=='basic'&&user.tier!=='pro'))throw new TypeError('Invalid user');return user.tier+':'+user.id;}

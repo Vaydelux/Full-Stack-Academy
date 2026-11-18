@@ -1,0 +1,1 @@
+interface PublicUser{id:string;displayName?:string;role:'reader'|'editor'};type Label={label:string;role:PublicUser['role']};export function solve(user:PublicUser):Label{if(!user||typeof user.id!=='string'||(user.role!=='reader'&&user.role!=='editor'))throw new TypeError('Invalid public user');return {label:user.displayName?.trim()||user.id,role:user.role};}
