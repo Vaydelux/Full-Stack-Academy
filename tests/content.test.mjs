@@ -13,7 +13,7 @@ test('MDX integration is compile-time and never compiles learner input', () => {
   assert.match(nextConfig, /@next\/mdx/);
   assert.match(nextConfig, /withMDX/);
   assert.match(mdx, /useMDXComponents/);
-  assert.match(page, /MDX_LESSONS/);
+  assert.match(page, /LessonArticle/);
   assert.doesNotMatch(page, /evaluate\s*\(|new Function|eval\s*\(/);
 });
 
@@ -41,6 +41,6 @@ test('local labs are registered and have a real completion rubric', () => {
   for (const id of ['00.01.01','00.01.02']) {
     const meta=JSON.parse(read('src/content/lessons/'+id+'.meta.json'));
     assert.ok(meta.rubric.length>=3);
-    assert.ok(read('src/content/lesson-registry.ts').includes(id));
+    assert.ok(read('src/content/lesson-registry.tsx').includes(id));
   }
 });

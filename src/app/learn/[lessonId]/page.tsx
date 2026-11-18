@@ -5,7 +5,7 @@ import { AUTHORED_LESSONS } from '@/lib/academy/authored-content';
 import { lessonMap, moduleMap } from '@/lib/academy/curriculum';
 import { CodeBlock, DocNotice, DocSection, DocShell } from '@/components/course/DocShell';
 import { getPublicOrigin } from '@/lib/academy/site';
-import { MDX_LESSONS } from '@/content/lesson-registry';
+import { LessonArticle } from '@/content/lesson-registry';
 import { MDX_METADATA, PUBLISHED_LESSON_IDS, lessonRubric } from '@/lib/academy/published';
 import { LocalLessonCompletion } from '@/components/course/LocalLessonCompletion';
 
@@ -35,7 +35,6 @@ export default async function LessonPage({ params }: LessonPageProps) {
   if (!lesson) notFound();
   const authored = AUTHORED_LESSONS[lessonId];
   const mdxMeta = MDX_METADATA.get(lessonId);
-  const LessonMDX = MDX_LESSONS.get(lessonId);
   const localRubric = !authored ? lessonRubric(lessonId) : undefined;
   return (
     <DocShell active={authored || mdxMeta ? lessonId : undefined}>
@@ -48,19 +47,19 @@ export default async function LessonPage({ params }: LessonPageProps) {
       <p className="text-xs font-bold uppercase tracking-[.2em] text-cyan-700 dark:text-[#7DEBFF]">{lesson.id} · {lesson.level}</p>
       <h1 className="mt-3 text-3xl font-extrabold tracking-tight sm:text-4xl">{mdxMeta?.title ?? authored?.headline ?? lesson.title}</h1>
       <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-600 dark:text-slate-300">{mdxMeta?.description ?? authored?.subtitle ?? moduleMap.get(lesson.moduleId)?.outcome}</p>
-      {!authored && !LessonMDX ? (
+      {!authored && !mdxMeta ? (
         <div className="mt-7 space-y-5">
           <DocNotice><strong>Planned lesson — not published.</strong> This entry is part of the long-term curriculum. It does not yet have a verified tutorial, runnable lab, or grading evidence, so it cannot be marked complete.</DocNotice>
           <p className="text-sm leading-7 text-slate-600 dark:text-slate-300">For now, use the module context and the linked official documentation. This topic will be updated after its examples, exercises, and editorial checks are complete.</p>
           <a href={lesson.referenceUrl} target="_blank" rel="noopener noreferrer" className="text-sm font-semibold text-cyan-700 hover:underline dark:text-[#7DEBFF]">Read official documentation</a>
         </div>
-      ) : LessonMDX && mdxMeta ? (
+      ) : mdxMeta ? (
         <div className="mt-6">
           <p className="mb-5 text-xs text-slate-500">
             {Object.entries(mdxMeta.stack).map(([tech,version])=>`${tech} ${version}`).join(' · ')} · Last reviewed {mdxMeta.reviewedAt} · ~{mdxMeta.estimatedMinutes} min
           </p>
           <article aria-label="Guided lesson" className="max-w-none">
-            <LessonMDX />
+            <LessonArticle lessonId={lessonId} />
             {localRubric && <LocalLessonCompletion lessonId={lessonId} rubric={localRubric} /> }
           </article>
         </div>

@@ -71,7 +71,7 @@ for (const name of metaFiles) {
   assert.equal(meta.level, entry.level);
   assert.equal(name, `${meta.id}.meta.json`);
   if (meta.labId.startsWith('lab.foundation.')) assert.ok(meta.rubric?.length, 'Local labs need a completion rubric');
-  assert.ok(read('src/content/lesson-registry.ts').includes(`./lessons/${meta.id}.mdx`), `No MDX registry entry: ${meta.id}`);
+  assert.ok(read('src/content/lesson-registry.tsx').includes(`./lessons/${meta.id}.mdx`), `No MDX registry entry: ${meta.id}`);
   assert.ok(read('src/lib/academy/published.ts').includes(`lessons/${meta.id}.meta.json`), `No metadata registry entry: ${meta.id}`);
   for (const [technology, major] of Object.entries(meta.stack)) {
     assert.equal(versions[technology], major, `Unpinned/mismatched ${technology} version in ${meta.id}`);
