@@ -1,0 +1,39 @@
+{
+  "id": "01.04.01",
+  "title": "DOM and rendering tree",
+  "description": "Separate the document object model from what the browser paints, then create safe interface updates with DOM methods instead of interpreting learner input as HTML.",
+  "trackId": "01",
+  "moduleId": "01.04",
+  "level": "Beginner",
+  "estimatedMinutes": 55,
+  "status": "authored",
+  "reviewedAt": "2026-11-18",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "01.03.09"
+  ],
+  "objectives": [
+    "Distinguish DOM nodes, style calculation, layout and paint",
+    "Use createElement and textContent for user-provided text",
+    "Replace displayed content without injecting markup",
+    "Verify the actual rendered behavior and keyboard input"
+  ],
+  "labId": "lab.foundation.web-dom",
+  "sources": [
+    {
+      "label": "MDN Document Object Model",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model"
+    },
+    {
+      "label": "MDN Node.textContent",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/API/Node/textContent"
+    }
+  ],
+  "rubric": [
+    "I separated DOM operations from layout and paint concepts.",
+    "I tested a markup-looking input and observed literal text, not parsed HTML.",
+    "I verified native button keyboard activation and no external submission."
+  ]
+}

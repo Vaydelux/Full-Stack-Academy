@@ -1,0 +1,122 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Distinguish DOM nodes, style calculation, layout and paint","Use createElement and textContent for user-provided text","Replace displayed content without injecting markup","Verify the actual rendered behavior and keyboard input"]} />
+
+## The problem we're solving
+
+A workshop search accepts an arbitrary topic and displays it inside a list. Its developer used innerHTML because it seemed convenient. The code treats text as executable markup, and reviewers confuse the DOM with the rendered layout. We will keep the input as text, preserve native controls and inspect the result.
+
+## Build the mental model
+
+The browser parses HTML into a DOM; CSS contributes to style calculations, layout decides geometry and paint/compositing turn the result into pixels. These are related stages, not the same tree. A DOM change may trigger style or layout work, but the DOM is not itself a screenshot. When data is text, assign it to textContent. createElement plus append or replaceChildren constructs nodes explicitly, with no HTML parsing of untrusted strings.
+
+**Predict before running:** If the user enters an angle-bracket tag, textContent displays those characters literally. innerHTML interprets them as markup.
+
+## Prerequisites and preflight
+
+Continue from [the previous lesson](/learn/01.03.09). Use a local repository checkout, Node.js 24, and Chromium. Open the browser console and use only synthetic input. The practice fixture is offline and requires no personal login, credential, cloud API, paid service or external data. The canonical catalog is a learning roadmap; only separately authored lessons are published.
+
+**Learning outcome:** Distinguish DOM nodes, style calculation, layout and paint; Use createElement and textContent for user-provided text; Replace displayed content without injecting markup; Verify the actual rendered behavior and keyboard input.
+
+## Guided implementation
+
+Work in `labs/web-dom/starter/index.html`. Apply each change to the same file, then compare it with the instructor implementation in `labs/web-dom/solution/index.html`. The complete solution is runnable by opening its index.html in a browser.
+
+<LessonStep number={1} title={"Select the real controls"} file="labs/web-dom/starter/index.html" expected={"A button click should be available to keyboard users, and the selectors should resolve to actual DOM nodes."}>
+
+In the local HTML solution, find an input, action button and list by stable IDs. Use native HTML elements, not click handlers on divs.
+
+```js
+const input = document.querySelector('#topic');
+const button = document.querySelector('#add-topic');
+const list = document.querySelector('#topics');
+```
+
+**Predict before running:** A button click should be available to keyboard users, and the selectors should resolve to actual DOM nodes.
+
+**Why it works:** A selector returns an element reference, not a copy of rendered pixels.
+
+**Proof it works:** Open DevTools Elements and find each ID.
+
+</LessonStep>
+
+
+<LessonStep number={2} title={"Build a safe list item"} file="labs/web-dom/starter/index.html" expected={"Typing <img src=x onerror=alert(1)> should display text, not produce an image node."}>
+
+Construct a list item as a node, set textContent and never concatenate input into innerHTML.
+
+```js
+const item = document.createElement('li');
+item.textContent = input.value;
+list.replaceChildren(item);
+```
+
+**Predict before running:** Typing `<img src=x onerror=alert(1)>` should display text, not produce an image node.
+
+**Why it works:** textContent does not parse strings as HTML, so it prevents HTML injection in this rendering path.
+
+**Proof it works:** Inspect the list child; verify its tag is LI and its text equals the input.
+
+</LessonStep>
+
+
+<LessonStep number={3} title={"Verify the event and the result"} file="labs/web-dom/starter/index.html" expected={"Blank input leaves the example unchanged; a nonblank topic updates one item."}>
+
+Use an event listener, trim whitespace and provide a truthful local-only status.
+
+```js
+button.addEventListener('click', () => {
+  const value = input.value.trim();
+  if (!value) return;
+  const item = document.createElement('li');
+  item.textContent = value;
+  list.replaceChildren(item);
+  document.querySelector('#status').textContent = 'Local topic preview updated.';
+});
+```
+
+**Predict before running:** Blank input leaves the example unchanged; a nonblank topic updates one item.
+
+**Why it works:** Local DOM updates do not persist or send form data.
+
+**Proof it works:** Tab to the button, press Enter, and verify one list item appears.
+
+</LessonStep>
+
+## Explore and verify
+
+Start with the intentionally failing starter and complete all steps. Open the solution and starter locally. Inspect the actual DOM, Console, Network or browser permission state relevant to this lesson; do not assume a source-code regex alone proves runtime behavior. At a narrow mobile viewport, check that buttons, form fields and status messages remain readable. Record the actual outcome and which claims are *simulated* rather than observed through a remote service.
+
+<Misconception claim={"The DOM is the same thing as the rendering tree."} correction={"The DOM represents document nodes. Style, layout and paint depend on CSS, state and viewport and need not map one-to-one to DOM nodes."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+The starter assigns the input to innerHTML. Reproduce with the literal string `<strong>unsafe</strong>`: it becomes an element. Replace this path with createElement and textContent, and confirm no STRONG node appears.
+
+First document the original symptom; then make the smallest fix, predict the observable difference, and rerun the exact scenario. Prefer an observable behavior check over screenshots alone.
+
+<KnowledgeCheck question={"Which technique safely displays a user-supplied phrase as text?"} choices={["list.innerHTML = input.value","list.insertAdjacentHTML('beforeend', input.value)","item.textContent = input.value","document.write(input.value)"]} correctIndex={2} explanation={"textContent writes a text node without HTML interpretation."} misconception={"String interpolation into HTML is not safe merely because the source is a textbox."} lessonId="01.04.01" />
+
+## Guided local lab
+
+Repair `labs/web-dom/starter/index.html` and compare with `labs/web-dom/solution/index.html`. The default test targets the instructor solution. To test **your starter** instead, use:
+
+```powershell
+$env:ACADEMY_LAB_TARGET = 'starter'
+npm run lab:web-dom
+Remove-Item Env:ACADEMY_LAB_TARGET
+```
+
+In Bash: `ACADEMY_LAB_TARGET=starter npm run lab:web-dom`. The starter intentionally fails. After repair, its assertions should pass. The repository's isolated Chromium suite separately checks browser behaviors. Verification is local and does not grade or persist learner data on a server.
+
+<LabGate lessonId="01.04.01" labId="lab.foundation.web-dom" commands={["npm ci","npm run lab:web-dom"]} interactive={false} />
+
+## Reflect
+
+What changed? Why is it more correct or secure? Under what conditions would you choose a different pattern? Write a precise reproduction, actual evidence, one untested edge case and a follow-up browser or server test. Do not mistake this local training fixture for a production security or accessibility certification.
+
+## Official references
+
+- [MDN Document Object Model](https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model)
+- [MDN Node.textContent](https://developer.mozilla.org/en-US/docs/Web/API/Node/textContent)

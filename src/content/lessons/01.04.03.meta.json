@@ -1,0 +1,39 @@
+{
+  "id": "01.04.03",
+  "title": "URL and URLSearchParams",
+  "description": "Resolve and validate URLs, safely encode repeated query parameters and reject cross-origin redirects without actually navigating the browser.",
+  "trackId": "01",
+  "moduleId": "01.04",
+  "level": "Beginner",
+  "estimatedMinutes": 55,
+  "status": "authored",
+  "reviewedAt": "2026-11-18",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "01.04.02"
+  ],
+  "objectives": [
+    "Construct absolute URLs from an explicit base",
+    "Use URLSearchParams to encode and read repeated keys",
+    "Validate the parsed origin before producing an internal link",
+    "Avoid open redirects and manual query-string concatenation"
+  ],
+  "labId": "lab.foundation.web-url",
+  "sources": [
+    {
+      "label": "MDN URL constructor",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/API/URL/URL"
+    },
+    {
+      "label": "MDN URLSearchParams.append",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams/append"
+    }
+  ],
+  "rubric": [
+    "I verified normalized relative paths and percent encoding.",
+    "I rejected external origins after parsing rather than trusting the base argument.",
+    "I confirmed repeated query keys without navigating or sending requests."
+  ]
+}

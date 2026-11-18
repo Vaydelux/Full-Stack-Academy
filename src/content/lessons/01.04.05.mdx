@@ -1,0 +1,123 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Identify secure-context and user-activation requirements","Request clipboard writing only after an explicit user action","Handle unsupported or denied API access as normal behavior","Provide manual-copy fallback without misleading success"]} />
+
+## The problem we're solving
+
+A page copies content as soon as it loads and declares success even in denied browsers. Some capabilities require secure contexts and transient user activation; a denied permission is not a programming exception to hide. We will request copying only when a learner presses a native button.
+
+## Build the mental model
+
+Browser permissions and capabilities vary across origins, devices, enterprise policies and activation contexts. Clipboard writeText commonly requires a secure context and user interaction. Feature detection is necessary but not sufficient: methods can still reject. A good fallback exposes the text and tells the user to select it manually instead of claiming automatic copying happened.
+
+**Predict before running:** On unsupported or restricted file:// tutorial contexts, clicking Copy safe sample may show a manual-copy explanation, but it must never claim a successful clipboard write.
+
+## Prerequisites and preflight
+
+Continue from [the previous lesson](/learn/01.04.04). Use a local repository checkout, Node.js 24, and Chromium. Open the browser console and use only synthetic input. The practice fixture is offline and requires no personal login, credential, cloud API, paid service or external data. The canonical catalog is a learning roadmap; only separately authored lessons are published.
+
+**Learning outcome:** Identify secure-context and user-activation requirements; Request clipboard writing only after an explicit user action; Handle unsupported or denied API access as normal behavior; Provide manual-copy fallback without misleading success.
+
+## Guided implementation
+
+Work in `labs/web-permissions/starter/index.html`. Apply each change to the same file, then compare it with the instructor implementation in `labs/web-permissions/solution/index.html`. The complete solution is runnable by opening its index.html in a browser.
+
+<LessonStep number={1} title={"Keep the content public and selectable"} file="labs/web-permissions/starter/index.html" expected={"The example is safe to display and never accesses a real clipboard without a click."}>
+
+Show a fixed synthetic command in a text field that can be selected without permission.
+
+```js
+const sample = 'npm run verify:content';
+const field = document.querySelector('#sample');
+field.value = sample;
+```
+
+**Predict before running:** The example is safe to display and never accesses a real clipboard without a click.
+
+**Why it works:** Public sample text is different from personal or secret data.
+
+**Proof it works:** Focus the sample field and verify it is selectable.
+
+</LessonStep>
+
+
+<LessonStep number={2} title={"Request only on a user gesture"} file="labs/web-permissions/starter/index.html" expected={"No permission prompt happens when the page loads."}>
+
+Put the clipboard attempt inside a native click event and test support.
+
+```js
+button.addEventListener('click', async () => {
+  if (!navigator.clipboard?.writeText) {
+    status.textContent = 'Select the sample and copy manually.';
+    return;
+  }
+});
+```
+
+**Predict before running:** No permission prompt happens when the page loads.
+
+**Why it works:** An explicit button allows the browser to associate the request with user activation.
+
+**Proof it works:** Reload: the status should remain neutral until Copy safe sample is pressed.
+
+</LessonStep>
+
+
+<LessonStep number={3} title={"Handle rejection truthfully"} file="labs/web-permissions/starter/index.html" expected={"Only fulfilled clipboard writes are reported as copied."}>
+
+Catch permission errors and leave a reachable manual fallback.
+
+```js
+try {
+  await navigator.clipboard.writeText(sample);
+  status.textContent = 'Copied the sample text.';
+} catch {
+  status.textContent = 'Clipboard unavailable. Select the sample and copy manually.';
+}
+```
+
+**Predict before running:** Only fulfilled clipboard writes are reported as copied.
+
+**Why it works:** Denied permission is an expected result and should not break the page.
+
+**Proof it works:** Click Copy safe sample; verify that either branch remains usable.
+
+</LessonStep>
+
+## Explore and verify
+
+Start with the intentionally failing starter and complete all steps. Open the solution and starter locally. Inspect the actual DOM, Console, Network or browser permission state relevant to this lesson; do not assume a source-code regex alone proves runtime behavior. At a narrow mobile viewport, check that buttons, form fields and status messages remain readable. Record the actual outcome and which claims are *simulated* rather than observed through a remote service.
+
+<Misconception claim={"If navigator.clipboard exists, a writeText call is guaranteed to work."} correction={"Support, secure-context policy, activation requirements and permission decisions can still make a call reject."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+The starter announces Copied without awaiting any clipboard operation. Replace it with an awaited, guarded write and a manual-copy fallback.
+
+First document the original symptom; then make the smallest fix, predict the observable difference, and rerun the exact scenario. Prefer an observable behavior check over screenshots alone.
+
+<KnowledgeCheck question={"When should a page report that clipboard text was copied?"} choices={["As soon as the page loads","If navigator.clipboard exists","Only after writeText resolves successfully","Whenever the user hovers over a button"]} correctIndex={2} explanation={"The page should represent a confirmed operation, not a capability guess."} misconception={"An API being present is not proof of permission or successful execution."} lessonId="01.04.05" />
+
+## Guided local lab
+
+Repair `labs/web-permissions/starter/index.html` and compare with `labs/web-permissions/solution/index.html`. The default test targets the instructor solution. To test **your starter** instead, use:
+
+```powershell
+$env:ACADEMY_LAB_TARGET = 'starter'
+npm run lab:web-permissions
+Remove-Item Env:ACADEMY_LAB_TARGET
+```
+
+In Bash: `ACADEMY_LAB_TARGET=starter npm run lab:web-permissions`. The starter intentionally fails. After repair, its assertions should pass. The repository's isolated Chromium suite separately checks browser behaviors. Verification is local and does not grade or persist learner data on a server.
+
+<LabGate lessonId="01.04.05" labId="lab.foundation.web-permissions" commands={["npm ci","npm run lab:web-permissions"]} interactive={false} />
+
+## Reflect
+
+What changed? Why is it more correct or secure? Under what conditions would you choose a different pattern? Write a precise reproduction, actual evidence, one untested edge case and a follow-up browser or server test. Do not mistake this local training fixture for a production security or accessibility certification.
+
+## Official references
+
+- [MDN Clipboard.writeText](https://developer.mozilla.org/en-US/docs/Web/API/Clipboard/writeText)
+- [MDN Permissions API](https://developer.mozilla.org/en-US/docs/Web/API/Permissions_API)

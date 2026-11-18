@@ -1,0 +1,117 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Explain localStorage and sessionStorage lifetime and origin boundaries","Explain HttpOnly, Secure and SameSite cookie attributes","Persist only a nonsensitive UI preference where storage is available","Handle blocked storage without losing basic page functionality"]} />
+
+## The problem we're solving
+
+A prototype writes a session token to localStorage and treats this as secure authentication. It also fails when storage is disabled. We will narrow storage to a harmless visual preference and provide a memory fallback, while explaining why server-managed session cookies have distinct security controls.
+
+## Build the mental model
+
+Web Storage is origin-scoped client-readable data. localStorage generally persists across sessions, while sessionStorage is bound to a tab's page session; both may be blocked or cleared. Neither has HttpOnly protection from page JavaScript. Cookies are sent according to domain/path and policy; Secure limits eligible transport, HttpOnly prevents JavaScript reads, and SameSite helps control cross-site sending. None of these properties makes XSS irrelevant. A server, not this offline fixture, must set real session-cookie policies.
+
+**Predict before running:** A blocked localStorage setter should not crash the page; the page may retain a preference in memory for the current visit.
+
+## Prerequisites and preflight
+
+Continue from [the previous lesson](/learn/01.04.03). Use a local repository checkout, Node.js 24, and Chromium. Open the browser console and use only synthetic input. The practice fixture is offline and requires no personal login, credential, cloud API, paid service or external data. The canonical catalog is a learning roadmap; only separately authored lessons are published.
+
+**Learning outcome:** Explain localStorage and sessionStorage lifetime and origin boundaries; Explain HttpOnly, Secure and SameSite cookie attributes; Persist only a nonsensitive UI preference where storage is available; Handle blocked storage without losing basic page functionality.
+
+## Guided implementation
+
+Work in `labs/web-storage/starter/index.html`. Apply each change to the same file, then compare it with the instructor implementation in `labs/web-storage/solution/index.html`. The complete solution is runnable by opening its index.html in a browser.
+
+<LessonStep number={1} title={"Choose a nonsensitive value"} file="labs/web-storage/starter/index.html" expected={"A theme change is safe to preview locally, without authentication."}>
+
+Use a theme preference, never an access token, password or real session secret.
+
+```js
+const key = 'academy-demo-theme';
+const theme = 'dark';
+```
+
+**Predict before running:** A theme change is safe to preview locally, without authentication.
+
+**Why it works:** Client-visible preference data has a different threat model from credentials.
+
+**Proof it works:** Inspect the key and confirm no account or password fields exist.
+
+</LessonStep>
+
+
+<LessonStep number={2} title={"Handle storage being unavailable"} file="labs/web-storage/starter/index.html" expected={"A storage-denied environment can still update the current UI."}>
+
+Wrap storage access because privacy settings and file:// origins may throw.
+
+```js
+try {
+  localStorage.setItem(key, theme);
+} catch {
+  memory.set(key, theme);
+}
+```
+
+**Predict before running:** A storage-denied environment can still update the current UI.
+
+**Why it works:** Storage APIs are not guaranteed writable in all execution contexts.
+
+**Proof it works:** Use the two theme buttons and check the visible status.
+
+</LessonStep>
+
+
+<LessonStep number={3} title={"Separate client storage from server session policy"} file="labs/web-storage/starter/index.html" expected={"The example never creates a session or stores actual credentials."}>
+
+Treat a cookie example as educational text, not a functional login.
+
+```js
+// Example HTTP response header set by a server (not JS):
+// Set-Cookie: sid=<opaque>; Secure; HttpOnly; SameSite=Lax; Path=/
+```
+
+**Predict before running:** The example never creates a session or stores actual credentials.
+
+**Why it works:** HttpOnly cookies cannot be created with the HttpOnly flag through document.cookie.
+
+**Proof it works:** Explain why document.cookie cannot verify whether a cookie is HttpOnly.
+
+</LessonStep>
+
+## Explore and verify
+
+Start with the intentionally failing starter and complete all steps. Open the solution and starter locally. Inspect the actual DOM, Console, Network or browser permission state relevant to this lesson; do not assume a source-code regex alone proves runtime behavior. At a narrow mobile viewport, check that buttons, form fields and status messages remain readable. Record the actual outcome and which claims are *simulated* rather than observed through a remote service.
+
+<Misconception claim={"Putting an access token in localStorage makes it safe from injected JavaScript."} correction={"Script running in the origin can read Web Storage. Keep credentials out of this exercise and design real sessions with server-side controls."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+The starter writes an example credential to localStorage without guarding exceptions. Remove credential writes, store a harmless preference and add a memory fallback.
+
+First document the original symptom; then make the smallest fix, predict the observable difference, and rerun the exact scenario. Prefer an observable behavior check over screenshots alone.
+
+<KnowledgeCheck question={"Which attribute prevents JavaScript from reading a session cookie?"} choices={["SameSite","Path","HttpOnly","Max-Age"]} correctIndex={2} explanation={"HttpOnly blocks access through document.cookie; the cookie is still sent by the browser according to policy."} misconception={"SameSite affects cross-site sending, not script readability."} lessonId="01.04.04" />
+
+## Guided local lab
+
+Repair `labs/web-storage/starter/index.html` and compare with `labs/web-storage/solution/index.html`. The default test targets the instructor solution. To test **your starter** instead, use:
+
+```powershell
+$env:ACADEMY_LAB_TARGET = 'starter'
+npm run lab:web-storage
+Remove-Item Env:ACADEMY_LAB_TARGET
+```
+
+In Bash: `ACADEMY_LAB_TARGET=starter npm run lab:web-storage`. The starter intentionally fails. After repair, its assertions should pass. The repository's isolated Chromium suite separately checks browser behaviors. Verification is local and does not grade or persist learner data on a server.
+
+<LabGate lessonId="01.04.04" labId="lab.foundation.web-storage" commands={["npm ci","npm run lab:web-storage"]} interactive={false} />
+
+## Reflect
+
+What changed? Why is it more correct or secure? Under what conditions would you choose a different pattern? Write a precise reproduction, actual evidence, one untested edge case and a follow-up browser or server test. Do not mistake this local training fixture for a production security or accessibility certification.
+
+## Official references
+
+- [MDN Web Storage API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API)
+- [MDN Set-Cookie header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Set-Cookie)

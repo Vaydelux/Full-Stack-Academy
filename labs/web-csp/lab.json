@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.web-csp",
+  "lessonId": "01.04.07",
+  "title": "CSP and browser isolation",
+  "runtime": "browser-html-and-node-24",
+  "status": "authored",
+  "starter": "labs/web-csp/starter/index.html",
+  "solution": "labs/web-csp/solution/index.html",
+  "tests": "labs/web-csp/solution.test.mjs",
+  "verify": [
+    "npm run lab:web-csp"
+  ],
+  "expected": "I explained the difference between CSP headers and iframe sandbox attributes.",
+  "security": "Self-contained synthetic offline page; no user accounts, remote requests, access tokens or real user data. Node static checks require Chromium behavior verification."
+}

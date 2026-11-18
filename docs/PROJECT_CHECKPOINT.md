@@ -1,3 +1,5 @@
+> **Unreleased candidate — feature branch feat/01-04-web-apis-security (2026-11-18).** The production verification below still describes the previously verified main deployment, NOT this new content. Eight 01.04 Web APIs & Security lessons and eight labs are committed on a feature branch; registries, lint, typecheck, content validation, local lab tests, Chromium, dependency audit, Next build, and exact-head Vercel preview must pass before merging. Candidate counts: 61 published lesson IDs, 58 MDX files, 58 lab fixtures and seven complete content modules. Manual accessibility and assistive-technology verification remain unperformed. See docs/NEXT_TODO.md for the pending release gates.
+
 # Full-Stack Academy — Verified Project Checkpoint
 
 **Verified date:** 2026-11-18 (Asia/Manila)  

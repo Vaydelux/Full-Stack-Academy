@@ -1,0 +1,119 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Explain what script-src, object-src and base-uri restrict","Recognize why CSP is defense-in-depth rather than input sanitization","Use iframe sandbox without allow-same-origin for untrusted examples","Verify postMessage source, origin and payload before trusting an event"]} />
+
+## The problem we're solving
+
+A demo iframe runs code beside the academy interface and posts status events to its parent. If it gets a same-origin sandbox escape or the parent trusts any incoming message, the parent can be tricked. We'll constrain the iframe and accept only a tiny, expected status payload. We also discuss the server-set CSP headers needed in a hosted production environment.
+
+## Build the mental model
+
+CSP constrains permitted resources and behaviors, most effectively through an HTTP response header. It does not sanitize DOM text or replace output encoding. iframe sandbox isolates an embedded document; sandbox='allow-scripts' without allow-same-origin gives its contents an opaque origin. An opaque-origin child must generally target '*' when posting to its parent, so the parent must validate event.source, event.origin and the message schema and never include secrets in the exchange. This local page deliberately posts only a static status.
+
+**Predict before running:** A message from a different window, or an unexpected payload, should be ignored even if it uses the same 'kind' field.
+
+## Prerequisites and preflight
+
+Continue from [the previous lesson](/learn/01.04.06). Use a local repository checkout, Node.js 24, and Chromium. Open the browser console and use only synthetic input. The practice fixture is offline and requires no personal login, credential, cloud API, paid service or external data. The canonical catalog is a learning roadmap; only separately authored lessons are published.
+
+**Learning outcome:** Explain what script-src, object-src and base-uri restrict; Recognize why CSP is defense-in-depth rather than input sanitization; Use iframe sandbox without allow-same-origin for untrusted examples; Verify postMessage source, origin and payload before trusting an event.
+
+## Guided implementation
+
+Work in `labs/web-csp/starter/index.html`. Apply each change to the same file, then compare it with the instructor implementation in `labs/web-csp/solution/index.html`. The complete solution is runnable by opening its index.html in a browser.
+
+<LessonStep number={1} title={"Review a strict server-side CSP example"} file="labs/web-csp/starter/index.html" expected={"This header blocks plug-in objects and base URL rewrites; frame-ancestors must be sent as a response header."}>
+
+Treat this as an illustrative HTTP response header; a meta tag cannot enforce every directive.
+
+```js
+// Content-Security-Policy: default-src 'self';
+//   object-src 'none'; base-uri 'none'; frame-ancestors 'none'
+```
+
+**Predict before running:** This header blocks plug-in objects and base URL rewrites; frame-ancestors must be sent as a response header.
+
+**Why it works:** CSP is enforced by the browser after the server supplies the policy.
+
+**Proof it works:** Explain why 'unsafe-inline' undermines script restrictions; do not apply this header blindly to Next.js.
+
+</LessonStep>
+
+
+<LessonStep number={2} title={"Isolate the demo iframe"} file="labs/web-csp/starter/index.html" expected={"The embedded document runs with an opaque origin even though it is srcdoc."}>
+
+Allow scripts but not same-origin access. This demo does not execute learner-supplied code.
+
+```html
+<iframe id="isolation" title="Isolated tutorial sample"
+        sandbox="allow-scripts" srcdoc="..."></iframe>
+```
+
+**Predict before running:** The embedded document runs with an opaque origin even though it is srcdoc.
+
+**Why it works:** Without allow-same-origin, scripts cannot assume the parent's origin.
+
+**Proof it works:** Inspect the iframe sandbox attribute in Elements.
+
+</LessonStep>
+
+
+<LessonStep number={3} title={"Validate postMessage before updating status"} file="labs/web-csp/starter/index.html" expected={"Only the expected child event may update the parent status."}>
+
+Compare source, opaque origin and a narrow static payload.
+
+```js
+window.addEventListener('message', (event) => {
+  if (event.source !== frame.contentWindow) return;
+  if (event.origin !== 'null') return;
+  if (event.data?.kind !== 'academy-demo-ready') return;
+  if (event.data.value !== 'isolated') return;
+  status.textContent = 'Sandbox signaled ready.';
+});
+```
+
+**Predict before running:** Only the expected child event may update the parent status.
+
+**Why it works:** Message data is untrusted input even when sent by an iframe.
+
+**Proof it works:** Reload and wait for the local ready status; send a fake window message and verify it is ignored.
+
+</LessonStep>
+
+## Explore and verify
+
+Start with the intentionally failing starter and complete all steps. Open the solution and starter locally. Inspect the actual DOM, Console, Network or browser permission state relevant to this lesson; do not assume a source-code regex alone proves runtime behavior. At a narrow mobile viewport, check that buttons, form fields and status messages remain readable. Record the actual outcome and which claims are *simulated* rather than observed through a remote service.
+
+<Misconception claim={"A sandboxed iframe's message should be trusted because it is embedded in our page."} correction={"Sandboxed documents can have opaque origins and send arbitrary payloads. Validate event.source, event.origin and strict schema; isolate untrusted code on a dedicated origin for production."} />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+The starter listens to all message events and accepts any object with kind=ready. Add a restrictive sandbox and verify source, origin and payload before updating the parent.
+
+First document the original symptom; then make the smallest fix, predict the observable difference, and rerun the exact scenario. Prefer an observable behavior check over screenshots alone.
+
+<KnowledgeCheck question={"Why omit allow-same-origin from a sandbox that allows scripts?"} choices={["It forces every iframe to use HTTPS","It prevents the child from sharing the embedding page's origin privileges","It blocks all postMessage events","It automatically sanitizes child HTML"]} correctIndex={1} explanation={"The opaque-origin sandbox reduces same-origin privilege, while scripts can still run inside the constrained frame."} misconception={"Sandboxing and CSP are layered controls, neither one replaces careful message validation."} lessonId="01.04.07" />
+
+## Guided local lab
+
+Repair `labs/web-csp/starter/index.html` and compare with `labs/web-csp/solution/index.html`. The default test targets the instructor solution. To test **your starter** instead, use:
+
+```powershell
+$env:ACADEMY_LAB_TARGET = 'starter'
+npm run lab:web-csp
+Remove-Item Env:ACADEMY_LAB_TARGET
+```
+
+In Bash: `ACADEMY_LAB_TARGET=starter npm run lab:web-csp`. The starter intentionally fails. After repair, its assertions should pass. The repository's isolated Chromium suite separately checks browser behaviors. Verification is local and does not grade or persist learner data on a server.
+
+<LabGate lessonId="01.04.07" labId="lab.foundation.web-csp" commands={["npm ci","npm run lab:web-csp"]} interactive={false} />
+
+## Reflect
+
+What changed? Why is it more correct or secure? Under what conditions would you choose a different pattern? Write a precise reproduction, actual evidence, one untested edge case and a follow-up browser or server test. Do not mistake this local training fixture for a production security or accessibility certification.
+
+## Official references
+
+- [MDN Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CSP)
+- [MDN window.postMessage security](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage)

@@ -1,0 +1,39 @@
+{
+  "id": "01.04.05",
+  "title": "Permissions and clipboard",
+  "description": "Use a user-triggered clipboard action, handle denied or unsupported capabilities and provide an accessible manual-copy fallback.",
+  "trackId": "01",
+  "moduleId": "01.04",
+  "level": "Beginner",
+  "estimatedMinutes": 55,
+  "status": "authored",
+  "reviewedAt": "2026-11-18",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "01.04.04"
+  ],
+  "objectives": [
+    "Identify secure-context and user-activation requirements",
+    "Request clipboard writing only after an explicit user action",
+    "Handle unsupported or denied API access as normal behavior",
+    "Provide manual-copy fallback without misleading success"
+  ],
+  "labId": "lab.foundation.web-permissions",
+  "sources": [
+    {
+      "label": "MDN Clipboard.writeText",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/API/Clipboard/writeText"
+    },
+    {
+      "label": "MDN Permissions API",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/API/Permissions_API"
+    }
+  ],
+  "rubric": [
+    "I attempted a capability only from an explicit user action.",
+    "I tested the unsupported or denied path without false success feedback.",
+    "I kept the sample synthetic and available for manual copying."
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.web-devtools",
+  "lessonId": "01.04.08",
+  "title": "Lab DevTools request investigation",
+  "runtime": "browser-html-and-node-24",
+  "status": "authored",
+  "starter": "labs/web-devtools/starter/index.html",
+  "solution": "labs/web-devtools/solution/index.html",
+  "tests": "labs/web-devtools/solution.test.mjs",
+  "verify": [
+    "npm run lab:web-devtools"
+  ],
+  "expected": "I inspected the locally generated fetch response in DevTools.",
+  "security": "Self-contained synthetic offline page; no user accounts, remote requests, access tokens or real user data. Node static checks require Chromium behavior verification."
+}

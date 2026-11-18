@@ -53,8 +53,8 @@ try {
   await wait(page.getByText('Correct — you identified the concept.'));
   await page.goto(base + '/reference/zod-safeparse');
   await wait(page.getByRole('heading',{name:/Zod 4: schema.safeParse/}));
-  await page.goto(base + '/learn/01.04.01');
-  assert.match(await page.locator('meta[name="robots"]').getAttribute('content'), /noindex/);
+  await page.goto(base + '/learn/02.01.01');
+  assert.match(await page.locator('meta[name="robots"]').first().getAttribute('content'), /noindex/);
   await wait(page.getByText('Planned lesson — not published.', {exact:true}));
   await page.goto(base + '/learn/00.01.01');
   await wait(page.getByRole('heading',{name:'What runs in a browser vs on a server?',exact:true}));
@@ -69,10 +69,10 @@ try {
   await wait(btn('Completed'));
   await page.getByRole('link',{name:/Next: Client server lifecycle/}).click();
   await wait(page.getByRole('heading',{name:'Client–server lifecycle: follow a real request',exact:true}));
-  for (const id of ["00.01.03","00.01.04","00.01.05","00.01.06","00.01.07","00.01.08","00.02.01","00.02.02","00.02.03","00.02.04","00.02.05","00.02.06","00.02.07","00.02.08","00.03.01","00.03.02","00.03.03","00.03.04","00.03.05","00.03.06","00.03.07","00.03.08","01.01.01","01.01.02","01.01.03","01.01.04","01.01.05","01.01.06","01.01.07","01.01.08","01.02.01","01.02.02","01.02.03","01.02.04","01.02.05","01.02.06","01.02.07","01.02.08","01.03.01","01.03.02","01.03.03","01.03.04","01.03.05","01.03.06","01.03.07","01.03.08","01.03.09"]) {
+  for (const id of ["00.01.03","00.01.04","00.02.01","00.01.06","00.01.07","00.01.08","00.02.01","00.02.02","00.02.03","00.02.04","00.02.05","00.02.06","00.02.07","00.02.08","00.03.01","00.03.02","00.03.03","00.03.04","00.03.05","00.03.06","00.03.07","00.03.08","01.01.01","01.01.02","01.01.03","01.01.04","01.02.01","01.01.06","01.01.07","01.01.08","01.02.01","01.02.02","01.02.03","01.02.04","01.02.05","01.02.06","01.02.07","01.02.08","01.03.01","01.03.02","01.03.03","01.03.04","01.03.05","01.03.06","01.03.07","01.03.08","01.03.09"]) {
     const result = await page.goto(base+'/learn/'+id);
     assert.equal(result.status(),200);
-    assert.match(await page.locator('meta[name="robots"]').getAttribute('content'), /^index/);
+    assert.match(await page.locator('meta[name="robots"]').first().getAttribute('content'), /^index/);
     await wait(page.getByRole('region',{name:'Lesson completion'}));
     await wait(page.getByRole('heading',{name:'Build the mental model',exact:true}));
     assert.equal(await page.getByRole('button',{name:'Mark complete'}).isEnabled(), false);
@@ -286,6 +286,69 @@ try {
   await page.getByRole('button',{name:'Preview topic'}).click();
   await wait(page.getByRole('status').getByText('Local preview complete. Nothing sent or saved.'));
   assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'Accessible capstone mobile overflow');
+
+  // Web APIs & Security: verify authored routes, offline fixture behavior and refusal paths.
+  await page.goto(base + '/learn/01.04.01');
+  await wait(page.getByRole('heading', { name: "The problem we're solving" }));
+  assert.equal(await page.locator('meta[name="robots"][content*="noindex"]').count(),0,'Published Web APIs lesson must be indexable');
+  await page.goto(base + '/learn/02.01.01');
+  assert.match(await page.locator('meta[name="robots"]').first().getAttribute('content'), /noindex/, 'Planned next module must remain noindex');
+  const webLab = slug => new URL('../labs/'+slug+'/solution/index.html', import.meta.url).href;
+  const webSlugs = ['web-dom','web-fetch-json','web-url','web-storage','web-permissions','web-cors','web-csp','web-devtools'];
+  for(const slug of webSlugs){
+    await page.goto(webLab(slug));
+    assert.equal(await page.locator('html').getAttribute('lang'),'en','Web lab language: '+slug);
+    assert.equal(await page.getByRole('main').count(),1,'Web lab must have one main: '+slug);
+    assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'Web lab mobile overflow: '+slug);
+  }
+  await page.goto(webLab('web-dom'));
+  await page.getByRole('textbox',{name:'Workshop topic'}).fill('<strong>escaped</strong>');
+  await page.getByRole('button',{name:'Preview topic'}).click();
+  assert.equal(await page.locator('#topics li').innerText(),'<strong>escaped</strong>');
+  assert.equal(await page.locator('#topics strong').count(),0,'Untrusted text must not become HTML');
+  await page.goto(webLab('web-fetch-json'));
+  await page.getByRole('button',{name:'Load sample JSON'}).click();
+  await wait(page.getByRole('status').getByText('2 sample items loaded locally. No network request.'));
+  await page.getByRole('button',{name:'Simulate HTTP 503'}).click();
+  await wait(page.getByRole('status').getByText('Request failed: HTTP 503'));
+  await page.getByRole('button',{name:'Simulate malformed JSON'}).click();
+  await wait(page.getByRole('status').getByText('JSON parsing failed.'));
+  await page.getByRole('button',{name:'Simulate network failure'}).click();
+  await wait(page.getByRole('status').getByText(/Simulated transport failure/));
+  await page.getByRole('button',{name:'Load sample JSON'}).click();
+  await page.getByRole('button',{name:'Cancel request'}).click();
+  await wait(page.getByRole('status').getByText('Request cancelled.'));
+  await page.goto(webLab('web-url'));
+  await page.getByRole('button',{name:'Preview URL'}).click();
+  await wait(page.getByRole('status').getByText(/tags: web security, DOM & CSS/));
+  await page.getByRole('textbox',{name:'Preview path'}).fill('https://outside.example/');
+  await page.getByRole('button',{name:'Preview URL'}).click();
+  await wait(page.getByRole('status').getByText(/Rejected: origin outside/));
+  await page.goto(webLab('web-storage'));
+  await page.getByRole('button',{name:'Use dark preference'}).click();
+  await wait(page.getByRole('status').getByText(/dark UI preference saved to (browser storage|temporary memory) only/));
+  await page.goto(webLab('web-permissions'));
+  await page.getByRole('button',{name:'Copy safe sample'}).click();
+  await wait(page.getByRole('status').getByText(/(Copied the sample text|copy manually)/));
+  await page.goto(webLab('web-cors'));
+  await page.getByRole('button',{name:'Evaluate CORS'}).click();
+  await wait(page.getByRole('status').getByText(/Blocked: credentials require/));
+  await page.getByRole('combobox',{name:'CORS response policy'}).selectOption('explicit');
+  await page.getByRole('button',{name:'Evaluate CORS'}).click();
+  await wait(page.getByRole('status').getByText(/Allowed: explicit matching origin/));
+  await page.goto(webLab('web-csp'));
+  assert.equal(await page.locator('iframe#isolation').getAttribute('sandbox'),'allow-scripts');
+  await wait(page.getByRole('status').getByText(/Sandbox signaled ready/));
+  await page.evaluate(()=>window.postMessage({kind:'academy-demo-ready',value:'isolated'},'*'));
+  assert.match(await page.getByRole('status').innerText(),/Sandbox signaled ready/);
+  await page.goto(webLab('web-devtools'));
+  await page.getByRole('button',{name:'Inspect local request'}).click();
+  await wait(page.getByRole('status').getByText(/Local Blob fetch returned 2 local entries/));
+  await page.getByRole('button',{name:'Simulate HTTP error'}).click();
+  await wait(page.getByRole('status').getByText(/Local simulator returned simulated HTTP 503/));
+  await page.getByRole('button',{name:'Simulate invalid JSON'}).click();
+  await wait(page.getByRole('status').getByText(/JSON parsing failed after a successful response/));
+
   await page.goto(base+'/?lesson=06.01.01&mode=practice');
   await wait(btn('Practice'));
   await btn('Output').click();
