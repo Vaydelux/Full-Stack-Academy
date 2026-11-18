@@ -1,0 +1,87 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Write meaningful alt text for an informative diagram","Use empty alt for a decorative illustration","Provide tabular data for a complex chart","Verify images load from local sources and communicate the intended trend"]} />
+
+## The problem we're solving
+
+An attendance chart has alt text 'chart' and no accessible numbers, so learners cannot determine the difference between Monday and Tuesday sessions. Decorative flourishes repeat the page title in the screen-reader reading order.
+
+## Build the mental model
+
+Alternative text communicates an image's purpose or relevant information in context. Informative diagrams need meaningful alt text; purely decorative images should usually have alt="" so they do not add noise. Complex charts may require a nearby table or detailed textual summary to communicate all values, not a huge alt paragraph. A figure caption gives context to visual and non-visual readers. SVG can be embedded as a normal img with alt supplied by HTML. A screen-reader image list should include the meaningful diagram while omitting decoration.
+
+**Predict before running:** A chart of 12 attendees on Monday and 18 on Tuesday cannot be understood from alt='chart'. Describe the trend and provide an actual data table.
+
+## Prerequisites
+
+Complete [the previous lesson](/learn/01.03.06). Use Node.js 24 and a local browser; keep all practice synthetic. Inspect real focus, computed styles, roles and names in Chromium. A passing browser smoke run is **not** a formal accessibility conformance certificate.
+
+<LessonStep number={1} title={"Describe an informative image by purpose"} file="labs/a11y-image-alt/starter/index.html" expected={"A non-visual reader receives the relevant spatial relationship."}>
+
+The layout illustration is important because it shows two zones for learning.
+
+```html
+<img src="assets/layout.svg" width="640" height="360" alt="Teaching area on the left and shared notes on the right">
+```
+
+</LessonStep>
+
+<LessonStep number={2} title={"Mark purely decorative artwork as decorative"} file="labs/a11y-image-alt/starter/index.html" expected={"Decorative art does not clutter the accessibility tree."}>
+
+Avoid repeating content that is already expressed by nearby text.
+
+```html
+<img src="assets/layout.svg" width="64" height="36" alt="" aria-hidden="true">
+```
+
+</LessonStep>
+
+<LessonStep number={3} title={"Pair a complex chart with accessible numbers"} file="labs/a11y-image-alt/starter/index.html" expected={"The table gives accessible exact data alongside the visual trend."}>
+
+Use a concise image alternative and adjacent table; let readers explore exact values.
+
+```html
+<figure><img src="assets/attendance.svg" width="640" height="320" alt="Workshop attendance increased from 12 Monday to 18 Tuesday">
+<figcaption>Attendance during two practice sessions</figcaption></figure>
+<table><caption>Workshop attendance by day</caption>
+<thead><tr><th scope="col">Day</th><th scope="col">Attendees</th></tr></thead>
+<tbody><tr><th scope="row">Monday</th><td>12</td></tr><tr><th scope="row">Tuesday</th><td>18</td></tr></tbody></table>
+```
+
+</LessonStep>
+
+## Explore it yourself
+
+Open `labs/a11y-image-alt/starter/index.html` in Chromium and perform the lesson's keyboard and visual checks. Compare against the checked-in instructor implementation in `labs/a11y-image-alt/solution/index.html`. Test at 390px and desktop widths, and emulate OS reduced motion where appropriate. Record exactly what you observed and which screen-reader/device checks remain unperformed.
+
+<Misconception claim={"Every image needs non-empty alt text."} correction={"Decorative images need empty alt text, while meaningful images need context-appropriate descriptions."} />
+
+## Bug Hunt: reproduce and repair the barrier
+
+An instructional attendance chart has alt='graph'; the exact values are inaccessible. Add a concise trend description and a nearby proper data table.
+
+<KnowledgeCheck question={"What is an effective alternative for a complex chart?"} choices={["Only the word 'chart'","Meaningful alt plus a nearby structured table of values","An empty alt for all charts","A long filename"]} correctIndex={1} explanation={"A concise alt communicates purpose; tabular data preserves detail."} misconception={"A graphic-only representation can hide the actual measurements."} lessonId="01.03.07" />
+
+## Guided local lab
+
+Implement the repair in `labs/a11y-image-alt/starter/index.html`, and refer to `labs/a11y-image-alt/solution/index.html` when needed. The reference assets and scripts are bundled locally. To test the **starter** in PowerShell:
+
+```powershell
+$env:ACADEMY_LAB_TARGET = 'starter'
+npm run lab:a11y-image-alt
+Remove-Item Env:ACADEMY_LAB_TARGET
+```
+
+In Bash run `ACADEMY_LAB_TARGET=starter npm run lab:a11y-image-alt`. The deliberately incomplete starter should fail first; improve it and rerun. Instructors' solution tests and Chromium interactions are automated. Manual assistive-technology observation stays self-assessed.
+
+<LabGate lessonId="01.03.07" labId="lab.foundation.a11y-image-alt" commands={["npm ci","npm run lab:a11y-image-alt"]} interactive={false} />
+
+## Reflect
+
+Write down the failing scenario, semantic or interaction repair, tested evidence, remaining limitations and a meaningful next test. Avoid broad accessibility or WCAG claims without evidence of the applicable criteria.
+
+## Official references
+
+- [WAI Images Tutorial](https://www.w3.org/WAI/tutorials/images/)
+- [WAI Complex Images](https://www.w3.org/WAI/tutorials/images/complex/)

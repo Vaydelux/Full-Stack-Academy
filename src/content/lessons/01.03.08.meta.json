@@ -1,0 +1,39 @@
+{
+  "id": "01.03.08",
+  "title": "Reduced motion and pause controls",
+  "description": "Respect prefers-reduced-motion and provide a separate pause action for nonessential animation without depending on movement to communicate meaning.",
+  "trackId": "01",
+  "moduleId": "01.03",
+  "level": "Beginner",
+  "estimatedMinutes": 55,
+  "status": "authored",
+  "reviewedAt": "2026-11-18",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "01.03.07"
+  ],
+  "objectives": [
+    "Write a reduced-motion media query that turns off nonessential animation",
+    "Provide a manually usable pause/resume button",
+    "Test computed animation names under both motion preferences",
+    "Keep essential information visible without animation"
+  ],
+  "labId": "lab.foundation.a11y-reduced-motion",
+  "sources": [
+    {
+      "label": "MDN prefers-reduced-motion",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion"
+    },
+    {
+      "label": "W3C Pause Stop Hide",
+      "url": "https://www.w3.org/WAI/WCAG22/Understanding/pause-stop-hide.html"
+    }
+  ],
+  "rubric": [
+    "I observed no nonessential animation under reduced-motion emulation.",
+    "I paused and resumed motion via a keyboard-operable button.",
+    "I confirmed meaning remains available without animated effects."
+  ]
+}

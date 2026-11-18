@@ -1,0 +1,101 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Repair skip links, semantic controls and visible focus","Make fields, image alternatives and status feedback understandable","Verify native modal closure and focus restoration","Test reduced motion, mobile layout and honest local-only form submission"]} />
+
+## The problem we're solving
+
+A new workshop page 'looks finished' but its navigation is mouse-only, images are unnamed, form inputs lack labels, focus is invisible and a custom overlay traps the user's keyboard context. The team needs a reproducible accessibility repair, not a visual restyle.
+
+## Build the mental model
+
+An accessibility audit tests real user journeys. Start with keyboard-only access, landmark navigation and meaningful headings; verify visible focus, accessible names and appropriate descriptions. Use native dialog behavior rather than rebuilding modal focus traps, then test Escape and return-focus. Images need alternatives based on purpose; decorative images are skipped. Honor reduced motion and maintain adequate contrast. A live status must tell the truth about what happened locally; client tests and automated role checks are not a full WCAG conformance report. This capstone uses synthetic interactions, no remote submission and no real user accounts.
+
+**Predict before running:** If the page passes a static HTML regex but the modal cannot be closed with Escape, the accessibility task is incomplete. Test the actual keyboard flow.
+
+## Prerequisites
+
+Complete [the previous lesson](/learn/01.03.08). Use Node.js 24 and a local browser; keep all practice synthetic. Inspect real focus, computed styles, roles and names in Chromium. A passing browser smoke run is **not** a formal accessibility conformance certificate.
+
+<LessonStep number={1} title={"Repair the first keyboard targets and document regions"} file="labs/a11y-keyboard-audit/starter/index.html" expected={"Tab reaches the skip link before other links; Enter reaches the main content."}>
+
+Provide a first-focus skip link, native navigation and a single main region.
+
+```html
+<a class="skip" href="#main-content">Skip to main content</a>
+<nav aria-label="Primary navigation"><a href="#practice">Practice area</a></nav>
+<main id="main-content" tabindex="-1"><h1>Accessible workshop audit</h1></main>
+```
+
+</LessonStep>
+
+<LessonStep number={2} title={"Label form fields and describe the illustration"} file="labs/a11y-keyboard-audit/starter/index.html" expected={"The field has an accessible name and description; the illustration has a meaningful alternative."}>
+
+Use a native label and helpful description; communicate the image's meaningful context.
+
+```html
+<label for="topic">Workshop topic</label>
+<p id="topic-hint">At least three characters; this is a local preview.</p>
+<input id="topic" name="topic" minlength="3" aria-describedby="topic-hint" required>
+<img src="assets/layout.svg" width="640" height="360" alt="Teaching space on the left, shared notes on the right">
+```
+
+</LessonStep>
+
+<LessonStep number={3} title={"Use a modal and preserve focus"} file="labs/a11y-keyboard-audit/starter/index.html" expected={"Tab remains within the modal and Escape returns focus to the opener."}>
+
+Open a native dialog, focus its heading and restore the opener on close.
+
+```js
+dialog.showModal();
+dialog.querySelector('h2').focus();
+dialog.addEventListener('close',()=>opener.focus());
+```
+
+</LessonStep>
+
+<LessonStep number={4} title={"Respect reduced motion and keep submission local"} file="labs/a11y-keyboard-audit/starter/index.html" expected={"The demo is readable and operable with reduced motion and never claims server persistence."}>
+
+Allow the operating system to disable decoration, and avoid fake saved-account messages.
+
+```css
+@media (prefers-reduced-motion: reduce){.indicator{animation:none}}
+/* A local form preview must say 'Nothing sent or saved.' */
+```
+
+</LessonStep>
+
+## Explore it yourself
+
+Open `labs/a11y-keyboard-audit/starter/index.html` in Chromium and perform the lesson's keyboard and visual checks. Compare against the checked-in instructor implementation in `labs/a11y-keyboard-audit/solution/index.html`. Test at 390px and desktop widths, and emulate OS reduced motion where appropriate. Record exactly what you observed and which screen-reader/device checks remain unperformed.
+
+<Misconception claim={"A green accessibility audit tool result guarantees the keyboard flow works."} correction={"Real browser and assistive-technology journeys reveal barriers that static checks cannot detect."} />
+
+## Bug Hunt: reproduce and repair the barrier
+
+The starter's mouse-only help control, unnamed input and misleading 'sent successfully' message mislead users. Repair the structure, add real native behavior and test end-to-end without a mouse.
+
+<KnowledgeCheck question={"What should an accessibility repair capstone verify beyond static source checks?"} choices={["Only the chosen brand font","Real keyboard flows, modal focus restoration, names, contrast and motion preferences","A passing compile step alone","A global claim of WCAG certification"]} correctIndex={1} explanation={"Interaction and computed behavior must work for real users, not just appear in source code."} misconception={"A static check cannot prove keyboard access and focus behavior."} lessonId="01.03.09" />
+
+## Guided local lab
+
+Implement the repair in `labs/a11y-keyboard-audit/starter/index.html`, and refer to `labs/a11y-keyboard-audit/solution/index.html` when needed. The reference assets and scripts are bundled locally. To test the **starter** in PowerShell:
+
+```powershell
+$env:ACADEMY_LAB_TARGET = 'starter'
+npm run lab:a11y-keyboard-audit
+Remove-Item Env:ACADEMY_LAB_TARGET
+```
+
+In Bash run `ACADEMY_LAB_TARGET=starter npm run lab:a11y-keyboard-audit`. The deliberately incomplete starter should fail first; improve it and rerun. Instructors' solution tests and Chromium interactions are automated. Manual assistive-technology observation stays self-assessed.
+
+<LabGate lessonId="01.03.09" labId="lab.foundation.a11y-keyboard-audit" commands={["npm ci","npm run lab:a11y-keyboard-audit"]} interactive={false} />
+
+## Reflect
+
+Write down the failing scenario, semantic or interaction repair, tested evidence, remaining limitations and a meaningful next test. Avoid broad accessibility or WCAG claims without evidence of the applicable criteria.
+
+## Official references
+
+- [WAI Easy Checks](https://www.w3.org/WAI/test-evaluate/preliminary/)
+- [WAI ARIA APG Keyboard Interface](https://www.w3.org/WAI/ARIA/apg/practices/keyboard-interface/)

@@ -1,0 +1,39 @@
+{
+  "id": "01.03.05",
+  "title": "Color contrast and readable text",
+  "description": "Calculate WCAG 2.2 sRGB relative luminance and contrast ratios, distinguish normal and large text thresholds, and test real foreground/background pairs.",
+  "trackId": "01",
+  "moduleId": "01.03",
+  "level": "Beginner",
+  "estimatedMinutes": 65,
+  "status": "authored",
+  "reviewedAt": "2026-11-18",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "01.03.04"
+  ],
+  "objectives": [
+    "Explain why text contrast affects visual readability",
+    "Implement luminance and WCAG contrast ratio for opaque hex colors",
+    "Distinguish 4.5:1 normal and 3:1 large text thresholds",
+    "Avoid overstating what a two-color calculator certifies"
+  ],
+  "labId": "lab.foundation.a11y-contrast",
+  "sources": [
+    {
+      "label": "W3C WCAG 2.2 contrast minimum",
+      "url": "https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html"
+    },
+    {
+      "label": "W3C non-text contrast",
+      "url": "https://www.w3.org/WAI/WCAG22/Understanding/non-text-contrast"
+    }
+  ],
+  "rubric": [
+    "I calculated known test pairs with correct sRGB gamma correction.",
+    "I distinguished normal and large-text contrast thresholds.",
+    "I explained why a two-color checker does not certify the rest of a page."
+  ]
+}

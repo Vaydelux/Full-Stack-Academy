@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.a11y-keyboard-audit",
+  "lessonId": "01.03.09",
+  "title": "Lab keyboard audit and repair capstone",
+  "runtime": "browser-html-and-node-24",
+  "status": "authored",
+  "starter": "labs/a11y-keyboard-audit/starter/index.html",
+  "solution": "labs/a11y-keyboard-audit/solution/index.html",
+  "tests": "labs/a11y-keyboard-audit/solution.test.mjs",
+  "verify": [
+    "npm run lab:a11y-keyboard-audit"
+  ],
+  "expected": "I recorded verified behavior and limits without claiming formal WCAG certification.",
+  "security": "Offline HTML accessibility fixture with original local assets. No real personal data, remote grading or untrusted execution on the academy server; browser checks do not establish WCAG conformance."
+}

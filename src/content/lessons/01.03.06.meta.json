@@ -1,0 +1,39 @@
+{
+  "id": "01.03.06",
+  "title": "Accessible names and descriptions",
+  "description": "Associate persistent visible labels and supporting descriptions, name icon-only actions and verify the browser exposes meaningful control names.",
+  "trackId": "01",
+  "moduleId": "01.03",
+  "level": "Beginner",
+  "estimatedMinutes": 55,
+  "status": "authored",
+  "reviewedAt": "2026-11-18",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "01.03.05"
+  ],
+  "objectives": [
+    "Provide visible input labels and separate optional help text",
+    "Name icon-only actions with a stable accessible name",
+    "Use aria-labelledby and aria-describedby deliberately",
+    "Test accessible name/description through Chromium role-based queries"
+  ],
+  "labId": "lab.foundation.a11y-names",
+  "sources": [
+    {
+      "label": "WAI Form Labels",
+      "url": "https://www.w3.org/WAI/tutorials/forms/labels/"
+    },
+    {
+      "label": "WAI APG Names and Descriptions",
+      "url": "https://www.w3.org/WAI/ARIA/apg/practices/names-and-descriptions/"
+    }
+  ],
+  "rubric": [
+    "I verified a persistent input name and separate hint description.",
+    "I confirmed the icon button is discoverable by accessible name.",
+    "I tested the local feedback without exposing entered data."
+  ]
+}

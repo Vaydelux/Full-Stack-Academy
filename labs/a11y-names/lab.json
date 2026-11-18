@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.a11y-names",
+  "lessonId": "01.03.06",
+  "title": "Accessible names and descriptions",
+  "runtime": "browser-html-and-node-24",
+  "status": "authored",
+  "starter": "labs/a11y-names/starter/index.html",
+  "solution": "labs/a11y-names/solution/index.html",
+  "tests": "labs/a11y-names/solution.test.mjs",
+  "verify": [
+    "npm run lab:a11y-names"
+  ],
+  "expected": "I tested the local feedback without exposing entered data.",
+  "security": "Offline HTML accessibility fixture with original local assets. No real personal data, remote grading or untrusted execution on the academy server; browser checks do not establish WCAG conformance."
+}
