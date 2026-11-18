@@ -38,7 +38,7 @@ test('quality workflow executes both content and lab verification', () => {
 });
 
 test('local labs are registered and have a real completion rubric', () => {
-  for (const id of ['00.01.01','00.01.02']) {
+  for (const id of ['00.01.01','00.01.02','00.01.03','00.01.04','00.01.05','00.01.06','00.01.07','00.01.08']) {
     const meta=JSON.parse(read('src/content/lessons/'+id+'.meta.json'));
     assert.ok(meta.rubric.length>=3);
     assert.ok(read('src/content/lesson-registry.tsx').includes(id));

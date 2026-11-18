@@ -31,7 +31,7 @@ export function DocShell({ children, active }: { children: ReactNode; active?: s
       </header>
       <div className="mx-auto grid max-w-7xl gap-8 px-4 py-8 sm:px-6 lg:grid-cols-[235px_minmax(0,1fr)]">
         <aside aria-label="Published lessons" className="hidden self-start lg:sticky lg:top-20 lg:block">
-          <div className="rounded-2xl border border-slate-200 bg-white/90 p-4 dark:border-white/10 dark:bg-white/[0.03]">
+          <div className="max-h-[calc(100dvh-7rem)] overflow-y-auto rounded-2xl border border-slate-200 bg-white/90 p-4 dark:border-white/10 dark:bg-white/[0.03]">
             <h2 className="mb-3 text-xs font-bold uppercase tracking-widest text-slate-500">Available lessons</h2>
             <div className="flex flex-col gap-1">
               {PUBLISHED_LESSON_IDS.map((id) => (

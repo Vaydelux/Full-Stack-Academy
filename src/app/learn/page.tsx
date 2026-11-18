@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { AUTHORED_LESSONS } from '@/lib/academy/authored-content';
-import { MDX_METADATA, PUBLISHED_LESSON_IDS } from '@/lib/academy/published';
+import { MDX_METADATA, PUBLISHED_LESSON_IDS, LOCAL_LAB_LESSONS } from '@/lib/academy/published';
 import { modulesByTrack, summary, trackMap, TRACK_GROUPS } from '@/lib/academy/curriculum';
 import { DocShell } from '@/components/course/DocShell';
 
@@ -18,6 +18,13 @@ export default function CourseIndex() {
       <p className="mt-4 max-w-3xl text-sm leading-7 text-slate-600 dark:text-slate-300">
         {summary.tracks} tracks, {summary.modules} modules and {summary.plannedLessons} mapped topics. Only published lessons contain verified teaching material; the remaining topics are explicitly marked as planned.
       </p>
+      <section aria-label="Beginner learning path" className="mt-8 rounded-xl border border-cyan-600/25 bg-cyan-500/[0.05] p-5">
+        <p className="text-xs font-semibold text-cyan-700 dark:text-cyan-300">Start here · Module 00.01</p>
+        <h2 className="mt-2 text-xl font-bold">Computing &amp; internet foundations</h2>
+        <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">{LOCAL_LAB_LESSONS.length} authored lessons · {LOCAL_LAB_LESSONS.reduce((minutes, lesson) => minutes+lesson.estimatedMinutes, 0)} min estimated · Local hands-on practice</p>
+        <Link href="/learn/00.01.01" className="mt-4 inline-flex rounded-lg bg-cyan-700 px-4 py-2 text-sm font-semibold text-white">Start module</Link>
+        <Link href="/learn/track/00" className="ml-4 text-sm font-medium text-cyan-700 dark:text-cyan-300">View topics</Link>
+      </section>
       <section aria-labelledby="published-title" className="mt-9">
         <h2 id="published-title" className="mb-4 text-xl font-bold">Start with available lessons</h2>
         <div className="grid gap-3 sm:grid-cols-2">
