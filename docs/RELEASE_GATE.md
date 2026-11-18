@@ -1,30 +1,33 @@
-# Academy reader release gate — 2026-11-18
+# Full-Stack Academy — Release and QA gates (2026-11-18)
 
-## Alignment
+## Current publication truth
 
-- Planned syllabus: **28 tracks / 111 modules / 889 topics**; only **4 interactive sample lessons** are authored.
-- Reference index: **303 subjects**; **4 reference article drafts** are authored.
-- Keep each track in one primary group and preserve subtopics in module order.
-- Lessons need the ten-stage authoring quality bar in `COURSE_AUTHORING_STANDARD.md`.
-- Progress remains local and self-assessed, not a certificate or tamper-proof grade.
-- The current spatial Next.js reader is retained. Migrating to MDX/Fumadocs must preserve interactive sample lessons.
+- **Curriculum plan:** 28 tracks, 111 modules, 889 topic IDs. Only **61** lessons are published, spanning **7 complete modules**. Catalog entries are not authored pages.
+- **Content:** 58 MDX files, four interactive models (one overlapping ID), 58 offline local lab fixtures.
+- **References:** 303 indexed subjects; four authored drafts. Do not confuse index coverage with completed articles.
+- **Runtime:** Next.js App Router, compile-time trusted MDX, sandboxed local JSX teaching environment. No authenticated synced progress or remote arbitrary-code grading.
+- **Progress:** browser-local and self-assessed, not a certificate or tamper-resistant assessment.
 
-## Hardening in this branch
+## Every candidate must pass
 
-1. Sandbox uses `sandbox="allow-scripts"` without same-origin; messages verify source and origin.
-2. Module asset CORS permits opaque-origin sandbox imports; parent executable code input is bounded.
-3. Backup hydration and restore validate completion gates and reference known lesson IDs.
-4. Planned lessons show an honest lab/editor placeholder.
-5. Shortcuts no longer interfere with focused buttons, links, forms or dialogs.
-6. Curriculum track 10 appears in Backend and databases only.
-7. CI defines typecheck, lint, Node tests, package validation and Next production build.
+1. Confirm `main`, open PRs, source-of-truth curriculum IDs and last verified app-release SHA.
+2. Author each canonical lesson with metadata, 3+ guided runnable steps, predictions, self-check and misconception, bug hunt, official HTTPS citations, real local lab starter+solution+tests, an honest rubric.
+3. Register `.mdx` and `.meta.json` in both publication registries; keep planned lessons `noindex`, excluded from sitemap and unavailable for completion claims.
+4. Run `npm ci`, `npm run lint`, `npm run typecheck`, `npm test`, `npm run validate`, `npm run verify:content`, `npm run checkpoint:check`, `npm run test:labs`, `npm run build`, and isolated Chromium smoke on the PR HEAD.
+5. Run `npm run audit:dependencies`: runtime critical/high must fail; scoped temporary dev advisory exception must be reviewed by its expiry date.
+6. Verify exact-head Vercel preview READY and check hosted published routes, robots metadata, sitemap and representative browser behavior. Do not treat a READY build alone as interactive usability certification.
+7. Review diff, security changes, unresolved threads and scoped exceptions; merge only after required gates pass. Confirm main CI, production deployment SHA and live route behavior after merge; update the handoff checkpoint.
 
-## Still needed before production graduation
+## Known residual risks and nonclaims
 
-- Verify live React sandbox in a real deployed browser; check asset CORS and browser console.
-- Validate desktop, keyboard-only, and touch-mobile viewport behavior with Playwright.
-- Implement stable canonical lesson URLs, reference URLs, metadata and SEO; current one-page workspace is not yet an indexable documentation site.
-- Add MDX content tooling, versioned code fixtures, executable/graded lab tests, accessibility audits and lesson editorial QA.
-- Before accepting arbitrary untrusted public code, host execution on a dedicated sandbox origin with CSP, quotas and strict network restrictions.
-- For multi-device progress, add authenticated server-side progress with explicit privacy/retention policy.
-- Do not merge a failed CI change or claim the planned lesson catalog is published content.
+- The **14 dev-only Picomatch high findings** are not fixed. The controlled exception expires 2026-12-02 UTC (see `docs/DEPENDENCY_SECURITY_REVIEW.md`).
+- Chromium smoke is not a physical-device manual screen-reader audit nor formal WCAG 2.2 certification.
+- Do not compile untrusted user-submitted MDX or run arbitrary learner code on the trusted Next.js origin. Keep iframe opaque-origin isolation, bounded messages and explicit source/origin checks.
+- Do not claim client-only preview messages reflect persisted submissions or real backend acknowledgments.
+- Keep the reading-first navigation and keyboard behavior; do not replace the MDX reader or alter branding during curriculum milestones.
+
+## Last verified application release
+
+[PR #12](https://github.com/Vaydelux/Full-Stack-Academy/pull/12) merged Module `01.04`; application release commit `394e6d0f620f4740912b0d50cbcbbf5aecc83e8e`; post-merge [CI 44321173715](https://github.com/Vaydelux/Full-Stack-Academy/actions/runs/44321173715) successful; production deployment `dpl_5CsySTxdf8iRD2zQ1wpL4xcTBstX` READY; hosted published routes and planned noindex/sitemap boundaries verified.
+
+Read `docs/PROJECT_CHECKPOINT.md` and `docs/NEXT_TODO.md` before starting `02.01 — CSS Fundamentals`.
