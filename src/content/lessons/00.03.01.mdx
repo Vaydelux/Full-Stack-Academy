@@ -11,7 +11,7 @@ A page fails with 'Unable to load dashboard,' but the real failure started when 
 
 An Error has a name, message, and usually a stack showing where it was thrown followed by callers. The top stack frame often points closest to the throw; it is not universally the 'bottom line.' An Error.cause chain records higher-level error wrappers; following it toward the deepest cause can reveal the originating failure. Console output order varies by runtime and formatting. Diagnose the cause chain first, identify the first relevant application frame, then reproduce the failure. Never paste logs containing credentials or personal data.
 
-**Predict before running:** If Error('Load failed', {cause:new TypeError('missing config')}) is thrown, which message most directly names the originating failure? 'missing config', while the wrapper provides operation context.
+**Predict before running:** If `Error('Load failed', {cause:new TypeError('missing config')})` is thrown, which message most directly names the originating failure? 'missing config', while the wrapper provides operation context.
 
 ## Prerequisites
 
