@@ -28,7 +28,10 @@
     "lab:project-scripts": "node --test labs/project-scripts/solution.test.mjs",
     "lab:environment-config": "node --test labs/environment-config/solution.test.mjs",
     "lab:git-ssh-setup": "node --test labs/git-ssh-setup/solution.test.mjs",
-    "lab:workstation-capstone": "node --test labs/workstation-capstone/solution.test.mjs"
+    "lab:workstation-capstone": "node --test labs/workstation-capstone/solution.test.mjs",
+    "checkpoint:check": "node scripts/checkpoint-status.mjs --check",
+    "checkpoint:write": "node scripts/checkpoint-status.mjs --write",
+    "checkpoint:show": "node scripts/checkpoint-status.mjs"
   },
   "dependencies": {
     "clsx": "^2.1.1",

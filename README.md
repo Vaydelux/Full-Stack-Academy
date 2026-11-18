@@ -92,3 +92,7 @@ All eight computing and internet foundations lessons (00.01.01–00.01.08) use l
 ## Developer Toolchain (00.02)
 
 Eight complete lessons teach VS Code, PowerShell/Bash/WSL, Node runtime, package manager locks, scripts, configuration, Git/SSH and a workstation capstone. Each includes local starter and solution fixtures and acceptance tests. The catalog groups available lessons by module. Use Node.js 24 and Git to run the local exercises. npm remains the academy's package manager; pnpm is taught separately. The course now has 20 authored lessons (16 orientation lessons and four interactive samples). Manual workstation operations are self-assessed, not automatically certified.
+
+## Current project handoff and progress
+
+The canonical multi-agent handoff is [AGENTS.md](AGENTS.md), [docs/PROJECT_CHECKPOINT.md](docs/PROJECT_CHECKPOINT.md), [docs/NEXT_TODO.md](docs/NEXT_TODO.md), and machine-checked [docs/checkpoint.json](docs/checkpoint.json). Run `npm run checkpoint:check` to verify authored/published counts; after changing the publication inventory, run `npm run checkpoint:write` and commit the generated snapshot. The earlier v1.1 overview sections remain historical and do not supersede these handoff files.

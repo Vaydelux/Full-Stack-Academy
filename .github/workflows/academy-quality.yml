@@ -48,6 +48,8 @@ jobs:
         run: npm run validate
       - name: Validate publishable MDX metadata and lab fixtures
         run: npm run verify:content
+      - name: Verify machine-readable handoff checkpoint
+        run: npm run checkpoint:check
       - name: Test checked-in React lab solution
         run: npm run test:labs
       - name: Production build

@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-11-18",
+  "baseline": {
+    "branch": "main",
+    "sha": "cd7f33bb0c524887c8b6e05a8dd2c90867fd6439",
+    "vercelDeploymentId": "dpl_7u1f3atULEvoE1tmNX2bokzXCJBB",
+    "ciRun": 44243836026
+  },
+  "development": {
+    "branch": "feat/learning-debugging-checkpoint"
+  },
+  "snapshot": {
+    "tracks": 28,
+    "modules": 111,
+    "catalogTopics": 889,
+    "indexedReferences": 303,
+    "authoredReferenceDrafts": 4,
+    "authoredInteractiveModels": 4,
+    "authoredMdxLessons": 17,
+    "publishedLessons": 20,
+    "labFixtures": 17,
+    "completeModules": [
+      "00.01",
+      "00.02"
+    ]
+  },
+  "security": {
+    "runtimeAuditKnownFindings": 0,
+    "devHighFindings": 14,
+    "exceptionExpires": "2026-12-02"
+  },
+  "nextMilestone": "00.03",
+  "status": "active"
+}
