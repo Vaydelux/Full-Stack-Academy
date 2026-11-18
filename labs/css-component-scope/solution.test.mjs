@@ -9,5 +9,5 @@ test('standalone design-system fixture has one semantic main and no external dep
 });
 test('CSS defect is replaced with the instructor stateful rule',()=>{
  assert.ok(html.includes("[data-component=\"course\"] .item-title"),'Missing: '+"[data-component=\"course\"] .item-title");
- assert.ok(!html.includes(".item-title { color: #075e7b; }"),'Original defective rule is still present');
+  assert.doesNotMatch(html, /^\s*\.item-title\s*\{/m, 'Global title selector must not remain');
 });

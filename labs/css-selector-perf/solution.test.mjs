@@ -9,5 +9,5 @@ test('offline performance/a11y fixture is semantic and self contained',()=>{
 });
 test('the targeted CSS performance or accessibility repair is present',()=>{
   assert.ok(html.includes("[data-component=\"learning-list\"] .item"),'Missing: '+"[data-component=\"learning-list\"] .item");
-  assert.ok(!html.includes(".item { color: #075e7b; }"),'Original incorrect rule remains');
+  assert.doesNotMatch(html, /^\s*\.item\s*\{/m, 'Global item selector must not remain');
 });
