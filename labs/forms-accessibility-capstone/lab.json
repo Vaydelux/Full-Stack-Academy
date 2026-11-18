@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.forms-accessibility-capstone",
+  "lessonId": "01.02.08",
+  "title": "Bug Hunt inaccessible form",
+  "runtime": "browser-html-and-node-24",
+  "status": "authored",
+  "starter": "labs/forms-accessibility-capstone/starter/index.html",
+  "solution": "labs/forms-accessibility-capstone/solution/index.html",
+  "tests": "labs/forms-accessibility-capstone/solution.test.mjs",
+  "verify": [
+    "npm run lab:forms-accessibility-capstone"
+  ],
+  "expected": "I verified the local preview makes no false claim about saving or sending data.",
+  "security": "Standalone offline HTML/browser exercise only. No uploads, remote submissions, account persistence, or arbitrary user code on server. Chromium tests real keyboard and validation behavior."
+}

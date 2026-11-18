@@ -1,0 +1,39 @@
+{
+  "id": "01.02.05",
+  "title": "File inputs and safe local previews",
+  "description": "Use a labeled file control with accept hints, multipart semantics and defensive local file validation without uploading any content.",
+  "trackId": "01",
+  "moduleId": "01.02",
+  "level": "Beginner",
+  "estimatedMinutes": 55,
+  "status": "authored",
+  "reviewedAt": "2026-11-18",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "01.02.04"
+  ],
+  "objectives": [
+    "Label file inputs and clearly describe accepted formats",
+    "Distinguish file chooser hints from enforceable server checks",
+    "Validate selected file type and size for a local preview",
+    "Explain multipart encoding and backend upload security requirements"
+  ],
+  "labId": "lab.foundation.forms-files",
+  "sources": [
+    {
+      "label": "MDN file input",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/input/file"
+    },
+    {
+      "label": "MDN sending form data",
+      "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Forms/Sending_and_retrieving_form_data"
+    }
+  ],
+  "rubric": [
+    "I labeled the file picker and explained accepted formats.",
+    "I tested a valid, unsupported and oversized example file locally.",
+    "I confirmed there is no network upload and identified server verification requirements."
+  ]
+}

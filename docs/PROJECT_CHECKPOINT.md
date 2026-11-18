@@ -33,6 +33,13 @@ Canonical data: `data/curriculum.json`, `data/reference-index.json`. Published l
 - Browser CI tests desktop/mobile and basic keyboard semantics; they do not replace a manual assistive-technology audit on real devices.
 - The historical README header still says v1.1; reconcile the old narrative when convenient without making branding or layout a release blocker.
 
+## Current feature branch — Module 01.02 (unreleased)
+
+- Eight additional MDX lessons and local HTML/JS starter/solution projects covering labels, constraints, native submission, progressive enhancement, file inputs, dialog/popover/details, form events and an accessibility repair capstone.
+- In-branch provisional counts: **44 authored lessons, 41 MDX files, 41 lab manifests and five complete modules**. These values will be confirmed by `npm run checkpoint:check` and CI. The production SHA above remains unchanged until merge and deployment verification.
+- Real Chromium checks now cover native constraint validation, accurate local submission messages, no-JavaScript fallback, safe file metadata previews, modal keyboard behavior and responsive form interactions.
+- The next catalog module is `01.03` Accessibility (nine topics), but do not start it before qualifying and releasing 01.02.
+
 ## Immediate next milestone: `01.02` HTML Forms & Validation
 The eight canonical topics from `data/curriculum.json`: `01.02.01` Labels controls and fieldsets; `01.02.02` Input types and validation; `01.02.03` Buttons and form submissions; `01.02.04` Progressive enhancement; `01.02.05` File inputs; `01.02.06` Dialog popover and details; `01.02.07` Native events and default behavior; `01.02.08` Bug Hunt inaccessible form. See `docs/NEXT_TODO.md` for acceptance criteria and release gates.
 

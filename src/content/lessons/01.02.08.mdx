@@ -1,0 +1,111 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Repair label and fieldset relationships on an intentionally broken form","Preserve native email and required-field constraints","Add visible focus styles and live feedback without claiming persistence","Verify invalid and valid keyboard flows and mobile layout in Chromium"]} />
+
+## The problem we're solving
+
+A contact form looks good with a mouse but fails for keyboard and screen-reader visitors: missing labels, unlabeled radio choices, no validation, invisible focus and a submit action that silently does nothing.
+
+## Build the mental model
+
+An accessible form begins with persistent labels and a coherent control order. Fieldsets group related choices; hints and errors should have clear programmatic relationships. Native constraint validation handles common input errors and can focus invalid controls. For an inline summary, listen to invalid events in the capture phase (they do not bubble normally) without suppressing browser validation. Display a visible alert for invalid input and a status message only after a valid local demo submission. This example intentionally **does not save or transmit** contact data. The production backend would still need validation, abuse protection, privacy handling and a real acceptance response.
+
+**Predict before running:** If an email is invalid, the submit handler ordinarily will not run, but an invalid listener in the capture phase can provide an extra accessible error summary.
+
+## Prerequisites
+
+Complete [the previous lesson](/learn/01.02.07). Use an offline browser and the repository's HTML starter fixture with Node.js 24 for tests. No real user data, cloud accounts, or server-side submission is needed.
+
+<LessonStep number={1} title={"Repair labels and grouped contact preferences"} file="labs/forms-accessibility-capstone/starter/index.html" expected={"Assistive technology exposes field names and a named radio group."}>
+
+Create associated labels and a native fieldset/legend for exclusive choices.
+
+```html
+<label for="contact-name">Display name</label>
+<input id="contact-name" name="displayName" autocomplete="nickname" required>
+<label for="contact-email">Contact email</label>
+<input id="contact-email" name="email" type="email" autocomplete="email" required>
+<fieldset><legend>Contact preference</legend>
+  <label><input type="radio" name="preference" value="email" required> Email</label>
+  <label><input type="radio" name="preference" value="none"> No follow-up</label>
+</fieldset>
+```
+
+</LessonStep>
+
+<LessonStep number={2} title={"Describe required message length and preserve browser validation"} file="labs/forms-accessibility-capstone/starter/index.html" expected={"Short or empty messages are rejected through native constraints."}>
+
+Use aria-describedby for a hint, required and minlength on the message.
+
+```html
+<label for="message">Workshop question</label>
+<p id="message-hint">At least 10 characters. No real messages are sent.</p>
+<textarea id="message" name="message" rows="5" required minlength="10" aria-describedby="message-hint"></textarea>
+```
+
+</LessonStep>
+
+<LessonStep number={3} title={"Give valid submission an honest live-region status"} file="labs/forms-accessibility-capstone/starter/index.html" expected={"Invalid fields remain focusable; valid submission produces a truthful status."}>
+
+Avoid fake success responses. Capture invalid events without canceling native feedback.
+
+```js
+form.addEventListener('invalid',event=>{
+  error.textContent='Check the highlighted field: '+(event.target.labels?.[0]?.textContent||'Required information');
+},true);
+form.addEventListener('submit',event=>{
+  event.preventDefault();
+  error.textContent='';
+  status.textContent='Local form preview complete. Nothing sent or saved.';
+});
+```
+
+</LessonStep>
+
+<LessonStep number={4} title={"Verify visible focus and mobile readability"} file="labs/forms-accessibility-capstone/starter/index.html" expected={"The form has visible focus and no horizontal overflow at a 390px viewport."}>
+
+Apply a high-contrast keyboard focus outline and responsive content width; then tab through the entire form.
+
+```css
+input:focus-visible,textarea:focus-visible,button:focus-visible{outline:3px solid #e67b18;outline-offset:3px}
+*{box-sizing:border-box}
+main{width:min(100%,48rem)}
+```
+
+</LessonStep>
+
+## Explore it yourself
+
+Open `labs/forms-accessibility-capstone/starter/index.html` in Chromium and use only your keyboard for at least one complete interaction. Inspect the accessibility tree, form validity or event behavior relevant to the lesson. Compare with `labs/forms-accessibility-capstone/solution/index.html`. When a file picker is involved use synthetic files only; never upload private content to a tutorial.
+
+<Misconception claim={"An alert saying 'Submitted!' means a form was saved."} correction={"A local preview and real server acceptance are separate events; never claim persistence without a confirmed backend response."} />
+
+## Bug Hunt: diagnose and repair the behavior
+
+The flawed starter contains unlabeled controls, radio inputs with unrelated names, a missing submit status and no mobile focus treatment. Repair them all and verify both invalid and valid paths in a real browser.
+
+<KnowledgeCheck question={"How can a form show an error summary while preserving native invalid-field feedback?"} choices={["Disable required validation","Capture the invalid event and update a role=alert message without canceling validation","Replace every input with a div","Always claim success when the submit button is clicked"]} correctIndex={1} explanation={"Capture invalid events and keep native browser validation; show a truthful status only after valid form submission."} misconception={"Invalid events do not bubble normally, and a submit handler does not fire for invalid native submissions."} lessonId="01.02.08" />
+
+## Guided local lab
+
+Implement the exercise in `labs/forms-accessibility-capstone/starter/index.html`; instructor solution is in `labs/forms-accessibility-capstone/solution/index.html`. Test **your starter** with:
+
+```powershell
+$env:ACADEMY_LAB_TARGET = 'starter'
+npm run lab:forms-accessibility-capstone
+Remove-Item Env:ACADEMY_LAB_TARGET
+```
+
+In Bash: `ACADEMY_LAB_TARGET=starter npm run lab:forms-accessibility-capstone`. The starter fails initially; pass its checks by repairing the actual markup and behavior. Default scripts test the instructor solution; the browser smoke suite separately checks behavior. Do not claim that a local preview saves or transmits data.
+
+<LabGate lessonId="01.02.08" labId="lab.foundation.forms-accessibility-capstone" commands={["npm ci","npm run lab:forms-accessibility-capstone"]} interactive={false} />
+
+## Reflect
+
+Record the original failure, expected browser behavior, actual observed result, and why the fix uses native semantics or targeted JavaScript. Explain what remains a real backend's responsibility.
+
+## Official references
+
+- [WAI form instructions and validation](https://www.w3.org/WAI/tutorials/forms/notifications/)
+- [MDN HTML constraint validation](https://developer.mozilla.org/en-US/docs/Web/HTML/Guides/Constraint_validation)

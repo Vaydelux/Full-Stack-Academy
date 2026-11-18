@@ -1,0 +1,39 @@
+{
+  "id": "01.02.06",
+  "title": "Dialog popover and details",
+  "description": "Select the right native HTML disclosure pattern and test modal focus, Escape dismissal, non-modal popovers and details without custom focus traps.",
+  "trackId": "01",
+  "moduleId": "01.02",
+  "level": "Beginner",
+  "estimatedMinutes": 55,
+  "status": "authored",
+  "reviewedAt": "2026-11-18",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "01.02.05"
+  ],
+  "objectives": [
+    "Choose details for inline disclosure and popover for lightweight help",
+    "Open a named modal dialog with showModal and an explicit close action",
+    "Verify Escape dismissal and focus restoration in Chromium",
+    "Avoid unnecessary custom focus traps or misleading dialog roles"
+  ],
+  "labId": "lab.foundation.forms-native-dialog",
+  "sources": [
+    {
+      "label": "MDN dialog reference",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/dialog"
+    },
+    {
+      "label": "MDN popover API",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/API/Popover_API"
+    }
+  ],
+  "rubric": [
+    "I used the appropriate disclosure control for each context.",
+    "I opened and dismissed a modal with its native keyboard behavior.",
+    "I verified focus recovery, popover toggling and details expansion in a browser."
+  ]
+}

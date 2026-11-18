@@ -1,0 +1,39 @@
+{
+  "id": "01.02.08",
+  "title": "Bug Hunt inaccessible form",
+  "description": "Repair a flawed workshop contact form into a keyboard-operable, labeled, validated and mobile-friendly local preview with meaningful errors and honest completion messages.",
+  "trackId": "01",
+  "moduleId": "01.02",
+  "level": "Beginner",
+  "estimatedMinutes": 75,
+  "status": "authored",
+  "reviewedAt": "2026-11-18",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "01.02.07"
+  ],
+  "objectives": [
+    "Repair label and fieldset relationships on an intentionally broken form",
+    "Preserve native email and required-field constraints",
+    "Add visible focus styles and live feedback without claiming persistence",
+    "Verify invalid and valid keyboard flows and mobile layout in Chromium"
+  ],
+  "labId": "lab.foundation.forms-accessibility-capstone",
+  "sources": [
+    {
+      "label": "WAI form instructions and validation",
+      "url": "https://www.w3.org/WAI/tutorials/forms/notifications/"
+    },
+    {
+      "label": "MDN HTML constraint validation",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Guides/Constraint_validation"
+    }
+  ],
+  "rubric": [
+    "I repaired every field label, choice group and hint relationship.",
+    "I tested keyboard focus plus invalid and valid submission flows at mobile width.",
+    "I verified the local preview makes no false claim about saving or sending data."
+  ]
+}

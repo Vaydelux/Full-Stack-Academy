@@ -1,0 +1,90 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Associate every form control with visible accessible labels","Group related radio choices in a fieldset with a legend","Connect optional instructions through aria-describedby","Distinguish an input id from its submitted name"]} />
+
+## The problem we're solving
+
+A registration form relies on placeholders instead of labels. When the visitor starts typing, the instructions disappear; a screen-reader user cannot identify the fields or the choice group.
+
+## Build the mental model
+
+A form control needs a programmatically associated label: use `label for` matching the control ID, or nest an input inside a label. Placeholder text does not replace a label. The `name` identifies a field for submission; the `id` connects references inside this document. `fieldset` and `legend` group related radio controls into a named choice. `aria-describedby` adds instructions without replacing the accessible name. Avoid unnecessary ARIA when native elements already encode semantics.
+
+**Predict before running:** Will an input become correctly labeled merely because it contains a placeholder with a description? No: the placeholder is not a label.
+
+## Prerequisites
+
+Complete [the previous lesson](/learn/01.01.08). Work with Node.js 24 and a local browser on the checked-in form fixtures. These examples deliberately use only synthetic data and cannot create accounts or transmit registrations.
+
+<LessonStep number={1} title={"Build an explicitly labeled text input"} file="labs/forms-labels/starter/index.html" expected={"Clicking the label focuses its corresponding input."}>
+
+The name field has a persistent label that works even after typing.
+
+```html
+<label for="full-name">Full name</label>
+<input id="full-name" name="fullName" autocomplete="name" required>
+```
+
+</LessonStep>
+
+<LessonStep number={2} title={"Connect help text to a separate control"} file="labs/forms-labels/starter/index.html" expected={"Accessibility inspection reads the field name and helpful description."}>
+
+Use aria-describedby for format guidance; the label stays the accessible name.
+
+```html
+<label for="contact-email">Contact email</label>
+<p id="email-hint">Use an address you can access.</p>
+<input id="contact-email" name="email" type="email" aria-describedby="email-hint" required>
+```
+
+</LessonStep>
+
+<LessonStep number={3} title={"Group exclusive choices with native elements"} file="labs/forms-labels/starter/index.html" expected={"Only one session can be selected at a time, and the group has a visible legend."}>
+
+Radio inputs with the same name form a set and their fieldset provides the group label.
+
+```html
+<fieldset>
+  <legend>Preferred session</legend>
+  <label><input type="radio" name="session" value="morning" required> Morning</label>
+  <label><input type="radio" name="session" value="afternoon"> Afternoon</label>
+</fieldset>
+```
+
+</LessonStep>
+
+## Explore it yourself
+
+Open `labs/forms-labels/starter/index.html` in a browser and inspect its accessible labels, form validity and navigation from DevTools. Try keyboard-only interaction and record which browser behavior occurs before JavaScript executes. Compare results against `labs/forms-labels/solution/index.html`. A browser may display localized error strings; test the constraint state instead of comparing exact wording.
+
+<Misconception claim={"The placeholder is a valid replacement for a label."} correction={"Placeholders can vanish and do not reliably provide persistent accessible names; use labels instead."} />
+
+## Bug Hunt: identify the root cause
+
+The contact field's visible label points at `id=contact`, but the input is `id=contact-email`. Fix the association, then verify the browser exposes both name and description.
+
+<KnowledgeCheck question={"Why combine `fieldset` and `legend` for related radio buttons?"} choices={["To force a new browser tab","To give the group a clear semantic name","To store the answer on the server","To disable keyboard focus"]} correctIndex={1} explanation={"The legend provides a visible and accessible label for a related control group."} misconception={"ARIA is not needed when native HTML provides the grouping."} lessonId="01.02.01" />
+
+## Guided local lab
+
+Edit `labs/forms-labels/starter/index.html`. The instructor solution is in `labs/forms-labels/solution/index.html`. Run **your starter's** tests with PowerShell:
+
+```powershell
+$env:ACADEMY_LAB_TARGET = 'starter'
+npm run lab:forms-labels
+Remove-Item Env:ACADEMY_LAB_TARGET
+```
+
+For Bash: `ACADEMY_LAB_TARGET=starter npm run lab:forms-labels`. The incomplete starter is expected to fail first. Default commands test the instructor solution; Chromium smoke tests the real browser behavior separately. Completion is self-assessed, not a remote grading or persisted submission.
+
+<LabGate lessonId="01.02.01" labId="lab.foundation.forms-labels" commands={["npm ci","npm run lab:forms-labels"]} interactive={false} />
+
+## Reflect
+
+Write down which rules are browser defaults, which are accessibility conventions, and what a real backend would still need to validate or process. Share only synthetic form values and non-sensitive test output.
+
+## Official references
+
+- [MDN label element](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/label)
+- [WAI labeling form controls](https://www.w3.org/WAI/tutorials/forms/labels/)

@@ -1,0 +1,39 @@
+{
+  "id": "01.02.03",
+  "title": "Buttons and form submissions",
+  "description": "Use explicit button types, successful named controls and GET form submission without producing remote side effects.",
+  "trackId": "01",
+  "moduleId": "01.02",
+  "level": "Beginner",
+  "estimatedMinutes": 50,
+  "status": "authored",
+  "reviewedAt": "2026-11-18",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "01.02.02"
+  ],
+  "objectives": [
+    "Use explicit submit, button and reset types",
+    "Explain named form controls and successful submissions",
+    "Compare GET query encoding with POST body semantics",
+    "Inspect a real safe local GET navigation without a backend"
+  ],
+  "labId": "lab.foundation.forms-submission",
+  "sources": [
+    {
+      "label": "MDN button element",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/button"
+    },
+    {
+      "label": "MDN sending form data",
+      "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Forms/Sending_and_retrieving_form_data"
+    }
+  ],
+  "rubric": [
+    "I used explicit button types for distinct actions.",
+    "I inspected the named field encoded in the local GET URL.",
+    "I verified the helper action does not submit or reset the form."
+  ]
+}

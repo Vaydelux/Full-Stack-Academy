@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.forms-enhancement",
+  "lessonId": "01.02.04",
+  "title": "Progressive enhancement",
+  "runtime": "browser-html-and-node-24",
+  "status": "authored",
+  "starter": "labs/forms-enhancement/starter/index.html",
+  "solution": "labs/forms-enhancement/solution/index.html",
+  "tests": "labs/forms-enhancement/solution.test.mjs",
+  "verify": [
+    "npm run lab:forms-enhancement"
+  ],
+  "expected": "I tested both JavaScript-enabled and JavaScript-disabled paths.",
+  "security": "Static offline browser form examples only; no real submissions, hosted user code, backend persistence or credentials. Chromium exercises browser behavior."
+}

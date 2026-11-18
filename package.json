@@ -10,7 +10,7 @@
     "typecheck": "tsc --noEmit",
     "validate": "python validate_package.py",
     "test": "node --test tests/academy.test.mjs tests/hardening.test.mjs tests/course-routes.test.mjs tests/content.test.mjs",
-    "test:labs": "tsx --test labs/jsx-skill-card/solution.test.tsx labs/browser-server/solution.test.mjs labs/request-lifecycle/solution.test.mjs labs/dns-domains/solution.test.mjs labs/tcp-tls-https/solution.test.mjs labs/http-contract/solution.test.mjs labs/api-json/solution.test.mjs labs/cookies-sessions/solution.test.mjs labs/devtools-trace/solution.test.mjs labs/vscode-workspace/solution.test.mjs labs/terminal-workflow/solution.test.mjs labs/node-runtime/solution.test.mjs labs/package-locks/solution.test.mjs labs/project-scripts/solution.test.mjs labs/environment-config/solution.test.mjs labs/git-ssh-setup/solution.test.mjs labs/workstation-capstone/solution.test.mjs labs/error-causes/solution.test.mjs labs/minimal-repro/solution.test.mjs labs/debugger-watches/solution.test.mjs labs/network-observation/solution.test.mjs labs/technical-questions/solution.test.mjs labs/changelog-reading/solution.test.mjs labs/architecture-notes/solution.test.mjs labs/environment-mismatch/solution.test.mjs labs/html-anatomy/solution.test.mjs labs/html-metadata/solution.test.mjs labs/html-landmarks/solution.test.mjs labs/html-headings/solution.test.mjs labs/html-text-lists/solution.test.mjs labs/html-navigation/solution.test.mjs labs/html-images/solution.test.mjs labs/html-accessible-page/solution.test.mjs",
+    "test:labs": "tsx --test labs/jsx-skill-card/solution.test.tsx labs/browser-server/solution.test.mjs labs/request-lifecycle/solution.test.mjs labs/dns-domains/solution.test.mjs labs/tcp-tls-https/solution.test.mjs labs/http-contract/solution.test.mjs labs/api-json/solution.test.mjs labs/cookies-sessions/solution.test.mjs labs/devtools-trace/solution.test.mjs labs/vscode-workspace/solution.test.mjs labs/terminal-workflow/solution.test.mjs labs/node-runtime/solution.test.mjs labs/package-locks/solution.test.mjs labs/project-scripts/solution.test.mjs labs/environment-config/solution.test.mjs labs/git-ssh-setup/solution.test.mjs labs/workstation-capstone/solution.test.mjs labs/error-causes/solution.test.mjs labs/minimal-repro/solution.test.mjs labs/debugger-watches/solution.test.mjs labs/network-observation/solution.test.mjs labs/technical-questions/solution.test.mjs labs/changelog-reading/solution.test.mjs labs/architecture-notes/solution.test.mjs labs/environment-mismatch/solution.test.mjs labs/html-anatomy/solution.test.mjs labs/html-metadata/solution.test.mjs labs/html-landmarks/solution.test.mjs labs/html-headings/solution.test.mjs labs/html-text-lists/solution.test.mjs labs/html-navigation/solution.test.mjs labs/html-images/solution.test.mjs labs/html-accessible-page/solution.test.mjs labs/forms-labels/solution.test.mjs labs/forms-constraints/solution.test.mjs labs/forms-submission/solution.test.mjs labs/forms-enhancement/solution.test.mjs labs/forms-files/solution.test.mjs labs/forms-native-dialog/solution.test.mjs labs/forms-events/solution.test.mjs labs/forms-accessibility-capstone/solution.test.mjs",
     "verify:content": "node scripts/validate-content.mjs",
     "lab:browser-server": "node --test labs/browser-server/solution.test.mjs",
     "lab:request-lifecycle": "node --test labs/request-lifecycle/solution.test.mjs",
@@ -47,7 +47,15 @@
     "lab:html-text-lists": "node --test labs/html-text-lists/solution.test.mjs",
     "lab:html-navigation": "node --test labs/html-navigation/solution.test.mjs",
     "lab:html-images": "node --test labs/html-images/solution.test.mjs",
-    "lab:html-accessible-page": "node --test labs/html-accessible-page/solution.test.mjs"
+    "lab:html-accessible-page": "node --test labs/html-accessible-page/solution.test.mjs",
+    "lab:forms-labels": "node --test labs/forms-labels/solution.test.mjs",
+    "lab:forms-constraints": "node --test labs/forms-constraints/solution.test.mjs",
+    "lab:forms-submission": "node --test labs/forms-submission/solution.test.mjs",
+    "lab:forms-enhancement": "node --test labs/forms-enhancement/solution.test.mjs",
+    "lab:forms-files": "node --test labs/forms-files/solution.test.mjs",
+    "lab:forms-native-dialog": "node --test labs/forms-native-dialog/solution.test.mjs",
+    "lab:forms-events": "node --test labs/forms-events/solution.test.mjs",
+    "lab:forms-accessibility-capstone": "node --test labs/forms-accessibility-capstone/solution.test.mjs"
   },
   "dependencies": {
     "clsx": "^2.1.1",

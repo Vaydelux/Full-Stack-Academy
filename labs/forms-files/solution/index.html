@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>File inputs</title><style>
+*{box-sizing:border-box}html{font-family:system-ui,sans-serif;color:#19334a;background:#f5f9fc}
+body{margin:0;padding:1rem}main{width:min(100%,48rem);margin:2rem auto;background:#fff;padding:clamp(1rem,4vw,2rem);border:1px solid #c4d5df;border-radius:.8rem}
+label{display:block;font-weight:650;margin:.8rem 0 .25rem}input,select,textarea,button{font:inherit}
+input:not([type=radio]):not([type=checkbox]):not([type=file]),select,textarea{width:100%;max-width:100%;padding:.65rem;border:1px solid #6f8292;border-radius:.3rem}
+button{padding:.65rem 1rem;margin:.75rem .5rem .25rem 0;background:#125a79;color:#fff;border:0;border-radius:.4rem;cursor:pointer}
+a{color:#075679}button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,summary:focus-visible,a:focus-visible{outline:3px solid #e67b18;outline-offset:3px}
+fieldset{margin:1rem 0;border:1px solid #9cafbb;border-radius:.4rem;padding:1rem}
+fieldset label{font-weight:400;display:block}fieldset input{margin-inline-end:.35rem}.hint{font-size:.9rem;color:#354e60;margin:.2rem 0 .7rem}
+output,.status{display:block;margin:.75rem 0;font-weight:650;white-space:pre-wrap}.error,[role=alert]{color:#9f2525}
+dialog{max-width:min(95vw,30rem);border:1px solid #6f8292;border-radius:.75rem;padding:1.5rem}
+dialog::backdrop{background:#17364b9e}[popover]{max-width:min(85vw,25rem);padding:1rem;border:1px solid #6f8292;border-radius:.5rem}
+@media(max-width:480px){main{margin:.5rem auto}}
+</style></head>
+<body><main><h1>Review a file attachment</h1><p>Local selection only; no file is sent or saved.</p>
+<form id="attachment-form">
+<label for="attachment">Choose an example attachment</label>
+<p id="file-hint" class="hint">PNG, JPEG or PDF; up to 1 MB. Nothing will be uploaded.</p>
+<input id="attachment" name="attachment" type="file" accept=".png,.jpg,.jpeg,.pdf,image/png,image/jpeg,application/pdf" aria-describedby="file-hint" required>
+<button type="submit">Preview file</button>
+<p id="file-status" role="status" aria-live="polite">No file selected.</p>
+</form></main><script>
+const input=document.querySelector('#attachment');
+const status=document.querySelector('#file-status');
+function validateSelectedFile(){
+  const file=input.files?.[0];
+  if(!file){status.textContent='No file selected.';return false;}
+  const allowed=new Set(['image/png','image/jpeg','application/pdf']);
+  if(!allowed.has(file.type)){status.textContent='Unsupported file type. Select PNG, JPEG or PDF.';return false;}
+  if(file.size>1_000_000){status.textContent='File too large. Use 1 MB or less.';return false;}
+  status.textContent='Ready for local preview: '+file.name+' ('+file.size+' bytes). Nothing uploaded.';
+  return true;
+}
+input.addEventListener('change',validateSelectedFile);
+document.querySelector('#attachment-form').addEventListener('submit',event=>{
+  event.preventDefault();
+  validateSelectedFile();
+});
+</script></body>
+</html>

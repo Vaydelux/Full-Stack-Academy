@@ -9,9 +9,9 @@
     "productionUrl": "https://fullstack-academy-ecru.vercel.app/"
   },
   "development": {
-    "branch": null,
-    "lastMergedPr": 6,
-    "state": "production-verified"
+    "branch": "feat/html-forms-validation-20261118",
+    "headNote": "HTML Forms & Validation release candidate: verification and preview pending",
+    "state": "in-review"
   },
   "snapshot": {
     "tracks": 28,
@@ -20,14 +20,15 @@
     "indexedReferences": 303,
     "authoredReferenceDrafts": 4,
     "authoredInteractiveModels": 4,
-    "authoredMdxLessons": 33,
-    "publishedLessons": 36,
-    "labFixtures": 33,
+    "authoredMdxLessons": 41,
+    "publishedLessons": 44,
+    "labFixtures": 41,
     "completeModules": [
       "00.01",
       "00.02",
       "00.03",
-      "01.01"
+      "01.01",
+      "01.02"
     ]
   },
   "security": {
@@ -35,6 +36,6 @@
     "devHighFindings": 14,
     "exceptionExpires": "2026-12-02"
   },
-  "nextMilestone": "01.02",
-  "status": "released"
+  "nextMilestone": "01.03",
+  "status": "release-candidate"
 }

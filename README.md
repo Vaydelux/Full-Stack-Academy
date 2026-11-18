@@ -104,3 +104,7 @@ Eight authored MDX lessons cover nested errors, minimal bug reproduction, debugg
 ## HTML Document Structure (01.01) — preview release candidate
 
 Eight HTML tutorials teach document structure, metadata, native landmarks, heading hierarchy, text/lists/quotations, descriptive links, responsive images, and a complete accessible content-page capstone. Every lesson includes a standalone offline HTML starter and instructor solution, Node structural tests and browser DevTools practice. The capstone also has responsive Chromium checks for real DOM, keyboard focus, local image loading, and mobile horizontal overflow. No cloud accounts or paid resources required. **PR preview content is not a production release until gates pass.**
+
+## HTML Forms & Validation (01.02) — release candidate
+
+Eight browser-native tutorials with standalone HTML/JS starter/solution fixtures cover labeling, constraint validation, GET vs POST semantics, no-script fallback, safe local file previews, modal/non-modal disclosure, native form event defaults, and inaccessible-form repair. JavaScript examples use synthetic information and do not send real submissions. Browser smoke checks native constraints, accessible names, keyboard interactions, mobile layout and explicit fallback behavior. Not production until release gates pass.

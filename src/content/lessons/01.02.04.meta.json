@@ -1,0 +1,39 @@
+{
+  "id": "01.02.04",
+  "title": "Progressive enhancement",
+  "description": "Build a native form that still reaches a safe local destination without JavaScript, then add an optional status-enhancing submit handler.",
+  "trackId": "01",
+  "moduleId": "01.02",
+  "level": "Beginner",
+  "estimatedMinutes": 55,
+  "status": "authored",
+  "reviewedAt": "2026-11-18",
+  "stack": {
+    "node": "24"
+  },
+  "prerequisites": [
+    "01.02.03"
+  ],
+  "objectives": [
+    "Provide a usable no-JavaScript form submission destination",
+    "Enhance with a progressive status message, not fabricated persistence",
+    "Avoid accidental suppression of native constraint validation",
+    "Check the enabled and disabled JavaScript paths in a real browser"
+  ],
+  "labId": "lab.foundation.forms-enhancement",
+  "sources": [
+    {
+      "label": "MDN forms progressive enhancement",
+      "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Forms/Sending_and_retrieving_form_data"
+    },
+    {
+      "label": "MDN constraint validation",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/HTML/Guides/Constraint_validation"
+    }
+  ],
+  "rubric": [
+    "I created a native form with usable no-script navigation.",
+    "I added an optional, truthful live-region preview while preserving browser validation.",
+    "I tested both JavaScript-enabled and JavaScript-disabled paths."
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.forms-labels",
+  "lessonId": "01.02.01",
+  "title": "Labels controls and fieldsets",
+  "runtime": "browser-html-and-node-24",
+  "status": "authored",
+  "starter": "labs/forms-labels/starter/index.html",
+  "solution": "labs/forms-labels/solution/index.html",
+  "tests": "labs/forms-labels/solution.test.mjs",
+  "verify": [
+    "npm run lab:forms-labels"
+  ],
+  "expected": "I checked accessible names, descriptions and local lab assertions.",
+  "security": "Static offline browser form examples only; no real submissions, hosted user code, backend persistence or credentials. Chromium exercises browser behavior."
+}
