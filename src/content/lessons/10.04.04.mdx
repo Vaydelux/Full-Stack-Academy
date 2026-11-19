@@ -1,0 +1,93 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Operation IDs used by SDK generators should be stable, unique and safe identifiers; examples should match their documented schema and not contain credentials.","Fix the examples and operation ids bug using a checked-in OpenAPI 3.1.1 example.","Verify an actual contract or generated SDK instead of assuming annotations make a server correct."]} />
+
+## The problem we're solving
+
+The starter reports no operation ID errors even after a new endpoint reuses an existing operationId. API schemas, operation IDs, examples, authorization descriptions and client integrations must remain consistent across changes.
+
+## Build the mental model
+
+Operation IDs used by SDK generators should be stable, unique and safe identifiers; examples should match their documented schema and not contain credentials.
+
+**Expected outcome:** The canonical contract has no issues; duplicates, missing IDs and unsafe names are detected.
+
+**Version and scope:** This module uses OpenAPI Specification **3.1.1** and one checked-in JSON contract at `examples/task-contract/task-api.openapi.json`. The smallest client generator is deliberately restricted to static, trusted GET/POST operations. Operation IDs are an SDK stability contract, not authorization or sanitization for arbitrary user-supplied scripts.
+
+## Prerequisites and preflight
+
+Complete `10.03.08` and the preceding OpenAPI lesson. Use Node 24 with no new runtime dependency. Read `labs/openapi-operation-ids/starter/solution.mjs`. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:openapi-operation-ids`; PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:openapi-operation-ids; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Demonstrate the broken contract or SDK output" file="labs/openapi-operation-ids/starter/solution.mjs" expected="The learner starter fails an actual contract assertion.">
+
+```js
+export function operationIdIssues(_document){return [];}
+```
+
+**Root cause:** The starter reports no operation ID errors even after a new endpoint reuses an existing operationId.
+
+</LessonStep>
+
+<LessonStep number={2} title="Build the valid OpenAPI 3.1 integration" file="labs/openapi-operation-ids/starter/solution.mjs" expected="The canonical contract has no issues; duplicates, missing IDs and unsafe names are detected.">
+
+```js
+export function operationIdIssues(document){
+ const issues=[];const seen=new Set();
+ for(const [route,verbs] of Object.entries(document?.paths??{})){
+  for(const [method,operation] of Object.entries(verbs)){
+   if(!['get','post','put','patch','delete'].includes(method))continue;
+   const id=operation?.operationId;
+   if(typeof id!=='string'||!/^[A-Za-z_$][\w$]*$/.test(id)||['__proto__','constructor','prototype'].includes(id))issues.push('invalid '+method+' '+route);
+   else if(seen.has(id))issues.push('duplicate '+id);
+   else seen.add(id);
+  }
+ }
+ return issues;
+}
+```
+
+**Why this corrects the contract:** Operation IDs used by SDK generators should be stable, unique and safe identifiers; examples should match their documented schema and not contain credentials.
+
+</LessonStep>
+
+<LessonStep number={3} title="Execute real document and client acceptance" file="labs/openapi-operation-ids/solution.test.mjs" expected="The instructor passes the local acceptance test; the red starter fails the intended contract assertion.">
+
+```js
+const {loadTaskSpec}=await import('../../../examples/task-contract/load-spec.mjs');
+const document=await loadTaskSpec();
+assert.deepEqual(mod.operationIdIssues(document),[]);
+const duplicated=structuredClone(document);duplicated.paths['/api/notes'].post.operationId='listNotes';
+assert.deepEqual(mod.operationIdIssues(duplicated),['duplicate listNotes']);
+const missing=structuredClone(document);delete missing.paths['/api/notes'].get.operationId;
+assert.ok(mod.operationIdIssues(missing).some(x=>x.startsWith('invalid')));
+```
+
+**Scope:** Operation IDs are an SDK stability contract, not authorization or sanitization for arbitrary user-supplied scripts. This small exercise does not invoke a general-purpose OpenAPI compiler, schema validator or public server.
+
+</LessonStep>
+
+<Misconception claim="The starter reports no operation ID errors even after a new endpoint reuses an existing operationId." correction="Operation IDs used by SDK generators should be stable, unique and safe identifiers; examples should match their documented schema and not contain credentials. Operation IDs are an SDK stability contract, not authorization or sanitization for arbitrary user-supplied scripts." />
+
+<KnowledgeCheck question="What makes examples and operation ids reliable?" choices={["A YAML or JSON file alone guarantees the running server follows the contract.","Operation IDs used by SDK generators should be stable, unique and safe identifiers; examples should match their documented schema and not contain credentials.","Operation IDs are proof that every route is authenticated and authorized.","OpenAPI annotations replace executable request/response tests."] } correctIndex={1} explanation="Operation IDs used by SDK generators should be stable, unique and safe identifiers; examples should match their documented schema and not contain credentials." misconception="Validate the source contract, SDK behavior and actual server responses separately." lessonId="10.04.04" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Failure:** The starter reports no operation ID errors even after a new endpoint reuses an existing operationId. **Reproduce:** run the red starter on the local example contract. **Repair:** Operation IDs used by SDK generators should be stable, unique and safe identifiers; examples should match their documented schema and not contain credentials. **Regression:** The canonical contract has no issues; duplicates, missing IDs and unsafe names are detected.
+
+## Guided local lab
+
+`labs/openapi-operation-ids/` contains a learner starter, complete instructor solution, executable Node assertions and a rubric. The examples use trusted static source files and no hosted learner-code runtime.
+
+<LabGate lessonId="10.04.04" labId="lab.openapi.openapi-operation-ids" commands={["npm run lab:openapi-operation-ids","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+Which changes are breaking for existing API clients? What additional dynamic schema validation and server instrumentation would be required before public SDK distribution?
+
+## Official references
+
+- [OpenAPI or HTTP specification](https://spec.openapis.org/oas/v3.1.1.html#operation-object)
+- [Supporting standards documentation](https://spec.openapis.org/oas/v3.1.1.html#example-object)

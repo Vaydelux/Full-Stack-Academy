@@ -1,0 +1,15 @@
+{
+  "id": "lab.openapi.openapi-bearer-schemes",
+  "lessonId": "10.04.03",
+  "title": "OpenAPI 3.1: OpenAPI security schemes",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/openapi-bearer-schemes/starter/solution.mjs",
+  "solution": "labs/openapi-bearer-schemes/solution/solution.mjs",
+  "tests": "labs/openapi-bearer-schemes/solution.test.mjs",
+  "verify": [
+    "npm run lab:openapi-bearer-schemes"
+  ],
+  "expected": "Only the declared BearerAuth security scheme protects GET and POST notes, while health remains public.",
+  "security": "Trusted checked-in OpenAPI JSON and local SDK generator only; no public auth, storage or remote code execution."
+}

@@ -1,0 +1,88 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Validate exact upstream HTTPS hostnames, reject credentials, alternate ports, IP literals and redirects—but recognize DNS rebinding and egress remain separate network controls.","Repair the server-side request forgery defect in a Node.js exercise.","Distinguish this local security model from a complete production defense."]} />
+
+## The problem we're solving
+
+The starter permits any HTTP URL containing the string of an allowed domain, including lookalikes. Real services must establish who can request a resource, constrain how the request is interpreted, and prevent unexpected data disclosure.
+
+## Build the mental model
+
+Validate exact upstream HTTPS hostnames, reject credentials, alternate ports, IP literals and redirects—but recognize DNS rebinding and egress remain separate network controls.
+
+**Expected outcome:** Only exact, explicitly allowlisted HTTPS destinations pass the URL policy.
+
+**Production boundary:** Never claim this pure URL policy is complete SSRF prevention: verify resolved IPv4/IPv6 addresses at connect time, prevent DNS rebinding and disable redirects; enforce network egress ACLs.
+
+## Prerequisites and preflight
+
+Complete Node.js `10.01` and HTTP `10.02`. Run locally under Node 24 using built-in APIs. Open `labs/security-ssrf-allowlist/starter/solution.mjs`. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:security-ssrf-allowlist`; PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:security-ssrf-allowlist; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the security regression" file="labs/security-ssrf-allowlist/starter/solution.mjs" expected="The red starter fails an actual assertion about a denied action.">
+
+```js
+export function allowedUpstream(raw,allowedHosts){
+ return allowedHosts.some(host=>String(raw).includes(host));
+}
+```
+
+**Why it fails:** The starter permits any HTTP URL containing the string of an allowed domain, including lookalikes.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the bounded guard or server behavior" file="labs/security-ssrf-allowlist/starter/solution.mjs" expected="Only exact, explicitly allowlisted HTTPS destinations pass the URL policy.">
+
+```js
+import {isIP} from 'node:net';
+export function allowedUpstream(raw,allowedHosts){
+ try{
+  const url=new URL(raw);
+  if(url.protocol!=='https:'||url.username||url.password||url.port&&url.port!=='443')return false;
+  const host=url.hostname.toLowerCase();
+  if(isIP(host)||host==='localhost'||host.endsWith('.localhost'))return false;
+  return allowedHosts.some(allowed=>host===allowed.toLowerCase());
+ }catch{return false;}
+}
+```
+
+**Why this works:** Validate exact upstream HTTPS hostnames, reject credentials, alternate ports, IP literals and redirects—but recognize DNS rebinding and egress remain separate network controls.
+
+</LessonStep>
+
+<LessonStep number={3} title="Test allowed and denied behavior" file="labs/security-ssrf-allowlist/solution.test.mjs" expected="The instructor passes positive and negative Node assertions, while the learner's starter fails a meaningful assertion.">
+
+```js
+const hosts=['api.partner.example'];
+assert.equal(mod.allowedUpstream('https://api.partner.example/data',hosts),true);
+for(const url of ['http://api.partner.example','https://api.partner.example.evil.test','https://evil.test/?target=api.partner.example','https://127.0.0.1/','https://user:pass@api.partner.example/','https://api.partner.example:8443/'])assert.equal(mod.allowedUpstream(url,hosts),false,url);
+```
+
+**Beyond the model:** Never claim this pure URL policy is complete SSRF prevention: verify resolved IPv4/IPv6 addresses at connect time, prevent DNS rebinding and disable redirects; enforce network egress ACLs. Real browser, proxy, DNS/egress and identity integration require independent testing.
+
+</LessonStep>
+
+<Misconception claim="The starter permits any HTTP URL containing the string of an allowed domain, including lookalikes." correction="Validate exact upstream HTTPS hostnames, reject credentials, alternate ports, IP literals and redirects—but recognize DNS rebinding and egress remain separate network controls. Never claim this pure URL policy is complete SSRF prevention: verify resolved IPv4/IPv6 addresses at connect time, prevent DNS rebinding and disable redirects; enforce network egress ACLs." />
+
+<KnowledgeCheck question="Which security boundary governs server-side request forgery?" choices={["A browser UI control is sufficient authorization for an HTTP operation.","Validate exact upstream HTTPS hostnames, reject credentials, alternate ports, IP literals and redirects—but recognize DNS rebinding and egress remain separate network controls.","A local function test proves every proxy and network access is secure.","Returning 200 for denied requests helps hide internal authorization decisions."] } correctIndex={1} explanation="Validate exact upstream HTTPS hostnames, reject credentials, alternate ports, IP literals and redirects—but recognize DNS rebinding and egress remain separate network controls." misconception="Always verify the relevant trust boundary in code and in its actual deployment context." lessonId="10.03.06" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Bug:** The starter permits any HTTP URL containing the string of an allowed domain, including lookalikes. **Reproduce:** run the red starter and inspect its negative case. **Repair:** Validate exact upstream HTTPS hostnames, reject credentials, alternate ports, IP literals and redirects—but recognize DNS rebinding and egress remain separate network controls. **Regression:** Only exact, explicitly allowlisted HTTPS destinations pass the URL policy.
+
+## Guided local lab
+
+`labs/security-ssrf-allowlist/` contains a broken learner source file, complete instructor implementation, executable Node tests and an assessment rubric. Run only trusted checked-in tests; no learner code is evaluated on a hosted server.
+
+<LabGate lessonId="10.03.06" labId="lab.security.security-ssrf-allowlist" commands={["npm run lab:security-ssrf-allowlist","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+What could still break at a reverse proxy, distributed gateway, DNS resolver, identity provider or persistence layer? How would you verify it with a negative integration test?
+
+## Official references
+
+- [Primary security specification or API](https://cheatsheetseries.owasp.org/cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.html)
+- [Additional official guidance](https://nodejs.org/api/dns.html)

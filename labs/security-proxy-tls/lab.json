@@ -1,0 +1,15 @@
+{
+  "id": "lab.security.security-proxy-tls",
+  "lessonId": "10.03.01",
+  "title": "Security boundary: TLS and reverse proxies",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/security-proxy-tls/starter/solution.mjs",
+  "solution": "labs/security-proxy-tls/solution/solution.mjs",
+  "tests": "labs/security-proxy-tls/solution.test.mjs",
+  "verify": [
+    "npm run lab:security-proxy-tls"
+  ],
+  "expected": "Spoofed HTTPS from an untrusted client stays insecure; trusted proxy HTTPS is recognized.",
+  "security": "Node built-ins; intentionally small local model. Deployment-grade controls require their own checks."
+}

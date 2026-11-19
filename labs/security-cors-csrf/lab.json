@@ -1,0 +1,15 @@
+{
+  "id": "lab.security.security-cors-csrf",
+  "lessonId": "10.03.02",
+  "title": "Security boundary: CORS versus CSRF",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/security-cors-csrf/starter/solution.mjs",
+  "solution": "labs/security-cors-csrf/solution/solution.mjs",
+  "tests": "labs/security-cors-csrf/solution.test.mjs",
+  "verify": [
+    "npm run lab:security-cors-csrf"
+  ],
+  "expected": "Only a configured exact origin receives credentialed CORS and a cross-origin write is rejected.",
+  "security": "Node built-ins; intentionally small local model. Deployment-grade controls require their own checks."
+}

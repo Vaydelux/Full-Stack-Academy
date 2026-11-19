@@ -1,0 +1,39 @@
+{
+  "id": "10.03.04",
+  "title": "Rate limiting and abuse controls",
+  "description": "Security boundaries with a deliberately insecure Node.js learner starter, verified instructor guard, denial cases and explicit production limitations.",
+  "trackId": "10",
+  "moduleId": "10.03",
+  "level": "Intermediate",
+  "estimatedMinutes": 75,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "node": "24",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "10.03.03"
+  ],
+  "objectives": [
+    "Bound requests per actor in a sliding time window and reject excess attempts before expensive processing; distributed gateways need shared enforcement.",
+    "Diagnose and repair security-request-limiter.",
+    "Explain why an isolated guard or loopback test does not certify production security."
+  ],
+  "labId": "lab.security.security-request-limiter",
+  "rubric": [
+    "I can identify the risk described in rate limiting and abuse controls.",
+    "I can fix the red starter and verify the denied action.",
+    "I can identify at least one untested production boundary."
+  ],
+  "sources": [
+    {
+      "label": "Security standard",
+      "url": "https://cheatsheetseries.owasp.org/cheatsheets/Denial_of_Service_Cheat_Sheet.html"
+    },
+    {
+      "label": "Supporting official guidance",
+      "url": "https://nodejs.org/api/http.html"
+    }
+  ]
+}

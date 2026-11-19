@@ -1,0 +1,39 @@
+{
+  "id": "10.04.02",
+  "title": "Request and response contracts",
+  "description": "OpenAPI 3.1.1 and SDK engineering: checked-in contract, executable assertion, red starter, instructor fix and compatibility/security limitations.",
+  "trackId": "10",
+  "moduleId": "10.04",
+  "level": "Intermediate",
+  "estimatedMinutes": 80,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "node": "24",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "10.04.01"
+  ],
+  "objectives": [
+    "Every operation must document its media types, required request body and actual status-specific response schema; 201 and 422 have distinct meanings.",
+    "Repair the broken openapi-request-response contract exercise.",
+    "Explain the difference between an OpenAPI description and an enforced server behavior."
+  ],
+  "labId": "lab.openapi.openapi-request-response",
+  "rubric": [
+    "I understand the OpenAPI contract behind request and response contracts.",
+    "I can repair the starter and run a meaningful negative case.",
+    "I can name production validation or compatibility checks beyond this exercise."
+  ],
+  "sources": [
+    {
+      "label": "Primary official specification",
+      "url": "https://spec.openapis.org/oas/v3.1.1.html#request-body-object"
+    },
+    {
+      "label": "Supporting API documentation",
+      "url": "https://www.rfc-editor.org/rfc/rfc9110.html"
+    }
+  ]
+}

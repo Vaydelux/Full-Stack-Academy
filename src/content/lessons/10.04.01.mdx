@@ -1,0 +1,83 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["An OpenAPI 3.1 document declares an exact version, info metadata, paths and reusable components; it is a source contract, not an HTTP server.","Fix the openapi 3.1 structure bug using a checked-in OpenAPI 3.1.1 example.","Verify an actual contract or generated SDK instead of assuming annotations make a server correct."]} />
+
+## The problem we're solving
+
+The starter invents a version and ignores missing document metadata. API schemas, operation IDs, examples, authorization descriptions and client integrations must remain consistent across changes.
+
+## Build the mental model
+
+An OpenAPI 3.1 document declares an exact version, info metadata, paths and reusable components; it is a source contract, not an HTTP server.
+
+**Expected outcome:** A valid OpenAPI 3.1.1 document summarizes the correct title and static operation count, and an incomplete one is rejected.
+
+**Version and scope:** This module uses OpenAPI Specification **3.1.1** and one checked-in JSON contract at `examples/task-contract/task-api.openapi.json`. The smallest client generator is deliberately restricted to static, trusted GET/POST operations. OpenAPI 3.1 Schema Objects align with JSON Schema 2020-12. This course model is not a full JSON Schema validator.
+
+## Prerequisites and preflight
+
+Complete `10.03.08` and the preceding OpenAPI lesson. Use Node 24 with no new runtime dependency. Read `labs/openapi-document-layout/starter/solution.mjs`. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:openapi-document-layout`; PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:openapi-document-layout; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Demonstrate the broken contract or SDK output" file="labs/openapi-document-layout/starter/solution.mjs" expected="The learner starter fails an actual contract assertion.">
+
+```js
+export function summarizeDocument(_document){return {version:'3.0.0',title:'Untitled',operationCount:0};}
+```
+
+**Root cause:** The starter invents a version and ignores missing document metadata.
+
+</LessonStep>
+
+<LessonStep number={2} title="Build the valid OpenAPI 3.1 integration" file="labs/openapi-document-layout/starter/solution.mjs" expected="A valid OpenAPI 3.1.1 document summarizes the correct title and static operation count, and an incomplete one is rejected.">
+
+```js
+export function summarizeDocument(document){
+ if(!document||!/^3\.1\.\d+$/.test(document.openapi??'')||!document.info?.title||!document.info?.version||!document.paths)throw new TypeError('Invalid OpenAPI 3.1 document');
+ let operationCount=0;
+ for(const value of Object.values(document.paths))for(const method of Object.keys(value))if(['get','post','put','patch','delete'].includes(method))operationCount++;
+ return {version:document.openapi,title:document.info.title,operationCount};
+}
+```
+
+**Why this corrects the contract:** An OpenAPI 3.1 document declares an exact version, info metadata, paths and reusable components; it is a source contract, not an HTTP server.
+
+</LessonStep>
+
+<LessonStep number={3} title="Execute real document and client acceptance" file="labs/openapi-document-layout/solution.test.mjs" expected="The instructor passes the local acceptance test; the red starter fails the intended contract assertion.">
+
+```js
+const {loadTaskSpec}=await import('../../../examples/task-contract/load-spec.mjs');
+const document=await loadTaskSpec();
+assert.deepEqual(mod.summarizeDocument(document),{version:'3.1.1',title:'Academy Loopback Notes API',operationCount:3});
+assert.throws(()=>mod.summarizeDocument({openapi:'3.0.0',paths:{}}),/Invalid OpenAPI/);
+```
+
+**Scope:** OpenAPI 3.1 Schema Objects align with JSON Schema 2020-12. This course model is not a full JSON Schema validator. This small exercise does not invoke a general-purpose OpenAPI compiler, schema validator or public server.
+
+</LessonStep>
+
+<Misconception claim="The starter invents a version and ignores missing document metadata." correction="An OpenAPI 3.1 document declares an exact version, info metadata, paths and reusable components; it is a source contract, not an HTTP server. OpenAPI 3.1 Schema Objects align with JSON Schema 2020-12. This course model is not a full JSON Schema validator." />
+
+<KnowledgeCheck question="What makes openapi 3.1 structure reliable?" choices={["A YAML or JSON file alone guarantees the running server follows the contract.","An OpenAPI 3.1 document declares an exact version, info metadata, paths and reusable components; it is a source contract, not an HTTP server.","Operation IDs are proof that every route is authenticated and authorized.","OpenAPI annotations replace executable request/response tests."] } correctIndex={1} explanation="An OpenAPI 3.1 document declares an exact version, info metadata, paths and reusable components; it is a source contract, not an HTTP server." misconception="Validate the source contract, SDK behavior and actual server responses separately." lessonId="10.04.01" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Failure:** The starter invents a version and ignores missing document metadata. **Reproduce:** run the red starter on the local example contract. **Repair:** An OpenAPI 3.1 document declares an exact version, info metadata, paths and reusable components; it is a source contract, not an HTTP server. **Regression:** A valid OpenAPI 3.1.1 document summarizes the correct title and static operation count, and an incomplete one is rejected.
+
+## Guided local lab
+
+`labs/openapi-document-layout/` contains a learner starter, complete instructor solution, executable Node assertions and a rubric. The examples use trusted static source files and no hosted learner-code runtime.
+
+<LabGate lessonId="10.04.01" labId="lab.openapi.openapi-document-layout" commands={["npm run lab:openapi-document-layout","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+Which changes are breaking for existing API clients? What additional dynamic schema validation and server instrumentation would be required before public SDK distribution?
+
+## Official references
+
+- [OpenAPI or HTTP specification](https://spec.openapis.org/oas/v3.1.1.html)
+- [Supporting standards documentation](https://json-schema.org/draft/2020-12)

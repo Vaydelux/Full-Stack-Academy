@@ -1,0 +1,39 @@
+{
+  "id": "10.03.02",
+  "title": "CORS versus CSRF",
+  "description": "Security boundaries with a deliberately insecure Node.js learner starter, verified instructor guard, denial cases and explicit production limitations.",
+  "trackId": "10",
+  "moduleId": "10.03",
+  "level": "Intermediate",
+  "estimatedMinutes": 75,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "node": "24",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "10.03.01"
+  ],
+  "objectives": [
+    "CORS governs browser read access; for cookie-authenticated state changes, independently verify Origin and use CSRF protections.",
+    "Diagnose and repair security-cors-csrf.",
+    "Explain why an isolated guard or loopback test does not certify production security."
+  ],
+  "labId": "lab.security.security-cors-csrf",
+  "rubric": [
+    "I can identify the risk described in cors versus csrf.",
+    "I can fix the red starter and verify the denied action.",
+    "I can identify at least one untested production boundary."
+  ],
+  "sources": [
+    {
+      "label": "Security standard",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS"
+    },
+    {
+      "label": "Supporting official guidance",
+      "url": "https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html"
+    }
+  ]
+}

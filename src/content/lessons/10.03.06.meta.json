@@ -1,0 +1,39 @@
+{
+  "id": "10.03.06",
+  "title": "Server-side request forgery",
+  "description": "Security boundaries with a deliberately insecure Node.js learner starter, verified instructor guard, denial cases and explicit production limitations.",
+  "trackId": "10",
+  "moduleId": "10.03",
+  "level": "Intermediate",
+  "estimatedMinutes": 75,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "node": "24",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "10.03.05"
+  ],
+  "objectives": [
+    "Validate exact upstream HTTPS hostnames, reject credentials, alternate ports, IP literals and redirects—but recognize DNS rebinding and egress remain separate network controls.",
+    "Diagnose and repair security-ssrf-allowlist.",
+    "Explain why an isolated guard or loopback test does not certify production security."
+  ],
+  "labId": "lab.security.security-ssrf-allowlist",
+  "rubric": [
+    "I can identify the risk described in server-side request forgery.",
+    "I can fix the red starter and verify the denied action.",
+    "I can identify at least one untested production boundary."
+  ],
+  "sources": [
+    {
+      "label": "Security standard",
+      "url": "https://cheatsheetseries.owasp.org/cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.html"
+    },
+    {
+      "label": "Supporting official guidance",
+      "url": "https://nodejs.org/api/dns.html"
+    }
+  ]
+}

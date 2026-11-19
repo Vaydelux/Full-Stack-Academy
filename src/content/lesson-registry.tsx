@@ -329,6 +329,23 @@ import BackendVertical14 from './lessons/10.02.06.mdx';
 import BackendVertical15 from './lessons/10.02.07.mdx';
 import BackendVertical16 from './lessons/10.02.08.mdx';
 
+import BackendFinal1 from './lessons/10.03.01.mdx';
+import BackendFinal2 from './lessons/10.03.02.mdx';
+import BackendFinal3 from './lessons/10.03.03.mdx';
+import BackendFinal4 from './lessons/10.03.04.mdx';
+import BackendFinal5 from './lessons/10.03.05.mdx';
+import BackendFinal6 from './lessons/10.03.06.mdx';
+import BackendFinal7 from './lessons/10.03.07.mdx';
+import BackendFinal8 from './lessons/10.03.08.mdx';
+import BackendFinal9 from './lessons/10.04.01.mdx';
+import BackendFinal10 from './lessons/10.04.02.mdx';
+import BackendFinal11 from './lessons/10.04.03.mdx';
+import BackendFinal12 from './lessons/10.04.04.mdx';
+import BackendFinal13 from './lessons/10.04.05.mdx';
+import BackendFinal14 from './lessons/10.04.06.mdx';
+import BackendFinal15 from './lessons/10.04.07.mdx';
+import BackendFinal16 from './lessons/10.04.08.mdx';
+
 export function LessonArticle({lessonId}: {lessonId:string}) {
   switch (lessonId) {
     case '00.01.01': return <BrowserLesson />;
@@ -652,6 +669,22 @@ export function LessonArticle({lessonId}: {lessonId:string}) {
     case '10.02.06': return <BackendVertical14 />;
     case '10.02.07': return <BackendVertical15 />;
     case '10.02.08': return <BackendVertical16 />;
+    case '10.03.01': return <BackendFinal1 />;
+    case '10.03.02': return <BackendFinal2 />;
+    case '10.03.03': return <BackendFinal3 />;
+    case '10.03.04': return <BackendFinal4 />;
+    case '10.03.05': return <BackendFinal5 />;
+    case '10.03.06': return <BackendFinal6 />;
+    case '10.03.07': return <BackendFinal7 />;
+    case '10.03.08': return <BackendFinal8 />;
+    case '10.04.01': return <BackendFinal9 />;
+    case '10.04.02': return <BackendFinal10 />;
+    case '10.04.03': return <BackendFinal11 />;
+    case '10.04.04': return <BackendFinal12 />;
+    case '10.04.05': return <BackendFinal13 />;
+    case '10.04.06': return <BackendFinal14 />;
+    case '10.04.07': return <BackendFinal15 />;
+    case '10.04.08': return <BackendFinal16 />;
     default: return null;
   }
 }

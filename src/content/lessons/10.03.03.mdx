@@ -1,0 +1,83 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Set Secure, HttpOnly, SameSite and host-only cookie scope on opaque session identifiers; understand how bearer headers differ from automatically sent cookies.","Repair the cookies versus bearer tokens defect in a Node.js exercise.","Distinguish this local security model from a complete production defense."]} />
+
+## The problem we're solving
+
+The starter generates a script-readable session cookie with no secure attributes. Real services must establish who can request a resource, constrain how the request is interpreted, and prevent unexpected data disclosure.
+
+## Build the mental model
+
+Set Secure, HttpOnly, SameSite and host-only cookie scope on opaque session identifiers; understand how bearer headers differ from automatically sent cookies.
+
+**Expected outcome:** A host-only opaque session cookie has HttpOnly, Secure, SameSite=Lax and Path=/ and rejects newline injection.
+
+**Production boundary:** The __Host- prefix requires Secure, Path=/ and no Domain attribute. Session IDs must be cryptographically random and server-verified; this serializer is not an auth system.
+
+## Prerequisites and preflight
+
+Complete Node.js `10.01` and HTTP `10.02`. Run locally under Node 24 using built-in APIs. Open `labs/security-session-cookies/starter/solution.mjs`. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:security-session-cookies`; PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:security-session-cookies; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the security regression" file="labs/security-session-cookies/starter/solution.mjs" expected="The red starter fails an actual assertion about a denied action.">
+
+```js
+export function sessionCookie(value){
+ return 'session='+value+'; Path=/';
+}
+```
+
+**Why it fails:** The starter generates a script-readable session cookie with no secure attributes.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the bounded guard or server behavior" file="labs/security-session-cookies/starter/solution.mjs" expected="A host-only opaque session cookie has HttpOnly, Secure, SameSite=Lax and Path=/ and rejects newline injection.">
+
+```js
+export function sessionCookie(value){
+ if(typeof value!=='string'||!/^[A-Za-z0-9_-]{16,128}$/.test(value))throw new TypeError('Invalid session id');
+ return '__Host-session='+value+'; Path=/; HttpOnly; Secure; SameSite=Lax';
+}
+```
+
+**Why this works:** Set Secure, HttpOnly, SameSite and host-only cookie scope on opaque session identifiers; understand how bearer headers differ from automatically sent cookies.
+
+</LessonStep>
+
+<LessonStep number={3} title="Test allowed and denied behavior" file="labs/security-session-cookies/solution.test.mjs" expected="The instructor passes positive and negative Node assertions, while the learner's starter fails a meaningful assertion.">
+
+```js
+const c=mod.sessionCookie('a'.repeat(24));
+assert.match(c,/^__Host-session=/);for(const attr of ['Path=/','HttpOnly','Secure','SameSite=Lax'])assert.ok(c.includes(attr));
+assert.doesNotMatch(c,/[\r\n]/);assert.throws(()=>mod.sessionCookie('bad\r\nSet-Cookie: stolen=1'),/Invalid/);
+assert.throws(()=>mod.sessionCookie('short'),/Invalid/);
+```
+
+**Beyond the model:** The __Host- prefix requires Secure, Path=/ and no Domain attribute. Session IDs must be cryptographically random and server-verified; this serializer is not an auth system. Real browser, proxy, DNS/egress and identity integration require independent testing.
+
+</LessonStep>
+
+<Misconception claim="The starter generates a script-readable session cookie with no secure attributes." correction="Set Secure, HttpOnly, SameSite and host-only cookie scope on opaque session identifiers; understand how bearer headers differ from automatically sent cookies. The __Host- prefix requires Secure, Path=/ and no Domain attribute. Session IDs must be cryptographically random and server-verified; this serializer is not an auth system." />
+
+<KnowledgeCheck question="Which security boundary governs cookies versus bearer tokens?" choices={["A browser UI control is sufficient authorization for an HTTP operation.","Set Secure, HttpOnly, SameSite and host-only cookie scope on opaque session identifiers; understand how bearer headers differ from automatically sent cookies.","A local function test proves every proxy and network access is secure.","Returning 200 for denied requests helps hide internal authorization decisions."] } correctIndex={1} explanation="Set Secure, HttpOnly, SameSite and host-only cookie scope on opaque session identifiers; understand how bearer headers differ from automatically sent cookies." misconception="Always verify the relevant trust boundary in code and in its actual deployment context." lessonId="10.03.03" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Bug:** The starter generates a script-readable session cookie with no secure attributes. **Reproduce:** run the red starter and inspect its negative case. **Repair:** Set Secure, HttpOnly, SameSite and host-only cookie scope on opaque session identifiers; understand how bearer headers differ from automatically sent cookies. **Regression:** A host-only opaque session cookie has HttpOnly, Secure, SameSite=Lax and Path=/ and rejects newline injection.
+
+## Guided local lab
+
+`labs/security-session-cookies/` contains a broken learner source file, complete instructor implementation, executable Node tests and an assessment rubric. Run only trusted checked-in tests; no learner code is evaluated on a hosted server.
+
+<LabGate lessonId="10.03.03" labId="lab.security.security-session-cookies" commands={["npm run lab:security-session-cookies","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+What could still break at a reverse proxy, distributed gateway, DNS resolver, identity provider or persistence layer? How would you verify it with a negative integration test?
+
+## Official references
+
+- [Primary security specification or API](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Cookies)
+- [Additional official guidance](https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html)

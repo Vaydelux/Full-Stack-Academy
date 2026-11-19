@@ -1,0 +1,82 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["CORS governs browser read access; for cookie-authenticated state changes, independently verify Origin and use CSRF protections.","Repair the cors versus csrf defect in a Node.js exercise.","Distinguish this local security model from a complete production defense."]} />
+
+## The problem we're solving
+
+The starter reflects arbitrary Origins with credentialed CORS and approves state changes from any site. Real services must establish who can request a resource, constrain how the request is interpreted, and prevent unexpected data disclosure.
+
+## Build the mental model
+
+CORS governs browser read access; for cookie-authenticated state changes, independently verify Origin and use CSRF protections.
+
+**Expected outcome:** Only a configured exact origin receives credentialed CORS and a cross-origin write is rejected.
+
+**Production boundary:** For browser form posts also consider SameSite cookies, CSRF tokens and Origin/Referer checks; nonbrowser clients and cross-site resource policies have separate constraints.
+
+## Prerequisites and preflight
+
+Complete Node.js `10.01` and HTTP `10.02`. Run locally under Node 24 using built-in APIs. Open `labs/security-cors-csrf/starter/solution.mjs`. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:security-cors-csrf`; PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:security-cors-csrf; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the security regression" file="labs/security-cors-csrf/starter/solution.mjs" expected="The red starter fails an actual assertion about a denied action.">
+
+```js
+export function checkOrigin(origin,_allowed){
+ return {corsOrigin:origin,allowCredentials:true,allowWrite:true};
+}
+```
+
+**Why it fails:** The starter reflects arbitrary Origins with credentialed CORS and approves state changes from any site.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the bounded guard or server behavior" file="labs/security-cors-csrf/starter/solution.mjs" expected="Only a configured exact origin receives credentialed CORS and a cross-origin write is rejected.">
+
+```js
+export function checkOrigin(origin,allowed){
+ const accepted=typeof origin==='string'&&allowed.includes(origin);
+ return {corsOrigin:accepted?origin:null,allowCredentials:accepted,allowWrite:accepted};
+}
+```
+
+**Why this works:** CORS governs browser read access; for cookie-authenticated state changes, independently verify Origin and use CSRF protections.
+
+</LessonStep>
+
+<LessonStep number={3} title="Test allowed and denied behavior" file="labs/security-cors-csrf/solution.test.mjs" expected="The instructor passes positive and negative Node assertions, while the learner's starter fails a meaningful assertion.">
+
+```js
+assert.deepEqual(mod.checkOrigin('https://academy.example',['https://academy.example']),{corsOrigin:'https://academy.example',allowCredentials:true,allowWrite:true});
+assert.deepEqual(mod.checkOrigin('https://evil.example',['https://academy.example']),{corsOrigin:null,allowCredentials:false,allowWrite:false});
+assert.equal(mod.checkOrigin('https://academy.example.evil.test',['https://academy.example']).allowWrite,false);
+```
+
+**Beyond the model:** For browser form posts also consider SameSite cookies, CSRF tokens and Origin/Referer checks; nonbrowser clients and cross-site resource policies have separate constraints. Real browser, proxy, DNS/egress and identity integration require independent testing.
+
+</LessonStep>
+
+<Misconception claim="The starter reflects arbitrary Origins with credentialed CORS and approves state changes from any site." correction="CORS governs browser read access; for cookie-authenticated state changes, independently verify Origin and use CSRF protections. For browser form posts also consider SameSite cookies, CSRF tokens and Origin/Referer checks; nonbrowser clients and cross-site resource policies have separate constraints." />
+
+<KnowledgeCheck question="Which security boundary governs cors versus csrf?" choices={["A browser UI control is sufficient authorization for an HTTP operation.","CORS governs browser read access; for cookie-authenticated state changes, independently verify Origin and use CSRF protections.","A local function test proves every proxy and network access is secure.","Returning 200 for denied requests helps hide internal authorization decisions."] } correctIndex={1} explanation="CORS governs browser read access; for cookie-authenticated state changes, independently verify Origin and use CSRF protections." misconception="Always verify the relevant trust boundary in code and in its actual deployment context." lessonId="10.03.02" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Bug:** The starter reflects arbitrary Origins with credentialed CORS and approves state changes from any site. **Reproduce:** run the red starter and inspect its negative case. **Repair:** CORS governs browser read access; for cookie-authenticated state changes, independently verify Origin and use CSRF protections. **Regression:** Only a configured exact origin receives credentialed CORS and a cross-origin write is rejected.
+
+## Guided local lab
+
+`labs/security-cors-csrf/` contains a broken learner source file, complete instructor implementation, executable Node tests and an assessment rubric. Run only trusted checked-in tests; no learner code is evaluated on a hosted server.
+
+<LabGate lessonId="10.03.02" labId="lab.security.security-cors-csrf" commands={["npm run lab:security-cors-csrf","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+What could still break at a reverse proxy, distributed gateway, DNS resolver, identity provider or persistence layer? How would you verify it with a negative integration test?
+
+## Official references
+
+- [Primary security specification or API](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS)
+- [Additional official guidance](https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html)

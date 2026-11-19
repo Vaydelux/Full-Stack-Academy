@@ -1,0 +1,15 @@
+{
+  "id": "lab.security.security-log-redaction",
+  "lessonId": "10.03.07",
+  "title": "Security boundary: Sensitive data redaction",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/security-log-redaction/starter/solution.mjs",
+  "solution": "labs/security-log-redaction/solution/solution.mjs",
+  "tests": "labs/security-log-redaction/solution.test.mjs",
+  "verify": [
+    "npm run lab:security-log-redaction"
+  ],
+  "expected": "Nested and array-based secret values are removed, while original input and public IDs remain unchanged.",
+  "security": "Node built-ins; intentionally small local model. Deployment-grade controls require their own checks."
+}

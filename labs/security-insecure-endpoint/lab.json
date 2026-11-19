@@ -1,0 +1,15 @@
+{
+  "id": "lab.security.security-insecure-endpoint",
+  "lessonId": "10.03.08",
+  "title": "Security boundary: Bug Hunt: insecure endpoint",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/security-insecure-endpoint/starter/solution.mjs",
+  "solution": "labs/security-insecure-endpoint/solution/solution.mjs",
+  "tests": "labs/security-insecure-endpoint/solution.test.mjs",
+  "verify": [
+    "npm run lab:security-insecure-endpoint"
+  ],
+  "expected": "Unauthorized requests get 401 without secret leakage; validated writes succeed and oversized JSON is rejected.",
+  "security": "Node built-ins; intentionally small local model. Deployment-grade controls require their own checks."
+}

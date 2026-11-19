@@ -1,0 +1,39 @@
+{
+  "id": "10.04.07",
+  "title": "API version strategy",
+  "description": "OpenAPI 3.1.1 and SDK engineering: checked-in contract, executable assertion, red starter, instructor fix and compatibility/security limitations.",
+  "trackId": "10",
+  "moduleId": "10.04",
+  "level": "Intermediate",
+  "estimatedMinutes": 80,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "node": "24",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "10.04.06"
+  ],
+  "objectives": [
+    "Version negotiation needs a documented, bounded contract; unsupported vendor media versions must not silently fall back and change behavior.",
+    "Repair the broken openapi-version-strategy contract exercise.",
+    "Explain the difference between an OpenAPI description and an enforced server behavior."
+  ],
+  "labId": "lab.openapi.openapi-version-strategy",
+  "rubric": [
+    "I understand the OpenAPI contract behind api version strategy.",
+    "I can repair the starter and run a meaningful negative case.",
+    "I can name production validation or compatibility checks beyond this exercise."
+  ],
+  "sources": [
+    {
+      "label": "Primary official specification",
+      "url": "https://www.rfc-editor.org/rfc/rfc9110.html#section-12"
+    },
+    {
+      "label": "Supporting API documentation",
+      "url": "https://spec.openapis.org/oas/v3.1.1.html#info-object"
+    }
+  ]
+}

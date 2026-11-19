@@ -1,3 +1,5 @@
+> **Follow-up Track 10 update (2026-11-19):** 10.03/10.04 Security + OpenAPI are now source-authored on `feat/backend-security-openapi-complete`, completing Track 10's 32 total lessons across stacked PRs. Cumulative source snapshot is 338 published IDs, 337 MDX and labs, 42 complete modules. See `docs/TRACK10_SECURITY_OPENAPI_ACCEPTANCE.md` for exact SHA-matched security/generated-client Node 22 results, remaining Node 24 gates, and merge order. This original document remains a historical record of PR #24's earlier Node/HTTP checkpoint.
+
 # Node.js 24 + HTTP API Fundamentals — Full Vertical Slice Acceptance
 
 **Date:** 2026-11-19 · **Branch:** `feat/node24-http-api-vertical-slice` · **Base:** draft PR #23 `feat/zustand5-state-boundaries-live` at `e6b3c8f`, itself stacked on draft PRs #22, #21 and #20.

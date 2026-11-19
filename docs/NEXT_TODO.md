@@ -1,35 +1,40 @@
-# Full-Stack Academy — Active handoff (2026-11-19)
+# Full-Stack Academy — Active development handoff (2026-11-19)
 
-## Repository source truth
+## Source state, not hosted state
 
-- `main`: `651fb296` following earlier owner-approved PRs #17–#19.
-- Draft PR stack: **#20 Next 07.02–07.05 → #21 UI 08.01–08.04 → #22 Zod 09.01 → #23 Zustand 09.04 → current `feat/node24-http-api-vertical-slice` 10.01–10.02**.
-- Proposed source totals when all stack layers are included: 322 unique published lesson IDs, 321 MDX lesson bodies, 321 local lab manifests, 40 complete modules, 38 reference drafts/303 indexed subjects. 567/889 remain planned.
-- First unauthored canonical ID still **09.02.01**; Node 10.01–10.02 is an intentional independently executable out-of-order increment.
-- Source count is not live deployment status. No Vercel or GitHub Actions checked.
+- `main` previously merged through owner-approved PRs #17–#19 and is not currently on this source branch.
+- Draft stacked milestone chain: **#20 Next.js 07.02–07.05 → #21 UI 08.01–08.04 → #22 Zod 09.01 → #23 Zustand 09.04 → #24 Node+HTTP 10.01–10.02 → current `feat/backend-security-openapi-complete` Security+OpenAPI 10.03–10.04**.
+- Proposed candidate snapshot after the six stacked layers: **338 distinct published IDs, 337 MDX lessons, 337 lab manifests, 42 completed modules, 38 authored reference drafts/303 indexed topics**. The 889-topic catalog has **551 still planned**.
+- **Full Track 10, all four modules (32 lessons), is source-authored** across #24 and current branch. `09.02.01` remains the **first unauthored canonical** lesson due to missing real React Hook Form and TanStack Query dependencies.
+- No Vercel or GitHub Actions was checked. These source totals are **NOT** the live production website.
 
-## This delivery: Node 24 and REST APIs
+## Delivered in current large-scope pass
 
-- [x] 16 canonical lessons with 3 guided steps each, source metadata, quiz, misconception, bug hunt, rubric, red starter, working instructor and official API sources
-- [x] Node 10.01 includes actual microtask ordering, environmental bounds, stream byte budgets, Fetch/AbortSignal, filesystem realpath, process metrics, lifecycle cleanup and streaming SHA-256 upload
-- [x] HTTP 10.02 includes RFC 9110 verbs, Accept negotiation, bounded JSON, idempotency, global sort/filter/page, RFC 9457 errors, ETags and **real local http server capstone**
-- [x] Local Node 22 **exact blob-matched** expanded HTTP capstone test **1/1 pass**, including all five 4xx negative cases and 304; exact starter tested with `ACADEMY_LAB_TARGET=starter` and failed `ERR_ASSERTION` as intended. No Node 24 run.
-- [x] Registered all MDX and metadata, per-lab commands, independent Node test script and 16-case red-starter assertion guard; content schema supports `lab.node.*` and `lab.http.*`
-- [x] Added source integrity suite and local Next/Chromium route/sitemap/mobile smoke script
+- [x] `10.03.01–10.03.08`: trusted proxies, CORS/CSRF, cookie hardening, sliding-window limiter, streamed body limits, SSRF allowlist with explicit DNS/egress disclaimer, structured redaction and secure demo endpoint
+- [x] `10.04.01–10.04.08`: OpenAPI 3.1 structure, request/response semantics, bearer security schemes, IDs/examples, actual generator, compatibility checks, version strategy and live generated-client capstone
+- [x] All 16 articles have complete metadata, lab manifests, broken learner code, instructor code, 3 guided steps, quiz, misconception, official docs and completion rubrics
+- [x] Real checked-in OpenAPI 3.1.1 JSON + restricted JS generator + local bearer-demo HTTP server with actual cross-module HTTP tests
+- [x] Published/route registries, per-lab scripts, independent security+OpenAPI test script, strict red starter suite, source checks and local Chromium route smoke contract
+- [x] Fixed stale cumulative-count checks in 5 older suite files; exact global checkpoint remains separately audited
+- [x] GitHub source tree counts confirmed and all 16 metadata/MDX structures inspected
+- [x] **Actual Node 22 execution**: exact SHA-matched security and generated-client instructor capstones **2/2 passed**, corresponding red starters both failed with `ERR_ASSERTION`
 
-## Remaining P0 verification
+## What is NOT verified
 
-- [ ] On a real Node 24 full checkout, `npm ci && npm run verify:offline`
-- [ ] Exact-head `npm run test:node-http` and `npm run test:red-node-http`; confirm all 16 instructors pass and all 16 broken learners fail `ERR_ASSERTION`
-- [ ] Run local Chromium browser smoke for the 16 authored Node/HTTP pages (320px, noindex, sitemap, accessibility)
-- [ ] Qualify and converge stacked drafts in dependency order; do not merge based solely on text or source checks
-- [ ] Reassess historical dev-only Picomatch exception before **2026-12-02 UTC**
+- [ ] Remaining 14 new instructors and 14 red learners as executable Node 24 tests
+- [ ] Full `npm ci && npm run verify:offline` on the exact head, including lint/tsc/content/checkpoint, 337 lab files, all red starters and Next build
+- [ ] Local Next+Chromium/browser checks, keyboard, 320px, screen reader and responsiveness
+- [ ] Full OpenAPI JSON Schema conformance; the generator intentionally supports only trusted static GET/POST endpoints
+- [ ] Production security (human identities, tenant authorization, secret management, TLS/egress, rate limits, persistent storage, audit logging)
+- [ ] Owner-approved qualification/rebase/merge convergence across draft PRs #20–#25
+- [ ] Review historical dev-only Picomatch exception before **2026-12-02 UTC**
 
-## Next larger pass
+## Next genuinely large milestones
 
-- [ ] 10.03–10.04 Security Boundaries / OpenAPI & SDKs — 16 lessons, actual security/API-contract integration tests
-- [ ] Next large slices: Nest 11.01–11.04 (32), SQL 12.01–12.05 (40), Prisma/Supabase 13.01–14.04 (64)
-- [ ] Backfill 09.02 RHF and 09.03 TanStack Query with **genuinely installed and lockfile-pinned** dependencies, rather than mocked framework APIs
-- [ ] Grow 38/303 authored reference drafts while preserving the reading-first UI, browser-only practice and quick-reference distinctions
+- [ ] **Consolidation:** qualify PR #20 first with Node 24 and merge sequentially, rebase/retest each successor
+- [ ] **Block A:** 09.02 React Hook Form + 09.03 TanStack Query (16 topics) with real packages and a new lockfile, controlled mounted React integrations and error-state tests
+- [ ] **Block B:** NestJS 11.01–11.04 (32) with real `@nestjs/*` packages, DTO validation, pipeline, auth boundaries and HTTP tests
+- [ ] **Block C:** SQL/Postgres 12.01–12.05 (40), real DB migrations, concurrency and recovery evidence
+- [ ] **Block D:** Prisma/Supabase 13.01–14.04 (64) with verified RLS denial cases, Auth and migration checks
 
-**Continue from** `docs/NODE_HTTP_VERTICAL_ACCEPTANCE.md`, `docs/LARGE_SCOPE_DELIVERY_PROGRAM.md`, `docs/checkpoint.json`, `AGENTS.md`.
+**Source handoff:** `docs/TRACK10_SECURITY_OPENAPI_ACCEPTANCE.md`, `docs/LARGE_SCOPE_DELIVERY_PROGRAM.md`, `docs/checkpoint.json`, `AGENTS.md`. Do not open more unverified stacked PRs until a locally qualified merge plan reduces the six-layer risk.

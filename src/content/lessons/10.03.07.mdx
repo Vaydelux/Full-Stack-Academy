@@ -1,0 +1,90 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Redact known secret-bearing keys recursively before logging and avoid mutating original request objects or emitting raw tokens.","Repair the sensitive data redaction defect in a Node.js exercise.","Distinguish this local security model from a complete production defense."]} />
+
+## The problem we're solving
+
+The starter logs nested passwords, Authorization values and cookies unchanged. Real services must establish who can request a resource, constrain how the request is interpreted, and prevent unexpected data disclosure.
+
+## Build the mental model
+
+Redact known secret-bearing keys recursively before logging and avoid mutating original request objects or emitting raw tokens.
+
+**Expected outcome:** Nested and array-based secret values are removed, while original input and public IDs remain unchanged.
+
+**Production boundary:** Blocklisting keys is not sufficient for production DLP: prefer explicit allowlisted structured log fields and short-lived correlation IDs; scrub free-text payloads separately.
+
+## Prerequisites and preflight
+
+Complete Node.js `10.01` and HTTP `10.02`. Run locally under Node 24 using built-in APIs. Open `labs/security-log-redaction/starter/solution.mjs`. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:security-log-redaction`; PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:security-log-redaction; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the security regression" file="labs/security-log-redaction/starter/solution.mjs" expected="The red starter fails an actual assertion about a denied action.">
+
+```js
+export function redactLog(value){return value;}
+```
+
+**Why it fails:** The starter logs nested passwords, Authorization values and cookies unchanged.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the bounded guard or server behavior" file="labs/security-log-redaction/starter/solution.mjs" expected="Nested and array-based secret values are removed, while original input and public IDs remain unchanged.">
+
+```js
+const PRIVATE=new Set(['authorization','cookie','set-cookie','password','passwd','token','access_token','refresh_token','apikey','api_key','secret']);
+export function redactLog(value){
+ const visit=(data,seen)=>{
+  if(!data||typeof data!=='object')return data;
+  if(seen.has(data))return '[Circular]';
+  seen.add(data);
+  const output=Array.isArray(data)?data.map(item=>visit(item,seen)):Object.fromEntries(Object.entries(data).map(([k,v])=>[k,PRIVATE.has(k.toLowerCase())?'[REDACTED]':visit(v,seen)]));
+  seen.delete(data);
+  return output;
+ };
+ return visit(value,new WeakSet());
+}
+```
+
+**Why this works:** Redact known secret-bearing keys recursively before logging and avoid mutating original request objects or emitting raw tokens.
+
+</LessonStep>
+
+<LessonStep number={3} title="Test allowed and denied behavior" file="labs/security-log-redaction/solution.test.mjs" expected="The instructor passes positive and negative Node assertions, while the learner's starter fails a meaningful assertion.">
+
+```js
+const item={id:'task-1',headers:{Authorization:'Bearer SECRET',cookie:'session=SECRET'},nested:[{password:'SECRET',title:'Public'}]};
+const original=JSON.stringify(item),out=mod.redactLog(item);
+assert.equal(out.id,'task-1');assert.equal(out.headers.Authorization,'[REDACTED]');
+assert.equal(out.nested[0].password,'[REDACTED]');
+assert.doesNotMatch(JSON.stringify(out),/SECRET/);assert.equal(JSON.stringify(item),original);
+```
+
+**Beyond the model:** Blocklisting keys is not sufficient for production DLP: prefer explicit allowlisted structured log fields and short-lived correlation IDs; scrub free-text payloads separately. Real browser, proxy, DNS/egress and identity integration require independent testing.
+
+</LessonStep>
+
+<Misconception claim="The starter logs nested passwords, Authorization values and cookies unchanged." correction="Redact known secret-bearing keys recursively before logging and avoid mutating original request objects or emitting raw tokens. Blocklisting keys is not sufficient for production DLP: prefer explicit allowlisted structured log fields and short-lived correlation IDs; scrub free-text payloads separately." />
+
+<KnowledgeCheck question="Which security boundary governs sensitive data redaction?" choices={["A browser UI control is sufficient authorization for an HTTP operation.","Redact known secret-bearing keys recursively before logging and avoid mutating original request objects or emitting raw tokens.","A local function test proves every proxy and network access is secure.","Returning 200 for denied requests helps hide internal authorization decisions."] } correctIndex={1} explanation="Redact known secret-bearing keys recursively before logging and avoid mutating original request objects or emitting raw tokens." misconception="Always verify the relevant trust boundary in code and in its actual deployment context." lessonId="10.03.07" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Bug:** The starter logs nested passwords, Authorization values and cookies unchanged. **Reproduce:** run the red starter and inspect its negative case. **Repair:** Redact known secret-bearing keys recursively before logging and avoid mutating original request objects or emitting raw tokens. **Regression:** Nested and array-based secret values are removed, while original input and public IDs remain unchanged.
+
+## Guided local lab
+
+`labs/security-log-redaction/` contains a broken learner source file, complete instructor implementation, executable Node tests and an assessment rubric. Run only trusted checked-in tests; no learner code is evaluated on a hosted server.
+
+<LabGate lessonId="10.03.07" labId="lab.security.security-log-redaction" commands={["npm run lab:security-log-redaction","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+What could still break at a reverse proxy, distributed gateway, DNS resolver, identity provider or persistence layer? How would you verify it with a negative integration test?
+
+## Official references
+
+- [Primary security specification or API](https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html)
+- [Additional official guidance](https://owasp.org/www-project-top-ten/)

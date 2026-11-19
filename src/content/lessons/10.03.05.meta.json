@@ -1,0 +1,39 @@
+{
+  "id": "10.03.05",
+  "title": "Request body and file limits",
+  "description": "Security boundaries with a deliberately insecure Node.js learner starter, verified instructor guard, denial cases and explicit production limitations.",
+  "trackId": "10",
+  "moduleId": "10.03",
+  "level": "Intermediate",
+  "estimatedMinutes": 75,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "node": "24",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "10.03.04"
+  ],
+  "objectives": [
+    "Enforce a preflight Content-Length ceiling and independently count streamed bytes, rejecting mismatched and oversized bodies.",
+    "Diagnose and repair security-body-size.",
+    "Explain why an isolated guard or loopback test does not certify production security."
+  ],
+  "labId": "lab.security.security-body-size",
+  "rubric": [
+    "I can identify the risk described in request body and file limits.",
+    "I can fix the red starter and verify the denied action.",
+    "I can identify at least one untested production boundary."
+  ],
+  "sources": [
+    {
+      "label": "Security standard",
+      "url": "https://nodejs.org/api/stream.html"
+    },
+    {
+      "label": "Supporting official guidance",
+      "url": "https://cheatsheetseries.owasp.org/cheatsheets/File_Upload_Cheat_Sheet.html"
+    }
+  ]
+}

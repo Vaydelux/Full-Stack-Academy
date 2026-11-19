@@ -9,11 +9,11 @@
     "productionUrl": "https://fullstack-academy-ecru.vercel.app/"
   },
   "development": {
-    "branch": "feat/node24-http-api-vertical-slice",
-    "basePullRequest": 23,
-    "baseBranch": "feat/zustand5-state-boundaries-live",
-    "state": "node24-http-api-vertical-source-candidate",
-    "note": "16 new canonical Node + HTTP lessons with dependency-free actual Node core and local HTTP socket capstone. RHF 09.02 and Query 09.03 remain planned; noindex boundary stays 09.02.01."
+    "branch": "feat/backend-security-openapi-complete",
+    "basePullRequest": 24,
+    "baseBranch": "feat/node24-http-api-vertical-slice",
+    "state": "complete-track-10-security-openapi-source-candidate",
+    "note": "32 source-authored Node/HTTP/Security/OpenAPI lessons across draft PR24+this branch; 10.03 and 10.04 now authored. No production security or complete OpenAPI tooling implied. 09.02/09.03 remain planned."
   },
   "snapshot": {
     "tracks": 28,
@@ -22,9 +22,9 @@
     "indexedReferences": 303,
     "authoredReferenceDrafts": 38,
     "authoredInteractiveModels": 4,
-    "authoredMdxLessons": 321,
-    "publishedLessons": 322,
-    "labFixtures": 321,
+    "authoredMdxLessons": 337,
+    "publishedLessons": 338,
+    "labFixtures": 337,
     "completeModules": [
       "00.01",
       "00.02",
@@ -65,7 +65,9 @@
       "09.01",
       "09.04",
       "10.01",
-      "10.02"
+      "10.02",
+      "10.03",
+      "10.04"
     ]
   },
   "security": {
@@ -73,6 +75,6 @@
     "devHighFindings": 14,
     "exceptionExpires": "2026-12-02"
   },
-  "nextMilestone": "10.03",
-  "status": "unreleased-backend-vertical-slice"
+  "nextMilestone": "11.01",
+  "status": "unreleased-full-backend-track10"
 }

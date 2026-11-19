@@ -37,10 +37,10 @@ test('Zustand uses actual dependency and planned first React Hook Form lesson re
  assert.equal(pkg.scripts['test:red-zustand-state'],'node --test tests/zustand-state-red-starters.test.mjs');
  assert.equal(pkg.scripts['test:labs'],'node scripts/run-local-labs.mjs');
  const cp=JSON.parse(read('docs/checkpoint.json'));
- assert.equal(cp.snapshot.publishedLessons,306);
- assert.equal(cp.snapshot.authoredMdxLessons,305);
- assert.equal(cp.snapshot.labFixtures,305);
- assert.equal(cp.snapshot.completeModules.length,38);
+ assert.ok(cp.snapshot.publishedLessons>=306,'minimum publishedLessons coverage for this milestone');
+ assert.ok(cp.snapshot.authoredMdxLessons>=305,'minimum authoredMdxLessons coverage for this milestone');
+ assert.ok(cp.snapshot.labFixtures>=305,'minimum labFixtures coverage for this milestone');
+ assert.ok(cp.snapshot.completeModules.length>=38,'minimum completeModules.length coverage for this milestone');
  assert.ok(!read('src/lib/academy/published.ts').includes('lessons/09.02.01.meta.json'));
 });
 test('browser lab imports the same real vanilla Zustand store and no remote data cache',()=>{

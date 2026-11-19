@@ -12,6 +12,7 @@ import { verifyUiGallery } from './ui-gallery-smoke.mjs';
 import { verifyZodFoundation } from './zod-foundations-smoke.mjs';
 import { verifyZustandState } from './zustand-state-smoke.mjs';
 import { verifyNodeHttpTrack } from './node-http-track-smoke.mjs';
+import { verifyBackendContractTrack } from './backend-contract-track-smoke.mjs';
 import { createRequire } from 'node:module';
 import path from 'node:path';
 
@@ -416,6 +417,7 @@ try {
   await verifyZodFoundation({page,base,assert,wait});
   await verifyZustandState({page,base,assert,wait});
   await verifyNodeHttpTrack({page,base,assert,wait});
+  await verifyBackendContractTrack({page,base,assert,wait});
 
   await page.goto(base+'/?lesson=06.01.01&mode=practice');
   await wait(btn('Practice'));

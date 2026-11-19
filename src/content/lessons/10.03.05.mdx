@@ -1,0 +1,93 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Enforce a preflight Content-Length ceiling and independently count streamed bytes, rejecting mismatched and oversized bodies.","Repair the request body and file limits defect in a Node.js exercise.","Distinguish this local security model from a complete production defense."]} />
+
+## The problem we're solving
+
+The starter trusts the declared Content-Length and never counts actual streamed bytes. Real services must establish who can request a resource, constrain how the request is interpreted, and prevent unexpected data disclosure.
+
+## Build the mental model
+
+Enforce a preflight Content-Length ceiling and independently count streamed bytes, rejecting mismatched and oversized bodies.
+
+**Expected outcome:** Actual multibyte payloads count true bytes and oversized or mismatched bodies fail.
+
+**Production boundary:** Production uploads also need timeout limits, content scanning, quotas, storage isolation, stream cancellation and safe file names.
+
+## Prerequisites and preflight
+
+Complete Node.js `10.01` and HTTP `10.02`. Run locally under Node 24 using built-in APIs. Open `labs/security-body-size/starter/solution.mjs`. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:security-body-size`; PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:security-body-size; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the security regression" file="labs/security-body-size/starter/solution.mjs" expected="The red starter fails an actual assertion about a denied action.">
+
+```js
+export async function readBounded(chunks,_limit,declared){
+ const data=[];for await(const chunk of chunks)data.push(Buffer.from(chunk));
+ return Buffer.concat(data);
+}
+```
+
+**Why it fails:** The starter trusts the declared Content-Length and never counts actual streamed bytes.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the bounded guard or server behavior" file="labs/security-body-size/starter/solution.mjs" expected="Actual multibyte payloads count true bytes and oversized or mismatched bodies fail.">
+
+```js
+export async function readBounded(chunks,limit,declared){
+ if(!Number.isSafeInteger(limit)||limit<0)throw new RangeError('Invalid limit');
+ if(declared!==undefined&&(!Number.isSafeInteger(declared)||declared<0||declared>limit))throw new RangeError('Declared body too large');
+ const data=[];let count=0;
+ for await(const value of chunks){
+  const chunk=Buffer.isBuffer(value)?value:Buffer.from(value);
+  count+=chunk.byteLength;
+  if(count>limit)throw new RangeError('Body too large');
+  data.push(chunk);
+ }
+ if(declared!==undefined&&count!==declared)throw new RangeError('Mismatched length');
+ return Buffer.concat(data);
+}
+```
+
+**Why this works:** Enforce a preflight Content-Length ceiling and independently count streamed bytes, rejecting mismatched and oversized bodies.
+
+</LessonStep>
+
+<LessonStep number={3} title="Test allowed and denied behavior" file="labs/security-body-size/solution.test.mjs" expected="The instructor passes positive and negative Node assertions, while the learner's starter fails a meaningful assertion.">
+
+```js
+assert.equal((await mod.readBounded([Buffer.from('€')],3,3)).toString('utf8'),'€');
+await assert.rejects(mod.readBounded([Buffer.from('€')],2,3),/Declared body too large/);
+await assert.rejects(mod.readBounded([Buffer.from('€')],2),/Body too large/);
+await assert.rejects(mod.readBounded([Buffer.from('a')],10,2),/Mismatched length/);
+```
+
+**Beyond the model:** Production uploads also need timeout limits, content scanning, quotas, storage isolation, stream cancellation and safe file names. Real browser, proxy, DNS/egress and identity integration require independent testing.
+
+</LessonStep>
+
+<Misconception claim="The starter trusts the declared Content-Length and never counts actual streamed bytes." correction="Enforce a preflight Content-Length ceiling and independently count streamed bytes, rejecting mismatched and oversized bodies. Production uploads also need timeout limits, content scanning, quotas, storage isolation, stream cancellation and safe file names." />
+
+<KnowledgeCheck question="Which security boundary governs request body and file limits?" choices={["A browser UI control is sufficient authorization for an HTTP operation.","Enforce a preflight Content-Length ceiling and independently count streamed bytes, rejecting mismatched and oversized bodies.","A local function test proves every proxy and network access is secure.","Returning 200 for denied requests helps hide internal authorization decisions."] } correctIndex={1} explanation="Enforce a preflight Content-Length ceiling and independently count streamed bytes, rejecting mismatched and oversized bodies." misconception="Always verify the relevant trust boundary in code and in its actual deployment context." lessonId="10.03.05" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Bug:** The starter trusts the declared Content-Length and never counts actual streamed bytes. **Reproduce:** run the red starter and inspect its negative case. **Repair:** Enforce a preflight Content-Length ceiling and independently count streamed bytes, rejecting mismatched and oversized bodies. **Regression:** Actual multibyte payloads count true bytes and oversized or mismatched bodies fail.
+
+## Guided local lab
+
+`labs/security-body-size/` contains a broken learner source file, complete instructor implementation, executable Node tests and an assessment rubric. Run only trusted checked-in tests; no learner code is evaluated on a hosted server.
+
+<LabGate lessonId="10.03.05" labId="lab.security.security-body-size" commands={["npm run lab:security-body-size","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+What could still break at a reverse proxy, distributed gateway, DNS resolver, identity provider or persistence layer? How would you verify it with a negative integration test?
+
+## Official references
+
+- [Primary security specification or API](https://nodejs.org/api/stream.html)
+- [Additional official guidance](https://cheatsheetseries.owasp.org/cheatsheets/File_Upload_Cheat_Sheet.html)

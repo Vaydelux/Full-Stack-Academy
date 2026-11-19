@@ -1,0 +1,15 @@
+{
+  "id": "lab.openapi.openapi-document-layout",
+  "lessonId": "10.04.01",
+  "title": "OpenAPI 3.1: OpenAPI 3.1 structure",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/openapi-document-layout/starter/solution.mjs",
+  "solution": "labs/openapi-document-layout/solution/solution.mjs",
+  "tests": "labs/openapi-document-layout/solution.test.mjs",
+  "verify": [
+    "npm run lab:openapi-document-layout"
+  ],
+  "expected": "A valid OpenAPI 3.1.1 document summarizes the correct title and static operation count, and an incomplete one is rejected.",
+  "security": "Trusted checked-in OpenAPI JSON and local SDK generator only; no public auth, storage or remote code execution."
+}

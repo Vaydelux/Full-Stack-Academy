@@ -1,0 +1,39 @@
+{
+  "id": "10.03.03",
+  "title": "Cookies versus bearer tokens",
+  "description": "Security boundaries with a deliberately insecure Node.js learner starter, verified instructor guard, denial cases and explicit production limitations.",
+  "trackId": "10",
+  "moduleId": "10.03",
+  "level": "Intermediate",
+  "estimatedMinutes": 75,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "node": "24",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "10.03.02"
+  ],
+  "objectives": [
+    "Set Secure, HttpOnly, SameSite and host-only cookie scope on opaque session identifiers; understand how bearer headers differ from automatically sent cookies.",
+    "Diagnose and repair security-session-cookies.",
+    "Explain why an isolated guard or loopback test does not certify production security."
+  ],
+  "labId": "lab.security.security-session-cookies",
+  "rubric": [
+    "I can identify the risk described in cookies versus bearer tokens.",
+    "I can fix the red starter and verify the denied action.",
+    "I can identify at least one untested production boundary."
+  ],
+  "sources": [
+    {
+      "label": "Security standard",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Cookies"
+    },
+    {
+      "label": "Supporting official guidance",
+      "url": "https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html"
+    }
+  ]
+}
