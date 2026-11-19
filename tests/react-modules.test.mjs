@@ -25,7 +25,7 @@ test('15 React lessons are registered with complete, local-only fixture paths',(
 test('new lesson meta uses canonical React IDs and does not pretend to run remote code',()=>{
  for(const id of ids){
   const content=read('src/content/lessons/'+id+'.mdx');
-  assert.ok((content.match(/<LessonStep\\b/g)||[]).length>=3,id);
+  assert.ok((content.match(/<LessonStep\b/g)||[]).length>=3,id);
   assert.match(content,/## Bug Hunt/);
   assert.match(content,/## Official references/);
   assert.match(content,/interactive=\{false\}/);
