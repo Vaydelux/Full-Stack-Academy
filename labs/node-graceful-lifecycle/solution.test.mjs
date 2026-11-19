@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 const mod=await import('./'+(process.env.ACADEMY_LAB_TARGET==='starter'?'starter':'solution')+'/solution.mjs');
 test("10.01.07 Process lifecycle: actual Node core module behavior",async()=>{
-import {EventEmitter} from 'node:events';
+const {EventEmitter}=await import('node:events');
 const signals=new EventEmitter();let calls=0;
 const dispose=mod.installShutdown(signals,()=>{calls++;});
 signals.emit('SIGTERM');signals.emit('SIGINT');

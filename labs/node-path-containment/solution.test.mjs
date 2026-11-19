@@ -2,8 +2,8 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 const mod=await import('./'+(process.env.ACADEMY_LAB_TARGET==='starter'?'starter':'solution')+'/solution.mjs');
 test("10.01.05 File system safety: actual Node core module behavior",async()=>{
-import {mkdtemp,writeFile,rm} from 'node:fs/promises';
-import {tmpdir} from 'node:os';import {join} from 'node:path';
+const {mkdtemp,writeFile,rm}=await import('node:fs/promises');
+const {tmpdir}=await import('node:os');const {join}=await import('node:path');
 const root=await mkdtemp(join(tmpdir(),'academy-path-'));
 const outer=await mkdtemp(join(tmpdir(),'academy-outer-'));
 try{
