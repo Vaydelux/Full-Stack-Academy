@@ -1,0 +1,258 @@
+[
+  {
+    "id": "react-usestate",
+    "matchCategories": [
+      "React"
+    ],
+    "matchTitles": [
+      "useState"
+    ],
+    "heading": "React 19: useState()",
+    "category": "React · State",
+    "majorVersion": "React 19",
+    "status": "Authored reference draft",
+    "summary": "Hold a value across renders and request new renders when updating state. React reads the state snapshot from the current render; the setter queues future work.",
+    "syntax": "const [value, setValue] = useState(initialValue);",
+    "lang": "tsx",
+    "parameters": "initialValue: the value (or initializer function) for the first render.",
+    "returns": "[currentValue, setValue] — current render snapshot and a stable setter.",
+    "minimalExample": "'use client';\nimport {useState} from 'react';\nconst [count,setCount] = useState(0);\n// Use a functional setter for sequential updates.\nsetCount(previous => previous + 1);",
+    "productionExample": "function Counter(){\n  const [count,setCount] = useState(0);\n  return <button type=\"button\" onClick={() => setCount(n=>n+1)}>{count}</button>;\n}",
+    "commonMistakes": [
+      "Expecting the count variable to update immediately after calling setCount.",
+      "Mutating arrays or objects held in state instead of creating fresh values."
+    ],
+    "securityPerformanceNotes": [
+      "Use updater functions for queued changes based on previous state.",
+      "Avoid sensitive data in browser state; it is not an authorization boundary."
+    ],
+    "relatedLessonIds": [
+      "06.02.01"
+    ],
+    "canonicalUrl": "https://react.dev/reference/react/useState"
+  },
+  {
+    "id": "react-useeffect",
+    "matchCategories": [
+      "React"
+    ],
+    "matchTitles": [
+      "useEffect"
+    ],
+    "heading": "React 19: useEffect()",
+    "category": "React · External synchronization",
+    "majorVersion": "React 19",
+    "status": "Authored reference draft",
+    "summary": "Synchronize an already-rendered component with a non-React system. Declare all reactive dependencies and return cleanup for listeners, timers and subscriptions.",
+    "syntax": "useEffect(() => { /* subscribe */; return () => { /* cleanup */; }; }, [deps]);",
+    "lang": "tsx",
+    "parameters": "setup: function invoked after commit; dependencies: reactive values used by setup.",
+    "returns": "void; optional cleanup function executes before a rerun and on unmount.",
+    "minimalExample": "'use client';\nimport {useEffect} from 'react';\nuseEffect(() => {\n  const listener=()=>console.log('resize');\n  window.addEventListener('resize',listener);\n  return ()=>window.removeEventListener('resize',listener);\n},[]);",
+    "productionExample": "useEffect(()=>{\n  const oldTitle=document.title;\n  document.title='Course: '+courseTitle;\n  return ()=>{document.title=oldTitle;};\n},[courseTitle]);",
+    "commonMistakes": [
+      "Using Effects to derive data already available from props or state.",
+      "Omitting cleanup or reactive dependencies, causing stale subscriptions."
+    ],
+    "securityPerformanceNotes": [
+      "Effects do not run while rendering static server HTML.",
+      "Do not read secrets in browser Effects or bypass authenticated API boundaries."
+    ],
+    "relatedLessonIds": [
+      "06.03.02"
+    ],
+    "canonicalUrl": "https://react.dev/reference/react/useEffect"
+  },
+  {
+    "id": "react-usereducer",
+    "matchCategories": [
+      "React"
+    ],
+    "matchTitles": [
+      "useReducer"
+    ],
+    "heading": "React 19: useReducer()",
+    "category": "React · State machines",
+    "majorVersion": "React 19",
+    "status": "Authored reference draft",
+    "summary": "Model related transitions as explicit actions processed by a pure reducer, keeping mutation and validation decisions separate from rendering.",
+    "syntax": "const [state, dispatch] = useReducer(reducer, initialState);",
+    "lang": "tsx",
+    "parameters": "reducer: pure function (state, action) => nextState; initialState: starting value.",
+    "returns": "Current state and a stable dispatch function.",
+    "minimalExample": "'use client';\nimport {useReducer} from 'react';\nconst reducer=(count:number,action:'up'|'down')=>action==='up'?count+1:Math.max(0,count-1);\nconst [count,dispatch]=useReducer(reducer,0);",
+    "productionExample": "type Action={type:'change';value:string}|{type:'submit'};\nfunction reducer(state:{value:string;status:string},action:Action){\n  if(action.type==='change')return {value:action.value,status:'editing'};\n  return {...state,status:state.value.trim()?'submitted':'editing'};\n}",
+    "commonMistakes": [
+      "Performing fetches or mutations inside the reducer.",
+      "Returning the same mutated state object instead of a new state."
+    ],
+    "securityPerformanceNotes": [
+      "Keep reducers deterministic so they can be tested without a network.",
+      "Validate and authorize any eventual server mutation independently."
+    ],
+    "relatedLessonIds": [
+      "06.02.07"
+    ],
+    "canonicalUrl": "https://react.dev/reference/react/useReducer"
+  },
+  {
+    "id": "react-useref",
+    "matchCategories": [
+      "React"
+    ],
+    "matchTitles": [
+      "useRef"
+    ],
+    "heading": "React 19: useRef()",
+    "category": "React · DOM and mutable handles",
+    "majorVersion": "React 19",
+    "status": "Authored reference draft",
+    "summary": "Keep a mutable value stable between renders without scheduling a render when its current property changes. Common uses include timer handles and DOM focus.",
+    "syntax": "const inputRef = useRef<HTMLInputElement>(null);",
+    "lang": "tsx",
+    "parameters": "initialValue: initial ref.current; frequently null for DOM elements.",
+    "returns": "Stable object with mutable current property.",
+    "minimalExample": "'use client';\nimport {useRef} from 'react';\nconst input=useRef<HTMLInputElement>(null);\nfunction focus(){input.current?.focus();}",
+    "productionExample": "const timer=useRef<ReturnType<typeof setInterval>|null>(null);\nfunction stop(){if(timer.current!==null){clearInterval(timer.current);timer.current=null;}}",
+    "commonMistakes": [
+      "Expecting ref.current changes to render new text on screen.",
+      "Dereferencing a DOM node before React has committed it."
+    ],
+    "securityPerformanceNotes": [
+      "Never use refs to bypass authorization or hide client-visible secrets.",
+      "Clean up timers and subscriptions referenced by refs on unmount."
+    ],
+    "relatedLessonIds": [
+      "06.03.05"
+    ],
+    "canonicalUrl": "https://react.dev/reference/react/useRef"
+  },
+  {
+    "id": "react-usecontext",
+    "matchCategories": [
+      "React"
+    ],
+    "matchTitles": [
+      "useContext"
+    ],
+    "heading": "React 19: useContext()",
+    "category": "React · Context",
+    "majorVersion": "React 19",
+    "status": "Authored reference draft",
+    "summary": "Read the nearest matching provider value in the component tree. Use context for shared values, but avoid sending unrelated fast-changing state through broad providers.",
+    "syntax": "const value = useContext(MyContext);",
+    "lang": "tsx",
+    "parameters": "MyContext: context object created with createContext.",
+    "returns": "The nearest provider value, or the declared default when no provider exists.",
+    "minimalExample": "'use client';\nimport {createContext,useContext} from 'react';\nconst ThemeContext=createContext<'light'|'dark'>('light');\nconst theme=useContext(ThemeContext);",
+    "productionExample": "const Theme=createContext<'light'|'dark'>('light');\nfunction ThemeBadge(){return <span>Theme: {useContext(Theme)}</span>;}\nfunction Settings(){return <Theme.Provider value=\"dark\"><ThemeBadge /></Theme.Provider>;}",
+    "commonMistakes": [
+      "Assuming context state automatically persists across browser sessions.",
+      "Putting every rapidly changing field into one enormous provider."
+    ],
+    "securityPerformanceNotes": [
+      "Context is a UI data channel, not an authentication or permission mechanism.",
+      "Minimize provider scope to reduce unnecessary consumer updates."
+    ],
+    "relatedLessonIds": [
+      "06.04.01"
+    ],
+    "canonicalUrl": "https://react.dev/reference/react/useContext"
+  },
+  {
+    "id": "react-usetransition",
+    "matchCategories": [
+      "React"
+    ],
+    "matchTitles": [
+      "useTransition"
+    ],
+    "heading": "React 19: useTransition()",
+    "category": "React · Concurrent interaction",
+    "majorVersion": "React 19",
+    "status": "Authored reference draft",
+    "summary": "Mark non-urgent state transitions so urgent input remains responsive, while exposing an isPending flag for accessible progress feedback.",
+    "syntax": "const [isPending, startTransition] = useTransition();",
+    "lang": "tsx",
+    "parameters": "scope: callback scheduling updates that React may treat as non-blocking.",
+    "returns": "isPending Boolean and startTransition scheduling function.",
+    "minimalExample": "'use client';\nimport {useTransition} from 'react';\nconst [pending,startTransition]=useTransition();\nstartTransition(()=>setResults(nextResults));",
+    "productionExample": "function Search(){\n  const [query,setQuery]=useState('');\n  const [results,setResults]=useState<string[]>([]);\n  const [pending,startTransition]=useTransition();\n  return <><input value={query} onChange={e=>{\n    setQuery(e.target.value);\n    startTransition(()=>setResults(filterItems(e.target.value)));\n  }}/><output aria-busy={pending}>{results.length} matches</output></>;\n}",
+    "commonMistakes": [
+      "Wrapping the controlled input's urgent value update in a transition.",
+      "Assuming a transition eliminates expensive synchronous calculations or network costs."
+    ],
+    "securityPerformanceNotes": [
+      "Do not treat isPending as proof that a server mutation succeeded.",
+      "Measure user-perceived responsiveness rather than assuming transitions are always faster."
+    ],
+    "relatedLessonIds": [
+      "06.04.03"
+    ],
+    "canonicalUrl": "https://react.dev/reference/react/useTransition"
+  },
+  {
+    "id": "react-useoptimistic",
+    "matchCategories": [
+      "React"
+    ],
+    "matchTitles": [
+      "useOptimistic"
+    ],
+    "heading": "React 19: useOptimistic()",
+    "category": "React · Optimistic updates",
+    "majorVersion": "React 19",
+    "status": "Authored reference draft",
+    "summary": "Render a temporary projected state while an Action is pending. Reconcile to the server-confirmed value when the operation completes or fails.",
+    "syntax": "const [optimisticState, addOptimistic] = useOptimistic(state, updateFn);",
+    "lang": "tsx",
+    "parameters": "state: confirmed source; updateFn: pure projection of current state and pending input.",
+    "returns": "Projected state and a function to enqueue an optimistic update within an Action.",
+    "minimalExample": "'use client';\nimport {useOptimistic,useTransition} from 'react';\nconst [shown,addPending]=useOptimistic(items,(list,item)=>[...list,item]);",
+    "productionExample": "const [shown,optimisticAdd]=useOptimistic(comments,(list,item)=>[...list,item]);\nstartTransition(async()=>{\n  optimisticAdd(draft);\n  const saved=await submitComment(draft); // authenticated server operation\n  if(saved.ok)setComments(prev=>reconcile(prev,saved.comment));\n  // On failure, render confirmed data and show an error.\n});",
+    "commonMistakes": [
+      "Treating a temporary optimistic item as confirmed persistence.",
+      "Failing to reconcile after errors, resulting in ghost or duplicate records."
+    ],
+    "securityPerformanceNotes": [
+      "Enforce authorization and validation on the server regardless of optimistic UI.",
+      "Use stable client IDs and idempotent server operations where retries are possible."
+    ],
+    "relatedLessonIds": [
+      "06.04.05"
+    ],
+    "canonicalUrl": "https://react.dev/reference/react/useOptimistic"
+  },
+  {
+    "id": "react-useactionstate",
+    "matchCategories": [
+      "React"
+    ],
+    "matchTitles": [
+      "useActionState"
+    ],
+    "heading": "React 19: useActionState()",
+    "category": "React · Forms and Actions",
+    "majorVersion": "React 19",
+    "status": "Authored reference draft",
+    "summary": "Track the returned state and pending status of a form Action. A form Action receives previous state first, followed by submitted form input.",
+    "syntax": "const [state, formAction, isPending] = useActionState(action, initialState);",
+    "lang": "tsx",
+    "parameters": "action: async reducer receiving prior state and form payload; initialState: default result.",
+    "returns": "Latest Action result, formAction function, pending Boolean.",
+    "minimalExample": "'use client';\nimport {useActionState} from 'react';\nconst [state,action,pending]=useActionState(async(prev,form:FormData)=>{\n  const title=String(form.get('title')??'').trim();\n  return {error:title?'':'Required'};\n},{error:''});",
+    "productionExample": "function SubmitDraft(){\n  const [state,action,pending]=useActionState(saveAuthorizedDraft,{error:''});\n  return <form action={action}><label>Title<input name=\"title\" required /></label>\n    <button disabled={pending}>Save</button><p role=\"status\">{state.error}</p></form>;\n}\n// saveAuthorizedDraft must validate and authorize on the server.",
+    "commonMistakes": [
+      "Using the wrong parameter order when binding the Action.",
+      "Returning sensitive exception messages or assuming the client form enforces authorization."
+    ],
+    "securityPerformanceNotes": [
+      "Validate unknown form fields and authorize inside the actual server mutation.",
+      "Use visible pending and error feedback; do not reveal private stack traces."
+    ],
+    "relatedLessonIds": [
+      "06.04.06"
+    ],
+    "canonicalUrl": "https://react.dev/reference/react/useActionState"
+  }
+]
