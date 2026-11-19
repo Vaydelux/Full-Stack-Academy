@@ -19,6 +19,7 @@ const stagedModuleRoadmap = [
 }));
 const steps = [
   { title: 'Validate and submit', copy: 'Client constraints make errors helpful, while strict server validation rejects untrusted inputs. Use a fresh idempotency key for a new task.', output: 'POST /api/tasks → 201 Created, or 422 Invalid task' },
+  { title: 'Resolve uncertain creates', copy: 'If the POST response is lost, keep the original idempotency key and payload. Retry that operation or explicitly discard it, with a duplicate-risk warning, before starting a new create.', output: 'POST /api/tasks → replayed 201, or terminal 422' },
   { title: 'Fetch and filter', copy: 'Read the current server list with a bounded page size and an optional status filter. Each list revision has its own pagination cursors.', output: 'GET /api/tasks?status=todo → 200 TaskPage' },
   { title: 'Change task status safely', copy: 'Read the current revision, then send an If-Match precondition with PATCH. Only one competing update against a given revision can win.', output: 'PATCH /api/tasks/{id} → 200, 412 stale revision, or 428 missing precondition' },
   { title: 'Recover from conflicts', copy: 'A stale cursor means a write occurred; start pagination again. A stale task edit means someone else won; read fresh state before a new edit.', output: 'GET or PATCH → 409 or 412, then refresh' },
@@ -66,11 +67,11 @@ export default function FormsQueryProjectPage() {
       </section>
       <section aria-labelledby="test-project" className="mt-10">
         <h2 id="test-project" className="text-xl font-bold">3. Verify the HTTP contracts locally</h2>
-        <CodeBlock file="Terminal · repository root" code={'node --test tests/forms-query-http.test.mjs\nnode --test tests/forms-query-workflow.test.mjs\nnode --test tests/forms-query-contract.test.mjs\nnode --experimental-strip-types --test tests/forms-query-react-api.test.mjs tests/forms-query-policy.test.mjs\nnode --test tests/forms-query-react-wiring.test.mjs'} />
+        <CodeBlock file="Terminal · repository root" code={'node --test tests/forms-query-http.test.mjs\nnode --test tests/forms-query-workflow.test.mjs\nnode --test tests/forms-query-contract.test.mjs\nnode --experimental-strip-types --test tests/forms-query-react-api.test.mjs tests/forms-query-policy.test.mjs\nnode --test tests/forms-query-react-wiring.test.mjs\nnode --test tests/forms-query-native-ui.test.mjs'} />
         <p className="text-sm leading-7 text-slate-600 dark:text-slate-300">The workflow suite covers stale revision rejection, invalid input, list cursor/filter isolation and spoofed Host rejection. The new typed-client HTTP suite verifies actual page cursors, idempotent replay and competing writes. Source checks do not substitute for mounted React browser tests.</p>
         <h3 className="mt-6 text-base font-bold">Optional real Chrome/Edge/Chromium UI gate</h3>
         <CodeBlock file="Terminal · local Node 22+ and a browser installed" code="npm run qualify:forms-query:browser" />
-        <p className="text-sm leading-7 text-slate-600 dark:text-slate-300">This separate browser gate launches the native task UI on loopback, checks real form submission, status changes, pagination, 320px overflow and keyboard focus. It does not run RHF or TanStack Query; those packages require their own browser qualification. No cloud service or GitHub Actions are used.</p>
+        <p className="text-sm leading-7 text-slate-600 dark:text-slate-300">This separate browser gate launches the native task UI on loopback and checks real form submission, terminal errors, response-loss retries, explicit discard, status-update locking, stale cursor recovery, mobile overflow and keyboard focus. It does not run RHF or TanStack Query; those packages require their own browser qualification. No cloud service or GitHub Actions are used.</p>
       </section>
       <section aria-labelledby="staged-roadmap" className="mt-10 border-t border-slate-200 pt-8 dark:border-white/10">
         <p className="text-xs font-extrabold uppercase tracking-[.16em] text-cyan-700 dark:text-cyan-300">Curriculum preparation</p>
