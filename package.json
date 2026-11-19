@@ -278,12 +278,13 @@
     "test:react-next:red": "node --test tests/react-next-red-starters.test.mjs",
     "check:react-next:syntax": "node scripts/react-next-syntax-gate.mjs",
     "test:react-next:snippets": "node --test tests/react-next-snippet-safety.test.mjs",
-    "verify:react-next:cheap": "npm run check:react-next:structure && npm run check:react-next:syntax && npm run test:react-next:snippets && npm run reference:check",
+    "verify:react-next:cheap": "npm run check:react-next:structure && npm run check:react-next:syntax && npm run test:react-next:snippets && npm run reference:check && npm run test:reference-search",
     "verify:react-next:full": "npm run verify:react-next:cheap && npm run test:react-next:offline && npm run test:react-next:red && npm run verify:content && npm run checkpoint:check && npm run lint && npm run typecheck && npm run build && npm run plan:waves:check",
     "plan:waves": "node scripts/plan-curriculum-waves.mjs",
     "plan:waves:check": "node scripts/plan-curriculum-waves.mjs --check",
     "plan:waves:write": "node scripts/plan-curriculum-waves.mjs --write",
-    "reference:check": "node scripts/reference-details-audit.mjs"
+    "reference:check": "node scripts/reference-details-audit.mjs",
+    "test:reference-search": "tsx --test tests/reference-explorer.test.mjs"
   },
   "dependencies": {
     "clsx": "^2.1.1",
