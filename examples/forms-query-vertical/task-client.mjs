@@ -19,9 +19,10 @@ export function createTaskClient(baseUrl, fetchImpl = globalThis.fetch) {
   }
   return {
     health: (signal) => request('/api/health', { signal }),
-    list: ({ cursor = null, limit = 10, signal } = {}) => {
+    list: ({ cursor = null, limit = 10, status = 'all', signal } = {}) => {
       if (!Number.isInteger(limit) || limit < 1 || limit > 25) throw new TypeError('limit must be between 1 and 25');
-      const params = new URLSearchParams({ limit: String(limit) });
+      if (!['all', 'todo', 'doing', 'done'].includes(status)) throw new TypeError('Invalid status filter');
+      const params = new URLSearchParams({ limit: String(limit), status });
       if (cursor !== null) params.set('cursor', cursor);
       return request(`/api/tasks?${params}`, { signal });
     },
@@ -30,6 +31,20 @@ export function createTaskClient(baseUrl, fetchImpl = globalThis.fetch) {
       headers: { 'content-type': 'application/json', 'idempotency-key': key },
       body: JSON.stringify(input),
     }),
+    get: (id, { signal } = {}) => {
+      if (!/^[0-9a-f-]{36}$/.test(id)) throw new TypeError('Invalid task ID');
+      return request(`/api/tasks/${id}`, { signal });
+    },
+    setStatus: (id, status, revision, { signal } = {}) => {
+      if (!/^[0-9a-f-]{36}$/.test(id)) throw new TypeError('Invalid task ID');
+      if (!['todo', 'doing', 'done'].includes(status)) throw new TypeError('Invalid task status');
+      if (!Number.isSafeInteger(revision) || revision < 1) throw new TypeError('Invalid revision');
+      return request(`/api/tasks/${id}`, {
+        method: 'PATCH', signal,
+        headers: { 'content-type': 'application/json', 'if-match': `"${revision}"` },
+        body: JSON.stringify({ status }),
+      });
+    },
     remove: (id, { signal } = {}) => {
       if (!/^[0-9a-f-]{36}$/.test(id)) throw new TypeError('Invalid task ID');
       return request(`/api/tasks/${id}`, { method: 'DELETE', signal });
