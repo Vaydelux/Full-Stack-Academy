@@ -26,6 +26,9 @@ const checks=[
   'tests/forms-query-workflow.test.mjs',
   'tests/forms-query-contract.test.mjs',
   'tests/forms-query-project-route.test.mjs']},
+ {name:'Typed React HTTP boundary + query policy (no RHF/Query package required)',
+  program:'node',args:['--experimental-strip-types','--test',
+   'tests/forms-query-react-api.test.mjs','tests/forms-query-policy.test.mjs']},
 ];
 if(mode==='--full'){
  if(!fs.existsSync(path.join(root,'package-lock.json'))){
