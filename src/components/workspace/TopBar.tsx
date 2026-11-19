@@ -45,6 +45,7 @@ export default function TopBar() {
       </button>
       <nav aria-label="Main navigation" className="hidden items-center gap-5 pl-5 text-sm font-medium text-slate-600 sm:flex dark:text-slate-300">
         <Link href="/learn" className="hover:underline">Courses</Link>
+        <Link href="/learn/dashboard" className="hover:underline">My progress</Link>
         <Link href="/reference" className="hover:underline">Reference</Link>
       </nav>
       <div className="ml-auto flex shrink-0 items-center gap-2">
