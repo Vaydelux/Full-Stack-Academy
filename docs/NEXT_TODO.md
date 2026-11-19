@@ -19,6 +19,7 @@
 - [x] Browser-only interactive gallery `/learn/ui-gallery`, linked from `08.01.08`: theme, width, variants, form, announcements, code samples; no server-side arbitrary code execution
 - [x] Eight new authored CSS/accessibility reference drafts: `var()`, `@media`, `@container`, `@layer`, `:focus-visible`, reduced motion, `color-scheme`, `clamp()`
 - [x] Updated planned/noindex boundary to `09.01.01` (first unauthored Zod topic)
+- [x] Replace Windows-fragile 11,688-character aggregate lab command with a manifest-driven, fail-fast local runner (batches of 20; source-authored, not executed)
 - [x] Checkpoint and developer acceptance handoff
 
 ## P0 — Critical acceptance still unexecuted

@@ -19,6 +19,10 @@ Eight additional CSS reference drafts in the modern reference explorer bring aut
 - Table content distinguishes TanStack Table **v8** client-managed row models from server-owned pagination/sort/filter. CSV export warns about formula injection.
 - No public remote code execution, paid providers or hosted dependency in this milestone.
 
+### Windows-safe local lab execution
+
+The previous `package.json` `test:labs` command grew to **11,688 characters** with 289 file paths and was at risk of hitting Windows `cmd.exe` command-length limits. This feature branch replaces it with `node scripts/run-local-labs.mjs`: it discovers only checked-in `labs/*/lab.json` tests, validates in-repo paths, rejects duplicates, and runs `node --import tsx --test` in bounded groups of 20 with no shell. The source configuration has been checked, but the new runner **has not been executed in this environment**. A local Node 24 checkout must prove it works with existing and newly authored tests.
+
 ## Source counts after stacking
 
 - 889 canonical lesson topics across 28 tracks and 111 modules
