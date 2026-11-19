@@ -36,6 +36,10 @@ input::placeholder { color: #8b9bb6; }
 .push { margin-left: auto; }
 .status-wrap { min-height: 1.2rem; color: #a9ebc7; font-size: .84rem; padding-top: .7rem; }
 .status-wrap.error { color: #ffb4bd; }
+.retry-actions { display: flex; flex-wrap: wrap; align-items: center; gap: .65rem; margin-top: .6rem; }
+.retry-actions .secondary { min-height: 44px; }
+#discard { border-color: #ffb4bd77; color: #ffe3e7; }
+#discard:hover { background: #432b3d; }
 .hidden { display: none !important; }
 .note { background: #65e0e411; border: 1px solid #65e0e42a; border-radius: .8rem; margin-top: 1.25rem; padding: .9rem; font-size: .78rem; color: #b4c5dc; }
 .note strong { color: #c9f7fb; }
