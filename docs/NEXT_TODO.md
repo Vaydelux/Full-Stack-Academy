@@ -1,53 +1,52 @@
-# Full-Stack Academy — Current development handoff (2026-11-20)
+# Full-Stack Academy — Authoring and Release Handoff (2026-11-20)
 
-## Source state and genuine qualification
+## Exact state after Forms/Query 16-pack staging
 
-- Owner-authorized PRs **#20–#29** have merged into `main`. The latest v3 feature branch adds a source-only larger milestone around the real local Forms/Query capstone; its PR will be merged separately.
-- Core catalog remains exactly **889 canonical topics in 111 modules and 28 tracks**, with **338 published unique IDs, 337 MDX lessons + 337 local lab manifests, 42 completed modules and 38 authored references**. The 16 09.02/09.03 topics are still PLANNED.
-- Available from academy `/learn/projects` and `/learn/projects/forms-query`: a guided **local-only** task workflow, runbook and tests. The page itself does not run an unauthenticated API on the Next server.
-- No GitHub Actions or Vercel inspections. No npm registry/GitHub clone DNS in the model's local runtime and no complete root Node 24 install/Next build or nested React typecheck/browser run. **A source merge is not release qualification.**
+- Source baseline: PRs #20–#30 merged. This milestone is staged on `feat/forms-query-16-lesson-authoring-20261120` and must not be mistaken for an already published React Hook Form/TanStack Query module.
+- Canonical counts: **28 tracks, 111 modules, 889 topics, 338 unique published lessons, 337 MDX lessons and local published lab manifests, 42 complete modules**.
+- **551 topics remain unpublished.** Sixteen now have individual MDX teaching drafts, staged metadata, broken starter source, instructor source and acceptance contracts outside the published registry. **535 topics still need source-level staging**.
+- Completed staging: React Hook Form `09.02.01–09.02.08`; TanStack Query `09.03.01–09.03.08`.
+- Live academy page `/learn/projects/forms-query` lists all 16 staged topics and links GitHub source; it is noindex and does not host the unauthenticated Task API.
+- Existing loopback Task API and React reference client from PR #30 remain source examples. They still need latest-version real Node tests and a nested React package lock/typecheck/browser acceptance.
+- No GitHub Actions or Vercel checks were used. No public demo server is authorized.
 
-## v3 work implemented
+## Staged authoring delivered
 
-- [x] Strict loopback Host validation before static/API routing, Origin and Fetch Metadata cross-site denial, absolute/network-path request-target rejection
-- [x] RFC-compatible application/problem+json responses
-- [x] Task status todo/doing/done and per-task strong revision ETag
-- [x] GET-by-ID; conditional PATCH status requiring If-Match; 412 conflict/428 missing precondition
-- [x] Post-await atomic revision comparison so competing requests cannot both commit a stale edit
-- [x] Status-filtered list queries, revision/filter-scoped pagination and strict query shape; writes invalidate old cursors
-- [x] Browser-native task state transitions, filter and bounded metadata-only request journal
-- [x] Standalone nested genuine RHF/TanStack React source with filtered query keys, typed status mutations and optimistic rollback; local Vite proxy trusted Origin translation
-- [x] Complete OpenAPI 3.1.1 contract for six operations and corresponding contract assertions
-- [x] Internal unindexed Practice Projects list/detail routes, linked from curriculum/DocShell
-- [x] New root scripts in local `verify:offline`: workflow, contract and route checks
-- [x] Updated runbook, workbook, acceptance, checkpoint and AGENTS.md
+- [x] 16 substantial canonical MDX draft articles, with three guided steps each, concept explanations, predictions, misconceptions, knowledge checks, bug hunts, reflection and official sources.
+- [x] 16 per-topic red starter and instructor TSX pairs plus individual acceptance manifests.
+- [x] Fix RHF async submission starter/solution so retry keeps one logical idempotency key and the form is actually managed by RHF.
+- [x] Add missing Next SSR client/provider source assets to query hydration draft.
+- [x] Expand the remote-task capstone instructor source to cover RHF, Query, invalidation, conditional status updates, request retry and rollback.
+- [x] Verify primary official URLs and prerequisites against canonical curriculum; fix two source misalignments.
+- [x] Source file checks: 88/88 per module article/metadata assertions, 48/48 lab contract assertions, 4/4 JS verification script syntax parses; no staged topic accidentally imported into published registries.
+- [x] Add a Node-only staging validator, TSX syntax diagnostic script, strict source/full release runner and deterministic curriculum coverage report.
+- [x] Expose new local scripts via package.json and verify:offline.
+- [x] Add source directory README, large-scope roadmap and precise acceptance handoff.
 
-## What was actually checked
+## Unfinished release gates (DO NOT MARK DONE)
 
-- [x] 29/29 workflow cases against committed JavaScript source in an **isolated mocked HTTP request/response harness** (including a two-writer conflict)
-- [x] 11/11 exact-source OpenAPI contract checks
-- [x] 6/6 exact-source project route and boundary checks
-- [x] JavaScript syntax parsing of API/client/browser/test source, with a found test syntax error corrected before final run
-- [ ] **Real Node 22/24 HTTP suite on v3 branch**; 22 real HTTP tests passed previously on PR #29, but not re-executed against v3 changes
-- [ ] Real browser UI (native and nested React), keyboard/200% zoom/320px/screen reader, Vite Host/Origin proxy POST and 412 recovery
-- [ ] Root `npm ci`, lint/typecheck/Next build, exact 337+ lab/negative gates, Node 24 supported runtime
-- [ ] Nested React npm install, actual npm-generated lockfile, real typecheck/build and integration tests
+- [ ] Run actual Node 22/24 `npm run qualify:forms-query:source` on a full Git checkout, including the updated v3 real HTTP socket suites and the 16-pack staging validator.
+- [ ] On Node 24, run root trusted `npm ci`, `npm run verify:offline` and staged TSX syntax verification. Fix all *actual* lint/typecheck/build issues.
+- [ ] Resolve/install **real** RHF, Zod resolver and TanStack Query npm packages; commit npm-generated nested lockfile, then nested `npm ci`, typecheck/build.
+- [ ] Create and execute real React DOM/keyboard/integration tests for 16 instructor solutions and intentional assertion-failing starters. Verify SSR hydration with a real Next boundary rather than a Vite-only approximation.
+- [ ] Verify 320px/tablet/desktop, zoom/reduced-motion, focus management, labels/error announcements, request journal, 409/412 recovery and Vite proxy/Host/Origin compatibility in a real browser.
+- [ ] Promote `09.02` and `09.03` one complete verified module at a time to `src/content/lessons/`, `labs/`, `lesson-registry.tsx`, `published.ts`, package scripts and checkpoint. **Do not merely copy files and mark authored.**
+- [ ] Review historical dev-only dependency exception before **2026-12-02 UTC**.
 
-See [v3 acceptance](FORMS_QUERY_WORKFLOW_V3_ACCEPTANCE.md) for detailed evidence and exact commands.
+## Next large curriculum batches after Forms/Query
 
-## Prioritized next milestones
+1. **11.01–11.04 NestJS** (32 topics): locked DI, validation, auth pipeline and genuine HTTP tests.
+2. **12.01–12.05 PostgreSQL** (40 topics): actual migrations, transactions, indexes, EXPLAIN and rollback.
+3. **13–14 Prisma + Supabase** (64 topics): client generation, migrations, authentication and denial-first RLS tests.
+4. Continue production/security/testing/deployment, specializations and capstones in dependency-respecting eight-topic modules. Inspect `npm run status:curriculum` after every merge rather than guessing counts.
 
-1. **P0 Real network and browser qualification:** Full Node 24 checkout, `node --test tests/forms-query-*.test.mjs` (or the script names), `npm ci && npm run verify:offline`; verify Vite proxy and browser flows, remove actual defects. No hosted/Actions test gate needed.
-2. **P1 Publish React Hook Form 09.02 and TanStack Query 09.03 (16 canonical topics):** resolve compatible dependencies and lock with npm; complete per-topic MDX, metadata, instructor/negative starter, lab fixture, rubric, real library/browser tests. Keep unqualified topics PLANNED/noindex.
-3. **P2 Next NestJS Track 11 (32 topics):** real locked Nest package integrations, DI, request pipeline, validation, security boundaries and loopback tests.
-4. **P3 PostgreSQL Track 12 (40 topics):** actual local DB harness, transactions, migrations, EXPLAIN, rollback and concurrency checks.
-5. **P4 Prisma/Supabase Tracks 13–14 (64 topics):** actual generated client, schema migrations, Auth and denial-first RLS tests with audited boundaries.
-6. Review the historical dev-only **Picomatch security exception before 2026-12-02 UTC**.
+## Start here
 
-## Persistent project boundaries
+1. `AGENTS.md`
+2. `docs/FORMS_QUERY_16_STAGING_ACCEPTANCE.md`
+3. `drafts/forms-query/README.md`
+4. `docs/CURRICULUM_FINISHING_ROADMAP.md`
+5. `examples/forms-query-vertical/README.md`
+6. `docs/checkpoint.json`
 
-- Task API is educational single-process in-memory with NO users, tenant isolation, persistence, TLS, durable idempotency or rate limits. **Never expose it on the public internet.**
-- The React sample is a separate Vite project, not imported into production Next, until real packages/build/browser checks succeed.
-- Do not fabricate npm integrity hashes or claim 16 workbook drafts are published lessons.
-- Keep source-authored, local unit/simulation checked, real HTTP tested, browser qualified, and production released as distinct states.
-- Source truth: `AGENTS.md`, `docs/checkpoint.json`, `docs/FORMS_QUERY_WORKFLOW_V3_ACCEPTANCE.md`, `examples/forms-query-vertical/README.md`.
+Source-authored ≠ TypeScript-checked ≠ library-tested ≠ browser-qualified ≠ released. Retain this distinction in all future status reports.
