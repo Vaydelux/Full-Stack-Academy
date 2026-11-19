@@ -1,0 +1,90 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Use memo only when measured re-render work is expensive and props are meaningfully stable.","Repair a broken react.memo when warranted example with React 19 and TypeScript.","Compare local source/model assertions with real mounted-browser testing evidence."]} />
+
+## The problem we're solving
+
+A repeated product card has a stable identity, but its price and title can change independently. **Failure case:** The starter comparator treats matching IDs as equal even when visible title or price has changed, causing stale UI.
+
+## Build the mental model
+
+Use memo only when measured re-render work is expensive and props are meaningfully stable.
+
+**Expected result:** Comparator detects changed display props and accepts equivalent snapshots.
+
+**Evidence boundary:** Node tests run reviewed fixtures, not arbitrary learner code. React server markup proves initial output only. A browser or configured DOM environment is required for real user events, hydration, the React DevTools Profiler, and state preservation after reordering. This repo does not currently declare or lock React Testing Library; do not claim these Node checks exercise that dependency.
+
+## Prerequisites and preflight
+
+Read the prior React lesson. Use Node.js 24, run `npm ci` and inspect `labs/react-memo-evidence/starter/solution.tsx`. To reproduce the defect: Bash `ACADEMY_LAB_TARGET=starter npm run lab:react-memo-evidence`; PowerShell `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:react-memo-evidence; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Predict and reproduce a broken behavior" file="labs/react-memo-evidence/starter/solution.tsx" expected="A regression assertion fails on an intentionally incorrect implementation.">
+
+```tsx
+import {memo} from 'react';
+export type Product={id:string;name:string;price:number};
+export function equalProduct(a:Product,b:Product){return a.id===b.id;}
+export const ProductCard=memo(function ProductCard({product}:{product:Product}){
+ return <article><h2>{product.name}</h2><p>{product.price.toFixed(2)}</p></article>;
+},(a,b)=>equalProduct(a.product,b.product));
+```
+
+**Diagnosis:** The starter comparator treats matching IDs as equal even when visible title or price has changed, causing stale UI. Before reading the answer, identify the user-visible symptom, not just the line number.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the implementation contract" file="labs/react-memo-evidence/starter/solution.tsx" expected="Comparator detects changed display props and accepts equivalent snapshots.">
+
+```tsx
+import {memo} from 'react';
+export type Product={id:string;name:string;price:number};
+export function equalProduct(a:Product,b:Product){
+ return a.id===b.id&&a.name===b.name&&a.price===b.price;
+}
+export const ProductCard=memo(function ProductCard({product}:{product:Product}){
+ return <article><h2>{product.name}</h2><p>{product.price.toFixed(2)}</p></article>;
+},(a,b)=>equalProduct(a.product,b.product));
+```
+
+**Why this works:** Use memo only when measured re-render work is expensive and props are meaningfully stable.
+
+</LessonStep>
+
+<LessonStep number={3} title="Compare positive and negative tests" file="labs/react-memo-evidence/solution.test.mjs" expected="Correct instructor code passes the documented assertions; the original starter fails.">
+
+```js
+const a={id:'x',name:'Coffee',price:12},b={...a,price:15};
+assert.equal(mod.equalProduct(a,a),true);assert.equal(mod.equalProduct(a,b),false);
+assert.equal(mod.equalProduct(a,{...a,name:'Tea'}),false);
+assert.match(renderToStaticMarkup(createElement(mod.ProductCard,{product:a})),/Coffee/);
+```
+
+**Beyond the static model:** Memoization is not a correctness strategy. If an onClick callback, object or nested value is captured by a custom comparator, ensure changes remain visible or omit the custom comparator. Benchmark before/after.
+
+</LessonStep>
+
+<Misconception claim="The starter comparator treats matching IDs as equal even when visible title or price has changed, causing stale UI." correction="Use memo only when measured re-render work is expensive and props are meaningfully stable. A passing server-rendering test cannot prove mounted interactions." />
+
+<KnowledgeCheck question="Which testing or rendering principle matters most for react.memo when warranted?" choices={["An SSR snapshot proves browser interactions and state persistence.","Use memo only when measured re-render work is expensive and props are meaningfully stable.","UI correctness is guaranteed by TypeScript without runtime tests.","Optimization should happen before any profiling evidence."] } correctIndex={1} explanation="Use memo only when measured re-render work is expensive and props are meaningfully stable." misconception="Match each assertion to the behavior it actually measures." lessonId="06.05.05" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Reproduce:** Run the intentionally broken starter and record the failed assertion. **Investigate:** The starter comparator treats matching IDs as equal even when visible title or price has changed, causing stale UI. **Repair:** Use memo only when measured re-render work is expensive and props are meaningfully stable. **Verify:** Comparator detects changed display props and accepts equivalent snapshots.
+
+## Guided local lab
+
+The lab includes an editable starter, instructor solution, local test fixture, and completion rubric. Source snippets are compiled only by your local toolchain, never by the public academy server.
+
+<LabGate lessonId="06.05.05" labId="lab.react.react-memo-evidence" commands={["npm run lab:react-memo-evidence","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+What property can an isolated test verify? What must a real mounted React browser test verify separately? Describe one production risk an SSR test would miss.
+
+## Official references
+
+- [Primary official reference for React.memo when warranted](https://react.dev/reference/react/memo)
+- [Supporting official reference](https://react.dev/learn/render-and-commit)

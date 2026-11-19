@@ -1,0 +1,39 @@
+{
+  "id": "06.05.03",
+  "title": "Test user journeys: Model a complete interaction as state transitions with preconditions, visible success and failure states",
+  "description": "React 19 and TypeScript 5 guide to test user journeys with reproducible starter bugs, instructor corrections, local regression assertions and browser-verification boundaries.",
+  "trackId": "06",
+  "moduleId": "06.05",
+  "level": "Beginner",
+  "estimatedMinutes": 65,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "react": "19",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "06.05.02"
+  ],
+  "objectives": [
+    "Model a complete interaction as state transitions with preconditions, visible success and failure states.",
+    "Repair the intentionally failing example for test user journeys.",
+    "Distinguish a server-rendered assertion from genuine browser behavior and integration evidence."
+  ],
+  "labId": "lab.react.react-user-journey",
+  "rubric": [
+    "I can explain the difference between a static fixture and a mounted test for test user journeys.",
+    "I can repair the starter for 06.05.03 and demonstrate the regression assertion.",
+    "I can describe the necessary browser, dependency or profiler evidence before claiming production reliability."
+  ],
+  "sources": [
+    {
+      "label": "Primary: Test user journeys",
+      "url": "https://testing-library.com/docs/user-event/intro/"
+    },
+    {
+      "label": "Supporting official reference",
+      "url": "https://react.dev/learn/choosing-the-state-structure"
+    }
+  ]
+}

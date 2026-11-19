@@ -1,0 +1,86 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Stable keys must be tied to record identity rather than the item's position in a changing list.","Repair a broken bug hunt unstable keys example with React 19 and TypeScript.","Compare local source/model assertions with real mounted-browser testing evidence."]} />
+
+## The problem we're solving
+
+A sortable issue board appears correct until an item is inserted; using index keys transfers child state to the wrong issue. **Failure case:** The starter keys list elements by array position rather than their immutable issue IDs.
+
+## Build the mental model
+
+Stable keys must be tied to record identity rather than the item's position in a changing list.
+
+**Expected result:** Element keys preserve record identity across reorder and the view has an empty state.
+
+**Evidence boundary:** Node tests run reviewed fixtures, not arbitrary learner code. React server markup proves initial output only. A browser or configured DOM environment is required for real user events, hydration, the React DevTools Profiler, and state preservation after reordering. This repo does not currently declare or lock React Testing Library; do not claim these Node checks exercise that dependency.
+
+## Prerequisites and preflight
+
+Read the prior React lesson. Use Node.js 24, run `npm ci` and inspect `labs/react-unstable-keys-capstone/starter/solution.tsx`. To reproduce the defect: Bash `ACADEMY_LAB_TARGET=starter npm run lab:react-unstable-keys-capstone`; PowerShell `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:react-unstable-keys-capstone; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Predict and reproduce a broken behavior" file="labs/react-unstable-keys-capstone/starter/solution.tsx" expected="A regression assertion fails on an intentionally incorrect implementation.">
+
+```tsx
+export type Issue={id:string;title:string};
+export function IssueBoard({issues}:{issues:readonly Issue[]}){
+ if(issues.length===0)return <p role="status">No issues.</p>;
+ return <ul>{issues.map((issue,index)=><li key={index} data-issue-id={issue.id}>{issue.title}</li>)}</ul>;
+}
+```
+
+**Diagnosis:** The starter keys list elements by array position rather than their immutable issue IDs. Before reading the answer, identify the user-visible symptom, not just the line number.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the implementation contract" file="labs/react-unstable-keys-capstone/starter/solution.tsx" expected="Element keys preserve record identity across reorder and the view has an empty state.">
+
+```tsx
+export type Issue={id:string;title:string};
+export function IssueBoard({issues}:{issues:readonly Issue[]}){
+ if(issues.length===0)return <p role="status">No issues.</p>;
+ return <ul>{issues.map(issue=><li key={issue.id} data-issue-id={issue.id}>{issue.title}</li>)}</ul>;
+}
+```
+
+**Why this works:** Stable keys must be tied to record identity rather than the item's position in a changing list.
+
+</LessonStep>
+
+<LessonStep number={3} title="Compare positive and negative tests" file="labs/react-unstable-keys-capstone/solution.test.mjs" expected="Correct instructor code passes the documented assertions; the original starter fails.">
+
+```js
+const issues=[{id:'z',title:'Fix focus'},{id:'a',title:'Fix cache'}];
+const tree=mod.IssueBoard({issues});assert.deepEqual(tree.props.children.map(item=>item.key),['z','a']);
+assert.match(renderToStaticMarkup(createElement(mod.IssueBoard,{issues:[]})),/No issues/);
+const swapped=mod.IssueBoard({issues:[...issues].reverse()});assert.deepEqual(swapped.props.children.map(item=>item.key),['a','z']);
+```
+
+**Beyond the static model:** SSR hides keys in HTML by design. Inspect element identity or run a mounted React reorder test with stateful children to verify the bug. Keys are not a public DOM attribute.
+
+</LessonStep>
+
+<Misconception claim="The starter keys list elements by array position rather than their immutable issue IDs." correction="Stable keys must be tied to record identity rather than the item's position in a changing list. A passing server-rendering test cannot prove mounted interactions." />
+
+<KnowledgeCheck question="Which testing or rendering principle matters most for bug hunt unstable keys?" choices={["An SSR snapshot proves browser interactions and state persistence.","Stable keys must be tied to record identity rather than the item's position in a changing list.","UI correctness is guaranteed by TypeScript without runtime tests.","Optimization should happen before any profiling evidence."] } correctIndex={1} explanation="Stable keys must be tied to record identity rather than the item's position in a changing list." misconception="Match each assertion to the behavior it actually measures." lessonId="06.05.08" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Reproduce:** Run the intentionally broken starter and record the failed assertion. **Investigate:** The starter keys list elements by array position rather than their immutable issue IDs. **Repair:** Stable keys must be tied to record identity rather than the item's position in a changing list. **Verify:** Element keys preserve record identity across reorder and the view has an empty state.
+
+## Guided local lab
+
+The lab includes an editable starter, instructor solution, local test fixture, and completion rubric. Source snippets are compiled only by your local toolchain, never by the public academy server.
+
+<LabGate lessonId="06.05.08" labId="lab.react.react-unstable-keys-capstone" commands={["npm run lab:react-unstable-keys-capstone","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+What property can an isolated test verify? What must a real mounted React browser test verify separately? Describe one production risk an SSR test would miss.
+
+## Official references
+
+- [Primary official reference for Bug Hunt unstable keys](https://react.dev/learn/rendering-lists)
+- [Supporting official reference](https://react.dev/learn/preserving-and-resetting-state)

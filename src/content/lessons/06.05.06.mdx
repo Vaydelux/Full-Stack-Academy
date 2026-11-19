@@ -1,0 +1,100 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Use memoization only for measured costly derived work or stable callback identity needed by memoized children.","Repair a broken usememo and usecallback tradeoffs example with React 19 and TypeScript.","Compare local source/model assertions with real mounted-browser testing evidence."]} />
+
+## The problem we're solving
+
+A course search sorts by title, but mutating the input list breaks other consumers and makes caching unreliable. **Failure case:** The starter sorts the original array in place, changing a parent-owned collection.
+
+## Build the mental model
+
+Use memoization only for measured costly derived work or stable callback identity needed by memoized children.
+
+**Expected result:** Sorting returns a new filtered list and preserves the original input order.
+
+**Evidence boundary:** Node tests run reviewed fixtures, not arbitrary learner code. React server markup proves initial output only. A browser or configured DOM environment is required for real user events, hydration, the React DevTools Profiler, and state preservation after reordering. This repo does not currently declare or lock React Testing Library; do not claim these Node checks exercise that dependency.
+
+## Prerequisites and preflight
+
+Read the prior React lesson. Use Node.js 24, run `npm ci` and inspect `labs/react-usememo-callback-cost/starter/solution.tsx`. To reproduce the defect: Bash `ACADEMY_LAB_TARGET=starter npm run lab:react-usememo-callback-cost`; PowerShell `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:react-usememo-callback-cost; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Predict and reproduce a broken behavior" file="labs/react-usememo-callback-cost/starter/solution.tsx" expected="A regression assertion fails on an intentionally incorrect implementation.">
+
+```tsx
+import {useMemo,useState} from 'react';
+export function selectCourses(courses:readonly string[],_query:string){
+ return (courses as string[]).sort((a,b)=>a.localeCompare(b));
+}
+export function CoursePicker({courses}:{courses:readonly string[]}){
+ const [query,setQuery]=useState('');
+ const visible=useMemo(()=>selectCourses(courses,query),[courses,query]);
+ return <section><label htmlFor="course-query">Course</label>
+ <input id="course-query" value={query} onChange={e=>setQuery(e.target.value)}/>
+ <ul>{visible.map(course=><li key={course}>{course}</li>)}</ul></section>;
+}
+```
+
+**Diagnosis:** The starter sorts the original array in place, changing a parent-owned collection. Before reading the answer, identify the user-visible symptom, not just the line number.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the implementation contract" file="labs/react-usememo-callback-cost/starter/solution.tsx" expected="Sorting returns a new filtered list and preserves the original input order.">
+
+```tsx
+import {useMemo,useState} from 'react';
+export function selectCourses(courses:readonly string[],query:string){
+ const normalized=query.trim().toLocaleLowerCase();
+ return courses.filter(x=>x.toLocaleLowerCase().includes(normalized)).sort((a,b)=>a.localeCompare(b));
+}
+export function CoursePicker({courses}:{courses:readonly string[]}){
+ const [query,setQuery]=useState('');
+ const visible=useMemo(()=>selectCourses(courses,query),[courses,query]);
+ return <section><label htmlFor="course-query">Course</label>
+ <input id="course-query" value={query} onChange={e=>setQuery(e.target.value)}/>
+ <ul>{visible.map(course=><li key={course}>{course}</li>)}</ul></section>;
+}
+```
+
+**Why this works:** Use memoization only for measured costly derived work or stable callback identity needed by memoized children.
+
+</LessonStep>
+
+<LessonStep number={3} title="Compare positive and negative tests" file="labs/react-usememo-callback-cost/solution.test.mjs" expected="Correct instructor code passes the documented assertions; the original starter fails.">
+
+```js
+const original=['TypeScript','React','Next.js'];
+const selected=mod.selectCourses(original,'react');
+assert.deepEqual(selected,['React']);assert.deepEqual(original,['TypeScript','React','Next.js']);
+assert.deepEqual(mod.selectCourses(original,''),['Next.js','React','TypeScript']);
+assert.match(renderToStaticMarkup(createElement(mod.CoursePicker,{courses:original})),/Next.js/);
+```
+
+**Beyond the static model:** `useMemo` and `useCallback` are optimization tools, not correctness boundaries. React Compiler settings and dependency identity can change their practical value. Record a profile before adding them; never mutate render inputs.
+
+</LessonStep>
+
+<Misconception claim="The starter sorts the original array in place, changing a parent-owned collection." correction="Use memoization only for measured costly derived work or stable callback identity needed by memoized children. A passing server-rendering test cannot prove mounted interactions." />
+
+<KnowledgeCheck question="Which testing or rendering principle matters most for usememo and usecallback tradeoffs?" choices={["An SSR snapshot proves browser interactions and state persistence.","Use memoization only for measured costly derived work or stable callback identity needed by memoized children.","UI correctness is guaranteed by TypeScript without runtime tests.","Optimization should happen before any profiling evidence."] } correctIndex={1} explanation="Use memoization only for measured costly derived work or stable callback identity needed by memoized children." misconception="Match each assertion to the behavior it actually measures." lessonId="06.05.06" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Reproduce:** Run the intentionally broken starter and record the failed assertion. **Investigate:** The starter sorts the original array in place, changing a parent-owned collection. **Repair:** Use memoization only for measured costly derived work or stable callback identity needed by memoized children. **Verify:** Sorting returns a new filtered list and preserves the original input order.
+
+## Guided local lab
+
+The lab includes an editable starter, instructor solution, local test fixture, and completion rubric. Source snippets are compiled only by your local toolchain, never by the public academy server.
+
+<LabGate lessonId="06.05.06" labId="lab.react.react-usememo-callback-cost" commands={["npm run lab:react-usememo-callback-cost","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+What property can an isolated test verify? What must a real mounted React browser test verify separately? Describe one production risk an SSR test would miss.
+
+## Official references
+
+- [Primary official reference for useMemo and useCallback tradeoffs](https://react.dev/reference/react/useMemo)
+- [Supporting official reference](https://react.dev/reference/react/useCallback)

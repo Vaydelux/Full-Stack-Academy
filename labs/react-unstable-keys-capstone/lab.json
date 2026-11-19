@@ -1,0 +1,15 @@
+{
+  "id": "lab.react.react-unstable-keys-capstone",
+  "lessonId": "06.05.08",
+  "title": "Offline bug hunt unstable keys lab",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/react-unstable-keys-capstone/starter/solution.tsx",
+  "solution": "labs/react-unstable-keys-capstone/solution/solution.tsx",
+  "tests": "labs/react-unstable-keys-capstone/solution.test.mjs",
+  "verify": [
+    "npm run lab:react-unstable-keys-capstone"
+  ],
+  "expected": "Element keys preserve record identity across reorder and the view has an empty state.",
+  "security": "Local checked-in test fixtures only. Real RTL/mounted tests require independently locked DOM tooling and are not claimed by this lesson."
+}

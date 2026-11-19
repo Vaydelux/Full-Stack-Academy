@@ -1,0 +1,86 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Test behavior observable to a person rather than implementation details. React Testing Library requires an installed DOM runtime and is not provided by this repository's locked dependencies.","Repair a broken react testing library example with React 19 and TypeScript.","Compare local source/model assertions with real mounted-browser testing evidence."]} />
+
+## The problem we're solving
+
+A notification button must reveal a readable status after activation, and the test should locate it by accessible role. **Failure case:** The starter omits both the accessible button state and the notification announcement.
+
+## Build the mental model
+
+Test behavior observable to a person rather than implementation details. React Testing Library requires an installed DOM runtime and is not provided by this repository's locked dependencies.
+
+**Expected result:** A notice button provides a named control, correctly marked pressed state, and a status region.
+
+**Evidence boundary:** Node tests run reviewed fixtures, not arbitrary learner code. React server markup proves initial output only. A browser or configured DOM environment is required for real user events, hydration, the React DevTools Profiler, and state preservation after reordering. This repo does not currently declare or lock React Testing Library; do not claim these Node checks exercise that dependency.
+
+## Prerequisites and preflight
+
+Read the prior React lesson. Use Node.js 24, run `npm ci` and inspect `labs/react-testing-library-intro/starter/solution.tsx`. To reproduce the defect: Bash `ACADEMY_LAB_TARGET=starter npm run lab:react-testing-library-intro`; PowerShell `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:react-testing-library-intro; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Predict and reproduce a broken behavior" file="labs/react-testing-library-intro/starter/solution.tsx" expected="A regression assertion fails on an intentionally incorrect implementation.">
+
+```tsx
+import {useState} from 'react';
+export function AnnouncementButton(){
+ const [active,setActive]=useState(false);
+ return <section><button type="button" onClick={()=>setActive(current=>!current)}>Toggle notice</button>
+ <p>{active?'Notice enabled':'Notice disabled'}</p></section>;
+}
+```
+
+**Diagnosis:** The starter omits both the accessible button state and the notification announcement. Before reading the answer, identify the user-visible symptom, not just the line number.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the implementation contract" file="labs/react-testing-library-intro/starter/solution.tsx" expected="A notice button provides a named control, correctly marked pressed state, and a status region.">
+
+```tsx
+import {useState} from 'react';
+export function AnnouncementButton(){
+ const [active,setActive]=useState(false);
+ return <section><button type="button" aria-pressed={active} onClick={()=>setActive(current=>!current)}>Toggle notice</button>
+ <p role="status">{active?'Notice enabled':'Notice disabled'}</p></section>;
+}
+```
+
+**Why this works:** Test behavior observable to a person rather than implementation details. React Testing Library requires an installed DOM runtime and is not provided by this repository's locked dependencies.
+
+</LessonStep>
+
+<LessonStep number={3} title="Compare positive and negative tests" file="labs/react-testing-library-intro/solution.test.mjs" expected="Correct instructor code passes the documented assertions; the original starter fails.">
+
+```js
+const html=renderToStaticMarkup(createElement(mod.AnnouncementButton));
+assert.match(html,/aria-pressed="false"/);assert.match(html,/role="status"/);assert.match(html,/Notice disabled/);
+```
+
+**Beyond the static model:** For genuine mounted tests, add compatible `@testing-library/react`, `@testing-library/user-event` and a DOM environment with a regenerated lockfile. Example: `render(<AnnouncementButton />); await userEvent.setup().click(screen.getByRole('button',{name:'Toggle notice'})); expect(screen.getByRole('status')).toHaveTextContent('Notice enabled');`. This is an illustrative test, not an executed CI/test runner guarantee.
+
+</LessonStep>
+
+<Misconception claim="The starter omits both the accessible button state and the notification announcement." correction="Test behavior observable to a person rather than implementation details. React Testing Library requires an installed DOM runtime and is not provided by this repository's locked dependencies. A passing server-rendering test cannot prove mounted interactions." />
+
+<KnowledgeCheck question="Which testing or rendering principle matters most for react testing library?" choices={["An SSR snapshot proves browser interactions and state persistence.","Test behavior observable to a person rather than implementation details. React Testing Library requires an installed DOM runtime and is not provided by this repository's locked dependencies.","UI correctness is guaranteed by TypeScript without runtime tests.","Optimization should happen before any profiling evidence."] } correctIndex={1} explanation="Test behavior observable to a person rather than implementation details. React Testing Library requires an installed DOM runtime and is not provided by this repository's locked dependencies." misconception="Match each assertion to the behavior it actually measures." lessonId="06.05.01" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Reproduce:** Run the intentionally broken starter and record the failed assertion. **Investigate:** The starter omits both the accessible button state and the notification announcement. **Repair:** Test behavior observable to a person rather than implementation details. React Testing Library requires an installed DOM runtime and is not provided by this repository's locked dependencies. **Verify:** A notice button provides a named control, correctly marked pressed state, and a status region.
+
+## Guided local lab
+
+The lab includes an editable starter, instructor solution, local test fixture, and completion rubric. Source snippets are compiled only by your local toolchain, never by the public academy server.
+
+<LabGate lessonId="06.05.01" labId="lab.react.react-testing-library-intro" commands={["npm run lab:react-testing-library-intro","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+What property can an isolated test verify? What must a real mounted React browser test verify separately? Describe one production risk an SSR test would miss.
+
+## Official references
+
+- [Primary official reference for React Testing Library](https://testing-library.com/docs/react-testing-library/intro/)
+- [Supporting official reference](https://react.dev/learn)

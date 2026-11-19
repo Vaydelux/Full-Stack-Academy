@@ -1,0 +1,91 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Keep render logic pure because React may start, replay, interrupt or discard render work before a commit.","Repair a broken concurrent rendering mental model example with React 19 and TypeScript.","Compare local source/model assertions with real mounted-browser testing evidence."]} />
+
+## The problem we're solving
+
+An activity counter must derive its label from the latest input without changing an external singleton while rendering. **Failure case:** The starter transforms every count into a fixed label, concealing a stale snapshot.
+
+## Build the mental model
+
+Keep render logic pure because React may start, replay, interrupt or discard render work before a commit.
+
+**Expected result:** Each input produces a deterministic derived description, including zero and plural cases.
+
+**Evidence boundary:** Node tests run reviewed fixtures, not arbitrary learner code. React server markup proves initial output only. A browser or configured DOM environment is required for real user events, hydration, the React DevTools Profiler, and state preservation after reordering. This repo does not currently declare or lock React Testing Library; do not claim these Node checks exercise that dependency.
+
+## Prerequisites and preflight
+
+Read the prior React lesson. Use Node.js 24, run `npm ci` and inspect `labs/react-concurrent-rendering/starter/solution.tsx`. To reproduce the defect: Bash `ACADEMY_LAB_TARGET=starter npm run lab:react-concurrent-rendering`; PowerShell `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:react-concurrent-rendering; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Predict and reproduce a broken behavior" file="labs/react-concurrent-rendering/starter/solution.tsx" expected="A regression assertion fails on an intentionally incorrect implementation.">
+
+```tsx
+import {useState,useTransition} from 'react';
+export function activityLabel(_count:number){return '0 activities';}
+export function ActivityPanel(){
+ const [count,setCount]=useState(0);const [pending,startTransition]=useTransition();
+ return <section><button type="button" onClick={()=>startTransition(()=>setCount(n=>n+1))}>Add activity</button>
+ <p role="status">{pending?'Updating':activityLabel(count)}</p></section>;
+}
+```
+
+**Diagnosis:** The starter transforms every count into a fixed label, concealing a stale snapshot. Before reading the answer, identify the user-visible symptom, not just the line number.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the implementation contract" file="labs/react-concurrent-rendering/starter/solution.tsx" expected="Each input produces a deterministic derived description, including zero and plural cases.">
+
+```tsx
+import {useState,useTransition} from 'react';
+export function activityLabel(count:number){
+ if(!Number.isSafeInteger(count)||count<0)throw new RangeError('Count must be nonnegative');
+ return count===1?'1 activity':`${count} activities`;
+}
+export function ActivityPanel(){
+ const [count,setCount]=useState(0);const [pending,startTransition]=useTransition();
+ return <section><button type="button" onClick={()=>startTransition(()=>setCount(n=>n+1))}>Add activity</button>
+ <p role="status">{pending?'Updating':activityLabel(count)}</p></section>;
+}
+```
+
+**Why this works:** Keep render logic pure because React may start, replay, interrupt or discard render work before a commit.
+
+</LessonStep>
+
+<LessonStep number={3} title="Compare positive and negative tests" file="labs/react-concurrent-rendering/solution.test.mjs" expected="Correct instructor code passes the documented assertions; the original starter fails.">
+
+```js
+assert.equal(mod.activityLabel(1),'1 activity');assert.equal(mod.activityLabel(4),'4 activities');assert.throws(()=>mod.activityLabel(-1),RangeError);
+assert.match(renderToStaticMarkup(createElement(mod.ActivityPanel)),/0 activities/);
+```
+
+**Beyond the static model:** Concurrency is not parallel JavaScript execution. Urgent UI (input text, focus) remains responsive while React schedules lower-priority rendering; side effects belong after commit, not in render. An SSR assertion cannot prove interruptions.
+
+</LessonStep>
+
+<Misconception claim="The starter transforms every count into a fixed label, concealing a stale snapshot." correction="Keep render logic pure because React may start, replay, interrupt or discard render work before a commit. A passing server-rendering test cannot prove mounted interactions." />
+
+<KnowledgeCheck question="Which testing or rendering principle matters most for concurrent rendering mental model?" choices={["An SSR snapshot proves browser interactions and state persistence.","Keep render logic pure because React may start, replay, interrupt or discard render work before a commit.","UI correctness is guaranteed by TypeScript without runtime tests.","Optimization should happen before any profiling evidence."] } correctIndex={1} explanation="Keep render logic pure because React may start, replay, interrupt or discard render work before a commit." misconception="Match each assertion to the behavior it actually measures." lessonId="06.05.07" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Reproduce:** Run the intentionally broken starter and record the failed assertion. **Investigate:** The starter transforms every count into a fixed label, concealing a stale snapshot. **Repair:** Keep render logic pure because React may start, replay, interrupt or discard render work before a commit. **Verify:** Each input produces a deterministic derived description, including zero and plural cases.
+
+## Guided local lab
+
+The lab includes an editable starter, instructor solution, local test fixture, and completion rubric. Source snippets are compiled only by your local toolchain, never by the public academy server.
+
+<LabGate lessonId="06.05.07" labId="lab.react.react-concurrent-rendering" commands={["npm run lab:react-concurrent-rendering","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+What property can an isolated test verify? What must a real mounted React browser test verify separately? Describe one production risk an SSR test would miss.
+
+## Official references
+
+- [Primary official reference for Concurrent rendering mental model](https://react.dev/reference/react/useTransition)
+- [Supporting official reference](https://react.dev/learn/render-and-commit)

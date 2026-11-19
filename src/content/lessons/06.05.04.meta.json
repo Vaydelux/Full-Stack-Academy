@@ -1,0 +1,39 @@
+{
+  "id": "06.05.04",
+  "title": "React DevTools profiler: Measure before optimizing. Distinguish actual duration, base duration and a rendering event rather than assuming every render is waste",
+  "description": "React 19 and TypeScript 5 guide to react devtools profiler with reproducible starter bugs, instructor corrections, local regression assertions and browser-verification boundaries.",
+  "trackId": "06",
+  "moduleId": "06.05",
+  "level": "Beginner",
+  "estimatedMinutes": 65,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "react": "19",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "06.05.03"
+  ],
+  "objectives": [
+    "Measure before optimizing. Distinguish actual duration, base duration and a rendering event rather than assuming every render is waste.",
+    "Repair the intentionally failing example for react devtools profiler.",
+    "Distinguish a server-rendered assertion from genuine browser behavior and integration evidence."
+  ],
+  "labId": "lab.react.react-profiler-diagnosis",
+  "rubric": [
+    "I can explain the difference between a static fixture and a mounted test for react devtools profiler.",
+    "I can repair the starter for 06.05.04 and demonstrate the regression assertion.",
+    "I can describe the necessary browser, dependency or profiler evidence before claiming production reliability."
+  ],
+  "sources": [
+    {
+      "label": "Primary: React DevTools profiler",
+      "url": "https://react.dev/reference/react/Profiler"
+    },
+    {
+      "label": "Supporting official reference",
+      "url": "https://react.dev/reference/react/memo"
+    }
+  ]
+}

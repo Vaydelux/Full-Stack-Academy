@@ -1,0 +1,39 @@
+{
+  "id": "06.05.02",
+  "title": "Accessible queries: Prefer roles and associated labels over brittle CSS classes, positions or test IDs when querying UI",
+  "description": "React 19 and TypeScript 5 guide to accessible queries with reproducible starter bugs, instructor corrections, local regression assertions and browser-verification boundaries.",
+  "trackId": "06",
+  "moduleId": "06.05",
+  "level": "Beginner",
+  "estimatedMinutes": 65,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "react": "19",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "06.05.01"
+  ],
+  "objectives": [
+    "Prefer roles and associated labels over brittle CSS classes, positions or test IDs when querying UI.",
+    "Repair the intentionally failing example for accessible queries.",
+    "Distinguish a server-rendered assertion from genuine browser behavior and integration evidence."
+  ],
+  "labId": "lab.react.react-accessible-queries",
+  "rubric": [
+    "I can explain the difference between a static fixture and a mounted test for accessible queries.",
+    "I can repair the starter for 06.05.02 and demonstrate the regression assertion.",
+    "I can describe the necessary browser, dependency or profiler evidence before claiming production reliability."
+  ],
+  "sources": [
+    {
+      "label": "Primary: Accessible queries",
+      "url": "https://testing-library.com/docs/queries/about/"
+    },
+    {
+      "label": "Supporting official reference",
+      "url": "https://www.w3.org/WAI/ARIA/apg/"
+    }
+  ]
+}
