@@ -1,0 +1,85 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Apply filtering and sorting to a consistent dataset before pagination, or delegate all three operations coherently to a server.","Debug the deliberately broken controlled sorting filtering pagination example.","Explain when server data, controlled table state and browser accessibility must be verified independently."]} />
+
+## The problem we're solving
+
+The starter paginates first, then filters, so matching rows can disappear from the wrong page. Enterprise interfaces need correct data scope, stable identities, accessible states and predictable behavior under pagination, refresh and mobile layouts.
+
+## Build the mental model
+
+Apply filtering and sorting to a consistent dataset before pagination, or delegate all three operations coherently to a server.
+
+**Prediction:** Filtering occurs before stable sorting and pagination; page zero contains matching results.
+
+**Scope of evidence:** The instructor's local Node tests exercise a pure data transformation. TanStack Table v8 and TanStack Virtual require separate dependency installation and mounted browser tests. Never treat sorting the current server page as global sorting, or browser-side role checks as server authorization.
+
+## Prerequisites and preflight
+
+Study the previous UI lesson. Use the project lockfile and Node 24. Inspect `labs/ui-controlled-table/starter/solution.tsx`. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:ui-controlled-table`. PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:ui-controlled-table; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the operational UI failure" file="labs/ui-controlled-table/starter/solution.tsx" expected="An incorrect data transformation fails a local assertion.">
+
+```tsx
+export function selectPage(rows:readonly string[],term:string,page:number,size:number){return rows.slice(page*size,(page+1)*size).filter(x=>x.includes(term));}
+```
+
+**Why it fails:** The starter paginates first, then filters, so matching rows can disappear from the wrong page.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the typed data contract" file="labs/ui-controlled-table/starter/solution.tsx" expected="Filtering occurs before stable sorting and pagination; page zero contains matching results.">
+
+```tsx
+export function selectPage(rows:readonly string[],term:string,page:number,size:number){if(!Number.isInteger(page)||page<0||!Number.isInteger(size)||size<1)throw new RangeError('Invalid page');const q=term.toLowerCase();return rows.filter(x=>x.toLowerCase().includes(q)).sort((a,b)=>a.localeCompare(b)).slice(page*size,(page+1)*size);}
+```
+
+**Why this works:** Apply filtering and sorting to a consistent dataset before pagination, or delegate all three operations coherently to a server.
+
+</LessonStep>
+
+<LessonStep number={3} title="Check edge cases and framework integration" file="labs/ui-controlled-table/solution.test.mjs" expected="The instructor solution passes and the red starter fails the same local acceptance suite.">
+
+```js
+assert.deepEqual(mod.selectPage(['Zebra','Alpha','Another'],'a',0,2),['Alpha','Another']);assert.deepEqual(mod.selectPage(['Zebra','Alpha','Another'],'a',1,2),['Zebra']);assert.throws(()=>mod.selectPage([], '',-1,2),RangeError);
+```
+
+**Framework/UX reference (illustrative; installation and browser tests are separate):**
+
+```tsx
+// TanStack Table v8 controlled state:
+// state:{sorting,columnFilters,pagination}; onSortingChange:setSorting;
+// getSortedRowModel,getFilteredRowModel,getPaginationRowModel for client datasets.
+// If manualPagination:true, query the SERVER with matching sort+filter params.
+// Never sort only the current server page and imply global ordering.
+```
+
+In an application with a backend, verify stable IDs, authorization and global sort/filter/page consistency against actual HTTP responses.
+
+</LessonStep>
+
+<Misconception claim="The starter paginates first, then filters, so matching rows can disappear from the wrong page." correction="Apply filtering and sorting to a consistent dataset before pagination, or delegate all three operations coherently to a server. A local model cannot establish server pagination, authorization or real keyboard behavior." />
+
+<KnowledgeCheck question="What matters most for controlled sorting filtering pagination?" choices={["A client-rendered table automatically makes backend authorization unnecessary.","Apply filtering and sorting to a consistent dataset before pagination, or delegate all three operations coherently to a server.","Server pagination and client-only sort always produce one globally ordered result.","A screenshot can verify a screen reader's experience with loading states."] } correctIndex={1} explanation="Apply filtering and sorting to a consistent dataset before pagination, or delegate all three operations coherently to a server." misconception="Data correctness, backend permissions and accessibility must be independently demonstrated." lessonId="08.03.02" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Bug:** The starter paginates first, then filters, so matching rows can disappear from the wrong page. **Reproduce:** run the starter and capture the failing assertion. **Repair:** Apply filtering and sorting to a consistent dataset before pagination, or delegate all three operations coherently to a server. **Regression:** Filtering occurs before stable sorting and pagination; page zero contains matching results. Test actual data source and interactions before production use.
+
+## Guided local lab
+
+`labs/ui-controlled-table/` contains a broken starter, correct instructor code, offline assertions, and a completion rubric. The public academy does not execute learner code.
+
+<LabGate lessonId="08.03.02" labId="lab.ui.ui-controlled-table" commands={["npm run lab:ui-controlled-table","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+Which invariant is protected by this pure model test? What must still be tested through a real server or keyboard-driven browser?
+
+## Official references
+
+- [Official reference for Controlled sorting filtering pagination](https://tanstack.com/table/v8/docs/guide/pagination)
+- [Supporting specification or documentation](https://tanstack.com/table/v8/docs/guide/sorting)

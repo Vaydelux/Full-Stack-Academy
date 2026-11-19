@@ -1,0 +1,39 @@
+{
+  "id": "08.03.04",
+  "title": "Dense tables and mobile alternatives: Make mobile tables usable with deliberate cards or horizontal scrolling, while preserving important labels and data parity.",
+  "description": "Professional UI data interface tutorial for dense tables and mobile alternatives, including a typed local starter, instructor repair, regression tests and explicit server/accessibility boundaries.",
+  "trackId": "08",
+  "moduleId": "08.03",
+  "level": "Intermediate",
+  "estimatedMinutes": 65,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "typescript": "5",
+    "react": "19"
+  },
+  "prerequisites": [
+    "08.03.03"
+  ],
+  "objectives": [
+    "Make mobile tables usable with deliberate cards or horizontal scrolling, while preserving important labels and data parity.",
+    "Repair the ui-mobile-table-view broken implementation.",
+    "Identify necessary real-browser and backend checks for dense tables and mobile alternatives."
+  ],
+  "labId": "lab.ui.ui-mobile-table-view",
+  "rubric": [
+    "I understand the model and browser boundaries for dense tables and mobile alternatives.",
+    "I can fix 08.03.04 and demonstrate a negative regression assertion.",
+    "I can explain the risk of trusting client data, pagination or role state."
+  ],
+  "sources": [
+    {
+      "label": "Official Dense tables and mobile alternatives documentation",
+      "url": "https://www.w3.org/WAI/tutorials/tables/"
+    },
+    {
+      "label": "Supplementary specification",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_media_queries/Using_media_queries"
+    }
+  ]
+}

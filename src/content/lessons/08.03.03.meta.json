@@ -1,0 +1,39 @@
+{
+  "id": "08.03.03",
+  "title": "Virtualized lists: Render a bounded visible window with overscan and preserve item IDs, keyboard navigation and screen reader access.",
+  "description": "Professional UI data interface tutorial for virtualized lists, including a typed local starter, instructor repair, regression tests and explicit server/accessibility boundaries.",
+  "trackId": "08",
+  "moduleId": "08.03",
+  "level": "Intermediate",
+  "estimatedMinutes": 65,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "typescript": "5",
+    "react": "19"
+  },
+  "prerequisites": [
+    "08.03.02"
+  ],
+  "objectives": [
+    "Render a bounded visible window with overscan and preserve item IDs, keyboard navigation and screen reader access.",
+    "Repair the ui-virtual-window broken implementation.",
+    "Identify necessary real-browser and backend checks for virtualized lists."
+  ],
+  "labId": "lab.ui.ui-virtual-window",
+  "rubric": [
+    "I understand the model and browser boundaries for virtualized lists.",
+    "I can fix 08.03.03 and demonstrate a negative regression assertion.",
+    "I can explain the risk of trusting client data, pagination or role state."
+  ],
+  "sources": [
+    {
+      "label": "Official Virtualized lists documentation",
+      "url": "https://tanstack.com/virtual/latest/docs/introduction"
+    },
+    {
+      "label": "Supplementary specification",
+      "url": "https://www.w3.org/WAI/ARIA/apg/patterns/grid/"
+    }
+  ]
+}

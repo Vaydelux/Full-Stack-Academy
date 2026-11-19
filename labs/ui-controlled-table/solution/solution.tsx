@@ -1,0 +1,1 @@
+export function selectPage(rows:readonly string[],term:string,page:number,size:number){if(!Number.isInteger(page)||page<0||!Number.isInteger(size)||size<1)throw new RangeError('Invalid page');const q=term.toLowerCase();return rows.filter(x=>x.toLowerCase().includes(q)).sort((a,b)=>a.localeCompare(b)).slice(page*size,(page+1)*size);}

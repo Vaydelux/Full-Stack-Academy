@@ -1,0 +1,15 @@
+{
+  "id": "lab.ui.ui-controlled-table",
+  "lessonId": "08.03.02",
+  "title": "UI data systems controlled sorting filtering pagination local lab",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/ui-controlled-table/starter/solution.tsx",
+  "solution": "labs/ui-controlled-table/solution/solution.tsx",
+  "tests": "labs/ui-controlled-table/solution.test.mjs",
+  "verify": [
+    "npm run lab:ui-controlled-table"
+  ],
+  "expected": "Filtering occurs before stable sorting and pagination; page zero contains matching results.",
+  "security": "Trusted source-level model only. No external data, UI event runner or remote code execution."
+}

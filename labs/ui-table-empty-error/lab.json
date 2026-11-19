@@ -1,0 +1,15 @@
+{
+  "id": "lab.ui.ui-table-empty-error",
+  "lessonId": "08.03.05",
+  "title": "UI data systems loading empty and error states local lab",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/ui-table-empty-error/starter/solution.tsx",
+  "solution": "labs/ui-table-empty-error/solution/solution.tsx",
+  "tests": "labs/ui-table-empty-error/solution.test.mjs",
+  "verify": [
+    "npm run lab:ui-table-empty-error"
+  ],
+  "expected": "Error and loading take priority over emptiness; ready appears when data exists.",
+  "security": "Trusted source-level model only. No external data, UI event runner or remote code execution."
+}

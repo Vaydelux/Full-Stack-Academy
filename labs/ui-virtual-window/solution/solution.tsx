@@ -1,0 +1,1 @@
+export function visibleRange(total:number,start:number,count:number,overscan:number){if([total,start,count,overscan].some(x=>!Number.isSafeInteger(x)||x<0))throw new RangeError('Invalid window');return {from:Math.min(total,Math.max(0,start-overscan)),to:Math.min(total,start+count+overscan)};}

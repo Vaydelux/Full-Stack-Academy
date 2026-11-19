@@ -1,0 +1,84 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Escape spreadsheet CSV quotes/newlines and neutralize formula-like user text; never export fields a user is not authorized to access.","Debug the deliberately broken export and print ux example.","Explain when server data, controlled table state and browser accessibility must be verified independently."]} />
+
+## The problem we're solving
+
+The starter emits raw values, allowing commas, quotes and formula prefixes to break cells or inject spreadsheet expressions. Enterprise interfaces need correct data scope, stable identities, accessible states and predictable behavior under pagination, refresh and mobile layouts.
+
+## Build the mental model
+
+Escape spreadsheet CSV quotes/newlines and neutralize formula-like user text; never export fields a user is not authorized to access.
+
+**Prediction:** CSV values are quoted when necessary and formula-like text is prefixed with a neutralizing apostrophe.
+
+**Scope of evidence:** The instructor's local Node tests exercise a pure data transformation. TanStack Table v8 and TanStack Virtual require separate dependency installation and mounted browser tests. Never treat sorting the current server page as global sorting, or browser-side role checks as server authorization.
+
+## Prerequisites and preflight
+
+Study the previous UI lesson. Use the project lockfile and Node 24. Inspect `labs/ui-safe-csv-export/starter/solution.tsx`. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:ui-safe-csv-export`. PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:ui-safe-csv-export; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the operational UI failure" file="labs/ui-safe-csv-export/starter/solution.tsx" expected="An incorrect data transformation fails a local assertion.">
+
+```tsx
+export const csvCell=(value:string)=>value;
+```
+
+**Why it fails:** The starter emits raw values, allowing commas, quotes and formula prefixes to break cells or inject spreadsheet expressions.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the typed data contract" file="labs/ui-safe-csv-export/starter/solution.tsx" expected="CSV values are quoted when necessary and formula-like text is prefixed with a neutralizing apostrophe.">
+
+```tsx
+export function csvCell(value:string){const safe=/^[\s]*[=+\-@\t\r]/.test(value)?"'"+value:value;return /[",\r\n]/.test(safe)?'"'+safe.replace(/"/g,'""')+'"':safe;}
+```
+
+**Why this works:** Escape spreadsheet CSV quotes/newlines and neutralize formula-like user text; never export fields a user is not authorized to access.
+
+</LessonStep>
+
+<LessonStep number={3} title="Check edge cases and framework integration" file="labs/ui-safe-csv-export/solution.test.mjs" expected="The instructor solution passes and the red starter fails the same local acceptance suite.">
+
+```js
+assert.equal(mod.csvCell('A,B'),'"A,B"');assert.equal(mod.csvCell('"Hi"'),'"\u0022\u0022Hi\u0022\u0022"');assert.equal(mod.csvCell('=2+2'),"'=2+2");assert.equal(mod.csvCell('normal'),'normal');
+```
+
+**Framework/UX reference (illustrative; installation and browser tests are separate):**
+
+```tsx
+// Export only explicitly authorized/visible columns.
+// Neutralizing spreadsheet formulas is necessary in addition to proper CSV quoting.
+// Print should keep headers with their respective data, readable at 100% zoom.
+// Test imported CSV in your target spreadsheet applications; locale rules vary.
+```
+
+In an application with a backend, verify stable IDs, authorization and global sort/filter/page consistency against actual HTTP responses.
+
+</LessonStep>
+
+<Misconception claim="The starter emits raw values, allowing commas, quotes and formula prefixes to break cells or inject spreadsheet expressions." correction="Escape spreadsheet CSV quotes/newlines and neutralize formula-like user text; never export fields a user is not authorized to access. A local model cannot establish server pagination, authorization or real keyboard behavior." />
+
+<KnowledgeCheck question="What matters most for export and print ux?" choices={["A client-rendered table automatically makes backend authorization unnecessary.","Escape spreadsheet CSV quotes/newlines and neutralize formula-like user text; never export fields a user is not authorized to access.","Server pagination and client-only sort always produce one globally ordered result.","A screenshot can verify a screen reader's experience with loading states."] } correctIndex={1} explanation="Escape spreadsheet CSV quotes/newlines and neutralize formula-like user text; never export fields a user is not authorized to access." misconception="Data correctness, backend permissions and accessibility must be independently demonstrated." lessonId="08.03.07" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Bug:** The starter emits raw values, allowing commas, quotes and formula prefixes to break cells or inject spreadsheet expressions. **Reproduce:** run the starter and capture the failing assertion. **Repair:** Escape spreadsheet CSV quotes/newlines and neutralize formula-like user text; never export fields a user is not authorized to access. **Regression:** CSV values are quoted when necessary and formula-like text is prefixed with a neutralizing apostrophe. Test actual data source and interactions before production use.
+
+## Guided local lab
+
+`labs/ui-safe-csv-export/` contains a broken starter, correct instructor code, offline assertions, and a completion rubric. The public academy does not execute learner code.
+
+<LabGate lessonId="08.03.07" labId="lab.ui.ui-safe-csv-export" commands={["npm run lab:ui-safe-csv-export","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+Which invariant is protected by this pure model test? What must still be tested through a real server or keyboard-driven browser?
+
+## Official references
+
+- [Official reference for Export and print UX](https://owasp.org/www-community/attacks/CSV_Injection)
+- [Supporting specification or documentation](https://www.w3.org/WAI/tutorials/tables/)

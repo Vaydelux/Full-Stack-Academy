@@ -1,0 +1,15 @@
+{
+  "id": "lab.ui.ui-operational-console",
+  "lessonId": "08.03.08",
+  "title": "UI data systems lab operational console local lab",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/ui-operational-console/starter/solution.tsx",
+  "solution": "labs/ui-operational-console/solution/solution.tsx",
+  "tests": "labs/ui-operational-console/solution.test.mjs",
+  "verify": [
+    "npm run lab:ui-operational-console"
+  ],
+  "expected": "Only a reviewer can approve a pending record; prior state is preserved for unauthorized actions.",
+  "security": "Trusted source-level model only. No external data, UI event runner or remote code execution."
+}

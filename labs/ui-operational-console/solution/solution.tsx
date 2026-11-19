@@ -1,0 +1,1 @@
+export type Role='viewer'|'reviewer';export type Item={id:string;status:'pending'|'approved'};export function approve(role:Role,item:Item){if(role!=='reviewer'||item.status!=='pending')return null;return {...item,status:'approved'};}

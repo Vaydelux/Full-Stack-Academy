@@ -1,0 +1,15 @@
+{
+  "id": "lab.ui.ui-safe-csv-export",
+  "lessonId": "08.03.07",
+  "title": "UI data systems export and print ux local lab",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/ui-safe-csv-export/starter/solution.tsx",
+  "solution": "labs/ui-safe-csv-export/solution/solution.tsx",
+  "tests": "labs/ui-safe-csv-export/solution.test.mjs",
+  "verify": [
+    "npm run lab:ui-safe-csv-export"
+  ],
+  "expected": "CSV values are quoted when necessary and formula-like text is prefixed with a neutralizing apostrophe.",
+  "security": "Trusted source-level model only. No external data, UI event runner or remote code execution."
+}

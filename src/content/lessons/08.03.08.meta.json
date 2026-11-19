@@ -1,0 +1,39 @@
+{
+  "id": "08.03.08",
+  "title": "Lab operational console: Coordinate a role-aware operational table with stable row IDs, action authorization and clear status feedback.",
+  "description": "Professional UI data interface tutorial for lab operational console, including a typed local starter, instructor repair, regression tests and explicit server/accessibility boundaries.",
+  "trackId": "08",
+  "moduleId": "08.03",
+  "level": "Intermediate",
+  "estimatedMinutes": 65,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "typescript": "5",
+    "react": "19"
+  },
+  "prerequisites": [
+    "08.03.07"
+  ],
+  "objectives": [
+    "Coordinate a role-aware operational table with stable row IDs, action authorization and clear status feedback.",
+    "Repair the ui-operational-console broken implementation.",
+    "Identify necessary real-browser and backend checks for lab operational console."
+  ],
+  "labId": "lab.ui.ui-operational-console",
+  "rubric": [
+    "I understand the model and browser boundaries for lab operational console.",
+    "I can fix 08.03.08 and demonstrate a negative regression assertion.",
+    "I can explain the risk of trusting client data, pagination or role state."
+  ],
+  "sources": [
+    {
+      "label": "Official Lab operational console documentation",
+      "url": "https://tanstack.com/table/v8/docs/guide/row-selection"
+    },
+    {
+      "label": "Supplementary specification",
+      "url": "https://www.w3.org/WAI/ARIA/apg/patterns/grid/"
+    }
+  ]
+}

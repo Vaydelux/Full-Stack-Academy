@@ -1,0 +1,39 @@
+{
+  "id": "08.03.07",
+  "title": "Export and print UX: Escape spreadsheet CSV quotes/newlines and neutralize formula-like user text; never export fields a user is not authorized to access.",
+  "description": "Professional UI data interface tutorial for export and print ux, including a typed local starter, instructor repair, regression tests and explicit server/accessibility boundaries.",
+  "trackId": "08",
+  "moduleId": "08.03",
+  "level": "Intermediate",
+  "estimatedMinutes": 65,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "typescript": "5",
+    "react": "19"
+  },
+  "prerequisites": [
+    "08.03.06"
+  ],
+  "objectives": [
+    "Escape spreadsheet CSV quotes/newlines and neutralize formula-like user text; never export fields a user is not authorized to access.",
+    "Repair the ui-safe-csv-export broken implementation.",
+    "Identify necessary real-browser and backend checks for export and print ux."
+  ],
+  "labId": "lab.ui.ui-safe-csv-export",
+  "rubric": [
+    "I understand the model and browser boundaries for export and print ux.",
+    "I can fix 08.03.07 and demonstrate a negative regression assertion.",
+    "I can explain the risk of trusting client data, pagination or role state."
+  ],
+  "sources": [
+    {
+      "label": "Official Export and print UX documentation",
+      "url": "https://owasp.org/www-community/attacks/CSV_Injection"
+    },
+    {
+      "label": "Supplementary specification",
+      "url": "https://www.w3.org/WAI/tutorials/tables/"
+    }
+  ]
+}
