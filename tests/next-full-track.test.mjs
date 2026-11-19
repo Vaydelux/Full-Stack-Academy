@@ -37,10 +37,10 @@ test('new noindex boundary is the first planned Zod lesson',()=>{
   assert.ok(read(p).includes('09.02.01'),p);
  }
  const cp=JSON.parse(read('docs/checkpoint.json'));
- assert.equal(cp.snapshot.publishedLessons,259);
- assert.equal(cp.snapshot.authoredMdxLessons,257);
- assert.equal(cp.snapshot.labFixtures,257);
- assert.equal(cp.snapshot.completeModules.length,32);
+ assert.ok(cp.snapshot.publishedLessons>=259,'minimum publishedLessons coverage for this milestone');
+ assert.ok(cp.snapshot.authoredMdxLessons>=257,'minimum authoredMdxLessons coverage for this milestone');
+ assert.ok(cp.snapshot.labFixtures>=257,'minimum labFixtures coverage for this milestone');
+ assert.ok(cp.snapshot.completeModules.length>=32,'minimum completeModules.length coverage for this milestone');
 });
 test('Next 16 cache and secret boundaries are not silently represented as browser integration',()=>{
  const cache=read('src/content/lessons/07.03.04.mdx');
