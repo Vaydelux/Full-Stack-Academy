@@ -152,7 +152,8 @@ async function load(append) {
 async function submit(operation) {
   if (busy || (failedRequest && failedRequest.key !== operation.key)) return;
   setWriteBusy(true);
-  message(status, 'Saving task…');
+  try {
+    message(status, 'Saving task…');
   record('POST', 'Sending a new or retained logical operation.');
   let accepted = false;
   try {
@@ -181,7 +182,7 @@ async function submit(operation) {
     await load(false);
     title.focus();
   }
-  setWriteBusy(false);
+  } finally { setWriteBusy(false); }
 }
 form.addEventListener('submit', event => {
   event.preventDefault();
