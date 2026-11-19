@@ -1,3 +1,5 @@
+> **2026-11-19 progress note:** The Node loopback task API, browser-native practice app, separate actual RHF/TanStack React source, 22 real local HTTP integration tests and 16-topic workbook are now authored in source. Registry DNS still blocks trusted npm lockfile generation and real React typecheck/build/browser qualification. The 16 canonical topic entries remain PLANNED. See docs/FORMS_QUERY_CAPSTONE_ACCEPTANCE.md and examples/forms-query-vertical/README.md; this document is the remaining acceptance plan, not a claim that the modules are published.
+
 # Next large development milestone — 09.02 Forms + 09.03 Async Server State
 
 **Status:** PLANNED, not published. Current dashboard study-planner work is a dependency-free platform improvement, NOT the completion of the React Hook Form and TanStack Query track.
