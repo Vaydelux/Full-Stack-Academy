@@ -10,8 +10,8 @@
   },
   "development": {
     "branch": "main",
-    "state": "six-curriculum-prs-merged-plus-learner-dashboard-source-candidate",
-    "note": "PRs #20-#25 merged to main. Dashboard adds personalized local learning UX without changing catalog publication counts. No full local Node 24/Next/browser qualification; no Vercel/Actions inspection. Dashboard feature PR is to be merged."
+    "state": "dashboard-plus-tested-study-planner-source",
+    "note": "PRs #20–#26 were merged to main. Study planner is a new source milestone for /learn/dashboard. Nine exact source-matched Node 22 tests passed and pure helper strict typecheck passed. Full Node 24 npm/Next/Chromium checks not executed. Forms 09.02 and Query 09.03 remain planned; registry DNS unavailable; no Vercel/Actions used."
   },
   "snapshot": {
     "tracks": 28,
@@ -73,6 +73,6 @@
     "devHighFindings": 14,
     "exceptionExpires": "2026-12-02"
   },
-  "nextMilestone": "09.02-09.03-real-packages-and-forms-query-vertical-slice",
-  "status": "source-merged-offline-release-qualification-pending"
+  "nextMilestone": "09.02-09.03-real-package-forms-query-vertical-slice",
+  "status": "source-merged-study-planner-model-qualified-full-release-unverified"
 }
