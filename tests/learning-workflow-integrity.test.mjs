@@ -53,7 +53,7 @@ test('local sync stays origin-bound and registered only in the browser', () => {
 test('new saved session priority respects the existing prerequisite gate', () => {
   const planner = read('src/lib/academy/study-plan.ts');
   assert.match(planner, /progress\.bookmarks\?\.\[id\] === true/);
-  assert.match(planner, /ready\.filter\(/);
+  assert.match(planner, /\[\.\.\.pending\.values\(\)\]\.filter\(eligible\)/);
   assert.match(planner, /known\.has\(id\) && done\.has\(id\)/);
   assert.match(read('tests/study-plan.test.mjs'), /bookmarked eligible lessons/);
 });
