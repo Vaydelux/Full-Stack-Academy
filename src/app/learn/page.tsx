@@ -46,6 +46,13 @@ export default function CourseIndex() {
         <p className="mt-1 text-xs leading-6 text-slate-600 dark:text-slate-300">Find your next unfinished lesson, review module progress and export your local notes without searching the entire catalog.</p>
         <Link href="/learn/dashboard" className="mt-3 inline-flex rounded-lg bg-cyan-700 px-4 py-2 text-sm font-bold text-white hover:bg-cyan-800">Open learning dashboard</Link>
       </div>
+      <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white p-4 dark:border-white/10 dark:bg-white/[0.03]">
+        <div>
+          <p className="text-sm font-semibold">Ready for a complete practice project?</p>
+          <p className="mt-1 text-xs leading-6 text-slate-600 dark:text-slate-300">Explore real local HTTP capstones with explicit source and verification boundaries.</p>
+        </div>
+        <Link href="/learn/projects" className="inline-flex min-h-10 items-center rounded-lg border border-slate-300 px-4 py-2 text-sm font-bold hover:border-cyan-500 dark:border-white/20">Explore practice projects</Link>
+      </div>
       <section aria-label="Beginner learning path" className="mt-8">
         <h2 className="mb-3 text-xl font-bold">Start here</h2>
         <div className="grid gap-3 sm:grid-cols-2">
