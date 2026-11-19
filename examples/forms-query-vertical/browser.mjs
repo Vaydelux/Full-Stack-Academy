@@ -208,7 +208,7 @@ discard.addEventListener('click', () => {
   setWriteBusy(false);
   title.focus();
 });
-refresh.addEventListener('click', () => { void load(false); });
+refresh.addEventListener('click', () => { if (!busy) void load(false); });
 filter.addEventListener('change', () => {
   if (busy) return;
   records = [];
@@ -217,5 +217,5 @@ filter.addEventListener('change', () => {
   more.classList.add('hidden');
   void load(false);
 });
-more.addEventListener('click', () => { if (nextCursor) void load(true); });
+more.addEventListener('click', () => { if (!busy && nextCursor) void load(true); });
 void load(false);
