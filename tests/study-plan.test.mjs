@@ -61,3 +61,31 @@ test('finished scope yields no queue and no false blocker',()=>{
  assert.equal(result.lessons.length,0);
  assert.equal(result.blockedInScope,0);
 });
+
+test('does not bypass a missing or cyclic prerequisite even for started lessons',()=>{
+ const cyclic=[
+  {id:'a',title:'A',moduleId:'x',minutes:10,prerequisites:['b']},
+  {id:'b',title:'B',moduleId:'x',minutes:10,prerequisites:['a']},
+ ];
+ const result=createStudyPlan(cyclic,{...empty(),notes:{a:'started'}},{budgetMinutes:45});
+ assert.equal(result.lessons.length,0);
+ assert.equal(result.blockedInScope,2);
+});
+
+test('a completed cross-module prerequisite unlocks focused learning',()=>{
+ const lessons=[
+  {id:'intro',title:'Intro',moduleId:'basics',minutes:5},
+  {id:'advanced',title:'Advanced',moduleId:'advanced',minutes:15,prerequisites:['intro']},
+ ];
+ const blocked=createStudyPlan(lessons,empty(),{budgetMinutes:30,focusModule:'advanced'});
+ assert.equal(blocked.lessons.length,0);
+ const unlocked=createStudyPlan(lessons,{...empty(),complete:{intro:true}},{budgetMinutes:30,focusModule:'advanced'});
+ assert.deepEqual(unlocked.lessons.map(l=>l.id),['advanced']);
+});
+
+test('the lesson count bound prevents unbounded lists',()=>{
+ const lessons=Array.from({length:30},(_,i)=>({id:String(i),title:String(i),moduleId:'many',minutes:1}));
+ const result=createStudyPlan(lessons,empty(),{budgetMinutes:240,maxLessons:500});
+ assert.equal(result.lessons.length,12);
+ assert.equal(result.totalMinutes,12);
+});
