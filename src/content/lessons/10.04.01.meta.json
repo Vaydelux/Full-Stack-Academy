@@ -1,0 +1,39 @@
+{
+  "id": "10.04.01",
+  "title": "OpenAPI 3.1 structure",
+  "description": "OpenAPI 3.1.1 and SDK engineering: checked-in contract, executable assertion, red starter, instructor fix and compatibility/security limitations.",
+  "trackId": "10",
+  "moduleId": "10.04",
+  "level": "Intermediate",
+  "estimatedMinutes": 80,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "node": "24",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "10.03.08"
+  ],
+  "objectives": [
+    "An OpenAPI 3.1 document declares an exact version, info metadata, paths and reusable components; it is a source contract, not an HTTP server.",
+    "Repair the broken openapi-document-layout contract exercise.",
+    "Explain the difference between an OpenAPI description and an enforced server behavior."
+  ],
+  "labId": "lab.openapi.openapi-document-layout",
+  "rubric": [
+    "I understand the OpenAPI contract behind openapi 3.1 structure.",
+    "I can repair the starter and run a meaningful negative case.",
+    "I can name production validation or compatibility checks beyond this exercise."
+  ],
+  "sources": [
+    {
+      "label": "Primary official specification",
+      "url": "https://spec.openapis.org/oas/v3.1.1.html"
+    },
+    {
+      "label": "Supporting API documentation",
+      "url": "https://json-schema.org/draft/2020-12"
+    }
+  ]
+}

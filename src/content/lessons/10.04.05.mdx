@@ -1,0 +1,87 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Generate a real bounded ECMAScript SDK from a trusted OpenAPI 3.1 file, with distinct operations and runtime bearer injection, never embedding credentials into source.","Fix the client code generation bug using a checked-in OpenAPI 3.1.1 example.","Verify an actual contract or generated SDK instead of assuming annotations make a server correct."]} />
+
+## The problem we're solving
+
+The starter emits an empty source file and cannot expose any documented operation. API schemas, operation IDs, examples, authorization descriptions and client integrations must remain consistent across changes.
+
+## Build the mental model
+
+Generate a real bounded ECMAScript SDK from a trusted OpenAPI 3.1 file, with distinct operations and runtime bearer injection, never embedding credentials into source.
+
+**Expected outcome:** The generated client exposes getHealth, listNotes and createNote and performs the expected fetch calls.
+
+**Version and scope:** This module uses OpenAPI Specification **3.1.1** and one checked-in JSON contract at `examples/task-contract/task-api.openapi.json`. The smallest client generator is deliberately restricted to static, trusted GET/POST operations. This pinned local generator deliberately supports only static paths and GET/POST. It is not a substitute for production-grade SDK tooling, schema compilation or OAuth flows.
+
+## Prerequisites and preflight
+
+Complete `10.03.08` and the preceding OpenAPI lesson. Use Node 24 with no new runtime dependency. Read `labs/openapi-generate-client/starter/solution.mjs`. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:openapi-generate-client`; PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:openapi-generate-client; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Demonstrate the broken contract or SDK output" file="labs/openapi-generate-client/starter/solution.mjs" expected="The learner starter fails an actual contract assertion.">
+
+```js
+export function generateClient(_document){return ''}
+```
+
+**Root cause:** The starter emits an empty source file and cannot expose any documented operation.
+
+</LessonStep>
+
+<LessonStep number={2} title="Build the valid OpenAPI 3.1 integration" file="labs/openapi-generate-client/starter/solution.mjs" expected="The generated client exposes getHealth, listNotes and createNote and performs the expected fetch calls.">
+
+```js
+export {generateClient} from '../../../examples/task-contract/generate-client.mjs';
+```
+
+**Why this corrects the contract:** Generate a real bounded ECMAScript SDK from a trusted OpenAPI 3.1 file, with distinct operations and runtime bearer injection, never embedding credentials into source.
+
+</LessonStep>
+
+<LessonStep number={3} title="Execute real document and client acceptance" file="labs/openapi-generate-client/solution.test.mjs" expected="The instructor passes the local acceptance test; the red starter fails the intended contract assertion.">
+
+```js
+const {loadTaskSpec}=await import('../../../examples/task-contract/load-spec.mjs');
+const document=await loadTaskSpec();
+const source=mod.generateClient(document);
+assert.match(source,/export function createClient/);assert.match(source,/listNotes/);
+const {createClient}=await import('data:text/javascript,'+encodeURIComponent(source));
+const seen=[];
+const client=createClient({baseUrl:'http://127.0.0.1:3456',token:'demo-token',fetchImpl:async(url,options)=>{seen.push({url:String(url),options});return new Response(JSON.stringify({ok:true}),{status:200,headers:{'content-type':'application/json'}});}});
+assert.deepEqual(await client.getHealth(),{ok:true});
+await client.listNotes();await client.createNote({title:'Sample'});
+assert.equal(seen.length,3);assert.equal(seen[0].options.headers.authorization,undefined);
+assert.equal(seen[1].options.headers.authorization,'Bearer demo-token');
+assert.equal(seen[2].options.method,'POST');
+assert.deepEqual(JSON.parse(seen[2].options.body),{title:'Sample'});
+```
+
+**Scope:** This pinned local generator deliberately supports only static paths and GET/POST. It is not a substitute for production-grade SDK tooling, schema compilation or OAuth flows. This small exercise does not invoke a general-purpose OpenAPI compiler, schema validator or public server.
+
+</LessonStep>
+
+<Misconception claim="The starter emits an empty source file and cannot expose any documented operation." correction="Generate a real bounded ECMAScript SDK from a trusted OpenAPI 3.1 file, with distinct operations and runtime bearer injection, never embedding credentials into source. This pinned local generator deliberately supports only static paths and GET/POST. It is not a substitute for production-grade SDK tooling, schema compilation or OAuth flows." />
+
+<KnowledgeCheck question="What makes client code generation reliable?" choices={["A YAML or JSON file alone guarantees the running server follows the contract.","Generate a real bounded ECMAScript SDK from a trusted OpenAPI 3.1 file, with distinct operations and runtime bearer injection, never embedding credentials into source.","Operation IDs are proof that every route is authenticated and authorized.","OpenAPI annotations replace executable request/response tests."] } correctIndex={1} explanation="Generate a real bounded ECMAScript SDK from a trusted OpenAPI 3.1 file, with distinct operations and runtime bearer injection, never embedding credentials into source." misconception="Validate the source contract, SDK behavior and actual server responses separately." lessonId="10.04.05" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Failure:** The starter emits an empty source file and cannot expose any documented operation. **Reproduce:** run the red starter on the local example contract. **Repair:** Generate a real bounded ECMAScript SDK from a trusted OpenAPI 3.1 file, with distinct operations and runtime bearer injection, never embedding credentials into source. **Regression:** The generated client exposes getHealth, listNotes and createNote and performs the expected fetch calls.
+
+## Guided local lab
+
+`labs/openapi-generate-client/` contains a learner starter, complete instructor solution, executable Node assertions and a rubric. The examples use trusted static source files and no hosted learner-code runtime.
+
+<LabGate lessonId="10.04.05" labId="lab.openapi.openapi-generate-client" commands={["npm run lab:openapi-generate-client","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+Which changes are breaking for existing API clients? What additional dynamic schema validation and server instrumentation would be required before public SDK distribution?
+
+## Official references
+
+- [OpenAPI or HTTP specification](https://spec.openapis.org/oas/v3.1.1.html#operation-object)
+- [Supporting standards documentation](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)

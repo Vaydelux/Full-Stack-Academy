@@ -1,0 +1,15 @@
+{
+  "id": "lab.openapi.openapi-generated-client-capstone",
+  "lessonId": "10.04.08",
+  "title": "OpenAPI 3.1: Lab generated client",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/openapi-generated-client-capstone/starter/solution.mjs",
+  "solution": "labs/openapi-generated-client-capstone/solution/solution.mjs",
+  "tests": "labs/openapi-generated-client-capstone/solution.test.mjs",
+  "verify": [
+    "npm run lab:openapi-generated-client-capstone"
+  ],
+  "expected": "The generated client calls GET health, GET notes and POST notes, injects bearer only on protected operations, and rejects unauthorized requests.",
+  "security": "Trusted checked-in OpenAPI JSON and local SDK generator only; no public auth, storage or remote code execution."
+}

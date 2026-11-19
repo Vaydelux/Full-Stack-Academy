@@ -1,0 +1,15 @@
+{
+  "id": "lab.openapi.openapi-operation-ids",
+  "lessonId": "10.04.04",
+  "title": "OpenAPI 3.1: Examples and operation IDs",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/openapi-operation-ids/starter/solution.mjs",
+  "solution": "labs/openapi-operation-ids/solution/solution.mjs",
+  "tests": "labs/openapi-operation-ids/solution.test.mjs",
+  "verify": [
+    "npm run lab:openapi-operation-ids"
+  ],
+  "expected": "The canonical contract has no issues; duplicates, missing IDs and unsafe names are detected.",
+  "security": "Trusted checked-in OpenAPI JSON and local SDK generator only; no public auth, storage or remote code execution."
+}

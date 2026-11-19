@@ -1,0 +1,39 @@
+{
+  "id": "10.04.06",
+  "title": "Contract compatibility",
+  "description": "OpenAPI 3.1.1 and SDK engineering: checked-in contract, executable assertion, red starter, instructor fix and compatibility/security limitations.",
+  "trackId": "10",
+  "moduleId": "10.04",
+  "level": "Intermediate",
+  "estimatedMinutes": 80,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "node": "24",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "10.04.05"
+  ],
+  "objectives": [
+    "Removing an operation or formerly successful response is a breaking change to generated clients; mark newly required request bodies as incompatible.",
+    "Repair the broken openapi-contract-compat contract exercise.",
+    "Explain the difference between an OpenAPI description and an enforced server behavior."
+  ],
+  "labId": "lab.openapi.openapi-contract-compat",
+  "rubric": [
+    "I understand the OpenAPI contract behind contract compatibility.",
+    "I can repair the starter and run a meaningful negative case.",
+    "I can name production validation or compatibility checks beyond this exercise."
+  ],
+  "sources": [
+    {
+      "label": "Primary official specification",
+      "url": "https://spec.openapis.org/oas/v3.1.1.html"
+    },
+    {
+      "label": "Supporting API documentation",
+      "url": "https://semver.org/"
+    }
+  ]
+}

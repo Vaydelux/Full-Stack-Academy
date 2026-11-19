@@ -1,0 +1,15 @@
+{
+  "id": "lab.openapi.openapi-generate-client",
+  "lessonId": "10.04.05",
+  "title": "OpenAPI 3.1: Client code generation",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/openapi-generate-client/starter/solution.mjs",
+  "solution": "labs/openapi-generate-client/solution/solution.mjs",
+  "tests": "labs/openapi-generate-client/solution.test.mjs",
+  "verify": [
+    "npm run lab:openapi-generate-client"
+  ],
+  "expected": "The generated client exposes getHealth, listNotes and createNote and performs the expected fetch calls.",
+  "security": "Trusted checked-in OpenAPI JSON and local SDK generator only; no public auth, storage or remote code execution."
+}

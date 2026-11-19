@@ -1,0 +1,15 @@
+{
+  "id": "lab.openapi.openapi-request-response",
+  "lessonId": "10.04.02",
+  "title": "OpenAPI 3.1: Request and response contracts",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/openapi-request-response/starter/solution.mjs",
+  "solution": "labs/openapi-request-response/solution/solution.mjs",
+  "tests": "labs/openapi-request-response/solution.test.mjs",
+  "verify": [
+    "npm run lab:openapi-request-response"
+  ],
+  "expected": "The complete notes contract passes; removing the POST body or 201 response fails.",
+  "security": "Trusted checked-in OpenAPI JSON and local SDK generator only; no public auth, storage or remote code execution."
+}

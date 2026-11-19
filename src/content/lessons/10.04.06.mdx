@@ -1,0 +1,95 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Removing an operation or formerly successful response is a breaking change to generated clients; mark newly required request bodies as incompatible.","Fix the contract compatibility bug using a checked-in OpenAPI 3.1.1 example.","Verify an actual contract or generated SDK instead of assuming annotations make a server correct."]} />
+
+## The problem we're solving
+
+The starter treats deleted operations as compatible with the previous public SDK. API schemas, operation IDs, examples, authorization descriptions and client integrations must remain consistent across changes.
+
+## Build the mental model
+
+Removing an operation or formerly successful response is a breaking change to generated clients; mark newly required request bodies as incompatible.
+
+**Expected outcome:** An unchanged document has no breaking changes; removed POST or removed 201 is detected.
+
+**Version and scope:** This module uses OpenAPI Specification **3.1.1** and one checked-in JSON contract at `examples/task-contract/task-api.openapi.json`. The smallest client generator is deliberately restricted to static, trusted GET/POST operations. This is a bounded method/status regression model; full semantic compatibility must compare schemas, required fields, enum narrowing, security and response media changes.
+
+## Prerequisites and preflight
+
+Complete `10.03.08` and the preceding OpenAPI lesson. Use Node 24 with no new runtime dependency. Read `labs/openapi-contract-compat/starter/solution.mjs`. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:openapi-contract-compat`; PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:openapi-contract-compat; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Demonstrate the broken contract or SDK output" file="labs/openapi-contract-compat/starter/solution.mjs" expected="The learner starter fails an actual contract assertion.">
+
+```js
+export function findBreakingChanges(_oldDoc,_nextDoc){return [];}
+```
+
+**Root cause:** The starter treats deleted operations as compatible with the previous public SDK.
+
+</LessonStep>
+
+<LessonStep number={2} title="Build the valid OpenAPI 3.1 integration" file="labs/openapi-contract-compat/starter/solution.mjs" expected="An unchanged document has no breaking changes; removed POST or removed 201 is detected.">
+
+```js
+export function findBreakingChanges(previous,next){
+ const breaks=[];
+ for(const [route,verbs] of Object.entries(previous?.paths??{})){
+  for(const [method,operation] of Object.entries(verbs)){
+   if(!['get','post','put','patch','delete'].includes(method))continue;
+   const newer=next?.paths?.[route]?.[method];
+   if(!newer){breaks.push('removed '+method.toUpperCase()+' '+route);continue;}
+   for(const status of Object.keys(operation.responses??{})){
+    if(/^2\d\d$/.test(status)&&!newer.responses?.[status])breaks.push('removed response '+status+' '+method.toUpperCase()+' '+route);
+   }
+   if(operation.requestBody?.required!==true&&newer.requestBody?.required===true)breaks.push('new required body '+method.toUpperCase()+' '+route);
+  }
+ }
+ return breaks;
+}
+```
+
+**Why this corrects the contract:** Removing an operation or formerly successful response is a breaking change to generated clients; mark newly required request bodies as incompatible.
+
+</LessonStep>
+
+<LessonStep number={3} title="Execute real document and client acceptance" file="labs/openapi-contract-compat/solution.test.mjs" expected="The instructor passes the local acceptance test; the red starter fails the intended contract assertion.">
+
+```js
+const {loadTaskSpec}=await import('../../../examples/task-contract/load-spec.mjs');
+const document=await loadTaskSpec();
+assert.deepEqual(mod.findBreakingChanges(document,structuredClone(document)),[]);
+const removed=structuredClone(document);delete removed.paths['/api/notes'].post;
+assert.ok(mod.findBreakingChanges(document,removed).some(x=>x.includes('removed POST')));
+const response=structuredClone(document);delete response.paths['/api/notes'].post.responses['201'];
+assert.ok(mod.findBreakingChanges(document,response).some(x=>x.includes('removed response 201')));
+```
+
+**Scope:** This is a bounded method/status regression model; full semantic compatibility must compare schemas, required fields, enum narrowing, security and response media changes. This small exercise does not invoke a general-purpose OpenAPI compiler, schema validator or public server.
+
+</LessonStep>
+
+<Misconception claim="The starter treats deleted operations as compatible with the previous public SDK." correction="Removing an operation or formerly successful response is a breaking change to generated clients; mark newly required request bodies as incompatible. This is a bounded method/status regression model; full semantic compatibility must compare schemas, required fields, enum narrowing, security and response media changes." />
+
+<KnowledgeCheck question="What makes contract compatibility reliable?" choices={["A YAML or JSON file alone guarantees the running server follows the contract.","Removing an operation or formerly successful response is a breaking change to generated clients; mark newly required request bodies as incompatible.","Operation IDs are proof that every route is authenticated and authorized.","OpenAPI annotations replace executable request/response tests."] } correctIndex={1} explanation="Removing an operation or formerly successful response is a breaking change to generated clients; mark newly required request bodies as incompatible." misconception="Validate the source contract, SDK behavior and actual server responses separately." lessonId="10.04.06" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Failure:** The starter treats deleted operations as compatible with the previous public SDK. **Reproduce:** run the red starter on the local example contract. **Repair:** Removing an operation or formerly successful response is a breaking change to generated clients; mark newly required request bodies as incompatible. **Regression:** An unchanged document has no breaking changes; removed POST or removed 201 is detected.
+
+## Guided local lab
+
+`labs/openapi-contract-compat/` contains a learner starter, complete instructor solution, executable Node assertions and a rubric. The examples use trusted static source files and no hosted learner-code runtime.
+
+<LabGate lessonId="10.04.06" labId="lab.openapi.openapi-contract-compat" commands={["npm run lab:openapi-contract-compat","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+Which changes are breaking for existing API clients? What additional dynamic schema validation and server instrumentation would be required before public SDK distribution?
+
+## Official references
+
+- [OpenAPI or HTTP specification](https://spec.openapis.org/oas/v3.1.1.html)
+- [Supporting standards documentation](https://semver.org/)

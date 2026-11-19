@@ -1,0 +1,90 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Declare bearer authentication as an HTTP security scheme, require it on protected operations, and mark health explicitly public.","Fix the openapi security schemes bug using a checked-in OpenAPI 3.1.1 example.","Verify an actual contract or generated SDK instead of assuming annotations make a server correct."]} />
+
+## The problem we're solving
+
+The starter accepts a contract where protected note operations have no bearer requirement. API schemas, operation IDs, examples, authorization descriptions and client integrations must remain consistent across changes.
+
+## Build the mental model
+
+Declare bearer authentication as an HTTP security scheme, require it on protected operations, and mark health explicitly public.
+
+**Expected outcome:** Only the declared BearerAuth security scheme protects GET and POST notes, while health remains public.
+
+**Version and scope:** This module uses OpenAPI Specification **3.1.1** and one checked-in JSON contract at `examples/task-contract/task-api.openapi.json`. The smallest client generator is deliberately restricted to static, trusted GET/POST operations. A documented bearer scheme cannot authorize an HTTP request. Actual servers need token verification, identity and resource ownership controls.
+
+## Prerequisites and preflight
+
+Complete `10.03.08` and the preceding OpenAPI lesson. Use Node 24 with no new runtime dependency. Read `labs/openapi-bearer-schemes/starter/solution.mjs`. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:openapi-bearer-schemes`; PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:openapi-bearer-schemes; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Demonstrate the broken contract or SDK output" file="labs/openapi-bearer-schemes/starter/solution.mjs" expected="The learner starter fails an actual contract assertion.">
+
+```js
+export function secureOperations(_document){return true;}
+```
+
+**Root cause:** The starter accepts a contract where protected note operations have no bearer requirement.
+
+</LessonStep>
+
+<LessonStep number={2} title="Build the valid OpenAPI 3.1 integration" file="labs/openapi-bearer-schemes/starter/solution.mjs" expected="Only the declared BearerAuth security scheme protects GET and POST notes, while health remains public.">
+
+```js
+export function secureOperations(document){
+ const scheme=document?.components?.securitySchemes?.BearerAuth;
+ if(scheme?.type!=='http'||scheme.scheme!=='bearer')return false;
+ if(JSON.stringify(document.paths?.['/health']?.get?.security)!=='[]')return false;
+ for(const method of ['get','post']){
+  const list=document?.paths?.['/api/notes']?.[method]?.security;
+  if(!Array.isArray(list)||!list.some(item=>Object.hasOwn(item,'BearerAuth')&&Array.isArray(item.BearerAuth)&&item.BearerAuth.length===0))return false;
+ }
+ return true;
+}
+```
+
+**Why this corrects the contract:** Declare bearer authentication as an HTTP security scheme, require it on protected operations, and mark health explicitly public.
+
+</LessonStep>
+
+<LessonStep number={3} title="Execute real document and client acceptance" file="labs/openapi-bearer-schemes/solution.test.mjs" expected="The instructor passes the local acceptance test; the red starter fails the intended contract assertion.">
+
+```js
+const {loadTaskSpec}=await import('../../../examples/task-contract/load-spec.mjs');
+const document=await loadTaskSpec();
+assert.equal(mod.secureOperations(document),true);
+const unprotected=structuredClone(document);unprotected.paths['/api/notes'].post.security=[];
+assert.equal(mod.secureOperations(unprotected),false);
+const global=structuredClone(document);delete global.components.securitySchemes.BearerAuth;
+assert.equal(mod.secureOperations(global),false);
+```
+
+**Scope:** A documented bearer scheme cannot authorize an HTTP request. Actual servers need token verification, identity and resource ownership controls. This small exercise does not invoke a general-purpose OpenAPI compiler, schema validator or public server.
+
+</LessonStep>
+
+<Misconception claim="The starter accepts a contract where protected note operations have no bearer requirement." correction="Declare bearer authentication as an HTTP security scheme, require it on protected operations, and mark health explicitly public. A documented bearer scheme cannot authorize an HTTP request. Actual servers need token verification, identity and resource ownership controls." />
+
+<KnowledgeCheck question="What makes openapi security schemes reliable?" choices={["A YAML or JSON file alone guarantees the running server follows the contract.","Declare bearer authentication as an HTTP security scheme, require it on protected operations, and mark health explicitly public.","Operation IDs are proof that every route is authenticated and authorized.","OpenAPI annotations replace executable request/response tests."] } correctIndex={1} explanation="Declare bearer authentication as an HTTP security scheme, require it on protected operations, and mark health explicitly public." misconception="Validate the source contract, SDK behavior and actual server responses separately." lessonId="10.04.03" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Failure:** The starter accepts a contract where protected note operations have no bearer requirement. **Reproduce:** run the red starter on the local example contract. **Repair:** Declare bearer authentication as an HTTP security scheme, require it on protected operations, and mark health explicitly public. **Regression:** Only the declared BearerAuth security scheme protects GET and POST notes, while health remains public.
+
+## Guided local lab
+
+`labs/openapi-bearer-schemes/` contains a learner starter, complete instructor solution, executable Node assertions and a rubric. The examples use trusted static source files and no hosted learner-code runtime.
+
+<LabGate lessonId="10.04.03" labId="lab.openapi.openapi-bearer-schemes" commands={["npm run lab:openapi-bearer-schemes","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+Which changes are breaking for existing API clients? What additional dynamic schema validation and server instrumentation would be required before public SDK distribution?
+
+## Official references
+
+- [OpenAPI or HTTP specification](https://spec.openapis.org/oas/v3.1.1.html#security-scheme-object)
+- [Supporting standards documentation](https://www.rfc-editor.org/rfc/rfc6750.html)

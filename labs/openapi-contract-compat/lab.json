@@ -1,0 +1,15 @@
+{
+  "id": "lab.openapi.openapi-contract-compat",
+  "lessonId": "10.04.06",
+  "title": "OpenAPI 3.1: Contract compatibility",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/openapi-contract-compat/starter/solution.mjs",
+  "solution": "labs/openapi-contract-compat/solution/solution.mjs",
+  "tests": "labs/openapi-contract-compat/solution.test.mjs",
+  "verify": [
+    "npm run lab:openapi-contract-compat"
+  ],
+  "expected": "An unchanged document has no breaking changes; removed POST or removed 201 is detected.",
+  "security": "Trusted checked-in OpenAPI JSON and local SDK generator only; no public auth, storage or remote code execution."
+}

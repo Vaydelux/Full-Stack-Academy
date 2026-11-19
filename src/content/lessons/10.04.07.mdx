@@ -1,0 +1,85 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Version negotiation needs a documented, bounded contract; unsupported vendor media versions must not silently fall back and change behavior.","Fix the api version strategy bug using a checked-in OpenAPI 3.1.1 example.","Verify an actual contract or generated SDK instead of assuming annotations make a server correct."]} />
+
+## The problem we're solving
+
+The starter always chooses v1 even when the caller explicitly requests a known v2 or unknown v3 media type. API schemas, operation IDs, examples, authorization descriptions and client integrations must remain consistent across changes.
+
+## Build the mental model
+
+Version negotiation needs a documented, bounded contract; unsupported vendor media versions must not silently fall back and change behavior.
+
+**Expected outcome:** Default JSON requests use v1, explicit academy v2 selects v2, and unknown versioned media fails.
+
+**Version and scope:** This module uses OpenAPI Specification **3.1.1** and one checked-in JSON contract at `examples/task-contract/task-api.openapi.json`. The smallest client generator is deliberately restricted to static, trusted GET/POST operations. A real versioned deployment should explicitly publish support/deprecation policy and API contract regression tests; this simple negotiator is intentionally not full Accept q-value parsing.
+
+## Prerequisites and preflight
+
+Complete `10.03.08` and the preceding OpenAPI lesson. Use Node 24 with no new runtime dependency. Read `labs/openapi-version-strategy/starter/solution.mjs`. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:openapi-version-strategy`; PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:openapi-version-strategy; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Demonstrate the broken contract or SDK output" file="labs/openapi-version-strategy/starter/solution.mjs" expected="The learner starter fails an actual contract assertion.">
+
+```js
+export function selectApiVersion(_accept){return 'v1';}
+```
+
+**Root cause:** The starter always chooses v1 even when the caller explicitly requests a known v2 or unknown v3 media type.
+
+</LessonStep>
+
+<LessonStep number={2} title="Build the valid OpenAPI 3.1 integration" file="labs/openapi-version-strategy/starter/solution.mjs" expected="Default JSON requests use v1, explicit academy v2 selects v2, and unknown versioned media fails.">
+
+```js
+export function selectApiVersion(accept='application/json'){
+ if(typeof accept!=='string')throw new TypeError('Invalid Accept');
+ const value=accept.trim().toLowerCase();
+ if(value==='application/json'||value==='*/*')return 'v1';
+ if(value==='application/vnd.academy.v1+json')return 'v1';
+ if(value==='application/vnd.academy.v2+json')return 'v2';
+ throw new RangeError('Unsupported API version');
+}
+```
+
+**Why this corrects the contract:** Version negotiation needs a documented, bounded contract; unsupported vendor media versions must not silently fall back and change behavior.
+
+</LessonStep>
+
+<LessonStep number={3} title="Execute real document and client acceptance" file="labs/openapi-version-strategy/solution.test.mjs" expected="The instructor passes the local acceptance test; the red starter fails the intended contract assertion.">
+
+```js
+assert.equal(mod.selectApiVersion('application/json'),'v1');
+assert.equal(mod.selectApiVersion('application/vnd.academy.v2+json'),'v2');
+assert.equal(mod.selectApiVersion('application/vnd.academy.v1+json'),'v1');
+assert.throws(()=>mod.selectApiVersion('application/vnd.academy.v3+json'),/Unsupported API version/);
+```
+
+**Scope:** A real versioned deployment should explicitly publish support/deprecation policy and API contract regression tests; this simple negotiator is intentionally not full Accept q-value parsing. This small exercise does not invoke a general-purpose OpenAPI compiler, schema validator or public server.
+
+</LessonStep>
+
+<Misconception claim="The starter always chooses v1 even when the caller explicitly requests a known v2 or unknown v3 media type." correction="Version negotiation needs a documented, bounded contract; unsupported vendor media versions must not silently fall back and change behavior. A real versioned deployment should explicitly publish support/deprecation policy and API contract regression tests; this simple negotiator is intentionally not full Accept q-value parsing." />
+
+<KnowledgeCheck question="What makes api version strategy reliable?" choices={["A YAML or JSON file alone guarantees the running server follows the contract.","Version negotiation needs a documented, bounded contract; unsupported vendor media versions must not silently fall back and change behavior.","Operation IDs are proof that every route is authenticated and authorized.","OpenAPI annotations replace executable request/response tests."] } correctIndex={1} explanation="Version negotiation needs a documented, bounded contract; unsupported vendor media versions must not silently fall back and change behavior." misconception="Validate the source contract, SDK behavior and actual server responses separately." lessonId="10.04.07" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Failure:** The starter always chooses v1 even when the caller explicitly requests a known v2 or unknown v3 media type. **Reproduce:** run the red starter on the local example contract. **Repair:** Version negotiation needs a documented, bounded contract; unsupported vendor media versions must not silently fall back and change behavior. **Regression:** Default JSON requests use v1, explicit academy v2 selects v2, and unknown versioned media fails.
+
+## Guided local lab
+
+`labs/openapi-version-strategy/` contains a learner starter, complete instructor solution, executable Node assertions and a rubric. The examples use trusted static source files and no hosted learner-code runtime.
+
+<LabGate lessonId="10.04.07" labId="lab.openapi.openapi-version-strategy" commands={["npm run lab:openapi-version-strategy","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+Which changes are breaking for existing API clients? What additional dynamic schema validation and server instrumentation would be required before public SDK distribution?
+
+## Official references
+
+- [OpenAPI or HTTP specification](https://www.rfc-editor.org/rfc/rfc9110.html#section-12)
+- [Supporting standards documentation](https://spec.openapis.org/oas/v3.1.1.html#info-object)
