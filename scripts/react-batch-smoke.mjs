@@ -10,13 +10,13 @@ export async function verifyReactBatch({page,base,assert,wait}) {
     await wait(page.getByRole('heading',{name:"The problem we're solving"}));
     assert.equal(await page.locator('meta[name="robots"][content*="noindex"]').count(),0,'React authored lesson must be indexable: '+id);
   }
-  const planned=await page.goto(base+'/learn/06.05.01');
+  const planned=await page.goto(base+'/learn/07.02.01');
   assert.equal(planned.status(),200);
   assert.equal(await page.locator('meta[name="robots"][content*="noindex"]').count(),1,'Next React module stays noindex');
   const sitemap=await (await page.request.get(base+'/sitemap.xml')).text();
   if(sitemap.includes('<loc>')) {
     for(const id of ids)assert.ok(sitemap.includes('/learn/'+id),'React published route in sitemap: '+id);
-    assert.ok(!sitemap.includes('/learn/06.05.01'),'Planned React route excluded');
+    assert.ok(!sitemap.includes('/learn/07.02.01'),'Planned React route excluded');
   }
   await page.setViewportSize({width:320,height:800});
   await page.goto(base+'/learn/06.02.08');
