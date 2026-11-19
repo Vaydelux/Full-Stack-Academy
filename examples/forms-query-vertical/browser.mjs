@@ -13,6 +13,19 @@ const list = $('#tasks');
 const more = $('#load-more');
 const refresh = $('#refresh');
 const filter = $('#status-filter');
+const log = $('#request-log');
+const clearLog = $('#clear-log');
+function record(method, note) {
+  const item = document.createElement('li');
+  const code = document.createElement('strong');
+  code.textContent = method;
+  const detail = document.createElement('span');
+  detail.textContent = note;
+  item.append(code, detail);
+  log.prepend(item);
+  while (log.children.length > 24) log.lastElementChild.remove();
+}
+clearLog.addEventListener('click', () => log.replaceChildren());
 let failedRequest = null;
 let busy = false;
 let activeController = null;
@@ -49,10 +62,12 @@ function render() {
       advance.disabled = true;
       try {
         await api.setStatus(task.id, next, task.revision);
+        record('PATCH 200', `Status changed to ${next}; revision checked.`);
         await load(false);
         message(listStatus, 'Task updated using its latest revision.');
       } catch (error) {
         advance.disabled = false;
+        record(`PATCH ${error.status ?? 'error'}`, error.status === 412 ? 'Stale revision; refresh needed.' : 'Status update failed.');
         message(listStatus, error.status === 412
           ? 'Another edit won. Refresh the list before retrying.'
           : error.message ?? 'Status update failed.', true);
@@ -67,10 +82,12 @@ function render() {
       remove.disabled = true;
       try {
         await api.remove(task.id);
+        record('DELETE 204', 'Task removed; list cursor invalidated.');
         await load(false);
         message(listStatus, 'Task deleted. The list was refreshed.');
       } catch (error) {
         remove.disabled = false;
+        record(`DELETE ${error.status ?? 'error'}`, 'Delete did not complete.');
         message(listStatus, error.message ?? 'Delete failed.', true);
       }
     });
@@ -88,15 +105,18 @@ async function load(append) {
   refresh.disabled = true;
   more.disabled = true;
   message(listStatus, 'Loading tasks…');
+  record('GET', `Fetching ${filter.value} tasks${append ? ' (next cursor)' : ' (first page)'}.`);
   try {
     const page = await api.list({ cursor: append ? nextCursor : null, limit: 10, status: filter.value, signal: controller.signal });
     if (controller !== activeController) return;
     records = append ? [...records, ...page.items] : page.items;
     nextCursor = page.nextCursor;
+    record('GET 200', `${page.items.length} task records received${nextCursor ? '; next cursor available' : ''}.`);
     render();
     if (records.length) message(listStatus, `${records.length} tasks displayed${nextCursor ? ' · more available' : ''}.`);
   } catch (error) {
     if (controller !== activeController || error.name === 'AbortError') return;
+    record(`GET ${error.status ?? 'error'}`, error.status === 409 ? 'List revision changed; restarting.' : 'Read failed.');
     if (error.status === 409 && append) {
       message(listStatus, 'The list changed; starting pagination again.');
       void load(false);
@@ -111,8 +131,10 @@ async function submit(operation) {
   save.disabled = true;
   retry.disabled = true;
   message(status, 'Saving task…');
+  record('POST', 'Creating a task with a fresh or retained idempotency key.');
   try {
     await api.create(operation.payload, { key: operation.key });
+    record('POST 201', 'Create accepted; refresh server cache.');
     failedRequest = null;
     retry.classList.add('hidden');
     form.reset();
@@ -121,6 +143,7 @@ async function submit(operation) {
     title.focus();
   } catch (error) {
     failedRequest = operation; // Retry the same semantic request with the same idempotency key.
+    record(`POST ${error.status ?? 'error'}`, 'Create did not confirm; retained key enables a safe retry.');
     message(status, `Create failed: ${error.message ?? 'Network error'}. Retry is safe with the same key.`, true);
     retry.classList.remove('hidden');
   } finally {
