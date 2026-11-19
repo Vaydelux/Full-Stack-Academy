@@ -1,3 +1,5 @@
+> **2026-11-19 current addendum:** PRs #14–#16 were merged despite historical offline-hold language below. Baseline GitHub main now has 181 authored lesson IDs. An offline feature branch is implementing React `06.01–06.02` (16 canonical IDs including the existing JSX sample; 15 new MDX/labs). The proposed branch total is **196 IDs, 193 MDX bodies/labs, 24 complete modules**, not a tested or hosted release. The next large **64-topic** program is React `06.03–06.05` (24) plus Next.js `07.01–07.05` (40); split at technical qualification boundaries, not arbitrary micro-PRs. User requests **no Vercel or GitHub Actions checking**. Local execution remains a necessary quality gate and is not replaced by AI inference.
+
 # Full-Stack Academy — Multi-Module Offline Delivery Plan
 
 **Reviewed:** 2026-11-19 (expanded two-track JS/TS batch) · **Product goal:** Complete the canonical 889-topic curriculum with usable exercises, maintainable references and truthful progress signals. **Release mode:** no Vercel deployments until owner resumes.

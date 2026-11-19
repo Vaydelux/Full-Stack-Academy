@@ -1,3 +1,5 @@
+> **2026-11-19 handoff override for this active milestone:** Current branch `feat/react-foundations-state-offline` targets 15 additional offline React lessons across `06.01` and `06.02`. PRs #14–#16 are already merged. The owner has explicitly requested **no Vercel or GitHub Actions checks** for current development. Do local lint, types, tests, content validation, Next compilation and browser smoke when a full clone is available; do not claim those have passed without executing them. Do not merge while checks remain unverified. Next milestone after this batch: `06.03`–`06.05` + Next.js `07.01`–`07.05`.
+
 # AI / Engineer Handoff — Full-Stack Academy
 
 **Read this file first, then [docs/PROJECT_CHECKPOINT.md](docs/PROJECT_CHECKPOINT.md), [docs/NEXT_TODO.md](docs/NEXT_TODO.md), and [docs/checkpoint.json](docs/checkpoint.json).** This repository is the source of truth; chat summaries and stale branch names are not.

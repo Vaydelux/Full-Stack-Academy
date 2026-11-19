@@ -1,31 +1,34 @@
-# Full-Stack Academy — Next TODO
+# Full-Stack Academy — Next TODO (2026-11-19)
 
-**Development checkpoint:** full canonical Git/Collaboration/Monorepos track `05.01`–`05.03` (24 lessons) authored on `feat/05-git-monorepo-offline`. **No Vercel deploy**, no merge. Baseline production remains 61 published lesson IDs.
+## Source of truth
 
-## P0 — Verify full Git track on its exact branch HEAD
+- GitHub `main` is at `7e8f42d` after merges #14, #15 and #16. It contains 181 source-published lesson IDs; actual hosted production state is intentionally not checked.
+- Active offline branch: `feat/react-foundations-state-offline` (PR pending). It proposes **196 lesson IDs, 193 MDX, 193 lab fixtures and 24 complete modules**.
+- This milestone modifies only repository files. **No Vercel or GitHub Actions check** was performed. Do not claim successful build, browser tests or deployment.
 
-- [x] `05.01 — Everyday Git`: eight lessons with temporary local repositories; real status/index/commit history, merge ancestry, revert vs reset, bare-remote push, conflict resolution, .gitignore and feature capstone
-- [x] `05.02 — Team Engineering`: trunk age/review policies, conventional commits, simplified CODEOWNERS, review comments, exact-SHA CI checks, stable SemVer, changelogs, tracked-secret remediation with real Git history
-- [x] `05.03 — pnpm & Turborepo`: workspaces, public package exports, shared TS config, graph ordering, cache keys, direct-lockfile checks, upgrade policy and 3-package shared-contract capstone
-- [x] Twenty-four full MDX lessons and metadata, red starter/green instructor exercise modules, independent lab tests, new package/TypeScript capstone fixtures and browser route checks
-- [x] Publish registries, lab commands, content checkpoint and long-scope handoff updated; **all are branch-only**
-- [x] Prior exact-head CI passed at `88326b5` — run [44371495933](https://github.com/Vaydelux/Full-Stack-Academy/actions/runs/44371495933): lint, strict types, content/checkpoint, 322 local lab tests, 18 repo tests, Next build and all Chromium smoke
-- [x] Add automated red-starter checks for all 24 new labs against disposable local fixtures; run in final exact-head CI
-- [ ] Pass final exact-head CI with the newly added red-starter gate
-- [x] Keep PR #14 and #15 unmerged; open [draft PR #16](https://github.com/Vaydelux/Full-Stack-Academy/pull/16) for track 05 with zero Vercel feature deployments
+## P0 — Finish integration and local acceptance of React batch 06.01–06.02
 
-## P1 — Large-scope React + Next.js program
+- [x] Author `06.01.02–06.01.08` components, children, conditions, keys, commits, events and dashboard capstone
+- [x] Author `06.02.01–06.02.08` snapshots, batching, derived/immutable state, identity, lifted state, reducers and stale closures
+- [x] Provide fifteen intentionally defective starters, separate instructor solutions, local tests and strict lab manifests
+- [x] Register each lesson and metadata; update per-lab commands, full lab test suite, checkpoint and sitemap/browser smoke expectations
+- [ ] Run `npm ci && npm run lint && npm run typecheck && npm test && npm run verify:content && npm run checkpoint:check && npm run test:labs && npm run test:red-react && npm run build` in a full local clone
+- [ ] Run isolated local Next + Chromium `scripts/browser-smoke.mjs` and repair real failures; check 320px layout, keyboard and assistive technology separately
+- [ ] Review metadata, code pedagogy, React 19 behavior and dependency exception before merging; keep PR unmerged until credible local evidence exists
 
-- [ ] `06.01–06.05` React (40 canonical topic IDs, **one already-authored interactive sample** `06.01.01`); create or deepen 39 remaining topics with DOM/component tests and realistic sample apps
-- [ ] `07.01–07.05` Next.js App Router & SEO (40 canonical topics), focusing on route/layout/data/caching/auth/server-client runtime behavior with isolated demos
-- [ ] Combined track `05–07` program covers **104 canonical IDs**, of which **24 Git IDs now authored here**, one existing React JSX sample, and 79 additional React+Next lessons remain planned
-- [ ] Scope/checkpoint by complete modules or tracks, not tiny releases; keep one exact-head quality gate for each batch
-- [ ] Expand encyclopedia: 303 reference index subjects but only 4 authored reference drafts
+## P1 — Next much-larger authoring program
 
-## P2 — Security and eventual release
+- [ ] React `06.03`–`06.05`: **24 lessons** (Effects/refs, context/concurrency, testing/performance), 24 labs and representative interactive DOM tests
+- [ ] Next.js `07.01`–`07.05`: **40 lessons** with server/client boundaries, App Router, caching/revalidation, auth, SEO, error/loading states and realistic offline fixtures
+- [ ] Combine into **64 additional canonical topic IDs** after qualification of this React batch. Do not represent planned topics as authored.
 
-- [ ] Revisit **14 high dev-only Picomatch audit findings** before exception expiry **2026-12-02 UTC**; no broad dependency upgrade without verification
-- [ ] Real screen readers, keyboard and 200% zoom, performance trace, real pnpm install and Turbo cache verification remain untested release conditions
-- [ ] Resume Vercel only when explicitly requested. A passing GitHub CI job is **not** a hosted release; do not merge or deploy while hold stands
+## P2 — Platform and safeguards
 
-**Branch candidate snapshot:** 181 published IDs (178 MDX, 178 local labs), 22 complete modules, 889 catalog topic IDs, 708 catalog IDs planned. **Live baseline: 61 published IDs.** See `docs/GIT_TRACK_ACCEPTANCE.md` and `docs/LONG_SCOPE_DELIVERY_PLAN.md`.
+- [ ] Reassess the 14 known dev-only Picomatch advisory reports before the temporary exception expires on **2026-12-02 UTC**
+- [ ] Add real mounted React interaction tests (DOM/hydration): server markup checks do not prove click behavior or state preservation
+- [ ] Improve W3Schools-like reference pages without turning un-authored index subjects into published articles
+- [ ] Keep cloud infrastructure optional and no remote learner-code execution; preserve the reading-first UI and separate practice mode
+
+## Handoff
+
+Read `AGENTS.md`, `docs/PROJECT_CHECKPOINT.md`, `docs/checkpoint.json`, `docs/REACT_FOUNDATIONS_ACCEPTANCE.md` and `docs/LONG_SCOPE_DELIVERY_PLAN.md`. Resume from `06.03.01` only after the current branch passes local integration.

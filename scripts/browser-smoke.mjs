@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { verifyCssTrack } from './css-track-smoke.mjs';
 import { verifyJsTsBatch } from './js-ts-batch-smoke.mjs';
 import { verifyGitTrack } from './git-track-smoke.mjs';
+import { verifyReactBatch } from './react-batch-smoke.mjs';
 import { createRequire } from 'node:module';
 import path from 'node:path';
 
@@ -56,7 +57,7 @@ try {
   await wait(page.getByText('Correct — you identified the concept.'));
   await page.goto(base + '/reference/zod-safeparse');
   await wait(page.getByRole('heading',{name:/Zod 4: schema.safeParse/}));
-  await page.goto(base + '/learn/06.01.02');
+  await page.goto(base + '/learn/06.03.01');
   assert.ok(await page.locator('meta[name="robots"][content*="noindex"]').count() > 0, 'Planned curriculum topic must have a noindex directive');
   await wait(page.getByText('Planned lesson — not published.', {exact:true}));
   await page.goto(base + '/learn/00.01.01');
@@ -294,7 +295,7 @@ try {
   await page.goto(base + '/learn/01.04.01');
   await wait(page.getByRole('heading', { name: "The problem we're solving" }));
   assert.equal(await page.locator('meta[name="robots"][content*="noindex"]').count(),0,'Published Web APIs lesson must be indexable');
-  await page.goto(base + '/learn/06.01.02');
+  await page.goto(base + '/learn/06.03.01');
   assert.ok(await page.locator('meta[name="robots"][content*="noindex"]').count() > 0, 'Next unauthored React lesson must remain noindex');
   const webLab = slug => new URL('../labs/'+slug+'/solution/index.html', import.meta.url).href;
   const webSlugs = ['web-dom','web-fetch-json','web-url','web-storage','web-permissions','web-cors','web-csp','web-devtools'];
@@ -356,7 +357,7 @@ try {
   await page.goto(base + '/learn/02.01.01');
   await wait(page.getByRole('heading', { name: "The problem we're solving" }));
   assert.equal(await page.locator('meta[name="robots"][content*="noindex"]').count(), 0, 'Published CSS lessons must be indexable');
-  await page.goto(base + '/learn/06.01.02');
+  await page.goto(base + '/learn/06.03.01');
   assert.ok(await page.locator('meta[name="robots"][content*="noindex"]').count() > 0, 'Next unauthored React lesson remains noindex');
   const cssLab = slug => new URL('../labs/' + slug + '/solution/index.html', import.meta.url).href;
   const cssSlugs = ["css-selectors","css-cascade","css-layers","css-box-model","css-typography","css-logical","css-states","css-responsive-card"];
@@ -396,6 +397,7 @@ try {
   await verifyJsTsBatch({ page, base, assert, wait });
 
   await verifyGitTrack({page,base,assert,wait});
+  await verifyReactBatch({page,base,assert,wait});
 
   await page.goto(base+'/?lesson=06.01.01&mode=practice');
   await wait(btn('Practice'));
