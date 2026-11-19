@@ -1,3 +1,5 @@
+> **Current reliability progress (2026-11-20):** Before promotion of 09.02/09.03, the standalone React reference has been hardened with real infinite queries, retry/status policy, reliable POST acknowledgement boundaries and serialized optimistic mutations. New Node tests and browser CDP gate are source-authored; **real Node sockets, React runtime, package lock and browser acceptance remain blockers**. The 16 lesson packs remain staged, and the total published count is 338. See [current QA acceptance](FORMS_QUERY_RESILIENCE_ACCEPTANCE.md). The milestone roadmap below remains the remaining-work plan, not a claim of completion.
+
 # Full-Stack Academy — Curriculum Completion Roadmap
 
 **Source state dated 2026-11-20.** This roadmap is intentionally grounded in canonical content counts, not promises of immediate completion or artificial publication.

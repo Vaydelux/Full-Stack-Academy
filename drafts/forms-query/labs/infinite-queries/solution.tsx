@@ -14,11 +14,12 @@ export function Pager(){
    return response.json() as Promise<Page>;
   },
   getNextPageParam:last=>last.nextCursor,
-  maxPages:5,
+  maxPages:10,
+  retry:(count,error)=>count<1&&!/^HTTP 4\\d\\d$/.test(String(error.message)),
  });
  if(pages.isPending)return <p role="status">Loading pages…</p>;
  if(pages.isError)return <div role="alert">Pagination failed.
-  <button type="button" onClick={()=>client.removeQueries({queryKey:key})}>Restart pages</button></div>;
+  <button type="button" onClick={()=>{void client.resetQueries({queryKey:key,exact:true});}}>Restart pages</button></div>;
  return <div><ul>{pages.data.pages.flatMap(p=>p.items).map(t=><li key={t.id}>{t.title}</li>)}</ul>
-  <button disabled={!pages.hasNextPage||pages.isFetchingNextPage} onClick={()=>pages.fetchNextPage()}>Load more</button></div>;
+  <button type="button" disabled={!pages.hasNextPage||pages.isFetchingNextPage} onClick={()=>{void pages.fetchNextPage();}}>Load more</button></div>;
 }
