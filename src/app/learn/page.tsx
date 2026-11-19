@@ -26,6 +26,11 @@ export default function CourseIndex() {
       <p className="mt-4 max-w-3xl text-sm leading-7 text-slate-600 dark:text-slate-300">
         {summary.tracks} tracks, {summary.modules} modules and {summary.plannedLessons} mapped topics. Only published lessons contain verified teaching material; the remaining topics are explicitly marked as planned.
       </p>
+      <div className="mt-6 rounded-xl border border-cyan-600/25 bg-cyan-50 p-4 dark:bg-cyan-300/[0.06]">
+        <p className="text-sm font-semibold">Returning to learn?</p>
+        <p className="mt-1 text-xs leading-6 text-slate-600 dark:text-slate-300">Find your next unfinished lesson, review module progress and export your local notes without searching the entire catalog.</p>
+        <Link href="/learn/dashboard" className="mt-3 inline-flex rounded-lg bg-cyan-700 px-4 py-2 text-sm font-bold text-white hover:bg-cyan-800">Open learning dashboard</Link>
+      </div>
       <section aria-label="Beginner learning path" className="mt-8">
         <h2 className="mb-3 text-xl font-bold">Start here</h2>
         <div className="grid gap-3 sm:grid-cols-2">
