@@ -20,6 +20,7 @@
     "test:forms-query-project-route": "node --test tests/forms-query-project-route.test.mjs",
     "test:forms-query-drafts": "node scripts/verify-forms-query-drafts.mjs",
     "test:forms-query-draft-types": "node scripts/verify-forms-query-draft-types.mjs",
+    "test:forms-query-react-api": "node --experimental-strip-types --test tests/forms-query-react-api.test.mjs",
     "qualify:forms-query:source": "node scripts/qualify-forms-query.mjs --source",
     "qualify:forms-query:full": "node scripts/qualify-forms-query.mjs --full",
     "status:curriculum": "node scripts/curriculum-readiness.mjs",
