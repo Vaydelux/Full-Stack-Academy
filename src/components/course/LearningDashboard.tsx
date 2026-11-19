@@ -6,17 +6,22 @@ import { ArrowRight, BookOpen, CheckCircle2, Clock3, Download, Search, Upload } 
 import { useAcademy } from '@/lib/academy/store';
 import { lessonMap, moduleMap } from '@/lib/academy/curriculum';
 import { MDX_METADATA, PUBLISHED_LESSON_IDS } from '@/lib/academy/published';
-import { createLearningOverview, type OverviewLesson } from '@/lib/academy/learning-overview';
+import { createLearningOverview } from '@/lib/academy/learning-overview';
+import type { DiscoverableLesson } from '@/lib/academy/lesson-discovery';
+import { SavedLessonShelf } from '@/components/course/SavedLessonShelf';
 import { StudyPlanPanel } from '@/components/course/StudyPlanPanel';
 
-const publishedCatalog: OverviewLesson[] = PUBLISHED_LESSON_IDS.map((id) => {
+const publishedCatalog: DiscoverableLesson[] = PUBLISHED_LESSON_IDS.map((id) => {
   const item = lessonMap.get(id);
   const metadata = MDX_METADATA.get(id);
   return {
     id,
     moduleId: item?.moduleId ?? id.slice(0, 5),
     title: metadata?.title ?? item?.title ?? id,
+    moduleTitle: moduleMap.get(item?.moduleId ?? id.slice(0, 5))?.title ?? (item?.moduleId ?? id.slice(0, 5)),
+    level: metadata?.level ?? item?.level ?? 'Core',
     minutes: metadata?.estimatedMinutes ?? item?.estimatedMinutes ?? 0,
+    description: metadata?.description ?? '',
   };
 });
 const moduleTitles = Object.fromEntries([...moduleMap].map(([id, module]) => [id, module.title]));
@@ -149,6 +154,7 @@ export function LearningDashboard() {
       </section>
 
       <StudyPlanPanel />
+      <SavedLessonShelf catalog={publishedCatalog} />
 
       <section aria-labelledby="module-progress-heading" className="mt-10">
         <h2 id="module-progress-heading" className="text-xl font-bold">Your modules</h2>
