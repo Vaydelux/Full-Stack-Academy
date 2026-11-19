@@ -168,3 +168,19 @@ test('origin failure never responds with wildcard CORS', async () => fixture(asy
   assert.equal(response.status,403);
   assert.equal(response.headers.get('access-control-allow-origin'),null);
 }));
+
+test('competing conditional writes cannot both commit the same revision', async () => fixture(async ({make,client}) => {
+  const task = await make('Concurrent update');
+  const outcomes = await Promise.allSettled([
+    client.setStatus(task.id, 'doing', 1),
+    client.setStatus(task.id, 'done', 1),
+  ]);
+  const accepted = outcomes.filter(outcome => outcome.status === 'fulfilled');
+  const rejected = outcomes.filter(outcome => outcome.status === 'rejected');
+  assert.equal(accepted.length,1);
+  assert.equal(rejected.length,1);
+  assert.equal(rejected[0].reason.status,412);
+  const authoritative = await client.get(task.id);
+  assert.equal(authoritative.revision,2);
+  assert.equal(authoritative.status,accepted[0].value.status);
+});
