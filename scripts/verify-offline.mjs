@@ -10,6 +10,7 @@ const steps = [
   'test:study-plan',
   'test:lesson-discovery',
   'test:learning-workflow',
+  'test:forms-query-http',
   'validate',
   'verify:content',
   'checkpoint:check',
