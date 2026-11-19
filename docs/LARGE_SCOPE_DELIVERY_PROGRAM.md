@@ -1,3 +1,5 @@
+> **Update — 2026-11-19:** All of Track 10 is now source-authored across PR #24 plus `feat/backend-security-openapi-complete`: **32 Node/HTTP/Security/OpenAPI lessons**, real contract fixture, generated JS client and two exact SHA-matched Node 22 capstone tests (2/2 pass, two intentional starters fail `ERR_ASSERTION`). Proposed cumulative checkpoint 338 IDs, 337 MDX/labs, 42 modules, 38 reference drafts. **Release qualification is not complete**. The next priority is to converge the stacked PRs, not open unlimited new ones. See `docs/TRACK10_SECURITY_OPENAPI_ACCEPTANCE.md`.
+
 # Larger-Scope Delivery Program — Full-Stack Academy
 
 **Frozen planning baseline:** 2026-11-19. This file is a roadmap and handoff, **not a claim that future features have been built**.
@@ -13,7 +15,7 @@ These broad passes are longer in scope, not permission to skip runtime verificat
 | Increment | Canonical scope | Count | Actual required runtime/acceptance |
 |---|---|---:|---|
 | Node + REST | 10.01–10.02 | **16 authored source lessons** | Built-in Node 24; exact GitHub blob-matched expanded HTTP capstone passed on local Node 22, including a real red starter; full Node 24 gate pending |
-| Backend security / OpenAPI | 10.03–10.04 | **16 planned** | Real HTTP negative tests, SSRF/limits/auth, OpenAPI 3.1 and generated client compatibility |
+| Backend security / OpenAPI | 10.03–10.04 | **16 authored source lessons** | Real HTTP negative tests, SSRF/limits/auth, OpenAPI 3.1 and generated client compatibility |
 | NestJS production architecture | 11.01–11.04 | **32 planned** | Pinned NestJS packages, compile, local HTTP tests, DTO validation and request pipeline |
 | PostgreSQL | 12.01–12.05 | **40 planned** | Real isolated Postgres, transaction races, query plans, backups and recovery |
 | Prisma + Supabase | 13.01–14.04 | **64 planned** | Generated client and real migrations, RLS denial tests, Auth, storage and deployment boundary |
@@ -45,6 +47,7 @@ PRs #20, #21, #22, #23 and the Node/HTTP candidate form a **five-layer stack**. 
 | 10.01–10.02 new source | GitHub tree and metadata inspection | Not fully | Exact checked-in expanded REST capstone 1/1 on local Node 22, plus intentional starter ERR_ASSERTION; full Node 24 pending | No |
 | React + Next + UI + Zod + Zustand stacked sources | Source structures recorded in predecessor PRs | Not fully | Browser smoke scripts authored, not executed | No |
 | 09.02 / 09.03 | Not authored | No | No | No |
-| 10.03 / 10.04 and beyond | Planned | No | No | No |
+| 10.03–10.04 | Source audited | Two exact GitHub SHA-matched capstones passed on Node 22; 14 other lessons unexecuted | Real loopback HTTP + generated SDK | No |
+| 11+ and remaining earlier gaps | Planned | No | No | No |
 
 **Next concrete action:** qualify predecessor PR #20 with Node 24, then progress through stack while preparing dependency-pinned 09.02/09.03 and the 10.03–10.04 security/OpenAPI vertical slice.
