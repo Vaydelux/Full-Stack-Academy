@@ -209,7 +209,7 @@ export function LearningDashboard() {
       <section aria-labelledby="backup-heading" className="mt-10 rounded-2xl border border-slate-200 p-5 dark:border-white/10">
         <h2 id="backup-heading" className="text-xl font-bold">Keep your progress</h2>
         <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">
-          Your notes, reflections, theme and self-assessed progress are stored in local browser storage. They do not sync across devices. Export a private JSON backup before clearing browser data.
+          Your bookmarks, notes, reflections, theme and self-assessed progress are stored in local browser storage. They do not sync across devices. Export a private JSON backup before clearing browser data.
         </p>
         <div className="mt-4 flex flex-wrap gap-3">
           <button type="button" onClick={downloadBackup} className={'inline-flex items-center gap-2 ' + buttonStyle}><Download size={16} aria-hidden="true"/> Download backup</button>
