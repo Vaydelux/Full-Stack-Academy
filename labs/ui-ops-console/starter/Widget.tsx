@@ -1,0 +1,2 @@
+import React from "react";
+export function Workshop(){return <main aria-label="Operational console workshop"><h2>Operations overview</h2><label htmlFor="ops-filter">Search tasks</label><input type="search" id="ops-filter"/><p role="status">2 visible tasks</p><table><caption>Authorized task overview</caption><thead><tr><th scope="col">Task</th><th scope="col">Status</th></tr></thead><tbody><tr><th scope="row">Task A</th><td>Queued</td></tr><tr><th scope="row">Task B</th><td>Active</td></tr></tbody></table></main>;}

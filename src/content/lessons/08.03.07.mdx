@@ -1,0 +1,98 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Explain the accessibility and design invariant behind export and print ux","Reproduce and correct a meaningful failing student assertion","Identify what static SSR proves and what requires a real browser and keyboard"]} />
+
+## The problem we're solving
+
+A CSV export writes untrusted cell data beginning with = as formula content, which spreadsheet applications may execute when opened.
+
+## Build the mental model
+
+Spreadsheet CSV injection is a real export boundary. Preserve CSV quoting and escape potential formula prefixes with a safe leading apostrophe when targeting spreadsheet tools. Pair exports with clear filenames, filters and a print-only layout that doesn't leak private columns.
+
+**Predict first:** CSV values that start with formula markers become inert text while quotes and commas remain correctly escaped.
+
+## Prerequisites and preflight
+
+Continue from [the previous topic](/learn/08.03.06). Read `labs/ui-export-print/starter/solution.ts`, `labs/ui-export-print/solution/solution.ts` and `labs/ui-export-print/solution.test.mjs`. The TSX sample is rendered as initial HTML only; hydrated events, focus, visual contrast and overflow need separate browser tests.
+
+<LessonStep number={1} title="Reproduce the defective UI policy" file="labs/ui-export-print/starter/solution.ts" expected="Student starter fails a meaningful assertion.">
+
+```ts
+
+export function solve(value:string):string{return `"${value.replace(/"/g,'""')}"`;}
+
+```
+
+**Predict:** CSV values that start with formula markers become inert text while quotes and commas remain correctly escaped.
+
+**Diagnosis:** A CSV export writes untrusted cell data beginning with = as formula content, which spreadsheet applications may execute when opened.
+
+**Proof:** Run `ACADEMY_LAB_TARGET=starter npm run lab:ui-export-print`. The starter should fail the stated regression, not fail because of a missing dependency.
+
+</LessonStep>
+
+<LessonStep number={2} title="Fix the policy and verify edge cases" file="labs/ui-export-print/starter/solution.ts" expected="CSV values that start with formula markers become inert text while quotes and commas remain correctly escaped.">
+
+```ts
+
+export function solve(value:string):string{const safe=/^[\s]*[=+@-]/.test(value)?"'"+value:value;return `"${safe.replace(/"/g,'""')}"`;}
+
+```
+
+**Why it works:** Spreadsheet CSV injection is a real export boundary. Preserve CSV quoting and escape potential formula prefixes with a safe leading apostrophe when targeting spreadsheet tools. Pair exports with clear filenames, filters and a print-only layout that doesn't leak private columns.
+
+**Proof:** Run `npm run lab:ui-export-print` and inspect the instructor test output.
+
+</LessonStep>
+
+<LessonStep number={3} title="Render the semantic React example" file="labs/ui-export-print/solution/Widget.tsx" expected="Initial semantic markup renders without a runtime crash.">
+
+```tsx
+
+import React from "react";
+export function Workshop(){return <section aria-label="Export workshop"><h2>Records export</h2><button type="button">Export filtered rows</button><p role="note">Use safe CSV quoting and spreadsheet formula protection.</p></section>;}
+
+```
+
+This sample uses semantic React without requiring an uninstalled UI package. Server rendering does not execute handlers or certify focus management.
+
+**Proof:** The lab renders initial HTML with React DOM Server. A real browser check remains mandatory.
+
+</LessonStep>
+
+## Production library pattern
+
+Consult the official implementation pattern for this component and version.
+
+The local pure helper covers a teaching subset of CSV injection defense. Production exporters also need encoding, newline handling, locale and spreadsheet-specific testing.
+
+## Explore and verify
+
+Test long labels, keyboard-only usage, 320px width, reduced motion, contrast, errors and screen-reader announcements in a real browser.
+
+<Misconception claim="An SSR snapshot proves a component is keyboard accessible." correction="Spreadsheet CSV injection is a real export boundary. Preserve CSV quoting and escape potential formula prefixes with a safe leading apostrophe when targeting spreadsheet tools. Pair exports with clear filenames, filters and a print-only layout that doesn't leak private columns." />
+
+## Bug Hunt: reproduce, diagnose, repair
+
+Construct CSV cells starting with =, +, @ and tabs, then inspect their representation in a spreadsheet program. Confirm only authorized columns are exported and print output excludes hidden tokens.
+
+<KnowledgeCheck question="What is a major risk of exporting user-controlled text to CSV?" choices={["Spreadsheet formula injection","Automatic CSS conversion","The inability to use commas","Losing all Unicode characters"]} correctIndex={0} explanation="Spreadsheet CSV injection is a real export boundary. Preserve CSV quoting and escape potential formula prefixes with a safe leading apostrophe when targeting spreadsheet tools. Pair exports with clear filenames, filters and a print-only layout that doesn't leak private columns." misconception="Offline SSR is not an interactive accessibility test." lessonId="08.03.07" />
+
+## Guided local lab
+
+Edit `labs/ui-export-print/starter/solution.ts`; the actual test asserts meaningful positive and negative outcomes. `npm run lab:ui-export-print` also renders initial React markup. Keyboard interactions, pointer behavior, focus trapping, browser layout and actual Radix/shadcn packages are separate integration gates.
+
+<LabGate lessonId="08.03.07" labId="lab.foundation.ui-export-print" commands={["npm ci","npm run lab:ui-export-print"]} interactive={false} />
+
+## Reflect
+
+What was broken, what exact assertion proves the repair, and which user interaction still requires a real browser or assistive technology?
+
+## Official references
+
+- [Primary framework documentation](https://www.w3.org/WAI/WCAG22/Understanding/name-role-value.html)
+
+- [Supporting accessibility and API guide](https://owasp.org/www-community/attacks/CSV_Injection)

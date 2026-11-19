@@ -1,0 +1,2 @@
+import React from "react";
+export function Workshop(){return <section aria-label="Table controls workshop"><h2>Task explorer</h2><label htmlFor="filter-tasks">Filter tasks</label><input id="filter-tasks" type="search"/><table><caption>Tasks, page 1</caption><thead><tr><th scope="col">Title</th></tr></thead><tbody><tr><th scope="row">Review</th></tr></tbody></table><nav aria-label="Result pages"><button type="button" disabled>Previous</button><button type="button">Next</button></nav></section>;}

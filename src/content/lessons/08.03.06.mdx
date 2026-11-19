@@ -1,0 +1,99 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Explain the accessibility and design invariant behind optimistic table interactions","Reproduce and correct a meaningful failing student assertion","Identify what static SSR proves and what requires a real browser and keyboard"]} />
+
+## The problem we're solving
+
+A row appears deleted immediately on click and stays deleted even when a simulated server rejection occurs.
+
+## Build the mental model
+
+Optimistic updates are provisional projections, not persisted truth. Keep a confirmed data source, stable row identity and a clear rollback/reconciliation strategy; server authorization and idempotency remain mandatory.
+
+**Predict first:** A rejected server mutation preserves the confirmed rows and never silently commits the optimistic projection.
+
+## Prerequisites and preflight
+
+Continue from [the previous topic](/learn/08.03.05). Read `labs/ui-optimistic-tables/starter/solution.ts`, `labs/ui-optimistic-tables/solution/solution.ts` and `labs/ui-optimistic-tables/solution.test.mjs`. The TSX sample is rendered as initial HTML only; hydrated events, focus, visual contrast and overflow need separate browser tests.
+
+<LessonStep number={1} title="Reproduce the defective UI policy" file="labs/ui-optimistic-tables/starter/solution.ts" expected="Student starter fails a meaningful assertion.">
+
+```ts
+
+export function solve<T extends {id:string}>(rows:readonly T[],id:string,approved:boolean):T[]{return rows.filter(x=>x.id!==id);}
+
+```
+
+**Predict:** A rejected server mutation preserves the confirmed rows and never silently commits the optimistic projection.
+
+**Diagnosis:** A row appears deleted immediately on click and stays deleted even when a simulated server rejection occurs.
+
+**Proof:** Run `ACADEMY_LAB_TARGET=starter npm run lab:ui-optimistic-tables`. The starter should fail the stated regression, not fail because of a missing dependency.
+
+</LessonStep>
+
+<LessonStep number={2} title="Fix the policy and verify edge cases" file="labs/ui-optimistic-tables/starter/solution.ts" expected="A rejected server mutation preserves the confirmed rows and never silently commits the optimistic projection.">
+
+```ts
+
+export function solve<T extends {id:string}>(rows:readonly T[],id:string,approved:boolean):T[]{return approved?rows.filter(x=>x.id!==id):[...rows];}
+
+```
+
+**Why it works:** Optimistic updates are provisional projections, not persisted truth. Keep a confirmed data source, stable row identity and a clear rollback/reconciliation strategy; server authorization and idempotency remain mandatory.
+
+**Proof:** Run `npm run lab:ui-optimistic-tables` and inspect the instructor test output.
+
+</LessonStep>
+
+<LessonStep number={3} title="Render the semantic React example" file="labs/ui-optimistic-tables/solution/Widget.tsx" expected="Initial semantic markup renders without a runtime crash.">
+
+```tsx
+
+"use client";
+import React,{useState} from "react";
+export function Workshop(){const [rows,setRows]=useState([{id:"a",title:"Draft"},{id:"b",title:"Published"}]);return <section aria-label="Optimistic table workshop"><h2>Records</h2><ul>{rows.map(row=><li key={row.id}>{row.title}<button type="button" onClick={()=>setRows(list=>list.filter(x=>x.id!==row.id))}>Remove demo row</button></li>)}</ul><p role="note">Local demo only; no server persistence.</p></section>;}
+
+```
+
+The static React demo removes a local row without contacting a server, and must not be interpreted as verified optimistic persistence. The pure test models a confirmation/rollback decision.
+
+**Proof:** The lab renders initial HTML with React DOM Server. A real browser check remains mandatory.
+
+</LessonStep>
+
+## Production library pattern
+
+Consult the official implementation pattern for this component and version.
+
+This integration sketch is illustrative. It is not compiled or executed by the offline lab and must be verified separately in an isolated app.
+
+## Explore and verify
+
+Test long labels, keyboard-only usage, 320px width, reduced motion, contrast, errors and screen-reader announcements in a real browser.
+
+<Misconception claim="An SSR snapshot proves a component is keyboard accessible." correction="Optimistic updates are provisional projections, not persisted truth. Keep a confirmed data source, stable row identity and a clear rollback/reconciliation strategy; server authorization and idempotency remain mandatory." />
+
+## Bug Hunt: reproduce, diagnose, repair
+
+Simulate an update that rejects after the row disappears, then ensure the confirmed row returns and an accessible error announces the failure. Test duplicate click/ retry safety.
+
+<KnowledgeCheck question="What must happen when an optimistic row update fails?" choices={["Preserve the failed projection forever","Restore or reconcile with confirmed data and report failure","Hide the error","Delete the record from the database anyway"]} correctIndex={1} explanation="Optimistic updates are provisional projections, not persisted truth. Keep a confirmed data source, stable row identity and a clear rollback/reconciliation strategy; server authorization and idempotency remain mandatory." misconception="Offline SSR is not an interactive accessibility test." lessonId="08.03.06" />
+
+## Guided local lab
+
+Edit `labs/ui-optimistic-tables/starter/solution.ts`; the actual test asserts meaningful positive and negative outcomes. `npm run lab:ui-optimistic-tables` also renders initial React markup. Keyboard interactions, pointer behavior, focus trapping, browser layout and actual Radix/shadcn packages are separate integration gates.
+
+<LabGate lessonId="08.03.06" labId="lab.foundation.ui-optimistic-tables" commands={["npm ci","npm run lab:ui-optimistic-tables"]} interactive={false} />
+
+## Reflect
+
+What was broken, what exact assertion proves the repair, and which user interaction still requires a real browser or assistive technology?
+
+## Official references
+
+- [Primary framework documentation](https://tanstack.com/table/latest/docs/guide/row-selection)
+
+- [Supporting accessibility and API guide](https://react.dev/reference/react/useOptimistic)

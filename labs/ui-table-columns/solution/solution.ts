@@ -1,0 +1,1 @@
+export type Column={id:string;header:string};export function solve(cols:readonly Column[]):Column[]{const used=new Set<string>();return cols.map(x=>{if(!x.id.trim()||!x.header.trim()||used.has(x.id)||x.id.startsWith("_"))throw new TypeError("Unique public, named column required");used.add(x.id);return {id:x.id,header:x.header.trim()};});}

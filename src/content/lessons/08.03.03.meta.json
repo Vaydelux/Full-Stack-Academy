@@ -1,0 +1,41 @@
+{
+  "id": "08.03.03",
+  "title": "Virtualized lists",
+  "description": "Develop virtualized lists using Tailwind v4 principles, accessible React markup and a meaningful offline bug-hunt lab.",
+  "trackId": "08",
+  "moduleId": "08.03",
+  "level": "Intermediate",
+  "estimatedMinutes": 60,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "react": "19",
+    "tailwind": "4",
+    "typescript": "5",
+    "node": "24"
+  },
+  "prerequisites": [
+    "08.03.02"
+  ],
+  "objectives": [
+    "Explain the accessibility and design invariant behind virtualized lists",
+    "Reproduce and correct a meaningful failing student assertion",
+    "Identify what static SSR proves and what requires a real browser and keyboard"
+  ],
+  "labId": "lab.foundation.ui-virtual-lists",
+  "sources": [
+    {
+      "label": "Official primary documentation",
+      "url": "https://tanstack.com/virtual/latest/docs/introduction"
+    },
+    {
+      "label": "Official accessibility/component reference",
+      "url": "https://www.w3.org/WAI/ARIA/apg/practices/keyboard-interface/"
+    }
+  ],
+  "rubric": [
+    "Reproduce a user-facing failure from the starter",
+    "Repair the invariant without changing the assertions",
+    "Describe the remaining keyboard, browser and visual QA requirements"
+  ]
+}

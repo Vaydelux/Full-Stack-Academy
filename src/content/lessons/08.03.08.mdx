@@ -1,0 +1,98 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Explain the accessibility and design invariant behind lab operational console","Reproduce and correct a meaningful failing student assertion","Identify what static SSR proves and what requires a real browser and keyboard"]} />
+
+## The problem we're solving
+
+An operations dashboard shows cross-tenant records, duplicate row IDs and an empty state that silently hides active filters.
+
+## Build the mental model
+
+A professional operations console needs tenant-scoped server authorization, stable row IDs, explicit query/filter/sort/page state, accessible status announcements and a resilient responsive layout. Client filtering alone does not enforce tenant boundaries.
+
+**Predict first:** Only records for the authorized tenant remain in the projected view and duplicate public IDs are rejected.
+
+## Prerequisites and preflight
+
+Continue from [the previous topic](/learn/08.03.07). Read `labs/ui-ops-console/starter/solution.ts`, `labs/ui-ops-console/solution/solution.ts` and `labs/ui-ops-console/solution.test.mjs`. The TSX sample is rendered as initial HTML only; hydrated events, focus, visual contrast and overflow need separate browser tests.
+
+<LessonStep number={1} title="Reproduce the defective UI policy" file="labs/ui-ops-console/starter/solution.ts" expected="Student starter fails a meaningful assertion.">
+
+```ts
+
+export type RecordRow={id:string;tenant:string;title:string};export function solve(rows:readonly RecordRow[],tenant:string):RecordRow[]{return [...rows];}
+
+```
+
+**Predict:** Only records for the authorized tenant remain in the projected view and duplicate public IDs are rejected.
+
+**Diagnosis:** An operations dashboard shows cross-tenant records, duplicate row IDs and an empty state that silently hides active filters.
+
+**Proof:** Run `ACADEMY_LAB_TARGET=starter npm run lab:ui-ops-console`. The starter should fail the stated regression, not fail because of a missing dependency.
+
+</LessonStep>
+
+<LessonStep number={2} title="Fix the policy and verify edge cases" file="labs/ui-ops-console/starter/solution.ts" expected="Only records for the authorized tenant remain in the projected view and duplicate public IDs are rejected.">
+
+```ts
+
+export type RecordRow={id:string;tenant:string;title:string};export function solve(rows:readonly RecordRow[],tenant:string):RecordRow[]{if(!tenant.trim())throw new TypeError("Tenant required");const allowed=rows.filter(r=>r.tenant===tenant);if(new Set(allowed.map(x=>x.id)).size!==allowed.length)throw new TypeError("Duplicate row IDs");return allowed.map(x=>({id:x.id,tenant:x.tenant,title:x.title}));}
+
+```
+
+**Why it works:** A professional operations console needs tenant-scoped server authorization, stable row IDs, explicit query/filter/sort/page state, accessible status announcements and a resilient responsive layout. Client filtering alone does not enforce tenant boundaries.
+
+**Proof:** Run `npm run lab:ui-ops-console` and inspect the instructor test output.
+
+</LessonStep>
+
+<LessonStep number={3} title="Render the semantic React example" file="labs/ui-ops-console/solution/Widget.tsx" expected="Initial semantic markup renders without a runtime crash.">
+
+```tsx
+
+import React from "react";
+export function Workshop(){return <main aria-label="Operational console workshop"><h2>Operations overview</h2><label htmlFor="ops-filter">Search tasks</label><input type="search" id="ops-filter"/><p role="status">2 visible tasks</p><table><caption>Authorized task overview</caption><thead><tr><th scope="col">Task</th><th scope="col">Status</th></tr></thead><tbody><tr><th scope="row">Task A</th><td>Queued</td></tr><tr><th scope="row">Task B</th><td>Active</td></tr></tbody></table></main>;}
+
+```
+
+This sample uses semantic React without requiring an uninstalled UI package. Server rendering does not execute handlers or certify focus management.
+
+**Proof:** The lab renders initial HTML with React DOM Server. A real browser check remains mandatory.
+
+</LessonStep>
+
+## Production library pattern
+
+Consult the official implementation pattern for this component and version.
+
+This is a synthetic presentation contract, not authorization or a running operational API. Full-stack tenant isolation requires authenticated request and database tests.
+
+## Explore and verify
+
+Test long labels, keyboard-only usage, 320px width, reduced motion, contrast, errors and screen-reader announcements in a real browser.
+
+<Misconception claim="An SSR snapshot proves a component is keyboard accessible." correction="A professional operations console needs tenant-scoped server authorization, stable row IDs, explicit query/filter/sort/page state, accessible status announcements and a resilient responsive layout. Client filtering alone does not enforce tenant boundaries." />
+
+## Bug Hunt: reproduce, diagnose, repair
+
+Supply records from two tenants, change filtering and pagination, then verify the UI never displays private rows. In production, repeat the check at the API and database layer; a client-side selector alone is not security.
+
+<KnowledgeCheck question="Where must tenant isolation ultimately be enforced?" choices={["Only in a React filter","On the authenticated server and data access boundary","Only by changing the table caption","Only in the CSS grid"]} correctIndex={1} explanation="A professional operations console needs tenant-scoped server authorization, stable row IDs, explicit query/filter/sort/page state, accessible status announcements and a resilient responsive layout. Client filtering alone does not enforce tenant boundaries." misconception="Offline SSR is not an interactive accessibility test." lessonId="08.03.08" />
+
+## Guided local lab
+
+Edit `labs/ui-ops-console/starter/solution.ts`; the actual test asserts meaningful positive and negative outcomes. `npm run lab:ui-ops-console` also renders initial React markup. Keyboard interactions, pointer behavior, focus trapping, browser layout and actual Radix/shadcn packages are separate integration gates.
+
+<LabGate lessonId="08.03.08" labId="lab.foundation.ui-ops-console" commands={["npm ci","npm run lab:ui-ops-console"]} interactive={false} />
+
+## Reflect
+
+What was broken, what exact assertion proves the repair, and which user interaction still requires a real browser or assistive technology?
+
+## Official references
+
+- [Primary framework documentation](https://tanstack.com/table/latest/docs/guide/column-filtering)
+
+- [Supporting accessibility and API guide](https://www.w3.org/WAI/tutorials/tables/)

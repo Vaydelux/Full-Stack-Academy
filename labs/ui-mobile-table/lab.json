@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.ui-mobile-table",
+  "lessonId": "08.03.04",
+  "title": "Dense tables and mobile alternatives",
+  "runtime": "react19-ui-ssr-pure-contract",
+  "status": "authored",
+  "starter": "labs/ui-mobile-table/starter/solution.ts",
+  "solution": "labs/ui-mobile-table/solution/solution.ts",
+  "tests": "labs/ui-mobile-table/solution.test.mjs",
+  "verify": [
+    "npm run lab:ui-mobile-table"
+  ],
+  "expected": "Reviewed offline contract and initial semantic React markup, not browser interaction or visual fidelity.",
+  "security": "Only synthetic fixture data. No cloud, secrets, untrusted evaluation, authentication, deployment or hosted grader."
+}

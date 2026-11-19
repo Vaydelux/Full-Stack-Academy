@@ -1,0 +1,1 @@
+export function solve(total:number,start:number,windowSize:number){if(!Number.isInteger(total)||total<0||!Number.isInteger(start)||start<0||!Number.isInteger(windowSize)||windowSize<1)throw new TypeError("Invalid virtual window");const first=Math.min(start,total);return {start:first,end:Math.min(total,first+windowSize)};}

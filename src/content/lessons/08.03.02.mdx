@@ -1,0 +1,98 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Explain the accessibility and design invariant behind sorting filtering and pagination","Reproduce and correct a meaningful failing student assertion","Identify what static SSR proves and what requires a real browser and keyboard"]} />
+
+## The problem we're solving
+
+The filtered view sorts the original source array in place and paginates before filtering, so results disappear between pages.
+
+## Build the mental model
+
+For client-side tables, filter, then sort deterministically, then paginate the resulting set. Use immutable data and stable secondary sort keys to avoid jumping rows. Controlled state should be reflected in accessible headers and page controls.
+
+**Predict first:** The dataset is filtered and deterministically sorted before paging; invalid page sizes are rejected.
+
+## Prerequisites and preflight
+
+Continue from [the previous topic](/learn/08.03.01). Read `labs/ui-table-controls/starter/solution.ts`, `labs/ui-table-controls/solution/solution.ts` and `labs/ui-table-controls/solution.test.mjs`. The TSX sample is rendered as initial HTML only; hydrated events, focus, visual contrast and overflow need separate browser tests.
+
+<LessonStep number={1} title="Reproduce the defective UI policy" file="labs/ui-table-controls/starter/solution.ts" expected="Student starter fails a meaningful assertion.">
+
+```ts
+
+export function solve(items:readonly {id:string;title:string}[],query:string,page:number,size:number){return [...items].slice(page*size,(page+1)*size);}
+
+```
+
+**Predict:** The dataset is filtered and deterministically sorted before paging; invalid page sizes are rejected.
+
+**Diagnosis:** The filtered view sorts the original source array in place and paginates before filtering, so results disappear between pages.
+
+**Proof:** Run `ACADEMY_LAB_TARGET=starter npm run lab:ui-table-controls`. The starter should fail the stated regression, not fail because of a missing dependency.
+
+</LessonStep>
+
+<LessonStep number={2} title="Fix the policy and verify edge cases" file="labs/ui-table-controls/starter/solution.ts" expected="The dataset is filtered and deterministically sorted before paging; invalid page sizes are rejected.">
+
+```ts
+
+export function solve(items:readonly {id:string;title:string}[],query:string,page:number,size:number){if(!Number.isInteger(page)||page<0||!Number.isInteger(size)||size<1)throw new TypeError("Invalid page");const q=query.trim().toLowerCase();return items.filter(x=>x.title.toLowerCase().includes(q)).sort((a,b)=>a.title.localeCompare(b.title)||a.id.localeCompare(b.id)).slice(page*size,(page+1)*size);}
+
+```
+
+**Why it works:** For client-side tables, filter, then sort deterministically, then paginate the resulting set. Use immutable data and stable secondary sort keys to avoid jumping rows. Controlled state should be reflected in accessible headers and page controls.
+
+**Proof:** Run `npm run lab:ui-table-controls` and inspect the instructor test output.
+
+</LessonStep>
+
+<LessonStep number={3} title="Render the semantic React example" file="labs/ui-table-controls/solution/Widget.tsx" expected="Initial semantic markup renders without a runtime crash.">
+
+```tsx
+
+import React from "react";
+export function Workshop(){return <section aria-label="Table controls workshop"><h2>Task explorer</h2><label htmlFor="filter-tasks">Filter tasks</label><input id="filter-tasks" type="search"/><table><caption>Tasks, page 1</caption><thead><tr><th scope="col">Title</th></tr></thead><tbody><tr><th scope="row">Review</th></tr></tbody></table><nav aria-label="Result pages"><button type="button" disabled>Previous</button><button type="button">Next</button></nav></section>;}
+
+```
+
+This sample uses semantic React without requiring an uninstalled UI package. Server rendering does not execute handlers or certify focus management.
+
+**Proof:** The lab renders initial HTML with React DOM Server. A real browser check remains mandatory.
+
+</LessonStep>
+
+## Production library pattern
+
+Consult the official implementation pattern for this component and version.
+
+This integration sketch is illustrative. It is not compiled or executed by the offline lab and must be verified separately in an isolated app.
+
+## Explore and verify
+
+Test long labels, keyboard-only usage, 320px width, reduced motion, contrast, errors and screen-reader announcements in a real browser.
+
+<Misconception claim="An SSR snapshot proves a component is keyboard accessible." correction="For client-side tables, filter, then sort deterministically, then paginate the resulting set. Use immutable data and stable secondary sort keys to avoid jumping rows. Controlled state should be reflected in accessible headers and page controls." />
+
+## Bug Hunt: reproduce, diagnose, repair
+
+Filter down to a single record while viewing page 4, then reset to page 0 and confirm the record appears. Verify sort direction announcements and page count in a browser.
+
+<KnowledgeCheck question="What is the correct client-side order of operations for a paginated filtered table?" choices={["Paginate, then filter","Filter, sort, then paginate","Sort after rendering","Mutate the source array first"]} correctIndex={1} explanation="For client-side tables, filter, then sort deterministically, then paginate the resulting set. Use immutable data and stable secondary sort keys to avoid jumping rows. Controlled state should be reflected in accessible headers and page controls." misconception="Offline SSR is not an interactive accessibility test." lessonId="08.03.02" />
+
+## Guided local lab
+
+Edit `labs/ui-table-controls/starter/solution.ts`; the actual test asserts meaningful positive and negative outcomes. `npm run lab:ui-table-controls` also renders initial React markup. Keyboard interactions, pointer behavior, focus trapping, browser layout and actual Radix/shadcn packages are separate integration gates.
+
+<LabGate lessonId="08.03.02" labId="lab.foundation.ui-table-controls" commands={["npm ci","npm run lab:ui-table-controls"]} interactive={false} />
+
+## Reflect
+
+What was broken, what exact assertion proves the repair, and which user interaction still requires a real browser or assistive technology?
+
+## Official references
+
+- [Primary framework documentation](https://tanstack.com/table/latest/docs/guide/pagination)
+
+- [Supporting accessibility and API guide](https://tanstack.com/table/latest/docs/guide/column-filtering)

@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.ui-virtual-lists",
+  "lessonId": "08.03.03",
+  "title": "Virtualized lists",
+  "runtime": "react19-ui-ssr-pure-contract",
+  "status": "authored",
+  "starter": "labs/ui-virtual-lists/starter/solution.ts",
+  "solution": "labs/ui-virtual-lists/solution/solution.ts",
+  "tests": "labs/ui-virtual-lists/solution.test.mjs",
+  "verify": [
+    "npm run lab:ui-virtual-lists"
+  ],
+  "expected": "Reviewed offline contract and initial semantic React markup, not browser interaction or visual fidelity.",
+  "security": "Only synthetic fixture data. No cloud, secrets, untrusted evaluation, authentication, deployment or hosted grader."
+}

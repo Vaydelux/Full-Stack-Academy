@@ -1,0 +1,98 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Explain the accessibility and design invariant behind dense tables and mobile alternatives","Reproduce and correct a meaningful failing student assertion","Identify what static SSR proves and what requires a real browser and keyboard"]} />
+
+## The problem we're solving
+
+A data table with twelve columns overflows at 320px and hides critical record status beyond the horizontal viewport.
+
+## Build the mental model
+
+Prioritize essential columns and offer a card or definition-list alternative for narrow screens. Preserve relationships between labels and values; don't hide important row information just to eliminate horizontal scrolling.
+
+**Predict first:** A narrow viewport selects labeled cards while a larger viewport may retain the data table.
+
+## Prerequisites and preflight
+
+Continue from [the previous topic](/learn/08.03.03). Read `labs/ui-mobile-table/starter/solution.ts`, `labs/ui-mobile-table/solution/solution.ts` and `labs/ui-mobile-table/solution.test.mjs`. The TSX sample is rendered as initial HTML only; hydrated events, focus, visual contrast and overflow need separate browser tests.
+
+<LessonStep number={1} title="Reproduce the defective UI policy" file="labs/ui-mobile-table/starter/solution.ts" expected="Student starter fails a meaningful assertion.">
+
+```ts
+
+export function solve(width:number):"table"|"cards"{return "table";}
+
+```
+
+**Predict:** A narrow viewport selects labeled cards while a larger viewport may retain the data table.
+
+**Diagnosis:** A data table with twelve columns overflows at 320px and hides critical record status beyond the horizontal viewport.
+
+**Proof:** Run `ACADEMY_LAB_TARGET=starter npm run lab:ui-mobile-table`. The starter should fail the stated regression, not fail because of a missing dependency.
+
+</LessonStep>
+
+<LessonStep number={2} title="Fix the policy and verify edge cases" file="labs/ui-mobile-table/starter/solution.ts" expected="A narrow viewport selects labeled cards while a larger viewport may retain the data table.">
+
+```ts
+
+export function solve(width:number):"table"|"cards"{if(!Number.isFinite(width)||width<0)throw new TypeError("Invalid width");return width<640?"cards":"table";}
+
+```
+
+**Why it works:** Prioritize essential columns and offer a card or definition-list alternative for narrow screens. Preserve relationships between labels and values; don't hide important row information just to eliminate horizontal scrolling.
+
+**Proof:** Run `npm run lab:ui-mobile-table` and inspect the instructor test output.
+
+</LessonStep>
+
+<LessonStep number={3} title="Render the semantic React example" file="labs/ui-mobile-table/solution/Widget.tsx" expected="Initial semantic markup renders without a runtime crash.">
+
+```tsx
+
+import React from "react";
+export function Workshop(){return <section aria-label="Responsive data workshop"><h2>Mobile record cards</h2><article><h3>Invoice INV-01</h3><dl><dt>Status</dt><dd>Pending</dd><dt>Amount</dt><dd>100</dd></dl></article></section>;}
+
+```
+
+This sample uses semantic React without requiring an uninstalled UI package. Server rendering does not execute handlers or certify focus management.
+
+**Proof:** The lab renders initial HTML with React DOM Server. A real browser check remains mandatory.
+
+</LessonStep>
+
+## Production library pattern
+
+Consult the official implementation pattern for this component and version.
+
+This integration sketch is illustrative. It is not compiled or executed by the offline lab and must be verified separately in an isolated app.
+
+## Explore and verify
+
+Test long labels, keyboard-only usage, 320px width, reduced motion, contrast, errors and screen-reader announcements in a real browser.
+
+<Misconception claim="An SSR snapshot proves a component is keyboard accessible." correction="Prioritize essential columns and offer a card or definition-list alternative for narrow screens. Preserve relationships between labels and values; don't hide important row information just to eliminate horizontal scrolling." />
+
+## Bug Hunt: reproduce, diagnose, repair
+
+At 320px/200% zoom, identify clipped statuses, unlabeled card values and hidden keyboard actions. Verify the same information is available across both layouts.
+
+<KnowledgeCheck question="What should a mobile table alternative preserve?" choices={["Readable field labels, values and actions","Only the first column","The exact 12-column desktop density","A screenshot of the table"]} correctIndex={0} explanation="Prioritize essential columns and offer a card or definition-list alternative for narrow screens. Preserve relationships between labels and values; don't hide important row information just to eliminate horizontal scrolling." misconception="Offline SSR is not an interactive accessibility test." lessonId="08.03.04" />
+
+## Guided local lab
+
+Edit `labs/ui-mobile-table/starter/solution.ts`; the actual test asserts meaningful positive and negative outcomes. `npm run lab:ui-mobile-table` also renders initial React markup. Keyboard interactions, pointer behavior, focus trapping, browser layout and actual Radix/shadcn packages are separate integration gates.
+
+<LabGate lessonId="08.03.04" labId="lab.foundation.ui-mobile-table" commands={["npm ci","npm run lab:ui-mobile-table"]} interactive={false} />
+
+## Reflect
+
+What was broken, what exact assertion proves the repair, and which user interaction still requires a real browser or assistive technology?
+
+## Official references
+
+- [Primary framework documentation](https://www.w3.org/WAI/WCAG22/Understanding/reflow.html)
+
+- [Supporting accessibility and API guide](https://www.w3.org/WAI/tutorials/tables/)

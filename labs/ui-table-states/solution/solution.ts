@@ -1,0 +1,1 @@
+export type State="loading"|"empty"|"ready"|"error";export function solve(state:State):string{switch(state){case "loading":return "Loading…";case "empty":return "No matching records";case "ready":return "Results";case "error":return "Could not load records";}}

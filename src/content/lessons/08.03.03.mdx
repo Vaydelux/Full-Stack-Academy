@@ -1,0 +1,102 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Explain the accessibility and design invariant behind virtualized lists","Reproduce and correct a meaningful failing student assertion","Identify what static SSR proves and what requires a real browser and keyboard"]} />
+
+## The problem we're solving
+
+A virtual list computes an end index beyond its dataset length and can render duplicate rows when scrolling near the bottom.
+
+## Build the mental model
+
+Virtualization renders a window of items based on scroll position, item heights and overscan. Clamp window indices, preserve stable item identity and provide an accessible alternative. Virtualization trades DOM size for measurement and focus complexity.
+
+**Predict first:** The rendered interval is always within total item count and never exceeds the dataset.
+
+## Prerequisites and preflight
+
+Continue from [the previous topic](/learn/08.03.02). Read `labs/ui-virtual-lists/starter/solution.ts`, `labs/ui-virtual-lists/solution/solution.ts` and `labs/ui-virtual-lists/solution.test.mjs`. The TSX sample is rendered as initial HTML only; hydrated events, focus, visual contrast and overflow need separate browser tests.
+
+<LessonStep number={1} title="Reproduce the defective UI policy" file="labs/ui-virtual-lists/starter/solution.ts" expected="Student starter fails a meaningful assertion.">
+
+```ts
+
+export function solve(total:number,start:number,windowSize:number){return {start,end:start+windowSize};}
+
+```
+
+**Predict:** The rendered interval is always within total item count and never exceeds the dataset.
+
+**Diagnosis:** A virtual list computes an end index beyond its dataset length and can render duplicate rows when scrolling near the bottom.
+
+**Proof:** Run `ACADEMY_LAB_TARGET=starter npm run lab:ui-virtual-lists`. The starter should fail the stated regression, not fail because of a missing dependency.
+
+</LessonStep>
+
+<LessonStep number={2} title="Fix the policy and verify edge cases" file="labs/ui-virtual-lists/starter/solution.ts" expected="The rendered interval is always within total item count and never exceeds the dataset.">
+
+```ts
+
+export function solve(total:number,start:number,windowSize:number){if(!Number.isInteger(total)||total<0||!Number.isInteger(start)||start<0||!Number.isInteger(windowSize)||windowSize<1)throw new TypeError("Invalid virtual window");const first=Math.min(start,total);return {start:first,end:Math.min(total,first+windowSize)};}
+
+```
+
+**Why it works:** Virtualization renders a window of items based on scroll position, item heights and overscan. Clamp window indices, preserve stable item identity and provide an accessible alternative. Virtualization trades DOM size for measurement and focus complexity.
+
+**Proof:** Run `npm run lab:ui-virtual-lists` and inspect the instructor test output.
+
+</LessonStep>
+
+<LessonStep number={3} title="Render the semantic React example" file="labs/ui-virtual-lists/solution/Widget.tsx" expected="Initial semantic markup renders without a runtime crash.">
+
+```tsx
+
+import React from "react";
+export function Workshop(){return <section aria-label="Virtual list workshop"><h2>Large roster</h2><p>Only a bounded visible window should be rendered at a time.</p><ol aria-label="Roster window"><li>Person 20</li><li>Person 21</li></ol></section>;}
+
+```
+
+This sample uses semantic React without requiring an uninstalled UI package. Server rendering does not execute handlers or certify focus management.
+
+**Proof:** The lab renders initial HTML with React DOM Server. A real browser check remains mandatory.
+
+</LessonStep>
+
+## Production library pattern
+
+```tsx
+import {useVirtualizer} from "@tanstack/react-virtual";
+// Inside a client component with a scrollElement ref:
+const v=useVirtualizer({count:rows.length,getScrollElement:()=>scrollRef.current,estimateSize:()=>44,overscan:5});
+```
+
+Virtualizer integration needs a browser scroll container and measured layout. The offline solver only checks interval bounds.
+
+## Explore and verify
+
+Test long labels, keyboard-only usage, 320px width, reduced motion, contrast, errors and screen-reader announcements in a real browser.
+
+<Misconception claim="An SSR snapshot proves a component is keyboard accessible." correction="Virtualization renders a window of items based on scroll position, item heights and overscan. Clamp window indices, preserve stable item identity and provide an accessible alternative. Virtualization trades DOM size for measurement and focus complexity." />
+
+## Bug Hunt: reproduce, diagnose, repair
+
+Scroll to the very end of a 50,000-item test dataset and inspect range boundaries, keyboard focus and stable row keys. Compare real virtualized memory with a full DOM render.
+
+<KnowledgeCheck question="What is the main goal of virtualization?" choices={["Render all 50,000 rows invisibly","Limit active DOM items to a measured visible window","Guarantee SEO for private tables","Remove pagination controls"]} correctIndex={1} explanation="Virtualization renders a window of items based on scroll position, item heights and overscan. Clamp window indices, preserve stable item identity and provide an accessible alternative. Virtualization trades DOM size for measurement and focus complexity." misconception="Offline SSR is not an interactive accessibility test." lessonId="08.03.03" />
+
+## Guided local lab
+
+Edit `labs/ui-virtual-lists/starter/solution.ts`; the actual test asserts meaningful positive and negative outcomes. `npm run lab:ui-virtual-lists` also renders initial React markup. Keyboard interactions, pointer behavior, focus trapping, browser layout and actual Radix/shadcn packages are separate integration gates.
+
+<LabGate lessonId="08.03.03" labId="lab.foundation.ui-virtual-lists" commands={["npm ci","npm run lab:ui-virtual-lists"]} interactive={false} />
+
+## Reflect
+
+What was broken, what exact assertion proves the repair, and which user interaction still requires a real browser or assistive technology?
+
+## Official references
+
+- [Primary framework documentation](https://tanstack.com/virtual/latest/docs/introduction)
+
+- [Supporting accessibility and API guide](https://www.w3.org/WAI/ARIA/apg/practices/keyboard-interface/)
