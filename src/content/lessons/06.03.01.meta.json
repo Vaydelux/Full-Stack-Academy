@@ -1,0 +1,39 @@
+{
+  "id": "06.03.01",
+  "title": "Render purity and deterministic components: Keep render-time calculations deterministic and free of observable mutations",
+  "description": "React 19 guided tutorial for render purity and deterministic components, including an offline failing starter, corrected TypeScript source, regression assertions and explicit lifecycle boundaries.",
+  "trackId": "06",
+  "moduleId": "06.03",
+  "level": "Beginner",
+  "estimatedMinutes": 55,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "react": "19",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "06.02.08"
+  ],
+  "objectives": [
+    "Keep render-time calculations deterministic and free of observable mutations.",
+    "Repair the intentionally failing example in react-render-purity.",
+    "Verify representative and edge-case results using the local acceptance suite."
+  ],
+  "labId": "lab.react.react-render-purity",
+  "rubric": [
+    "I can explain render purity and deterministic components with correct React lifecycle boundaries.",
+    "I can reproduce and repair the starter failure for 06.03.01.",
+    "I can distinguish static/SSR evidence from mounted behavior and describe missing checks."
+  ],
+  "sources": [
+    {
+      "label": "React: Render purity and deterministic components",
+      "url": "https://react.dev/learn/keeping-components-pure"
+    },
+    {
+      "label": "React Hooks reference",
+      "url": "https://react.dev/reference/react/hooks"
+    }
+  ]
+}

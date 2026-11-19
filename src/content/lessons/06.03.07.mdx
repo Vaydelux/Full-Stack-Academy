@@ -1,0 +1,104 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Derive search results directly from props and current query rather than syncing duplicate state with an Effect.","Implement avoiding unnecessary effects in a complete TypeScript/React 19 fixture.","Reproduce the initial defect and prove the repair with local positive and negative tests."]} />
+
+## The problem we're solving
+
+A searchable directory briefly shows outdated matches when a query changes because its filtered list is stored and synchronized separately. The starter returns every item and ignores the query, demonstrating incorrect derived output. The goal is to learn the React runtime contract rather than memorize hook names.
+
+## Build the mental model
+
+Derive search results directly from props and current query rather than syncing duplicate state with an Effect. Remove the Effect and compute the value during rendering from the authoritative inputs. **Distinguish source-level correctness from runtime evidence:** Pure helpers can be tested without a browser, but an SSR output assertion cannot prove that an Effect ran, a ref focused an actual input or a global listener was removed after unmount.
+
+**Predict before you run:** Search ignores casing and whitespace, preserves record order and returns an empty list for no matches.
+
+## Prerequisites and preflight
+
+Study the preceding React topic and inspect `labs/react-avoid-effect/starter/solution.tsx`. Use Node.js 24 and locked project dependencies. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:react-avoid-effect`. PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:react-avoid-effect; Remove-Item Env:ACADEMY_LAB_TARGET`. No browser, GitHub Actions workflow or hosted deployment runs just by reading the article.
+
+## Guided implementation
+
+<LessonStep number={1} title="Observe the failing starter behavior" file="labs/react-avoid-effect/starter/solution.tsx" expected="An instructor assertion fails for a concrete incorrect behavior.">
+
+Read this starter before changing anything:
+
+```tsx
+export type DirectoryItem={id:string;name:string};
+export function filterDirectory(items:readonly DirectoryItem[],_query:string){return [...items];}
+export function Directory({items,query}:{items:readonly DirectoryItem[];query:string}) {
+ const filtered=filterDirectory(items,query);
+ return <ul>{filtered.map(item=><li key={item.id}>{item.name}</li>)}</ul>;
+}
+```
+
+**Prediction:** Search ignores casing and whitespace, preserves record order and returns an empty list for no matches.
+
+**Why it fails:** The starter returns every item and ignores the query, demonstrating incorrect derived output.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the correct synchronization boundary" file="labs/react-avoid-effect/starter/solution.tsx" expected="Search ignores casing and whitespace, preserves record order and returns an empty list for no matches.">
+
+Make the smallest correction that addresses the causal defect while keeping the fixture's exported API stable:
+
+```tsx
+export type DirectoryItem={id:string;name:string};
+export function filterDirectory(items:readonly DirectoryItem[],query:string) {
+ const term=query.trim().toLocaleLowerCase();
+ return items.filter(item=>item.name.toLocaleLowerCase().includes(term));
+}
+export function Directory({items,query}:{items:readonly DirectoryItem[];query:string}) {
+ const filtered=filterDirectory(items,query);
+ return <ul>{filtered.map(item=><li key={item.id}>{item.name}</li>)}</ul>;
+}
+```
+
+**Why it works:** Derive search results directly from props and current query rather than syncing duplicate state with an Effect.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify the contract and edge cases" file="labs/react-avoid-effect/solution.test.mjs" expected="Instructor results pass local tests; the original starter fails at least one behavioral assertion.">
+
+Review these representative assertions before executing the full test file:
+
+```js
+const items=[{id:'1',name:'Ava Smith'},{id:'2',name:'Noel Reed'},{id:'3',name:'Avani'}];
+assert.deepEqual(mod.filterDirectory(items,' AVA ').map(x=>x.id),['1','3']);
+assert.deepEqual(mod.filterDirectory(items,'nomatch'),[]);
+const html=renderToStaticMarkup(createElement(mod.Directory,{items,query:'reed'}));
+assert.match(html,/Noel Reed/);assert.doesNotMatch(html,/Ava Smith/);
+```
+
+**Proof it works:** `npm run lab:react-avoid-effect`. Toggle `ACADEMY_LAB_TARGET=starter` to reproduce the broken baseline. For lifecycle semantics, use an actual mounted browser run before asserting real-world behavior.
+
+</LessonStep>
+
+<Misconception claim="The starter returns every item and ignores the query, demonstrating incorrect derived output." correction="Derive search results directly from props and current query rather than syncing duplicate state with an Effect. Remove the Effect and compute the value during rendering from the authoritative inputs." />
+
+<KnowledgeCheck question="What is the simplest fix for an Effect that only copies a calculated value into state?" choices={["React automatically performs every external cleanup without a cleanup function.","Remove the Effect and compute the value during rendering from the authoritative inputs.","The TypeScript compiler executes React Effects at build time.","State changes always write a database record."] } correctIndex={1} explanation="Remove the Effect and compute the value during rendering from the authoritative inputs." misconception="Identify the external system and the exact setup/cleanup or render boundary instead of treating all hooks alike." lessonId="06.03.07" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Symptom:** The starter returns every item and ignores the query, demonstrating incorrect derived output.
+
+**Reproduction:** Run the starter variant using the exact same local assertions as the instructor solution. Record which assertion fails and what input caused the mismatch.
+
+**Diagnosis:** A searchable directory briefly shows outdated matches when a query changes because its filtered list is stored and synchronized separately.
+
+**Repair and regression:** Derive search results directly from props and current query rather than syncing duplicate state with an Effect. Then verify search ignores casing and whitespace, preserves record order and returns an empty list for no matches.
+
+## Guided local lab
+
+Exercise `labs/react-avoid-effect/` contains the intentionally defective learner source, complete reviewed solution and executable Node/React-server-rendering assertions. Hints: identify the authoritative input; inspect setup and cleanup ownership; finally compare expected output with the model. This is not an online arbitrary-code execution service.
+
+<LabGate lessonId="06.03.07" labId="lab.react.react-avoid-effect" commands={["npm run lab:react-avoid-effect","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+Which behavior can a pure function or server-rendering test establish, and which lifecycle or focus behavior requires a mounted browser test? Under what circumstances would an Effect be unnecessary?
+
+## Official references
+
+- [React: Avoiding unnecessary Effects](https://react.dev/learn/you-might-not-need-an-effect)
+- [React official Hooks reference](https://react.dev/reference/react/hooks)

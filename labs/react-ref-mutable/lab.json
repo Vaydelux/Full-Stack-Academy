@@ -1,0 +1,15 @@
+{
+  "id": "lab.react.react-ref-mutable",
+  "lessonId": "06.03.05",
+  "title": "Practice useref and mutable values outside render in React 19",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/react-ref-mutable/starter/solution.tsx",
+  "solution": "labs/react-ref-mutable/solution/solution.tsx",
+  "tests": "labs/react-ref-mutable/solution.test.mjs",
+  "verify": [
+    "npm run lab:react-ref-mutable"
+  ],
+  "expected": "Three calls against one ref return 1, 2 and 3, and distinct refs remain independent.",
+  "security": "Only trusted source executes locally. Browser-only Hooks lifecycle behavior requires separate Playwright coverage."
+}

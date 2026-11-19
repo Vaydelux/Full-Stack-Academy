@@ -1,0 +1,15 @@
+{
+  "id": "lab.react.react-use-optimistic",
+  "lessonId": "06.04.05",
+  "title": "Practice React 19 useoptimistic and pending ui",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/react-use-optimistic/starter/solution.tsx",
+  "solution": "labs/react-use-optimistic/solution/solution.tsx",
+  "tests": "labs/react-use-optimistic/solution.test.mjs",
+  "verify": [
+    "npm run lab:react-use-optimistic"
+  ],
+  "expected": "Existing entries remain in order and the new item has an explicit pending state until committed.",
+  "security": "Trusted local source only. No remote code runner, API credentials or production persistence."
+}

@@ -1,0 +1,15 @@
+{
+  "id": "lab.react.react-context-provider",
+  "lessonId": "06.04.01",
+  "title": "Practice React 19 context and providers",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/react-context-provider/starter/solution.tsx",
+  "solution": "labs/react-context-provider/solution/solution.tsx",
+  "tests": "labs/react-context-provider/solution.test.mjs",
+  "verify": [
+    "npm run lab:react-context-provider"
+  ],
+  "expected": "Providing dark mode renders Theme: dark and a consumer outside the provider throws a clear setup error.",
+  "security": "Trusted local source only. No remote code runner, API credentials or production persistence."
+}

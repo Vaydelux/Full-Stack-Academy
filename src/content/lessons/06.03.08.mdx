@@ -1,0 +1,118 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Combine timer cleanup, event listener cleanup, focus safety and clock formatting into a controlled React feature.","Implement reliable timer and keyboard shortcuts capstone in a complete TypeScript/React 19 fixture.","Reproduce the initial defect and prove the repair with local positive and negative tests."]} />
+
+## The problem we're solving
+
+A timer continues running after leaving its route, while a global Space shortcut intercepts typing in form controls. The starter formats time incorrectly and activates shortcuts even when a text field owns focus. The goal is to learn the React runtime contract rather than memorize hook names.
+
+## Build the mental model
+
+Combine timer cleanup, event listener cleanup, focus safety and clock formatting into a controlled React feature. Clear the interval and unregister the keyboard event listener when the relevant Effects clean up. **Distinguish source-level correctness from runtime evidence:** Pure helpers can be tested without a browser, but an SSR output assertion cannot prove that an Effect ran, a ref focused an actual input or a global listener was removed after unmount.
+
+**Predict before you run:** Clock formatting handles minutes correctly and only bare, non-repeated Space outside interactive or editable controls activates the shortcut.
+
+## Prerequisites and preflight
+
+Study the preceding React topic and inspect `labs/react-timer-keyboard/starter/solution.tsx`. Use Node.js 24 and locked project dependencies. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:react-timer-keyboard`. PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:react-timer-keyboard; Remove-Item Env:ACADEMY_LAB_TARGET`. No browser, GitHub Actions workflow or hosted deployment runs just by reading the article.
+
+## Guided implementation
+
+<LessonStep number={1} title="Observe the failing starter behavior" file="labs/react-timer-keyboard/starter/solution.tsx" expected="An instructor assertion fails for a concrete incorrect behavior.">
+
+Read this starter before changing anything:
+
+```tsx
+import {useEffect,useState} from 'react';
+export function formatClock(seconds:number){return '00:00';}
+export function shouldToggle(_event:{key:string;ctrlKey:boolean;altKey:boolean;metaKey:boolean;targetTag?:string;editable?:boolean;repeat?:boolean;defaultPrevented?:boolean}){return true;}
+export function TimerKeyboard(){
+ const [seconds,setSeconds]=useState(0);const [running,setRunning]=useState(false);
+ useEffect(()=>{if(!running)return;const id=window.setInterval(()=>setSeconds(s=>s+1),1000);return ()=>window.clearInterval(id);},[running]);
+ useEffect(()=>{const onKey=(e:KeyboardEvent)=>{if(shouldToggle({key:e.key,ctrlKey:e.ctrlKey,altKey:e.altKey,metaKey:e.metaKey,targetTag:(e.target as HTMLElement|null)?.tagName,editable:(e.target as HTMLElement|null)?.isContentEditable,repeat:e.repeat,defaultPrevented:e.defaultPrevented})){e.preventDefault();setRunning(v=>!v);}};
+ window.addEventListener('keydown',onKey);return ()=>window.removeEventListener('keydown',onKey);},[]);
+ return <section><p role="timer">{formatClock(seconds)}</p><button type="button" onClick={()=>setRunning(v=>!v)}>{running?'Pause':'Start'}</button></section>;
+}
+```
+
+**Prediction:** Clock formatting handles minutes correctly and only bare, non-repeated Space outside interactive or editable controls activates the shortcut.
+
+**Why it fails:** The starter formats time incorrectly and activates shortcuts even when a text field owns focus.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the correct synchronization boundary" file="labs/react-timer-keyboard/starter/solution.tsx" expected="Clock formatting handles minutes correctly and only bare, non-repeated Space outside interactive or editable controls activates the shortcut.">
+
+Make the smallest correction that addresses the causal defect while keeping the fixture's exported API stable:
+
+```tsx
+import {useEffect,useState} from 'react';
+export function formatClock(seconds:number){
+ if(!Number.isSafeInteger(seconds)||seconds<0)throw new RangeError('Invalid seconds');
+ return `${String(Math.floor(seconds/60)).padStart(2,'0')}:${String(seconds%60).padStart(2,'0')}`;
+}
+export function shouldToggle(event:{key:string;ctrlKey:boolean;altKey:boolean;metaKey:boolean;targetTag?:string;editable?:boolean;repeat?:boolean;defaultPrevented?:boolean}){
+ return event.key===' '&&!event.repeat&&!event.defaultPrevented&&!event.editable&&!event.ctrlKey&&!event.altKey&&!event.metaKey&&!['INPUT','TEXTAREA','SELECT','BUTTON','A'].includes(event.targetTag?.toUpperCase()??'');
+}
+export function TimerKeyboard(){
+ const [seconds,setSeconds]=useState(0);const [running,setRunning]=useState(false);
+ useEffect(()=>{if(!running)return;const id=window.setInterval(()=>setSeconds(s=>s+1),1000);return ()=>window.clearInterval(id);},[running]);
+ useEffect(()=>{const onKey=(e:KeyboardEvent)=>{if(shouldToggle({key:e.key,ctrlKey:e.ctrlKey,altKey:e.altKey,metaKey:e.metaKey,targetTag:(e.target as HTMLElement|null)?.tagName,editable:(e.target as HTMLElement|null)?.isContentEditable,repeat:e.repeat,defaultPrevented:e.defaultPrevented})){e.preventDefault();setRunning(v=>!v);}};
+ window.addEventListener('keydown',onKey);return ()=>window.removeEventListener('keydown',onKey);},[]);
+ return <section><p role="timer">{formatClock(seconds)}</p><button type="button" onClick={()=>setRunning(v=>!v)}>{running?'Pause':'Start'}</button></section>;
+}
+```
+
+**Why it works:** Combine timer cleanup, event listener cleanup, focus safety and clock formatting into a controlled React feature.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify the contract and edge cases" file="labs/react-timer-keyboard/solution.test.mjs" expected="Instructor results pass local tests; the original starter fails at least one behavioral assertion.">
+
+Review these representative assertions before executing the full test file:
+
+```js
+assert.equal(mod.formatClock(0),'00:00');assert.equal(mod.formatClock(65),'01:05');assert.throws(()=>mod.formatClock(-1),RangeError);
+const basic={key:' ',ctrlKey:false,altKey:false,metaKey:false};
+assert.equal(mod.shouldToggle(basic),true);assert.equal(mod.shouldToggle({...basic,targetTag:'INPUT'}),false);
+assert.equal(mod.shouldToggle({...basic,ctrlKey:true}),false);
+assert.equal(mod.shouldToggle({...basic,targetTag:'BUTTON'}),false);
+assert.equal(mod.shouldToggle({...basic,editable:true}),false);
+assert.equal(mod.shouldToggle({...basic,repeat:true}),false);
+assert.equal(mod.shouldToggle({...basic,defaultPrevented:true}),false);
+assert.match(renderToStaticMarkup(createElement(mod.TimerKeyboard)),/00:00/);
+```
+
+**Proof it works:** `npm run lab:react-timer-keyboard`. Toggle `ACADEMY_LAB_TARGET=starter` to reproduce the broken baseline. For lifecycle semantics, use an actual mounted browser run before asserting real-world behavior.
+
+</LessonStep>
+
+<Misconception claim="The starter formats time incorrectly and activates shortcuts even when a text field owns focus." correction="Combine timer cleanup, event listener cleanup, focus safety and clock formatting into a controlled React feature. Clear the interval and unregister the keyboard event listener when the relevant Effects clean up." />
+
+<KnowledgeCheck question="What two cleanup operations are required by a timer with a global shortcut?" choices={["React automatically performs every external cleanup without a cleanup function.","Clear the interval and unregister the keyboard event listener when the relevant Effects clean up.","The TypeScript compiler executes React Effects at build time.","State changes always write a database record."] } correctIndex={1} explanation="Clear the interval and unregister the keyboard event listener when the relevant Effects clean up." misconception="Identify the external system and the exact setup/cleanup or render boundary instead of treating all hooks alike." lessonId="06.03.08" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Symptom:** The starter formats time incorrectly and activates shortcuts even when a text field owns focus.
+
+**Reproduction:** Run the starter variant using the exact same local assertions as the instructor solution. Record which assertion fails and what input caused the mismatch.
+
+**Diagnosis:** A timer continues running after leaving its route, while a global Space shortcut intercepts typing in form controls.
+
+**Repair and regression:** Combine timer cleanup, event listener cleanup, focus safety and clock formatting into a controlled React feature. Then verify clock formatting handles minutes correctly and only bare space outside editable controls activates the shortcut.
+
+## Guided local lab
+
+Exercise `labs/react-timer-keyboard/` contains the intentionally defective learner source, complete reviewed solution and executable Node/React-server-rendering assertions. Hints: identify the authoritative input; inspect setup and cleanup ownership; finally compare expected output with the model. This is not an online arbitrary-code execution service.
+
+<LabGate lessonId="06.03.08" labId="lab.react.react-timer-keyboard" commands={["npm run lab:react-timer-keyboard","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+Which behavior can a pure function or server-rendering test establish, and which lifecycle or focus behavior requires a mounted browser test? Under what circumstances would an Effect be unnecessary?
+
+## Official references
+
+- [React: Reliable timer and keyboard shortcuts capstone](https://react.dev/learn/synchronizing-with-effects)
+- [React official Hooks reference](https://react.dev/reference/react/hooks)

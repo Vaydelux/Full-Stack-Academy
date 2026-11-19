@@ -1,0 +1,109 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Treat subscription dependencies as part of the synchronization contract.","Implement managing effect dependencies in a complete TypeScript/React 19 fixture.","Reproduce the initial defect and prove the repair with local positive and negative tests."]} />
+
+## The problem we're solving
+
+A team member switches between chat rooms but their status continues receiving events from a previously selected room. The starter subscribes to a hardcoded room instead of the current roomId. The goal is to learn the React runtime contract rather than memorize hook names.
+
+## Build the mental model
+
+Treat subscription dependencies as part of the synchronization contract. Every reactive value read by the Effect, as enforced by the React Hooks lint rule. **Distinguish source-level correctness from runtime evidence:** Pure helpers can be tested without a browser, but an SSR output assertion cannot prove that an Effect ran, a ref focused an actual input or a global listener was removed after unmount.
+
+**Predict before you run:** Subscription uses the current room ID and returns the correct room-scoped cleanup.
+
+## Prerequisites and preflight
+
+Study the preceding React topic and inspect `labs/react-effect-dependencies/starter/solution.tsx`. Use Node.js 24 and locked project dependencies. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:react-effect-dependencies`. PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:react-effect-dependencies; Remove-Item Env:ACADEMY_LAB_TARGET`. No browser, GitHub Actions workflow or hosted deployment runs just by reading the article.
+
+## Guided implementation
+
+<LessonStep number={1} title="Observe the failing starter behavior" file="labs/react-effect-dependencies/starter/solution.tsx" expected="An instructor assertion fails for a concrete incorrect behavior.">
+
+Read this starter before changing anything:
+
+```tsx
+import {useEffect,useState} from 'react';
+export type RoomBus={subscribe:(room:string,listener:()=>void)=>()=>void};
+export function connectRoom(_roomId:string,bus:RoomBus,onMessage:()=>void) {
+ return bus.subscribe('general',onMessage);
+}
+export function RoomFeed({roomId,bus}:{roomId:string;bus:RoomBus}) {
+ const [messages,setMessages]=useState(0);
+ useEffect(()=>connectRoom(roomId,bus,()=>setMessages(n=>n+1)),[roomId,bus]);
+ return <p>Room {roomId}: {messages}</p>;
+}
+```
+
+**Prediction:** Subscription uses the current room ID and returns the correct room-scoped cleanup.
+
+**Why it fails:** The starter subscribes to a hardcoded room instead of the current roomId.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the correct synchronization boundary" file="labs/react-effect-dependencies/starter/solution.tsx" expected="Subscription uses the current room ID and returns the correct room-scoped cleanup.">
+
+Make the smallest correction that addresses the causal defect while keeping the fixture's exported API stable:
+
+```tsx
+import {useEffect,useState} from 'react';
+export type RoomBus={subscribe:(room:string,listener:()=>void)=>()=>void};
+export function connectRoom(roomId:string,bus:RoomBus,onMessage:()=>void) {
+ if(!roomId.trim()) return ()=>{};
+ return bus.subscribe(roomId,onMessage);
+}
+export function RoomFeed({roomId,bus}:{roomId:string;bus:RoomBus}) {
+ const [messages,setMessages]=useState(0);
+ useEffect(()=>connectRoom(roomId,bus,()=>setMessages(n=>n+1)),[roomId,bus]);
+ return <p>Room {roomId}: {messages}</p>;
+}
+```
+
+**Why it works:** Treat subscription dependencies as part of the synchronization contract.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify the contract and edge cases" file="labs/react-effect-dependencies/solution.test.mjs" expected="Instructor results pass local tests; the original starter fails at least one behavioral assertion.">
+
+Review these representative assertions before executing the full test file:
+
+```js
+let connected='';let removed=0;const bus={subscribe:(room,fn)=>{connected=room;fn();return ()=>removed++;}};
+const stop=mod.connectRoom('engineering',bus,()=>{});assert.equal(connected,'engineering');stop();assert.equal(removed,1);
+connected='';mod.connectRoom('',bus,()=>{});assert.equal(connected,'');
+assert.match(renderToStaticMarkup(createElement(mod.RoomFeed,{roomId:'qa',bus})),/Room qa: 0/);
+```
+
+**Proof it works:** `npm run lab:react-effect-dependencies`. Toggle `ACADEMY_LAB_TARGET=starter` to reproduce the broken baseline. For lifecycle semantics, use an actual mounted browser run before asserting real-world behavior.
+
+</LessonStep>
+
+<Misconception claim="The starter subscribes to a hardcoded room instead of the current roomId." correction="Treat subscription dependencies as part of the synchronization contract. Every reactive value read by the Effect, as enforced by the React Hooks lint rule." />
+
+<KnowledgeCheck question="What should determine an Effect's dependency list?" choices={["React automatically performs every external cleanup without a cleanup function.","Every reactive value read by the Effect, as enforced by the React Hooks lint rule.","The TypeScript compiler executes React Effects at build time.","State changes always write a database record."] } correctIndex={1} explanation="Every reactive value read by the Effect, as enforced by the React Hooks lint rule." misconception="Identify the external system and the exact setup/cleanup or render boundary instead of treating all hooks alike." lessonId="06.03.04" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Symptom:** The starter subscribes to a hardcoded room instead of the current roomId.
+
+**Reproduction:** Run the starter variant using the exact same local assertions as the instructor solution. Record which assertion fails and what input caused the mismatch.
+
+**Diagnosis:** A team member switches between chat rooms but their status continues receiving events from a previously selected room.
+
+**Repair and regression:** Treat subscription dependencies as part of the synchronization contract. Then verify subscription uses the current room id and returns the correct room-scoped cleanup.
+
+## Guided local lab
+
+Exercise `labs/react-effect-dependencies/` contains the intentionally defective learner source, complete reviewed solution and executable Node/React-server-rendering assertions. Hints: identify the authoritative input; inspect setup and cleanup ownership; finally compare expected output with the model. This is not an online arbitrary-code execution service.
+
+<LabGate lessonId="06.03.04" labId="lab.react.react-effect-dependencies" commands={["npm run lab:react-effect-dependencies","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+Which behavior can a pure function or server-rendering test establish, and which lifecycle or focus behavior requires a mounted browser test? Under what circumstances would an Effect be unnecessary?
+
+## Official references
+
+- [React: Managing Effect dependencies](https://react.dev/learn/removing-effect-dependencies)
+- [React official Hooks reference](https://react.dev/reference/react/hooks)

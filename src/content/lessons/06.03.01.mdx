@@ -1,0 +1,94 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Keep render-time calculations deterministic and free of observable mutations.","Implement render purity and deterministic components in a complete TypeScript/React 19 fixture.","Reproduce the initial defect and prove the repair with local positive and negative tests."]} />
+
+## The problem we're solving
+
+A team roster badge changes labels unpredictably because a module-level counter is incremented whenever React renders it. The starter returns a constant instead of calculating the member label from the current input. The goal is to learn the React runtime contract rather than memorize hook names.
+
+## Build the mental model
+
+Keep render-time calculations deterministic and free of observable mutations. It computes a value from current props and state without mutating external data or performing side effects. **Distinguish source-level correctness from runtime evidence:** Pure helpers can be tested without a browser, but an SSR output assertion cannot prove that an Effect ran, a ref focused an actual input or a global listener was removed after unmount.
+
+**Predict before you run:** A single member renders a singular label; multiple members render plural; negative counts are rejected.
+
+## Prerequisites and preflight
+
+Study the preceding React topic and inspect `labs/react-render-purity/starter/solution.tsx`. Use Node.js 24 and locked project dependencies. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:react-render-purity`. PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:react-render-purity; Remove-Item Env:ACADEMY_LAB_TARGET`. No browser, GitHub Actions workflow or hosted deployment runs just by reading the article.
+
+## Guided implementation
+
+<LessonStep number={1} title="Observe the failing starter behavior" file="labs/react-render-purity/starter/solution.tsx" expected="An instructor assertion fails for a concrete incorrect behavior.">
+
+Read this starter before changing anything:
+
+```tsx
+export function memberLabel(_count:number):string { return '0 members'; }
+export function MemberSummary({count}:{count:number}) {return <p>{memberLabel(count)}</p>;}
+```
+
+**Prediction:** A single member renders a singular label; multiple members render plural; negative counts are rejected.
+
+**Why it fails:** The starter returns a constant instead of calculating the member label from the current input.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the correct synchronization boundary" file="labs/react-render-purity/starter/solution.tsx" expected="A single member renders a singular label; multiple members render plural; negative counts are rejected.">
+
+Make the smallest correction that addresses the causal defect while keeping the fixture's exported API stable:
+
+```tsx
+export function memberLabel(count:number):string {
+  if(!Number.isSafeInteger(count)||count<0) throw new RangeError('Invalid count');
+  return count===1 ? '1 member' : `${count} members`;
+}
+export function MemberSummary({count}:{count:number}) {return <p>{memberLabel(count)}</p>;}
+```
+
+**Why it works:** Keep render-time calculations deterministic and free of observable mutations.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify the contract and edge cases" file="labs/react-render-purity/solution.test.mjs" expected="Instructor results pass local tests; the original starter fails at least one behavioral assertion.">
+
+Review these representative assertions before executing the full test file:
+
+```js
+assert.equal(mod.memberLabel(1),'1 member');assert.equal(mod.memberLabel(4),'4 members');
+assert.throws(()=>mod.memberLabel(-1),RangeError);
+assert.match(renderToStaticMarkup(createElement(mod.MemberSummary,{count:4})),/>4 members</);
+```
+
+**Proof it works:** `npm run lab:react-render-purity`. Toggle `ACADEMY_LAB_TARGET=starter` to reproduce the broken baseline. For lifecycle semantics, use an actual mounted browser run before asserting real-world behavior.
+
+</LessonStep>
+
+<Misconception claim="The starter returns a constant instead of calculating the member label from the current input." correction="Keep render-time calculations deterministic and free of observable mutations. It computes a value from current props and state without mutating external data or performing side effects." />
+
+<KnowledgeCheck question="What makes an operation safe to perform while React is rendering?" choices={["React automatically performs every external cleanup without a cleanup function.","It computes a value from current props and state without mutating external data or performing side effects.","The TypeScript compiler executes React Effects at build time.","State changes always write a database record."] } correctIndex={1} explanation="It computes a value from current props and state without mutating external data or performing side effects." misconception="Identify the external system and the exact setup/cleanup or render boundary instead of treating all hooks alike." lessonId="06.03.01" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Symptom:** The starter returns a constant instead of calculating the member label from the current input.
+
+**Reproduction:** Run the starter variant using the exact same local assertions as the instructor solution. Record which assertion fails and what input caused the mismatch.
+
+**Diagnosis:** A team roster badge changes labels unpredictably because a module-level counter is incremented whenever React renders it.
+
+**Repair and regression:** Keep render-time calculations deterministic and free of observable mutations. Then verify a single member renders a singular label; multiple members render plural; negative counts are rejected.
+
+## Guided local lab
+
+Exercise `labs/react-render-purity/` contains the intentionally defective learner source, complete reviewed solution and executable Node/React-server-rendering assertions. Hints: identify the authoritative input; inspect setup and cleanup ownership; finally compare expected output with the model. This is not an online arbitrary-code execution service.
+
+<LabGate lessonId="06.03.01" labId="lab.react.react-render-purity" commands={["npm run lab:react-render-purity","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+Which behavior can a pure function or server-rendering test establish, and which lifecycle or focus behavior requires a mounted browser test? Under what circumstances would an Effect be unnecessary?
+
+## Official references
+
+- [React: Render purity and deterministic components](https://react.dev/learn/keeping-components-pure)
+- [React official Hooks reference](https://react.dev/reference/react/hooks)

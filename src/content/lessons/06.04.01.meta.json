@@ -1,0 +1,39 @@
+{
+  "id": "06.04.01",
+  "title": "Context and providers: Share a stable theme value through a provider while rejecting missing provider setup in a custom consumer",
+  "description": "A practical React 19 lesson for context and providers, with an intentionally failing starter, complete TypeScript instructor implementation, local assertions and honest runtime scope.",
+  "trackId": "06",
+  "moduleId": "06.04",
+  "level": "Beginner",
+  "estimatedMinutes": 65,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "react": "19",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "06.03.08"
+  ],
+  "objectives": [
+    "Share a stable theme value through a provider while rejecting missing provider setup in a custom consumer.",
+    "Repair the broken behavior in the react-context-provider starter.",
+    "Demonstrate correct and edge-case outcomes using offline tests."
+  ],
+  "labId": "lab.react.react-context-provider",
+  "rubric": [
+    "I can articulate the React 19 contract for context and providers.",
+    "I can reproduce, repair and test the 06.04.01 starter case.",
+    "I can explain the difference between a local fixture and production persistence or browser behavior."
+  ],
+  "sources": [
+    {
+      "label": "React official: Context and providers",
+      "url": "https://react.dev/learn/passing-data-deeply-with-context"
+    },
+    {
+      "label": "React Hooks reference",
+      "url": "https://react.dev/reference/react/hooks"
+    }
+  ]
+}

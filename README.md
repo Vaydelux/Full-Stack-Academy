@@ -1,4 +1,4 @@
-> **Development checkpoint — 2026-11-19:** GitHub `main` includes 181 authored/published lesson IDs after merged PRs #14–#16. The unmerged React foundations feature branch proposes 196 authored lesson IDs, 193 MDX and 193 local labs across 24 complete modules. The hosted deployment has not been rechecked and these source counts are **not** a production release claim. See [current handoff](docs/NEXT_TODO.md) and [React acceptance](docs/REACT_FOUNDATIONS_ACCEPTANCE.md). No Vercel or GitHub Actions check is required for this development pass.
+> **Source development checkpoint — 2026-11-19:** GitHub `main` contains 181 authored lesson IDs; draft PR #17 proposes 196 IDs; the stacked React Effects/Advanced candidate proposes **212 IDs / 209 MDX / 209 labs / 26 complete modules**. Neither PR is qualified as a hosted deployment. No Vercel or GitHub Actions checks are part of this offline development stage. [Current handoff](docs/NEXT_TODO.md) · [Advanced React acceptance](docs/REACT_EFFECTS_ADVANCED_ACCEPTANCE.md).
 
 # Full-Stack Engineering Academy · v1.1
 

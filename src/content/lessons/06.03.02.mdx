@@ -1,0 +1,113 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Synchronize with an external event source in an Effect and return its unsubscribe function.","Implement useeffect for external synchronization in a complete TypeScript/React 19 fixture.","Reproduce the initial defect and prove the repair with local positive and negative tests."]} />
+
+## The problem we're solving
+
+An analytics panel listens for viewport size changes but keeps an outdated label because it never subscribes to the browser resize event. The starter reads width once but never installs a listener or returns the unsubscribe function. The goal is to learn the React runtime contract rather than memorize hook names.
+
+## Build the mental model
+
+Synchronize with an external event source in an Effect and return its unsubscribe function. When a component must synchronize with a system outside React, such as a DOM API, connection or subscription. **Distinguish source-level correctness from runtime evidence:** Pure helpers can be tested without a browser, but an SSR output assertion cannot prove that an Effect ran, a ref focused an actual input or a global listener was removed after unmount.
+
+**Predict before you run:** The subscriber immediately receives the current width, receives subsequent changes, and stops after cleanup.
+
+## Prerequisites and preflight
+
+Study the preceding React topic and inspect `labs/react-external-effect/starter/solution.tsx`. Use Node.js 24 and locked project dependencies. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:react-external-effect`. PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:react-external-effect; Remove-Item Env:ACADEMY_LAB_TARGET`. No browser, GitHub Actions workflow or hosted deployment runs just by reading the article.
+
+## Guided implementation
+
+<LessonStep number={1} title="Observe the failing starter behavior" file="labs/react-external-effect/starter/solution.tsx" expected="An instructor assertion fails for a concrete incorrect behavior.">
+
+Read this starter before changing anything:
+
+```tsx
+import {useEffect,useState} from 'react';
+export type SizeSource={read:()=>number;subscribe:(listener:()=>void)=>()=>void};
+export function watchWidth(source:SizeSource,notify:(width:number)=>void) {
+  notify(source.read());return ()=>{};
+}
+export function WidthNotice() {
+  const [width,setWidth]=useState(0);
+  useEffect(()=>watchWidth({read:()=>window.innerWidth,subscribe:listener=>{
+    window.addEventListener('resize',listener);return ()=>window.removeEventListener('resize',listener);
+  }},setWidth),[]);
+  return <p>Width: {width}</p>;
+}
+```
+
+**Prediction:** The subscriber immediately receives the current width, receives subsequent changes, and stops after cleanup.
+
+**Why it fails:** The starter reads width once but never installs a listener or returns the unsubscribe function.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the correct synchronization boundary" file="labs/react-external-effect/starter/solution.tsx" expected="The subscriber immediately receives the current width, receives subsequent changes, and stops after cleanup.">
+
+Make the smallest correction that addresses the causal defect while keeping the fixture's exported API stable:
+
+```tsx
+import {useEffect,useState} from 'react';
+export type SizeSource={read:()=>number;subscribe:(listener:()=>void)=>()=>void};
+export function watchWidth(source:SizeSource,notify:(width:number)=>void) {
+  notify(source.read());
+  return source.subscribe(()=>notify(source.read()));
+}
+export function WidthNotice() {
+  const [width,setWidth]=useState(0);
+  useEffect(()=>watchWidth({read:()=>window.innerWidth,subscribe:listener=>{
+    window.addEventListener('resize',listener);return ()=>window.removeEventListener('resize',listener);
+  }},setWidth),[]);
+  return <p>Width: {width}</p>;
+}
+```
+
+**Why it works:** Synchronize with an external event source in an Effect and return its unsubscribe function.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify the contract and edge cases" file="labs/react-external-effect/solution.test.mjs" expected="Instructor results pass local tests; the original starter fails at least one behavioral assertion.">
+
+Review these representative assertions before executing the full test file:
+
+```js
+let width=320;let listener=()=>{};let stopped=0;const observed=[];
+const stop=mod.watchWidth({read:()=>width,subscribe:cb=>{listener=cb;return ()=>stopped++;}},w=>observed.push(w));
+width=720;listener();stop();assert.deepEqual(observed,[320,720]);assert.equal(stopped,1);
+assert.match(renderToStaticMarkup(createElement(mod.WidthNotice)),/Width: 0/);
+```
+
+**Proof it works:** `npm run lab:react-external-effect`. Toggle `ACADEMY_LAB_TARGET=starter` to reproduce the broken baseline. For lifecycle semantics, use an actual mounted browser run before asserting real-world behavior.
+
+</LessonStep>
+
+<Misconception claim="The starter reads width once but never installs a listener or returns the unsubscribe function." correction="Synchronize with an external event source in an Effect and return its unsubscribe function. When a component must synchronize with a system outside React, such as a DOM API, connection or subscription." />
+
+<KnowledgeCheck question="When is a useEffect appropriate?" choices={["React automatically performs every external cleanup without a cleanup function.","When a component must synchronize with a system outside React, such as a DOM API, connection or subscription.","The TypeScript compiler executes React Effects at build time.","State changes always write a database record."] } correctIndex={1} explanation="When a component must synchronize with a system outside React, such as a DOM API, connection or subscription." misconception="Identify the external system and the exact setup/cleanup or render boundary instead of treating all hooks alike." lessonId="06.03.02" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Symptom:** The starter reads width once but never installs a listener or returns the unsubscribe function.
+
+**Reproduction:** Run the starter variant using the exact same local assertions as the instructor solution. Record which assertion fails and what input caused the mismatch.
+
+**Diagnosis:** An analytics panel listens for viewport size changes but keeps an outdated label because it never subscribes to the browser resize event.
+
+**Repair and regression:** Synchronize with an external event source in an Effect and return its unsubscribe function. Then verify the subscriber immediately receives the current width, receives subsequent changes, and stops after cleanup.
+
+## Guided local lab
+
+Exercise `labs/react-external-effect/` contains the intentionally defective learner source, complete reviewed solution and executable Node/React-server-rendering assertions. Hints: identify the authoritative input; inspect setup and cleanup ownership; finally compare expected output with the model. This is not an online arbitrary-code execution service.
+
+<LabGate lessonId="06.03.02" labId="lab.react.react-external-effect" commands={["npm run lab:react-external-effect","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+Which behavior can a pure function or server-rendering test establish, and which lifecycle or focus behavior requires a mounted browser test? Under what circumstances would an Effect be unnecessary?
+
+## Official references
+
+- [React: useEffect for external synchronization](https://react.dev/learn/synchronizing-with-effects)
+- [React official Hooks reference](https://react.dev/reference/react/hooks)

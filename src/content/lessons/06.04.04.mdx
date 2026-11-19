@@ -1,0 +1,102 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Allow a slow result view to lag behind urgent input state without delaying keystrokes.","Create a React 19 / TypeScript 5 example for usedeferredvalue for expensive views.","Use local instructor tests to isolate the failure and explain the unverified browser boundary."]} />
+
+## The problem we're solving
+
+A search page has an expensive result list whose rendering can slow down direct text input. The starter filter discards the query and leaves every item visible.
+
+## Build the mental model
+
+Allow a slow result view to lag behind urgent input state without delaying keystrokes. The value supplied to a lower-priority render of a consumer, not the user's immediate controlled input value. The React 19 APIs used here have distinct contracts: context passes values, transitions schedule nonurgent updates, deferred values let rendering lag, and optimistic state is a temporary view during an Action. These lessons use local data, not backend persistence.
+
+**Predict before you run:** Only names matching the provided query appear; the client component delegates an expensive view to a deferred query value.
+
+## Prerequisites and preflight
+
+Read the previous canonical React topic. Use Node 24 with `npm ci` at the repository root. The learner state lives at `labs/react-use-deferred-value/starter/solution.tsx`; instructor code lives in `labs/react-use-deferred-value/solution/solution.tsx`. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:react-use-deferred-value`. PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:react-use-deferred-value; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Predict and reproduce the incorrect behavior" file="labs/react-use-deferred-value/starter/solution.tsx" expected="A focused test fails on the intentionally defective starter.">
+
+Read the incomplete implementation and identify which invariant it violates:
+
+```tsx
+import {useDeferredValue,useState} from 'react';
+export function searchNames(names:readonly string[],_query:string){return [...names];}
+export function DeferredSearch({names}:{names:readonly string[]}){
+ const [query,setQuery]=useState('');const deferred=useDeferredValue(query);
+ const matches=searchNames(names,deferred);
+ return <section><label htmlFor="deferred-query">Name</label><input id="deferred-query" value={query} onChange={e=>setQuery(e.target.value)}/>
+ <ul>{matches.map(n=><li key={n}>{n}</li>)}</ul></section>;
+}
+```
+
+**Why it fails:** The starter filter discards the query and leaves every item visible.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the React 19 component contract" file="labs/react-use-deferred-value/starter/solution.tsx" expected="Only names matching the provided query appear; the client component delegates an expensive view to a deferred query value.">
+
+The instructor repair preserves the public exports while fixing the value propagation, scheduling, or state reconciliation defect:
+
+```tsx
+import {useDeferredValue,useState} from 'react';
+export function searchNames(names:readonly string[],query:string){
+ const q=query.trim().toLocaleLowerCase();return names.filter(n=>n.toLocaleLowerCase().includes(q));
+}
+export function DeferredSearch({names}:{names:readonly string[]}){
+ const [query,setQuery]=useState('');const deferred=useDeferredValue(query);
+ const matches=searchNames(names,deferred);
+ return <section><label htmlFor="deferred-query">Name</label><input id="deferred-query" value={query} onChange={e=>setQuery(e.target.value)}/>
+ <ul>{matches.map(n=><li key={n}>{n}</li>)}</ul></section>;
+}
+```
+
+**Why it works:** Allow a slow result view to lag behind urgent input state without delaying keystrokes.
+
+</LessonStep>
+
+<LessonStep number={3} title="Check success and failure paths without a hosted backend" file="labs/react-use-deferred-value/solution.test.mjs" expected="Instructor assertions pass for the intended pure contract, while the learner starter fails before correction.">
+
+```js
+assert.deepEqual(mod.searchNames(['Anna','Noel','Anika'],' an '),['Anna','Anika']);
+assert.deepEqual(mod.searchNames(['Anna'],'zzz'),[]);
+const html=renderToStaticMarkup(createElement(mod.DeferredSearch,{names:['Anna','Noel']}));
+assert.match(html,/Anna/);assert.match(html,/Noel/);
+```
+
+**Proof it works:** Run `npm run lab:react-use-deferred-value`. The test inspects a pure transformation or server-rendered initial tree where applicable. An SSR test does not prove user-event scheduling, Suspense fallbacks while streaming, hydration or interaction timing. Those require browser integration tests.
+
+</LessonStep>
+
+<Misconception claim="The starter filter discards the query and leaves every item visible." correction="Allow a slow result view to lag behind urgent input state without delaying keystrokes. The value supplied to a lower-priority render of a consumer, not the user's immediate controlled input value." />
+
+<KnowledgeCheck question="What does useDeferredValue defer?" choices={["React always saves state to a database automatically.","The value supplied to a lower-priority render of a consumer, not the user's immediate controlled input value.","Rendering a component on a server proves every client-side transition works.","TypeScript removes the need for runtime data validation."] } correctIndex={1} explanation="The value supplied to a lower-priority render of a consumer, not the user's immediate controlled input value." misconception="The chosen Hook changes rendering, composition or scheduling; it does not implicitly implement a network service." lessonId="06.04.04" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Symptom:** The starter filter discards the query and leaves every item visible.
+
+**Reproduction:** Run the failing starter under the same assertions as the instructor solution. Inspect the relevant props, state snapshot, source array, or action input rather than debugging visual appearance first.
+
+**Repair:** Allow a slow result view to lag behind urgent input state without delaying keystrokes.
+
+**Regression:** Only names matching the provided query appear; the client component delegates an expensive view to a deferred query value. Test at least one invalid, duplicate, empty or missing-provider case as appropriate. Never describe this local simulation as a deployed backend.
+
+## Guided local lab
+
+Work through `labs/react-use-deferred-value/`. Hint ladder: read the expected outcome; identify the authoritative state and Hook boundary; compare the instructor's pure helper or context consumer after you attempt the repair. No arbitrary learner code executes on the public academy origin.
+
+<LabGate lessonId="06.04.04" labId="lab.react.react-use-deferred-value" commands={["npm run lab:react-use-deferred-value","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+What behavior is genuinely demonstrated by the local tests, and which interaction needs mounted React or real backend data before a production claim would be justified?
+
+## Official references
+
+- [React official documentation: useDeferredValue for expensive views](https://react.dev/reference/react/useDeferredValue)
+- [React Hooks reference](https://react.dev/reference/react/hooks)

@@ -1,0 +1,39 @@
+{
+  "id": "06.04.04",
+  "title": "useDeferredValue for expensive views: Allow a slow result view to lag behind urgent input state without delaying keystrokes",
+  "description": "A practical React 19 lesson for usedeferredvalue for expensive views, with an intentionally failing starter, complete TypeScript instructor implementation, local assertions and honest runtime scope.",
+  "trackId": "06",
+  "moduleId": "06.04",
+  "level": "Beginner",
+  "estimatedMinutes": 65,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "react": "19",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "06.04.03"
+  ],
+  "objectives": [
+    "Allow a slow result view to lag behind urgent input state without delaying keystrokes.",
+    "Repair the broken behavior in the react-use-deferred-value starter.",
+    "Demonstrate correct and edge-case outcomes using offline tests."
+  ],
+  "labId": "lab.react.react-use-deferred-value",
+  "rubric": [
+    "I can articulate the React 19 contract for usedeferredvalue for expensive views.",
+    "I can reproduce, repair and test the 06.04.04 starter case.",
+    "I can explain the difference between a local fixture and production persistence or browser behavior."
+  ],
+  "sources": [
+    {
+      "label": "React official: useDeferredValue for expensive views",
+      "url": "https://react.dev/reference/react/useDeferredValue"
+    },
+    {
+      "label": "React Hooks reference",
+      "url": "https://react.dev/reference/react/hooks"
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "id": "06.04.02",
+  "title": "Reusable custom Hooks: Package a reusable stateful behavior in a custom Hook while keeping the caller's UI independent",
+  "description": "A practical React 19 lesson for reusable custom hooks, with an intentionally failing starter, complete TypeScript instructor implementation, local assertions and honest runtime scope.",
+  "trackId": "06",
+  "moduleId": "06.04",
+  "level": "Beginner",
+  "estimatedMinutes": 65,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "react": "19",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "06.04.01"
+  ],
+  "objectives": [
+    "Package a reusable stateful behavior in a custom Hook while keeping the caller's UI independent.",
+    "Repair the broken behavior in the react-custom-hook starter.",
+    "Demonstrate correct and edge-case outcomes using offline tests."
+  ],
+  "labId": "lab.react.react-custom-hook",
+  "rubric": [
+    "I can articulate the React 19 contract for reusable custom hooks.",
+    "I can reproduce, repair and test the 06.04.02 starter case.",
+    "I can explain the difference between a local fixture and production persistence or browser behavior."
+  ],
+  "sources": [
+    {
+      "label": "React official: Reusable custom Hooks",
+      "url": "https://react.dev/learn/reusing-logic-with-custom-hooks"
+    },
+    {
+      "label": "React Hooks reference",
+      "url": "https://react.dev/reference/react/hooks"
+    }
+  ]
+}

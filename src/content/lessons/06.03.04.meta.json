@@ -1,0 +1,39 @@
+{
+  "id": "06.03.04",
+  "title": "Managing Effect dependencies: Treat subscription dependencies as part of the synchronization contract",
+  "description": "React 19 guided tutorial for managing effect dependencies, including an offline failing starter, corrected TypeScript source, regression assertions and explicit lifecycle boundaries.",
+  "trackId": "06",
+  "moduleId": "06.03",
+  "level": "Beginner",
+  "estimatedMinutes": 55,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "react": "19",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "06.03.03"
+  ],
+  "objectives": [
+    "Treat subscription dependencies as part of the synchronization contract.",
+    "Repair the intentionally failing example in react-effect-dependencies.",
+    "Verify representative and edge-case results using the local acceptance suite."
+  ],
+  "labId": "lab.react.react-effect-dependencies",
+  "rubric": [
+    "I can explain managing effect dependencies with correct React lifecycle boundaries.",
+    "I can reproduce and repair the starter failure for 06.03.04.",
+    "I can distinguish static/SSR evidence from mounted behavior and describe missing checks."
+  ],
+  "sources": [
+    {
+      "label": "React: Managing Effect dependencies",
+      "url": "https://react.dev/learn/removing-effect-dependencies"
+    },
+    {
+      "label": "React Hooks reference",
+      "url": "https://react.dev/reference/react/hooks"
+    }
+  ]
+}

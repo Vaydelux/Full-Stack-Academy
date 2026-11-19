@@ -1,0 +1,15 @@
+{
+  "id": "lab.react.react-custom-hook",
+  "lessonId": "06.04.02",
+  "title": "Practice React 19 reusable custom hooks",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/react-custom-hook/starter/solution.tsx",
+  "solution": "labs/react-custom-hook/solution/solution.tsx",
+  "tests": "labs/react-custom-hook/solution.test.mjs",
+  "verify": [
+    "npm run lab:react-custom-hook"
+  ],
+  "expected": "Toggling either boolean changes its value, and a fresh disclosure starts in its explicit initial state.",
+  "security": "Trusted local source only. No remote code runner, API credentials or production persistence."
+}

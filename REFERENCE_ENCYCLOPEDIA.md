@@ -1,3 +1,5 @@
+> **2026-11-19 draft coverage:** 303 index entries remain; 12 authored reference drafts now exist on the stacked React development branch (4 original + 8 React 19). The reference page uses search, category and authored/index-only filters, with pagination to reduce the overwhelming 303-item initial list. An index entry is not a completed reference. See `docs/REACT_EFFECTS_ADVANCED_ACCEPTANCE.md`.
+
 # Modern Reference Encyclopedia — Index
 
 **Indexed concepts:** 303 across 13 categories. Entries are indexed reference subjects, not full written pages.

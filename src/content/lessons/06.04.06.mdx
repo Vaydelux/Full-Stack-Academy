@@ -1,0 +1,110 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Return typed validation feedback from a React form Action without storing duplicated submission flags.","Create a React 19 / TypeScript 5 example for useactionstate and form validation.","Use local instructor tests to isolate the failure and explain the unverified browser boundary."]} />
+
+## The problem we're solving
+
+A feedback form must report short or empty messages and announce the result after a submission. The starter accepts every input, including an empty message, and always reports success.
+
+## Build the mental model
+
+Return typed validation feedback from a React form Action without storing duplicated submission flags. A state value, an Action dispatcher and a pending flag that reflect the Action's lifecycle. The React 19 APIs used here have distinct contracts: context passes values, transitions schedule nonurgent updates, deferred values let rendering lag, and optimistic state is a temporary view during an Action. These lessons use local data, not backend persistence.
+
+**Predict before you run:** Blank and very short messages are rejected; valid submissions return a typed success state.
+
+## Prerequisites and preflight
+
+Read the previous canonical React topic. Use Node 24 with `npm ci` at the repository root. The learner state lives at `labs/react-use-action-state/starter/solution.tsx`; instructor code lives in `labs/react-use-action-state/solution/solution.tsx`. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:react-use-action-state`. PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:react-use-action-state; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Predict and reproduce the incorrect behavior" file="labs/react-use-action-state/starter/solution.tsx" expected="A focused test fails on the intentionally defective starter.">
+
+Read the incomplete implementation and identify which invariant it violates:
+
+```tsx
+import {useActionState} from 'react';
+export type FeedbackResult={ok:boolean;message:string};
+export async function checkFeedback(_previous:FeedbackResult,_data:FormData):Promise<FeedbackResult>{
+ return {ok:true,message:'Saved locally'};
+}
+export function FeedbackForm(){
+ const [result,action,pending]=useActionState(checkFeedback,{ok:false,message:'No submission yet'});
+ return <form action={action}><label htmlFor="feedback-input">Feedback</label>
+ <textarea id="feedback-input" name="feedback"/><button type="submit" disabled={pending}>Send</button>
+ <p role="status">{result.message}</p></form>;
+}
+```
+
+**Why it fails:** The starter accepts every input, including an empty message, and always reports success.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the React 19 component contract" file="labs/react-use-action-state/starter/solution.tsx" expected="Blank and very short messages are rejected; valid submissions return a typed success state.">
+
+The instructor repair preserves the public exports while fixing the value propagation, scheduling, or state reconciliation defect:
+
+```tsx
+import {useActionState} from 'react';
+export type FeedbackResult={ok:boolean;message:string};
+export async function checkFeedback(_previous:FeedbackResult,data:FormData):Promise<FeedbackResult>{
+ const text=data.get('feedback');
+ if(typeof text!=='string'||text.trim().length<3)return {ok:false,message:'Enter at least 3 characters'};
+ return {ok:true,message:'Accepted local feedback'};
+}
+export function FeedbackForm(){
+ const [result,action,pending]=useActionState(checkFeedback,{ok:false,message:'No submission yet'});
+ return <form action={action}><label htmlFor="feedback-input">Feedback</label>
+ <textarea id="feedback-input" name="feedback"/><button type="submit" disabled={pending}>Send</button>
+ <p role="status">{result.message}</p></form>;
+}
+```
+
+**Why it works:** Return typed validation feedback from a React form Action without storing duplicated submission flags.
+
+</LessonStep>
+
+<LessonStep number={3} title="Check success and failure paths without a hosted backend" file="labs/react-use-action-state/solution.test.mjs" expected="Instructor assertions pass for the intended pure contract, while the learner starter fails before correction.">
+
+```js
+const blank=new FormData();blank.set('feedback',' ');const short=new FormData();short.set('feedback','ab');
+const good=new FormData();good.set('feedback','Detailed note');
+assert.deepEqual(await mod.checkFeedback({ok:false,message:''},blank),{ok:false,message:'Enter at least 3 characters'});
+assert.equal((await mod.checkFeedback({ok:false,message:''},short)).ok,false);
+assert.equal((await mod.checkFeedback({ok:false,message:''},good)).ok,true);
+assert.equal(typeof mod.FeedbackForm,'function');
+```
+
+**Proof it works:** Run `npm run lab:react-use-action-state`. The test inspects a pure transformation or server-rendered initial tree where applicable. An SSR test does not prove user-event scheduling, Suspense fallbacks while streaming, hydration or interaction timing. Those require browser integration tests.
+
+</LessonStep>
+
+<Misconception claim="The starter accepts every input, including an empty message, and always reports success." correction="Return typed validation feedback from a React form Action without storing duplicated submission flags. A state value, an Action dispatcher and a pending flag that reflect the Action's lifecycle." />
+
+<KnowledgeCheck question="What does useActionState return?" choices={["React always saves state to a database automatically.","A state value, an Action dispatcher and a pending flag that reflect the Action's lifecycle.","Rendering a component on a server proves every client-side transition works.","TypeScript removes the need for runtime data validation."] } correctIndex={1} explanation="A state value, an Action dispatcher and a pending flag that reflect the Action's lifecycle." misconception="The chosen Hook changes rendering, composition or scheduling; it does not implicitly implement a network service." lessonId="06.04.06" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Symptom:** The starter accepts every input, including an empty message, and always reports success.
+
+**Reproduction:** Run the failing starter under the same assertions as the instructor solution. Inspect the relevant props, state snapshot, source array, or action input rather than debugging visual appearance first.
+
+**Repair:** Return typed validation feedback from a React form Action without storing duplicated submission flags.
+
+**Regression:** Blank and very short messages are rejected; valid submissions return a typed success state. Test at least one invalid, duplicate, empty or missing-provider case as appropriate. Never describe this local simulation as a deployed backend.
+
+## Guided local lab
+
+Work through `labs/react-use-action-state/`. Hint ladder: read the expected outcome; identify the authoritative state and Hook boundary; compare the instructor's pure helper or context consumer after you attempt the repair. No arbitrary learner code executes on the public academy origin.
+
+<LabGate lessonId="06.04.06" labId="lab.react.react-use-action-state" commands={["npm run lab:react-use-action-state","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+What behavior is genuinely demonstrated by the local tests, and which interaction needs mounted React or real backend data before a production claim would be justified?
+
+## Official references
+
+- [React official documentation: useActionState and form validation](https://react.dev/reference/react/useActionState)
+- [React Hooks reference](https://react.dev/reference/react/hooks)

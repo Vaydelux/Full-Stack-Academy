@@ -1,0 +1,104 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Move focus through an intentional DOM ref only after the user activates a control.","Implement dom refs and accessible focus in a complete TypeScript/React 19 fixture.","Reproduce the initial defect and prove the repair with local positive and negative tests."]} />
+
+## The problem we're solving
+
+A search form's Focus input button should focus its corresponding input without reaching into global DOM selectors. The starter never calls the input element's focus method. The goal is to learn the React runtime contract rather than memorize hook names.
+
+## Build the mental model
+
+Move focus through an intentional DOM ref only after the user activates a control. Imperative operations such as focus, measurement or integrating an external non-React widget. **Distinguish source-level correctness from runtime evidence:** Pure helpers can be tested without a browser, but an SSR output assertion cannot prove that an Effect ran, a ref focused an actual input or a global listener was removed after unmount.
+
+**Predict before you run:** A mounted ref is focused exactly once and a missing ref is handled safely.
+
+## Prerequisites and preflight
+
+Study the preceding React topic and inspect `labs/react-dom-ref-focus/starter/solution.tsx`. Use Node.js 24 and locked project dependencies. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:react-dom-ref-focus`. PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:react-dom-ref-focus; Remove-Item Env:ACADEMY_LAB_TARGET`. No browser, GitHub Actions workflow or hosted deployment runs just by reading the article.
+
+## Guided implementation
+
+<LessonStep number={1} title="Observe the failing starter behavior" file="labs/react-dom-ref-focus/starter/solution.tsx" expected="An instructor assertion fails for a concrete incorrect behavior.">
+
+Read this starter before changing anything:
+
+```tsx
+import {useRef} from 'react';
+export function focusNode(_node:Pick<HTMLInputElement,'focus'>|null):boolean {return false;}
+export function FocusSearch() {
+ const input=useRef<HTMLInputElement>(null);
+ return <form onSubmit={e=>e.preventDefault()}><label htmlFor="focus-search">Search</label>
+ <input id="focus-search" ref={input}/><button type="button" onClick={()=>focusNode(input.current)}>Focus input</button></form>;
+}
+```
+
+**Prediction:** A mounted ref is focused exactly once and a missing ref is handled safely.
+
+**Why it fails:** The starter never calls the input element's focus method.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the correct synchronization boundary" file="labs/react-dom-ref-focus/starter/solution.tsx" expected="A mounted ref is focused exactly once and a missing ref is handled safely.">
+
+Make the smallest correction that addresses the causal defect while keeping the fixture's exported API stable:
+
+```tsx
+import {useRef} from 'react';
+export function focusNode(node:Pick<HTMLInputElement,'focus'>|null):boolean {
+ if(!node)return false;node.focus();return true;
+}
+export function FocusSearch() {
+ const input=useRef<HTMLInputElement>(null);
+ return <form onSubmit={e=>e.preventDefault()}><label htmlFor="focus-search">Search</label>
+ <input id="focus-search" ref={input}/><button type="button" onClick={()=>focusNode(input.current)}>Focus input</button></form>;
+}
+```
+
+**Why it works:** Move focus through an intentional DOM ref only after the user activates a control.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify the contract and edge cases" file="labs/react-dom-ref-focus/solution.test.mjs" expected="Instructor results pass local tests; the original starter fails at least one behavioral assertion.">
+
+Review these representative assertions before executing the full test file:
+
+```js
+let called=0;assert.equal(mod.focusNode({focus:()=>called++}),true);assert.equal(called,1);
+assert.equal(mod.focusNode(null),false);
+const html=renderToStaticMarkup(createElement(mod.FocusSearch));
+assert.match(html,/id="focus-search"/);assert.match(html,/Focus input/);
+```
+
+**Proof it works:** `npm run lab:react-dom-ref-focus`. Toggle `ACADEMY_LAB_TARGET=starter` to reproduce the broken baseline. For lifecycle semantics, use an actual mounted browser run before asserting real-world behavior.
+
+</LessonStep>
+
+<Misconception claim="The starter never calls the input element's focus method." correction="Move focus through an intentional DOM ref only after the user activates a control. Imperative operations such as focus, measurement or integrating an external non-React widget." />
+
+<KnowledgeCheck question="What kind of DOM access belongs in a React ref callback or event handler?" choices={["React automatically performs every external cleanup without a cleanup function.","Imperative operations such as focus, measurement or integrating an external non-React widget.","The TypeScript compiler executes React Effects at build time.","State changes always write a database record."] } correctIndex={1} explanation="Imperative operations such as focus, measurement or integrating an external non-React widget." misconception="Identify the external system and the exact setup/cleanup or render boundary instead of treating all hooks alike." lessonId="06.03.06" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Symptom:** The starter never calls the input element's focus method.
+
+**Reproduction:** Run the starter variant using the exact same local assertions as the instructor solution. Record which assertion fails and what input caused the mismatch.
+
+**Diagnosis:** A search form's Focus input button should focus its corresponding input without reaching into global DOM selectors.
+
+**Repair and regression:** Move focus through an intentional DOM ref only after the user activates a control. Then verify a mounted ref is focused exactly once and a missing ref is handled safely.
+
+## Guided local lab
+
+Exercise `labs/react-dom-ref-focus/` contains the intentionally defective learner source, complete reviewed solution and executable Node/React-server-rendering assertions. Hints: identify the authoritative input; inspect setup and cleanup ownership; finally compare expected output with the model. This is not an online arbitrary-code execution service.
+
+<LabGate lessonId="06.03.06" labId="lab.react.react-dom-ref-focus" commands={["npm run lab:react-dom-ref-focus","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+Which behavior can a pure function or server-rendering test establish, and which lifecycle or focus behavior requires a mounted browser test? Under what circumstances would an Effect be unnecessary?
+
+## Official references
+
+- [React: DOM refs and accessible focus](https://react.dev/learn/manipulating-the-dom-with-refs)
+- [React official Hooks reference](https://react.dev/reference/react/hooks)

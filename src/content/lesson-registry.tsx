@@ -194,6 +194,23 @@ import ReactBatch13 from './lessons/06.02.06.mdx';
 import ReactBatch14 from './lessons/06.02.07.mdx';
 import ReactBatch15 from './lessons/06.02.08.mdx';
 
+import ReactAdvanced1 from './lessons/06.03.01.mdx';
+import ReactAdvanced2 from './lessons/06.03.02.mdx';
+import ReactAdvanced3 from './lessons/06.03.03.mdx';
+import ReactAdvanced4 from './lessons/06.03.04.mdx';
+import ReactAdvanced5 from './lessons/06.03.05.mdx';
+import ReactAdvanced6 from './lessons/06.03.06.mdx';
+import ReactAdvanced7 from './lessons/06.03.07.mdx';
+import ReactAdvanced8 from './lessons/06.03.08.mdx';
+import ReactAdvanced9 from './lessons/06.04.01.mdx';
+import ReactAdvanced10 from './lessons/06.04.02.mdx';
+import ReactAdvanced11 from './lessons/06.04.03.mdx';
+import ReactAdvanced12 from './lessons/06.04.04.mdx';
+import ReactAdvanced13 from './lessons/06.04.05.mdx';
+import ReactAdvanced14 from './lessons/06.04.06.mdx';
+import ReactAdvanced15 from './lessons/06.04.07.mdx';
+import ReactAdvanced16 from './lessons/06.04.08.mdx';
+
 export function LessonArticle({lessonId}: {lessonId:string}) {
   switch (lessonId) {
     case '00.01.01': return <BrowserLesson />;
@@ -389,6 +406,22 @@ export function LessonArticle({lessonId}: {lessonId:string}) {
     case '06.02.06': return <ReactBatch13 />;
     case '06.02.07': return <ReactBatch14 />;
     case '06.02.08': return <ReactBatch15 />;
+    case '06.03.01': return <ReactAdvanced1 />;
+    case '06.03.02': return <ReactAdvanced2 />;
+    case '06.03.03': return <ReactAdvanced3 />;
+    case '06.03.04': return <ReactAdvanced4 />;
+    case '06.03.05': return <ReactAdvanced5 />;
+    case '06.03.06': return <ReactAdvanced6 />;
+    case '06.03.07': return <ReactAdvanced7 />;
+    case '06.03.08': return <ReactAdvanced8 />;
+    case '06.04.01': return <ReactAdvanced9 />;
+    case '06.04.02': return <ReactAdvanced10 />;
+    case '06.04.03': return <ReactAdvanced11 />;
+    case '06.04.04': return <ReactAdvanced12 />;
+    case '06.04.05': return <ReactAdvanced13 />;
+    case '06.04.06': return <ReactAdvanced14 />;
+    case '06.04.07': return <ReactAdvanced15 />;
+    case '06.04.08': return <ReactAdvanced16 />;
     default: return null;
   }
 }

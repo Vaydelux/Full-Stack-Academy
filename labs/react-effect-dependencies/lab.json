@@ -1,0 +1,15 @@
+{
+  "id": "lab.react.react-effect-dependencies",
+  "lessonId": "06.03.04",
+  "title": "Practice managing effect dependencies in React 19",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/react-effect-dependencies/starter/solution.tsx",
+  "solution": "labs/react-effect-dependencies/solution/solution.tsx",
+  "tests": "labs/react-effect-dependencies/solution.test.mjs",
+  "verify": [
+    "npm run lab:react-effect-dependencies"
+  ],
+  "expected": "Subscription uses the current room ID and returns the correct room-scoped cleanup.",
+  "security": "Only trusted source executes locally. Browser-only Hooks lifecycle behavior requires separate Playwright coverage."
+}

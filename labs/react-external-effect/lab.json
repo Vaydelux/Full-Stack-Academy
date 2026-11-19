@@ -1,0 +1,15 @@
+{
+  "id": "lab.react.react-external-effect",
+  "lessonId": "06.03.02",
+  "title": "Practice useeffect for external synchronization in React 19",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/react-external-effect/starter/solution.tsx",
+  "solution": "labs/react-external-effect/solution/solution.tsx",
+  "tests": "labs/react-external-effect/solution.test.mjs",
+  "verify": [
+    "npm run lab:react-external-effect"
+  ],
+  "expected": "The subscriber immediately receives the current width, receives subsequent changes, and stops after cleanup.",
+  "security": "Only trusted source executes locally. Browser-only Hooks lifecycle behavior requires separate Playwright coverage."
+}

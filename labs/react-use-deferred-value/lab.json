@@ -1,0 +1,15 @@
+{
+  "id": "lab.react.react-use-deferred-value",
+  "lessonId": "06.04.04",
+  "title": "Practice React 19 usedeferredvalue for expensive views",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/react-use-deferred-value/starter/solution.tsx",
+  "solution": "labs/react-use-deferred-value/solution/solution.tsx",
+  "tests": "labs/react-use-deferred-value/solution.test.mjs",
+  "verify": [
+    "npm run lab:react-use-deferred-value"
+  ],
+  "expected": "Only names matching the provided query appear; the client component delegates an expensive view to a deferred query value.",
+  "security": "Trusted local source only. No remote code runner, API credentials or production persistence."
+}

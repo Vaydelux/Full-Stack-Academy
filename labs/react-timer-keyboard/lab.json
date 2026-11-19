@@ -1,0 +1,15 @@
+{
+  "id": "lab.react.react-timer-keyboard",
+  "lessonId": "06.03.08",
+  "title": "Practice reliable timer and keyboard shortcuts capstone in React 19",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/react-timer-keyboard/starter/solution.tsx",
+  "solution": "labs/react-timer-keyboard/solution/solution.tsx",
+  "tests": "labs/react-timer-keyboard/solution.test.mjs",
+  "verify": [
+    "npm run lab:react-timer-keyboard"
+  ],
+  "expected": "Clock formatting handles minutes correctly and only bare Space outside editable controls activates the shortcut.",
+  "security": "Only trusted source executes locally. Browser-only Hooks lifecycle behavior requires separate Playwright coverage."
+}

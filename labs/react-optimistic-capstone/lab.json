@@ -1,0 +1,15 @@
+{
+  "id": "lab.react.react-optimistic-capstone",
+  "lessonId": "06.04.08",
+  "title": "Practice React 19 optimistic comments capstone",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/react-optimistic-capstone/starter/solution.tsx",
+  "solution": "labs/react-optimistic-capstone/solution/solution.tsx",
+  "tests": "labs/react-optimistic-capstone/solution.test.mjs",
+  "verify": [
+    "npm run lab:react-optimistic-capstone"
+  ],
+  "expected": "Committing the same identifier twice preserves one record, and an optimistic item cannot overwrite an existing committed entry.",
+  "security": "Trusted local source only. No remote code runner, API credentials or production persistence."
+}

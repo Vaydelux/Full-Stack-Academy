@@ -1,0 +1,15 @@
+{
+  "id": "lab.react.react-avoid-effect",
+  "lessonId": "06.03.07",
+  "title": "Practice avoiding unnecessary effects in React 19",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/react-avoid-effect/starter/solution.tsx",
+  "solution": "labs/react-avoid-effect/solution/solution.tsx",
+  "tests": "labs/react-avoid-effect/solution.test.mjs",
+  "verify": [
+    "npm run lab:react-avoid-effect"
+  ],
+  "expected": "Search ignores casing and whitespace, preserves record order and returns an empty list for no matches.",
+  "security": "Only trusted source executes locally. Browser-only Hooks lifecycle behavior requires separate Playwright coverage."
+}

@@ -1,0 +1,39 @@
+{
+  "id": "06.03.05",
+  "title": "useRef and mutable values outside render: Use a ref for an imperative value that should persist without itself triggering a render",
+  "description": "React 19 guided tutorial for useref and mutable values outside render, including an offline failing starter, corrected TypeScript source, regression assertions and explicit lifecycle boundaries.",
+  "trackId": "06",
+  "moduleId": "06.03",
+  "level": "Beginner",
+  "estimatedMinutes": 55,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "react": "19",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "06.03.04"
+  ],
+  "objectives": [
+    "Use a ref for an imperative value that should persist without itself triggering a render.",
+    "Repair the intentionally failing example in react-ref-mutable.",
+    "Verify representative and edge-case results using the local acceptance suite."
+  ],
+  "labId": "lab.react.react-ref-mutable",
+  "rubric": [
+    "I can explain useref and mutable values outside render with correct React lifecycle boundaries.",
+    "I can reproduce and repair the starter failure for 06.03.05.",
+    "I can distinguish static/SSR evidence from mounted behavior and describe missing checks."
+  ],
+  "sources": [
+    {
+      "label": "React: useRef and mutable values outside render",
+      "url": "https://react.dev/learn/referencing-values-with-refs"
+    },
+    {
+      "label": "React Hooks reference",
+      "url": "https://react.dev/reference/react/hooks"
+    }
+  ]
+}
