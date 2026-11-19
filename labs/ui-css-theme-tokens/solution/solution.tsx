@@ -1,0 +1,1 @@
+export type Tone='success'|'warning'|'danger';export function tokenFor(tone:Tone){const tokens:Record<Tone,string>={success:'var(--color-success)',warning:'var(--color-warning)',danger:'var(--color-danger)'};return tokens[tone];}

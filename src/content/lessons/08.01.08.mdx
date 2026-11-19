@@ -1,0 +1,79 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Build a semantic component gallery with stable IDs, typed states, theme tokens and deliberately selected examples.","Repair a failing lab component gallery example using checked-in TypeScript code.","Identify browser, accessibility, CSS compilation and dependency evidence that a local model cannot establish."]} />
+
+## The problem we're solving
+
+The starter permits duplicate component identities and disabled preview entries. A robust component system has to work across dark and light themes, keyboard input, small screens and real data, not merely appear correct in a screenshot.
+
+## Build the mental model
+
+Build a semantic component gallery with stable IDs, typed states, theme tokens and deliberately selected examples. **Predict before executing:** Gallery excludes disabled examples and fails on duplicate IDs.
+
+**Runtime boundary:** This lesson's fixture is local TypeScript only. It does not compile Tailwind CSS, install shadcn or Radix/Base UI, mount a browser interaction, or verify visual contrast on real content. Those require a dedicated UI build and accessibility checks.
+
+## Prerequisites and preflight
+
+Read the previous canonical topic and inspect `labs/ui-component-gallery/starter/solution.tsx`. Node.js 24 and locked project dependencies are required. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:ui-component-gallery`. PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:ui-component-gallery; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the broken design-system rule" file="labs/ui-component-gallery/starter/solution.tsx" expected="An instructor assertion fails on the intentionally wrong implementation.">
+
+```tsx
+export type Item={id:string;enabled:boolean};export const gallery=(items:readonly Item[])=>[...items];
+```
+
+**Root cause:** The starter permits duplicate component identities and disabled preview entries.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the typed source contract" file="labs/ui-component-gallery/starter/solution.tsx" expected="Gallery excludes disabled examples and fails on duplicate IDs.">
+
+```tsx
+export type Item={id:string;enabled:boolean};export function gallery(items:readonly Item[]){const seen=new Set<string>();return items.filter(x=>{if(seen.has(x.id))throw new Error('Duplicate ID');seen.add(x.id);return x.enabled;});}
+```
+
+**Why it works:** Build a semantic component gallery with stable IDs, typed states, theme tokens and deliberately selected examples.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify the behavior and consider real integration" file="labs/ui-component-gallery/solution.test.mjs" expected="The instructor passes valid and edge-case assertions. Mounted UI must be verified separately.">
+
+```js
+assert.deepEqual(mod.gallery([{id:'a',enabled:true},{id:'b',enabled:false}]).map(x=>x.id),['a']);assert.throws(()=>mod.gallery([{id:'a',enabled:true},{id:'a',enabled:true}]),/Duplicate ID/);
+```
+
+**Representative framework usage (requires matching installed dependencies):**
+
+```tsx
+<section aria-labelledby="gallery-heading"><h2 id="gallery-heading">Component Gallery</h2><article><h3>Buttons</h3><button type="button">Save changes</button></article><article><h3>Status</h3><p role="status">Saved</p></article></section>
+```
+
+**Operational check:** Ensure the design remains usable at 320px, 200% zoom, high contrast, reduced motion and by keyboard. No source-only test substitutes for those observations.
+
+</LessonStep>
+
+<Misconception claim="The starter permits duplicate component identities and disabled preview entries." correction="Build a semantic component gallery with stable IDs, typed states, theme tokens and deliberately selected examples. Visual polish does not by itself establish semantics, accessibility or interaction correctness." />
+
+<KnowledgeCheck question="What matters most for lab component gallery?" choices={["A screenshot proves all interaction and accessibility requirements.","Build a semantic component gallery with stable IDs, typed states, theme tokens and deliberately selected examples.","All modern shadcn components require Radix and cannot use Base UI.","A passing SSR or pure model test proves client hydration and focus behavior."] } correctIndex={1} explanation="Build a semantic component gallery with stable IDs, typed states, theme tokens and deliberately selected examples." misconception="Testing evidence must match the layer that is actually exercised." lessonId="08.01.08" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Observed defect:** The starter permits duplicate component identities and disabled preview entries. **Reproduce:** run the red starter and capture a failing assertion. **Repair:** Build a semantic component gallery with stable IDs, typed states, theme tokens and deliberately selected examples. **Regression:** Gallery excludes disabled examples and fails on duplicate IDs. Perform a real component interaction and contrast audit before deployment.
+
+## Guided local lab
+
+The checked-in lab `labs/ui-component-gallery/` includes a learner starter, corrected instructor code, executable local checks and rubric. The academy never runs arbitrary learner code on its public origin.
+
+<LabGate lessonId="08.01.08" labId="lab.ui.ui-component-gallery" commands={["npm run lab:ui-component-gallery","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+What could still fail in a real browser even if the source tests pass? Which accessibility checks would uncover that failure?
+
+## Official references
+
+- [Official documentation for Lab component gallery](https://tailwindcss.com/docs/theme)
+- [Supporting reference](https://ui.shadcn.com/docs/theming)

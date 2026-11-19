@@ -1,0 +1,15 @@
+{
+  "id": "lab.ui.ui-tailwind-v4",
+  "lessonId": "08.01.01",
+  "title": "UI Systems local tailwind v4 configuration exercise",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/ui-tailwind-v4/starter/solution.tsx",
+  "solution": "labs/ui-tailwind-v4/solution/solution.tsx",
+  "tests": "labs/ui-tailwind-v4/solution.test.mjs",
+  "verify": [
+    "npm run lab:ui-tailwind-v4"
+  ],
+  "expected": "A v4 import passes; legacy-only directives fail.",
+  "security": "Reviewed offline fixture. CSS compilation, third-party UI libraries and mounted accessibility remain separate."
+}

@@ -1,0 +1,39 @@
+{
+  "id": "08.01.08",
+  "title": "Lab component gallery: Build a semantic component gallery with stable IDs, typed states, theme tokens and deliberately selected examples.",
+  "description": "UI Systems Track 08 tutorial for lab component gallery with a red starter, instructor implementation, local regression tests and honest browser/interaction boundaries.",
+  "trackId": "08",
+  "moduleId": "08.01",
+  "level": "Intermediate",
+  "estimatedMinutes": 60,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "typescript": "5",
+    "react": "19"
+  },
+  "prerequisites": [
+    "08.01.07"
+  ],
+  "objectives": [
+    "Build a semantic component gallery with stable IDs, typed states, theme tokens and deliberately selected examples.",
+    "Repair the ui-component-gallery starter with meaningful assertions.",
+    "Describe the browser and accessibility checks needed for lab component gallery."
+  ],
+  "labId": "lab.ui.ui-component-gallery",
+  "rubric": [
+    "I can explain the principles for lab component gallery.",
+    "I can reproduce and fix the failing 08.01.08 starter.",
+    "I know what browser or accessibility qualification is still missing."
+  ],
+  "sources": [
+    {
+      "label": "Official guide for Lab component gallery",
+      "url": "https://tailwindcss.com/docs/theme"
+    },
+    {
+      "label": "Supporting official reference",
+      "url": "https://ui.shadcn.com/docs/theming"
+    }
+  ]
+}

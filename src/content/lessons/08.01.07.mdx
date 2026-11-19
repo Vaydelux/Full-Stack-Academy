@@ -1,0 +1,81 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Use disclosure semantics, keyboard-operable controls and stable public navigation links independent of breakpoint.","Repair a failing responsive navigation example using checked-in TypeScript code.","Identify browser, accessibility, CSS compilation and dependency evidence that a local model cannot establish."]} />
+
+## The problem we're solving
+
+The starter includes disabled and unpublished destinations in the menu. A robust component system has to work across dark and light themes, keyboard input, small screens and real data, not merely appear correct in a screenshot.
+
+## Build the mental model
+
+Use disclosure semantics, keyboard-operable controls and stable public navigation links independent of breakpoint. **Predict before executing:** Only visible, enabled and internal destinations remain.
+
+**Runtime boundary:** This lesson's fixture is local TypeScript only. It does not compile Tailwind CSS, install shadcn or Radix/Base UI, mount a browser interaction, or verify visual contrast on real content. Those require a dedicated UI build and accessibility checks.
+
+## Prerequisites and preflight
+
+Read the previous canonical topic and inspect `labs/ui-responsive-nav/starter/solution.tsx`. Node.js 24 and locked project dependencies are required. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:ui-responsive-nav`. PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:ui-responsive-nav; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the broken design-system rule" file="labs/ui-responsive-nav/starter/solution.tsx" expected="An instructor assertion fails on the intentionally wrong implementation.">
+
+```tsx
+export type Nav={href:string;visible:boolean;enabled:boolean};export const menuLinks=(items:readonly Nav[])=>[...items];
+```
+
+**Root cause:** The starter includes disabled and unpublished destinations in the menu.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the typed source contract" file="labs/ui-responsive-nav/starter/solution.tsx" expected="Only visible, enabled and internal destinations remain.">
+
+```tsx
+export type Nav={href:string;visible:boolean;enabled:boolean};export const menuLinks=(items:readonly Nav[])=>items.filter(x=>x.visible&&x.enabled&&x.href.startsWith('/')&&!x.href.startsWith('//'));
+```
+
+**Why it works:** Use disclosure semantics, keyboard-operable controls and stable public navigation links independent of breakpoint.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify the behavior and consider real integration" file="labs/ui-responsive-nav/solution.test.mjs" expected="The instructor passes valid and edge-case assertions. Mounted UI must be verified separately.">
+
+```js
+const items=[{href:'/learn',visible:true,enabled:true},{href:'/draft',visible:false,enabled:true},{href:'/soon',visible:true,enabled:false}];assert.deepEqual(mod.menuLinks(items).map(x=>x.href),['/learn']);assert.equal(items.length,3);
+```
+
+**Representative framework usage (requires matching installed dependencies):**
+
+```tsx
+'use client';
+import {useState} from 'react';
+export function MobileNav(){const [open,setOpen]=useState(false);return <nav aria-label="Primary"><button type="button" aria-expanded={open} aria-controls="mobile-links" onClick={()=>setOpen(v=>!v)}>Menu</button><ul id="mobile-links" hidden={!open}><li><a href="/learn">Courses</a></li></ul></nav>;}
+```
+
+**Operational check:** Ensure the design remains usable at 320px, 200% zoom, high contrast, reduced motion and by keyboard. No source-only test substitutes for those observations.
+
+</LessonStep>
+
+<Misconception claim="The starter includes disabled and unpublished destinations in the menu." correction="Use disclosure semantics, keyboard-operable controls and stable public navigation links independent of breakpoint. Visual polish does not by itself establish semantics, accessibility or interaction correctness." />
+
+<KnowledgeCheck question="What matters most for responsive navigation?" choices={["A screenshot proves all interaction and accessibility requirements.","Use disclosure semantics, keyboard-operable controls and stable public navigation links independent of breakpoint.","All modern shadcn components require Radix and cannot use Base UI.","A passing SSR or pure model test proves client hydration and focus behavior."] } correctIndex={1} explanation="Use disclosure semantics, keyboard-operable controls and stable public navigation links independent of breakpoint." misconception="Testing evidence must match the layer that is actually exercised." lessonId="08.01.07" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Observed defect:** The starter includes disabled and unpublished destinations in the menu. **Reproduce:** run the red starter and capture a failing assertion. **Repair:** Use disclosure semantics, keyboard-operable controls and stable public navigation links independent of breakpoint. **Regression:** Only visible, enabled and internal destinations remain. Perform a real component interaction and contrast audit before deployment.
+
+## Guided local lab
+
+The checked-in lab `labs/ui-responsive-nav/` includes a learner starter, corrected instructor code, executable local checks and rubric. The academy never runs arbitrary learner code on its public origin.
+
+<LabGate lessonId="08.01.07" labId="lab.ui.ui-responsive-nav" commands={["npm run lab:ui-responsive-nav","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+What could still fail in a real browser even if the source tests pass? Which accessibility checks would uncover that failure?
+
+## Official references
+
+- [Official documentation for Responsive navigation](https://www.w3.org/WAI/ARIA/apg/patterns/disclosure/)
+- [Supporting reference](https://tailwindcss.com/docs/responsive-design)

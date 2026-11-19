@@ -1,0 +1,39 @@
+{
+  "id": "08.01.02",
+  "title": "CSS-first tokens: Use semantic CSS variables for theme state and Tailwind @theme tokens for utility generation.",
+  "description": "UI Systems Track 08 tutorial for css-first tokens with a red starter, instructor implementation, local regression tests and honest browser/interaction boundaries.",
+  "trackId": "08",
+  "moduleId": "08.01",
+  "level": "Intermediate",
+  "estimatedMinutes": 60,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "typescript": "5",
+    "react": "19"
+  },
+  "prerequisites": [
+    "08.01.01"
+  ],
+  "objectives": [
+    "Use semantic CSS variables for theme state and Tailwind @theme tokens for utility generation.",
+    "Repair the ui-css-theme-tokens starter with meaningful assertions.",
+    "Describe the browser and accessibility checks needed for css-first tokens."
+  ],
+  "labId": "lab.ui.ui-css-theme-tokens",
+  "rubric": [
+    "I can explain the principles for css-first tokens.",
+    "I can reproduce and fix the failing 08.01.02 starter.",
+    "I know what browser or accessibility qualification is still missing."
+  ],
+  "sources": [
+    {
+      "label": "Official guide for CSS-first tokens",
+      "url": "https://tailwindcss.com/docs/theme"
+    },
+    {
+      "label": "Supporting official reference",
+      "url": "https://tailwindcss.com/docs/functions-and-directives"
+    }
+  ]
+}

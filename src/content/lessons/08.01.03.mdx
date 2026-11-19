@@ -1,0 +1,80 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Radix Dialog requires a named accessible Title, Description and verified focus behavior.","Repair a failing radix primitives example using checked-in TypeScript code.","Identify browser, accessibility, CSS compilation and dependency evidence that a local model cannot establish."]} />
+
+## The problem we're solving
+
+The empty-title dialog is marked accessible. A robust component system has to work across dark and light themes, keyboard input, small screens and real data, not merely appear correct in a screenshot.
+
+## Build the mental model
+
+Radix Dialog requires a named accessible Title, Description and verified focus behavior. **Predict before executing:** A nonempty title and description are required.
+
+**Runtime boundary:** This lesson's fixture is local TypeScript only. It does not compile Tailwind CSS, install shadcn or Radix/Base UI, mount a browser interaction, or verify visual contrast on real content. Those require a dedicated UI build and accessibility checks.
+
+## Prerequisites and preflight
+
+Read the previous canonical topic and inspect `labs/ui-radix-dialog/starter/solution.tsx`. Node.js 24 and locked project dependencies are required. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:ui-radix-dialog`. PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:ui-radix-dialog; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the broken design-system rule" file="labs/ui-radix-dialog/starter/solution.tsx" expected="An instructor assertion fails on the intentionally wrong implementation.">
+
+```tsx
+export const validDialog=(_title:string,_description:string)=>true;
+```
+
+**Root cause:** The empty-title dialog is marked accessible.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the typed source contract" file="labs/ui-radix-dialog/starter/solution.tsx" expected="A nonempty title and description are required.">
+
+```tsx
+export const validDialog=(title:string,description:string)=>Boolean(title.trim()&&description.trim());
+```
+
+**Why it works:** Radix Dialog requires a named accessible Title, Description and verified focus behavior.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify the behavior and consider real integration" file="labs/ui-radix-dialog/solution.test.mjs" expected="The instructor passes valid and edge-case assertions. Mounted UI must be verified separately.">
+
+```js
+assert.equal(mod.validDialog('Delete','This cannot be undone.'),true);assert.equal(mod.validDialog('','Description'),false);assert.equal(mod.validDialog('Title',' '),false);
+```
+
+**Representative framework usage (requires matching installed dependencies):**
+
+```tsx
+import {Dialog} from 'radix-ui';
+export function Example(){return <Dialog.Root><Dialog.Trigger>Edit</Dialog.Trigger><Dialog.Portal><Dialog.Overlay/><Dialog.Content><Dialog.Title>Edit profile</Dialog.Title><Dialog.Description>Update details.</Dialog.Description><Dialog.Close>Close</Dialog.Close></Dialog.Content></Dialog.Portal></Dialog.Root>;}
+```
+
+**Operational check:** Ensure the design remains usable at 320px, 200% zoom, high contrast, reduced motion and by keyboard. No source-only test substitutes for those observations.
+
+</LessonStep>
+
+<Misconception claim="The empty-title dialog is marked accessible." correction="Radix Dialog requires a named accessible Title, Description and verified focus behavior. Visual polish does not by itself establish semantics, accessibility or interaction correctness." />
+
+<KnowledgeCheck question="What matters most for radix primitives?" choices={["A screenshot proves all interaction and accessibility requirements.","Radix Dialog requires a named accessible Title, Description and verified focus behavior.","All modern shadcn components require Radix and cannot use Base UI.","A passing SSR or pure model test proves client hydration and focus behavior."] } correctIndex={1} explanation="Radix Dialog requires a named accessible Title, Description and verified focus behavior." misconception="Testing evidence must match the layer that is actually exercised." lessonId="08.01.03" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Observed defect:** The empty-title dialog is marked accessible. **Reproduce:** run the red starter and capture a failing assertion. **Repair:** Radix Dialog requires a named accessible Title, Description and verified focus behavior. **Regression:** A nonempty title and description are required. Perform a real component interaction and contrast audit before deployment.
+
+## Guided local lab
+
+The checked-in lab `labs/ui-radix-dialog/` includes a learner starter, corrected instructor code, executable local checks and rubric. The academy never runs arbitrary learner code on its public origin.
+
+<LabGate lessonId="08.01.03" labId="lab.ui.ui-radix-dialog" commands={["npm run lab:ui-radix-dialog","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+What could still fail in a real browser even if the source tests pass? Which accessibility checks would uncover that failure?
+
+## Official references
+
+- [Official documentation for Radix primitives](https://www.radix-ui.com/primitives/docs/components/dialog)
+- [Supporting reference](https://www.radix-ui.com/primitives/docs/overview/accessibility)

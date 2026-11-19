@@ -1,0 +1,39 @@
+{
+  "id": "08.01.07",
+  "title": "Responsive navigation: Use disclosure semantics, keyboard-operable controls and stable public navigation links independent of breakpoint.",
+  "description": "UI Systems Track 08 tutorial for responsive navigation with a red starter, instructor implementation, local regression tests and honest browser/interaction boundaries.",
+  "trackId": "08",
+  "moduleId": "08.01",
+  "level": "Intermediate",
+  "estimatedMinutes": 60,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "typescript": "5",
+    "react": "19"
+  },
+  "prerequisites": [
+    "08.01.06"
+  ],
+  "objectives": [
+    "Use disclosure semantics, keyboard-operable controls and stable public navigation links independent of breakpoint.",
+    "Repair the ui-responsive-nav starter with meaningful assertions.",
+    "Describe the browser and accessibility checks needed for responsive navigation."
+  ],
+  "labId": "lab.ui.ui-responsive-nav",
+  "rubric": [
+    "I can explain the principles for responsive navigation.",
+    "I can reproduce and fix the failing 08.01.07 starter.",
+    "I know what browser or accessibility qualification is still missing."
+  ],
+  "sources": [
+    {
+      "label": "Official guide for Responsive navigation",
+      "url": "https://www.w3.org/WAI/ARIA/apg/patterns/disclosure/"
+    },
+    {
+      "label": "Supporting official reference",
+      "url": "https://tailwindcss.com/docs/responsive-design"
+    }
+  ]
+}

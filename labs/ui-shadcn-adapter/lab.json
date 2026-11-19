@@ -1,0 +1,15 @@
+{
+  "id": "lab.ui.ui-shadcn-adapter",
+  "lessonId": "08.01.04",
+  "title": "UI Systems local shadcn composition exercise",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/ui-shadcn-adapter/starter/solution.tsx",
+  "solution": "labs/ui-shadcn-adapter/solution/solution.tsx",
+  "tests": "labs/ui-shadcn-adapter/solution.test.mjs",
+  "verify": [
+    "npm run lab:ui-shadcn-adapter"
+  ],
+  "expected": "Base UI and Radix produce different explicit package dependencies.",
+  "security": "Reviewed offline fixture. CSS compilation, third-party UI libraries and mounted accessibility remain separate."
+}
