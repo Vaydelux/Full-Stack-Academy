@@ -13,6 +13,7 @@ export interface StudyPlanProgress {
   rubrics: Record<string, number[]>;
   notes: Record<string, string>;
   reflections: Record<string, string>;
+  bookmarks?: Record<string, boolean>;
 }
 
 export interface StudyPlanOptions {
