@@ -18,6 +18,7 @@
 - [x] Per-mount `src/lib/academy/zustand-filters.ts` store factory with stable primitive selectors, typed actions and no remote records in global state
 - [x] Browser-only `/learn/state-boundaries-lab`: query, course/reference types, density options, reset, live results count, URL representation preview and code disclosure; no backend, localStorage or arbitrary-code execution
 - [x] Registered MDX/metadata, `zustand:5` stack version, `lab.zustand.*` schema support, eight npm lab commands, aggregate lab discovery, red-starter gate and browser route/gallery smoke
+- [x] Strengthened all eight historical red-starter suites to require actual `ERR_ASSERTION` output (not generic import-error TAP failures), and added a source integrity guard
 - [x] Publication integrity tests and updated handoff. Noindex boundary **stays 09.02.01** because RHF and TanStack Query remain unauthored; intentional out-of-order work does not pretend they're finished
 
 ## P0 — Required executable qualification, still unexecuted

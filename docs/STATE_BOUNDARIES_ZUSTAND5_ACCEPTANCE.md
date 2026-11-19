@@ -30,6 +30,8 @@ The browser-only route `/learn/state-boundaries-lab` is noindex and accessible f
 
 Official sources: https://zustand.docs.pmnd.rs/reference/apis/create-store, https://zustand.docs.pmnd.rs/reference/hooks/use-store, https://zustand.docs.pmnd.rs/reference/middlewares/subscribe-with-selector, https://zustand.docs.pmnd.rs/reference/middlewares/persist and https://zustand.docs.pmnd.rs/reference/migrations/migrating-to-v5.
 
+**Negative-test hardening:** All eight existing React, Next.js, UI, Zod and Zustand red-starter suites now require TAP evidence of `code: 'ERR_ASSERTION'` rather than accepting any `not ok` line. Node loader/import failures can also produce `not ok`. A new `tests/negative-gates-integrity.test.mjs` guards against this false-green condition. I verified Node's assertion output format locally, but the exact repository suites are still unexecuted.
+
 ## Source checks and release acceptance
 
 Repository file-tree and schema audits are not equivalent to running dependencies. Run these on the EXACT branch head:
