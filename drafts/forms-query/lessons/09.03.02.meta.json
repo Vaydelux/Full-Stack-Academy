@@ -1,0 +1,31 @@
+{
+  "id": "09.03.02",
+  "title": "Stale time and garbage collection",
+  "moduleId": "09.03",
+  "trackId": "09",
+  "sourceStatus": "staged-unverified",
+  "estimatedMinutes": 63,
+  "prerequisites": [
+    "09.03.01"
+  ],
+  "stack": {
+    "react": "19",
+    "typescript": "5",
+    "tanstackQuery": "5"
+  },
+  "objective": "Separate staleTime freshness from gcTime eviction of unused cache entries, and predict focus/refetch behavior.",
+  "predict": "A ten-second staleTime may prevent an immediate refetch; after the freshness window, refocus or remount can revalidate. gcTime starts after a query becomes unused.",
+  "expectedBehavior": "Read immediately twice, refocus at 2 seconds, then refocus after 11 seconds. Explain which reads should reuse cached data and when inactive queries are garbage-collected.",
+  "commonFailure": "The starter sets infinite freshness and zero cache lifetime, conflating staleness and garbage collection.",
+  "securityBoundary": "Never assume cache freshness is authorization. A 401/403 must be handled at the server boundary even if a previous cached object existed.",
+  "labSlug": "stale-garbage",
+  "officialReferences": [
+    "https://tanstack.com/query/latest/docs/framework/react/guides/important-defaults",
+    "https://tanstack.com/query/latest/docs/framework/react/reference/useQuery"
+  ],
+  "rubric": [
+    "Separate staleTime freshness from gcTime eviction of unused cache entries, and predict focus/refetch behavior.",
+    "Read immediately twice, refocus at 2 seconds, then refocus after 11 seconds. Explain which reads should reuse cached data and when inactive queries are garbage-collected.",
+    "I can distinguish cache freshness, HTTP success and server authorization."
+  ]
+}

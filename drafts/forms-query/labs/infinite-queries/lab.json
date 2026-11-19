@@ -1,0 +1,19 @@
+{
+  "id": "draft.query.infinite-queries",
+  "lessonId": "09.03.05",
+  "title": "Infinite queries",
+  "sourceStatus": "staged-unverified",
+  "runtime": "react-19-tanstack-query-5-ts-5",
+  "starter": "drafts/forms-query/labs/infinite-queries/starter.tsx",
+  "solution": "drafts/forms-query/labs/infinite-queries/solution.tsx",
+  "expectedPositive": "Create 25 todo tasks; fetch pages 10+10+5 without duplicates. After adding a new task, the previous cursor should return 409 and the client should restart.",
+  "expectedNegative": "The starter guesses numeric offsets and never uses nextCursor or signal cancellation.",
+  "securityBoundary": "Bound displayed pages and total task payloads. Infinite query caches can grow without limits; trim or evict older pages when appropriate.",
+  "officialReferences": [
+    "https://tanstack.com/query/latest/docs/framework/react/guides/infinite-queries",
+    "https://tanstack.com/query/latest/docs/framework/react/reference/useInfiniteQuery"
+  ],
+  "requiresRealLibraryTest": true,
+  "requiresRealBrowserTest": true,
+  "readyToPublish": false
+}

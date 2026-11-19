@@ -1,0 +1,19 @@
+{
+  "id": "draft.query.query-keys",
+  "lessonId": "09.03.01",
+  "title": "Query keys and caching",
+  "sourceStatus": "staged-unverified",
+  "runtime": "react-19-tanstack-query-5-ts-5",
+  "starter": "drafts/forms-query/labs/query-keys/starter.tsx",
+  "solution": "drafts/forms-query/labs/query-keys/solution.tsx",
+  "expectedPositive": "Switch between todo and done. Inspect Query Devtools and verify different keys; no cross-filter content leakage. Cancel a request by switching rapidly.",
+  "expectedNegative": "The starter uses a constant cache key for different status-filtered responses.",
+  "securityBoundary": "Never include access tokens or raw private task titles in a query key; tenant scope belongs in a secure key namespace and server authorization.",
+  "officialReferences": [
+    "https://tanstack.com/query/latest/docs/framework/react/guides/query-keys",
+    "https://tanstack.com/query/latest/docs/framework/react/guides/query-cancellation"
+  ],
+  "requiresRealLibraryTest": true,
+  "requiresRealBrowserTest": true,
+  "readyToPublish": false
+}

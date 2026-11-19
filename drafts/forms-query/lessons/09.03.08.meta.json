@@ -1,0 +1,31 @@
+{
+  "id": "09.03.08",
+  "title": "Lab remote task list",
+  "moduleId": "09.03",
+  "trackId": "09",
+  "sourceStatus": "staged-unverified",
+  "estimatedMinutes": 95,
+  "prerequisites": [
+    "09.03.07"
+  ],
+  "stack": {
+    "react": "19",
+    "typescript": "5",
+    "tanstackQuery": "5"
+  },
+  "objective": "Integrate RHF/Zod validation, same-origin authenticated-by-nobody teaching POST, Query list/invalidation, conditional status PATCH and explicit error recovery.",
+  "predict": "A valid task POST updates the list; 422 blocks or shows an error; 412 requires refetch; a failed optimistic deletion must roll back.",
+  "expectedBehavior": "Using the actual loopback API and installed RHF/Query, prove valid create→GET refresh, invalid title no-POST, 422/error retry, 412 version conflict and a rollback path in the companion task workspace.",
+  "commonFailure": "The starter submits unvalidated data to the wrong endpoint and never invalidates remote list state.",
+  "securityBoundary": "The teaching API is in-memory and unauthenticated. Do not deploy this workflow publicly or imply that Zod/client query keys provide access control.",
+  "labSlug": "remote-task-capstone",
+  "officialReferences": [
+    "https://react-hook-form.com/docs/useform/handlesubmit",
+    "https://tanstack.com/query/latest/docs/framework/react/guides/mutations"
+  ],
+  "rubric": [
+    "Integrate RHF/Zod validation, same-origin authenticated-by-nobody teaching POST, Query list/invalidation, conditional status PATCH and explicit error recovery.",
+    "Using the actual loopback API and installed RHF/Query, prove valid create→GET refresh, invalid title no-POST, 422/error retry, 412 version conflict and a rollback path in the companion task workspace.",
+    "I can distinguish cache freshness, HTTP success and server authorization."
+  ]
+}

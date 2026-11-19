@@ -1,0 +1,31 @@
+{
+  "id": "09.03.03",
+  "title": "Mutations and invalidation",
+  "moduleId": "09.03",
+  "trackId": "09",
+  "sourceStatus": "staged-unverified",
+  "estimatedMinutes": 63,
+  "prerequisites": [
+    "09.03.02"
+  ],
+  "stack": {
+    "react": "19",
+    "typescript": "5",
+    "tanstackQuery": "5"
+  },
+  "objective": "Use useMutation for writes, attach one logical idempotency key, and invalidate all affected query views after confirmed success.",
+  "predict": "After a valid 201 POST, the task should appear in the refreshed todo list even when that list is separately cached from done/doing views.",
+  "expectedBehavior": "Create with a valid key; verify one 201, then a GET refreshes the matching list. A 422 must never produce an invalidation-based success state.",
+  "commonFailure": "The starter sends a POST without invalidating task-list queries and has no idempotency contract.",
+  "securityBoundary": "A retry that regenerates the idempotency key may produce duplicate tasks. Avoid retrying unauthorized or validation failures automatically.",
+  "labSlug": "mutation-invalidation",
+  "officialReferences": [
+    "https://tanstack.com/query/latest/docs/framework/react/guides/invalidations-from-mutations",
+    "https://tanstack.com/query/latest/docs/framework/react/guides/mutations"
+  ],
+  "rubric": [
+    "Use useMutation for writes, attach one logical idempotency key, and invalidate all affected query views after confirmed success.",
+    "Create with a valid key; verify one 201, then a GET refreshes the matching list. A 422 must never produce an invalidation-based success state.",
+    "I can distinguish cache freshness, HTTP success and server authorization."
+  ]
+}

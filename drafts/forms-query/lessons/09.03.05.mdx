@@ -1,0 +1,108 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Paginate the real cursor API with useInfiniteQuery, a correct next-page parameter, and stale-cursor recovery.","Create 25 todo tasks; fetch pages 10+10+5 without duplicates. After adding a new task, the previous cursor should return 409 and the client should restart.","Bound displayed pages and total task payloads. Infinite query caches can grow without limits; trim or evict older pages when appropriate."]} />
+
+## The problem we're solving
+
+A list appends pages using numeric offset. Another task is created between reads, shifting positions and causing duplicated or skipped rows; the server already offers opaque revision-bound cursors.
+
+**Broken behavior in the starter:** The starter guesses numeric offsets and never uses nextCursor or signal cancellation.
+
+## Build the mental model
+
+An infinite query stores a sequence of pages plus page parameters. Use the API's opaque nextCursor; never reconstruct it or mix pages from different filters or revisions.
+
+**Predict before coding:** Load More appends exactly the next page. After a 409 stale-cursor response, restart the list rather than appending incompatible results.
+
+**Version and deployment scope:** TanStack Query v5, React 19, TypeScript 5. The Task API is a locally bound, in-memory, unauthenticated fixture. No compatible npm dependency lock or browser qualification has been completed, so this draft cannot be marked published.
+
+## Prerequisites and preflight
+
+Review the preceding canonical topics, including React Hook Form's validated POST boundary. Start with `drafts/forms-query/labs/infinite-queries/starter.tsx`, and compare with the instructor source only after predicting the incorrect result.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the faulty remote-state assumption" file="drafts/forms-query/labs/infinite-queries/starter.tsx" expected="The starter guesses numeric offsets and never uses nextCursor or signal cancellation.">
+
+```tsx
+import { useQuery } from '@tanstack/react-query';
+export function Pager(){
+ const tasks=useQuery({queryKey:['tasks'],queryFn:async()=>{
+  const r=await fetch('/api/tasks?offset=10');return r.json();
+ }});
+ return <output>{JSON.stringify(tasks.data)}</output>;
+}
+```
+
+**Why it fails:** A list appends pages using numeric offset. Another task is created between reads, shifting positions and causing duplicated or skipped rows; the server already offers opaque revision-bound cursors.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the correct TanStack Query behavior" file="drafts/forms-query/labs/infinite-queries/solution.tsx" expected="Load More appends exactly the next page. After a 409 stale-cursor response, restart the list rather than appending incompatible results.">
+
+```tsx
+import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
+type Page={items:{id:string;title:string}[];nextCursor:string|null};
+export function Pager(){
+ const client=useQueryClient();
+ const key=['tasks',{status:'todo',mode:'infinite'}] as const;
+ const pages=useInfiniteQuery({
+  queryKey:key,
+  initialPageParam:null as string|null,
+  queryFn:async({pageParam,signal})=>{
+   const params=new URLSearchParams({status:'todo',limit:'10'});
+   if(pageParam)params.set('cursor',pageParam);
+   const response=await fetch('/api/tasks?'+params,{signal});
+   if(!response.ok)throw new Error('HTTP '+response.status);
+   return response.json() as Promise<Page>;
+  },
+  getNextPageParam:last=>last.nextCursor,
+  maxPages:5,
+ });
+ if(pages.isPending)return <p role="status">Loading pages…</p>;
+ if(pages.isError)return <div role="alert">Pagination failed.
+  <button type="button" onClick={()=>client.removeQueries({queryKey:key})}>Restart pages</button></div>;
+ return <div><ul>{pages.data.pages.flatMap(p=>p.items).map(t=><li key={t.id}>{t.title}</li>)}</ul>
+  <button disabled={!pages.hasNextPage||pages.isFetchingNextPage} onClick={()=>pages.fetchNextPage()}>Load more</button></div>;
+}
+```
+
+**What changed:** An infinite query stores a sequence of pages plus page parameters. Use the API's opaque nextCursor; never reconstruct it or mix pages from different filters or revisions.
+
+</LessonStep>
+
+<LessonStep number={3} title="Assert real HTTP and cache behavior" file="drafts/forms-query/labs/infinite-queries/lab.json" expected="Create 25 todo tasks; fetch pages 10+10+5 without duplicates. After adding a new task, the previous cursor should return 409 and the client should restart.">
+
+**Observe:** Create 25 todo tasks; fetch pages 10+10+5 without duplicates. After adding a new task, the previous cursor should return 409 and the client should restart.
+
+**Required evidence before publishing:** Use real installed TanStack Query with a mounted QueryClientProvider and an actual loopback HTTP fixture. Record the expected red assertion for the starter and a green assertion for the instructor. Inspect request counts and body shape; static source checks are insufficient for release.
+
+**Boundary:** Bound displayed pages and total task payloads. Infinite query caches can grow without limits; trim or evict older pages when appropriate.
+
+</LessonStep>
+
+<Misconception claim="The starter guesses numeric offsets and never uses nextCursor or signal cancellation." correction="An infinite query stores a sequence of pages plus page parameters. Use the API's opaque nextCursor; never reconstruct it or mix pages from different filters or revisions." />
+
+<KnowledgeCheck question="What is the reliable approach to infinite queries?" choices={["Assume cached browser state equals server truth forever.","Use TanStack Query resource identity and the server's HTTP contract.","Ignore failure responses to keep the UI fast.","Disable all validation once the code typechecks."]} correctIndex={1} explanation="An infinite query stores a sequence of pages plus page parameters. Use the API's opaque nextCursor; never reconstruct it or mix pages from different filters or revisions." misconception="The starter guesses numeric offsets and never uses nextCursor or signal cancellation." lessonId="09.03.05" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+1. **Reproduce:** The starter guesses numeric offsets and never uses nextCursor or signal cancellation.
+2. **Diagnose:** Trace the query key, cancellation boundary, remote response, cache update and invalidation.
+3. **Repair:** Paginate the real cursor API with useInfiniteQuery, a correct next-page parameter, and stale-cursor recovery.
+4. **Regression:** Create 25 todo tasks; fetch pages 10+10+5 without duplicates. After adding a new task, the previous cursor should return 409 and the client should restart.
+5. **Security and operations:** Bound displayed pages and total task payloads. Infinite query caches can grow without limits; trim or evict older pages when appropriate.
+
+## Guided local lab
+
+Red learner source: `drafts/forms-query/labs/infinite-queries/starter.tsx`. Instructor implementation: `drafts/forms-query/labs/infinite-queries/solution.tsx`. The lab manifest declares missing real-library qualification explicitly; it is not part of the published lab runner or lesson registry.
+
+## Reflect
+
+What should happen if the server returns an old result, a 409 stale cursor, a 412 conditional-write conflict or a network error? Which layer owns each recovery decision?
+
+## Official references
+
+- [Primary official reference](https://tanstack.com/query/latest/docs/framework/react/guides/infinite-queries)
+- [Supporting official reference](https://tanstack.com/query/latest/docs/framework/react/reference/useInfiniteQuery)

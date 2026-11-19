@@ -1,0 +1,31 @@
+{
+  "id": "09.03.04",
+  "title": "Optimistic updates and rollback",
+  "moduleId": "09.03",
+  "trackId": "09",
+  "sourceStatus": "staged-unverified",
+  "estimatedMinutes": 63,
+  "prerequisites": [
+    "09.03.03"
+  ],
+  "stack": {
+    "react": "19",
+    "typescript": "5",
+    "tanstackQuery": "5"
+  },
+  "objective": "Snapshot affected query data before an optimistic delete, roll back on failure, and reconcile after the mutation settles.",
+  "predict": "During a failed DELETE, the row disappears briefly and then reappears. A successful delete stays removed after refetch.",
+  "expectedBehavior": "Force DELETE 404 or transport failure. The cached row must be restored. Success must invalidate server data. Disable concurrent deletes or implement version-aware compensation.",
+  "commonFailure": "The starter removes the row in cache but never saves or restores the previous snapshot after an HTTP error.",
+  "securityBoundary": "Snapshot rollback only remains correct when conflicting updates are serialized or reconciled; overlapping optimistic mutations need a more careful policy.",
+  "labSlug": "optimistic-rollback",
+  "officialReferences": [
+    "https://tanstack.com/query/latest/docs/framework/react/guides/optimistic-updates",
+    "https://tanstack.com/query/latest/docs/framework/react/reference/useMutation"
+  ],
+  "rubric": [
+    "Snapshot affected query data before an optimistic delete, roll back on failure, and reconcile after the mutation settles.",
+    "Force DELETE 404 or transport failure. The cached row must be restored. Success must invalidate server data. Disable concurrent deletes or implement version-aware compensation.",
+    "I can distinguish cache freshness, HTTP success and server authorization."
+  ]
+}

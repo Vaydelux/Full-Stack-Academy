@@ -1,0 +1,19 @@
+{
+  "id": "draft.query.remote-task-capstone",
+  "lessonId": "09.03.08",
+  "title": "Lab remote task list",
+  "sourceStatus": "staged-unverified",
+  "runtime": "react-19-tanstack-query-5-ts-5",
+  "starter": "drafts/forms-query/labs/remote-task-capstone/starter.tsx",
+  "solution": "drafts/forms-query/labs/remote-task-capstone/solution.tsx",
+  "expectedPositive": "Using the actual loopback API and installed RHF/Query, prove valid create→GET refresh, invalid title no-POST, 422/error retry, 412 version conflict and a rollback path in the companion task workspace.",
+  "expectedNegative": "The starter submits unvalidated data to the wrong endpoint and never invalidates remote list state.",
+  "securityBoundary": "The teaching API is in-memory and unauthenticated. Do not deploy this workflow publicly or imply that Zod/client query keys provide access control.",
+  "officialReferences": [
+    "https://react-hook-form.com/docs/useform/handlesubmit",
+    "https://tanstack.com/query/latest/docs/framework/react/guides/mutations"
+  ],
+  "requiresRealLibraryTest": true,
+  "requiresRealBrowserTest": true,
+  "readyToPublish": false
+}

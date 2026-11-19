@@ -1,0 +1,19 @@
+{
+  "id": "draft.query.ssr-hydration",
+  "lessonId": "09.03.06",
+  "title": "Suspense and SSR hydration",
+  "sourceStatus": "staged-unverified",
+  "runtime": "react-19-tanstack-query-5-ts-5",
+  "starter": "drafts/forms-query/labs/ssr-hydration/starter.tsx",
+  "solution": "drafts/forms-query/labs/ssr-hydration/solution.tsx",
+  "expectedPositive": "In a real Next.js app, compare server and client query keys exactly. Inspect dehydrated state and verify only safe anonymous data appears; test hydration with a mounted QueryClientProvider.",
+  "expectedNegative": "The starter creates QueryClient but fails to prefetch and hydrate into the client component with a matching key.",
+  "securityBoundary": "Never dehydrate authentication tokens, internal service responses, another user's tasks or secrets into a public HTML payload. This server-only example is not a Vite browser route.",
+  "officialReferences": [
+    "https://tanstack.com/query/latest/docs/framework/react/guides/advanced-ssr",
+    "https://tanstack.com/query/latest/docs/framework/react/guides/ssr"
+  ],
+  "requiresRealLibraryTest": true,
+  "requiresRealBrowserTest": true,
+  "readyToPublish": false
+}
