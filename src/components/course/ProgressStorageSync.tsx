@@ -23,7 +23,9 @@ export function ProgressStorageSync() {
 
   useEffect(() => {
     const onStorage = (event: StorageEvent) => {
-      if (event.storageArea !== window.localStorage) return;
+      let storage: Storage;
+      try { storage = window.localStorage; } catch { return; }
+      if (event.storageArea !== storage) return;
       if (event.key === STORAGE_KEY || event.key === null) {
         useAcademy.getState().hydrate();
       }
