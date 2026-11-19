@@ -223,6 +223,7 @@ async function qualify() {
     });
 
     await check('Keyboard Tab can focus an interactive control', async () => {
+      await cdp.send('Page.bringToFront');
       await evaluate('document.activeElement?.blur()');
       await cdp.send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Tab', code: 'Tab', windowsVirtualKeyCode: 9, nativeVirtualKeyCode: 9 });
       await cdp.send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Tab', code: 'Tab', windowsVirtualKeyCode: 9, nativeVirtualKeyCode: 9 });
