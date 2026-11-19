@@ -1,0 +1,40 @@
+{
+  "id": "09.04.02",
+  "title": "Zustand selectors and slices: Use bounded state slices, stable primitive selectors, and subscribeWithSelector for targeted subscriptions to a vanilla Zustand store.",
+  "description": "A complete Zustand 5 state-boundaries lesson using actual vanilla stores, targeted subscriptions and safe client state ownership, including a red starter and offline regression tests.",
+  "trackId": "09",
+  "moduleId": "09.04",
+  "level": "Intermediate",
+  "estimatedMinutes": 65,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "typescript": "5",
+    "react": "19",
+    "zustand": "5"
+  },
+  "prerequisites": [
+    "09.04.01"
+  ],
+  "objectives": [
+    "Use bounded state slices, stable primitive selectors, and subscribeWithSelector for targeted subscriptions to a vanilla Zustand store.",
+    "Repair the zustand-selectors-slices intentionally broken Zustand 5 starter.",
+    "Explain what belongs in local, URL or authoritative remote data state."
+  ],
+  "labId": "lab.zustand.zustand-selectors-slices",
+  "rubric": [
+    "I can explain the state ownership principle for zustand selectors and slices.",
+    "I can repair the 09.04.02 defect using actual Zustand 5 APIs.",
+    "I can identify persistence, privacy and hydration risks needing integration tests."
+  ],
+  "sources": [
+    {
+      "label": "Zustand 5 official APIs",
+      "url": "https://zustand.docs.pmnd.rs/reference/middlewares/subscribe-with-selector"
+    },
+    {
+      "label": "Additional official guide",
+      "url": "https://zustand.docs.pmnd.rs/reference/apis/create-store"
+    }
+  ]
+}

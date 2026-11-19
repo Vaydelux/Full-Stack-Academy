@@ -6,5 +6,6 @@
   "nestjs": "12",
   "prisma": "7",
   "zod": "4",
-  "postgresql": "17"
+  "postgresql": "17",
+  "zustand": "5"
 }

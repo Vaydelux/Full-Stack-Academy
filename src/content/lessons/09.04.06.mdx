@@ -1,0 +1,109 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Keep shareable filters in the URL as the source of truth and coordinate the visible Zustand UI state with parsed, allowlisted query parameters.","Reproduce and repair the urlsearchparams as state state bug with real Zustand 5 APIs.","Distinguish ephemeral UI state, shareable URL state and authoritative server data."]} />
+
+## The problem we're solving
+
+A course filter must remain shareable on reload, but a developer stores it only in ephemeral in-memory state, losing the filter after navigation.
+
+**Broken behavior:** The starter's URL serializer always returns an empty string, so a selected filter cannot be linked.
+
+## Build the mental model
+
+Keep shareable filters in the URL as the source of truth and coordinate the visible Zustand UI state with parsed, allowlisted query parameters.
+
+**Predict:** Valid active status can be serialized to a URL and restored; invalid status defaults safely.
+
+**Evidence boundary:** The local test imports the real Zustand 5 `createStore` API and, where appropriate, the official middleware. The store is created afresh per test; it does not use a global request-scoped server singleton. Passing Node assertions does not prove browser hydration, cross-tab synchronization or HTTP authorization.
+
+## Prerequisites and preflight
+
+Complete `09.01.08` (Zod 4) before this module and the preceding `09.04` lesson as applicable. This is a dependency-safe module: Zustand 5 is already in the project's dependency manifest; React Hook Form and TanStack Query are covered in other planned modules. Run with locked dependencies under Node 24.
+
+Open `labs/zustand-url-search-state/starter/solution.ts`. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:zustand-url-search-state`; PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:zustand-url-search-state; Remove-Item Env:ACADEMY_LAB_TARGET`. The starter intentionally fails a substantive assertion.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the broken Zustand store behavior" file="labs/zustand-url-search-state/starter/solution.ts" expected="The red starter fails a meaningful offline assertion, not a missing dependency import.">
+
+```ts
+import {createStore} from 'zustand/vanilla';
+export function makeQueryStore(search:string){
+ const status=new URLSearchParams(search).get('status')==='active'?'active':'all';
+ return createStore()(set=>({status,setStatus:(status:string)=>set({status})}));
+}
+export const toQuery=(_store:unknown)=>'';
+```
+
+**Cause:** The starter's URL serializer always returns an empty string, so a selected filter cannot be linked.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the corrected Zustand 5 store" file="labs/zustand-url-search-state/starter/solution.ts" expected="Valid active status can be serialized to a URL and restored; invalid status defaults safely.">
+
+```ts
+import {createStore,type StoreApi} from 'zustand/vanilla';
+export type Status='all'|'active';
+export type QueryState={status:Status;setStatus:(status:Status)=>void};
+export function makeQueryStore(search:string){
+ const status:Status=new URLSearchParams(search.startsWith('?')?search.slice(1):search).get('status')==='active'?'active':'all';
+ return createStore<QueryState>()(set=>({status,setStatus:status=>set({status})}));
+}
+export function toQuery(store:StoreApi<QueryState>){
+ const status=store.getState().status;
+ return status==='all'?'':new URLSearchParams({status}).toString();
+}
+```
+
+**Reasoning:** Keep shareable filters in the URL as the source of truth and coordinate the visible Zustand UI state with parsed, allowlisted query parameters.
+
+</LessonStep>
+
+<LessonStep number={3} title="Run a real store mutation and regression check" file="labs/zustand-url-search-state/solution.test.mjs" expected="The correct instructor passes the Node/Zustand assertions, including denied or edge cases.">
+
+```js
+const store=mod.makeQueryStore('?status=active');assert.equal(store.getState().status,'active');
+assert.equal(mod.toQuery(store),'status=active');
+store.getState().setStatus('all');assert.equal(mod.toQuery(store),'');
+assert.equal(mod.makeQueryStore('?status=admin').getState().status,'all');
+```
+
+**React/browser usage pattern (illustrative until mounted and tested):**
+
+```tsx
+// Next.js client URL state:
+const params=new URLSearchParams(window.location.search);
+params.set('status','active');
+window.history.replaceState(null,'','?'+params.toString());
+// Keep URL search params allowlisted and use framework navigation APIs
+// where needed; server-fetched content still needs separate cache keys.
+```
+
+**Trust boundary:** Never treat a UI role, selected row or persisted browser token as server authorization. Query data and private records still require server-side validation and access controls.
+
+</LessonStep>
+
+<Misconception claim="The starter's URL serializer always returns an empty string, so a selected filter cannot be linked." correction="Keep shareable filters in the URL as the source of truth and coordinate the visible Zustand UI state with parsed, allowlisted query parameters. Runtime Zustand state transitions do not establish backend authorization or cross-browser correctness." />
+
+<KnowledgeCheck question="What is the best state-management rule for urlsearchparams as state?" choices={["A single global store should contain every request's server response and secrets.","Keep shareable filters in the URL as the source of truth and coordinate the visible Zustand UI state with parsed, allowlisted query parameters.","Browser persistence securely hides access tokens from the user.","Any correct TypeScript type implies cross-tab and server data consistency."] } correctIndex={1} explanation="Keep shareable filters in the URL as the source of truth and coordinate the visible Zustand UI state with parsed, allowlisted query parameters." misconception="Use each state mechanism for the data scope and lifetime it actually owns." lessonId="09.04.06" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Reproduce:** The starter's URL serializer always returns an empty string, so a selected filter cannot be linked. **Diagnose:** trace the store action and ownership boundary. **Repair:** Keep shareable filters in the URL as the source of truth and coordinate the visible Zustand UI state with parsed, allowlisted query parameters. **Regression:** Valid active status can be serialized to a URL and restored; invalid status defaults safely. Confirm browser and HTTP behavior separately when relevant.
+
+## Guided local lab
+
+The `labs/zustand-url-search-state/` exercise contains an intentionally broken learner starter, a reviewed instructor fix, real Zustand 5 Node assertions, and a completion rubric. No arbitrary learner code is executed by the academy server.
+
+<LabGate lessonId="09.04.06" labId="lab.zustand.zustand-url-search-state" commands={["npm run lab:zustand-url-search-state","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+Which state belongs to a local component, which should survive in a shareable URL, and which must remain in a server-backed cache? How would you reproduce a stale state bug in two tabs?
+
+## Official references
+
+- [Zustand 5 official reference](https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams)
+- [Supporting official guide](https://zustand.docs.pmnd.rs/reference/apis/create-store)
+

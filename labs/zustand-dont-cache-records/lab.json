@@ -1,0 +1,15 @@
+{
+  "id": "lab.zustand.zustand-dont-cache-records",
+  "lessonId": "09.04.07",
+  "title": "Zustand 5 avoiding duplicated caches local lab",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/zustand-dont-cache-records/starter/solution.ts",
+  "solution": "labs/zustand-dont-cache-records/solution/solution.ts",
+  "tests": "labs/zustand-dont-cache-records/solution.test.mjs",
+  "verify": [
+    "npm run lab:zustand-dont-cache-records"
+  ],
+  "expected": "Zustand stores just the selected ID and actions; record details come from the authoritative provided collection.",
+  "security": "Actual Zustand 5 vanilla stores execute locally; no network, browser secrets, authentication, persistence into real storage or remote code execution."
+}

@@ -1,0 +1,15 @@
+{
+  "id": "lab.zustand.zustand-filter-preference-capstone",
+  "lessonId": "09.04.08",
+  "title": "Zustand 5 lab filters and preferences local lab",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/zustand-filter-preference-capstone/starter/solution.ts",
+  "solution": "labs/zustand-filter-preference-capstone/solution/solution.ts",
+  "tests": "labs/zustand-filter-preference-capstone/solution.test.mjs",
+  "verify": [
+    "npm run lab:zustand-filter-preference-capstone"
+  ],
+  "expected": "Search and kind filter real catalogue rows, density remains independent, and reset restores the defaults.",
+  "security": "Actual Zustand 5 vanilla stores execute locally; no network, browser secrets, authentication, persistence into real storage or remote code execution."
+}

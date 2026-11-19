@@ -1,0 +1,124 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Use Zustand persist with a strict partialize allowlist and controlled hydration; localStorage is user-readable and must never become a secret store.","Reproduce and repair the persistence risks state bug with real Zustand 5 APIs.","Distinguish ephemeral UI state, shareable URL state and authoritative server data."]} />
+
+## The problem we're solving
+
+A theme preference may be safe to remember, but a session token or secret must never be saved in localStorage merely because it lives in the same store.
+
+**Broken behavior:** The starter persists a token along with theme, exposing sensitive values in a browser-readable storage record.
+
+## Build the mental model
+
+Use Zustand persist with a strict partialize allowlist and controlled hydration; localStorage is user-readable and must never become a secret store.
+
+**Predict:** Theme is persisted but token is omitted from serialized state, even after token updates.
+
+**Evidence boundary:** The local test imports the real Zustand 5 `createStore` API and, where appropriate, the official middleware. The store is created afresh per test; it does not use a global request-scoped server singleton. Passing Node assertions does not prove browser hydration, cross-tab synchronization or HTTP authorization.
+
+## Prerequisites and preflight
+
+Complete `09.01.08` (Zod 4) before this module and the preceding `09.04` lesson as applicable. This is a dependency-safe module: Zustand 5 is already in the project's dependency manifest; React Hook Form and TanStack Query are covered in other planned modules. Run with locked dependencies under Node 24.
+
+Open `labs/zustand-persist-private/starter/solution.ts`. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:zustand-persist-private`; PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:zustand-persist-private; Remove-Item Env:ACADEMY_LAB_TARGET`. The starter intentionally fails a substantive assertion.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the broken Zustand store behavior" file="labs/zustand-persist-private/starter/solution.ts" expected="The red starter fails a meaningful offline assertion, not a missing dependency import.">
+
+```ts
+import {createStore} from 'zustand/vanilla';
+import {persist,createJSONStorage} from 'zustand/middleware';
+import type {StateStorage} from 'zustand/middleware';
+type Theme='light'|'dark';
+export type PrefState={theme:Theme;token:string;setTheme:(theme:Theme)=>void;setToken:(token:string)=>void};
+export function makePrefsStore(storage:StateStorage){
+ return createStore<PrefState>()(persist((set)=>({
+  theme:'light',token:'',setTheme:theme=>set({theme}),setToken:token=>set({token}),
+ }),{name:'academy-ui-preferences',storage:createJSONStorage(()=>storage),skipHydration:true,
+ partialize:state=>({theme:state.theme,token:state.token})}));
+}
+```
+
+**Cause:** The starter persists a token along with theme, exposing sensitive values in a browser-readable storage record.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the corrected Zustand 5 store" file="labs/zustand-persist-private/starter/solution.ts" expected="Theme is persisted but token is omitted from serialized state, even after token updates.">
+
+```ts
+import {createStore} from 'zustand/vanilla';
+import {persist,createJSONStorage} from 'zustand/middleware';
+import type {StateStorage} from 'zustand/middleware';
+type Theme='light'|'dark';
+export type PrefState={theme:Theme;token:string;setTheme:(theme:Theme)=>void;setToken:(token:string)=>void};
+type StoredPrefs={theme:Theme};
+export function makePrefsStore(storage:StateStorage){
+ return createStore<PrefState>()(persist<PrefState,StoredPrefs>((set)=>({
+  theme:'light',token:'',setTheme:theme=>set({theme}),setToken:token=>set({token}),
+ }),{name:'academy-ui-preferences',storage:createJSONStorage<StoredPrefs>(()=>storage),skipHydration:true,
+ partialize:state=>({theme:state.theme})}));
+}
+```
+
+**Reasoning:** Use Zustand persist with a strict partialize allowlist and controlled hydration; localStorage is user-readable and must never become a secret store.
+
+</LessonStep>
+
+<LessonStep number={3} title="Run a real store mutation and regression check" file="labs/zustand-persist-private/solution.test.mjs" expected="The correct instructor passes the Node/Zustand assertions, including denied or edge cases.">
+
+```js
+const memory=new Map();const storage={
+ getItem:(key)=>memory.get(key)??null,
+ setItem:(key,value)=>{memory.set(key,value);},
+ removeItem:(key)=>{memory.delete(key);},
+};
+const store=mod.makePrefsStore(storage);
+store.getState().setToken('PRIVATE_TOKEN');
+store.getState().setTheme('dark');
+const raw=memory.get('academy-ui-preferences');assert.ok(raw);
+const data=JSON.parse(raw);assert.equal(data.state.theme,'dark');
+assert.equal('token' in data.state,false);assert.doesNotMatch(raw,/PRIVATE_TOKEN/);
+```
+
+**React/browser usage pattern (illustrative until mounted and tested):**
+
+```tsx
+import {createJSONStorage,persist} from 'zustand/middleware';
+import {create} from 'zustand';
+const useTheme=create()(persist((set)=>({theme:'light',setTheme:(theme:string)=>set({theme})}),{
+ name:'academy-public-theme',partialize:state=>({theme:state.theme}),
+ storage:createJSONStorage(()=>localStorage),skipHydration:true,
+}));
+// Explicitly rehydrate after mount for SSR-safe UI; validate untrusted persisted JSON before use.
+// Never persist tokens, session cookies, passwords or request-private data.
+```
+
+**Trust boundary:** Never treat a UI role, selected row or persisted browser token as server authorization. Query data and private records still require server-side validation and access controls.
+
+</LessonStep>
+
+<Misconception claim="The starter persists a token along with theme, exposing sensitive values in a browser-readable storage record." correction="Use Zustand persist with a strict partialize allowlist and controlled hydration; localStorage is user-readable and must never become a secret store. Runtime Zustand state transitions do not establish backend authorization or cross-browser correctness." />
+
+<KnowledgeCheck question="What is the best state-management rule for persistence risks?" choices={["A single global store should contain every request's server response and secrets.","Use Zustand persist with a strict partialize allowlist and controlled hydration; localStorage is user-readable and must never become a secret store.","Browser persistence securely hides access tokens from the user.","Any correct TypeScript type implies cross-tab and server data consistency."] } correctIndex={1} explanation="Use Zustand persist with a strict partialize allowlist and controlled hydration; localStorage is user-readable and must never become a secret store." misconception="Use each state mechanism for the data scope and lifetime it actually owns." lessonId="09.04.03" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Reproduce:** The starter persists a token along with theme, exposing sensitive values in a browser-readable storage record. **Diagnose:** trace the store action and ownership boundary. **Repair:** Use Zustand persist with a strict partialize allowlist and controlled hydration; localStorage is user-readable and must never become a secret store. **Regression:** Theme is persisted but token is omitted from serialized state, even after token updates. Confirm browser and HTTP behavior separately when relevant.
+
+## Guided local lab
+
+The `labs/zustand-persist-private/` exercise contains an intentionally broken learner starter, a reviewed instructor fix, real Zustand 5 Node assertions, and a completion rubric. No arbitrary learner code is executed by the academy server.
+
+<LabGate lessonId="09.04.03" labId="lab.zustand.zustand-persist-private" commands={["npm run lab:zustand-persist-private","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+Which state belongs to a local component, which should survive in a shareable URL, and which must remain in a server-backed cache? How would you reproduce a stale state bug in two tabs?
+
+## Official references
+
+- [Zustand 5 official reference](https://zustand.docs.pmnd.rs/reference/middlewares/persist)
+- [Supporting official guide](https://zustand.docs.pmnd.rs/reference/integrations/persisting-store-data)
+

@@ -1,0 +1,40 @@
+{
+  "id": "09.04.04",
+  "title": "Derived state and store subscriptions: Keep one source of truth in Zustand and compute lightweight derived data from selected state; subscribe to stable slices rather than duplicating caches.",
+  "description": "A complete Zustand 5 state-boundaries lesson using actual vanilla stores, targeted subscriptions and safe client state ownership, including a red starter and offline regression tests.",
+  "trackId": "09",
+  "moduleId": "09.04",
+  "level": "Intermediate",
+  "estimatedMinutes": 65,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "typescript": "5",
+    "react": "19",
+    "zustand": "5"
+  },
+  "prerequisites": [
+    "09.04.03"
+  ],
+  "objectives": [
+    "Keep one source of truth in Zustand and compute lightweight derived data from selected state; subscribe to stable slices rather than duplicating caches.",
+    "Repair the zustand-derived-subscription intentionally broken Zustand 5 starter.",
+    "Explain what belongs in local, URL or authoritative remote data state."
+  ],
+  "labId": "lab.zustand.zustand-derived-subscription",
+  "rubric": [
+    "I can explain the state ownership principle for derived state and store subscriptions.",
+    "I can repair the 09.04.04 defect using actual Zustand 5 APIs.",
+    "I can identify persistence, privacy and hydration risks needing integration tests."
+  ],
+  "sources": [
+    {
+      "label": "Zustand 5 official APIs",
+      "url": "https://zustand.docs.pmnd.rs/reference/apis/create-store"
+    },
+    {
+      "label": "Additional official guide",
+      "url": "https://zustand.docs.pmnd.rs/reference/hooks/use-store"
+    }
+  ]
+}

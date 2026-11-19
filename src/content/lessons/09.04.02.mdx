@@ -1,0 +1,111 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Use bounded state slices, stable primitive selectors, and subscribeWithSelector for targeted subscriptions to a vanilla Zustand store.","Reproduce and repair the zustand selectors and slices state bug with real Zustand 5 APIs.","Distinguish ephemeral UI state, shareable URL state and authoritative server data."]} />
+
+## The problem we're solving
+
+A filter panel should update sorting without overwriting a typed search query. A subscriber to sorting should not rerun when only the query changes.
+
+**Broken behavior:** The starter's setSort overwrites the query string and leaves the sort state unchanged.
+
+## Build the mental model
+
+Use bounded state slices, stable primitive selectors, and subscribeWithSelector for targeted subscriptions to a vanilla Zustand store.
+
+**Predict:** Changing query leaves sort subscribers quiet; changing sort notifies them exactly once.
+
+**Evidence boundary:** The local test imports the real Zustand 5 `createStore` API and, where appropriate, the official middleware. The store is created afresh per test; it does not use a global request-scoped server singleton. Passing Node assertions does not prove browser hydration, cross-tab synchronization or HTTP authorization.
+
+## Prerequisites and preflight
+
+Complete `09.01.08` (Zod 4) before this module and the preceding `09.04` lesson as applicable. This is a dependency-safe module: Zustand 5 is already in the project's dependency manifest; React Hook Form and TanStack Query are covered in other planned modules. Run with locked dependencies under Node 24.
+
+Open `labs/zustand-selectors-slices/starter/solution.ts`. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:zustand-selectors-slices`; PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:zustand-selectors-slices; Remove-Item Env:ACADEMY_LAB_TARGET`. The starter intentionally fails a substantive assertion.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the broken Zustand store behavior" file="labs/zustand-selectors-slices/starter/solution.ts" expected="The red starter fails a meaningful offline assertion, not a missing dependency import.">
+
+```ts
+import {createStore} from 'zustand/vanilla';
+import {subscribeWithSelector} from 'zustand/middleware';
+export function makeSortStore(){
+ return createStore()(subscribeWithSelector(set=>({
+  query:'',sort:'title',
+  setQuery:(query:string)=>set({query}),
+  setSort:(sort:string)=>set({query:sort}),
+ })));
+}
+```
+
+**Cause:** The starter's setSort overwrites the query string and leaves the sort state unchanged.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the corrected Zustand 5 store" file="labs/zustand-selectors-slices/starter/solution.ts" expected="Changing query leaves sort subscribers quiet; changing sort notifies them exactly once.">
+
+```ts
+import {createStore} from 'zustand/vanilla';
+import {subscribeWithSelector} from 'zustand/middleware';
+export type SortState={query:string;sort:'title'|'recent';setQuery:(q:string)=>void;setSort:(s:'title'|'recent')=>void};
+export function makeSortStore(){
+ return createStore<SortState>()(subscribeWithSelector(set=>({
+  query:'',sort:'title',
+  setQuery:query=>set({query}),
+  setSort:sort=>set({sort}),
+ })));
+}
+```
+
+**Reasoning:** Use bounded state slices, stable primitive selectors, and subscribeWithSelector for targeted subscriptions to a vanilla Zustand store.
+
+</LessonStep>
+
+<LessonStep number={3} title="Run a real store mutation and regression check" file="labs/zustand-selectors-slices/solution.test.mjs" expected="The correct instructor passes the Node/Zustand assertions, including denied or edge cases.">
+
+```js
+const store=mod.makeSortStore();
+let events=0;const off=store.subscribe(s=>s.sort,()=>events++);
+store.getState().setQuery('React');assert.equal(store.getState().query,'React');assert.equal(events,0);
+store.getState().setSort('recent');assert.equal(store.getState().sort,'recent');assert.equal(store.getState().query,'React');assert.equal(events,1);off();
+```
+
+**React/browser usage pattern (illustrative until mounted and tested):**
+
+```tsx
+import {createStore} from 'zustand/vanilla';
+import {subscribeWithSelector} from 'zustand/middleware';
+const store=createStore(subscribeWithSelector(set=>({filter:'all',setFilter:(filter:string)=>set({filter})})));
+const unsubscribe=store.subscribe(s=>s.filter,(filter,previous)=>console.log(filter,previous));
+store.getState().setFilter('active');unsubscribe();
+// In React prefer selectors returning stable primitive values; avoid creating fresh objects every render in Zustand 5.
+```
+
+**Trust boundary:** Never treat a UI role, selected row or persisted browser token as server authorization. Query data and private records still require server-side validation and access controls.
+
+</LessonStep>
+
+<Misconception claim="The starter's setSort overwrites the query string and leaves the sort state unchanged." correction="Use bounded state slices, stable primitive selectors, and subscribeWithSelector for targeted subscriptions to a vanilla Zustand store. Runtime Zustand state transitions do not establish backend authorization or cross-browser correctness." />
+
+<KnowledgeCheck question="What is the best state-management rule for zustand selectors and slices?" choices={["A single global store should contain every request's server response and secrets.","Use bounded state slices, stable primitive selectors, and subscribeWithSelector for targeted subscriptions to a vanilla Zustand store.","Browser persistence securely hides access tokens from the user.","Any correct TypeScript type implies cross-tab and server data consistency."] } correctIndex={1} explanation="Use bounded state slices, stable primitive selectors, and subscribeWithSelector for targeted subscriptions to a vanilla Zustand store." misconception="Use each state mechanism for the data scope and lifetime it actually owns." lessonId="09.04.02" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Reproduce:** The starter's setSort overwrites the query string and leaves the sort state unchanged. **Diagnose:** trace the store action and ownership boundary. **Repair:** Use bounded state slices, stable primitive selectors, and subscribeWithSelector for targeted subscriptions to a vanilla Zustand store. **Regression:** Changing query leaves sort subscribers quiet; changing sort notifies them exactly once. Confirm browser and HTTP behavior separately when relevant.
+
+## Guided local lab
+
+The `labs/zustand-selectors-slices/` exercise contains an intentionally broken learner starter, a reviewed instructor fix, real Zustand 5 Node assertions, and a completion rubric. No arbitrary learner code is executed by the academy server.
+
+<LabGate lessonId="09.04.02" labId="lab.zustand.zustand-selectors-slices" commands={["npm run lab:zustand-selectors-slices","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+Which state belongs to a local component, which should survive in a shareable URL, and which must remain in a server-backed cache? How would you reproduce a stale state bug in two tabs?
+
+## Official references
+
+- [Zustand 5 official reference](https://zustand.docs.pmnd.rs/reference/middlewares/subscribe-with-selector)
+- [Supporting official guide](https://zustand.docs.pmnd.rs/reference/apis/create-store)
+
