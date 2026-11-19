@@ -1,0 +1,101 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["File-system segments determine App Router URLs. Route groups in parentheses organize files without appearing in the public pathname.","Repair a broken project structure and route segments example using a realistic Next.js 16 contract.","Distinguish offline models from a compiled App Router route or real response."]} />
+
+## The problem we're solving
+
+A documentation site must map checked-in route files to actual URLs without exposing private organizational group names.
+
+**Failure:** The starter turns `(marketing)` into a visible URL segment, producing incorrect routes.
+
+## Build the mental model
+
+File-system segments determine App Router URLs. Route groups in parentheses organize files without appearing in the public pathname.
+
+**Prediction:** Group markers disappear while real segment names remain in order.
+
+**Proof boundary:** The local Node/TSX fixture verifies this lesson's deterministic model and initial React markup. It does **not** start Next.js, compile route conventions, simulate streaming, or prove HTTP status codes. A separately built Next application and browser/HTTP test are needed before release qualification.
+
+## Prerequisites and preflight
+
+Read the preceding canonical topic and open `labs/next-route-segments/starter/solution.tsx`. Use Node.js 24 and repository-locked dependencies. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:next-route-segments`. PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:next-route-segments; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the routing or metadata defect" file="labs/next-route-segments/starter/solution.tsx" expected="An existing regression assertion fails for the exact incorrect behavior.">
+
+```tsx
+export function routeFromSegments(parts:readonly string[]){
+ return '/'+parts.filter(Boolean).join('/');
+}
+export function RouteNotice({parts}:{parts:readonly string[]}){
+ return <code>{routeFromSegments(parts)}</code>;
+}
+```
+
+**Why it fails:** The starter turns `(marketing)` into a visible URL segment, producing incorrect routes.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the safe Next.js-oriented contract" file="labs/next-route-segments/starter/solution.tsx" expected="Group markers disappear while real segment names remain in order.">
+
+```tsx
+export function routeFromSegments(parts:readonly string[]){
+ const segments=parts.filter(s=>s&&!/^\([^/]+\)$/.test(s)&&s!=='page.tsx');
+ return '/'+segments.join('/');
+}
+export function RouteNotice({parts}:{parts:readonly string[]}){
+ return <code>{routeFromSegments(parts)}</code>;
+}
+```
+
+**Why it works:** File-system segments determine App Router URLs. Route groups in parentheses organize files without appearing in the public pathname.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify data/route invariants and inspect real file conventions" file="labs/next-route-segments/solution.test.mjs" expected="The instructor solution passes offline assertions; production routing remains a separate local Next build/browser gate.">
+
+```js
+assert.equal(mod.routeFromSegments(['(marketing)','products','page.tsx']),'/products');
+assert.equal(mod.routeFromSegments(['guides','nextjs','page.tsx']),'/guides/nextjs');
+assert.match(renderToStaticMarkup(createElement(mod.RouteNotice,{parts:['(docs)','guide','page.tsx']})),/\/guide/);
+```
+
+**Real App Router shape:**
+
+```tsx
+app/
+  layout.tsx          # required root layout with <html> and <body>
+  page.tsx            # /
+  (marketing)/        # group not present in URL
+    about/page.tsx    # /about
+  guides/[slug]/page.tsx   # /guides/:slug
+```
+
+**Nuance:** Route groups do not alter URLs; they can affect layout organization and colliding paths still cause conflicts. Nested pages require an appropriate parent layout. File-system mapping is framework behavior; our offline helper only models the path convention.
+
+</LessonStep>
+
+<Misconception claim="The starter turns `(marketing)` into a visible URL segment, producing incorrect routes." correction="File-system segments determine App Router URLs. Route groups in parentheses organize files without appearing in the public pathname. A pure TypeScript routing model is not a Next.js HTTP integration test." />
+
+<KnowledgeCheck question="What is the safest principle for project structure and route segments in Next.js 16?" choices={["Next.js compiles route files automatically from this standalone Node test.","File-system segments determine App Router URLs. Route groups in parentheses organize files without appearing in the public pathname.","Client-side route state can replace server permission checks.","Metadata and routing conventions never require a real Next build."] } correctIndex={1} explanation="File-system segments determine App Router URLs. Route groups in parentheses organize files without appearing in the public pathname." misconception="Distinguish a model assertion from framework behavior and network outcomes." lessonId="07.01.01" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Reproduction:** The starter turns `(marketing)` into a visible URL segment, producing incorrect routes. Use the starter and capture the exact failed assertion. **Repair:** File-system segments determine App Router URLs. Route groups in parentheses organize files without appearing in the public pathname. **Verify:** Group markers disappear while real segment names remain in order.
+
+## Guided local lab
+
+The lab includes a broken starter, fixed instructor implementation, checked-in Node tests and a completion rubric. The academy does not run learner code on the server.
+
+<LabGate lessonId="07.01.01" labId="lab.next.next-route-segments" commands={["npm run lab:next-route-segments","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+Which checks can be carried out entirely offline? What additional Next.js 16 build, HTTP-status, accessibility, and navigation tests are needed for real production confidence?
+
+## Official references
+
+- [Official Next.js documentation for Project structure and route segments](https://nextjs.org/docs/app/getting-started/project-structure)
+- [Additional Next.js reference](https://nextjs.org/docs/app/getting-started/layouts-and-pages)

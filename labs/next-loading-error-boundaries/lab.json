@@ -1,0 +1,15 @@
+{
+  "id": "lab.next.next-loading-error-boundaries",
+  "lessonId": "07.01.04",
+  "title": "Offline model for loading and error boundaries",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/next-loading-error-boundaries/starter/solution.tsx",
+  "solution": "labs/next-loading-error-boundaries/solution/solution.tsx",
+  "tests": "labs/next-loading-error-boundaries/solution.test.mjs",
+  "verify": [
+    "npm run lab:next-loading-error-boundaries"
+  ],
+  "expected": "Loading announces progress, errors announce a failure, and ready has normal content.",
+  "security": "Only local fixtures run in Node. Next framework compilation, network behavior and auth require separate integration checks."
+}

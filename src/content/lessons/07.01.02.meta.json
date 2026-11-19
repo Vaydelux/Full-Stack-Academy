@@ -1,0 +1,39 @@
+{
+  "id": "07.01.02",
+  "title": "Layouts, pages and templates: Layouts preserve shared UI and local state between sibling navigations; templates create a fresh instance when a matching segment changes",
+  "description": "Next.js 16 and TypeScript 5 App Router lesson for layouts, pages and templates. Includes an intentionally broken starter, a corrected contract, verified-path offline tests and official documentation.",
+  "trackId": "07",
+  "moduleId": "07.01",
+  "level": "Intermediate",
+  "estimatedMinutes": 70,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "next": "16",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "07.01.01"
+  ],
+  "objectives": [
+    "Layouts preserve shared UI and local state between sibling navigations; templates create a fresh instance when a matching segment changes.",
+    "Repair the intentionally failing next-layout-template model.",
+    "Explain which behaviors need real Next.js compilation or browser integration verification."
+  ],
+  "labId": "lab.next.next-layout-template",
+  "rubric": [
+    "I can explain layouts, pages and templates in Next.js 16 without mixing older Pages Router semantics.",
+    "I can reproduce and fix the 07.01.02 failing starter with real data inputs.",
+    "I can identify the missing Next.js build, routing and HTTP integration evidence."
+  ],
+  "sources": [
+    {
+      "label": "Next.js reference for Layouts, pages and templates",
+      "url": "https://nextjs.org/docs/app/api-reference/file-conventions/layout"
+    },
+    {
+      "label": "Supporting official Next.js documentation",
+      "url": "https://nextjs.org/docs/app/api-reference/file-conventions/template"
+    }
+  ]
+}

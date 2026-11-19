@@ -1,0 +1,100 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Use Next.js Metadata API and static icon files rather than adding arbitrary head elements at runtime.","Repair a broken metadata and favicons example using a realistic Next.js 16 contract.","Distinguish offline models from a compiled App Router route or real response."]} />
+
+## The problem we're solving
+
+A guide page needs a readable document title, concise description and safe route-specific metadata.
+
+**Failure:** The starter returns the same homepage metadata regardless of topic and ignores unknown slugs.
+
+## Build the mental model
+
+Use Next.js Metadata API and static icon files rather than adding arbitrary head elements at runtime.
+
+**Prediction:** Metadata is generated from a validated topic name and never renders untrusted HTML.
+
+**Proof boundary:** The local Node/TSX fixture verifies this lesson's deterministic model and initial React markup. It does **not** start Next.js, compile route conventions, simulate streaming, or prove HTTP status codes. A separately built Next application and browser/HTTP test are needed before release qualification.
+
+## Prerequisites and preflight
+
+Read the preceding canonical topic and open `labs/next-metadata-favicons/starter/solution.tsx`. Use Node.js 24 and repository-locked dependencies. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:next-metadata-favicons`. PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:next-metadata-favicons; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the routing or metadata defect" file="labs/next-metadata-favicons/starter/solution.tsx" expected="An existing regression assertion fails for the exact incorrect behavior.">
+
+```tsx
+export type GuideMeta={title:string;description:string};
+export function metadataForGuide(_slug:string):GuideMeta{
+ return {title:'Home',description:'Home page'};
+}
+```
+
+**Why it fails:** The starter returns the same homepage metadata regardless of topic and ignores unknown slugs.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the safe Next.js-oriented contract" file="labs/next-metadata-favicons/starter/solution.tsx" expected="Metadata is generated from a validated topic name and never renders untrusted HTML.">
+
+```tsx
+export type GuideMeta={title:string;description:string};
+export function metadataForGuide(slug:string):GuideMeta{
+ const titles:Record<string,string>={react:'React guide',nextjs:'Next.js guide'};
+ const title=titles[slug];
+ if(!title)throw new Error('Unknown guide');
+ return {title:`${title} | Academy`,description:`Learn ${title} with practical examples.`};
+}
+```
+
+**Why it works:** Use Next.js Metadata API and static icon files rather than adding arbitrary head elements at runtime.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify data/route invariants and inspect real file conventions" file="labs/next-metadata-favicons/solution.test.mjs" expected="The instructor solution passes offline assertions; production routing remains a separate local Next build/browser gate.">
+
+```js
+assert.deepEqual(mod.metadataForGuide('react'),{title:'React guide | Academy',description:'Learn React guide with practical examples.'});
+assert.throws(()=>mod.metadataForGuide('random'),/Unknown guide/);
+```
+
+**Real App Router shape:**
+
+```tsx
+// app/guides/[slug]/page.tsx
+import type { Metadata } from 'next';
+type Props = { params: Promise<{ slug: string }> };
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params;
+  return {title: slug === 'react' ? 'React | Academy' : 'Guide | Academy', robots: {index: slug === 'react'}};
+}
+// Place icons as app/icon.png, app/apple-icon.png or configured metadata icons.
+```
+
+**Nuance:** App Router metadata belongs to Server Components and can be asynchronous. A favicon file is a static asset with browser caching; metadata generation does not authorize a route and should reflect canonical content, not expose private titles.
+
+</LessonStep>
+
+<Misconception claim="The starter returns the same homepage metadata regardless of topic and ignores unknown slugs." correction="Use Next.js Metadata API and static icon files rather than adding arbitrary head elements at runtime. A pure TypeScript routing model is not a Next.js HTTP integration test." />
+
+<KnowledgeCheck question="What is the safest principle for metadata and favicons in Next.js 16?" choices={["Next.js compiles route files automatically from this standalone Node test.","Use Next.js Metadata API and static icon files rather than adding arbitrary head elements at runtime.","Client-side route state can replace server permission checks.","Metadata and routing conventions never require a real Next build."] } correctIndex={1} explanation="Use Next.js Metadata API and static icon files rather than adding arbitrary head elements at runtime." misconception="Distinguish a model assertion from framework behavior and network outcomes." lessonId="07.01.07" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Reproduction:** The starter returns the same homepage metadata regardless of topic and ignores unknown slugs. Use the starter and capture the exact failed assertion. **Repair:** Use Next.js Metadata API and static icon files rather than adding arbitrary head elements at runtime. **Verify:** Metadata is generated from a validated topic name and never renders untrusted HTML.
+
+## Guided local lab
+
+The lab includes a broken starter, fixed instructor implementation, checked-in Node tests and a completion rubric. The academy does not run learner code on the server.
+
+<LabGate lessonId="07.01.07" labId="lab.next.next-metadata-favicons" commands={["npm run lab:next-metadata-favicons","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+Which checks can be carried out entirely offline? What additional Next.js 16 build, HTTP-status, accessibility, and navigation tests are needed for real production confidence?
+
+## Official references
+
+- [Official Next.js documentation for Metadata and favicons](https://nextjs.org/docs/app/api-reference/functions/generate-metadata)
+- [Additional Next.js reference](https://nextjs.org/docs/app/getting-started/metadata-and-og-images)

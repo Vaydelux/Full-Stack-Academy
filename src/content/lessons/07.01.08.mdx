@@ -1,0 +1,103 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Combine routes, layout, dynamic params, metadata, not-found decisions and accessible navigation into one small public-site contract.","Repair a broken lab public site example using a realistic Next.js 16 contract.","Distinguish offline models from a compiled App Router route or real response."]} />
+
+## The problem we're solving
+
+A fictional product catalogue needs a public landing page, route-safe product detail pages and meaningful 404 behavior.
+
+**Failure:** The starter accepts any product slug, returning a fabricated entry for unknown pages.
+
+## Build the mental model
+
+Combine routes, layout, dynamic params, metadata, not-found decisions and accessible navigation into one small public-site contract.
+
+**Prediction:** Known slugs render validated catalogue information; unknown slugs are rejected and public links stay internal.
+
+**Proof boundary:** The local Node/TSX fixture verifies this lesson's deterministic model and initial React markup. It does **not** start Next.js, compile route conventions, simulate streaming, or prove HTTP status codes. A separately built Next application and browser/HTTP test are needed before release qualification.
+
+## Prerequisites and preflight
+
+Read the preceding canonical topic and open `labs/next-public-site-capstone/starter/solution.tsx`. Use Node.js 24 and repository-locked dependencies. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:next-public-site-capstone`. PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:next-public-site-capstone; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the routing or metadata defect" file="labs/next-public-site-capstone/starter/solution.tsx" expected="An existing regression assertion fails for the exact incorrect behavior.">
+
+```tsx
+export type Product={slug:string;title:string};
+export const products:readonly Product[]=[{slug:'starter-kit',title:'Starter kit'},{slug:'ui-handbook',title:'UI handbook'}];
+export function findProduct(slug:string):Product|null{
+ return {slug,title:'A product'};
+}
+export function Catalogue(){return <ul>{products.map(product=><li key={product.slug}>{product.title}</li>)}</ul>;}
+```
+
+**Why it fails:** The starter accepts any product slug, returning a fabricated entry for unknown pages.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the safe Next.js-oriented contract" file="labs/next-public-site-capstone/starter/solution.tsx" expected="Known slugs render validated catalogue information; unknown slugs are rejected and public links stay internal.">
+
+```tsx
+export type Product={slug:string;title:string};
+export const products:readonly Product[]=[{slug:'starter-kit',title:'Starter kit'},{slug:'ui-handbook',title:'UI handbook'}];
+export function findProduct(slug:string):Product|null{
+ return products.find(product=>product.slug===slug)??null;
+}
+export function Catalogue(){return <ul>{products.map(product=><li key={product.slug}>{product.title}</li>)}</ul>;}
+```
+
+**Why it works:** Combine routes, layout, dynamic params, metadata, not-found decisions and accessible navigation into one small public-site contract.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify data/route invariants and inspect real file conventions" file="labs/next-public-site-capstone/solution.test.mjs" expected="The instructor solution passes offline assertions; production routing remains a separate local Next build/browser gate.">
+
+```js
+assert.deepEqual(mod.findProduct('starter-kit'),{slug:'starter-kit',title:'Starter kit'});
+assert.equal(mod.findProduct('../private'),null);
+assert.equal(mod.findProduct('not-real'),null);
+const html=renderToStaticMarkup(createElement(mod.Catalogue));assert.match(html,/Starter kit/);assert.match(html,/UI handbook/);
+```
+
+**Real App Router shape:**
+
+```tsx
+app/
+  layout.tsx
+  page.tsx
+  loading.tsx
+  not-found.tsx
+  products/[slug]/page.tsx
+// Always await params and call notFound() for unknown slugs.
+// Only the real Next build validates file convention exports and route behavior.
+```
+
+**Nuance:** The capstone includes a separately checked-in sample Next App Router tree under its solution assets. Its offline Node tests prove catalogue data and file presence—not Next compilation, streaming or production HTTP status codes.
+
+</LessonStep>
+
+<Misconception claim="The starter accepts any product slug, returning a fabricated entry for unknown pages." correction="Combine routes, layout, dynamic params, metadata, not-found decisions and accessible navigation into one small public-site contract. A pure TypeScript routing model is not a Next.js HTTP integration test." />
+
+<KnowledgeCheck question="What is the safest principle for lab public site in Next.js 16?" choices={["Next.js compiles route files automatically from this standalone Node test.","Combine routes, layout, dynamic params, metadata, not-found decisions and accessible navigation into one small public-site contract.","Client-side route state can replace server permission checks.","Metadata and routing conventions never require a real Next build."] } correctIndex={1} explanation="Combine routes, layout, dynamic params, metadata, not-found decisions and accessible navigation into one small public-site contract." misconception="Distinguish a model assertion from framework behavior and network outcomes." lessonId="07.01.08" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Reproduction:** The starter accepts any product slug, returning a fabricated entry for unknown pages. Use the starter and capture the exact failed assertion. **Repair:** Combine routes, layout, dynamic params, metadata, not-found decisions and accessible navigation into one small public-site contract. **Verify:** Known slugs render validated catalogue information; unknown slugs are rejected and public links stay internal.
+
+## Guided local lab
+
+The lab includes a broken starter, fixed instructor implementation, checked-in Node tests and a completion rubric. The academy does not run learner code on the server.
+
+<LabGate lessonId="07.01.08" labId="lab.next.next-public-site-capstone" commands={["npm run lab:next-public-site-capstone","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+Which checks can be carried out entirely offline? What additional Next.js 16 build, HTTP-status, accessibility, and navigation tests are needed for real production confidence?
+
+## Official references
+
+- [Official Next.js documentation for Lab public site](https://nextjs.org/docs/app/getting-started/layouts-and-pages)
+- [Additional Next.js reference](https://nextjs.org/docs/app/api-reference/file-conventions/dynamic-routes)

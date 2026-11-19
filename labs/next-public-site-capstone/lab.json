@@ -1,0 +1,15 @@
+{
+  "id": "lab.next.next-public-site-capstone",
+  "lessonId": "07.01.08",
+  "title": "Offline model for lab public site",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/next-public-site-capstone/starter/solution.tsx",
+  "solution": "labs/next-public-site-capstone/solution/solution.tsx",
+  "tests": "labs/next-public-site-capstone/solution.test.mjs",
+  "verify": [
+    "npm run lab:next-public-site-capstone"
+  ],
+  "expected": "Known slugs render validated catalogue information; unknown slugs are rejected and public links stay internal.",
+  "security": "Only local fixtures run in Node. Next framework compilation, network behavior and auth require separate integration checks."
+}

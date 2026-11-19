@@ -1,0 +1,108 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Keep navigation internal and explicit; use next/link for user navigation and do not turn untrusted destinations into open redirects.","Repair a broken navigation and prefetch example using a realistic Next.js 16 contract.","Distinguish offline models from a compiled App Router route or real response."]} />
+
+## The problem we're solving
+
+A documentation link accepts a path for a known same-origin page, but arbitrary external and JavaScript URLs must not become in-app navigation targets.
+
+**Failure:** The starter returns any supplied destination unchanged, including external origins.
+
+## Build the mental model
+
+Keep navigation internal and explicit; use next/link for user navigation and do not turn untrusted destinations into open redirects.
+
+**Prediction:** A local guide path remains internal; cross-origin and non-HTTP schemes are rejected.
+
+**Proof boundary:** The local Node/TSX fixture verifies this lesson's deterministic model and initial React markup. It does **not** start Next.js, compile route conventions, simulate streaming, or prove HTTP status codes. A separately built Next application and browser/HTTP test are needed before release qualification.
+
+## Prerequisites and preflight
+
+Read the preceding canonical topic and open `labs/next-navigation-prefetch/starter/solution.tsx`. Use Node.js 24 and repository-locked dependencies. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:next-navigation-prefetch`. PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:next-navigation-prefetch; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the routing or metadata defect" file="labs/next-navigation-prefetch/starter/solution.tsx" expected="An existing regression assertion fails for the exact incorrect behavior.">
+
+```tsx
+export function safeInternalPath(destination:string){return destination;}
+export function NavPath({destination}:{destination:string}){
+ return <code>{safeInternalPath(destination)}</code>;
+}
+```
+
+**Why it fails:** The starter returns any supplied destination unchanged, including external origins.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the safe Next.js-oriented contract" file="labs/next-navigation-prefetch/starter/solution.tsx" expected="A local guide path remains internal; cross-origin and non-HTTP schemes are rejected.">
+
+```tsx
+export function safeInternalPath(destination:string){
+ if(!destination.startsWith('/')||destination.startsWith('//'))return null;
+ try{
+  const parsed=new URL(destination,'https://academy.invalid');
+  if(parsed.origin!=='https://academy.invalid')return null;
+  if(parsed.pathname.startsWith('/\\'))return null;
+  return parsed.pathname+parsed.search+parsed.hash;
+ }catch{return null;}
+}
+export function NavPath({destination}:{destination:string}){
+ const href=safeInternalPath(destination);
+ return <code>{href??'Invalid destination'}</code>;
+}
+```
+
+**Why it works:** Keep navigation internal and explicit; use next/link for user navigation and do not turn untrusted destinations into open redirects.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify data/route invariants and inspect real file conventions" file="labs/next-navigation-prefetch/solution.test.mjs" expected="The instructor solution passes offline assertions; production routing remains a separate local Next build/browser gate.">
+
+```js
+assert.equal(mod.safeInternalPath('/guides/react'),'/guides/react');
+assert.equal(mod.safeInternalPath('https://evil.test/login'),null);
+assert.equal(mod.safeInternalPath('//evil.test'),null);
+assert.equal(mod.safeInternalPath('javascript:alert(1)'),null);
+assert.match(renderToStaticMarkup(createElement(mod.NavPath,{destination:'/docs'})),/\/docs/);
+```
+
+**Real App Router shape:**
+
+```tsx
+import Link from 'next/link';
+export default function GuideNav() {
+  return <nav aria-label="Guide navigation">
+    <Link href="/guides/react">React guide</Link>
+    <Link href="/guides/nextjs" prefetch={false}>Next.js guide</Link>
+  </nav>;
+}
+```
+
+**Nuance:** Next.js may prefetch visible links depending on deployment and route context. This is a performance feature, not an authorization check or guarantee the destination is available offline. Internal href validation is separate from server access control.
+
+</LessonStep>
+
+<Misconception claim="The starter returns any supplied destination unchanged, including external origins." correction="Keep navigation internal and explicit; use next/link for user navigation and do not turn untrusted destinations into open redirects. A pure TypeScript routing model is not a Next.js HTTP integration test." />
+
+<KnowledgeCheck question="What is the safest principle for navigation and prefetch in Next.js 16?" choices={["Next.js compiles route files automatically from this standalone Node test.","Keep navigation internal and explicit; use next/link for user navigation and do not turn untrusted destinations into open redirects.","Client-side route state can replace server permission checks.","Metadata and routing conventions never require a real Next build."] } correctIndex={1} explanation="Keep navigation internal and explicit; use next/link for user navigation and do not turn untrusted destinations into open redirects." misconception="Distinguish a model assertion from framework behavior and network outcomes." lessonId="07.01.06" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Reproduction:** The starter returns any supplied destination unchanged, including external origins. Use the starter and capture the exact failed assertion. **Repair:** Keep navigation internal and explicit; use next/link for user navigation and do not turn untrusted destinations into open redirects. **Verify:** A local guide path remains internal; cross-origin and non-HTTP schemes are rejected.
+
+## Guided local lab
+
+The lab includes a broken starter, fixed instructor implementation, checked-in Node tests and a completion rubric. The academy does not run learner code on the server.
+
+<LabGate lessonId="07.01.06" labId="lab.next.next-navigation-prefetch" commands={["npm run lab:next-navigation-prefetch","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+Which checks can be carried out entirely offline? What additional Next.js 16 build, HTTP-status, accessibility, and navigation tests are needed for real production confidence?
+
+## Official references
+
+- [Official Next.js documentation for Navigation and prefetch](https://nextjs.org/docs/app/getting-started/linking-and-navigating)
+- [Additional Next.js reference](https://nextjs.org/docs/app/api-reference/components/link)
