@@ -36,7 +36,7 @@ export function LessonNotebook({ lessonId }: { lessonId: string }) {
   }
 
   return (
-    <section aria-label="Save and annotate this lesson" className="mt-6 rounded-2xl border border-slate-200 bg-white/70 p-4 dark:border-white/10 dark:bg-white/[0.035]">
+    <section id="lesson-tools" aria-label="Save and annotate this lesson" className="mt-6 rounded-2xl border border-slate-200 bg-white/70 p-4 dark:border-white/10 dark:bg-white/[0.035]">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <button type="button" disabled={!hydrated} onClick={onBookmark} aria-pressed={bookmarked}
           className="inline-flex min-h-10 items-center gap-2 rounded-lg border border-slate-300 px-3 py-2 text-sm font-semibold hover:border-cyan-500 focus-visible:outline-2 focus-visible:outline-cyan-500 disabled:opacity-50 dark:border-white/20">
