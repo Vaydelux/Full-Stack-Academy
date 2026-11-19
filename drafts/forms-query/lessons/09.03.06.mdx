@@ -1,0 +1,102 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Prefetch safe public data in a Next.js Server Component, dehydrate it, and hydrate the same query key on the client.","In a real Next.js app, compare server and client query keys exactly. Inspect dehydrated state and verify only safe anonymous data appears; test hydration with a mounted QueryClientProvider.","Never dehydrate authentication tokens, internal service responses, another user's tasks or secrets into a public HTML payload. This server-only example is not a Vite browser route."]} />
+
+## The problem we're solving
+
+A Next.js page fetches tasks on the server and again on the client with different query keys, causing duplicate requests, flicker, and a hydration mismatch.
+
+**Broken behavior in the starter:** The starter creates QueryClient but fails to prefetch and hydrate into the client component with a matching key.
+
+## Build the mental model
+
+The server creates a request-scoped QueryClient, prefetches a query, then passes only safe dehydrated state through HydrationBoundary. Client query keys and data shapes must match.
+
+**Predict before coding:** The first client render uses the prefetched cache; a later refetch occurs only when freshness policy requires it.
+
+**Version and deployment scope:** TanStack Query v5, React 19, TypeScript 5. The Task API is a locally bound, in-memory, unauthenticated fixture. No compatible npm dependency lock or browser qualification has been completed, so this draft cannot be marked published.
+
+## Prerequisites and preflight
+
+Review the preceding canonical topics, including React Hook Form's validated POST boundary. Start with `drafts/forms-query/labs/ssr-hydration/starter.tsx`, and compare with the instructor source only after predicting the incorrect result.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the faulty remote-state assumption" file="drafts/forms-query/labs/ssr-hydration/starter.tsx" expected="The starter creates QueryClient but fails to prefetch and hydrate into the client component with a matching key.">
+
+```tsx
+import { QueryClient, dehydrate, HydrationBoundary } from '@tanstack/react-query';
+import TaskList from './task-list';
+export default async function Page(){
+ const client=new QueryClient();
+ return <TaskList />; // cache never seeded; client refetches
+}
+```
+
+**Why it fails:** A Next.js page fetches tasks on the server and again on the client with different query keys, causing duplicate requests, flicker, and a hydration mismatch.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the correct TanStack Query behavior" file="drafts/forms-query/labs/ssr-hydration/solution.tsx" expected="The first client render uses the prefetched cache; a later refetch occurs only when freshness policy requires it.">
+
+```tsx
+import { QueryClient, dehydrate, HydrationBoundary } from '@tanstack/react-query';
+import TaskList from './task-list';
+import Providers from './providers';
+// Next App Router Server Component. Teaching-only local anonymous public data.
+export default async function Page(){
+ const client=new QueryClient();
+ await client.prefetchQuery({
+  queryKey:['tasks',{status:'todo',limit:10}],
+  queryFn:async()=>{
+   const r=await fetch('http://127.0.0.1:3337/api/tasks?status=todo&limit=10',{cache:'no-store'});
+   if(!r.ok)throw new Error('Local teaching API unavailable');
+   return r.json();
+  },
+ });
+ return <Providers><HydrationBoundary state={dehydrate(client)}><TaskList/></HydrationBoundary></Providers>;
+}
+
+```
+
+**Required client boundary:** `drafts/forms-query/labs/ssr-hydration/providers.tsx` owns one browser QueryClientProvider; `task-list.tsx` is a `'use client'` consumer. Real Next.js server prefetch requires a trusted same-origin BFF or a strictly local Node runtime, not a production browser reaching into developer loopback.
+
+**What changed:** The server creates a request-scoped QueryClient, prefetches a query, then passes only safe dehydrated state through HydrationBoundary. Client query keys and data shapes must match.
+
+</LessonStep>
+
+<LessonStep number={3} title="Assert real HTTP and cache behavior" file="drafts/forms-query/labs/ssr-hydration/lab.json" expected="In a real Next.js app, compare server and client query keys exactly. Inspect dehydrated state and verify only safe anonymous data appears; test hydration with a mounted QueryClientProvider.">
+
+**Observe:** In a real Next.js app, compare server and client query keys exactly. Inspect dehydrated state and verify only safe anonymous data appears; test hydration with a mounted QueryClientProvider.
+
+**Required evidence before publishing:** Use real installed TanStack Query with a mounted QueryClientProvider and an actual loopback HTTP fixture. Record the expected red assertion for the starter and a green assertion for the instructor. Inspect request counts and body shape; static source checks are insufficient for release.
+
+**Boundary:** Never dehydrate authentication tokens, internal service responses, another user's tasks or secrets into a public HTML payload. This server-only example is not a Vite browser route.
+
+</LessonStep>
+
+<Misconception claim="The starter creates QueryClient but fails to prefetch and hydrate into the client component with a matching key." correction="The server creates a request-scoped QueryClient, prefetches a query, then passes only safe dehydrated state through HydrationBoundary. Client query keys and data shapes must match." />
+
+<KnowledgeCheck question="What is the reliable approach to suspense and ssr hydration?" choices={["Assume cached browser state equals server truth forever.","Use TanStack Query resource identity and the server's HTTP contract.","Ignore failure responses to keep the UI fast.","Disable all validation once the code typechecks."]} correctIndex={1} explanation="The server creates a request-scoped QueryClient, prefetches a query, then passes only safe dehydrated state through HydrationBoundary. Client query keys and data shapes must match." misconception="The starter creates QueryClient but fails to prefetch and hydrate into the client component with a matching key." lessonId="09.03.06" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+1. **Reproduce:** The starter creates QueryClient but fails to prefetch and hydrate into the client component with a matching key.
+2. **Diagnose:** Trace the query key, cancellation boundary, remote response, cache update and invalidation.
+3. **Repair:** Prefetch safe public data in a Next.js Server Component, dehydrate it, and hydrate the same query key on the client.
+4. **Regression:** In a real Next.js app, compare server and client query keys exactly. Inspect dehydrated state and verify only safe anonymous data appears; test hydration with a mounted QueryClientProvider.
+5. **Security and operations:** Never dehydrate authentication tokens, internal service responses, another user's tasks or secrets into a public HTML payload. This server-only example is not a Vite browser route.
+
+## Guided local lab
+
+Red learner source: `drafts/forms-query/labs/ssr-hydration/starter.tsx`. Instructor implementation: `drafts/forms-query/labs/ssr-hydration/solution.tsx`. The lab manifest declares missing real-library qualification explicitly; it is not part of the published lab runner or lesson registry.
+
+## Reflect
+
+What should happen if the server returns an old result, a 409 stale cursor, a 412 conditional-write conflict or a network error? Which layer owns each recovery decision?
+
+## Official references
+
+- [Primary official reference](https://tanstack.com/query/latest/docs/framework/react/guides/advanced-ssr)
+- [Supporting official reference](https://tanstack.com/query/latest/docs/framework/react/guides/ssr)

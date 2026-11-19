@@ -1,0 +1,101 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Distinguish a React-controlled input from an uncontrolled field registered with React Hook Form, and keep a single source of truth.","Type `Practice HTTP` using the keyboard and submit; the output must reflect the text. Submitting an empty or two-character title must not update the output.","The browser must validate for usability, but the HTTP server still checks the 3–100 character title and allowed priorities."]} />
+
+## The problem we're solving
+
+A team binds a profile field to React state but forgets to forward onChange, leaving the form apparently read-only. Repeated rerenders add more problems when the same field is also registered in React Hook Form.
+
+**What breaks in the learner starter:** The title is hard-coded and never updated by the registered field.
+
+## Build the mental model
+
+A controlled input receives its current value and change handler from React. An uncontrolled input keeps its current value in the DOM, and React Hook Form can register it via a ref. Pick one owner per field.
+
+**Predict before coding:** Typing into a value-bound field without an onChange handler will not update it; registration with RHF avoids duplicating React state.
+
+**Scope:** This staged article uses genuine React Hook Form v7 interfaces and React 19 patterns. The source is not yet compiled with installed RHF packages or browser-tested. The companion Node loopback Task API is educational, unauthenticated and in-memory.
+
+## Prerequisites and preflight
+
+Read the preceding canonical module lessons and `drafts/forms-query/README.md`. The staged exercise is in `drafts/forms-query/labs/controlled-uncontrolled/`. Install and lock real compatible npm packages *before* promoting this draft to the production academy. Do not copy the starter to the published lab registry until its negative test is observable.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the red starter" file="drafts/forms-query/labs/controlled-uncontrolled/starter.tsx" expected="The title is hard-coded and never updated by the registered field.">
+
+```tsx
+import { useForm } from 'react-hook-form';
+export default function TitleForm() {
+  const { handleSubmit } = useForm<{title:string}>();
+  return <form onSubmit={handleSubmit(console.log)}>
+    <label htmlFor="title">Title</label>
+    <input id="title" value="Not editable" />
+    <button>Save</button>
+  </form>;
+}
+```
+
+**Observe:** A team binds a profile field to React state but forgets to forward onChange, leaving the form apparently read-only. Repeated rerenders add more problems when the same field is also registered in React Hook Form.
+
+</LessonStep>
+
+<LessonStep number={2} title="Apply the instructor repair" file="drafts/forms-query/labs/controlled-uncontrolled/solution.tsx" expected="Typing into a value-bound field without an onChange handler will not update it; registration with RHF avoids duplicating React state.">
+
+```tsx
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+export default function TitleForm() {
+  const { register, handleSubmit, formState: { errors } } =
+    useForm<{ title: string }>({ defaultValues: { title: '' } });
+  const [submitted, setSubmitted] = useState('');
+  return <form onSubmit={handleSubmit(v => setSubmitted(v.title))}>
+    <label htmlFor="title">Task title</label>
+    <input id="title" {...register('title', { required: 'Required', minLength: 3, maxLength: 100 })}
+      aria-invalid={Boolean(errors.title)} aria-describedby={errors.title ? 'title-error' : undefined} />
+    {errors.title && <p id="title-error" role="alert">{errors.title.message ?? 'Invalid title'}</p>}
+    <button type="submit">Save</button>
+    <output>{submitted}</output>
+  </form>;
+}
+```
+
+**Why:** A controlled input receives its current value and change handler from React. An uncontrolled input keeps its current value in the DOM, and React Hook Form can register it via a ref. Pick one owner per field.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify behavior at the real boundary" file="drafts/forms-query/labs/controlled-uncontrolled/lab.json" expected="Type `Practice HTTP` using the keyboard and submit; the output must reflect the text. Submitting an empty or two-character title must not update the output.">
+
+**Acceptance scenario:** Type `Practice HTTP` using the keyboard and submit; the output must reflect the text. Submitting an empty or two-character title must not update the output.
+
+**Debug the failure:** reproduce the bad behavior in the starter, make the smallest correction, then repeat the positive case and a genuinely failing negative case. This must be automated using real RHF/React packages and a DOM harness before the lesson is published.
+
+**Trust boundary:** The browser must validate for usability, but the HTTP server still checks the 3–100 character title and allowed priorities.
+
+</LessonStep>
+
+<Misconception claim="The title is hard-coded and never updated by the registered field." correction="A controlled input receives its current value and change handler from React. An uncontrolled input keeps its current value in the DOM, and React Hook Form can register it via a ref. Pick one owner per field." />
+
+<KnowledgeCheck question="Which repair best addresses controlled vs uncontrolled inputs?" choices={["Always trust the browser to enforce security.","Use one authoritative form state and verify the tested behavior.","Ignore non-200 HTTP responses if fetch resolved.","Treat TypeScript types as runtime authorization."]} correctIndex={1} explanation="A controlled input receives its current value and change handler from React. An uncontrolled input keeps its current value in the DOM, and React Hook Form can register it via a ref. Pick one owner per field." misconception="The title is hard-coded and never updated by the registered field." lessonId="09.02.01" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+1. **Reproduce:** The title is hard-coded and never updated by the registered field.
+2. **Diagnose:** Locate who owns the current value, where it is transformed, and which effect or async boundary can invalidate assumptions.
+3. **Repair:** Distinguish a React-controlled input from an uncontrolled field registered with React Hook Form, and keep a single source of truth.
+4. **Regression:** Type `Practice HTTP` using the keyboard and submit; the output must reflect the text. Submitting an empty or two-character title must not update the output.
+5. **Operational boundary:** The browser must validate for usability, but the HTTP server still checks the 3–100 character title and allowed priorities.
+
+## Guided local lab
+
+The staged red starter and instructor solution are available in `drafts/forms-query/labs/controlled-uncontrolled/`. The acceptance specification describes behaviors to implement and verify with actual library packages. This is **not** a published or automatically graded lab and has no LabGate until tests pass.
+
+## Reflect
+
+What did the learner believe to be the source of truth before the repair? What user-visible state would diverge under failure, cancellation or a stale server response?
+
+## Official references
+
+- [Primary official reference](https://react-hook-form.com/get-started)
+- [Supporting official reference](https://react-hook-form.com/docs/useform/register)

@@ -1,0 +1,108 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Snapshot affected query data before an optimistic delete, roll back on failure, and reconcile after the mutation settles.","Force DELETE 404 or transport failure. The cached row must be restored. Success must invalidate server data. Disable concurrent deletes or implement version-aware compensation.","Snapshot rollback only remains correct when conflicting updates are serialized or reconciled; overlapping optimistic mutations need a more careful policy."]} />
+
+## The problem we're solving
+
+A task disappears as soon as Delete is clicked. The server rejects the request, but the UI keeps it removed, contradicting authoritative server state.
+
+**Broken behavior in the starter:** The starter removes the row in cache but never saves or restores the previous snapshot after an HTTP error.
+
+## Build the mental model
+
+An optimistic update is speculative. cancelQueries protects the snapshot from in-flight reads, onMutate saves the previous value, onError restores it, and onSettled invalidates.
+
+**Predict before coding:** During a failed DELETE, the row disappears briefly and then reappears. A successful delete stays removed after refetch.
+
+**Version and deployment scope:** TanStack Query v5, React 19, TypeScript 5. The Task API is a locally bound, in-memory, unauthenticated fixture. No compatible npm dependency lock or browser qualification has been completed, so this draft cannot be marked published.
+
+## Prerequisites and preflight
+
+Review the preceding canonical topics, including React Hook Form's validated POST boundary. Start with `drafts/forms-query/labs/optimistic-rollback/starter.tsx`, and compare with the instructor source only after predicting the incorrect result.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the faulty remote-state assumption" file="drafts/forms-query/labs/optimistic-rollback/starter.tsx" expected="The starter removes the row in cache but never saves or restores the previous snapshot after an HTTP error.">
+
+```tsx
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+export function DeleteButton({id}:{id:string}){
+ const client=useQueryClient();
+ const del=useMutation({mutationFn:()=>fetch('/api/tasks/'+id,{method:'DELETE'}),
+  onMutate:()=>{client.setQueryData<{items:{id:string}[]}>(['tasks'],old=>old?{items:old.items.filter(x=>x.id!==id)}:old);}
+ });
+ return <button onClick={()=>del.mutate()}>Delete</button>;
+}
+```
+
+**Why it fails:** A task disappears as soon as Delete is clicked. The server rejects the request, but the UI keeps it removed, contradicting authoritative server state.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the correct TanStack Query behavior" file="drafts/forms-query/labs/optimistic-rollback/solution.tsx" expected="During a failed DELETE, the row disappears briefly and then reappears. A successful delete stays removed after refetch.">
+
+```tsx
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+type TaskPage={items:{id:string;title:string}[]};
+export function DeleteButton({id}:{id:string}){
+ const client=useQueryClient();
+ const key=['tasks',{status:'all',limit:10}] as const;
+ const del=useMutation({
+  mutationFn:async()=>{
+   const response=await fetch('/api/tasks/'+encodeURIComponent(id),{method:'DELETE'});
+   if(!response.ok)throw new Error('HTTP '+response.status);
+  },
+  onMutate:async()=>{
+   await client.cancelQueries({queryKey:key});
+   const before=client.getQueryData<TaskPage>(key);
+   client.setQueryData<TaskPage>(key,current=>current?{...current,items:current.items.filter(t=>t.id!==id)}:current);
+   return {before};
+  },
+  onError:(_error,_variables,ctx)=>{if(ctx?.before)client.setQueryData(key,ctx.before);},
+  onSettled:()=>client.invalidateQueries({queryKey:['tasks']}),
+ });
+ return <button type="button" disabled={del.isPending} onClick={()=>del.mutate()}>
+  {del.isPending?'Removing…':'Delete'}
+ </button>;
+}
+```
+
+**What changed:** An optimistic update is speculative. cancelQueries protects the snapshot from in-flight reads, onMutate saves the previous value, onError restores it, and onSettled invalidates.
+
+</LessonStep>
+
+<LessonStep number={3} title="Assert real HTTP and cache behavior" file="drafts/forms-query/labs/optimistic-rollback/lab.json" expected="Force DELETE 404 or transport failure. The cached row must be restored. Success must invalidate server data. Disable concurrent deletes or implement version-aware compensation.">
+
+**Observe:** Force DELETE 404 or transport failure. The cached row must be restored. Success must invalidate server data. Disable concurrent deletes or implement version-aware compensation.
+
+**Required evidence before publishing:** Use real installed TanStack Query with a mounted QueryClientProvider and an actual loopback HTTP fixture. Record the expected red assertion for the starter and a green assertion for the instructor. Inspect request counts and body shape; static source checks are insufficient for release.
+
+**Boundary:** Snapshot rollback only remains correct when conflicting updates are serialized or reconciled; overlapping optimistic mutations need a more careful policy.
+
+</LessonStep>
+
+<Misconception claim="The starter removes the row in cache but never saves or restores the previous snapshot after an HTTP error." correction="An optimistic update is speculative. cancelQueries protects the snapshot from in-flight reads, onMutate saves the previous value, onError restores it, and onSettled invalidates." />
+
+<KnowledgeCheck question="What is the reliable approach to optimistic updates and rollback?" choices={["Assume cached browser state equals server truth forever.","Use TanStack Query resource identity and the server's HTTP contract.","Ignore failure responses to keep the UI fast.","Disable all validation once the code typechecks."]} correctIndex={1} explanation="An optimistic update is speculative. cancelQueries protects the snapshot from in-flight reads, onMutate saves the previous value, onError restores it, and onSettled invalidates." misconception="The starter removes the row in cache but never saves or restores the previous snapshot after an HTTP error." lessonId="09.03.04" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+1. **Reproduce:** The starter removes the row in cache but never saves or restores the previous snapshot after an HTTP error.
+2. **Diagnose:** Trace the query key, cancellation boundary, remote response, cache update and invalidation.
+3. **Repair:** Snapshot affected query data before an optimistic delete, roll back on failure, and reconcile after the mutation settles.
+4. **Regression:** Force DELETE 404 or transport failure. The cached row must be restored. Success must invalidate server data. Disable concurrent deletes or implement version-aware compensation.
+5. **Security and operations:** Snapshot rollback only remains correct when conflicting updates are serialized or reconciled; overlapping optimistic mutations need a more careful policy.
+
+## Guided local lab
+
+Red learner source: `drafts/forms-query/labs/optimistic-rollback/starter.tsx`. Instructor implementation: `drafts/forms-query/labs/optimistic-rollback/solution.tsx`. The lab manifest declares missing real-library qualification explicitly; it is not part of the published lab runner or lesson registry.
+
+## Reflect
+
+What should happen if the server returns an old result, a 409 stale cursor, a 412 conditional-write conflict or a network error? Which layer owns each recovery decision?
+
+## Official references
+
+- [Primary official reference](https://tanstack.com/query/latest/docs/framework/react/guides/optimistic-updates)
+- [Supporting official reference](https://tanstack.com/query/latest/docs/framework/react/reference/useMutation)

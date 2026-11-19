@@ -1,0 +1,32 @@
+{
+  "id": "09.02.03",
+  "title": "Zod resolvers",
+  "moduleId": "09.02",
+  "trackId": "09",
+  "sourceStatus": "staged-unverified",
+  "estimatedMinutes": 48,
+  "prerequisites": [
+    "09.02.02"
+  ],
+  "stack": {
+    "react": "19",
+    "typescript": "5",
+    "zod": "4",
+    "reactHookForm": "7"
+  },
+  "objective": "Use zodResolver with distinct schema input and transformed output types; validate unknown values at the HTTP boundary too.",
+  "predict": "A title containing spaces only must be blocked before POST, while a valid padded title becomes trimmed in handleSubmit.",
+  "expectedBehavior": "The string `  done ` must be transformed to `done`. `   ` and a 101-character title must not invoke the submit callback. Server 422 must still be handled.",
+  "commonFailure": "The form has no resolver, so a whitespace title reaches the submit handler.",
+  "securityBoundary": "zodResolver is not authorization or persistence. The loopback API rejects invalid title/priority independently and must not trust the browser schema.",
+  "labSlug": "zod-resolver",
+  "officialReferences": [
+    "https://github.com/react-hook-form/resolvers#zod",
+    "https://zod.dev/basics"
+  ],
+  "rubric": [
+    "Use zodResolver with distinct schema input and transformed output types; validate unknown values at the HTTP boundary too.",
+    "The string `  done ` must be transformed to `done`. `   ` and a 101-character title must not invoke the submit callback. Server 422 must still be handled.",
+    "I can explain why client validation is not server authorization."
+  ]
+}

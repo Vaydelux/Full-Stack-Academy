@@ -1,0 +1,32 @@
+{
+  "id": "09.02.05",
+  "title": "Async submissions",
+  "moduleId": "09.02",
+  "trackId": "09",
+  "sourceStatus": "staged-unverified",
+  "estimatedMinutes": 48,
+  "prerequisites": [
+    "09.02.04"
+  ],
+  "stack": {
+    "react": "19",
+    "typescript": "5",
+    "zod": "4",
+    "reactHookForm": "7"
+  },
+  "objective": "Prevent duplicate side effects and reuse one idempotency key for retries of the same logical request.",
+  "predict": "Two clicks and a response-loss retry must produce one logical task, while a later new task gets a new key.",
+  "expectedBehavior": "Simulate an accepted 201 with a lost response. Retry must preserve both body and key. Double-click while pending and verify no second fetch starts.",
+  "commonFailure": "The starter generates a new idempotency key for every retry and has no in-flight lock.",
+  "securityBoundary": "An in-memory idempotency key protects only one process lifetime. Real billing/financial mutations require durable server-side deduplication.",
+  "labSlug": "async-submission",
+  "officialReferences": [
+    "https://react-hook-form.com/docs/useform/handlesubmit",
+    "https://tanstack.com/query/latest/docs/framework/react/guides/mutations"
+  ],
+  "rubric": [
+    "Prevent duplicate side effects and reuse one idempotency key for retries of the same logical request.",
+    "Simulate an accepted 201 with a lost response. Retry must preserve both body and key. Double-click while pending and verify no second fetch starts.",
+    "I can explain why client validation is not server authorization."
+  ]
+}

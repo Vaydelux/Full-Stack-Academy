@@ -10,8 +10,8 @@
   },
   "development": {
     "branch": "main",
-    "state": "forms-query-task-workflow-v3-source-candidate",
-    "note": "After PR #29, strict Host/Origin/request-target validation, revision-based status PATCH (412/428), status-filtered cursors, bounded browser request journal, isolated React status/rollback source, 6-operation OpenAPI 3.1.1, and two unindexed academy project routes. Exact source 29/29 mocked-request simulations, 11/11 spec assertions and 6/6 route assertions passed. No v3 real Node socket suite, full Node24 npm/Next/Vite build or browser acceptance; no Vercel/Actions. RHF 09.02/Query 09.03 remain PLANNED."
+    "state": "forms-query-sixteen-staged-unverified",
+    "note": "Following merged PR #30, 16 canonical 09.02/09.03 topics have complete staged MDX teaching drafts, paired broken/instructor TSX examples, and lab acceptance contracts under drafts/forms-query; two SSR client/provider support files included. New local draft validator, TSX syntax gate, strict source/full qualification CLI and curriculum readiness report. Source inspections: 176/176 article/metadata + 48/48 lab checks, 4/4 new JS script syntax parses; no new actual Node HTTP run, npm lock, typechecked React/Next build or browser tests. 338 published IDs/337 MDX/labs and 42 complete modules unchanged. No GitHub Actions/Vercel."
   },
   "snapshot": {
     "tracks": 28,
@@ -73,6 +73,6 @@
     "devHighFindings": 14,
     "exceptionExpires": "2026-12-02"
   },
-  "nextMilestone": "qualify-v3-real-node-http-and-react-deps-then-publish-09.02-09.03",
-  "status": "task-workflow-v3-source-merged-mock-qualified-real-build-and-browser-pending"
+  "nextMilestone": "qualify-rhf-query-real-node24-npm-locked-ui-tests-and-promote-09.02-09.03",
+  "status": "forms-query-16-draft-packs-staged-no-publication-release-gates-pending"
 }

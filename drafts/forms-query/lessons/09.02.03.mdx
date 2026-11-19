@@ -1,0 +1,103 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Use zodResolver with distinct schema input and transformed output types; validate unknown values at the HTTP boundary too.","The string `  done ` must be transformed to `done`. `   ` and a 101-character title must not invoke the submit callback. Server 422 must still be handled.","zodResolver is not authorization or persistence. The loopback API rejects invalid title/priority independently and must not trust the browser schema."]} />
+
+## The problem we're solving
+
+A task form accepts whitespace-only titles even though the server rejects them. Another developer types a submitted value as the pre-transform input and sends untrimmed text.
+
+**What breaks in the learner starter:** The form has no resolver, so a whitespace title reaches the submit handler.
+
+## Build the mental model
+
+Zod 4 parses and transforms runtime input. React Hook Form supports the schema input type and a distinct handleSubmit output type as its third generic.
+
+**Predict before coding:** A title containing spaces only must be blocked before POST, while a valid padded title becomes trimmed in handleSubmit.
+
+**Scope:** This staged article uses genuine React Hook Form v7 interfaces and React 19 patterns. The source is not yet compiled with installed RHF packages or browser-tested. The companion Node loopback Task API is educational, unauthenticated and in-memory.
+
+## Prerequisites and preflight
+
+Read the preceding canonical module lessons and `drafts/forms-query/README.md`. The staged exercise is in `drafts/forms-query/labs/zod-resolver/`. Install and lock real compatible npm packages *before* promoting this draft to the production academy. Do not copy the starter to the published lab registry until its negative test is observable.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the red starter" file="drafts/forms-query/labs/zod-resolver/starter.tsx" expected="The form has no resolver, so a whitespace title reaches the submit handler.">
+
+```tsx
+import { useForm } from 'react-hook-form';
+export default function TaskForm(){
+ const {register,handleSubmit}=useForm<{title:string;priority:'low'|'normal'|'high'}>();
+ return <form onSubmit={handleSubmit(console.log)}>
+  <input aria-label="Title" {...register('title')} />
+  <select aria-label="Priority" {...register('priority')}><option value="normal">Normal</option></select>
+  <button>Submit</button>
+ </form>;
+}
+```
+
+**Observe:** A task form accepts whitespace-only titles even though the server rejects them. Another developer types a submitted value as the pre-transform input and sends untrimmed text.
+
+</LessonStep>
+
+<LessonStep number={2} title="Apply the instructor repair" file="drafts/forms-query/labs/zod-resolver/solution.tsx" expected="A title containing spaces only must be blocked before POST, while a valid padded title becomes trimmed in handleSubmit.">
+
+```tsx
+import * as z from 'zod';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+const Task=z.object({title:z.string().trim().min(3).max(100),priority:z.enum(['low','normal','high'])});
+export default function TaskForm(){
+ const {register,handleSubmit,formState:{errors}}=
+  useForm<z.input<typeof Task>,unknown,z.output<typeof Task>>({
+   resolver:zodResolver(Task), defaultValues:{title:'',priority:'normal'} });
+ return <form onSubmit={handleSubmit(data=>console.log(data.title))}>
+  <label htmlFor="task-title">Title</label><input id="task-title" {...register('title')}
+   aria-invalid={Boolean(errors.title)} aria-describedby={errors.title?'title-err':undefined}/>
+  {errors.title&&<p id="title-err" role="alert">{errors.title.message}</p>}
+  <label htmlFor="task-priority">Priority</label><select id="task-priority" {...register('priority')}>
+   <option value="normal">Normal</option><option value="low">Low</option><option value="high">High</option></select>
+  <button>Submit</button>
+ </form>;
+}
+```
+
+**Why:** Zod 4 parses and transforms runtime input. React Hook Form supports the schema input type and a distinct handleSubmit output type as its third generic.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify behavior at the real boundary" file="drafts/forms-query/labs/zod-resolver/lab.json" expected="The string `  done ` must be transformed to `done`. `   ` and a 101-character title must not invoke the submit callback. Server 422 must still be handled.">
+
+**Acceptance scenario:** The string `  done ` must be transformed to `done`. `   ` and a 101-character title must not invoke the submit callback. Server 422 must still be handled.
+
+**Debug the failure:** reproduce the bad behavior in the starter, make the smallest correction, then repeat the positive case and a genuinely failing negative case. This must be automated using real RHF/React packages and a DOM harness before the lesson is published.
+
+**Trust boundary:** zodResolver is not authorization or persistence. The loopback API rejects invalid title/priority independently and must not trust the browser schema.
+
+</LessonStep>
+
+<Misconception claim="The form has no resolver, so a whitespace title reaches the submit handler." correction="Zod 4 parses and transforms runtime input. React Hook Form supports the schema input type and a distinct handleSubmit output type as its third generic." />
+
+<KnowledgeCheck question="Which repair best addresses zod resolvers?" choices={["Always trust the browser to enforce security.","Use one authoritative form state and verify the tested behavior.","Ignore non-200 HTTP responses if fetch resolved.","Treat TypeScript types as runtime authorization."]} correctIndex={1} explanation="Zod 4 parses and transforms runtime input. React Hook Form supports the schema input type and a distinct handleSubmit output type as its third generic." misconception="The form has no resolver, so a whitespace title reaches the submit handler." lessonId="09.02.03" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+1. **Reproduce:** The form has no resolver, so a whitespace title reaches the submit handler.
+2. **Diagnose:** Locate who owns the current value, where it is transformed, and which effect or async boundary can invalidate assumptions.
+3. **Repair:** Use zodResolver with distinct schema input and transformed output types; validate unknown values at the HTTP boundary too.
+4. **Regression:** The string `  done ` must be transformed to `done`. `   ` and a 101-character title must not invoke the submit callback. Server 422 must still be handled.
+5. **Operational boundary:** zodResolver is not authorization or persistence. The loopback API rejects invalid title/priority independently and must not trust the browser schema.
+
+## Guided local lab
+
+The staged red starter and instructor solution are available in `drafts/forms-query/labs/zod-resolver/`. The acceptance specification describes behaviors to implement and verify with actual library packages. This is **not** a published or automatically graded lab and has no LabGate until tests pass.
+
+## Reflect
+
+What did the learner believe to be the source of truth before the repair? What user-visible state would diverge under failure, cancellation or a stale server response?
+
+## Official references
+
+- [Primary official reference](https://github.com/react-hook-form/resolvers#zod)
+- [Supporting official reference](https://zod.dev/basics)

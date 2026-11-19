@@ -1,0 +1,31 @@
+{
+  "id": "09.03.06",
+  "title": "Suspense and SSR hydration",
+  "moduleId": "09.03",
+  "trackId": "09",
+  "sourceStatus": "staged-unverified",
+  "estimatedMinutes": 63,
+  "prerequisites": [
+    "09.03.05"
+  ],
+  "stack": {
+    "react": "19",
+    "typescript": "5",
+    "tanstackQuery": "5"
+  },
+  "objective": "Prefetch safe public data in a Next.js Server Component, dehydrate it, and hydrate the same query key on the client.",
+  "predict": "The first client render uses the prefetched cache; a later refetch occurs only when freshness policy requires it.",
+  "expectedBehavior": "In a real Next.js app, compare server and client query keys exactly. Inspect dehydrated state and verify only safe anonymous data appears; test hydration with a mounted QueryClientProvider.",
+  "commonFailure": "The starter creates QueryClient but fails to prefetch and hydrate into the client component with a matching key.",
+  "securityBoundary": "Never dehydrate authentication tokens, internal service responses, another user's tasks or secrets into a public HTML payload. This server-only example is not a Vite browser route.",
+  "labSlug": "ssr-hydration",
+  "officialReferences": [
+    "https://tanstack.com/query/latest/docs/framework/react/guides/advanced-ssr",
+    "https://tanstack.com/query/latest/docs/framework/react/guides/ssr"
+  ],
+  "rubric": [
+    "Prefetch safe public data in a Next.js Server Component, dehydrate it, and hydrate the same query key on the client.",
+    "In a real Next.js app, compare server and client query keys exactly. Inspect dehydrated state and verify only safe anonymous data appears; test hydration with a mounted QueryClientProvider.",
+    "I can distinguish cache freshness, HTTP success and server authorization."
+  ]
+}

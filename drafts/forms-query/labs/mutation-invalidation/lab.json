@@ -1,0 +1,19 @@
+{
+  "id": "draft.query.mutation-invalidation",
+  "lessonId": "09.03.03",
+  "title": "Mutations and invalidation",
+  "sourceStatus": "staged-unverified",
+  "runtime": "react-19-tanstack-query-5-ts-5",
+  "starter": "drafts/forms-query/labs/mutation-invalidation/starter.tsx",
+  "solution": "drafts/forms-query/labs/mutation-invalidation/solution.tsx",
+  "expectedPositive": "Create with a valid key; verify one 201, then a GET refreshes the matching list. A 422 must never produce an invalidation-based success state.",
+  "expectedNegative": "The starter sends a POST without invalidating task-list queries and has no idempotency contract.",
+  "securityBoundary": "A retry that regenerates the idempotency key may produce duplicate tasks. Avoid retrying unauthorized or validation failures automatically.",
+  "officialReferences": [
+    "https://tanstack.com/query/latest/docs/framework/react/guides/invalidations-from-mutations",
+    "https://tanstack.com/query/latest/docs/framework/react/guides/mutations"
+  ],
+  "requiresRealLibraryTest": true,
+  "requiresRealBrowserTest": true,
+  "readyToPublish": false
+}

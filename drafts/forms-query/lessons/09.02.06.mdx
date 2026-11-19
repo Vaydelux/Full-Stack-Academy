@@ -1,0 +1,104 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Understand isDirty, dirtyFields, defaultValues, reset(), and preserving drafts after a failed request.","Enter a nonempty title, force server 503, and verify the field remains dirty. Repeat with 201 and confirm reset clears it.","Do not store private form drafts or server error bodies into telemetry by default; client state may contain sensitive data."]} />
+
+## The problem we're solving
+
+A form clears its inputs at the start of every submit, then a 503 response arrives. The learner must retype the entire task and loses the failed request context.
+
+**What breaks in the learner starter:** The starter resets before the HTTP response is confirmed, destroying user input on failure.
+
+## Build the mental model
+
+Reset defines a new baseline and changes dirty state. Only reset after a confirmed successful mutation; preserve draft values after errors.
+
+**Predict before coding:** After a 500 response, isDirty stays true and the typed title remains; after a 201 success, the form resets to its initial defaults.
+
+**Scope:** This staged article uses genuine React Hook Form v7 interfaces and React 19 patterns. The source is not yet compiled with installed RHF packages or browser-tested. The companion Node loopback Task API is educational, unauthenticated and in-memory.
+
+## Prerequisites and preflight
+
+Read the preceding canonical module lessons and `drafts/forms-query/README.md`. The staged exercise is in `drafts/forms-query/labs/reset-dirty/`. Install and lock real compatible npm packages *before* promoting this draft to the production academy. Do not copy the starter to the published lab registry until its negative test is observable.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the red starter" file="drafts/forms-query/labs/reset-dirty/starter.tsx" expected="The starter resets before the HTTP response is confirmed, destroying user input on failure.">
+
+```tsx
+import { useForm } from 'react-hook-form';
+export default function SettingsForm(){
+ const {register,handleSubmit,reset}=useForm<{title:string}>({defaultValues:{title:''}});
+ return <form onSubmit={handleSubmit(async data=>{
+  reset(); // loses the only draft if the next request fails
+  await fetch('/api/tasks',{method:'POST',body:JSON.stringify(data)});
+ })}><label>Title<input {...register('title')}/></label><button>Save</button></form>;
+}
+```
+
+**Observe:** A form clears its inputs at the start of every submit, then a 503 response arrives. The learner must retype the entire task and loses the failed request context.
+
+</LessonStep>
+
+<LessonStep number={2} title="Apply the instructor repair" file="drafts/forms-query/labs/reset-dirty/solution.tsx" expected="After a 500 response, isDirty stays true and the typed title remains; after a 201 success, the form resets to its initial defaults.">
+
+```tsx
+import { useForm } from 'react-hook-form';
+import { useState } from 'react';
+export default function SettingsForm(){
+ const {register,handleSubmit,reset,formState:{isDirty,isSubmitting}}=useForm<{title:string}>({defaultValues:{title:''}});
+ const [message,setMessage]=useState('');
+ return <form onSubmit={handleSubmit(async data=>{
+  try{
+   const response=await fetch('/api/tasks',{method:'POST',
+    headers:{'content-type':'application/json','idempotency-key':crypto.randomUUID()},
+    body:JSON.stringify({title:data.title,priority:'normal'})});
+   if(!response.ok)throw new Error('HTTP '+response.status);
+   reset({title:''});setMessage('Saved');
+  }catch{setMessage('Save failed; your draft is preserved');}
+ })}>
+  <label htmlFor="title">Title</label><input id="title" {...register('title',{required:true,minLength:3})}/>
+  <button disabled={isSubmitting||!isDirty}>Save</button>
+  <output aria-live="polite">{message}</output>
+ </form>;
+}
+```
+
+**Why:** Reset defines a new baseline and changes dirty state. Only reset after a confirmed successful mutation; preserve draft values after errors.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify behavior at the real boundary" file="drafts/forms-query/labs/reset-dirty/lab.json" expected="Enter a nonempty title, force server 503, and verify the field remains dirty. Repeat with 201 and confirm reset clears it.">
+
+**Acceptance scenario:** Enter a nonempty title, force server 503, and verify the field remains dirty. Repeat with 201 and confirm reset clears it.
+
+**Debug the failure:** reproduce the bad behavior in the starter, make the smallest correction, then repeat the positive case and a genuinely failing negative case. This must be automated using real RHF/React packages and a DOM harness before the lesson is published.
+
+**Trust boundary:** Do not store private form drafts or server error bodies into telemetry by default; client state may contain sensitive data.
+
+</LessonStep>
+
+<Misconception claim="The starter resets before the HTTP response is confirmed, destroying user input on failure." correction="Reset defines a new baseline and changes dirty state. Only reset after a confirmed successful mutation; preserve draft values after errors." />
+
+<KnowledgeCheck question="Which repair best addresses reset and dirty state?" choices={["Always trust the browser to enforce security.","Use one authoritative form state and verify the tested behavior.","Ignore non-200 HTTP responses if fetch resolved.","Treat TypeScript types as runtime authorization."]} correctIndex={1} explanation="Reset defines a new baseline and changes dirty state. Only reset after a confirmed successful mutation; preserve draft values after errors." misconception="The starter resets before the HTTP response is confirmed, destroying user input on failure." lessonId="09.02.06" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+1. **Reproduce:** The starter resets before the HTTP response is confirmed, destroying user input on failure.
+2. **Diagnose:** Locate who owns the current value, where it is transformed, and which effect or async boundary can invalidate assumptions.
+3. **Repair:** Understand isDirty, dirtyFields, defaultValues, reset(), and preserving drafts after a failed request.
+4. **Regression:** Enter a nonempty title, force server 503, and verify the field remains dirty. Repeat with 201 and confirm reset clears it.
+5. **Operational boundary:** Do not store private form drafts or server error bodies into telemetry by default; client state may contain sensitive data.
+
+## Guided local lab
+
+The staged red starter and instructor solution are available in `drafts/forms-query/labs/reset-dirty/`. The acceptance specification describes behaviors to implement and verify with actual library packages. This is **not** a published or automatically graded lab and has no LabGate until tests pass.
+
+## Reflect
+
+What did the learner believe to be the source of truth before the repair? What user-visible state would diverge under failure, cancellation or a stale server response?
+
+## Official references
+
+- [Primary official reference](https://react-hook-form.com/docs/useform/reset)
+- [Supporting official reference](https://react-hook-form.com/docs/useform/formstate)

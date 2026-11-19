@@ -1,0 +1,31 @@
+{
+  "id": "09.03.01",
+  "title": "Query keys and caching",
+  "moduleId": "09.03",
+  "trackId": "09",
+  "sourceStatus": "staged-unverified",
+  "estimatedMinutes": 63,
+  "prerequisites": [
+    "09.02.08"
+  ],
+  "stack": {
+    "react": "19",
+    "typescript": "5",
+    "tanstackQuery": "5"
+  },
+  "objective": "Design stable structured query keys containing every filter and pass the Query signal to the actual HTTP request.",
+  "predict": "Switching filters must yield distinct cache entries; reselecting a recent filter can reuse its own result without displaying another filter's rows.",
+  "expectedBehavior": "Switch between todo and done. Inspect Query Devtools and verify different keys; no cross-filter content leakage. Cancel a request by switching rapidly.",
+  "commonFailure": "The starter uses a constant cache key for different status-filtered responses.",
+  "securityBoundary": "Never include access tokens or raw private task titles in a query key; tenant scope belongs in a secure key namespace and server authorization.",
+  "labSlug": "query-keys",
+  "officialReferences": [
+    "https://tanstack.com/query/latest/docs/framework/react/guides/query-keys",
+    "https://tanstack.com/query/latest/docs/framework/react/guides/query-cancellation"
+  ],
+  "rubric": [
+    "Design stable structured query keys containing every filter and pass the Query signal to the actual HTTP request.",
+    "Switch between todo and done. Inspect Query Devtools and verify different keys; no cross-filter content leakage. Cancel a request by switching rapidly.",
+    "I can distinguish cache freshness, HTTP success and server authorization."
+  ]
+}

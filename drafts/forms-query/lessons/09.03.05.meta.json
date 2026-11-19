@@ -1,0 +1,31 @@
+{
+  "id": "09.03.05",
+  "title": "Infinite queries",
+  "moduleId": "09.03",
+  "trackId": "09",
+  "sourceStatus": "staged-unverified",
+  "estimatedMinutes": 63,
+  "prerequisites": [
+    "09.03.04"
+  ],
+  "stack": {
+    "react": "19",
+    "typescript": "5",
+    "tanstackQuery": "5"
+  },
+  "objective": "Paginate the real cursor API with useInfiniteQuery, a correct next-page parameter, and stale-cursor recovery.",
+  "predict": "Load More appends exactly the next page. After a 409 stale-cursor response, restart the list rather than appending incompatible results.",
+  "expectedBehavior": "Create 25 todo tasks; fetch pages 10+10+5 without duplicates. After adding a new task, the previous cursor should return 409 and the client should restart.",
+  "commonFailure": "The starter guesses numeric offsets and never uses nextCursor or signal cancellation.",
+  "securityBoundary": "Bound displayed pages and total task payloads. Infinite query caches can grow without limits; trim or evict older pages when appropriate.",
+  "labSlug": "infinite-queries",
+  "officialReferences": [
+    "https://tanstack.com/query/latest/docs/framework/react/guides/infinite-queries",
+    "https://tanstack.com/query/latest/docs/framework/react/reference/useInfiniteQuery"
+  ],
+  "rubric": [
+    "Paginate the real cursor API with useInfiniteQuery, a correct next-page parameter, and stale-cursor recovery.",
+    "Create 25 todo tasks; fetch pages 10+10+5 without duplicates. After adding a new task, the previous cursor should return 409 and the client should restart.",
+    "I can distinguish cache freshness, HTTP success and server authorization."
+  ]
+}

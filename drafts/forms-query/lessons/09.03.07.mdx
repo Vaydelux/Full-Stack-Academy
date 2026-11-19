@@ -1,0 +1,100 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Pass AbortSignal into fetch, distinguish HTTP 4xx and 5xx, and bound automatic retry behavior.","Abort an in-flight request on unmount; ensure no stale result is committed. Mock 422 (zero retries), 503 (bounded retries), and a network failure.","Do not retry credential failures or validation errors; aggressive retries can amplify a production incident and expose service capacity limits."]} />
+
+## The problem we're solving
+
+A search filter is changed while an old request is pending. The un-cancelled request finishes later and overwrites the currently selected filter, while 422 errors retry repeatedly.
+
+**Broken behavior in the starter:** The starter discards AbortSignal, ignores response.ok, and retries errors indiscriminately.
+
+## Build the mental model
+
+TanStack Query supplies signal to queryFn. Pass it to fetch, throw for non-2xx HTTP statuses, and retry transient failures only with explicit limits.
+
+**Predict before coding:** Canceling a stale query should not cache a late response; HTTP 422 must not be retried, while an intermittent 503 can be retried a bounded number of times.
+
+**Version and deployment scope:** TanStack Query v5, React 19, TypeScript 5. The Task API is a locally bound, in-memory, unauthenticated fixture. No compatible npm dependency lock or browser qualification has been completed, so this draft cannot be marked published.
+
+## Prerequisites and preflight
+
+Review the preceding canonical topics, including React Hook Form's validated POST boundary. Start with `drafts/forms-query/labs/retries-cancellation/starter.tsx`, and compare with the instructor source only after predicting the incorrect result.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the faulty remote-state assumption" file="drafts/forms-query/labs/retries-cancellation/starter.tsx" expected="The starter discards AbortSignal, ignores response.ok, and retries errors indiscriminately.">
+
+```tsx
+import { useQuery } from '@tanstack/react-query';
+export function TaskList(){
+ const tasks=useQuery({queryKey:['tasks'],queryFn:()=>fetch('/api/tasks').then(x=>x.json()),retry:true});
+ return <output>{tasks.data?.items?.length??0}</output>;
+}
+```
+
+**Why it fails:** A search filter is changed while an old request is pending. The un-cancelled request finishes later and overwrites the currently selected filter, while 422 errors retry repeatedly.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the correct TanStack Query behavior" file="drafts/forms-query/labs/retries-cancellation/solution.tsx" expected="Canceling a stale query should not cache a late response; HTTP 422 must not be retried, while an intermittent 503 can be retried a bounded number of times.">
+
+```tsx
+import { useQuery } from '@tanstack/react-query';
+class RequestError extends Error{
+ constructor(readonly status:number){super('Task GET failed: '+status);}
+}
+export function TaskList(){
+ const tasks=useQuery({
+  queryKey:['tasks',{status:'todo'}],
+  queryFn:async({signal})=>{
+   const r=await fetch('/api/tasks?status=todo',{signal});
+   if(!r.ok)throw new RequestError(r.status);
+   return r.json() as Promise<{items:{id:string}[]}>;
+  },
+  retry:(count,error)=>count<2 && (!(error instanceof RequestError)||error.status>=500),
+  retryDelay:attempt=>Math.min(1000*2**attempt,4000),
+ });
+ if(tasks.isError)return <p role="alert">Task service unavailable; retry later.</p>;
+ return <output>{tasks.data?.items.length??0} tasks</output>;
+}
+```
+
+**What changed:** TanStack Query supplies signal to queryFn. Pass it to fetch, throw for non-2xx HTTP statuses, and retry transient failures only with explicit limits.
+
+</LessonStep>
+
+<LessonStep number={3} title="Assert real HTTP and cache behavior" file="drafts/forms-query/labs/retries-cancellation/lab.json" expected="Abort an in-flight request on unmount; ensure no stale result is committed. Mock 422 (zero retries), 503 (bounded retries), and a network failure.">
+
+**Observe:** Abort an in-flight request on unmount; ensure no stale result is committed. Mock 422 (zero retries), 503 (bounded retries), and a network failure.
+
+**Required evidence before publishing:** Use real installed TanStack Query with a mounted QueryClientProvider and an actual loopback HTTP fixture. Record the expected red assertion for the starter and a green assertion for the instructor. Inspect request counts and body shape; static source checks are insufficient for release.
+
+**Boundary:** Do not retry credential failures or validation errors; aggressive retries can amplify a production incident and expose service capacity limits.
+
+</LessonStep>
+
+<Misconception claim="The starter discards AbortSignal, ignores response.ok, and retries errors indiscriminately." correction="TanStack Query supplies signal to queryFn. Pass it to fetch, throw for non-2xx HTTP statuses, and retry transient failures only with explicit limits." />
+
+<KnowledgeCheck question="What is the reliable approach to retries and cancellation?" choices={["Assume cached browser state equals server truth forever.","Use TanStack Query resource identity and the server's HTTP contract.","Ignore failure responses to keep the UI fast.","Disable all validation once the code typechecks."]} correctIndex={1} explanation="TanStack Query supplies signal to queryFn. Pass it to fetch, throw for non-2xx HTTP statuses, and retry transient failures only with explicit limits." misconception="The starter discards AbortSignal, ignores response.ok, and retries errors indiscriminately." lessonId="09.03.07" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+1. **Reproduce:** The starter discards AbortSignal, ignores response.ok, and retries errors indiscriminately.
+2. **Diagnose:** Trace the query key, cancellation boundary, remote response, cache update and invalidation.
+3. **Repair:** Pass AbortSignal into fetch, distinguish HTTP 4xx and 5xx, and bound automatic retry behavior.
+4. **Regression:** Abort an in-flight request on unmount; ensure no stale result is committed. Mock 422 (zero retries), 503 (bounded retries), and a network failure.
+5. **Security and operations:** Do not retry credential failures or validation errors; aggressive retries can amplify a production incident and expose service capacity limits.
+
+## Guided local lab
+
+Red learner source: `drafts/forms-query/labs/retries-cancellation/starter.tsx`. Instructor implementation: `drafts/forms-query/labs/retries-cancellation/solution.tsx`. The lab manifest declares missing real-library qualification explicitly; it is not part of the published lab runner or lesson registry.
+
+## Reflect
+
+What should happen if the server returns an old result, a 409 stale cursor, a 412 conditional-write conflict or a network error? Which layer owns each recovery decision?
+
+## Official references
+
+- [Primary official reference](https://tanstack.com/query/latest/docs/framework/react/guides/query-cancellation)
+- [Supporting official reference](https://tanstack.com/query/latest/docs/framework/react/guides/query-retries)

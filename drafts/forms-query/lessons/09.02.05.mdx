@@ -1,0 +1,123 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Prevent duplicate side effects and reuse one idempotency key for retries of the same logical request.","Simulate an accepted 201 with a lost response. Retry must preserve both body and key. Double-click while pending and verify no second fetch starts.","An in-memory idempotency key protects only one process lifetime. Real billing/financial mutations require durable server-side deduplication."]} />
+
+## The problem we're solving
+
+A task POST succeeds but the network response is lost. The learner clicks Retry and the app creates another random idempotency key, producing two identical tasks.
+
+**What breaks in the learner starter:** The starter generates a new idempotency key for every retry and has no in-flight lock.
+
+## Build the mental model
+
+A logical operation consists of validated payload plus an idempotency key. Lock while pending; retain both across retries; clear only after confirmed success.
+
+**Predict before coding:** Two clicks and a response-loss retry must produce one logical task, while a later new task gets a new key.
+
+**Scope:** This staged article uses genuine React Hook Form v7 interfaces and React 19 patterns. The source is not yet compiled with installed RHF packages or browser-tested. The companion Node loopback Task API is educational, unauthenticated and in-memory.
+
+## Prerequisites and preflight
+
+Read the preceding canonical module lessons and `drafts/forms-query/README.md`. The staged exercise is in `drafts/forms-query/labs/async-submission/`. Install and lock real compatible npm packages *before* promoting this draft to the production academy. Do not copy the starter to the published lab registry until its negative test is observable.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the red starter" file="drafts/forms-query/labs/async-submission/starter.tsx" expected="The starter generates a new idempotency key for every retry and has no in-flight lock.">
+
+```tsx
+import { useForm } from 'react-hook-form';
+export default function RetryForm(){
+ const { register, handleSubmit }=useForm<{title:string}>({defaultValues:{title:'Practice task'}});
+ const send=handleSubmit(async ({title})=>{
+  // Broken: Retry executes this handler again and generates a new key each time.
+  const key=crypto.randomUUID();
+  await fetch('/api/tasks',{method:'POST',headers:{'content-type':'application/json','idempotency-key':key},
+    body:JSON.stringify({title,priority:'normal'})});
+ });
+ return <form onSubmit={send}>
+  <label htmlFor="title">Title</label><input id="title" {...register('title',{required:true})}/>
+  <button type="submit">Create</button>
+  <button type="button" onClick={()=>void send()}>Retry (unsafe)</button>
+ </form>;
+}
+```
+
+**Observe:** A task POST succeeds but the network response is lost. The learner clicks Retry and the app creates another random idempotency key, producing two identical tasks.
+
+</LessonStep>
+
+<LessonStep number={2} title="Apply the instructor repair" file="drafts/forms-query/labs/async-submission/solution.tsx" expected="Two clicks and a response-loss retry must produce one logical task, while a later new task gets a new key.">
+
+```tsx
+import { useRef, useState } from 'react';
+import { useForm } from 'react-hook-form';
+type Operation={key:string;payload:{title:string;priority:'normal'}};
+export default function RetryForm(){
+ const {register,handleSubmit,formState:{isSubmitting}}=
+  useForm<{title:string}>({defaultValues:{title:'Practice task'}});
+ const busy=useRef(false), attempt=useRef<Operation|null>(null);
+ const [state,setState]=useState('Ready');
+ async function execute(op:Operation){
+  if(busy.current)return;
+  busy.current=true; attempt.current=op; setState('Sending');
+  try{
+   const r=await fetch('/api/tasks',{method:'POST',
+    headers:{'content-type':'application/json','idempotency-key':op.key},body:JSON.stringify(op.payload)});
+   if(!r.ok)throw new Error('HTTP '+r.status);
+   attempt.current=null;setState('Saved');
+  }catch{setState('Not confirmed; retry using the same key');}
+  finally{busy.current=false;}
+ }
+ return <form onSubmit={handleSubmit(async ({title})=>{
+   if(attempt.current)return; // Unknown outcome must be resolved before another create.
+   await execute({key:crypto.randomUUID(),payload:{title,priority:'normal'}});
+ })}>
+  <label htmlFor="title">Title</label>
+  <input id="title" {...register('title',{required:true,minLength:3,maxLength:100})}/>
+  <button type="submit" disabled={isSubmitting||state==='Sending'||!!attempt.current}>Create task</button>
+  <button type="button" disabled={state==='Sending'||!attempt.current}
+   onClick={()=>{if(attempt.current)void execute(attempt.current)}}>Retry same request</button>
+  <p role="status">{state}</p>
+ </form>;
+}
+```
+
+**Why:** A logical operation consists of validated payload plus an idempotency key. Lock while pending; retain both across retries; clear only after confirmed success.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify behavior at the real boundary" file="drafts/forms-query/labs/async-submission/lab.json" expected="Simulate an accepted 201 with a lost response. Retry must preserve both body and key. Double-click while pending and verify no second fetch starts.">
+
+**Acceptance scenario:** Simulate an accepted 201 with a lost response. Retry must preserve both body and key. Double-click while pending and verify no second fetch starts.
+
+**Debug the failure:** reproduce the bad behavior in the starter, make the smallest correction, then repeat the positive case and a genuinely failing negative case. This must be automated using real RHF/React packages and a DOM harness before the lesson is published.
+
+**Trust boundary:** An in-memory idempotency key protects only one process lifetime. Real billing/financial mutations require durable server-side deduplication.
+
+</LessonStep>
+
+<Misconception claim="The starter generates a new idempotency key for every retry and has no in-flight lock." correction="A logical operation consists of validated payload plus an idempotency key. Lock while pending; retain both across retries; clear only after confirmed success." />
+
+<KnowledgeCheck question="Which repair best addresses async submissions?" choices={["Always trust the browser to enforce security.","Use one authoritative form state and verify the tested behavior.","Ignore non-200 HTTP responses if fetch resolved.","Treat TypeScript types as runtime authorization."]} correctIndex={1} explanation="A logical operation consists of validated payload plus an idempotency key. Lock while pending; retain both across retries; clear only after confirmed success." misconception="The starter generates a new idempotency key for every retry and has no in-flight lock." lessonId="09.02.05" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+1. **Reproduce:** The starter generates a new idempotency key for every retry and has no in-flight lock.
+2. **Diagnose:** Locate who owns the current value, where it is transformed, and which effect or async boundary can invalidate assumptions.
+3. **Repair:** Prevent duplicate side effects and reuse one idempotency key for retries of the same logical request.
+4. **Regression:** Simulate an accepted 201 with a lost response. Retry must preserve both body and key. Double-click while pending and verify no second fetch starts.
+5. **Operational boundary:** An in-memory idempotency key protects only one process lifetime. Real billing/financial mutations require durable server-side deduplication.
+
+## Guided local lab
+
+The staged red starter and instructor solution are available in `drafts/forms-query/labs/async-submission/`. The acceptance specification describes behaviors to implement and verify with actual library packages. This is **not** a published or automatically graded lab and has no LabGate until tests pass.
+
+## Reflect
+
+What did the learner believe to be the source of truth before the repair? What user-visible state would diverge under failure, cancellation or a stale server response?
+
+## Official references
+
+- [Primary official reference](https://react-hook-form.com/docs/useform/handlesubmit)
+- [Supporting official reference](https://tanstack.com/query/latest/docs/framework/react/guides/mutations)

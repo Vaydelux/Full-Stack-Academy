@@ -1,0 +1,32 @@
+{
+  "id": "09.02.08",
+  "title": "Bug Hunt mismatched form state",
+  "moduleId": "09.02",
+  "trackId": "09",
+  "sourceStatus": "staged-unverified",
+  "estimatedMinutes": 60,
+  "prerequisites": [
+    "09.02.07"
+  ],
+  "stack": {
+    "react": "19",
+    "typescript": "5",
+    "zod": "4",
+    "reactHookForm": "7"
+  },
+  "objective": "Find and remove duplicated form state, stale previews, and uncontrolled-to-controlled mismatches.",
+  "predict": "Typing must update both preview and submitted payload from the same registered field value. Reset should clear both.",
+  "expectedBehavior": "Type, reset and programmatically update the field; preview and submitted payload must be consistent, with no independent useState shadow.",
+  "commonFailure": "Separate useState preview and RHF input values drift after reset or programmatic update.",
+  "securityBoundary": "Treat displayed form previews as user content; React text interpolation escapes text, while innerHTML would introduce an XSS risk.",
+  "labSlug": "form-state-bug-hunt",
+  "officialReferences": [
+    "https://react-hook-form.com/docs/useform/formstate",
+    "https://react-hook-form.com/docs/usewatch"
+  ],
+  "rubric": [
+    "Find and remove duplicated form state, stale previews, and uncontrolled-to-controlled mismatches.",
+    "Type, reset and programmatically update the field; preview and submitted payload must be consistent, with no independent useState shadow.",
+    "I can explain why client validation is not server authorization."
+  ]
+}

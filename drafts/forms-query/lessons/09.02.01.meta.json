@@ -1,0 +1,32 @@
+{
+  "id": "09.02.01",
+  "title": "Controlled vs uncontrolled inputs",
+  "moduleId": "09.02",
+  "trackId": "09",
+  "sourceStatus": "staged-unverified",
+  "estimatedMinutes": 48,
+  "prerequisites": [
+    "09.01.08"
+  ],
+  "stack": {
+    "react": "19",
+    "typescript": "5",
+    "zod": "4",
+    "reactHookForm": "7"
+  },
+  "objective": "Distinguish a React-controlled input from an uncontrolled field registered with React Hook Form, and keep a single source of truth.",
+  "predict": "Typing into a value-bound field without an onChange handler will not update it; registration with RHF avoids duplicating React state.",
+  "expectedBehavior": "Type `Practice HTTP` using the keyboard and submit; the output must reflect the text. Submitting an empty or two-character title must not update the output.",
+  "commonFailure": "The title is hard-coded and never updated by the registered field.",
+  "securityBoundary": "The browser must validate for usability, but the HTTP server still checks the 3–100 character title and allowed priorities.",
+  "labSlug": "controlled-uncontrolled",
+  "officialReferences": [
+    "https://react-hook-form.com/get-started",
+    "https://react-hook-form.com/docs/useform/register"
+  ],
+  "rubric": [
+    "Distinguish a React-controlled input from an uncontrolled field registered with React Hook Form, and keep a single source of truth.",
+    "Type `Practice HTTP` using the keyboard and submit; the output must reflect the text. Submitting an empty or two-character title must not update the output.",
+    "I can explain why client validation is not server authorization."
+  ]
+}
