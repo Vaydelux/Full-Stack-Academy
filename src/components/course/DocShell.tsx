@@ -27,6 +27,7 @@ export function DocShell({ children, active }: { children: ReactNode; active?: s
               <Layers3 size={15} aria-hidden="true" /> Curriculum
             </Link>
             <Link href="/learn/dashboard" className="flex items-center gap-1 hover:text-cyan-600 dark:hover:text-[#7DEBFF]">My progress</Link>
+            <Link href="/learn/projects" className="flex items-center gap-1 hover:text-cyan-600 dark:hover:text-[#7DEBFF]">Projects</Link>
             <Link href="/reference" className="flex items-center gap-1 hover:text-cyan-600 dark:hover:text-[#7DEBFF]">
               <LibraryBig size={15} aria-hidden="true" /> Reference
             </Link>
