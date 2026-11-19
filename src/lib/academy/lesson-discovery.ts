@@ -82,7 +82,7 @@ export function discoverPublishedLessons(
   const search = text((options.query ?? '').slice(0, 160).trim());
   const tokens = search.split(/\s+/).filter(Boolean).slice(0, 8);
   const offset = cap(options.offset, 0, 0, 100_000);
-  const limit = cap(options.limit, 12, 1, 100);
+  const limit = cap(options.limit, 12, 1, 1000);
   const matches = catalogDistinct(catalog)
     .map((lesson, index) => {
       const title = text(lesson.title);
