@@ -1,0 +1,15 @@
+{
+  "id": "lab.security.security-body-size",
+  "lessonId": "10.03.05",
+  "title": "Security boundary: Request body and file limits",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/security-body-size/starter/solution.mjs",
+  "solution": "labs/security-body-size/solution/solution.mjs",
+  "tests": "labs/security-body-size/solution.test.mjs",
+  "verify": [
+    "npm run lab:security-body-size"
+  ],
+  "expected": "Actual multibyte payloads count true bytes and oversized or mismatched bodies fail.",
+  "security": "Node built-ins; intentionally small local model. Deployment-grade controls require their own checks."
+}

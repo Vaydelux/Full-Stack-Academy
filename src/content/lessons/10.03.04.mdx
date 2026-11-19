@@ -1,0 +1,93 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Bound requests per actor in a sliding time window and reject excess attempts before expensive processing; distributed gateways need shared enforcement.","Repair the rate limiting and abuse controls defect in a Node.js exercise.","Distinguish this local security model from a complete production defense."]} />
+
+## The problem we're solving
+
+The starter allows unlimited requests regardless of the key or time window. Real services must establish who can request a resource, constrain how the request is interpreted, and prevent unexpected data disclosure.
+
+## Build the mental model
+
+Bound requests per actor in a sliding time window and reject excess attempts before expensive processing; distributed gateways need shared enforcement.
+
+**Expected outcome:** The third request in a two-request window is blocked; calls after the window recover.
+
+**Production boundary:** This in-memory example has no eviction or distributed durability; for production bound key cardinality, apply quotas at gateway and storage, and support trusted actor identity.
+
+## Prerequisites and preflight
+
+Complete Node.js `10.01` and HTTP `10.02`. Run locally under Node 24 using built-in APIs. Open `labs/security-request-limiter/starter/solution.mjs`. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:security-request-limiter`; PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:security-request-limiter; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the security regression" file="labs/security-request-limiter/starter/solution.mjs" expected="The red starter fails an actual assertion about a denied action.">
+
+```js
+export function makeLimiter(_limit,_windowMs){
+ return {check:(_actor,_now)=>({allowed:true,remaining:999})};
+}
+```
+
+**Why it fails:** The starter allows unlimited requests regardless of the key or time window.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the bounded guard or server behavior" file="labs/security-request-limiter/starter/solution.mjs" expected="The third request in a two-request window is blocked; calls after the window recover.">
+
+```js
+export function makeLimiter(limit,windowMs){
+ if(!Number.isInteger(limit)||limit<1||!Number.isInteger(windowMs)||windowMs<1)throw new RangeError('Invalid limits');
+ const records=new Map();
+ return {check(actor,now){
+  if(typeof actor!=='string'||actor.length<1||actor.length>128||!Number.isFinite(now)||now<0)throw new TypeError('Invalid request');
+  const current=(records.get(actor)??[]).filter(time=>time>now-windowMs);
+  const allowed=current.length<limit;
+  if(allowed)current.push(now);
+  records.set(actor,current);
+  return {allowed,remaining:Math.max(0,limit-current.length)};
+ }};
+}
+```
+
+**Why this works:** Bound requests per actor in a sliding time window and reject excess attempts before expensive processing; distributed gateways need shared enforcement.
+
+</LessonStep>
+
+<LessonStep number={3} title="Test allowed and denied behavior" file="labs/security-request-limiter/solution.test.mjs" expected="The instructor passes positive and negative Node assertions, while the learner's starter fails a meaningful assertion.">
+
+```js
+const l=mod.makeLimiter(2,1000);
+assert.deepEqual(l.check('alice',0),{allowed:true,remaining:1});
+assert.deepEqual(l.check('alice',100),{allowed:true,remaining:0});
+assert.deepEqual(l.check('alice',200),{allowed:false,remaining:0});
+assert.deepEqual(l.check('bob',200),{allowed:true,remaining:1});
+assert.equal(l.check('alice',1200).allowed,true);
+```
+
+**Beyond the model:** This in-memory example has no eviction or distributed durability; for production bound key cardinality, apply quotas at gateway and storage, and support trusted actor identity. Real browser, proxy, DNS/egress and identity integration require independent testing.
+
+</LessonStep>
+
+<Misconception claim="The starter allows unlimited requests regardless of the key or time window." correction="Bound requests per actor in a sliding time window and reject excess attempts before expensive processing; distributed gateways need shared enforcement. This in-memory example has no eviction or distributed durability; for production bound key cardinality, apply quotas at gateway and storage, and support trusted actor identity." />
+
+<KnowledgeCheck question="Which security boundary governs rate limiting and abuse controls?" choices={["A browser UI control is sufficient authorization for an HTTP operation.","Bound requests per actor in a sliding time window and reject excess attempts before expensive processing; distributed gateways need shared enforcement.","A local function test proves every proxy and network access is secure.","Returning 200 for denied requests helps hide internal authorization decisions."] } correctIndex={1} explanation="Bound requests per actor in a sliding time window and reject excess attempts before expensive processing; distributed gateways need shared enforcement." misconception="Always verify the relevant trust boundary in code and in its actual deployment context." lessonId="10.03.04" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Bug:** The starter allows unlimited requests regardless of the key or time window. **Reproduce:** run the red starter and inspect its negative case. **Repair:** Bound requests per actor in a sliding time window and reject excess attempts before expensive processing; distributed gateways need shared enforcement. **Regression:** The third request in a two-request window is blocked; calls after the window recover.
+
+## Guided local lab
+
+`labs/security-request-limiter/` contains a broken learner source file, complete instructor implementation, executable Node tests and an assessment rubric. Run only trusted checked-in tests; no learner code is evaluated on a hosted server.
+
+<LabGate lessonId="10.03.04" labId="lab.security.security-request-limiter" commands={["npm run lab:security-request-limiter","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+What could still break at a reverse proxy, distributed gateway, DNS resolver, identity provider or persistence layer? How would you verify it with a negative integration test?
+
+## Official references
+
+- [Primary security specification or API](https://cheatsheetseries.owasp.org/cheatsheets/Denial_of_Service_Cheat_Sheet.html)
+- [Additional official guidance](https://nodejs.org/api/http.html)

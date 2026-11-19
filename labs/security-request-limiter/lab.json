@@ -1,0 +1,15 @@
+{
+  "id": "lab.security.security-request-limiter",
+  "lessonId": "10.03.04",
+  "title": "Security boundary: Rate limiting and abuse controls",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/security-request-limiter/starter/solution.mjs",
+  "solution": "labs/security-request-limiter/solution/solution.mjs",
+  "tests": "labs/security-request-limiter/solution.test.mjs",
+  "verify": [
+    "npm run lab:security-request-limiter"
+  ],
+  "expected": "The third request in a two-request window is blocked; calls after the window recover.",
+  "security": "Node built-ins; intentionally small local model. Deployment-grade controls require their own checks."
+}

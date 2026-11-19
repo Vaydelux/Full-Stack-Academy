@@ -1,0 +1,86 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Honor forwarded HTTPS headers only from an explicitly trusted proxy and never let a direct attacker spoof transport security.","Repair the tls and reverse proxies defect in a Node.js exercise.","Distinguish this local security model from a complete production defense."]} />
+
+## The problem we're solving
+
+The starter trusts an X-Forwarded-Proto header from every remote address. Real services must establish who can request a resource, constrain how the request is interpreted, and prevent unexpected data disclosure.
+
+## Build the mental model
+
+Honor forwarded HTTPS headers only from an explicitly trusted proxy and never let a direct attacker spoof transport security.
+
+**Expected outcome:** Spoofed HTTPS from an untrusted client stays insecure; trusted proxy HTTPS is recognized.
+
+**Production boundary:** Trusted proxies must strip client-supplied forwarding headers. This minimal model does not verify proxy TLS, connection authenticity or a multi-hop chain.
+
+## Prerequisites and preflight
+
+Complete Node.js `10.01` and HTTP `10.02`. Run locally under Node 24 using built-in APIs. Open `labs/security-proxy-tls/starter/solution.mjs`. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:security-proxy-tls`; PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:security-proxy-tls; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the security regression" file="labs/security-proxy-tls/starter/solution.mjs" expected="The red starter fails an actual assertion about a denied action.">
+
+```js
+export function isSecureRequest(request,_trustedProxyIps=[]){
+ return Boolean(request.encrypted)||request.headers['x-forwarded-proto']==='https';
+}
+```
+
+**Why it fails:** The starter trusts an X-Forwarded-Proto header from every remote address.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the bounded guard or server behavior" file="labs/security-proxy-tls/starter/solution.mjs" expected="Spoofed HTTPS from an untrusted client stays insecure; trusted proxy HTTPS is recognized.">
+
+```js
+export function isSecureRequest(request,trustedProxyIps=[]){
+ if(request.encrypted===true)return true;
+ const trusted=trustedProxyIps.includes(request.remoteAddress);
+ if(!trusted)return false;
+ const value=request.headers['x-forwarded-proto'];
+ return typeof value==='string'&&value.trim().toLowerCase()==='https';
+}
+```
+
+**Why this works:** Honor forwarded HTTPS headers only from an explicitly trusted proxy and never let a direct attacker spoof transport security.
+
+</LessonStep>
+
+<LessonStep number={3} title="Test allowed and denied behavior" file="labs/security-proxy-tls/solution.test.mjs" expected="The instructor passes positive and negative Node assertions, while the learner's starter fails a meaningful assertion.">
+
+```js
+assert.equal(mod.isSecureRequest({encrypted:false,remoteAddress:'198.51.100.2',headers:{'x-forwarded-proto':'https'}},['127.0.0.1']),false);
+assert.equal(mod.isSecureRequest({encrypted:false,remoteAddress:'127.0.0.1',headers:{'x-forwarded-proto':'https'}},['127.0.0.1']),true);
+assert.equal(mod.isSecureRequest({encrypted:true,remoteAddress:'198.51.100.2',headers:{}},[]),true);
+assert.equal(mod.isSecureRequest({encrypted:false,remoteAddress:'127.0.0.1',headers:{'x-forwarded-proto':'https,http'}},['127.0.0.1']),false);
+```
+
+**Beyond the model:** Trusted proxies must strip client-supplied forwarding headers. This minimal model does not verify proxy TLS, connection authenticity or a multi-hop chain. Real browser, proxy, DNS/egress and identity integration require independent testing.
+
+</LessonStep>
+
+<Misconception claim="The starter trusts an X-Forwarded-Proto header from every remote address." correction="Honor forwarded HTTPS headers only from an explicitly trusted proxy and never let a direct attacker spoof transport security. Trusted proxies must strip client-supplied forwarding headers. This minimal model does not verify proxy TLS, connection authenticity or a multi-hop chain." />
+
+<KnowledgeCheck question="Which security boundary governs tls and reverse proxies?" choices={["A browser UI control is sufficient authorization for an HTTP operation.","Honor forwarded HTTPS headers only from an explicitly trusted proxy and never let a direct attacker spoof transport security.","A local function test proves every proxy and network access is secure.","Returning 200 for denied requests helps hide internal authorization decisions."] } correctIndex={1} explanation="Honor forwarded HTTPS headers only from an explicitly trusted proxy and never let a direct attacker spoof transport security." misconception="Always verify the relevant trust boundary in code and in its actual deployment context." lessonId="10.03.01" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Bug:** The starter trusts an X-Forwarded-Proto header from every remote address. **Reproduce:** run the red starter and inspect its negative case. **Repair:** Honor forwarded HTTPS headers only from an explicitly trusted proxy and never let a direct attacker spoof transport security. **Regression:** Spoofed HTTPS from an untrusted client stays insecure; trusted proxy HTTPS is recognized.
+
+## Guided local lab
+
+`labs/security-proxy-tls/` contains a broken learner source file, complete instructor implementation, executable Node tests and an assessment rubric. Run only trusted checked-in tests; no learner code is evaluated on a hosted server.
+
+<LabGate lessonId="10.03.01" labId="lab.security.security-proxy-tls" commands={["npm run lab:security-proxy-tls","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+What could still break at a reverse proxy, distributed gateway, DNS resolver, identity provider or persistence layer? How would you verify it with a negative integration test?
+
+## Official references
+
+- [Primary security specification or API](https://nodejs.org/api/http.html#messageheaders)
+- [Additional official guidance](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Forwarded)

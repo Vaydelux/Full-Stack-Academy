@@ -1,0 +1,15 @@
+{
+  "id": "lab.security.security-ssrf-allowlist",
+  "lessonId": "10.03.06",
+  "title": "Security boundary: Server-side request forgery",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/security-ssrf-allowlist/starter/solution.mjs",
+  "solution": "labs/security-ssrf-allowlist/solution/solution.mjs",
+  "tests": "labs/security-ssrf-allowlist/solution.test.mjs",
+  "verify": [
+    "npm run lab:security-ssrf-allowlist"
+  ],
+  "expected": "Only exact, explicitly allowlisted HTTPS destinations pass the URL policy.",
+  "security": "Node built-ins; intentionally small local model. Deployment-grade controls require their own checks."
+}

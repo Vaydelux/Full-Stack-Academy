@@ -1,0 +1,123 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Compose bearer authentication, bounded JSON, error redaction and request isolation into a loopback-only Node server tested using real HTTP requests.","Repair the bug hunt: insecure endpoint defect in a Node.js exercise.","Distinguish this local security model from a complete production defense."]} />
+
+## The problem we're solving
+
+The starter exposes notes publicly and echoes token values into JSON responses. Real services must establish who can request a resource, constrain how the request is interpreted, and prevent unexpected data disclosure.
+
+## Build the mental model
+
+Compose bearer authentication, bounded JSON, error redaction and request isolation into a loopback-only Node server tested using real HTTP requests.
+
+**Expected outcome:** Unauthorized requests get 401 without secret leakage; validated writes succeed and oversized JSON is rejected.
+
+**Production boundary:** This loopback teaching API is not internet-safe. Bearer token example lacks identity/tenant authorization, durable replay, storage, TLS, distributed rate limits and monitoring.
+
+## Prerequisites and preflight
+
+Complete Node.js `10.01` and HTTP `10.02`. Run locally under Node 24 using built-in APIs. Open `labs/security-insecure-endpoint/starter/solution.mjs`. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:security-insecure-endpoint`; PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:security-insecure-endpoint; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the security regression" file="labs/security-insecure-endpoint/starter/solution.mjs" expected="The red starter fails an actual assertion about a denied action.">
+
+```js
+import {createServer} from 'node:http';
+export function createDemoServer({token}){
+ return createServer((_req,res)=>{res.setHeader('content-type','application/json');res.end(JSON.stringify({notes:[{id:'secret',title:'private'}],token}));});
+}
+```
+
+**Why it fails:** The starter exposes notes publicly and echoes token values into JSON responses.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the bounded guard or server behavior" file="labs/security-insecure-endpoint/starter/solution.mjs" expected="Unauthorized requests get 401 without secret leakage; validated writes succeed and oversized JSON is rejected.">
+
+```js
+import {createServer} from 'node:http';
+import {timingSafeEqual} from 'node:crypto';
+// Local educational server. NO persistence, tenant auth, rate limits or production secrets.
+const MAX_BODY=2048;
+const send=(res,status,body,type='application/json')=>{
+ res.writeHead(status,{'content-type':type,'cache-control':'no-store'});
+ res.end(JSON.stringify(body));
+};
+export function createDemoServer({token}){
+ if(typeof token!=='string'||!token)throw new TypeError('Token required');
+ const notes=[];let nextId=1;
+ return createServer(async(req,res)=>{
+  try{
+   if(req.url==='/health'&&req.method==='GET')return send(res,200,{ok:true});
+   const provided=req.headers.authorization;
+   const supplied=typeof provided==='string'&&provided.startsWith('Bearer ')?provided.slice(7):'';
+   const left=Buffer.from(supplied),right=Buffer.from(token);
+   if(left.length!==right.length||!timingSafeEqual(left,right))
+    return send(res,401,{type:'about:blank',title:'Unauthorized',status:401},'application/problem+json');
+   if(req.url!=='/api/notes')return send(res,404,{type:'about:blank',title:'Not Found',status:404},'application/problem+json');
+   if(req.method==='GET')return send(res,200,{items:notes});
+   if(req.method!=='POST'){res.setHeader('allow','GET, POST');return send(res,405,{type:'about:blank',title:'Method Not Allowed',status:405},'application/problem+json');}
+   if(!/^application\/json(?:;|$)/i.test(req.headers['content-type']??''))return send(res,415,{type:'about:blank',title:'Unsupported Media Type',status:415},'application/problem+json');
+   const chunks=[];let size=0;
+   for await(const chunk of req){size+=chunk.length;if(size>MAX_BODY)return send(res,413,{type:'about:blank',title:'Payload Too Large',status:413},'application/problem+json');chunks.push(chunk);}
+   let body;try{body=JSON.parse(Buffer.concat(chunks).toString('utf8'));}catch{return send(res,400,{type:'about:blank',title:'Malformed JSON',status:400},'application/problem+json');}
+   if(!body||typeof body!=='object'||Array.isArray(body)||Object.keys(body).some(k=>k!=='title')||typeof body.title!=='string'||body.title.trim().length<2||body.title.length>80)
+    return send(res,422,{type:'about:blank',title:'Invalid Note',status:422},'application/problem+json');
+   const record={id:'note-'+nextId++,title:body.title.trim()};notes.push(record);return send(res,201,record);
+  }catch{return send(res,500,{type:'about:blank',title:'Internal Server Error',status:500},'application/problem+json');}
+ });
+}
+```
+
+**Why this works:** Compose bearer authentication, bounded JSON, error redaction and request isolation into a loopback-only Node server tested using real HTTP requests.
+
+</LessonStep>
+
+<LessonStep number={3} title="Test allowed and denied behavior" file="labs/security-insecure-endpoint/solution.test.mjs" expected="The instructor passes positive and negative Node assertions, while the learner's starter fails a meaningful assertion.">
+
+```js
+const server=mod.createDemoServer({token:'test-token'});
+await new Promise((ok,bad)=>{server.once('error',bad);server.listen(0,'127.0.0.1',ok);});
+const base='http://127.0.0.1:'+server.address().port;
+try{
+ const denied=await fetch(base+'/api/notes');assert.equal(denied.status,401);
+ assert.doesNotMatch(await denied.text(),/test-token|private/);
+ const denied2=await fetch(base+'/api/notes',{headers:{authorization:'Bearer wrong'}});assert.equal(denied2.status,401);
+ const body=JSON.stringify({title:'  Secure APIs  '});
+ const created=await fetch(base+'/api/notes',{method:'POST',headers:{authorization:'Bearer test-token','content-type':'application/json'},body});
+ assert.equal(created.status,201);assert.equal((await created.json()).title,'Secure APIs');
+ const listing=await fetch(base+'/api/notes',{headers:{authorization:'Bearer test-token'}});
+ assert.equal(listing.status,200);assert.equal((await listing.json()).items.length,1);
+ const large=await fetch(base+'/api/notes',{method:'POST',headers:{authorization:'Bearer test-token','content-type':'application/json'},body:JSON.stringify({title:'x'.repeat(4000)})});
+ assert.equal(large.status,413);
+}finally{await new Promise((ok,bad)=>server.close(err=>err?bad(err):ok()));}
+```
+
+**Beyond the model:** This loopback teaching API is not internet-safe. Bearer token example lacks identity/tenant authorization, durable replay, storage, TLS, distributed rate limits and monitoring. Real browser, proxy, DNS/egress and identity integration require independent testing.
+
+</LessonStep>
+
+<Misconception claim="The starter exposes notes publicly and echoes token values into JSON responses." correction="Compose bearer authentication, bounded JSON, error redaction and request isolation into a loopback-only Node server tested using real HTTP requests. This loopback teaching API is not internet-safe. Bearer token example lacks identity/tenant authorization, durable replay, storage, TLS, distributed rate limits and monitoring." />
+
+<KnowledgeCheck question="Which security boundary governs bug hunt: insecure endpoint?" choices={["A browser UI control is sufficient authorization for an HTTP operation.","Compose bearer authentication, bounded JSON, error redaction and request isolation into a loopback-only Node server tested using real HTTP requests.","A local function test proves every proxy and network access is secure.","Returning 200 for denied requests helps hide internal authorization decisions."] } correctIndex={1} explanation="Compose bearer authentication, bounded JSON, error redaction and request isolation into a loopback-only Node server tested using real HTTP requests." misconception="Always verify the relevant trust boundary in code and in its actual deployment context." lessonId="10.03.08" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Bug:** The starter exposes notes publicly and echoes token values into JSON responses. **Reproduce:** run the red starter and inspect its negative case. **Repair:** Compose bearer authentication, bounded JSON, error redaction and request isolation into a loopback-only Node server tested using real HTTP requests. **Regression:** Unauthorized requests get 401 without secret leakage; validated writes succeed and oversized JSON is rejected.
+
+## Guided local lab
+
+`labs/security-insecure-endpoint/` contains a broken learner source file, complete instructor implementation, executable Node tests and an assessment rubric. Run only trusted checked-in tests; no learner code is evaluated on a hosted server.
+
+<LabGate lessonId="10.03.08" labId="lab.security.security-insecure-endpoint" commands={["npm run lab:security-insecure-endpoint","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+What could still break at a reverse proxy, distributed gateway, DNS resolver, identity provider or persistence layer? How would you verify it with a negative integration test?
+
+## Official references
+
+- [Primary security specification or API](https://nodejs.org/api/http.html)
+- [Additional official guidance](https://www.rfc-editor.org/rfc/rfc9457.html)

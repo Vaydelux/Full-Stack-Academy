@@ -1,0 +1,15 @@
+{
+  "id": "lab.security.security-session-cookies",
+  "lessonId": "10.03.03",
+  "title": "Security boundary: Cookies versus bearer tokens",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/security-session-cookies/starter/solution.mjs",
+  "solution": "labs/security-session-cookies/solution/solution.mjs",
+  "tests": "labs/security-session-cookies/solution.test.mjs",
+  "verify": [
+    "npm run lab:security-session-cookies"
+  ],
+  "expected": "A host-only opaque session cookie has HttpOnly, Secure, SameSite=Lax and Path=/ and rejects newline injection.",
+  "security": "Node built-ins; intentionally small local model. Deployment-grade controls require their own checks."
+}
