@@ -12,6 +12,7 @@ const listStatus = $('#list-status');
 const list = $('#tasks');
 const more = $('#load-more');
 const refresh = $('#refresh');
+const filter = $('#status-filter');
 let failedRequest = null;
 let busy = false;
 let activeController = null;
@@ -35,6 +36,28 @@ function render() {
     const badge = document.createElement('span');
     badge.className = `priority ${task.priority}`;
     badge.textContent = task.priority;
+    const state = document.createElement('span');
+    state.className = `state ${task.status}`;
+    state.textContent = task.status === 'todo' ? 'To do' : task.status === 'doing' ? 'In progress' : 'Done';
+    const advance = document.createElement('button');
+    advance.type = 'button';
+    advance.className = 'secondary change-status';
+    const next = task.status === 'todo' ? 'doing' : task.status === 'doing' ? 'done' : 'todo';
+    advance.textContent = task.status === 'todo' ? 'Start' : task.status === 'doing' ? 'Complete' : 'Reopen';
+    advance.setAttribute('aria-label', `${advance.textContent} task ${task.title}`);
+    advance.addEventListener('click', async () => {
+      advance.disabled = true;
+      try {
+        await api.setStatus(task.id, next, task.revision);
+        await load(false);
+        message(listStatus, 'Task updated using its latest revision.');
+      } catch (error) {
+        advance.disabled = false;
+        message(listStatus, error.status === 412
+          ? 'Another edit won. Refresh the list before retrying.'
+          : error.message ?? 'Status update failed.', true);
+      }
+    });
     const remove = document.createElement('button');
     remove.type = 'button';
     remove.className = 'secondary remove';
@@ -52,7 +75,7 @@ function render() {
       }
     });
     copy.append(label, details);
-    item.append(copy, badge, remove);
+    item.append(copy, badge, state, advance, remove);
     list.append(item);
   }
   more.classList.toggle('hidden', !nextCursor);
@@ -66,7 +89,7 @@ async function load(append) {
   more.disabled = true;
   message(listStatus, 'Loading tasks…');
   try {
-    const page = await api.list({ cursor: append ? nextCursor : null, limit: 10, signal: controller.signal });
+    const page = await api.list({ cursor: append ? nextCursor : null, limit: 10, status: filter.value, signal: controller.signal });
     if (controller !== activeController) return;
     records = append ? [...records, ...page.items] : page.items;
     nextCursor = page.nextCursor;
@@ -118,5 +141,6 @@ form.addEventListener('submit', event => {
 title.addEventListener('input', () => title.setCustomValidity(''));
 retry.addEventListener('click', () => { if (failedRequest) void submit(failedRequest); });
 refresh.addEventListener('click', () => { void load(false); });
+filter.addEventListener('change', () => { records = []; nextCursor = null; void load(false); });
 more.addEventListener('click', () => { if (nextCursor) void load(true); });
 void load(false);
