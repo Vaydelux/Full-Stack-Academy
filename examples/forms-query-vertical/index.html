@@ -27,6 +27,8 @@
       </section>
       <section class="panel" aria-labelledby="tasks-title">
         <div class="panel-top"><span class="section-index">02</span><h2 id="tasks-title">Server tasks</h2><button id="refresh" class="secondary push" type="button">Refresh</button></div>
+        <label for="status-filter">Filter by task status</label>
+        <select id="status-filter" aria-controls="tasks"><option value="all">All tasks</option><option value="todo">To do</option><option value="doing">In progress</option><option value="done">Completed</option></select>
         <p class="help">These entries come from GET /api/tasks. Refresh cancels the previous read. New writes invalidate the cursor.</p>
         <div id="list-status" role="status" aria-live="polite" class="status-wrap"></div>
         <ul id="tasks" class="tasks" aria-label="Task entries"></ul>
