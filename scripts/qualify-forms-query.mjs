@@ -29,6 +29,7 @@ const checks=[
  {name:'Typed React HTTP boundary + query policy (no RHF/Query package required)',
   program:'node',args:['--experimental-strip-types','--test',
    'tests/forms-query-react-api.test.mjs','tests/forms-query-policy.test.mjs']},
+ {name:'React UI source contract (not browser DOM)',program:'node',args:['--test','tests/forms-query-react-wiring.test.mjs']},
 ];
 if(mode==='--full'){
  if(!fs.existsSync(path.join(root,'package-lock.json'))){
@@ -44,7 +45,8 @@ if(mode==='--full'){
   {name:'Entire academy offline quality gate including 16 staged TSX syntax scans',program:'npm',args:['run','verify:offline']},
   {name:'Nested React dependency reinstall',program:'npm',args:['ci','--prefix',nested]},
   {name:'Nested RHF/TanStack React typecheck',program:'npm',args:['run','typecheck','--prefix',nested]},
-  {name:'Nested React production build',program:'npm',args:['run','build','--prefix',nested]}
+  {name:'Nested React production build',program:'npm',args:['run','build','--prefix',nested]},
+  {name:'Native practice UI via real local Chromium CDP',program:'node',args:['scripts/verify-forms-query-browser.mjs']}
  );
 }
 const passed=[];
