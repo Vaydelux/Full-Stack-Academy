@@ -21,6 +21,7 @@
 - **88/88** source/metadata consistency assertions on 09.02's 8 MDX + 8 metadata files, including canonical IDs/titles, prerequisites, source URLs and teaching structure.
 - **88/88** equivalent assertions on 09.03's eight articles and metadata files.
 - **48/48** staged lab manifest/source checks across all 16 packs. This caught one substantive defect in the async submission lesson and was rerun after correction.
+- **16/16 exact red/green code parity comparisons** passed against the actual staged MDX code fences and both source files, including revised async submission, SSR hydration and remote-task capstone.
 - **4/4** new JS source verification scripts parsed as valid JavaScript in an isolated evaluator.
 - Production published registry and MDX registry were inspected: none of the 16 staged IDs is imported as published; existing checkpoint remains 338 unique published lesson IDs / 337 MDX lesson files / 337 published lab fixtures.
 - Staged official sources were compared to the canonical curriculum; two mismatched primary source references were corrected before the final checks.
