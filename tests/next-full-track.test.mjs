@@ -37,7 +37,7 @@ test('new noindex boundary is the first planned Tailwind lesson',()=>{
   assert.ok(read(p).includes('08.01.01'),p);
  }
  const cp=JSON.parse(read('docs/checkpoint.json'));
- assert.equal(cp.snapshot.publishedLessons,260);
+ assert.equal(cp.snapshot.publishedLessons,259);
  assert.equal(cp.snapshot.authoredMdxLessons,257);
  assert.equal(cp.snapshot.labFixtures,257);
  assert.equal(cp.snapshot.completeModules.length,32);

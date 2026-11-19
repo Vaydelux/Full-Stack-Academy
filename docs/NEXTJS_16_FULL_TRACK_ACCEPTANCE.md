@@ -11,7 +11,7 @@
 
 Every one of the 32 new canonical topics has an MDX article, strict metadata, three worked implementation steps, an intentionally broken learner starter, correct instructor code, a local test, a lab manifest, self-assessment rubric and official documentation sources. The publication registry and lab script list include them.
 
-**Source candidate counts:** 260 lesson IDs / 257 MDX / 257 labs / 32 complete modules. 889 total topics; 629 planned. 12 authored API reference drafts out of 303 indexed subjects. This is *not* a tested hosted release.
+**Source candidate counts:** 259 lesson IDs / 257 MDX / 257 labs / 32 complete modules. 889 total topics; 630 planned. 12 authored API reference drafts out of 303 indexed subjects. This is *not* a tested hosted release.
 
 ## Correct Next.js 16 policy boundaries
 

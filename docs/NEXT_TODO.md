@@ -4,8 +4,8 @@
 
 - GitHub `main` commit `651fb296` includes owner-authorized merge PR #19; PR #17 and #18 are also merged. No local dependency-driven tests, Next build or Chromium were executed during those owner-authorized merges.
 - Feature branch: `feat/nextjs-16-complete-track-offline`, based on `main` at `651fb296`.
-- Proposed (unmerged) source snapshot: **260 lesson IDs, 257 MDX lessons, 257 local lab manifests, 32 complete modules, 12 authored reference drafts of 303 indexed reference subjects**.
-- Canonical curriculum: 889 lesson topics; 629 remain planned if this candidate is accepted. Next unimplemented canonical ID: `08.01.01` (Tailwind v4 configuration).
+- Proposed (unmerged) source snapshot: **259 lesson IDs, 257 MDX lessons, 257 local lab manifests, 32 complete modules, 12 authored reference drafts of 303 indexed reference subjects**.
+- Canonical curriculum: 889 lesson topics; 630 remain planned if this candidate is accepted. **07.02.01 was already published as an interactive model**; this branch adds its MDX/lab but not another distinct published ID. Next unimplemented canonical ID: `08.01.01` (Tailwind v4 configuration).
 - **The source counts are NOT deployment/build/test claims.** No Vercel or GitHub Actions inspection performed.
 
 ## This large Next.js 16 milestone

@@ -277,5 +277,5 @@ export const LOCAL_LAB_LESSONS = [browser, lifecycle, foundation3, foundation4, 
 export const PUBLISHED_LESSON_IDS = [...new Set([...AUTHORED_LESSON_IDS, ...MDX_METADATA.keys()])].sort();
 export const isPublishedLesson = (id: string) => PUBLISHED_LESSON_IDS.includes(id);
 export function lessonRubric(id: string): string[] | undefined {
-  return AUTHORED_LESSONS[id]?.challenge.rubric ?? LOCAL_LAB_LESSONS.find(meta => meta.id === id)?.rubric;
+  return LOCAL_LAB_LESSONS.find(meta => meta.id === id)?.rubric ?? AUTHORED_LESSONS[id]?.challenge.rubric;
 }

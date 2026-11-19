@@ -35,7 +35,7 @@ export default async function LessonPage({ params }: LessonPageProps) {
   if (!lesson) notFound();
   const authored = AUTHORED_LESSONS[lessonId];
   const mdxMeta = MDX_METADATA.get(lessonId);
-  const localRubric = !authored ? lessonRubric(lessonId) : undefined;
+  const localRubric = mdxMeta ? lessonRubric(lessonId) : undefined;
   return (
     <DocShell active={authored || mdxMeta ? lessonId : undefined}>
       <nav aria-label="Breadcrumb" className="mb-5 text-xs text-slate-500">

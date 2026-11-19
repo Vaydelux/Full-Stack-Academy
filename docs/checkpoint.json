@@ -11,7 +11,8 @@
   "development": {
     "branch": "feat/nextjs-16-complete-track-offline",
     "lastMergedPr": 19,
-    "state": "next16-complete-track-source-awaits-execution"
+    "state": "next16-complete-track-source-awaits-execution",
+    "note": "07.02.01 already existed as an authored interactive lesson; the new MDX adds an article and lab but no new unique publication ID."
   },
   "snapshot": {
     "tracks": 28,
@@ -21,7 +22,7 @@
     "authoredReferenceDrafts": 12,
     "authoredInteractiveModels": 4,
     "authoredMdxLessons": 257,
-    "publishedLessons": 260,
+    "publishedLessons": 259,
     "labFixtures": 257,
     "completeModules": [
       "00.01",
