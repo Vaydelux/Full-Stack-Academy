@@ -86,12 +86,12 @@ for(const item of expected){
   assert.notEqual(starter,solution,'Red starter must differ from instructor source');
   assert.ok(starter.length>220 && solution.length>400,'Incomplete exercise source');
   assert.ok(solution.includes('export ') && starter.includes('export '));
-  const examples=[...mdx.matchAll(/```tsx\\n([\\s\\S]*?)\\n```/g)].map(match=>match[1].trim());
+  const examples=[...mdx.matchAll(/```tsx\n([\s\S]*?)\n```/g)].map(match=>match[1].trim());
   assert.equal(examples.length,2,'Expected red and instructor TSX examples in the draft');
   assert.equal(examples[0],starter.trim(),'MDX starter code differs from actual starter.tsx');
   assert.equal(examples[1],solution.trim(),'MDX instructor code differs from actual solution.tsx');
   for(const extra of manifest.additionalAssets??[]){
-   assert.ok(/^drafts\\/forms-query\\/labs\\/ssr-hydration\\/[a-z0-9-]+\\.tsx$/.test(extra),'Unsafe supporting asset path');
+   assert.ok(/^drafts\/forms-query\/labs\/ssr-hydration\/[a-z0-9-]+\.tsx$/.test(extra),'Unsafe supporting asset path');
    const file=path.resolve(root,extra);
    assert.ok(file.startsWith(staging+path.sep),'Supporting asset escapes staging root');
    assert.ok(fs.statSync(file).isFile(),'Missing supporting asset '+extra);
