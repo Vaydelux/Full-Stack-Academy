@@ -12,13 +12,13 @@ export async function verifyGitTrack({page,base,assert,wait}){
    assert.equal(await page.locator('meta[name="robots"][content*="noindex"]').count(),0,'Authored Git lesson should be indexable: '+id);
   }
  }
- const planned=await page.goto(base+'/learn/08.01.01');
+ const planned=await page.goto(base+'/learn/09.01.01');
  assert.equal(planned.status(),200,'Next planned React lesson should remain discoverable');
  assert.equal(await page.locator('meta[name="robots"][content*="noindex"]').count(),1,'Planned React content remains noindex');
  const sitemap=await (await page.request.get(base+'/sitemap.xml')).text();
  if(sitemap.includes('<loc>')){
   for(const id of ['05.01.01','05.01.08','05.02.01','05.02.08','05.03.01','05.03.08'])assert.ok(sitemap.includes('/learn/'+id),'Configured sitemap includes Git lesson: '+id);
-  assert.ok(!sitemap.includes('/learn/08.01.01'),'Planned React topic excluded from sitemap');
+  assert.ok(!sitemap.includes('/learn/09.01.01'),'Planned React topic excluded from sitemap');
  }else{
   assert.ok(sitemap.includes('<urlset'),'No public origin means an empty, valid sitemap instead of guessed localhost URLs');
  }

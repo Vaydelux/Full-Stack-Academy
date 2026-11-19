@@ -40,9 +40,9 @@ test('Next.js 16 capstone includes App Router file conventions and async params'
  const error=read('labs/next-public-site/solution/app/error.tsx');
  assert.ok(error.startsWith("'use client';"));
 });
-test('source registries mark next planned module 08.01.01 noindex',()=>{
+test('source registries mark next planned module 09.01.01 noindex',()=>{
  assert.ok(read('scripts/validate-content.mjs').includes('react|foundation|next'));
  for(const script of ['scripts/browser-smoke.mjs','scripts/react-batch-smoke.mjs','scripts/react-advanced-smoke.mjs','scripts/react-next-milestone-smoke.mjs']){
-  assert.ok(read(script).includes('08.01.01'),script);
+  assert.ok(read(script).includes('09.01.01'),script);
  }
 });
