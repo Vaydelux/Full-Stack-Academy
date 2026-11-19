@@ -1,0 +1,82 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Restrict browser-exposed values to explicitly public names and never put secrets in NEXT_PUBLIC_ variables or next.config env.","Reproduce and repair the documented failure using a self-contained TypeScript fixture.","Explain what requires a locally compiled Next.js 16 app or real runtime tests."]} />
+
+## The problem we're solving
+
+Environment separation can create user-visible reliability or security failures. The starter considers every NEXT_PUBLIC_ setting safe even if its name signals a secret.
+
+## Build the mental model
+
+Restrict browser-exposed values to explicitly public names and never put secrets in NEXT_PUBLIC_ variables or next.config env. **Expected result:** A public site label passes; an API key, token or password is refused.
+
+Offline tests verify small, deterministic policy models. They cannot establish real HTTP security, deployment compatibility, image loading, environment secrecy or network diagnostics.
+
+## Prerequisites and preflight
+
+Read the previous canonical Next.js lesson and inspect `labs/next-environment-separation/starter/solution.tsx` after `npm ci` on Node 24. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:next-environment-separation`. PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:next-environment-separation; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the broken policy" file="labs/next-environment-separation/starter/solution.tsx" expected="The original starter fails a meaningful assertion.">
+
+```tsx
+export function publicEnvCandidate(name:string){return name.startsWith('NEXT_PUBLIC_');}
+```
+
+**Why it fails:** The starter considers every NEXT_PUBLIC_ setting safe even if its name signals a secret.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the policy and runtime boundary" file="labs/next-environment-separation/starter/solution.tsx" expected="A public site label passes; an API key, token or password is refused.">
+
+```tsx
+export function publicEnvCandidate(name:string){return /^NEXT_PUBLIC_[A-Z0-9_]+$/.test(name) && !/(SECRET|TOKEN|PASSWORD|PRIVATE|API_KEY|CREDENTIAL)/.test(name);}
+```
+
+**Why it works:** Restrict browser-exposed values to explicitly public names and never put secrets in NEXT_PUBLIC_ variables or next.config env.
+
+</LessonStep>
+
+<LessonStep number={3} title="Test a positive and a negative case" file="labs/next-environment-separation/solution.test.mjs" expected="The instructor code passes source-model assertions; framework-level qualification is separate.">
+
+```js
+assert.equal(mod.publicEnvCandidate('NEXT_PUBLIC_SITE_TITLE'),true);assert.equal(mod.publicEnvCandidate('NEXT_PUBLIC_SECRET_TOKEN'),false);assert.equal(mod.publicEnvCandidate('DATABASE_URL'),false);assert.equal(mod.publicEnvCandidate('NEXT_PUBLIC_API_KEY'),false);
+```
+
+**Illustrative Next.js 16 usage:**
+
+```tsx
+// .env.local, gitignored: DATABASE_URL is server-only; NEXT_PUBLIC_SITE_TITLE is public.
+// Never put database credentials under next.config.ts env settings.
+import 'server-only';
+const connectionString=process.env.DATABASE_URL;
+```
+
+Do not confuse the offline fixtures with a compiled application or a real HTTP route.
+
+</LessonStep>
+
+<Misconception claim="The starter considers every NEXT_PUBLIC_ setting safe even if its name signals a secret." correction="Restrict browser-exposed values to explicitly public names and never put secrets in NEXT_PUBLIC_ variables or next.config env. Local source-model tests cannot replace deployment or security evidence." />
+
+<KnowledgeCheck question="What is the right principle for environment separation?" choices={["If TypeScript compiles, every deployment and authorization boundary is safe.","Restrict browser-exposed values to explicitly public names and never put secrets in NEXT_PUBLIC_ variables or next.config env.","Browser data is always private unless a server sends it explicitly.","All Next.js Proxy work runs on the Edge runtime."] } correctIndex={1} explanation="Restrict browser-exposed values to explicitly public names and never put secrets in NEXT_PUBLIC_ variables or next.config env." misconception="Check the true runtime and trust boundary, not the appearance of a correct UI." lessonId="07.05.01" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Symptom:** The starter considers every NEXT_PUBLIC_ setting safe even if its name signals a secret. **Reproduction:** run the red starter on one bad input. **Repair:** Restrict browser-exposed values to explicitly public names and never put secrets in NEXT_PUBLIC_ variables or next.config env. **Regression:** A public site label passes; an API key, token or password is refused. Test the real App Router/runtime separately.
+
+## Guided local lab
+
+Local source, instructor fix, tests and rubric are checked into `labs/next-environment-separation/`. No arbitrary learner code executes on the academy server.
+
+<LabGate lessonId="07.05.01" labId="lab.next.next-environment-separation" commands={["npm run lab:next-environment-separation","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+What additional build, HTTP, network or credential audit would provide evidence that this policy is effective in production?
+
+## Official references
+
+- [Next.js official reference: Environment separation](https://nextjs.org/docs/app/guides/environment-variables)
+- [Supporting Next.js guide](https://nextjs.org/docs/app/guides/production-checklist)

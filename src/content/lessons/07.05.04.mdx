@@ -1,0 +1,82 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Choose Node.js for native modules, filesystem or database dependencies; Edge is suitable only for compatible Web APIs, while Next.js 16 Proxy uses Node.","Reproduce and repair the documented failure using a self-contained TypeScript fixture.","Explain what requires a locally compiled Next.js 16 app or real runtime tests."]} />
+
+## The problem we're solving
+
+Edge vs Node runtime can create user-visible reliability or security failures. The starter selects Edge even when the operation requires Node filesystem APIs.
+
+## Build the mental model
+
+Choose Node.js for native modules, filesystem or database dependencies; Edge is suitable only for compatible Web APIs, while Next.js 16 Proxy uses Node. **Expected result:** Native DB and filesystem workloads select Node; Web-only fetch can be Edge-eligible.
+
+Offline tests verify small, deterministic policy models. They cannot establish real HTTP security, deployment compatibility, image loading, environment secrecy or network diagnostics.
+
+## Prerequisites and preflight
+
+Read the previous canonical Next.js lesson and inspect `labs/next-node-edge-runtime/starter/solution.tsx` after `npm ci` on Node 24. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:next-node-edge-runtime`. PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:next-node-edge-runtime; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the broken policy" file="labs/next-node-edge-runtime/starter/solution.tsx" expected="The original starter fails a meaningful assertion.">
+
+```tsx
+export type Workload='fs'|'native-db'|'web-fetch';export function runtimeFor(_task:Workload){return 'edge';}
+```
+
+**Why it fails:** The starter selects Edge even when the operation requires Node filesystem APIs.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the policy and runtime boundary" file="labs/next-node-edge-runtime/starter/solution.tsx" expected="Native DB and filesystem workloads select Node; Web-only fetch can be Edge-eligible.">
+
+```tsx
+export type Workload='fs'|'native-db'|'web-fetch';export function runtimeFor(task:Workload){return task==='web-fetch'?'edge':'nodejs';}
+```
+
+**Why it works:** Choose Node.js for native modules, filesystem or database dependencies; Edge is suitable only for compatible Web APIs, while Next.js 16 Proxy uses Node.
+
+</LessonStep>
+
+<LessonStep number={3} title="Test a positive and a negative case" file="labs/next-node-edge-runtime/solution.test.mjs" expected="The instructor code passes source-model assertions; framework-level qualification is separate.">
+
+```js
+assert.equal(mod.runtimeFor('fs'),'nodejs');assert.equal(mod.runtimeFor('native-db'),'nodejs');assert.equal(mod.runtimeFor('web-fetch'),'edge');
+```
+
+**Illustrative Next.js 16 usage:**
+
+```tsx
+// app/api/report/route.ts
+export const runtime='nodejs';
+export async function GET(){const report=await loadFromNodeOnlyLibrary();return Response.json(report);}
+// Next.js 16 proxy.ts runs in Node, unlike older Edge middleware assumptions.
+```
+
+Do not confuse the offline fixtures with a compiled application or a real HTTP route.
+
+</LessonStep>
+
+<Misconception claim="The starter selects Edge even when the operation requires Node filesystem APIs." correction="Choose Node.js for native modules, filesystem or database dependencies; Edge is suitable only for compatible Web APIs, while Next.js 16 Proxy uses Node. Local source-model tests cannot replace deployment or security evidence." />
+
+<KnowledgeCheck question="What is the right principle for edge vs node runtime?" choices={["If TypeScript compiles, every deployment and authorization boundary is safe.","Choose Node.js for native modules, filesystem or database dependencies; Edge is suitable only for compatible Web APIs, while Next.js 16 Proxy uses Node.","Browser data is always private unless a server sends it explicitly.","All Next.js Proxy work runs on the Edge runtime."] } correctIndex={1} explanation="Choose Node.js for native modules, filesystem or database dependencies; Edge is suitable only for compatible Web APIs, while Next.js 16 Proxy uses Node." misconception="Check the true runtime and trust boundary, not the appearance of a correct UI." lessonId="07.05.04" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Symptom:** The starter selects Edge even when the operation requires Node filesystem APIs. **Reproduction:** run the red starter on one bad input. **Repair:** Choose Node.js for native modules, filesystem or database dependencies; Edge is suitable only for compatible Web APIs, while Next.js 16 Proxy uses Node. **Regression:** Native DB and filesystem workloads select Node; Web-only fetch can be Edge-eligible. Test the real App Router/runtime separately.
+
+## Guided local lab
+
+Local source, instructor fix, tests and rubric are checked into `labs/next-node-edge-runtime/`. No arbitrary learner code executes on the academy server.
+
+<LabGate lessonId="07.05.04" labId="lab.next.next-node-edge-runtime" commands={["npm run lab:next-node-edge-runtime","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+What additional build, HTTP, network or credential audit would provide evidence that this policy is effective in production?
+
+## Official references
+
+- [Next.js official reference: Edge vs Node runtime](https://nextjs.org/docs/app/api-reference/edge)
+- [Supporting Next.js guide](https://nextjs.org/docs/app/guides/upgrading/version-16)

@@ -1,0 +1,81 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Reserve image dimensions and preload only a measured LCP candidate, using next/image and optimized font delivery.","Reproduce and repair the documented failure using a self-contained TypeScript fixture.","Explain what requires a locally compiled Next.js 16 app or real runtime tests."]} />
+
+## The problem we're solving
+
+Image and asset optimization can create user-visible reliability or security failures. The starter preloads every thumbnail and accepts invalid image dimensions.
+
+## Build the mental model
+
+Reserve image dimensions and preload only a measured LCP candidate, using next/image and optimized font delivery. **Expected result:** Valid hero is preloaded; thumbnails lazy-load and invalid dimensions throw.
+
+Offline tests verify small, deterministic policy models. They cannot establish real HTTP security, deployment compatibility, image loading, environment secrecy or network diagnostics.
+
+## Prerequisites and preflight
+
+Read the previous canonical Next.js lesson and inspect `labs/next-image-assets/starter/solution.tsx` after `npm ci` on Node 24. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:next-image-assets`. PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:next-image-assets; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the broken policy" file="labs/next-image-assets/starter/solution.tsx" expected="The original starter fails a meaningful assertion.">
+
+```tsx
+export function assetPlan(_kind:'hero'|'thumbnail',width:number,height:number){return {width,height,preload:true};}
+```
+
+**Why it fails:** The starter preloads every thumbnail and accepts invalid image dimensions.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the policy and runtime boundary" file="labs/next-image-assets/starter/solution.tsx" expected="Valid hero is preloaded; thumbnails lazy-load and invalid dimensions throw.">
+
+```tsx
+export function assetPlan(kind:'hero'|'thumbnail',width:number,height:number){if(!Number.isSafeInteger(width)||!Number.isSafeInteger(height)||width<=0||height<=0)throw new RangeError('Invalid dimensions');return {width,height,preload:kind==='hero',loading:kind==='hero'?'eager':'lazy'};}
+```
+
+**Why it works:** Reserve image dimensions and preload only a measured LCP candidate, using next/image and optimized font delivery.
+
+</LessonStep>
+
+<LessonStep number={3} title="Test a positive and a negative case" file="labs/next-image-assets/solution.test.mjs" expected="The instructor code passes source-model assertions; framework-level qualification is separate.">
+
+```js
+assert.deepEqual(mod.assetPlan('hero',1440,900),{width:1440,height:900,preload:true,loading:'eager'});assert.equal(mod.assetPlan('thumbnail',240,160).preload,false);assert.throws(()=>mod.assetPlan('hero',0,160),RangeError);
+```
+
+**Illustrative Next.js 16 usage:**
+
+```tsx
+import Image from 'next/image';
+export function Hero(){return <Image src='/hero.webp' alt='Study workspace' width={1440} height={900} sizes='(max-width: 768px) 100vw, 960px' preload/>;}
+// Use next/font and measure actual LCP before setting preload on further images.
+```
+
+Do not confuse the offline fixtures with a compiled application or a real HTTP route.
+
+</LessonStep>
+
+<Misconception claim="The starter preloads every thumbnail and accepts invalid image dimensions." correction="Reserve image dimensions and preload only a measured LCP candidate, using next/image and optimized font delivery. Local source-model tests cannot replace deployment or security evidence." />
+
+<KnowledgeCheck question="What is the right principle for image and asset optimization?" choices={["If TypeScript compiles, every deployment and authorization boundary is safe.","Reserve image dimensions and preload only a measured LCP candidate, using next/image and optimized font delivery.","Browser data is always private unless a server sends it explicitly.","All Next.js Proxy work runs on the Edge runtime."] } correctIndex={1} explanation="Reserve image dimensions and preload only a measured LCP candidate, using next/image and optimized font delivery." misconception="Check the true runtime and trust boundary, not the appearance of a correct UI." lessonId="07.05.03" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Symptom:** The starter preloads every thumbnail and accepts invalid image dimensions. **Reproduction:** run the red starter on one bad input. **Repair:** Reserve image dimensions and preload only a measured LCP candidate, using next/image and optimized font delivery. **Regression:** Valid hero is preloaded; thumbnails lazy-load and invalid dimensions throw. Test the real App Router/runtime separately.
+
+## Guided local lab
+
+Local source, instructor fix, tests and rubric are checked into `labs/next-image-assets/`. No arbitrary learner code executes on the academy server.
+
+<LabGate lessonId="07.05.03" labId="lab.next.next-image-assets" commands={["npm run lab:next-image-assets","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+What additional build, HTTP, network or credential audit would provide evidence that this policy is effective in production?
+
+## Official references
+
+- [Next.js official reference: Image and asset optimization](https://nextjs.org/docs/app/api-reference/components/image)
+- [Supporting Next.js guide](https://nextjs.org/docs/app/getting-started/images)

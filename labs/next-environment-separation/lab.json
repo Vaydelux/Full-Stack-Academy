@@ -1,0 +1,15 @@
+{
+  "id": "lab.next.next-environment-separation",
+  "lessonId": "07.05.01",
+  "title": "Local Next 16 environment separation exercise",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/next-environment-separation/starter/solution.tsx",
+  "solution": "labs/next-environment-separation/solution/solution.tsx",
+  "tests": "labs/next-environment-separation/solution.test.mjs",
+  "verify": [
+    "npm run lab:next-environment-separation"
+  ],
+  "expected": "A public site label passes; an API key, token or password is refused.",
+  "security": "Offline reviewed source-level tests only; runtime security must be separately verified."
+}
