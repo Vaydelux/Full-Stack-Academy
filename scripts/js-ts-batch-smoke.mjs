@@ -12,13 +12,13 @@ export async function verifyJsTsBatch({page,base,assert,wait}) {
       assert.equal(await page.locator('meta[name="robots"][content*="noindex"]').count(),0,'Authored route indexable: '+id);
     }
   }
-  await page.goto(base+'/learn/09.01.01');
+  await page.goto(base+'/learn/09.02.01');
   assert.ok(await page.locator('meta[name="robots"][content*="noindex"]').count()>0,'Next unauthored React module must remain noindex');
   const sitemap = await (await page.request.get(base+'/sitemap.xml')).text();
   // Local GitHub CI deliberately omits NEXT_PUBLIC_SITE_URL; the application must never publish localhost URLs.
   if (sitemap.includes('<loc>')) {
     for(const id of ['03.01.01','03.02.08','03.03.08','03.04.08','04.01.01','04.02.08','04.03.08','04.04.08'])assert.ok(sitemap.includes('/learn/'+id),'Configured public sitemap should include authored lesson '+id);
-    assert.ok(!sitemap.includes('/learn/09.01.01'),'Planned lesson must not appear in sitemap');
+    assert.ok(!sitemap.includes('/learn/09.02.01'),'Planned lesson must not appear in sitemap');
   } else {
     assert.ok(sitemap.includes('<urlset'),'No-origin build should emit an empty valid sitemap instead of guessed localhost links');
   }
