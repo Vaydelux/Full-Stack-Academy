@@ -21,7 +21,7 @@
 
 - [ ] Track `08` — APIs/backend foundations (next canonical topic `08.01.01`)
 - [ ] Expand the remaining **630 planned topic IDs**, prioritizing complete adjacent tracks rather than random content additions
-- [ ] Expand encyclopedia: **303 index entries**, only **4 authored reference drafts**
+- [ ] Expand encyclopedia: **303 index entries**, now **20 authored reference drafts**
 - [ ] Normalize and review actual Next.js 16 Cache Components examples against target project settings
 - [ ] Add browser-level React Testing Library interactions; current React fixtures prove initial SSR markup and pure state semantics, not hydrated UI behavior
 - [ ] Real Next App Router render/request/cache/route handler integration tests remain pending; standalone examples are not running server routes
@@ -48,3 +48,11 @@
 - [ ] W07: tracks 26+27 (72 IDs)
 
 Source: `docs/MEGA_SCOPE_DELIVERY_PLAN.md` and `docs/delivery-waves.json`. Verify with `npm run plan:waves:check` locally.
+
+## Reference expansion batch (React + Next)
+
+- [x] Author 16 topic-specific React/Next API reference drafts aligned with canonical index IDs, lessons, examples and official links
+- [x] Keep 4 preexisting Zod/Prisma/Nest/Redis reference drafts; total 20, index unchanged at 303
+- [x] Add local reference schema/snippet audit command: `npm run reference:check`
+- [ ] Run that audit, inspect examples in production renderer and verify exact-head Next build locally
+- [ ] Review reference page accessibility, search interaction, source version drift and draft SEO before release

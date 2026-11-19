@@ -16,6 +16,8 @@ const interactiveIds = [...idList[1].matchAll(/'([^']+)'/g)].map(m=>m[1]);
 const refSection = authored.split('export const AUTHORED_REFERENCES')[1]?.split('export function findAuthoredReference')[0];
 assert.ok(refSection, 'Could not locate authored references');
 const references = [...refSection.matchAll(/^\s*id: '([^']+)'/gm)].map(m=>m[1]);
+const supplementalRefs=JSON.parse(read('data/reference-details.json'));
+const authoredReferenceIds=[...new Set([...references,...supplementalRefs.map(entry=>entry.id)])];
 const labs = fs.readdirSync(path.join(root,'labs')).filter(slug=>fs.existsSync(path.join(root,'labs',slug,'lab.json')));
 const published = [...new Set([...interactiveIds,...mdxIds])];
 const completeModules = [...new Set(curriculum.lessons.map(l=>l.moduleId))].filter(
@@ -24,7 +26,7 @@ const completeModules = [...new Set(curriculum.lessons.map(l=>l.moduleId))].filt
 const snapshot = {
   tracks:curriculum.tracks.length, modules:curriculum.modules.length,
   catalogTopics:curriculum.lessons.length,indexedReferences:referenceIndex.entries.length,
-  authoredReferenceDrafts:references.length, authoredInteractiveModels:interactiveIds.length,
+  authoredReferenceDrafts:authoredReferenceIds.length, authoredInteractiveModels:interactiveIds.length,
   authoredMdxLessons:mdxIds.length,publishedLessons:published.length,
   labFixtures:labs.length, completeModules
 };

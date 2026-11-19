@@ -1,3 +1,5 @@
+import supplementalReferences from '../../../data/reference-details.json';
+
 import type {
   AuthoredLesson,
   AuthoredReference,
@@ -908,6 +910,7 @@ export const AUTHORED_LESSON_IDS = ['06.01.01', '07.02.01', '09.01.02', '15.02.0
 /* ------------------------------------------------------------------ */
 
 export const AUTHORED_REFERENCES: AuthoredReference[] = [
+  ...supplementalReferences,
   {
     id: 'zod-safeparse',
     matchCategories: ['Zod'],

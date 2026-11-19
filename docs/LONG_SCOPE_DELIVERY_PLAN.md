@@ -71,3 +71,7 @@ Read `AGENTS.md`, `docs/PROJECT_CHECKPOINT.md`, `docs/NEXT_TODO.md`, `docs/check
 ## Long-horizon continuation — 7 whole-track waves
 
 All post-React/Next development is arranged into seven **80–104-topic** whole-track waves (the final wave is 72): W01 08–10, W02 11–13, W03 14–16, W04 17–19, W05 20–22, W06 23–25 and W07 26–27. Detailed canonical counts, duplicate interactive IDs, quality gates and ownership are in `docs/MEGA_SCOPE_DELIVERY_PLAN.md` and `docs/delivery-waves.json`. No future lesson is marked authored solely because a wave has been planned.
+
+## Quick-reference program
+
+The authored reference drafts now total **20** (four legacy plus 16 React/Next), out of 303 canonical indexed subjects. Source is split between the existing interactive sample registry and `data/reference-details.json`; the reference renderer reuses the same typed contract. `npm run reference:check` validates IDs, links, snippets and source mappings locally. Future batches should author full reference cohorts by relevant track, not falsely label all 303 index entries as complete.
