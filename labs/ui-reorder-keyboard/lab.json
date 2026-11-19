@@ -1,0 +1,15 @@
+{
+  "id": "lab.ui.ui-reorder-keyboard",
+  "lessonId": "08.02.06",
+  "title": "Advanced UI drag and drop local lab",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/ui-reorder-keyboard/starter/solution.tsx",
+  "solution": "labs/ui-reorder-keyboard/solution/solution.tsx",
+  "tests": "labs/ui-reorder-keyboard/solution.test.mjs",
+  "verify": [
+    "npm run lab:ui-reorder-keyboard"
+  ],
+  "expected": "Reorder returns a new list; moving the first item to the last preserves its stable ID.",
+  "security": "Trusted local fixtures only. Mounted interaction/a11y testing is required separately."
+}

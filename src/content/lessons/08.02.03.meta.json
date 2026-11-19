@@ -1,0 +1,39 @@
+{
+  "id": "08.02.03",
+  "title": "Combobox and listbox: Filter combobox options predictably while keeping option IDs stable and keyboard navigation distinct from selection.",
+  "description": "Advanced UI interaction guide for combobox and listbox, with a red learner starter, corrected instructor source, offline tests and a mounted-accessibility validation boundary.",
+  "trackId": "08",
+  "moduleId": "08.02",
+  "level": "Intermediate",
+  "estimatedMinutes": 65,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "typescript": "5",
+    "react": "19"
+  },
+  "prerequisites": [
+    "08.02.02"
+  ],
+  "objectives": [
+    "Filter combobox options predictably while keeping option IDs stable and keyboard navigation distinct from selection.",
+    "Repair the ui-combobox-filter starter's reproducible defect.",
+    "Explain missing keyboard, touch and assistive technology checks for combobox and listbox."
+  ],
+  "labId": "lab.ui.ui-combobox-filter",
+  "rubric": [
+    "I can describe the interaction requirements for combobox and listbox.",
+    "I can repair the 08.02.03 broken example and prove a negative case.",
+    "I know why an offline fixture is not a mounted accessibility test."
+  ],
+  "sources": [
+    {
+      "label": "Official Combobox and listbox documentation",
+      "url": "https://www.w3.org/WAI/ARIA/apg/patterns/combobox/"
+    },
+    {
+      "label": "Related official reference",
+      "url": "https://www.w3.org/WAI/ARIA/apg/patterns/listbox/"
+    }
+  ]
+}

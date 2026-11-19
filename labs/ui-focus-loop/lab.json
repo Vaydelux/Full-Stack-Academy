@@ -1,0 +1,15 @@
+{
+  "id": "lab.ui.ui-focus-loop",
+  "lessonId": "08.02.04",
+  "title": "Advanced UI keyboard focus traps local lab",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/ui-focus-loop/starter/solution.tsx",
+  "solution": "labs/ui-focus-loop/solution/solution.tsx",
+  "tests": "labs/ui-focus-loop/solution.test.mjs",
+  "verify": [
+    "npm run lab:ui-focus-loop"
+  ],
+  "expected": "Tab cycles forward and Shift+Tab backwards; empty content has no focus target.",
+  "security": "Trusted local fixtures only. Mounted interaction/a11y testing is required separately."
+}

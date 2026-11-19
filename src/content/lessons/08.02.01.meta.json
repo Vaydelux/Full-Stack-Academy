@@ -1,0 +1,39 @@
+{
+  "id": "08.02.01",
+  "title": "Motion animation primitives: Respect prefers-reduced-motion: keep state changes perceivable without forced displacement or animation.",
+  "description": "Advanced UI interaction guide for motion animation primitives, with a red learner starter, corrected instructor source, offline tests and a mounted-accessibility validation boundary.",
+  "trackId": "08",
+  "moduleId": "08.02",
+  "level": "Intermediate",
+  "estimatedMinutes": 65,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "typescript": "5",
+    "react": "19"
+  },
+  "prerequisites": [
+    "08.01.08"
+  ],
+  "objectives": [
+    "Respect prefers-reduced-motion: keep state changes perceivable without forced displacement or animation.",
+    "Repair the ui-motion-reduced starter's reproducible defect.",
+    "Explain missing keyboard, touch and assistive technology checks for motion animation primitives."
+  ],
+  "labId": "lab.ui.ui-motion-reduced",
+  "rubric": [
+    "I can describe the interaction requirements for motion animation primitives.",
+    "I can repair the 08.02.01 broken example and prove a negative case.",
+    "I know why an offline fixture is not a mounted accessibility test."
+  ],
+  "sources": [
+    {
+      "label": "Official Motion animation primitives documentation",
+      "url": "https://motion.dev/docs/react-use-reduced-motion"
+    },
+    {
+      "label": "Related official reference",
+      "url": "https://motion.dev/docs/react-motion-config"
+    }
+  ]
+}

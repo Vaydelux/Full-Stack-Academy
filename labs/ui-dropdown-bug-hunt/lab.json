@@ -1,0 +1,15 @@
+{
+  "id": "lab.ui.ui-dropdown-bug-hunt",
+  "lessonId": "08.02.08",
+  "title": "Advanced UI bug hunt inaccessible dropdown local lab",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/ui-dropdown-bug-hunt/starter/solution.tsx",
+  "solution": "labs/ui-dropdown-bug-hunt/solution/solution.tsx",
+  "tests": "labs/ui-dropdown-bug-hunt/solution.test.mjs",
+  "verify": [
+    "npm run lab:ui-dropdown-bug-hunt"
+  ],
+  "expected": "Initial focus lands on the first enabled action or -1 for an empty/disabled menu.",
+  "security": "Trusted local fixtures only. Mounted interaction/a11y testing is required separately."
+}

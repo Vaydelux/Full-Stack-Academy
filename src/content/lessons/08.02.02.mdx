@@ -1,0 +1,80 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Use a named modal with correct initial focus, keyboard containment, Escape closing and focus restoration to the trigger.","Repair a defective accessible modal dialog model with repeatable offline tests.","Identify the browser interaction, assistive technology and motion checks not covered by SSR."]} />
+
+## The problem we're solving
+
+The starter accepts missing label and initial focus. Advanced UI interactions need a robust identity and focus model so the component works with touch, keyboard and screen readers rather than only a mouse.
+
+## Build the mental model
+
+Use a named modal with correct initial focus, keyboard containment, Escape closing and focus restoration to the trigger. **Expected behavior:** A dialog plan must provide a named title, cancel action and focus target.
+
+**Evidence boundary:** The local test checks a pure data or interaction-policy function. It does not prove DOM focus, ARIA announcements, actual event sequences, animation timing or a third-party library's mounted behavior. Use a real local browser and accessible component primitives for those claims.
+
+## Prerequisites and preflight
+
+Read the previous UI Systems lesson; use Node 24 and locked dependencies. Inspect `labs/ui-modal-accessibility/starter/solution.tsx`. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:ui-modal-accessibility`. PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:ui-modal-accessibility; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the broken interaction model" file="labs/ui-modal-accessibility/starter/solution.tsx" expected="The starter fails an instructor assertion for a concrete interaction bug.">
+
+```tsx
+export function modalPlan(_title:string,_cancelLabel:string){return {accessible:true,initialFocus:'body'};}
+```
+
+**Failure mechanism:** The starter accepts missing label and initial focus.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the typed accessibility contract" file="labs/ui-modal-accessibility/starter/solution.tsx" expected="A dialog plan must provide a named title, cancel action and focus target.">
+
+```tsx
+export function modalPlan(title:string,cancelLabel:string){return {accessible:Boolean(title.trim()&&cancelLabel.trim()),initialFocus:'cancel'};}
+```
+
+**Principle:** Use a named modal with correct initial focus, keyboard containment, Escape closing and focus restoration to the trigger.
+
+</LessonStep>
+
+<LessonStep number={3} title="Test edge cases and inspect mounted implementation guidance" file="labs/ui-modal-accessibility/solution.test.mjs" expected="Instructor source passes and the broken starter fails the same local assertions.">
+
+```js
+assert.deepEqual(mod.modalPlan('Delete','Cancel'),{accessible:true,initialFocus:'cancel'});assert.equal(mod.modalPlan('','Cancel').accessible,false);
+```
+
+**Browser-oriented integration example or checklist:**
+
+```tsx
+import {AlertDialog} from 'radix-ui';
+export function Confirm(){return <AlertDialog.Root><AlertDialog.Trigger>Delete</AlertDialog.Trigger><AlertDialog.Portal><AlertDialog.Overlay/><AlertDialog.Content><AlertDialog.Title>Delete this item?</AlertDialog.Title><AlertDialog.Description>This action cannot be undone.</AlertDialog.Description><AlertDialog.Cancel>Cancel</AlertDialog.Cancel><AlertDialog.Action>Delete</AlertDialog.Action></AlertDialog.Content></AlertDialog.Portal></AlertDialog.Root>;}
+```
+
+Run real keyboard, focus-restoration, touch, screen-reader and reduced-motion checks on your actual component before calling it accessible.
+
+</LessonStep>
+
+<Misconception claim="The starter accepts missing label and initial focus." correction="Use a named modal with correct initial focus, keyboard containment, Escape closing and focus restoration to the trigger. Local model tests cannot prove real DOM interaction correctness." />
+
+<KnowledgeCheck question="Which accessibility rule is essential for accessible modal dialog?" choices={["A successful mouse click proves complete keyboard support.","Use a named modal with correct initial focus, keyboard containment, Escape closing and focus restoration to the trigger.","ARIA roles always replace keyboard interaction code.","An offline data function proves a dialog traps focus after mounting."] } correctIndex={1} explanation="Use a named modal with correct initial focus, keyboard containment, Escape closing and focus restoration to the trigger." misconception="Verify the observable behavior users rely on, not only the markup's appearance." lessonId="08.02.02" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Bug:** The starter accepts missing label and initial focus. **Reproduce:** run the red starter and capture the failing assertion. **Repair:** Use a named modal with correct initial focus, keyboard containment, Escape closing and focus restoration to the trigger. **Regression:** A dialog plan must provide a named title, cancel action and focus target. Test the mounted widget before publication.
+
+## Guided local lab
+
+`labs/ui-modal-accessibility/` includes deliberately broken learner source, instructor solution, runnable local checks, and an explicit self-assessment rubric. No learner code runs on the academy server.
+
+<LabGate lessonId="08.02.02" labId="lab.ui.ui-modal-accessibility" commands={["npm run lab:ui-modal-accessibility","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+What is different about a data-model assertion and an actual keyboard or screen-reader assertion? Which regression would only appear in the browser?
+
+## Official references
+
+- [Official interaction reference: Accessible modal dialog](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/)
+- [Related accessibility guidance](https://www.radix-ui.com/primitives/docs/components/dialog)

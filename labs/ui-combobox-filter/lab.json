@@ -1,0 +1,15 @@
+{
+  "id": "lab.ui.ui-combobox-filter",
+  "lessonId": "08.02.03",
+  "title": "Advanced UI combobox and listbox local lab",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/ui-combobox-filter/starter/solution.tsx",
+  "solution": "labs/ui-combobox-filter/solution/solution.tsx",
+  "tests": "labs/ui-combobox-filter/solution.test.mjs",
+  "verify": [
+    "npm run lab:ui-combobox-filter"
+  ],
+  "expected": "Search is case-insensitive and excludes nonmatching options without mutating the source.",
+  "security": "Trusted local fixtures only. Mounted interaction/a11y testing is required separately."
+}

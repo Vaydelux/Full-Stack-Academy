@@ -1,0 +1,1 @@
+export function move<T>(items:readonly T[],from:number,to:number):T[]{if(!Number.isInteger(from)||!Number.isInteger(to)||from<0||to<0||from>=items.length||to>=items.length)return [...items];const next=[...items];const [row]=next.splice(from,1);next.splice(to,0,row);return next;}

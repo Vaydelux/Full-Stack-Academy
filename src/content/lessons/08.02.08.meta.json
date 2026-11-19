@@ -1,0 +1,39 @@
+{
+  "id": "08.02.08",
+  "title": "Bug Hunt inaccessible dropdown: Distinguish an action menu from a listbox, and never focus disabled actions when a dropdown opens.",
+  "description": "Advanced UI interaction guide for bug hunt inaccessible dropdown, with a red learner starter, corrected instructor source, offline tests and a mounted-accessibility validation boundary.",
+  "trackId": "08",
+  "moduleId": "08.02",
+  "level": "Intermediate",
+  "estimatedMinutes": 65,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "typescript": "5",
+    "react": "19"
+  },
+  "prerequisites": [
+    "08.02.07"
+  ],
+  "objectives": [
+    "Distinguish an action menu from a listbox, and never focus disabled actions when a dropdown opens.",
+    "Repair the ui-dropdown-bug-hunt starter's reproducible defect.",
+    "Explain missing keyboard, touch and assistive technology checks for bug hunt inaccessible dropdown."
+  ],
+  "labId": "lab.ui.ui-dropdown-bug-hunt",
+  "rubric": [
+    "I can describe the interaction requirements for bug hunt inaccessible dropdown.",
+    "I can repair the 08.02.08 broken example and prove a negative case.",
+    "I know why an offline fixture is not a mounted accessibility test."
+  ],
+  "sources": [
+    {
+      "label": "Official Bug Hunt inaccessible dropdown documentation",
+      "url": "https://www.w3.org/WAI/ARIA/apg/patterns/menu-button/"
+    },
+    {
+      "label": "Related official reference",
+      "url": "https://www.w3.org/WAI/ARIA/apg/patterns/listbox/"
+    }
+  ]
+}

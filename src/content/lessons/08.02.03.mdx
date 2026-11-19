@@ -1,0 +1,82 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Filter combobox options predictably while keeping option IDs stable and keyboard navigation distinct from selection.","Repair a defective combobox and listbox model with repeatable offline tests.","Identify the browser interaction, assistive technology and motion checks not covered by SSR."]} />
+
+## The problem we're solving
+
+The starter returns all items despite a search term. Advanced UI interactions need a robust identity and focus model so the component works with touch, keyboard and screen readers rather than only a mouse.
+
+## Build the mental model
+
+Filter combobox options predictably while keeping option IDs stable and keyboard navigation distinct from selection. **Expected behavior:** Search is case-insensitive and excludes nonmatching options without mutating the source.
+
+**Evidence boundary:** The local test checks a pure data or interaction-policy function. It does not prove DOM focus, ARIA announcements, actual event sequences, animation timing or a third-party library's mounted behavior. Use a real local browser and accessible component primitives for those claims.
+
+## Prerequisites and preflight
+
+Read the previous UI Systems lesson; use Node 24 and locked dependencies. Inspect `labs/ui-combobox-filter/starter/solution.tsx`. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:ui-combobox-filter`. PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:ui-combobox-filter; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the broken interaction model" file="labs/ui-combobox-filter/starter/solution.tsx" expected="The starter fails an instructor assertion for a concrete interaction bug.">
+
+```tsx
+export type Option={id:string;label:string};export const filterOptions=(items:readonly Option[],_term:string)=>[...items];
+```
+
+**Failure mechanism:** The starter returns all items despite a search term.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the typed accessibility contract" file="labs/ui-combobox-filter/starter/solution.tsx" expected="Search is case-insensitive and excludes nonmatching options without mutating the source.">
+
+```tsx
+export type Option={id:string;label:string};export function filterOptions(items:readonly Option[],term:string){const q=term.trim().toLocaleLowerCase();return items.filter(x=>x.label.toLocaleLowerCase().includes(q));}
+```
+
+**Principle:** Filter combobox options predictably while keeping option IDs stable and keyboard navigation distinct from selection.
+
+</LessonStep>
+
+<LessonStep number={3} title="Test edge cases and inspect mounted implementation guidance" file="labs/ui-combobox-filter/solution.test.mjs" expected="Instructor source passes and the broken starter fails the same local assertions.">
+
+```js
+const rows=[{id:'a',label:'React'},{id:'b',label:'Vue'}];assert.deepEqual(mod.filterOptions(rows,'re').map(x=>x.id),['a']);assert.equal(rows.length,2);
+```
+
+**Browser-oriented integration example or checklist:**
+
+```tsx
+// Combobox requires input/aria-expanded/aria-controls/aria-activedescendant
+// and keyboard behavior for ArrowUp/Down, Enter and Escape.
+// Prefer a tested primitive instead of hand-authoring every ARIA/focus handler.
+// Use the WAI-ARIA APG combobox/listbox pattern for validation.
+```
+
+Run real keyboard, focus-restoration, touch, screen-reader and reduced-motion checks on your actual component before calling it accessible.
+
+</LessonStep>
+
+<Misconception claim="The starter returns all items despite a search term." correction="Filter combobox options predictably while keeping option IDs stable and keyboard navigation distinct from selection. Local model tests cannot prove real DOM interaction correctness." />
+
+<KnowledgeCheck question="Which accessibility rule is essential for combobox and listbox?" choices={["A successful mouse click proves complete keyboard support.","Filter combobox options predictably while keeping option IDs stable and keyboard navigation distinct from selection.","ARIA roles always replace keyboard interaction code.","An offline data function proves a dialog traps focus after mounting."] } correctIndex={1} explanation="Filter combobox options predictably while keeping option IDs stable and keyboard navigation distinct from selection." misconception="Verify the observable behavior users rely on, not only the markup's appearance." lessonId="08.02.03" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Bug:** The starter returns all items despite a search term. **Reproduce:** run the red starter and capture the failing assertion. **Repair:** Filter combobox options predictably while keeping option IDs stable and keyboard navigation distinct from selection. **Regression:** Search is case-insensitive and excludes nonmatching options without mutating the source. Test the mounted widget before publication.
+
+## Guided local lab
+
+`labs/ui-combobox-filter/` includes deliberately broken learner source, instructor solution, runnable local checks, and an explicit self-assessment rubric. No learner code runs on the academy server.
+
+<LabGate lessonId="08.02.03" labId="lab.ui.ui-combobox-filter" commands={["npm run lab:ui-combobox-filter","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+What is different about a data-model assertion and an actual keyboard or screen-reader assertion? Which regression would only appear in the browser?
+
+## Official references
+
+- [Official interaction reference: Combobox and listbox](https://www.w3.org/WAI/ARIA/apg/patterns/combobox/)
+- [Related accessibility guidance](https://www.w3.org/WAI/ARIA/apg/patterns/listbox/)
