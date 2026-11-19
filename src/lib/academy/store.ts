@@ -105,12 +105,13 @@ function loadPersisted(): PersistedProgress {
   }
 }
 
-function savePersisted(data: PersistedProgress) {
-  if (typeof window === 'undefined') return;
+function savePersisted(data: PersistedProgress): boolean {
+  if (typeof window === 'undefined') return false;
   try {
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    return true;
   } catch {
-    /* ignore storage quota failures */
+    return false;
   }
 }
 
@@ -583,7 +584,9 @@ export const useAcademy = create<AcademyStore>((set, get) => ({
       }
       // Import replaces state, rather than preserving existing invalid completions.
       const restored = normalizeProgress(result.data.data);
-      savePersisted(restored);
+      if (!savePersisted(restored)) {
+        return { ok: false, error: 'Browser storage is unavailable or full. Existing progress was not replaced.' };
+      }
       set({
         progress: restored,
         toast: { id: ++toastId, msg: 'Progress backup restored locally', tone: 'success' },
