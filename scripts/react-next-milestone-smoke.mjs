@@ -9,13 +9,13 @@ export async function verifyReactNextMilestone({page,base,assert,wait}) {
   await wait(page.getByRole('heading',{name:"The problem we're solving"}));
   assert.equal(await page.locator('meta[name="robots"][content*="noindex"]').count(),0,'Authored lesson indexable '+id);
  }
- const planned=await page.goto(base+'/learn/07.02.01');
+ const planned=await page.goto(base+'/learn/08.01.01');
  assert.equal(planned.status(),200);
  assert.equal(await page.locator('meta[name="robots"][content*="noindex"]').count(),1,'Next planned topic remains noindex');
  const sitemap=await (await page.request.get(base+'/sitemap.xml')).text();
  if(sitemap.includes('<loc>')){
   for(const id of ids)assert.ok(sitemap.includes('/learn/'+id),'Authored topic sitemap '+id);
-  assert.ok(!sitemap.includes('/learn/07.02.01'),'No planned topic in sitemap');
+  assert.ok(!sitemap.includes('/learn/08.01.01'),'No planned topic in sitemap');
  }
  await page.setViewportSize({width:320,height:800});
  await page.goto(base+'/learn/07.01.08');
