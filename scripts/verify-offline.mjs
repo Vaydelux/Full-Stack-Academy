@@ -17,6 +17,7 @@ const steps = [
   'test:forms-query-drafts',
   'test:forms-query-draft-types',
   'test:forms-query-react-api',
+  'test:forms-query-policy',
   'test:curriculum-readiness',
   'validate',
   'verify:content',
