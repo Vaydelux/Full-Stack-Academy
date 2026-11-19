@@ -1,0 +1,39 @@
+{
+  "id": "10.01.02",
+  "title": "process.env and signals",
+  "description": "Node.js 24 runtime lesson: A missing or malformed PORT environment variable is silently accepted, then the server fails to bind a listener. Includes executable core-module fixtures, a failing starter and instructor regression suite.",
+  "trackId": "10",
+  "moduleId": "10.01",
+  "level": "Intermediate",
+  "estimatedMinutes": 70,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "node": "24",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "10.01.01"
+  ],
+  "objectives": [
+    "Parse environment variables as unknown strings into bounded runtime configuration and treat termination signals as requests for graceful cleanup.",
+    "Repair node-env-signals and prove a failure boundary.",
+    "Describe production risks not exercised by the local Node test."
+  ],
+  "labId": "lab.node.node-env-signals",
+  "rubric": [
+    "I can explain the Node runtime contract for process.env and signals.",
+    "I can reproduce and repair 10.01.02 with real Node core modules.",
+    "I can identify a security or load test needed before deployment."
+  ],
+  "sources": [
+    {
+      "label": "Official Node.js documentation",
+      "url": "https://nodejs.org/api/process.html#processenv"
+    },
+    {
+      "label": "Supporting Node.js API",
+      "url": "https://nodejs.org/api/process.html#signal-events"
+    }
+  ]
+}

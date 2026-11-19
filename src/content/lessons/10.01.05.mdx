@@ -1,0 +1,106 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Resolve the trusted root and target with fs.realpath, then check path.relative containment. Do not treat a string prefix check as filesystem security.","Reproduce and repair file system safety with executable Node core modules.","Explain the production limit that a local API or system test cannot establish."]} />
+
+## The problem we're solving
+
+An endpoint concatenates a user-provided file name onto a storage root, allowing ../ traversal or symbolic-link escape from the intended directory.
+
+**Deliberate defect:** The starter joins paths without verifying the resulting file remains inside the allowed root. This exercise runs under Node.js 24 using built-in modules—no paid service, hosted data source or arbitrary learner-code runner.
+
+## Build the mental model
+
+Resolve the trusted root and target with fs.realpath, then check path.relative containment. Do not treat a string prefix check as filesystem security.
+
+**Predict before writing code:** Authorized files are readable; ../ and symbolic links escaping the root are rejected.
+
+The exact Node.js API documentation is linked below. These exercises model concrete runtime behavior, not a screenshot of a server. They must not be interpreted as proof of container permission boundaries, a production reverse proxy or multi-process request isolation.
+
+## Prerequisites and preflight
+
+Prior knowledge: JavaScript promises and modules, TypeScript-style interfaces and API basics. Run a local Node.js 24 installation. Open `labs/node-path-containment/starter/solution.mjs`. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:node-path-containment`; PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:node-path-containment; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the runtime bug" file="labs/node-path-containment/starter/solution.mjs" expected="The starter fails a meaningful Node assertion.">
+
+```js
+import {readFile} from 'node:fs/promises';
+import {join} from 'node:path';
+export async function readContained(root,name){
+ return readFile(join(root,name),'utf8');
+}
+```
+
+**Diagnosis:** The starter joins paths without verifying the resulting file remains inside the allowed root.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the standard Node API usage" file="labs/node-path-containment/starter/solution.mjs" expected="Authorized files are readable; ../ and symbolic links escaping the root are rejected.">
+
+```js
+import {readFile,realpath} from 'node:fs/promises';
+import {resolve,relative,isAbsolute,sep} from 'node:path';
+export async function readContained(root,name){
+ if(typeof name!=='string'||!name||name.includes('\0'))throw new Error('Invalid file name');
+ const [base,target]=await Promise.all([realpath(root),realpath(resolve(root,name))]);
+ const rel=relative(base,target);
+ if(rel==='..'||rel.startsWith('..'+sep)||isAbsolute(rel))throw new Error('Path outside root');
+ return readFile(target,'utf8');
+}
+```
+
+**Causal reasoning:** Resolve the trusted root and target with fs.realpath, then check path.relative containment. Do not treat a string prefix check as filesystem security.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify a success case and a failure boundary" file="labs/node-path-containment/solution.test.mjs" expected="The instructor solution passes a real Node test; the learner starter fails its intended assertion.">
+
+```js
+import {mkdtemp,writeFile,rm} from 'node:fs/promises';
+import {tmpdir} from 'node:os';import {join} from 'node:path';
+const root=await mkdtemp(join(tmpdir(),'academy-path-'));
+const outer=await mkdtemp(join(tmpdir(),'academy-outer-'));
+try{
+ await writeFile(join(root,'ok.txt'),'allowed');await writeFile(join(outer,'secret.txt'),'private');
+ assert.equal(await mod.readContained(root,'ok.txt'),'allowed');
+ await assert.rejects(mod.readContained(root,join('..',outer.split(/[\\/]/).pop(),'secret.txt')),/Path outside root|ENOENT/);
+}finally{await rm(root,{recursive:true,force:true});await rm(outer,{recursive:true,force:true});}
+```
+
+**Production-oriented integration example:**
+
+```js
+// Realpath containment catches simple symlink escapes and traversal.
+// For high-security uploads, avoid file name reuse/races, isolate per-user roots,
+// use restrictive OS permissions, validate extensions and scan accepted content.
+// A pre-read realpath check alone does not eliminate TOCTOU races.
+```
+
+The example is an explanatory snippet, not a separately compiled end-to-end production server. Observe error handling, resource cleanup and request ownership in an actual deployed environment before calling the behavior release-ready.
+
+</LessonStep>
+
+<Misconception claim="The starter joins paths without verifying the resulting file remains inside the allowed root." correction="Resolve the trusted root and target with fs.realpath, then check path.relative containment. Do not treat a string prefix check as filesystem security. A local Node test verifies one runtime contract, not every production deployment or security property." />
+
+<KnowledgeCheck question="Which practice is essential for file system safety?" choices={["Static types automatically protect runtime files, sockets and process signals.","Resolve the trusted root and target with fs.realpath, then check path.relative containment. Do not treat a string prefix check as filesystem security.","Any error printed by Node proves the intended learner assertion failed.","A production service never needs resource limits or cleanup."] } correctIndex={1} explanation="Resolve the trusted root and target with fs.realpath, then check path.relative containment. Do not treat a string prefix check as filesystem security." misconception="Runtime behavior needs direct tests and explicit trust/resource boundaries." lessonId="10.01.05" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Bug:** The starter joins paths without verifying the resulting file remains inside the allowed root. **Reproduction:** run the red starter and capture the asserted failure. **Fix:** Resolve the trusted root and target with fs.realpath, then check path.relative containment. Do not treat a string prefix check as filesystem security. **Regression:** Authorized files are readable; ../ and symbolic links escaping the root are rejected. Add a negative scenario to guard the boundary.
+
+## Guided local lab
+
+The local project under `labs/node-path-containment/` contains a broken learner source file, a complete instructor solution, executable Node tests and a rubric. No server evaluates learner-supplied code; each lab runs on the learner's local machine.
+
+<LabGate lessonId="10.01.05" labId="lab.node.node-path-containment" commands={["npm run lab:node-path-containment","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+What resource can fail under real concurrent load, and which extra integration test would demonstrate correct isolation, deadlines or cleanup?
+
+## Official references
+
+- [Node.js official documentation for File system safety](https://nodejs.org/api/fs.html#fspromisesrealpathpath-options)
+- [Supporting Node.js official API](https://nodejs.org/api/path.html#pathrelativefrom-to)

@@ -1,0 +1,39 @@
+{
+  "id": "10.01.06",
+  "title": "Memory and CPU profiling",
+  "description": "Node.js 24 runtime lesson: A telemetry dashboard reports zeros for RSS, heap and CPU because the metrics are mocked rather than sampled from the actual Node process. Includes executable core-module fixtures, a failing starter and instructor regression suite.",
+  "trackId": "10",
+  "moduleId": "10.01",
+  "level": "Intermediate",
+  "estimatedMinutes": 70,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "node": "24",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "10.01.05"
+  ],
+  "objectives": [
+    "Measure process.memoryUsage and process.cpuUsage and distinguish RSS from V8 heap-used before optimizing CPU-bound work.",
+    "Repair node-memory-cpu-metrics and prove a failure boundary.",
+    "Describe production risks not exercised by the local Node test."
+  ],
+  "labId": "lab.node.node-memory-cpu-metrics",
+  "rubric": [
+    "I can explain the Node runtime contract for memory and cpu profiling.",
+    "I can reproduce and repair 10.01.06 with real Node core modules.",
+    "I can identify a security or load test needed before deployment."
+  ],
+  "sources": [
+    {
+      "label": "Official Node.js documentation",
+      "url": "https://nodejs.org/api/process.html#processmemoryusage"
+    },
+    {
+      "label": "Supporting Node.js API",
+      "url": "https://nodejs.org/api/process.html#processcpuusagepreviousvalue"
+    }
+  ]
+}

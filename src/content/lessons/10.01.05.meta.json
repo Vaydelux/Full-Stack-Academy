@@ -1,0 +1,39 @@
+{
+  "id": "10.01.05",
+  "title": "File system safety",
+  "description": "Node.js 24 runtime lesson: An endpoint concatenates a user-provided file name onto a storage root, allowing ../ traversal or symbolic-link escape from the intended directory. Includes executable core-module fixtures, a failing starter and instructor regression suite.",
+  "trackId": "10",
+  "moduleId": "10.01",
+  "level": "Intermediate",
+  "estimatedMinutes": 70,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "node": "24",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "10.01.04"
+  ],
+  "objectives": [
+    "Resolve the trusted root and target with fs.realpath, then check path.relative containment. Do not treat a string prefix check as filesystem security.",
+    "Repair node-path-containment and prove a failure boundary.",
+    "Describe production risks not exercised by the local Node test."
+  ],
+  "labId": "lab.node.node-path-containment",
+  "rubric": [
+    "I can explain the Node runtime contract for file system safety.",
+    "I can reproduce and repair 10.01.05 with real Node core modules.",
+    "I can identify a security or load test needed before deployment."
+  ],
+  "sources": [
+    {
+      "label": "Official Node.js documentation",
+      "url": "https://nodejs.org/api/fs.html#fspromisesrealpathpath-options"
+    },
+    {
+      "label": "Supporting Node.js API",
+      "url": "https://nodejs.org/api/path.html#pathrelativefrom-to"
+    }
+  ]
+}

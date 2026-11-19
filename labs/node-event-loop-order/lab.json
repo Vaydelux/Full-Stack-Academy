@@ -1,0 +1,15 @@
+{
+  "id": "lab.node.node-event-loop-order",
+  "lessonId": "10.01.01",
+  "title": "Node.js 24 event loop, i/o and worker threads lab",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/node-event-loop-order/starter/solution.mjs",
+  "solution": "labs/node-event-loop-order/solution/solution.mjs",
+  "tests": "labs/node-event-loop-order/solution.test.mjs",
+  "verify": [
+    "npm run lab:node-event-loop-order"
+  ],
+  "expected": "The actual Node ordering remains sync → microtask → setImmediate, without relying on nondeterministic timer races.",
+  "security": "Local trusted Node built-ins only. Production reverse proxy, OS policy, permissions and HTTP authentication require separate verification."
+}

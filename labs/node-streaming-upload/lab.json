@@ -1,0 +1,15 @@
+{
+  "id": "lab.node.node-streaming-upload",
+  "lessonId": "10.01.08",
+  "title": "Node.js 24 lab streaming upload lab",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/node-streaming-upload/starter/solution.mjs",
+  "solution": "labs/node-streaming-upload/solution/solution.mjs",
+  "tests": "labs/node-streaming-upload/solution.test.mjs",
+  "verify": [
+    "npm run lab:node-streaming-upload"
+  ],
+  "expected": "A small upload returns the correct SHA-256 digest; an oversized one fails before completion.",
+  "security": "Local trusted Node built-ins only. Production reverse proxy, OS policy, permissions and HTTP authentication require separate verification."
+}

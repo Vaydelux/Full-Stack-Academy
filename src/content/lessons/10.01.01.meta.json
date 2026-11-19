@@ -1,0 +1,39 @@
+{
+  "id": "10.01.01",
+  "title": "Event loop, I/O and worker threads",
+  "description": "Node.js 24 runtime lesson: An event handler runs a CPU-heavy callback on the main thread and freezes other requests; a learner also assumes timers, microtasks and immediate callbacks are interchangeable. Includes executable core-module fixtures, a failing starter and instructor regression suite.",
+  "trackId": "10",
+  "moduleId": "10.01",
+  "level": "Intermediate",
+  "estimatedMinutes": 70,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "node": "24",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "09.04.08"
+  ],
+  "objectives": [
+    "Observe actual synchronous, microtask and setImmediate execution, and offload long-running CPU jobs to worker_threads instead of blocking the event loop.",
+    "Repair node-event-loop-order and prove a failure boundary.",
+    "Describe production risks not exercised by the local Node test."
+  ],
+  "labId": "lab.node.node-event-loop-order",
+  "rubric": [
+    "I can explain the Node runtime contract for event loop, i/o and worker threads.",
+    "I can reproduce and repair 10.01.01 with real Node core modules.",
+    "I can identify a security or load test needed before deployment."
+  ],
+  "sources": [
+    {
+      "label": "Official Node.js documentation",
+      "url": "https://nodejs.org/api/process.html#when-to-use-queuemicrotask-vs-processnexttick"
+    },
+    {
+      "label": "Supporting Node.js API",
+      "url": "https://nodejs.org/api/worker_threads.html"
+    }
+  ]
+}

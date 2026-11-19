@@ -1,0 +1,15 @@
+{
+  "id": "lab.node.node-memory-cpu-metrics",
+  "lessonId": "10.01.06",
+  "title": "Node.js 24 memory and cpu profiling lab",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/node-memory-cpu-metrics/starter/solution.mjs",
+  "solution": "labs/node-memory-cpu-metrics/solution/solution.mjs",
+  "tests": "labs/node-memory-cpu-metrics/solution.test.mjs",
+  "verify": [
+    "npm run lab:node-memory-cpu-metrics"
+  ],
+  "expected": "RSS/heap/CPU readings are nonnegative process metrics, not fabricated counters.",
+  "security": "Local trusted Node built-ins only. Production reverse proxy, OS policy, permissions and HTTP authentication require separate verification."
+}

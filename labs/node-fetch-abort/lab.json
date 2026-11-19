@@ -1,0 +1,15 @@
+{
+  "id": "lab.node.node-fetch-abort",
+  "lessonId": "10.01.04",
+  "title": "Node.js 24 fetch and abortsignal lab",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/node-fetch-abort/starter/solution.mjs",
+  "solution": "labs/node-fetch-abort/solution/solution.mjs",
+  "tests": "labs/node-fetch-abort/solution.test.mjs",
+  "verify": [
+    "npm run lab:node-fetch-abort"
+  ],
+  "expected": "A JSON 200 response is parsed; an HTTP 503 response and an HTML content type are rejected.",
+  "security": "Local trusted Node built-ins only. Production reverse proxy, OS policy, permissions and HTTP authentication require separate verification."
+}

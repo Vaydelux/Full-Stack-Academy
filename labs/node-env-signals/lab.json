@@ -1,0 +1,15 @@
+{
+  "id": "lab.node.node-env-signals",
+  "lessonId": "10.01.02",
+  "title": "Node.js 24 process.env and signals lab",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/node-env-signals/starter/solution.mjs",
+  "solution": "labs/node-env-signals/solution/solution.mjs",
+  "tests": "labs/node-env-signals/solution.test.mjs",
+  "verify": [
+    "npm run lab:node-env-signals"
+  ],
+  "expected": "Missing PORT uses a documented default; malformed values raise a clear configuration error.",
+  "security": "Local trusted Node built-ins only. Production reverse proxy, OS policy, permissions and HTTP authentication require separate verification."
+}

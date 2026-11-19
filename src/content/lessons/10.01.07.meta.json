@@ -1,0 +1,39 @@
+{
+  "id": "10.01.07",
+  "title": "Process lifecycle",
+  "description": "Node.js 24 runtime lesson: Two termination signals arrive during shutdown. The server closes twice, causing duplicate resource cleanup and lost error handling. Includes executable core-module fixtures, a failing starter and instructor regression suite.",
+  "trackId": "10",
+  "moduleId": "10.01",
+  "level": "Intermediate",
+  "estimatedMinutes": 70,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "node": "24",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "10.01.06"
+  ],
+  "objectives": [
+    "Register SIGTERM/SIGINT handlers with an idempotent shutdown gate and detach listeners after cleanup.",
+    "Repair node-graceful-lifecycle and prove a failure boundary.",
+    "Describe production risks not exercised by the local Node test."
+  ],
+  "labId": "lab.node.node-graceful-lifecycle",
+  "rubric": [
+    "I can explain the Node runtime contract for process lifecycle.",
+    "I can reproduce and repair 10.01.07 with real Node core modules.",
+    "I can identify a security or load test needed before deployment."
+  ],
+  "sources": [
+    {
+      "label": "Official Node.js documentation",
+      "url": "https://nodejs.org/api/process.html#signal-events"
+    },
+    {
+      "label": "Supporting Node.js API",
+      "url": "https://nodejs.org/api/events.html"
+    }
+  ]
+}
