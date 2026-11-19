@@ -17,6 +17,7 @@ const steps = [
   'test:red-next-full',
   'test:red-ui-track',
   'test:red-zod-foundations',
+  'test:red-zustand-state',
   'build',
 ];
 

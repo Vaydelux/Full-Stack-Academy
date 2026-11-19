@@ -9,7 +9,7 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "validate": "python validate_package.py",
-    "test": "node --test tests/academy.test.mjs tests/hardening.test.mjs tests/course-routes.test.mjs tests/content.test.mjs tests/react-modules.test.mjs tests/react-interaction-source.test.mjs tests/react-effects-advanced.test.mjs tests/react-reference-library.test.mjs tests/offline-verification.test.mjs tests/react-next-milestone.test.mjs tests/next-full-track.test.mjs tests/ui-track.test.mjs tests/zod-foundations.test.mjs",
+    "test": "node --test tests/academy.test.mjs tests/hardening.test.mjs tests/course-routes.test.mjs tests/content.test.mjs tests/react-modules.test.mjs tests/react-interaction-source.test.mjs tests/react-effects-advanced.test.mjs tests/react-reference-library.test.mjs tests/offline-verification.test.mjs tests/react-next-milestone.test.mjs tests/next-full-track.test.mjs tests/ui-track.test.mjs tests/zod-foundations.test.mjs tests/zustand-state-boundaries.test.mjs",
     "test:labs": "node scripts/run-local-labs.mjs",
     "verify:content": "node scripts/validate-content.mjs",
     "lab:browser-server": "node --test labs/browser-server/solution.test.mjs",
@@ -320,7 +320,16 @@
     "lab:zod-discriminated-requests": "tsx --test labs/zod-discriminated-requests/solution.test.mjs",
     "lab:zod-composition-types": "tsx --test labs/zod-composition-types/solution.test.mjs",
     "lab:zod-profile-form": "tsx --test labs/zod-profile-form/solution.test.mjs",
-    "test:red-zod-foundations": "node --test tests/zod-foundations-red-starters.test.mjs"
+    "test:red-zod-foundations": "node --test tests/zod-foundations-red-starters.test.mjs",
+    "lab:zustand-local-url-server": "tsx --test labs/zustand-local-url-server/solution.test.mjs",
+    "lab:zustand-selectors-slices": "tsx --test labs/zustand-selectors-slices/solution.test.mjs",
+    "lab:zustand-persist-private": "tsx --test labs/zustand-persist-private/solution.test.mjs",
+    "lab:zustand-derived-subscription": "tsx --test labs/zustand-derived-subscription/solution.test.mjs",
+    "lab:zustand-multitab-revisions": "tsx --test labs/zustand-multitab-revisions/solution.test.mjs",
+    "lab:zustand-url-search-state": "tsx --test labs/zustand-url-search-state/solution.test.mjs",
+    "lab:zustand-dont-cache-records": "tsx --test labs/zustand-dont-cache-records/solution.test.mjs",
+    "lab:zustand-filter-preference-capstone": "tsx --test labs/zustand-filter-preference-capstone/solution.test.mjs",
+    "test:red-zustand-state": "node --test tests/zustand-state-red-starters.test.mjs"
   },
   "dependencies": {
     "clsx": "^2.1.1",
