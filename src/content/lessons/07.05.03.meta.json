@@ -1,0 +1,39 @@
+{
+  "id": "07.05.03",
+  "title": "Image and asset optimization: Reserve image dimensions and preload only a measured LCP candidate, using next/image and optimized font delivery.",
+  "description": "Next.js 16 production operations lesson for image and asset optimization with a broken starter, instructor repair, negative test and local-only verification.",
+  "trackId": "07",
+  "moduleId": "07.05",
+  "level": "Intermediate",
+  "estimatedMinutes": 65,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "next": "16",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "07.05.02"
+  ],
+  "objectives": [
+    "Reserve image dimensions and preload only a measured LCP candidate, using next/image and optimized font delivery.",
+    "Repair the problem in next-image-assets.",
+    "Identify independent production security and runtime acceptance requirements."
+  ],
+  "labId": "lab.next.next-image-assets",
+  "rubric": [
+    "I can explain the Next.js 16 rules for image and asset optimization.",
+    "I can reproduce and fix the 07.05.03 failing starter.",
+    "I can distinguish deterministic model tests from real runtime or HTTP qualification."
+  ],
+  "sources": [
+    {
+      "label": "Image and asset optimization",
+      "url": "https://nextjs.org/docs/app/api-reference/components/image"
+    },
+    {
+      "label": "Next.js supporting reference",
+      "url": "https://nextjs.org/docs/app/getting-started/images"
+    }
+  ]
+}

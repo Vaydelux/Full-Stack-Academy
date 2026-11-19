@@ -1,0 +1,15 @@
+{
+  "id": "lab.next.next-proxy-host-guard",
+  "lessonId": "07.05.02",
+  "title": "Local Next 16 reverse proxy and headers exercise",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/next-proxy-host-guard/starter/solution.tsx",
+  "solution": "labs/next-proxy-host-guard/solution/solution.tsx",
+  "tests": "labs/next-proxy-host-guard/solution.test.mjs",
+  "verify": [
+    "npm run lab:next-proxy-host-guard"
+  ],
+  "expected": "Only exact trusted hosts are allowed; lookalikes, ports and injected line breaks are rejected.",
+  "security": "Offline reviewed source-level tests only; runtime security must be separately verified."
+}

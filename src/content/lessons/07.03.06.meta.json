@@ -1,0 +1,39 @@
+{
+  "id": "07.03.06",
+  "title": "ISR vs SSR vs static: Choose static/precomputed pages for stable public content, revalidated cached public content for changing shared data, and dynamic request-specific rendering for private data.",
+  "description": "Next.js 16 Cache Components tutorial for isr vs ssr vs static with a failing starter, safe cache boundary model, instructor code and offline regression tests.",
+  "trackId": "07",
+  "moduleId": "07.03",
+  "level": "Intermediate",
+  "estimatedMinutes": 65,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "next": "16",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "07.03.05"
+  ],
+  "objectives": [
+    "Choose static/precomputed pages for stable public content, revalidated cached public content for changing shared data, and dynamic request-specific rendering for private data.",
+    "Repair the unsafe or stale assumption in next-rendering-strategies.",
+    "Explain which cache and HTTP behaviors need independent compiled Next.js verification."
+  ],
+  "labId": "lab.next.next-rendering-strategies",
+  "rubric": [
+    "I can explain isr vs ssr vs static under Next 16 Cache Components rules.",
+    "I can repair the 07.03.06 failing local starter and explain the regression.",
+    "I can distinguish the local test from real cache, authorization and multi-tenant safety evidence."
+  ],
+  "sources": [
+    {
+      "label": "Next.js: ISR vs SSR vs static",
+      "url": "https://nextjs.org/docs/app/getting-started/cache-components"
+    },
+    {
+      "label": "Official cache documentation",
+      "url": "https://nextjs.org/docs/app/guides/migrating-to-cache-components"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "id": "lab.next.next-private-cache-risks",
+  "lessonId": "07.03.05",
+  "title": "Next.js 16 private data and cache risks local lab",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/next-private-cache-risks/starter/solution.tsx",
+  "solution": "labs/next-private-cache-risks/solution/solution.tsx",
+  "tests": "labs/next-private-cache-risks/solution.test.mjs",
+  "verify": [
+    "npm run lab:next-private-cache-risks"
+  ],
+  "expected": "Only records explicitly marked public qualify for shared caching; organization-owned and private records do not.",
+  "security": "Only local cache-decision fixtures run, never a real Next cache or authenticated backend."
+}

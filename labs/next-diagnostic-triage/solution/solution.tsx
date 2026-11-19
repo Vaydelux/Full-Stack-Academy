@@ -1,0 +1,1 @@
+export function diagnose(code:string){if(code==='MISSING_ENV')return 'configuration';if(code==='TS_ERROR')return 'typecheck';if(code==='HYDRATION')return 'browser-runtime';return 'needs-investigation';}

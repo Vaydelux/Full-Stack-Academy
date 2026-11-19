@@ -1,0 +1,15 @@
+{
+  "id": "lab.next.next-semantic-metadata",
+  "lessonId": "07.04.01",
+  "title": "Next.js 16 semantic metadata local lab",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/next-semantic-metadata/starter/solution.tsx",
+  "solution": "labs/next-semantic-metadata/solution/solution.tsx",
+  "tests": "labs/next-semantic-metadata/solution.test.mjs",
+  "verify": [
+    "npm run lab:next-semantic-metadata"
+  ],
+  "expected": "Published article indexes with a descriptive title; draft metadata is noindex.",
+  "security": "Static SEO and metadata models only. No browser crawlers, real-user telemetry or production origin used."
+}

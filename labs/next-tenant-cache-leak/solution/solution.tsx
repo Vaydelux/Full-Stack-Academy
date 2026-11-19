@@ -1,0 +1,1 @@
+export type Principal={userId:string;tenantId:string}|null;export type Resource={tenantId:string;visibility:'public'|'private'};export function readDecision(actor:Principal,resource:Resource){if(resource.visibility==='public')return {allowed:true,cache:'shared'};return {allowed:Boolean(actor&&actor.tenantId===resource.tenantId),cache:'request'};}

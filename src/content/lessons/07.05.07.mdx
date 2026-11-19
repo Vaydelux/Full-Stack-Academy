@@ -1,0 +1,83 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Review Next.js 16 breaking conventions, rename middleware.ts to proxy.ts, await async request APIs and migrate cache configuration by mode.","Reproduce and repair an operational or security defect with a local TypeScript model.","Identify the missing HTTP, runtime or security integration evidence."]} />
+
+## The problem we're solving
+
+Upgrade and migration checks matters in a production-facing Next.js application. **Initial defect:** The starter reports no migration issues despite legacy middleware and synchronous params access.
+
+## Build the mental model
+
+Review Next.js 16 breaking conventions, rename middleware.ts to proxy.ts, await async request APIs and migrate cache configuration by mode. **Predict:** Each legacy convention yields a distinct migration warning.
+
+These source tests are not a replacement for real Next.js build, authentic requests, tenant-scoped database reads, observability or production deployment checks.
+
+## Prerequisites and preflight
+
+Read the preceding Next.js topic and open `labs/next16-migration-audit/starter/solution.tsx` with Node.js 24 and locked dependencies. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:next16-migration-audit`. PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:next16-migration-audit; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the broken baseline" file="labs/next16-migration-audit/starter/solution.tsx" expected="A focused local acceptance assertion fails.">
+
+```tsx
+export type Flags={middleware:boolean;syncParams:boolean;legacyCache:boolean};export function migrationFindings(_flags:Flags):string[]{return [];}
+```
+
+**Cause:** The starter reports no migration issues despite legacy middleware and synchronous params access.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the boundary or diagnostic policy" file="labs/next16-migration-audit/starter/solution.tsx" expected="Each legacy convention yields a distinct migration warning.">
+
+```tsx
+export type Flags={middleware:boolean;syncParams:boolean;legacyCache:boolean};export function migrationFindings(flags:Flags):string[]{const issues:string[]=[];if(flags.middleware)issues.push('rename-to-proxy');if(flags.syncParams)issues.push('await-request-apis');if(flags.legacyCache)issues.push('review-cache-components-mode');return issues;}
+```
+
+**Principle:** Review Next.js 16 breaking conventions, rename middleware.ts to proxy.ts, await async request APIs and migrate cache configuration by mode.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify an allowed and a rejected scenario" file="labs/next16-migration-audit/solution.test.mjs" expected="Instructor data contract passes; compiled framework integration remains a separate release gate.">
+
+```js
+assert.deepEqual(mod.migrationFindings({middleware:true,syncParams:true,legacyCache:false}),['rename-to-proxy','await-request-apis']);assert.deepEqual(mod.migrationFindings({middleware:false,syncParams:false,legacyCache:true}),['review-cache-components-mode']);assert.deepEqual(mod.migrationFindings({middleware:false,syncParams:false,legacyCache:false}),[]);
+```
+
+**Real Next.js-oriented example or investigation plan:**
+
+```tsx
+// Next.js 16 migration review:
+// middleware.ts -> proxy.ts; export function proxy(request) {}
+// await params, searchParams, cookies() and headers() as documented
+// cacheComponents: true requires explicit use cache/cacheLife boundaries
+// Verify Node-only dependencies, local production build and request authorization.
+```
+
+These examples need correct imports, real infrastructure and security review before deployment.
+
+</LessonStep>
+
+<Misconception claim="The starter reports no migration issues despite legacy middleware and synchronous params access." correction="Review Next.js 16 breaking conventions, rename middleware.ts to proxy.ts, await async request APIs and migrate cache configuration by mode. A local policy fixture does not prove the actual backend enforces that boundary." />
+
+<KnowledgeCheck question="Which production principle applies to upgrade and migration checks?" choices={["If the page renders, its backend authorization and runtime are automatically safe.","Review Next.js 16 breaking conventions, rename middleware.ts to proxy.ts, await async request APIs and migrate cache configuration by mode.","A git merge is the same as a passing production build.","Next.js client data can be trusted instead of checking server permissions."] } correctIndex={1} explanation="Review Next.js 16 breaking conventions, rename middleware.ts to proxy.ts, await async request APIs and migrate cache configuration by mode." misconception="Prove the real trust boundary with an independently run test." lessonId="07.05.07" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Failure:** The starter reports no migration issues despite legacy middleware and synchronous params access. **Reproduction:** run the red starter and capture the failing assertion. **Repair:** Review Next.js 16 breaking conventions, rename middleware.ts to proxy.ts, await async request APIs and migrate cache configuration by mode. **Regression:** Each legacy convention yields a distinct migration warning. Validate the actual Next.js and HTTP behavior separately.
+
+## Guided local lab
+
+The local lab at `labs/next16-migration-audit/` contains a starter, corrected instructor solution, acceptance checks and self-assessment rubric. The academy never evaluates learner code on its server.
+
+<LabGate lessonId="07.05.07" labId="lab.next.next16-migration-audit" commands={["npm run lab:next16-migration-audit","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+How might this bug be invisible to TypeScript? Which exact build, telemetry, or unauthorized HTTP request would prove the fix?
+
+## Official references
+
+- [Next.js official documentation: Upgrade and migration checks](https://nextjs.org/docs/app/guides/upgrading/version-16)
+- [Supporting framework guide](https://nextjs.org/docs/app/guides/migrating-to-cache-components)

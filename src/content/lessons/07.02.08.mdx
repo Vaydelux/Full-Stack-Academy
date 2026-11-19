@@ -1,0 +1,99 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Keep the client module graph intentionally small and reject server-only or Node built-ins from client module imports.","Repair the deliberately broken bug hunt accidental client import contract.","Verify a valid and an invalid boundary condition locally without claiming Next.js framework execution."]} />
+
+## The problem we're solving
+
+A developer adds `'use client'` to a shared barrel file and accidentally pulls a server-only DB accessor into a client import tree.
+
+**Symptom:** The starter treats imports under private server modules as safe for Client Components.
+
+## Build the mental model
+
+Keep the client module graph intentionally small and reject server-only or Node built-ins from client module imports.
+
+**Predict first:** Known server-only modules and Node built-in imports are blocked; a shared UI module remains permitted.
+
+The local fixture tests only an isolated TypeScript/React contract; actual Server Component compilation, network transport, streaming, Server Actions, security isolation and browser hydration require a separate compiled Next.js 16 application and integration tests.
+
+## Prerequisites and preflight
+
+Read `07.01.08` and the preceding module's topic before using this example. Open `labs/next-accidental-client-import/starter/solution.tsx`. With Node.js 24 and locked dependencies, run `ACADEMY_LAB_TARGET=starter npm run lab:next-accidental-client-import` (PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:next-accidental-client-import; Remove-Item Env:ACADEMY_LAB_TARGET`). The starter is intentionally red.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the broken boundary" file="labs/next-accidental-client-import/starter/solution.tsx" expected="At least one test assertion exposes the documented failure.">
+
+```tsx
+export function safeClientImport(_specifier:string):boolean{return true;}
+```
+
+**Root cause:** The starter treats imports under private server modules as safe for Client Components.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement a minimal correct contract" file="labs/next-accidental-client-import/starter/solution.tsx" expected="Known server-only modules and Node built-in imports are blocked; a shared UI module remains permitted.">
+
+```tsx
+export function safeClientImport(specifier:string):boolean{
+ if(!specifier.trim()||specifier==='server-only')return false;
+ if(specifier.startsWith('node:'))return false;
+ if(specifier.startsWith('@/lib/server/')||specifier.startsWith('@/db/'))return false;
+ return true;
+}
+```
+
+**Why it works:** Keep the client module graph intentionally small and reject server-only or Node built-ins from client module imports.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify an edge case and inspect the Next.js shape" file="labs/next-accidental-client-import/solution.test.mjs" expected="The instructor contract passes offline tests. Framework behavior is not asserted without a Next build.">
+
+```js
+assert.equal(mod.safeClientImport('@/components/Button'),true);
+assert.equal(mod.safeClientImport('server-only'),false);
+assert.equal(mod.safeClientImport('node:fs'),false);
+assert.equal(mod.safeClientImport('@/db/client'),false);
+assert.equal(mod.safeClientImport('@/lib/server/secrets'),false);
+```
+
+**Framework-oriented example (illustrative; needs real imports and infrastructure):**
+
+```tsx
+// BAD: 'use client' at a broad barrel entry that re-exports server data.
+// GOOD: separate imports with a server-only guard in lib/server/data.ts
+// app/components/SaveButton.tsx
+'use client';
+export function SaveButton({id}:{id:string}) {
+ return <button type="button">Save {id}</button>;
+}
+// app/courses/[id]/page.tsx remains a Server Component and renders SaveButton.
+```
+
+**Boundary note:** This denylist is a teaching smoke check, not a full static import graph analyzer. A real Next build should fail when an explicitly server-only module enters a client boundary. Check transitive re-exports and bundling.
+
+</LessonStep>
+
+<Misconception claim="The starter treats imports under private server modules as safe for Client Components." correction="Keep the client module graph intentionally small and reject server-only or Node built-ins from client module imports. A fixture test cannot establish the actual compiled boundary or authorization." />
+
+<KnowledgeCheck question="What rule matters most for bug hunt accidental client import?" choices={["All client code is automatically authorized by Next.js.","Keep the client module graph intentionally small and reject server-only or Node built-ins from client module imports.","Server rendering means an API has no externally reachable endpoints.","A passing SSR assertion establishes hydration and backend security."] } correctIndex={1} explanation="Keep the client module graph intentionally small and reject server-only or Node built-ins from client module imports." misconception="The server/client division changes execution boundaries, not who is authorized to access a particular record." lessonId="07.02.08" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Reproduce:** The starter treats imports under private server modules as safe for Client Components. **Diagnose:** trace the input and execution boundary. **Repair:** Keep the client module graph intentionally small and reject server-only or Node built-ins from client module imports. **Regression:** Known server-only modules and Node built-in imports are blocked; a shared UI module remains permitted. Use a real Next build and network test for server and client behavior.
+
+## Guided local lab
+
+Practice in `labs/next-accidental-client-import/`, with a broken starter, instructor fix, offline regression checks, and learner rubric. No untrusted code runs on the academy server.
+
+<LabGate lessonId="07.02.08" labId="lab.next.next-accidental-client-import" commands={["npm run lab:next-accidental-client-import","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+Which server-side operation cannot be trusted to the browser? How would you demonstrate unauthorized access is rejected in a real deployed endpoint?
+
+## Official references
+
+- [Official Next.js reference: Bug Hunt accidental client import](https://nextjs.org/docs/app/getting-started/server-and-client-components)
+- [Supporting official guide](https://nextjs.org/docs/app/guides/data-security)

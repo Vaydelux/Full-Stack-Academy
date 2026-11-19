@@ -1,0 +1,87 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Use revalidateTag(tag, 'max') for stale-while-revalidate and updateTag(tag) inside Server Actions for immediate read-your-writes semantics.","Repair the intentionally broken revalidation and invalidation example.","Explain Next.js 16 Cache Components boundaries, privacy risks and test limitations."]} />
+
+## The problem we're solving
+
+A public blog should refresh stale-while-revalidate after a content edit, but a writer who just saved a change needs read-your-writes behavior.
+
+**Failure mode:** The starter routes all mutations through the same background stale-while-revalidate policy, even when immediate visibility is required.
+
+## Build the mental model
+
+Use revalidateTag(tag, 'max') for stale-while-revalidate and updateTag(tag) inside Server Actions for immediate read-your-writes semantics. This module specifically uses **Next.js 16 with `cacheComponents: true`**; avoid mixing with the legacy `dynamic`, route-segment `revalidate` or `fetchCache` configuration model. The offline assertions are data/decision models; they do not access Next's actual cache internals, HTTP, or database.
+
+**Expected behavior:** Public scheduled freshness chooses revalidateTag; a confirmed author edit chooses updateTag.
+
+## Prerequisites and preflight
+
+Study the preceding lesson and make sure the project uses Node.js 24 and a locked dependency install. Start from `labs/next-cache-revalidation/starter/solution.tsx`; run `ACADEMY_LAB_TARGET=starter npm run lab:next-cache-revalidation` (PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:next-cache-revalidation; Remove-Item Env:ACADEMY_LAB_TARGET`). This deliberately fails at least one assertion.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce a stale or unsafe cache assumption" file="labs/next-cache-revalidation/starter/solution.tsx" expected="The defective baseline fails its local data contract.">
+
+```tsx
+export function invalidationMode(_needImmediate:boolean){return 'swr';}
+```
+
+**Root cause:** The starter routes all mutations through the same background stale-while-revalidate policy, even when immediate visibility is required.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the explicit cache contract" file="labs/next-cache-revalidation/starter/solution.tsx" expected="Public scheduled freshness chooses revalidateTag; a confirmed author edit chooses updateTag.">
+
+```tsx
+export function invalidationMode(needImmediate:boolean){return needImmediate?'read-your-writes':'swr';}
+```
+
+**Why this works:** Use revalidateTag(tag, 'max') for stale-while-revalidate and updateTag(tag) inside Server Actions for immediate read-your-writes semantics.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify scope and inspect real Next.js 16 APIs" file="labs/next-cache-revalidation/solution.test.mjs" expected="The instructor passes local assertions. Cache behavior still needs a compiled app and local HTTP tests.">
+
+```js
+assert.equal(mod.invalidationMode(false),'swr');
+assert.equal(mod.invalidationMode(true),'read-your-writes');
+```
+
+**Framework example (illustrative; not executed here):**
+
+```tsx
+import {revalidateTag,updateTag} from 'next/cache';
+// Content management or webhook context:
+revalidateTag('courses:react-19','max');
+// Inside a Server Action after an authorized mutation:
+updateTag('courses:react-19');
+// updateTag is limited to Server Actions. Neither call replaces auth validation.
+```
+
+**Operational nuance:** The older single-argument revalidateTag invalidation form is deprecated for this mode. `updateTag` is not a general Route Handler API; use documented context-specific functions.
+
+</LessonStep>
+
+<Misconception claim="The starter routes all mutations through the same background stale-while-revalidate policy, even when immediate visibility is required." correction="Use revalidateTag(tag, 'max') for stale-while-revalidate and updateTag(tag) inside Server Actions for immediate read-your-writes semantics. An offline helper does not prove server cache invalidation or confidentiality." />
+
+<KnowledgeCheck question="Which Next.js 16 caching principle applies to revalidation and invalidation?" choices={["Use one global cached entry for authenticated and anonymous requests.","Use revalidateTag(tag, 'max') for stale-while-revalidate and updateTag(tag) inside Server Actions for immediate read-your-writes semantics.","A local SSR test proves cache invalidation on a remote server.","Legacy route-segment cache options always override Cache Components."] } correctIndex={1} explanation="Use revalidateTag(tag, 'max') for stale-while-revalidate and updateTag(tag) inside Server Actions for immediate read-your-writes semantics." misconception="Classify public versus request-specific work before choosing a freshness strategy." lessonId="07.03.04" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Symptom:** The starter routes all mutations through the same background stale-while-revalidate policy, even when immediate visibility is required. **Reproduce:** run the starter and record failing input. **Repair:** Use revalidateTag(tag, 'max') for stale-while-revalidate and updateTag(tag) inside Server Actions for immediate read-your-writes semantics. **Regression:** Public scheduled freshness chooses revalidateTag; a confirmed author edit chooses updateTag. Validate in a real Next.js 16 Cache Components app before claiming cache correctness.
+
+## Guided local lab
+
+The self-contained `labs/next-cache-revalidation/` lab provides a red starter, corrected instructor source, offline assertions, and a completion rubric. The academy does not run learner-provided code on its server.
+
+<LabGate lessonId="07.03.04" labId="lab.next.next-cache-revalidation" commands={["npm run lab:next-cache-revalidation","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+When must freshness be immediate rather than stale-while-revalidate? How would you prove tenant privacy remains intact under concurrency?
+
+## Official references
+
+- [Next.js reference: Revalidation and invalidation](https://nextjs.org/docs/app/api-reference/functions/revalidateTag)
+- [Supporting Next.js 16 guide](https://nextjs.org/docs/app/api-reference/functions/updateTag)

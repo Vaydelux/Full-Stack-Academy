@@ -1,0 +1,85 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Emit bounded diagnostic identifiers and error codes without logging access tokens, raw email addresses or other personal data.","Reproduce and repair an operational or security defect with a local TypeScript model.","Identify the missing HTTP, runtime or security integration evidence."]} />
+
+## The problem we're solving
+
+Error tracking matters in a production-facing Next.js application. **Initial defect:** The starter serializes all error context fields into the log, including credentials.
+
+## Build the mental model
+
+Emit bounded diagnostic identifiers and error codes without logging access tokens, raw email addresses or other personal data. **Predict:** Only requestId, operation and errorCode remain after redaction.
+
+These source tests are not a replacement for real Next.js build, authentic requests, tenant-scoped database reads, observability or production deployment checks.
+
+## Prerequisites and preflight
+
+Read the preceding Next.js topic and open `labs/next-error-redaction/starter/solution.tsx` with Node.js 24 and locked dependencies. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:next-error-redaction`. PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:next-error-redaction; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the broken baseline" file="labs/next-error-redaction/starter/solution.tsx" expected="A focused local acceptance assertion fails.">
+
+```tsx
+export type ErrorInput={requestId:string;operation:string;errorCode:string;token:string;email:string};export function sanitizeError(input:ErrorInput){return {...input};}
+```
+
+**Cause:** The starter serializes all error context fields into the log, including credentials.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the boundary or diagnostic policy" file="labs/next-error-redaction/starter/solution.tsx" expected="Only requestId, operation and errorCode remain after redaction.">
+
+```tsx
+export type ErrorInput={requestId:string;operation:string;errorCode:string;token:string;email:string};export function sanitizeError(input:ErrorInput){const trim=(s:string)=>s.slice(0,80);return {requestId:trim(input.requestId),operation:trim(input.operation),errorCode:trim(input.errorCode)};}
+```
+
+**Principle:** Emit bounded diagnostic identifiers and error codes without logging access tokens, raw email addresses or other personal data.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify an allowed and a rejected scenario" file="labs/next-error-redaction/solution.test.mjs" expected="Instructor data contract passes; compiled framework integration remains a separate release gate.">
+
+```js
+const row={requestId:'r1',operation:'course.read',errorCode:'DB_TIMEOUT',token:'SECRET',email:'user@example.test'};assert.deepEqual(mod.sanitizeError(row),{requestId:'r1',operation:'course.read',errorCode:'DB_TIMEOUT'});assert.doesNotMatch(JSON.stringify(mod.sanitizeError(row)),/SECRET|user@example/);
+```
+
+**Real Next.js-oriented example or investigation plan:**
+
+```tsx
+// instrumentation.ts in project root
+export async function register(){
+ if(process.env.NEXT_RUNTIME==='nodejs'){
+  // Configure a vetted OpenTelemetry exporter and redact sensitive fields.
+ }
+}
+// Inspect retention/sampling; never copy raw authenticated requests into external telemetry.
+```
+
+These examples need correct imports, real infrastructure and security review before deployment.
+
+</LessonStep>
+
+<Misconception claim="The starter serializes all error context fields into the log, including credentials." correction="Emit bounded diagnostic identifiers and error codes without logging access tokens, raw email addresses or other personal data. A local policy fixture does not prove the actual backend enforces that boundary." />
+
+<KnowledgeCheck question="Which production principle applies to error tracking?" choices={["If the page renders, its backend authorization and runtime are automatically safe.","Emit bounded diagnostic identifiers and error codes without logging access tokens, raw email addresses or other personal data.","A git merge is the same as a passing production build.","Next.js client data can be trusted instead of checking server permissions."] } correctIndex={1} explanation="Emit bounded diagnostic identifiers and error codes without logging access tokens, raw email addresses or other personal data." misconception="Prove the real trust boundary with an independently run test." lessonId="07.05.05" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Failure:** The starter serializes all error context fields into the log, including credentials. **Reproduction:** run the red starter and capture the failing assertion. **Repair:** Emit bounded diagnostic identifiers and error codes without logging access tokens, raw email addresses or other personal data. **Regression:** Only requestId, operation and errorCode remain after redaction. Validate the actual Next.js and HTTP behavior separately.
+
+## Guided local lab
+
+The local lab at `labs/next-error-redaction/` contains a starter, corrected instructor solution, acceptance checks and self-assessment rubric. The academy never evaluates learner code on its server.
+
+<LabGate lessonId="07.05.05" labId="lab.next.next-error-redaction" commands={["npm run lab:next-error-redaction","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+How might this bug be invisible to TypeScript? Which exact build, telemetry, or unauthorized HTTP request would prove the fix?
+
+## Official references
+
+- [Next.js official documentation: Error tracking](https://nextjs.org/docs/app/guides/instrumentation)
+- [Supporting framework guide](https://nextjs.org/docs/app/guides/production-checklist)

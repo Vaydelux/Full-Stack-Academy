@@ -1,0 +1,39 @@
+{
+  "id": "07.02.02",
+  "title": "RSC request lifecycle: Distinguish server data and RSC rendering from client hydration; hydration attaches interactivity to server-rendered UI.",
+  "description": "Next.js 16 rsc request lifecycle using precise server/client execution boundaries, a failing TypeScript starter, corrected instructor source and local verification.",
+  "trackId": "07",
+  "moduleId": "07.02",
+  "level": "Intermediate",
+  "estimatedMinutes": 60,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "next": "16",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "07.02.01"
+  ],
+  "objectives": [
+    "Distinguish server data and RSC rendering from client hydration; hydration attaches interactivity to server-rendered UI.",
+    "Repair the reproducible failure in next-rsc-request-lifecycle.",
+    "Distinguish an offline model assertion from real Next.js compilation and security integration."
+  ],
+  "labId": "lab.next.next-rsc-request-lifecycle",
+  "rubric": [
+    "I can explain rsc request lifecycle without conflating server and client execution.",
+    "I can reproduce and repair the 07.02.02 starter failure.",
+    "I can identify the additional Next.js build and security evidence this lesson does not execute."
+  ],
+  "sources": [
+    {
+      "label": "Next.js: RSC request lifecycle",
+      "url": "https://nextjs.org/docs/app/getting-started/server-and-client-components"
+    },
+    {
+      "label": "Supporting Next.js guide",
+      "url": "https://nextjs.org/docs/app/getting-started/linking-and-navigating"
+    }
+  ]
+}

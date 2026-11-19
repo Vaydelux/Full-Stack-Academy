@@ -1,0 +1,95 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Generate unique, accurate page metadata and explicitly noindex unpublished or missing content.","Repair the incomplete semantic metadata SEO or performance example.","Verify a legitimate and an edge-case result before browser qualification."]} />
+
+## The problem we're solving
+
+An editorial site publishes an article with a meaningful title and description, but a draft must not be indexed.
+
+**Defect:** The starter marks every page indexable, including unpublished drafts.
+
+## Build the mental model
+
+Generate unique, accurate page metadata and explicitly noindex unpublished or missing content.
+
+**Predict before running:** Published article indexes with a descriptive title; draft metadata is noindex.
+
+The academy exercises reviewed TypeScript/React logic locally. It does not automatically exercise the Next.js Metadata API, search crawler, browser page loading, network waterfall, Lighthouse or real-user field metrics. Those are separate qualification gates.
+
+## Prerequisites and preflight
+
+Study the previous topic, use Node.js 24 with locked dependencies, and open `labs/next-semantic-metadata/starter/solution.tsx`. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:next-semantic-metadata`. PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:next-semantic-metadata; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the SEO or performance failure" file="labs/next-semantic-metadata/starter/solution.tsx" expected="The intentionally broken starter fails one acceptance assertion.">
+
+```tsx
+export function articleMetadata(title:string,_published:boolean){return {title,robots:{index:true}};}
+```
+
+**Why it fails:** The starter marks every page indexable, including unpublished drafts.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the measurable contract" file="labs/next-semantic-metadata/starter/solution.tsx" expected="Published article indexes with a descriptive title; draft metadata is noindex.">
+
+```tsx
+export function articleMetadata(title:string,published:boolean){
+ const safeTitle=title.trim()||'Untitled';
+ return {title:safeTitle+' | Academy',description:'Read '+safeTitle+' on the academy.',robots:{index:published,follow:true}};
+}
+```
+
+**Root principle:** Generate unique, accurate page metadata and explicitly noindex unpublished or missing content.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify an edge case and examine framework usage" file="labs/next-semantic-metadata/solution.test.mjs" expected="A valid and an invalid input satisfy the instructor's local assertions.">
+
+```js
+assert.equal(mod.articleMetadata('React tips',true).robots.index,true);
+assert.equal(mod.articleMetadata('Draft',false).robots.index,false);
+assert.match(mod.articleMetadata(' React tips ',true).title,/React tips \| Academy/);
+```
+
+**Next.js 16 usage pattern (illustrative):**
+
+```tsx
+// app/articles/[slug]/page.tsx
+import type {Metadata} from 'next';
+export async function generateMetadata({params}:{params:Promise<{slug:string}>}):Promise<Metadata>{
+ const {slug}=await params;
+ const article=await findPublishedArticle(slug);
+ if(!article)return {title:'Article not found',robots:{index:false}};
+ return {title:article.title,description:article.summary,robots:{index:true}};
+}
+```
+
+**Production nuance:** Next metadata has inheritance/overwrite behavior; nested object fields like openGraph and robots need deliberate merging. The helper tests the policy only, not actual HTML head injection.
+
+</LessonStep>
+
+<Misconception claim="The starter marks every page indexable, including unpublished drafts." correction="Generate unique, accurate page metadata and explicitly noindex unpublished or missing content. A fixture assertion is not real search or field-performance evidence." />
+
+<KnowledgeCheck question="Which principle matters most for semantic metadata?" choices={["An offline unit assertion guarantees Google indexing and search ranking.","Generate unique, accurate page metadata and explicitly noindex unpublished or missing content.","Every page and image should be preloaded for maximum speed.","robots.txt replaces authorization and secure data access."] } correctIndex={1} explanation="Generate unique, accurate page metadata and explicitly noindex unpublished or missing content." misconception="Optimize discoverability and user experience through verifiable semantics and measurements." lessonId="07.04.01" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Symptom:** The starter marks every page indexable, including unpublished drafts. **Reproduce:** record the failed assertion from the starter. **Repair:** Generate unique, accurate page metadata and explicitly noindex unpublished or missing content. **Regression:** Published article indexes with a descriptive title; draft metadata is noindex. Run a full Next production build, local browser audit and field/performance review for real release claims.
+
+## Guided local lab
+
+Use `labs/next-semantic-metadata/` for red starter, corrected instructor implementation, local tests and self-check rubric; no public user-code execution service is involved.
+
+<LabGate lessonId="07.04.01" labId="lab.next.next-semantic-metadata" commands={["npm run lab:next-semantic-metadata","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+Which SEO attributes can be checked statically, and which require observing the real crawler, browser or field traffic? What accessibility regression might a visual-only audit miss?
+
+## Official references
+
+- [Official reference: Semantic metadata](https://nextjs.org/docs/app/api-reference/functions/generate-metadata)
+- [Supporting documentation](https://nextjs.org/docs/app/getting-started/metadata-and-og-images)

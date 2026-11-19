@@ -1,0 +1,91 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Distinguish server data and RSC rendering from client hydration; hydration attaches interactivity to server-rendered UI.","Repair the deliberately broken rsc request lifecycle contract.","Verify a valid and an invalid boundary condition locally without claiming Next.js framework execution."]} />
+
+## The problem we're solving
+
+A route receives a request for a lesson, fetches data server-side, creates a React Server Component payload, and hydrates only interactive islands.
+
+**Symptom:** The starter starts hydration before creating server render output, reversing the required logical sequence.
+
+## Build the mental model
+
+Distinguish server data and RSC rendering from client hydration; hydration attaches interactivity to server-rendered UI.
+
+**Predict first:** Server data precedes the RSC payload, HTML precedes hydration, and the list is immutable.
+
+The local fixture tests only an isolated TypeScript/React contract; actual Server Component compilation, network transport, streaming, Server Actions, security isolation and browser hydration require a separate compiled Next.js 16 application and integration tests.
+
+## Prerequisites and preflight
+
+Read `07.01.08` and the preceding module's topic before using this example. Open `labs/next-rsc-request-lifecycle/starter/solution.tsx`. With Node.js 24 and locked dependencies, run `ACADEMY_LAB_TARGET=starter npm run lab:next-rsc-request-lifecycle` (PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:next-rsc-request-lifecycle; Remove-Item Env:ACADEMY_LAB_TARGET`). The starter is intentionally red.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the broken boundary" file="labs/next-rsc-request-lifecycle/starter/solution.tsx" expected="At least one test assertion exposes the documented failure.">
+
+```tsx
+export type Phase='request'|'server-data'|'rsc'|'html'|'hydrate';
+export function renderPhases():readonly Phase[]{return ['request','hydrate','server-data','html','rsc'];}
+```
+
+**Root cause:** The starter starts hydration before creating server render output, reversing the required logical sequence.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement a minimal correct contract" file="labs/next-rsc-request-lifecycle/starter/solution.tsx" expected="Server data precedes the RSC payload, HTML precedes hydration, and the list is immutable.">
+
+```tsx
+export type Phase='request'|'server-data'|'rsc'|'html'|'hydrate';
+export function renderPhases():readonly Phase[]{return ['request','server-data','rsc','html','hydrate'];}
+```
+
+**Why it works:** Distinguish server data and RSC rendering from client hydration; hydration attaches interactivity to server-rendered UI.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify an edge case and inspect the Next.js shape" file="labs/next-rsc-request-lifecycle/solution.test.mjs" expected="The instructor contract passes offline tests. Framework behavior is not asserted without a Next build.">
+
+```js
+assert.deepEqual(mod.renderPhases(),['request','server-data','rsc','html','hydrate']);
+assert.ok(mod.renderPhases().indexOf('rsc')<mod.renderPhases().indexOf('hydrate'));
+```
+
+**Framework-oriented example (illustrative; needs real imports and infrastructure):**
+
+```tsx
+// Request lifecycle (conceptual, not one universal transport trace)
+// 1. Server performs authorized data access and renders Server Component payload.
+// 2. Next.js produces initial HTML for a full document request.
+// 3. Browser displays HTML and React hydrates Client Components.
+// 4. Subsequent navigations can request an RSC payload without full-page reload.
+// 5. Client Components own interactive event handlers and local state.
+```
+
+**Boundary note:** Real streaming and navigation may interleave payload chunks; this five-step teaching model is intentionally conceptual. Verify the browser network waterfall and hydration rather than assuming all requests behave identically.
+
+</LessonStep>
+
+<Misconception claim="The starter starts hydration before creating server render output, reversing the required logical sequence." correction="Distinguish server data and RSC rendering from client hydration; hydration attaches interactivity to server-rendered UI. A fixture test cannot establish the actual compiled boundary or authorization." />
+
+<KnowledgeCheck question="What rule matters most for rsc request lifecycle?" choices={["All client code is automatically authorized by Next.js.","Distinguish server data and RSC rendering from client hydration; hydration attaches interactivity to server-rendered UI.","Server rendering means an API has no externally reachable endpoints.","A passing SSR assertion establishes hydration and backend security."] } correctIndex={1} explanation="Distinguish server data and RSC rendering from client hydration; hydration attaches interactivity to server-rendered UI." misconception="The server/client division changes execution boundaries, not who is authorized to access a particular record." lessonId="07.02.02" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Reproduce:** The starter starts hydration before creating server render output, reversing the required logical sequence. **Diagnose:** trace the input and execution boundary. **Repair:** Distinguish server data and RSC rendering from client hydration; hydration attaches interactivity to server-rendered UI. **Regression:** Server data precedes the RSC payload, HTML precedes hydration, and the list is immutable. Use a real Next build and network test for server and client behavior.
+
+## Guided local lab
+
+Practice in `labs/next-rsc-request-lifecycle/`, with a broken starter, instructor fix, offline regression checks, and learner rubric. No untrusted code runs on the academy server.
+
+<LabGate lessonId="07.02.02" labId="lab.next.next-rsc-request-lifecycle" commands={["npm run lab:next-rsc-request-lifecycle","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+Which server-side operation cannot be trusted to the browser? How would you demonstrate unauthorized access is rejected in a real deployed endpoint?
+
+## Official references
+
+- [Official Next.js reference: RSC request lifecycle](https://nextjs.org/docs/app/getting-started/server-and-client-components)
+- [Supporting official guide](https://nextjs.org/docs/app/getting-started/linking-and-navigating)

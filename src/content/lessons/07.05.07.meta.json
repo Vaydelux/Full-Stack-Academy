@@ -1,0 +1,39 @@
+{
+  "id": "07.05.07",
+  "title": "Upgrade and migration checks: Review Next.js 16 breaking conventions, rename middleware.ts to proxy.ts, await async request APIs and migrate cache configuration by mode.",
+  "description": "Next.js 16 operations topic upgrade and migration checks, with a runnable local regression model, failing starter, correct instructor source and security caveats.",
+  "trackId": "07",
+  "moduleId": "07.05",
+  "level": "Intermediate",
+  "estimatedMinutes": 65,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "next": "16",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "07.05.06"
+  ],
+  "objectives": [
+    "Review Next.js 16 breaking conventions, rename middleware.ts to proxy.ts, await async request APIs and migrate cache configuration by mode.",
+    "Repair the next16-migration-audit defect and verify a denied or invalid case.",
+    "Explain why real runtime, security, or observability acceptance remains necessary."
+  ],
+  "labId": "lab.next.next16-migration-audit",
+  "rubric": [
+    "I can explain the correct Next 16 behavior for upgrade and migration checks.",
+    "I can fix the 07.05.07 starter and explain the failing test.",
+    "I can plan an appropriate production-oriented integration test for the issue."
+  ],
+  "sources": [
+    {
+      "label": "Upgrade and migration checks",
+      "url": "https://nextjs.org/docs/app/guides/upgrading/version-16"
+    },
+    {
+      "label": "Supporting Next.js documentation",
+      "url": "https://nextjs.org/docs/app/guides/migrating-to-cache-components"
+    }
+  ]
+}

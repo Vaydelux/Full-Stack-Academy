@@ -1,0 +1,15 @@
+{
+  "id": "lab.next.next-fetch-behavior",
+  "lessonId": "07.03.01",
+  "title": "Next.js 16 fetch behavior in next.js 16 local lab",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/next-fetch-behavior/starter/solution.tsx",
+  "solution": "labs/next-fetch-behavior/solution/solution.tsx",
+  "tests": "labs/next-fetch-behavior/solution.test.mjs",
+  "verify": [
+    "npm run lab:next-fetch-behavior"
+  ],
+  "expected": "Public catalogue data can be considered cacheable; private messages and authorization-sensitive records cannot be shared.",
+  "security": "Only local cache-decision fixtures run, never a real Next cache or authenticated backend."
+}

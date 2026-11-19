@@ -1,0 +1,100 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Pass a minimal allowlisted React-serializable DTO across the Server-to-Client boundary; keep secrets and server-only objects server-side.","Repair the deliberately broken serialization boundaries contract.","Verify a valid and an invalid boundary condition locally without claiming Next.js framework execution."]} />
+
+## The problem we're solving
+
+A server database row includes internal tokens, dates and ORM methods. A Client Component needs only a safe and serializable card title and identifier.
+
+**Symptom:** The starter spreads the entire server row into client props, copying an internal token and Date instance.
+
+## Build the mental model
+
+Pass a minimal allowlisted React-serializable DTO across the Server-to-Client boundary; keep secrets and server-only objects server-side.
+
+**Predict first:** Only id, title and ISO date cross the boundary; private token and Date instance are excluded.
+
+The local fixture tests only an isolated TypeScript/React contract; actual Server Component compilation, network transport, streaming, Server Actions, security isolation and browser hydration require a separate compiled Next.js 16 application and integration tests.
+
+## Prerequisites and preflight
+
+Read `07.01.08` and the preceding module's topic before using this example. Open `labs/next-serialization-projection/starter/solution.tsx`. With Node.js 24 and locked dependencies, run `ACADEMY_LAB_TARGET=starter npm run lab:next-serialization-projection` (PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:next-serialization-projection; Remove-Item Env:ACADEMY_LAB_TARGET`). The starter is intentionally red.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the broken boundary" file="labs/next-serialization-projection/starter/solution.tsx" expected="At least one test assertion exposes the documented failure.">
+
+```tsx
+export type ServerCourse={id:string;title:string;createdAt:Date;internalToken:string};
+export function toClientCourse(row:ServerCourse){return {...row};}
+```
+
+**Root cause:** The starter spreads the entire server row into client props, copying an internal token and Date instance.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement a minimal correct contract" file="labs/next-serialization-projection/starter/solution.tsx" expected="Only id, title and ISO date cross the boundary; private token and Date instance are excluded.">
+
+```tsx
+export type ServerCourse={id:string;title:string;createdAt:Date;internalToken:string};
+export function toClientCourse(row:ServerCourse){
+ return {id:row.id,title:row.title,createdAtIso:row.createdAt.toISOString()};
+}
+```
+
+**Why it works:** Pass a minimal allowlisted React-serializable DTO across the Server-to-Client boundary; keep secrets and server-only objects server-side.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify an edge case and inspect the Next.js shape" file="labs/next-serialization-projection/solution.test.mjs" expected="The instructor contract passes offline tests. Framework behavior is not asserted without a Next build.">
+
+```js
+const row={id:'c1',title:'React',createdAt:new Date('2026-01-02T00:00:00Z'),internalToken:'NEVER-SEND'};
+const dto=mod.toClientCourse(row);
+assert.deepEqual(dto,{id:'c1',title:'React',createdAtIso:'2026-01-02T00:00:00.000Z'});
+assert.doesNotMatch(JSON.stringify(dto),/NEVER-SEND/);
+assert.equal(typeof dto.createdAtIso,'string');
+```
+
+**Framework-oriented example (illustrative; needs real imports and infrastructure):**
+
+```tsx
+// Server Component or data access module
+import 'server-only';
+const row=await db.course.findUniqueOrThrow({where:{id:courseId}});
+const publicCourse={id:row.id,title:row.title,createdAtIso:row.createdAt.toISOString()};
+return <CourseCard course={publicCourse}/>;
+// CourseCard.tsx
+'use client';
+export function CourseCard({course}:{course:{id:string;title:string;createdAtIso:string}}) {
+ return <article><h2>{course.title}</h2><time dateTime={course.createdAtIso}>{course.createdAtIso}</time></article>;
+}
+```
+
+**Boundary note:** React supports some richer serializable types, but an explicit DTO is a safer public API contract. Never assume a class instance, database client, closure or secret can safely cross the network.
+
+</LessonStep>
+
+<Misconception claim="The starter spreads the entire server row into client props, copying an internal token and Date instance." correction="Pass a minimal allowlisted React-serializable DTO across the Server-to-Client boundary; keep secrets and server-only objects server-side. A fixture test cannot establish the actual compiled boundary or authorization." />
+
+<KnowledgeCheck question="What rule matters most for serialization boundaries?" choices={["All client code is automatically authorized by Next.js.","Pass a minimal allowlisted React-serializable DTO across the Server-to-Client boundary; keep secrets and server-only objects server-side.","Server rendering means an API has no externally reachable endpoints.","A passing SSR assertion establishes hydration and backend security."] } correctIndex={1} explanation="Pass a minimal allowlisted React-serializable DTO across the Server-to-Client boundary; keep secrets and server-only objects server-side." misconception="The server/client division changes execution boundaries, not who is authorized to access a particular record." lessonId="07.02.03" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Reproduce:** The starter spreads the entire server row into client props, copying an internal token and Date instance. **Diagnose:** trace the input and execution boundary. **Repair:** Pass a minimal allowlisted React-serializable DTO across the Server-to-Client boundary; keep secrets and server-only objects server-side. **Regression:** Only id, title and ISO date cross the boundary; private token and Date instance are excluded. Use a real Next build and network test for server and client behavior.
+
+## Guided local lab
+
+Practice in `labs/next-serialization-projection/`, with a broken starter, instructor fix, offline regression checks, and learner rubric. No untrusted code runs on the academy server.
+
+<LabGate lessonId="07.02.03" labId="lab.next.next-serialization-projection" commands={["npm run lab:next-serialization-projection","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+Which server-side operation cannot be trusted to the browser? How would you demonstrate unauthorized access is rejected in a real deployed endpoint?
+
+## Official references
+
+- [Official Next.js reference: Serialization boundaries](https://nextjs.org/docs/app/getting-started/server-and-client-components)
+- [Supporting official guide](https://nextjs.org/docs/app/api-reference/directives/use-client)

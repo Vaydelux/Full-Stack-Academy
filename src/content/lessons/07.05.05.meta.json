@@ -1,0 +1,39 @@
+{
+  "id": "07.05.05",
+  "title": "Error tracking: Emit bounded diagnostic identifiers and error codes without logging access tokens, raw email addresses or other personal data.",
+  "description": "Next.js 16 operations topic error tracking, with a runnable local regression model, failing starter, correct instructor source and security caveats.",
+  "trackId": "07",
+  "moduleId": "07.05",
+  "level": "Intermediate",
+  "estimatedMinutes": 65,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "next": "16",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "07.05.04"
+  ],
+  "objectives": [
+    "Emit bounded diagnostic identifiers and error codes without logging access tokens, raw email addresses or other personal data.",
+    "Repair the next-error-redaction defect and verify a denied or invalid case.",
+    "Explain why real runtime, security, or observability acceptance remains necessary."
+  ],
+  "labId": "lab.next.next-error-redaction",
+  "rubric": [
+    "I can explain the correct Next 16 behavior for error tracking.",
+    "I can fix the 07.05.05 starter and explain the failing test.",
+    "I can plan an appropriate production-oriented integration test for the issue."
+  ],
+  "sources": [
+    {
+      "label": "Error tracking",
+      "url": "https://nextjs.org/docs/app/guides/instrumentation"
+    },
+    {
+      "label": "Supporting Next.js documentation",
+      "url": "https://nextjs.org/docs/app/guides/production-checklist"
+    }
+  ]
+}

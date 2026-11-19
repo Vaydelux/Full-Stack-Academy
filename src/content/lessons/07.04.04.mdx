@@ -1,0 +1,94 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Generate schema.org data from validated content and escape `<` in JSON-LD before embedding in a script; never inject untrusted raw HTML.","Repair the incomplete json-ld and structured data SEO or performance example.","Verify a legitimate and an edge-case result before browser qualification."]} />
+
+## The problem we're solving
+
+A course includes user-supplied title text. Rendering JSON-LD in a script tag without escaping HTML-significant characters could break out of the script content.
+
+**Defect:** The starter stringifies raw text without escaping a closing script sequence.
+
+## Build the mental model
+
+Generate schema.org data from validated content and escape `<` in JSON-LD before embedding in a script; never inject untrusted raw HTML.
+
+**Predict before running:** An attacker-provided closing script sequence becomes escaped text while ordinary JSON remains parseable.
+
+The academy exercises reviewed TypeScript/React logic locally. It does not automatically exercise the Next.js Metadata API, search crawler, browser page loading, network waterfall, Lighthouse or real-user field metrics. Those are separate qualification gates.
+
+## Prerequisites and preflight
+
+Study the previous topic, use Node.js 24 with locked dependencies, and open `labs/next-jsonld-safe/starter/solution.tsx`. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:next-jsonld-safe`. PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:next-jsonld-safe; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the SEO or performance failure" file="labs/next-jsonld-safe/starter/solution.tsx" expected="The intentionally broken starter fails one acceptance assertion.">
+
+```tsx
+export function safeJsonLd(value:unknown){return JSON.stringify(value);}
+```
+
+**Why it fails:** The starter stringifies raw text without escaping a closing script sequence.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the measurable contract" file="labs/next-jsonld-safe/starter/solution.tsx" expected="An attacker-provided closing script sequence becomes escaped text while ordinary JSON remains parseable.">
+
+```tsx
+export function safeJsonLd(value:unknown){
+ const json=JSON.stringify(value);
+ if(json===undefined)throw new TypeError('Expected JSON-LD value');
+ return json.split('<').join(String.fromCharCode(92)+'u003c');
+}
+```
+
+**Root principle:** Generate schema.org data from validated content and escape `<` in JSON-LD before embedding in a script; never inject untrusted raw HTML.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify an edge case and examine framework usage" file="labs/next-jsonld-safe/solution.test.mjs" expected="A valid and an invalid input satisfy the instructor's local assertions.">
+
+```js
+const result=mod.safeJsonLd({name:'</script><script>alert(1)</script>'});
+assert.doesNotMatch(result,/<script>|<\/script>/i);
+assert.ok(result.includes(String.fromCharCode(92)+'u003c'));
+assert.deepEqual(JSON.parse(result),{name:'</script><script>alert(1)</script>'});
+assert.throws(()=>mod.safeJsonLd(undefined),TypeError);
+```
+
+**Next.js 16 usage pattern (illustrative):**
+
+```tsx
+// Server Component (only after validating/escaping data):
+const graph={ '@context':'https://schema.org','@type':'Article',headline:article.title };
+const json=JSON.stringify(graph).replace(/</g,'\\u003c');
+return <script type="application/ld+json" dangerouslySetInnerHTML={{__html:json}}/>;
+```
+
+**Production nuance:** The code example uses dangerouslySetInnerHTML for structured data, not arbitrary page markup. Escaping is essential; schema correctness and search result eligibility still require structured-data validation.
+
+</LessonStep>
+
+<Misconception claim="The starter stringifies raw text without escaping a closing script sequence." correction="Generate schema.org data from validated content and escape `<` in JSON-LD before embedding in a script; never inject untrusted raw HTML. A fixture assertion is not real search or field-performance evidence." />
+
+<KnowledgeCheck question="Which principle matters most for json-ld and structured data?" choices={["An offline unit assertion guarantees Google indexing and search ranking.","Generate schema.org data from validated content and escape `<` in JSON-LD before embedding in a script; never inject untrusted raw HTML.","Every page and image should be preloaded for maximum speed.","robots.txt replaces authorization and secure data access."] } correctIndex={1} explanation="Generate schema.org data from validated content and escape `<` in JSON-LD before embedding in a script; never inject untrusted raw HTML." misconception="Optimize discoverability and user experience through verifiable semantics and measurements." lessonId="07.04.04" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Symptom:** The starter stringifies raw text without escaping a closing script sequence. **Reproduce:** record the failed assertion from the starter. **Repair:** Generate schema.org data from validated content and escape `<` in JSON-LD before embedding in a script; never inject untrusted raw HTML. **Regression:** An attacker-provided closing script sequence becomes escaped text while ordinary JSON remains parseable. Run a full Next production build, local browser audit and field/performance review for real release claims.
+
+## Guided local lab
+
+Use `labs/next-jsonld-safe/` for red starter, corrected instructor implementation, local tests and self-check rubric; no public user-code execution service is involved.
+
+<LabGate lessonId="07.04.04" labId="lab.next.next-jsonld-safe" commands={["npm run lab:next-jsonld-safe","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+Which SEO attributes can be checked statically, and which require observing the real crawler, browser or field traffic? What accessibility regression might a visual-only audit miss?
+
+## Official references
+
+- [Official reference: JSON-LD and structured data](https://nextjs.org/docs/app/guides/json-ld)
+- [Supporting documentation](https://nextjs.org/docs/app/getting-started/metadata-and-og-images)

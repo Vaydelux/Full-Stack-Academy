@@ -1,0 +1,92 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Choose static/precomputed pages for stable public content, revalidated cached public content for changing shared data, and dynamic request-specific rendering for private data.","Repair the intentionally broken isr vs ssr vs static example.","Explain Next.js 16 Cache Components boundaries, privacy risks and test limitations."]} />
+
+## The problem we're solving
+
+A documentation homepage changes weekly, while an account profile is different for every signed-in user. They need different rendering and freshness strategies.
+
+**Failure mode:** The starter chooses static rendering for every page, including authenticated profiles.
+
+## Build the mental model
+
+Choose static/precomputed pages for stable public content, revalidated cached public content for changing shared data, and dynamic request-specific rendering for private data. This module specifically uses **Next.js 16 with `cacheComponents: true`**; avoid mixing with the legacy `dynamic`, route-segment `revalidate` or `fetchCache` configuration model. The offline assertions are data/decision models; they do not access Next's actual cache internals, HTTP, or database.
+
+**Expected behavior:** Stable marketing = static; edited public articles = revalidated cache; personal profile = dynamic.
+
+## Prerequisites and preflight
+
+Study the preceding lesson and make sure the project uses Node.js 24 and a locked dependency install. Start from `labs/next-rendering-strategies/starter/solution.tsx`; run `ACADEMY_LAB_TARGET=starter npm run lab:next-rendering-strategies` (PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:next-rendering-strategies; Remove-Item Env:ACADEMY_LAB_TARGET`). This deliberately fails at least one assertion.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce a stale or unsafe cache assumption" file="labs/next-rendering-strategies/starter/solution.tsx" expected="The defective baseline fails its local data contract.">
+
+```tsx
+export type PageKind='marketing'|'news'|'profile';
+export function renderingStrategy(_kind:PageKind){return 'static';}
+```
+
+**Root cause:** The starter chooses static rendering for every page, including authenticated profiles.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the explicit cache contract" file="labs/next-rendering-strategies/starter/solution.tsx" expected="Stable marketing = static; edited public articles = revalidated cache; personal profile = dynamic.">
+
+```tsx
+export type PageKind='marketing'|'news'|'profile';
+export function renderingStrategy(kind:PageKind){
+ if(kind==='marketing')return 'static';
+ if(kind==='news')return 'revalidated-public';
+ return 'request-dynamic';
+}
+```
+
+**Why this works:** Choose static/precomputed pages for stable public content, revalidated cached public content for changing shared data, and dynamic request-specific rendering for private data.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify scope and inspect real Next.js 16 APIs" file="labs/next-rendering-strategies/solution.test.mjs" expected="The instructor passes local assertions. Cache behavior still needs a compiled app and local HTTP tests.">
+
+```js
+assert.equal(mod.renderingStrategy('marketing'),'static');
+assert.equal(mod.renderingStrategy('news'),'revalidated-public');
+assert.equal(mod.renderingStrategy('profile'),'request-dynamic');
+```
+
+**Framework example (illustrative; not executed here):**
+
+```tsx
+// In Cache Components mode, prerendered portions opt in with 'use cache'
+// while data that depends on an authenticated request is runtime data.
+// Public catalogue: 'use cache' + cacheLife('hours') + cacheTag('courses').
+// Profile: no shared caching of auth cookies or user-specific rows.
+```
+
+**Operational nuance:** SSR, ISR and static are teaching labels, not interchangeable Next 16 flags. Build outputs, streaming and caching differ depending on cacheComponents mode; do not combine both configuration models.
+
+</LessonStep>
+
+<Misconception claim="The starter chooses static rendering for every page, including authenticated profiles." correction="Choose static/precomputed pages for stable public content, revalidated cached public content for changing shared data, and dynamic request-specific rendering for private data. An offline helper does not prove server cache invalidation or confidentiality." />
+
+<KnowledgeCheck question="Which Next.js 16 caching principle applies to isr vs ssr vs static?" choices={["Use one global cached entry for authenticated and anonymous requests.","Choose static/precomputed pages for stable public content, revalidated cached public content for changing shared data, and dynamic request-specific rendering for private data.","A local SSR test proves cache invalidation on a remote server.","Legacy route-segment cache options always override Cache Components."] } correctIndex={1} explanation="Choose static/precomputed pages for stable public content, revalidated cached public content for changing shared data, and dynamic request-specific rendering for private data." misconception="Classify public versus request-specific work before choosing a freshness strategy." lessonId="07.03.06" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Symptom:** The starter chooses static rendering for every page, including authenticated profiles. **Reproduce:** run the starter and record failing input. **Repair:** Choose static/precomputed pages for stable public content, revalidated cached public content for changing shared data, and dynamic request-specific rendering for private data. **Regression:** Stable marketing = static; edited public articles = revalidated cache; personal profile = dynamic. Validate in a real Next.js 16 Cache Components app before claiming cache correctness.
+
+## Guided local lab
+
+The self-contained `labs/next-rendering-strategies/` lab provides a red starter, corrected instructor source, offline assertions, and a completion rubric. The academy does not run learner-provided code on its server.
+
+<LabGate lessonId="07.03.06" labId="lab.next.next-rendering-strategies" commands={["npm run lab:next-rendering-strategies","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+When must freshness be immediate rather than stale-while-revalidate? How would you prove tenant privacy remains intact under concurrency?
+
+## Official references
+
+- [Next.js reference: ISR vs SSR vs static](https://nextjs.org/docs/app/getting-started/cache-components)
+- [Supporting Next.js 16 guide](https://nextjs.org/docs/app/guides/migrating-to-cache-components)

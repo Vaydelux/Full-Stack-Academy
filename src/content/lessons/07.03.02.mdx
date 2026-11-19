@@ -1,0 +1,92 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Split stable public content from request-personalized data; use cache directives only around safe public computations.","Repair the intentionally broken explicit cache boundaries example.","Explain Next.js 16 Cache Components boundaries, privacy risks and test limitations."]} />
+
+## The problem we're solving
+
+A public course directory can be cached, but a user's enrollment state is request-specific and must never be part of a globally reused response.
+
+**Failure mode:** The starter combines public and private data in a single shared cache scope.
+
+## Build the mental model
+
+Split stable public content from request-personalized data; use cache directives only around safe public computations. This module specifically uses **Next.js 16 with `cacheComponents: true`**; avoid mixing with the legacy `dynamic`, route-segment `revalidate` or `fetchCache` configuration model. The offline assertions are data/decision models; they do not access Next's actual cache internals, HTTP, or database.
+
+**Expected behavior:** A public catalogue is eligible for a shared cache, while a personalized enrollment list is forced dynamic.
+
+## Prerequisites and preflight
+
+Study the preceding lesson and make sure the project uses Node.js 24 and a locked dependency install. Start from `labs/next-explicit-cache-boundary/starter/solution.tsx`; run `ACADEMY_LAB_TARGET=starter npm run lab:next-explicit-cache-boundary` (PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:next-explicit-cache-boundary; Remove-Item Env:ACADEMY_LAB_TARGET`). This deliberately fails at least one assertion.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce a stale or unsafe cache assumption" file="labs/next-explicit-cache-boundary/starter/solution.tsx" expected="The defective baseline fails its local data contract.">
+
+```tsx
+export function cacheScope(kind:'public'|'personalized'){return 'shared';}
+```
+
+**Root cause:** The starter combines public and private data in a single shared cache scope.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the explicit cache contract" file="labs/next-explicit-cache-boundary/starter/solution.tsx" expected="A public catalogue is eligible for a shared cache, while a personalized enrollment list is forced dynamic.">
+
+```tsx
+export function cacheScope(kind:'public'|'personalized'){
+ return kind==='public'?'shared':'request';
+}
+```
+
+**Why this works:** Split stable public content from request-personalized data; use cache directives only around safe public computations.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify scope and inspect real Next.js 16 APIs" file="labs/next-explicit-cache-boundary/solution.test.mjs" expected="The instructor passes local assertions. Cache behavior still needs a compiled app and local HTTP tests.">
+
+```js
+assert.equal(mod.cacheScope('public'),'shared');
+assert.equal(mod.cacheScope('personalized'),'request');
+```
+
+**Framework example (illustrative; not executed here):**
+
+```tsx
+// app/courses/PublicCatalogue.tsx
+import { cacheLife } from 'next/cache';
+export async function PublicCatalogue(){
+ 'use cache';
+ cacheLife('hours');
+ const courses=await getPublicCourses();
+ return <ul>{courses.map(c=><li key={c.id}>{c.title}</li>)}</ul>;
+}
+// Personalized status is rendered outside this cached component after an auth check.
+```
+
+**Operational nuance:** The string 'use cache' applies only under a configured Cache Components mode. Do not mix legacy route-segment `revalidate` exports with Cache Components conventions.
+
+</LessonStep>
+
+<Misconception claim="The starter combines public and private data in a single shared cache scope." correction="Split stable public content from request-personalized data; use cache directives only around safe public computations. An offline helper does not prove server cache invalidation or confidentiality." />
+
+<KnowledgeCheck question="Which Next.js 16 caching principle applies to explicit cache boundaries?" choices={["Use one global cached entry for authenticated and anonymous requests.","Split stable public content from request-personalized data; use cache directives only around safe public computations.","A local SSR test proves cache invalidation on a remote server.","Legacy route-segment cache options always override Cache Components."] } correctIndex={1} explanation="Split stable public content from request-personalized data; use cache directives only around safe public computations." misconception="Classify public versus request-specific work before choosing a freshness strategy." lessonId="07.03.02" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Symptom:** The starter combines public and private data in a single shared cache scope. **Reproduce:** run the starter and record failing input. **Repair:** Split stable public content from request-personalized data; use cache directives only around safe public computations. **Regression:** A public catalogue is eligible for a shared cache, while a personalized enrollment list is forced dynamic. Validate in a real Next.js 16 Cache Components app before claiming cache correctness.
+
+## Guided local lab
+
+The self-contained `labs/next-explicit-cache-boundary/` lab provides a red starter, corrected instructor source, offline assertions, and a completion rubric. The academy does not run learner-provided code on its server.
+
+<LabGate lessonId="07.03.02" labId="lab.next.next-explicit-cache-boundary" commands={["npm run lab:next-explicit-cache-boundary","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+When must freshness be immediate rather than stale-while-revalidate? How would you prove tenant privacy remains intact under concurrency?
+
+## Official references
+
+- [Next.js reference: Explicit cache boundaries](https://nextjs.org/docs/app/guides/migrating-to-cache-components)
+- [Supporting Next.js 16 guide](https://nextjs.org/docs/app/api-reference/directives/use-cache)

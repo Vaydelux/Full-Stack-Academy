@@ -1,0 +1,86 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Treat forwarded/Host headers as untrusted, use an explicit allowlist, and understand Next.js 16 proxy.ts executes in Node.js.","Reproduce and repair the documented failure using a self-contained TypeScript fixture.","Explain what requires a locally compiled Next.js 16 app or real runtime tests."]} />
+
+## The problem we're solving
+
+Reverse proxy and headers can create user-visible reliability or security failures. The starter trusts any nonempty Host header, enabling malicious password-reset or callback URLs.
+
+## Build the mental model
+
+Treat forwarded/Host headers as untrusted, use an explicit allowlist, and understand Next.js 16 proxy.ts executes in Node.js. **Expected result:** Only exact trusted hosts are allowed; lookalikes, ports and injected line breaks are rejected.
+
+Offline tests verify small, deterministic policy models. They cannot establish real HTTP security, deployment compatibility, image loading, environment secrecy or network diagnostics.
+
+## Prerequisites and preflight
+
+Read the previous canonical Next.js lesson and inspect `labs/next-proxy-host-guard/starter/solution.tsx` after `npm ci` on Node 24. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:next-proxy-host-guard`. PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:next-proxy-host-guard; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the broken policy" file="labs/next-proxy-host-guard/starter/solution.tsx" expected="The original starter fails a meaningful assertion.">
+
+```tsx
+export function trustedHost(host:string,_allowed:readonly string[]){return Boolean(host);}
+```
+
+**Why it fails:** The starter trusts any nonempty Host header, enabling malicious password-reset or callback URLs.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the policy and runtime boundary" file="labs/next-proxy-host-guard/starter/solution.tsx" expected="Only exact trusted hosts are allowed; lookalikes, ports and injected line breaks are rejected.">
+
+```tsx
+export function trustedHost(host:string,allowed:readonly string[]){if(!/^[a-z0-9.-]+(?::[0-9]{1,5})?$/i.test(host))return false;return allowed.some(x=>host.toLowerCase()===x.toLowerCase());}
+```
+
+**Why it works:** Treat forwarded/Host headers as untrusted, use an explicit allowlist, and understand Next.js 16 proxy.ts executes in Node.js.
+
+</LessonStep>
+
+<LessonStep number={3} title="Test a positive and a negative case" file="labs/next-proxy-host-guard/solution.test.mjs" expected="The instructor code passes source-model assertions; framework-level qualification is separate.">
+
+```js
+const hosts=['academy.example','localhost:3000'];assert.equal(mod.trustedHost('academy.example',hosts),true);assert.equal(mod.trustedHost('academy.example.evil.test',hosts),false);assert.equal(mod.trustedHost('academy.example:444',hosts),false);assert.equal(mod.trustedHost('academy.example\r\nBad:1',hosts),false);
+```
+
+**Illustrative Next.js 16 usage:**
+
+```tsx
+// proxy.ts is a routing/network boundary, not an authorization service.
+import {NextResponse,type NextRequest} from 'next/server';
+export function proxy(request:NextRequest){
+ const host=request.headers.get('host')??'';
+ if(!trustedHost(host,['academy.example']))return new NextResponse('Invalid host',{status:400});
+ return NextResponse.next();
+}
+export const config={matcher:['/account/:path*']};
+```
+
+Do not confuse the offline fixtures with a compiled application or a real HTTP route.
+
+</LessonStep>
+
+<Misconception claim="The starter trusts any nonempty Host header, enabling malicious password-reset or callback URLs." correction="Treat forwarded/Host headers as untrusted, use an explicit allowlist, and understand Next.js 16 proxy.ts executes in Node.js. Local source-model tests cannot replace deployment or security evidence." />
+
+<KnowledgeCheck question="What is the right principle for reverse proxy and headers?" choices={["If TypeScript compiles, every deployment and authorization boundary is safe.","Treat forwarded/Host headers as untrusted, use an explicit allowlist, and understand Next.js 16 proxy.ts executes in Node.js.","Browser data is always private unless a server sends it explicitly.","All Next.js Proxy work runs on the Edge runtime."] } correctIndex={1} explanation="Treat forwarded/Host headers as untrusted, use an explicit allowlist, and understand Next.js 16 proxy.ts executes in Node.js." misconception="Check the true runtime and trust boundary, not the appearance of a correct UI." lessonId="07.05.02" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Symptom:** The starter trusts any nonempty Host header, enabling malicious password-reset or callback URLs. **Reproduction:** run the red starter on one bad input. **Repair:** Treat forwarded/Host headers as untrusted, use an explicit allowlist, and understand Next.js 16 proxy.ts executes in Node.js. **Regression:** Only exact trusted hosts are allowed; lookalikes, ports and injected line breaks are rejected. Test the real App Router/runtime separately.
+
+## Guided local lab
+
+Local source, instructor fix, tests and rubric are checked into `labs/next-proxy-host-guard/`. No arbitrary learner code executes on the academy server.
+
+<LabGate lessonId="07.05.02" labId="lab.next.next-proxy-host-guard" commands={["npm run lab:next-proxy-host-guard","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+What additional build, HTTP, network or credential audit would provide evidence that this policy is effective in production?
+
+## Official references
+
+- [Next.js official reference: Reverse proxy and headers](https://nextjs.org/docs/app/getting-started/proxy)
+- [Supporting Next.js guide](https://nextjs.org/docs/app/api-reference/file-conventions/proxy)

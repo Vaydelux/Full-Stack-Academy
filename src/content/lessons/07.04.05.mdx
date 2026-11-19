@@ -1,0 +1,91 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Reserve intrinsic image dimensions and use the Next Image component with a responsive sizes value; prioritize only an actual LCP candidate.","Repair the incomplete images fonts and lcp SEO or performance example.","Verify a legitimate and an edge-case result before browser qualification."]} />
+
+## The problem we're solving
+
+A large hero image is the primary contentful element, but it has no intrinsic dimensions and can cause a layout shift on load.
+
+**Defect:** The starter produces a plan without dimensions, which cannot reserve stable space.
+
+## Build the mental model
+
+Reserve intrinsic image dimensions and use the Next Image component with a responsive sizes value; prioritize only an actual LCP candidate.
+
+**Predict before running:** Hero and regular imagery preserve positive width/height, while only the hero is marked preload-worthy.
+
+The academy exercises reviewed TypeScript/React logic locally. It does not automatically exercise the Next.js Metadata API, search crawler, browser page loading, network waterfall, Lighthouse or real-user field metrics. Those are separate qualification gates.
+
+## Prerequisites and preflight
+
+Study the previous topic, use Node.js 24 with locked dependencies, and open `labs/next-images-fonts-lcp/starter/solution.tsx`. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:next-images-fonts-lcp`. PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:next-images-fonts-lcp; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the SEO or performance failure" file="labs/next-images-fonts-lcp/starter/solution.tsx" expected="The intentionally broken starter fails one acceptance assertion.">
+
+```tsx
+export function imagePlan(_width:number,_height:number,_hero:boolean){return {width:0,height:0,preload:false};}
+```
+
+**Why it fails:** The starter produces a plan without dimensions, which cannot reserve stable space.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the measurable contract" file="labs/next-images-fonts-lcp/starter/solution.tsx" expected="Hero and regular imagery preserve positive width/height, while only the hero is marked preload-worthy.">
+
+```tsx
+export function imagePlan(width:number,height:number,hero:boolean){
+ if(!Number.isSafeInteger(width)||!Number.isSafeInteger(height)||width<=0||height<=0)throw new RangeError('Invalid image dimensions');
+ return {width,height,preload:hero,sizes:'(max-width: 768px) 100vw, 720px'};
+}
+```
+
+**Root principle:** Reserve intrinsic image dimensions and use the Next Image component with a responsive sizes value; prioritize only an actual LCP candidate.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify an edge case and examine framework usage" file="labs/next-images-fonts-lcp/solution.test.mjs" expected="A valid and an invalid input satisfy the instructor's local assertions.">
+
+```js
+assert.deepEqual(mod.imagePlan(1440,900,true),{width:1440,height:900,preload:true,sizes:'(max-width: 768px) 100vw, 720px'});
+assert.equal(mod.imagePlan(640,400,false).preload,false);
+assert.throws(()=>mod.imagePlan(0,400,true),RangeError);
+```
+
+**Next.js 16 usage pattern (illustrative):**
+
+```tsx
+import Image from 'next/image';
+export function Hero(){return <Image src="/hero.webp" alt="Study workspace" width={1440} height={900}
+ sizes="(max-width: 768px) 100vw, 720px" preload/>;}
+// Use next/font for self-hosted optimized fonts and avoid layout shifts from font swapping.
+```
+
+**Production nuance:** Preloading every large image can worsen network contention. Measure LCP on representative phones and keep dimensions/aspect ratio stable. The fixture does not measure image decoding.
+
+</LessonStep>
+
+<Misconception claim="The starter produces a plan without dimensions, which cannot reserve stable space." correction="Reserve intrinsic image dimensions and use the Next Image component with a responsive sizes value; prioritize only an actual LCP candidate. A fixture assertion is not real search or field-performance evidence." />
+
+<KnowledgeCheck question="Which principle matters most for images fonts and lcp?" choices={["An offline unit assertion guarantees Google indexing and search ranking.","Reserve intrinsic image dimensions and use the Next Image component with a responsive sizes value; prioritize only an actual LCP candidate.","Every page and image should be preloaded for maximum speed.","robots.txt replaces authorization and secure data access."] } correctIndex={1} explanation="Reserve intrinsic image dimensions and use the Next Image component with a responsive sizes value; prioritize only an actual LCP candidate." misconception="Optimize discoverability and user experience through verifiable semantics and measurements." lessonId="07.04.05" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Symptom:** The starter produces a plan without dimensions, which cannot reserve stable space. **Reproduce:** record the failed assertion from the starter. **Repair:** Reserve intrinsic image dimensions and use the Next Image component with a responsive sizes value; prioritize only an actual LCP candidate. **Regression:** Hero and regular imagery preserve positive width/height, while only the hero is marked preload-worthy. Run a full Next production build, local browser audit and field/performance review for real release claims.
+
+## Guided local lab
+
+Use `labs/next-images-fonts-lcp/` for red starter, corrected instructor implementation, local tests and self-check rubric; no public user-code execution service is involved.
+
+<LabGate lessonId="07.04.05" labId="lab.next.next-images-fonts-lcp" commands={["npm run lab:next-images-fonts-lcp","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+Which SEO attributes can be checked statically, and which require observing the real crawler, browser or field traffic? What accessibility regression might a visual-only audit miss?
+
+## Official references
+
+- [Official reference: Images fonts and LCP](https://nextjs.org/docs/app/api-reference/components/image)
+- [Supporting documentation](https://nextjs.org/docs/app/getting-started/images)

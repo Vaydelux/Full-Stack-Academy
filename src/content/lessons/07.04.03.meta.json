@@ -1,0 +1,39 @@
+{
+  "id": "07.04.03",
+  "title": "Sitemap and robots: Produce sitemap URLs only for public published pages; use robots metadata for indexability, not robots.txt as an access-control mechanism.",
+  "description": "Next.js 16 lesson in sitemap and robots with secure metadata, accessibility, official references, a failing starter and local verification examples.",
+  "trackId": "07",
+  "moduleId": "07.04",
+  "level": "Intermediate",
+  "estimatedMinutes": 65,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "next": "16",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "07.04.02"
+  ],
+  "objectives": [
+    "Produce sitemap URLs only for public published pages; use robots metadata for indexability, not robots.txt as an access-control mechanism.",
+    "Repair the broken example for next-sitemap-robots.",
+    "Differentiate a deterministic source check from search, browser and field performance verification."
+  ],
+  "labId": "lab.next.next-sitemap-robots",
+  "rubric": [
+    "I can explain sitemap and robots using Next.js 16 metadata conventions.",
+    "I can fix the 07.04.03 starter bug and prove an edge case.",
+    "I can describe additional accessibility, SEO and real-browser release checks."
+  ],
+  "sources": [
+    {
+      "label": "Next.js: Sitemap and robots",
+      "url": "https://nextjs.org/docs/app/api-reference/file-conventions/metadata/sitemap"
+    },
+    {
+      "label": "Supporting official resource",
+      "url": "https://nextjs.org/docs/app/api-reference/file-conventions/metadata/robots"
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "id": "07.03.07",
+  "title": "Cache debugging: Diagnose the cache scope, tag identity and invalidation event before changing TTL values or adding extra caches.",
+  "description": "Next.js 16 Cache Components tutorial for cache debugging with a failing starter, safe cache boundary model, instructor code and offline regression tests.",
+  "trackId": "07",
+  "moduleId": "07.03",
+  "level": "Intermediate",
+  "estimatedMinutes": 65,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "next": "16",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "07.03.06"
+  ],
+  "objectives": [
+    "Diagnose the cache scope, tag identity and invalidation event before changing TTL values or adding extra caches.",
+    "Repair the unsafe or stale assumption in next-cache-debugging.",
+    "Explain which cache and HTTP behaviors need independent compiled Next.js verification."
+  ],
+  "labId": "lab.next.next-cache-debugging",
+  "rubric": [
+    "I can explain cache debugging under Next 16 Cache Components rules.",
+    "I can repair the 07.03.07 failing local starter and explain the regression.",
+    "I can distinguish the local test from real cache, authorization and multi-tenant safety evidence."
+  ],
+  "sources": [
+    {
+      "label": "Next.js: Cache debugging",
+      "url": "https://nextjs.org/docs/app/api-reference/functions/cacheTag"
+    },
+    {
+      "label": "Official cache documentation",
+      "url": "https://nextjs.org/docs/app/getting-started/revalidating"
+    }
+  ]
+}

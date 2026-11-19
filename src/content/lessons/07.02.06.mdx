@@ -1,0 +1,104 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Suspense enables parts of the tree to reveal when ready; provide meaningful fallback UI without confusing loaded data and in-flight work.","Repair the deliberately broken suspense streaming contract.","Verify a valid and an invalid boundary condition locally without claiming Next.js framework execution."]} />
+
+## The problem we're solving
+
+A slow recommendations section should not block the entire article from being readable. The loading state must be announced clearly.
+
+**Symptom:** The starter renders Loading in the success state and Ready while pending, reversing the accessible status contract.
+
+## Build the mental model
+
+Suspense enables parts of the tree to reveal when ready; provide meaningful fallback UI without confusing loaded data and in-flight work.
+
+**Predict first:** Pending displays a status, ready displays the content, and errors remain distinct from loading.
+
+The local fixture tests only an isolated TypeScript/React contract; actual Server Component compilation, network transport, streaming, Server Actions, security isolation and browser hydration require a separate compiled Next.js 16 application and integration tests.
+
+## Prerequisites and preflight
+
+Read `07.01.08` and the preceding module's topic before using this example. Open `labs/next-suspense-streaming/starter/solution.tsx`. With Node.js 24 and locked dependencies, run `ACADEMY_LAB_TARGET=starter npm run lab:next-suspense-streaming` (PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:next-suspense-streaming; Remove-Item Env:ACADEMY_LAB_TARGET`). The starter is intentionally red.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the broken boundary" file="labs/next-suspense-streaming/starter/solution.tsx" expected="At least one test assertion exposes the documented failure.">
+
+```tsx
+export type ResourceState='pending'|'ready'|'error';
+export function ResourceNotice({state}:{state:ResourceState}){return <p>{state==='ready'?'Loading…':'Ready'}</p>;}
+```
+
+**Root cause:** The starter renders Loading in the success state and Ready while pending, reversing the accessible status contract.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement a minimal correct contract" file="labs/next-suspense-streaming/starter/solution.tsx" expected="Pending displays a status, ready displays the content, and errors remain distinct from loading.">
+
+```tsx
+export type ResourceState='pending'|'ready'|'error';
+export function ResourceNotice({state}:{state:ResourceState}){
+ if(state==='pending')return <p role="status">Loading recommendations…</p>;
+ if(state==='error')return <p role="alert">Recommendations unavailable.</p>;
+ return <p>Recommendations ready.</p>;
+}
+```
+
+**Why it works:** Suspense enables parts of the tree to reveal when ready; provide meaningful fallback UI without confusing loaded data and in-flight work.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify an edge case and inspect the Next.js shape" file="labs/next-suspense-streaming/solution.test.mjs" expected="The instructor contract passes offline tests. Framework behavior is not asserted without a Next build.">
+
+```js
+assert.match(renderToStaticMarkup(createElement(mod.ResourceNotice,{state:'pending'})),/role="status"/);
+assert.match(renderToStaticMarkup(createElement(mod.ResourceNotice,{state:'error'})),/role="alert"/);
+assert.match(renderToStaticMarkup(createElement(mod.ResourceNotice,{state:'ready'})),/Recommendations ready/);
+```
+
+**Framework-oriented example (illustrative; needs real imports and infrastructure):**
+
+```tsx
+// app/lessons/[id]/page.tsx (Server Component)
+import { Suspense } from 'react';
+export default async function Page({params}:{params:Promise<{id:string}>}) {
+ const {id}=await params;
+ const lesson=await loadLesson(id);
+ return <main><h1>{lesson.title}</h1>
+  <Suspense fallback={<p role="status">Loading recommendations…</p>}>
+    <Recommendations lessonId={id}/>
+  </Suspense></main>;
+}
+async function Recommendations({lessonId}:{lessonId:string}) {
+ const records=await loadRecommendations(lessonId);
+ return <ul>{records.map(row=><li key={row.id}>{row.title}</li>)}</ul>;
+}
+```
+
+**Boundary note:** The static ResourceNotice is a state-model fixture, not proof that chunks stream. Verify real server response timing and browser accessibility in a compiled Next app.
+
+</LessonStep>
+
+<Misconception claim="The starter renders Loading in the success state and Ready while pending, reversing the accessible status contract." correction="Suspense enables parts of the tree to reveal when ready; provide meaningful fallback UI without confusing loaded data and in-flight work. A fixture test cannot establish the actual compiled boundary or authorization." />
+
+<KnowledgeCheck question="What rule matters most for suspense streaming?" choices={["All client code is automatically authorized by Next.js.","Suspense enables parts of the tree to reveal when ready; provide meaningful fallback UI without confusing loaded data and in-flight work.","Server rendering means an API has no externally reachable endpoints.","A passing SSR assertion establishes hydration and backend security."] } correctIndex={1} explanation="Suspense enables parts of the tree to reveal when ready; provide meaningful fallback UI without confusing loaded data and in-flight work." misconception="The server/client division changes execution boundaries, not who is authorized to access a particular record." lessonId="07.02.06" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Reproduce:** The starter renders Loading in the success state and Ready while pending, reversing the accessible status contract. **Diagnose:** trace the input and execution boundary. **Repair:** Suspense enables parts of the tree to reveal when ready; provide meaningful fallback UI without confusing loaded data and in-flight work. **Regression:** Pending displays a status, ready displays the content, and errors remain distinct from loading. Use a real Next build and network test for server and client behavior.
+
+## Guided local lab
+
+Practice in `labs/next-suspense-streaming/`, with a broken starter, instructor fix, offline regression checks, and learner rubric. No untrusted code runs on the academy server.
+
+<LabGate lessonId="07.02.06" labId="lab.next.next-suspense-streaming" commands={["npm run lab:next-suspense-streaming","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+Which server-side operation cannot be trusted to the browser? How would you demonstrate unauthorized access is rejected in a real deployed endpoint?
+
+## Official references
+
+- [Official Next.js reference: Suspense streaming](https://nextjs.org/docs/app/getting-started/linking-and-navigating)
+- [Supporting official guide](https://react.dev/reference/react/Suspense)

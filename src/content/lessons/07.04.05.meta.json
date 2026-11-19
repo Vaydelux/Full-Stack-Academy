@@ -1,0 +1,39 @@
+{
+  "id": "07.04.05",
+  "title": "Images fonts and LCP: Reserve intrinsic image dimensions and use the Next Image component with a responsive sizes value; prioritize only an actual LCP candidate.",
+  "description": "Next.js 16 lesson in images fonts and lcp with secure metadata, accessibility, official references, a failing starter and local verification examples.",
+  "trackId": "07",
+  "moduleId": "07.04",
+  "level": "Intermediate",
+  "estimatedMinutes": 65,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "next": "16",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "07.04.04"
+  ],
+  "objectives": [
+    "Reserve intrinsic image dimensions and use the Next Image component with a responsive sizes value; prioritize only an actual LCP candidate.",
+    "Repair the broken example for next-images-fonts-lcp.",
+    "Differentiate a deterministic source check from search, browser and field performance verification."
+  ],
+  "labId": "lab.next.next-images-fonts-lcp",
+  "rubric": [
+    "I can explain images fonts and lcp using Next.js 16 metadata conventions.",
+    "I can fix the 07.04.05 starter bug and prove an edge case.",
+    "I can describe additional accessibility, SEO and real-browser release checks."
+  ],
+  "sources": [
+    {
+      "label": "Next.js: Images fonts and LCP",
+      "url": "https://nextjs.org/docs/app/api-reference/components/image"
+    },
+    {
+      "label": "Supporting official resource",
+      "url": "https://nextjs.org/docs/app/getting-started/images"
+    }
+  ]
+}

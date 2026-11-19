@@ -1,0 +1,39 @@
+{
+  "id": "07.05.04",
+  "title": "Edge vs Node runtime: Choose Node.js for native modules, filesystem or database dependencies; Edge is suitable only for compatible Web APIs, while Next.js 16 Proxy uses Node.",
+  "description": "Next.js 16 production operations lesson for edge vs node runtime with a broken starter, instructor repair, negative test and local-only verification.",
+  "trackId": "07",
+  "moduleId": "07.05",
+  "level": "Intermediate",
+  "estimatedMinutes": 65,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "next": "16",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "07.05.03"
+  ],
+  "objectives": [
+    "Choose Node.js for native modules, filesystem or database dependencies; Edge is suitable only for compatible Web APIs, while Next.js 16 Proxy uses Node.",
+    "Repair the problem in next-node-edge-runtime.",
+    "Identify independent production security and runtime acceptance requirements."
+  ],
+  "labId": "lab.next.next-node-edge-runtime",
+  "rubric": [
+    "I can explain the Next.js 16 rules for edge vs node runtime.",
+    "I can reproduce and fix the 07.05.04 failing starter.",
+    "I can distinguish deterministic model tests from real runtime or HTTP qualification."
+  ],
+  "sources": [
+    {
+      "label": "Edge vs Node runtime",
+      "url": "https://nextjs.org/docs/app/api-reference/edge"
+    },
+    {
+      "label": "Next.js supporting reference",
+      "url": "https://nextjs.org/docs/app/guides/upgrading/version-16"
+    }
+  ]
+}

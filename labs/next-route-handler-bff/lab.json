@@ -1,0 +1,15 @@
+{
+  "id": "lab.next.next-route-handler-bff",
+  "lessonId": "07.02.05",
+  "title": "Next.js 16 route handlers and bff local lab",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/next-route-handler-bff/starter/solution.tsx",
+  "solution": "labs/next-route-handler-bff/solution/solution.tsx",
+  "tests": "labs/next-route-handler-bff/solution.test.mjs",
+  "verify": [
+    "npm run lab:next-route-handler-bff"
+  ],
+  "expected": "Limits 1–50 are allowed, invalid values rejected, and absent limit defaults to 20.",
+  "security": "Local reviewed model test. No real Server Action or backend is executed by this fixture."
+}

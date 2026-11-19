@@ -1,0 +1,15 @@
+{
+  "id": "lab.next.next-accidental-client-import",
+  "lessonId": "07.02.08",
+  "title": "Next.js 16 bug hunt accidental client import local lab",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/next-accidental-client-import/starter/solution.tsx",
+  "solution": "labs/next-accidental-client-import/solution/solution.tsx",
+  "tests": "labs/next-accidental-client-import/solution.test.mjs",
+  "verify": [
+    "npm run lab:next-accidental-client-import"
+  ],
+  "expected": "Known server-only modules and Node built-in imports are blocked; a shared UI module remains permitted.",
+  "security": "Local reviewed model test. No real Server Action or backend is executed by this fixture."
+}

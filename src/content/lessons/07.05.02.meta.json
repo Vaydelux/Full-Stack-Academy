@@ -1,0 +1,39 @@
+{
+  "id": "07.05.02",
+  "title": "Reverse proxy and headers: Treat forwarded/Host headers as untrusted, use an explicit allowlist, and understand Next.js 16 proxy.ts executes in Node.js.",
+  "description": "Next.js 16 production operations lesson for reverse proxy and headers with a broken starter, instructor repair, negative test and local-only verification.",
+  "trackId": "07",
+  "moduleId": "07.05",
+  "level": "Intermediate",
+  "estimatedMinutes": 65,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "next": "16",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "07.05.01"
+  ],
+  "objectives": [
+    "Treat forwarded/Host headers as untrusted, use an explicit allowlist, and understand Next.js 16 proxy.ts executes in Node.js.",
+    "Repair the problem in next-proxy-host-guard.",
+    "Identify independent production security and runtime acceptance requirements."
+  ],
+  "labId": "lab.next.next-proxy-host-guard",
+  "rubric": [
+    "I can explain the Next.js 16 rules for reverse proxy and headers.",
+    "I can reproduce and fix the 07.05.02 failing starter.",
+    "I can distinguish deterministic model tests from real runtime or HTTP qualification."
+  ],
+  "sources": [
+    {
+      "label": "Reverse proxy and headers",
+      "url": "https://nextjs.org/docs/app/getting-started/proxy"
+    },
+    {
+      "label": "Next.js supporting reference",
+      "url": "https://nextjs.org/docs/app/api-reference/file-conventions/proxy"
+    }
+  ]
+}

@@ -1,0 +1,103 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Treat every Server Action as a public mutation entry point; validate input and authorize the specific object on every request.","Repair the deliberately broken server actions and mutations contract.","Verify a valid and an invalid boundary condition locally without claiming Next.js framework execution."]} />
+
+## The problem we're solving
+
+An authenticated user submits a title update for a project; a valid session is insufficient unless that user is authorized for the exact project.
+
+**Symptom:** The starter grants any signed-in user write access to any project ID.
+
+## Build the mental model
+
+Treat every Server Action as a public mutation entry point; validate input and authorize the specific object on every request.
+
+**Predict first:** Only a matching member with a nonblank bounded title may update a project; unauthorized access is rejected.
+
+The local fixture tests only an isolated TypeScript/React contract; actual Server Component compilation, network transport, streaming, Server Actions, security isolation and browser hydration require a separate compiled Next.js 16 application and integration tests.
+
+## Prerequisites and preflight
+
+Read `07.01.08` and the preceding module's topic before using this example. Open `labs/next-server-action-authorization/starter/solution.tsx`. With Node.js 24 and locked dependencies, run `ACADEMY_LAB_TARGET=starter npm run lab:next-server-action-authorization` (PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:next-server-action-authorization; Remove-Item Env:ACADEMY_LAB_TARGET`). The starter is intentionally red.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the broken boundary" file="labs/next-server-action-authorization/starter/solution.tsx" expected="At least one test assertion exposes the documented failure.">
+
+```tsx
+export type Principal={id:string}|null;
+export type Project={id:string;memberIds:readonly string[]};
+export function canChangeTitle(principal:Principal,_project:Project,title:string){return Boolean(principal&&title);}
+```
+
+**Root cause:** The starter grants any signed-in user write access to any project ID.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement a minimal correct contract" file="labs/next-server-action-authorization/starter/solution.tsx" expected="Only a matching member with a nonblank bounded title may update a project; unauthorized access is rejected.">
+
+```tsx
+export type Principal={id:string}|null;
+export type Project={id:string;memberIds:readonly string[]};
+export function canChangeTitle(principal:Principal,project:Project,title:string){
+ return Boolean(principal&&project.memberIds.includes(principal.id)&&title.trim().length>=1&&title.trim().length<=120);
+}
+```
+
+**Why it works:** Treat every Server Action as a public mutation entry point; validate input and authorize the specific object on every request.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify an edge case and inspect the Next.js shape" file="labs/next-server-action-authorization/solution.test.mjs" expected="The instructor contract passes offline tests. Framework behavior is not asserted without a Next build.">
+
+```js
+const project={id:'p1',memberIds:['u1']};
+assert.equal(mod.canChangeTitle({id:'u1'},project,'Updated'),true);
+assert.equal(mod.canChangeTitle({id:'u2'},project,'Updated'),false);
+assert.equal(mod.canChangeTitle(null,project,'Updated'),false);
+assert.equal(mod.canChangeTitle({id:'u1'},project,' '),false);
+```
+
+**Framework-oriented example (illustrative; needs real imports and infrastructure):**
+
+```tsx
+// app/actions.ts (illustrative Server Action)
+'use server';
+export async function renameProject(projectId:string,formData:FormData){
+ const user=await requireAuthenticatedUser();
+ const parsed=TitleSchema.safeParse({title:formData.get('title')});
+ if(!parsed.success) return {ok:false,message:'Invalid title'};
+ const project=await db.project.findFirst({where:{id:projectId,members:{some:{userId:user.id}}}});
+ if(!project) return {ok:false,message:'Not allowed'};
+ await db.project.update({where:{id:project.id},data:{title:parsed.data.title}});
+ return {ok:true};
+}
+```
+
+**Boundary note:** The sample Action requires real imports and a database/auth implementation. Action IDs and form origin protections are not authorization. Verify tenant-scoped mutations and failed requests with integration tests.
+
+</LessonStep>
+
+<Misconception claim="The starter grants any signed-in user write access to any project ID." correction="Treat every Server Action as a public mutation entry point; validate input and authorize the specific object on every request. A fixture test cannot establish the actual compiled boundary or authorization." />
+
+<KnowledgeCheck question="What rule matters most for server actions and mutations?" choices={["All client code is automatically authorized by Next.js.","Treat every Server Action as a public mutation entry point; validate input and authorize the specific object on every request.","Server rendering means an API has no externally reachable endpoints.","A passing SSR assertion establishes hydration and backend security."] } correctIndex={1} explanation="Treat every Server Action as a public mutation entry point; validate input and authorize the specific object on every request." misconception="The server/client division changes execution boundaries, not who is authorized to access a particular record." lessonId="07.02.04" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Reproduce:** The starter grants any signed-in user write access to any project ID. **Diagnose:** trace the input and execution boundary. **Repair:** Treat every Server Action as a public mutation entry point; validate input and authorize the specific object on every request. **Regression:** Only a matching member with a nonblank bounded title may update a project; unauthorized access is rejected. Use a real Next build and network test for server and client behavior.
+
+## Guided local lab
+
+Practice in `labs/next-server-action-authorization/`, with a broken starter, instructor fix, offline regression checks, and learner rubric. No untrusted code runs on the academy server.
+
+<LabGate lessonId="07.02.04" labId="lab.next.next-server-action-authorization" commands={["npm run lab:next-server-action-authorization","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+Which server-side operation cannot be trusted to the browser? How would you demonstrate unauthorized access is rejected in a real deployed endpoint?
+
+## Official references
+
+- [Official Next.js reference: Server Actions and mutations](https://nextjs.org/docs/app/getting-started/mutating-data)
+- [Supporting official guide](https://nextjs.org/docs/app/guides/data-security)

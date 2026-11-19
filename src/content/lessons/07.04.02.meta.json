@@ -1,0 +1,39 @@
+{
+  "id": "07.04.02",
+  "title": "Canonical and Open Graph: Build absolute canonical/OG URLs from an allowlisted site origin and validated route parameters; never trust arbitrary user-controlled origin strings.",
+  "description": "Next.js 16 lesson in canonical and open graph with secure metadata, accessibility, official references, a failing starter and local verification examples.",
+  "trackId": "07",
+  "moduleId": "07.04",
+  "level": "Intermediate",
+  "estimatedMinutes": 65,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "next": "16",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "07.04.01"
+  ],
+  "objectives": [
+    "Build absolute canonical/OG URLs from an allowlisted site origin and validated route parameters; never trust arbitrary user-controlled origin strings.",
+    "Repair the broken example for next-canonical-og.",
+    "Differentiate a deterministic source check from search, browser and field performance verification."
+  ],
+  "labId": "lab.next.next-canonical-og",
+  "rubric": [
+    "I can explain canonical and open graph using Next.js 16 metadata conventions.",
+    "I can fix the 07.04.02 starter bug and prove an edge case.",
+    "I can describe additional accessibility, SEO and real-browser release checks."
+  ],
+  "sources": [
+    {
+      "label": "Next.js: Canonical and Open Graph",
+      "url": "https://nextjs.org/docs/app/api-reference/functions/generate-metadata"
+    },
+    {
+      "label": "Supporting official resource",
+      "url": "https://nextjs.org/docs/app/getting-started/metadata-and-og-images"
+    }
+  ]
+}

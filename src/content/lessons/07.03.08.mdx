@@ -1,0 +1,99 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Authorize the exact record, validate the new title, persist the revision, then invalidate the relevant public cache tag using the appropriate semantics.","Repair the intentionally broken lab publish and revalidate example.","Explain Next.js 16 Cache Components boundaries, privacy risks and test limitations."]} />
+
+## The problem we're solving
+
+A publication editor updates an article. The model must ensure that only the author can publish a new revision and that the correct invalidation mode is selected.
+
+**Failure mode:** The starter allows nonowners to publish and does not increment the version.
+
+## Build the mental model
+
+Authorize the exact record, validate the new title, persist the revision, then invalidate the relevant public cache tag using the appropriate semantics. This module specifically uses **Next.js 16 with `cacheComponents: true`**; avoid mixing with the legacy `dynamic`, route-segment `revalidate` or `fetchCache` configuration model. The offline assertions are data/decision models; they do not access Next's actual cache internals, HTTP, or database.
+
+**Expected behavior:** Only the owner can publish valid content; versions increment without mutating past snapshots.
+
+## Prerequisites and preflight
+
+Study the preceding lesson and make sure the project uses Node.js 24 and a locked dependency install. Start from `labs/next-publish-revalidate-capstone/starter/solution.tsx`; run `ACADEMY_LAB_TARGET=starter npm run lab:next-publish-revalidate-capstone` (PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:next-publish-revalidate-capstone; Remove-Item Env:ACADEMY_LAB_TARGET`). This deliberately fails at least one assertion.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce a stale or unsafe cache assumption" file="labs/next-publish-revalidate-capstone/starter/solution.tsx" expected="The defective baseline fails its local data contract.">
+
+```tsx
+export type Post={id:string;ownerId:string;title:string;revision:number};
+export function publishPost(post:Post,_actor:string,title:string){return {...post,title};}
+```
+
+**Root cause:** The starter allows nonowners to publish and does not increment the version.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the explicit cache contract" file="labs/next-publish-revalidate-capstone/starter/solution.tsx" expected="Only the owner can publish valid content; versions increment without mutating past snapshots.">
+
+```tsx
+export type Post={id:string;ownerId:string;title:string;revision:number};
+export function publishPost(post:Post,actor:string,title:string):Post|null{
+ if(post.ownerId!==actor||!title.trim()||title.trim().length>120)return null;
+ return {...post,title:title.trim(),revision:post.revision+1};
+}
+```
+
+**Why this works:** Authorize the exact record, validate the new title, persist the revision, then invalidate the relevant public cache tag using the appropriate semantics.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify scope and inspect real Next.js 16 APIs" file="labs/next-publish-revalidate-capstone/solution.test.mjs" expected="The instructor passes local assertions. Cache behavior still needs a compiled app and local HTTP tests.">
+
+```js
+const post={id:'react',ownerId:'u1',title:'Draft',revision:1};
+assert.equal(mod.publishPost(post,'u2','Changed'),null);
+const result=mod.publishPost(post,'u1',' Ready ');
+assert.deepEqual(result,{id:'react',ownerId:'u1',title:'Ready',revision:2});
+assert.equal(post.revision,1);
+```
+
+**Framework example (illustrative; not executed here):**
+
+```tsx
+// app/actions.ts; correct imports and persistent transaction required.
+'use server';
+import {updateTag} from 'next/cache';
+export async function publish(formData:FormData){
+ const actor=await requireAuthenticatedUser();
+ const updated=await publishAuthorizedArticle({actorId:actor.id,formData});
+ if(!updated)return {ok:false,message:'Not authorized'};
+ updateTag('courses:'+updated.id); // Immediate read-your-writes inside Server Action
+ return {ok:true,revision:updated.revision};
+}
+```
+
+**Operational nuance:** The lab models the business transaction and does not connect to a database/cache handler. Real production logic must use a transaction, concurrency control, authorization and an appropriate post-commit invalidation policy.
+
+</LessonStep>
+
+<Misconception claim="The starter allows nonowners to publish and does not increment the version." correction="Authorize the exact record, validate the new title, persist the revision, then invalidate the relevant public cache tag using the appropriate semantics. An offline helper does not prove server cache invalidation or confidentiality." />
+
+<KnowledgeCheck question="Which Next.js 16 caching principle applies to lab publish and revalidate?" choices={["Use one global cached entry for authenticated and anonymous requests.","Authorize the exact record, validate the new title, persist the revision, then invalidate the relevant public cache tag using the appropriate semantics.","A local SSR test proves cache invalidation on a remote server.","Legacy route-segment cache options always override Cache Components."] } correctIndex={1} explanation="Authorize the exact record, validate the new title, persist the revision, then invalidate the relevant public cache tag using the appropriate semantics." misconception="Classify public versus request-specific work before choosing a freshness strategy." lessonId="07.03.08" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Symptom:** The starter allows nonowners to publish and does not increment the version. **Reproduce:** run the starter and record failing input. **Repair:** Authorize the exact record, validate the new title, persist the revision, then invalidate the relevant public cache tag using the appropriate semantics. **Regression:** Only the owner can publish valid content; versions increment without mutating past snapshots. Validate in a real Next.js 16 Cache Components app before claiming cache correctness.
+
+## Guided local lab
+
+The self-contained `labs/next-publish-revalidate-capstone/` lab provides a red starter, corrected instructor source, offline assertions, and a completion rubric. The academy does not run learner-provided code on its server.
+
+<LabGate lessonId="07.03.08" labId="lab.next.next-publish-revalidate-capstone" commands={["npm run lab:next-publish-revalidate-capstone","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+When must freshness be immediate rather than stale-while-revalidate? How would you prove tenant privacy remains intact under concurrency?
+
+## Official references
+
+- [Next.js reference: Lab publish and revalidate](https://nextjs.org/docs/app/getting-started/revalidating)
+- [Supporting Next.js 16 guide](https://nextjs.org/docs/app/api-reference/functions/updateTag)

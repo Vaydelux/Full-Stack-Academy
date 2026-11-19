@@ -1,0 +1,15 @@
+{
+  "id": "lab.next.next-cache-revalidation",
+  "lessonId": "07.03.04",
+  "title": "Next.js 16 revalidation and invalidation local lab",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/next-cache-revalidation/starter/solution.tsx",
+  "solution": "labs/next-cache-revalidation/solution/solution.tsx",
+  "tests": "labs/next-cache-revalidation/solution.test.mjs",
+  "verify": [
+    "npm run lab:next-cache-revalidation"
+  ],
+  "expected": "Public scheduled freshness chooses revalidateTag; a confirmed author edit chooses updateTag.",
+  "security": "Only local cache-decision fixtures run, never a real Next cache or authenticated backend."
+}

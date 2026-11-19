@@ -1,0 +1,1 @@
+export function assetPlan(kind:'hero'|'thumbnail',width:number,height:number){if(!Number.isSafeInteger(width)||!Number.isSafeInteger(height)||width<=0||height<=0)throw new RangeError('Invalid dimensions');return {width,height,preload:kind==='hero',loading:kind==='hero'?'eager':'lazy'};}

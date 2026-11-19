@@ -1,0 +1,15 @@
+{
+  "id": "lab.next.next-cache-tags",
+  "lessonId": "07.03.03",
+  "title": "Next.js 16 use cache and cache tags local lab",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/next-cache-tags/starter/solution.tsx",
+  "solution": "labs/next-cache-tags/solution/solution.tsx",
+  "tests": "labs/next-cache-tags/solution.test.mjs",
+  "verify": [
+    "npm run lab:next-cache-tags"
+  ],
+  "expected": "Different course IDs produce distinct namespaced cache tags; malformed identifiers are rejected.",
+  "security": "Only local cache-decision fixtures run, never a real Next cache or authenticated backend."
+}

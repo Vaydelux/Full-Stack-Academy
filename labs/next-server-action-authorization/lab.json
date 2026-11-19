@@ -1,0 +1,15 @@
+{
+  "id": "lab.next.next-server-action-authorization",
+  "lessonId": "07.02.04",
+  "title": "Next.js 16 server actions and mutations local lab",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/next-server-action-authorization/starter/solution.tsx",
+  "solution": "labs/next-server-action-authorization/solution/solution.tsx",
+  "tests": "labs/next-server-action-authorization/solution.test.mjs",
+  "verify": [
+    "npm run lab:next-server-action-authorization"
+  ],
+  "expected": "Only a matching member with a nonblank bounded title may update a project; unauthorized access is rejected.",
+  "security": "Local reviewed model test. No real Server Action or backend is executed by this fixture."
+}

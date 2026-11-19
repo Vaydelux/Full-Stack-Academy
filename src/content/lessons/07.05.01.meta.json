@@ -1,0 +1,39 @@
+{
+  "id": "07.05.01",
+  "title": "Environment separation: Restrict browser-exposed values to explicitly public names and never put secrets in NEXT_PUBLIC_ variables or next.config env.",
+  "description": "Next.js 16 production operations lesson for environment separation with a broken starter, instructor repair, negative test and local-only verification.",
+  "trackId": "07",
+  "moduleId": "07.05",
+  "level": "Intermediate",
+  "estimatedMinutes": 65,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "next": "16",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "07.04.08"
+  ],
+  "objectives": [
+    "Restrict browser-exposed values to explicitly public names and never put secrets in NEXT_PUBLIC_ variables or next.config env.",
+    "Repair the problem in next-environment-separation.",
+    "Identify independent production security and runtime acceptance requirements."
+  ],
+  "labId": "lab.next.next-environment-separation",
+  "rubric": [
+    "I can explain the Next.js 16 rules for environment separation.",
+    "I can reproduce and fix the 07.05.01 failing starter.",
+    "I can distinguish deterministic model tests from real runtime or HTTP qualification."
+  ],
+  "sources": [
+    {
+      "label": "Environment separation",
+      "url": "https://nextjs.org/docs/app/guides/environment-variables"
+    },
+    {
+      "label": "Next.js supporting reference",
+      "url": "https://nextjs.org/docs/app/guides/production-checklist"
+    }
+  ]
+}

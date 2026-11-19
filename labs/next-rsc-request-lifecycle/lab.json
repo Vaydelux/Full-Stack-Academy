@@ -1,0 +1,15 @@
+{
+  "id": "lab.next.next-rsc-request-lifecycle",
+  "lessonId": "07.02.02",
+  "title": "Next.js 16 rsc request lifecycle local lab",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/next-rsc-request-lifecycle/starter/solution.tsx",
+  "solution": "labs/next-rsc-request-lifecycle/solution/solution.tsx",
+  "tests": "labs/next-rsc-request-lifecycle/solution.test.mjs",
+  "verify": [
+    "npm run lab:next-rsc-request-lifecycle"
+  ],
+  "expected": "Server data precedes the RSC payload, HTML precedes hydration, and the list is immutable.",
+  "security": "Local reviewed model test. No real Server Action or backend is executed by this fixture."
+}

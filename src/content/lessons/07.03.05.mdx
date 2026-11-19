@@ -1,0 +1,89 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Separate public cache entries from tenant- or principal-scoped responses; never share personalized data under a global key.","Repair the intentionally broken private data and cache risks example.","Explain Next.js 16 Cache Components boundaries, privacy risks and test limitations."]} />
+
+## The problem we're solving
+
+A SaaS dashboard caches a response without separating organizations. Another organization's account may then receive private records.
+
+**Failure mode:** The starter declares every cached document public regardless of access scope.
+
+## Build the mental model
+
+Separate public cache entries from tenant- or principal-scoped responses; never share personalized data under a global key. This module specifically uses **Next.js 16 with `cacheComponents: true`**; avoid mixing with the legacy `dynamic`, route-segment `revalidate` or `fetchCache` configuration model. The offline assertions are data/decision models; they do not access Next's actual cache internals, HTTP, or database.
+
+**Expected behavior:** Only records explicitly marked public qualify for shared caching; organization-owned and private records do not.
+
+## Prerequisites and preflight
+
+Study the preceding lesson and make sure the project uses Node.js 24 and a locked dependency install. Start from `labs/next-private-cache-risks/starter/solution.tsx`; run `ACADEMY_LAB_TARGET=starter npm run lab:next-private-cache-risks` (PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:next-private-cache-risks; Remove-Item Env:ACADEMY_LAB_TARGET`). This deliberately fails at least one assertion.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce a stale or unsafe cache assumption" file="labs/next-private-cache-risks/starter/solution.tsx" expected="The defective baseline fails its local data contract.">
+
+```tsx
+export type Visibility='public'|'organization'|'private';
+export function mayUseSharedCache(_visibility:Visibility){return true;}
+```
+
+**Root cause:** The starter declares every cached document public regardless of access scope.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the explicit cache contract" file="labs/next-private-cache-risks/starter/solution.tsx" expected="Only records explicitly marked public qualify for shared caching; organization-owned and private records do not.">
+
+```tsx
+export type Visibility='public'|'organization'|'private';
+export function mayUseSharedCache(visibility:Visibility){return visibility==='public';}
+```
+
+**Why this works:** Separate public cache entries from tenant- or principal-scoped responses; never share personalized data under a global key.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify scope and inspect real Next.js 16 APIs" file="labs/next-private-cache-risks/solution.test.mjs" expected="The instructor passes local assertions. Cache behavior still needs a compiled app and local HTTP tests.">
+
+```js
+assert.equal(mod.mayUseSharedCache('public'),true);
+assert.equal(mod.mayUseSharedCache('organization'),false);
+assert.equal(mod.mayUseSharedCache('private'),false);
+```
+
+**Framework example (illustrative; not executed here):**
+
+```tsx
+// Keep request-authenticated data outside a shared cache boundary.
+const user=await requireAuthenticatedUser();
+const tasks=await db.task.findMany({where:{organizationId:user.organizationId}});
+// A shared public topic list can be cached independently with 'use cache'.
+return <Dashboard tasks={tasks} publicTopics={await getCachedPublicTopics()}/>;
+```
+
+**Operational nuance:** `use cache: private` has its own rules and is not a blanket permission to leak secrets. Authorization must run independently on every private data access and mutation.
+
+</LessonStep>
+
+<Misconception claim="The starter declares every cached document public regardless of access scope." correction="Separate public cache entries from tenant- or principal-scoped responses; never share personalized data under a global key. An offline helper does not prove server cache invalidation or confidentiality." />
+
+<KnowledgeCheck question="Which Next.js 16 caching principle applies to private data and cache risks?" choices={["Use one global cached entry for authenticated and anonymous requests.","Separate public cache entries from tenant- or principal-scoped responses; never share personalized data under a global key.","A local SSR test proves cache invalidation on a remote server.","Legacy route-segment cache options always override Cache Components."] } correctIndex={1} explanation="Separate public cache entries from tenant- or principal-scoped responses; never share personalized data under a global key." misconception="Classify public versus request-specific work before choosing a freshness strategy." lessonId="07.03.05" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Symptom:** The starter declares every cached document public regardless of access scope. **Reproduce:** run the starter and record failing input. **Repair:** Separate public cache entries from tenant- or principal-scoped responses; never share personalized data under a global key. **Regression:** Only records explicitly marked public qualify for shared caching; organization-owned and private records do not. Validate in a real Next.js 16 Cache Components app before claiming cache correctness.
+
+## Guided local lab
+
+The self-contained `labs/next-private-cache-risks/` lab provides a red starter, corrected instructor source, offline assertions, and a completion rubric. The academy does not run learner-provided code on its server.
+
+<LabGate lessonId="07.03.05" labId="lab.next.next-private-cache-risks" commands={["npm run lab:next-private-cache-risks","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+When must freshness be immediate rather than stale-while-revalidate? How would you prove tenant privacy remains intact under concurrency?
+
+## Official references
+
+- [Next.js reference: Private data and cache risks](https://nextjs.org/docs/app/guides/data-security)
+- [Supporting Next.js 16 guide](https://nextjs.org/docs/app/api-reference/directives/use-cache)

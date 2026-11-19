@@ -1,0 +1,88 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Classify build errors at the correct boundary before changing code and record the exact commit, runtime and failing command.","Reproduce and repair an operational or security defect with a local TypeScript model.","Identify the missing HTTP, runtime or security integration evidence."]} />
+
+## The problem we're solving
+
+Build and runtime diagnostics matters in a production-facing Next.js application. **Initial defect:** The starter reports every compiler, configuration and hydration error as a CSS issue.
+
+## Build the mental model
+
+Classify build errors at the correct boundary before changing code and record the exact commit, runtime and failing command. **Predict:** Type errors, missing env and hydration regressions receive separate classifications.
+
+These source tests are not a replacement for real Next.js build, authentic requests, tenant-scoped database reads, observability or production deployment checks.
+
+## Prerequisites and preflight
+
+Read the preceding Next.js topic and open `labs/next-diagnostic-triage/starter/solution.tsx` with Node.js 24 and locked dependencies. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:next-diagnostic-triage`. PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:next-diagnostic-triage; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the broken baseline" file="labs/next-diagnostic-triage/starter/solution.tsx" expected="A focused local acceptance assertion fails.">
+
+```tsx
+export function diagnose(_code:string){return 'styling';}
+```
+
+**Cause:** The starter reports every compiler, configuration and hydration error as a CSS issue.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the boundary or diagnostic policy" file="labs/next-diagnostic-triage/starter/solution.tsx" expected="Type errors, missing env and hydration regressions receive separate classifications.">
+
+```tsx
+export function diagnose(code:string){if(code==='MISSING_ENV')return 'configuration';if(code==='TS_ERROR')return 'typecheck';if(code==='HYDRATION')return 'browser-runtime';return 'needs-investigation';}
+```
+
+**Principle:** Classify build errors at the correct boundary before changing code and record the exact commit, runtime and failing command.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify an allowed and a rejected scenario" file="labs/next-diagnostic-triage/solution.test.mjs" expected="Instructor data contract passes; compiled framework integration remains a separate release gate.">
+
+```js
+assert.equal(mod.diagnose('MISSING_ENV'),'configuration');assert.equal(mod.diagnose('TS_ERROR'),'typecheck');assert.equal(mod.diagnose('HYDRATION'),'browser-runtime');assert.equal(mod.diagnose('UNKNOWN'),'needs-investigation');
+```
+
+**Real Next.js-oriented example or investigation plan:**
+
+```tsx
+# Local quality checks, no cloud dependency
+npm ci
+npm run lint
+npm run typecheck
+npm test
+npm run verify:content
+npm run checkpoint:check
+npm run test:labs
+npm run build
+# Serve local production build and run isolated Chromium smoke.
+```
+
+These examples need correct imports, real infrastructure and security review before deployment.
+
+</LessonStep>
+
+<Misconception claim="The starter reports every compiler, configuration and hydration error as a CSS issue." correction="Classify build errors at the correct boundary before changing code and record the exact commit, runtime and failing command. A local policy fixture does not prove the actual backend enforces that boundary." />
+
+<KnowledgeCheck question="Which production principle applies to build and runtime diagnostics?" choices={["If the page renders, its backend authorization and runtime are automatically safe.","Classify build errors at the correct boundary before changing code and record the exact commit, runtime and failing command.","A git merge is the same as a passing production build.","Next.js client data can be trusted instead of checking server permissions."] } correctIndex={1} explanation="Classify build errors at the correct boundary before changing code and record the exact commit, runtime and failing command." misconception="Prove the real trust boundary with an independently run test." lessonId="07.05.06" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Failure:** The starter reports every compiler, configuration and hydration error as a CSS issue. **Reproduction:** run the red starter and capture the failing assertion. **Repair:** Classify build errors at the correct boundary before changing code and record the exact commit, runtime and failing command. **Regression:** Type errors, missing env and hydration regressions receive separate classifications. Validate the actual Next.js and HTTP behavior separately.
+
+## Guided local lab
+
+The local lab at `labs/next-diagnostic-triage/` contains a starter, corrected instructor solution, acceptance checks and self-assessment rubric. The academy never evaluates learner code on its server.
+
+<LabGate lessonId="07.05.06" labId="lab.next.next-diagnostic-triage" commands={["npm run lab:next-diagnostic-triage","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+How might this bug be invisible to TypeScript? Which exact build, telemetry, or unauthorized HTTP request would prove the fix?
+
+## Official references
+
+- [Next.js official documentation: Build and runtime diagnostics](https://nextjs.org/docs/app/guides/production-checklist)
+- [Supporting framework guide](https://nextjs.org/docs/app/guides/upgrading/version-16)

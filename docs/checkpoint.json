@@ -9,9 +9,10 @@
     "productionUrl": "https://fullstack-academy-ecru.vercel.app/"
   },
   "development": {
-    "branch": "feat/react-testing-next-router-offline",
-    "lastMergedPr": 18,
-    "state": "react-testing-next-router-source-unverified"
+    "branch": "feat/nextjs-16-complete-track-offline",
+    "lastMergedPr": 19,
+    "state": "next16-complete-track-source-awaits-execution",
+    "note": "07.02.01 already existed as an authored interactive lesson; the new MDX adds an article and lab but no new unique publication ID."
   },
   "snapshot": {
     "tracks": 28,
@@ -20,9 +21,9 @@
     "indexedReferences": 303,
     "authoredReferenceDrafts": 12,
     "authoredInteractiveModels": 4,
-    "authoredMdxLessons": 225,
-    "publishedLessons": 228,
-    "labFixtures": 225,
+    "authoredMdxLessons": 257,
+    "publishedLessons": 259,
+    "labFixtures": 257,
     "completeModules": [
       "00.01",
       "00.02",
@@ -51,7 +52,11 @@
       "06.03",
       "06.04",
       "06.05",
-      "07.01"
+      "07.01",
+      "07.02",
+      "07.03",
+      "07.04",
+      "07.05"
     ]
   },
   "security": {
@@ -59,6 +64,6 @@
     "devHighFindings": 14,
     "exceptionExpires": "2026-12-02"
   },
-  "nextMilestone": "07.02",
-  "status": "unreleased-react-testing-next-router"
+  "nextMilestone": "08.01",
+  "status": "unreleased-next16-complete-track-candidate"
 }
