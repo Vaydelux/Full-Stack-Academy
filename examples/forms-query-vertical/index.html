@@ -35,6 +35,11 @@
         <div class="actions"><button id="load-more" type="button" class="secondary hidden">Load more</button></div>
       </section>
     </div>
+    <section class="trace-panel" aria-labelledby="trace-heading">
+      <div class="panel-top"><span class="section-index">03</span><h2 id="trace-heading">Request lifecycle</h2><button id="clear-log" class="secondary push" type="button">Clear history</button></div>
+      <p class="help">See your local GET, POST, PATCH and DELETE interactions, including conflict recovery. Only operation metadata is shown—no task text or idempotency keys. This journal is temporary and not uploaded.</p>
+      <ol id="request-log" class="request-log" aria-label="Recent local HTTP operations"></ol>
+    </section>
     <section class="learning-strip"><h2>What this lab demonstrates</h2><div class="learning-items"><p><strong>Validation</strong>Native form constraints and independent server-side checks.</p><p><strong>Retries</strong>Idempotency keys prevent duplicate creates when reused.</p><p><strong>Remote state</strong>Fetching, abort signals, pagination and conflict recovery.</p><p><strong>Safety</strong>Loopback-only binding, no HTML injection, bounded request sizes.</p></div></section>
   </main>
   <footer>Educational prototype · No accounts, synchronization or production persistence · Do not bind to a public address</footer>
