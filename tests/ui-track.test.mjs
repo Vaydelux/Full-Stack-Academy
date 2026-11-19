@@ -62,3 +62,15 @@ test('React, Tailwind 4 and shadcn provider choices are documented without unpin
  const pkg=JSON.parse(read('package.json'));
  assert.equal(pkg.scripts['test:red-ui-track'],'node --test tests/ui-track-red-starters.test.mjs');
 });
+
+test('eight CSS quick references correspond to canonical index entries',()=>{
+ const ids=['css-var','css-media','css-container','css-layer','css-focus-visible','css-prefers-reduced-motion','css-color-scheme','css-clamp'];
+ const indexed=new Set(JSON.parse(read('data/reference-index.json')).entries.map(x=>x.id));
+ const section=read('src/lib/academy/authored-content.ts').split('export const AUTHORED_REFERENCES')[1].split('export function findAuthoredReference')[0];
+ for(const id of ids){
+  assert.ok(indexed.has(id),id+' not canonical');
+  assert.ok(section.includes('"id": "'+id+'"'),id+' no authored draft');
+ }
+ const cp=JSON.parse(read('docs/checkpoint.json'));
+ assert.equal(cp.snapshot.authoredReferenceDrafts,20);
+});

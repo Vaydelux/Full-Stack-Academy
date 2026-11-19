@@ -12,14 +12,15 @@
     "branch": "feat/ui-systems-track08-offline",
     "lastMergedPr": 19,
     "basePullRequest": 20,
-    "state": "ui-track-08-source-candidate-unverified"
+    "state": "ui-track-08-source-candidate-unverified",
+    "note": "Track 08 stacked on unmerged PR20; 32 new unique published MDX lessons plus eight CSS drafts and browser-only interactive gallery; executable verification pending."
   },
   "snapshot": {
     "tracks": 28,
     "modules": 111,
     "catalogTopics": 889,
     "indexedReferences": 303,
-    "authoredReferenceDrafts": 12,
+    "authoredReferenceDrafts": 20,
     "authoredInteractiveModels": 4,
     "authoredMdxLessons": 289,
     "publishedLessons": 291,
