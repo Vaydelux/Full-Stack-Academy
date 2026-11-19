@@ -1,0 +1,34 @@
+{
+  "id": "06.01.04",
+  "title": "Conditional rendering: Represent each UI state explicitly; never confuse a missing status with a successful one",
+  "description": "Learn conditional rendering with a React 19 model, TypeScript starter and solution, testable edge cases, a bug hunt and offline verification.",
+  "trackId": "06",
+  "moduleId": "06.01",
+  "level": "Beginner",
+  "estimatedMinutes": 50,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "react": "19",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "06.01.03"
+  ],
+  "objectives": [
+    "Explain the conditional rendering contract and why it matters",
+    "Repair a deliberately broken react-conditional example",
+    "Verify the expected result and a failure or edge case with local tests"
+  ],
+  "labId": "lab.react.react-conditional",
+  "sources": [
+    {
+      "label": "React: Conditional rendering",
+      "url": "https://react.dev/learn/conditional-rendering"
+    },
+    {
+      "label": "React learning documentation",
+      "url": "https://react.dev/learn"
+    }
+  ]
+}

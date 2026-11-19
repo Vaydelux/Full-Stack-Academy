@@ -1,0 +1,34 @@
+{
+  "id": "06.01.05",
+  "title": "Lists, keys and identity: Use stable record IDs as keys so React can associate items across reorderings",
+  "description": "Learn lists, keys and identity with a React 19 model, TypeScript starter and solution, testable edge cases, a bug hunt and offline verification.",
+  "trackId": "06",
+  "moduleId": "06.01",
+  "level": "Beginner",
+  "estimatedMinutes": 50,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "react": "19",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "06.01.04"
+  ],
+  "objectives": [
+    "Explain the lists, keys and identity contract and why it matters",
+    "Repair a deliberately broken react-list-identity example",
+    "Verify the expected result and a failure or edge case with local tests"
+  ],
+  "labId": "lab.react.react-list-identity",
+  "sources": [
+    {
+      "label": "React: Lists, keys and identity",
+      "url": "https://react.dev/learn/rendering-lists"
+    },
+    {
+      "label": "React learning documentation",
+      "url": "https://react.dev/learn"
+    }
+  ]
+}

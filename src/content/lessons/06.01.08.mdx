@@ -1,0 +1,102 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Describe profile dashboard card capstone as an explicit React 19 rendering contract.","Implement a typed component or pure helper for react profile capstone.","Diagnose the failure mode and verify a positive and negative case."]} />
+
+## The problem we're solving
+
+A small internal profile directory requires a reusable card that handles an empty skill list and status changes. Copy-pasting hardcoded cards leads to mismatched names and inaccessible empty states. This lesson uses local React 19 / TypeScript 5 fixtures; the website does not execute learner-provided code.
+
+## Build the mental model
+
+Compose typed props, conditional badges and stable lists into one accessible feature. Explicit props and predictable composition, not hardcoded strings or hidden DOM edits. A React element is a description of UI; server rendering verifies initial markup but cannot, by itself, prove a browser interaction, reconciliation, or a DOM commit.
+
+**Predict before you run:** The profile card renders unique data, online/offline state, stable skills and an empty case.
+
+## Prerequisites and preflight
+
+Read the preceding React topic and inspect `labs/react-profile-capstone/starter/solution.tsx` before the instructor answer. From the repository root use `npm ci` once. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:react-profile-capstone`. PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:react-profile-capstone; Remove-Item Env:ACADEMY_LAB_TARGET`. The starter is intentionally failing.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the learner-facing defect" file="labs/react-profile-capstone/starter/solution.tsx" expected="The starter demonstrates a reproducible missing behavior.">
+
+The initial state is deliberately incomplete. Predict which assertion will fail, then confirm the failure before editing the starter.
+
+```tsx
+export type Profile = {id:string; name:string; role:string;online:boolean;skills:readonly {id:string;label:string}[]};
+export function ProfileDashboard({_profile,profile}:{_profile?:Profile;profile:Profile}) {
+  return <article><h2>Example User</h2><p>Online</p></article>;
+}
+```
+
+**Why it fails:** Copy-pasting hardcoded cards leads to mismatched names and inaccessible empty states.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the smallest correct React contract" file="labs/react-profile-capstone/starter/solution.tsx" expected="The profile card renders unique data, online/offline state, stable skills and an empty case.">
+
+Replace the starter's implementation with the reviewed approach below. Keep its public exports stable.
+
+```tsx
+export type Profile = {id:string; name:string; role:string;online:boolean;skills:readonly {id:string;label:string}[]};
+export function ProfileDashboard({profile}:{profile:Profile}) {
+  return <article aria-label={`Profile of ${profile.name}`}>
+    <h2>{profile.name}</h2><p>{profile.role}</p>
+    <p role="status">{profile.online?'Online':'Offline'}</p>
+    {profile.skills.length ? <ul>{profile.skills.map(s=><li key={s.id} data-id={s.id}>{s.label}</li>)}</ul>
+       : <p>No skills listed.</p>}
+  </article>;
+}
+```
+
+**Predict before you run:** The profile card renders unique data, online/offline state, stable skills and an empty case.
+
+**Why the repair works:** Compose typed props, conditional badges and stable lists into one accessible feature.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify behavior and try breaking the fix" file="labs/react-profile-capstone/starter/solution.tsx" expected="A local assertion passes for the repaired model and fails for the original starter.">
+
+The checked-in test imports whichever target you select. Instructor tests cover both the expected state and an edge case. Do not mistake static server rendering for a real click or a full browser lifecycle.
+
+```js
+const profile={id:'p1',name:'Ava',role:'Engineer',online:false,skills:[{id:'ts',label:'TypeScript'},{id:'css',label:'CSS'}]};
+const html=renderToStaticMarkup(createElement(mod.ProfileDashboard,{profile}));
+assert.match(html,/aria-label="Profile of Ava"/);assert.match(html,/<h2>Ava<\/h2>/);assert.match(html,/Offline/);
+assert.ok(html.indexOf('TypeScript')<html.indexOf('CSS'));assert.match(html,/data-id="ts"/);
+assert.match(renderToStaticMarkup(createElement(mod.ProfileDashboard,{profile:{...profile,skills:[]}})),/No skills listed/);
+```
+
+**Proof it works:** Run `npm run lab:react-profile-capstone` after comparing your starter repair. Deliberately restore one broken branch and confirm the relevant assertion fails again.
+
+</LessonStep>
+
+<Misconception claim="Copy-pasting hardcoded cards leads to mismatched names and inaccessible empty states." correction="Compose typed props, conditional badges and stable lists into one accessible feature. React behavior must be verified at the right boundary: unit models for pure logic, markup tests for server output, and real browser tests for client interaction." />
+
+<KnowledgeCheck question="What should determine the content of a reusable dashboard card?" choices={["Because React always reuses the same DOM node regardless of props or keys.","Explicit props and predictable composition, not hardcoded strings or hidden DOM edits.","Because changing JSX disables TypeScript checks.","Because React automatically persists every input to a database."] } correctIndex={1} explanation="Explicit props and predictable composition, not hardcoded strings or hidden DOM edits." misconception="Review the component inputs, rendering boundary and explicit failure case." lessonId="06.01.08" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Symptom:** Copy-pasting hardcoded cards leads to mismatched names and inaccessible empty states.
+
+**Diagnosis:** Trace the starter implementation to the first incorrect branch or missing prop; inspect the failing expected output rather than guessing about visual appearance.
+
+**Repair:** Compose typed props, conditional badges and stable lists into one accessible feature.
+
+**Regression:** Re-run the local checks with altered input and verify the intended behavior without relying on Vercel, GitHub Actions, or public APIs.
+
+## Guided local lab
+
+Use the starter, instructor solution and test at `labs/react-profile-capstone/`. Hints: first inspect the function signature; next trace the expected output; finally compare the exact condition or callback in the instructor example. This is an offline lab, not remote grading.
+
+<LabGate lessonId="06.01.08" labId="lab.react.react-profile-capstone" commands={["npm run lab:react-profile-capstone","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+What changed in the component contract? When might you deliberately choose a different composition or state boundary, and what additional browser test would prove it?
+
+## Official references
+
+- [React official guide: Profile dashboard card capstone](https://react.dev/learn/thinking-in-react)
+- [React official learning index](https://react.dev/learn)

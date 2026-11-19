@@ -1,0 +1,15 @@
+{
+  "id": "lab.react.react-conditional",
+  "lessonId": "06.01.04",
+  "title": "Implement and verify conditional rendering",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/react-conditional/starter/solution.tsx",
+  "solution": "labs/react-conditional/solution/solution.tsx",
+  "tests": "labs/react-conditional/solution.test.mjs",
+  "verify": [
+    "npm run lab:react-conditional"
+  ],
+  "expected": "Loading is announced as status, failure as alert, and ready as an ordinary message.",
+  "security": "Local reviewed React/TypeScript fixtures only; no arbitrary code executes on the academy server."
+}

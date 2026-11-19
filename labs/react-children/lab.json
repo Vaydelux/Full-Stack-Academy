@@ -1,0 +1,15 @@
+{
+  "id": "lab.react.react-children",
+  "lessonId": "06.01.03",
+  "title": "Implement and verify composition and children",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/react-children/starter/solution.tsx",
+  "solution": "labs/react-children/solution/solution.tsx",
+  "tests": "labs/react-children/solution.test.mjs",
+  "verify": [
+    "npm run lab:react-children"
+  ],
+  "expected": "A named region contains the caller's child content without changing it.",
+  "security": "Local reviewed React/TypeScript fixtures only; no arbitrary code executes on the academy server."
+}

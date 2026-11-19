@@ -1,0 +1,98 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Describe lists, keys and identity as an explicit React 19 rendering contract.","Implement a typed component or pure helper for react list identity.","Diagnose the failure mode and verify a positive and negative case."]} />
+
+## The problem we're solving
+
+A task list can sort and insert tasks without attaching item identity to its position. Using array indices for keys misidentifies records after insertion or reorder. This lesson uses local React 19 / TypeScript 5 fixtures; the website does not execute learner-provided code.
+
+## Build the mental model
+
+Use stable record IDs as keys so React can associate items across reorderings. Indices represent positions rather than records, so reordering can transfer state to the wrong item. A React element is a description of UI; server rendering verifies initial markup but cannot, by itself, prove a browser interaction, reconciliation, or a DOM commit.
+
+**Predict before you run:** List order follows input, empty state is explicit, and list elements use task IDs as keys.
+
+## Prerequisites and preflight
+
+Read the preceding React topic and inspect `labs/react-list-identity/starter/solution.tsx` before the instructor answer. From the repository root use `npm ci` once. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:react-list-identity`. PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:react-list-identity; Remove-Item Env:ACADEMY_LAB_TARGET`. The starter is intentionally failing.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the learner-facing defect" file="labs/react-list-identity/starter/solution.tsx" expected="The starter demonstrates a reproducible missing behavior.">
+
+The initial state is deliberately incomplete. Predict which assertion will fail, then confirm the failure before editing the starter.
+
+```tsx
+export type Task = {id:string; title:string};
+export function TaskList({tasks}:{tasks:readonly Task[]}) {
+  return <ul>{tasks.map((task,index)=><li key={index}>{task.title}</li>)}</ul>;
+}
+```
+
+**Why it fails:** Using array indices for keys misidentifies records after insertion or reorder.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the smallest correct React contract" file="labs/react-list-identity/starter/solution.tsx" expected="List order follows input, empty state is explicit, and list elements use task IDs as keys.">
+
+Replace the starter's implementation with the reviewed approach below. Keep its public exports stable.
+
+```tsx
+export type Task = {id:string; title:string};
+export function TaskList({tasks}:{tasks:readonly Task[]}) {
+  if(tasks.length===0) return <p role="status">No tasks yet.</p>;
+  return <ul>{tasks.map(task=><li key={task.id} data-id={task.id}>{task.title}</li>)}</ul>;
+}
+```
+
+**Predict before you run:** List order follows input, empty state is explicit, and list elements use task IDs as keys.
+
+**Why the repair works:** Use stable record IDs as keys so React can associate items across reorderings.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify behavior and try breaking the fix" file="labs/react-list-identity/starter/solution.tsx" expected="A local assertion passes for the repaired model and fails for the original starter.">
+
+The checked-in test imports whichever target you select. Instructor tests cover both the expected state and an edge case. Do not mistake static server rendering for a real click or a full browser lifecycle.
+
+```js
+const tasks=[{id:'t2',title:'Review'},{id:'t1',title:'Plan'}];
+const html=renderToStaticMarkup(createElement(mod.TaskList,{tasks}));
+assert.ok(html.indexOf('Review')<html.indexOf('Plan'));assert.match(html,/data-id="t2"/);
+const tree=mod.TaskList({tasks});assert.deepEqual(tree.props.children.map((child)=>child.key),['t2','t1']);
+assert.match(renderToStaticMarkup(createElement(mod.TaskList,{tasks:[]})),/role="status".*No tasks/);
+```
+
+**Proof it works:** Run `npm run lab:react-list-identity` after comparing your starter repair. Deliberately restore one broken branch and confirm the relevant assertion fails again.
+
+</LessonStep>
+
+<Misconception claim="Using array indices for keys misidentifies records after insertion or reorder." correction="Use stable record IDs as keys so React can associate items across reorderings. React behavior must be verified at the right boundary: unit models for pure logic, markup tests for server output, and real browser tests for client interaction." />
+
+<KnowledgeCheck question="Why are array indices fragile React keys?" choices={["Because React always reuses the same DOM node regardless of props or keys.","Indices represent positions rather than records, so reordering can transfer state to the wrong item.","Because changing JSX disables TypeScript checks.","Because React automatically persists every input to a database."] } correctIndex={1} explanation="Indices represent positions rather than records, so reordering can transfer state to the wrong item." misconception="Review the component inputs, rendering boundary and explicit failure case." lessonId="06.01.05" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Symptom:** Using array indices for keys misidentifies records after insertion or reorder.
+
+**Diagnosis:** Trace the starter implementation to the first incorrect branch or missing prop; inspect the failing expected output rather than guessing about visual appearance.
+
+**Repair:** Use stable record IDs as keys so React can associate items across reorderings.
+
+**Regression:** Re-run the local checks with altered input and verify the intended behavior without relying on Vercel, GitHub Actions, or public APIs.
+
+## Guided local lab
+
+Use the starter, instructor solution and test at `labs/react-list-identity/`. Hints: first inspect the function signature; next trace the expected output; finally compare the exact condition or callback in the instructor example. This is an offline lab, not remote grading.
+
+<LabGate lessonId="06.01.05" labId="lab.react.react-list-identity" commands={["npm run lab:react-list-identity","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+What changed in the component contract? When might you deliberately choose a different composition or state boundary, and what additional browser test would prove it?
+
+## Official references
+
+- [React official guide: Lists, keys and identity](https://react.dev/learn/rendering-lists)
+- [React official learning index](https://react.dev/learn)

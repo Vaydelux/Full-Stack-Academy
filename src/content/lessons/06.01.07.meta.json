@@ -1,0 +1,34 @@
+{
+  "id": "06.01.07",
+  "title": "Event handlers: Pass a callback to onClick; do not invoke it during rendering",
+  "description": "Learn event handlers with a React 19 model, TypeScript starter and solution, testable edge cases, a bug hunt and offline verification.",
+  "trackId": "06",
+  "moduleId": "06.01",
+  "level": "Beginner",
+  "estimatedMinutes": 50,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "react": "19",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "06.01.06"
+  ],
+  "objectives": [
+    "Explain the event handlers contract and why it matters",
+    "Repair a deliberately broken react-events example",
+    "Verify the expected result and a failure or edge case with local tests"
+  ],
+  "labId": "lab.react.react-events",
+  "sources": [
+    {
+      "label": "React: Event handlers",
+      "url": "https://react.dev/learn/responding-to-events"
+    },
+    {
+      "label": "React learning documentation",
+      "url": "https://react.dev/learn"
+    }
+  ]
+}

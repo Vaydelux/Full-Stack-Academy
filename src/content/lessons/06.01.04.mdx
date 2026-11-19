@@ -1,0 +1,97 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Describe conditional rendering as an explicit React 19 rendering contract.","Implement a typed component or pure helper for react conditional.","Diagnose the failure mode and verify a positive and negative case."]} />
+
+## The problem we're solving
+
+A request indicator needs clear ready, loading and failed states for screen-reader users. Using one generic label for every state hides failures from the learner. This lesson uses local React 19 / TypeScript 5 fixtures; the website does not execute learner-provided code.
+
+## Build the mental model
+
+Represent each UI state explicitly; never confuse a missing status with a successful one. A failed request is a distinct user-facing state and needs an accurate accessible announcement. A React element is a description of UI; server rendering verifies initial markup but cannot, by itself, prove a browser interaction, reconciliation, or a DOM commit.
+
+**Predict before you run:** Loading is announced as status, failure as alert, and ready as an ordinary message.
+
+## Prerequisites and preflight
+
+Read the preceding React topic and inspect `labs/react-conditional/starter/solution.tsx` before the instructor answer. From the repository root use `npm ci` once. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:react-conditional`. PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:react-conditional; Remove-Item Env:ACADEMY_LAB_TARGET`. The starter is intentionally failing.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the learner-facing defect" file="labs/react-conditional/starter/solution.tsx" expected="The starter demonstrates a reproducible missing behavior.">
+
+The initial state is deliberately incomplete. Predict which assertion will fail, then confirm the failure before editing the starter.
+
+```tsx
+export type RequestState = 'loading' | 'ready' | 'failed';
+export function RequestNotice({_state}: { _state?: RequestState; state?: RequestState }) {
+  return <p>Report is ready.</p>;
+}
+```
+
+**Why it fails:** Using one generic label for every state hides failures from the learner.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the smallest correct React contract" file="labs/react-conditional/starter/solution.tsx" expected="Loading is announced as status, failure as alert, and ready as an ordinary message.">
+
+Replace the starter's implementation with the reviewed approach below. Keep its public exports stable.
+
+```tsx
+export type RequestState = 'loading' | 'ready' | 'failed';
+export function RequestNotice({state}:{state:RequestState}) {
+  if(state==='failed') return <p role="alert">Unable to load the report.</p>;
+  if(state==='loading') return <p role="status">Loading report…</p>;
+  return <p>Report is ready.</p>;
+}
+```
+
+**Predict before you run:** Loading is announced as status, failure as alert, and ready as an ordinary message.
+
+**Why the repair works:** Represent each UI state explicitly; never confuse a missing status with a successful one.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify behavior and try breaking the fix" file="labs/react-conditional/starter/solution.tsx" expected="A local assertion passes for the repaired model and fails for the original starter.">
+
+The checked-in test imports whichever target you select. Instructor tests cover both the expected state and an edge case. Do not mistake static server rendering for a real click or a full browser lifecycle.
+
+```js
+assert.match(renderToStaticMarkup(createElement(mod.RequestNotice,{state:'failed'})),/role="alert".*Unable to load/);
+assert.match(renderToStaticMarkup(createElement(mod.RequestNotice,{state:'loading'})),/role="status".*Loading/);
+assert.match(renderToStaticMarkup(createElement(mod.RequestNotice,{state:'ready'})),/Report is ready/);
+```
+
+**Proof it works:** Run `npm run lab:react-conditional` after comparing your starter repair. Deliberately restore one broken branch and confirm the relevant assertion fails again.
+
+</LessonStep>
+
+<Misconception claim="Using one generic label for every state hides failures from the learner." correction="Represent each UI state explicitly; never confuse a missing status with a successful one. React behavior must be verified at the right boundary: unit models for pure logic, markup tests for server output, and real browser tests for client interaction." />
+
+<KnowledgeCheck question="Why use an explicit failed branch?" choices={["Because React always reuses the same DOM node regardless of props or keys.","A failed request is a distinct user-facing state and needs an accurate accessible announcement.","Because changing JSX disables TypeScript checks.","Because React automatically persists every input to a database."] } correctIndex={1} explanation="A failed request is a distinct user-facing state and needs an accurate accessible announcement." misconception="Review the component inputs, rendering boundary and explicit failure case." lessonId="06.01.04" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Symptom:** Using one generic label for every state hides failures from the learner.
+
+**Diagnosis:** Trace the starter implementation to the first incorrect branch or missing prop; inspect the failing expected output rather than guessing about visual appearance.
+
+**Repair:** Represent each UI state explicitly; never confuse a missing status with a successful one.
+
+**Regression:** Re-run the local checks with altered input and verify the intended behavior without relying on Vercel, GitHub Actions, or public APIs.
+
+## Guided local lab
+
+Use the starter, instructor solution and test at `labs/react-conditional/`. Hints: first inspect the function signature; next trace the expected output; finally compare the exact condition or callback in the instructor example. This is an offline lab, not remote grading.
+
+<LabGate lessonId="06.01.04" labId="lab.react.react-conditional" commands={["npm run lab:react-conditional","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+What changed in the component contract? When might you deliberately choose a different composition or state boundary, and what additional browser test would prove it?
+
+## Official references
+
+- [React official guide: Conditional rendering](https://react.dev/learn/conditional-rendering)
+- [React official learning index](https://react.dev/learn)
