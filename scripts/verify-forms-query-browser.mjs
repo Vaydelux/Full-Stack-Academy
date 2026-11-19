@@ -170,7 +170,7 @@ async function qualify() {
       ' return response;',
       '};',
       '})();',
-    ].join('\\n') });
+    ].join('\n') });
 
     await cdp.send('Page.navigate', { url: base + '/' });
     await waitFor(async () => evaluate('document.readyState === "complete" && Boolean(document.getElementById("task-form"))'), 'native teaching form load');
