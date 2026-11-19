@@ -1,0 +1,39 @@
+{
+  "id": "06.05.01",
+  "title": "React Testing Library: Test behavior observable to a person rather than implementation details. React Testing Library requires an installed DOM runtime and is not provided by this repository's locked dependencies",
+  "description": "React 19 and TypeScript 5 guide to react testing library with reproducible starter bugs, instructor corrections, local regression assertions and browser-verification boundaries.",
+  "trackId": "06",
+  "moduleId": "06.05",
+  "level": "Beginner",
+  "estimatedMinutes": 65,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "react": "19",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "06.04.08"
+  ],
+  "objectives": [
+    "Test behavior observable to a person rather than implementation details. React Testing Library requires an installed DOM runtime and is not provided by this repository's locked dependencies.",
+    "Repair the intentionally failing example for react testing library.",
+    "Distinguish a server-rendered assertion from genuine browser behavior and integration evidence."
+  ],
+  "labId": "lab.react.react-testing-library-intro",
+  "rubric": [
+    "I can explain the difference between a static fixture and a mounted test for react testing library.",
+    "I can repair the starter for 06.05.01 and demonstrate the regression assertion.",
+    "I can describe the necessary browser, dependency or profiler evidence before claiming production reliability."
+  ],
+  "sources": [
+    {
+      "label": "Primary: React Testing Library",
+      "url": "https://testing-library.com/docs/react-testing-library/intro/"
+    },
+    {
+      "label": "Supporting official reference",
+      "url": "https://react.dev/learn"
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "id": "07.01.07",
+  "title": "Metadata and favicons: Use Next.js Metadata API and static icon files rather than adding arbitrary head elements at runtime",
+  "description": "Next.js 16 and TypeScript 5 App Router lesson for metadata and favicons. Includes an intentionally broken starter, a corrected contract, verified-path offline tests and official documentation.",
+  "trackId": "07",
+  "moduleId": "07.01",
+  "level": "Intermediate",
+  "estimatedMinutes": 70,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "next": "16",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "07.01.06"
+  ],
+  "objectives": [
+    "Use Next.js Metadata API and static icon files rather than adding arbitrary head elements at runtime.",
+    "Repair the intentionally failing next-metadata-favicons model.",
+    "Explain which behaviors need real Next.js compilation or browser integration verification."
+  ],
+  "labId": "lab.next.next-metadata-favicons",
+  "rubric": [
+    "I can explain metadata and favicons in Next.js 16 without mixing older Pages Router semantics.",
+    "I can reproduce and fix the 07.01.07 failing starter with real data inputs.",
+    "I can identify the missing Next.js build, routing and HTTP integration evidence."
+  ],
+  "sources": [
+    {
+      "label": "Next.js reference for Metadata and favicons",
+      "url": "https://nextjs.org/docs/app/api-reference/functions/generate-metadata"
+    },
+    {
+      "label": "Supporting official Next.js documentation",
+      "url": "https://nextjs.org/docs/app/getting-started/metadata-and-og-images"
+    }
+  ]
+}

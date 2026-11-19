@@ -1,0 +1,15 @@
+{
+  "id": "lab.react.react-profiler-diagnosis",
+  "lessonId": "06.05.04",
+  "title": "Offline react devtools profiler lab",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/react-profiler-diagnosis/starter/solution.tsx",
+  "solution": "labs/react-profiler-diagnosis/solution/solution.tsx",
+  "tests": "labs/react-profiler-diagnosis/solution.test.mjs",
+  "verify": [
+    "npm run lab:react-profiler-diagnosis"
+  ],
+  "expected": "The profiler summary returns a finite total duration and correct sample count.",
+  "security": "Local checked-in test fixtures only. Real RTL/mounted tests require independently locked DOM tooling and are not claimed by this lesson."
+}

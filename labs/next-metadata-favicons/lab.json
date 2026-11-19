@@ -1,0 +1,15 @@
+{
+  "id": "lab.next.next-metadata-favicons",
+  "lessonId": "07.01.07",
+  "title": "Offline model for metadata and favicons",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/next-metadata-favicons/starter/solution.tsx",
+  "solution": "labs/next-metadata-favicons/solution/solution.tsx",
+  "tests": "labs/next-metadata-favicons/solution.test.mjs",
+  "verify": [
+    "npm run lab:next-metadata-favicons"
+  ],
+  "expected": "Metadata is generated from a validated topic name and never renders untrusted HTML.",
+  "security": "Only local fixtures run in Node. Next framework compilation, network behavior and auth require separate integration checks."
+}

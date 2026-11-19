@@ -1,0 +1,100 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Separate missing resources from legitimate redirects: call notFound for absence, redirect for navigation policy, and render real records normally.","Repair a broken not-found and redirects example using a realistic Next.js 16 contract.","Distinguish offline models from a compiled App Router route or real response."]} />
+
+## The problem we're solving
+
+A legacy guide path redirects to the new category, an unknown slug returns 404, and a valid guide renders a canonical page.
+
+**Failure:** The starter redirects every unknown slug to the homepage, hiding actual missing content.
+
+## Build the mental model
+
+Separate missing resources from legitimate redirects: call notFound for absence, redirect for navigation policy, and render real records normally.
+
+**Prediction:** Known guide loads, legacy guide redirects, and truly missing guide gets a not-found decision.
+
+**Proof boundary:** The local Node/TSX fixture verifies this lesson's deterministic model and initial React markup. It does **not** start Next.js, compile route conventions, simulate streaming, or prove HTTP status codes. A separately built Next application and browser/HTTP test are needed before release qualification.
+
+## Prerequisites and preflight
+
+Read the preceding canonical topic and open `labs/next-notfound-redirects/starter/solution.tsx`. Use Node.js 24 and repository-locked dependencies. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:next-notfound-redirects`. PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:next-notfound-redirects; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the routing or metadata defect" file="labs/next-notfound-redirects/starter/solution.tsx" expected="An existing regression assertion fails for the exact incorrect behavior.">
+
+```tsx
+export type RouteDecision={kind:'render';slug:string}|{kind:'redirect';to:string}|{kind:'notFound'};
+export function decideGuide(slug:string):RouteDecision{
+ return slug==='react'?{kind:'render',slug}:{kind:'redirect',to:'/'};
+}
+```
+
+**Why it fails:** The starter redirects every unknown slug to the homepage, hiding actual missing content.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the safe Next.js-oriented contract" file="labs/next-notfound-redirects/starter/solution.tsx" expected="Known guide loads, legacy guide redirects, and truly missing guide gets a not-found decision.">
+
+```tsx
+export type RouteDecision={kind:'render';slug:string}|{kind:'redirect';to:string}|{kind:'notFound'};
+export function decideGuide(slug:string):RouteDecision{
+ if(slug==='react')return {kind:'render',slug};
+ if(slug==='old-react')return {kind:'redirect',to:'/guides/react'};
+ return {kind:'notFound'};
+}
+```
+
+**Why it works:** Separate missing resources from legitimate redirects: call notFound for absence, redirect for navigation policy, and render real records normally.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify data/route invariants and inspect real file conventions" file="labs/next-notfound-redirects/solution.test.mjs" expected="The instructor solution passes offline assertions; production routing remains a separate local Next build/browser gate.">
+
+```js
+assert.deepEqual(mod.decideGuide('react'),{kind:'render',slug:'react'});
+assert.deepEqual(mod.decideGuide('old-react'),{kind:'redirect',to:'/guides/react'});
+assert.deepEqual(mod.decideGuide('unknown'),{kind:'notFound'});
+```
+
+**Real App Router shape:**
+
+```tsx
+// app/guides/[slug]/page.tsx
+import { redirect, notFound } from 'next/navigation';
+export default async function Page({ params }: { params: Promise<{slug:string}> }) {
+  const { slug } = await params;
+  if (slug === 'old-react') redirect('/guides/react');
+  if (slug !== 'react') notFound();
+  return <h1>React guide</h1>;
+}
+```
+
+**Nuance:** Both helpers throw control-flow errors. Don't swallow them inside a catch-all try/catch. Never create redirects from unchecked user URLs (open redirects).
+
+</LessonStep>
+
+<Misconception claim="The starter redirects every unknown slug to the homepage, hiding actual missing content." correction="Separate missing resources from legitimate redirects: call notFound for absence, redirect for navigation policy, and render real records normally. A pure TypeScript routing model is not a Next.js HTTP integration test." />
+
+<KnowledgeCheck question="What is the safest principle for not-found and redirects in Next.js 16?" choices={["Next.js compiles route files automatically from this standalone Node test.","Separate missing resources from legitimate redirects: call notFound for absence, redirect for navigation policy, and render real records normally.","Client-side route state can replace server permission checks.","Metadata and routing conventions never require a real Next build."] } correctIndex={1} explanation="Separate missing resources from legitimate redirects: call notFound for absence, redirect for navigation policy, and render real records normally." misconception="Distinguish a model assertion from framework behavior and network outcomes." lessonId="07.01.05" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Reproduction:** The starter redirects every unknown slug to the homepage, hiding actual missing content. Use the starter and capture the exact failed assertion. **Repair:** Separate missing resources from legitimate redirects: call notFound for absence, redirect for navigation policy, and render real records normally. **Verify:** Known guide loads, legacy guide redirects, and truly missing guide gets a not-found decision.
+
+## Guided local lab
+
+The lab includes a broken starter, fixed instructor implementation, checked-in Node tests and a completion rubric. The academy does not run learner code on the server.
+
+<LabGate lessonId="07.01.05" labId="lab.next.next-notfound-redirects" commands={["npm run lab:next-notfound-redirects","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+Which checks can be carried out entirely offline? What additional Next.js 16 build, HTTP-status, accessibility, and navigation tests are needed for real production confidence?
+
+## Official references
+
+- [Official Next.js documentation for Not-found and redirects](https://nextjs.org/docs/app/api-reference/functions/not-found)
+- [Additional Next.js reference](https://nextjs.org/docs/app/api-reference/functions/redirect)

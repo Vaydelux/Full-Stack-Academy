@@ -1,0 +1,15 @@
+{
+  "id": "lab.next.next-navigation-prefetch",
+  "lessonId": "07.01.06",
+  "title": "Offline model for navigation and prefetch",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/next-navigation-prefetch/starter/solution.tsx",
+  "solution": "labs/next-navigation-prefetch/solution/solution.tsx",
+  "tests": "labs/next-navigation-prefetch/solution.test.mjs",
+  "verify": [
+    "npm run lab:next-navigation-prefetch"
+  ],
+  "expected": "A local guide path remains internal; cross-origin and non-HTTP schemes are rejected.",
+  "security": "Only local fixtures run in Node. Next framework compilation, network behavior and auth require separate integration checks."
+}

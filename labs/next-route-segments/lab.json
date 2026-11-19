@@ -1,0 +1,15 @@
+{
+  "id": "lab.next.next-route-segments",
+  "lessonId": "07.01.01",
+  "title": "Offline model for project structure and route segments",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/next-route-segments/starter/solution.tsx",
+  "solution": "labs/next-route-segments/solution/solution.tsx",
+  "tests": "labs/next-route-segments/solution.test.mjs",
+  "verify": [
+    "npm run lab:next-route-segments"
+  ],
+  "expected": "Group markers disappear while real segment names remain in order.",
+  "security": "Only local fixtures run in Node. Next framework compilation, network behavior and auth require separate integration checks."
+}

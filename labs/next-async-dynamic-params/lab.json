@@ -1,0 +1,15 @@
+{
+  "id": "lab.next.next-async-dynamic-params",
+  "lessonId": "07.01.03",
+  "title": "Offline model for dynamic route params",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/next-async-dynamic-params/starter/solution.tsx",
+  "solution": "labs/next-async-dynamic-params/solution/solution.tsx",
+  "tests": "labs/next-async-dynamic-params/solution.test.mjs",
+  "verify": [
+    "npm run lab:next-async-dynamic-params"
+  ],
+  "expected": "Valid IDs return a normalized slug, malformed IDs throw, and the input Promise is handled asynchronously.",
+  "security": "Only local fixtures run in Node. Next framework compilation, network behavior and auth require separate integration checks."
+}

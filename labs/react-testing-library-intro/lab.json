@@ -1,0 +1,15 @@
+{
+  "id": "lab.react.react-testing-library-intro",
+  "lessonId": "06.05.01",
+  "title": "Offline react testing library lab",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/react-testing-library-intro/starter/solution.tsx",
+  "solution": "labs/react-testing-library-intro/solution/solution.tsx",
+  "tests": "labs/react-testing-library-intro/solution.test.mjs",
+  "verify": [
+    "npm run lab:react-testing-library-intro"
+  ],
+  "expected": "A notice button provides a named control, correctly marked pressed state, and a status region.",
+  "security": "Local checked-in test fixtures only. Real RTL/mounted tests require independently locked DOM tooling and are not claimed by this lesson."
+}

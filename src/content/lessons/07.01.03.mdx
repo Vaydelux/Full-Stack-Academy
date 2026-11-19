@@ -1,0 +1,98 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["In Next.js 16, dynamic page params are asynchronous and should be awaited before validating, decoding or using a slug.","Repair a broken dynamic route params example using a realistic Next.js 16 contract.","Distinguish offline models from a compiled App Router route or real response."]} />
+
+## The problem we're solving
+
+The guide route `/guides/[slug]` must reject malformed slugs and await the `params` Promise rather than reading a synchronous property.
+
+**Failure:** The starter never awaits params and returns a placeholder slug.
+
+## Build the mental model
+
+In Next.js 16, dynamic page params are asynchronous and should be awaited before validating, decoding or using a slug.
+
+**Prediction:** Valid IDs return a normalized slug, malformed IDs throw, and the input Promise is handled asynchronously.
+
+**Proof boundary:** The local Node/TSX fixture verifies this lesson's deterministic model and initial React markup. It does **not** start Next.js, compile route conventions, simulate streaming, or prove HTTP status codes. A separately built Next application and browser/HTTP test are needed before release qualification.
+
+## Prerequisites and preflight
+
+Read the preceding canonical topic and open `labs/next-async-dynamic-params/starter/solution.tsx`. Use Node.js 24 and repository-locked dependencies. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:next-async-dynamic-params`. PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:next-async-dynamic-params; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the routing or metadata defect" file="labs/next-async-dynamic-params/starter/solution.tsx" expected="An existing regression assertion fails for the exact incorrect behavior.">
+
+```tsx
+export async function readGuideSlug(_params:Promise<{slug:string}>){
+ return 'placeholder';
+}
+```
+
+**Why it fails:** The starter never awaits params and returns a placeholder slug.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the safe Next.js-oriented contract" file="labs/next-async-dynamic-params/starter/solution.tsx" expected="Valid IDs return a normalized slug, malformed IDs throw, and the input Promise is handled asynchronously.">
+
+```tsx
+export async function readGuideSlug(params:Promise<{slug:string}>){
+ const {slug}=await params;
+ if(!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) throw new Error('Invalid guide slug');
+ return slug;
+}
+```
+
+**Why it works:** In Next.js 16, dynamic page params are asynchronous and should be awaited before validating, decoding or using a slug.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify data/route invariants and inspect real file conventions" file="labs/next-async-dynamic-params/solution.test.mjs" expected="The instructor solution passes offline assertions; production routing remains a separate local Next build/browser gate.">
+
+```js
+assert.equal(await mod.readGuideSlug(Promise.resolve({slug:'app-router'})),'app-router');
+await assert.rejects(()=>mod.readGuideSlug(Promise.resolve({slug:'../oops'})),/Invalid guide slug/);
+await assert.rejects(()=>mod.readGuideSlug(Promise.resolve({slug:''})),/Invalid guide slug/);
+```
+
+**Real App Router shape:**
+
+```tsx
+// app/guides/[slug]/page.tsx
+import { notFound } from 'next/navigation';
+type Props = { params: Promise<{ slug: string }> };
+export default async function GuidePage({ params }: Props) {
+  const { slug } = await params;
+  if (!/^[a-z0-9-]+$/.test(slug)) notFound();
+  return <article><h1>Guide: {slug}</h1></article>;
+}
+```
+
+**Nuance:** `params` is a Promise in current Next App Router conventions. Validate what it refers to before a database, file or HTTP call; pattern validation alone does not authorize a private resource.
+
+</LessonStep>
+
+<Misconception claim="The starter never awaits params and returns a placeholder slug." correction="In Next.js 16, dynamic page params are asynchronous and should be awaited before validating, decoding or using a slug. A pure TypeScript routing model is not a Next.js HTTP integration test." />
+
+<KnowledgeCheck question="What is the safest principle for dynamic route params in Next.js 16?" choices={["Next.js compiles route files automatically from this standalone Node test.","In Next.js 16, dynamic page params are asynchronous and should be awaited before validating, decoding or using a slug.","Client-side route state can replace server permission checks.","Metadata and routing conventions never require a real Next build."] } correctIndex={1} explanation="In Next.js 16, dynamic page params are asynchronous and should be awaited before validating, decoding or using a slug." misconception="Distinguish a model assertion from framework behavior and network outcomes." lessonId="07.01.03" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Reproduction:** The starter never awaits params and returns a placeholder slug. Use the starter and capture the exact failed assertion. **Repair:** In Next.js 16, dynamic page params are asynchronous and should be awaited before validating, decoding or using a slug. **Verify:** Valid IDs return a normalized slug, malformed IDs throw, and the input Promise is handled asynchronously.
+
+## Guided local lab
+
+The lab includes a broken starter, fixed instructor implementation, checked-in Node tests and a completion rubric. The academy does not run learner code on the server.
+
+<LabGate lessonId="07.01.03" labId="lab.next.next-async-dynamic-params" commands={["npm run lab:next-async-dynamic-params","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+Which checks can be carried out entirely offline? What additional Next.js 16 build, HTTP-status, accessibility, and navigation tests are needed for real production confidence?
+
+## Official references
+
+- [Official Next.js documentation for Dynamic route params](https://nextjs.org/docs/app/api-reference/file-conventions/dynamic-routes)
+- [Additional Next.js reference](https://nextjs.org/docs/app/api-reference/file-conventions/page)

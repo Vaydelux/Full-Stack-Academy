@@ -1,0 +1,15 @@
+{
+  "id": "lab.react.react-user-journey",
+  "lessonId": "06.05.03",
+  "title": "Offline test user journeys lab",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/react-user-journey/starter/solution.tsx",
+  "solution": "labs/react-user-journey/solution/solution.tsx",
+  "tests": "labs/react-user-journey/solution.test.mjs",
+  "verify": [
+    "npm run lab:react-user-journey"
+  ],
+  "expected": "Unaccepted terms block checkout; acceptance enables a completed state with visible confirmation.",
+  "security": "Local checked-in test fixtures only. Real RTL/mounted tests require independently locked DOM tooling and are not claimed by this lesson."
+}

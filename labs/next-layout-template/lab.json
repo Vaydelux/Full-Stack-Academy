@@ -1,0 +1,15 @@
+{
+  "id": "lab.next.next-layout-template",
+  "lessonId": "07.01.02",
+  "title": "Offline model for layouts, pages and templates",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/next-layout-template/starter/solution.tsx",
+  "solution": "labs/next-layout-template/solution/solution.tsx",
+  "tests": "labs/next-layout-template/solution.test.mjs",
+  "verify": [
+    "npm run lab:next-layout-template"
+  ],
+  "expected": "A semantic layout encloses both shared navigation and the requested page body.",
+  "security": "Only local fixtures run in Node. Next framework compilation, network behavior and auth require separate integration checks."
+}

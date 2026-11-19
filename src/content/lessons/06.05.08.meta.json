@@ -1,0 +1,39 @@
+{
+  "id": "06.05.08",
+  "title": "Bug Hunt unstable keys: Stable keys must be tied to record identity rather than the item's position in a changing list",
+  "description": "React 19 and TypeScript 5 guide to bug hunt unstable keys with reproducible starter bugs, instructor corrections, local regression assertions and browser-verification boundaries.",
+  "trackId": "06",
+  "moduleId": "06.05",
+  "level": "Beginner",
+  "estimatedMinutes": 65,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "react": "19",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "06.05.07"
+  ],
+  "objectives": [
+    "Stable keys must be tied to record identity rather than the item's position in a changing list.",
+    "Repair the intentionally failing example for bug hunt unstable keys.",
+    "Distinguish a server-rendered assertion from genuine browser behavior and integration evidence."
+  ],
+  "labId": "lab.react.react-unstable-keys-capstone",
+  "rubric": [
+    "I can explain the difference between a static fixture and a mounted test for bug hunt unstable keys.",
+    "I can repair the starter for 06.05.08 and demonstrate the regression assertion.",
+    "I can describe the necessary browser, dependency or profiler evidence before claiming production reliability."
+  ],
+  "sources": [
+    {
+      "label": "Primary: Bug Hunt unstable keys",
+      "url": "https://react.dev/learn/rendering-lists"
+    },
+    {
+      "label": "Supporting official reference",
+      "url": "https://react.dev/learn/preserving-and-resetting-state"
+    }
+  ]
+}

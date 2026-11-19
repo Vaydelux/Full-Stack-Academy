@@ -1,0 +1,15 @@
+{
+  "id": "lab.react.react-concurrent-rendering",
+  "lessonId": "06.05.07",
+  "title": "Offline concurrent rendering mental model lab",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/react-concurrent-rendering/starter/solution.tsx",
+  "solution": "labs/react-concurrent-rendering/solution/solution.tsx",
+  "tests": "labs/react-concurrent-rendering/solution.test.mjs",
+  "verify": [
+    "npm run lab:react-concurrent-rendering"
+  ],
+  "expected": "Each input produces a deterministic derived description, including zero and plural cases.",
+  "security": "Local checked-in test fixtures only. Real RTL/mounted tests require independently locked DOM tooling and are not claimed by this lesson."
+}

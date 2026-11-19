@@ -1,0 +1,104 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Model a complete interaction as state transitions with preconditions, visible success and failure states.","Repair a broken test user journeys example with React 19 and TypeScript.","Compare local source/model assertions with real mounted-browser testing evidence."]} />
+
+## The problem we're solving
+
+A checkout flow should not complete without terms accepted and must allow a confirmed submission. **Failure case:** The starter permits submission before consent, so an end-to-end journey skips a required business rule.
+
+## Build the mental model
+
+Model a complete interaction as state transitions with preconditions, visible success and failure states.
+
+**Expected result:** Unaccepted terms block checkout; acceptance enables a completed state with visible confirmation.
+
+**Evidence boundary:** Node tests run reviewed fixtures, not arbitrary learner code. React server markup proves initial output only. A browser or configured DOM environment is required for real user events, hydration, the React DevTools Profiler, and state preservation after reordering. This repo does not currently declare or lock React Testing Library; do not claim these Node checks exercise that dependency.
+
+## Prerequisites and preflight
+
+Read the prior React lesson. Use Node.js 24, run `npm ci` and inspect `labs/react-user-journey/starter/solution.tsx`. To reproduce the defect: Bash `ACADEMY_LAB_TARGET=starter npm run lab:react-user-journey`; PowerShell `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:react-user-journey; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Predict and reproduce a broken behavior" file="labs/react-user-journey/starter/solution.tsx" expected="A regression assertion fails on an intentionally incorrect implementation.">
+
+```tsx
+import {useReducer} from 'react';
+export type Flow={accepted:boolean;stage:'editing'|'complete'};
+export type FlowAction={type:'toggle'}|{type:'submit'};
+export function flowReducer(state:Flow,action:FlowAction):Flow{
+ if(action.type==='toggle')return {...state,accepted:!state.accepted};
+ return {...state,stage:'complete'};
+}
+export function CheckoutFlow(){
+ const [state,dispatch]=useReducer(flowReducer,{accepted:false,stage:'editing'});
+ return <section><label><input type="checkbox" checked={state.accepted} onChange={()=>dispatch({type:'toggle'})}/>Accept terms</label>
+ <button type="button" disabled={!state.accepted} onClick={()=>dispatch({type:'submit'})}>Submit order</button>
+ <p role="status">{state.stage==='complete'?'Order confirmed':'Order pending'}</p></section>;
+}
+```
+
+**Diagnosis:** The starter permits submission before consent, so an end-to-end journey skips a required business rule. Before reading the answer, identify the user-visible symptom, not just the line number.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the implementation contract" file="labs/react-user-journey/starter/solution.tsx" expected="Unaccepted terms block checkout; acceptance enables a completed state with visible confirmation.">
+
+```tsx
+import {useReducer} from 'react';
+export type Flow={accepted:boolean;stage:'editing'|'complete'};
+export type FlowAction={type:'toggle'}|{type:'submit'};
+export function flowReducer(state:Flow,action:FlowAction):Flow{
+ if(action.type==='toggle')return {...state,accepted:!state.accepted};
+ if(action.type==='submit'&&state.accepted)return {...state,stage:'complete'};
+ return state;
+}
+export function CheckoutFlow(){
+ const [state,dispatch]=useReducer(flowReducer,{accepted:false,stage:'editing'});
+ return <section><label><input type="checkbox" checked={state.accepted} onChange={()=>dispatch({type:'toggle'})}/>Accept terms</label>
+ <button type="button" disabled={!state.accepted||state.stage==='complete'} onClick={()=>dispatch({type:'submit'})}>Submit order</button>
+ <p role="status">{state.stage==='complete'?'Order confirmed':'Order pending'}</p></section>;
+}
+```
+
+**Why this works:** Model a complete interaction as state transitions with preconditions, visible success and failure states.
+
+</LessonStep>
+
+<LessonStep number={3} title="Compare positive and negative tests" file="labs/react-user-journey/solution.test.mjs" expected="Correct instructor code passes the documented assertions; the original starter fails.">
+
+```js
+const state={accepted:false,stage:'editing'};
+assert.deepEqual(mod.flowReducer(state,{type:'submit'}),state);
+const accepted=mod.flowReducer(state,{type:'toggle'});
+assert.equal(mod.flowReducer(accepted,{type:'submit'}).stage,'complete');
+assert.match(renderToStaticMarkup(createElement(mod.CheckoutFlow)),/disabled=""/);
+```
+
+**Beyond the static model:** In an installed browser/DOM test, drive the same checkout from a real checkbox click and assert the button is disabled before consent and successful after consent. Pure reducer tests cover business invariants; they cannot prove focus/keyboard behavior.
+
+</LessonStep>
+
+<Misconception claim="The starter permits submission before consent, so an end-to-end journey skips a required business rule." correction="Model a complete interaction as state transitions with preconditions, visible success and failure states. A passing server-rendering test cannot prove mounted interactions." />
+
+<KnowledgeCheck question="Which testing or rendering principle matters most for test user journeys?" choices={["An SSR snapshot proves browser interactions and state persistence.","Model a complete interaction as state transitions with preconditions, visible success and failure states.","UI correctness is guaranteed by TypeScript without runtime tests.","Optimization should happen before any profiling evidence."] } correctIndex={1} explanation="Model a complete interaction as state transitions with preconditions, visible success and failure states." misconception="Match each assertion to the behavior it actually measures." lessonId="06.05.03" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Reproduce:** Run the intentionally broken starter and record the failed assertion. **Investigate:** The starter permits submission before consent, so an end-to-end journey skips a required business rule. **Repair:** Model a complete interaction as state transitions with preconditions, visible success and failure states. **Verify:** Unaccepted terms block checkout; acceptance enables a completed state with visible confirmation.
+
+## Guided local lab
+
+The lab includes an editable starter, instructor solution, local test fixture, and completion rubric. Source snippets are compiled only by your local toolchain, never by the public academy server.
+
+<LabGate lessonId="06.05.03" labId="lab.react.react-user-journey" commands={["npm run lab:react-user-journey","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+What property can an isolated test verify? What must a real mounted React browser test verify separately? Describe one production risk an SSR test would miss.
+
+## Official references
+
+- [Primary official reference for Test user journeys](https://testing-library.com/docs/user-event/intro/)
+- [Supporting official reference](https://react.dev/learn/choosing-the-state-structure)

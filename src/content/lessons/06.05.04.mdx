@@ -1,0 +1,88 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Measure before optimizing. Distinguish actual duration, base duration and a rendering event rather than assuming every render is waste.","Repair a broken react devtools profiler example with React 19 and TypeScript.","Compare local source/model assertions with real mounted-browser testing evidence."]} />
+
+## The problem we're solving
+
+A list looks sluggish and an engineer must summarize Profiler durations without calling every render a regression. **Failure case:** The starter calculates zero for every profiler sample, hiding evidence that a render consumed time.
+
+## Build the mental model
+
+Measure before optimizing. Distinguish actual duration, base duration and a rendering event rather than assuming every render is waste.
+
+**Expected result:** The profiler summary returns a finite total duration and correct sample count.
+
+**Evidence boundary:** Node tests run reviewed fixtures, not arbitrary learner code. React server markup proves initial output only. A browser or configured DOM environment is required for real user events, hydration, the React DevTools Profiler, and state preservation after reordering. This repo does not currently declare or lock React Testing Library; do not claim these Node checks exercise that dependency.
+
+## Prerequisites and preflight
+
+Read the prior React lesson. Use Node.js 24, run `npm ci` and inspect `labs/react-profiler-diagnosis/starter/solution.tsx`. To reproduce the defect: Bash `ACADEMY_LAB_TARGET=starter npm run lab:react-profiler-diagnosis`; PowerShell `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:react-profiler-diagnosis; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Predict and reproduce a broken behavior" file="labs/react-profiler-diagnosis/starter/solution.tsx" expected="A regression assertion fails on an intentionally incorrect implementation.">
+
+```tsx
+import {Profiler,type ReactNode} from 'react';
+export function summarizeRenders(samples:readonly number[]){return {count:samples.length,totalMs:0};}
+export function ProfiledSection({children,onRender}:{children:ReactNode;onRender:(id:string,phase:'mount'|'update'|'nested-update',actualDuration:number)=>void}){
+ return <Profiler id="section" onRender={(id,phase,duration)=>onRender(id,phase,duration)}>{children}</Profiler>;
+}
+```
+
+**Diagnosis:** The starter calculates zero for every profiler sample, hiding evidence that a render consumed time. Before reading the answer, identify the user-visible symptom, not just the line number.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the implementation contract" file="labs/react-profiler-diagnosis/starter/solution.tsx" expected="The profiler summary returns a finite total duration and correct sample count.">
+
+```tsx
+import {Profiler,type ReactNode} from 'react';
+export function summarizeRenders(samples:readonly number[]){
+ if(samples.some(x=>!Number.isFinite(x)||x<0))throw new RangeError('Invalid render sample');
+ return {count:samples.length,totalMs:samples.reduce((sum,x)=>sum+x,0)};
+}
+export function ProfiledSection({children,onRender}:{children:ReactNode;onRender:(id:string,phase:'mount'|'update'|'nested-update',actualDuration:number)=>void}){
+ return <Profiler id="section" onRender={(id,phase,duration)=>onRender(id,phase,duration)}>{children}</Profiler>;
+}
+```
+
+**Why this works:** Measure before optimizing. Distinguish actual duration, base duration and a rendering event rather than assuming every render is waste.
+
+</LessonStep>
+
+<LessonStep number={3} title="Compare positive and negative tests" file="labs/react-profiler-diagnosis/solution.test.mjs" expected="Correct instructor code passes the documented assertions; the original starter fails.">
+
+```js
+assert.deepEqual(mod.summarizeRenders([1.5,2.5]),{count:2,totalMs:4});
+assert.throws(()=>mod.summarizeRenders([-1]),RangeError);
+assert.equal(typeof mod.ProfiledSection,'function');
+```
+
+**Beyond the static model:** DevTools Profiler runs in the browser. Compare measured interactions in equivalent builds, use React Profiler as a diagnosis tool, and avoid interpreting SSR as mounted performance data. `actualDuration` is not a network or total user-perceived latency metric.
+
+</LessonStep>
+
+<Misconception claim="The starter calculates zero for every profiler sample, hiding evidence that a render consumed time." correction="Measure before optimizing. Distinguish actual duration, base duration and a rendering event rather than assuming every render is waste. A passing server-rendering test cannot prove mounted interactions." />
+
+<KnowledgeCheck question="Which testing or rendering principle matters most for react devtools profiler?" choices={["An SSR snapshot proves browser interactions and state persistence.","Measure before optimizing. Distinguish actual duration, base duration and a rendering event rather than assuming every render is waste.","UI correctness is guaranteed by TypeScript without runtime tests.","Optimization should happen before any profiling evidence."] } correctIndex={1} explanation="Measure before optimizing. Distinguish actual duration, base duration and a rendering event rather than assuming every render is waste." misconception="Match each assertion to the behavior it actually measures." lessonId="06.05.04" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Reproduce:** Run the intentionally broken starter and record the failed assertion. **Investigate:** The starter calculates zero for every profiler sample, hiding evidence that a render consumed time. **Repair:** Measure before optimizing. Distinguish actual duration, base duration and a rendering event rather than assuming every render is waste. **Verify:** The profiler summary returns a finite total duration and correct sample count.
+
+## Guided local lab
+
+The lab includes an editable starter, instructor solution, local test fixture, and completion rubric. Source snippets are compiled only by your local toolchain, never by the public academy server.
+
+<LabGate lessonId="06.05.04" labId="lab.react.react-profiler-diagnosis" commands={["npm run lab:react-profiler-diagnosis","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+What property can an isolated test verify? What must a real mounted React browser test verify separately? Describe one production risk an SSR test would miss.
+
+## Official references
+
+- [Primary official reference for React DevTools profiler](https://react.dev/reference/react/Profiler)
+- [Supporting official reference](https://react.dev/reference/react/memo)

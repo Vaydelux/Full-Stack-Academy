@@ -1,0 +1,39 @@
+{
+  "id": "07.01.05",
+  "title": "Not-found and redirects: Separate missing resources from legitimate redirects: call notFound for absence, redirect for navigation policy, and render real records normally",
+  "description": "Next.js 16 and TypeScript 5 App Router lesson for not-found and redirects. Includes an intentionally broken starter, a corrected contract, verified-path offline tests and official documentation.",
+  "trackId": "07",
+  "moduleId": "07.01",
+  "level": "Intermediate",
+  "estimatedMinutes": 70,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "next": "16",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "07.01.04"
+  ],
+  "objectives": [
+    "Separate missing resources from legitimate redirects: call notFound for absence, redirect for navigation policy, and render real records normally.",
+    "Repair the intentionally failing next-notfound-redirects model.",
+    "Explain which behaviors need real Next.js compilation or browser integration verification."
+  ],
+  "labId": "lab.next.next-notfound-redirects",
+  "rubric": [
+    "I can explain not-found and redirects in Next.js 16 without mixing older Pages Router semantics.",
+    "I can reproduce and fix the 07.01.05 failing starter with real data inputs.",
+    "I can identify the missing Next.js build, routing and HTTP integration evidence."
+  ],
+  "sources": [
+    {
+      "label": "Next.js reference for Not-found and redirects",
+      "url": "https://nextjs.org/docs/app/api-reference/functions/not-found"
+    },
+    {
+      "label": "Supporting official Next.js documentation",
+      "url": "https://nextjs.org/docs/app/api-reference/functions/redirect"
+    }
+  ]
+}

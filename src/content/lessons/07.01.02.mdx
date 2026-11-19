@@ -1,0 +1,97 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Layouts preserve shared UI and local state between sibling navigations; templates create a fresh instance when a matching segment changes.","Repair a broken layouts, pages and templates example using a realistic Next.js 16 contract.","Distinguish offline models from a compiled App Router route or real response."]} />
+
+## The problem we're solving
+
+An academy shell must keep navigation stable while page content changes, and a separately keyed template can reset a transition animation.
+
+**Failure:** The starter drops page children and renders the shell alone.
+
+## Build the mental model
+
+Layouts preserve shared UI and local state between sibling navigations; templates create a fresh instance when a matching segment changes.
+
+**Prediction:** A semantic layout encloses both shared navigation and the requested page body.
+
+**Proof boundary:** The local Node/TSX fixture verifies this lesson's deterministic model and initial React markup. It does **not** start Next.js, compile route conventions, simulate streaming, or prove HTTP status codes. A separately built Next application and browser/HTTP test are needed before release qualification.
+
+## Prerequisites and preflight
+
+Read the preceding canonical topic and open `labs/next-layout-template/starter/solution.tsx`. Use Node.js 24 and repository-locked dependencies. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:next-layout-template`. PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:next-layout-template; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the routing or metadata defect" file="labs/next-layout-template/starter/solution.tsx" expected="An existing regression assertion fails for the exact incorrect behavior.">
+
+```tsx
+import type {ReactNode} from 'react';
+export function PortalShell({children:_children}:{children:ReactNode}){
+ return <div><nav aria-label="Main navigation">Academy</nav></div>;
+}
+```
+
+**Why it fails:** The starter drops page children and renders the shell alone.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the safe Next.js-oriented contract" file="labs/next-layout-template/starter/solution.tsx" expected="A semantic layout encloses both shared navigation and the requested page body.">
+
+```tsx
+import type {ReactNode} from 'react';
+export function PortalShell({children}:{children:ReactNode}){
+ return <div><nav aria-label="Main navigation">Academy</nav><main>{children}</main></div>;
+}
+```
+
+**Why it works:** Layouts preserve shared UI and local state between sibling navigations; templates create a fresh instance when a matching segment changes.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify data/route invariants and inspect real file conventions" file="labs/next-layout-template/solution.test.mjs" expected="The instructor solution passes offline assertions; production routing remains a separate local Next build/browser gate.">
+
+```js
+const html=renderToStaticMarkup(createElement(mod.PortalShell,null,createElement('p',null,'Current lesson')));
+assert.match(html,/aria-label="Main navigation"/);assert.match(html,/<main><p>Current lesson<\/p><\/main>/);
+```
+
+**Real App Router shape:**
+
+```tsx
+// app/layout.tsx: shared root shell
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return <html lang="en"><body><header>Academy</header>{children}</body></html>;
+}
+// app/(learning)/template.tsx: optional, remounts on segment navigation
+export default function Template({ children }: { children: React.ReactNode }) {
+  return <section>{children}</section>;
+}
+```
+
+**Nuance:** Only the root layout should own html/body in this simplified application. A template does not automatically make all data refresh; it changes component remount behavior, not the persistence model.
+
+</LessonStep>
+
+<Misconception claim="The starter drops page children and renders the shell alone." correction="Layouts preserve shared UI and local state between sibling navigations; templates create a fresh instance when a matching segment changes. A pure TypeScript routing model is not a Next.js HTTP integration test." />
+
+<KnowledgeCheck question="What is the safest principle for layouts, pages and templates in Next.js 16?" choices={["Next.js compiles route files automatically from this standalone Node test.","Layouts preserve shared UI and local state between sibling navigations; templates create a fresh instance when a matching segment changes.","Client-side route state can replace server permission checks.","Metadata and routing conventions never require a real Next build."] } correctIndex={1} explanation="Layouts preserve shared UI and local state between sibling navigations; templates create a fresh instance when a matching segment changes." misconception="Distinguish a model assertion from framework behavior and network outcomes." lessonId="07.01.02" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Reproduction:** The starter drops page children and renders the shell alone. Use the starter and capture the exact failed assertion. **Repair:** Layouts preserve shared UI and local state between sibling navigations; templates create a fresh instance when a matching segment changes. **Verify:** A semantic layout encloses both shared navigation and the requested page body.
+
+## Guided local lab
+
+The lab includes a broken starter, fixed instructor implementation, checked-in Node tests and a completion rubric. The academy does not run learner code on the server.
+
+<LabGate lessonId="07.01.02" labId="lab.next.next-layout-template" commands={["npm run lab:next-layout-template","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+Which checks can be carried out entirely offline? What additional Next.js 16 build, HTTP-status, accessibility, and navigation tests are needed for real production confidence?
+
+## Official references
+
+- [Official Next.js documentation for Layouts, pages and templates](https://nextjs.org/docs/app/api-reference/file-conventions/layout)
+- [Additional Next.js reference](https://nextjs.org/docs/app/api-reference/file-conventions/template)

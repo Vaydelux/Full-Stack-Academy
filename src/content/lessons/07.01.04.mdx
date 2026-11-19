@@ -1,0 +1,101 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Use loading.tsx for Suspense fallback, error.tsx as a client-rendered boundary, and explicit accessible status/error content.","Repair a broken loading and error boundaries example using a realistic Next.js 16 contract.","Distinguish offline models from a compiled App Router route or real response."]} />
+
+## The problem we're solving
+
+A course index should show a meaningful loading placeholder while a segment streams, and an error notice if rendering fails.
+
+**Failure:** The starter treats an error as a successful ready state and hides it from assistive technology.
+
+## Build the mental model
+
+Use loading.tsx for Suspense fallback, error.tsx as a client-rendered boundary, and explicit accessible status/error content.
+
+**Prediction:** Loading announces progress, errors announce a failure, and ready has normal content.
+
+**Proof boundary:** The local Node/TSX fixture verifies this lesson's deterministic model and initial React markup. It does **not** start Next.js, compile route conventions, simulate streaming, or prove HTTP status codes. A separately built Next application and browser/HTTP test are needed before release qualification.
+
+## Prerequisites and preflight
+
+Read the preceding canonical topic and open `labs/next-loading-error-boundaries/starter/solution.tsx`. Use Node.js 24 and repository-locked dependencies. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:next-loading-error-boundaries`. PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:next-loading-error-boundaries; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the routing or metadata defect" file="labs/next-loading-error-boundaries/starter/solution.tsx" expected="An existing regression assertion fails for the exact incorrect behavior.">
+
+```tsx
+export type PageState='loading'|'ready'|'error';
+export function SegmentNotice({state}:{state:PageState}){
+ return <p>Lesson ready</p>;
+}
+```
+
+**Why it fails:** The starter treats an error as a successful ready state and hides it from assistive technology.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the safe Next.js-oriented contract" file="labs/next-loading-error-boundaries/starter/solution.tsx" expected="Loading announces progress, errors announce a failure, and ready has normal content.">
+
+```tsx
+export type PageState='loading'|'ready'|'error';
+export function SegmentNotice({state}:{state:PageState}){
+ if(state==='loading')return <p role="status">Loading lesson…</p>;
+ if(state==='error')return <p role="alert">Lesson could not load.</p>;
+ return <p>Lesson ready</p>;
+}
+```
+
+**Why it works:** Use loading.tsx for Suspense fallback, error.tsx as a client-rendered boundary, and explicit accessible status/error content.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify data/route invariants and inspect real file conventions" file="labs/next-loading-error-boundaries/solution.test.mjs" expected="The instructor solution passes offline assertions; production routing remains a separate local Next build/browser gate.">
+
+```js
+assert.match(renderToStaticMarkup(createElement(mod.SegmentNotice,{state:'loading'})),/role="status"/);
+assert.match(renderToStaticMarkup(createElement(mod.SegmentNotice,{state:'error'})),/role="alert"/);
+assert.match(renderToStaticMarkup(createElement(mod.SegmentNotice,{state:'ready'})),/Lesson ready/);
+```
+
+**Real App Router shape:**
+
+```tsx
+// app/guides/loading.tsx
+export default function Loading() {
+  return <p role="status">Loading guide…</p>;
+}
+// app/guides/error.tsx (must be a Client Component)
+'use client';
+export default function ErrorView({reset}:{error:Error;reset:()=>void}) {
+  return <div role="alert"><p>Could not load guide.</p><button onClick={reset}>Retry</button></div>;
+}
+```
+
+**Nuance:** Error boundaries cannot catch every class of error (including their own throws). Streaming, status codes and network data are integration concerns; a static notice fixture does not prove Next's actual boundary lifecycle.
+
+</LessonStep>
+
+<Misconception claim="The starter treats an error as a successful ready state and hides it from assistive technology." correction="Use loading.tsx for Suspense fallback, error.tsx as a client-rendered boundary, and explicit accessible status/error content. A pure TypeScript routing model is not a Next.js HTTP integration test." />
+
+<KnowledgeCheck question="What is the safest principle for loading and error boundaries in Next.js 16?" choices={["Next.js compiles route files automatically from this standalone Node test.","Use loading.tsx for Suspense fallback, error.tsx as a client-rendered boundary, and explicit accessible status/error content.","Client-side route state can replace server permission checks.","Metadata and routing conventions never require a real Next build."] } correctIndex={1} explanation="Use loading.tsx for Suspense fallback, error.tsx as a client-rendered boundary, and explicit accessible status/error content." misconception="Distinguish a model assertion from framework behavior and network outcomes." lessonId="07.01.04" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Reproduction:** The starter treats an error as a successful ready state and hides it from assistive technology. Use the starter and capture the exact failed assertion. **Repair:** Use loading.tsx for Suspense fallback, error.tsx as a client-rendered boundary, and explicit accessible status/error content. **Verify:** Loading announces progress, errors announce a failure, and ready has normal content.
+
+## Guided local lab
+
+The lab includes a broken starter, fixed instructor implementation, checked-in Node tests and a completion rubric. The academy does not run learner code on the server.
+
+<LabGate lessonId="07.01.04" labId="lab.next.next-loading-error-boundaries" commands={["npm run lab:next-loading-error-boundaries","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+Which checks can be carried out entirely offline? What additional Next.js 16 build, HTTP-status, accessibility, and navigation tests are needed for real production confidence?
+
+## Official references
+
+- [Official Next.js documentation for Loading and error boundaries](https://nextjs.org/docs/app/api-reference/file-conventions/loading)
+- [Additional Next.js reference](https://nextjs.org/docs/app/api-reference/file-conventions/error)

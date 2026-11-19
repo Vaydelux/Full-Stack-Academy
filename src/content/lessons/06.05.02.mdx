@@ -1,0 +1,85 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Prefer roles and associated labels over brittle CSS classes, positions or test IDs when querying UI.","Repair a broken accessible queries example with React 19 and TypeScript.","Compare local source/model assertions with real mounted-browser testing evidence."]} />
+
+## The problem we're solving
+
+A support search must expose a query field with an accessible name and announce its result count. **Failure case:** The starter uses unlabeled input markup, so getByRole('searchbox',{name:'Search support'}) cannot find it.
+
+## Build the mental model
+
+Prefer roles and associated labels over brittle CSS classes, positions or test IDs when querying UI.
+
+**Expected result:** The searchbox has a proper accessible name and results use a status region.
+
+**Evidence boundary:** Node tests run reviewed fixtures, not arbitrary learner code. React server markup proves initial output only. A browser or configured DOM environment is required for real user events, hydration, the React DevTools Profiler, and state preservation after reordering. This repo does not currently declare or lock React Testing Library; do not claim these Node checks exercise that dependency.
+
+## Prerequisites and preflight
+
+Read the prior React lesson. Use Node.js 24, run `npm ci` and inspect `labs/react-accessible-queries/starter/solution.tsx`. To reproduce the defect: Bash `ACADEMY_LAB_TARGET=starter npm run lab:react-accessible-queries`; PowerShell `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:react-accessible-queries; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Predict and reproduce a broken behavior" file="labs/react-accessible-queries/starter/solution.tsx" expected="A regression assertion fails on an intentionally incorrect implementation.">
+
+```tsx
+export function SupportSearch({results}:{results:number}){
+ return <form role="search"><input type="search" name="q"/>
+ <p>{results} results</p><button type="submit">Search</button></form>;
+}
+```
+
+**Diagnosis:** The starter uses unlabeled input markup, so getByRole('searchbox',{name:'Search support'}) cannot find it. Before reading the answer, identify the user-visible symptom, not just the line number.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the implementation contract" file="labs/react-accessible-queries/starter/solution.tsx" expected="The searchbox has a proper accessible name and results use a status region.">
+
+```tsx
+export function SupportSearch({results}:{results:number}){
+ return <form role="search"><label htmlFor="support-query">Search support</label>
+ <input id="support-query" type="search" name="q"/>
+ <p role="status">{results===1?'1 result':`${results} results`}</p>
+ <button type="submit">Search</button></form>;
+}
+```
+
+**Why this works:** Prefer roles and associated labels over brittle CSS classes, positions or test IDs when querying UI.
+
+</LessonStep>
+
+<LessonStep number={3} title="Compare positive and negative tests" file="labs/react-accessible-queries/solution.test.mjs" expected="Correct instructor code passes the documented assertions; the original starter fails.">
+
+```js
+const html=renderToStaticMarkup(createElement(mod.SupportSearch,{results:1}));
+assert.match(html,/<label for="support-query">Search support<\/label>/);
+assert.match(html,/id="support-query"/);assert.match(html,/role="status">1 result/);
+```
+
+**Beyond the static model:** Accessible queries have priority: getByRole(name), getByLabelText, getByText, then fallback selectors when semantics cannot express the target. Test labels, control types and empty/invalid states rather than relying on snapshots alone.
+
+</LessonStep>
+
+<Misconception claim="The starter uses unlabeled input markup, so getByRole('searchbox',{name:'Search support'}) cannot find it." correction="Prefer roles and associated labels over brittle CSS classes, positions or test IDs when querying UI. A passing server-rendering test cannot prove mounted interactions." />
+
+<KnowledgeCheck question="Which testing or rendering principle matters most for accessible queries?" choices={["An SSR snapshot proves browser interactions and state persistence.","Prefer roles and associated labels over brittle CSS classes, positions or test IDs when querying UI.","UI correctness is guaranteed by TypeScript without runtime tests.","Optimization should happen before any profiling evidence."] } correctIndex={1} explanation="Prefer roles and associated labels over brittle CSS classes, positions or test IDs when querying UI." misconception="Match each assertion to the behavior it actually measures." lessonId="06.05.02" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Reproduce:** Run the intentionally broken starter and record the failed assertion. **Investigate:** The starter uses unlabeled input markup, so getByRole('searchbox',{name:'Search support'}) cannot find it. **Repair:** Prefer roles and associated labels over brittle CSS classes, positions or test IDs when querying UI. **Verify:** The searchbox has a proper accessible name and results use a status region.
+
+## Guided local lab
+
+The lab includes an editable starter, instructor solution, local test fixture, and completion rubric. Source snippets are compiled only by your local toolchain, never by the public academy server.
+
+<LabGate lessonId="06.05.02" labId="lab.react.react-accessible-queries" commands={["npm run lab:react-accessible-queries","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+What property can an isolated test verify? What must a real mounted React browser test verify separately? Describe one production risk an SSR test would miss.
+
+## Official references
+
+- [Primary official reference for Accessible queries](https://testing-library.com/docs/queries/about/)
+- [Supporting official reference](https://www.w3.org/WAI/ARIA/apg/)
