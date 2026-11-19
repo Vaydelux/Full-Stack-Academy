@@ -1,0 +1,102 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Preserve field-array identity with fields[].id, controlled append/remove, and bounded dynamic inputs.","Type unique values in three rows; remove the middle row. The remaining values must match their original logical items. Adding past eight rows must be disabled.","Never accept arbitrary numbers of dynamic rows on the server; cap collection lengths and validate each nested item."]} />
+
+## The problem we're solving
+
+A shopping-list form lets a learner remove the middle row. With index-based React keys, entered values jump to another row because React reuses the wrong DOM input.
+
+**What breaks in the learner starter:** The starter uses key={index} and allows unlimited rows; reordering or deleting can shift user edits.
+
+## Build the mental model
+
+useFieldArray tracks a stable generated field ID. Use field.id for React keys; the numeric index is only for field registration paths.
+
+**Predict before coding:** After removing a middle row, the remaining input content must stay attached to the correct item.
+
+**Scope:** This staged article uses genuine React Hook Form v7 interfaces and React 19 patterns. The source is not yet compiled with installed RHF packages or browser-tested. The companion Node loopback Task API is educational, unauthenticated and in-memory.
+
+## Prerequisites and preflight
+
+Read the preceding canonical module lessons and `drafts/forms-query/README.md`. The staged exercise is in `drafts/forms-query/labs/dynamic-field-arrays/`. Install and lock real compatible npm packages *before* promoting this draft to the production academy. Do not copy the starter to the published lab registry until its negative test is observable.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the red starter" file="drafts/forms-query/labs/dynamic-field-arrays/starter.tsx" expected="The starter uses key={index} and allows unlimited rows; reordering or deleting can shift user edits.">
+
+```tsx
+import { useForm, useFieldArray } from 'react-hook-form';
+type Fields={steps:{text:string}[]};
+export default function StepsForm(){
+ const {control,register}=useForm<Fields>({defaultValues:{steps:[{text:'A'},{text:'B'}]}});
+ const {fields,append,remove}=useFieldArray({control,name:'steps'});
+ return <div>{fields.map((field,index)=><div key={index}>
+  <input aria-label={'Step '+(index+1)} {...register(`steps.${index}.text`)} />
+  <button type="button" onClick={()=>remove(index)}>Remove</button>
+ </div>)}<button type="button" onClick={()=>append({text:''})}>Add</button></div>;
+}
+```
+
+**Observe:** A shopping-list form lets a learner remove the middle row. With index-based React keys, entered values jump to another row because React reuses the wrong DOM input.
+
+</LessonStep>
+
+<LessonStep number={2} title="Apply the instructor repair" file="drafts/forms-query/labs/dynamic-field-arrays/solution.tsx" expected="After removing a middle row, the remaining input content must stay attached to the correct item.">
+
+```tsx
+import { useForm, useFieldArray } from 'react-hook-form';
+type Fields={steps:{text:string}[]};
+export default function StepsForm(){
+ const {control,register,handleSubmit}=useForm<Fields>({defaultValues:{steps:[{text:'A'},{text:'B'}]}});
+ const {fields,append,remove}=useFieldArray({control,name:'steps'});
+ return <form onSubmit={handleSubmit(console.log)}>
+  {fields.map((field,index)=><div key={field.id}>
+   <label htmlFor={'step-'+field.id}>Step {index+1}</label>
+   <input id={'step-'+field.id} {...register(`steps.${index}.text`,{required:true,maxLength:80})} />
+   <button type="button" onClick={()=>remove(index)}>Remove</button>
+  </div>)}
+  <button type="button" disabled={fields.length>=8} onClick={()=>append({text:''})}>Add step</button>
+  <button type="submit">Save</button>
+ </form>;
+}
+```
+
+**Why:** useFieldArray tracks a stable generated field ID. Use field.id for React keys; the numeric index is only for field registration paths.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify behavior at the real boundary" file="drafts/forms-query/labs/dynamic-field-arrays/lab.json" expected="Type unique values in three rows; remove the middle row. The remaining values must match their original logical items. Adding past eight rows must be disabled.">
+
+**Acceptance scenario:** Type unique values in three rows; remove the middle row. The remaining values must match their original logical items. Adding past eight rows must be disabled.
+
+**Debug the failure:** reproduce the bad behavior in the starter, make the smallest correction, then repeat the positive case and a genuinely failing negative case. This must be automated using real RHF/React packages and a DOM harness before the lesson is published.
+
+**Trust boundary:** Never accept arbitrary numbers of dynamic rows on the server; cap collection lengths and validate each nested item.
+
+</LessonStep>
+
+<Misconception claim="The starter uses key={index} and allows unlimited rows; reordering or deleting can shift user edits." correction="useFieldArray tracks a stable generated field ID. Use field.id for React keys; the numeric index is only for field registration paths." />
+
+<KnowledgeCheck question="Which repair best addresses dynamic field arrays?" choices={["Always trust the browser to enforce security.","Use one authoritative form state and verify the tested behavior.","Ignore non-200 HTTP responses if fetch resolved.","Treat TypeScript types as runtime authorization."]} correctIndex={1} explanation="useFieldArray tracks a stable generated field ID. Use field.id for React keys; the numeric index is only for field registration paths." misconception="The starter uses key={index} and allows unlimited rows; reordering or deleting can shift user edits." lessonId="09.02.04" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+1. **Reproduce:** The starter uses key={index} and allows unlimited rows; reordering or deleting can shift user edits.
+2. **Diagnose:** Locate who owns the current value, where it is transformed, and which effect or async boundary can invalidate assumptions.
+3. **Repair:** Preserve field-array identity with fields[].id, controlled append/remove, and bounded dynamic inputs.
+4. **Regression:** Type unique values in three rows; remove the middle row. The remaining values must match their original logical items. Adding past eight rows must be disabled.
+5. **Operational boundary:** Never accept arbitrary numbers of dynamic rows on the server; cap collection lengths and validate each nested item.
+
+## Guided local lab
+
+The staged red starter and instructor solution are available in `drafts/forms-query/labs/dynamic-field-arrays/`. The acceptance specification describes behaviors to implement and verify with actual library packages. This is **not** a published or automatically graded lab and has no LabGate until tests pass.
+
+## Reflect
+
+What did the learner believe to be the source of truth before the repair? What user-visible state would diverge under failure, cancellation or a stale server response?
+
+## Official references
+
+- [Primary official reference](https://react-hook-form.com/docs/usefieldarray)
+- [Supporting official reference](https://react-hook-form.com/docs/useform/register)

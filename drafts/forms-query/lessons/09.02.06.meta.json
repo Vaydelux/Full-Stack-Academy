@@ -1,0 +1,32 @@
+{
+  "id": "09.02.06",
+  "title": "Reset and dirty state",
+  "moduleId": "09.02",
+  "trackId": "09",
+  "sourceStatus": "staged-unverified",
+  "estimatedMinutes": 48,
+  "prerequisites": [
+    "09.02.05"
+  ],
+  "stack": {
+    "react": "19",
+    "typescript": "5",
+    "zod": "4",
+    "reactHookForm": "7"
+  },
+  "objective": "Understand isDirty, dirtyFields, defaultValues, reset(), and preserving drafts after a failed request.",
+  "predict": "After a 500 response, isDirty stays true and the typed title remains; after a 201 success, the form resets to its initial defaults.",
+  "expectedBehavior": "Enter a nonempty title, force server 503, and verify the field remains dirty. Repeat with 201 and confirm reset clears it.",
+  "commonFailure": "The starter resets before the HTTP response is confirmed, destroying user input on failure.",
+  "securityBoundary": "Do not store private form drafts or server error bodies into telemetry by default; client state may contain sensitive data.",
+  "labSlug": "reset-dirty",
+  "officialReferences": [
+    "https://react-hook-form.com/docs/useform/reset",
+    "https://react-hook-form.com/docs/useform/formstate"
+  ],
+  "rubric": [
+    "Understand isDirty, dirtyFields, defaultValues, reset(), and preserving drafts after a failed request.",
+    "Enter a nonempty title, force server 503, and verify the field remains dirty. Repeat with 201 and confirm reset clears it.",
+    "I can explain why client validation is not server authorization."
+  ]
+}

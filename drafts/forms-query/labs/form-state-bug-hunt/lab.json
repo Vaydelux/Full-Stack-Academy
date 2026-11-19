@@ -1,0 +1,19 @@
+{
+  "id": "draft.forms.form-state-bug-hunt",
+  "lessonId": "09.02.08",
+  "title": "Bug Hunt mismatched form state",
+  "sourceStatus": "staged-unverified",
+  "runtime": "react-19-rhf-7-zod-4-ts-5",
+  "starter": "drafts/forms-query/labs/form-state-bug-hunt/starter.tsx",
+  "solution": "drafts/forms-query/labs/form-state-bug-hunt/solution.tsx",
+  "expectedPositive": "Type, reset and programmatically update the field; preview and submitted payload must be consistent, with no independent useState shadow.",
+  "expectedNegative": "Separate useState preview and RHF input values drift after reset or programmatic update.",
+  "securityBoundary": "Treat displayed form previews as user content; React text interpolation escapes text, while innerHTML would introduce an XSS risk.",
+  "officialReferences": [
+    "https://react-hook-form.com/docs/usewatch",
+    "https://react-hook-form.com/docs/useform/reset"
+  ],
+  "requiresRealLibraryTest": true,
+  "requiresRealBrowserTest": true,
+  "readyToPublish": false
+}

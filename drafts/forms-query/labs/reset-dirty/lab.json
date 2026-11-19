@@ -1,0 +1,19 @@
+{
+  "id": "draft.forms.reset-dirty",
+  "lessonId": "09.02.06",
+  "title": "Reset and dirty state",
+  "sourceStatus": "staged-unverified",
+  "runtime": "react-19-rhf-7-zod-4-ts-5",
+  "starter": "drafts/forms-query/labs/reset-dirty/starter.tsx",
+  "solution": "drafts/forms-query/labs/reset-dirty/solution.tsx",
+  "expectedPositive": "Enter a nonempty title, force server 503, and verify the field remains dirty. Repeat with 201 and confirm reset clears it.",
+  "expectedNegative": "The starter resets before the HTTP response is confirmed, destroying user input on failure.",
+  "securityBoundary": "Do not store private form drafts or server error bodies into telemetry by default; client state may contain sensitive data.",
+  "officialReferences": [
+    "https://react-hook-form.com/docs/useform/reset",
+    "https://react-hook-form.com/docs/useform/formstate"
+  ],
+  "requiresRealLibraryTest": true,
+  "requiresRealBrowserTest": true,
+  "readyToPublish": false
+}

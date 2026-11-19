@@ -1,0 +1,32 @@
+{
+  "id": "09.02.02",
+  "title": "Register and Controller",
+  "moduleId": "09.02",
+  "trackId": "09",
+  "sourceStatus": "staged-unverified",
+  "estimatedMinutes": 48,
+  "prerequisites": [
+    "09.02.01"
+  ],
+  "stack": {
+    "react": "19",
+    "typescript": "5",
+    "zod": "4",
+    "reactHookForm": "7"
+  },
+  "objective": "Use register for a native input and Controller for a non-native controlled picker without creating duplicate form state.",
+  "predict": "The naive widget never reports its selected rating to handleSubmit; Controller makes the custom control participate in the form.",
+  "expectedBehavior": "Click or keyboard-activate the rating button twice, then submit; the handler must receive rating 3 rather than 1. Verify the title is also registered.",
+  "commonFailure": "The custom control never receives the form-owned value or onChange handler.",
+  "securityBoundary": "A rating picker still needs a semantic accessible name and keyboard focus; wrapping an inaccessible custom control in Controller does not make it accessible.",
+  "labSlug": "register-controller",
+  "officialReferences": [
+    "https://react-hook-form.com/docs/usecontroller/controller",
+    "https://react-hook-form.com/docs/useform/register"
+  ],
+  "rubric": [
+    "Use register for a native input and Controller for a non-native controlled picker without creating duplicate form state.",
+    "Click or keyboard-activate the rating button twice, then submit; the handler must receive rating 3 rather than 1. Verify the title is also registered.",
+    "I can explain why client validation is not server authorization."
+  ]
+}

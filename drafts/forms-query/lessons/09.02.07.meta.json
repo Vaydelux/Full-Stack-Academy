@@ -1,0 +1,32 @@
+{
+  "id": "09.02.07",
+  "title": "Server errors and focus",
+  "moduleId": "09.02",
+  "trackId": "09",
+  "sourceStatus": "staged-unverified",
+  "estimatedMinutes": 48,
+  "prerequisites": [
+    "09.02.06"
+  ],
+  "stack": {
+    "react": "19",
+    "typescript": "5",
+    "zod": "4",
+    "reactHookForm": "7"
+  },
+  "objective": "Represent authoritative HTTP errors in accessible form feedback and restore focus to the first relevant input.",
+  "predict": "A 422 response must never show success; the title field should be focused and identified as invalid, with role alert text.",
+  "expectedBehavior": "Mock 422 then 503. The 422 path must set title error and focus; 503 must set root.server without claiming success.",
+  "commonFailure": "The starter treats a fetch response as success without checking response.ok.",
+  "securityBoundary": "Never print untrusted server error bodies as HTML; use trusted generic descriptions and text nodes for any constrained message.",
+  "labSlug": "server-error-focus",
+  "officialReferences": [
+    "https://react-hook-form.com/docs/useform/seterror",
+    "https://react-hook-form.com/docs/useform/setfocus"
+  ],
+  "rubric": [
+    "Represent authoritative HTTP errors in accessible form feedback and restore focus to the first relevant input.",
+    "Mock 422 then 503. The 422 path must set title error and focus; 503 must set root.server without claiming success.",
+    "I can explain why client validation is not server authorization."
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "id": "09.02.04",
+  "title": "Dynamic field arrays",
+  "moduleId": "09.02",
+  "trackId": "09",
+  "sourceStatus": "staged-unverified",
+  "estimatedMinutes": 48,
+  "prerequisites": [
+    "09.02.03"
+  ],
+  "stack": {
+    "react": "19",
+    "typescript": "5",
+    "zod": "4",
+    "reactHookForm": "7"
+  },
+  "objective": "Preserve field-array identity with fields[].id, controlled append/remove, and bounded dynamic inputs.",
+  "predict": "After removing a middle row, the remaining input content must stay attached to the correct item.",
+  "expectedBehavior": "Type unique values in three rows; remove the middle row. The remaining values must match their original logical items. Adding past eight rows must be disabled.",
+  "commonFailure": "The starter uses key={index} and allows unlimited rows; reordering or deleting can shift user edits.",
+  "securityBoundary": "Never accept arbitrary numbers of dynamic rows on the server; cap collection lengths and validate each nested item.",
+  "labSlug": "dynamic-field-arrays",
+  "officialReferences": [
+    "https://react-hook-form.com/docs/usefieldarray",
+    "https://react-hook-form.com/docs/useform/register"
+  ],
+  "rubric": [
+    "Preserve field-array identity with fields[].id, controlled append/remove, and bounded dynamic inputs.",
+    "Type unique values in three rows; remove the middle row. The remaining values must match their original logical items. Adding past eight rows must be disabled.",
+    "I can explain why client validation is not server authorization."
+  ]
+}

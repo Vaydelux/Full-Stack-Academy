@@ -1,0 +1,19 @@
+{
+  "id": "draft.forms.zod-resolver",
+  "lessonId": "09.02.03",
+  "title": "Zod resolvers",
+  "sourceStatus": "staged-unverified",
+  "runtime": "react-19-rhf-7-zod-4-ts-5",
+  "starter": "drafts/forms-query/labs/zod-resolver/starter.tsx",
+  "solution": "drafts/forms-query/labs/zod-resolver/solution.tsx",
+  "expectedPositive": "The string `  done ` must be transformed to `done`. `   ` and a 101-character title must not invoke the submit callback. Server 422 must still be handled.",
+  "expectedNegative": "The form has no resolver, so a whitespace title reaches the submit handler.",
+  "securityBoundary": "zodResolver is not authorization or persistence. The loopback API rejects invalid title/priority independently and must not trust the browser schema.",
+  "officialReferences": [
+    "https://github.com/react-hook-form/resolvers#zod",
+    "https://zod.dev/basics"
+  ],
+  "requiresRealLibraryTest": true,
+  "requiresRealBrowserTest": true,
+  "readyToPublish": false
+}

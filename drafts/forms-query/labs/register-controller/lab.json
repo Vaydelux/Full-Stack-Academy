@@ -1,0 +1,19 @@
+{
+  "id": "draft.forms.register-controller",
+  "lessonId": "09.02.02",
+  "title": "Register and Controller",
+  "sourceStatus": "staged-unverified",
+  "runtime": "react-19-rhf-7-zod-4-ts-5",
+  "starter": "drafts/forms-query/labs/register-controller/starter.tsx",
+  "solution": "drafts/forms-query/labs/register-controller/solution.tsx",
+  "expectedPositive": "Click or keyboard-activate the rating button twice, then submit; the handler must receive rating 3 rather than 1. Verify the title is also registered.",
+  "expectedNegative": "The custom control never receives the form-owned value or onChange handler.",
+  "securityBoundary": "A rating picker still needs a semantic accessible name and keyboard focus; wrapping an inaccessible custom control in Controller does not make it accessible.",
+  "officialReferences": [
+    "https://react-hook-form.com/docs/usecontroller/controller",
+    "https://react-hook-form.com/docs/useform/register"
+  ],
+  "requiresRealLibraryTest": true,
+  "requiresRealBrowserTest": true,
+  "readyToPublish": false
+}

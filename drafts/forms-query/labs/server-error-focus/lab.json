@@ -1,0 +1,19 @@
+{
+  "id": "draft.forms.server-error-focus",
+  "lessonId": "09.02.07",
+  "title": "Server errors and focus",
+  "sourceStatus": "staged-unverified",
+  "runtime": "react-19-rhf-7-zod-4-ts-5",
+  "starter": "drafts/forms-query/labs/server-error-focus/starter.tsx",
+  "solution": "drafts/forms-query/labs/server-error-focus/solution.tsx",
+  "expectedPositive": "Mock 422 then 503. The 422 path must set title error and focus; 503 must set root.server without claiming success.",
+  "expectedNegative": "The starter treats a fetch response as success without checking response.ok.",
+  "securityBoundary": "Never print untrusted server error bodies as HTML; use trusted generic descriptions and text nodes for any constrained message.",
+  "officialReferences": [
+    "https://react-hook-form.com/docs/useform/seterror",
+    "https://react-hook-form.com/docs/useform/setfocus"
+  ],
+  "requiresRealLibraryTest": true,
+  "requiresRealBrowserTest": true,
+  "readyToPublish": false
+}
