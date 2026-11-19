@@ -1,0 +1,92 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Diagnose the cache scope, tag identity and invalidation event before changing TTL values or adding extra caches.","Repair the intentionally broken cache debugging example.","Explain Next.js 16 Cache Components boundaries, privacy risks and test limitations."]} />
+
+## The problem we're solving
+
+After a content update, a reader still sees a stale article. A debugger needs to distinguish untagged content, wrongly scoped cache keys and missing invalidation.
+
+**Failure mode:** The starter always reports 'cache healthy', even for private data or missing tags.
+
+## Build the mental model
+
+Diagnose the cache scope, tag identity and invalidation event before changing TTL values or adding extra caches. This module specifically uses **Next.js 16 with `cacheComponents: true`**; avoid mixing with the legacy `dynamic`, route-segment `revalidate` or `fetchCache` configuration model. The offline assertions are data/decision models; they do not access Next's actual cache internals, HTTP, or database.
+
+**Expected behavior:** Missing tags and unsafe shared-private cache are flagged; a public tagged cache is accepted.
+
+## Prerequisites and preflight
+
+Study the preceding lesson and make sure the project uses Node.js 24 and a locked dependency install. Start from `labs/next-cache-debugging/starter/solution.tsx`; run `ACADEMY_LAB_TARGET=starter npm run lab:next-cache-debugging` (PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:next-cache-debugging; Remove-Item Env:ACADEMY_LAB_TARGET`). This deliberately fails at least one assertion.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce a stale or unsafe cache assumption" file="labs/next-cache-debugging/starter/solution.tsx" expected="The defective baseline fails its local data contract.">
+
+```tsx
+export function cacheDiagnosis(_scope:'public'|'private',_tag:string){return 'healthy';}
+```
+
+**Root cause:** The starter always reports 'cache healthy', even for private data or missing tags.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the explicit cache contract" file="labs/next-cache-debugging/starter/solution.tsx" expected="Missing tags and unsafe shared-private cache are flagged; a public tagged cache is accepted.">
+
+```tsx
+export function cacheDiagnosis(scope:'public'|'private',tag:string){
+ if(scope==='private')return 'unsafe-shared-scope';
+ if(!/^courses:[a-z0-9-]+$/.test(tag))return 'missing-or-invalid-tag';
+ return 'healthy';
+}
+```
+
+**Why this works:** Diagnose the cache scope, tag identity and invalidation event before changing TTL values or adding extra caches.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify scope and inspect real Next.js 16 APIs" file="labs/next-cache-debugging/solution.test.mjs" expected="The instructor passes local assertions. Cache behavior still needs a compiled app and local HTTP tests.">
+
+```js
+assert.equal(mod.cacheDiagnosis('private','courses:x'),'unsafe-shared-scope');
+assert.equal(mod.cacheDiagnosis('public',''),'missing-or-invalid-tag');
+assert.equal(mod.cacheDiagnosis('public','courses:react'),'healthy');
+```
+
+**Framework example (illustrative; not executed here):**
+
+```tsx
+// Debug checklist in a local Next 16 Cache Components project:
+// 1. Confirm cacheComponents: true, and where 'use cache' is declared.
+// 2. Inspect cacheTag value and cacheLife profile.
+// 3. Confirm successful DB write precedes updateTag/revalidateTag.
+// 4. Compare unauthenticated public reads and authenticated private reads.
+// 5. Measure stale results via local HTTP and browser reload, not guessed timings.
+```
+
+**Operational nuance:** This diagnostic helper does not inspect the real Next cache or the app's cache handler. Use the actual local compiled app and logs to validate revalidation.
+
+</LessonStep>
+
+<Misconception claim="The starter always reports 'cache healthy', even for private data or missing tags." correction="Diagnose the cache scope, tag identity and invalidation event before changing TTL values or adding extra caches. An offline helper does not prove server cache invalidation or confidentiality." />
+
+<KnowledgeCheck question="Which Next.js 16 caching principle applies to cache debugging?" choices={["Use one global cached entry for authenticated and anonymous requests.","Diagnose the cache scope, tag identity and invalidation event before changing TTL values or adding extra caches.","A local SSR test proves cache invalidation on a remote server.","Legacy route-segment cache options always override Cache Components."] } correctIndex={1} explanation="Diagnose the cache scope, tag identity and invalidation event before changing TTL values or adding extra caches." misconception="Classify public versus request-specific work before choosing a freshness strategy." lessonId="07.03.07" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Symptom:** The starter always reports 'cache healthy', even for private data or missing tags. **Reproduce:** run the starter and record failing input. **Repair:** Diagnose the cache scope, tag identity and invalidation event before changing TTL values or adding extra caches. **Regression:** Missing tags and unsafe shared-private cache are flagged; a public tagged cache is accepted. Validate in a real Next.js 16 Cache Components app before claiming cache correctness.
+
+## Guided local lab
+
+The self-contained `labs/next-cache-debugging/` lab provides a red starter, corrected instructor source, offline assertions, and a completion rubric. The academy does not run learner-provided code on its server.
+
+<LabGate lessonId="07.03.07" labId="lab.next.next-cache-debugging" commands={["npm run lab:next-cache-debugging","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+When must freshness be immediate rather than stale-while-revalidate? How would you prove tenant privacy remains intact under concurrency?
+
+## Official references
+
+- [Next.js reference: Cache debugging](https://nextjs.org/docs/app/api-reference/functions/cacheTag)
+- [Supporting Next.js 16 guide](https://nextjs.org/docs/app/getting-started/revalidating)

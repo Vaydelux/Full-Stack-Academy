@@ -1,0 +1,39 @@
+{
+  "id": "07.03.01",
+  "title": "Fetch behavior in Next.js 16: Treat request-specific data as runtime data and never cache user-specific output globally. Cache Components enables explicit opt-in caching of eligible work.",
+  "description": "Next.js 16 Cache Components tutorial for fetch behavior in next.js 16 with a failing starter, safe cache boundary model, instructor code and offline regression tests.",
+  "trackId": "07",
+  "moduleId": "07.03",
+  "level": "Intermediate",
+  "estimatedMinutes": 65,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "next": "16",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "07.02.08"
+  ],
+  "objectives": [
+    "Treat request-specific data as runtime data and never cache user-specific output globally. Cache Components enables explicit opt-in caching of eligible work.",
+    "Repair the unsafe or stale assumption in next-fetch-behavior.",
+    "Explain which cache and HTTP behaviors need independent compiled Next.js verification."
+  ],
+  "labId": "lab.next.next-fetch-behavior",
+  "rubric": [
+    "I can explain fetch behavior in next.js 16 under Next 16 Cache Components rules.",
+    "I can repair the 07.03.01 failing local starter and explain the regression.",
+    "I can distinguish the local test from real cache, authorization and multi-tenant safety evidence."
+  ],
+  "sources": [
+    {
+      "label": "Next.js: Fetch behavior in Next.js 16",
+      "url": "https://nextjs.org/docs/app/getting-started/fetching-data"
+    },
+    {
+      "label": "Official cache documentation",
+      "url": "https://nextjs.org/docs/app/api-reference/config/next-config-js/cacheComponents"
+    }
+  ]
+}

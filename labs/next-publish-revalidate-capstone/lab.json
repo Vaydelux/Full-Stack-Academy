@@ -1,0 +1,15 @@
+{
+  "id": "lab.next.next-publish-revalidate-capstone",
+  "lessonId": "07.03.08",
+  "title": "Next.js 16 lab publish and revalidate local lab",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/next-publish-revalidate-capstone/starter/solution.tsx",
+  "solution": "labs/next-publish-revalidate-capstone/solution/solution.tsx",
+  "tests": "labs/next-publish-revalidate-capstone/solution.test.mjs",
+  "verify": [
+    "npm run lab:next-publish-revalidate-capstone"
+  ],
+  "expected": "Only the owner can publish valid content; versions increment without mutating past snapshots.",
+  "security": "Only local cache-decision fixtures run, never a real Next cache or authenticated backend."
+}

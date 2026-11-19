@@ -1,0 +1,94 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Use deterministic, bounded, public-data cache tags and a cacheLife policy inside a `use cache` scope.","Repair the intentionally broken use cache and cache tags example.","Explain Next.js 16 Cache Components boundaries, privacy risks and test limitations."]} />
+
+## The problem we're solving
+
+An editorial page needs a cache tag so a published update can invalidate the correct course without evicting unrelated content.
+
+**Failure mode:** The starter produces the same global tag for every course, causing unrelated pages to invalidate together.
+
+## Build the mental model
+
+Use deterministic, bounded, public-data cache tags and a cacheLife policy inside a `use cache` scope. This module specifically uses **Next.js 16 with `cacheComponents: true`**; avoid mixing with the legacy `dynamic`, route-segment `revalidate` or `fetchCache` configuration model. The offline assertions are data/decision models; they do not access Next's actual cache internals, HTTP, or database.
+
+**Expected behavior:** Different course IDs produce distinct namespaced cache tags; malformed identifiers are rejected.
+
+## Prerequisites and preflight
+
+Study the preceding lesson and make sure the project uses Node.js 24 and a locked dependency install. Start from `labs/next-cache-tags/starter/solution.tsx`; run `ACADEMY_LAB_TARGET=starter npm run lab:next-cache-tags` (PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:next-cache-tags; Remove-Item Env:ACADEMY_LAB_TARGET`). This deliberately fails at least one assertion.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce a stale or unsafe cache assumption" file="labs/next-cache-tags/starter/solution.tsx" expected="The defective baseline fails its local data contract.">
+
+```tsx
+export function courseTag(_id:string){return 'courses:all';}
+```
+
+**Root cause:** The starter produces the same global tag for every course, causing unrelated pages to invalidate together.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the explicit cache contract" file="labs/next-cache-tags/starter/solution.tsx" expected="Different course IDs produce distinct namespaced cache tags; malformed identifiers are rejected.">
+
+```tsx
+export function courseTag(id:string){
+ if(!/^[a-z0-9-]{1,50}$/.test(id))throw new Error('Invalid course ID');
+ return 'courses:'+id;
+}
+```
+
+**Why this works:** Use deterministic, bounded, public-data cache tags and a cacheLife policy inside a `use cache` scope.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify scope and inspect real Next.js 16 APIs" file="labs/next-cache-tags/solution.test.mjs" expected="The instructor passes local assertions. Cache behavior still needs a compiled app and local HTTP tests.">
+
+```js
+assert.equal(mod.courseTag('react-19'),'courses:react-19');
+assert.equal(mod.courseTag('next-16'),'courses:next-16');
+assert.notEqual(mod.courseTag('react-19'),mod.courseTag('next-16'));
+assert.throws(()=>mod.courseTag('../private'),/Invalid course ID/);
+```
+
+**Framework example (illustrative; not executed here):**
+
+```tsx
+// next.config.ts => {cacheComponents:true}
+import {cacheLife,cacheTag} from 'next/cache';
+export async function getPublicCourse(id:string){
+ 'use cache';
+ cacheLife('hours');
+ cacheTag('courses:'+id);
+ return getCourseFromPublicStore(id);
+}
+```
+
+**Operational nuance:** Do not tag/cache sensitive user-specific data as shared public content. Confirm the duration and invalidation behavior with an actual compiled Next 16 app.
+
+</LessonStep>
+
+<Misconception claim="The starter produces the same global tag for every course, causing unrelated pages to invalidate together." correction="Use deterministic, bounded, public-data cache tags and a cacheLife policy inside a `use cache` scope. An offline helper does not prove server cache invalidation or confidentiality." />
+
+<KnowledgeCheck question="Which Next.js 16 caching principle applies to use cache and cache tags?" choices={["Use one global cached entry for authenticated and anonymous requests.","Use deterministic, bounded, public-data cache tags and a cacheLife policy inside a `use cache` scope.","A local SSR test proves cache invalidation on a remote server.","Legacy route-segment cache options always override Cache Components."] } correctIndex={1} explanation="Use deterministic, bounded, public-data cache tags and a cacheLife policy inside a `use cache` scope." misconception="Classify public versus request-specific work before choosing a freshness strategy." lessonId="07.03.03" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Symptom:** The starter produces the same global tag for every course, causing unrelated pages to invalidate together. **Reproduce:** run the starter and record failing input. **Repair:** Use deterministic, bounded, public-data cache tags and a cacheLife policy inside a `use cache` scope. **Regression:** Different course IDs produce distinct namespaced cache tags; malformed identifiers are rejected. Validate in a real Next.js 16 Cache Components app before claiming cache correctness.
+
+## Guided local lab
+
+The self-contained `labs/next-cache-tags/` lab provides a red starter, corrected instructor source, offline assertions, and a completion rubric. The academy does not run learner-provided code on its server.
+
+<LabGate lessonId="07.03.03" labId="lab.next.next-cache-tags" commands={["npm run lab:next-cache-tags","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+When must freshness be immediate rather than stale-while-revalidate? How would you prove tenant privacy remains intact under concurrency?
+
+## Official references
+
+- [Next.js reference: use cache and cache tags](https://nextjs.org/docs/app/api-reference/functions/cacheTag)
+- [Supporting Next.js 16 guide](https://nextjs.org/docs/app/api-reference/functions/cacheLife)

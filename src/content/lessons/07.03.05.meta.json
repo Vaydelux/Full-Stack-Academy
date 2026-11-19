@@ -1,0 +1,39 @@
+{
+  "id": "07.03.05",
+  "title": "Private data and cache risks: Separate public cache entries from tenant- or principal-scoped responses; never share personalized data under a global key.",
+  "description": "Next.js 16 Cache Components tutorial for private data and cache risks with a failing starter, safe cache boundary model, instructor code and offline regression tests.",
+  "trackId": "07",
+  "moduleId": "07.03",
+  "level": "Intermediate",
+  "estimatedMinutes": 65,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "next": "16",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "07.03.04"
+  ],
+  "objectives": [
+    "Separate public cache entries from tenant- or principal-scoped responses; never share personalized data under a global key.",
+    "Repair the unsafe or stale assumption in next-private-cache-risks.",
+    "Explain which cache and HTTP behaviors need independent compiled Next.js verification."
+  ],
+  "labId": "lab.next.next-private-cache-risks",
+  "rubric": [
+    "I can explain private data and cache risks under Next 16 Cache Components rules.",
+    "I can repair the 07.03.05 failing local starter and explain the regression.",
+    "I can distinguish the local test from real cache, authorization and multi-tenant safety evidence."
+  ],
+  "sources": [
+    {
+      "label": "Next.js: Private data and cache risks",
+      "url": "https://nextjs.org/docs/app/guides/data-security"
+    },
+    {
+      "label": "Official cache documentation",
+      "url": "https://nextjs.org/docs/app/api-reference/directives/use-cache"
+    }
+  ]
+}

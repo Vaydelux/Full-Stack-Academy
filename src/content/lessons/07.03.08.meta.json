@@ -1,0 +1,39 @@
+{
+  "id": "07.03.08",
+  "title": "Lab publish and revalidate: Authorize the exact record, validate the new title, persist the revision, then invalidate the relevant public cache tag using the appropriate semantics.",
+  "description": "Next.js 16 Cache Components tutorial for lab publish and revalidate with a failing starter, safe cache boundary model, instructor code and offline regression tests.",
+  "trackId": "07",
+  "moduleId": "07.03",
+  "level": "Intermediate",
+  "estimatedMinutes": 65,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "next": "16",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "07.03.07"
+  ],
+  "objectives": [
+    "Authorize the exact record, validate the new title, persist the revision, then invalidate the relevant public cache tag using the appropriate semantics.",
+    "Repair the unsafe or stale assumption in next-publish-revalidate-capstone.",
+    "Explain which cache and HTTP behaviors need independent compiled Next.js verification."
+  ],
+  "labId": "lab.next.next-publish-revalidate-capstone",
+  "rubric": [
+    "I can explain lab publish and revalidate under Next 16 Cache Components rules.",
+    "I can repair the 07.03.08 failing local starter and explain the regression.",
+    "I can distinguish the local test from real cache, authorization and multi-tenant safety evidence."
+  ],
+  "sources": [
+    {
+      "label": "Next.js: Lab publish and revalidate",
+      "url": "https://nextjs.org/docs/app/getting-started/revalidating"
+    },
+    {
+      "label": "Official cache documentation",
+      "url": "https://nextjs.org/docs/app/api-reference/functions/updateTag"
+    }
+  ]
+}

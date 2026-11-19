@@ -1,0 +1,39 @@
+{
+  "id": "07.03.02",
+  "title": "Explicit cache boundaries: Split stable public content from request-personalized data; use cache directives only around safe public computations.",
+  "description": "Next.js 16 Cache Components tutorial for explicit cache boundaries with a failing starter, safe cache boundary model, instructor code and offline regression tests.",
+  "trackId": "07",
+  "moduleId": "07.03",
+  "level": "Intermediate",
+  "estimatedMinutes": 65,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "next": "16",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "07.03.01"
+  ],
+  "objectives": [
+    "Split stable public content from request-personalized data; use cache directives only around safe public computations.",
+    "Repair the unsafe or stale assumption in next-explicit-cache-boundary.",
+    "Explain which cache and HTTP behaviors need independent compiled Next.js verification."
+  ],
+  "labId": "lab.next.next-explicit-cache-boundary",
+  "rubric": [
+    "I can explain explicit cache boundaries under Next 16 Cache Components rules.",
+    "I can repair the 07.03.02 failing local starter and explain the regression.",
+    "I can distinguish the local test from real cache, authorization and multi-tenant safety evidence."
+  ],
+  "sources": [
+    {
+      "label": "Next.js: Explicit cache boundaries",
+      "url": "https://nextjs.org/docs/app/guides/migrating-to-cache-components"
+    },
+    {
+      "label": "Official cache documentation",
+      "url": "https://nextjs.org/docs/app/api-reference/directives/use-cache"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "id": "lab.next.next-rendering-strategies",
+  "lessonId": "07.03.06",
+  "title": "Next.js 16 isr vs ssr vs static local lab",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/next-rendering-strategies/starter/solution.tsx",
+  "solution": "labs/next-rendering-strategies/solution/solution.tsx",
+  "tests": "labs/next-rendering-strategies/solution.test.mjs",
+  "verify": [
+    "npm run lab:next-rendering-strategies"
+  ],
+  "expected": "Stable marketing = static; edited public articles = revalidated cache; personal profile = dynamic.",
+  "security": "Only local cache-decision fixtures run, never a real Next cache or authenticated backend."
+}

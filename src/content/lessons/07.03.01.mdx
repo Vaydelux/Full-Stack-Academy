@@ -1,0 +1,94 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Treat request-specific data as runtime data and never cache user-specific output globally. Cache Components enables explicit opt-in caching of eligible work.","Repair the intentionally broken fetch behavior in next.js 16 example.","Explain Next.js 16 Cache Components boundaries, privacy risks and test limitations."]} />
+
+## The problem we're solving
+
+A personalized inbox must be requested at runtime; an author mistakenly assumes every server fetch is automatically cached and shared.
+
+**Failure mode:** The starter marks a personal inbox as safe to share across users.
+
+## Build the mental model
+
+Treat request-specific data as runtime data and never cache user-specific output globally. Cache Components enables explicit opt-in caching of eligible work. This module specifically uses **Next.js 16 with `cacheComponents: true`**; avoid mixing with the legacy `dynamic`, route-segment `revalidate` or `fetchCache` configuration model. The offline assertions are data/decision models; they do not access Next's actual cache internals, HTTP, or database.
+
+**Expected behavior:** Public catalogue data can be considered cacheable; private messages and authorization-sensitive records cannot be shared.
+
+## Prerequisites and preflight
+
+Study the preceding lesson and make sure the project uses Node.js 24 and a locked dependency install. Start from `labs/next-fetch-behavior/starter/solution.tsx`; run `ACADEMY_LAB_TARGET=starter npm run lab:next-fetch-behavior` (PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:next-fetch-behavior; Remove-Item Env:ACADEMY_LAB_TARGET`). This deliberately fails at least one assertion.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce a stale or unsafe cache assumption" file="labs/next-fetch-behavior/starter/solution.tsx" expected="The defective baseline fails its local data contract.">
+
+```tsx
+export type Resource='catalogue'|'inbox'|'account';
+export function sharedCacheCandidate(_resource:Resource){return true;}
+```
+
+**Root cause:** The starter marks a personal inbox as safe to share across users.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the explicit cache contract" file="labs/next-fetch-behavior/starter/solution.tsx" expected="Public catalogue data can be considered cacheable; private messages and authorization-sensitive records cannot be shared.">
+
+```tsx
+export type Resource='catalogue'|'inbox'|'account';
+export function sharedCacheCandidate(resource:Resource){return resource==='catalogue';}
+```
+
+**Why this works:** Treat request-specific data as runtime data and never cache user-specific output globally. Cache Components enables explicit opt-in caching of eligible work.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify scope and inspect real Next.js 16 APIs" file="labs/next-fetch-behavior/solution.test.mjs" expected="The instructor passes local assertions. Cache behavior still needs a compiled app and local HTTP tests.">
+
+```js
+assert.equal(mod.sharedCacheCandidate('catalogue'),true);
+assert.equal(mod.sharedCacheCandidate('inbox'),false);
+assert.equal(mod.sharedCacheCandidate('account'),false);
+```
+
+**Framework example (illustrative; not executed here):**
+
+```tsx
+// next.config.ts
+import type {NextConfig} from 'next';
+const nextConfig:NextConfig={cacheComponents:true};
+export default nextConfig;
+// Default request-scoped data is dynamic; opt in to shared cache only for public content.
+export default async function InboxPage(){
+ const user=await requireUser();
+ const messages=await db.message.findMany({where:{userId:user.id}});
+ return <Inbox messages={messages}/>;
+}
+```
+
+**Operational nuance:** Default fetch caching differs by Next configuration and version. With Cache Components enabled, use explicit cache scopes and avoid caching personalized response data. Network access and authorization are not tested by the offline fixture.
+
+</LessonStep>
+
+<Misconception claim="The starter marks a personal inbox as safe to share across users." correction="Treat request-specific data as runtime data and never cache user-specific output globally. Cache Components enables explicit opt-in caching of eligible work. An offline helper does not prove server cache invalidation or confidentiality." />
+
+<KnowledgeCheck question="Which Next.js 16 caching principle applies to fetch behavior in next.js 16?" choices={["Use one global cached entry for authenticated and anonymous requests.","Treat request-specific data as runtime data and never cache user-specific output globally. Cache Components enables explicit opt-in caching of eligible work.","A local SSR test proves cache invalidation on a remote server.","Legacy route-segment cache options always override Cache Components."] } correctIndex={1} explanation="Treat request-specific data as runtime data and never cache user-specific output globally. Cache Components enables explicit opt-in caching of eligible work." misconception="Classify public versus request-specific work before choosing a freshness strategy." lessonId="07.03.01" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Symptom:** The starter marks a personal inbox as safe to share across users. **Reproduce:** run the starter and record failing input. **Repair:** Treat request-specific data as runtime data and never cache user-specific output globally. Cache Components enables explicit opt-in caching of eligible work. **Regression:** Public catalogue data can be considered cacheable; private messages and authorization-sensitive records cannot be shared. Validate in a real Next.js 16 Cache Components app before claiming cache correctness.
+
+## Guided local lab
+
+The self-contained `labs/next-fetch-behavior/` lab provides a red starter, corrected instructor source, offline assertions, and a completion rubric. The academy does not run learner-provided code on its server.
+
+<LabGate lessonId="07.03.01" labId="lab.next.next-fetch-behavior" commands={["npm run lab:next-fetch-behavior","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+When must freshness be immediate rather than stale-while-revalidate? How would you prove tenant privacy remains intact under concurrency?
+
+## Official references
+
+- [Next.js reference: Fetch behavior in Next.js 16](https://nextjs.org/docs/app/getting-started/fetching-data)
+- [Supporting Next.js 16 guide](https://nextjs.org/docs/app/api-reference/config/next-config-js/cacheComponents)
