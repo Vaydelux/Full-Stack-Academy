@@ -13,6 +13,7 @@ const steps = [
   'test:forms-query-http',
   'test:forms-query-workflow',
   'test:forms-query-contract',
+  'test:forms-query-project-route',
   'validate',
   'verify:content',
   'checkpoint:check',
