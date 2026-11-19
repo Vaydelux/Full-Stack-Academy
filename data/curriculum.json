@@ -5890,7 +5890,7 @@
       "type": "lesson",
       "estimatedMinutes": 18,
       "status": "planned",
-      "referenceUrl": "https://zod.dev/",
+      "referenceUrl": "https://react-hook-form.com/get-started",
       "prerequisites": []
     },
     {
@@ -5905,7 +5905,7 @@
       "type": "lesson",
       "estimatedMinutes": 18,
       "status": "planned",
-      "referenceUrl": "https://zod.dev/",
+      "referenceUrl": "https://react-hook-form.com/docs/usecontroller/controller",
       "prerequisites": []
     },
     {
@@ -5920,7 +5920,7 @@
       "type": "lesson",
       "estimatedMinutes": 18,
       "status": "planned",
-      "referenceUrl": "https://zod.dev/",
+      "referenceUrl": "https://github.com/react-hook-form/resolvers#zod",
       "prerequisites": []
     },
     {
@@ -5935,7 +5935,7 @@
       "type": "lesson",
       "estimatedMinutes": 18,
       "status": "planned",
-      "referenceUrl": "https://zod.dev/",
+      "referenceUrl": "https://react-hook-form.com/docs/usefieldarray",
       "prerequisites": []
     },
     {
@@ -5950,7 +5950,7 @@
       "type": "lesson",
       "estimatedMinutes": 18,
       "status": "planned",
-      "referenceUrl": "https://zod.dev/",
+      "referenceUrl": "https://react-hook-form.com/docs/useform/handlesubmit",
       "prerequisites": []
     },
     {
@@ -5965,7 +5965,7 @@
       "type": "lesson",
       "estimatedMinutes": 18,
       "status": "planned",
-      "referenceUrl": "https://zod.dev/",
+      "referenceUrl": "https://react-hook-form.com/docs/useform/reset",
       "prerequisites": []
     },
     {
@@ -5980,7 +5980,7 @@
       "type": "lesson",
       "estimatedMinutes": 18,
       "status": "planned",
-      "referenceUrl": "https://zod.dev/",
+      "referenceUrl": "https://react-hook-form.com/docs/useform/seterror",
       "prerequisites": []
     },
     {
@@ -5995,7 +5995,7 @@
       "type": "debug",
       "estimatedMinutes": 30,
       "status": "planned",
-      "referenceUrl": "https://zod.dev/",
+      "referenceUrl": "https://react-hook-form.com/docs/useform/formstate",
       "prerequisites": []
     },
     {
@@ -6010,7 +6010,7 @@
       "type": "lesson",
       "estimatedMinutes": 18,
       "status": "planned",
-      "referenceUrl": "https://zod.dev/",
+      "referenceUrl": "https://tanstack.com/query/latest/docs/framework/react/guides/query-keys",
       "prerequisites": []
     },
     {
@@ -6025,7 +6025,7 @@
       "type": "lesson",
       "estimatedMinutes": 18,
       "status": "planned",
-      "referenceUrl": "https://zod.dev/",
+      "referenceUrl": "https://tanstack.com/query/latest/docs/framework/react/guides/important-defaults",
       "prerequisites": []
     },
     {
@@ -6040,7 +6040,7 @@
       "type": "lesson",
       "estimatedMinutes": 18,
       "status": "planned",
-      "referenceUrl": "https://zod.dev/",
+      "referenceUrl": "https://tanstack.com/query/latest/docs/framework/react/guides/invalidations-from-mutations",
       "prerequisites": []
     },
     {
@@ -6055,7 +6055,7 @@
       "type": "lesson",
       "estimatedMinutes": 18,
       "status": "planned",
-      "referenceUrl": "https://zod.dev/",
+      "referenceUrl": "https://tanstack.com/query/latest/docs/framework/react/guides/optimistic-updates",
       "prerequisites": []
     },
     {
@@ -6070,7 +6070,7 @@
       "type": "lesson",
       "estimatedMinutes": 18,
       "status": "planned",
-      "referenceUrl": "https://zod.dev/",
+      "referenceUrl": "https://tanstack.com/query/latest/docs/framework/react/guides/infinite-queries",
       "prerequisites": []
     },
     {
@@ -6085,7 +6085,7 @@
       "type": "lesson",
       "estimatedMinutes": 18,
       "status": "planned",
-      "referenceUrl": "https://zod.dev/",
+      "referenceUrl": "https://tanstack.com/query/latest/docs/framework/react/guides/advanced-ssr",
       "prerequisites": []
     },
     {
@@ -6100,7 +6100,7 @@
       "type": "lesson",
       "estimatedMinutes": 18,
       "status": "planned",
-      "referenceUrl": "https://zod.dev/",
+      "referenceUrl": "https://tanstack.com/query/latest/docs/framework/react/guides/query-cancellation",
       "prerequisites": []
     },
     {
@@ -6115,7 +6115,7 @@
       "type": "lab",
       "estimatedMinutes": 50,
       "status": "planned",
-      "referenceUrl": "https://zod.dev/",
+      "referenceUrl": "https://tanstack.com/query/latest/docs/framework/react/guides/mutations",
       "prerequisites": []
     },
     {
