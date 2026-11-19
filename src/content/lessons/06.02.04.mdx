@@ -1,0 +1,103 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Explain the updating arrays and objects mental model in React 19","Repair a controlled state or reducer example for react-immutable-updates","Verify expected and edge-case behavior through local checks"]} />
+
+## The problem we're solving
+
+A quantity editor must update one cart row without mutating the previous state snapshot. Directly changing an array item mutates past snapshots and defeats predictable React updates. The following exercise is React 19 and TypeScript 5 source checked into this repository, not a remote code runner.
+
+## Build the mental model
+
+Use immutable updates so unchanged items preserve identity while the modified record receives a new object. Map to a new array and clone only the record that changes. **Important boundary:** A pure-function test validates state transitions and static React rendering checks initial markup; neither alone simulates an interactive browser or verifies hydration and effect behavior.
+
+**Predict before you run:** Only the selected item changes; the previous list and untouched item references remain intact.
+
+## Prerequisites and preflight
+
+Review the previous canonical React topic, then open `labs/react-immutable-updates/starter/solution.tsx`. Use Node.js 24 with locked repository dependencies. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:react-immutable-updates`. PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:react-immutable-updates; Remove-Item Env:ACADEMY_LAB_TARGET`. The failing starter is intentional.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the initial defect" file="labs/react-immutable-updates/starter/solution.tsx" expected="A local assertion exposes the deliberately incorrect state rule.">
+
+Read this starter before editing. Predict the specific failing assertion and whether it is a render or transition failure.
+
+```tsx
+export type QuantityRow={id:string;quantity:number};
+export function setQuantity(rows:readonly QuantityRow[],id:string,quantity:number):QuantityRow[] {
+ const copied=rows as QuantityRow[];const item=copied.find(row=>row.id===id);if(item)item.quantity=quantity;return copied;
+}
+export function QuantityList({rows}:{rows:readonly QuantityRow[]}) {
+ return <ul>{rows.map(row=><li key={row.id}>{row.id}: {row.quantity}</li>)}</ul>;
+}
+```
+
+**Why it fails:** Directly changing an array item mutates past snapshots and defeats predictable React updates.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the state ownership or transition" file="labs/react-immutable-updates/starter/solution.tsx" expected="Only the selected item changes; the previous list and untouched item references remain intact.">
+
+Apply a correction that respects the relevant React snapshot, identity, immutability, or single-source-of-truth rule.
+
+```tsx
+export type QuantityRow={id:string;quantity:number};
+export function setQuantity(rows:readonly QuantityRow[],id:string,quantity:number):QuantityRow[] {
+ if(!Number.isSafeInteger(quantity)||quantity<0) throw new RangeError('Invalid quantity');
+ return rows.map(row=>row.id===id?{...row,quantity}:row);
+}
+export function QuantityList({rows}:{rows:readonly QuantityRow[]}) {
+ return <ul>{rows.map(row=><li key={row.id}>{row.id}: {row.quantity}</li>)}</ul>;
+}
+```
+
+**Why the repair works:** Use immutable updates so unchanged items preserve identity while the modified record receives a new object.
+
+</LessonStep>
+
+<LessonStep number={3} title="Prove the happy path and a counterexample" file="labs/react-immutable-updates/solution.test.mjs" expected="A reviewed solution passes the local assertions; a restored defect fails.">
+
+Run `npm run lab:react-immutable-updates`, then change an input or restore the defect and repeat the command.
+
+```js
+const rows=[{id:'a',quantity:1},{id:'b',quantity:2}];
+const next=mod.setQuantity(rows,'a',5);
+assert.equal(rows[0].quantity,1);assert.equal(next[0].quantity,5);
+assert.notEqual(next,rows);assert.notEqual(next[0],rows[0]);assert.equal(next[1],rows[1]);
+assert.throws(()=>mod.setQuantity(rows,'a',-1),RangeError);
+assert.match(renderToStaticMarkup(createElement(mod.QuantityList,{rows:next})),/a: 5/);
+```
+
+**What actually happened:** Only the selected item changes; the previous list and untouched item references remain intact. For browser interaction evidence, add a dedicated DOM environment; this lesson's local test does not claim to simulate user events.
+
+</LessonStep>
+
+<Misconception claim="Directly changing an array item mutates past snapshots and defeats predictable React updates." correction="Use immutable updates so unchanged items preserve identity while the modified record receives a new object. Map to a new array and clone only the record that changes." />
+
+<KnowledgeCheck question="What is the safest way to update an item in an array state?" choices={["React automatically synchronizes any duplicate state stored in unrelated components.","Map to a new array and clone only the record that changes.","All React state is stored in the browser's localStorage by default.","Passing a compile-only TypeScript check proves a browser interaction works."] } correctIndex={1} explanation="Map to a new array and clone only the record that changes." misconception="Choose the state owner and transition model explicitly instead of relying on automatic synchronization." lessonId="06.02.04" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Symptom:** Directly changing an array item mutates past snapshots and defeats predictable React updates.
+
+**Root cause:** The starter violates the rule established in the mental model. Use a small input and read the actual prior state before changing code.
+
+**Repair:** Use immutable updates so unchanged items preserve identity while the modified record receives a new object.
+
+**Regression test:** Only the selected item changes; the previous list and untouched item references remain intact. Do not conclude that a test of a pure function proves component reconciliation or live event batching.
+
+## Guided local lab
+
+Inspect `labs/react-immutable-updates/starter`, repair the exported code, and run the local verifier. Hint ladder: identify the authoritative input; examine the old state snapshot; compare the instructor's updated function signature and branch behavior.
+
+<LabGate lessonId="06.02.04" labId="lab.react.react-immutable-updates" commands={["npm run lab:react-immutable-updates","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+What is the minimal authoritative state? How could the repaired approach regress, and which additional real-browser test would confirm behavior after a user interaction?
+
+## Official references
+
+- [React guide: Updating arrays and objects](https://react.dev/learn/updating-arrays-in-state)
+- [React documentation index](https://react.dev/learn)

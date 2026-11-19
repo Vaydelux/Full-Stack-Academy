@@ -1,0 +1,15 @@
+{
+  "id": "lab.react.react-batched-updates",
+  "lessonId": "06.02.02",
+  "title": "Practice batching and functional updates with local fixtures",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/react-batched-updates/starter/solution.tsx",
+  "solution": "labs/react-batched-updates/solution/solution.tsx",
+  "tests": "labs/react-batched-updates/solution.test.mjs",
+  "verify": [
+    "npm run lab:react-batched-updates"
+  ],
+  "expected": "Two sequential functional updates increase any starting count by exactly two.",
+  "security": "Only checked-in source executes in a local Node test process; no public React code-execution endpoint exists."
+}

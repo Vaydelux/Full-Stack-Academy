@@ -1,0 +1,39 @@
+{
+  "id": "06.01.08",
+  "title": "Profile dashboard card capstone: Compose typed props, conditional badges and stable lists into one accessible feature",
+  "description": "Learn profile dashboard card capstone with a React 19 model, TypeScript starter and solution, testable edge cases, a bug hunt and offline verification.",
+  "trackId": "06",
+  "moduleId": "06.01",
+  "level": "Beginner",
+  "estimatedMinutes": 50,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "react": "19",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "06.01.07"
+  ],
+  "objectives": [
+    "Explain the profile dashboard card capstone contract and why it matters",
+    "Repair a deliberately broken react-profile-capstone example",
+    "Verify the expected result and a failure or edge case with local tests"
+  ],
+  "labId": "lab.react.react-profile-capstone",
+  "sources": [
+    {
+      "label": "React: Profile dashboard card capstone",
+      "url": "https://react.dev/learn/thinking-in-react"
+    },
+    {
+      "label": "React learning documentation",
+      "url": "https://react.dev/learn"
+    }
+  ],
+  "rubric": [
+    "I can explain profile dashboard card capstone without confusing a render model with mounted browser behavior.",
+    "I can repair the starter for 06.01.08, compare with the instructor solution and explain why the test fails before the repair.",
+    "I can verify representative and edge-case behavior locally and name at least one additional interaction test needed."
+  ]
+}

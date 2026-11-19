@@ -1,0 +1,39 @@
+{
+  "id": "06.02.01",
+  "title": "useState and state snapshots: State is a snapshot for each render, so an event handler sees values captured by that render",
+  "description": "A React 19 and TypeScript 5 offline walkthrough of usestate and state snapshots, with explicit state contracts, a reproducible defect and local regression tests.",
+  "trackId": "06",
+  "moduleId": "06.02",
+  "level": "Beginner",
+  "estimatedMinutes": 55,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "react": "19",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "06.01.08"
+  ],
+  "objectives": [
+    "Explain the state contract of usestate and state snapshots",
+    "Fix a reproducible problem in react-state-snapshots",
+    "Verify representative and edge-case behavior using offline tests"
+  ],
+  "labId": "lab.react.react-state-snapshots",
+  "sources": [
+    {
+      "label": "React official guide: useState and state snapshots",
+      "url": "https://react.dev/learn/state-as-a-snapshot"
+    },
+    {
+      "label": "React official documentation",
+      "url": "https://react.dev/learn"
+    }
+  ],
+  "rubric": [
+    "I can explain usestate and state snapshots without confusing a render model with mounted browser behavior.",
+    "I can repair the starter for 06.02.01, compare with the instructor solution and explain why the test fails before the repair.",
+    "I can verify representative and edge-case behavior locally and name at least one additional interaction test needed."
+  ]
+}

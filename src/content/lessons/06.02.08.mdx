@@ -1,0 +1,108 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Explain the bug hunt: stale closure mental model in React 19","Repair a controlled state or reducer example for react-stale-closures","Verify expected and edge-case behavior through local checks"]} />
+
+## The problem we're solving
+
+A batch action should add two points without repeatedly using a stale captured count. A handler that enqueues the same captured snapshot twice loses an update. The following exercise is React 19 and TypeScript 5 source checked into this repository, not a remote code runner.
+
+## Build the mental model
+
+Queue updater functions when an event needs multiple state transitions; each updater receives current queued state. Provide functional updaters that take the most recent queued state. **Important boundary:** A pure-function test validates state transitions and static React rendering checks initial markup; neither alone simulates an interactive browser or verifies hydration and effect behavior.
+
+**Predict before you run:** Starting at five and applying both queued updaters results in seven, not six or one.
+
+## Prerequisites and preflight
+
+Review the previous canonical React topic, then open `labs/react-stale-closures/starter/solution.tsx`. Use Node.js 24 with locked repository dependencies. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:react-stale-closures`. PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:react-stale-closures; Remove-Item Env:ACADEMY_LAB_TARGET`. The failing starter is intentional.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the initial defect" file="labs/react-stale-closures/starter/solution.tsx" expected="A local assertion exposes the deliberately incorrect state rule.">
+
+Read this starter before editing. Predict the specific failing assertion and whether it is a render or transition failure.
+
+```tsx
+import {useState} from 'react';
+export type Updater=(prior:number)=>number;
+export function enqueueTwice(dispatch:(update:Updater)=>void) {
+ const captured=0;dispatch(()=>captured+1);dispatch(()=>captured+1);
+}
+export function BurstCounter() {
+ const [count,setCount]=useState(0);
+ return <button type="button" onClick={()=>enqueueTwice(setCount)}>Score: {count}</button>;
+}
+```
+
+**Why it fails:** A handler that enqueues the same captured snapshot twice loses an update.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the state ownership or transition" file="labs/react-stale-closures/starter/solution.tsx" expected="Starting at five and applying both queued updaters results in seven, not six or one.">
+
+Apply a correction that respects the relevant React snapshot, identity, immutability, or single-source-of-truth rule.
+
+```tsx
+import {useState} from 'react';
+export type Updater=(prior:number)=>number;
+export function enqueueTwice(dispatch:(update:Updater)=>void) {
+ dispatch(prior=>prior+1);dispatch(prior=>prior+1);
+}
+export function BurstCounter() {
+ const [count,setCount]=useState(0);
+ return <button type="button" onClick={()=>enqueueTwice(setCount)}>Score: {count}</button>;
+}
+```
+
+**Why the repair works:** Queue updater functions when an event needs multiple state transitions; each updater receives current queued state.
+
+</LessonStep>
+
+<LessonStep number={3} title="Prove the happy path and a counterexample" file="labs/react-stale-closures/solution.test.mjs" expected="A reviewed solution passes the local assertions; a restored defect fails.">
+
+Run `npm run lab:react-stale-closures`, then change an input or restore the defect and repeat the command.
+
+```js
+const queue=[];mod.enqueueTwice(updater=>queue.push(updater));
+assert.equal(queue.length,2);assert.equal(queue.reduce((v,updater)=>updater(v),5),7);
+assert.match(renderToStaticMarkup(createElement(mod.BurstCounter)),/Score: 0/);
+```
+
+**What actually happened:** Starting at five and applying both queued updaters results in seven, not six or one. For browser interaction evidence, add a dedicated DOM environment; this lesson's local test does not claim to simulate user events.
+
+</LessonStep>
+
+<Misconception claim="A handler that enqueues the same captured snapshot twice loses an update." correction="Queue updater functions when an event needs multiple state transitions; each updater receives current queued state. Provide functional updaters that take the most recent queued state." />
+
+<KnowledgeCheck question="What is the robust repair for repeated snapshot-dependent updates?" choices={["React automatically synchronizes any duplicate state stored in unrelated components.","Provide functional updaters that take the most recent queued state.","All React state is stored in the browser's localStorage by default.","Passing a compile-only TypeScript check proves a browser interaction works."] } correctIndex={1} explanation="Provide functional updaters that take the most recent queued state." misconception="Choose the state owner and transition model explicitly instead of relying on automatic synchronization." lessonId="06.02.08" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Symptom:** A handler that enqueues the same captured snapshot twice loses an update.
+
+**Root cause:** The starter violates the rule established in the mental model. Use a small input and read the actual prior state before changing code.
+
+**Repair:** Queue updater functions when an event needs multiple state transitions; each updater receives current queued state.
+
+**Regression test:** Starting at five and applying both queued updaters results in seven, not six or one. Do not conclude that a test of a pure function proves component reconciliation or live event batching.
+
+## Guided local lab
+
+Inspect `labs/react-stale-closures/starter`, repair the exported code, and run the local verifier. Hint ladder: identify the authoritative input; examine the old state snapshot; compare the instructor's updated function signature and branch behavior.
+
+<LabGate lessonId="06.02.08" labId="lab.react.react-stale-closures" commands={["npm run lab:react-stale-closures","npm run test:labs"]} interactive={false} />
+
+
+### Browser practice: mounted React state
+
+For hands-on behavior, open the [React state, identity, and reducer practice page](/learn/react-state-lab). It runs real React event handlers in the browser rather than evaluating arbitrary learner code. The local regression tests above remain separate proof of the pure logic.
+
+## Reflect
+
+What is the minimal authoritative state? How could the repaired approach regress, and which additional real-browser test would confirm behavior after a user interaction?
+
+## Official references
+
+- [React guide: Bug Hunt: stale closure](https://react.dev/learn/state-as-a-snapshot)
+- [React documentation index](https://react.dev/learn)

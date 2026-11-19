@@ -1,0 +1,100 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Explain the reducers and state machines mental model in React 19","Repair a controlled state or reducer example for react-reducer","Verify expected and edge-case behavior through local checks"]} />
+
+## The problem we're solving
+
+A task list needs predictable add, toggle and remove operations as UI complexity grows. Distributing ad-hoc mutation logic across buttons makes transitions hard to reason about and test. The following exercise is React 19 and TypeScript 5 source checked into this repository, not a remote code runner.
+
+## Build the mental model
+
+Model each state transition as an explicit typed action and return new state without mutating it. It can return the existing state; actions that change data should produce the new immutable state. **Important boundary:** A pure-function test validates state transitions and static React rendering checks initial markup; neither alone simulates an interactive browser or verifies hydration and effect behavior.
+
+**Predict before you run:** Add, toggle and remove are deterministic and duplicate IDs do not create duplicate tasks.
+
+## Prerequisites and preflight
+
+Review the previous canonical React topic, then open `labs/react-reducer/starter/solution.tsx`. Use Node.js 24 with locked repository dependencies. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:react-reducer`. PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:react-reducer; Remove-Item Env:ACADEMY_LAB_TARGET`. The failing starter is intentional.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the initial defect" file="labs/react-reducer/starter/solution.tsx" expected="A local assertion exposes the deliberately incorrect state rule.">
+
+Read this starter before editing. Predict the specific failing assertion and whether it is a render or transition failure.
+
+```tsx
+export type Todo={id:string;text:string;done:boolean};
+export type Action={type:'add';item:Todo}|{type:'toggle';id:string}|{type:'remove';id:string};
+export function todoReducer(state:readonly Todo[],_action:Action):readonly Todo[] {return state;}
+```
+
+**Why it fails:** Distributing ad-hoc mutation logic across buttons makes transitions hard to reason about and test.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the state ownership or transition" file="labs/react-reducer/starter/solution.tsx" expected="Add, toggle and remove are deterministic and duplicate IDs do not create duplicate tasks.">
+
+Apply a correction that respects the relevant React snapshot, identity, immutability, or single-source-of-truth rule.
+
+```tsx
+export type Todo={id:string;text:string;done:boolean};
+export type Action={type:'add';item:Todo}|{type:'toggle';id:string}|{type:'remove';id:string};
+export function todoReducer(state:readonly Todo[],action:Action):readonly Todo[] {
+ switch(action.type){
+  case 'add': return state.some(x=>x.id===action.item.id)?state:[...state,action.item];
+  case 'toggle': return state.map(x=>x.id===action.id?{...x,done:!x.done}:x);
+  case 'remove': return state.filter(x=>x.id!==action.id);
+ }
+}
+```
+
+**Why the repair works:** Model each state transition as an explicit typed action and return new state without mutating it.
+
+</LessonStep>
+
+<LessonStep number={3} title="Prove the happy path and a counterexample" file="labs/react-reducer/solution.test.mjs" expected="A reviewed solution passes the local assertions; a restored defect fails.">
+
+Run `npm run lab:react-reducer`, then change an input or restore the defect and repeat the command.
+
+```js
+const item={id:'1',text:'Review',done:false};
+const added=mod.todoReducer([],{type:'add',item});assert.equal(added.length,1);
+assert.equal(mod.todoReducer(added,{type:'add',item}),added);
+const toggled=mod.todoReducer(added,{type:'toggle',id:'1'});
+assert.equal(toggled[0].done,true);assert.equal(added[0].done,false);
+assert.deepEqual(mod.todoReducer(toggled,{type:'remove',id:'1'}),[]);
+```
+
+**What actually happened:** Add, toggle and remove are deterministic and duplicate IDs do not create duplicate tasks. For browser interaction evidence, add a dedicated DOM environment; this lesson's local test does not claim to simulate user events.
+
+</LessonStep>
+
+<Misconception claim="Distributing ad-hoc mutation logic across buttons makes transitions hard to reason about and test." correction="Model each state transition as an explicit typed action and return new state without mutating it. It can return the existing state; actions that change data should produce the new immutable state." />
+
+<KnowledgeCheck question="What must a reducer return for an unchanged state?" choices={["React automatically synchronizes any duplicate state stored in unrelated components.","It can return the existing state; actions that change data should produce the new immutable state.","All React state is stored in the browser's localStorage by default.","Passing a compile-only TypeScript check proves a browser interaction works."] } correctIndex={1} explanation="It can return the existing state; actions that change data should produce the new immutable state." misconception="Choose the state owner and transition model explicitly instead of relying on automatic synchronization." lessonId="06.02.07" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Symptom:** Distributing ad-hoc mutation logic across buttons makes transitions hard to reason about and test.
+
+**Root cause:** The starter violates the rule established in the mental model. Use a small input and read the actual prior state before changing code.
+
+**Repair:** Model each state transition as an explicit typed action and return new state without mutating it.
+
+**Regression test:** Add, toggle and remove are deterministic and duplicate IDs do not create duplicate tasks. Do not conclude that a test of a pure function proves component reconciliation or live event batching.
+
+## Guided local lab
+
+Inspect `labs/react-reducer/starter`, repair the exported code, and run the local verifier. Hint ladder: identify the authoritative input; examine the old state snapshot; compare the instructor's updated function signature and branch behavior.
+
+<LabGate lessonId="06.02.07" labId="lab.react.react-reducer" commands={["npm run lab:react-reducer","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+What is the minimal authoritative state? How could the repaired approach regress, and which additional real-browser test would confirm behavior after a user interaction?
+
+## Official references
+
+- [React guide: Reducers and state machines](https://react.dev/learn/extracting-state-logic-into-a-reducer)
+- [React documentation index](https://react.dev/learn)

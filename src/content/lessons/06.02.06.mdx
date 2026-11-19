@@ -1,0 +1,100 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Explain the lifting state up mental model in React 19","Repair a controlled state or reducer example for react-lift-state","Verify expected and edge-case behavior through local checks"]} />
+
+## The problem we're solving
+
+A composer input and live preview must always display the same text as the user edits. Separate local copies of a text field and preview can drift when only one child receives updates. The following exercise is React 19 and TypeScript 5 source checked into this repository, not a remote code runner.
+
+## Build the mental model
+
+Keep one authoritative state value in the closest common parent and pass it to controlled siblings. In the nearest common ancestor that coordinates both consumers. **Important boundary:** A pure-function test validates state transitions and static React rendering checks initial markup; neither alone simulates an interactive browser or verifies hydration and effect behavior.
+
+**Predict before you run:** Initial input and preview agree, and the parent owns the update callback.
+
+## Prerequisites and preflight
+
+Review the previous canonical React topic, then open `labs/react-lift-state/starter/solution.tsx`. Use Node.js 24 with locked repository dependencies. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:react-lift-state`. PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:react-lift-state; Remove-Item Env:ACADEMY_LAB_TARGET`. The failing starter is intentional.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the initial defect" file="labs/react-lift-state/starter/solution.tsx" expected="A local assertion exposes the deliberately incorrect state rule.">
+
+Read this starter before editing. Predict the specific failing assertion and whether it is a render or transition failure.
+
+```tsx
+import {useState} from 'react';
+export function TextComposer({initial=''}:{initial?:string}) {
+ const [text,setText]=useState(initial);
+ return <section><label htmlFor="composer">Message</label>
+ <input id="composer" value={text} onChange={e=>setText(e.target.value)}/>
+ <output aria-label="Preview">Disconnected preview</output></section>;
+}
+```
+
+**Why it fails:** Separate local copies of a text field and preview can drift when only one child receives updates.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the state ownership or transition" file="labs/react-lift-state/starter/solution.tsx" expected="Initial input and preview agree, and the parent owns the update callback.">
+
+Apply a correction that respects the relevant React snapshot, identity, immutability, or single-source-of-truth rule.
+
+```tsx
+import {useState} from 'react';
+export function TextComposer({initial=''}:{initial?:string}) {
+ const [text,setText]=useState(initial);
+ return <section><label htmlFor="composer">Message</label>
+  <input id="composer" value={text} onChange={e=>setText(e.target.value)}/>
+  <output aria-label="Preview">{text||'Empty message'}</output></section>;
+}
+```
+
+**Why the repair works:** Keep one authoritative state value in the closest common parent and pass it to controlled siblings.
+
+</LessonStep>
+
+<LessonStep number={3} title="Prove the happy path and a counterexample" file="labs/react-lift-state/solution.test.mjs" expected="A reviewed solution passes the local assertions; a restored defect fails.">
+
+Run `npm run lab:react-lift-state`, then change an input or restore the defect and repeat the command.
+
+```js
+const html=renderToStaticMarkup(createElement(mod.TextComposer,{initial:'Hello'}));
+assert.match(html,/id="composer"/);assert.match(html,/value="Hello"/);
+assert.match(html,/aria-label="Preview">Hello/);
+assert.match(renderToStaticMarkup(createElement(mod.TextComposer,{initial:''})),/Empty message/);
+```
+
+**What actually happened:** Initial input and preview agree, and the parent owns the update callback. For browser interaction evidence, add a dedicated DOM environment; this lesson's local test does not claim to simulate user events.
+
+</LessonStep>
+
+<Misconception claim="Separate local copies of a text field and preview can drift when only one child receives updates." correction="Keep one authoritative state value in the closest common parent and pass it to controlled siblings. In the nearest common ancestor that coordinates both consumers." />
+
+<KnowledgeCheck question="Where should shared editable state live?" choices={["React automatically synchronizes any duplicate state stored in unrelated components.","In the nearest common ancestor that coordinates both consumers.","All React state is stored in the browser's localStorage by default.","Passing a compile-only TypeScript check proves a browser interaction works."] } correctIndex={1} explanation="In the nearest common ancestor that coordinates both consumers." misconception="Choose the state owner and transition model explicitly instead of relying on automatic synchronization." lessonId="06.02.06" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Symptom:** Separate local copies of a text field and preview can drift when only one child receives updates.
+
+**Root cause:** The starter violates the rule established in the mental model. Use a small input and read the actual prior state before changing code.
+
+**Repair:** Keep one authoritative state value in the closest common parent and pass it to controlled siblings.
+
+**Regression test:** Initial input and preview agree, and the parent owns the update callback. Do not conclude that a test of a pure function proves component reconciliation or live event batching.
+
+## Guided local lab
+
+Inspect `labs/react-lift-state/starter`, repair the exported code, and run the local verifier. Hint ladder: identify the authoritative input; examine the old state snapshot; compare the instructor's updated function signature and branch behavior.
+
+<LabGate lessonId="06.02.06" labId="lab.react.react-lift-state" commands={["npm run lab:react-lift-state","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+What is the minimal authoritative state? How could the repaired approach regress, and which additional real-browser test would confirm behavior after a user interaction?
+
+## Official references
+
+- [React guide: Lifting state up](https://react.dev/learn/sharing-state-between-components)
+- [React documentation index](https://react.dev/learn)

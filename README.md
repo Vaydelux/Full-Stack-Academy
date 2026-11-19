@@ -1,3 +1,5 @@
+> **Development checkpoint — 2026-11-19:** GitHub `main` includes 181 authored/published lesson IDs after merged PRs #14–#16. The unmerged React foundations feature branch proposes 196 authored lesson IDs, 193 MDX and 193 local labs across 24 complete modules. The hosted deployment has not been rechecked and these source counts are **not** a production release claim. See [current handoff](docs/NEXT_TODO.md) and [React acceptance](docs/REACT_FOUNDATIONS_ACCEPTANCE.md). No Vercel or GitHub Actions check is required for this development pass.
+
 # Full-Stack Engineering Academy · v1.1
 
 A content-first, interactive curriculum architecture and spatial course reader covering **TypeScript, React 19, Next.js 16, Tailwind CSS, Zod 4, NestJS/Fastify, PostgreSQL, Prisma 7, Supabase, Redis/BullMQ, testing, Docker/CI/CD, observability, and production engineering**.
@@ -87,7 +89,7 @@ The home workspace opens in Read lesson mode. Curriculum, search and notes remai
 
 ## First foundations lessons
 
-All eight computing and internet foundations lessons (00.01.01–00.01.08) use local Node.js lab fixtures rather than simulating server code in a React iframe. Learners can verify starter code via the documented ACADEMY_LAB_TARGET setting. The course has twelve authored lessons (four existing interactive samples and eight local foundations labs). Module 00.01 is fully authored; subsequent orientation modules remain planned. Run all lab tests with `npm run test:labs`.
+All eight computing and internet foundations lessons (00.01.01–00.01.08) use local Node.js lab fixtures rather than simulating server code in a React iframe. Learners can verify starter code via the documented ACADEMY_LAB_TARGET setting. That first foundation release had twelve authored lesson IDs; subsequent source milestones have expanded the authored curriculum substantially. Refer to docs/checkpoint.json for current source counts. Run all lab tests with `npm run test:labs`.
 
 ## Developer Toolchain (00.02)
 

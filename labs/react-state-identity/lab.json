@@ -1,0 +1,15 @@
+{
+  "id": "lab.react.react-state-identity",
+  "lessonId": "06.02.05",
+  "title": "Practice component state preservation with local fixtures",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/react-state-identity/starter/solution.tsx",
+  "solution": "labs/react-state-identity/solution/solution.tsx",
+  "tests": "labs/react-state-identity/solution.test.mjs",
+  "verify": [
+    "npm run lab:react-state-identity"
+  ],
+  "expected": "The editor key matches the current person ID, and the initial rendered field shows the selected person.",
+  "security": "Only checked-in source executes in a local Node test process; no public React code-execution endpoint exists."
+}

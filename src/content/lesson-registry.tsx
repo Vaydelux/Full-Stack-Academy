@@ -178,6 +178,22 @@ import GitMono6 from './lessons/05.03.06.mdx';
 import GitMono7 from './lessons/05.03.07.mdx';
 import GitMono8 from './lessons/05.03.08.mdx';
 
+import ReactBatch1 from './lessons/06.01.02.mdx';
+import ReactBatch2 from './lessons/06.01.03.mdx';
+import ReactBatch3 from './lessons/06.01.04.mdx';
+import ReactBatch4 from './lessons/06.01.05.mdx';
+import ReactBatch5 from './lessons/06.01.06.mdx';
+import ReactBatch6 from './lessons/06.01.07.mdx';
+import ReactBatch7 from './lessons/06.01.08.mdx';
+import ReactBatch8 from './lessons/06.02.01.mdx';
+import ReactBatch9 from './lessons/06.02.02.mdx';
+import ReactBatch10 from './lessons/06.02.03.mdx';
+import ReactBatch11 from './lessons/06.02.04.mdx';
+import ReactBatch12 from './lessons/06.02.05.mdx';
+import ReactBatch13 from './lessons/06.02.06.mdx';
+import ReactBatch14 from './lessons/06.02.07.mdx';
+import ReactBatch15 from './lessons/06.02.08.mdx';
+
 export function LessonArticle({lessonId}: {lessonId:string}) {
   switch (lessonId) {
     case '00.01.01': return <BrowserLesson />;
@@ -358,6 +374,21 @@ export function LessonArticle({lessonId}: {lessonId:string}) {
     case '05.03.07': return <GitMono7 />;
     case '05.03.08': return <GitMono8 />;
     case '06.01.01': return <JSXLessonMDX />;
+    case '06.01.02': return <ReactBatch1 />;
+    case '06.01.03': return <ReactBatch2 />;
+    case '06.01.04': return <ReactBatch3 />;
+    case '06.01.05': return <ReactBatch4 />;
+    case '06.01.06': return <ReactBatch5 />;
+    case '06.01.07': return <ReactBatch6 />;
+    case '06.01.08': return <ReactBatch7 />;
+    case '06.02.01': return <ReactBatch8 />;
+    case '06.02.02': return <ReactBatch9 />;
+    case '06.02.03': return <ReactBatch10 />;
+    case '06.02.04': return <ReactBatch11 />;
+    case '06.02.05': return <ReactBatch12 />;
+    case '06.02.06': return <ReactBatch13 />;
+    case '06.02.07': return <ReactBatch14 />;
+    case '06.02.08': return <ReactBatch15 />;
     default: return null;
   }
 }

@@ -1,0 +1,15 @@
+{
+  "id": "lab.react.react-stale-closures",
+  "lessonId": "06.02.08",
+  "title": "Practice bug hunt: stale closure with local fixtures",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/react-stale-closures/starter/solution.tsx",
+  "solution": "labs/react-stale-closures/solution/solution.tsx",
+  "tests": "labs/react-stale-closures/solution.test.mjs",
+  "verify": [
+    "npm run lab:react-stale-closures"
+  ],
+  "expected": "Starting at five and applying both queued updaters results in seven, not six or one.",
+  "security": "Only checked-in source executes in a local Node test process; no public React code-execution endpoint exists."
+}

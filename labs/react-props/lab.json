@@ -1,0 +1,15 @@
+{
+  "id": "lab.react.react-props",
+  "lessonId": "06.01.02",
+  "title": "Implement and verify components and props",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/react-props/starter/solution.tsx",
+  "solution": "labs/react-props/solution/solution.tsx",
+  "tests": "labs/react-props/solution.test.mjs",
+  "verify": [
+    "npm run lab:react-props"
+  ],
+  "expected": "The same component renders two distinct badges and safely escapes displayed names.",
+  "security": "Local reviewed React/TypeScript fixtures only; no arbitrary code executes on the academy server."
+}

@@ -1,0 +1,39 @@
+{
+  "id": "06.01.02",
+  "title": "Components and props: Treat props as read-only inputs to a component, not mutable application state",
+  "description": "Learn components and props with a React 19 model, TypeScript starter and solution, testable edge cases, a bug hunt and offline verification.",
+  "trackId": "06",
+  "moduleId": "06.01",
+  "level": "Beginner",
+  "estimatedMinutes": 50,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "react": "19",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "06.01.01"
+  ],
+  "objectives": [
+    "Explain the components and props contract and why it matters",
+    "Repair a deliberately broken react-props example",
+    "Verify the expected result and a failure or edge case with local tests"
+  ],
+  "labId": "lab.react.react-props",
+  "sources": [
+    {
+      "label": "React: Components and props",
+      "url": "https://react.dev/learn/passing-props-to-a-component"
+    },
+    {
+      "label": "React learning documentation",
+      "url": "https://react.dev/learn"
+    }
+  ],
+  "rubric": [
+    "I can explain components and props without confusing a render model with mounted browser behavior.",
+    "I can repair the starter for 06.01.02, compare with the instructor solution and explain why the test fails before the repair.",
+    "I can verify representative and edge-case behavior locally and name at least one additional interaction test needed."
+  ]
+}

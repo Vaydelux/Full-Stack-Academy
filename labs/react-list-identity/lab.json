@@ -1,0 +1,15 @@
+{
+  "id": "lab.react.react-list-identity",
+  "lessonId": "06.01.05",
+  "title": "Implement and verify lists, keys and identity",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/react-list-identity/starter/solution.tsx",
+  "solution": "labs/react-list-identity/solution/solution.tsx",
+  "tests": "labs/react-list-identity/solution.test.mjs",
+  "verify": [
+    "npm run lab:react-list-identity"
+  ],
+  "expected": "List order follows input, empty state is explicit, and list elements use task IDs as keys.",
+  "security": "Local reviewed React/TypeScript fixtures only; no arbitrary code executes on the academy server."
+}

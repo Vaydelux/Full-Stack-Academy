@@ -1,0 +1,15 @@
+{
+  "id": "lab.react.react-state-snapshots",
+  "lessonId": "06.02.01",
+  "title": "Practice usestate and state snapshots with local fixtures",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/react-state-snapshots/starter/solution.tsx",
+  "solution": "labs/react-state-snapshots/solution/solution.tsx",
+  "tests": "labs/react-state-snapshots/solution.test.mjs",
+  "verify": [
+    "npm run lab:react-state-snapshots"
+  ],
+  "expected": "A counter reflects its initial state and a functional increment computes from the supplied prior value.",
+  "security": "Only checked-in source executes in a local Node test process; no public React code-execution endpoint exists."
+}

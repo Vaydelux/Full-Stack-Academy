@@ -1,0 +1,39 @@
+{
+  "id": "06.01.06",
+  "title": "Rendering versus DOM commits: Separate pure render calculations from the browser's eventual DOM commit",
+  "description": "Learn rendering versus dom commits with a React 19 model, TypeScript starter and solution, testable edge cases, a bug hunt and offline verification.",
+  "trackId": "06",
+  "moduleId": "06.01",
+  "level": "Beginner",
+  "estimatedMinutes": 50,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "react": "19",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "06.01.05"
+  ],
+  "objectives": [
+    "Explain the rendering versus dom commits contract and why it matters",
+    "Repair a deliberately broken react-render-commit example",
+    "Verify the expected result and a failure or edge case with local tests"
+  ],
+  "labId": "lab.react.react-render-commit",
+  "sources": [
+    {
+      "label": "React: Rendering versus DOM commits",
+      "url": "https://react.dev/learn/render-and-commit"
+    },
+    {
+      "label": "React learning documentation",
+      "url": "https://react.dev/learn"
+    }
+  ],
+  "rubric": [
+    "I can explain rendering versus dom commits without confusing a render model with mounted browser behavior.",
+    "I can repair the starter for 06.01.06, compare with the instructor solution and explain why the test fails before the repair.",
+    "I can verify representative and edge-case behavior locally and name at least one additional interaction test needed."
+  ]
+}

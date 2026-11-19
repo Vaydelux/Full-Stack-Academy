@@ -1,0 +1,97 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Describe event handlers as an explicit React 19 rendering contract.","Implement a typed component or pure helper for react events.","Diagnose the failure mode and verify a positive and negative case."]} />
+
+## The problem we're solving
+
+A selected filter button must communicate its state and respond only when activated. Calling a handler in JSX while rendering triggers side effects before a user clicks. This lesson uses local React 19 / TypeScript 5 fixtures; the website does not execute learner-provided code.
+
+## Build the mental model
+
+Pass a callback to onClick; do not invoke it during rendering. onClick receives a function reference or a function that calls the desired operation on activation. A React element is a description of UI; server rendering verifies initial markup but cannot, by itself, prove a browser interaction, reconciliation, or a DOM commit.
+
+**Predict before you run:** A button starts unpressed, exposes aria-pressed and calls the parent callback exactly once when invoked.
+
+## Prerequisites and preflight
+
+Read the preceding React topic and inspect `labs/react-events/starter/solution.tsx` before the instructor answer. From the repository root use `npm ci` once. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:react-events`. PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:react-events; Remove-Item Env:ACADEMY_LAB_TARGET`. The starter is intentionally failing.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the learner-facing defect" file="labs/react-events/starter/solution.tsx" expected="The starter demonstrates a reproducible missing behavior.">
+
+The initial state is deliberately incomplete. Predict which assertion will fail, then confirm the failure before editing the starter.
+
+```tsx
+export function SelectionButton({selected,_onToggle,onToggle}:{selected:boolean;_onToggle?:()=>void;onToggle:()=>void}) {
+  return <button type="button">{selected ? 'Selected' : 'Select'}</button>;
+}
+```
+
+**Why it fails:** Calling a handler in JSX while rendering triggers side effects before a user clicks.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the smallest correct React contract" file="labs/react-events/starter/solution.tsx" expected="A button starts unpressed, exposes aria-pressed and calls the parent callback exactly once when invoked.">
+
+Replace the starter's implementation with the reviewed approach below. Keep its public exports stable.
+
+```tsx
+export function SelectionButton({selected,onToggle}:{selected:boolean;onToggle:()=>void}) {
+  return <button type="button" aria-pressed={selected} onClick={onToggle}>
+    {selected ? 'Selected' : 'Select'}
+  </button>;
+}
+```
+
+**Predict before you run:** A button starts unpressed, exposes aria-pressed and calls the parent callback exactly once when invoked.
+
+**Why the repair works:** Pass a callback to onClick; do not invoke it during rendering.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify behavior and try breaking the fix" file="labs/react-events/starter/solution.tsx" expected="A local assertion passes for the repaired model and fails for the original starter.">
+
+The checked-in test imports whichever target you select. Instructor tests cover both the expected state and an edge case. Do not mistake static server rendering for a real click or a full browser lifecycle.
+
+```js
+let calls=0;const handler=()=>{calls++};
+const element=mod.SelectionButton({selected:false,onToggle:handler});
+assert.equal(calls,0);assert.equal(element.props['aria-pressed'],false);assert.equal(element.props.type,'button');
+element.props.onClick();assert.equal(calls,1);
+assert.match(renderToStaticMarkup(createElement(mod.SelectionButton,{selected:true,onToggle:handler})),/aria-pressed="true"/);
+```
+
+**Proof it works:** Run `npm run lab:react-events` after comparing your starter repair. Deliberately restore one broken branch and confirm the relevant assertion fails again.
+
+</LessonStep>
+
+<Misconception claim="Calling a handler in JSX while rendering triggers side effects before a user clicks." correction="Pass a callback to onClick; do not invoke it during rendering. React behavior must be verified at the right boundary: unit models for pure logic, markup tests for server output, and real browser tests for client interaction." />
+
+<KnowledgeCheck question="Which expression correctly registers a click callback?" choices={["Because React always reuses the same DOM node regardless of props or keys.","onClick receives a function reference or a function that calls the desired operation on activation.","Because changing JSX disables TypeScript checks.","Because React automatically persists every input to a database."] } correctIndex={1} explanation="onClick receives a function reference or a function that calls the desired operation on activation." misconception="Review the component inputs, rendering boundary and explicit failure case." lessonId="06.01.07" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Symptom:** Calling a handler in JSX while rendering triggers side effects before a user clicks.
+
+**Diagnosis:** Trace the starter implementation to the first incorrect branch or missing prop; inspect the failing expected output rather than guessing about visual appearance.
+
+**Repair:** Pass a callback to onClick; do not invoke it during rendering.
+
+**Regression:** Re-run the local checks with altered input and verify the intended behavior without relying on Vercel, GitHub Actions, or public APIs.
+
+## Guided local lab
+
+Use the starter, instructor solution and test at `labs/react-events/`. Hints: first inspect the function signature; next trace the expected output; finally compare the exact condition or callback in the instructor example. This is an offline lab, not remote grading.
+
+<LabGate lessonId="06.01.07" labId="lab.react.react-events" commands={["npm run lab:react-events","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+What changed in the component contract? When might you deliberately choose a different composition or state boundary, and what additional browser test would prove it?
+
+## Official references
+
+- [React official guide: Event handlers](https://react.dev/learn/responding-to-events)
+- [React official learning index](https://react.dev/learn)

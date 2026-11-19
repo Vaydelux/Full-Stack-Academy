@@ -1,0 +1,15 @@
+{
+  "id": "lab.react.react-immutable-updates",
+  "lessonId": "06.02.04",
+  "title": "Practice updating arrays and objects with local fixtures",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/react-immutable-updates/starter/solution.tsx",
+  "solution": "labs/react-immutable-updates/solution/solution.tsx",
+  "tests": "labs/react-immutable-updates/solution.test.mjs",
+  "verify": [
+    "npm run lab:react-immutable-updates"
+  ],
+  "expected": "Only the selected item changes; the previous list and untouched item references remain intact.",
+  "security": "Only checked-in source executes in a local Node test process; no public React code-execution endpoint exists."
+}

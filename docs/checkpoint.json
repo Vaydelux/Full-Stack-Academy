@@ -9,9 +9,9 @@
     "productionUrl": "https://fullstack-academy-ecru.vercel.app/"
   },
   "development": {
-    "branch": "feat/05-git-monorepo-offline",
-    "lastMergedPr": 13,
-    "state": "offline-git-track-verified-ci-additional-red-gate"
+    "branch": "feat/react-foundations-state-offline",
+    "lastMergedPr": 16,
+    "state": "react-modules-06-01-06-02-awaiting-local-execution"
   },
   "snapshot": {
     "tracks": 28,
@@ -20,9 +20,9 @@
     "indexedReferences": 303,
     "authoredReferenceDrafts": 4,
     "authoredInteractiveModels": 4,
-    "authoredMdxLessons": 178,
-    "publishedLessons": 181,
-    "labFixtures": 178,
+    "authoredMdxLessons": 193,
+    "publishedLessons": 196,
+    "labFixtures": 193,
     "completeModules": [
       "00.01",
       "00.02",
@@ -45,7 +45,9 @@
       "04.04",
       "05.01",
       "05.02",
-      "05.03"
+      "05.03",
+      "06.01",
+      "06.02"
     ]
   },
   "security": {
@@ -53,6 +55,6 @@
     "devHighFindings": 14,
     "exceptionExpires": "2026-12-02"
   },
-  "nextMilestone": "06.01",
-  "status": "unreleased-git-track-candidate"
+  "nextMilestone": "06.03",
+  "status": "unreleased-react-foundations-state-candidate"
 }

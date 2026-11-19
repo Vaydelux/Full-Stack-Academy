@@ -20,7 +20,7 @@ export async function verifyCssTrack({ page, base, assert, wait }) {
       assert.equal(await page.locator('meta[name="robots"][content*="noindex"]').count(),0,'Newly authored lesson must be indexed: ' + id);
     }
   }
-  await page.goto(base + '/learn/06.01.02');
+  await page.goto(base + '/learn/06.03.01');
   assert.ok(await page.locator('meta[name="robots"][content*="noindex"]').count() > 0, 'Next unauthored React lesson must remain noindex');
 
   await page.setViewportSize({width:320,height:800});

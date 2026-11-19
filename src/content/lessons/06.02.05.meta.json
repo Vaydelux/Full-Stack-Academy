@@ -1,0 +1,39 @@
+{
+  "id": "06.02.05",
+  "title": "Component state preservation: React associates state with component identity and tree position; a deliberate key can reset a form for a new record",
+  "description": "A React 19 and TypeScript 5 offline walkthrough of component state preservation, with explicit state contracts, a reproducible defect and local regression tests.",
+  "trackId": "06",
+  "moduleId": "06.02",
+  "level": "Beginner",
+  "estimatedMinutes": 55,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "react": "19",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "06.02.04"
+  ],
+  "objectives": [
+    "Explain the state contract of component state preservation",
+    "Fix a reproducible problem in react-state-identity",
+    "Verify representative and edge-case behavior using offline tests"
+  ],
+  "labId": "lab.react.react-state-identity",
+  "sources": [
+    {
+      "label": "React official guide: Component state preservation",
+      "url": "https://react.dev/learn/preserving-and-resetting-state"
+    },
+    {
+      "label": "React official documentation",
+      "url": "https://react.dev/learn"
+    }
+  ],
+  "rubric": [
+    "I can explain component state preservation without confusing a render model with mounted browser behavior.",
+    "I can repair the starter for 06.02.05, compare with the instructor solution and explain why the test fails before the repair.",
+    "I can verify representative and edge-case behavior locally and name at least one additional interaction test needed."
+  ]
+}

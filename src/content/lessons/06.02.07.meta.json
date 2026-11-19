@@ -1,0 +1,39 @@
+{
+  "id": "06.02.07",
+  "title": "Reducers and state machines: Model each state transition as an explicit typed action and return new state without mutating it",
+  "description": "A React 19 and TypeScript 5 offline walkthrough of reducers and state machines, with explicit state contracts, a reproducible defect and local regression tests.",
+  "trackId": "06",
+  "moduleId": "06.02",
+  "level": "Beginner",
+  "estimatedMinutes": 55,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "react": "19",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "06.02.06"
+  ],
+  "objectives": [
+    "Explain the state contract of reducers and state machines",
+    "Fix a reproducible problem in react-reducer",
+    "Verify representative and edge-case behavior using offline tests"
+  ],
+  "labId": "lab.react.react-reducer",
+  "sources": [
+    {
+      "label": "React official guide: Reducers and state machines",
+      "url": "https://react.dev/learn/extracting-state-logic-into-a-reducer"
+    },
+    {
+      "label": "React official documentation",
+      "url": "https://react.dev/learn"
+    }
+  ],
+  "rubric": [
+    "I can explain reducers and state machines without confusing a render model with mounted browser behavior.",
+    "I can repair the starter for 06.02.07, compare with the instructor solution and explain why the test fails before the repair.",
+    "I can verify representative and edge-case behavior locally and name at least one additional interaction test needed."
+  ]
+}

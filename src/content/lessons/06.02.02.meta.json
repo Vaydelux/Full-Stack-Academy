@@ -1,0 +1,39 @@
+{
+  "id": "06.02.02",
+  "title": "Batching and functional updates: When multiple queued changes depend on earlier changes, pass updater functions rather than a captured count",
+  "description": "A React 19 and TypeScript 5 offline walkthrough of batching and functional updates, with explicit state contracts, a reproducible defect and local regression tests.",
+  "trackId": "06",
+  "moduleId": "06.02",
+  "level": "Beginner",
+  "estimatedMinutes": 55,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "react": "19",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "06.02.01"
+  ],
+  "objectives": [
+    "Explain the state contract of batching and functional updates",
+    "Fix a reproducible problem in react-batched-updates",
+    "Verify representative and edge-case behavior using offline tests"
+  ],
+  "labId": "lab.react.react-batched-updates",
+  "sources": [
+    {
+      "label": "React official guide: Batching and functional updates",
+      "url": "https://react.dev/learn/queueing-a-series-of-state-updates"
+    },
+    {
+      "label": "React official documentation",
+      "url": "https://react.dev/learn"
+    }
+  ],
+  "rubric": [
+    "I can explain batching and functional updates without confusing a render model with mounted browser behavior.",
+    "I can repair the starter for 06.02.02, compare with the instructor solution and explain why the test fails before the repair.",
+    "I can verify representative and edge-case behavior locally and name at least one additional interaction test needed."
+  ]
+}

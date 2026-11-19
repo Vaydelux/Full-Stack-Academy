@@ -1,0 +1,15 @@
+{
+  "id": "lab.react.react-events",
+  "lessonId": "06.01.07",
+  "title": "Implement and verify event handlers",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/react-events/starter/solution.tsx",
+  "solution": "labs/react-events/solution/solution.tsx",
+  "tests": "labs/react-events/solution.test.mjs",
+  "verify": [
+    "npm run lab:react-events"
+  ],
+  "expected": "A button starts unpressed, exposes aria-pressed and calls the parent callback exactly once when invoked.",
+  "security": "Local reviewed React/TypeScript fixtures only; no arbitrary code executes on the academy server."
+}

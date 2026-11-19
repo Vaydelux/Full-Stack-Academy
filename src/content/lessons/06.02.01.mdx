@@ -1,0 +1,95 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Explain the usestate and state snapshots mental model in React 19","Repair a controlled state or reducer example for react-state-snapshots","Verify expected and edge-case behavior through local checks"]} />
+
+## The problem we're solving
+
+A counter widget should use React state, rather than assigning a mutable variable during rendering. A nonreactive local variable or a constant initial label never causes React to render the updated count. The following exercise is React 19 and TypeScript 5 source checked into this repository, not a remote code runner.
+
+## Build the mental model
+
+State is a snapshot for each render, so an event handler sees values captured by that render. It captures the state snapshot from the render that created that handler. **Important boundary:** A pure-function test validates state transitions and static React rendering checks initial markup; neither alone simulates an interactive browser or verifies hydration and effect behavior.
+
+**Predict before you run:** A counter reflects its initial state and a functional increment computes from the supplied prior value.
+
+## Prerequisites and preflight
+
+Review the previous canonical React topic, then open `labs/react-state-snapshots/starter/solution.tsx`. Use Node.js 24 with locked repository dependencies. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:react-state-snapshots`. PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:react-state-snapshots; Remove-Item Env:ACADEMY_LAB_TARGET`. The failing starter is intentional.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the initial defect" file="labs/react-state-snapshots/starter/solution.tsx" expected="A local assertion exposes the deliberately incorrect state rule.">
+
+Read this starter before editing. Predict the specific failing assertion and whether it is a render or transition failure.
+
+```tsx
+export function increment(previous:number){return previous;}
+export function SnapshotCounter({_initial,initial=0}:{_initial?:number;initial?:number}) {
+ return <button type="button">Count: 0</button>;
+}
+```
+
+**Why it fails:** A nonreactive local variable or a constant initial label never causes React to render the updated count.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the state ownership or transition" file="labs/react-state-snapshots/starter/solution.tsx" expected="A counter reflects its initial state and a functional increment computes from the supplied prior value.">
+
+Apply a correction that respects the relevant React snapshot, identity, immutability, or single-source-of-truth rule.
+
+```tsx
+import {useState} from 'react';
+export function increment(previous:number){return previous+1;}
+export function SnapshotCounter({initial=0}:{initial?:number}) {
+ const [count,setCount]=useState(initial);
+ return <button type="button" onClick={()=>setCount(increment)}>Count: {count}</button>;
+}
+```
+
+**Why the repair works:** State is a snapshot for each render, so an event handler sees values captured by that render.
+
+</LessonStep>
+
+<LessonStep number={3} title="Prove the happy path and a counterexample" file="labs/react-state-snapshots/solution.test.mjs" expected="A reviewed solution passes the local assertions; a restored defect fails.">
+
+Run `npm run lab:react-state-snapshots`, then change an input or restore the defect and repeat the command.
+
+```js
+assert.equal(mod.increment(4),5);assert.equal(mod.increment(-1),0);
+const html=renderToStaticMarkup(createElement(mod.SnapshotCounter,{initial:4}));
+assert.match(html,/Count: 4/);assert.match(html,/type="button"/);
+```
+
+**What actually happened:** A counter reflects its initial state and a functional increment computes from the supplied prior value. For browser interaction evidence, add a dedicated DOM environment; this lesson's local test does not claim to simulate user events.
+
+</LessonStep>
+
+<Misconception claim="A nonreactive local variable or a constant initial label never causes React to render the updated count." correction="State is a snapshot for each render, so an event handler sees values captured by that render. It captures the state snapshot from the render that created that handler." />
+
+<KnowledgeCheck question="What value does a render's event handler capture?" choices={["React automatically synchronizes any duplicate state stored in unrelated components.","It captures the state snapshot from the render that created that handler.","All React state is stored in the browser's localStorage by default.","Passing a compile-only TypeScript check proves a browser interaction works."] } correctIndex={1} explanation="It captures the state snapshot from the render that created that handler." misconception="Choose the state owner and transition model explicitly instead of relying on automatic synchronization." lessonId="06.02.01" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Symptom:** A nonreactive local variable or a constant initial label never causes React to render the updated count.
+
+**Root cause:** The starter violates the rule established in the mental model. Use a small input and read the actual prior state before changing code.
+
+**Repair:** State is a snapshot for each render, so an event handler sees values captured by that render.
+
+**Regression test:** A counter reflects its initial state and a functional increment computes from the supplied prior value. Do not conclude that a test of a pure function proves component reconciliation or live event batching.
+
+## Guided local lab
+
+Inspect `labs/react-state-snapshots/starter`, repair the exported code, and run the local verifier. Hint ladder: identify the authoritative input; examine the old state snapshot; compare the instructor's updated function signature and branch behavior.
+
+<LabGate lessonId="06.02.01" labId="lab.react.react-state-snapshots" commands={["npm run lab:react-state-snapshots","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+What is the minimal authoritative state? How could the repaired approach regress, and which additional real-browser test would confirm behavior after a user interaction?
+
+## Official references
+
+- [React guide: useState and state snapshots](https://react.dev/learn/state-as-a-snapshot)
+- [React documentation index](https://react.dev/learn)
