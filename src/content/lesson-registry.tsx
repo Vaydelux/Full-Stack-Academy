@@ -228,6 +228,39 @@ import Milestone14 from './lessons/07.01.06.mdx';
 import Milestone15 from './lessons/07.01.07.mdx';
 import Milestone16 from './lessons/07.01.08.mdx';
 
+import NextFull1 from './lessons/07.02.01.mdx';
+import NextFull2 from './lessons/07.02.02.mdx';
+import NextFull3 from './lessons/07.02.03.mdx';
+import NextFull4 from './lessons/07.02.04.mdx';
+import NextFull5 from './lessons/07.02.05.mdx';
+import NextFull6 from './lessons/07.02.06.mdx';
+import NextFull7 from './lessons/07.02.07.mdx';
+import NextFull8 from './lessons/07.02.08.mdx';
+import NextFull9 from './lessons/07.03.01.mdx';
+import NextFull10 from './lessons/07.03.02.mdx';
+import NextFull11 from './lessons/07.03.03.mdx';
+import NextFull12 from './lessons/07.03.04.mdx';
+import NextFull13 from './lessons/07.03.05.mdx';
+import NextFull14 from './lessons/07.03.06.mdx';
+import NextFull15 from './lessons/07.03.07.mdx';
+import NextFull16 from './lessons/07.03.08.mdx';
+import NextFull17 from './lessons/07.04.01.mdx';
+import NextFull18 from './lessons/07.04.02.mdx';
+import NextFull19 from './lessons/07.04.03.mdx';
+import NextFull20 from './lessons/07.04.04.mdx';
+import NextFull21 from './lessons/07.04.05.mdx';
+import NextFull22 from './lessons/07.04.06.mdx';
+import NextFull23 from './lessons/07.04.07.mdx';
+import NextFull24 from './lessons/07.04.08.mdx';
+import NextFull25 from './lessons/07.05.01.mdx';
+import NextFull26 from './lessons/07.05.02.mdx';
+import NextFull27 from './lessons/07.05.03.mdx';
+import NextFull28 from './lessons/07.05.04.mdx';
+import NextFull29 from './lessons/07.05.05.mdx';
+import NextFull30 from './lessons/07.05.06.mdx';
+import NextFull31 from './lessons/07.05.07.mdx';
+import NextFull32 from './lessons/07.05.08.mdx';
+
 export function LessonArticle({lessonId}: {lessonId:string}) {
   switch (lessonId) {
     case '00.01.01': return <BrowserLesson />;
@@ -455,6 +488,38 @@ export function LessonArticle({lessonId}: {lessonId:string}) {
     case '07.01.06': return <Milestone14 />;
     case '07.01.07': return <Milestone15 />;
     case '07.01.08': return <Milestone16 />;
+    case '07.02.01': return <NextFull1 />;
+    case '07.02.02': return <NextFull2 />;
+    case '07.02.03': return <NextFull3 />;
+    case '07.02.04': return <NextFull4 />;
+    case '07.02.05': return <NextFull5 />;
+    case '07.02.06': return <NextFull6 />;
+    case '07.02.07': return <NextFull7 />;
+    case '07.02.08': return <NextFull8 />;
+    case '07.03.01': return <NextFull9 />;
+    case '07.03.02': return <NextFull10 />;
+    case '07.03.03': return <NextFull11 />;
+    case '07.03.04': return <NextFull12 />;
+    case '07.03.05': return <NextFull13 />;
+    case '07.03.06': return <NextFull14 />;
+    case '07.03.07': return <NextFull15 />;
+    case '07.03.08': return <NextFull16 />;
+    case '07.04.01': return <NextFull17 />;
+    case '07.04.02': return <NextFull18 />;
+    case '07.04.03': return <NextFull19 />;
+    case '07.04.04': return <NextFull20 />;
+    case '07.04.05': return <NextFull21 />;
+    case '07.04.06': return <NextFull22 />;
+    case '07.04.07': return <NextFull23 />;
+    case '07.04.08': return <NextFull24 />;
+    case '07.05.01': return <NextFull25 />;
+    case '07.05.02': return <NextFull26 />;
+    case '07.05.03': return <NextFull27 />;
+    case '07.05.04': return <NextFull28 />;
+    case '07.05.05': return <NextFull29 />;
+    case '07.05.06': return <NextFull30 />;
+    case '07.05.07': return <NextFull31 />;
+    case '07.05.08': return <NextFull32 />;
     default: return null;
   }
 }
