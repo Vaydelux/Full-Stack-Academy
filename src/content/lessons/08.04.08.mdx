@@ -1,0 +1,98 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Explain the accessibility and design invariant behind lab annotated ux review","Reproduce and correct a meaningful failing student assertion","Identify what static SSR proves and what requires a real browser and keyboard"]} />
+
+## The problem we're solving
+
+A UI review rubric gives a passing grade even when critical focus failures and unlabelled controls remain unresolved.
+
+## Build the mental model
+
+A professional UX release review records observations, severity, affected user journeys and evidence, then blocks release on critical accessibility failures. Distinguish subjective visual preference from objective keyboard failures, missing labels and data loss.
+
+**Predict first:** An unresolved critical issue blocks release; only resolved or absent issues permit passing status.
+
+## Prerequisites and preflight
+
+Continue from [the previous topic](/learn/08.04.07). Read `labs/ui-annotated-ux-review/starter/solution.ts`, `labs/ui-annotated-ux-review/solution/solution.ts` and `labs/ui-annotated-ux-review/solution.test.mjs`. The TSX sample is rendered as initial HTML only; hydrated events, focus, visual contrast and overflow need separate browser tests.
+
+<LessonStep number={1} title="Reproduce the defective UI policy" file="labs/ui-annotated-ux-review/starter/solution.ts" expected="Student starter fails a meaningful assertion.">
+
+```ts
+
+export type Issue={severity:"low"|"medium"|"critical";resolved:boolean};export function solve(issues:readonly Issue[]):string{return "pass";}
+
+```
+
+**Predict:** An unresolved critical issue blocks release; only resolved or absent issues permit passing status.
+
+**Diagnosis:** A UI review rubric gives a passing grade even when critical focus failures and unlabelled controls remain unresolved.
+
+**Proof:** Run `ACADEMY_LAB_TARGET=starter npm run lab:ui-annotated-ux-review`. The starter should fail the stated regression, not fail because of a missing dependency.
+
+</LessonStep>
+
+<LessonStep number={2} title="Fix the policy and verify edge cases" file="labs/ui-annotated-ux-review/starter/solution.ts" expected="An unresolved critical issue blocks release; only resolved or absent issues permit passing status.">
+
+```ts
+
+export type Issue={severity:"low"|"medium"|"critical";resolved:boolean};export function solve(issues:readonly Issue[]):string{const active=issues.filter(x=>!x.resolved);return active.some(x=>x.severity==="critical")?"blocked":active.length?"review":"pass";}
+
+```
+
+**Why it works:** A professional UX release review records observations, severity, affected user journeys and evidence, then blocks release on critical accessibility failures. Distinguish subjective visual preference from objective keyboard failures, missing labels and data loss.
+
+**Proof:** Run `npm run lab:ui-annotated-ux-review` and inspect the instructor test output.
+
+</LessonStep>
+
+<LessonStep number={3} title="Render the semantic React example" file="labs/ui-annotated-ux-review/solution/Widget.tsx" expected="Initial semantic markup renders without a runtime crash.">
+
+```tsx
+
+import React from "react";
+export function Workshop(){return <main aria-label="UX review workshop"><h2>Annotated release review</h2><ol><li><strong>Critical:</strong> Dialog focus can escape; fix before release.</li><li><strong>Medium:</strong> Secondary text contrast needs confirmation.</li></ol><p role="status">Release gate: Blocked</p></main>;}
+
+```
+
+This sample uses semantic React without requiring an uninstalled UI package. Server rendering does not execute handlers or certify focus management.
+
+**Proof:** The lab renders initial HTML with React DOM Server. A real browser check remains mandatory.
+
+</LessonStep>
+
+## Production library pattern
+
+Consult the official implementation pattern for this component and version.
+
+This integration sketch is illustrative. It is not compiled or executed by the offline lab and must be verified separately in an isolated app.
+
+## Explore and verify
+
+Test long labels, keyboard-only usage, 320px width, reduced motion, contrast, errors and screen-reader announcements in a real browser.
+
+<Misconception claim="An SSR snapshot proves a component is keyboard accessible." correction="A professional UX release review records observations, severity, affected user journeys and evidence, then blocks release on critical accessibility failures. Distinguish subjective visual preference from objective keyboard failures, missing labels and data loss." />
+
+## Bug Hunt: reproduce, diagnose, repair
+
+Audit a form, table and modal at keyboard-only, 320px and 200% zoom. Record concrete evidence, severity and fix; rerun affected interaction tests before closing issues.
+
+<KnowledgeCheck question="Which condition should block UI release?" choices={["An unresolved critical keyboard or data-loss defect","A designer preferring a different border radius","A minor nonfunctional animation color","An optional theme accent"]} correctIndex={0} explanation="A professional UX release review records observations, severity, affected user journeys and evidence, then blocks release on critical accessibility failures. Distinguish subjective visual preference from objective keyboard failures, missing labels and data loss." misconception="Offline SSR is not an interactive accessibility test." lessonId="08.04.08" />
+
+## Guided local lab
+
+Edit `labs/ui-annotated-ux-review/starter/solution.ts`; the actual test asserts meaningful positive and negative outcomes. `npm run lab:ui-annotated-ux-review` also renders initial React markup. Keyboard interactions, pointer behavior, focus trapping, browser layout and actual Radix/shadcn packages are separate integration gates.
+
+<LabGate lessonId="08.04.08" labId="lab.foundation.ui-annotated-ux-review" commands={["npm ci","npm run lab:ui-annotated-ux-review"]} interactive={false} />
+
+## Reflect
+
+What was broken, what exact assertion proves the repair, and which user interaction still requires a real browser or assistive technology?
+
+## Official references
+
+- [Primary framework documentation](https://www.w3.org/WAI/WCAG22/)
+
+- [Supporting accessibility and API guide](https://www.nngroup.com/articles/ten-usability-heuristics/)

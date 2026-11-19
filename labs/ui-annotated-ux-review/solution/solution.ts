@@ -1,0 +1,1 @@
+export type Issue={severity:"low"|"medium"|"critical";resolved:boolean};export function solve(issues:readonly Issue[]):string{const active=issues.filter(x=>!x.resolved);return active.some(x=>x.severity==="critical")?"blocked":active.length?"review":"pass";}

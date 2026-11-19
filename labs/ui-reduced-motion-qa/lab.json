@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.ui-reduced-motion-qa",
+  "lessonId": "08.04.05",
+  "title": "Reduced motion testing",
+  "runtime": "react19-ui-ssr-pure-contract",
+  "status": "authored",
+  "starter": "labs/ui-reduced-motion-qa/starter/solution.ts",
+  "solution": "labs/ui-reduced-motion-qa/solution/solution.ts",
+  "tests": "labs/ui-reduced-motion-qa/solution.test.mjs",
+  "verify": [
+    "npm run lab:ui-reduced-motion-qa"
+  ],
+  "expected": "Reviewed offline contract and initial semantic React markup, not browser interaction or visual fidelity.",
+  "security": "Only synthetic fixture data. No cloud, secrets, untrusted evaluation, authentication, deployment or hosted grader."
+}

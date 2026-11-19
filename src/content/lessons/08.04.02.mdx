@@ -1,0 +1,98 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Explain the accessibility and design invariant behind color and typography systems","Reproduce and correct a meaningful failing student assertion","Identify what static SSR proves and what requires a real browser and keyboard"]} />
+
+## The problem we're solving
+
+A theme uses 11px text for essential instructions and relies on low contrast to distinguish secondary content.
+
+## Build the mental model
+
+Typography must remain legible when zoomed; use scalable units, sufficient contrast, a readable line height and a clear hierarchy. A token system prevents different pages from silently drifting into tiny arbitrary values.
+
+**Predict first:** The teaching baseline rejects negative sizes and lifts the 11px body copy to a 16px token.
+
+## Prerequisites and preflight
+
+Continue from [the previous topic](/learn/08.04.01). Read `labs/ui-typography-system/starter/solution.ts`, `labs/ui-typography-system/solution/solution.ts` and `labs/ui-typography-system/solution.test.mjs`. The TSX sample is rendered as initial HTML only; hydrated events, focus, visual contrast and overflow need separate browser tests.
+
+<LessonStep number={1} title="Reproduce the defective UI policy" file="labs/ui-typography-system/starter/solution.ts" expected="Student starter fails a meaningful assertion.">
+
+```ts
+
+export function solve(size:number):number{return size;}
+
+```
+
+**Predict:** The teaching baseline rejects negative sizes and lifts the 11px body copy to a 16px token.
+
+**Diagnosis:** A theme uses 11px text for essential instructions and relies on low contrast to distinguish secondary content.
+
+**Proof:** Run `ACADEMY_LAB_TARGET=starter npm run lab:ui-typography-system`. The starter should fail the stated regression, not fail because of a missing dependency.
+
+</LessonStep>
+
+<LessonStep number={2} title="Fix the policy and verify edge cases" file="labs/ui-typography-system/starter/solution.ts" expected="The teaching baseline rejects negative sizes and lifts the 11px body copy to a 16px token.">
+
+```ts
+
+export function solve(size:number):number{if(!Number.isFinite(size)||size<0)throw new TypeError("Invalid font size");return Math.max(16,size);}
+
+```
+
+**Why it works:** Typography must remain legible when zoomed; use scalable units, sufficient contrast, a readable line height and a clear hierarchy. A token system prevents different pages from silently drifting into tiny arbitrary values.
+
+**Proof:** Run `npm run lab:ui-typography-system` and inspect the instructor test output.
+
+</LessonStep>
+
+<LessonStep number={3} title="Render the semantic React example" file="labs/ui-typography-system/solution/Widget.tsx" expected="Initial semantic markup renders without a runtime crash.">
+
+```tsx
+
+import React from "react";
+export function Workshop(){return <section aria-label="Typography workshop"><h2>Legible text system</h2><p className="text-base leading-relaxed">Explanations should remain readable at increased zoom.</p><small>Secondary information should retain adequate contrast.</small></section>;}
+
+```
+
+This sample uses semantic React without requiring an uninstalled UI package. Server rendering does not execute handlers or certify focus management.
+
+**Proof:** The lab renders initial HTML with React DOM Server. A real browser check remains mandatory.
+
+</LessonStep>
+
+## Production library pattern
+
+Consult the official implementation pattern for this component and version.
+
+This integration sketch is illustrative. It is not compiled or executed by the offline lab and must be verified separately in an isolated app.
+
+## Explore and verify
+
+Test long labels, keyboard-only usage, 320px width, reduced motion, contrast, errors and screen-reader announcements in a real browser.
+
+<Misconception claim="An SSR snapshot proves a component is keyboard accessible." correction="Typography must remain legible when zoomed; use scalable units, sufficient contrast, a readable line height and a clear hierarchy. A token system prevents different pages from silently drifting into tiny arbitrary values." />
+
+## Bug Hunt: reproduce, diagnose, repair
+
+Zoom to 200%, compare line lengths and focus indicators, check secondary text contrast and ensure long words wrap without clipping.
+
+<KnowledgeCheck question="Which combination supports accessible body text?" choices={["Tiny fixed pixels and low contrast","Readable scalable type, line height and contrast","Only bold text everywhere","Using images of text"]} correctIndex={1} explanation="Typography must remain legible when zoomed; use scalable units, sufficient contrast, a readable line height and a clear hierarchy. A token system prevents different pages from silently drifting into tiny arbitrary values." misconception="Offline SSR is not an interactive accessibility test." lessonId="08.04.02" />
+
+## Guided local lab
+
+Edit `labs/ui-typography-system/starter/solution.ts`; the actual test asserts meaningful positive and negative outcomes. `npm run lab:ui-typography-system` also renders initial React markup. Keyboard interactions, pointer behavior, focus trapping, browser layout and actual Radix/shadcn packages are separate integration gates.
+
+<LabGate lessonId="08.04.02" labId="lab.foundation.ui-typography-system" commands={["npm ci","npm run lab:ui-typography-system"]} interactive={false} />
+
+## Reflect
+
+What was broken, what exact assertion proves the repair, and which user interaction still requires a real browser or assistive technology?
+
+## Official references
+
+- [Primary framework documentation](https://www.w3.org/WAI/WCAG22/Understanding/resize-text.html)
+
+- [Supporting accessibility and API guide](https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html)

@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.ui-layout-stability",
+  "lessonId": "08.04.07",
+  "title": "CLS and layout stability",
+  "runtime": "react19-ui-ssr-pure-contract",
+  "status": "authored",
+  "starter": "labs/ui-layout-stability/starter/solution.ts",
+  "solution": "labs/ui-layout-stability/solution/solution.ts",
+  "tests": "labs/ui-layout-stability/solution.test.mjs",
+  "verify": [
+    "npm run lab:ui-layout-stability"
+  ],
+  "expected": "Reviewed offline contract and initial semantic React markup, not browser interaction or visual fidelity.",
+  "security": "Only synthetic fixture data. No cloud, secrets, untrusted evaluation, authentication, deployment or hosted grader."
+}

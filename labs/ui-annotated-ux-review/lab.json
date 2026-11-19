@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.ui-annotated-ux-review",
+  "lessonId": "08.04.08",
+  "title": "Lab annotated UX review",
+  "runtime": "react19-ui-ssr-pure-contract",
+  "status": "authored",
+  "starter": "labs/ui-annotated-ux-review/starter/solution.ts",
+  "solution": "labs/ui-annotated-ux-review/solution/solution.ts",
+  "tests": "labs/ui-annotated-ux-review/solution.test.mjs",
+  "verify": [
+    "npm run lab:ui-annotated-ux-review"
+  ],
+  "expected": "Reviewed offline contract and initial semantic React markup, not browser interaction or visual fidelity.",
+  "security": "Only synthetic fixture data. No cloud, secrets, untrusted evaluation, authentication, deployment or hosted grader."
+}

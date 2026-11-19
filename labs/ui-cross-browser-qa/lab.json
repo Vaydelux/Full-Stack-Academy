@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.ui-cross-browser-qa",
+  "lessonId": "08.04.06",
+  "title": "Cross-browser testing",
+  "runtime": "react19-ui-ssr-pure-contract",
+  "status": "authored",
+  "starter": "labs/ui-cross-browser-qa/starter/solution.ts",
+  "solution": "labs/ui-cross-browser-qa/solution/solution.ts",
+  "tests": "labs/ui-cross-browser-qa/solution.test.mjs",
+  "verify": [
+    "npm run lab:ui-cross-browser-qa"
+  ],
+  "expected": "Reviewed offline contract and initial semantic React markup, not browser interaction or visual fidelity.",
+  "security": "Only synthetic fixture data. No cloud, secrets, untrusted evaluation, authentication, deployment or hosted grader."
+}

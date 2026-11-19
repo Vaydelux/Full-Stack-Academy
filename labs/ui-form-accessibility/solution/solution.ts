@@ -1,0 +1,1 @@
+export type Field={id:string;label:string;error?:string};export function solve(field:Field){if(!field.id.trim()||!field.label.trim())throw new TypeError("Field ID and label required");return {id:field.id,labelled:true,described:Boolean(field.error?.trim())};}

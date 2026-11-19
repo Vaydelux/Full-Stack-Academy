@@ -1,0 +1,101 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Explain the accessibility and design invariant behind reduced motion testing","Reproduce and correct a meaningful failing student assertion","Identify what static SSR proves and what requires a real browser and keyboard"]} />
+
+## The problem we're solving
+
+A CSS-only entrance animation remains active even when a user has requested reduced motion from the operating system.
+
+## Build the mental model
+
+Nonessential animation should stop or simplify under prefers-reduced-motion. Test both operating-system preferences in real browsers; source-code inspection alone does not establish runtime behavior or layout stability.
+
+**Predict first:** A reduced-motion preference forces the teaching animation duration to zero, while normal mode retains the declared timing.
+
+## Prerequisites and preflight
+
+Continue from [the previous topic](/learn/08.04.04). Read `labs/ui-reduced-motion-qa/starter/solution.ts`, `labs/ui-reduced-motion-qa/solution/solution.ts` and `labs/ui-reduced-motion-qa/solution.test.mjs`. The TSX sample is rendered as initial HTML only; hydrated events, focus, visual contrast and overflow need separate browser tests.
+
+<LessonStep number={1} title="Reproduce the defective UI policy" file="labs/ui-reduced-motion-qa/starter/solution.ts" expected="Student starter fails a meaningful assertion.">
+
+```ts
+
+export function solve(preferReduced:boolean,duration:number):number{return duration;}
+
+```
+
+**Predict:** A reduced-motion preference forces the teaching animation duration to zero, while normal mode retains the declared timing.
+
+**Diagnosis:** A CSS-only entrance animation remains active even when a user has requested reduced motion from the operating system.
+
+**Proof:** Run `ACADEMY_LAB_TARGET=starter npm run lab:ui-reduced-motion-qa`. The starter should fail the stated regression, not fail because of a missing dependency.
+
+</LessonStep>
+
+<LessonStep number={2} title="Fix the policy and verify edge cases" file="labs/ui-reduced-motion-qa/starter/solution.ts" expected="A reduced-motion preference forces the teaching animation duration to zero, while normal mode retains the declared timing.">
+
+```ts
+
+export function solve(preferReduced:boolean,duration:number):number{if(!Number.isFinite(duration)||duration<0)throw new TypeError("Invalid motion duration");return preferReduced?0:duration;}
+
+```
+
+**Why it works:** Nonessential animation should stop or simplify under prefers-reduced-motion. Test both operating-system preferences in real browsers; source-code inspection alone does not establish runtime behavior or layout stability.
+
+**Proof:** Run `npm run lab:ui-reduced-motion-qa` and inspect the instructor test output.
+
+</LessonStep>
+
+<LessonStep number={3} title="Render the semantic React example" file="labs/ui-reduced-motion-qa/solution/Widget.tsx" expected="Initial semantic markup renders without a runtime crash.">
+
+```tsx
+
+import React from "react";
+export function Workshop(){return <section aria-label="Reduced motion QA workshop"><h2>Motion preferences</h2><p>Content remains available without transitions.</p><button type="button">Open details</button></section>;}
+
+```
+
+This sample uses semantic React without requiring an uninstalled UI package. Server rendering does not execute handlers or certify focus management.
+
+**Proof:** The lab renders initial HTML with React DOM Server. A real browser check remains mandatory.
+
+</LessonStep>
+
+## Production library pattern
+
+```tsx
+/* CSS */
+@media (prefers-reduced-motion: reduce) { .decorative-motion { animation: none; transition-duration: 0ms; } }
+```
+
+The CSS pattern is not compiled in the React SSR lab; a real browser must measure actual media-query behavior.
+
+## Explore and verify
+
+Test long labels, keyboard-only usage, 320px width, reduced motion, contrast, errors and screen-reader announcements in a real browser.
+
+<Misconception claim="An SSR snapshot proves a component is keyboard accessible." correction="Nonessential animation should stop or simplify under prefers-reduced-motion. Test both operating-system preferences in real browsers; source-code inspection alone does not establish runtime behavior or layout stability." />
+
+## Bug Hunt: reproduce, diagnose, repair
+
+Use Chrome/Firefox media emulation to compare reduced/nonreduced scenarios and verify that content remains discoverable without movement.
+
+<KnowledgeCheck question="How should nonessential motion behave under prefers-reduced-motion?" choices={["Remain unchanged","Be eliminated or meaningfully simplified","Become faster and larger","Move focus unpredictably"]} correctIndex={1} explanation="Nonessential animation should stop or simplify under prefers-reduced-motion. Test both operating-system preferences in real browsers; source-code inspection alone does not establish runtime behavior or layout stability." misconception="Offline SSR is not an interactive accessibility test." lessonId="08.04.05" />
+
+## Guided local lab
+
+Edit `labs/ui-reduced-motion-qa/starter/solution.ts`; the actual test asserts meaningful positive and negative outcomes. `npm run lab:ui-reduced-motion-qa` also renders initial React markup. Keyboard interactions, pointer behavior, focus trapping, browser layout and actual Radix/shadcn packages are separate integration gates.
+
+<LabGate lessonId="08.04.05" labId="lab.foundation.ui-reduced-motion-qa" commands={["npm ci","npm run lab:ui-reduced-motion-qa"]} interactive={false} />
+
+## Reflect
+
+What was broken, what exact assertion proves the repair, and which user interaction still requires a real browser or assistive technology?
+
+## Official references
+
+- [Primary framework documentation](https://www.w3.org/WAI/WCAG22/Understanding/animation-from-interactions.html)
+
+- [Supporting accessibility and API guide](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion)

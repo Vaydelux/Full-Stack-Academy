@@ -1,0 +1,98 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Explain the accessibility and design invariant behind visual hierarchy and spacing","Reproduce and correct a meaningful failing student assertion","Identify what static SSR proves and what requires a real browser and keyboard"]} />
+
+## The problem we're solving
+
+A page uses arbitrary spacing sizes on adjacent cards so its visual hierarchy feels inconsistent and cannot be updated centrally.
+
+## Build the mental model
+
+Use a small, intentional spacing scale that reflects grouping and hierarchy rather than per-component magic numbers. Start with readable headings and structural grouping, then apply systematic rhythm and responsive density.
+
+**Predict first:** Off-scale spacing values round to a consistent design grid and invalid values fail explicitly.
+
+## Prerequisites and preflight
+
+Continue from [the previous topic](/learn/08.03.08). Read `labs/ui-visual-hierarchy/starter/solution.ts`, `labs/ui-visual-hierarchy/solution/solution.ts` and `labs/ui-visual-hierarchy/solution.test.mjs`. The TSX sample is rendered as initial HTML only; hydrated events, focus, visual contrast and overflow need separate browser tests.
+
+<LessonStep number={1} title="Reproduce the defective UI policy" file="labs/ui-visual-hierarchy/starter/solution.ts" expected="Student starter fails a meaningful assertion.">
+
+```ts
+
+export function solve(spacing:number):number{return spacing;}
+
+```
+
+**Predict:** Off-scale spacing values round to a consistent design grid and invalid values fail explicitly.
+
+**Diagnosis:** A page uses arbitrary spacing sizes on adjacent cards so its visual hierarchy feels inconsistent and cannot be updated centrally.
+
+**Proof:** Run `ACADEMY_LAB_TARGET=starter npm run lab:ui-visual-hierarchy`. The starter should fail the stated regression, not fail because of a missing dependency.
+
+</LessonStep>
+
+<LessonStep number={2} title="Fix the policy and verify edge cases" file="labs/ui-visual-hierarchy/starter/solution.ts" expected="Off-scale spacing values round to a consistent design grid and invalid values fail explicitly.">
+
+```ts
+
+export function solve(spacing:number):number{if(!Number.isFinite(spacing)||spacing<0)throw new TypeError("Invalid spacing");return Math.round(spacing/4)*4;}
+
+```
+
+**Why it works:** Use a small, intentional spacing scale that reflects grouping and hierarchy rather than per-component magic numbers. Start with readable headings and structural grouping, then apply systematic rhythm and responsive density.
+
+**Proof:** Run `npm run lab:ui-visual-hierarchy` and inspect the instructor test output.
+
+</LessonStep>
+
+<LessonStep number={3} title="Render the semantic React example" file="labs/ui-visual-hierarchy/solution/Widget.tsx" expected="Initial semantic markup renders without a runtime crash.">
+
+```tsx
+
+import React from "react";
+export function Workshop(){return <main aria-label="Hierarchy workshop"><h1>Project overview</h1><section className="space-y-4"><h2>Current tasks</h2><p>Spacing and headings should reveal information hierarchy.</p></section></main>;}
+
+```
+
+This sample uses semantic React without requiring an uninstalled UI package. Server rendering does not execute handlers or certify focus management.
+
+**Proof:** The lab renders initial HTML with React DOM Server. A real browser check remains mandatory.
+
+</LessonStep>
+
+## Production library pattern
+
+Consult the official implementation pattern for this component and version.
+
+This integration sketch is illustrative. It is not compiled or executed by the offline lab and must be verified separately in an isolated app.
+
+## Explore and verify
+
+Test long labels, keyboard-only usage, 320px width, reduced motion, contrast, errors and screen-reader announcements in a real browser.
+
+<Misconception claim="An SSR snapshot proves a component is keyboard accessible." correction="Use a small, intentional spacing scale that reflects grouping and hierarchy rather than per-component magic numbers. Start with readable headings and structural grouping, then apply systematic rhythm and responsive density." />
+
+## Bug Hunt: reproduce, diagnose, repair
+
+Compare cards with 13px and 16px gaps, document the grouping problems, then migrate both to tokens. At mobile widths check that heading priority and reading order survive.
+
+<KnowledgeCheck question="What should guide spacing in an interface?" choices={["Random pixel values per component","A consistent scale that supports information grouping","Always the smallest possible gap","Only screen width"]} correctIndex={1} explanation="Use a small, intentional spacing scale that reflects grouping and hierarchy rather than per-component magic numbers. Start with readable headings and structural grouping, then apply systematic rhythm and responsive density." misconception="Offline SSR is not an interactive accessibility test." lessonId="08.04.01" />
+
+## Guided local lab
+
+Edit `labs/ui-visual-hierarchy/starter/solution.ts`; the actual test asserts meaningful positive and negative outcomes. `npm run lab:ui-visual-hierarchy` also renders initial React markup. Keyboard interactions, pointer behavior, focus trapping, browser layout and actual Radix/shadcn packages are separate integration gates.
+
+<LabGate lessonId="08.04.01" labId="lab.foundation.ui-visual-hierarchy" commands={["npm ci","npm run lab:ui-visual-hierarchy"]} interactive={false} />
+
+## Reflect
+
+What was broken, what exact assertion proves the repair, and which user interaction still requires a real browser or assistive technology?
+
+## Official references
+
+- [Primary framework documentation](https://www.w3.org/WAI/WCAG22/Understanding/info-and-relationships.html)
+
+- [Supporting accessibility and API guide](https://developer.mozilla.org/en-US/docs/Web/CSS/gap)

@@ -1,0 +1,98 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Explain the accessibility and design invariant behind cross-browser testing","Reproduce and correct a meaningful failing student assertion","Identify what static SSR proves and what requires a real browser and keyboard"]} />
+
+## The problem we're solving
+
+A feature is enabled based solely on a user-agent substring and breaks on a browser where the expected API is missing.
+
+## Build the mental model
+
+Use feature detection for optional capabilities and provide progressive enhancement. Test functionality and focus semantics in multiple browser engines; user-agent sniffing is brittle and does not prove API availability.
+
+**Predict first:** Optional enhancements are enabled only when the required capabilities are present, otherwise a stable fallback is selected.
+
+## Prerequisites and preflight
+
+Continue from [the previous topic](/learn/08.04.05). Read `labs/ui-cross-browser-qa/starter/solution.ts`, `labs/ui-cross-browser-qa/solution/solution.ts` and `labs/ui-cross-browser-qa/solution.test.mjs`. The TSX sample is rendered as initial HTML only; hydrated events, focus, visual contrast and overflow need separate browser tests.
+
+<LessonStep number={1} title="Reproduce the defective UI policy" file="labs/ui-cross-browser-qa/starter/solution.ts" expected="Student starter fails a meaningful assertion.">
+
+```ts
+
+export function solve(capabilities:{dialog:boolean;observer:boolean}):string{return "native";}
+
+```
+
+**Predict:** Optional enhancements are enabled only when the required capabilities are present, otherwise a stable fallback is selected.
+
+**Diagnosis:** A feature is enabled based solely on a user-agent substring and breaks on a browser where the expected API is missing.
+
+**Proof:** Run `ACADEMY_LAB_TARGET=starter npm run lab:ui-cross-browser-qa`. The starter should fail the stated regression, not fail because of a missing dependency.
+
+</LessonStep>
+
+<LessonStep number={2} title="Fix the policy and verify edge cases" file="labs/ui-cross-browser-qa/starter/solution.ts" expected="Optional enhancements are enabled only when the required capabilities are present, otherwise a stable fallback is selected.">
+
+```ts
+
+export function solve(capabilities:{dialog:boolean;observer:boolean}):string{return capabilities.dialog&&capabilities.observer?"enhanced":"progressive-fallback";}
+
+```
+
+**Why it works:** Use feature detection for optional capabilities and provide progressive enhancement. Test functionality and focus semantics in multiple browser engines; user-agent sniffing is brittle and does not prove API availability.
+
+**Proof:** Run `npm run lab:ui-cross-browser-qa` and inspect the instructor test output.
+
+</LessonStep>
+
+<LessonStep number={3} title="Render the semantic React example" file="labs/ui-cross-browser-qa/solution/Widget.tsx" expected="Initial semantic markup renders without a runtime crash.">
+
+```tsx
+
+import React from "react";
+export function Workshop(){return <section aria-label="Cross-browser workshop"><h2>Progressive enhancement</h2><p>Core information stays available when optional APIs are unsupported.</p><button type="button">Open compatible view</button></section>;}
+
+```
+
+This sample uses semantic React without requiring an uninstalled UI package. Server rendering does not execute handlers or certify focus management.
+
+**Proof:** The lab renders initial HTML with React DOM Server. A real browser check remains mandatory.
+
+</LessonStep>
+
+## Production library pattern
+
+Consult the official implementation pattern for this component and version.
+
+This integration sketch is illustrative. It is not compiled or executed by the offline lab and must be verified separately in an isolated app.
+
+## Explore and verify
+
+Test long labels, keyboard-only usage, 320px width, reduced motion, contrast, errors and screen-reader announcements in a real browser.
+
+<Misconception claim="An SSR snapshot proves a component is keyboard accessible." correction="Use feature detection for optional capabilities and provide progressive enhancement. Test functionality and focus semantics in multiple browser engines; user-agent sniffing is brittle and does not prove API availability." />
+
+## Bug Hunt: reproduce, diagnose, repair
+
+Remove ResizeObserver in a controlled test and verify the interface still functions. Compare Chromium, Firefox and WebKit in a disposable test environment; do not infer coverage from one UA string.
+
+<KnowledgeCheck question="Which strategy is more reliable than user-agent sniffing?" choices={["Feature detection and progressive fallback","Assuming every browser has identical APIs","Hiding all unsupported features permanently","Using CSS only for authorization"]} correctIndex={0} explanation="Use feature detection for optional capabilities and provide progressive enhancement. Test functionality and focus semantics in multiple browser engines; user-agent sniffing is brittle and does not prove API availability." misconception="Offline SSR is not an interactive accessibility test." lessonId="08.04.06" />
+
+## Guided local lab
+
+Edit `labs/ui-cross-browser-qa/starter/solution.ts`; the actual test asserts meaningful positive and negative outcomes. `npm run lab:ui-cross-browser-qa` also renders initial React markup. Keyboard interactions, pointer behavior, focus trapping, browser layout and actual Radix/shadcn packages are separate integration gates.
+
+<LabGate lessonId="08.04.06" labId="lab.foundation.ui-cross-browser-qa" commands={["npm ci","npm run lab:ui-cross-browser-qa"]} interactive={false} />
+
+## Reflect
+
+What was broken, what exact assertion proves the repair, and which user interaction still requires a real browser or assistive technology?
+
+## Official references
+
+- [Primary framework documentation](https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Testing/Feature_detection)
+
+- [Supporting accessibility and API guide](https://www.w3.org/WAI/WCAG22/Understanding/compatible.html)

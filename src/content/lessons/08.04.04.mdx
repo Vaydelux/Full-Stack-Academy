@@ -1,0 +1,98 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Explain the accessibility and design invariant behind usability heuristics","Reproduce and correct a meaningful failing student assertion","Identify what static SSR proves and what requires a real browser and keyboard"]} />
+
+## The problem we're solving
+
+A destructive record-delete action commits immediately with no confirmation or undo path, causing irreversible mistakes.
+
+## Build the mental model
+
+Good interface behavior makes system status visible, prevents predictable errors, supports recovery and uses consistent controls. Actions with destructive consequences need an appropriate confirmation or undo mechanism without unnecessary dialogs for harmless operations.
+
+**Predict first:** A destructive delete cannot proceed with the same no-confirmation policy as harmless viewing.
+
+## Prerequisites and preflight
+
+Continue from [the previous topic](/learn/08.04.03). Read `labs/ui-usability-heuristics/starter/solution.ts`, `labs/ui-usability-heuristics/solution/solution.ts` and `labs/ui-usability-heuristics/solution.test.mjs`. The TSX sample is rendered as initial HTML only; hydrated events, focus, visual contrast and overflow need separate browser tests.
+
+<LessonStep number={1} title="Reproduce the defective UI policy" file="labs/ui-usability-heuristics/starter/solution.ts" expected="Student starter fails a meaningful assertion.">
+
+```ts
+
+export function solve(action:"view"|"delete"):string{return "execute";}
+
+```
+
+**Predict:** A destructive delete cannot proceed with the same no-confirmation policy as harmless viewing.
+
+**Diagnosis:** A destructive record-delete action commits immediately with no confirmation or undo path, causing irreversible mistakes.
+
+**Proof:** Run `ACADEMY_LAB_TARGET=starter npm run lab:ui-usability-heuristics`. The starter should fail the stated regression, not fail because of a missing dependency.
+
+</LessonStep>
+
+<LessonStep number={2} title="Fix the policy and verify edge cases" file="labs/ui-usability-heuristics/starter/solution.ts" expected="A destructive delete cannot proceed with the same no-confirmation policy as harmless viewing.">
+
+```ts
+
+export function solve(action:"view"|"delete"):string{return action==="delete"?"confirm-or-undo":"execute";}
+
+```
+
+**Why it works:** Good interface behavior makes system status visible, prevents predictable errors, supports recovery and uses consistent controls. Actions with destructive consequences need an appropriate confirmation or undo mechanism without unnecessary dialogs for harmless operations.
+
+**Proof:** Run `npm run lab:ui-usability-heuristics` and inspect the instructor test output.
+
+</LessonStep>
+
+<LessonStep number={3} title="Render the semantic React example" file="labs/ui-usability-heuristics/solution/Widget.tsx" expected="Initial semantic markup renders without a runtime crash.">
+
+```tsx
+
+import React from "react";
+export function Workshop(){return <section aria-label="Usability heuristics workshop"><h2>Safe task actions</h2><p>Deleting a record should offer confirmation or a reversible undo.</p><button type="button">Review deletion</button></section>;}
+
+```
+
+This sample uses semantic React without requiring an uninstalled UI package. Server rendering does not execute handlers or certify focus management.
+
+**Proof:** The lab renders initial HTML with React DOM Server. A real browser check remains mandatory.
+
+</LessonStep>
+
+## Production library pattern
+
+Consult the official implementation pattern for this component and version.
+
+This integration sketch is illustrative. It is not compiled or executed by the offline lab and must be verified separately in an isolated app.
+
+## Explore and verify
+
+Test long labels, keyboard-only usage, 320px width, reduced motion, contrast, errors and screen-reader announcements in a real browser.
+
+<Misconception claim="An SSR snapshot proves a component is keyboard accessible." correction="Good interface behavior makes system status visible, prevents predictable errors, supports recovery and uses consistent controls. Actions with destructive consequences need an appropriate confirmation or undo mechanism without unnecessary dialogs for harmless operations." />
+
+## Bug Hunt: reproduce, diagnose, repair
+
+Ask a learner to recover after accidental deletion. Map the missing status, prevention and undo steps to documented usability heuristics and test the corrected workflow.
+
+<KnowledgeCheck question="Which usability principle supports safe destructive actions?" choices={["Error prevention and recoverability","Surprising irreversible side effects","Hiding status messages","Removing Undo"]} correctIndex={0} explanation="Good interface behavior makes system status visible, prevents predictable errors, supports recovery and uses consistent controls. Actions with destructive consequences need an appropriate confirmation or undo mechanism without unnecessary dialogs for harmless operations." misconception="Offline SSR is not an interactive accessibility test." lessonId="08.04.04" />
+
+## Guided local lab
+
+Edit `labs/ui-usability-heuristics/starter/solution.ts`; the actual test asserts meaningful positive and negative outcomes. `npm run lab:ui-usability-heuristics` also renders initial React markup. Keyboard interactions, pointer behavior, focus trapping, browser layout and actual Radix/shadcn packages are separate integration gates.
+
+<LabGate lessonId="08.04.04" labId="lab.foundation.ui-usability-heuristics" commands={["npm ci","npm run lab:ui-usability-heuristics"]} interactive={false} />
+
+## Reflect
+
+What was broken, what exact assertion proves the repair, and which user interaction still requires a real browser or assistive technology?
+
+## Official references
+
+- [Primary framework documentation](https://www.nngroup.com/articles/ten-usability-heuristics/)
+
+- [Supporting accessibility and API guide](https://www.w3.org/WAI/WCAG22/Understanding/error-prevention-legal-financial-data.html)

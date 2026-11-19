@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.ui-typography-system",
+  "lessonId": "08.04.02",
+  "title": "Color and typography systems",
+  "runtime": "react19-ui-ssr-pure-contract",
+  "status": "authored",
+  "starter": "labs/ui-typography-system/starter/solution.ts",
+  "solution": "labs/ui-typography-system/solution/solution.ts",
+  "tests": "labs/ui-typography-system/solution.test.mjs",
+  "verify": [
+    "npm run lab:ui-typography-system"
+  ],
+  "expected": "Reviewed offline contract and initial semantic React markup, not browser interaction or visual fidelity.",
+  "security": "Only synthetic fixture data. No cloud, secrets, untrusted evaluation, authentication, deployment or hosted grader."
+}

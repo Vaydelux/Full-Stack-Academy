@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.ui-visual-hierarchy",
+  "lessonId": "08.04.01",
+  "title": "Visual hierarchy and spacing",
+  "runtime": "react19-ui-ssr-pure-contract",
+  "status": "authored",
+  "starter": "labs/ui-visual-hierarchy/starter/solution.ts",
+  "solution": "labs/ui-visual-hierarchy/solution/solution.ts",
+  "tests": "labs/ui-visual-hierarchy/solution.test.mjs",
+  "verify": [
+    "npm run lab:ui-visual-hierarchy"
+  ],
+  "expected": "Reviewed offline contract and initial semantic React markup, not browser interaction or visual fidelity.",
+  "security": "Only synthetic fixture data. No cloud, secrets, untrusted evaluation, authentication, deployment or hosted grader."
+}

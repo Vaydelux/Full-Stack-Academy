@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.ui-form-accessibility",
+  "lessonId": "08.04.03",
+  "title": "Form accessibility",
+  "runtime": "react19-ui-ssr-pure-contract",
+  "status": "authored",
+  "starter": "labs/ui-form-accessibility/starter/solution.ts",
+  "solution": "labs/ui-form-accessibility/solution/solution.ts",
+  "tests": "labs/ui-form-accessibility/solution.test.mjs",
+  "verify": [
+    "npm run lab:ui-form-accessibility"
+  ],
+  "expected": "Reviewed offline contract and initial semantic React markup, not browser interaction or visual fidelity.",
+  "security": "Only synthetic fixture data. No cloud, secrets, untrusted evaluation, authentication, deployment or hosted grader."
+}

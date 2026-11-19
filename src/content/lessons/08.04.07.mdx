@@ -1,0 +1,98 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Explain the accessibility and design invariant behind cls and layout stability","Reproduce and correct a meaningful failing student assertion","Identify what static SSR proves and what requires a real browser and keyboard"]} />
+
+## The problem we're solving
+
+A hero image lacks reserved dimensions and pushes the page's main action offscreen after loading.
+
+## Build the mental model
+
+Cumulative Layout Shift reflects unexpected movements in the viewport. Reserve image and embed space using dimensions or aspect ratio; trace actual shifts with browser tools instead of assuming that a single calculated value represents real field CLS.
+
+**Predict first:** A simple shift contribution equals impact fraction times distance fraction; actual CLS needs real browser observation.
+
+## Prerequisites and preflight
+
+Continue from [the previous topic](/learn/08.04.06). Read `labs/ui-layout-stability/starter/solution.ts`, `labs/ui-layout-stability/solution/solution.ts` and `labs/ui-layout-stability/solution.test.mjs`. The TSX sample is rendered as initial HTML only; hydrated events, focus, visual contrast and overflow need separate browser tests.
+
+<LessonStep number={1} title="Reproduce the defective UI policy" file="labs/ui-layout-stability/starter/solution.ts" expected="Student starter fails a meaningful assertion.">
+
+```ts
+
+export function solve(impact:number,distance:number):number{return 0;}
+
+```
+
+**Predict:** A simple shift contribution equals impact fraction times distance fraction; actual CLS needs real browser observation.
+
+**Diagnosis:** A hero image lacks reserved dimensions and pushes the page's main action offscreen after loading.
+
+**Proof:** Run `ACADEMY_LAB_TARGET=starter npm run lab:ui-layout-stability`. The starter should fail the stated regression, not fail because of a missing dependency.
+
+</LessonStep>
+
+<LessonStep number={2} title="Fix the policy and verify edge cases" file="labs/ui-layout-stability/starter/solution.ts" expected="A simple shift contribution equals impact fraction times distance fraction; actual CLS needs real browser observation.">
+
+```ts
+
+export function solve(impact:number,distance:number):number{if([impact,distance].some(x=>!Number.isFinite(x)||x<0||x>1))throw new TypeError("Invalid fractions");return impact*distance;}
+
+```
+
+**Why it works:** Cumulative Layout Shift reflects unexpected movements in the viewport. Reserve image and embed space using dimensions or aspect ratio; trace actual shifts with browser tools instead of assuming that a single calculated value represents real field CLS.
+
+**Proof:** Run `npm run lab:ui-layout-stability` and inspect the instructor test output.
+
+</LessonStep>
+
+<LessonStep number={3} title="Render the semantic React example" file="labs/ui-layout-stability/solution/Widget.tsx" expected="Initial semantic markup renders without a runtime crash.">
+
+```tsx
+
+import React from "react";
+export function Workshop(){return <main aria-label="Layout stability workshop"><h2>Stable hero layout</h2><div style={{width:320,maxWidth:"100%",aspectRatio:"16 / 9",background:"#e2e8f0"}} role="img" aria-label="Reserved image space"/><p>Reserve dimensions before content loads.</p></main>;}
+
+```
+
+This sample uses semantic React without requiring an uninstalled UI package. Server rendering does not execute handlers or certify focus management.
+
+**Proof:** The lab renders initial HTML with React DOM Server. A real browser check remains mandatory.
+
+</LessonStep>
+
+## Production library pattern
+
+Consult the official implementation pattern for this component and version.
+
+This integration sketch is illustrative. It is not compiled or executed by the offline lab and must be verified separately in an isolated app.
+
+## Explore and verify
+
+Test long labels, keyboard-only usage, 320px width, reduced motion, contrast, errors and screen-reader announcements in a real browser.
+
+<Misconception claim="An SSR snapshot proves a component is keyboard accessible." correction="Cumulative Layout Shift reflects unexpected movements in the viewport. Reserve image and embed space using dimensions or aspect ratio; trace actual shifts with browser tools instead of assuming that a single calculated value represents real field CLS." />
+
+## Bug Hunt: reproduce, diagnose, repair
+
+Disable image dimensions and record a layout shift trace, then reserve space and compare before/after. Inspect mobile 320px and zoom without inventing a measured CLS value.
+
+<KnowledgeCheck question="How can a hero image avoid causing a layout shift?" choices={["Reserve its dimensions or aspect ratio before loading","Load the image after all clicks","Remove the alt text","Always use width:auto without container constraints"]} correctIndex={0} explanation="Cumulative Layout Shift reflects unexpected movements in the viewport. Reserve image and embed space using dimensions or aspect ratio; trace actual shifts with browser tools instead of assuming that a single calculated value represents real field CLS." misconception="Offline SSR is not an interactive accessibility test." lessonId="08.04.07" />
+
+## Guided local lab
+
+Edit `labs/ui-layout-stability/starter/solution.ts`; the actual test asserts meaningful positive and negative outcomes. `npm run lab:ui-layout-stability` also renders initial React markup. Keyboard interactions, pointer behavior, focus trapping, browser layout and actual Radix/shadcn packages are separate integration gates.
+
+<LabGate lessonId="08.04.07" labId="lab.foundation.ui-layout-stability" commands={["npm ci","npm run lab:ui-layout-stability"]} interactive={false} />
+
+## Reflect
+
+What was broken, what exact assertion proves the repair, and which user interaction still requires a real browser or assistive technology?
+
+## Official references
+
+- [Primary framework documentation](https://developer.mozilla.org/en-US/docs/Web/Performance/Guides/CLS)
+
+- [Supporting accessibility and API guide](https://web.dev/articles/cls)

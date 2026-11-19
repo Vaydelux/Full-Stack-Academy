@@ -1,0 +1,98 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Explain the accessibility and design invariant behind form accessibility","Reproduce and correct a meaningful failing student assertion","Identify what static SSR proves and what requires a real browser and keyboard"]} />
+
+## The problem we're solving
+
+An icon-only input lacks a label and its validation error is not programmatically associated with the field.
+
+## Build the mental model
+
+Labels identify what the user must enter; error messages should be connected through aria-describedby or accessible error conventions. Preserve native validation and input types, and explain a correction rather than only changing border color.
+
+**Predict first:** A valid field has a meaningful associated label and detects whether an error description needs wiring.
+
+## Prerequisites and preflight
+
+Continue from [the previous topic](/learn/08.04.02). Read `labs/ui-form-accessibility/starter/solution.ts`, `labs/ui-form-accessibility/solution/solution.ts` and `labs/ui-form-accessibility/solution.test.mjs`. The TSX sample is rendered as initial HTML only; hydrated events, focus, visual contrast and overflow need separate browser tests.
+
+<LessonStep number={1} title="Reproduce the defective UI policy" file="labs/ui-form-accessibility/starter/solution.ts" expected="Student starter fails a meaningful assertion.">
+
+```ts
+
+export type Field={id:string;label:string;error?:string};export function solve(field:Field){return {id:field.id,labelled:Boolean(field.label),described:false};}
+
+```
+
+**Predict:** A valid field has a meaningful associated label and detects whether an error description needs wiring.
+
+**Diagnosis:** An icon-only input lacks a label and its validation error is not programmatically associated with the field.
+
+**Proof:** Run `ACADEMY_LAB_TARGET=starter npm run lab:ui-form-accessibility`. The starter should fail the stated regression, not fail because of a missing dependency.
+
+</LessonStep>
+
+<LessonStep number={2} title="Fix the policy and verify edge cases" file="labs/ui-form-accessibility/starter/solution.ts" expected="A valid field has a meaningful associated label and detects whether an error description needs wiring.">
+
+```ts
+
+export type Field={id:string;label:string;error?:string};export function solve(field:Field){if(!field.id.trim()||!field.label.trim())throw new TypeError("Field ID and label required");return {id:field.id,labelled:true,described:Boolean(field.error?.trim())};}
+
+```
+
+**Why it works:** Labels identify what the user must enter; error messages should be connected through aria-describedby or accessible error conventions. Preserve native validation and input types, and explain a correction rather than only changing border color.
+
+**Proof:** Run `npm run lab:ui-form-accessibility` and inspect the instructor test output.
+
+</LessonStep>
+
+<LessonStep number={3} title="Render the semantic React example" file="labs/ui-form-accessibility/solution/Widget.tsx" expected="Initial semantic markup renders without a runtime crash.">
+
+```tsx
+
+import React from "react";
+export function Workshop(){return <form aria-label="Form accessibility workshop"><h2>Contact form</h2><label htmlFor="contact-email">Email address</label><input id="contact-email" type="email" aria-describedby="email-error" aria-invalid="true" required/><p id="email-error">Enter a valid email address.</p><button type="submit">Continue</button></form>;}
+
+```
+
+This sample uses semantic React without requiring an uninstalled UI package. Server rendering does not execute handlers or certify focus management.
+
+**Proof:** The lab renders initial HTML with React DOM Server. A real browser check remains mandatory.
+
+</LessonStep>
+
+## Production library pattern
+
+Consult the official implementation pattern for this component and version.
+
+This integration sketch is illustrative. It is not compiled or executed by the offline lab and must be verified separately in an isolated app.
+
+## Explore and verify
+
+Test long labels, keyboard-only usage, 320px width, reduced motion, contrast, errors and screen-reader announcements in a real browser.
+
+<Misconception claim="An SSR snapshot proves a component is keyboard accessible." correction="Labels identify what the user must enter; error messages should be connected through aria-describedby or accessible error conventions. Preserve native validation and input types, and explain a correction rather than only changing border color." />
+
+## Bug Hunt: reproduce, diagnose, repair
+
+Remove the label, disconnect aria-describedby, then test the actual error announcement with keyboard and screen reader. Confirm errors are not signaled by color alone.
+
+<KnowledgeCheck question="What should connect an input's error explanation to the input?" choices={["aria-describedby referencing an existing error ID","Only a red border","A blank placeholder","A hidden unrelated button"]} correctIndex={0} explanation="Labels identify what the user must enter; error messages should be connected through aria-describedby or accessible error conventions. Preserve native validation and input types, and explain a correction rather than only changing border color." misconception="Offline SSR is not an interactive accessibility test." lessonId="08.04.03" />
+
+## Guided local lab
+
+Edit `labs/ui-form-accessibility/starter/solution.ts`; the actual test asserts meaningful positive and negative outcomes. `npm run lab:ui-form-accessibility` also renders initial React markup. Keyboard interactions, pointer behavior, focus trapping, browser layout and actual Radix/shadcn packages are separate integration gates.
+
+<LabGate lessonId="08.04.03" labId="lab.foundation.ui-form-accessibility" commands={["npm ci","npm run lab:ui-form-accessibility"]} interactive={false} />
+
+## Reflect
+
+What was broken, what exact assertion proves the repair, and which user interaction still requires a real browser or assistive technology?
+
+## Official references
+
+- [Primary framework documentation](https://www.w3.org/WAI/tutorials/forms/labels/)
+
+- [Supporting accessibility and API guide](https://www.w3.org/WAI/WCAG22/Understanding/error-identification.html)
