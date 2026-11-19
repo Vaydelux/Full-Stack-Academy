@@ -12,6 +12,8 @@ const staticRoot = new URL('./', import.meta.url);
 const MAX_BODY_BYTES = 8 * 1024;
 const MAX_ITEMS = 100;
 const KEY_PATTERN = /^[a-zA-Z0-9_-]{8,96}$/;
+const TASK_STATES = new Set(['todo', 'doing', 'done']);
+const FILTER_STATES = new Set(['all', ...TASK_STATES]);
 const jsonHeaders = { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store', 'x-content-type-options': 'nosniff' };
 
 class HttpProblem extends Error {
@@ -47,14 +49,21 @@ async function readJson(req) {
   try { return JSON.parse(Buffer.concat(chunks).toString('utf8')); }
   catch { throw new HttpProblem(400, 'Malformed JSON'); }
 }
-function cursorEncode(version, offset) { return Buffer.from(`${version}:${offset}`).toString('base64url'); }
-function cursorDecode(value, version) {
+function validatePatch(value) {
+  if (!value || typeof value !== 'object' || Array.isArray(value) || Object.keys(value).length !== 1 || !Object.hasOwn(value, 'status') || !TASK_STATES.has(value.status)) {
+    throw new HttpProblem(422, 'Only status todo, doing or done may be updated');
+  }
+  return value.status;
+}
+function cursorEncode(version, filter, offset) { return Buffer.from(`${version}:${filter}:${offset}`).toString('base64url'); }
+function cursorDecode(value, version, filter) {
   if (!/^[A-Za-z0-9_-]{1,40}$/.test(value)) throw new HttpProblem(400, 'Invalid pagination cursor');
   const decoded = Buffer.from(value, 'base64url').toString('utf8');
-  const match = /^(\d+):(\d+)$/.exec(decoded);
-  if (!match || cursorEncode(Number(match[1]), Number(match[2])) !== value) throw new HttpProblem(400, 'Invalid pagination cursor');
+  const match = /^(\d+):(all|todo|doing|done):(\d+)$/.exec(decoded);
+  if (!match || cursorEncode(Number(match[1]), match[2], Number(match[3])) !== value) throw new HttpProblem(400, 'Invalid pagination cursor');
   if (Number(match[1]) !== version) throw new HttpProblem(409, 'List changed; restart pagination');
-  return Number(match[2]);
+  if (match[2] !== filter) throw new HttpProblem(400, 'Cursor belongs to another filter');
+  return Number(match[3]);
 }
 
 export function createTaskApi({ host = '127.0.0.1', maxItems = MAX_ITEMS } = {}) {
@@ -65,7 +74,14 @@ export function createTaskApi({ host = '127.0.0.1', maxItems = MAX_ITEMS } = {})
   let version = 1;
   const server = createServer(async (req, res) => {
     try {
-      const ownOrigin = `http://${req.headers.host ?? ''}`;
+      // Reject DNS rebinding/Host spoofing before serving even static assets.
+      const bound = server.address();
+      if (!bound || typeof bound === 'string') throw new HttpProblem(503, 'Listener unavailable');
+      const expectedHost = host === '::1' ? `[::1]:${bound.port}` : `127.0.0.1:${bound.port}`;
+      if (req.headers.host !== expectedHost) throw new HttpProblem(421, 'Invalid Host header');
+      const ownOrigin = `http://${expectedHost}`;
+      if (req.headers.origin && req.headers.origin !== ownOrigin) throw new HttpProblem(403, 'Cross-origin requests are not allowed');
+      if (req.headers['sec-fetch-site'] === 'cross-site') throw new HttpProblem(403, 'Cross-site requests are not allowed');
       const url = new URL(req.url ?? '/', ownOrigin);
       const staticFiles = {
         '/': ['index.html', 'text/html; charset=utf-8'],
@@ -86,20 +102,25 @@ export function createTaskApi({ host = '127.0.0.1', maxItems = MAX_ITEMS } = {})
         res.end(body); return;
       }
       if (!url.pathname.startsWith('/api/')) { fail(res, 404, 'Not found'); return; }
-      if (req.headers.origin && req.headers.origin !== ownOrigin) throw new HttpProblem(403, 'Cross-origin requests are not allowed');
       if (req.method === 'GET' && url.pathname === '/api/health') {
         send(res, 200, { ok: true, mode: 'ephemeral-loopback' }); return;
       }
       if (req.method === 'GET' && url.pathname === '/api/tasks') {
+        if ([...url.searchParams.keys()].some(name => !['limit', 'status', 'cursor'].includes(name)) ||
+            ['limit', 'status', 'cursor'].some(name => url.searchParams.getAll(name).length > 1)) {
+          throw new HttpProblem(400, 'Unknown or repeated query parameter');
+        }
+        const filter = url.searchParams.get('status') ?? 'all';
+        if (!FILTER_STATES.has(filter)) throw new HttpProblem(400, 'Invalid status filter');
         const limit = url.searchParams.get('limit') ?? '10';
         if (!/^(?:[1-9]|1\d|2[0-5])$/.test(limit)) throw new HttpProblem(400, 'Invalid limit');
         const cursor = url.searchParams.get('cursor');
-        const offset = cursor === null ? 0 : cursorDecode(cursor, version);
-        const values = [...tasks.values()].reverse();
+        const offset = cursor === null ? 0 : cursorDecode(cursor, version, filter);
+        const values = [...tasks.values()].reverse().filter(task => filter === 'all' || task.status === filter);
         if (offset > values.length) throw new HttpProblem(400, 'Invalid pagination cursor');
         const page = values.slice(offset, offset + Number(limit));
         const next = offset + page.length;
-        send(res, 200, { items: page, nextCursor: next < values.length ? cursorEncode(version, next) : null }); return;
+        send(res, 200, { items: page, nextCursor: next < values.length ? cursorEncode(version, filter, next) : null }); return;
       }
       if (req.method === 'POST' && url.pathname === '/api/tasks') {
         const key = req.headers['idempotency-key'];
@@ -112,7 +133,7 @@ export function createTaskApi({ host = '127.0.0.1', maxItems = MAX_ITEMS } = {})
           send(res, 201, old.task, { 'idempotency-replayed': 'true' }); return;
         }
         if (tasks.size >= maxItems) throw new HttpProblem(409, 'Demo task capacity reached');
-        const task = { id: randomUUID(), ...data, createdAt: new Date().toISOString() };
+        const task = { id: randomUUID(), ...data, status: 'todo', revision: 1, createdAt: new Date().toISOString() };
         tasks.set(task.id, task);
         idem.set(key, { digest, task });
         if (idem.size > 200) idem.delete(idem.keys().next().value);
@@ -120,6 +141,25 @@ export function createTaskApi({ host = '127.0.0.1', maxItems = MAX_ITEMS } = {})
         send(res, 201, task, { 'idempotency-replayed': 'false', location: `/api/tasks/${task.id}` }); return;
       }
       const match = /^\/api\/tasks\/([0-9a-f-]{36})$/.exec(url.pathname);
+      if (req.method === 'GET' && match) {
+        const task = tasks.get(match[1]);
+        if (!task) throw new HttpProblem(404, 'Task not found');
+        send(res, 200, task, { etag: `"${task.revision}"` }); return;
+      }
+      if (req.method === 'PATCH' && match) {
+        const task = tasks.get(match[1]);
+        if (!task) throw new HttpProblem(404, 'Task not found');
+        const expected = req.headers['if-match'];
+        if (typeof expected !== 'string') throw new HttpProblem(428, 'If-Match revision is required');
+        if (expected !== `"${task.revision}"`) throw new HttpProblem(412, 'Task changed; refresh before retrying');
+        const nextStatus = validatePatch(await readJson(req));
+        if (nextStatus !== task.status) {
+          tasks.set(task.id, { ...task, status: nextStatus, revision: task.revision + 1 });
+          version++;
+        }
+        const updated = tasks.get(task.id);
+        send(res, 200, updated, { etag: `"${updated.revision}"` }); return;
+      }
       if (req.method === 'DELETE' && match) {
         if (!tasks.delete(match[1])) throw new HttpProblem(404, 'Task not found');
         version++;
