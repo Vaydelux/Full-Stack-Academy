@@ -8,6 +8,7 @@ import { verifyReactReferences } from './react-reference-smoke.mjs';
 import { verifyReactNextMilestone } from './react-next-milestone-smoke.mjs';
 import { verifyNextFullTrack } from './next-full-track-smoke.mjs';
 import { verifyUiTrack } from './ui-track-smoke.mjs';
+import { verifyUiGallery } from './ui-gallery-smoke.mjs';
 import { createRequire } from 'node:module';
 import path from 'node:path';
 
@@ -408,6 +409,7 @@ try {
   await verifyReactNextMilestone({page,base,assert,wait});
   await verifyNextFullTrack({page,base,assert,wait});
   await verifyUiTrack({page,base,assert,wait});
+  await verifyUiGallery({page,base,assert,wait});
 
   await page.goto(base+'/?lesson=06.01.01&mode=practice');
   await wait(btn('Practice'));
