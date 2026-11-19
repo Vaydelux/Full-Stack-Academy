@@ -21,7 +21,10 @@ node --test tests/forms-query-contract.test.mjs
 node --test tests/forms-query-project-route.test.mjs
 node --experimental-strip-types --test tests/forms-query-react-api.test.mjs tests/forms-query-policy.test.mjs
 node --test tests/forms-query-react-wiring.test.mjs
+node --test tests/forms-query-native-ui.test.mjs
 ```
+
+The latest native event/HTTP interaction suite has nine new cases for uncertain POST recovery, explicit discard, terminal 422, confirmed-POST/read-failure isolation, cross-action locks and stale cursor pagination. These nine cases passed in an isolated exact-source DOM/request harness. A complete Node HTTP run and full Chromium UI gate are still required.
 
 The earlier HTTP suite passed 22/22 on the preceding version. The new workflow suite covers revision races, status filtering and hostile request targets; rerun all suites on this exact branch before release. An isolated handler-level simulation of 29 workflow scenarios and 11 contract assertions passed during development, but this is not a replacement for the Node network run.
 
@@ -40,6 +43,7 @@ The test server uses an ephemeral loopback port (no privileged port). It is star
 
 - Problem responses use **application/problem+json** with status/title, without reflecting arbitrary user content.
 - The local browser interface displays task lifecycle transitions, status filters and a bounded request journal (last 24 operations, metadata only; no task title or idempotency key).
+- A network failure or retryable POST response retains the **same logical operation key and input** and blocks starting a different create. The learner can retry or explicitly discard the pending attempt with a clear duplicate-risk warning. Terminal 4xx responses (except 408/429) are not offered as ambiguous retries. The UI serializes create/status/delete actions and treats a confirmed POST separately from any later GET refresh failure.
 - Create returns 201 with a Location header. Replays with the same normalized payload and key return the same task; a reused key with a changed payload returns 409.
 - A successful state-changing write invalidates earlier pagination cursors; stale pagination returns 409 so clients restart rather than silently duplicating items. The cursor also encodes the selected status filter and refuses cross-filter reuse. A no-op status PATCH leaves the revision unchanged.
 - Conditional status updates read the full request body, then compare the **current** revision immediately before the synchronous in-memory update; two competing edits with the same version cannot both commit.
@@ -81,7 +85,7 @@ The React source demonstrates:
 
 ## Learning and implementation progression
 
-See [WORKBOOK.md](WORKBOOK.md) for the 16 canonical topic exercises and acceptance requirements. [task-workflow.openapi.json](task-workflow.openapi.json) is the checked-in OpenAPI 3.1.1 contract. See [docs/FORMS_QUERY_WORKFLOW_V3_ACCEPTANCE.md](../../docs/FORMS_QUERY_WORKFLOW_V3_ACCEPTANCE.md) for this milestone's evidence and follow-up gates.
+See [WORKBOOK.md](WORKBOOK.md) for the 16 canonical topic exercises and acceptance requirements. [task-workflow.openapi.json](task-workflow.openapi.json) is the checked-in OpenAPI 3.1.1 contract. See [docs/FORMS_QUERY_NATIVE_UI_ACCEPTANCE.md](../../docs/FORMS_QUERY_NATIVE_UI_ACCEPTANCE.md) for the latest native interface milestone and verification limits; [docs/FORMS_QUERY_RESILIENCE_ACCEPTANCE.md](../../docs/FORMS_QUERY_RESILIENCE_ACCEPTANCE.md) describes the preceding React-client milestone.
 
 ## Security & maintenance boundaries
 
