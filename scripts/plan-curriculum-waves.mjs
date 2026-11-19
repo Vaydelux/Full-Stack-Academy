@@ -34,7 +34,7 @@ const read=p=>fs.readFileSync(path.join(root,p),'utf8');
 const curriculum=JSON.parse(read('data/curriculum.json'));
 const checkpoint=JSON.parse(read('docs/checkpoint.json'));
 const authoredContent=read('src/lib/academy/authored-content.ts');
-const match=authoredContent.match(/export const AUTHORED_LESSON_IDS\\s*=\\s*\\[([^\\]]+)\\]/);
+const match=authoredContent.match(/AUTHORED_LESSON_IDS\s*=\s*\[([\s\S]*?)\]/);
 assert.ok(match,'Interactive authored lesson registry must be discoverable');
 const interactiveIds=[...match[1].matchAll(/'([^']+)'/g)].map(x=>x[1]);
 const mdxIds=fs.readdirSync(path.join(root,'src/content/lessons')).filter(n=>n.endsWith('.meta.json')).map(n=>JSON.parse(read('src/content/lessons/'+n)).id);
@@ -45,7 +45,7 @@ assert.equal(planned.remainingAfterCurrent,630,'Remaining topic count changed; r
 assert.equal(planned.waves.reduce((n,w)=>n+w.remaining,0),planned.remainingAfterCurrent);
 const target=path.join(root,'docs/delivery-waves.json');
 if(process.argv.includes('--write')){
- fs.writeFileSync(target,JSON.stringify(planned,null,2)+'\\n');
+ fs.writeFileSync(target,JSON.stringify(planned,null,2)+'\n');
  console.log('Wrote docs/delivery-waves.json');
 }else if(process.argv.includes('--check')){
  assert.deepEqual(JSON.parse(fs.readFileSync(target,'utf8')),planned,'Stale delivery waves; regenerate locally with npm run plan:waves:write');
