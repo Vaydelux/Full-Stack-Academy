@@ -1,6 +1,6 @@
 {
   "id": "08.03.02",
-  "title": "Sorting filtering and pagination",
+  "title": "Controlled sorting filtering pagination",
   "description": "Develop sorting filtering and pagination using Tailwind v4 principles, accessible React markup and a meaningful offline bug-hunt lab.",
   "trackId": "08",
   "moduleId": "08.03",

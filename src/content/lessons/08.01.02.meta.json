@@ -1,6 +1,6 @@
 {
   "id": "08.01.02",
-  "title": "CSS-first design tokens",
+  "title": "CSS-first tokens",
   "description": "Develop css-first design tokens using Tailwind v4 principles, accessible React markup and a meaningful offline bug-hunt lab.",
   "trackId": "08",
   "moduleId": "08.01",

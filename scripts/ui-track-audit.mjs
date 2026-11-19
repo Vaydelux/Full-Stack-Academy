@@ -11,7 +11,7 @@
   assert.ok(!seen.has(l.id));seen.add(l.id);
   const meta=json("src/content/lessons/"+l.id+".meta.json"),mdx=read("src/content/lessons/"+l.id+".mdx");
   assert.equal(meta.id,l.id);assert.equal(meta.moduleId,l.moduleId);assert.equal(meta.trackId,"08");assert.equal(meta.level,"Intermediate");
-  assert.equal(meta.status,"authored");assert.ok(meta.title.length>=15&&meta.description.length>=50);
+  assert.equal(meta.status,"authored");assert.equal(meta.title,l.title,"Keep canonical lesson title: "+l.id);assert.ok(meta.title.length>=15&&meta.description.length>=50);
   assert.ok(meta.sources.length>=2&&meta.sources.every(s=>s.url.startsWith("https://")));
   assert.ok(meta.objectives.length>=3&&meta.rubric.length>=3);
   const no=Number(l.id.split(".").at(-1)),module=l.moduleId;

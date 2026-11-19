@@ -1,7 +1,7 @@
 {
   "id": "lab.foundation.ui-shadcn-composition",
   "lessonId": "08.01.04",
-  "title": "shadcn component composition",
+  "title": "shadcn composition",
   "runtime": "react19-ui-ssr-pure-contract",
   "status": "authored",
   "starter": "labs/ui-shadcn-composition/starter/solution.ts",

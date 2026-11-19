@@ -1,7 +1,7 @@
 {
   "id": "lab.foundation.ui-css-first-tokens",
   "lessonId": "08.01.02",
-  "title": "CSS-first design tokens",
+  "title": "CSS-first tokens",
   "runtime": "react19-ui-ssr-pure-contract",
   "status": "authored",
   "starter": "labs/ui-css-first-tokens/starter/solution.ts",

@@ -1,7 +1,7 @@
 {
   "id": "lab.foundation.ui-table-controls",
   "lessonId": "08.03.02",
-  "title": "Sorting filtering and pagination",
+  "title": "Controlled sorting filtering pagination",
   "runtime": "react19-ui-ssr-pure-contract",
   "status": "authored",
   "starter": "labs/ui-table-controls/starter/solution.ts",

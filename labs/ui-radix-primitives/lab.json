@@ -1,7 +1,7 @@
 {
   "id": "lab.foundation.ui-radix-primitives",
   "lessonId": "08.01.03",
-  "title": "Radix UI primitives",
+  "title": "Radix primitives",
   "runtime": "react19-ui-ssr-pure-contract",
   "status": "authored",
   "starter": "labs/ui-radix-primitives/starter/solution.ts",
