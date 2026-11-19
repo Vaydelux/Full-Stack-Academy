@@ -1,8 +1,9 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { AUTHORED_LESSONS } from '@/lib/academy/authored-content';
+import { PublishedLessonExplorer } from '@/components/course/PublishedLessonExplorer';
+import type { DiscoverableLesson } from '@/lib/academy/lesson-discovery';
 import { MDX_METADATA, PUBLISHED_LESSON_IDS, LOCAL_LAB_LESSONS } from '@/lib/academy/published';
-import { modulesByTrack, summary, trackMap, TRACK_GROUPS } from '@/lib/academy/curriculum';
+import { lessonMap, moduleMap, modulesByTrack, summary, trackMap, TRACK_GROUPS } from '@/lib/academy/curriculum';
 import { DocShell } from '@/components/course/DocShell';
 
 export const metadata: Metadata = {
@@ -11,6 +12,20 @@ export const metadata: Metadata = {
 };
 
 export default function CourseIndex() {
+  const publishedCatalog: DiscoverableLesson[] = PUBLISHED_LESSON_IDS.map(id => {
+    const lesson = lessonMap.get(id);
+    const meta = MDX_METADATA.get(id);
+    const moduleId = lesson?.moduleId ?? id.slice(0, 5);
+    return {
+      id,
+      title: meta?.title ?? lesson?.title ?? id,
+      moduleId,
+      moduleTitle: moduleMap.get(moduleId)?.title ?? moduleId,
+      level: meta?.level ?? lesson?.level ?? 'Core',
+      minutes: meta?.estimatedMinutes ?? lesson?.estimatedMinutes ?? 0,
+      description: meta?.description ?? '',
+    };
+  });
   const learningModules = [
     { id: '00.01', title: 'Computing & internet foundations', description: 'Understand how applications and the web work.' },
     { id: '00.02', title: 'Developer toolchain', description: 'Prepare a reproducible environment and ship a tested project.' },
@@ -46,24 +61,7 @@ export default function CourseIndex() {
           })}
         </div>
       </section>
-      <section aria-labelledby="published-title" className="mt-9">
-        <details className="rounded-xl border border-slate-200 p-4 dark:border-white/10">
-        <summary id="published-title" className="cursor-pointer font-bold">All available lessons ({PUBLISHED_LESSON_IDS.length})</summary>
-        <div className="mt-4 grid gap-3 sm:grid-cols-2">
-          {PUBLISHED_LESSON_IDS.map((id) => {
-            const lesson = AUTHORED_LESSONS[id];
-            const meta = MDX_METADATA.get(id);
-            return (
-              <Link href={`/learn/${id}`} key={id} className="rounded-xl border border-slate-200 bg-white p-4 transition-colors hover:border-cyan-500 dark:border-white/10 dark:bg-white/[0.03]">
-                <p className="text-xs font-mono text-cyan-700 dark:text-[#7DEBFF]">{id} · {meta?.level ?? lesson.level} · ~{meta?.estimatedMinutes ?? lesson.estMinutes} min</p>
-                <h3 className="mt-2 font-bold">{meta?.title ?? lesson.headline}</h3>
-                <p className="mt-2 text-xs leading-6 text-slate-600 dark:text-slate-400">{meta?.description ?? lesson.subtitle}</p>
-              </Link>
-            );
-          })}
-        </div>
-        </details>
-      </section>
+      <PublishedLessonExplorer catalog={publishedCatalog} />
       <section aria-labelledby="tracks-title" className="mt-10">
         <h2 id="tracks-title" className="mb-4 text-xl font-bold">Tracks and subtopics</h2>
         <div className="space-y-6">

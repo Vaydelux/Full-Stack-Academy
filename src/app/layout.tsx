@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import { Plus_Jakarta_Sans, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
+import { ProgressStorageSync } from '@/components/course/ProgressStorageSync';
 import { getPublicOrigin } from '@/lib/academy/site';
 
 const appSans = Plus_Jakarta_Sans({
@@ -40,6 +41,7 @@ export default function RootLayout({
       <body
         className={`${appSans.variable} ${appMono.variable} antialiased overflow-hidden`}
       >
+        <ProgressStorageSync />
         {children}
       </body>
     </html>

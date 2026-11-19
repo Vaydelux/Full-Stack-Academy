@@ -9,6 +9,7 @@ import {
 } from './authored-content';
 import { lessonMap, references } from './curriculum';
 import { PUBLISHED_LESSON_IDS, lessonRubric } from './published';
+import { normalizeBookmarks } from './lesson-discovery';
 import type {
   ConsoleEntry,
   PreviewStatus,
@@ -46,6 +47,7 @@ export const BackupDataSchema = z.object({
   rubrics: z.record(z.string(), z.array(z.number().int().nonnegative())).default({}),
   notes: z.record(z.string(), z.string()).default({}),
   reflections: z.record(z.string(), z.string()).default({}),
+  bookmarks: z.record(z.string(), z.boolean()).default({}),
   theme: z.enum(['dark', 'light']).default('dark'),
 });
 
@@ -62,6 +64,7 @@ const EMPTY_PROGRESS: PersistedProgress = {
   rubrics: {},
   notes: {},
   reflections: {},
+  bookmarks: {},
   theme: 'dark',
 };
 
@@ -90,7 +93,8 @@ export function normalizeProgress(input: PersistedProgress): PersistedProgress {
   for (const [id, reflection] of Object.entries(input.reflections)) {
     if (lessonMap.has(id)) reflections[id] = reflection.slice(0, 20000);
   }
-  return { complete, quizzes, rubrics, notes, reflections, theme: input.theme };
+  return { complete, quizzes, rubrics, notes, reflections,
+    bookmarks: normalizeBookmarks(input.bookmarks, PUBLISHED_LESSON_IDS), theme: input.theme };
 }
 
 function loadPersisted(): PersistedProgress {
@@ -159,6 +163,7 @@ export interface AcademyState {
 
   /* learner persisted record */
   hydrated: boolean;
+  storageError: boolean;
   progress: PersistedProgress;
 }
 
@@ -213,6 +218,7 @@ export interface AcademyActions {
   toggleRubricItem: (lessonId: string, index: number) => void;
   setReflection: (lessonId: string, text: string) => void;
   setNote: (lessonId: string, text: string) => void;
+  toggleBookmark: (lessonId: string) => void;
   markLessonComplete: (lessonId: string) => void;
   exportBackupJson: () => string;
   importBackupJson: (raw: string) => { ok: boolean; error?: string };
@@ -252,8 +258,8 @@ function updateAndSaveProgress(
   updater: (prev: PersistedProgress) => PersistedProgress
 ): Partial<AcademyState> {
   const next = updater(state.progress);
-  savePersisted(next);
-  return { progress: next };
+  const storageError = !savePersisted(next);
+  return { progress: next, storageError };
 }
 
 /* ------------------------------------------------------------------ */
@@ -299,11 +305,12 @@ export const useAcademy = create<AcademyStore>((set, get) => ({
   toast: null,
 
   hydrated: false,
+  storageError: false,
   progress: EMPTY_PROGRESS,
 
   hydrate: () => {
     const loaded = loadPersisted();
-    set({ progress: loaded, hydrated: true });
+    set({ progress: loaded, hydrated: true, storageError: false });
   },
 
   setActiveView: (activeView) => set({ activeView, ...(activeView !== 'lesson' ? { isPlaying: false, mobileTab: 'docs' as const } : {}) }),
@@ -540,7 +547,7 @@ export const useAcademy = create<AcademyStore>((set, get) => ({
     set((s) =>
       updateAndSaveProgress(s, (prev) => ({
         ...prev,
-        reflections: { ...prev.reflections, [lessonId]: text },
+        reflections: { ...prev.reflections, [lessonId]: text.slice(0, 20000) },
       }))
     ),
 
@@ -548,9 +555,20 @@ export const useAcademy = create<AcademyStore>((set, get) => ({
     set((s) =>
       updateAndSaveProgress(s, (prev) => ({
         ...prev,
-        notes: { ...prev.notes, [lessonId]: text },
+        notes: { ...prev.notes, [lessonId]: text.slice(0, 20000) },
       }))
     ),
+
+  toggleBookmark: (lessonId) =>
+    set((s) => {
+      if (!PUBLISHED_LESSON_IDS.includes(lessonId)) return {};
+      return updateAndSaveProgress(s, (prev) => {
+        const bookmarks = { ...prev.bookmarks };
+        if (bookmarks[lessonId]) delete bookmarks[lessonId];
+        else bookmarks[lessonId] = true;
+        return { ...prev, bookmarks };
+      });
+    }),
 
   markLessonComplete: (lessonId) =>
     set((s) => {
@@ -560,12 +578,15 @@ export const useAcademy = create<AcademyStore>((set, get) => ({
       const rubric = s.progress.rubrics[lessonId] ?? [];
       const rubricOk = criteria.every((_, idx) => rubric.includes(idx));
       if (!quizOk || !rubricOk) return {};
+      const update = updateAndSaveProgress(s, (prev) => ({
+        ...prev,
+        complete: { ...prev.complete, [lessonId]: true },
+      }));
       return {
-        ...updateAndSaveProgress(s, (prev) => ({
-          ...prev,
-          complete: { ...prev.complete, [lessonId]: true },
-        })),
-        toast: { id: ++toastId, msg: `Lesson ${lessonId} marked complete`, tone: 'success' },
+        ...update,
+        toast: update.storageError
+          ? { id: ++toastId, msg: 'Lesson completion could not be saved on this device', tone: 'error' }
+          : { id: ++toastId, msg: `Lesson ${lessonId} marked complete`, tone: 'success' },
       };
     }),
 
@@ -589,6 +610,7 @@ export const useAcademy = create<AcademyStore>((set, get) => ({
       }
       set({
         progress: restored,
+        storageError: false,
         toast: { id: ++toastId, msg: 'Progress backup restored locally', tone: 'success' },
       });
       return { ok: true };

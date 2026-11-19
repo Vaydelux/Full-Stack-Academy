@@ -67,6 +67,7 @@ export default function Workspace() {
   const lessonId = useAcademy((s) => s.selectedLessonId);
   const note = useAcademy((s) => s.progress.notes[lessonId] ?? '');
   const setNote = useAcademy((s) => s.setNote);
+  const storageError = useAcademy((s) => s.storageError);
   const pause = useAcademy((s) => s.pause);
   const canPractice = activeView === 'lesson' && Boolean(AUTHORED_LESSONS[lessonId]);
   const practicing = canPractice && mobileTab !== 'docs';
@@ -179,9 +180,10 @@ export default function Workspace() {
           )}
           {notesOpen && canPractice && (
             <section aria-label="Private lesson notes" className="shrink-0 border-b border-slate-200 bg-white px-4 py-3 dark:border-white/10 dark:bg-[#15161c]">
-              <label htmlFor="reading-note" className="text-xs font-semibold text-slate-500">Private notes · saved in this browser</label>
+              <label htmlFor="reading-note" className="text-xs font-semibold text-slate-500">Private notes · stored in this browser when available</label>
               <textarea id="reading-note" value={note} onChange={e => setNote(lessonId, e.target.value)} rows={3} maxLength={20000}
                 className="mt-2 block w-full resize-y rounded-lg border border-slate-300 bg-transparent p-3 text-sm dark:border-white/15" />
+              {storageError && <p role="alert" className="mt-2 text-xs font-semibold text-rose-700 dark:text-rose-300">Cannot save to browser storage. Export a backup when storage is available; this note may be lost.</p>}
             </section>
           )}
           <div className={`min-h-0 flex-1 flex-col ${practicing ? 'hidden' : 'flex'}`}>

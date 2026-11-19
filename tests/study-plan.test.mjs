@@ -89,3 +89,25 @@ test('the lesson count bound prevents unbounded lists',()=>{
  assert.equal(result.lessons.length,12);
  assert.equal(result.totalMinutes,12);
 });
+
+
+test('bookmarked eligible lessons come after in-progress work but before untouched work',()=>{
+ const lessons=[
+  {id:'first',title:'First',moduleId:'one',minutes:10},
+  {id:'saved',title:'Saved',moduleId:'one',minutes:10},
+  {id:'ongoing',title:'Ongoing',moduleId:'one',minutes:10},
+ ];
+ const progress={...empty(), bookmarks:{saved:true}, notes:{ongoing:'draft'}};
+ const plan=createStudyPlan(lessons,progress,{budgetMinutes:40,maxLessons:3});
+ assert.deepEqual(plan.lessons.map(l=>l.id),['ongoing','saved','first']);
+});
+
+test('a bookmarked lesson cannot bypass missing prerequisites',()=>{
+ const lessons=[
+  {id:'blocked',title:'Blocked',moduleId:'one',minutes:10,prerequisites:['missing']},
+  {id:'available',title:'Available',moduleId:'one',minutes:10},
+ ];
+ const plan=createStudyPlan(lessons,{...empty(),bookmarks:{blocked:true}},{budgetMinutes:30});
+ assert.deepEqual(plan.lessons.map(l=>l.id),['available']);
+ assert.equal(plan.blockedInScope,1);
+});

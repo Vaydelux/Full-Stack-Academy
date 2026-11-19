@@ -13,6 +13,7 @@ export interface StudyPlanProgress {
   rubrics: Record<string, number[]>;
   notes: Record<string, string>;
   reflections: Record<string, string>;
+  bookmarks?: Record<string, boolean>;
 }
 
 export interface StudyPlanOptions {
@@ -72,7 +73,8 @@ export function createStudyPlan(
     const ready = [...pending.values()].filter(eligible);
     if (!ready.length) break;
     // Keep catalog order within in-progress and not-started groups.
-    ready.sort((a, b) => Number(started(b.id, progress)) - Number(started(a.id, progress)));
+    const priority = (id: string) => started(id, progress) ? 2 : progress.bookmarks?.[id] === true ? 1 : 0;
+    ready.sort((a, b) => priority(b.id) - priority(a.id));
     const fit = ready.find(item => totalMinutes + item.minutes <= budgetMinutes);
     // Never suggest a course session with zero actions if at least one is ready.
     const candidate = fit ?? (queue.length === 0 ? ready[0] : undefined);
