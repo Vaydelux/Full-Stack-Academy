@@ -24,7 +24,7 @@ function send(res, status, payload, extra = {}) {
   res.end(JSON.stringify(payload));
 }
 function fail(res, status, title) {
-  send(res, status, { type: 'about:blank', status, title });
+  send(res, status, { type: 'about:blank', status, title }, { 'content-type': 'application/problem+json; charset=utf-8' });
 }
 function validateTask(value) {
   if (!value || typeof value !== 'object' || Array.isArray(value)) throw new HttpProblem(422, 'Task must be an object');
