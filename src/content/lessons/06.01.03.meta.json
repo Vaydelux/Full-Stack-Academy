@@ -30,5 +30,10 @@
       "label": "React learning documentation",
       "url": "https://react.dev/learn"
     }
+  ],
+  "rubric": [
+    "I can explain composition and children without confusing a render model with mounted browser behavior.",
+    "I can repair the starter for 06.01.03, compare with the instructor solution and explain why the test fails before the repair.",
+    "I can verify representative and edge-case behavior locally and name at least one additional interaction test needed."
   ]
 }
