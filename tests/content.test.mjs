@@ -34,7 +34,7 @@ test('quality workflow executes both content and lab verification', () => {
   const pkg = JSON.parse(read('package.json'));
   assert.match(ci,/npm run verify:content/);
   assert.match(ci,/npm run test:labs/);
-  for (const testFile of ['tests/academy.test.mjs', 'tests/hardening.test.mjs', 'tests/course-routes.test.mjs', 'tests/content.test.mjs', 'tests/react-modules.test.mjs']) {
+  for (const testFile of ['tests/academy.test.mjs', 'tests/hardening.test.mjs', 'tests/course-routes.test.mjs', 'tests/content.test.mjs', 'tests/react-modules.test.mjs', 'tests/react-interaction-source.test.mjs']) {
     assert.ok(pkg.scripts.test.includes(testFile), `Missing required test file: ${testFile}`);
   }
 });

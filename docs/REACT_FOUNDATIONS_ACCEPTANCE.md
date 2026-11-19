@@ -16,6 +16,10 @@ Branch `feat/react-foundations-state-offline` follows merged `main` commit `7e8f
 - Publication registries, full lab test list, individual `lab:react-*` commands, planned lesson noindex boundary and sitemap expectations are updated.
 - No remote learner-code execution, credentials, backend, paid service, Vercel check or GitHub Actions check added.
 
+## Browser interaction expansion
+
+The candidate also includes `/learn/react-state-lab`, a fixed-source client component demonstrating functional updates, keyed state resets and immutable reducer changes. `scripts/react-batch-smoke.mjs` includes real Chromium interactions for these behaviors. This suite is authored but has **not** been executed in the current environment; it is not equivalent to a passing browser test.
+
 ## Local verification checklist — not yet executed
 
 ```bash
