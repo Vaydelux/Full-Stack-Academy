@@ -59,3 +59,9 @@ Then run the local `scripts/browser-smoke.mjs` with a disposable Next server and
 After local green qualification of tracks 06–08, continue W01 on **tracks 09 and 10**, 63 unique unauthored IDs: Zod, React Hook Form, TanStack Query, Zustand, Node runtime, HTTP APIs, security boundaries and OpenAPI/SDKs. The other six complete-track waves remain in `docs/MEGA_SCOPE_DELIVERY_PLAN.md`.
 
 Other AI agents should read `docs/checkpoint.json`, `docs/NEXT_TODO.md`, `docs/UI_TRACK_ACCEPTANCE.md`, and `docs/delivery-waves.json` before editing. Preserve exact code/test evidence and never label a source-only milestone as deployed or verified.
+
+## Post-authoring editorial quality refinement
+
+All **32 UI lesson MDX source files** were retrieved and inspected for three guided steps, one knowledge check, one lab gate, paired fences and at least two source URLs. All passed that static structural review. Five title mismatches against canonical `data/curriculum.json` were repaired in metadata, lab manifests, associated test labels, and the UI authoring factory. `scripts/ui-track-audit.mjs` now enforces exact canonical titles, including the short title `Drag and drop`.
+
+No Node/tsx/MDX compiler, TypeScript checker, local server, or browser was run during this source-only editorial audit. The actual local tests remain required before merging.

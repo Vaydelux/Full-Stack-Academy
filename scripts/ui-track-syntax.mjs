@@ -1,5 +1,6 @@
 (async function syntaxUI(){
- const fs=await import("node:fs"),path=await import("node:path"),url=await import("node:url"),assert=(await import("node:assert/strict")).default,ts=await import("typescript"),{compile}=await import("@mdx-js/mdx");
+ const fs=await import("node:fs"),path=await import("node:path"),url=await import("node:url"),assert=(await import("node:assert/strict")).default,tsMod=await import("typescript"),{compile}=await import("@mdx-js/mdx");
+ const ts=tsMod.default??tsMod;
  const root=path.resolve(path.dirname(url.fileURLToPath(import.meta.url)),".."),read=p=>fs.readFileSync(path.join(root,p),"utf8"),json=p=>JSON.parse(read(p));
  const ids=json("data/curriculum.json").lessons.filter(l=>l.trackId==="08");let mdx=0,tsParsed=0;const failures=[];
  for(const l of ids){
