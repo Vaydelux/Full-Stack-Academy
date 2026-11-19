@@ -6,4 +6,4 @@ export function makeQuantityStore(){
   addQuantity:quantity=>set(state=>({quantities:[...state.quantities,quantity]})),
  }));
 }
-export const totalOf=(_state:QtyState)=>0;
+export const totalOf=(state:QtyState)=>{void state;return 0;};

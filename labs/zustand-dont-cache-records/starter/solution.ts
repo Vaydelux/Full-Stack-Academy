@@ -7,4 +7,4 @@ export function makeSelectionStore(){
   select:selectedId=>set({selectedId}),
  }));
 }
-export const selectedTask=(_rows:readonly {id:string}[],_id:string|null)=>null;
+export const selectedTask=(rows:readonly {id:string}[],id:string|null)=>{void rows;void id;return null;};

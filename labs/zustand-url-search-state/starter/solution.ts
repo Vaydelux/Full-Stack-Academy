@@ -5,4 +5,4 @@ export function makeQueryStore(search:string){
  const status:Status=new URLSearchParams(search).get('status')==='active'?'active':'all';
  return createStore<QueryState>()(set=>({status,setStatus:status=>set({status})}));
 }
-export const toQuery=(_store:StoreApi<QueryState>)=>'';
+export const toQuery=(store:StoreApi<QueryState>)=>{void store;return '';};

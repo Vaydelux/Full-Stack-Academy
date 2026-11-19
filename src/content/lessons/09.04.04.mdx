@@ -36,7 +36,7 @@ export function makeQuantityStore(){
   addQuantity:quantity=>set(state=>({quantities:[...state.quantities,quantity]})),
  }));
 }
-export const totalOf=(_state:QtyState)=>0;
+export const totalOf=(state:QtyState)=>{void state;return 0;};
 ```
 
 **Cause:** The starter always returns a zero total despite changes to the real store's quantities.
