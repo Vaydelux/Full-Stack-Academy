@@ -67,3 +67,7 @@ After the CSS-track candidate, a distinct branch `feat/js-ts-two-track-offline` 
 ## Handoff format for a successor AI
 
 Read `AGENTS.md`, `docs/PROJECT_CHECKPOINT.md`, `docs/NEXT_TODO.md`, `docs/checkpoint.json` and this plan; check GitHub PR #14, Vercel project settings and the most recent CI run. Choose the next **complete** track only after the CSS batch has green checks, and never merge or deploy while the quota-saving hold is active.
+
+## Long-horizon continuation — 7 whole-track waves
+
+All post-React/Next development is arranged into seven **80–104-topic** whole-track waves (the final wave is 72): W01 08–10, W02 11–13, W03 14–16, W04 17–19, W05 20–22, W06 23–25 and W07 26–27. Detailed canonical counts, duplicate interactive IDs, quality gates and ownership are in `docs/MEGA_SCOPE_DELIVERY_PLAN.md` and `docs/delivery-waves.json`. No future lesson is marked authored solely because a wave has been planned.

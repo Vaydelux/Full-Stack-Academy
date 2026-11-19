@@ -279,7 +279,10 @@
     "check:react-next:syntax": "node scripts/react-next-syntax-gate.mjs",
     "test:react-next:snippets": "node --test tests/react-next-snippet-safety.test.mjs",
     "verify:react-next:cheap": "npm run check:react-next:structure && npm run check:react-next:syntax && npm run test:react-next:snippets",
-    "verify:react-next:full": "npm run verify:react-next:cheap && npm run test:react-next:offline && npm run test:react-next:red && npm run verify:content && npm run checkpoint:check && npm run lint && npm run typecheck && npm run build"
+    "verify:react-next:full": "npm run verify:react-next:cheap && npm run test:react-next:offline && npm run test:react-next:red && npm run verify:content && npm run checkpoint:check && npm run lint && npm run typecheck && npm run build",
+    "plan:waves": "node scripts/plan-curriculum-waves.mjs",
+    "plan:waves:check": "node scripts/plan-curriculum-waves.mjs --check",
+    "plan:waves:write": "node scripts/plan-curriculum-waves.mjs --write"
   },
   "dependencies": {
     "clsx": "^2.1.1",

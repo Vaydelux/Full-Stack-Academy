@@ -34,3 +34,17 @@
 - [ ] Favor local QA over GitHub Actions until owner re-enables it. Do not weaken tests to create false green status
 
 **Branch-only proposed counts:** 259 authored/published lesson IDs; 257 MDX + 257 offline lab manifests; 32 complete modules; 889 canonical topics. **Live deployment remains at 61 lesson IDs** because deployment is paused. `docs/checkpoint.json` and `docs/REACT_NEXT_OFFLINE_ACCEPTANCE.md` are handoff sources.
+
+## W01–W07 — Whole-track large-scope roadmap
+
+- [x] Machine-readable 7-wave, 630 remaining-topic plan checked against the 889-topic canonical catalog
+- [ ] Finish the local React/Next 80-topic source gate and browser checks first; no cloud usage
+- [ ] W01: tracks 08+09+10 (96 canonical IDs, 95 still unauthored)
+- [ ] W02: tracks 11+12+13 (104 IDs)
+- [ ] W03: tracks 14+15+16 (96 IDs, 95 still unauthored)
+- [ ] W04: tracks 17+18+19 (88 IDs)
+- [ ] W05: tracks 20+21+22 (80 IDs)
+- [ ] W06: tracks 23+24+25 (96 IDs)
+- [ ] W07: tracks 26+27 (72 IDs)
+
+Source: `docs/MEGA_SCOPE_DELIVERY_PLAN.md` and `docs/delivery-waves.json`. Verify with `npm run plan:waves:check` locally.
