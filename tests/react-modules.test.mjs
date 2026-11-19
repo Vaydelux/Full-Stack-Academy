@@ -20,7 +20,7 @@ test('15 React lessons are registered with complete, local-only fixture paths',(
   assert.ok(published.includes('lessons/'+id+'.meta.json'));
   for(const file of [lab.starter,lab.solution,lab.tests])assert.ok(fs.statSync(path.join(root,file)).isFile(),file);
   assert.equal(pkg.scripts['lab:'+name],'tsx --test labs/'+name+'/solution.test.mjs');
-  assert.ok(pkg.scripts['test:labs'].includes(lab.tests));
+  assert.equal(pkg.scripts['test:labs'],'node scripts/run-local-labs.mjs');
  }
 });
 test('new lesson meta uses canonical React IDs and does not pretend to run remote code',()=>{

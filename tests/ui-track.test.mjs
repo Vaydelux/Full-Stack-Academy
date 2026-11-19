@@ -26,7 +26,7 @@ test('all 32 Track 08 lessons are canonical, registered, rubric-backed and have 
   }
   for(const asset of [lab.starter,lab.solution,lab.tests])assert.ok(fs.statSync(path.join(root,asset)).isFile(),asset);
   assert.equal(pkg.scripts['lab:'+slug],'tsx --test labs/'+slug+'/solution.test.mjs');
-  assert.ok(pkg.scripts['test:labs'].includes(lab.tests));
+  assert.equal(pkg.scripts['test:labs'],'node scripts/run-local-labs.mjs');
   assert.ok(registry.includes('./lessons/'+id+'.mdx'));
   assert.ok(published.includes('lessons/'+id+'.meta.json'));
  }
@@ -73,4 +73,14 @@ test('eight CSS quick references correspond to canonical index entries',()=>{
  }
  const cp=JSON.parse(read('docs/checkpoint.json'));
  assert.equal(cp.snapshot.authoredReferenceDrafts,20);
+});
+
+test('manifest-based local lab runner avoids Windows command-line limits and checks file scope',()=>{
+ const runner=read('scripts/run-local-labs.mjs');
+ const pkg=JSON.parse(read('package.json'));
+ assert.equal(pkg.scripts['test:labs'],'node scripts/run-local-labs.mjs');
+ assert.ok(runner.includes('manifest.tests'));
+ assert.ok(runner.includes('spawnSync(process.execPath'));
+ assert.ok(runner.includes('batchSize=20'));
+ assert.ok(runner.includes('!resolved.startsWith(root+path.sep)'));
 });

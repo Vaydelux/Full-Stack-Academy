@@ -28,7 +28,7 @@ test('16 React/Next lesson metadata, lab fixtures and publication registration a
   assert.ok(published.includes("lessons/"+id+".meta.json"));
   for(const asset of [lab.starter,lab.solution,lab.tests])assert.ok(fs.statSync(path.join(root,asset)).isFile(),asset);
   assert.equal(packageJson.scripts['lab:'+name],'tsx --test labs/'+name+'/solution.test.mjs');
-  assert.ok(packageJson.scripts['test:labs'].includes(lab.tests));
+  assert.equal(packageJson.scripts['test:labs'],'node scripts/run-local-labs.mjs');
  }
 });
 test('Next.js 16 capstone includes App Router file conventions and async params',()=>{

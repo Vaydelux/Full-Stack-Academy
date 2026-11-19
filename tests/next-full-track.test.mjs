@@ -27,7 +27,7 @@ test('32 Next.js 16 lessons have canonical metadata, deep MDX and local lab fixt
   }
   for(const asset of [lab.starter,lab.solution,lab.tests])assert.ok(fs.statSync(path.join(root,asset)).isFile(),asset);
   assert.equal(pkg.scripts['lab:'+name],'tsx --test labs/'+name+'/solution.test.mjs');
-  assert.ok(pkg.scripts['test:labs'].includes(lab.tests));
+  assert.equal(pkg.scripts['test:labs'],'node scripts/run-local-labs.mjs');
   assert.ok(registry.includes('./lessons/'+id+'.mdx'));
   assert.ok(published.includes('lessons/'+id+'.meta.json'));
  }
