@@ -1,6 +1,6 @@
 # Forms and Server State — real loopback vertical slice
 
-This is a **developer-only teaching capstone** for future canonical modules 09.02 (React Hook Form) and 09.03 (TanStack Query). It is not a production API and does not publish any academy lesson ID.
+This is a **developer-only teaching capstone** for future canonical modules 09.02 (React Hook Form) and 09.03 (TanStack Query). It is not a production API and does not publish any academy lesson ID. The academy now provides an unindexed [project walkthrough](/learn/projects/forms-query) explaining the local exercise, but that page does not host the API.
 
 ## What works without installing packages
 
@@ -12,11 +12,16 @@ node examples/forms-query-vertical/task-api.mjs
 
 Then visit http://127.0.0.1:3337/ . The browser sample works without React, bundling, accounts or network access. It demonstrates native accessible form controls, user input validation plus independent server validation, real HTTP requests, pagination, cancellation, retry with the same idempotency key, safe DOM text rendering and explicit errors. The browser is served from the same origin as the API under a restrictive Content Security Policy.
 
-Run the **real network tests** with:
+Run the repository-owned **network suites** on a complete checkout with:
 
 ```bash
 node --test tests/forms-query-http.test.mjs
+node --test tests/forms-query-workflow.test.mjs
+node --test tests/forms-query-contract.test.mjs
+node --test tests/forms-query-project-route.test.mjs
 ```
+
+The earlier HTTP suite passed 22/22 on the preceding version. The new workflow suite covers revision races, status filtering and hostile request targets; rerun all suites on this exact branch before release. An isolated handler-level simulation of 29 workflow scenarios and 11 contract assertions passed during development, but this is not a replacement for the Node network run.
 
 The test server uses an ephemeral loopback port (no privileged port). It is started and closed within tests. No GitHub Actions/Vercel is involved.
 
@@ -25,15 +30,19 @@ The test server uses an ephemeral loopback port (no privileged port). It is star
 | Operation | Endpoint | Behavior |
 |---|---|---|
 | Health | GET /api/health | Education-only status |
-| List | GET /api/tasks?limit=10&cursor=... | Max 25 results per page, revision-bound opaque cursor |
-| Create | POST /api/tasks | Strict title/priority JSON validation, required Idempotency-Key (8–96 safe characters), 8 KiB body maximum |
+| List | GET /api/tasks?limit=10&status=all&cursor=... | Max 25 results per page; status can be all/todo/doing/done; cursors bind to both revision and status filter |
+| Create | POST /api/tasks | Strict title/priority JSON validation, required Idempotency-Key (8–96 safe characters), 8 KiB body maximum; creates todo revision 1 |
+| Read | GET /api/tasks/:uuid | One task with strong revision ETag |
+| Update | PATCH /api/tasks/:uuid | Only status todo/doing/done. Requires If-Match revision; 412 stale edit, 428 missing precondition |
 | Delete | DELETE /api/tasks/:uuid | Returns 204, or 404 if absent |
 
-- Problem responses use JSON with status/title, without reflecting arbitrary user content.
+- Problem responses use **application/problem+json** with status/title, without reflecting arbitrary user content.
+- The local browser interface displays task lifecycle transitions, status filters and a bounded request journal (last 24 operations, metadata only; no task title or idempotency key).
 - Create returns 201 with a Location header. Replays with the same normalized payload and key return the same task; a reused key with a changed payload returns 409.
-- A write invalidates all previously issued pagination cursors; stale pagination returns 409 so clients restart rather than silently duplicating items.
+- A successful state-changing write invalidates earlier pagination cursors; stale pagination returns 409 so clients restart rather than silently duplicating items. The cursor also encodes the selected status filter and refuses cross-filter reuse. A no-op status PATCH leaves the revision unchanged.
+- Conditional status updates read the full request body, then compare the **current** revision immediately before the synchronous in-memory update; two competing edits with the same version cannot both commit.
 - Capacity is 100 tasks; all data disappears at server restart. A maximum of 200 idempotency records are retained in memory, and older ones are evicted.
-- The server binds to 127.0.0.1 or ::1 only. Cross-origin request origins are rejected; no wildcard CORS is issued.
+- The server binds to 127.0.0.1 or ::1 only, rejects spoofed Host and absolute HTTP request targets, and rejects mismatched Origin / cross-site Fetch Metadata. No wildcard CORS is issued. Vite's local proxy rewrites only its exact trusted dev Origin to the local API Origin.
 - There are **no accounts, durable database, authorization, TLS, production rate limits or multi-user isolation**. Do not deploy to an internet-facing host.
 
 ## Real React Hook Form + TanStack Query source (UNQUALIFIED until npm install)
@@ -62,14 +71,15 @@ The React source demonstrates:
 - useForm and zodResolver, typed input/output, accessible field errors and submit gating;
 - QueryClientProvider and useQuery, stable keys and AbortSignal propagation;
 - useMutation for create with an idempotency key retained for retry;
+- status-scoped query keys; typed status transitions using If-Match, with an optimistic cache snapshot/rollback;
 - cancelQueries, optimistic delete, snapshot rollback on error and invalidateQueries after settle;
 - failure, loading, retry and empty states.
 
-**Limitations:** the React view intentionally shows only the first page, and its optimistic snapshot rollback is safe only for a single in-flight delete. It disables concurrent deletes; optimistic concurrency collisions and infinite queries remain separate exercises. The full React runtime was not executable during this implementation because the npm registry was unreachable.
+**Limitations:** the React view intentionally shows only the first page, and its optimistic snapshot rollback is safe only for one in-flight operation of each mutation class. It disables concurrent same-type mutations. Cross-type optimistic concurrency, infinite queries and full React browser qualification remain separate exercises. The full React runtime was not executable during this implementation because the npm registry was unreachable.
 
 ## Learning and implementation progression
 
-See [WORKBOOK.md](WORKBOOK.md) for the 16 canonical topic exercises and acceptance requirements. See [docs/FORMS_QUERY_CAPSTONE_ACCEPTANCE.md](../../docs/FORMS_QUERY_CAPSTONE_ACCEPTANCE.md) for executed evidence, unverified checks and release requirements.
+See [WORKBOOK.md](WORKBOOK.md) for the 16 canonical topic exercises and acceptance requirements. [task-workflow.openapi.json](task-workflow.openapi.json) is the checked-in OpenAPI 3.1.1 contract. See [docs/FORMS_QUERY_WORKFLOW_V3_ACCEPTANCE.md](../../docs/FORMS_QUERY_WORKFLOW_V3_ACCEPTANCE.md) for this milestone's evidence and follow-up gates.
 
 ## Security & maintenance boundaries
 
