@@ -1610,6 +1610,586 @@ await redisCache.set(cacheKey, JSON.stringify(safeDto), 'EX', 60);`,
     "08.04.07"
   ],
   "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/clamp"
+},
+{
+  "id": "zod-z-string",
+  "matchCategories": [
+    "Zod"
+  ],
+  "matchTitles": [
+    "z.string"
+  ],
+  "heading": "Zod 4: String validation",
+  "category": "Zod · Runtime validation",
+  "majorVersion": "Zod 4",
+  "status": "Authored reference draft",
+  "summary": "String schema with length constraints, trimming and formats; z.email()/z.url() are top-level format constructors in Zod 4.",
+  "syntax": "const Name=z.string().trim().min(2).max(80);",
+  "lang": "ts",
+  "parameters": "A schema declaration and untrusted runtime input; use parse/safeParse to validate before use.",
+  "returns": "A Zod schema with inferred output and a parse/safeParse result, including structured issues on invalid data.",
+  "minimalExample": "import * as z from 'zod';\nconst Name=z.string().trim().min(2).max(80);",
+  "productionExample": "import * as z from 'zod';\nconst Username=z.string().trim().min(3).max(32).regex(/^[a-z0-9_]+$/i);",
+  "commonMistakes": [
+    "Use z.string() for strings and add explicit min/max/trim constraints; use z.email() for email, not a broad regex.",
+    "Assuming TypeScript static types replace runtime validation for unknown API/form input."
+  ],
+  "securityPerformanceNotes": [
+    "Always validate at the server trust boundary; client validation improves usability but cannot authorize writes.",
+    "Bound user-supplied arrays/strings and avoid logging raw rejected personal or secret values."
+  ],
+  "relatedLessonIds": [
+    "09.01.01"
+  ],
+  "canonicalUrl": "https://zod.dev/api"
+},
+{
+  "id": "zod-z-number",
+  "matchCategories": [
+    "Zod"
+  ],
+  "matchTitles": [
+    "z.number"
+  ],
+  "heading": "Zod 4: Number validation",
+  "category": "Zod · Runtime validation",
+  "majorVersion": "Zod 4",
+  "status": "Authored reference draft",
+  "summary": "Strict number validation does not accept numeric strings; use z.coerce.number() deliberately for browser form strings.",
+  "syntax": "const Age=z.number().int().min(18);",
+  "lang": "ts",
+  "parameters": "A schema declaration and untrusted runtime input; use parse/safeParse to validate before use.",
+  "returns": "A Zod schema with inferred output and a parse/safeParse result, including structured issues on invalid data.",
+  "minimalExample": "import * as z from 'zod';\nconst Age=z.number().int().min(18);",
+  "productionExample": "import * as z from 'zod';\nconst Price=z.number().finite().nonnegative().max(1000000);",
+  "commonMistakes": [
+    "Do not rely on JavaScript numeric coercion without bounding finite and integer inputs.",
+    "Assuming TypeScript static types replace runtime validation for unknown API/form input."
+  ],
+  "securityPerformanceNotes": [
+    "Always validate at the server trust boundary; client validation improves usability but cannot authorize writes.",
+    "Bound user-supplied arrays/strings and avoid logging raw rejected personal or secret values."
+  ],
+  "relatedLessonIds": [
+    "09.01.01",
+    "09.01.05"
+  ],
+  "canonicalUrl": "https://zod.dev/api"
+},
+{
+  "id": "zod-z-boolean",
+  "matchCategories": [
+    "Zod"
+  ],
+  "matchTitles": [
+    "z.boolean"
+  ],
+  "heading": "Zod 4: Boolean validation",
+  "category": "Zod · Runtime validation",
+  "majorVersion": "Zod 4",
+  "status": "Authored reference draft",
+  "summary": "Boolean schema rejects string 'false'; z.coerce.boolean() uses Boolean(input) and converts nonempty strings to true.",
+  "syntax": "const Enabled=z.boolean();",
+  "lang": "ts",
+  "parameters": "A schema declaration and untrusted runtime input; use parse/safeParse to validate before use.",
+  "returns": "A Zod schema with inferred output and a parse/safeParse result, including structured issues on invalid data.",
+  "minimalExample": "import * as z from 'zod';\nconst Enabled=z.boolean();",
+  "productionExample": "import * as z from 'zod';\nconst Feature=z.strictObject({enabled:z.boolean()});",
+  "commonMistakes": [
+    "Do not coerce browser string 'false' with z.coerce.boolean() unless Boolean semantics are explicitly intended.",
+    "Assuming TypeScript static types replace runtime validation for unknown API/form input."
+  ],
+  "securityPerformanceNotes": [
+    "Always validate at the server trust boundary; client validation improves usability but cannot authorize writes.",
+    "Bound user-supplied arrays/strings and avoid logging raw rejected personal or secret values."
+  ],
+  "relatedLessonIds": [
+    "09.01.01",
+    "09.01.03"
+  ],
+  "canonicalUrl": "https://zod.dev/api"
+},
+{
+  "id": "zod-z-object",
+  "matchCategories": [
+    "Zod"
+  ],
+  "matchTitles": [
+    "z.object"
+  ],
+  "heading": "Zod 4: Object schema",
+  "category": "Zod · Runtime validation",
+  "majorVersion": "Zod 4",
+  "status": "Authored reference draft",
+  "summary": "Zod 4 z.object strips unknown string keys by default. z.strictObject rejects unknown keys when DTO boundaries require strictness.",
+  "syntax": "const User=z.object({id:z.string(),name:z.string()});",
+  "lang": "ts",
+  "parameters": "A schema declaration and untrusted runtime input; use parse/safeParse to validate before use.",
+  "returns": "A Zod schema with inferred output and a parse/safeParse result, including structured issues on invalid data.",
+  "minimalExample": "import * as z from 'zod';\nconst User=z.object({id:z.string(),name:z.string()});",
+  "productionExample": "import * as z from 'zod';\nconst Profile=z.object({name:z.string().trim().min(2)});const r=Profile.safeParse(payload);",
+  "commonMistakes": [
+    "Choose object unknown-key policy deliberately; stripping unknown fields is not authorization.",
+    "Assuming TypeScript static types replace runtime validation for unknown API/form input."
+  ],
+  "securityPerformanceNotes": [
+    "Always validate at the server trust boundary; client validation improves usability but cannot authorize writes.",
+    "Bound user-supplied arrays/strings and avoid logging raw rejected personal or secret values."
+  ],
+  "relatedLessonIds": [
+    "09.01.01"
+  ],
+  "canonicalUrl": "https://zod.dev/api"
+},
+{
+  "id": "zod-z-array",
+  "matchCategories": [
+    "Zod"
+  ],
+  "matchTitles": [
+    "z.array"
+  ],
+  "heading": "Zod 4: Array validation",
+  "category": "Zod · Runtime validation",
+  "majorVersion": "Zod 4",
+  "status": "Authored reference draft",
+  "summary": "Validate each array member and bound the collection length; unbounded arrays may permit expensive input payloads.",
+  "syntax": "const Tags=z.array(z.string().min(1)).max(20);",
+  "lang": "ts",
+  "parameters": "A schema declaration and untrusted runtime input; use parse/safeParse to validate before use.",
+  "returns": "A Zod schema with inferred output and a parse/safeParse result, including structured issues on invalid data.",
+  "minimalExample": "import * as z from 'zod';\nconst Tags=z.array(z.string().min(1)).max(20);",
+  "productionExample": "import * as z from 'zod';\nconst Items=z.array(z.strictObject({id:z.string().min(1),qty:z.number().int().positive()})).max(100);",
+  "commonMistakes": [
+    "Validate element shapes and maximum item count for server request bodies.",
+    "Assuming TypeScript static types replace runtime validation for unknown API/form input."
+  ],
+  "securityPerformanceNotes": [
+    "Always validate at the server trust boundary; client validation improves usability but cannot authorize writes.",
+    "Bound user-supplied arrays/strings and avoid logging raw rejected personal or secret values."
+  ],
+  "relatedLessonIds": [
+    "09.01.07"
+  ],
+  "canonicalUrl": "https://zod.dev/api"
+},
+{
+  "id": "zod-z-enum",
+  "matchCategories": [
+    "Zod"
+  ],
+  "matchTitles": [
+    "z.enum"
+  ],
+  "heading": "Zod 4: Enum validation",
+  "category": "Zod · Runtime validation",
+  "majorVersion": "Zod 4",
+  "status": "Authored reference draft",
+  "summary": "Enumerated runtime values reject unknown options; a TypeScript union alone does not validate incoming JSON.",
+  "syntax": "const Role=z.enum(['reader','editor']);",
+  "lang": "ts",
+  "parameters": "A schema declaration and untrusted runtime input; use parse/safeParse to validate before use.",
+  "returns": "A Zod schema with inferred output and a parse/safeParse result, including structured issues on invalid data.",
+  "minimalExample": "import * as z from 'zod';\nconst Role=z.enum(['reader','editor']);",
+  "productionExample": "import * as z from 'zod';\nconst Member=z.strictObject({id:z.string(),role:z.enum(['reader','editor'])});",
+  "commonMistakes": [
+    "Use explicit allowed strings and still authorize a role against the authenticated server identity.",
+    "Assuming TypeScript static types replace runtime validation for unknown API/form input."
+  ],
+  "securityPerformanceNotes": [
+    "Always validate at the server trust boundary; client validation improves usability but cannot authorize writes.",
+    "Bound user-supplied arrays/strings and avoid logging raw rejected personal or secret values."
+  ],
+  "relatedLessonIds": [
+    "09.01.01",
+    "09.01.06"
+  ],
+  "canonicalUrl": "https://zod.dev/api"
+},
+{
+  "id": "zod-z-literal",
+  "matchCategories": [
+    "Zod"
+  ],
+  "matchTitles": [
+    "z.literal"
+  ],
+  "heading": "Zod 4: Literal validation",
+  "category": "Zod · Runtime validation",
+  "majorVersion": "Zod 4",
+  "status": "Authored reference draft",
+  "summary": "Literal checks discriminate exact values such as kind or version and are useful in strict DTOs.",
+  "syntax": "const Version=z.literal('v1');",
+  "lang": "ts",
+  "parameters": "A schema declaration and untrusted runtime input; use parse/safeParse to validate before use.",
+  "returns": "A Zod schema with inferred output and a parse/safeParse result, including structured issues on invalid data.",
+  "minimalExample": "import * as z from 'zod';\nconst Version=z.literal('v1');",
+  "productionExample": "import * as z from 'zod';\nconst Request=z.strictObject({version:z.literal('v1'),payload:z.string()});",
+  "commonMistakes": [
+    "A literal field is a parser constraint, not proof of request authenticity.",
+    "Assuming TypeScript static types replace runtime validation for unknown API/form input."
+  ],
+  "securityPerformanceNotes": [
+    "Always validate at the server trust boundary; client validation improves usability but cannot authorize writes.",
+    "Bound user-supplied arrays/strings and avoid logging raw rejected personal or secret values."
+  ],
+  "relatedLessonIds": [
+    "09.01.06"
+  ],
+  "canonicalUrl": "https://zod.dev/api"
+},
+{
+  "id": "zod-z-union",
+  "matchCategories": [
+    "Zod"
+  ],
+  "matchTitles": [
+    "z.union"
+  ],
+  "heading": "Zod 4: General union",
+  "category": "Zod · Runtime validation",
+  "majorVersion": "Zod 4",
+  "status": "Authored reference draft",
+  "summary": "A union succeeds if any member schema matches; prefer z.discriminatedUnion when branches have an explicit discriminant.",
+  "syntax": "const ID=z.union([z.string().min(1),z.number().int()]);",
+  "lang": "ts",
+  "parameters": "A schema declaration and untrusted runtime input; use parse/safeParse to validate before use.",
+  "returns": "A Zod schema with inferred output and a parse/safeParse result, including structured issues on invalid data.",
+  "minimalExample": "import * as z from 'zod';\nconst ID=z.union([z.string().min(1),z.number().int()]);",
+  "productionExample": "import * as z from 'zod';\nconst Value=z.union([z.string().min(1),z.number().finite()]);const result=Value.safeParse(input);",
+  "commonMistakes": [
+    "Avoid overlapping unconstrained unions that make error handling ambiguous.",
+    "Assuming TypeScript static types replace runtime validation for unknown API/form input."
+  ],
+  "securityPerformanceNotes": [
+    "Always validate at the server trust boundary; client validation improves usability but cannot authorize writes.",
+    "Bound user-supplied arrays/strings and avoid logging raw rejected personal or secret values."
+  ],
+  "relatedLessonIds": [
+    "09.01.06"
+  ],
+  "canonicalUrl": "https://zod.dev/api"
+},
+{
+  "id": "zod-z-discriminatedunion",
+  "matchCategories": [
+    "Zod"
+  ],
+  "matchTitles": [
+    "z.discriminatedUnion"
+  ],
+  "heading": "Zod 4: Discriminated union",
+  "category": "Zod · Runtime validation",
+  "majorVersion": "Zod 4",
+  "status": "Authored reference draft",
+  "summary": "Select a branch by an explicit literal discriminator, ensuring branch-specific required fields and safe narrowing.",
+  "syntax": "const Event=z.discriminatedUnion('type',[z.object({type:z.literal('a')}),z.object({type:z.literal('b')})]);",
+  "lang": "ts",
+  "parameters": "A schema declaration and untrusted runtime input; use parse/safeParse to validate before use.",
+  "returns": "A Zod schema with inferred output and a parse/safeParse result, including structured issues on invalid data.",
+  "minimalExample": "import * as z from 'zod';\nconst Event=z.discriminatedUnion('type',[z.object({type:z.literal('a')}),z.object({type:z.literal('b')})]);",
+  "productionExample": "import * as z from 'zod';\nconst Notification=z.discriminatedUnion('channel',[z.strictObject({channel:z.literal('email'),address:z.email()}),z.strictObject({channel:z.literal('sms'),phone:z.string().min(8)})]);",
+  "commonMistakes": [
+    "Reject unknown channels and extra sensitive fields; validate at server trust boundaries.",
+    "Assuming TypeScript static types replace runtime validation for unknown API/form input."
+  ],
+  "securityPerformanceNotes": [
+    "Always validate at the server trust boundary; client validation improves usability but cannot authorize writes.",
+    "Bound user-supplied arrays/strings and avoid logging raw rejected personal or secret values."
+  ],
+  "relatedLessonIds": [
+    "09.01.06"
+  ],
+  "canonicalUrl": "https://zod.dev/api"
+},
+{
+  "id": "zod-z-optional",
+  "matchCategories": [
+    "Zod"
+  ],
+  "matchTitles": [
+    "z.optional"
+  ],
+  "heading": "Zod 4: Optional values",
+  "category": "Zod · Runtime validation",
+  "majorVersion": "Zod 4",
+  "status": "Authored reference draft",
+  "summary": "Optional permits undefined or missing input; it does not permit null unless nullable is included.",
+  "syntax": "const Bio=z.string().optional();",
+  "lang": "ts",
+  "parameters": "A schema declaration and untrusted runtime input; use parse/safeParse to validate before use.",
+  "returns": "A Zod schema with inferred output and a parse/safeParse result, including structured issues on invalid data.",
+  "minimalExample": "import * as z from 'zod';\nconst Bio=z.string().optional();",
+  "productionExample": "import * as z from 'zod';\nconst Draft=z.strictObject({title:z.string().min(1),note:z.string().optional()});",
+  "commonMistakes": [
+    "Distinguish absence from explicit null when patching partial records.",
+    "Assuming TypeScript static types replace runtime validation for unknown API/form input."
+  ],
+  "securityPerformanceNotes": [
+    "Always validate at the server trust boundary; client validation improves usability but cannot authorize writes.",
+    "Bound user-supplied arrays/strings and avoid logging raw rejected personal or secret values."
+  ],
+  "relatedLessonIds": [
+    "09.01.03"
+  ],
+  "canonicalUrl": "https://zod.dev/api"
+},
+{
+  "id": "zod-z-nullable",
+  "matchCategories": [
+    "Zod"
+  ],
+  "matchTitles": [
+    "z.nullable"
+  ],
+  "heading": "Zod 4: Nullable values",
+  "category": "Zod · Runtime validation",
+  "majorVersion": "Zod 4",
+  "status": "Authored reference draft",
+  "summary": "Nullable permits null in addition to the wrapped type, but does not imply a field can be omitted.",
+  "syntax": "const Bio=z.string().nullable();",
+  "lang": "ts",
+  "parameters": "A schema declaration and untrusted runtime input; use parse/safeParse to validate before use.",
+  "returns": "A Zod schema with inferred output and a parse/safeParse result, including structured issues on invalid data.",
+  "minimalExample": "import * as z from 'zod';\nconst Bio=z.string().nullable();",
+  "productionExample": "import * as z from 'zod';\nconst Profile=z.strictObject({bio:z.string().nullable().optional()});",
+  "commonMistakes": [
+    "Use optional and nullable intentionally; avoid collapsing missing and null database semantics.",
+    "Assuming TypeScript static types replace runtime validation for unknown API/form input."
+  ],
+  "securityPerformanceNotes": [
+    "Always validate at the server trust boundary; client validation improves usability but cannot authorize writes.",
+    "Bound user-supplied arrays/strings and avoid logging raw rejected personal or secret values."
+  ],
+  "relatedLessonIds": [
+    "09.01.03"
+  ],
+  "canonicalUrl": "https://zod.dev/api"
+},
+{
+  "id": "zod-z-default",
+  "matchCategories": [
+    "Zod"
+  ],
+  "matchTitles": [
+    "z.default"
+  ],
+  "heading": "Zod 4: Defaults in Zod 4",
+  "category": "Zod · Runtime validation",
+  "majorVersion": "Zod 4",
+  "status": "Authored reference draft",
+  "summary": "In Zod 4 default returns a typed output when input is undefined, without running transformations; prefault enables preparse default behavior.",
+  "syntax": "const Theme=z.enum(['light','dark']).default('light');",
+  "lang": "ts",
+  "parameters": "A schema declaration and untrusted runtime input; use parse/safeParse to validate before use.",
+  "returns": "A Zod schema with inferred output and a parse/safeParse result, including structured issues on invalid data.",
+  "minimalExample": "import * as z from 'zod';\nconst Theme=z.enum(['light','dark']).default('light');",
+  "productionExample": "import * as z from 'zod';\nconst Preferences=z.strictObject({newsletter:z.boolean().default(false),theme:z.enum(['light','dark']).default('light')});",
+  "commonMistakes": [
+    "Remember Zod 4 defaults short-circuit; choose valid output-type values or prefault where parsing is required.",
+    "Assuming TypeScript static types replace runtime validation for unknown API/form input."
+  ],
+  "securityPerformanceNotes": [
+    "Always validate at the server trust boundary; client validation improves usability but cannot authorize writes.",
+    "Bound user-supplied arrays/strings and avoid logging raw rejected personal or secret values."
+  ],
+  "relatedLessonIds": [
+    "09.01.03"
+  ],
+  "canonicalUrl": "https://zod.dev/v4/changelog"
+},
+{
+  "id": "zod-z-coerce",
+  "matchCategories": [
+    "Zod"
+  ],
+  "matchTitles": [
+    "z.coerce"
+  ],
+  "heading": "Zod 4: Coercion",
+  "category": "Zod · Runtime validation",
+  "majorVersion": "Zod 4",
+  "status": "Authored reference draft",
+  "summary": "Coercion uses JavaScript conversion before validation; z.coerce.number() accepts numeric text, but can turn an empty string into zero.",
+  "syntax": "const Age=z.coerce.number().int().min(18);",
+  "lang": "ts",
+  "parameters": "A schema declaration and untrusted runtime input; use parse/safeParse to validate before use.",
+  "returns": "A Zod schema with inferred output and a parse/safeParse result, including structured issues on invalid data.",
+  "minimalExample": "import * as z from 'zod';\nconst Age=z.coerce.number().int().min(18);",
+  "productionExample": "import * as z from 'zod';\nconst Form=z.strictObject({age:z.coerce.number().int().min(18).max(120)});",
+  "commonMistakes": [
+    "Use bounds and finite/integer checks; never use z.coerce.boolean() for literal string 'false' semantics.",
+    "Assuming TypeScript static types replace runtime validation for unknown API/form input."
+  ],
+  "securityPerformanceNotes": [
+    "Always validate at the server trust boundary; client validation improves usability but cannot authorize writes.",
+    "Bound user-supplied arrays/strings and avoid logging raw rejected personal or secret values."
+  ],
+  "relatedLessonIds": [
+    "09.01.05"
+  ],
+  "canonicalUrl": "https://zod.dev/api"
+},
+{
+  "id": "zod-z-transform",
+  "matchCategories": [
+    "Zod"
+  ],
+  "matchTitles": [
+    "z.transform"
+  ],
+  "heading": "Zod 4: Transforms",
+  "category": "Zod · Runtime validation",
+  "majorVersion": "Zod 4",
+  "status": "Authored reference draft",
+  "summary": "A transform changes the validated output, and input/output types may diverge; it does not make an unvalidated input trustworthy.",
+  "syntax": "const Normalized=z.string().trim().transform(s=>s.toLowerCase());",
+  "lang": "ts",
+  "parameters": "A schema declaration and untrusted runtime input; use parse/safeParse to validate before use.",
+  "returns": "A Zod schema with inferred output and a parse/safeParse result, including structured issues on invalid data.",
+  "minimalExample": "import * as z from 'zod';\nconst Normalized=z.string().trim().transform(s=>s.toLowerCase());",
+  "productionExample": "import * as z from 'zod';\nconst Email=z.email().transform(value=>value.toLowerCase());type In=z.input<typeof Email>;type Out=z.output<typeof Email>;",
+  "commonMistakes": [
+    "Beware irreversible transforms; validate output format and avoid conflating input with output DTOs.",
+    "Assuming TypeScript static types replace runtime validation for unknown API/form input."
+  ],
+  "securityPerformanceNotes": [
+    "Always validate at the server trust boundary; client validation improves usability but cannot authorize writes.",
+    "Bound user-supplied arrays/strings and avoid logging raw rejected personal or secret values."
+  ],
+  "relatedLessonIds": [
+    "09.01.05"
+  ],
+  "canonicalUrl": "https://zod.dev/api"
+},
+{
+  "id": "zod-z-refine",
+  "matchCategories": [
+    "Zod"
+  ],
+  "matchTitles": [
+    "z.refine"
+  ],
+  "heading": "Zod 4: Refinements",
+  "category": "Zod · Runtime validation",
+  "majorVersion": "Zod 4",
+  "status": "Authored reference draft",
+  "summary": "Refine adds custom invariants that built-in validators cannot express. It produces a custom issue when the predicate fails.",
+  "syntax": "const Pass=z.string().refine(s=>s.length>=12,{error:'Too short'});",
+  "lang": "ts",
+  "parameters": "A schema declaration and untrusted runtime input; use parse/safeParse to validate before use.",
+  "returns": "A Zod schema with inferred output and a parse/safeParse result, including structured issues on invalid data.",
+  "minimalExample": "import * as z from 'zod';\nconst Pass=z.string().refine(s=>s.length>=12,{error:'Too short'});",
+  "productionExample": "import * as z from 'zod';\nconst Even=z.number().int().refine(value=>value%2===0,{error:'Must be even'});",
+  "commonMistakes": [
+    "Avoid side effects during validation; use async parsing when the rule is truly asynchronous.",
+    "Assuming TypeScript static types replace runtime validation for unknown API/form input."
+  ],
+  "securityPerformanceNotes": [
+    "Always validate at the server trust boundary; client validation improves usability but cannot authorize writes.",
+    "Bound user-supplied arrays/strings and avoid logging raw rejected personal or secret values."
+  ],
+  "relatedLessonIds": [
+    "09.01.04"
+  ],
+  "canonicalUrl": "https://zod.dev/api"
+},
+{
+  "id": "zod-z-superrefine",
+  "matchCategories": [
+    "Zod"
+  ],
+  "matchTitles": [
+    "z.superRefine"
+  ],
+  "heading": "Zod 4: Cross-field issue paths",
+  "category": "Zod · Runtime validation",
+  "majorVersion": "Zod 4",
+  "status": "Authored reference draft",
+  "summary": "superRefine supports multiple path-specific issues but is deprecated in Zod 4 in favor of the lower-level check API; legacy examples remain functional.",
+  "syntax": "const Pair=z.object({a:z.string(),b:z.string()}).superRefine((v,ctx)=>{if(v.a!==v.b)ctx.addIssue({code:'custom',path:['b'],message:'Must match'});});",
+  "lang": "ts",
+  "parameters": "A schema declaration and untrusted runtime input; use parse/safeParse to validate before use.",
+  "returns": "A Zod schema with inferred output and a parse/safeParse result, including structured issues on invalid data.",
+  "minimalExample": "import * as z from 'zod';\nconst Pair=z.object({a:z.string(),b:z.string()}).superRefine((v,ctx)=>{if(v.a!==v.b)ctx.addIssue({code:'custom',path:['b'],message:'Must match'});});",
+  "productionExample": "import * as z from 'zod';\nconst Password=z.strictObject({pass:z.string().min(8),confirm:z.string().min(8)}).superRefine((v,ctx)=>{if(v.pass!==v.confirm)ctx.addIssue({code:'custom',path:['confirm'],message:'Mismatch'});});",
+  "commonMistakes": [
+    "Prefer a simple refine when one predicate suffices; never put network or database writes inside a validator.",
+    "Assuming TypeScript static types replace runtime validation for unknown API/form input."
+  ],
+  "securityPerformanceNotes": [
+    "Always validate at the server trust boundary; client validation improves usability but cannot authorize writes.",
+    "Bound user-supplied arrays/strings and avoid logging raw rejected personal or secret values."
+  ],
+  "relatedLessonIds": [
+    "09.01.04"
+  ],
+  "canonicalUrl": "https://zod.dev/v4/changelog"
+},
+{
+  "id": "zod-z-infer",
+  "matchCategories": [
+    "Zod"
+  ],
+  "matchTitles": [
+    "z.infer"
+  ],
+  "heading": "Zod 4: Type inference",
+  "category": "Zod · Runtime validation",
+  "majorVersion": "Zod 4",
+  "status": "Authored reference draft",
+  "summary": "z.infer reflects schema output; use z.input and z.output explicitly for transforms/coercions where the types differ.",
+  "syntax": "const User=z.strictObject({id:z.string()});type UserData=z.infer<typeof User>;",
+  "lang": "ts",
+  "parameters": "A schema declaration and untrusted runtime input; use parse/safeParse to validate before use.",
+  "returns": "A Zod schema with inferred output and a parse/safeParse result, including structured issues on invalid data.",
+  "minimalExample": "import * as z from 'zod';\nconst User=z.strictObject({id:z.string()});type UserData=z.infer<typeof User>;",
+  "productionExample": "import * as z from 'zod';\nconst Age=z.coerce.number().int();type Input=z.input<typeof Age>;type Output=z.output<typeof Age>;",
+  "commonMistakes": [
+    "TypeScript inference is a development aid; actual requests must still be parsed at runtime.",
+    "Assuming TypeScript static types replace runtime validation for unknown API/form input."
+  ],
+  "securityPerformanceNotes": [
+    "Always validate at the server trust boundary; client validation improves usability but cannot authorize writes.",
+    "Bound user-supplied arrays/strings and avoid logging raw rejected personal or secret values."
+  ],
+  "relatedLessonIds": [
+    "09.01.07"
+  ],
+  "canonicalUrl": "https://zod.dev/basics"
+},
+{
+  "id": "zod-z-strictobject",
+  "matchCategories": [
+    "Zod"
+  ],
+  "matchTitles": [
+    "z.strictObject"
+  ],
+  "heading": "Zod 4: Strict objects",
+  "category": "Zod · Runtime validation",
+  "majorVersion": "Zod 4",
+  "status": "Authored reference draft",
+  "summary": "Strict objects reject unknown keys, unlike default z.object which strips them; useful for rejecting unexpected request-body fields.",
+  "syntax": "const Account=z.strictObject({role:z.enum(['reader','editor'])});",
+  "lang": "ts",
+  "parameters": "A schema declaration and untrusted runtime input; use parse/safeParse to validate before use.",
+  "returns": "A Zod schema with inferred output and a parse/safeParse result, including structured issues on invalid data.",
+  "minimalExample": "import * as z from 'zod';\nconst Account=z.strictObject({role:z.enum(['reader','editor'])});",
+  "productionExample": "import * as z from 'zod';\nconst PublicDTO=z.strictObject({id:z.string(),title:z.string().min(1)});const result=PublicDTO.safeParse(payload);",
+  "commonMistakes": [
+    "Strictness is not a security authorization layer—enforce per-object access rules separately.",
+    "Assuming TypeScript static types replace runtime validation for unknown API/form input."
+  ],
+  "securityPerformanceNotes": [
+    "Always validate at the server trust boundary; client validation improves usability but cannot authorize writes.",
+    "Bound user-supplied arrays/strings and avoid logging raw rejected personal or secret values."
+  ],
+  "relatedLessonIds": [
+    "09.01.01",
+    "09.01.08"
+  ],
+  "canonicalUrl": "https://zod.dev/api"
 }
 ];
 
