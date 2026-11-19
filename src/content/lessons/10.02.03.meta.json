@@ -1,0 +1,39 @@
+{
+  "id": "10.02.03",
+  "title": "JSON serialization",
+  "description": "HTTP API fundamentals with standards-grounded Node.js examples, locally executable positive and negative contracts, and a complete real HTTP capstone.",
+  "trackId": "10",
+  "moduleId": "10.02",
+  "level": "Intermediate",
+  "estimatedMinutes": 75,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "node": "24",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "10.02.02"
+  ],
+  "objectives": [
+    "Bound raw UTF-8 body size before JSON.parse, require an object payload and recursively reject prototype-sensitive object keys.",
+    "Repair the http-safe-json failing instructor contract.",
+    "Explain the production limitation of a local Node HTTP exercise."
+  ],
+  "labId": "lab.http.http-safe-json",
+  "rubric": [
+    "I can apply the HTTP semantics for json serialization.",
+    "I can reproduce and fix the 10.02.03 defect with real Node or fetch APIs.",
+    "I can explain the security or durability work needed before deployment."
+  ],
+  "sources": [
+    {
+      "label": "Primary official standard / API",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/parse"
+    },
+    {
+      "label": "Supporting HTTP specification",
+      "url": "https://owasp.org/www-community/attacks/Prototype_Pollution"
+    }
+  ]
+}

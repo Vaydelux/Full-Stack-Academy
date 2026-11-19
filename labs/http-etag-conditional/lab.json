@@ -1,0 +1,15 @@
+{
+  "id": "lab.http.http-etag-conditional",
+  "lessonId": "10.02.07",
+  "title": "HTTP API etags and caching local lab",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/http-etag-conditional/starter/solution.mjs",
+  "solution": "labs/http-etag-conditional/solution/solution.mjs",
+  "tests": "labs/http-etag-conditional/solution.test.mjs",
+  "verify": [
+    "npm run lab:http-etag-conditional"
+  ],
+  "expected": "A fresh request receives 200 and ETag; a matching strong or weak condition receives 304 with an empty body.",
+  "security": "Local Node HTTP / Web standard only. Loopback capstone is intentionally unauthenticated, in-memory and not suitable as a public service."
+}

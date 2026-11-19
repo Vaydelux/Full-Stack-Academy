@@ -1,0 +1,15 @@
+{
+  "id": "lab.http.http-local-rest-contract",
+  "lessonId": "10.02.08",
+  "title": "HTTP API lab rest contract local lab",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/http-local-rest-contract/starter/solution.mjs",
+  "solution": "labs/http-local-rest-contract/solution/solution.mjs",
+  "tests": "labs/http-local-rest-contract/solution.test.mjs",
+  "verify": [
+    "npm run lab:http-local-rest-contract"
+  ],
+  "expected": "An ephemeral local server passes real fetch-based checks for error statuses, POST/replay/conflict, list filters and conditional 304.",
+  "security": "Local Node HTTP / Web standard only. Loopback capstone is intentionally unauthenticated, in-memory and not suitable as a public service."
+}

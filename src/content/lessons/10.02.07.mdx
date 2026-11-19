@@ -1,0 +1,102 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Generate a deterministic ETag for the representation and honor If-None-Match with 304 and no body for unchanged GET responses.","Reproduce and repair the etags and caching bug with genuine Web/Node HTTP APIs.","Define the actual security, concurrency and persistence limits of the local exercise."]} />
+
+## The problem we're solving
+
+A GET API sends a full JSON body even when the client has a matching ETag, wasting bandwidth and making conditional cache behavior impossible.
+
+**Fault to find:** The starter ignores conditional request headers and always responds 200 with a body. This track uses Node 24 built-ins and fetch-compatible `Response` where appropriate; no paid platform or remote arbitrary-code execution is needed.
+
+## Build the mental model
+
+Generate a deterministic ETag for the representation and honor If-None-Match with 304 and no body for unchanged GET responses.
+
+**Expected repair:** A fresh request receives 200 and ETag; a matching strong or weak condition receives 304 with an empty body.
+
+HTTP semantics follow RFC 9110. Public errors can use RFC 9457 Problem Details; do not invent return codes or copy internal stack traces into public responses. Pure helper tests are useful but the final capstone runs a real loopback server and tests wire responses.
+
+## Prerequisites and preflight
+
+Complete the Node runtime module `10.01` first. Open `labs/http-etag-conditional/starter/solution.mjs` with Node 24. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:http-etag-conditional`. PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:http-etag-conditional; Remove-Item Env:ACADEMY_LAB_TARGET`. The learner starter should fail an actual assertion.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the incorrect HTTP contract" file="labs/http-etag-conditional/starter/solution.mjs" expected="The intentionally wrong code violates a real HTTP assertion.">
+
+```js
+export function conditionalJson(data,_ifNoneMatch=''){
+ return new Response(JSON.stringify(data),{status:200,headers:{'content-type':'application/json'}});
+}
+```
+
+**Where the contract fails:** The starter ignores conditional request headers and always responds 200 with a body.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement standards-based HTTP behavior" file="labs/http-etag-conditional/starter/solution.mjs" expected="A fresh request receives 200 and ETag; a matching strong or weak condition receives 304 with an empty body.">
+
+```js
+import {createHash} from 'node:crypto';
+export function conditionalJson(data,ifNoneMatch=''){
+ const body=JSON.stringify(data);
+ const etag='"'+createHash('sha256').update(body).digest('hex')+'"';
+ const options={'etag':etag,'cache-control':'private, no-cache'};
+ const matches=String(ifNoneMatch).split(',').map(x=>x.trim().replace(/^W\//,'')).some(x=>x===etag||x==='*');
+ if(matches)return new Response(null,{status:304,headers:options});
+ return new Response(body,{status:200,headers:{...options,'content-type':'application/json'}});
+}
+```
+
+**Why this is correct:** Generate a deterministic ETag for the representation and honor If-None-Match with 304 and no body for unchanged GET responses.
+
+</LessonStep>
+
+<LessonStep number={3} title="Exercise negative and positive request cases" file="labs/http-etag-conditional/solution.test.mjs" expected="Instructor passes real Node HTTP assertions; learner starter fails. The capstone uses a real ephemeral loopback listener.">
+
+```js
+const first=mod.conditionalJson({a:1});
+assert.equal(first.status,200);
+const tag=first.headers.get('etag');assert.ok(tag);
+const cached=mod.conditionalJson({a:1},tag);
+assert.equal(cached.status,304);assert.equal(await cached.text(),'');
+const weak=mod.conditionalJson({a:1},'W/'+tag);assert.equal(weak.status,304);
+assert.equal(mod.conditionalJson({a:2},tag).status,200);
+```
+
+**Production adaptation and limits:**
+
+```js
+// Conditional requests are useful for public or authorized representations.
+// Never share a tenant-private response across users merely because it has
+// an ETag; use an appropriate Cache-Control policy and vary by identity
+// where your application architecture requires it.
+```
+
+**Operational distinction:** The reference implementation intentionally excludes production identities, durable database transactions, distributed replay records, rate limiting, SSRF protection, and deployment. Those require separate lessons and genuine integration checks.
+
+</LessonStep>
+
+<Misconception claim="The starter ignores conditional request headers and always responds 200 with a body." correction="Generate a deterministic ETag for the representation and honor If-None-Match with 304 and no body for unchanged GET responses. HTTP status and wire behavior must be tested, and a teaching API is not a production security boundary." />
+
+<KnowledgeCheck question="Which standards-based practice applies to etags and caching?" choices={["Every endpoint can return 200 if it includes a descriptive JSON message.","Generate a deterministic ETag for the representation and honor If-None-Match with 304 and no body for unchanged GET responses.","Node's type system automatically prevents replay, data leaks and invalid caching.","A localhost test certifies internet-facing authorization and denial-of-service safety."] } correctIndex={1} explanation="Generate a deterministic ETag for the representation and honor If-None-Match with 304 and no body for unchanged GET responses." misconception="HTTP semantics and actual request ownership must be enforced, not merely described." lessonId="10.02.07" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Broken behavior:** The starter ignores conditional request headers and always responds 200 with a body. **Reproduce:** run the red starter. **Diagnose:** compare the response, headers or state transition against the official contract. **Repair:** Generate a deterministic ETag for the representation and honor If-None-Match with 304 and no body for unchanged GET responses. **Regression:** A fresh request receives 200 and ETag; a matching strong or weak condition receives 304 with an empty body.
+
+## Guided local lab
+
+The local `labs/http-etag-conditional` fixture includes a deliberately broken implementation, completed instructor source, executable Node tests and self-assessment rubric. No server runs learner-submitted code.
+
+<LabGate lessonId="10.02.07" labId="lab.http.http-etag-conditional" commands={["npm run lab:http-etag-conditional","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+What difference would identity, concurrent server processes, durable storage or proxies make? Which negative integration test would prove that boundary?
+
+## Official references
+
+- [Official specification or API for ETags and caching](https://www.rfc-editor.org/rfc/rfc9110#section-8.8)
+- [Supporting HTTP or Node standard](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/If-None-Match)

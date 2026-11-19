@@ -1,0 +1,101 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Return a standards-based application/problem+json response with type, title, and status; never serialize raw stack traces or environment values.","Reproduce and repair the error envelopes and rfc 9457 bug with genuine Web/Node HTTP APIs.","Define the actual security, concurrency and persistence limits of the local exercise."]} />
+
+## The problem we're solving
+
+An API returns a stack trace and environment credentials inside a 500 response, exposing internal implementation details to clients.
+
+**Fault to find:** The starter includes an untrusted diagnostics field in public JSON errors. This track uses Node 24 built-ins and fetch-compatible `Response` where appropriate; no paid platform or remote arbitrary-code execution is needed.
+
+## Build the mental model
+
+Return a standards-based application/problem+json response with type, title, and status; never serialize raw stack traces or environment values.
+
+**Expected repair:** The error response uses application/problem+json and excludes sensitive debug details.
+
+HTTP semantics follow RFC 9110. Public errors can use RFC 9457 Problem Details; do not invent return codes or copy internal stack traces into public responses. Pure helper tests are useful but the final capstone runs a real loopback server and tests wire responses.
+
+## Prerequisites and preflight
+
+Complete the Node runtime module `10.01` first. Open `labs/http-rfc9457-problem/starter/solution.mjs` with Node 24. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:http-rfc9457-problem`. PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:http-rfc9457-problem; Remove-Item Env:ACADEMY_LAB_TARGET`. The learner starter should fail an actual assertion.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the incorrect HTTP contract" file="labs/http-rfc9457-problem/starter/solution.mjs" expected="The intentionally wrong code violates a real HTTP assertion.">
+
+```js
+export function problemResponse(status,title,internal){
+ return new Response(JSON.stringify({error:title,debug:internal}),{status});
+}
+```
+
+**Where the contract fails:** The starter includes an untrusted diagnostics field in public JSON errors.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement standards-based HTTP behavior" file="labs/http-rfc9457-problem/starter/solution.mjs" expected="The error response uses application/problem+json and excludes sensitive debug details.">
+
+```js
+export function problemResponse(status,title,_internal){
+ if(!Number.isInteger(status)||status<400||status>599)throw new RangeError('Invalid status');
+ return new Response(JSON.stringify({type:'about:blank',title:String(title),status}),{
+  status,headers:{'content-type':'application/problem+json','cache-control':'no-store'},
+ });
+}
+```
+
+**Why this is correct:** Return a standards-based application/problem+json response with type, title, and status; never serialize raw stack traces or environment values.
+
+</LessonStep>
+
+<LessonStep number={3} title="Exercise negative and positive request cases" file="labs/http-rfc9457-problem/solution.test.mjs" expected="Instructor passes real Node HTTP assertions; learner starter fails. The capstone uses a real ephemeral loopback listener.">
+
+```js
+const res=mod.problemResponse(500,'Internal server error','DATABASE_PASSWORD=SECRET');
+assert.equal(res.status,500);assert.match(res.headers.get('content-type')??'',/application\/problem\+json/);
+const body=await res.text();
+assert.deepEqual(JSON.parse(body),{type:'about:blank',title:'Internal server error',status:500});
+assert.doesNotMatch(body,/SECRET|DATABASE_PASSWORD/);
+assert.throws(()=>mod.problemResponse(200,'OK','secret'),/Invalid status/);
+```
+
+**Production adaptation and limits:**
+
+```js
+// RFC 9457 wire response:
+HTTP/1.1 404 Not Found
+Content-Type: application/problem+json
+
+{"type":"about:blank","title":"Not Found","status":404}
+// Do not copy stack traces, request auth headers or raw validation
+// payloads into public problem responses. Log diagnostics separately.
+```
+
+**Operational distinction:** The reference implementation intentionally excludes production identities, durable database transactions, distributed replay records, rate limiting, SSRF protection, and deployment. Those require separate lessons and genuine integration checks.
+
+</LessonStep>
+
+<Misconception claim="The starter includes an untrusted diagnostics field in public JSON errors." correction="Return a standards-based application/problem+json response with type, title, and status; never serialize raw stack traces or environment values. HTTP status and wire behavior must be tested, and a teaching API is not a production security boundary." />
+
+<KnowledgeCheck question="Which standards-based practice applies to error envelopes and rfc 9457?" choices={["Every endpoint can return 200 if it includes a descriptive JSON message.","Return a standards-based application/problem+json response with type, title, and status; never serialize raw stack traces or environment values.","Node's type system automatically prevents replay, data leaks and invalid caching.","A localhost test certifies internet-facing authorization and denial-of-service safety."] } correctIndex={1} explanation="Return a standards-based application/problem+json response with type, title, and status; never serialize raw stack traces or environment values." misconception="HTTP semantics and actual request ownership must be enforced, not merely described." lessonId="10.02.06" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Broken behavior:** The starter includes an untrusted diagnostics field in public JSON errors. **Reproduce:** run the red starter. **Diagnose:** compare the response, headers or state transition against the official contract. **Repair:** Return a standards-based application/problem+json response with type, title, and status; never serialize raw stack traces or environment values. **Regression:** The error response uses application/problem+json and excludes sensitive debug details.
+
+## Guided local lab
+
+The local `labs/http-rfc9457-problem` fixture includes a deliberately broken implementation, completed instructor source, executable Node tests and self-assessment rubric. No server runs learner-submitted code.
+
+<LabGate lessonId="10.02.06" labId="lab.http.http-rfc9457-problem" commands={["npm run lab:http-rfc9457-problem","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+What difference would identity, concurrent server processes, durable storage or proxies make? Which negative integration test would prove that boundary?
+
+## Official references
+
+- [Official specification or API for Error envelopes and RFC 9457](https://www.rfc-editor.org/rfc/rfc9457.html)
+- [Supporting HTTP or Node standard](https://www.rfc-editor.org/rfc/rfc9110#section-15)

@@ -1,0 +1,15 @@
+{
+  "id": "lab.http.http-accept-json",
+  "lessonId": "10.02.02",
+  "title": "HTTP API headers and content negotiation local lab",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/http-accept-json/starter/solution.mjs",
+  "solution": "labs/http-accept-json/solution/solution.mjs",
+  "tests": "labs/http-accept-json/solution.test.mjs",
+  "verify": [
+    "npm run lab:http-accept-json"
+  ],
+  "expected": "Valid JSON/wildcard media ranges are allowed, while text/html-only or q=0 are rejected.",
+  "security": "Local Node HTTP / Web standard only. Loopback capstone is intentionally unauthenticated, in-memory and not suitable as a public service."
+}

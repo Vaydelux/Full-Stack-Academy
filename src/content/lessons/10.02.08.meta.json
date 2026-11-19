@@ -1,0 +1,39 @@
+{
+  "id": "10.02.08",
+  "title": "Lab REST contract",
+  "description": "HTTP API fundamentals with standards-grounded Node.js examples, locally executable positive and negative contracts, and a complete real HTTP capstone.",
+  "trackId": "10",
+  "moduleId": "10.02",
+  "level": "Intermediate",
+  "estimatedMinutes": 75,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "node": "24",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "10.02.07"
+  ],
+  "objectives": [
+    "Build a loopback-only Node HTTP API with bounded JSON body parsing, consistent statuses, idempotency keys, filtering, ETags and RFC 9457 problem responses, and verify them over fetch.",
+    "Repair the http-local-rest-contract failing instructor contract.",
+    "Explain the production limitation of a local Node HTTP exercise."
+  ],
+  "labId": "lab.http.http-local-rest-contract",
+  "rubric": [
+    "I can apply the HTTP semantics for lab rest contract.",
+    "I can reproduce and fix the 10.02.08 defect with real Node or fetch APIs.",
+    "I can explain the security or durability work needed before deployment."
+  ],
+  "sources": [
+    {
+      "label": "Primary official standard / API",
+      "url": "https://nodejs.org/api/http.html#httpcreateserveroptions-requestlistener"
+    },
+    {
+      "label": "Supporting HTTP specification",
+      "url": "https://www.rfc-editor.org/rfc/rfc9457.html"
+    }
+  ]
+}

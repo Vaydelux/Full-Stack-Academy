@@ -1,0 +1,15 @@
+{
+  "id": "lab.http.http-idempotency-retry",
+  "lessonId": "10.02.04",
+  "title": "HTTP API idempotency and retries local lab",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/http-idempotency-retry/starter/solution.mjs",
+  "solution": "labs/http-idempotency-retry/solution/solution.mjs",
+  "tests": "labs/http-idempotency-retry/solution.test.mjs",
+  "verify": [
+    "npm run lab:http-idempotency-retry"
+  ],
+  "expected": "Concurrent same-key requests execute once; a changed payload with the same key produces a conflict.",
+  "security": "Local Node HTTP / Web standard only. Loopback capstone is intentionally unauthenticated, in-memory and not suitable as a public service."
+}

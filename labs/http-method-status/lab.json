@@ -1,0 +1,15 @@
+{
+  "id": "lab.http.http-method-status",
+  "lessonId": "10.02.01",
+  "title": "HTTP API verbs and status codes local lab",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/http-method-status/starter/solution.mjs",
+  "solution": "labs/http-method-status/solution/solution.mjs",
+  "tests": "labs/http-method-status/solution.test.mjs",
+  "verify": [
+    "npm run lab:http-method-status"
+  ],
+  "expected": "Known methods map to intended status codes; unsupported methods receive 405 and an Allow list.",
+  "security": "Local Node HTTP / Web standard only. Loopback capstone is intentionally unauthenticated, in-memory and not suitable as a public service."
+}
