@@ -52,6 +52,7 @@ export default function RetryForm(){
 ```tsx
 import { useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
+class HTTPStatus extends Error { readonly status:number; constructor(status:number){super('HTTP '+status);this.status=status;} }
 type Operation={key:string;payload:{title:string;priority:'normal'}};
 export default function RetryForm(){
  const {register,handleSubmit,formState:{isSubmitting}}=
@@ -64,9 +65,13 @@ export default function RetryForm(){
   try{
    const r=await fetch('/api/tasks',{method:'POST',
     headers:{'content-type':'application/json','idempotency-key':op.key},body:JSON.stringify(op.payload)});
-   if(!r.ok)throw new Error('HTTP '+r.status);
+   if(!r.ok)throw new HTTPStatus(r.status);
    attempt.current=null;setState('Saved');
-  }catch{setState('Not confirmed; retry using the same key');}
+  }catch(error){
+   if(error instanceof HTTPStatus && error.status<500 && error.status!==429){
+    attempt.current=null;setState('Request rejected; correct input before trying again');
+   }else setState('Not confirmed; retry using the same key');
+  }
   finally{busy.current=false;}
  }
  return <form onSubmit={handleSubmit(async ({title})=>{

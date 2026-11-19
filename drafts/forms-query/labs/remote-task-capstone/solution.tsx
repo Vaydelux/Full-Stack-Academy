@@ -12,9 +12,13 @@ type TaskState='todo'|'doing'|'done';
 type Task={id:string;title:string;priority:'low'|'normal'|'high';status:TaskState;revision:number};
 type Page={items:Task[];nextCursor:string|null};
 type Attempt={body:z.output<typeof TaskInput>;key:string};
+class StatusError extends Error {
+ readonly status:number;
+ constructor(status:number){super('HTTP '+status);this.status=status;}
+}
 async function request<T>(url:string,init:RequestInit={}):Promise<T>{
- const response=await fetch(url,{...init,credentials:'same-origin',cache:'no-store'});
- if(!response.ok)throw new Error('HTTP '+response.status);
+ const response=await fetch(url,{...init,credentials:'same-origin',cache:'no-store',redirect:'error'});
+ if(!response.ok)throw new StatusError(response.status);
  return (response.status===204?null:await response.json()) as T;
 }
 export default function RemoteTaskCapstone(){
@@ -41,7 +45,6 @@ export default function RemoteTaskCapstone(){
    body:JSON.stringify(operation.body),
   }),
   retry:false,
-  onSuccess:async()=>{await queryClient.invalidateQueries({queryKey:['tasks']});},
  });
  const status=useMutation({
   mutationFn:({task,next}:{task:Task;next:TaskState})=>request<Task>(
@@ -65,7 +68,7 @@ export default function RemoteTaskCapstone(){
    if(context?.before)queryClient.setQueryData(context.key,context.before);
    setMutationError('Status update failed: '+String(error)+'; refresh stale revisions.');
   },
-  onSettled:()=>queryClient.invalidateQueries({queryKey:['tasks']}),
+  onSettled:()=>{void queryClient.resetQueries({queryKey:['tasks']});},
  });
  const remove=useMutation({
   mutationFn:(task:Task)=>request<null>('/api/tasks/'+encodeURIComponent(task.id),{method:'DELETE'}),
@@ -81,16 +84,19 @@ export default function RemoteTaskCapstone(){
    if(context?.before)queryClient.setQueryData(context.key,context.before);
    setMutationError('Delete failed: '+String(error)+'; task restored.');
   },
-  onSettled:()=>queryClient.invalidateQueries({queryKey:['tasks']}),
+  onSettled:()=>{void queryClient.resetQueries({queryKey:['tasks']});},
  });
  async function send(operation:Attempt){
   if(submitting.current)return;
   submitting.current=true;attempt.current=operation;setNotice('Submitting…');
   try{
    await create.mutateAsync(operation);
-   attempt.current=null;form.reset();setNotice('Created and list refreshed');
+   attempt.current=null;form.reset();setNotice('Created; fetching fresh server data');
+   void queryClient.resetQueries({queryKey:['tasks']});
   }catch(error){
-   setNotice('Create not confirmed; retry with same key.');
+   const transient=!(error instanceof StatusError)||error.status===429||error.status>=500;
+   if(!transient)attempt.current=null;
+   setNotice(transient?'Result unconfirmed; retry with the SAME key.':'Request rejected; correct the input before a new create.');
    form.setError('root.server',{message:String(error)});
   }finally{submitting.current=false;}
  }
