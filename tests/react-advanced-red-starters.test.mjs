@@ -12,5 +12,6 @@ test('advanced React starters fail their intended assertions, not module loading
   assert.equal(result.error,undefined,name+': spawn failed');
   assert.notEqual(result.status,0,name+': starter unexpectedly satisfies all acceptance assertions');
   assert.match(result.stdout||'',/not ok\s+\d+/,name+': must show a test assertion failure');
+  assert.match(result.stdout||'',/code:\s*['"]ERR_ASSERTION['"]/,name+': expected AssertionError, not import/transform failure');
  }
 });

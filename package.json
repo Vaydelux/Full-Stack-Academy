@@ -9,7 +9,7 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "validate": "python validate_package.py",
-    "test": "node --test tests/academy.test.mjs tests/hardening.test.mjs tests/course-routes.test.mjs tests/content.test.mjs tests/react-modules.test.mjs tests/react-interaction-source.test.mjs tests/react-effects-advanced.test.mjs tests/react-reference-library.test.mjs tests/offline-verification.test.mjs tests/react-next-milestone.test.mjs tests/next-full-track.test.mjs tests/ui-track.test.mjs tests/zod-foundations.test.mjs tests/zustand-state-boundaries.test.mjs",
+    "test": "node --test tests/academy.test.mjs tests/hardening.test.mjs tests/course-routes.test.mjs tests/content.test.mjs tests/react-modules.test.mjs tests/react-interaction-source.test.mjs tests/react-effects-advanced.test.mjs tests/react-reference-library.test.mjs tests/offline-verification.test.mjs tests/react-next-milestone.test.mjs tests/next-full-track.test.mjs tests/ui-track.test.mjs tests/zod-foundations.test.mjs tests/zustand-state-boundaries.test.mjs tests/negative-gates-integrity.test.mjs",
     "test:labs": "node scripts/run-local-labs.mjs",
     "verify:content": "node scripts/validate-content.mjs",
     "lab:browser-server": "node --test labs/browser-server/solution.test.mjs",

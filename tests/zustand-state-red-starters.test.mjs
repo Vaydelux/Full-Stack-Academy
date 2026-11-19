@@ -12,5 +12,6 @@ test('eight deliberately broken Zustand starter stores fail assertions (not miss
   assert.equal(result.error,undefined,slug+' runner failure');
   assert.notEqual(result.status,0,slug+' starter unexpectedly passed');
   assert.match(result.stdout||'',/not ok\s+\d+/,slug+' must fail a real assertion');
+  assert.match(result.stdout||'',/code:\s*['"]ERR_ASSERTION['"]/,slug+': expected AssertionError, not import/transform failure');
  }
 });

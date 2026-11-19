@@ -13,5 +13,6 @@ test('eight Zod learner starters fail real schema assertions and never pass acci
   assert.equal(result.error,undefined,slug+' test runner failed');
   assert.notEqual(result.status,0,slug+' starter unexpectedly passes');
   assert.match(result.stdout||'',/not ok\s+\d+/,slug+' should fail an assertion, not only fail to import');
+  assert.match(result.stdout||'',/code:\s*['"]ERR_ASSERTION['"]/,slug+': expected AssertionError, not import/transform failure');
  }
 });

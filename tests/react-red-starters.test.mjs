@@ -12,5 +12,6 @@ test('all new React learner starters fail their own acceptance tests (negative g
   assert.equal(result.error,undefined,name+' failed to execute: '+result.error);
   assert.notEqual(result.status,0,name+' starter unexpectedly passed all checks');
   assert.match(result.stdout||'',/not ok\s+\d+/,name+' must fail a real test assertion rather than an import error');
+  assert.match(result.stdout||'',/code:\s*['"]ERR_ASSERTION['"]/,name+': expected AssertionError, not import/transform failure');
  }
 });

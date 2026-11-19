@@ -12,5 +12,6 @@ test('32 intentionally broken Next 16 learner starters fail real assertions, not
   assert.equal(result.error,undefined,name+' failed to spawn');
   assert.notEqual(result.status,0,name+' starter unexpectedly passed');
   assert.match(result.stdout||'',/not ok\s+\d+/,name+' should fail a test, not module import');
+  assert.match(result.stdout||'',/code:\s*['"]ERR_ASSERTION['"]/,name+': expected AssertionError, not import/transform failure');
  }
 });

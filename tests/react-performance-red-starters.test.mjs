@@ -12,5 +12,6 @@ test("React performance starters fail acceptance",{timeout:240000},()=>{
   assert.equal(result.error,undefined,name+': failed to run');
   assert.notEqual(result.status,0,name+': starter unexpectedly passed');
   assert.match(result.stdout||'',/not ok\s+\d+/,name+': expected a genuine assertion failure');
+  assert.match(result.stdout||'',/code:\s*['"]ERR_ASSERTION['"]/,name+': expected AssertionError, not import/transform failure');
  }
 });
