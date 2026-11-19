@@ -1,3 +1,5 @@
 export function safeJsonLd(value:unknown){
- return JSON.stringify(value).split('<').join(String.fromCharCode(92)+'u003c');
+ const json=JSON.stringify(value);
+ if(json===undefined)throw new TypeError('Expected JSON-LD value');
+ return json.split('<').join(String.fromCharCode(92)+'u003c');
 }
