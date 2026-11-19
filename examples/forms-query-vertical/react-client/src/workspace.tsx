@@ -3,9 +3,10 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { TaskInputSchema, type TaskFormInput, type TaskFormOutput } from './schema';
-import { tasksApi, type TaskPage } from './api';
+import { tasksApi, type TaskPage, type TaskFilter, type TaskStatus } from './api';
 
-const taskQueryKey = ['practice-tasks', { limit: 10 }] as const;
+const taskQueryRoot = ['practice-tasks'] as const;
+const taskQueryKey = (status: TaskFilter) => [...taskQueryRoot, { limit: 10, status }] as const;
 type CreateAttempt = { payload: TaskFormOutput; key: string };
 const errorMessage = (error: unknown): string => error instanceof Error ? error.message : 'Unexpected request error';
 
@@ -14,6 +15,9 @@ export function TaskWorkspace() {
   const [feedback, setFeedback] = useState('');
   const [retryAttempt, setRetryAttempt] = useState<CreateAttempt | null>(null);
   const [deleteError, setDeleteError] = useState('');
+  const [statusError, setStatusError] = useState('');
+  const [statusFilter, setStatusFilter] = useState<TaskFilter>('all');
+  const activeKey = taskQueryKey(statusFilter);
   const submissionLock = useRef(false);
   const {
     register, handleSubmit, formState: { errors, isSubmitting }, reset, setError,
@@ -23,28 +27,51 @@ export function TaskWorkspace() {
     defaultValues: { title: '', priority: 'normal' },
   });
   const tasks = useQuery({
-    queryKey: taskQueryKey,
-    queryFn: ({ signal }) => tasksApi.list(signal),
+    queryKey: activeKey,
+    queryFn: ({ signal }) => tasksApi.list(statusFilter, signal),
   });
   const create = useMutation({
     mutationFn: ({ payload, key }: CreateAttempt) => tasksApi.create(payload, key),
-    onSuccess: async () => { await client.invalidateQueries({ queryKey: taskQueryKey }); },
+    onSuccess: async () => { await client.invalidateQueries({ queryKey: taskQueryRoot }); },
   });
   const remove = useMutation({
     mutationFn: (id: string) => tasksApi.remove(id),
     onMutate: async (id) => {
-      await client.cancelQueries({ queryKey: taskQueryKey });
-      const snapshot = client.getQueryData<TaskPage>(taskQueryKey);
-      client.setQueryData<TaskPage>(taskQueryKey, existing => existing
+      await client.cancelQueries({ queryKey: activeKey });
+      const snapshot = client.getQueryData<TaskPage>(activeKey);
+      client.setQueryData<TaskPage>(activeKey, existing => existing
         ? { ...existing, items: existing.items.filter(item => item.id !== id) }
         : existing);
-      return { snapshot };
+      return { snapshot, key: activeKey };
     },
     onError: (error, _id, context) => {
-      if (context?.snapshot) client.setQueryData(taskQueryKey, context.snapshot);
+      if (context?.snapshot) client.setQueryData(context.key, context.snapshot);
       setDeleteError(errorMessage(error));
     },
-    onSettled: () => client.invalidateQueries({ queryKey: taskQueryKey }),
+    onSettled: () => client.invalidateQueries({ queryKey: taskQueryRoot }),
+  });
+
+  const changeStatus = useMutation({
+    mutationFn: ({ id, status, revision }: { id: string; status: TaskStatus; revision: number }) =>
+      tasksApi.updateStatus(id, status, revision),
+    onMutate: async ({ id, status }) => {
+      await client.cancelQueries({ queryKey: activeKey });
+      const snapshot = client.getQueryData<TaskPage>(activeKey);
+      client.setQueryData<TaskPage>(activeKey, existing => existing
+        ? {
+            ...existing,
+            items: existing.items
+              .map(item => item.id === id ? { ...item, status } : item)
+              .filter(item => statusFilter === 'all' || item.status === statusFilter),
+          }
+        : existing);
+      return { snapshot, key: activeKey };
+    },
+    onError: (error, _variables, context) => {
+      if (context?.snapshot) client.setQueryData(context.key, context.snapshot);
+      setStatusError(errorMessage(error));
+    },
+    onSettled: () => client.invalidateQueries({ queryKey: taskQueryRoot }),
   });
 
   async function createAttempt(attempt: CreateAttempt) {
@@ -67,8 +94,15 @@ export function TaskWorkspace() {
   };
   const showTask = (task: NonNullable<typeof tasks.data>['items'][number]) => (
     <li key={task.id} className="task">
-      <div className="task-main"><strong>{task.title}</strong><span>{task.priority} · {new Date(task.createdAt).toLocaleString()}</span></div>
-      <button type="button" disabled={remove.isPending} onClick={() => { setDeleteError(''); remove.mutate(task.id); }} aria-label={'Delete ' + task.title}>Delete</button>
+      <div className="task-main"><strong>{task.title}</strong><span>{task.priority} · {task.status} · revision {task.revision} · {new Date(task.createdAt).toLocaleString()}</span></div>
+      <button type="button" disabled={remove.isPending || changeStatus.isPending} onClick={() => {
+        setStatusError('');
+        const next = task.status === 'todo' ? 'doing' : task.status === 'doing' ? 'done' : 'todo';
+        changeStatus.mutate({ id: task.id, status: next, revision: task.revision });
+      }} aria-label={'Advance ' + task.title + ' from ' + task.status}>
+        {task.status === 'todo' ? 'Start' : task.status === 'doing' ? 'Complete' : 'Reopen'}
+      </button>
+      <button type="button" disabled={remove.isPending || changeStatus.isPending} onClick={() => { setDeleteError(''); remove.mutate(task.id); }} aria-label={'Delete ' + task.title}>Delete</button>
     </li>
   );
 
@@ -96,12 +130,17 @@ export function TaskWorkspace() {
         </section>
         <section aria-labelledby="list-heading" className="panel">
           <div className="row"><h2 id="list-heading">Tasks from HTTP</h2><button type="button" disabled={tasks.isFetching} onClick={() => { void tasks.refetch(); }}>Refresh</button></div>
+          <label htmlFor="react-status-filter">Filter remote tasks</label>
+          <select id="react-status-filter" value={statusFilter} onChange={event => setStatusFilter(event.target.value as TaskFilter)}>
+            <option value="all">All tasks</option><option value="todo">To do</option><option value="doing">In progress</option><option value="done">Completed</option>
+          </select>
           {tasks.isPending ? <p role="status">Loading tasks…</p> : tasks.isError ? <div role="alert"><p>{errorMessage(tasks.error)}</p><button type="button" onClick={() => { void tasks.refetch(); }}>Try again</button></div> : <>
             <ul className="tasks">{tasks.data.items.map(showTask)}</ul>
             {tasks.data.items.length === 0 && <p className="help">No tasks yet. Submit the form to add one.</p>}
             {tasks.data.nextCursor && <p className="help">More pages exist. Pagination and cursor recovery are covered in the HTTP lab; this React component intentionally shows the first 10 entries.</p>}
           </>}
           {deleteError && <p role="alert" className="error">Delete failed and the cache was restored: {deleteError}</p>}
+          {statusError && <p role="alert" className="error">Status change failed; the previous cache was restored: {statusError}. Refresh before retrying if the revision is stale.</p>}
           {tasks.isFetching && !tasks.isPending && <p role="status" className="help">Refreshing remote data…</p>}
         </section>
       </div>
