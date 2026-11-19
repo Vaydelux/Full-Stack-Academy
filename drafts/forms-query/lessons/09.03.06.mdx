@@ -43,6 +43,7 @@ export default async function Page(){
 ```tsx
 import { QueryClient, dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import TaskList from './task-list';
+import Providers from './providers';
 // Next App Router Server Component. Teaching-only local anonymous public data.
 export default async function Page(){
  const client=new QueryClient();
@@ -54,9 +55,12 @@ export default async function Page(){
    return r.json();
   },
  });
- return <HydrationBoundary state={dehydrate(client)}><TaskList/></HydrationBoundary>;
+ return <Providers><HydrationBoundary state={dehydrate(client)}><TaskList/></HydrationBoundary></Providers>;
 }
+
 ```
+
+**Required client boundary:** `drafts/forms-query/labs/ssr-hydration/providers.tsx` owns one browser QueryClientProvider; `task-list.tsx` is a `'use client'` consumer. Real Next.js server prefetch requires a trusted same-origin BFF or a strictly local Node runtime, not a production browser reaching into developer loopback.
 
 **What changed:** The server creates a request-scoped QueryClient, prefetches a query, then passes only safe dehydrated state through HydrationBoundary. Client query keys and data shapes must match.
 

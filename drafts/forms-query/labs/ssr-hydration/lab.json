@@ -15,5 +15,9 @@
   ],
   "requiresRealLibraryTest": true,
   "requiresRealBrowserTest": true,
-  "readyToPublish": false
+  "readyToPublish": false,
+  "additionalAssets": [
+    "drafts/forms-query/labs/ssr-hydration/providers.tsx",
+    "drafts/forms-query/labs/ssr-hydration/task-list.tsx"
+  ]
 }

@@ -1,5 +1,6 @@
 import { QueryClient, dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import TaskList from './task-list';
+import Providers from './providers';
 // Next App Router Server Component. Teaching-only local anonymous public data.
 export default async function Page(){
  const client=new QueryClient();
@@ -11,5 +12,5 @@ export default async function Page(){
    return r.json();
   },
  });
- return <HydrationBoundary state={dehydrate(client)}><TaskList/></HydrationBoundary>;
+ return <Providers><HydrationBoundary state={dehydrate(client)}><TaskList/></HydrationBoundary></Providers>;
 }
