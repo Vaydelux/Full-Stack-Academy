@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react';
+import { taskQueryRoot, taskQueryKey, nextTaskStatus, shouldRetainCreateAttempt, shouldRetryRead } from './policy';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useInfiniteQuery, useMutation, useQueryClient, type InfiniteData } from '@tanstack/react-query';
@@ -7,15 +8,11 @@ import {
   tasksApi, TaskRequestError, type Task, type TaskPage, type TaskFilter, type TaskStatus,
 } from './api';
 
-const taskQueryRoot = ['practice-tasks'] as const;
-const taskQueryKey = (status: TaskFilter) => [...taskQueryRoot, { status, limit: 10, mode: 'infinite' }] as const;
 type TaskPages = InfiniteData<TaskPage, string | null>;
 type CreateAttempt = { payload: TaskFormOutput; key: string };
 type UpdateAttempt = { id: string; status: TaskStatus; revision: number };
 
 const message = (error: unknown): string => error instanceof Error ? error.message : 'Unexpected request failure';
-const isTransient = (error: unknown) =>
-  !(error instanceof TaskRequestError) || error.status === 429 || error.status >= 500;
 
 /**
  * A real RHF + TanStack Query teaching integration, intentionally limited to
@@ -47,7 +44,7 @@ export function TaskWorkspace() {
     queryFn: ({ pageParam, signal }) => tasksApi.list(statusFilter, pageParam, signal),
     getNextPageParam: lastPage => lastPage.nextCursor,
     maxPages: 10,
-    retry: (count, error) => count < 1 && isTransient(error),
+    retry: (count, error) => shouldRetryRead(count, error),
   });
   const records = tasks.data?.pages.flatMap(page => page.items) ?? [];
 
@@ -129,7 +126,7 @@ export function TaskWorkspace() {
         void queryClient.resetQueries({ queryKey: taskQueryRoot });
       } catch (error) {
         setError('root.server', { type: 'server', message: message(error) });
-        if (isTransient(error)) {
+        if (shouldRetainCreateAttempt(error)) {
           setRetryAttempt(attempt);
           setFeedback('The result is unconfirmed. Retry with the SAME operation key.');
         } else {
@@ -149,7 +146,7 @@ export function TaskWorkspace() {
   };
 
   async function performStatus(task: Task) {
-    const status: TaskStatus = task.status === 'todo' ? 'doing' : task.status === 'doing' ? 'done' : 'todo';
+    const status = nextTaskStatus(task.status);
     await exclusively(async () => {
       setTaskError('');
       try { await changeStatus.mutateAsync({ id: task.id, status, revision: task.revision }); }
