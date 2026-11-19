@@ -147,17 +147,20 @@ export function createTaskApi({ host = '127.0.0.1', maxItems = MAX_ITEMS } = {})
         send(res, 200, task, { etag: `"${task.revision}"` }); return;
       }
       if (req.method === 'PATCH' && match) {
-        const task = tasks.get(match[1]);
-        if (!task) throw new HttpProblem(404, 'Task not found');
+        if (!tasks.has(match[1])) throw new HttpProblem(404, 'Task not found');
         const expected = req.headers['if-match'];
         if (typeof expected !== 'string') throw new HttpProblem(428, 'If-Match revision is required');
-        if (expected !== `"${task.revision}"`) throw new HttpProblem(412, 'Task changed; refresh before retrying');
         const nextStatus = validatePatch(await readJson(req));
-        if (nextStatus !== task.status) {
-          tasks.set(task.id, { ...task, status: nextStatus, revision: task.revision + 1 });
+        // The body read yields. Check the *current* revision immediately before
+        // the synchronous Map update or concurrent requests can both succeed.
+        const current = tasks.get(match[1]);
+        if (!current) throw new HttpProblem(404, 'Task not found');
+        if (expected !== `"${current.revision}"`) throw new HttpProblem(412, 'Task changed; refresh before retrying');
+        if (nextStatus !== current.status) {
+          tasks.set(current.id, { ...current, status: nextStatus, revision: current.revision + 1 });
           version++;
         }
-        const updated = tasks.get(task.id);
+        const updated = tasks.get(current.id);
         send(res, 200, updated, { etag: `"${updated.revision}"` }); return;
       }
       if (req.method === 'DELETE' && match) {
