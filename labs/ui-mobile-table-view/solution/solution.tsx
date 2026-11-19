@@ -1,0 +1,1 @@
+export function layoutFor(width:number,columns:number){if(!Number.isFinite(width)||width<=0||!Number.isInteger(columns)||columns<0)throw new RangeError('Invalid layout');return width<640&&columns>3?'cards':'table';}

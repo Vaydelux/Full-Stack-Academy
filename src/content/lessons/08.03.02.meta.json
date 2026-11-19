@@ -1,0 +1,39 @@
+{
+  "id": "08.03.02",
+  "title": "Controlled sorting filtering pagination: Apply filtering and sorting to a consistent dataset before pagination, or delegate all three operations coherently to a server.",
+  "description": "Professional UI data interface tutorial for controlled sorting filtering pagination, including a typed local starter, instructor repair, regression tests and explicit server/accessibility boundaries.",
+  "trackId": "08",
+  "moduleId": "08.03",
+  "level": "Intermediate",
+  "estimatedMinutes": 65,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "typescript": "5",
+    "react": "19"
+  },
+  "prerequisites": [
+    "08.03.01"
+  ],
+  "objectives": [
+    "Apply filtering and sorting to a consistent dataset before pagination, or delegate all three operations coherently to a server.",
+    "Repair the ui-controlled-table broken implementation.",
+    "Identify necessary real-browser and backend checks for controlled sorting filtering pagination."
+  ],
+  "labId": "lab.ui.ui-controlled-table",
+  "rubric": [
+    "I understand the model and browser boundaries for controlled sorting filtering pagination.",
+    "I can fix 08.03.02 and demonstrate a negative regression assertion.",
+    "I can explain the risk of trusting client data, pagination or role state."
+  ],
+  "sources": [
+    {
+      "label": "Official Controlled sorting filtering pagination documentation",
+      "url": "https://tanstack.com/table/v8/docs/guide/pagination"
+    },
+    {
+      "label": "Supplementary specification",
+      "url": "https://tanstack.com/table/v8/docs/guide/sorting"
+    }
+  ]
+}

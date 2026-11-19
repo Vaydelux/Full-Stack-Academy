@@ -1,0 +1,39 @@
+{
+  "id": "08.01.01",
+  "title": "Tailwind v4 configuration: Use CSS-first @import and @tailwindcss/postcss, rather than legacy v3-only entrypoints.",
+  "description": "UI Systems Track 08 tutorial for tailwind v4 configuration with a red starter, instructor implementation, local regression tests and honest browser/interaction boundaries.",
+  "trackId": "08",
+  "moduleId": "08.01",
+  "level": "Intermediate",
+  "estimatedMinutes": 60,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "typescript": "5",
+    "react": "19"
+  },
+  "prerequisites": [
+    "07.05.08"
+  ],
+  "objectives": [
+    "Use CSS-first @import and @tailwindcss/postcss, rather than legacy v3-only entrypoints.",
+    "Repair the ui-tailwind-v4 starter with meaningful assertions.",
+    "Describe the browser and accessibility checks needed for tailwind v4 configuration."
+  ],
+  "labId": "lab.ui.ui-tailwind-v4",
+  "rubric": [
+    "I can explain the principles for tailwind v4 configuration.",
+    "I can reproduce and fix the failing 08.01.01 starter.",
+    "I know what browser or accessibility qualification is still missing."
+  ],
+  "sources": [
+    {
+      "label": "Official guide for Tailwind v4 configuration",
+      "url": "https://tailwindcss.com/docs/installation/using-postcss"
+    },
+    {
+      "label": "Supporting official reference",
+      "url": "https://tailwindcss.com/docs/upgrade-guide"
+    }
+  ]
+}

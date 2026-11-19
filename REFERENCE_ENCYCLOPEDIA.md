@@ -1,3 +1,5 @@
+> **2026-11-19 latest reference coverage:** 20 authored reference drafts of 303 indexed subjects (12 prior + eight modern CSS accessibility/API drafts). The other **283** remain index-only. The searchable explorer differentiates authored draft from missing prose; an index entry alone is not complete documentation. Stacked UI PR source only; local validation pending. See `docs/UI_SYSTEMS_TRACK08_ACCEPTANCE.md`.
+
 > **2026-11-19 draft coverage:** 303 index entries remain; 12 authored reference drafts now exist on the stacked React development branch (4 original + 8 React 19). The reference page uses search, category and authored/index-only filters, with pagination to reduce the overwhelming 303-item initial list. An index entry is not a completed reference. See `docs/REACT_EFFECTS_ADVANCED_ACCEPTANCE.md`.
 
 # Modern Reference Encyclopedia — Index

@@ -1,0 +1,1 @@
+export type Option={id:string;label:string};export function filterOptions(items:readonly Option[],term:string){const q=term.trim().toLocaleLowerCase();return items.filter(x=>x.label.toLocaleLowerCase().includes(q));}

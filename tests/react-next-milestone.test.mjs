@@ -28,7 +28,7 @@ test('16 React/Next lesson metadata, lab fixtures and publication registration a
   assert.ok(published.includes("lessons/"+id+".meta.json"));
   for(const asset of [lab.starter,lab.solution,lab.tests])assert.ok(fs.statSync(path.join(root,asset)).isFile(),asset);
   assert.equal(packageJson.scripts['lab:'+name],'tsx --test labs/'+name+'/solution.test.mjs');
-  assert.ok(packageJson.scripts['test:labs'].includes(lab.tests));
+  assert.equal(packageJson.scripts['test:labs'],'node scripts/run-local-labs.mjs');
  }
 });
 test('Next.js 16 capstone includes App Router file conventions and async params',()=>{
@@ -40,9 +40,9 @@ test('Next.js 16 capstone includes App Router file conventions and async params'
  const error=read('labs/next-public-site/solution/app/error.tsx');
  assert.ok(error.startsWith("'use client';"));
 });
-test('source registries mark next planned module 08.01.01 noindex',()=>{
+test('source registries mark next planned module 09.01.01 noindex',()=>{
  assert.ok(read('scripts/validate-content.mjs').includes('react|foundation|next'));
  for(const script of ['scripts/browser-smoke.mjs','scripts/react-batch-smoke.mjs','scripts/react-advanced-smoke.mjs','scripts/react-next-milestone-smoke.mjs']){
-  assert.ok(read(script).includes('08.01.01'),script);
+  assert.ok(read(script).includes('09.01.01'),script);
  }
 });

@@ -1,0 +1,85 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Review a real flow against clear categories—keyboard, contrast, error feedback, layout stability and mobile reachability—and return actionable high-priority findings.","Diagnose and repair the deliberately broken lab annotated ux review example.","Separate local model correctness from actual user observations, accessibility and cross-browser qualification."]} />
+
+## The problem we're solving
+
+The starter ignores the audit flags and always reports a clean interface. Mature design QA tests user comprehension, accessibility, visual hierarchy and realistic layout under stress, not merely whether an interface renders.
+
+## Build the mental model
+
+Review a real flow against clear categories—keyboard, contrast, error feedback, layout stability and mobile reachability—and return actionable high-priority findings.
+
+**Expected outcome:** A failed keyboard, contrast or error criterion becomes an explicit finding; all passing criteria produce no findings.
+
+**Evidence boundary:** This local test verifies a deterministic model or audit decision. It cannot claim a WCAG audit, human usability result, assistive technology behavior, actual CLS/LCP measurement, or cross-browser compatibility. Collect those in a real locally served application with documented scenarios.
+
+## Prerequisites and preflight
+
+Read the previous UI lesson. Use Node 24 and the repository's lockfile. Open `labs/ui-ux-audit-capstone/starter/solution.tsx`. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:ui-ux-audit-capstone`; PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:ui-ux-audit-capstone; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Observe the broken design QA contract" file="labs/ui-ux-audit-capstone/starter/solution.tsx" expected="The starter fails an assertion for a reproducible quality issue.">
+
+```tsx
+export type Review={keyboard:boolean;contrast:boolean;errors:boolean;mobile:boolean;stableLayout:boolean};export function auditUX(_review:Review):string[]{return [];}
+```
+
+**Failure:** The starter ignores the audit flags and always reports a clean interface.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the typed quality model" file="labs/ui-ux-audit-capstone/starter/solution.tsx" expected="A failed keyboard, contrast or error criterion becomes an explicit finding; all passing criteria produce no findings.">
+
+```tsx
+export type Review={keyboard:boolean;contrast:boolean;errors:boolean;mobile:boolean;stableLayout:boolean};export function auditUX(r:Review):string[]{const issues:string[]=[];if(!r.keyboard)issues.push('keyboard');if(!r.contrast)issues.push('contrast');if(!r.errors)issues.push('error-feedback');if(!r.mobile)issues.push('mobile');if(!r.stableLayout)issues.push('layout-stability');return issues;}
+```
+
+**Reasoning:** Review a real flow against clear categories—keyboard, contrast, error feedback, layout stability and mobile reachability—and return actionable high-priority findings.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify the edge case and plan real-device checks" file="labs/ui-ux-audit-capstone/solution.test.mjs" expected="Instructor solution passes local checks; real UX/quality evidence is collected separately.">
+
+```js
+assert.deepEqual(mod.auditUX({keyboard:false,contrast:false,errors:true,mobile:true,stableLayout:true}),['keyboard','contrast']);assert.deepEqual(mod.auditUX({keyboard:true,contrast:true,errors:true,mobile:true,stableLayout:true}),[]);
+```
+
+**Representative UI example and QA checklist:**
+
+```tsx
+// Real annotated UX audit format:
+// Screen and task -> observed behavior -> reproduction -> severity -> standard -> fix.
+// Check dark/light, keyboard-only, screen reader, 320px, 200% zoom,
+// reduced motion, loading/empty/error, CLS and true server authorization.
+// File issues with screenshots or clips only after reproducible observations.
+```
+
+A high-quality release gate combines keyboard and touch interaction, actual screen-reader observations, image/embedding stability, and valid WCAG/heuristic assessment.
+
+</LessonStep>
+
+<Misconception claim="The starter ignores the audit flags and always reports a clean interface." correction="Review a real flow against clear categories—keyboard, contrast, error feedback, layout stability and mobile reachability—and return actionable high-priority findings. Automated model tests alone cannot establish WCAG or real-user experience." />
+
+<KnowledgeCheck question="Which QA strategy applies to lab annotated ux review?" choices={["A unit test is sufficient evidence that every browser and screen reader works.","Review a real flow against clear categories—keyboard, contrast, error feedback, layout stability and mobile reachability—and return actionable high-priority findings.","A successful screenshot proves all error states and keyboard flows.","A designer can replace usability testing with color preference surveys."] } correctIndex={1} explanation="Review a real flow against clear categories—keyboard, contrast, error feedback, layout stability and mobile reachability—and return actionable high-priority findings." misconception="Collect directly observable evidence for the user experience being evaluated." lessonId="08.04.08" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Bug:** The starter ignores the audit flags and always reports a clean interface. **Reproduce:** run the red starter and capture the failing assertion. **Repair:** Review a real flow against clear categories—keyboard, contrast, error feedback, layout stability and mobile reachability—and return actionable high-priority findings. **Regression:** A failed keyboard, contrast or error criterion becomes an explicit finding; all passing criteria produce no findings. Extend the review to an actual browser/device when the component is integrated.
+
+## Guided local lab
+
+`labs/ui-ux-audit-capstone/` contains the learner's broken implementation, full instructor code, offline acceptance and rubric. The public academy does not execute arbitrary learner code.
+
+<LabGate lessonId="08.04.08" labId="lab.ui.ui-ux-audit-capstone" commands={["npm run lab:ui-ux-audit-capstone","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+What UX risk could still exist after these local assertions pass, and which concrete accessibility or cross-browser observation would expose it?
+
+## Official references
+
+- [Primary official reference: Lab annotated UX review](https://www.w3.org/TR/WCAG22/)
+- [Supporting standard and documentation](https://www.nngroup.com/articles/how-to-rate-the-severity-of-usability-problems/)

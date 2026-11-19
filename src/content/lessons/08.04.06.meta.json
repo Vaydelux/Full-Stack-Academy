@@ -1,0 +1,39 @@
+{
+  "id": "08.04.06",
+  "title": "Cross-browser testing: Build a repeatable browser and input-device coverage matrix instead of assuming passing Chromium tests prove Safari and Firefox behavior.",
+  "description": "Design QA lesson for cross-browser testing with a reproducible starter defect, instructor repair, offline regression suite and explicit browser and accessibility limits.",
+  "trackId": "08",
+  "moduleId": "08.04",
+  "level": "Intermediate",
+  "estimatedMinutes": 65,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "typescript": "5",
+    "react": "19"
+  },
+  "prerequisites": [
+    "08.04.05"
+  ],
+  "objectives": [
+    "Build a repeatable browser and input-device coverage matrix instead of assuming passing Chromium tests prove Safari and Firefox behavior.",
+    "Repair the reproducible defect in ui-browser-coverage.",
+    "Identify real user, accessibility or browser QA beyond cross-browser testing source tests."
+  ],
+  "labId": "lab.ui.ui-browser-coverage",
+  "rubric": [
+    "I can explain the methodology behind cross-browser testing.",
+    "I can fix the 08.04.06 bug and validate a negative case.",
+    "I can name direct accessibility or UX evidence that the source model cannot provide."
+  ],
+  "sources": [
+    {
+      "label": "Official reference for Cross-browser testing",
+      "url": "https://www.w3.org/WAI/test-evaluate/"
+    },
+    {
+      "label": "Supporting standard",
+      "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Testing"
+    }
+  ]
+}

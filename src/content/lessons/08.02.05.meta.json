@@ -1,0 +1,39 @@
+{
+  "id": "08.02.05",
+  "title": "Toasts and announcements: Use polite status regions for routine confirmations and assertive alerts only for urgent errors; deduplicate stale notifications.",
+  "description": "Advanced UI interaction guide for toasts and announcements, with a red learner starter, corrected instructor source, offline tests and a mounted-accessibility validation boundary.",
+  "trackId": "08",
+  "moduleId": "08.02",
+  "level": "Intermediate",
+  "estimatedMinutes": 65,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "typescript": "5",
+    "react": "19"
+  },
+  "prerequisites": [
+    "08.02.04"
+  ],
+  "objectives": [
+    "Use polite status regions for routine confirmations and assertive alerts only for urgent errors; deduplicate stale notifications.",
+    "Repair the ui-toast-queue starter's reproducible defect.",
+    "Explain missing keyboard, touch and assistive technology checks for toasts and announcements."
+  ],
+  "labId": "lab.ui.ui-toast-queue",
+  "rubric": [
+    "I can describe the interaction requirements for toasts and announcements.",
+    "I can repair the 08.02.05 broken example and prove a negative case.",
+    "I know why an offline fixture is not a mounted accessibility test."
+  ],
+  "sources": [
+    {
+      "label": "Official Toasts and announcements documentation",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Roles/status_role"
+    },
+    {
+      "label": "Related official reference",
+      "url": "https://www.w3.org/WAI/WCAG22/Understanding/status-messages.html"
+    }
+  ]
+}

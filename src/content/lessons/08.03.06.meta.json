@@ -1,0 +1,39 @@
+{
+  "id": "08.03.06",
+  "title": "Optimistic table interactions: Show a reversible pending update in a stable row without mutating server-owned data or implying the change has been persisted.",
+  "description": "Professional UI data interface tutorial for optimistic table interactions, including a typed local starter, instructor repair, regression tests and explicit server/accessibility boundaries.",
+  "trackId": "08",
+  "moduleId": "08.03",
+  "level": "Intermediate",
+  "estimatedMinutes": 65,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "typescript": "5",
+    "react": "19"
+  },
+  "prerequisites": [
+    "08.03.05"
+  ],
+  "objectives": [
+    "Show a reversible pending update in a stable row without mutating server-owned data or implying the change has been persisted.",
+    "Repair the ui-optimistic-table broken implementation.",
+    "Identify necessary real-browser and backend checks for optimistic table interactions."
+  ],
+  "labId": "lab.ui.ui-optimistic-table",
+  "rubric": [
+    "I understand the model and browser boundaries for optimistic table interactions.",
+    "I can fix 08.03.06 and demonstrate a negative regression assertion.",
+    "I can explain the risk of trusting client data, pagination or role state."
+  ],
+  "sources": [
+    {
+      "label": "Official Optimistic table interactions documentation",
+      "url": "https://react.dev/reference/react/useOptimistic"
+    },
+    {
+      "label": "Supplementary specification",
+      "url": "https://tanstack.com/table/v8/docs/guide/row-selection"
+    }
+  ]
+}

@@ -1,0 +1,84 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Use semantic typography roles, a bounded scale and foreground/background combinations that remain legible in light and dark themes.","Diagnose and repair the deliberately broken color and typography systems example.","Separate local model correctness from actual user observations, accessibility and cross-browser qualification."]} />
+
+## The problem we're solving
+
+The starter maps every role to body text, flattening visual hierarchy. Mature design QA tests user comprehension, accessibility, visual hierarchy and realistic layout under stress, not merely whether an interface renders.
+
+## Build the mental model
+
+Use semantic typography roles, a bounded scale and foreground/background combinations that remain legible in light and dark themes.
+
+**Expected outcome:** Heading and body map to distinct token pairs and small labels retain appropriate contrast.
+
+**Evidence boundary:** This local test verifies a deterministic model or audit decision. It cannot claim a WCAG audit, human usability result, assistive technology behavior, actual CLS/LCP measurement, or cross-browser compatibility. Collect those in a real locally served application with documented scenarios.
+
+## Prerequisites and preflight
+
+Read the previous UI lesson. Use Node 24 and the repository's lockfile. Open `labs/ui-color-type-system/starter/solution.tsx`. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:ui-color-type-system`; PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:ui-color-type-system; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Observe the broken design QA contract" file="labs/ui-color-type-system/starter/solution.tsx" expected="The starter fails an assertion for a reproducible quality issue.">
+
+```tsx
+export type TypeRole='heading'|'body'|'caption';export const typography=(_role:TypeRole)=>'text-base font-normal';
+```
+
+**Failure:** The starter maps every role to body text, flattening visual hierarchy.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the typed quality model" file="labs/ui-color-type-system/starter/solution.tsx" expected="Heading and body map to distinct token pairs and small labels retain appropriate contrast.">
+
+```tsx
+export type TypeRole='heading'|'body'|'caption';export function typography(role:TypeRole){const styles:Record<TypeRole,string>={heading:'text-2xl font-bold tracking-tight',body:'text-base leading-7',caption:'text-sm leading-5'};return styles[role];}
+```
+
+**Reasoning:** Use semantic typography roles, a bounded scale and foreground/background combinations that remain legible in light and dark themes.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify the edge case and plan real-device checks" file="labs/ui-color-type-system/solution.test.mjs" expected="Instructor solution passes local checks; real UX/quality evidence is collected separately.">
+
+```js
+assert.match(mod.typography('heading'),/text-2xl/);assert.match(mod.typography('body'),/leading-7/);assert.notEqual(mod.typography('caption'),mod.typography('heading'));
+```
+
+**Representative UI example and QA checklist:**
+
+```tsx
+/* Semantic text tokens retain contrast on every surface. */
+@theme { --font-body: ui-sans-serif, system-ui; }
+// Use headings with correct DOM levels, then apply typography classes.
+// Test 200% zoom, long translations, dyslexia-friendly line spacing, both themes.
+```
+
+A high-quality release gate combines keyboard and touch interaction, actual screen-reader observations, image/embedding stability, and valid WCAG/heuristic assessment.
+
+</LessonStep>
+
+<Misconception claim="The starter maps every role to body text, flattening visual hierarchy." correction="Use semantic typography roles, a bounded scale and foreground/background combinations that remain legible in light and dark themes. Automated model tests alone cannot establish WCAG or real-user experience." />
+
+<KnowledgeCheck question="Which QA strategy applies to color and typography systems?" choices={["A unit test is sufficient evidence that every browser and screen reader works.","Use semantic typography roles, a bounded scale and foreground/background combinations that remain legible in light and dark themes.","A successful screenshot proves all error states and keyboard flows.","A designer can replace usability testing with color preference surveys."] } correctIndex={1} explanation="Use semantic typography roles, a bounded scale and foreground/background combinations that remain legible in light and dark themes." misconception="Collect directly observable evidence for the user experience being evaluated." lessonId="08.04.02" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Bug:** The starter maps every role to body text, flattening visual hierarchy. **Reproduce:** run the red starter and capture the failing assertion. **Repair:** Use semantic typography roles, a bounded scale and foreground/background combinations that remain legible in light and dark themes. **Regression:** Heading and body map to distinct token pairs and small labels retain appropriate contrast. Extend the review to an actual browser/device when the component is integrated.
+
+## Guided local lab
+
+`labs/ui-color-type-system/` contains the learner's broken implementation, full instructor code, offline acceptance and rubric. The public academy does not execute arbitrary learner code.
+
+<LabGate lessonId="08.04.02" labId="lab.ui.ui-color-type-system" commands={["npm run lab:ui-color-type-system","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+What UX risk could still exist after these local assertions pass, and which concrete accessibility or cross-browser observation would expose it?
+
+## Official references
+
+- [Primary official reference: Color and typography systems](https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html)
+- [Supporting standard and documentation](https://tailwindcss.com/docs/font-size)

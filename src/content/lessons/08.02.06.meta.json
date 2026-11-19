@@ -1,0 +1,39 @@
+{
+  "id": "08.02.06",
+  "title": "Drag and drop: Provide an equivalent keyboard reorder action and announce the new position; never require a pointer to complete a sort.",
+  "description": "Advanced UI interaction guide for drag and drop, with a red learner starter, corrected instructor source, offline tests and a mounted-accessibility validation boundary.",
+  "trackId": "08",
+  "moduleId": "08.02",
+  "level": "Intermediate",
+  "estimatedMinutes": 65,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "typescript": "5",
+    "react": "19"
+  },
+  "prerequisites": [
+    "08.02.05"
+  ],
+  "objectives": [
+    "Provide an equivalent keyboard reorder action and announce the new position; never require a pointer to complete a sort.",
+    "Repair the ui-reorder-keyboard starter's reproducible defect.",
+    "Explain missing keyboard, touch and assistive technology checks for drag and drop."
+  ],
+  "labId": "lab.ui.ui-reorder-keyboard",
+  "rubric": [
+    "I can describe the interaction requirements for drag and drop.",
+    "I can repair the 08.02.06 broken example and prove a negative case.",
+    "I know why an offline fixture is not a mounted accessibility test."
+  ],
+  "sources": [
+    {
+      "label": "Official Drag and drop documentation",
+      "url": "https://docs.dndkit.com/guides/accessibility"
+    },
+    {
+      "label": "Related official reference",
+      "url": "https://www.w3.org/WAI/ARIA/apg/patterns/listbox/"
+    }
+  ]
+}

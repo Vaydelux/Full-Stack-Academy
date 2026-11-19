@@ -1,0 +1,1 @@
+export function describeSeries(values:readonly number[]){if(values.some(x=>!Number.isFinite(x)))throw new RangeError('Invalid chart point');return {count:values.length,total:values.reduce((a,b)=>a+b,0)};}

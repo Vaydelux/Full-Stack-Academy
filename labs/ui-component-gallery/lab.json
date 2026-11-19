@@ -1,0 +1,15 @@
+{
+  "id": "lab.ui.ui-component-gallery",
+  "lessonId": "08.01.08",
+  "title": "UI Systems local lab component gallery exercise",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/ui-component-gallery/starter/solution.tsx",
+  "solution": "labs/ui-component-gallery/solution/solution.tsx",
+  "tests": "labs/ui-component-gallery/solution.test.mjs",
+  "verify": [
+    "npm run lab:ui-component-gallery"
+  ],
+  "expected": "Gallery excludes disabled examples and fails on duplicate IDs.",
+  "security": "Reviewed offline fixture. CSS compilation, third-party UI libraries and mounted accessibility remain separate."
+}

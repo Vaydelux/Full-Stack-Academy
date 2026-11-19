@@ -1,0 +1,83 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Use CSS-first @import and @tailwindcss/postcss, rather than legacy v3-only entrypoints.","Repair a failing tailwind v4 configuration example using checked-in TypeScript code.","Identify browser, accessibility, CSS compilation and dependency evidence that a local model cannot establish."]} />
+
+## The problem we're solving
+
+A v3-only stylesheet incorrectly qualifies as v4. A robust component system has to work across dark and light themes, keyboard input, small screens and real data, not merely appear correct in a screenshot.
+
+## Build the mental model
+
+Use CSS-first @import and @tailwindcss/postcss, rather than legacy v3-only entrypoints. **Predict before executing:** A v4 import passes; legacy-only directives fail.
+
+**Runtime boundary:** This lesson's fixture is local TypeScript only. It does not compile Tailwind CSS, install shadcn or Radix/Base UI, mount a browser interaction, or verify visual contrast on real content. Those require a dedicated UI build and accessibility checks.
+
+## Prerequisites and preflight
+
+Read the previous canonical topic and inspect `labs/ui-tailwind-v4/starter/solution.tsx`. Node.js 24 and locked project dependencies are required. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:ui-tailwind-v4`. PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:ui-tailwind-v4; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the broken design-system rule" file="labs/ui-tailwind-v4/starter/solution.tsx" expected="An instructor assertion fails on the intentionally wrong implementation.">
+
+```tsx
+export const hasV4Entry=(css:string)=>css.includes('@tailwind');
+```
+
+**Root cause:** A v3-only stylesheet incorrectly qualifies as v4.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the typed source contract" file="labs/ui-tailwind-v4/starter/solution.tsx" expected="A v4 import passes; legacy-only directives fail.">
+
+```tsx
+export const hasV4Entry=(css:string)=>/@import\s+["']tailwindcss["']\s*;/.test(css);
+```
+
+**Why it works:** Use CSS-first @import and @tailwindcss/postcss, rather than legacy v3-only entrypoints.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify the behavior and consider real integration" file="labs/ui-tailwind-v4/solution.test.mjs" expected="The instructor passes valid and edge-case assertions. Mounted UI must be verified separately.">
+
+```js
+assert.equal(mod.hasV4Entry('@import "tailwindcss";'),true);assert.equal(mod.hasV4Entry('@tailwind base;'),false);
+```
+
+**Representative framework usage (requires matching installed dependencies):**
+
+```tsx
+/* CSS-first app stylesheet */
+@import "tailwindcss";
+@theme { --color-brand-500: oklch(.62 .17 245); }
+/* postcss.config.mjs */
+export default {plugins:{"@tailwindcss/postcss":{}}};
+```
+
+**Operational check:** Ensure the design remains usable at 320px, 200% zoom, high contrast, reduced motion and by keyboard. No source-only test substitutes for those observations.
+
+</LessonStep>
+
+<Misconception claim="A v3-only stylesheet incorrectly qualifies as v4." correction="Use CSS-first @import and @tailwindcss/postcss, rather than legacy v3-only entrypoints. Visual polish does not by itself establish semantics, accessibility or interaction correctness." />
+
+<KnowledgeCheck question="What matters most for tailwind v4 configuration?" choices={["A screenshot proves all interaction and accessibility requirements.","Use CSS-first @import and @tailwindcss/postcss, rather than legacy v3-only entrypoints.","All modern shadcn components require Radix and cannot use Base UI.","A passing SSR or pure model test proves client hydration and focus behavior."] } correctIndex={1} explanation="Use CSS-first @import and @tailwindcss/postcss, rather than legacy v3-only entrypoints." misconception="Testing evidence must match the layer that is actually exercised." lessonId="08.01.01" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Observed defect:** A v3-only stylesheet incorrectly qualifies as v4. **Reproduce:** run the red starter and capture a failing assertion. **Repair:** Use CSS-first @import and @tailwindcss/postcss, rather than legacy v3-only entrypoints. **Regression:** A v4 import passes; legacy-only directives fail. Perform a real component interaction and contrast audit before deployment.
+
+## Guided local lab
+
+The checked-in lab `labs/ui-tailwind-v4/` includes a learner starter, corrected instructor code, executable local checks and rubric. The academy never runs arbitrary learner code on its public origin.
+
+<LabGate lessonId="08.01.01" labId="lab.ui.ui-tailwind-v4" commands={["npm run lab:ui-tailwind-v4","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+What could still fail in a real browser even if the source tests pass? Which accessibility checks would uncover that failure?
+
+## Official references
+
+- [Official documentation for Tailwind v4 configuration](https://tailwindcss.com/docs/installation/using-postcss)
+- [Supporting reference](https://tailwindcss.com/docs/upgrade-guide)

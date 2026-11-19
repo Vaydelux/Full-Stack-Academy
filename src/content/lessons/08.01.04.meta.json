@@ -1,0 +1,39 @@
+{
+  "id": "08.01.04",
+  "title": "shadcn composition: shadcn components are owned source; match your installed Base UI or Radix adapter rather than assuming Radix is universal.",
+  "description": "UI Systems Track 08 tutorial for shadcn composition with a red starter, instructor implementation, local regression tests and honest browser/interaction boundaries.",
+  "trackId": "08",
+  "moduleId": "08.01",
+  "level": "Intermediate",
+  "estimatedMinutes": 60,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "typescript": "5",
+    "react": "19"
+  },
+  "prerequisites": [
+    "08.01.03"
+  ],
+  "objectives": [
+    "shadcn components are owned source; match your installed Base UI or Radix adapter rather than assuming Radix is universal.",
+    "Repair the ui-shadcn-adapter starter with meaningful assertions.",
+    "Describe the browser and accessibility checks needed for shadcn composition."
+  ],
+  "labId": "lab.ui.ui-shadcn-adapter",
+  "rubric": [
+    "I can explain the principles for shadcn composition.",
+    "I can reproduce and fix the failing 08.01.04 starter.",
+    "I know what browser or accessibility qualification is still missing."
+  ],
+  "sources": [
+    {
+      "label": "Official guide for shadcn composition",
+      "url": "https://ui.shadcn.com/docs/components-json"
+    },
+    {
+      "label": "Supporting official reference",
+      "url": "https://ui.shadcn.com/docs/theming"
+    }
+  ]
+}

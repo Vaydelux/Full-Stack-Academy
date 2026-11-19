@@ -1,0 +1,39 @@
+{
+  "id": "08.02.02",
+  "title": "Accessible modal dialog: Use a named modal with correct initial focus, keyboard containment, Escape closing and focus restoration to the trigger.",
+  "description": "Advanced UI interaction guide for accessible modal dialog, with a red learner starter, corrected instructor source, offline tests and a mounted-accessibility validation boundary.",
+  "trackId": "08",
+  "moduleId": "08.02",
+  "level": "Intermediate",
+  "estimatedMinutes": 65,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "typescript": "5",
+    "react": "19"
+  },
+  "prerequisites": [
+    "08.02.01"
+  ],
+  "objectives": [
+    "Use a named modal with correct initial focus, keyboard containment, Escape closing and focus restoration to the trigger.",
+    "Repair the ui-modal-accessibility starter's reproducible defect.",
+    "Explain missing keyboard, touch and assistive technology checks for accessible modal dialog."
+  ],
+  "labId": "lab.ui.ui-modal-accessibility",
+  "rubric": [
+    "I can describe the interaction requirements for accessible modal dialog.",
+    "I can repair the 08.02.02 broken example and prove a negative case.",
+    "I know why an offline fixture is not a mounted accessibility test."
+  ],
+  "sources": [
+    {
+      "label": "Official Accessible modal dialog documentation",
+      "url": "https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/"
+    },
+    {
+      "label": "Related official reference",
+      "url": "https://www.radix-ui.com/primitives/docs/components/dialog"
+    }
+  ]
+}

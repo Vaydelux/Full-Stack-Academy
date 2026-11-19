@@ -1,0 +1,15 @@
+{
+  "id": "lab.ui.ui-browser-coverage",
+  "lessonId": "08.04.06",
+  "title": "UI QA cross-browser testing local lab",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/ui-browser-coverage/starter/solution.tsx",
+  "solution": "labs/ui-browser-coverage/solution/solution.tsx",
+  "tests": "labs/ui-browser-coverage/solution.test.mjs",
+  "verify": [
+    "npm run lab:ui-browser-coverage"
+  ],
+  "expected": "Complete coverage requires Chromium, Firefox and WebKit with keyboard and touch/mobile coverage.",
+  "security": "Offline model and no real screen reader, field telemetry, device or cloud test."
+}

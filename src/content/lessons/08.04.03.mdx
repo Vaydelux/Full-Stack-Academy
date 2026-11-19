@@ -1,0 +1,82 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Associate persistent visible labels and error descriptions with each input, and announce actionable validation feedback.","Diagnose and repair the deliberately broken form accessibility example.","Separate local model correctness from actual user observations, accessibility and cross-browser qualification."]} />
+
+## The problem we're solving
+
+The starter never marks an invalid field or links it to an error description. Mature design QA tests user comprehension, accessibility, visual hierarchy and realistic layout under stress, not merely whether an interface renders.
+
+## Build the mental model
+
+Associate persistent visible labels and error descriptions with each input, and announce actionable validation feedback.
+
+**Expected outcome:** Invalid fields reference an error ID and aria-invalid; valid fields omit stale errors.
+
+**Evidence boundary:** This local test verifies a deterministic model or audit decision. It cannot claim a WCAG audit, human usability result, assistive technology behavior, actual CLS/LCP measurement, or cross-browser compatibility. Collect those in a real locally served application with documented scenarios.
+
+## Prerequisites and preflight
+
+Read the previous UI lesson. Use Node 24 and the repository's lockfile. Open `labs/ui-form-error-contract/starter/solution.tsx`. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:ui-form-error-contract`; PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:ui-form-error-contract; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Observe the broken design QA contract" file="labs/ui-form-error-contract/starter/solution.tsx" expected="The starter fails an assertion for a reproducible quality issue.">
+
+```tsx
+export function fieldAria(_id:string,_error:string|null){return {'aria-invalid':false};}
+```
+
+**Failure:** The starter never marks an invalid field or links it to an error description.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the typed quality model" file="labs/ui-form-error-contract/starter/solution.tsx" expected="Invalid fields reference an error ID and aria-invalid; valid fields omit stale errors.">
+
+```tsx
+export function fieldAria(id:string,error:string|null){const invalid=Boolean(error?.trim());return {'aria-invalid':invalid,'aria-describedby':invalid?id+'-error':undefined};}
+```
+
+**Reasoning:** Associate persistent visible labels and error descriptions with each input, and announce actionable validation feedback.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify the edge case and plan real-device checks" file="labs/ui-form-error-contract/solution.test.mjs" expected="Instructor solution passes local checks; real UX/quality evidence is collected separately.">
+
+```js
+assert.deepEqual(mod.fieldAria('email','Required'),{'aria-invalid':true,'aria-describedby':'email-error'});assert.deepEqual(mod.fieldAria('email',null),{'aria-invalid':false,'aria-describedby':undefined});
+```
+
+**Representative UI example and QA checklist:**
+
+```tsx
+<form><label htmlFor="email">Email address</label><input id="email" type="email" aria-invalid="true" aria-describedby="email-error"/><p id="email-error">Enter a valid email address.</p><button>Continue</button></form>
+// A server must validate too; ARIA and native validity are not permission checks.
+```
+
+A high-quality release gate combines keyboard and touch interaction, actual screen-reader observations, image/embedding stability, and valid WCAG/heuristic assessment.
+
+</LessonStep>
+
+<Misconception claim="The starter never marks an invalid field or links it to an error description." correction="Associate persistent visible labels and error descriptions with each input, and announce actionable validation feedback. Automated model tests alone cannot establish WCAG or real-user experience." />
+
+<KnowledgeCheck question="Which QA strategy applies to form accessibility?" choices={["A unit test is sufficient evidence that every browser and screen reader works.","Associate persistent visible labels and error descriptions with each input, and announce actionable validation feedback.","A successful screenshot proves all error states and keyboard flows.","A designer can replace usability testing with color preference surveys."] } correctIndex={1} explanation="Associate persistent visible labels and error descriptions with each input, and announce actionable validation feedback." misconception="Collect directly observable evidence for the user experience being evaluated." lessonId="08.04.03" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Bug:** The starter never marks an invalid field or links it to an error description. **Reproduce:** run the red starter and capture the failing assertion. **Repair:** Associate persistent visible labels and error descriptions with each input, and announce actionable validation feedback. **Regression:** Invalid fields reference an error ID and aria-invalid; valid fields omit stale errors. Extend the review to an actual browser/device when the component is integrated.
+
+## Guided local lab
+
+`labs/ui-form-error-contract/` contains the learner's broken implementation, full instructor code, offline acceptance and rubric. The public academy does not execute arbitrary learner code.
+
+<LabGate lessonId="08.04.03" labId="lab.ui.ui-form-error-contract" commands={["npm run lab:ui-form-error-contract","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+What UX risk could still exist after these local assertions pass, and which concrete accessibility or cross-browser observation would expose it?
+
+## Official references
+
+- [Primary official reference: Form accessibility](https://www.w3.org/WAI/WCAG22/Understanding/error-identification)
+- [Supporting standard and documentation](https://www.w3.org/WAI/WCAG22/Understanding/labels-or-instructions)

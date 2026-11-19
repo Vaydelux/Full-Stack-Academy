@@ -1346,6 +1346,270 @@ await redisCache.set(cacheKey, JSON.stringify(safeDto), 'EX', 60);`,
     "06.04.06"
   ],
   "canonicalUrl": "https://react.dev/reference/react/useActionState"
+},
+{
+  "id": "css-var",
+  "matchCategories": [
+    "CSS"
+  ],
+  "matchTitles": [
+    "var()"
+  ],
+  "heading": "CSS: var()",
+  "category": "CSS · Layout and accessibility",
+  "majorVersion": "Modern CSS",
+  "status": "Authored reference draft",
+  "summary": "Resolve a cascading custom property with an optional fallback. Useful for runtime theme colors and component tokens.",
+  "syntax": "color: var(--on-surface, #111827);",
+  "lang": "css",
+  "parameters": "CSS custom property name (starting with --), plus an optional fallback value.",
+  "returns": "Computed CSS value substituted at the use site, subject to that property's syntax.",
+  "minimalExample": ":root {--ink:#111827;} p {color:var(--ink);}",
+  "productionExample": ":root{--surface:#fff;--foreground:#111827;}[data-theme=dark]{--surface:#111827;--foreground:#fff}.card{background:var(--surface);color:var(--foreground)}",
+  "commonMistakes": [
+    "Defining a token with no appropriate fallback for consumers.",
+    "Assuming custom properties are type-checked when initially assigned."
+  ],
+  "securityPerformanceNotes": [
+    "Custom properties are visible to client users, not secret stores.",
+    "Test composited contrast in all supported themes."
+  ],
+  "relatedLessonIds": [
+    "08.01.02",
+    "08.01.06"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/var"
+},
+{
+  "id": "css-media",
+  "matchCategories": [
+    "CSS"
+  ],
+  "matchTitles": [
+    "@media"
+  ],
+  "heading": "CSS: @media",
+  "category": "CSS · Layout and accessibility",
+  "majorVersion": "Modern CSS",
+  "status": "Authored reference draft",
+  "summary": "Apply conditional CSS for viewport features and user preferences such as reduced motion or hover capability.",
+  "syntax": "@media (width >= 48rem) { /* rules */ }",
+  "lang": "css",
+  "parameters": "Media type and/or feature expressions combined with logical operators.",
+  "returns": "Rules apply only when media conditions are satisfied.",
+  "minimalExample": ".layout{display:block}@media (width >= 48rem){.layout{display:grid}}",
+  "productionExample": "@media (prefers-reduced-motion:reduce){.card{animation:none}}@media (hover:hover){.link:hover{text-decoration:underline}}",
+  "commonMistakes": [
+    "Assuming all devices support hover.",
+    "Using viewport width as a proxy for keyboard or touch input."
+  ],
+  "securityPerformanceNotes": [
+    "Use the relevant preference media features and keyboard-safe fallbacks.",
+    "Test zoom and real devices, not just fixed desktop presets."
+  ],
+  "relatedLessonIds": [
+    "08.01.07",
+    "08.04.06"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/%40media"
+},
+{
+  "id": "css-container",
+  "matchCategories": [
+    "CSS"
+  ],
+  "matchTitles": [
+    "@container"
+  ],
+  "heading": "CSS: @container",
+  "category": "CSS · Layout and accessibility",
+  "majorVersion": "Modern CSS",
+  "status": "Authored reference draft",
+  "summary": "Adapt a component to its available parent container rather than solely to the viewport.",
+  "syntax": "@container (width >= 30rem) { /* rules */ }",
+  "lang": "css",
+  "parameters": "A container query, optionally named, with an ancestor establishing container-type.",
+  "returns": "Conditional styles based on a matching query container.",
+  "minimalExample": ".slot{container-type:inline-size}@container (width >= 30rem){.card{display:grid}}",
+  "productionExample": ".catalogue{container:catalogue / inline-size}@container catalogue (width >= 42rem){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}}",
+  "commonMistakes": [
+    "Omitting the query container setup.",
+    "Mistaking a container width for the global viewport size."
+  ],
+  "securityPerformanceNotes": [
+    "Inspect nested layouts and intrinsic min-width overflow.",
+    "A container query does not by itself provide keyboard or screen-reader semantics."
+  ],
+  "relatedLessonIds": [
+    "08.03.04",
+    "08.04.01"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/%40container"
+},
+{
+  "id": "css-layer",
+  "matchCategories": [
+    "CSS"
+  ],
+  "matchTitles": [
+    "@layer"
+  ],
+  "heading": "CSS: @layer",
+  "category": "CSS · Layout and accessibility",
+  "majorVersion": "Modern CSS",
+  "status": "Authored reference draft",
+  "summary": "Establish predictable cascade precedence for resets, components and utilities.",
+  "syntax": "@layer reset, components, overrides;",
+  "lang": "css",
+  "parameters": "A named or anonymous cascade layer and the declarations assigned to it.",
+  "returns": "A distinct cascade ordering stage; normal and !important declarations have different layer precedence.",
+  "minimalExample": "@layer reset,components;@layer components{.button{padding:.75rem}}",
+  "productionExample": "@layer foundation,components,overrides;@layer foundation{button{font:inherit}}@layer components{.button{border-radius:.75rem}}",
+  "commonMistakes": [
+    "Adding !important everywhere instead of understanding the cascade.",
+    "Assuming layer precedence is the same for !important and normal declarations."
+  ],
+  "securityPerformanceNotes": [
+    "Debug the browser cascade before increasing specificity.",
+    "Combine cascade layers with semantic token design."
+  ],
+  "relatedLessonIds": [
+    "08.01.01",
+    "08.01.02"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/%40layer"
+},
+{
+  "id": "css-focus-visible",
+  "matchCategories": [
+    "CSS"
+  ],
+  "matchTitles": [
+    ":focus-visible"
+  ],
+  "heading": "CSS: :focus-visible",
+  "category": "CSS · Layout and accessibility",
+  "majorVersion": "Modern CSS",
+  "status": "Authored reference draft",
+  "summary": "Style the focused element when the browser judges a visible focus indicator appropriate, particularly keyboard navigation.",
+  "syntax": ":focus-visible { outline: 2px solid currentColor; }",
+  "lang": "css",
+  "parameters": "Matches focused elements based on user-agent focus-visible heuristics.",
+  "returns": "A selector state usable for clear focus indicators.",
+  "minimalExample": ":focus-visible{outline:2px solid #0891b2;outline-offset:3px}",
+  "productionExample": ".button:focus-visible{outline:3px solid var(--focus-ring);outline-offset:2px}",
+  "commonMistakes": [
+    "Removing focus outlines without a visible replacement.",
+    "Treating hover styling as sufficient for keyboard users."
+  ],
+  "securityPerformanceNotes": [
+    "Manually verify keyboard focus appearance in actual browsers.",
+    "Ensure the focus ring remains distinguishable against every surface."
+  ],
+  "relatedLessonIds": [
+    "08.02.04",
+    "08.04.03"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/%3Afocus-visible"
+},
+{
+  "id": "css-prefers-reduced-motion",
+  "matchCategories": [
+    "CSS"
+  ],
+  "matchTitles": [
+    "prefers-reduced-motion"
+  ],
+  "heading": "CSS: prefers-reduced-motion",
+  "category": "CSS · Layout and accessibility",
+  "majorVersion": "Modern CSS",
+  "status": "Authored reference draft",
+  "summary": "Respond to an OS accessibility preference for less motion while retaining meaningful UI state feedback.",
+  "syntax": "@media (prefers-reduced-motion: reduce) { /* rules */ }",
+  "lang": "css",
+  "parameters": "Media feature values reduce or no-preference.",
+  "returns": "Conditional rules to reduce or eliminate distracting movement.",
+  "minimalExample": "@media (prefers-reduced-motion:reduce){.panel{animation:none}}",
+  "productionExample": ".panel{transition:transform .2s ease}@media (prefers-reduced-motion:reduce){.panel{transition:none;transform:none}}",
+  "commonMistakes": [
+    "Disabling necessary focus and state feedback together with animation.",
+    "Forcing parallax even when reduced motion is requested."
+  ],
+  "securityPerformanceNotes": [
+    "Test changing the operating-system preference at runtime.",
+    "Do not claim a CSS source snippet proves all vestibular accessibility concerns."
+  ],
+  "relatedLessonIds": [
+    "08.02.01",
+    "08.04.05"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/%40media/prefers-reduced-motion"
+},
+{
+  "id": "css-color-scheme",
+  "matchCategories": [
+    "CSS"
+  ],
+  "matchTitles": [
+    "color-scheme"
+  ],
+  "heading": "CSS: color-scheme",
+  "category": "CSS · Layout and accessibility",
+  "majorVersion": "Modern CSS",
+  "status": "Authored reference draft",
+  "summary": "Inform the browser which light and dark schemes the element supports, aligning native form controls and browser-rendered UI.",
+  "syntax": "color-scheme: light dark;",
+  "lang": "css",
+  "parameters": "Supported color scheme keywords, often light and/or dark.",
+  "returns": "A browser hint for native control, scrollbar and UI appearance.",
+  "minimalExample": ":root{color-scheme:light dark}",
+  "productionExample": ":root{color-scheme:light;--surface:#fff;--ink:#111}[data-theme=dark]{color-scheme:dark;--surface:#111;--ink:#fff}",
+  "commonMistakes": [
+    "Assuming native color-scheme automatically updates every custom CSS variable.",
+    "Not checking native input contrast in dark mode."
+  ],
+  "securityPerformanceNotes": [
+    "Pair native scheme declarations with semantic component theme tokens.",
+    "Verify actual form controls, focus rings and errors in light and dark modes."
+  ],
+  "relatedLessonIds": [
+    "08.01.06",
+    "08.04.02"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/color-scheme"
+},
+{
+  "id": "css-clamp",
+  "matchCategories": [
+    "CSS"
+  ],
+  "matchTitles": [
+    "clamp()"
+  ],
+  "heading": "CSS: clamp()",
+  "category": "CSS · Layout and accessibility",
+  "majorVersion": "Modern CSS",
+  "status": "Authored reference draft",
+  "summary": "Constrain a fluid CSS value between chosen minimum and maximum bounds, useful for responsive typography and spacing.",
+  "syntax": "font-size: clamp(1.75rem, 3vw, 2.75rem);",
+  "lang": "css",
+  "parameters": "Three compatible CSS values: minimum, preferred and maximum.",
+  "returns": "The preferred value bounded by the minimum and maximum.",
+  "minimalExample": "h1{font-size:clamp(1.75rem,3vw,2.75rem)}",
+  "productionExample": ".reading{padding-inline:clamp(1rem,3vw,2rem)}.hero{font-size:clamp(2rem,4vw,3.5rem)}",
+  "commonMistakes": [
+    "Choosing bounds that prevent appropriate text scaling.",
+    "Assuming fluid CSS removes the need to test small screens and 200% zoom."
+  ],
+  "securityPerformanceNotes": [
+    "Use rem-based bounds when preserving text-size scalability.",
+    "Verify long translations, wrapping and layout at narrow widths."
+  ],
+  "relatedLessonIds": [
+    "08.04.02",
+    "08.04.07"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/clamp"
 }
 ];
 

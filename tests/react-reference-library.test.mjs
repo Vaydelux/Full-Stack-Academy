@@ -14,7 +14,7 @@ test('eight React 19 reference drafts match canonical indexed IDs and official s
   assert.ok(section.includes('"id": "'+id+'"'),'Missing authored React reference '+id);
  }
  const checkpoint=JSON.parse(read('docs/checkpoint.json'));
- assert.equal(checkpoint.snapshot.authoredReferenceDrafts,12);
+ assert.equal(checkpoint.snapshot.authoredReferenceDrafts,20);
  assert.equal(checkpoint.snapshot.indexedReferences,303);
 });
 test('reference explorer has explicit search, category, status and pagination interactions',()=>{

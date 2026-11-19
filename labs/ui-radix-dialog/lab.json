@@ -1,0 +1,15 @@
+{
+  "id": "lab.ui.ui-radix-dialog",
+  "lessonId": "08.01.03",
+  "title": "UI Systems local radix primitives exercise",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/ui-radix-dialog/starter/solution.tsx",
+  "solution": "labs/ui-radix-dialog/solution/solution.tsx",
+  "tests": "labs/ui-radix-dialog/solution.test.mjs",
+  "verify": [
+    "npm run lab:ui-radix-dialog"
+  ],
+  "expected": "A nonempty title and description are required.",
+  "security": "Reviewed offline fixture. CSS compilation, third-party UI libraries and mounted accessibility remain separate."
+}

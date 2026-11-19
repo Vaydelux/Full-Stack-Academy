@@ -1,0 +1,1 @@
+export type Item={id:string;enabled:boolean};export function gallery(items:readonly Item[]){const seen=new Set<string>();return items.filter(x=>{if(seen.has(x.id))throw new Error('Duplicate ID');seen.add(x.id);return x.enabled;});}

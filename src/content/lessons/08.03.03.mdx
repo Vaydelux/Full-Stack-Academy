@@ -1,0 +1,84 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Render a bounded visible window with overscan and preserve item IDs, keyboard navigation and screen reader access.","Debug the deliberately broken virtualized lists example.","Explain when server data, controlled table state and browser accessibility must be verified independently."]} />
+
+## The problem we're solving
+
+The starter renders all rows no matter how many items are present. Enterprise interfaces need correct data scope, stable identities, accessible states and predictable behavior under pagination, refresh and mobile layouts.
+
+## Build the mental model
+
+Render a bounded visible window with overscan and preserve item IDs, keyboard navigation and screen reader access.
+
+**Prediction:** The computed range is clamped inside the collection while accounting for overscan.
+
+**Scope of evidence:** The instructor's local Node tests exercise a pure data transformation. TanStack Table v8 and TanStack Virtual require separate dependency installation and mounted browser tests. Never treat sorting the current server page as global sorting, or browser-side role checks as server authorization.
+
+## Prerequisites and preflight
+
+Study the previous UI lesson. Use the project lockfile and Node 24. Inspect `labs/ui-virtual-window/starter/solution.tsx`. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:ui-virtual-window`. PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:ui-virtual-window; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the operational UI failure" file="labs/ui-virtual-window/starter/solution.tsx" expected="An incorrect data transformation fails a local assertion.">
+
+```tsx
+export const visibleRange=(_total:number,_start:number,_count:number,_overscan:number)=>({from:0,to:1000000});
+```
+
+**Why it fails:** The starter renders all rows no matter how many items are present.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the typed data contract" file="labs/ui-virtual-window/starter/solution.tsx" expected="The computed range is clamped inside the collection while accounting for overscan.">
+
+```tsx
+export function visibleRange(total:number,start:number,count:number,overscan:number){if([total,start,count,overscan].some(x=>!Number.isSafeInteger(x)||x<0))throw new RangeError('Invalid window');return {from:Math.min(total,Math.max(0,start-overscan)),to:Math.min(total,start+count+overscan)};}
+```
+
+**Why this works:** Render a bounded visible window with overscan and preserve item IDs, keyboard navigation and screen reader access.
+
+</LessonStep>
+
+<LessonStep number={3} title="Check edge cases and framework integration" file="labs/ui-virtual-window/solution.test.mjs" expected="The instructor solution passes and the red starter fails the same local acceptance suite.">
+
+```js
+assert.deepEqual(mod.visibleRange(100,20,10,2),{from:18,to:32});assert.deepEqual(mod.visibleRange(5,3,10,4),{from:0,to:5});assert.throws(()=>mod.visibleRange(-1,0,5,0),RangeError);
+```
+
+**Framework/UX reference (illustrative; installation and browser tests are separate):**
+
+```tsx
+// TanStack Virtual (optional dependency):
+// useVirtualizer({count:rows.length,getScrollElement:()=>scrollRef.current,estimateSize:()=>44,overscan:5})
+// Render measured positions but preserve row IDs and keyboard focus.
+// For short tables, normal DOM rendering is often simpler and more accessible.
+```
+
+In an application with a backend, verify stable IDs, authorization and global sort/filter/page consistency against actual HTTP responses.
+
+</LessonStep>
+
+<Misconception claim="The starter renders all rows no matter how many items are present." correction="Render a bounded visible window with overscan and preserve item IDs, keyboard navigation and screen reader access. A local model cannot establish server pagination, authorization or real keyboard behavior." />
+
+<KnowledgeCheck question="What matters most for virtualized lists?" choices={["A client-rendered table automatically makes backend authorization unnecessary.","Render a bounded visible window with overscan and preserve item IDs, keyboard navigation and screen reader access.","Server pagination and client-only sort always produce one globally ordered result.","A screenshot can verify a screen reader's experience with loading states."] } correctIndex={1} explanation="Render a bounded visible window with overscan and preserve item IDs, keyboard navigation and screen reader access." misconception="Data correctness, backend permissions and accessibility must be independently demonstrated." lessonId="08.03.03" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Bug:** The starter renders all rows no matter how many items are present. **Reproduce:** run the starter and capture the failing assertion. **Repair:** Render a bounded visible window with overscan and preserve item IDs, keyboard navigation and screen reader access. **Regression:** The computed range is clamped inside the collection while accounting for overscan. Test actual data source and interactions before production use.
+
+## Guided local lab
+
+`labs/ui-virtual-window/` contains a broken starter, correct instructor code, offline assertions, and a completion rubric. The public academy does not execute learner code.
+
+<LabGate lessonId="08.03.03" labId="lab.ui.ui-virtual-window" commands={["npm run lab:ui-virtual-window","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+Which invariant is protected by this pure model test? What must still be tested through a real server or keyboard-driven browser?
+
+## Official references
+
+- [Official reference for Virtualized lists](https://tanstack.com/virtual/latest/docs/introduction)
+- [Supporting specification or documentation](https://www.w3.org/WAI/ARIA/apg/patterns/grid/)

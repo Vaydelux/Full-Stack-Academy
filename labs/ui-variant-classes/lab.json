@@ -1,0 +1,15 @@
+{
+  "id": "lab.ui.ui-variant-classes",
+  "lessonId": "08.01.05",
+  "title": "UI Systems local variant patterns and class merging exercise",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/ui-variant-classes/starter/solution.tsx",
+  "solution": "labs/ui-variant-classes/solution/solution.tsx",
+  "tests": "labs/ui-variant-classes/solution.test.mjs",
+  "verify": [
+    "npm run lab:ui-variant-classes"
+  ],
+  "expected": "Danger and secondary have different classes; sizes are distinct.",
+  "security": "Reviewed offline fixture. CSS compilation, third-party UI libraries and mounted accessibility remain separate."
+}

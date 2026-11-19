@@ -1,0 +1,15 @@
+{
+  "id": "lab.ui.ui-chart-summary",
+  "lessonId": "08.02.07",
+  "title": "Advanced UI responsive charts local lab",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/ui-chart-summary/starter/solution.tsx",
+  "solution": "labs/ui-chart-summary/solution/solution.tsx",
+  "tests": "labs/ui-chart-summary/solution.test.mjs",
+  "verify": [
+    "npm run lab:ui-chart-summary"
+  ],
+  "expected": "The data summary reports the true count and total; invalid numeric points are rejected.",
+  "security": "Trusted local fixtures only. Mounted interaction/a11y testing is required separately."
+}

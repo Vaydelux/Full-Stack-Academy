@@ -1,0 +1,39 @@
+{
+  "id": "08.02.04",
+  "title": "Keyboard focus traps: Keep focus inside an active modal and restore focus after closing; use a vetted primitive for real DOM edge cases.",
+  "description": "Advanced UI interaction guide for keyboard focus traps, with a red learner starter, corrected instructor source, offline tests and a mounted-accessibility validation boundary.",
+  "trackId": "08",
+  "moduleId": "08.02",
+  "level": "Intermediate",
+  "estimatedMinutes": 65,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "typescript": "5",
+    "react": "19"
+  },
+  "prerequisites": [
+    "08.02.03"
+  ],
+  "objectives": [
+    "Keep focus inside an active modal and restore focus after closing; use a vetted primitive for real DOM edge cases.",
+    "Repair the ui-focus-loop starter's reproducible defect.",
+    "Explain missing keyboard, touch and assistive technology checks for keyboard focus traps."
+  ],
+  "labId": "lab.ui.ui-focus-loop",
+  "rubric": [
+    "I can describe the interaction requirements for keyboard focus traps.",
+    "I can repair the 08.02.04 broken example and prove a negative case.",
+    "I know why an offline fixture is not a mounted accessibility test."
+  ],
+  "sources": [
+    {
+      "label": "Official Keyboard focus traps documentation",
+      "url": "https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/"
+    },
+    {
+      "label": "Related official reference",
+      "url": "https://www.radix-ui.com/primitives/docs/components/dialog"
+    }
+  ]
+}

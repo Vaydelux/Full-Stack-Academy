@@ -7,6 +7,8 @@ import { verifyReactAdvanced } from './react-advanced-smoke.mjs';
 import { verifyReactReferences } from './react-reference-smoke.mjs';
 import { verifyReactNextMilestone } from './react-next-milestone-smoke.mjs';
 import { verifyNextFullTrack } from './next-full-track-smoke.mjs';
+import { verifyUiTrack } from './ui-track-smoke.mjs';
+import { verifyUiGallery } from './ui-gallery-smoke.mjs';
 import { createRequire } from 'node:module';
 import path from 'node:path';
 
@@ -61,7 +63,7 @@ try {
   await wait(page.getByText('Correct — you identified the concept.'));
   await page.goto(base + '/reference/zod-safeparse');
   await wait(page.getByRole('heading',{name:/Zod 4: schema.safeParse/}));
-  await page.goto(base + '/learn/08.01.01');
+  await page.goto(base + '/learn/09.01.01');
   assert.ok(await page.locator('meta[name="robots"][content*="noindex"]').count() > 0, 'Planned curriculum topic must have a noindex directive');
   await wait(page.getByText('Planned lesson — not published.', {exact:true}));
   await page.goto(base + '/learn/00.01.01');
@@ -299,7 +301,7 @@ try {
   await page.goto(base + '/learn/01.04.01');
   await wait(page.getByRole('heading', { name: "The problem we're solving" }));
   assert.equal(await page.locator('meta[name="robots"][content*="noindex"]').count(),0,'Published Web APIs lesson must be indexable');
-  await page.goto(base + '/learn/08.01.01');
+  await page.goto(base + '/learn/09.01.01');
   assert.ok(await page.locator('meta[name="robots"][content*="noindex"]').count() > 0, 'Next unauthored React lesson must remain noindex');
   const webLab = slug => new URL('../labs/'+slug+'/solution/index.html', import.meta.url).href;
   const webSlugs = ['web-dom','web-fetch-json','web-url','web-storage','web-permissions','web-cors','web-csp','web-devtools'];
@@ -361,7 +363,7 @@ try {
   await page.goto(base + '/learn/02.01.01');
   await wait(page.getByRole('heading', { name: "The problem we're solving" }));
   assert.equal(await page.locator('meta[name="robots"][content*="noindex"]').count(), 0, 'Published CSS lessons must be indexable');
-  await page.goto(base + '/learn/08.01.01');
+  await page.goto(base + '/learn/09.01.01');
   assert.ok(await page.locator('meta[name="robots"][content*="noindex"]').count() > 0, 'Next unauthored React lesson remains noindex');
   const cssLab = slug => new URL('../labs/' + slug + '/solution/index.html', import.meta.url).href;
   const cssSlugs = ["css-selectors","css-cascade","css-layers","css-box-model","css-typography","css-logical","css-states","css-responsive-card"];
@@ -406,6 +408,8 @@ try {
   await verifyReactReferences({page,base,assert,wait});
   await verifyReactNextMilestone({page,base,assert,wait});
   await verifyNextFullTrack({page,base,assert,wait});
+  await verifyUiTrack({page,base,assert,wait});
+  await verifyUiGallery({page,base,assert,wait});
 
   await page.goto(base+'/?lesson=06.01.01&mode=practice');
   await wait(btn('Practice'));

@@ -1,0 +1,15 @@
+{
+  "id": "lab.ui.ui-optimistic-table",
+  "lessonId": "08.03.06",
+  "title": "UI data systems optimistic table interactions local lab",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/ui-optimistic-table/starter/solution.tsx",
+  "solution": "labs/ui-optimistic-table/solution/solution.tsx",
+  "tests": "labs/ui-optimistic-table/solution.test.mjs",
+  "verify": [
+    "npm run lab:ui-optimistic-table"
+  ],
+  "expected": "Only the target row changes, original rows remain unchanged and missing IDs are no-ops.",
+  "security": "Trusted source-level model only. No external data, UI event runner or remote code execution."
+}

@@ -1,0 +1,15 @@
+{
+  "id": "lab.ui.ui-toast-queue",
+  "lessonId": "08.02.05",
+  "title": "Advanced UI toasts and announcements local lab",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/ui-toast-queue/starter/solution.tsx",
+  "solution": "labs/ui-toast-queue/solution/solution.tsx",
+  "tests": "labs/ui-toast-queue/solution.test.mjs",
+  "verify": [
+    "npm run lab:ui-toast-queue"
+  ],
+  "expected": "New notification IDs append once and repeated IDs update rather than duplicate.",
+  "security": "Trusted local fixtures only. Mounted interaction/a11y testing is required separately."
+}

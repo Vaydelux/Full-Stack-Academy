@@ -1,0 +1,82 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Make mobile tables usable with deliberate cards or horizontal scrolling, while preserving important labels and data parity.","Debug the deliberately broken dense tables and mobile alternatives example.","Explain when server data, controlled table state and browser accessibility must be verified independently."]} />
+
+## The problem we're solving
+
+The starter forces a dense 12-column grid on narrow screens. Enterprise interfaces need correct data scope, stable identities, accessible states and predictable behavior under pagination, refresh and mobile layouts.
+
+## Build the mental model
+
+Make mobile tables usable with deliberate cards or horizontal scrolling, while preserving important labels and data parity.
+
+**Prediction:** At mobile widths and high column counts, choose a labeled card view; otherwise keep a semantic table.
+
+**Scope of evidence:** The instructor's local Node tests exercise a pure data transformation. TanStack Table v8 and TanStack Virtual require separate dependency installation and mounted browser tests. Never treat sorting the current server page as global sorting, or browser-side role checks as server authorization.
+
+## Prerequisites and preflight
+
+Study the previous UI lesson. Use the project lockfile and Node 24. Inspect `labs/ui-mobile-table-view/starter/solution.tsx`. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:ui-mobile-table-view`. PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:ui-mobile-table-view; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the operational UI failure" file="labs/ui-mobile-table-view/starter/solution.tsx" expected="An incorrect data transformation fails a local assertion.">
+
+```tsx
+export function layoutFor(_width:number,_columns:number){return 'table';}
+```
+
+**Why it fails:** The starter forces a dense 12-column grid on narrow screens.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the typed data contract" file="labs/ui-mobile-table-view/starter/solution.tsx" expected="At mobile widths and high column counts, choose a labeled card view; otherwise keep a semantic table.">
+
+```tsx
+export function layoutFor(width:number,columns:number){if(!Number.isFinite(width)||width<=0||!Number.isInteger(columns)||columns<0)throw new RangeError('Invalid layout');return width<640&&columns>3?'cards':'table';}
+```
+
+**Why this works:** Make mobile tables usable with deliberate cards or horizontal scrolling, while preserving important labels and data parity.
+
+</LessonStep>
+
+<LessonStep number={3} title="Check edge cases and framework integration" file="labs/ui-mobile-table-view/solution.test.mjs" expected="The instructor solution passes and the red starter fails the same local acceptance suite.">
+
+```js
+assert.equal(mod.layoutFor(320,8),'cards');assert.equal(mod.layoutFor(1024,8),'table');assert.equal(mod.layoutFor(320,2),'table');assert.throws(()=>mod.layoutFor(0,8),RangeError);
+```
+
+**Framework/UX reference (illustrative; installation and browser tests are separate):**
+
+```tsx
+<div className="overflow-x-auto"><table><caption>Current invoices</caption><thead><tr><th scope="col">Invoice</th><th scope="col">Status</th></tr></thead><tbody><tr><th scope="row">INV-001</th><td>Paid</td></tr></tbody></table></div>
+// Card alternatives need explicit labels, not bare values; test 320px and 200% zoom.
+```
+
+In an application with a backend, verify stable IDs, authorization and global sort/filter/page consistency against actual HTTP responses.
+
+</LessonStep>
+
+<Misconception claim="The starter forces a dense 12-column grid on narrow screens." correction="Make mobile tables usable with deliberate cards or horizontal scrolling, while preserving important labels and data parity. A local model cannot establish server pagination, authorization or real keyboard behavior." />
+
+<KnowledgeCheck question="What matters most for dense tables and mobile alternatives?" choices={["A client-rendered table automatically makes backend authorization unnecessary.","Make mobile tables usable with deliberate cards or horizontal scrolling, while preserving important labels and data parity.","Server pagination and client-only sort always produce one globally ordered result.","A screenshot can verify a screen reader's experience with loading states."] } correctIndex={1} explanation="Make mobile tables usable with deliberate cards or horizontal scrolling, while preserving important labels and data parity." misconception="Data correctness, backend permissions and accessibility must be independently demonstrated." lessonId="08.03.04" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Bug:** The starter forces a dense 12-column grid on narrow screens. **Reproduce:** run the starter and capture the failing assertion. **Repair:** Make mobile tables usable with deliberate cards or horizontal scrolling, while preserving important labels and data parity. **Regression:** At mobile widths and high column counts, choose a labeled card view; otherwise keep a semantic table. Test actual data source and interactions before production use.
+
+## Guided local lab
+
+`labs/ui-mobile-table-view/` contains a broken starter, correct instructor code, offline assertions, and a completion rubric. The public academy does not execute learner code.
+
+<LabGate lessonId="08.03.04" labId="lab.ui.ui-mobile-table-view" commands={["npm run lab:ui-mobile-table-view","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+Which invariant is protected by this pure model test? What must still be tested through a real server or keyboard-driven browser?
+
+## Official references
+
+- [Official reference for Dense tables and mobile alternatives](https://www.w3.org/WAI/tutorials/tables/)
+- [Supporting specification or documentation](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_media_queries/Using_media_queries)

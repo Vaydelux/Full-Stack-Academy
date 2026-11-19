@@ -1,0 +1,39 @@
+{
+  "id": "08.03.01",
+  "title": "TanStack Table columns: Define typed, allowlisted columns for only public fields and keep internal credentials out of the browser's table model.",
+  "description": "Professional UI data interface tutorial for tanstack table columns, including a typed local starter, instructor repair, regression tests and explicit server/accessibility boundaries.",
+  "trackId": "08",
+  "moduleId": "08.03",
+  "level": "Intermediate",
+  "estimatedMinutes": 65,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "typescript": "5",
+    "react": "19"
+  },
+  "prerequisites": [
+    "08.02.08"
+  ],
+  "objectives": [
+    "Define typed, allowlisted columns for only public fields and keep internal credentials out of the browser's table model.",
+    "Repair the ui-table-columns broken implementation.",
+    "Identify necessary real-browser and backend checks for tanstack table columns."
+  ],
+  "labId": "lab.ui.ui-table-columns",
+  "rubric": [
+    "I understand the model and browser boundaries for tanstack table columns.",
+    "I can fix 08.03.01 and demonstrate a negative regression assertion.",
+    "I can explain the risk of trusting client data, pagination or role state."
+  ],
+  "sources": [
+    {
+      "label": "Official TanStack Table columns documentation",
+      "url": "https://tanstack.com/table/v8/docs/guide/column-defs"
+    },
+    {
+      "label": "Supplementary specification",
+      "url": "https://tanstack.com/table/v8/docs/framework/react/react-table"
+    }
+  ]
+}

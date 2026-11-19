@@ -1,0 +1,84 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Prioritize usability findings by impact and recurrence, record evidence and map fixes to the user journey rather than subjective visual preference.","Diagnose and repair the deliberately broken usability heuristics example.","Separate local model correctness from actual user observations, accessibility and cross-browser qualification."]} />
+
+## The problem we're solving
+
+The starter labels every issue low-priority even if it blocks the primary task. Mature design QA tests user comprehension, accessibility, visual hierarchy and realistic layout under stress, not merely whether an interface renders.
+
+## Build the mental model
+
+Prioritize usability findings by impact and recurrence, record evidence and map fixes to the user journey rather than subjective visual preference.
+
+**Expected outcome:** A recurring blocker ranks higher than a minor cosmetic issue, with reproducible scoring.
+
+**Evidence boundary:** This local test verifies a deterministic model or audit decision. It cannot claim a WCAG audit, human usability result, assistive technology behavior, actual CLS/LCP measurement, or cross-browser compatibility. Collect those in a real locally served application with documented scenarios.
+
+## Prerequisites and preflight
+
+Read the previous UI lesson. Use Node 24 and the repository's lockfile. Open `labs/ui-heuristic-severity/starter/solution.tsx`. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:ui-heuristic-severity`; PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:ui-heuristic-severity; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Observe the broken design QA contract" file="labs/ui-heuristic-severity/starter/solution.tsx" expected="The starter fails an assertion for a reproducible quality issue.">
+
+```tsx
+export function heuristicSeverity(_impact:number,_frequency:number){return 0;}
+```
+
+**Failure:** The starter labels every issue low-priority even if it blocks the primary task.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the typed quality model" file="labs/ui-heuristic-severity/starter/solution.tsx" expected="A recurring blocker ranks higher than a minor cosmetic issue, with reproducible scoring.">
+
+```tsx
+export function heuristicSeverity(impact:number,frequency:number){if(![impact,frequency].every(n=>Number.isInteger(n)&&n>=0&&n<=4))throw new RangeError('Invalid rating');return Math.min(4,Math.round((impact*2+frequency)/3));}
+```
+
+**Reasoning:** Prioritize usability findings by impact and recurrence, record evidence and map fixes to the user journey rather than subjective visual preference.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify the edge case and plan real-device checks" file="labs/ui-heuristic-severity/solution.test.mjs" expected="Instructor solution passes local checks; real UX/quality evidence is collected separately.">
+
+```js
+assert.equal(mod.heuristicSeverity(4,4),4);assert.equal(mod.heuristicSeverity(0,0),0);assert.ok(mod.heuristicSeverity(4,4)>mod.heuristicSeverity(1,1));assert.throws(()=>mod.heuristicSeverity(5,1),RangeError);
+```
+
+**Representative UI example and QA checklist:**
+
+```tsx
+// Nielsen's 10 heuristics cover system status, consistency, user control,
+// error prevention, recognition, flexibility, minimalist design and recovery.
+// Record the screen, task, steps, impact, frequency and fix rationale.
+// This scored helper is a local prioritization model, not Nielsen's exact formula.
+```
+
+A high-quality release gate combines keyboard and touch interaction, actual screen-reader observations, image/embedding stability, and valid WCAG/heuristic assessment.
+
+</LessonStep>
+
+<Misconception claim="The starter labels every issue low-priority even if it blocks the primary task." correction="Prioritize usability findings by impact and recurrence, record evidence and map fixes to the user journey rather than subjective visual preference. Automated model tests alone cannot establish WCAG or real-user experience." />
+
+<KnowledgeCheck question="Which QA strategy applies to usability heuristics?" choices={["A unit test is sufficient evidence that every browser and screen reader works.","Prioritize usability findings by impact and recurrence, record evidence and map fixes to the user journey rather than subjective visual preference.","A successful screenshot proves all error states and keyboard flows.","A designer can replace usability testing with color preference surveys."] } correctIndex={1} explanation="Prioritize usability findings by impact and recurrence, record evidence and map fixes to the user journey rather than subjective visual preference." misconception="Collect directly observable evidence for the user experience being evaluated." lessonId="08.04.04" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Bug:** The starter labels every issue low-priority even if it blocks the primary task. **Reproduce:** run the red starter and capture the failing assertion. **Repair:** Prioritize usability findings by impact and recurrence, record evidence and map fixes to the user journey rather than subjective visual preference. **Regression:** A recurring blocker ranks higher than a minor cosmetic issue, with reproducible scoring. Extend the review to an actual browser/device when the component is integrated.
+
+## Guided local lab
+
+`labs/ui-heuristic-severity/` contains the learner's broken implementation, full instructor code, offline acceptance and rubric. The public academy does not execute arbitrary learner code.
+
+<LabGate lessonId="08.04.04" labId="lab.ui.ui-heuristic-severity" commands={["npm run lab:ui-heuristic-severity","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+What UX risk could still exist after these local assertions pass, and which concrete accessibility or cross-browser observation would expose it?
+
+## Official references
+
+- [Primary official reference: Usability heuristics](https://www.nngroup.com/articles/ten-usability-heuristics/)
+- [Supporting standard and documentation](https://www.nngroup.com/articles/how-to-rate-the-severity-of-usability-problems/)

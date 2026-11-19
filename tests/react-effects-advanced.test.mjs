@@ -25,12 +25,12 @@ test('all 16 Effects/Advanced React tutorials have full authored metadata and lo
   assert.ok(mdx.includes("interactive={false}"));
   for(const asset of [lab.starter,lab.solution,lab.tests])assert.ok(fs.statSync(path.join(root,asset)).isFile(),asset);
   assert.equal(pkg.scripts['lab:'+name],'tsx --test labs/'+name+'/solution.test.mjs');
-  assert.ok(pkg.scripts['test:labs'].includes(lab.tests));
+  assert.equal(pkg.scripts['test:labs'],'node scripts/run-local-labs.mjs');
  }
 });
-test('browser smoke and all publication guards use 08.01.01 as the next planned Tailwind lesson',()=>{
+test('browser smoke and all publication guards use 09.01.01 as the next planned Zod lesson',()=>{
  for(const file of ['scripts/browser-smoke.mjs','scripts/react-batch-smoke.mjs','scripts/react-advanced-smoke.mjs','scripts/css-track-smoke.mjs','scripts/js-ts-batch-smoke.mjs','scripts/git-track-smoke.mjs']){
-  assert.ok(read(file).includes('08.01.01'),file);
+  assert.ok(read(file).includes('09.01.01'),file);
  }
 });
 

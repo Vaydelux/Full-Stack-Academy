@@ -1,0 +1,39 @@
+{
+  "id": "08.02.07",
+  "title": "Responsive charts: Every chart needs a textual summary or data-table alternative, with honest handling of empty or invalid data.",
+  "description": "Advanced UI interaction guide for responsive charts, with a red learner starter, corrected instructor source, offline tests and a mounted-accessibility validation boundary.",
+  "trackId": "08",
+  "moduleId": "08.02",
+  "level": "Intermediate",
+  "estimatedMinutes": 65,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "typescript": "5",
+    "react": "19"
+  },
+  "prerequisites": [
+    "08.02.06"
+  ],
+  "objectives": [
+    "Every chart needs a textual summary or data-table alternative, with honest handling of empty or invalid data.",
+    "Repair the ui-chart-summary starter's reproducible defect.",
+    "Explain missing keyboard, touch and assistive technology checks for responsive charts."
+  ],
+  "labId": "lab.ui.ui-chart-summary",
+  "rubric": [
+    "I can describe the interaction requirements for responsive charts.",
+    "I can repair the 08.02.07 broken example and prove a negative case.",
+    "I know why an offline fixture is not a mounted accessibility test."
+  ],
+  "sources": [
+    {
+      "label": "Official Responsive charts documentation",
+      "url": "https://www.w3.org/WAI/tutorials/images/complex/"
+    },
+    {
+      "label": "Related official reference",
+      "url": "https://www.w3.org/WAI/WCAG22/Understanding/non-text-content.html"
+    }
+  ]
+}

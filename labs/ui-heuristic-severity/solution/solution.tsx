@@ -1,0 +1,1 @@
+export function heuristicSeverity(impact:number,frequency:number){if(![impact,frequency].every(n=>Number.isInteger(n)&&n>=0&&n<=4))throw new RangeError('Invalid rating');return Math.min(4,Math.round((impact*2+frequency)/3));}

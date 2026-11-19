@@ -1,0 +1,39 @@
+{
+  "id": "08.01.05",
+  "title": "Variant patterns and class merging: Use finite, typed variant maps; understand class-merging semantics and avoid runtime string interpolation for utility names.",
+  "description": "UI Systems Track 08 tutorial for variant patterns and class merging with a red starter, instructor implementation, local regression tests and honest browser/interaction boundaries.",
+  "trackId": "08",
+  "moduleId": "08.01",
+  "level": "Intermediate",
+  "estimatedMinutes": 60,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "typescript": "5",
+    "react": "19"
+  },
+  "prerequisites": [
+    "08.01.04"
+  ],
+  "objectives": [
+    "Use finite, typed variant maps; understand class-merging semantics and avoid runtime string interpolation for utility names.",
+    "Repair the ui-variant-classes starter with meaningful assertions.",
+    "Describe the browser and accessibility checks needed for variant patterns and class merging."
+  ],
+  "labId": "lab.ui.ui-variant-classes",
+  "rubric": [
+    "I can explain the principles for variant patterns and class merging.",
+    "I can reproduce and fix the failing 08.01.05 starter.",
+    "I know what browser or accessibility qualification is still missing."
+  ],
+  "sources": [
+    {
+      "label": "Official guide for Variant patterns and class merging",
+      "url": "https://tailwindcss.com/docs/styling-with-utility-classes"
+    },
+    {
+      "label": "Supporting official reference",
+      "url": "https://ui.shadcn.com/docs/installation"
+    }
+  ]
+}

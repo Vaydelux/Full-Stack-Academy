@@ -1,0 +1,86 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Define typed, allowlisted columns for only public fields and keep internal credentials out of the browser's table model.","Debug the deliberately broken tanstack table columns example.","Explain when server data, controlled table state and browser accessibility must be verified independently."]} />
+
+## The problem we're solving
+
+The starter includes internal secrets in its column list. Enterprise interfaces need correct data scope, stable identities, accessible states and predictable behavior under pagination, refresh and mobile layouts.
+
+## Build the mental model
+
+Define typed, allowlisted columns for only public fields and keep internal credentials out of the browser's table model.
+
+**Prediction:** Only id, name, and status are visible columns; privateKey is excluded.
+
+**Scope of evidence:** The instructor's local Node tests exercise a pure data transformation. TanStack Table v8 and TanStack Virtual require separate dependency installation and mounted browser tests. Never treat sorting the current server page as global sorting, or browser-side role checks as server authorization.
+
+## Prerequisites and preflight
+
+Study the previous UI lesson. Use the project lockfile and Node 24. Inspect `labs/ui-table-columns/starter/solution.tsx`. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:ui-table-columns`. PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:ui-table-columns; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the operational UI failure" file="labs/ui-table-columns/starter/solution.tsx" expected="An incorrect data transformation fails a local assertion.">
+
+```tsx
+export type Column='id'|'name'|'status'|'privateKey';export const visibleColumns=(columns:readonly Column[])=>[...columns];
+```
+
+**Why it fails:** The starter includes internal secrets in its column list.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the typed data contract" file="labs/ui-table-columns/starter/solution.tsx" expected="Only id, name, and status are visible columns; privateKey is excluded.">
+
+```tsx
+export type Column='id'|'name'|'status'|'privateKey';export const visibleColumns=(columns:readonly Column[])=>columns.filter(column=>column!=='privateKey');
+```
+
+**Why this works:** Define typed, allowlisted columns for only public fields and keep internal credentials out of the browser's table model.
+
+</LessonStep>
+
+<LessonStep number={3} title="Check edge cases and framework integration" file="labs/ui-table-columns/solution.test.mjs" expected="The instructor solution passes and the red starter fails the same local acceptance suite.">
+
+```js
+assert.deepEqual(mod.visibleColumns(['id','privateKey','name','status']),['id','name','status']);assert.deepEqual(mod.visibleColumns(['privateKey']),[]);
+```
+
+**Framework/UX reference (illustrative; installation and browser tests are separate):**
+
+```tsx
+// TanStack Table v8 — requires installed @tanstack/react-table
+import {createColumnHelper} from '@tanstack/react-table';
+type Row={id:string;name:string;status:'active'|'paused'};
+const h=createColumnHelper<Row>();
+const columns=[h.accessor('name',{header:'Name',cell:info=>info.getValue()}),h.accessor('status',{header:'Status'})];
+// Never hand an internal secret field to a public data table.
+```
+
+In an application with a backend, verify stable IDs, authorization and global sort/filter/page consistency against actual HTTP responses.
+
+</LessonStep>
+
+<Misconception claim="The starter includes internal secrets in its column list." correction="Define typed, allowlisted columns for only public fields and keep internal credentials out of the browser's table model. A local model cannot establish server pagination, authorization or real keyboard behavior." />
+
+<KnowledgeCheck question="What matters most for tanstack table columns?" choices={["A client-rendered table automatically makes backend authorization unnecessary.","Define typed, allowlisted columns for only public fields and keep internal credentials out of the browser's table model.","Server pagination and client-only sort always produce one globally ordered result.","A screenshot can verify a screen reader's experience with loading states."] } correctIndex={1} explanation="Define typed, allowlisted columns for only public fields and keep internal credentials out of the browser's table model." misconception="Data correctness, backend permissions and accessibility must be independently demonstrated." lessonId="08.03.01" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Bug:** The starter includes internal secrets in its column list. **Reproduce:** run the starter and capture the failing assertion. **Repair:** Define typed, allowlisted columns for only public fields and keep internal credentials out of the browser's table model. **Regression:** Only id, name, and status are visible columns; privateKey is excluded. Test actual data source and interactions before production use.
+
+## Guided local lab
+
+`labs/ui-table-columns/` contains a broken starter, correct instructor code, offline assertions, and a completion rubric. The public academy does not execute learner code.
+
+<LabGate lessonId="08.03.01" labId="lab.ui.ui-table-columns" commands={["npm run lab:ui-table-columns","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+Which invariant is protected by this pure model test? What must still be tested through a real server or keyboard-driven browser?
+
+## Official references
+
+- [Official reference for TanStack Table columns](https://tanstack.com/table/v8/docs/guide/column-defs)
+- [Supporting specification or documentation](https://tanstack.com/table/v8/docs/framework/react/react-table)

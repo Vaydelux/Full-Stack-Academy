@@ -1,0 +1,39 @@
+{
+  "id": "08.04.02",
+  "title": "Color and typography systems: Use semantic typography roles, a bounded scale and foreground/background combinations that remain legible in light and dark themes.",
+  "description": "Design QA lesson for color and typography systems with a reproducible starter defect, instructor repair, offline regression suite and explicit browser and accessibility limits.",
+  "trackId": "08",
+  "moduleId": "08.04",
+  "level": "Intermediate",
+  "estimatedMinutes": 65,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "typescript": "5",
+    "react": "19"
+  },
+  "prerequisites": [
+    "08.04.01"
+  ],
+  "objectives": [
+    "Use semantic typography roles, a bounded scale and foreground/background combinations that remain legible in light and dark themes.",
+    "Repair the reproducible defect in ui-color-type-system.",
+    "Identify real user, accessibility or browser QA beyond color and typography systems source tests."
+  ],
+  "labId": "lab.ui.ui-color-type-system",
+  "rubric": [
+    "I can explain the methodology behind color and typography systems.",
+    "I can fix the 08.04.02 bug and validate a negative case.",
+    "I can name direct accessibility or UX evidence that the source model cannot provide."
+  ],
+  "sources": [
+    {
+      "label": "Official reference for Color and typography systems",
+      "url": "https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html"
+    },
+    {
+      "label": "Supporting standard",
+      "url": "https://tailwindcss.com/docs/font-size"
+    }
+  ]
+}

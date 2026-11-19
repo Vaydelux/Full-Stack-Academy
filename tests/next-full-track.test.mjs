@@ -27,14 +27,14 @@ test('32 Next.js 16 lessons have canonical metadata, deep MDX and local lab fixt
   }
   for(const asset of [lab.starter,lab.solution,lab.tests])assert.ok(fs.statSync(path.join(root,asset)).isFile(),asset);
   assert.equal(pkg.scripts['lab:'+name],'tsx --test labs/'+name+'/solution.test.mjs');
-  assert.ok(pkg.scripts['test:labs'].includes(lab.tests));
+  assert.equal(pkg.scripts['test:labs'],'node scripts/run-local-labs.mjs');
   assert.ok(registry.includes('./lessons/'+id+'.mdx'));
   assert.ok(published.includes('lessons/'+id+'.meta.json'));
  }
 });
-test('new noindex boundary is the first planned Tailwind lesson',()=>{
+test('new noindex boundary is the first planned Zod lesson',()=>{
  for(const p of ['scripts/browser-smoke.mjs','scripts/react-batch-smoke.mjs','scripts/react-advanced-smoke.mjs','scripts/react-next-milestone-smoke.mjs','scripts/next-full-track-smoke.mjs']){
-  assert.ok(read(p).includes('08.01.01'),p);
+  assert.ok(read(p).includes('09.01.01'),p);
  }
  const cp=JSON.parse(read('docs/checkpoint.json'));
  assert.equal(cp.snapshot.publishedLessons,259);

@@ -1,0 +1,81 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Use polite status regions for routine confirmations and assertive alerts only for urgent errors; deduplicate stale notifications.","Repair a defective toasts and announcements model with repeatable offline tests.","Identify the browser interaction, assistive technology and motion checks not covered by SSR."]} />
+
+## The problem we're solving
+
+The starter duplicates every queued notification, drowning out the message. Advanced UI interactions need a robust identity and focus model so the component works with touch, keyboard and screen readers rather than only a mouse.
+
+## Build the mental model
+
+Use polite status regions for routine confirmations and assertive alerts only for urgent errors; deduplicate stale notifications. **Expected behavior:** New notification IDs append once and repeated IDs update rather than duplicate.
+
+**Evidence boundary:** The local test checks a pure data or interaction-policy function. It does not prove DOM focus, ARIA announcements, actual event sequences, animation timing or a third-party library's mounted behavior. Use a real local browser and accessible component primitives for those claims.
+
+## Prerequisites and preflight
+
+Read the previous UI Systems lesson; use Node 24 and locked dependencies. Inspect `labs/ui-toast-queue/starter/solution.tsx`. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:ui-toast-queue`. PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:ui-toast-queue; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the broken interaction model" file="labs/ui-toast-queue/starter/solution.tsx" expected="The starter fails an instructor assertion for a concrete interaction bug.">
+
+```tsx
+export type Toast={id:string;message:string};export function queueToast(items:readonly Toast[],toast:Toast){return [...items,toast];}
+```
+
+**Failure mechanism:** The starter duplicates every queued notification, drowning out the message.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the typed accessibility contract" file="labs/ui-toast-queue/starter/solution.tsx" expected="New notification IDs append once and repeated IDs update rather than duplicate.">
+
+```tsx
+export type Toast={id:string;message:string};export function queueToast(items:readonly Toast[],toast:Toast){const next=items.filter(x=>x.id!==toast.id);return [...next,toast];}
+```
+
+**Principle:** Use polite status regions for routine confirmations and assertive alerts only for urgent errors; deduplicate stale notifications.
+
+</LessonStep>
+
+<LessonStep number={3} title="Test edge cases and inspect mounted implementation guidance" file="labs/ui-toast-queue/solution.test.mjs" expected="Instructor source passes and the broken starter fails the same local assertions.">
+
+```js
+const once=mod.queueToast([],{id:'save',message:'Saved'});const twice=mod.queueToast(once,{id:'save',message:'Updated'});assert.deepEqual(twice,[{id:'save',message:'Updated'}]);assert.equal(once.length,1);
+```
+
+**Browser-oriented integration example or checklist:**
+
+```tsx
+<section aria-label="Notifications"><p role="status">Settings saved</p><p role="alert">Payment failed</p></section>
+// Avoid adding role=alert + redundant aria-live=assertive on the same message.
+// Give important errors a persistent place beyond transient toast timeout.
+```
+
+Run real keyboard, focus-restoration, touch, screen-reader and reduced-motion checks on your actual component before calling it accessible.
+
+</LessonStep>
+
+<Misconception claim="The starter duplicates every queued notification, drowning out the message." correction="Use polite status regions for routine confirmations and assertive alerts only for urgent errors; deduplicate stale notifications. Local model tests cannot prove real DOM interaction correctness." />
+
+<KnowledgeCheck question="Which accessibility rule is essential for toasts and announcements?" choices={["A successful mouse click proves complete keyboard support.","Use polite status regions for routine confirmations and assertive alerts only for urgent errors; deduplicate stale notifications.","ARIA roles always replace keyboard interaction code.","An offline data function proves a dialog traps focus after mounting."] } correctIndex={1} explanation="Use polite status regions for routine confirmations and assertive alerts only for urgent errors; deduplicate stale notifications." misconception="Verify the observable behavior users rely on, not only the markup's appearance." lessonId="08.02.05" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Bug:** The starter duplicates every queued notification, drowning out the message. **Reproduce:** run the red starter and capture the failing assertion. **Repair:** Use polite status regions for routine confirmations and assertive alerts only for urgent errors; deduplicate stale notifications. **Regression:** New notification IDs append once and repeated IDs update rather than duplicate. Test the mounted widget before publication.
+
+## Guided local lab
+
+`labs/ui-toast-queue/` includes deliberately broken learner source, instructor solution, runnable local checks, and an explicit self-assessment rubric. No learner code runs on the academy server.
+
+<LabGate lessonId="08.02.05" labId="lab.ui.ui-toast-queue" commands={["npm run lab:ui-toast-queue","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+What is different about a data-model assertion and an actual keyboard or screen-reader assertion? Which regression would only appear in the browser?
+
+## Official references
+
+- [Official interaction reference: Toasts and announcements](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Roles/status_role)
+- [Related accessibility guidance](https://www.w3.org/WAI/WCAG22/Understanding/status-messages.html)

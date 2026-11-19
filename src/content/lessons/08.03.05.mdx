@@ -1,0 +1,83 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Differentiate pending, empty, failed and ready states; communicate errors without rendering a misleading empty dataset.","Debug the deliberately broken loading empty and error states example.","Explain when server data, controlled table state and browser accessibility must be verified independently."]} />
+
+## The problem we're solving
+
+The starter reports Empty whenever rows are zero, even during an error or loading operation. Enterprise interfaces need correct data scope, stable identities, accessible states and predictable behavior under pagination, refresh and mobile layouts.
+
+## Build the mental model
+
+Differentiate pending, empty, failed and ready states; communicate errors without rendering a misleading empty dataset.
+
+**Prediction:** Error and loading take priority over emptiness; ready appears when data exists.
+
+**Scope of evidence:** The instructor's local Node tests exercise a pure data transformation. TanStack Table v8 and TanStack Virtual require separate dependency installation and mounted browser tests. Never treat sorting the current server page as global sorting, or browser-side role checks as server authorization.
+
+## Prerequisites and preflight
+
+Study the previous UI lesson. Use the project lockfile and Node 24. Inspect `labs/ui-table-empty-error/starter/solution.tsx`. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:ui-table-empty-error`. PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:ui-table-empty-error; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the operational UI failure" file="labs/ui-table-empty-error/starter/solution.tsx" expected="An incorrect data transformation fails a local assertion.">
+
+```tsx
+export function viewState(_loading:boolean,_error:boolean,rows:number){return rows?'ready':'empty';}
+```
+
+**Why it fails:** The starter reports Empty whenever rows are zero, even during an error or loading operation.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the typed data contract" file="labs/ui-table-empty-error/starter/solution.tsx" expected="Error and loading take priority over emptiness; ready appears when data exists.">
+
+```tsx
+export function viewState(loading:boolean,error:boolean,rows:number){if(error)return 'error';if(loading)return 'loading';return rows===0?'empty':'ready';}
+```
+
+**Why this works:** Differentiate pending, empty, failed and ready states; communicate errors without rendering a misleading empty dataset.
+
+</LessonStep>
+
+<LessonStep number={3} title="Check edge cases and framework integration" file="labs/ui-table-empty-error/solution.test.mjs" expected="The instructor solution passes and the red starter fails the same local acceptance suite.">
+
+```js
+assert.equal(mod.viewState(false,true,0),'error');assert.equal(mod.viewState(true,false,0),'loading');assert.equal(mod.viewState(false,false,0),'empty');assert.equal(mod.viewState(false,false,2),'ready');
+```
+
+**Framework/UX reference (illustrative; installation and browser tests are separate):**
+
+```tsx
+<section aria-busy="true"><p role="status">Loading invoices…</p></section>
+// On error use role="alert" and a retry control; on empty show a meaningful next action.
+// Do not hide an API failure behind a fake successful 'No results' state.
+```
+
+In an application with a backend, verify stable IDs, authorization and global sort/filter/page consistency against actual HTTP responses.
+
+</LessonStep>
+
+<Misconception claim="The starter reports Empty whenever rows are zero, even during an error or loading operation." correction="Differentiate pending, empty, failed and ready states; communicate errors without rendering a misleading empty dataset. A local model cannot establish server pagination, authorization or real keyboard behavior." />
+
+<KnowledgeCheck question="What matters most for loading empty and error states?" choices={["A client-rendered table automatically makes backend authorization unnecessary.","Differentiate pending, empty, failed and ready states; communicate errors without rendering a misleading empty dataset.","Server pagination and client-only sort always produce one globally ordered result.","A screenshot can verify a screen reader's experience with loading states."] } correctIndex={1} explanation="Differentiate pending, empty, failed and ready states; communicate errors without rendering a misleading empty dataset." misconception="Data correctness, backend permissions and accessibility must be independently demonstrated." lessonId="08.03.05" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Bug:** The starter reports Empty whenever rows are zero, even during an error or loading operation. **Reproduce:** run the starter and capture the failing assertion. **Repair:** Differentiate pending, empty, failed and ready states; communicate errors without rendering a misleading empty dataset. **Regression:** Error and loading take priority over emptiness; ready appears when data exists. Test actual data source and interactions before production use.
+
+## Guided local lab
+
+`labs/ui-table-empty-error/` contains a broken starter, correct instructor code, offline assertions, and a completion rubric. The public academy does not execute learner code.
+
+<LabGate lessonId="08.03.05" labId="lab.ui.ui-table-empty-error" commands={["npm run lab:ui-table-empty-error","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+Which invariant is protected by this pure model test? What must still be tested through a real server or keyboard-driven browser?
+
+## Official references
+
+- [Official reference for Loading empty and error states](https://www.w3.org/WAI/WCAG22/Understanding/status-messages.html)
+- [Supporting specification or documentation](https://tanstack.com/table/v8/docs/guide/rows)

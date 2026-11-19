@@ -1,0 +1,39 @@
+{
+  "id": "08.03.05",
+  "title": "Loading empty and error states: Differentiate pending, empty, failed and ready states; communicate errors without rendering a misleading empty dataset.",
+  "description": "Professional UI data interface tutorial for loading empty and error states, including a typed local starter, instructor repair, regression tests and explicit server/accessibility boundaries.",
+  "trackId": "08",
+  "moduleId": "08.03",
+  "level": "Intermediate",
+  "estimatedMinutes": 65,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "typescript": "5",
+    "react": "19"
+  },
+  "prerequisites": [
+    "08.03.04"
+  ],
+  "objectives": [
+    "Differentiate pending, empty, failed and ready states; communicate errors without rendering a misleading empty dataset.",
+    "Repair the ui-table-empty-error broken implementation.",
+    "Identify necessary real-browser and backend checks for loading empty and error states."
+  ],
+  "labId": "lab.ui.ui-table-empty-error",
+  "rubric": [
+    "I understand the model and browser boundaries for loading empty and error states.",
+    "I can fix 08.03.05 and demonstrate a negative regression assertion.",
+    "I can explain the risk of trusting client data, pagination or role state."
+  ],
+  "sources": [
+    {
+      "label": "Official Loading empty and error states documentation",
+      "url": "https://www.w3.org/WAI/WCAG22/Understanding/status-messages.html"
+    },
+    {
+      "label": "Supplementary specification",
+      "url": "https://tanstack.com/table/v8/docs/guide/rows"
+    }
+  ]
+}

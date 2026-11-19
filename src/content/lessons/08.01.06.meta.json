@@ -1,0 +1,39 @@
+{
+  "id": "08.01.06",
+  "title": "Theme providers and contrast: Calculate WCAG relative-luminance contrast for theme foreground/background pairs; verify both themes and component states.",
+  "description": "UI Systems Track 08 tutorial for theme providers and contrast with a red starter, instructor implementation, local regression tests and honest browser/interaction boundaries.",
+  "trackId": "08",
+  "moduleId": "08.01",
+  "level": "Intermediate",
+  "estimatedMinutes": 60,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "typescript": "5",
+    "react": "19"
+  },
+  "prerequisites": [
+    "08.01.05"
+  ],
+  "objectives": [
+    "Calculate WCAG relative-luminance contrast for theme foreground/background pairs; verify both themes and component states.",
+    "Repair the ui-contrast-themes starter with meaningful assertions.",
+    "Describe the browser and accessibility checks needed for theme providers and contrast."
+  ],
+  "labId": "lab.ui.ui-contrast-themes",
+  "rubric": [
+    "I can explain the principles for theme providers and contrast.",
+    "I can reproduce and fix the failing 08.01.06 starter.",
+    "I know what browser or accessibility qualification is still missing."
+  ],
+  "sources": [
+    {
+      "label": "Official guide for Theme providers and contrast",
+      "url": "https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html"
+    },
+    {
+      "label": "Supporting official reference",
+      "url": "https://ui.shadcn.com/docs/theming"
+    }
+  ]
+}

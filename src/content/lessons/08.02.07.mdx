@@ -1,0 +1,80 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Every chart needs a textual summary or data-table alternative, with honest handling of empty or invalid data.","Repair a defective responsive charts model with repeatable offline tests.","Identify the browser interaction, assistive technology and motion checks not covered by SSR."]} />
+
+## The problem we're solving
+
+The starter reports zero for every series regardless of the plotted values. Advanced UI interactions need a robust identity and focus model so the component works with touch, keyboard and screen readers rather than only a mouse.
+
+## Build the mental model
+
+Every chart needs a textual summary or data-table alternative, with honest handling of empty or invalid data. **Expected behavior:** The data summary reports the true count and total; invalid numeric points are rejected.
+
+**Evidence boundary:** The local test checks a pure data or interaction-policy function. It does not prove DOM focus, ARIA announcements, actual event sequences, animation timing or a third-party library's mounted behavior. Use a real local browser and accessible component primitives for those claims.
+
+## Prerequisites and preflight
+
+Read the previous UI Systems lesson; use Node 24 and locked dependencies. Inspect `labs/ui-chart-summary/starter/solution.tsx`. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:ui-chart-summary`. PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:ui-chart-summary; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the broken interaction model" file="labs/ui-chart-summary/starter/solution.tsx" expected="The starter fails an instructor assertion for a concrete interaction bug.">
+
+```tsx
+export function describeSeries(_values:readonly number[]){return {count:0,total:0};}
+```
+
+**Failure mechanism:** The starter reports zero for every series regardless of the plotted values.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the typed accessibility contract" file="labs/ui-chart-summary/starter/solution.tsx" expected="The data summary reports the true count and total; invalid numeric points are rejected.">
+
+```tsx
+export function describeSeries(values:readonly number[]){if(values.some(x=>!Number.isFinite(x)))throw new RangeError('Invalid chart point');return {count:values.length,total:values.reduce((a,b)=>a+b,0)};}
+```
+
+**Principle:** Every chart needs a textual summary or data-table alternative, with honest handling of empty or invalid data.
+
+</LessonStep>
+
+<LessonStep number={3} title="Test edge cases and inspect mounted implementation guidance" file="labs/ui-chart-summary/solution.test.mjs" expected="Instructor source passes and the broken starter fails the same local assertions.">
+
+```js
+assert.deepEqual(mod.describeSeries([3,5,2]),{count:3,total:10});assert.deepEqual(mod.describeSeries([]),{count:0,total:0});assert.throws(()=>mod.describeSeries([NaN]),RangeError);
+```
+
+**Browser-oriented integration example or checklist:**
+
+```tsx
+<figure><svg viewBox="0 0 100 50" role="img" aria-label="Three data values, total ten"><path d="M0 40 L50 20 L100 30" stroke="currentColor" fill="none"/></svg><figcaption>Monthly totals: 3, 5, 2. Overall total: 10.</figcaption></figure>
+// Use a table for complex charts; ensure labels and axes remain available at 320px.
+```
+
+Run real keyboard, focus-restoration, touch, screen-reader and reduced-motion checks on your actual component before calling it accessible.
+
+</LessonStep>
+
+<Misconception claim="The starter reports zero for every series regardless of the plotted values." correction="Every chart needs a textual summary or data-table alternative, with honest handling of empty or invalid data. Local model tests cannot prove real DOM interaction correctness." />
+
+<KnowledgeCheck question="Which accessibility rule is essential for responsive charts?" choices={["A successful mouse click proves complete keyboard support.","Every chart needs a textual summary or data-table alternative, with honest handling of empty or invalid data.","ARIA roles always replace keyboard interaction code.","An offline data function proves a dialog traps focus after mounting."] } correctIndex={1} explanation="Every chart needs a textual summary or data-table alternative, with honest handling of empty or invalid data." misconception="Verify the observable behavior users rely on, not only the markup's appearance." lessonId="08.02.07" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Bug:** The starter reports zero for every series regardless of the plotted values. **Reproduce:** run the red starter and capture the failing assertion. **Repair:** Every chart needs a textual summary or data-table alternative, with honest handling of empty or invalid data. **Regression:** The data summary reports the true count and total; invalid numeric points are rejected. Test the mounted widget before publication.
+
+## Guided local lab
+
+`labs/ui-chart-summary/` includes deliberately broken learner source, instructor solution, runnable local checks, and an explicit self-assessment rubric. No learner code runs on the academy server.
+
+<LabGate lessonId="08.02.07" labId="lab.ui.ui-chart-summary" commands={["npm run lab:ui-chart-summary","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+What is different about a data-model assertion and an actual keyboard or screen-reader assertion? Which regression would only appear in the browser?
+
+## Official references
+
+- [Official interaction reference: Responsive charts](https://www.w3.org/WAI/tutorials/images/complex/)
+- [Related accessibility guidance](https://www.w3.org/WAI/WCAG22/Understanding/non-text-content.html)

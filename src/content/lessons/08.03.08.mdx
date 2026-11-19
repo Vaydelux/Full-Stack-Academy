@@ -1,0 +1,84 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Coordinate a role-aware operational table with stable row IDs, action authorization and clear status feedback.","Debug the deliberately broken lab operational console example.","Explain when server data, controlled table state and browser accessibility must be verified independently."]} />
+
+## The problem we're solving
+
+The starter allows any viewer to approve any record, ignoring the role and current status. Enterprise interfaces need correct data scope, stable identities, accessible states and predictable behavior under pagination, refresh and mobile layouts.
+
+## Build the mental model
+
+Coordinate a role-aware operational table with stable row IDs, action authorization and clear status feedback.
+
+**Prediction:** Only a reviewer can approve a pending record; prior state is preserved for unauthorized actions.
+
+**Scope of evidence:** The instructor's local Node tests exercise a pure data transformation. TanStack Table v8 and TanStack Virtual require separate dependency installation and mounted browser tests. Never treat sorting the current server page as global sorting, or browser-side role checks as server authorization.
+
+## Prerequisites and preflight
+
+Study the previous UI lesson. Use the project lockfile and Node 24. Inspect `labs/ui-operational-console/starter/solution.tsx`. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:ui-operational-console`. PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:ui-operational-console; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the operational UI failure" file="labs/ui-operational-console/starter/solution.tsx" expected="An incorrect data transformation fails a local assertion.">
+
+```tsx
+export type Role='viewer'|'reviewer';export type Item={id:string;status:'pending'|'approved'};export function approve(_role:Role,item:Item){return {...item,status:'approved'};}
+```
+
+**Why it fails:** The starter allows any viewer to approve any record, ignoring the role and current status.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the typed data contract" file="labs/ui-operational-console/starter/solution.tsx" expected="Only a reviewer can approve a pending record; prior state is preserved for unauthorized actions.">
+
+```tsx
+export type Role='viewer'|'reviewer';export type Item={id:string;status:'pending'|'approved'};export function approve(role:Role,item:Item){if(role!=='reviewer'||item.status!=='pending')return null;return {...item,status:'approved'};}
+```
+
+**Why this works:** Coordinate a role-aware operational table with stable row IDs, action authorization and clear status feedback.
+
+</LessonStep>
+
+<LessonStep number={3} title="Check edge cases and framework integration" file="labs/ui-operational-console/solution.test.mjs" expected="The instructor solution passes and the red starter fails the same local acceptance suite.">
+
+```js
+const item={id:'t1',status:'pending'};assert.equal(mod.approve('viewer',item),null);assert.deepEqual(mod.approve('reviewer',item),{id:'t1',status:'approved'});assert.equal(item.status,'pending');assert.equal(mod.approve('reviewer',{id:'t1',status:'approved'}),null);
+```
+
+**Framework/UX reference (illustrative; installation and browser tests are separate):**
+
+```tsx
+// An operator UI should provide search, filter, retry, empty/error and confirm states.
+// The server must authorize reviewer actions independently of the role shown in client state.
+// For mobile, use labeled record cards instead of an unusable wide table.
+// Test keyboard row actions, view-then-approve, and duplicate submission prevention.
+```
+
+In an application with a backend, verify stable IDs, authorization and global sort/filter/page consistency against actual HTTP responses.
+
+</LessonStep>
+
+<Misconception claim="The starter allows any viewer to approve any record, ignoring the role and current status." correction="Coordinate a role-aware operational table with stable row IDs, action authorization and clear status feedback. A local model cannot establish server pagination, authorization or real keyboard behavior." />
+
+<KnowledgeCheck question="What matters most for lab operational console?" choices={["A client-rendered table automatically makes backend authorization unnecessary.","Coordinate a role-aware operational table with stable row IDs, action authorization and clear status feedback.","Server pagination and client-only sort always produce one globally ordered result.","A screenshot can verify a screen reader's experience with loading states."] } correctIndex={1} explanation="Coordinate a role-aware operational table with stable row IDs, action authorization and clear status feedback." misconception="Data correctness, backend permissions and accessibility must be independently demonstrated." lessonId="08.03.08" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Bug:** The starter allows any viewer to approve any record, ignoring the role and current status. **Reproduce:** run the starter and capture the failing assertion. **Repair:** Coordinate a role-aware operational table with stable row IDs, action authorization and clear status feedback. **Regression:** Only a reviewer can approve a pending record; prior state is preserved for unauthorized actions. Test actual data source and interactions before production use.
+
+## Guided local lab
+
+`labs/ui-operational-console/` contains a broken starter, correct instructor code, offline assertions, and a completion rubric. The public academy does not execute learner code.
+
+<LabGate lessonId="08.03.08" labId="lab.ui.ui-operational-console" commands={["npm run lab:ui-operational-console","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+Which invariant is protected by this pure model test? What must still be tested through a real server or keyboard-driven browser?
+
+## Official references
+
+- [Official reference for Lab operational console](https://tanstack.com/table/v8/docs/guide/row-selection)
+- [Supporting specification or documentation](https://www.w3.org/WAI/ARIA/apg/patterns/grid/)

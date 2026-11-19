@@ -1,0 +1,82 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Calculate WCAG relative-luminance contrast for theme foreground/background pairs; verify both themes and component states.","Repair a failing theme providers and contrast example using checked-in TypeScript code.","Identify browser, accessibility, CSS compilation and dependency evidence that a local model cannot establish."]} />
+
+## The problem we're solving
+
+The starter returns a perfect ratio for every pair. A robust component system has to work across dark and light themes, keyboard input, small screens and real data, not merely appear correct in a screenshot.
+
+## Build the mental model
+
+Calculate WCAG relative-luminance contrast for theme foreground/background pairs; verify both themes and component states. **Predict before executing:** Black and white have 21:1 contrast and identical colors 1:1.
+
+**Runtime boundary:** This lesson's fixture is local TypeScript only. It does not compile Tailwind CSS, install shadcn or Radix/Base UI, mount a browser interaction, or verify visual contrast on real content. Those require a dedicated UI build and accessibility checks.
+
+## Prerequisites and preflight
+
+Read the previous canonical topic and inspect `labs/ui-contrast-themes/starter/solution.tsx`. Node.js 24 and locked project dependencies are required. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:ui-contrast-themes`. PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:ui-contrast-themes; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the broken design-system rule" file="labs/ui-contrast-themes/starter/solution.tsx" expected="An instructor assertion fails on the intentionally wrong implementation.">
+
+```tsx
+export const ratio=(_a:string,_b:string)=>21;
+```
+
+**Root cause:** The starter returns a perfect ratio for every pair.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the typed source contract" file="labs/ui-contrast-themes/starter/solution.tsx" expected="Black and white have 21:1 contrast and identical colors 1:1.">
+
+```tsx
+function lum(h:string){if(!/^#[\da-f]{6}$/i.test(h))throw new Error('Invalid hex');const rgb=[1,3,5].map(i=>parseInt(h.slice(i,i+2),16)/255).map(v=>v<=.04045?v/12.92:((v+.055)/1.055)**2.4);return .2126*rgb[0]+.7152*rgb[1]+.0722*rgb[2];}export function ratio(a:string,b:string){const x=lum(a),y=lum(b);return (Math.max(x,y)+.05)/(Math.min(x,y)+.05);}
+```
+
+**Why it works:** Calculate WCAG relative-luminance contrast for theme foreground/background pairs; verify both themes and component states.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify the behavior and consider real integration" file="labs/ui-contrast-themes/solution.test.mjs" expected="The instructor passes valid and edge-case assertions. Mounted UI must be verified separately.">
+
+```js
+assert.ok(Math.abs(mod.ratio('#ffffff','#000000')-21)<.001);assert.equal(mod.ratio('#ffffff','#ffffff'),1);assert.throws(()=>mod.ratio('red','#000000'),/Invalid hex/);
+```
+
+**Representative framework usage (requires matching installed dependencies):**
+
+```tsx
+/* Normal text WCAG 2.x AA contrast ratio: 4.5:1; large text: 3:1. */
+:root{color-scheme:light;--surface:#ffffff;--foreground:#111827}
+[data-theme=dark]{color-scheme:dark;--surface:#111827;--foreground:#f9fafb}
+@theme inline{--color-surface:var(--surface);--color-foreground:var(--foreground)}
+```
+
+**Operational check:** Ensure the design remains usable at 320px, 200% zoom, high contrast, reduced motion and by keyboard. No source-only test substitutes for those observations.
+
+</LessonStep>
+
+<Misconception claim="The starter returns a perfect ratio for every pair." correction="Calculate WCAG relative-luminance contrast for theme foreground/background pairs; verify both themes and component states. Visual polish does not by itself establish semantics, accessibility or interaction correctness." />
+
+<KnowledgeCheck question="What matters most for theme providers and contrast?" choices={["A screenshot proves all interaction and accessibility requirements.","Calculate WCAG relative-luminance contrast for theme foreground/background pairs; verify both themes and component states.","All modern shadcn components require Radix and cannot use Base UI.","A passing SSR or pure model test proves client hydration and focus behavior."] } correctIndex={1} explanation="Calculate WCAG relative-luminance contrast for theme foreground/background pairs; verify both themes and component states." misconception="Testing evidence must match the layer that is actually exercised." lessonId="08.01.06" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Observed defect:** The starter returns a perfect ratio for every pair. **Reproduce:** run the red starter and capture a failing assertion. **Repair:** Calculate WCAG relative-luminance contrast for theme foreground/background pairs; verify both themes and component states. **Regression:** Black and white have 21:1 contrast and identical colors 1:1. Perform a real component interaction and contrast audit before deployment.
+
+## Guided local lab
+
+The checked-in lab `labs/ui-contrast-themes/` includes a learner starter, corrected instructor code, executable local checks and rubric. The academy never runs arbitrary learner code on its public origin.
+
+<LabGate lessonId="08.01.06" labId="lab.ui.ui-contrast-themes" commands={["npm run lab:ui-contrast-themes","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+What could still fail in a real browser even if the source tests pass? Which accessibility checks would uncover that failure?
+
+## Official references
+
+- [Official documentation for Theme providers and contrast](https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html)
+- [Supporting reference](https://ui.shadcn.com/docs/theming)
