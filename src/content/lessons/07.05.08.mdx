@@ -57,8 +57,10 @@ The Next.js 16 example demonstrates an App Router convention. The offline test c
 ```tsx
 
 import {cookies} from 'next/headers';
-// Example private Route Handler. A real session parser and authorization check are required.
-export async function GET(){const session=(await cookies()).get('session')?.value;if(!session)return Response.json({error:'unauthorized'},{status:401,headers:{'Cache-Control':'private, no-store'}});return Response.json({message:'Authenticated boundary reached'},{headers:{'Cache-Control':'private, no-store'}});}
+// Teaching fixture: no identity provider is wired, so the verifier denies every request.
+// Replace this with a real server-side session verifier and permission check before releasing.
+async function verifyAuthorizedSession(_token:string|undefined):Promise<boolean>{return false;}
+export async function GET(){const token=(await cookies()).get('session')?.value;if(!await verifyAuthorizedSession(token))return Response.json({error:'unauthorized'},{status:401,headers:{'Cache-Control':'private, no-store'}});return Response.json({message:'Authorized session'},{headers:{'Cache-Control':'private, no-store'}});}
 
 ```
 
