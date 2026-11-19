@@ -17,6 +17,7 @@
     "test:forms-query-http": "node --test tests/forms-query-http.test.mjs",
     "test:forms-query-workflow": "node --test tests/forms-query-workflow.test.mjs",
     "test:forms-query-contract": "node --test tests/forms-query-contract.test.mjs",
+    "test:forms-query-project-route": "node --test tests/forms-query-project-route.test.mjs",
     "test:labs": "node scripts/run-local-labs.mjs",
     "verify:content": "node scripts/validate-content.mjs",
     "lab:browser-server": "node --test labs/browser-server/solution.test.mjs",
