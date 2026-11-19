@@ -101,3 +101,27 @@ test('capacity limit blocks additional objects without corrupting existing data'
     assert.equal((await client2.list()).items.length,1);
   }finally{await small.close()}
 });
+test('local page is served with restrictive CSP and nosniff headers', async () => {
+  const response=await raw('/');
+  assert.equal(response.status,200);
+  assert.match(response.headers.get('content-type'),/text\/html/);
+  assert.match(response.headers.get('content-security-policy'),/script-src 'self'/);
+  assert.match(response.headers.get('content-security-policy'),/frame-ancestors 'none'/);
+  assert.equal(response.headers.get('x-content-type-options'),'nosniff');
+  assert.match(await response.text(),/Full-Stack Academy/);
+});
+test('browser modules and stylesheet are served same-origin', async () => {
+  for(const [path,type] of [['/browser.mjs','text/javascript'],['/task-client.mjs','text/javascript'],['/styles.css','text/css']]){
+    const r=await raw(path);
+    assert.equal(r.status,200);
+    assert.match(r.headers.get('content-type'),new RegExp(type));
+  }
+});
+test('unlisted static and API paths are denied', async () => {
+  for(const path of ['/secrets.txt','/api/admin','/package.json']) assert.equal((await raw(path)).status,404);
+});
+test('cross-origin read request does not advertise a wildcard CORS origin', async () => {
+  const r=await raw('/api/tasks',{headers:{origin:'https://evil.example'}});
+  assert.equal(r.status,403);
+  assert.equal(r.headers.get('access-control-allow-origin'),null);
+});
