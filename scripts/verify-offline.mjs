@@ -11,6 +11,8 @@ const steps = [
   'test:lesson-discovery',
   'test:learning-workflow',
   'test:forms-query-http',
+  'test:forms-query-workflow',
+  'test:forms-query-contract',
   'validate',
   'verify:content',
   'checkpoint:check',
