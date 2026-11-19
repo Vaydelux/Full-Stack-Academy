@@ -1,42 +1,40 @@
-# Full-Stack Academy — active development handoff (2026-11-19)
+# Full-Stack Academy — Active development handoff (2026-11-19)
 
-## Current source state
+## Real source status
 
-- **PRs #20, #21, #22, #23, #24 and #25 have all been merged into main**, in dependency order with normal merge commits. Last merge SHA: e64bacc33abd0bf6d5f1b50c6559af9321ef01de.
-- **Latest source-only milestone:** learner dashboard at /learn/dashboard (see docs/LEARNER_DASHBOARD_ACCEPTANCE.md), currently prepared on feat/learner-dashboard-progress-20261119 for a new PR and same-turn merge.
-- The six curriculum merges contain a *source candidate* of 338 unique published lesson IDs, 337 MDX articles, 337 lab manifests, 42 full modules, 38 authored references of 303 indexed, with 551 of 889 catalog topics still planned.
-- Full Track 10 covers 32 source-authored Node.js, HTTP, Security and OpenAPI lessons; demonstrations are teaching fixtures, **not** deployable public security architecture.
-- No GitHub Actions or Vercel verification was used. No full project Node 24 npm install, Next build/typecheck or Chromium acceptance occurred in this execution. **Main is not release-qualified by the merge alone.**
+- **All PRs #20–#26 are merged into main.** #20–#25 consolidated 6 stacked curriculum source layers; #26 delivered the local learner dashboard.
+- The next study-planner feature branch adds a prerequisite-aware, budgeted queue to /learn/dashboard, nine locally run pure-model tests, offline verification wiring, and a 16-topic dependency-backed forms/query design specification.
+- Source checkpoint *before* this branch: 338 published unique IDs, 337 MDX lesson/lab pairs, 42 completed modules, 38 authored reference drafts, 303 indexed reference topics, 889 total catalog topics, 551 still planned.
+- 09.02 React Hook Form and 09.03 TanStack Query are still **planned/noindex**. Node 24 package resolution could not run because registry and clone DNS were unavailable. No false dependency locks were added.
+- **No Vercel or GitHub Actions checks.** Full Next install/build/browser quality gates are still outstanding and are not implied by source merges.
 
-## Completed in this continuation
+## This milestone: study session planner
 
-- [x] Merge PR #20 Next.js source
-- [x] Merge PR #21 UI systems
-- [x] Merge PR #22 Zod 4
-- [x] Merge PR #23 Zustand 5
-- [x] Merge PR #24 Node/HTTP
-- [x] Merge PR #25 security/OpenAPI
-- [x] Build learner dashboard pure read-model, route, navigation, module filters and progress/backup UI
-- [x] Harden import path to report browser storage write failures accurately
-- [x] Add pure model tests and wire into offline verification script
-- [x] Preserve published lesson counts; dashboard is an app route, not an authored lesson
+- [x] Pure and deterministic prerequisite-aware lesson planner against published catalog only.
+- [x] Start unfinished work, estimate session duration, and support focused module selection.
+- [x] Support 15/30/45/60/90-minute budgets, bounded queue, blocked prerequisites and stretch goals.
+- [x] Integrate at /learn/dashboard with responsive course links and visible self-assessment disclaimers.
+- [x] Reuse local learner store without new persisted profile data or remote access.
+- [x] Run nine actual local Node 22 tests on exact Git SHA-matched source; strict typecheck the pure helper.
+- [x] Wire npm run test:study-plan into the offline script.
+- [x] Record honest evidence in docs/STUDY_PLANNER_ACCEPTANCE.md.
 
-## Next cohesive large development blocks
+## Next large cohesive milestones
 
-1. **Release qualification and UI acceptance:** full Node 24 checkout, npm ci, npm run verify:offline, local Chromium keyboard/mobile/screen reader; review the Picomatch dev advisory exception by 2026-12-02 UTC. Fix actual failures. No hosted/Actions checking required.
-2. **Forms and async server state (09.02 and 09.03, 16 canonical topics):** install/lock actual react-hook-form, @hookform/resolvers and @tanstack/react-query; implement a coherent form-to-API-to-cache vertical slice, instructor/red labs, optimistic rollback, abort/cancellation, validation and browser tests. These lessons remain **PLANNED** until packages and runnable tests exist.
-3. **NestJS Track 11 (32 topics):** real compatible locked NestJS packages, pipeline/DI/DTO/service/auth examples, isolated HTTP integration tests.
-4. **PostgreSQL Track 12 (40 topics):** actual ephemeral DB test harness, transactions, indexes, EXPLAIN, migration and rollback.
-5. **Prisma/Supabase Tracks 13–14 (64 topics):** generated real clients, migration/recovery and RLS denial tests, never a fake auth simulation presented as secure.
-6. **UX expansion:** resume/bookmarks/notes usability, calmer curriculum module browser, reference search, responsive/keyboard improvements with evidence.
+1. **P0 — Local release qualification:** on a full Node 24 checkout, npm ci && npm run verify:offline. Then local Chromium desktop/320px, keyboard/focus/zoom, screen reader, backup restoration, and study planner interaction checks. Review dev-only Picomatch exception before 2026-12-02 UTC; fix confirmed failures rather than ignoring them.
+2. **P1 — 09.02 and 09.03:** 16 actual React Hook Form/TanStack Query lessons with live installed and lockfile-pinned dependencies, working local HTTP UI capstone, error/abort/retry/optimistic rollback tests. Canonical details: docs/FORMS_QUERY_NEXT_MILESTONE.md. Keep planned until proven.
+3. **P2 — NestJS 11.01–11.04:** 32 lessons, genuine locked Nest modules, DI/auth boundary, request pipeline and loopback integration.
+4. **P3 — PostgreSQL 12.01–12.05:** 40 lessons, actual database service, migrations, query plans, transaction/concurrency and rollback.
+5. **P4 — Prisma/Supabase 13–14:** 64 lessons, generated clients, schema migration, policy/RLS-denial, real auth/storage boundaries.
 
-## Outstanding verification, not claims of success
+## Evidence and open blockers
 
-- [ ] npm ci && npm run verify:offline on exact merged SHA, Node 24
-- [ ] npm run test:learning-dashboard (pure TS helper tests)
-- [ ] Local browser smoke for dashboard empty/in-progress/completed paths and 2 MB backup rejection
-- [ ] Multi-tab, localStorage disabled/quota exceeded, keyboard, 320px, reduced-motion, screen-reader navigation
-- [ ] Full lessons and lab tests from previous six PRs
-- [ ] Historical exception review due 2026-12-02 UTC
+- [x] Study-plan helper: strict isolated TypeScript check and 9/9 executed Node 22 test assertions.
+- [ ] Entire app npm ci, lint, typecheck, existing 337 lab suites, negative starter gates and Next build on Node 24.
+- [ ] Real browser acceptance for new planner and earlier dashboard; physical screen-reader review.
+- [ ] Genuine library install plus lockfile update for react-hook-form, @hookform/resolvers and @tanstack/react-query.
+- [ ] Historic dev-only security exception review before 2026-12-02.
 
-**Source truth:** AGENTS.md, docs/checkpoint.json, docs/PROJECT_CHECKPOINT.md, docs/LEARNER_DASHBOARD_ACCEPTANCE.md. Do not add another tower of stacked drafts; merge coherent qualified slices, and distinguish source completion from executable evidence.
+## Handoff
+
+Read AGENTS.md, docs/checkpoint.json, docs/STUDY_PLANNER_ACCEPTANCE.md and docs/FORMS_QUERY_NEXT_MILESTONE.md. Do not treat older README milestones as the current state. Do not create unbounded PR stacks; keep coherent changes merged after available local qualification. Record any skipped gates.

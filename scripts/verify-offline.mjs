@@ -7,6 +7,7 @@ const steps = [
   'typecheck',
   'test',
   'test:learning-dashboard',
+  'test:study-plan',
   'validate',
   'verify:content',
   'checkpoint:check',

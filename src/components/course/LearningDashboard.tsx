@@ -7,6 +7,7 @@ import { useAcademy } from '@/lib/academy/store';
 import { lessonMap, moduleMap } from '@/lib/academy/curriculum';
 import { MDX_METADATA, PUBLISHED_LESSON_IDS } from '@/lib/academy/published';
 import { createLearningOverview, type OverviewLesson } from '@/lib/academy/learning-overview';
+import { StudyPlanPanel } from '@/components/course/StudyPlanPanel';
 
 const publishedCatalog: OverviewLesson[] = PUBLISHED_LESSON_IDS.map((id) => {
   const item = lessonMap.get(id);
@@ -146,6 +147,8 @@ export function LearningDashboard() {
           </>
         ) : <p className="mt-2 text-sm">Every currently published lesson is marked complete. New lessons will appear here as the course grows.</p>}
       </section>
+
+      <StudyPlanPanel />
 
       <section aria-labelledby="module-progress-heading" className="mt-10">
         <h2 id="module-progress-heading" className="text-xl font-bold">Your modules</h2>
