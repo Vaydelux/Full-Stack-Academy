@@ -1,0 +1,39 @@
+{
+  "id": "06.04.07",
+  "title": "Error boundaries and Suspense: Provide a localized error fallback and a separate loading fallback without treating both conditions as the same failure",
+  "description": "A practical React 19 lesson for error boundaries and suspense, with an intentionally failing starter, complete TypeScript instructor implementation, local assertions and honest runtime scope.",
+  "trackId": "06",
+  "moduleId": "06.04",
+  "level": "Beginner",
+  "estimatedMinutes": 65,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "react": "19",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "06.04.06"
+  ],
+  "objectives": [
+    "Provide a localized error fallback and a separate loading fallback without treating both conditions as the same failure.",
+    "Repair the broken behavior in the react-error-suspense starter.",
+    "Demonstrate correct and edge-case outcomes using offline tests."
+  ],
+  "labId": "lab.react.react-error-suspense",
+  "rubric": [
+    "I can articulate the React 19 contract for error boundaries and suspense.",
+    "I can reproduce, repair and test the 06.04.07 starter case.",
+    "I can explain the difference between a local fixture and production persistence or browser behavior."
+  ],
+  "sources": [
+    {
+      "label": "React official: Error boundaries and Suspense",
+      "url": "https://react.dev/reference/react/Component#catching-rendering-errors-with-an-error-boundary"
+    },
+    {
+      "label": "React Hooks reference",
+      "url": "https://react.dev/reference/react/hooks"
+    }
+  ]
+}

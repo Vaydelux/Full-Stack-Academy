@@ -1,0 +1,109 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Own the full setup/cleanup lifecycle of a timer or subscription.","Implement effect cleanup and resource lifetime in a complete TypeScript/React 19 fixture.","Reproduce the initial defect and prove the repair with local positive and negative tests."]} />
+
+## The problem we're solving
+
+A dashboard schedules recurring work but still receives callbacks after its corresponding React component unmounts. The starter starts an interval and returns an empty cleanup function, leaving background callbacks active. The goal is to learn the React runtime contract rather than memorize hook names.
+
+## Build the mental model
+
+Own the full setup/cleanup lifecycle of a timer or subscription. Before rerunning an Effect whose dependencies changed and again after unmounting the component. **Distinguish source-level correctness from runtime evidence:** Pure helpers can be tested without a browser, but an SSR output assertion cannot prove that an Effect ran, a ref focused an actual input or a global listener was removed after unmount.
+
+**Predict before you run:** Cleanup stops exactly the timer that setup created without disturbing other timers.
+
+## Prerequisites and preflight
+
+Study the preceding React topic and inspect `labs/react-effect-cleanup/starter/solution.tsx`. Use Node.js 24 and locked project dependencies. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:react-effect-cleanup`. PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:react-effect-cleanup; Remove-Item Env:ACADEMY_LAB_TARGET`. No browser, GitHub Actions workflow or hosted deployment runs just by reading the article.
+
+## Guided implementation
+
+<LessonStep number={1} title="Observe the failing starter behavior" file="labs/react-effect-cleanup/starter/solution.tsx" expected="An instructor assertion fails for a concrete incorrect behavior.">
+
+Read this starter before changing anything:
+
+```tsx
+import {useEffect,useState} from 'react';
+export type Clock={start:(tick:()=>void,ms:number)=>number;stop:(id:number)=>void};
+export function startHeartbeat(clock:Clock,onTick:()=>void) {
+ clock.start(onTick,1000);return ()=>{};
+}
+export function Heartbeat() {
+ const [ticks,setTicks]=useState(0);
+ useEffect(()=>startHeartbeat({start:(tick,ms)=>window.setInterval(tick,ms),stop:id=>window.clearInterval(id)},()=>setTicks(n=>n+1)),[]);
+ return <p>Ticks: {ticks}</p>;
+}
+```
+
+**Prediction:** Cleanup stops exactly the timer that setup created without disturbing other timers.
+
+**Why it fails:** The starter starts an interval and returns an empty cleanup function, leaving background callbacks active.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the correct synchronization boundary" file="labs/react-effect-cleanup/starter/solution.tsx" expected="Cleanup stops exactly the timer that setup created without disturbing other timers.">
+
+Make the smallest correction that addresses the causal defect while keeping the fixture's exported API stable:
+
+```tsx
+import {useEffect,useState} from 'react';
+export type Clock={start:(tick:()=>void,ms:number)=>number;stop:(id:number)=>void};
+export function startHeartbeat(clock:Clock,onTick:()=>void) {
+ const id=clock.start(onTick,1000);
+ return ()=>clock.stop(id);
+}
+export function Heartbeat() {
+ const [ticks,setTicks]=useState(0);
+ useEffect(()=>startHeartbeat({start:(tick,ms)=>window.setInterval(tick,ms),stop:id=>window.clearInterval(id)},()=>setTicks(n=>n+1)),[]);
+ return <p>Ticks: {ticks}</p>;
+}
+```
+
+**Why it works:** Own the full setup/cleanup lifecycle of a timer or subscription.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify the contract and edge cases" file="labs/react-effect-cleanup/solution.test.mjs" expected="Instructor results pass local tests; the original starter fails at least one behavioral assertion.">
+
+Review these representative assertions before executing the full test file:
+
+```js
+const active=[];const stopped=[];let ticks=0;
+const cleanup=mod.startHeartbeat({start:(fn,ms)=>{assert.equal(ms,1000);active.push(fn);return 42;},stop:id=>stopped.push(id)},()=>ticks++);
+active[0]();assert.equal(ticks,1);cleanup();assert.deepEqual(stopped,[42]);
+assert.match(renderToStaticMarkup(createElement(mod.Heartbeat)),/Ticks: 0/);
+```
+
+**Proof it works:** `npm run lab:react-effect-cleanup`. Toggle `ACADEMY_LAB_TARGET=starter` to reproduce the broken baseline. For lifecycle semantics, use an actual mounted browser run before asserting real-world behavior.
+
+</LessonStep>
+
+<Misconception claim="The starter starts an interval and returns an empty cleanup function, leaving background callbacks active." correction="Own the full setup/cleanup lifecycle of a timer or subscription. Before rerunning an Effect whose dependencies changed and again after unmounting the component." />
+
+<KnowledgeCheck question="When does React call an Effect cleanup?" choices={["React automatically performs every external cleanup without a cleanup function.","Before rerunning an Effect whose dependencies changed and again after unmounting the component.","The TypeScript compiler executes React Effects at build time.","State changes always write a database record."] } correctIndex={1} explanation="Before rerunning an Effect whose dependencies changed and again after unmounting the component." misconception="Identify the external system and the exact setup/cleanup or render boundary instead of treating all hooks alike." lessonId="06.03.03" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Symptom:** The starter starts an interval and returns an empty cleanup function, leaving background callbacks active.
+
+**Reproduction:** Run the starter variant using the exact same local assertions as the instructor solution. Record which assertion fails and what input caused the mismatch.
+
+**Diagnosis:** A dashboard schedules recurring work but still receives callbacks after its corresponding React component unmounts.
+
+**Repair and regression:** Own the full setup/cleanup lifecycle of a timer or subscription. Then verify cleanup stops exactly the timer that setup created without disturbing other timers.
+
+## Guided local lab
+
+Exercise `labs/react-effect-cleanup/` contains the intentionally defective learner source, complete reviewed solution and executable Node/React-server-rendering assertions. Hints: identify the authoritative input; inspect setup and cleanup ownership; finally compare expected output with the model. This is not an online arbitrary-code execution service.
+
+<LabGate lessonId="06.03.03" labId="lab.react.react-effect-cleanup" commands={["npm run lab:react-effect-cleanup","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+Which behavior can a pure function or server-rendering test establish, and which lifecycle or focus behavior requires a mounted browser test? Under what circumstances would an Effect be unnecessary?
+
+## Official references
+
+- [React: Effect cleanup and resource lifetime](https://react.dev/learn/synchronizing-with-effects)
+- [React official Hooks reference](https://react.dev/reference/react/hooks)

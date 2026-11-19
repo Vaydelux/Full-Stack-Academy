@@ -1,0 +1,117 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Coordinate optimistic insertion, eventual reconciliation and duplicate protection without claiming local simulation is server persistence.","Create a React 19 / TypeScript 5 example for optimistic comments capstone.","Use local instructor tests to isolate the failure and explain the unverified browser boundary."]} />
+
+## The problem we're solving
+
+A comment composer needs immediate feedback and a consistent record list while an asynchronous save is simulated locally. The starter's reconciliation duplicates an existing comment whenever the same record is committed twice.
+
+## Build the mental model
+
+Coordinate optimistic insertion, eventual reconciliation and duplicate protection without claiming local simulation is server persistence. Discard or reconcile the temporary pending item and show a meaningful error, rather than presenting it as saved. The React 19 APIs used here have distinct contracts: context passes values, transitions schedule nonurgent updates, deferred values let rendering lag, and optimistic state is a temporary view during an Action. These lessons use local data, not backend persistence.
+
+**Predict before you run:** Committing the same identifier twice preserves one record, and an optimistic item cannot overwrite an existing committed entry.
+
+## Prerequisites and preflight
+
+Read the previous canonical React topic. Use Node 24 with `npm ci` at the repository root. The learner state lives at `labs/react-optimistic-capstone/starter/solution.tsx`; instructor code lives in `labs/react-optimistic-capstone/solution/solution.tsx`. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:react-optimistic-capstone`. PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:react-optimistic-capstone; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Predict and reproduce the incorrect behavior" file="labs/react-optimistic-capstone/starter/solution.tsx" expected="A focused test fails on the intentionally defective starter.">
+
+Read the incomplete implementation and identify which invariant it violates:
+
+```tsx
+import {startTransition,useOptimistic,useRef,useState,type FormEvent} from 'react';
+export type Entry={id:string;text:string;pending:boolean};
+export function reconcile(current:readonly Entry[],item:Entry):Entry[]{return [...current,item];}
+export function CommentsCapstone(){
+ const [saved,setSaved]=useState<Entry[]>([]);const [shown,addPending]=useOptimistic(saved,(items:Entry[],item:Entry)=>[...items,item]);
+ const [draft,setDraft]=useState('');const sequence=useRef(0);
+ function submit(e:FormEvent<HTMLFormElement>){e.preventDefault();const text=draft.trim();if(!text)return;
+  const item:Entry={id:`local-${++sequence.current}`,text,pending:true};
+  startTransition(async()=>{addPending(item);await Promise.resolve();
+   startTransition(()=>setSaved(curr=>reconcile(curr,{...item,pending:false})));});setDraft('');
+ }
+ return <section><h2>Comments</h2><form onSubmit={submit}><label htmlFor="capstone-comment">Message</label><input id="capstone-comment" value={draft} onChange={e=>setDraft(e.target.value)}/>
+ <button type="submit">Post</button></form><ul>{shown.map(entry=><li key={entry.id}>{entry.text}{entry.pending?' (pending)':''}</li>)}</ul></section>;
+}
+```
+
+**Why it fails:** The starter's reconciliation duplicates an existing comment whenever the same record is committed twice.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the React 19 component contract" file="labs/react-optimistic-capstone/starter/solution.tsx" expected="Committing the same identifier twice preserves one record, and an optimistic item cannot overwrite an existing committed entry.">
+
+The instructor repair preserves the public exports while fixing the value propagation, scheduling, or state reconciliation defect:
+
+```tsx
+import {startTransition,useOptimistic,useRef,useState,type FormEvent} from 'react';
+export type Entry={id:string;text:string;pending:boolean};
+export function reconcile(current:readonly Entry[],item:Entry):Entry[]{
+ if(current.some(existing=>existing.id===item.id))return current.map(existing=>existing.id===item.id?item:existing);
+ return [...current,item];
+}
+export function CommentsCapstone(){
+ const [saved,setSaved]=useState<Entry[]>([]);const [shown,addPending]=useOptimistic(saved,(items:Entry[],item:Entry)=>[...items,item]);
+ const [draft,setDraft]=useState('');const sequence=useRef(0);
+ function submit(e:FormEvent<HTMLFormElement>){e.preventDefault();const text=draft.trim();if(!text)return;
+  const item:Entry={id:`local-${++sequence.current}`,text,pending:true};
+  startTransition(async()=>{addPending(item);await Promise.resolve();
+   startTransition(()=>setSaved(curr=>reconcile(curr,{...item,pending:false})));});setDraft('');
+ }
+ return <section><h2>Comments</h2><form onSubmit={submit}><label htmlFor="capstone-comment">Message</label><input id="capstone-comment" value={draft} onChange={e=>setDraft(e.target.value)}/>
+ <button type="submit">Post</button></form><ul>{shown.map(entry=><li key={entry.id}>{entry.text}{entry.pending?' (pending)':''}</li>)}</ul></section>;
+}
+```
+
+**Why it works:** Coordinate optimistic insertion, eventual reconciliation and duplicate protection without claiming local simulation is server persistence.
+
+</LessonStep>
+
+<LessonStep number={3} title="Check success and failure paths without a hosted backend" file="labs/react-optimistic-capstone/solution.test.mjs" expected="Instructor assertions pass for the intended pure contract, while the learner starter fails before correction.">
+
+```js
+const saved=[{id:'a',text:'One',pending:false}];
+const first=mod.reconcile(saved,{id:'b',text:'Two',pending:false});
+assert.deepEqual(first.map(e=>e.id),['a','b']);
+const again=mod.reconcile(first,{id:'b',text:'Updated',pending:false});
+assert.equal(again.length,2);assert.equal(again[1].text,'Updated');
+assert.equal(saved.length,1);assert.equal(typeof mod.CommentsCapstone,'function');
+```
+
+**Proof it works:** Run `npm run lab:react-optimistic-capstone`. The test inspects a pure transformation or server-rendered initial tree where applicable. An SSR test does not prove user-event scheduling, Suspense fallbacks while streaming, hydration or interaction timing. Those require browser integration tests.
+
+</LessonStep>
+
+<Misconception claim="The starter's reconciliation duplicates an existing comment whenever the same record is committed twice." correction="Coordinate optimistic insertion, eventual reconciliation and duplicate protection without claiming local simulation is server persistence. Discard or reconcile the temporary pending item and show a meaningful error, rather than presenting it as saved." />
+
+<KnowledgeCheck question="What should happen if the server rejects an optimistic comment?" choices={["React always saves state to a database automatically.","Discard or reconcile the temporary pending item and show a meaningful error, rather than presenting it as saved.","Rendering a component on a server proves every client-side transition works.","TypeScript removes the need for runtime data validation."] } correctIndex={1} explanation="Discard or reconcile the temporary pending item and show a meaningful error, rather than presenting it as saved." misconception="The chosen Hook changes rendering, composition or scheduling; it does not implicitly implement a network service." lessonId="06.04.08" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Symptom:** The starter's reconciliation duplicates an existing comment whenever the same record is committed twice.
+
+**Reproduction:** Run the failing starter under the same assertions as the instructor solution. Inspect the relevant props, state snapshot, source array, or action input rather than debugging visual appearance first.
+
+**Repair:** Coordinate optimistic insertion, eventual reconciliation and duplicate protection without claiming local simulation is server persistence.
+
+**Regression:** Committing the same identifier twice preserves one record, and an optimistic item cannot overwrite an existing committed entry. Test at least one invalid, duplicate, empty or missing-provider case as appropriate. Never describe this local simulation as a deployed backend.
+
+## Guided local lab
+
+Work through `labs/react-optimistic-capstone/`. Hint ladder: read the expected outcome; identify the authoritative state and Hook boundary; compare the instructor's pure helper or context consumer after you attempt the repair. No arbitrary learner code executes on the public academy origin.
+
+<LabGate lessonId="06.04.08" labId="lab.react.react-optimistic-capstone" commands={["npm run lab:react-optimistic-capstone","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+What behavior is genuinely demonstrated by the local tests, and which interaction needs mounted React or real backend data before a production claim would be justified?
+
+## Official references
+
+- [React official documentation: Optimistic comments capstone](https://react.dev/reference/react/useOptimistic)
+- [React Hooks reference](https://react.dev/reference/react/hooks)

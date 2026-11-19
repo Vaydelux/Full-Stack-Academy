@@ -1,0 +1,15 @@
+{
+  "id": "lab.react.react-error-suspense",
+  "lessonId": "06.04.07",
+  "title": "Practice React 19 error boundaries and suspense",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/react-error-suspense/starter/solution.tsx",
+  "solution": "labs/react-error-suspense/solution/solution.tsx",
+  "tests": "labs/react-error-suspense/solution.test.mjs",
+  "verify": [
+    "npm run lab:react-error-suspense"
+  ],
+  "expected": "The initial boundary renders children; a derived failure state renders a semantic alert fallback.",
+  "security": "Trusted local source only. No remote code runner, API credentials or production persistence."
+}

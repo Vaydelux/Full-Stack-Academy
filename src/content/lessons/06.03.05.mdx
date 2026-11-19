@@ -1,0 +1,101 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Use a ref for an imperative value that should persist without itself triggering a render.","Implement useref and mutable values outside render in a complete TypeScript/React 19 fixture.","Reproduce the initial defect and prove the repair with local positive and negative tests."]} />
+
+## The problem we're solving
+
+An analytics button needs an internal event sequence number without rendering on every internal increment. The starter always returns one because it never advances the ref's current value. The goal is to learn the React runtime contract rather than memorize hook names.
+
+## Build the mental model
+
+Use a ref for an imperative value that should persist without itself triggering a render. When it must persist across renders but a change should not itself update the displayed UI. **Distinguish source-level correctness from runtime evidence:** Pure helpers can be tested without a browser, but an SSR output assertion cannot prove that an Effect ran, a ref focused an actual input or a global listener was removed after unmount.
+
+**Predict before you run:** Three calls against one ref return 1, 2 and 3, and distinct refs remain independent.
+
+## Prerequisites and preflight
+
+Study the preceding React topic and inspect `labs/react-ref-mutable/starter/solution.tsx`. Use Node.js 24 and locked project dependencies. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:react-ref-mutable`. PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:react-ref-mutable; Remove-Item Env:ACADEMY_LAB_TARGET`. No browser, GitHub Actions workflow or hosted deployment runs just by reading the article.
+
+## Guided implementation
+
+<LessonStep number={1} title="Observe the failing starter behavior" file="labs/react-ref-mutable/starter/solution.tsx" expected="An instructor assertion fails for a concrete incorrect behavior.">
+
+Read this starter before changing anything:
+
+```tsx
+import {useRef,useState} from 'react';
+export function nextSequence(_ref:{current:number}):number {return 1;}
+export function SequenceButton() {
+ const sequence=useRef(0);const [shown,setShown]=useState(0);
+ return <button type="button" onClick={()=>setShown(nextSequence(sequence))}>Sequence: {shown}</button>;
+}
+```
+
+**Prediction:** Three calls against one ref return 1, 2 and 3, and distinct refs remain independent.
+
+**Why it fails:** The starter always returns one because it never advances the ref's current value.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the correct synchronization boundary" file="labs/react-ref-mutable/starter/solution.tsx" expected="Three calls against one ref return 1, 2 and 3, and distinct refs remain independent.">
+
+Make the smallest correction that addresses the causal defect while keeping the fixture's exported API stable:
+
+```tsx
+import {useRef,useState} from 'react';
+export function nextSequence(ref:{current:number}):number {
+ ref.current+=1;return ref.current;
+}
+export function SequenceButton() {
+ const sequence=useRef(0);const [shown,setShown]=useState(0);
+ return <button type="button" onClick={()=>setShown(nextSequence(sequence))}>Sequence: {shown}</button>;
+}
+```
+
+**Why it works:** Use a ref for an imperative value that should persist without itself triggering a render.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify the contract and edge cases" file="labs/react-ref-mutable/solution.test.mjs" expected="Instructor results pass local tests; the original starter fails at least one behavioral assertion.">
+
+Review these representative assertions before executing the full test file:
+
+```js
+const r={current:0};assert.deepEqual([mod.nextSequence(r),mod.nextSequence(r),mod.nextSequence(r)],[1,2,3]);
+assert.equal(mod.nextSequence({current:10}),11);
+assert.match(renderToStaticMarkup(createElement(mod.SequenceButton)),/Sequence: 0/);
+```
+
+**Proof it works:** `npm run lab:react-ref-mutable`. Toggle `ACADEMY_LAB_TARGET=starter` to reproduce the broken baseline. For lifecycle semantics, use an actual mounted browser run before asserting real-world behavior.
+
+</LessonStep>
+
+<Misconception claim="The starter always returns one because it never advances the ref's current value." correction="Use a ref for an imperative value that should persist without itself triggering a render. When it must persist across renders but a change should not itself update the displayed UI." />
+
+<KnowledgeCheck question="When should data live in a ref rather than state?" choices={["React automatically performs every external cleanup without a cleanup function.","When it must persist across renders but a change should not itself update the displayed UI.","The TypeScript compiler executes React Effects at build time.","State changes always write a database record."] } correctIndex={1} explanation="When it must persist across renders but a change should not itself update the displayed UI." misconception="Identify the external system and the exact setup/cleanup or render boundary instead of treating all hooks alike." lessonId="06.03.05" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Symptom:** The starter always returns one because it never advances the ref's current value.
+
+**Reproduction:** Run the starter variant using the exact same local assertions as the instructor solution. Record which assertion fails and what input caused the mismatch.
+
+**Diagnosis:** An analytics button needs an internal event sequence number without rendering on every internal increment.
+
+**Repair and regression:** Use a ref for an imperative value that should persist without itself triggering a render. Then verify three calls against one ref return 1, 2 and 3, and distinct refs remain independent.
+
+## Guided local lab
+
+Exercise `labs/react-ref-mutable/` contains the intentionally defective learner source, complete reviewed solution and executable Node/React-server-rendering assertions. Hints: identify the authoritative input; inspect setup and cleanup ownership; finally compare expected output with the model. This is not an online arbitrary-code execution service.
+
+<LabGate lessonId="06.03.05" labId="lab.react.react-ref-mutable" commands={["npm run lab:react-ref-mutable","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+Which behavior can a pure function or server-rendering test establish, and which lifecycle or focus behavior requires a mounted browser test? Under what circumstances would an Effect be unnecessary?
+
+## Official references
+
+- [React: useRef and mutable values outside render](https://react.dev/learn/referencing-values-with-refs)
+- [React official Hooks reference](https://react.dev/reference/react/hooks)

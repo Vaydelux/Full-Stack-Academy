@@ -1069,6 +1069,284 @@ await redisCache.set(cacheKey, JSON.stringify(safeDto), 'EX', 60);`,
     relatedLessonIds: [],
     canonicalUrl: 'https://redis.io/docs/latest/commands/set/',
   },
+{
+  "id": "react-usestate",
+  "matchCategories": [
+    "React"
+  ],
+  "matchTitles": [
+    "useState"
+  ],
+  "heading": "React 19: useState()",
+  "category": "React · Component state",
+  "majorVersion": "React 19",
+  "status": "Authored reference draft",
+  "summary": "Keep local component state between renders. The returned setter schedules a new render; event handlers observe the state snapshot from their own render.",
+  "syntax": "const [value, setValue] = useState(initialValue);",
+  "lang": "tsx",
+  "parameters": "initialValue: value or lazy initializer function. The initializer runs when React initializes the component state (development Strict Mode may call it twice to check purity).",
+  "returns": "[state, setState] — the current render's state and a setter accepting a replacement value or functional updater. Calling the setter does not mutate the current render's snapshot.",
+  "minimalExample": "import { useState } from 'react';\n\nexport function Counter() {\n  const [count, setCount] = useState(0);\n  return <button onClick={() => setCount(v => v + 1)}>Count: {count}</button>;\n}",
+  "productionExample": "import { useState } from 'react';\n\nexport function QuantityPicker({ initial = 1 }: { initial?: number }) {\n  const [quantity, setQuantity] = useState(initial);\n  return (\n    <label>\n      Quantity\n      <input\n        type=\"number\"\n        min={1}\n        value={quantity}\n        onChange={e => {\n          const next = Number(e.target.value);\n          if (Number.isSafeInteger(next) && next > 0) setQuantity(next);\n        }}\n      />\n    </label>\n  );\n}",
+  "commonMistakes": [
+    "Calling setState then expecting the existing event handler's local state variable to change synchronously.",
+    "Mutating object/array state in place instead of returning a new immutable value.",
+    "Copying a derived total into separate state that can become inconsistent."
+  ],
+  "securityPerformanceNotes": [
+    "State lives in the browser; do not store secrets or trust client state as server authorization.",
+    "Prefer updater functions when multiple queued changes depend on the previous state.",
+    "Never claim React state is durable persistence; refresh/remount behavior depends on component identity and storage architecture."
+  ],
+  "relatedLessonIds": [
+    "06.02.01",
+    "06.02.02"
+  ],
+  "canonicalUrl": "https://react.dev/reference/react/useState"
+},
+{
+  "id": "react-usereducer",
+  "matchCategories": [
+    "React"
+  ],
+  "matchTitles": [
+    "useReducer"
+  ],
+  "heading": "React 19: useReducer()",
+  "category": "React · State transitions",
+  "majorVersion": "React 19",
+  "status": "Authored reference draft",
+  "summary": "Move related state transitions into a reducer that accepts the previous state and an explicit action; React handles re-rendering and dispatch.",
+  "syntax": "const [state, dispatch] = useReducer(reducer, initialState);",
+  "lang": "tsx",
+  "parameters": "reducer(state, action) returns the next state; initialState seeds the reducer. Optional init(initialArg) supports lazy initialization.",
+  "returns": "[state, dispatch] — current state and a dispatch function. Dispatch queues an action; it does not return the new state.",
+  "minimalExample": "import { useReducer } from 'react';\n\nfunction counter(state: number, action: 'add' | 'reset') {\n  return action === 'add' ? state + 1 : 0;\n}\nexport function Counter() {\n  const [count, dispatch] = useReducer(counter, 0);\n  return <button onClick={() => dispatch('add')}>{count}</button>;\n}",
+  "productionExample": "type Task = { id: string; text: string; done: boolean };\ntype Action = { type: 'toggle'; id: string } | { type: 'remove'; id: string };\n\nfunction reducer(tasks: readonly Task[], action: Action): Task[] {\n  switch (action.type) {\n    case 'toggle':\n      return tasks.map(t => t.id === action.id ? { ...t, done: !t.done } : t);\n    case 'remove':\n      return tasks.filter(t => t.id !== action.id);\n  }\n}\n// const [tasks, dispatch] = useReducer(reducer, initialTasks);",
+  "commonMistakes": [
+    "Mutating and returning the same array reference while assuming React can identify the update.",
+    "Putting external network requests, timers or DOM mutations into the reducer.",
+    "Letting action shapes drift without discriminated union types."
+  ],
+  "securityPerformanceNotes": [
+    "Reducer functions should be deterministic and free of side effects.",
+    "Validate untrusted server records before creating reducer actions; TypeScript annotations are not runtime validation.",
+    "IDs used in client reducers are not authorization checks; enforce object access on the server."
+  ],
+  "relatedLessonIds": [
+    "06.02.07",
+    "06.02.08"
+  ],
+  "canonicalUrl": "https://react.dev/reference/react/useReducer"
+},
+{
+  "id": "react-useeffect",
+  "matchCategories": [
+    "React"
+  ],
+  "matchTitles": [
+    "useEffect"
+  ],
+  "heading": "React 19: useEffect()",
+  "category": "React · Synchronization",
+  "majorVersion": "React 19",
+  "status": "Authored reference draft",
+  "summary": "Synchronize a component with an external browser system after React commits, and dispose of the connection when dependencies change or the component unmounts.",
+  "syntax": "useEffect(() => { /* setup */ return () => { /* cleanup */ }; }, [dependency]);",
+  "lang": "tsx",
+  "parameters": "setup: function that synchronizes an external system and optionally returns cleanup. dependencies: every reactive value read by setup; omit only when the appropriate lifecycle is intentional.",
+  "returns": "undefined from useEffect itself. The setup callback may return a cleanup function, which React calls before re-synchronization and on unmount.",
+  "minimalExample": "import { useEffect, useState } from 'react';\n\nexport function Width() {\n  const [width, setWidth] = useState(0);\n  useEffect(() => {\n    const onResize = () => setWidth(window.innerWidth);\n    onResize();\n    window.addEventListener('resize', onResize);\n    return () => window.removeEventListener('resize', onResize);\n  }, []);\n  return <output>Width: {width}</output>;\n}",
+  "productionExample": "import { useEffect, useState } from 'react';\n\ntype EventBus = { subscribe: (room: string, notify: () => void) => () => void };\nexport function RoomPulse({ roomId, bus }: { roomId: string; bus: EventBus }) {\n  const [pulses, setPulses] = useState(0);\n  useEffect(() => bus.subscribe(roomId, () => setPulses(n => n + 1)), [roomId, bus]);\n  return <p>Room {roomId}: {pulses} updates</p>;\n}",
+  "commonMistakes": [
+    "Using an Effect to recalculate values derivable during rendering.",
+    "Suppressing exhaustive-deps to conceal stale props or closures.",
+    "Skipping cleanup for listeners, sockets, timers and async operations, producing duplicate connections."
+  ],
+  "securityPerformanceNotes": [
+    "Effects do not execute during server rendering; browser-only APIs belong in client components.",
+    "Async responses may be stale after a dependency change; abort work or ignore obsolete results.",
+    "Avoid placing secrets in client-side Effects; client bundles are public."
+  ],
+  "relatedLessonIds": [
+    "06.03.02",
+    "06.03.03",
+    "06.03.04"
+  ],
+  "canonicalUrl": "https://react.dev/reference/react/useEffect"
+},
+{
+  "id": "react-useref",
+  "matchCategories": [
+    "React"
+  ],
+  "matchTitles": [
+    "useRef"
+  ],
+  "heading": "React 19: useRef()",
+  "category": "React · Imperative escape hatch",
+  "majorVersion": "React 19",
+  "status": "Authored reference draft",
+  "summary": "Preserve a mutable object across renders without causing a render when .current changes. Attach it to a DOM element for permitted imperative operations like focus.",
+  "syntax": "const ref = useRef<T>(initialValue);",
+  "lang": "tsx",
+  "parameters": "initialValue: the first ref.current value; React returns the same ref object on subsequent renders.",
+  "returns": "{ current: T } — a stable mutable ref object. Changing current is not a state update and will not re-render a component.",
+  "minimalExample": "import { useRef } from 'react';\n\nexport function FocusButton() {\n  const input = useRef<HTMLInputElement>(null);\n  return <>\n    <label htmlFor=\"ref-name\">Name</label>\n    <input id=\"ref-name\" ref={input} />\n    <button onClick={() => input.current?.focus()}>Focus name</button>\n  </>;\n}",
+  "productionExample": "import { useRef, useState } from 'react';\n\nexport function Sequence() {\n  const nextId = useRef(0);\n  const [ids, setIds] = useState<number[]>([]);\n  function add() {\n    const id = ++nextId.current;\n    setIds(previous => [...previous, id]);\n  }\n  return <>\n    <button onClick={add}>Create ID</button>\n    <ul>{ids.map(id => <li key={id}>Draft {id}</li>)}</ul>\n  </>;\n}",
+  "commonMistakes": [
+    "Using a ref for values that must appear reactively in the UI.",
+    "Reading or mutating ref.current as part of ordinary render logic.",
+    "Assuming ref-generated IDs are globally unique or durable across remounts."
+  ],
+  "securityPerformanceNotes": [
+    "Ref-managed values are in-memory only; do not treat them as durable storage or permission checks.",
+    "Focus or measure the DOM in event handlers or appropriate effects, not while rendering.",
+    "Guard null DOM refs, including during unmount and conditional rendering."
+  ],
+  "relatedLessonIds": [
+    "06.03.05",
+    "06.03.06"
+  ],
+  "canonicalUrl": "https://react.dev/reference/react/useRef"
+},
+{
+  "id": "react-usecontext",
+  "matchCategories": [
+    "React"
+  ],
+  "matchTitles": [
+    "useContext"
+  ],
+  "heading": "React 19: useContext()",
+  "category": "React · Composition",
+  "majorVersion": "React 19",
+  "status": "Authored reference draft",
+  "summary": "Read the nearest provider value for a React Context, avoiding repeated prop threading while keeping provider ownership explicit.",
+  "syntax": "const value = useContext(SomeContext);",
+  "lang": "tsx",
+  "parameters": "SomeContext: context object returned by createContext(defaultValue). Consumers read the closest matching provider above them.",
+  "returns": "The current context value. If no provider exists, React returns the default supplied when the Context was created.",
+  "minimalExample": "import { createContext, useContext } from 'react';\n\nconst LanguageContext = createContext('en');\nexport function Greeting() {\n  const language = useContext(LanguageContext);\n  return <p>{language === 'en' ? 'Hello' : 'Greetings'}</p>;\n}",
+  "productionExample": "import { createContext, useContext, type ReactNode } from 'react';\n\ntype Theme = 'light' | 'dark';\nconst ThemeContext = createContext<Theme | null>(null);\nexport function ThemeProvider({ value, children }: { value: Theme; children: ReactNode }) {\n  return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;\n}\nexport function ThemeLabel() {\n  const theme = useContext(ThemeContext);\n  if (theme === null) throw new Error('ThemeProvider is required');\n  return <p>Theme: {theme}</p>;\n}",
+  "commonMistakes": [
+    "Calling useContext outside a component or custom Hook.",
+    "Assuming any nested provider changes are invisible to consumers.",
+    "Packing frequently changing, unrelated data in one broad context that causes avoidable re-renders."
+  ],
+  "securityPerformanceNotes": [
+    "Never treat client Context as a trusted authorization boundary or storage for server secrets.",
+    "Use an explicit nullable default plus a clear provider error for required services.",
+    "Keep provider values stable where relevant; split unrelated contexts."
+  ],
+  "relatedLessonIds": [
+    "06.04.01"
+  ],
+  "canonicalUrl": "https://react.dev/reference/react/useContext"
+},
+{
+  "id": "react-usetransition",
+  "matchCategories": [
+    "React"
+  ],
+  "matchTitles": [
+    "useTransition"
+  ],
+  "heading": "React 19: useTransition()",
+  "category": "React · Concurrent rendering",
+  "majorVersion": "React 19",
+  "status": "Authored reference draft",
+  "summary": "Mark state updates as nonurgent so urgent interactions such as typing can stay responsive while React prepares more expensive work.",
+  "syntax": "const [isPending, startTransition] = useTransition();",
+  "lang": "tsx",
+  "parameters": "startTransition(callback) marks synchronous state updates inside callback as Transitions. React 19 supports async Actions, but updates after an await may need a nested startTransition.",
+  "returns": "[isPending, startTransition] — a pending state flag and an Action scheduler. Do not use a Transition to control text-input value.",
+  "minimalExample": "import { useState, useTransition } from 'react';\n\nexport function Results() {\n  const [query, setQuery] = useState('');\n  const [resultQuery, setResultQuery] = useState('');\n  const [isPending, startTransition] = useTransition();\n  return <>\n    <label htmlFor=\"trans-query\">Search</label>\n    <input id=\"trans-query\" value={query} onChange={e => {\n      const next = e.target.value;\n      setQuery(next);\n      startTransition(() => setResultQuery(next));\n    }} />\n    {isPending && <p role=\"status\">Updating</p>}\n    <p>Results for: {resultQuery}</p>\n  </>;\n}",
+  "productionExample": "import { useState, useTransition } from 'react';\n\nexport function SearchCatalog({ names }: { names: readonly string[] }) {\n  const [text, setText] = useState('');\n  const [resultText, setResultText] = useState('');\n  const [pending, startTransition] = useTransition();\n  const result = names.filter(name => name.toLowerCase().includes(resultText.toLowerCase()));\n  return <section>\n    <label htmlFor=\"catalog-query\">Find a name</label>\n    <input id=\"catalog-query\" value={text} onChange={e => {\n      const q = e.target.value;\n      setText(q);\n      startTransition(() => setResultText(q));\n    }} />\n    {pending && <p role=\"status\">Updating list</p>}\n    <ul>{result.map(name => <li key={name}>{name}</li>)}</ul>\n  </section>;\n}",
+  "commonMistakes": [
+    "Wrapping a controlled text-input state update in a Transition, which can interfere with typing.",
+    "Assuming a Transition makes heavy synchronous JavaScript calculation free or stops long-running work.",
+    "Forgetting that post-await React state updates may require an additional startTransition."
+  ],
+  "securityPerformanceNotes": [
+    "Pending state is UX feedback, not a guarantee of server durability.",
+    "Budget expensive work and retain accessible loading status; measure responsiveness on devices rather than inventing performance claims.",
+    "Avoid stale copies of source collections; derive results from current data and a nonurgent query."
+  ],
+  "relatedLessonIds": [
+    "06.04.03"
+  ],
+  "canonicalUrl": "https://react.dev/reference/react/useTransition"
+},
+{
+  "id": "react-useoptimistic",
+  "matchCategories": [
+    "React"
+  ],
+  "matchTitles": [
+    "useOptimistic"
+  ],
+  "heading": "React 19: useOptimistic()",
+  "category": "React · Optimistic UI",
+  "majorVersion": "React 19",
+  "status": "Authored reference draft",
+  "summary": "Show a temporary optimistic value while an Action is pending, then reconcile it with the authoritative result or a failure.",
+  "syntax": "const [optimisticState, addOptimistic] = useOptimistic(state, updateFn);",
+  "lang": "tsx",
+  "parameters": "state: authoritative base value; updateFn(current, optimisticValue): new optimistic state. Call addOptimistic during an Action such as a Transition or form submission.",
+  "returns": "[optimisticState, addOptimistic] — a temporary derived view and dispatch function. The optimistic value does not persist by itself.",
+  "minimalExample": "import { startTransition, useOptimistic, useState } from 'react';\n\nexport function Likes() {\n  const [likes, setLikes] = useState(0);\n  const [shown, addOptimistic] = useOptimistic(likes, (n: number, delta: number) => n + delta);\n  return <button onClick={() => startTransition(async () => {\n    addOptimistic(1);\n    await Promise.resolve(); // Local-only demonstration\n    startTransition(() => setLikes(n => n + 1));\n  })}>Likes: {shown}</button>;\n}",
+  "productionExample": "type Comment = { id: string; text: string; pending?: boolean };\nfunction append(base: readonly Comment[], item: Comment): Comment[] {\n  return [...base, item];\n}\n// In a client component:\n// const [saved, setSaved] = useState<Comment[]>(initial);\n// const [visible, showPending] = useOptimistic(saved, append);\n// In a form Action: showPending({ id: tempId, text, pending: true });\n// On successful response: setSaved(current => [...current, canonicalServerRecord]);\n// On failure: display an error and let the Action end so temporary state rolls back.",
+  "commonMistakes": [
+    "Calling the optimistic setter outside an Action and expecting long-lived pending UI.",
+    "Using temporary client IDs as durable server IDs or persisting a pending record as confirmed.",
+    "Failing to reconcile a rejected mutation, leaving duplicates or false success."
+  ],
+  "securityPerformanceNotes": [
+    "The server must validate and authorize every mutation independently of optimistic UI.",
+    "Do not display a temporary optimistic item as confirmed or durable.",
+    "Use bounded IDs, escape user text via React and handle duplicate/rejected writes."
+  ],
+  "relatedLessonIds": [
+    "06.04.05",
+    "06.04.08"
+  ],
+  "canonicalUrl": "https://react.dev/reference/react/useOptimistic"
+},
+{
+  "id": "react-useactionstate",
+  "matchCategories": [
+    "React"
+  ],
+  "matchTitles": [
+    "useActionState"
+  ],
+  "heading": "React 19: useActionState()",
+  "category": "React · Forms",
+  "majorVersion": "React 19",
+  "status": "Authored reference draft",
+  "summary": "Connect a form Action with the latest result state and a pending flag, centralizing validation results without duplicating submission flags.",
+  "syntax": "const [state, formAction, isPending] = useActionState(action, initialState);",
+  "lang": "tsx",
+  "parameters": "action(previousState, ...args): next state or Promise of state; initialState: value before the first action. Optional permalink supports progressive enhancement in some server-rendered setups.",
+  "returns": "[state, formAction, isPending]. The formAction can be assigned to a form action prop; pending reflects in-flight execution.",
+  "minimalExample": "import { useActionState } from 'react';\n\nasync function check(_previous: string, formData: FormData) {\n  const name = formData.get('name');\n  return typeof name === 'string' && name.trim() ? 'Saved locally' : 'Name required';\n}\nexport function NameForm() {\n  const [message, submit, pending] = useActionState(check, 'Enter a name');\n  return <form action={submit}>\n    <label htmlFor=\"action-name\">Name</label>\n    <input id=\"action-name\" name=\"name\" />\n    <button disabled={pending}>Submit</button>\n    <p role=\"status\">{message}</p>\n  </form>;\n}",
+  "productionExample": "type Result = { ok: boolean; message: string };\nasync function validate(_previous: Result, data: FormData): Promise<Result> {\n  const text = data.get('feedback');\n  if (typeof text !== 'string' || text.trim().length < 3) {\n    return { ok: false, message: 'Use at least 3 characters' };\n  }\n  // This local demo does not persist anything. A real server Action must authorize the user.\n  return { ok: true, message: 'Locally validated' };\n}\n// const [result, submit, pending] = useActionState(validate, { ok: false, message: '' });",
+  "commonMistakes": [
+    "Treating a client-side form Action as a secure server authorization check.",
+    "Forgetting the previous state argument in an Action used with useActionState.",
+    "Assuming local async validation implies database persistence."
+  ],
+  "securityPerformanceNotes": [
+    "Server Actions must validate, authenticate and authorize every request before mutating data.",
+    "Never trust client-provided IDs, roles or sensitive state.",
+    "Announce validation errors and disable or explain repeated submission while pending."
+  ],
+  "relatedLessonIds": [
+    "06.04.06"
+  ],
+  "canonicalUrl": "https://react.dev/reference/react/useActionState"
+}
 ];
 
 export function findAuthoredReference(category: string, title: string): AuthoredReference | undefined {

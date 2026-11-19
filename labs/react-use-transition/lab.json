@@ -1,0 +1,15 @@
+{
+  "id": "lab.react.react-use-transition",
+  "lessonId": "06.04.03",
+  "title": "Practice React 19 usetransition and responsive interactions",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/react-use-transition/starter/solution.tsx",
+  "solution": "labs/react-use-transition/solution/solution.tsx",
+  "tests": "labs/react-use-transition/solution.test.mjs",
+  "verify": [
+    "npm run lab:react-use-transition"
+  ],
+  "expected": "The pure filter finds only matching entries and preserves source order; initial React markup lists all entries.",
+  "security": "Trusted local source only. No remote code runner, API credentials or production persistence."
+}

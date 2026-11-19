@@ -1,0 +1,39 @@
+{
+  "id": "06.04.05",
+  "title": "useOptimistic and pending UI: Render a temporary optimistic entry during an Action while retaining authoritative committed state separately",
+  "description": "A practical React 19 lesson for useoptimistic and pending ui, with an intentionally failing starter, complete TypeScript instructor implementation, local assertions and honest runtime scope.",
+  "trackId": "06",
+  "moduleId": "06.04",
+  "level": "Beginner",
+  "estimatedMinutes": 65,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "react": "19",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "06.04.04"
+  ],
+  "objectives": [
+    "Render a temporary optimistic entry during an Action while retaining authoritative committed state separately.",
+    "Repair the broken behavior in the react-use-optimistic starter.",
+    "Demonstrate correct and edge-case outcomes using offline tests."
+  ],
+  "labId": "lab.react.react-use-optimistic",
+  "rubric": [
+    "I can articulate the React 19 contract for useoptimistic and pending ui.",
+    "I can reproduce, repair and test the 06.04.05 starter case.",
+    "I can explain the difference between a local fixture and production persistence or browser behavior."
+  ],
+  "sources": [
+    {
+      "label": "React official: useOptimistic and pending UI",
+      "url": "https://react.dev/reference/react/useOptimistic"
+    },
+    {
+      "label": "React Hooks reference",
+      "url": "https://react.dev/reference/react/hooks"
+    }
+  ]
+}

@@ -1,34 +1,34 @@
-# Full-Stack Academy — Next TODO (2026-11-19)
+# Next TODO — Offline React Effects/Advanced Stacked Candidate
 
-## Source of truth
+**2026-11-19:** GitHub `main` contains 181 source-authored IDs. PR #17 proposes React `06.01–06.02` with 196 IDs. A separate **stacked** branch `feat/react-effects-advanced-offline` adds 16 more lessons across `06.03–06.04` to a source total of **212 IDs, 209 MDX, 209 labs, 26 complete modules**. Neither candidate is certified for a hosted deployment.
 
-- GitHub `main` is at `7e8f42d` after merges #14, #15 and #16. It contains 181 source-published lesson IDs; actual hosted production state is intentionally not checked.
-- Active offline branch: `feat/react-foundations-state-offline` (PR pending). It proposes **196 lesson IDs, 193 MDX, 193 lab fixtures and 24 complete modules**.
-- This milestone modifies only repository files. **No Vercel or GitHub Actions check** was performed. Do not claim successful build, browser tests or deployment.
+## P0 — Complete local acceptance before merge
 
-## P0 — Finish integration and local acceptance of React batch 06.01–06.02
+- [x] Author eight `06.03` lessons: purity, Effects, cleanup, dependencies, refs, focus, avoiding redundant Effects, timer/keyboard capstone
+- [x] Author eight `06.04` lessons: context, custom Hooks, transitions, deferred value, optimistic state, form action state, Error Boundaries/Suspense, optimistic comments capstone
+- [x] Add 16 intentionally defective starters, 16 instructor solutions, 16 local assertion suites and manifest files
+- [x] Wire publication registry, metadata map, all-lab scripts, per-lab commands, browser smoke, machine checkpoint and negative starter gate
+- [x] Add the local-only `npm run verify:offline` orchestrator (source-authored; has NOT been executed here)
+- [ ] Run a full local clone with Node 24 and locked dependencies: `npm ci && npm run verify:offline`; stop on failure and record exact commit+runtime evidence
+- [ ] Start local Next and run isolated Chromium browser smoke (no hosted environment)
+- [ ] Add mounted React interaction tests for effect cleanup, actual focus, transitions, optimistic rejection and Suspense/error fallback; Node SSR/pure model tests alone do not prove these
+- [ ] Fix failing or unsubstantiated lessons; qualify PR #17 first, then stacked changes; do **not** merge until the exact head is verified
 
-- [x] Author `06.01.02–06.01.08` components, children, conditions, keys, commits, events and dashboard capstone
-- [x] Author `06.02.01–06.02.08` snapshots, batching, derived/immutable state, identity, lifted state, reducers and stale closures
-- [x] Provide fifteen intentionally defective starters, separate instructor solutions, local tests and strict lab manifests
-- [x] Register each lesson and metadata; update per-lab commands, full lab test suite, checkpoint and sitemap/browser smoke expectations
-- [ ] Run `npm ci && npm run lint && npm run typecheck && npm test && npm run verify:content && npm run checkpoint:check && npm run test:labs && npm run test:red-react && npm run build` in a full local clone
-- [ ] Run isolated local Next + Chromium `scripts/browser-smoke.mjs` and repair real failures; check 320px layout, keyboard and assistive technology separately
-- [ ] Review metadata, code pedagogy, React 19 behavior and dependency exception before merging; keep PR unmerged until credible local evidence exists
+## P1 — Remaining large program
 
-## P1 — Next much-larger authoring program
+- [ ] React `06.05` (8 lessons) testing/performance; genuine React Testing Library execution needs dependency/lockfile integration, or mark the relevant articles planned
+- [ ] Next.js `07.01–07.05` (40 lessons) with App Router, RSC, server/client boundaries, data fetching, caching under explicit `cacheComponents` mode, auth, SEO, error/load boundaries and route-handler security labs
+- [ ] Distinguish Next.js 16 Cache Components from previous cache model; never present route-segment `revalidate` and `use cache` rules as simultaneously interchangeable
+- [x] Author eight additional React 19 hook quick-reference drafts and implement searchable, paged, status-filtered encyclopedia (12 drafts total)
+- [ ] Expand remaining technical reference subjects (303 indexed, 291 without authored draft pages)
 
-- [ ] React `06.03`–`06.05`: **24 lessons** (Effects/refs, context/concurrency, testing/performance), 24 labs and representative interactive DOM tests
-- [ ] Next.js `07.01`–`07.05`: **40 lessons** with server/client boundaries, App Router, caching/revalidation, auth, SEO, error/loading states and realistic offline fixtures
-- [ ] Combine into **64 additional canonical topic IDs** after qualification of this React batch. Do not represent planned topics as authored.
+## P2 — Security and truthful release status
 
-## P2 — Platform and safeguards
+- [ ] Audit known 14 high dev-only Picomatch reports and the exception expiry (2026-12-02 UTC)
+- [ ] Run manual keyboard, screen reader, reduced-motion and narrow viewport checks
+- [ ] Preserve no public remote learner-code execution, no paid dependencies and browser-local self-assessed progress
+- [ ] No Vercel checks and no GitHub Actions checks until the owner explicitly changes the development constraints
 
-- [ ] Reassess the 14 known dev-only Picomatch advisory reports before the temporary exception expires on **2026-12-02 UTC**
-- [ ] Add real mounted React interaction tests (DOM/hydration): server markup checks do not prove click behavior or state preservation
-- [ ] Improve W3Schools-like reference pages without turning un-authored index subjects into published articles
-- [ ] Keep cloud infrastructure optional and no remote learner-code execution; preserve the reading-first UI and separate practice mode
+## Successor handoff
 
-## Handoff
-
-Read `AGENTS.md`, `docs/PROJECT_CHECKPOINT.md`, `docs/checkpoint.json`, `docs/REACT_FOUNDATIONS_ACCEPTANCE.md` and `docs/LONG_SCOPE_DELIVERY_PLAN.md`. Resume from `06.03.01` only after the current branch passes local integration.
+Start from the latest branch and read `AGENTS.md`, `docs/checkpoint.json`, `docs/REACT_EFFECTS_ADVANCED_ACCEPTANCE.md`, `docs/REACT_FOUNDATIONS_ACCEPTANCE.md` and the curriculum JSON. The next *unimplemented canonical topic* is `06.05.01`; don't change publication counts without full authored lessons and labs.

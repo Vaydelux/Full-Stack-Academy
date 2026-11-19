@@ -1,0 +1,39 @@
+{
+  "id": "06.03.02",
+  "title": "useEffect for external synchronization: Synchronize with an external event source in an Effect and return its unsubscribe function",
+  "description": "React 19 guided tutorial for useeffect for external synchronization, including an offline failing starter, corrected TypeScript source, regression assertions and explicit lifecycle boundaries.",
+  "trackId": "06",
+  "moduleId": "06.03",
+  "level": "Beginner",
+  "estimatedMinutes": 55,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "react": "19",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "06.03.01"
+  ],
+  "objectives": [
+    "Synchronize with an external event source in an Effect and return its unsubscribe function.",
+    "Repair the intentionally failing example in react-external-effect.",
+    "Verify representative and edge-case results using the local acceptance suite."
+  ],
+  "labId": "lab.react.react-external-effect",
+  "rubric": [
+    "I can explain useeffect for external synchronization with correct React lifecycle boundaries.",
+    "I can reproduce and repair the starter failure for 06.03.02.",
+    "I can distinguish static/SSR evidence from mounted behavior and describe missing checks."
+  ],
+  "sources": [
+    {
+      "label": "React: useEffect for external synchronization",
+      "url": "https://react.dev/learn/synchronizing-with-effects"
+    },
+    {
+      "label": "React Hooks reference",
+      "url": "https://react.dev/reference/react/hooks"
+    }
+  ]
+}

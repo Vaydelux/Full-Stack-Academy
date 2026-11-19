@@ -1,0 +1,103 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Package a reusable stateful behavior in a custom Hook while keeping the caller's UI independent.","Create a React 19 / TypeScript 5 example for reusable custom hooks.","Use local instructor tests to isolate the failure and explain the unverified browser boundary."]} />
+
+## The problem we're solving
+
+Three disclosure panels duplicate the same open/close state and callbacks, making their behavior diverge. The starter's toggle utility never changes the boolean, so every consumer remains stuck in its initial state.
+
+## Build the mental model
+
+Package a reusable stateful behavior in a custom Hook while keeping the caller's UI independent. A function whose name starts with use and that uses React Hooks under the same top-level call rules. The React 19 APIs used here have distinct contracts: context passes values, transitions schedule nonurgent updates, deferred values let rendering lag, and optimistic state is a temporary view during an Action. These lessons use local data, not backend persistence.
+
+**Predict before you run:** Toggling either boolean changes its value, and a fresh disclosure starts in its explicit initial state.
+
+## Prerequisites and preflight
+
+Read the previous canonical React topic. Use Node 24 with `npm ci` at the repository root. The learner state lives at `labs/react-custom-hook/starter/solution.tsx`; instructor code lives in `labs/react-custom-hook/solution/solution.tsx`. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:react-custom-hook`. PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:react-custom-hook; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Predict and reproduce the incorrect behavior" file="labs/react-custom-hook/starter/solution.tsx" expected="A focused test fails on the intentionally defective starter.">
+
+Read the incomplete implementation and identify which invariant it violates:
+
+```tsx
+import {useState} from 'react';
+export function inverted(value:boolean){return value;}
+export function useDisclosure(initial=false){
+ const [open,setOpen]=useState(initial);
+ return {open,toggle:()=>setOpen(value=>inverted(value)),close:()=>setOpen(false)};
+}
+export function Disclosure() {
+ const disclosure=useDisclosure(false);
+ return <button type="button" aria-expanded={disclosure.open} onClick={disclosure.toggle}>Details</button>;
+}
+```
+
+**Why it fails:** The starter's toggle utility never changes the boolean, so every consumer remains stuck in its initial state.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the React 19 component contract" file="labs/react-custom-hook/starter/solution.tsx" expected="Toggling either boolean changes its value, and a fresh disclosure starts in its explicit initial state.">
+
+The instructor repair preserves the public exports while fixing the value propagation, scheduling, or state reconciliation defect:
+
+```tsx
+import {useState} from 'react';
+export function inverted(value:boolean){return !value;}
+export function useDisclosure(initial=false){
+ const [open,setOpen]=useState(initial);
+ return {open,toggle:()=>setOpen(value=>inverted(value)),close:()=>setOpen(false)};
+}
+export function Disclosure() {
+ const disclosure=useDisclosure(false);
+ return <button type="button" aria-expanded={disclosure.open} onClick={disclosure.toggle}>Details</button>;
+}
+```
+
+**Why it works:** Package a reusable stateful behavior in a custom Hook while keeping the caller's UI independent.
+
+</LessonStep>
+
+<LessonStep number={3} title="Check success and failure paths without a hosted backend" file="labs/react-custom-hook/solution.test.mjs" expected="Instructor assertions pass for the intended pure contract, while the learner starter fails before correction.">
+
+```js
+assert.equal(mod.inverted(false),true);assert.equal(mod.inverted(true),false);
+const html=renderToStaticMarkup(createElement(mod.Disclosure));
+assert.match(html,/aria-expanded="false"/);
+```
+
+**Proof it works:** Run `npm run lab:react-custom-hook`. The test inspects a pure transformation or server-rendered initial tree where applicable. An SSR test does not prove user-event scheduling, Suspense fallbacks while streaming, hydration or interaction timing. Those require browser integration tests.
+
+</LessonStep>
+
+<Misconception claim="The starter's toggle utility never changes the boolean, so every consumer remains stuck in its initial state." correction="Package a reusable stateful behavior in a custom Hook while keeping the caller's UI independent. A function whose name starts with use and that uses React Hooks under the same top-level call rules." />
+
+<KnowledgeCheck question="What makes a custom Hook a Hook?" choices={["React always saves state to a database automatically.","A function whose name starts with use and that uses React Hooks under the same top-level call rules.","Rendering a component on a server proves every client-side transition works.","TypeScript removes the need for runtime data validation."] } correctIndex={1} explanation="A function whose name starts with use and that uses React Hooks under the same top-level call rules." misconception="The chosen Hook changes rendering, composition or scheduling; it does not implicitly implement a network service." lessonId="06.04.02" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Symptom:** The starter's toggle utility never changes the boolean, so every consumer remains stuck in its initial state.
+
+**Reproduction:** Run the failing starter under the same assertions as the instructor solution. Inspect the relevant props, state snapshot, source array, or action input rather than debugging visual appearance first.
+
+**Repair:** Package a reusable stateful behavior in a custom Hook while keeping the caller's UI independent.
+
+**Regression:** Toggling either boolean changes its value, and a fresh disclosure starts in its explicit initial state. Test at least one invalid, duplicate, empty or missing-provider case as appropriate. Never describe this local simulation as a deployed backend.
+
+## Guided local lab
+
+Work through `labs/react-custom-hook/`. Hint ladder: read the expected outcome; identify the authoritative state and Hook boundary; compare the instructor's pure helper or context consumer after you attempt the repair. No arbitrary learner code executes on the public academy origin.
+
+<LabGate lessonId="06.04.02" labId="lab.react.react-custom-hook" commands={["npm run lab:react-custom-hook","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+What behavior is genuinely demonstrated by the local tests, and which interaction needs mounted React or real backend data before a production claim would be justified?
+
+## Official references
+
+- [React official documentation: Reusable custom Hooks](https://react.dev/learn/reusing-logic-with-custom-hooks)
+- [React Hooks reference](https://react.dev/reference/react/hooks)

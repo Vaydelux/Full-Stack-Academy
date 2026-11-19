@@ -1,0 +1,104 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Provide a localized error fallback and a separate loading fallback without treating both conditions as the same failure.","Create a React 19 / TypeScript 5 example for error boundaries and suspense.","Use local instructor tests to isolate the failure and explain the unverified browser boundary."]} />
+
+## The problem we're solving
+
+A resource dashboard needs to show loading while data is suspended and a clear recovery message when a descendant throws during rendering. The starter error boundary returns its children even after failure state is set.
+
+## Build the mental model
+
+Provide a localized error fallback and a separate loading fallback without treating both conditions as the same failure. Suspense handles a suspended render with a loading fallback; an error boundary handles rendering errors with a failure fallback. The React 19 APIs used here have distinct contracts: context passes values, transitions schedule nonurgent updates, deferred values let rendering lag, and optimistic state is a temporary view during an Action. These lessons use local data, not backend persistence.
+
+**Predict before you run:** The initial boundary renders children; a derived failure state renders a semantic alert fallback.
+
+## Prerequisites and preflight
+
+Read the previous canonical React topic. Use Node 24 with `npm ci` at the repository root. The learner state lives at `labs/react-error-suspense/starter/solution.tsx`; instructor code lives in `labs/react-error-suspense/solution/solution.tsx`. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:react-error-suspense`. PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:react-error-suspense; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Predict and reproduce the incorrect behavior" file="labs/react-error-suspense/starter/solution.tsx" expected="A focused test fails on the intentionally defective starter.">
+
+Read the incomplete implementation and identify which invariant it violates:
+
+```tsx
+import {Component,Suspense,type ReactNode} from 'react';
+export class RescueBoundary extends Component<{children:ReactNode},{failed:boolean}>{
+ state={failed:false};
+ static getDerivedStateFromError(){return {failed:true};}
+ render(){return this.props.children;}
+}
+export function LoadingSection({children}:{children:ReactNode}){
+ return <Suspense fallback={<p role="status">Loading resource…</p>}>{children}</Suspense>;
+}
+```
+
+**Why it fails:** The starter error boundary returns its children even after failure state is set.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the React 19 component contract" file="labs/react-error-suspense/starter/solution.tsx" expected="The initial boundary renders children; a derived failure state renders a semantic alert fallback.">
+
+The instructor repair preserves the public exports while fixing the value propagation, scheduling, or state reconciliation defect:
+
+```tsx
+import {Component,Suspense,type ReactNode} from 'react';
+export class RescueBoundary extends Component<{children:ReactNode},{failed:boolean}>{
+ state={failed:false};
+ static getDerivedStateFromError(){return {failed:true};}
+ render(){return this.state.failed?<p role="alert">Cannot show this panel.</p>:this.props.children;}
+}
+export function LoadingSection({children}:{children:ReactNode}){
+ return <Suspense fallback={<p role="status">Loading resource…</p>}>{children}</Suspense>;
+}
+```
+
+**Why it works:** Provide a localized error fallback and a separate loading fallback without treating both conditions as the same failure.
+
+</LessonStep>
+
+<LessonStep number={3} title="Check success and failure paths without a hosted backend" file="labs/react-error-suspense/solution.test.mjs" expected="Instructor assertions pass for the intended pure contract, while the learner starter fails before correction.">
+
+```js
+const html=renderToStaticMarkup(createElement(mod.RescueBoundary,null,createElement('p',null,'Ready')));
+assert.match(html,/Ready/);assert.deepEqual(mod.RescueBoundary.getDerivedStateFromError(new Error('fail')),{failed:true});
+const boundary=new mod.RescueBoundary({children:createElement('p',null,'Ready')});
+boundary.state={failed:true};const failed=renderToStaticMarkup(boundary.render());
+assert.match(failed,/role="alert".*Cannot show/);
+assert.match(renderToStaticMarkup(createElement(mod.LoadingSection,null,createElement('p',null,'Loaded'))),/Loaded/);
+```
+
+**Proof it works:** Run `npm run lab:react-error-suspense`. The test inspects a pure transformation or server-rendered initial tree where applicable. An SSR test does not prove user-event scheduling, Suspense fallbacks while streaming, hydration or interaction timing. Those require browser integration tests.
+
+</LessonStep>
+
+<Misconception claim="The starter error boundary returns its children even after failure state is set." correction="Provide a localized error fallback and a separate loading fallback without treating both conditions as the same failure. Suspense handles a suspended render with a loading fallback; an error boundary handles rendering errors with a failure fallback." />
+
+<KnowledgeCheck question="What is the difference between Suspense and an error boundary?" choices={["React always saves state to a database automatically.","Suspense handles a suspended render with a loading fallback; an error boundary handles rendering errors with a failure fallback.","Rendering a component on a server proves every client-side transition works.","TypeScript removes the need for runtime data validation."] } correctIndex={1} explanation="Suspense handles a suspended render with a loading fallback; an error boundary handles rendering errors with a failure fallback." misconception="The chosen Hook changes rendering, composition or scheduling; it does not implicitly implement a network service." lessonId="06.04.07" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Symptom:** The starter error boundary returns its children even after failure state is set.
+
+**Reproduction:** Run the failing starter under the same assertions as the instructor solution. Inspect the relevant props, state snapshot, source array, or action input rather than debugging visual appearance first.
+
+**Repair:** Provide a localized error fallback and a separate loading fallback without treating both conditions as the same failure.
+
+**Regression:** The initial boundary renders children; a derived failure state renders a semantic alert fallback. Test at least one invalid, duplicate, empty or missing-provider case as appropriate. Never describe this local simulation as a deployed backend.
+
+## Guided local lab
+
+Work through `labs/react-error-suspense/`. Hint ladder: read the expected outcome; identify the authoritative state and Hook boundary; compare the instructor's pure helper or context consumer after you attempt the repair. No arbitrary learner code executes on the public academy origin.
+
+<LabGate lessonId="06.04.07" labId="lab.react.react-error-suspense" commands={["npm run lab:react-error-suspense","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+What behavior is genuinely demonstrated by the local tests, and which interaction needs mounted React or real backend data before a production claim would be justified?
+
+## Official references
+
+- [React official documentation: Error boundaries and Suspense](https://react.dev/reference/react/Component#catching-rendering-errors-with-an-error-boundary)
+- [React Hooks reference](https://react.dev/reference/react/hooks)

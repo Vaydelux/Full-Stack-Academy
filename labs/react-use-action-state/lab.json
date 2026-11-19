@@ -1,0 +1,15 @@
+{
+  "id": "lab.react.react-use-action-state",
+  "lessonId": "06.04.06",
+  "title": "Practice React 19 useactionstate and form validation",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/react-use-action-state/starter/solution.tsx",
+  "solution": "labs/react-use-action-state/solution/solution.tsx",
+  "tests": "labs/react-use-action-state/solution.test.mjs",
+  "verify": [
+    "npm run lab:react-use-action-state"
+  ],
+  "expected": "Blank and very short messages are rejected; valid submissions return a typed success state.",
+  "security": "Trusted local source only. No remote code runner, API credentials or production persistence."
+}

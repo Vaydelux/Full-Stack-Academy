@@ -1,0 +1,15 @@
+{
+  "id": "lab.react.react-effect-cleanup",
+  "lessonId": "06.03.03",
+  "title": "Practice effect cleanup and resource lifetime in React 19",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/react-effect-cleanup/starter/solution.tsx",
+  "solution": "labs/react-effect-cleanup/solution/solution.tsx",
+  "tests": "labs/react-effect-cleanup/solution.test.mjs",
+  "verify": [
+    "npm run lab:react-effect-cleanup"
+  ],
+  "expected": "Cleanup stops exactly the timer that setup created without disturbing other timers.",
+  "security": "Only trusted source executes locally. Browser-only Hooks lifecycle behavior requires separate Playwright coverage."
+}

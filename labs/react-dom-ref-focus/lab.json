@@ -1,0 +1,15 @@
+{
+  "id": "lab.react.react-dom-ref-focus",
+  "lessonId": "06.03.06",
+  "title": "Practice dom refs and accessible focus in React 19",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/react-dom-ref-focus/starter/solution.tsx",
+  "solution": "labs/react-dom-ref-focus/solution/solution.tsx",
+  "tests": "labs/react-dom-ref-focus/solution.test.mjs",
+  "verify": [
+    "npm run lab:react-dom-ref-focus"
+  ],
+  "expected": "A mounted ref is focused exactly once and a missing ref is handled safely.",
+  "security": "Only trusted source executes locally. Browser-only Hooks lifecycle behavior requires separate Playwright coverage."
+}
