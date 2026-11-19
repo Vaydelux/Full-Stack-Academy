@@ -110,7 +110,7 @@ async function withBrowser(run){
  const base=await api.start();
  const previous={document:globalThis.document,window:globalThis.window,fetch:globalThis.fetch};
  const doc=new TestDocument();
- const intercepted={dropNextPost:false,failNextList:false,pausePatch:false,releasePatch:null,requests:[]};
+ const intercepted={dropNextPost:false,failNextList:false,failListAfterPost:false,pausePatch:false,releasePatch:null,requests:[]};
  const nativeFetch=previous.fetch;
  globalThis.document=doc;
  globalThis.window={location:{origin:base}};
@@ -127,6 +127,10 @@ async function withBrowser(run){
    throw new TypeError('Simulated GET network failure');
   }
   const response=await nativeFetch(input,init);
+  if(intercepted.failListAfterPost && method==='POST'){
+   intercepted.failListAfterPost=false;
+   intercepted.failNextList=true;
+  }
   if(intercepted.dropNextPost && method==='POST'){
    intercepted.dropNextPost=false;
    throw new TypeError('Simulated response loss AFTER server committed');
@@ -203,12 +207,7 @@ test('terminal server 422 does not offer a misleading same-key retry',async()=>w
 }));
 
 test('GET failure after confirmed POST does not leave an uncertain create',async()=>withBrowser(async({doc,base,intercepted})=>{
- const before=globalThis.fetch;
- globalThis.fetch=async(url,init)=>{
-  const result=await before(url,init);
-  if((init?.method??'GET')==='POST')intercepted.failNextList=true;
-  return result;
- };
+ intercepted.failListAfterPost=true;
  await create(doc,'Committed before refresh failure');
  await until(()=>journal(doc).includes('GET error'),'post-create GET failure');
  assert.equal(doc.getElementById('retry').classList.contains('hidden'),true);
