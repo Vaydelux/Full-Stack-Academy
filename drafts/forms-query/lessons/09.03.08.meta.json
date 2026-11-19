@@ -20,8 +20,8 @@
   "securityBoundary": "The teaching API is in-memory and unauthenticated. Do not deploy this workflow publicly or imply that Zod/client query keys provide access control.",
   "labSlug": "remote-task-capstone",
   "officialReferences": [
-    "https://react-hook-form.com/docs/useform/handlesubmit",
-    "https://tanstack.com/query/latest/docs/framework/react/guides/mutations"
+    "https://tanstack.com/query/latest/docs/framework/react/guides/mutations",
+    "https://react-hook-form.com/docs/useform/handlesubmit"
   ],
   "rubric": [
     "Integrate RHF/Zod validation, same-origin authenticated-by-nobody teaching POST, Query list/invalidation, conditional status PATCH and explicit error recovery.",

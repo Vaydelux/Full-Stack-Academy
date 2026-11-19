@@ -10,8 +10,8 @@
   "expectedNegative": "Separate useState preview and RHF input values drift after reset or programmatic update.",
   "securityBoundary": "Treat displayed form previews as user content; React text interpolation escapes text, while innerHTML would introduce an XSS risk.",
   "officialReferences": [
-    "https://react-hook-form.com/docs/usewatch",
-    "https://react-hook-form.com/docs/useform/reset"
+    "https://react-hook-form.com/docs/useform/formstate",
+    "https://react-hook-form.com/docs/usewatch"
   ],
   "requiresRealLibraryTest": true,
   "requiresRealBrowserTest": true,

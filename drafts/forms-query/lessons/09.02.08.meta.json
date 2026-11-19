@@ -21,8 +21,8 @@
   "securityBoundary": "Treat displayed form previews as user content; React text interpolation escapes text, while innerHTML would introduce an XSS risk.",
   "labSlug": "form-state-bug-hunt",
   "officialReferences": [
-    "https://react-hook-form.com/docs/usewatch",
-    "https://react-hook-form.com/docs/useform/reset"
+    "https://react-hook-form.com/docs/useform/formstate",
+    "https://react-hook-form.com/docs/usewatch"
   ],
   "rubric": [
     "Find and remove duplicated form state, stale previews, and uncontrolled-to-controlled mismatches.",
