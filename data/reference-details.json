@@ -254,5 +254,261 @@
       "06.04.06"
     ],
     "canonicalUrl": "https://react.dev/reference/react/useActionState"
+  },
+  {
+    "id": "next.js-page-tsx",
+    "matchCategories": [
+      "Next.js"
+    ],
+    "matchTitles": [
+      "page.tsx"
+    ],
+    "heading": "Next.js 16: page.tsx",
+    "category": "Next.js · App Router",
+    "majorVersion": "Next.js 16",
+    "status": "Authored reference draft",
+    "summary": "Make a route publicly accessible with an App Router page file. Page components are Server Components by default; dynamic params are promised and must be awaited.",
+    "syntax": "export default async function Page({params}: {params: Promise<{slug:string}>}) { ... }",
+    "lang": "tsx",
+    "parameters": "params: Promise of dynamic route segments (for a dynamic route); optional searchParams also arrives asynchronously.",
+    "returns": "A React UI tree for the URL path; the function may be async on the server.",
+    "minimalExample": "// app/docs/page.tsx\nexport default function DocsPage(){return <main><h1>Documentation</h1></main>;}",
+    "productionExample": "import {notFound} from 'next/navigation';\n// app/docs/[slug]/page.tsx\nexport default async function Doc({params}:{params:Promise<{slug:string}>}){\n const {slug}=await params;\n if(!/^[a-z0-9-]+$/.test(slug))notFound();\n return <main><h1>Documentation: {slug}</h1></main>;\n}",
+    "commonMistakes": [
+      "Treating dynamic params as synchronous in Next 16.",
+      "Assuming a route slug alone proves authorization to load a private record."
+    ],
+    "securityPerformanceNotes": [
+      "Validate dynamic path values and check object-level permission on protected resources.",
+      "Server rendering does not guarantee a route avoids private-data caching risks."
+    ],
+    "relatedLessonIds": [
+      "07.01.03"
+    ],
+    "canonicalUrl": "https://nextjs.org/docs/app/api-reference/file-conventions/page"
+  },
+  {
+    "id": "next.js-route-ts",
+    "matchCategories": [
+      "Next.js"
+    ],
+    "matchTitles": [
+      "route.ts"
+    ],
+    "heading": "Next.js 16: route.ts GET/POST",
+    "category": "Next.js · HTTP handlers",
+    "majorVersion": "Next.js 16",
+    "status": "Authored reference draft",
+    "summary": "Implement a server-side HTTP endpoint using Web Request and Response APIs. Validate all inputs, choose an explicit caching policy and authorize before returning private data.",
+    "syntax": "export async function GET(request: Request): Promise<Response> { ... }",
+    "lang": "tsx",
+    "parameters": "request: standard Web Request; optional context with awaited dynamic params.",
+    "returns": "Response with status, headers and a serialized body.",
+    "minimalExample": "// app/api/health/route.ts\nexport function GET(){return Response.json({ok:true},{headers:{'Cache-Control':'no-store'}});}",
+    "productionExample": "import {z} from 'zod';\nexport async function POST(request:Request){\n const input=z.object({title:z.string().min(2)}).safeParse(await request.json().catch(()=>null));\n if(!input.success)return Response.json({error:'invalid-body'},{status:400});\n // Authorize and persist before responding in a real application.\n return Response.json({accepted:false,reason:'storage-not-configured'},{status:503,headers:{'Cache-Control':'no-store'}});\n}",
+    "commonMistakes": [
+      "Returning 200 for invalid JSON or failed authorization.",
+      "Building outbound fetch URLs from unvalidated caller-supplied hosts (SSRF)."
+    ],
+    "securityPerformanceNotes": [
+      "Validate both input shape and authenticated principal at the handler boundary.",
+      "Use private no-store responses for account-specific resources."
+    ],
+    "relatedLessonIds": [
+      "07.02.05"
+    ],
+    "canonicalUrl": "https://nextjs.org/docs/app/getting-started/route-handlers"
+  },
+  {
+    "id": "next.js-dynamic-segments",
+    "matchCategories": [
+      "Next.js"
+    ],
+    "matchTitles": [
+      "dynamic segments"
+    ],
+    "heading": "Next.js 16: dynamic route segments",
+    "category": "Next.js · Routing",
+    "majorVersion": "Next.js 16",
+    "status": "Authored reference draft",
+    "summary": "Represent variable route portions with bracketed folders such as [slug] and [[...segments]]. Await promised params in Next.js 16 server routes.",
+    "syntax": "app/blog/[slug]/page.tsx",
+    "lang": "tsx",
+    "parameters": "slug: path segment value supplied by the URL; catch-all routes may return arrays of segments.",
+    "returns": "A params object promised to the page, route handler or metadata generator.",
+    "minimalExample": "// app/blog/[slug]/page.tsx\nexport default async function Page({params}:{params:Promise<{slug:string}>}){\n const {slug}=await params;return <h1>{slug}</h1>;\n}",
+    "productionExample": "import {notFound} from 'next/navigation';\nexport default async function Page({params}:{params:Promise<{slug:string}>}){\n const {slug}=await params;\n if(!/^[a-z0-9-]{1,60}$/.test(slug))notFound();\n // Load only an authorized record; never trust slug to establish ownership.\n return <main><h1>Blog: {slug}</h1></main>;\n}",
+    "commonMistakes": [
+      "Confusing a route-group folder with a public URL segment.",
+      "Using path data directly as an authorized database selector without scoping."
+    ],
+    "securityPerformanceNotes": [
+      "Validate slug format before performing database work.",
+      "Perform server-side authorization even when navigation to a URL is hidden in the UI."
+    ],
+    "relatedLessonIds": [
+      "07.01.03"
+    ],
+    "canonicalUrl": "https://nextjs.org/docs/app/api-reference/file-conventions/dynamic-routes"
+  },
+  {
+    "id": "next.js-server-actions",
+    "matchCategories": [
+      "Next.js"
+    ],
+    "matchTitles": [
+      "Server Actions"
+    ],
+    "heading": "Next.js 16: Server Actions",
+    "category": "Next.js · Mutations",
+    "majorVersion": "Next.js 16",
+    "status": "Authored reference draft",
+    "summary": "Execute server-side mutations from forms or Client Components. Server Actions are remotely invokable endpoints: validate inputs and permissions on every invocation.",
+    "syntax": "async function action(formData: FormData) { 'use server'; /* validate */ }",
+    "lang": "tsx",
+    "parameters": "formData: submitted form fields; bound inputs must still be validated and authorized.",
+    "returns": "Promise resolving with a response/Action state; may trigger cache invalidation after successful persistence.",
+    "minimalExample": "import {z} from 'zod';\nasync function validateDraft(data:FormData):Promise<void>{\n 'use server';\n const fields=z.object({title:z.string().min(2)}).safeParse({title:data.get('title')});\n if(!fields.success)return;\n}",
+    "productionExample": "import {z} from 'zod';\nasync function publish(formData:FormData):Promise<void>{\n 'use server';\n const parsed=z.object({title:z.string().min(2)}).safeParse({title:formData.get('title')});\n if(!parsed.success)throw new Error('Invalid draft');\n // Authenticate, check ownership, persist and then invalidate related caches.\n // No database is wired in this educational example; fail closed.\n throw new Error('Persistence not configured');\n}",
+    "commonMistakes": [
+      "Assuming the form button being hidden or disabled enforces authorization.",
+      "Invalidating caches before a committed database transaction."
+    ],
+    "securityPerformanceNotes": [
+      "Validate and authorize again inside each Server Action, not just in the browser.",
+      "Apply idempotency and CSRF/origin defenses as appropriate."
+    ],
+    "relatedLessonIds": [
+      "07.02.04"
+    ],
+    "canonicalUrl": "https://nextjs.org/docs/app/getting-started/mutating-data"
+  },
+  {
+    "id": "next.js-use-cache",
+    "matchCategories": [
+      "Next.js"
+    ],
+    "matchTitles": [
+      "use cache"
+    ],
+    "heading": "Next.js 16: use cache",
+    "category": "Next.js · Cache Components",
+    "majorVersion": "Next.js 16",
+    "status": "Authored reference draft",
+    "summary": "Opt in to caching a public deterministic function or component under the Cache Components model. Requires cacheComponents enabled in next.config; avoid placing user-bound private data into shared cache scopes.",
+    "syntax": "async function cachedData(){ 'use cache'; cacheLife('hours'); return publicData; }",
+    "lang": "tsx",
+    "parameters": "cacheLife: lifetime profile; cacheTag: optional domain invalidation label.",
+    "returns": "Cached function result subject to the configured cache profile and invalidation rules.",
+    "minimalExample": "import {cacheLife} from 'next/cache';\nexport async function publicTopics(){'use cache';cacheLife('hours');return ['React','Next'];}",
+    "productionExample": "import {cacheTag,cacheLife} from 'next/cache';\nexport async function publicCatalog(){\n 'use cache';cacheLife('hours');cacheTag('catalog:academy');\n return [{id:'react',name:'React 19'}];\n}\n// Requires: cacheComponents: true in next.config.ts",
+    "commonMistakes": [
+      "Assuming use cache works without enabling the correct version-specific configuration.",
+      "Caching session cookies, private profile rows or credentials in a shared cache scope."
+    ],
+    "securityPerformanceNotes": [
+      "Do not cache user-specific private results in a shared key.",
+      "Choose tags and lifetime profiles based on actual freshness requirements."
+    ],
+    "relatedLessonIds": [
+      "07.03.02"
+    ],
+    "canonicalUrl": "https://nextjs.org/docs/app/api-reference/directives/use-cache"
+  },
+  {
+    "id": "next.js-cachetag",
+    "matchCategories": [
+      "Next.js"
+    ],
+    "matchTitles": [
+      "cacheTag"
+    ],
+    "heading": "Next.js 16: cacheTag()",
+    "category": "Next.js · Targeted invalidation",
+    "majorVersion": "Next.js 16",
+    "status": "Authored reference draft",
+    "summary": "Label cached domain results so a successful mutation can invalidate related entries. cacheTag belongs inside an explicit cached scope.",
+    "syntax": "cacheTag('catalog:academy');",
+    "lang": "tsx",
+    "parameters": "tag: stable domain label, unique enough to avoid unrelated cache invalidation.",
+    "returns": "void; associates the cached result with an invalidation tag.",
+    "minimalExample": "import {cacheTag} from 'next/cache';\nexport async function getCatalog(){'use cache';cacheTag('catalog:academy');return ['React'];}",
+    "productionExample": "import {cacheLife,cacheTag} from 'next/cache';\nexport async function cachedCourse(id:string){\n 'use cache';cacheTag('course:'+id);cacheLife('hours');\n return {id,title:'Public sample'};\n}",
+    "commonMistakes": [
+      "Using one global tag for all unrelated data, causing broad invalidation.",
+      "Putting unbounded private/session identifiers into globally shared tags."
+    ],
+    "securityPerformanceNotes": [
+      "Do not use cache tags as an authorization mechanism.",
+      "Invalidate after a successful write and keep the tag namespace stable."
+    ],
+    "relatedLessonIds": [
+      "07.03.03"
+    ],
+    "canonicalUrl": "https://nextjs.org/docs/app/api-reference/functions/cacheTag"
+  },
+  {
+    "id": "next.js-revalidatetag",
+    "matchCategories": [
+      "Next.js"
+    ],
+    "matchTitles": [
+      "revalidateTag"
+    ],
+    "heading": "Next.js 16: revalidateTag()",
+    "category": "Next.js · Revalidation",
+    "majorVersion": "Next.js 16",
+    "status": "Authored reference draft",
+    "summary": "Mark cached data with a tag for revalidation. In current Next.js APIs, the 'max' profile supports stale-while-revalidate semantics; updateTag is used for read-your-own-writes in Server Actions.",
+    "syntax": "revalidateTag('catalog:academy','max');",
+    "lang": "tsx",
+    "parameters": "tag: domain label; profile: cache lifetime/revalidation behavior such as max.",
+    "returns": "void; requests revalidation rather than returning fresh data synchronously.",
+    "minimalExample": "import {revalidateTag} from 'next/cache';\nexport function onCatalogChanged(){revalidateTag('catalog:academy','max');}",
+    "productionExample": "import {updateTag} from 'next/cache';\n// Call updateTag within a Server Action only after a trusted completed write.\nexport async function afterAuthorizedSave(){\n 'use server';\n // Persistence deliberately omitted: real code must commit before invalidation.\n // updateTag('catalog:academy');\n}",
+    "commonMistakes": [
+      "Using revalidateTag('tag') without the recommended current cache profile.",
+      "Expecting a stale-while-revalidate operation to guarantee immediate fresh reads."
+    ],
+    "securityPerformanceNotes": [
+      "Never invalidate as a substitute for actual data persistence.",
+      "Scope cache tags by public domain rather than private user secrets."
+    ],
+    "relatedLessonIds": [
+      "07.03.04"
+    ],
+    "canonicalUrl": "https://nextjs.org/docs/app/api-reference/functions/revalidateTag"
+  },
+  {
+    "id": "next.js-next-js-proxy",
+    "matchCategories": [
+      "Next.js"
+    ],
+    "matchTitles": [
+      "Next.js Proxy"
+    ],
+    "heading": "Next.js 16: proxy.ts",
+    "category": "Next.js · Request boundary",
+    "majorVersion": "Next.js 16",
+    "status": "Authored reference draft",
+    "summary": "A special root proxy.ts file performs lightweight request-time routing and response handling; Next.js 16 renamed Middleware to Proxy. Proxy does not replace authorization inside handlers and data services.",
+    "syntax": "export function proxy(request: NextRequest) { return NextResponse.next(); }",
+    "lang": "ts",
+    "parameters": "request: NextRequest, with path and headers; config.matcher controls matched requests.",
+    "returns": "NextResponse that passes through, rewrites or redirects an incoming request.",
+    "minimalExample": "import {NextResponse,type NextRequest} from 'next/server';\nexport function proxy(_request:NextRequest){return NextResponse.next();}",
+    "productionExample": "import {NextResponse,type NextRequest} from 'next/server';\nexport function proxy(request:NextRequest){\n const response=NextResponse.next();\n response.headers.set('X-Content-Type-Options','nosniff');\n // This adds a header, not authentication. Check protected data at the server boundary.\n return response;\n}\nexport const config={matcher:['/dashboard/:path*']};",
+    "commonMistakes": [
+      "Assuming a Proxy redirect is equivalent to per-resource authorization.",
+      "Using Proxy to call privileged database services without robust identity checks."
+    ],
+    "securityPerformanceNotes": [
+      "Check ownership and RBAC/RLS inside protected services and route handlers.",
+      "Use Proxy for limited routing/header work; do not claim it secures an API by itself."
+    ],
+    "relatedLessonIds": [
+      "07.05.02"
+    ],
+    "canonicalUrl": "https://nextjs.org/docs/app/api-reference/file-conventions/proxy"
   }
 ]
