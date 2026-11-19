@@ -39,3 +39,11 @@ The work is *authored code*, not production-ready verified course material yet. 
 ## Local-only quality commands
 
 `npm run verify:react-next:cheap` checks file structure, all 80 MDX parses, 276 TS/TSX syntax parses and source-safety regressions. `npm run verify:react-next:full` adds all 79 instructor labs, all red starter checks, content and checkpoint checks, ESLint, strict TypeScript and a production Next build. The latter can consume **local** CPU/memory but no hosted GitHub Actions or Vercel usage. Neither command is claimed to have run in this editing environment.
+
+## Reference discovery and sample safety (additional source-only batch)
+
+- [x] 16 React/Next quick-reference drafts registered (20 total including four legacy drafts)
+- [x] Responsive searchable reference explorer with category/detailed filters and semantic controls
+- [x] Local typed filter tests, reference schema parser and browser-search smoke checks authored
+- [ ] Execute local `npm run reference:check && npm run test:reference-search` and full Chromium smoke
+- [ ] Editorial review of hook rules, request authorization and cache semantics; syntax/static audit is not a substitute for interactive testing

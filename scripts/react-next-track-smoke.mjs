@@ -25,6 +25,23 @@ export async function verifyReactNextTrack({page,base,assert,wait}){
   await wait(page.getByRole('heading',{name:"The problem we're solving"}));
   assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'Lesson has no 320px horizontal overflow: '+id);
  }
+ // Exercise interactive reference search, category filtering, empty state and reset.
+ const referenceResponse=await page.goto(base+'/reference');
+ assert.equal(referenceResponse.status(),200,'Reference index should load from the local Next build');
+ const explorer=page.getByRole('region',{name:'Search developer references'});
+ const search=explorer.getByRole('searchbox',{name:'Search by API, hook or concept'});
+ await wait(search);
+ await search.fill('useOptimistic');
+ await wait(explorer.getByRole('link',{name:/useOptimistic/}));
+ assert.equal(await explorer.getByRole('link',{name:/useOptimistic/}).count(),1,'One authored reference matches useOptimistic');
+ await explorer.getByRole('checkbox',{name:'Detailed references only'}).check();
+ await explorer.getByRole('combobox',{name:'Category'}).selectOption('Next.js');
+ await wait(explorer.getByText('No matching references'));
+ await explorer.getByRole('button',{name:'Show all references'}).click();
+ await wait(explorer.getByText(/Showing 303 of 303 subjects/));
+ assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'Reference explorer fits 320px without horizontal overflow');
+ await explorer.getByRole('searchbox',{name:'Search by API, hook or concept'}).fill('cacheTag');
+ await wait(explorer.getByRole('link',{name:/cacheTag/}));
  if(oldViewport)await page.setViewportSize(oldViewport);
- console.log('React + Next track browser smoke passed: 10 modules, 20 representative authored routes, 320px reader, planned noindex and sitemap policy');
+ console.log('React + Next track browser smoke passed: 10 modules, 20 representative authored routes, 320px reader and reference explorer, planned noindex and sitemap policy');
 }

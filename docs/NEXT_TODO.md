@@ -55,4 +55,6 @@ Source: `docs/MEGA_SCOPE_DELIVERY_PLAN.md` and `docs/delivery-waves.json`. Verif
 - [x] Keep 4 preexisting Zod/Prisma/Nest/Redis reference drafts; total 20, index unchanged at 303
 - [x] Add local reference schema/snippet audit command: `npm run reference:check`
 - [ ] Run that audit, inspect examples in production renderer and verify exact-head Next build locally
-- [ ] Review reference page accessibility, search interaction, source version drift and draft SEO before release
+- [x] Add responsive reference search UI with semantic searchbox, category selector, detailed-only filter, live result count, empty state and reset
+- [x] Add pure reference-filter tests and browser smoke scenarios (not executed yet)
+- [ ] Review reference page accessibility, source version drift and draft SEO before release
