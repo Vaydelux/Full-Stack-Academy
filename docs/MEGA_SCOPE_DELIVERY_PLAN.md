@@ -1,6 +1,6 @@
 # Full-Stack Academy — Seven-Wave Large-Scope Delivery Plan
 
-**As of November 19, 2026.** This plan is generated from the academy's canonical **889-topic** catalog, not invented lesson counts. The active React/Next feature branch holds **259 unique authored IDs** (257 MDX lessons plus 4 existing interactive models, with two overlaps). **630 unique topic IDs remain un-authored.**
+**As of November 19, 2026.** This plan is generated from the academy's canonical **889-topic** catalog, not invented lesson counts. The active React/Next feature branch holds **259 unique authored IDs** (257 MDX lessons plus 4 existing interactive models, with two overlaps). **598 unique topic IDs remain un-authored.**
 
 ## Why 7 large waves rather than dozens of tiny PRs
 
@@ -8,20 +8,18 @@ Work in **whole tracks and complete modules**, typically 80–104 canonical topi
 
 | Wave | Tracks | Modules | Canonical topics | Already authored | Remaining |
 |---|---|---:|---:|---:|---:|
-| W01 | 08–09–10 | 12 | 96 | 1 | 95 |
+| W01 | 08–09–10 | 12 | 96 | 33 | 63 |
 | W02 | 11–12–13 | 13 | 104 | 0 | 104 |
 | W03 | 14–15–16 | 12 | 96 | 1 | 95 |
 | W04 | 17–18–19 | 11 | 88 | 0 | 88 |
 | W05 | 20–21–22 | 10 | 80 | 0 | 80 |
 | W06 | 23–24–25 | 12 | 96 | 0 | 96 |
 | W07 | 26–27 | 9 | 72 | 0 | 72 |
-| **Total** | 08–27 | **79** | **632** | **2** | **630** |
-
-The two pre-authored IDs in upcoming tracks are `09.01.02` and `15.02.04`; do not count them twice. All other future topics remain planned, not authored.
+| **Total** | 08–27 | **79** | **632** | **34** | **598** |
 
 ## Scope and architectural intent
 
-### W01 — Professional frontend, forms & HTTP services
+### W01 — Professional frontend, forms & HTTP services (UI track authored; forms & HTTP next)
 
 Design system, client data and server-side HTTP API core. Exact tracks **08, 09, 10**, with 95 unauthored topic IDs and 12 canonical modules. Complete topic-level hands-on labs and a module capstone without claiming real cloud or database integration unless it was executed.
 
@@ -63,3 +61,7 @@ Billing, RBAC/SSO/privacy/platform controls and integrated production capstone. 
 Read `docs/PROJECT_CHECKPOINT.md`, `docs/checkpoint.json`, `docs/NEXT_TODO.md`, `docs/REACT_NEXT_OFFLINE_ACCEPTANCE.md`, `docs/delivery-waves.json` and `data/curriculum.json` before editing. Record the exact feature branch head, the specific modules authored, tests run/not run and outstanding blockers. Never confuse a source-only milestone with a published website.
 
 **Current priority:** finish **local quality qualification of React/Next tracks 06–07** before beginning W01 (tracks 08 Tailwind/shadcn, 09 Zod/RHF/TanStack/Zustand, 10 Node & HTTP). No cloud or configuration is needed to author and review those topics. The live site still serves the older deployment.
+
+## Current W01 continuation
+
+Track 08 has 32 source-authored lessons but awaits local tests. Tracks 09 and 10 still contain **63 unauthored IDs** (32 + 32 topic slots less one pre-authored interactive Zod example). No module in 09/10 should be marked complete until its own graded labs and tests exist.

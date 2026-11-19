@@ -75,3 +75,7 @@ All post-React/Next development is arranged into seven **80–104-topic** whole-
 ## Quick-reference program
 
 The authored reference drafts now total **20** (four legacy plus 16 React/Next), out of 303 canonical indexed subjects. Source is split between the existing interactive sample registry and `data/reference-details.json`; the reference renderer reuses the same typed contract. `npm run reference:check` validates IDs, links, snippets and source mappings locally. Future batches should author full reference cohorts by relevant track, not falsely label all 303 index entries as complete.
+
+## W01 UI track source checkpoint (2026-11-19)
+
+Track 08 now has 32 authored UI system lessons and 32 local lab fixtures, producing 291 unique authored IDs and leaving 598 canonical IDs unauthored across 889 topics. The W01 next actual build scope is 63 missing IDs from 09 and 10. `docs/delivery-waves.json` is regenerated to count authored status; all React/Next/UI source is unreleased pending local Node/Chromium qualification.

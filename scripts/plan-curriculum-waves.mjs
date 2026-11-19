@@ -41,7 +41,7 @@ const mdxIds=fs.readdirSync(path.join(root,'src/content/lessons')).filter(n=>n.e
 const publishedIds=[...new Set([...mdxIds,...interactiveIds])];
 assert.equal(publishedIds.length,checkpoint.snapshot.publishedLessons,'Checkpoint must represent unique authored IDs');
 const planned=wavePlan(curriculum,publishedIds,checkpoint.snapshot);
-assert.equal(planned.remainingAfterCurrent,630,'Remaining topic count changed; replan the waves');
+assert.equal(planned.remainingAfterCurrent,curriculum.lessons.length-publishedIds.length,'Remaining topic count must match unique authored IDs');
 assert.equal(planned.waves.reduce((n,w)=>n+w.remaining,0),planned.remainingAfterCurrent);
 const target=path.join(root,'docs/delivery-waves.json');
 if(process.argv.includes('--write')){

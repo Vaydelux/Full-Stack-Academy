@@ -3,17 +3,17 @@
   "asOf": "2026-11-19",
   "strategy": "Large offline whole-track waves; no split modules",
   "baseline": {
-    "authoredLessonIds": 259,
-    "authoredMdx": 257,
-    "labFixtures": 257,
-    "completeModules": 32
+    "authoredLessonIds": 291,
+    "authoredMdx": 289,
+    "labFixtures": 289,
+    "completeModules": 36
   },
   "catalog": {
     "tracks": 28,
     "modules": 111,
     "topicIds": 889
   },
-  "remainingAfterCurrent": 630,
+  "remainingAfterCurrent": 598,
   "waves": [
     {
       "id": "W01",
@@ -29,29 +29,29 @@
           "id": "08.01",
           "title": "Tailwind & shadcn/ui",
           "topics": 8,
-          "alreadyAuthored": 0,
-          "remaining": 8
+          "alreadyAuthored": 8,
+          "remaining": 0
         },
         {
           "id": "08.02",
           "title": "Advanced Interaction",
           "topics": 8,
-          "alreadyAuthored": 0,
-          "remaining": 8
+          "alreadyAuthored": 8,
+          "remaining": 0
         },
         {
           "id": "08.03",
           "title": "Professional Data Interfaces",
           "topics": 8,
-          "alreadyAuthored": 0,
-          "remaining": 8
+          "alreadyAuthored": 8,
+          "remaining": 0
         },
         {
           "id": "08.04",
           "title": "Design QA",
           "topics": 8,
-          "alreadyAuthored": 0,
-          "remaining": 8
+          "alreadyAuthored": 8,
+          "remaining": 0
         },
         {
           "id": "09.01",
@@ -111,8 +111,8 @@
         }
       ],
       "topics": 96,
-      "alreadyAuthored": 1,
-      "remaining": 95,
+      "alreadyAuthored": 33,
+      "remaining": 63,
       "status": "planned-offline",
       "gate": "Complete source, tests, local build, review and checkpoint before merging or enabling hosted builds"
     },
