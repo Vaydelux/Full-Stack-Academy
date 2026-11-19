@@ -1,0 +1,102 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Explain the accessibility and design invariant behind accessible modal dialog","Reproduce and correct a meaningful failing student assertion","Identify what static SSR proves and what requires a real browser and keyboard"]} />
+
+## The problem we're solving
+
+A confirm dialog can be visually closed but leaves focus trapped on an invisible button and does not restore the trigger focus.
+
+## Build the mental model
+
+A modal must have a discernible title, modal semantics, keyboard dismissal strategy and predictable focus placement/return. Use a tested dialog primitive when possible; aria-modal alone does not implement focus trapping or background inertness.
+
+**Predict first:** Closing the dialog is accompanied by a focus-return intention, and the visible dialog always has a name.
+
+## Prerequisites and preflight
+
+Continue from [the previous topic](/learn/08.02.01). Read `labs/ui-modal-dialog/starter/solution.ts`, `labs/ui-modal-dialog/solution/solution.ts` and `labs/ui-modal-dialog/solution.test.mjs`. The TSX sample is rendered as initial HTML only; hydrated events, focus, visual contrast and overflow need separate browser tests.
+
+<LessonStep number={1} title="Reproduce the defective UI policy" file="labs/ui-modal-dialog/starter/solution.ts" expected="Student starter fails a meaningful assertion.">
+
+```ts
+
+export function solve(open:boolean):{visible:boolean;restoreFocus:boolean;labelled:boolean}{return {visible:open,restoreFocus:false,labelled:false};}
+
+```
+
+**Predict:** Closing the dialog is accompanied by a focus-return intention, and the visible dialog always has a name.
+
+**Diagnosis:** A confirm dialog can be visually closed but leaves focus trapped on an invisible button and does not restore the trigger focus.
+
+**Proof:** Run `ACADEMY_LAB_TARGET=starter npm run lab:ui-modal-dialog`. The starter should fail the stated regression, not fail because of a missing dependency.
+
+</LessonStep>
+
+<LessonStep number={2} title="Fix the policy and verify edge cases" file="labs/ui-modal-dialog/starter/solution.ts" expected="Closing the dialog is accompanied by a focus-return intention, and the visible dialog always has a name.">
+
+```ts
+
+export function solve(open:boolean):{visible:boolean;restoreFocus:boolean;labelled:boolean}{return {visible:open,restoreFocus:!open,labelled:true};}
+
+```
+
+**Why it works:** A modal must have a discernible title, modal semantics, keyboard dismissal strategy and predictable focus placement/return. Use a tested dialog primitive when possible; aria-modal alone does not implement focus trapping or background inertness.
+
+**Proof:** Run `npm run lab:ui-modal-dialog` and inspect the instructor test output.
+
+</LessonStep>
+
+<LessonStep number={3} title="Render the semantic React example" file="labs/ui-modal-dialog/solution/Widget.tsx" expected="Initial semantic markup renders without a runtime crash.">
+
+```tsx
+
+import React from "react";
+export function Workshop(){return <section aria-label="Modal workshop"><h2>Dialog semantics</h2><div role="dialog" aria-modal="true" aria-labelledby="confirm-title" aria-describedby="confirm-desc"><h3 id="confirm-title">Delete draft?</h3><p id="confirm-desc">The draft cannot be restored.</p><button type="button">Cancel</button></div></section>;}
+
+```
+
+This sample uses semantic React without requiring an uninstalled UI package. Server rendering does not execute handlers or certify focus management.
+
+**Proof:** The lab renders initial HTML with React DOM Server. A real browser check remains mandatory.
+
+</LessonStep>
+
+## Production library pattern
+
+```tsx
+"use client";
+import * as Dialog from "@radix-ui/react-dialog";
+function Confirm(){return <Dialog.Root><Dialog.Trigger>Delete</Dialog.Trigger><Dialog.Portal><Dialog.Overlay/><Dialog.Content><Dialog.Title>Delete draft?</Dialog.Title><Dialog.Description>Review before deleting.</Dialog.Description><Dialog.Close>Cancel</Dialog.Close></Dialog.Content></Dialog.Portal></Dialog.Root>;}
+```
+
+The Radix snippet is a library option, not a tested dependency in this course fixture. Proper modal focus is only certifiable in a running browser.
+
+## Explore and verify
+
+Test long labels, keyboard-only usage, 320px width, reduced motion, contrast, errors and screen-reader announcements in a real browser.
+
+<Misconception claim="An SSR snapshot proves a component is keyboard accessible." correction="A modal must have a discernible title, modal semantics, keyboard dismissal strategy and predictable focus placement/return. Use a tested dialog primitive when possible; aria-modal alone does not implement focus trapping or background inertness." />
+
+## Bug Hunt: reproduce, diagnose, repair
+
+In a real browser, open the dialog with keyboard only, press Tab repeatedly, Escape out, and confirm focus returns to the original trigger. Detect and fix background focus leakage.
+
+<KnowledgeCheck question="What does aria-modal=true do by itself?" choices={["Fully implement a focus trap","Communicate modal semantics but not keyboard focus management","Automatically restore focus","Destroy background elements"]} correctIndex={1} explanation="A modal must have a discernible title, modal semantics, keyboard dismissal strategy and predictable focus placement/return. Use a tested dialog primitive when possible; aria-modal alone does not implement focus trapping or background inertness." misconception="Offline SSR is not an interactive accessibility test." lessonId="08.02.02" />
+
+## Guided local lab
+
+Edit `labs/ui-modal-dialog/starter/solution.ts`; the actual test asserts meaningful positive and negative outcomes. `npm run lab:ui-modal-dialog` also renders initial React markup. Keyboard interactions, pointer behavior, focus trapping, browser layout and actual Radix/shadcn packages are separate integration gates.
+
+<LabGate lessonId="08.02.02" labId="lab.foundation.ui-modal-dialog" commands={["npm ci","npm run lab:ui-modal-dialog"]} interactive={false} />
+
+## Reflect
+
+What was broken, what exact assertion proves the repair, and which user interaction still requires a real browser or assistive technology?
+
+## Official references
+
+- [Primary framework documentation](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/)
+
+- [Supporting accessibility and API guide](https://www.radix-ui.com/primitives/docs/components/dialog)

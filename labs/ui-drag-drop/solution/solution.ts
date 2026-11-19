@@ -1,0 +1,1 @@
+export function solve<T>(items:readonly T[],from:number,to:number):T[]{if(!Number.isInteger(from)||!Number.isInteger(to)||from<0||to<0||from>=items.length||to>=items.length)throw new TypeError("Invalid reorder");const output=[...items];const moved=output.splice(from,1)[0];output.splice(to,0,moved);return output;}

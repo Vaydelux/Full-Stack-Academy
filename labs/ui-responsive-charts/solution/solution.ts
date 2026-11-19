@@ -1,0 +1,1 @@
+export function solve(values:readonly number[]):number[]{if(values.some(v=>!Number.isFinite(v)||v<0))throw new TypeError("Invalid chart input");const max=Math.max(0,...values);return values.map(v=>max===0?0:v/max);}

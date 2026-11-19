@@ -1,0 +1,102 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Explain the accessibility and design invariant behind toasts and announcements","Reproduce and correct a meaningful failing student assertion","Identify what static SSR proves and what requires a real browser and keyboard"]} />
+
+## The problem we're solving
+
+Every success toast is announced as an assertive alert, interrupting screen-reader navigation for routine confirmations.
+
+## Build the mental model
+
+Use noninterrupting status announcements for routine success, and reserve assertive alerts for urgent problems that require immediate attention. Keep toast copy concise, make actions keyboard reachable, and avoid vanishing content before it can be understood.
+
+**Predict first:** Success and informational messages use polite status semantics, while urgent errors use alert semantics.
+
+## Prerequisites and preflight
+
+Continue from [the previous topic](/learn/08.02.04). Read `labs/ui-toast-announcements/starter/solution.ts`, `labs/ui-toast-announcements/solution/solution.ts` and `labs/ui-toast-announcements/solution.test.mjs`. The TSX sample is rendered as initial HTML only; hydrated events, focus, visual contrast and overflow need separate browser tests.
+
+<LessonStep number={1} title="Reproduce the defective UI policy" file="labs/ui-toast-announcements/starter/solution.ts" expected="Student starter fails a meaningful assertion.">
+
+```ts
+
+export function solve(kind:"success"|"error"|"info"):string{return "alert";}
+
+```
+
+**Predict:** Success and informational messages use polite status semantics, while urgent errors use alert semantics.
+
+**Diagnosis:** Every success toast is announced as an assertive alert, interrupting screen-reader navigation for routine confirmations.
+
+**Proof:** Run `ACADEMY_LAB_TARGET=starter npm run lab:ui-toast-announcements`. The starter should fail the stated regression, not fail because of a missing dependency.
+
+</LessonStep>
+
+<LessonStep number={2} title="Fix the policy and verify edge cases" file="labs/ui-toast-announcements/starter/solution.ts" expected="Success and informational messages use polite status semantics, while urgent errors use alert semantics.">
+
+```ts
+
+export function solve(kind:"success"|"error"|"info"):string{return kind==="error"?"alert":"status";}
+
+```
+
+**Why it works:** Use noninterrupting status announcements for routine success, and reserve assertive alerts for urgent problems that require immediate attention. Keep toast copy concise, make actions keyboard reachable, and avoid vanishing content before it can be understood.
+
+**Proof:** Run `npm run lab:ui-toast-announcements` and inspect the instructor test output.
+
+</LessonStep>
+
+<LessonStep number={3} title="Render the semantic React example" file="labs/ui-toast-announcements/solution/Widget.tsx" expected="Initial semantic markup renders without a runtime crash.">
+
+```tsx
+
+import React from "react";
+export function Workshop(){return <section aria-label="Toast workshop"><h2>Announcement levels</h2><p role="status">Changes saved successfully.</p><button type="button">Dismiss message</button></section>;}
+
+```
+
+This sample uses semantic React without requiring an uninstalled UI package. Server rendering does not execute handlers or certify focus management.
+
+**Proof:** The lab renders initial HTML with React DOM Server. A real browser check remains mandatory.
+
+</LessonStep>
+
+## Production library pattern
+
+```tsx
+"use client";
+import React from "react";
+export function SaveStatus({saved}:{saved:boolean}){return <output role="status" aria-live="polite">{saved?"Changes saved":"Unsaved changes"}</output>;}
+```
+
+Real live-region timing and screen-reader speech must be tested in the browser. An SSR role attribute alone is only initial semantics.
+
+## Explore and verify
+
+Test long labels, keyboard-only usage, 320px width, reduced motion, contrast, errors and screen-reader announcements in a real browser.
+
+<Misconception claim="An SSR snapshot proves a component is keyboard accessible." correction="Use noninterrupting status announcements for routine success, and reserve assertive alerts for urgent problems that require immediate attention. Keep toast copy concise, make actions keyboard reachable, and avoid vanishing content before it can be understood." />
+
+## Bug Hunt: reproduce, diagnose, repair
+
+Trigger three toasts rapidly and listen with a screen reader. Verify announcements aren't repeated, critical information is available after timeout, and dismissal is keyboard accessible.
+
+<KnowledgeCheck question="Which ARIA role is normally suitable for a nonurgent save confirmation?" choices={["status","alert with assertive urgency","marquee","presentation"]} correctIndex={0} explanation="Use noninterrupting status announcements for routine success, and reserve assertive alerts for urgent problems that require immediate attention. Keep toast copy concise, make actions keyboard reachable, and avoid vanishing content before it can be understood." misconception="Offline SSR is not an interactive accessibility test." lessonId="08.02.05" />
+
+## Guided local lab
+
+Edit `labs/ui-toast-announcements/starter/solution.ts`; the actual test asserts meaningful positive and negative outcomes. `npm run lab:ui-toast-announcements` also renders initial React markup. Keyboard interactions, pointer behavior, focus trapping, browser layout and actual Radix/shadcn packages are separate integration gates.
+
+<LabGate lessonId="08.02.05" labId="lab.foundation.ui-toast-announcements" commands={["npm ci","npm run lab:ui-toast-announcements"]} interactive={false} />
+
+## Reflect
+
+What was broken, what exact assertion proves the repair, and which user interaction still requires a real browser or assistive technology?
+
+## Official references
+
+- [Primary framework documentation](https://www.w3.org/WAI/ARIA/apg/patterns/alert/)
+
+- [Supporting accessibility and API guide](https://www.w3.org/WAI/WCAG22/Understanding/status-messages.html)

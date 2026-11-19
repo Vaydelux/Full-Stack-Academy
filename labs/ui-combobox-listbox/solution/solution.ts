@@ -1,0 +1,1 @@
+export function solve(options:readonly {id:string;label:string}[],query:string):string[]{const needle=query.trim().toLowerCase();return options.filter(x=>x.label.toLowerCase().includes(needle)).map(x=>x.id);}

@@ -1,0 +1,102 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Explain the accessibility and design invariant behind motion animation primitives","Reproduce and correct a meaningful failing student assertion","Identify what static SSR proves and what requires a real browser and keyboard"]} />
+
+## The problem we're solving
+
+A card animation plays an aggressive 600ms slide for every user, including people who requested reduced motion.
+
+## Build the mental model
+
+Use motion deliberately to reinforce hierarchy and state. Honor prefers-reduced-motion by eliminating nonessential transforms or providing an instant state change. Don't assume duration alone guarantees accessible or efficient animation.
+
+**Predict first:** When reduced motion is requested, nonessential transforms turn off instead of simply running faster.
+
+## Prerequisites and preflight
+
+Continue from [the previous topic](/learn/08.01.08). Read `labs/ui-motion-primitives/starter/solution.ts`, `labs/ui-motion-primitives/solution/solution.ts` and `labs/ui-motion-primitives/solution.test.mjs`. The TSX sample is rendered as initial HTML only; hydrated events, focus, visual contrast and overflow need separate browser tests.
+
+<LessonStep number={1} title="Reproduce the defective UI policy" file="labs/ui-motion-primitives/starter/solution.ts" expected="Student starter fails a meaningful assertion.">
+
+```ts
+
+export function solve(reduced:boolean):{duration:number;animate:boolean}{return {duration:600,animate:true};}
+
+```
+
+**Predict:** When reduced motion is requested, nonessential transforms turn off instead of simply running faster.
+
+**Diagnosis:** A card animation plays an aggressive 600ms slide for every user, including people who requested reduced motion.
+
+**Proof:** Run `ACADEMY_LAB_TARGET=starter npm run lab:ui-motion-primitives`. The starter should fail the stated regression, not fail because of a missing dependency.
+
+</LessonStep>
+
+<LessonStep number={2} title="Fix the policy and verify edge cases" file="labs/ui-motion-primitives/starter/solution.ts" expected="When reduced motion is requested, nonessential transforms turn off instead of simply running faster.">
+
+```ts
+
+export function solve(reduced:boolean):{duration:number;animate:boolean}{return reduced?{duration:0,animate:false}:{duration:180,animate:true};}
+
+```
+
+**Why it works:** Use motion deliberately to reinforce hierarchy and state. Honor prefers-reduced-motion by eliminating nonessential transforms or providing an instant state change. Don't assume duration alone guarantees accessible or efficient animation.
+
+**Proof:** Run `npm run lab:ui-motion-primitives` and inspect the instructor test output.
+
+</LessonStep>
+
+<LessonStep number={3} title="Render the semantic React example" file="labs/ui-motion-primitives/solution/Widget.tsx" expected="Initial semantic markup renders without a runtime crash.">
+
+```tsx
+
+import React from "react";
+export function Workshop(){return <section aria-label="Motion workshop"><h2>Purposeful motion</h2><p>Transitions must respect reduced-motion preferences.</p><button type="button">Reveal details</button></section>;}
+
+```
+
+This sample uses semantic React without requiring an uninstalled UI package. Server rendering does not execute handlers or certify focus management.
+
+**Proof:** The lab renders initial HTML with React DOM Server. A real browser check remains mandatory.
+
+</LessonStep>
+
+## Production library pattern
+
+```tsx
+"use client";
+import {motion,useReducedMotion} from "motion/react";
+function Panel(){const reduce=useReducedMotion();return <motion.section initial={false} animate={{opacity:1,x:reduce?0:12}} transition={{duration:reduce?0:0.18}}>Details</motion.section>;}
+```
+
+Motion package integration and animations need a real browser and reduced-motion media-query tests; SSR markup alone cannot certify interaction animation.
+
+## Explore and verify
+
+Test long labels, keyboard-only usage, 320px width, reduced motion, contrast, errors and screen-reader announcements in a real browser.
+
+<Misconception claim="An SSR snapshot proves a component is keyboard accessible." correction="Use motion deliberately to reinforce hierarchy and state. Honor prefers-reduced-motion by eliminating nonessential transforms or providing an instant state change. Don't assume duration alone guarantees accessible or efficient animation." />
+
+## Bug Hunt: reproduce, diagnose, repair
+
+Toggle the browser's reduced-motion emulation, compare the animated and static variants, and verify the state change remains understandable without movement.
+
+<KnowledgeCheck question="Which preference should nonessential UI animation honor?" choices={["prefers-reduced-motion","prefers-bright-colors only","prefers-high-fps","devicePixelRatio"]} correctIndex={0} explanation="Use motion deliberately to reinforce hierarchy and state. Honor prefers-reduced-motion by eliminating nonessential transforms or providing an instant state change. Don't assume duration alone guarantees accessible or efficient animation." misconception="Offline SSR is not an interactive accessibility test." lessonId="08.02.01" />
+
+## Guided local lab
+
+Edit `labs/ui-motion-primitives/starter/solution.ts`; the actual test asserts meaningful positive and negative outcomes. `npm run lab:ui-motion-primitives` also renders initial React markup. Keyboard interactions, pointer behavior, focus trapping, browser layout and actual Radix/shadcn packages are separate integration gates.
+
+<LabGate lessonId="08.02.01" labId="lab.foundation.ui-motion-primitives" commands={["npm ci","npm run lab:ui-motion-primitives"]} interactive={false} />
+
+## Reflect
+
+What was broken, what exact assertion proves the repair, and which user interaction still requires a real browser or assistive technology?
+
+## Official references
+
+- [Primary framework documentation](https://www.w3.org/WAI/WCAG22/Understanding/animation-from-interactions.html)
+
+- [Supporting accessibility and API guide](https://motion.dev/docs/react-accessibility)

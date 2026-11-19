@@ -1,0 +1,102 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Explain the accessibility and design invariant behind combobox and listbox","Reproduce and correct a meaningful failing student assertion","Identify what static SSR proves and what requires a real browser and keyboard"]} />
+
+## The problem we're solving
+
+An autocomplete highlights the first item but commits a different record when the filtered list changes, because the selection is tracked by index.
+
+## Build the mental model
+
+Represent suggestions with stable option IDs and a typed query; the active descendant must identify an option still present in the current list. Full ARIA combobox keyboard behavior is demanding: prefer a tested primitive or native datalist when requirements permit.
+
+**Predict first:** Only matching stable option IDs remain available after filtering; active selection must be reconciled separately.
+
+## Prerequisites and preflight
+
+Continue from [the previous topic](/learn/08.02.02). Read `labs/ui-combobox-listbox/starter/solution.ts`, `labs/ui-combobox-listbox/solution/solution.ts` and `labs/ui-combobox-listbox/solution.test.mjs`. The TSX sample is rendered as initial HTML only; hydrated events, focus, visual contrast and overflow need separate browser tests.
+
+<LessonStep number={1} title="Reproduce the defective UI policy" file="labs/ui-combobox-listbox/starter/solution.ts" expected="Student starter fails a meaningful assertion.">
+
+```ts
+
+export function solve(options:readonly {id:string;label:string}[],query:string):string[]{return options.map(x=>x.id);}
+
+```
+
+**Predict:** Only matching stable option IDs remain available after filtering; active selection must be reconciled separately.
+
+**Diagnosis:** An autocomplete highlights the first item but commits a different record when the filtered list changes, because the selection is tracked by index.
+
+**Proof:** Run `ACADEMY_LAB_TARGET=starter npm run lab:ui-combobox-listbox`. The starter should fail the stated regression, not fail because of a missing dependency.
+
+</LessonStep>
+
+<LessonStep number={2} title="Fix the policy and verify edge cases" file="labs/ui-combobox-listbox/starter/solution.ts" expected="Only matching stable option IDs remain available after filtering; active selection must be reconciled separately.">
+
+```ts
+
+export function solve(options:readonly {id:string;label:string}[],query:string):string[]{const needle=query.trim().toLowerCase();return options.filter(x=>x.label.toLowerCase().includes(needle)).map(x=>x.id);}
+
+```
+
+**Why it works:** Represent suggestions with stable option IDs and a typed query; the active descendant must identify an option still present in the current list. Full ARIA combobox keyboard behavior is demanding: prefer a tested primitive or native datalist when requirements permit.
+
+**Proof:** Run `npm run lab:ui-combobox-listbox` and inspect the instructor test output.
+
+</LessonStep>
+
+<LessonStep number={3} title="Render the semantic React example" file="labs/ui-combobox-listbox/solution/Widget.tsx" expected="Initial semantic markup renders without a runtime crash.">
+
+```tsx
+
+import React from "react";
+export function Workshop(){return <form aria-label="Combobox workshop"><h2>Suggestions</h2><label htmlFor="fruit">Fruit</label><input id="fruit" list="fruit-list" autoComplete="off"/><datalist id="fruit-list"><option value="Apple"/><option value="Banana"/></datalist></form>;}
+
+```
+
+This sample uses semantic React without requiring an uninstalled UI package. Server rendering does not execute handlers or certify focus management.
+
+**Proof:** The lab renders initial HTML with React DOM Server. A real browser check remains mandatory.
+
+</LessonStep>
+
+## Production library pattern
+
+```tsx
+"use client";
+import * as Select from "@radix-ui/react-select";
+function FruitSelect(){return <Select.Root><Select.Trigger aria-label="Fruit"><Select.Value placeholder="Select fruit"/></Select.Trigger><Select.Portal><Select.Content><Select.Viewport><Select.Item value="apple"><Select.ItemText>Apple</Select.ItemText></Select.Item></Select.Viewport></Select.Content></Select.Portal></Select.Root>;}
+```
+
+The Radix Select pattern is not a full free-text combobox. For searchable combobox behavior, choose a corresponding primitive and test typeahead, focus, and announcements separately.
+
+## Explore and verify
+
+Test long labels, keyboard-only usage, 320px width, reduced motion, contrast, errors and screen-reader announcements in a real browser.
+
+<Misconception claim="An SSR snapshot proves a component is keyboard accessible." correction="Represent suggestions with stable option IDs and a typed query; the active descendant must identify an option still present in the current list. Full ARIA combobox keyboard behavior is demanding: prefer a tested primitive or native datalist when requirements permit." />
+
+## Bug Hunt: reproduce, diagnose, repair
+
+Filter to one result, then press ArrowDown/Enter and confirm the ID and label correspond. For custom comboboxes, verify aria-expanded, aria-controls, aria-activedescendant and screen-reader announcements.
+
+<KnowledgeCheck question="Which identifier should link an active combobox suggestion to a listbox option?" choices={["Its stable option ID","The array index forever","A fresh random ID on each render","The option's screen coordinates"]} correctIndex={0} explanation="Represent suggestions with stable option IDs and a typed query; the active descendant must identify an option still present in the current list. Full ARIA combobox keyboard behavior is demanding: prefer a tested primitive or native datalist when requirements permit." misconception="Offline SSR is not an interactive accessibility test." lessonId="08.02.03" />
+
+## Guided local lab
+
+Edit `labs/ui-combobox-listbox/starter/solution.ts`; the actual test asserts meaningful positive and negative outcomes. `npm run lab:ui-combobox-listbox` also renders initial React markup. Keyboard interactions, pointer behavior, focus trapping, browser layout and actual Radix/shadcn packages are separate integration gates.
+
+<LabGate lessonId="08.02.03" labId="lab.foundation.ui-combobox-listbox" commands={["npm ci","npm run lab:ui-combobox-listbox"]} interactive={false} />
+
+## Reflect
+
+What was broken, what exact assertion proves the repair, and which user interaction still requires a real browser or assistive technology?
+
+## Official references
+
+- [Primary framework documentation](https://www.w3.org/WAI/ARIA/apg/patterns/combobox/)
+
+- [Supporting accessibility and API guide](https://www.radix-ui.com/primitives/docs/components/select)

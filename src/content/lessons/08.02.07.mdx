@@ -1,0 +1,101 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Explain the accessibility and design invariant behind responsive charts","Reproduce and correct a meaningful failing student assertion","Identify what static SSR proves and what requires a real browser and keyboard"]} />
+
+## The problem we're solving
+
+A dashboard chart shrinks unreadable axis labels to fit mobile, while the underlying values are inaccessible without pointer hover.
+
+## Build the mental model
+
+A chart should provide a semantic textual summary or data table, and resize without horizontal overflow. Normalize numeric inputs, avoid inventing missing values, and ensure focusable legends/tooltips are accessible to keyboard and screen-reader users.
+
+**Predict first:** Valid nonnegative series normalize to values between zero and one; accessible summaries remain available independently of chart drawing.
+
+## Prerequisites and preflight
+
+Continue from [the previous topic](/learn/08.02.06). Read `labs/ui-responsive-charts/starter/solution.ts`, `labs/ui-responsive-charts/solution/solution.ts` and `labs/ui-responsive-charts/solution.test.mjs`. The TSX sample is rendered as initial HTML only; hydrated events, focus, visual contrast and overflow need separate browser tests.
+
+<LessonStep number={1} title="Reproduce the defective UI policy" file="labs/ui-responsive-charts/starter/solution.ts" expected="Student starter fails a meaningful assertion.">
+
+```ts
+
+export function solve(values:readonly number[]):number[]{return [...values];}
+
+```
+
+**Predict:** Valid nonnegative series normalize to values between zero and one; accessible summaries remain available independently of chart drawing.
+
+**Diagnosis:** A dashboard chart shrinks unreadable axis labels to fit mobile, while the underlying values are inaccessible without pointer hover.
+
+**Proof:** Run `ACADEMY_LAB_TARGET=starter npm run lab:ui-responsive-charts`. The starter should fail the stated regression, not fail because of a missing dependency.
+
+</LessonStep>
+
+<LessonStep number={2} title="Fix the policy and verify edge cases" file="labs/ui-responsive-charts/starter/solution.ts" expected="Valid nonnegative series normalize to values between zero and one; accessible summaries remain available independently of chart drawing.">
+
+```ts
+
+export function solve(values:readonly number[]):number[]{if(values.some(v=>!Number.isFinite(v)||v<0))throw new TypeError("Invalid chart input");const max=Math.max(0,...values);return values.map(v=>max===0?0:v/max);}
+
+```
+
+**Why it works:** A chart should provide a semantic textual summary or data table, and resize without horizontal overflow. Normalize numeric inputs, avoid inventing missing values, and ensure focusable legends/tooltips are accessible to keyboard and screen-reader users.
+
+**Proof:** Run `npm run lab:ui-responsive-charts` and inspect the instructor test output.
+
+</LessonStep>
+
+<LessonStep number={3} title="Render the semantic React example" file="labs/ui-responsive-charts/solution/Widget.tsx" expected="Initial semantic markup renders without a runtime crash.">
+
+```tsx
+
+import React from "react";
+export function Workshop(){return <section aria-label="Responsive chart workshop"><h2>Revenue summary</h2><p>Revenue increased from 10 to 20 units.</p><table><caption>Monthly revenue data</caption><thead><tr><th scope="col">Month</th><th scope="col">Revenue</th></tr></thead><tbody><tr><th scope="row">Jan</th><td>10</td></tr><tr><th scope="row">Feb</th><td>20</td></tr></tbody></table></section>;}
+
+```
+
+This sample uses semantic React without requiring an uninstalled UI package. Server rendering does not execute handlers or certify focus management.
+
+**Proof:** The lab renders initial HTML with React DOM Server. A real browser check remains mandatory.
+
+</LessonStep>
+
+## Production library pattern
+
+```tsx
+import React from "react";
+function AccessibleSeries(){return <section aria-labelledby="chart-title"><h2 id="chart-title">Revenue trend</h2><p>Revenue doubled from Jan to Feb.</p><table><caption>Values</caption><tbody><tr><th scope="row">Jan</th><td>10</td></tr><tr><th scope="row">Feb</th><td>20</td></tr></tbody></table></section>;}
+```
+
+An actual chart renderer and zoom/keyboard tests are additional gates. The local solver only validates normalization and server-rendered table semantics.
+
+## Explore and verify
+
+Test long labels, keyboard-only usage, 320px width, reduced motion, contrast, errors and screen-reader announcements in a real browser.
+
+<Misconception claim="An SSR snapshot proves a component is keyboard accessible." correction="A chart should provide a semantic textual summary or data table, and resize without horizontal overflow. Normalize numeric inputs, avoid inventing missing values, and ensure focusable legends/tooltips are accessible to keyboard and screen-reader users." />
+
+## Bug Hunt: reproduce, diagnose, repair
+
+Hide pointer tooltips and test whether a screen reader can still understand the metric trend. At 320px and 200% zoom, verify labels and the data table remain usable.
+
+<KnowledgeCheck question="What is a robust accessibility fallback for data charts?" choices={["A semantic summary or table of source values","Hover-only tooltips","A single background image without alt text","Removing chart titles"]} correctIndex={0} explanation="A chart should provide a semantic textual summary or data table, and resize without horizontal overflow. Normalize numeric inputs, avoid inventing missing values, and ensure focusable legends/tooltips are accessible to keyboard and screen-reader users." misconception="Offline SSR is not an interactive accessibility test." lessonId="08.02.07" />
+
+## Guided local lab
+
+Edit `labs/ui-responsive-charts/starter/solution.ts`; the actual test asserts meaningful positive and negative outcomes. `npm run lab:ui-responsive-charts` also renders initial React markup. Keyboard interactions, pointer behavior, focus trapping, browser layout and actual Radix/shadcn packages are separate integration gates.
+
+<LabGate lessonId="08.02.07" labId="lab.foundation.ui-responsive-charts" commands={["npm ci","npm run lab:ui-responsive-charts"]} interactive={false} />
+
+## Reflect
+
+What was broken, what exact assertion proves the repair, and which user interaction still requires a real browser or assistive technology?
+
+## Official references
+
+- [Primary framework documentation](https://www.w3.org/WAI/WCAG22/Understanding/non-text-content.html)
+
+- [Supporting accessibility and API guide](https://www.w3.org/WAI/WAI/tutorials/tables/)

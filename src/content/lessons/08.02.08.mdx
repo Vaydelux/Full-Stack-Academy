@@ -1,0 +1,103 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Explain the accessibility and design invariant behind bug hunt inaccessible dropdown","Reproduce and correct a meaningful failing student assertion","Identify what static SSR proves and what requires a real browser and keyboard"]} />
+
+## The problem we're solving
+
+A custom dropdown never updates aria-expanded, allows focus onto hidden options and closes when Tab is pressed.
+
+## Build the mental model
+
+Choose a disclosure or menu pattern based on actual semantics. Keep expanded state synchronized with visible content and use a tested primitive for complex listbox/menu behaviors. Never conflate a simple disclosure navigation panel with a full ARIA menu.
+
+**Predict first:** Expanded state and visible panel visibility agree for both open and closed transitions.
+
+## Prerequisites and preflight
+
+Continue from [the previous topic](/learn/08.02.07). Read `labs/ui-dropdown-bughunt/starter/solution.ts`, `labs/ui-dropdown-bughunt/solution/solution.ts` and `labs/ui-dropdown-bughunt/solution.test.mjs`. The TSX sample is rendered as initial HTML only; hydrated events, focus, visual contrast and overflow need separate browser tests.
+
+<LessonStep number={1} title="Reproduce the defective UI policy" file="labs/ui-dropdown-bughunt/starter/solution.ts" expected="Student starter fails a meaningful assertion.">
+
+```ts
+
+export function solve(open:boolean):{expanded:boolean;visible:boolean}{return {expanded:false,visible:open};}
+
+```
+
+**Predict:** Expanded state and visible panel visibility agree for both open and closed transitions.
+
+**Diagnosis:** A custom dropdown never updates aria-expanded, allows focus onto hidden options and closes when Tab is pressed.
+
+**Proof:** Run `ACADEMY_LAB_TARGET=starter npm run lab:ui-dropdown-bughunt`. The starter should fail the stated regression, not fail because of a missing dependency.
+
+</LessonStep>
+
+<LessonStep number={2} title="Fix the policy and verify edge cases" file="labs/ui-dropdown-bughunt/starter/solution.ts" expected="Expanded state and visible panel visibility agree for both open and closed transitions.">
+
+```ts
+
+export function solve(open:boolean):{expanded:boolean;visible:boolean}{return {expanded:open,visible:open};}
+
+```
+
+**Why it works:** Choose a disclosure or menu pattern based on actual semantics. Keep expanded state synchronized with visible content and use a tested primitive for complex listbox/menu behaviors. Never conflate a simple disclosure navigation panel with a full ARIA menu.
+
+**Proof:** Run `npm run lab:ui-dropdown-bughunt` and inspect the instructor test output.
+
+</LessonStep>
+
+<LessonStep number={3} title="Render the semantic React example" file="labs/ui-dropdown-bughunt/solution/Widget.tsx" expected="Initial semantic markup renders without a runtime crash.">
+
+```tsx
+
+"use client";
+import React,{useState} from "react";
+export function Workshop(){const [open,setOpen]=useState(false);return <nav aria-label="Account navigation"><h2>Account dropdown</h2><button type="button" aria-expanded={open} aria-controls="account-links" onClick={()=>setOpen(v=>!v)}>Account options</button><div id="account-links" hidden={!open}><a href="/account">Profile</a><a href="/settings">Settings</a></div></nav>;}
+
+```
+
+This sample uses semantic React without requiring an uninstalled UI package. Server rendering does not execute handlers or certify focus management.
+
+**Proof:** The lab renders initial HTML with React DOM Server. A real browser check remains mandatory.
+
+</LessonStep>
+
+## Production library pattern
+
+```tsx
+"use client";
+import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
+function AccountMenu(){return <DropdownMenu.Root><DropdownMenu.Trigger>Account options</DropdownMenu.Trigger><DropdownMenu.Portal><DropdownMenu.Content><DropdownMenu.Item>Profile</DropdownMenu.Item><DropdownMenu.Item>Settings</DropdownMenu.Item></DropdownMenu.Content></DropdownMenu.Portal></DropdownMenu.Root>;}
+```
+
+A Radix DropdownMenu follows menu semantics, which differ from ordinary site navigation disclosure links. The offline test covers only an expanded/visible invariant.
+
+## Explore and verify
+
+Test long labels, keyboard-only usage, 320px width, reduced motion, contrast, errors and screen-reader announcements in a real browser.
+
+<Misconception claim="An SSR snapshot proves a component is keyboard accessible." correction="Choose a disclosure or menu pattern based on actual semantics. Keep expanded state synchronized with visible content and use a tested primitive for complex listbox/menu behaviors. Never conflate a simple disclosure navigation panel with a full ARIA menu." />
+
+## Bug Hunt: reproduce, diagnose, repair
+
+Use only keyboard to open and close, tab through links and verify aria-expanded changes. For menus rather than disclosure navigation, add the correct arrow-key pattern via an accessible tested primitive.
+
+<KnowledgeCheck question="Which state must match a disclosure panel's visibility?" choices={["aria-expanded","CSS margin","document.title","A random data attribute"]} correctIndex={0} explanation="Choose a disclosure or menu pattern based on actual semantics. Keep expanded state synchronized with visible content and use a tested primitive for complex listbox/menu behaviors. Never conflate a simple disclosure navigation panel with a full ARIA menu." misconception="Offline SSR is not an interactive accessibility test." lessonId="08.02.08" />
+
+## Guided local lab
+
+Edit `labs/ui-dropdown-bughunt/starter/solution.ts`; the actual test asserts meaningful positive and negative outcomes. `npm run lab:ui-dropdown-bughunt` also renders initial React markup. Keyboard interactions, pointer behavior, focus trapping, browser layout and actual Radix/shadcn packages are separate integration gates.
+
+<LabGate lessonId="08.02.08" labId="lab.foundation.ui-dropdown-bughunt" commands={["npm ci","npm run lab:ui-dropdown-bughunt"]} interactive={false} />
+
+## Reflect
+
+What was broken, what exact assertion proves the repair, and which user interaction still requires a real browser or assistive technology?
+
+## Official references
+
+- [Primary framework documentation](https://www.w3.org/WAI/ARIA/apg/patterns/disclosure/)
+
+- [Supporting accessibility and API guide](https://www.w3.org/WAI/ARIA/apg/patterns/menu-button/)

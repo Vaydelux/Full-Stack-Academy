@@ -1,0 +1,2 @@
+import React from "react";
+export function Workshop(){return <section aria-label="Responsive chart workshop"><h2>Revenue summary</h2><p>Revenue increased from 10 to 20 units.</p><table><caption>Monthly revenue data</caption><thead><tr><th scope="col">Month</th><th scope="col">Revenue</th></tr></thead><tbody><tr><th scope="row">Jan</th><td>10</td></tr><tr><th scope="row">Feb</th><td>20</td></tr></tbody></table></section>;}

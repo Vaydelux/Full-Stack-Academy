@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.ui-focus-traps",
+  "lessonId": "08.02.04",
+  "title": "Keyboard focus traps",
+  "runtime": "react19-ui-ssr-pure-contract",
+  "status": "authored",
+  "starter": "labs/ui-focus-traps/starter/solution.ts",
+  "solution": "labs/ui-focus-traps/solution/solution.ts",
+  "tests": "labs/ui-focus-traps/solution.test.mjs",
+  "verify": [
+    "npm run lab:ui-focus-traps"
+  ],
+  "expected": "Reviewed offline contract and initial semantic React markup, not browser interaction or visual fidelity.",
+  "security": "Only synthetic fixture data. No cloud, secrets, untrusted evaluation, authentication, deployment or hosted grader."
+}

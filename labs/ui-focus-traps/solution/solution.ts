@@ -1,0 +1,1 @@
+export function solve(current:number,length:number,backward:boolean):number{if(!Number.isInteger(length)||length<1||!Number.isInteger(current)||current<0||current>=length)throw new TypeError("Invalid focus sequence");return (current+(backward?-1:1)+length)%length;}

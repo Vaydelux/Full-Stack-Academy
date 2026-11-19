@@ -1,0 +1,105 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Explain the accessibility and design invariant behind drag and drop","Reproduce and correct a meaningful failing student assertion","Identify what static SSR proves and what requires a real browser and keyboard"]} />
+
+## The problem we're solving
+
+A sortable list can only be rearranged by pointer dragging, so keyboard-only users have no way to change item order.
+
+## Build the mental model
+
+Every drag-and-drop interaction needs a keyboard-operable alternative with clear focus, announcements and a reversible result. For an immutable reorder, return a new list without changing the caller's original array.
+
+**Predict first:** Moving an item produces the correct immutable order and a keyboard-operable Move up action remains available.
+
+## Prerequisites and preflight
+
+Continue from [the previous topic](/learn/08.02.05). Read `labs/ui-drag-drop/starter/solution.ts`, `labs/ui-drag-drop/solution/solution.ts` and `labs/ui-drag-drop/solution.test.mjs`. The TSX sample is rendered as initial HTML only; hydrated events, focus, visual contrast and overflow need separate browser tests.
+
+<LessonStep number={1} title="Reproduce the defective UI policy" file="labs/ui-drag-drop/starter/solution.ts" expected="Student starter fails a meaningful assertion.">
+
+```ts
+
+export function solve<T>(items:readonly T[],from:number,to:number):T[]{return [...items];}
+
+```
+
+**Predict:** Moving an item produces the correct immutable order and a keyboard-operable Move up action remains available.
+
+**Diagnosis:** A sortable list can only be rearranged by pointer dragging, so keyboard-only users have no way to change item order.
+
+**Proof:** Run `ACADEMY_LAB_TARGET=starter npm run lab:ui-drag-drop`. The starter should fail the stated regression, not fail because of a missing dependency.
+
+</LessonStep>
+
+<LessonStep number={2} title="Fix the policy and verify edge cases" file="labs/ui-drag-drop/starter/solution.ts" expected="Moving an item produces the correct immutable order and a keyboard-operable Move up action remains available.">
+
+```ts
+
+export function solve<T>(items:readonly T[],from:number,to:number):T[]{if(!Number.isInteger(from)||!Number.isInteger(to)||from<0||to<0||from>=items.length||to>=items.length)throw new TypeError("Invalid reorder");const output=[...items];const moved=output.splice(from,1)[0];output.splice(to,0,moved);return output;}
+
+```
+
+**Why it works:** Every drag-and-drop interaction needs a keyboard-operable alternative with clear focus, announcements and a reversible result. For an immutable reorder, return a new list without changing the caller's original array.
+
+**Proof:** Run `npm run lab:ui-drag-drop` and inspect the instructor test output.
+
+</LessonStep>
+
+<LessonStep number={3} title="Render the semantic React example" file="labs/ui-drag-drop/solution/Widget.tsx" expected="Initial semantic markup renders without a runtime crash.">
+
+```tsx
+
+"use client";
+import React,{useState} from "react";
+import {solve} from "./solution";
+export function Workshop(){const [list,setList]=useState(["Planning","Building","Review"]);return <section aria-label="Sortable task workshop"><h2>Reorder tasks</h2><ol>{list.map((title,i)=><li key={title}>{title}<button type="button" disabled={i===0} aria-label={"Move "+title+" up"} onClick={()=>setList(p=>solve(p,i,i-1))}>Up</button></li>)}</ol></section>;}
+
+```
+
+This sample uses semantic React without requiring an uninstalled UI package. Server rendering does not execute handlers or certify focus management.
+
+**Proof:** The lab renders initial HTML with React DOM Server. A real browser check remains mandatory.
+
+</LessonStep>
+
+## Production library pattern
+
+```tsx
+"use client";
+import React from "react";
+// Integrate a supported drag library only after implementing keyboard sensors and announcements.
+function MoveUp({title,onMove}:{title:string;onMove:()=>void}){return <button type="button" onClick={onMove} aria-label={"Move "+title+" up"}>Up</button>;}
+```
+
+The lesson provides a real keyboard alternative but does not integrate pointer dragging or a DnD library. Test focus preservation and announcements in a browser.
+
+## Explore and verify
+
+Test long labels, keyboard-only usage, 320px width, reduced motion, contrast, errors and screen-reader announcements in a real browser.
+
+<Misconception claim="An SSR snapshot proves a component is keyboard accessible." correction="Every drag-and-drop interaction needs a keyboard-operable alternative with clear focus, announcements and a reversible result. For an immutable reorder, return a new list without changing the caller's original array." />
+
+## Bug Hunt: reproduce, diagnose, repair
+
+Reorder by keyboard, check focus stays on the moved item or a predictable destination, then verify an aria-live announcement of the new position in a real browser.
+
+<KnowledgeCheck question="What is a necessary alternative for pointer-only drag and drop?" choices={["A keyboard-operable reorder mechanism","Only larger mouse targets","A hidden div","Disabling focus outlines"]} correctIndex={0} explanation="Every drag-and-drop interaction needs a keyboard-operable alternative with clear focus, announcements and a reversible result. For an immutable reorder, return a new list without changing the caller's original array." misconception="Offline SSR is not an interactive accessibility test." lessonId="08.02.06" />
+
+## Guided local lab
+
+Edit `labs/ui-drag-drop/starter/solution.ts`; the actual test asserts meaningful positive and negative outcomes. `npm run lab:ui-drag-drop` also renders initial React markup. Keyboard interactions, pointer behavior, focus trapping, browser layout and actual Radix/shadcn packages are separate integration gates.
+
+<LabGate lessonId="08.02.06" labId="lab.foundation.ui-drag-drop" commands={["npm ci","npm run lab:ui-drag-drop"]} interactive={false} />
+
+## Reflect
+
+What was broken, what exact assertion proves the repair, and which user interaction still requires a real browser or assistive technology?
+
+## Official references
+
+- [Primary framework documentation](https://www.w3.org/WAI/ARIA/apg/practices/keyboard-interface/)
+
+- [Supporting accessibility and API guide](https://www.w3.org/WAI/WCAG22/Understanding/dragging-movements.html)

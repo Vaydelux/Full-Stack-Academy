@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.ui-drag-drop",
+  "lessonId": "08.02.06",
+  "title": "Drag and drop in practice",
+  "runtime": "react19-ui-ssr-pure-contract",
+  "status": "authored",
+  "starter": "labs/ui-drag-drop/starter/solution.ts",
+  "solution": "labs/ui-drag-drop/solution/solution.ts",
+  "tests": "labs/ui-drag-drop/solution.test.mjs",
+  "verify": [
+    "npm run lab:ui-drag-drop"
+  ],
+  "expected": "Reviewed offline contract and initial semantic React markup, not browser interaction or visual fidelity.",
+  "security": "Only synthetic fixture data. No cloud, secrets, untrusted evaluation, authentication, deployment or hosted grader."
+}
