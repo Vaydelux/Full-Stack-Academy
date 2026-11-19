@@ -147,6 +147,31 @@ async function qualify() {
       if (!condition) throw new Error(detail);
     };
 
+    // This must be installed BEFORE document scripts run because task-client
+    // captures fetch at module initialization. It is test-only, never served.
+    await cdp.send('Page.addScriptToEvaluateOnNewDocument', { source: [
+      '(() => {',
+      'const nativeFetch=window.fetch.bind(window);',
+      'const faults={dropNextPost:false,forceNextPost422:false,failListAfterPost:false,failNextList:false,pauseNextPatch:false,patchPending:false,releasePatch:null,requests:[]};',
+      'window.__academyFaults=faults;',
+      'window.fetch=async (input,init={}) => {',
+      ' const url=new URL(input,window.location.href);',
+      ' const method=init.method || (input instanceof Request ? input.method : "GET");',
+      ' const headers=new Headers(init.headers || (input instanceof Request ? input.headers : undefined));',
+      ' faults.requests.push({method,path:url.pathname,key:headers.get("idempotency-key")});',
+      ' if(method==="POST"&&faults.forceNextPost422){faults.forceNextPost422=false;return new Response(JSON.stringify({status:422,title:"Invalid title"}),{status:422,headers:{"content-type":"application/problem+json"}});}',
+      ' if(method==="PATCH"&&faults.pauseNextPatch){faults.pauseNextPatch=false;faults.patchPending=true;await new Promise(resolve=>{faults.releasePatch=resolve});faults.patchPending=false;}',
+      ' if(method==="GET"&&url.pathname==="/api/tasks"&&faults.failNextList){faults.failNextList=false;throw new TypeError("Deliberately dropped GET");}',
+      ' const response=await nativeFetch(input,init);',
+      ' if(method==="POST"&&url.pathname==="/api/tasks"){',
+      '  if(faults.failListAfterPost){faults.failListAfterPost=false;faults.failNextList=true;}',
+      '  if(faults.dropNextPost){faults.dropNextPost=false;throw new TypeError("Response lost after commit");}',
+      ' }',
+      ' return response;',
+      '};',
+      '})();',
+    ].join('\\n') });
+
     await cdp.send('Page.navigate', { url: base + '/' });
     await waitFor(async () => evaluate('document.readyState === "complete" && Boolean(document.getElementById("task-form"))'), 'native teaching form load');
     await waitFor(async () => evaluate('document.getElementById("list-status").textContent.includes("No tasks")'), 'initial empty state');
