@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   robots: { index: false, follow: true },
 };
 
-const repository = 'https://github.com/Vaydelux/Full-Stack-Academy/tree/main/examples/forms-query-vertical';
+const repository = 'https://github.com/Vaydelux/Full-Stack-Academy/blob/main/examples/forms-query-vertical';
 const steps = [
   { title: 'Validate and submit', copy: 'Client constraints make errors helpful, while strict server validation rejects untrusted inputs. Use a fresh idempotency key for a new task.', output: 'POST /api/tasks → 201 Created, or 422 Invalid task' },
   { title: 'Fetch and filter', copy: 'Read the current server list with a bounded page size and an optional status filter. Each list revision has its own pagination cursors.', output: 'GET /api/tasks?status=todo → 200 TaskPage' },
