@@ -20,6 +20,8 @@ const steps = [
   'test:red-zustand-state',
   'test:node-http',
   'test:red-node-http',
+  'test:backend-contract',
+  'test:red-backend-contract',
   'build',
 ];
 
