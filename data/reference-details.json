@@ -16,7 +16,7 @@
     "lang": "tsx",
     "parameters": "initialValue: the value (or initializer function) for the first render.",
     "returns": "[currentValue, setValue] — current render snapshot and a stable setter.",
-    "minimalExample": "'use client';\nimport {useState} from 'react';\nconst [count,setCount] = useState(0);\n// Use a functional setter for sequential updates.\nsetCount(previous => previous + 1);",
+    "minimalExample": "'use client';\nimport {useState} from 'react';\nfunction Counter(){const [count,setCount]=useState(0);return <button onClick={()=>setCount(n=>n+1)}>{count}</button>;}",
     "productionExample": "function Counter(){\n  const [count,setCount] = useState(0);\n  return <button type=\"button\" onClick={() => setCount(n=>n+1)}>{count}</button>;\n}",
     "commonMistakes": [
       "Expecting the count variable to update immediately after calling setCount.",
@@ -48,7 +48,7 @@
     "lang": "tsx",
     "parameters": "setup: function invoked after commit; dependencies: reactive values used by setup.",
     "returns": "void; optional cleanup function executes before a rerun and on unmount.",
-    "minimalExample": "'use client';\nimport {useEffect} from 'react';\nuseEffect(() => {\n  const listener=()=>console.log('resize');\n  window.addEventListener('resize',listener);\n  return ()=>window.removeEventListener('resize',listener);\n},[]);",
+    "minimalExample": "'use client';\nimport {useEffect,useState} from 'react';\nfunction Width(){const [width,setWidth]=useState(0);useEffect(()=>{const sync=()=>setWidth(innerWidth);sync();window.addEventListener('resize',sync);return()=>window.removeEventListener('resize',sync);},[]);return <output>{width}</output>;}",
     "productionExample": "useEffect(()=>{\n  const oldTitle=document.title;\n  document.title='Course: '+courseTitle;\n  return ()=>{document.title=oldTitle;};\n},[courseTitle]);",
     "commonMistakes": [
       "Using Effects to derive data already available from props or state.",
@@ -80,7 +80,7 @@
     "lang": "tsx",
     "parameters": "reducer: pure function (state, action) => nextState; initialState: starting value.",
     "returns": "Current state and a stable dispatch function.",
-    "minimalExample": "'use client';\nimport {useReducer} from 'react';\nconst reducer=(count:number,action:'up'|'down')=>action==='up'?count+1:Math.max(0,count-1);\nconst [count,dispatch]=useReducer(reducer,0);",
+    "minimalExample": "'use client';\nimport {useReducer} from 'react';\nconst reducer=(count:number,action:'up'|'down')=>action==='up'?count+1:Math.max(0,count-1);\nfunction Counter(){const [count,dispatch]=useReducer(reducer,0);return <button onClick={()=>dispatch('up')}>{count}</button>;}",
     "productionExample": "type Action={type:'change';value:string}|{type:'submit'};\nfunction reducer(state:{value:string;status:string},action:Action){\n  if(action.type==='change')return {value:action.value,status:'editing'};\n  return {...state,status:state.value.trim()?'submitted':'editing'};\n}",
     "commonMistakes": [
       "Performing fetches or mutations inside the reducer.",
@@ -112,8 +112,8 @@
     "lang": "tsx",
     "parameters": "initialValue: initial ref.current; frequently null for DOM elements.",
     "returns": "Stable object with mutable current property.",
-    "minimalExample": "'use client';\nimport {useRef} from 'react';\nconst input=useRef<HTMLInputElement>(null);\nfunction focus(){input.current?.focus();}",
-    "productionExample": "const timer=useRef<ReturnType<typeof setInterval>|null>(null);\nfunction stop(){if(timer.current!==null){clearInterval(timer.current);timer.current=null;}}",
+    "minimalExample": "'use client';\nimport {useRef} from 'react';\nfunction FocusBox(){const input=useRef<HTMLInputElement>(null);return <><input ref={input} aria-label=\"Your name\"/><button type=\"button\" onClick={()=>input.current?.focus()}>Focus</button></>;}",
+    "productionExample": "'use client';\nimport {useRef} from 'react';\nfunction TimerControl(){const timer=useRef<ReturnType<typeof setInterval>|null>(null);function stop(){if(timer.current!==null){clearInterval(timer.current);timer.current=null;}}return <button type=\"button\" onClick={stop}>Stop timer</button>;}",
     "commonMistakes": [
       "Expecting ref.current changes to render new text on screen.",
       "Dereferencing a DOM node before React has committed it."
@@ -144,7 +144,7 @@
     "lang": "tsx",
     "parameters": "MyContext: context object created with createContext.",
     "returns": "The nearest provider value, or the declared default when no provider exists.",
-    "minimalExample": "'use client';\nimport {createContext,useContext} from 'react';\nconst ThemeContext=createContext<'light'|'dark'>('light');\nconst theme=useContext(ThemeContext);",
+    "minimalExample": "'use client';\nimport {createContext,useContext} from 'react';\nconst ThemeContext=createContext<'light'|'dark'>('light');\nfunction ThemeBadge(){const theme=useContext(ThemeContext);return <span>{theme}</span>;}",
     "productionExample": "const Theme=createContext<'light'|'dark'>('light');\nfunction ThemeBadge(){return <span>Theme: {useContext(Theme)}</span>;}\nfunction Settings(){return <Theme.Provider value=\"dark\"><ThemeBadge /></Theme.Provider>;}",
     "commonMistakes": [
       "Assuming context state automatically persists across browser sessions.",
@@ -176,8 +176,8 @@
     "lang": "tsx",
     "parameters": "scope: callback scheduling updates that React may treat as non-blocking.",
     "returns": "isPending Boolean and startTransition scheduling function.",
-    "minimalExample": "'use client';\nimport {useTransition} from 'react';\nconst [pending,startTransition]=useTransition();\nstartTransition(()=>setResults(nextResults));",
-    "productionExample": "function Search(){\n  const [query,setQuery]=useState('');\n  const [results,setResults]=useState<string[]>([]);\n  const [pending,startTransition]=useTransition();\n  return <><input value={query} onChange={e=>{\n    setQuery(e.target.value);\n    startTransition(()=>setResults(filterItems(e.target.value)));\n  }}/><output aria-busy={pending}>{results.length} matches</output></>;\n}",
+    "minimalExample": "'use client';\nimport {useState,useTransition} from 'react';\nfunction Results(){const [items,setItems]=useState<string[]>([]);const [pending,startTransition]=useTransition();return <><button type=\"button\" onClick={()=>startTransition(()=>setItems(['React']))}>Refresh</button><output aria-busy={pending}>{items.join(', ')}</output></>;}",
+    "productionExample": "'use client';\nimport {useState,useTransition} from 'react';\nconst catalog=['React','Next','Redux'];\nfunction Search(){const [query,setQuery]=useState('');const [results,setResults]=useState(catalog);const [pending,startTransition]=useTransition();return <><label>Search <input value={query} onChange={e=>{const value=e.target.value;setQuery(value);startTransition(()=>setResults(catalog.filter(x=>x.toLowerCase().includes(value.toLowerCase()))));}}/></label><output aria-busy={pending}>{results.length} matches</output></>;}",
     "commonMistakes": [
       "Wrapping the controlled input's urgent value update in a transition.",
       "Assuming a transition eliminates expensive synchronous calculations or network costs."
@@ -208,8 +208,8 @@
     "lang": "tsx",
     "parameters": "state: confirmed source; updateFn: pure projection of current state and pending input.",
     "returns": "Projected state and a function to enqueue an optimistic update within an Action.",
-    "minimalExample": "'use client';\nimport {useOptimistic,useTransition} from 'react';\nconst [shown,addPending]=useOptimistic(items,(list,item)=>[...list,item]);",
-    "productionExample": "const [shown,optimisticAdd]=useOptimistic(comments,(list,item)=>[...list,item]);\nstartTransition(async()=>{\n  optimisticAdd(draft);\n  const saved=await submitComment(draft); // authenticated server operation\n  if(saved.ok)setComments(prev=>reconcile(prev,saved.comment));\n  // On failure, render confirmed data and show an error.\n});",
+    "minimalExample": "'use client';\nimport {useOptimistic,useState} from 'react';\nfunction Comments(){const [saved,setSaved]=useState<string[]>([]);const [shown,addOptimistic]=useOptimistic(saved,(list,item:string)=>[...list,item]);return <ul>{shown.map((text,i)=><li key={i}>{text}</li>)}</ul>;}",
+    "productionExample": "'use client';\nimport {useOptimistic,useState,useTransition} from 'react';\ntype Comment={id:string;text:string};\nasync function saveAuthorizedComment(_draft:Comment):Promise<{ok:false}>{return {ok:false};} // No backend: deny by default.\nfunction Comments(){const [saved,setSaved]=useState<Comment[]>([]);const [shown,addOptimistic]=useOptimistic(saved,(list,item:Comment)=>[...list,item]);const [pending,startTransition]=useTransition();const send=()=>startTransition(async()=>{const draft={id:'demo-1',text:'Hello'};addOptimistic(draft);const result=await saveAuthorizedComment(draft);if(!result.ok)return;});return <><button disabled={pending} onClick={send}>Post</button><ul>{shown.map(x=><li key={x.id}>{x.text}</li>)}</ul></>;}",
     "commonMistakes": [
       "Treating a temporary optimistic item as confirmed persistence.",
       "Failing to reconcile after errors, resulting in ghost or duplicate records."
@@ -240,8 +240,8 @@
     "lang": "tsx",
     "parameters": "action: async reducer receiving prior state and form payload; initialState: default result.",
     "returns": "Latest Action result, formAction function, pending Boolean.",
-    "minimalExample": "'use client';\nimport {useActionState} from 'react';\nconst [state,action,pending]=useActionState(async(prev,form:FormData)=>{\n  const title=String(form.get('title')??'').trim();\n  return {error:title?'':'Required'};\n},{error:''});",
-    "productionExample": "function SubmitDraft(){\n  const [state,action,pending]=useActionState(saveAuthorizedDraft,{error:''});\n  return <form action={action}><label>Title<input name=\"title\" required /></label>\n    <button disabled={pending}>Save</button><p role=\"status\">{state.error}</p></form>;\n}\n// saveAuthorizedDraft must validate and authorize on the server.",
+    "minimalExample": "'use client';\nimport {useActionState} from 'react';\nfunction DraftForm(){const [state,action,pending]=useActionState(async(_previous:{error:string},form:FormData)=>({error:String(form.get('title')??'').trim()?'':'Required'}),{error:''});return <form action={action}><input name=\"title\" aria-label=\"Draft title\"/><button disabled={pending}>Save</button><output>{state.error}</output></form>;}",
+    "productionExample": "'use client';\nimport {useActionState} from 'react';\nasync function saveAuthorizedDraft(_previous:{error:string},_data:FormData){return {error:'Server mutation not configured'};} // Replace with an authorized server function.\nfunction SubmitDraft(){const [state,action,pending]=useActionState(saveAuthorizedDraft,{error:''});return <form action={action}><label>Title<input name=\"title\" required/></label><button disabled={pending}>Save</button><p role=\"status\">{state.error}</p></form>;}",
     "commonMistakes": [
       "Using the wrong parameter order when binding the Action.",
       "Returning sensitive exception messages or assuming the client form enforces authorization."
@@ -497,7 +497,7 @@
     "parameters": "request: NextRequest, with path and headers; config.matcher controls matched requests.",
     "returns": "NextResponse that passes through, rewrites or redirects an incoming request.",
     "minimalExample": "import {NextResponse,type NextRequest} from 'next/server';\nexport function proxy(_request:NextRequest){return NextResponse.next();}",
-    "productionExample": "import {NextResponse,type NextRequest} from 'next/server';\nexport function proxy(request:NextRequest){\n const response=NextResponse.next();\n response.headers.set('X-Content-Type-Options','nosniff');\n // This adds a header, not authentication. Check protected data at the server boundary.\n return response;\n}\nexport const config={matcher:['/dashboard/:path*']};",
+    "productionExample": "import {NextResponse,type NextRequest} from 'next/server';\nexport function proxy(_request:NextRequest){\n const response=NextResponse.next();\n response.headers.set('X-Content-Type-Options','nosniff');\n // This adds a header, not authentication. Check protected data at the server boundary.\n return response;\n}\nexport const config={matcher:['/dashboard/:path*']};",
     "commonMistakes": [
       "Assuming a Proxy redirect is equivalent to per-resource authorization.",
       "Using Proxy to call privileged database services without robust identity checks."
