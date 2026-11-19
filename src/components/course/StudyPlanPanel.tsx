@@ -61,10 +61,10 @@ export function StudyPlanPanel() {
         </label>
       </div>
 
-      <div className="mt-5 border-t border-slate-200 pt-5 dark:border-white/10" aria-live="polite" aria-atomic="false">
+      <div className="mt-5 border-t border-slate-200 pt-5 dark:border-white/10">
         <div className="flex flex-wrap items-baseline justify-between gap-2">
           <h3 className="font-bold">Your suggested queue</h3>
-          <p className="text-xs tabular-nums text-slate-500">{plan.lessons.length} lessons · ~{plan.totalMinutes} min of {budgetMinutes} min</p>
+          <p role="status" aria-live="polite" className="text-xs tabular-nums text-slate-500">{plan.lessons.length} lessons · ~{plan.totalMinutes} min of {budgetMinutes} min</p>
         </div>
         {plan.lessons.length ? (
           <ol className="mt-3 space-y-2">
