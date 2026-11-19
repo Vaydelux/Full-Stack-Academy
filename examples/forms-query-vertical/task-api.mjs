@@ -5,6 +5,8 @@
 import { createServer } from 'node:http';
 import { randomUUID, createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
+import { pathToFileURL } from 'node:url';
+import { resolve } from 'node:path';
 const staticRoot = new URL('./', import.meta.url);
 
 const MAX_BODY_BYTES = 8 * 1024;
@@ -141,7 +143,7 @@ export function createTaskApi({ host = '127.0.0.1', maxItems = MAX_ITEMS } = {})
   };
 }
 
-if (process.argv[1] && import.meta.url === new URL(`file://${process.argv[1]}`).href) {
+if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
   const app = createTaskApi();
   const address = await app.start(Number(process.env.PORT ?? 3337));
   console.log(`Teaching API: ${address}; local memory only, no authentication, NOT for public access`);
