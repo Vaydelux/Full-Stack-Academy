@@ -1,0 +1,96 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Compose strict schemas with safeExtend and derive TS types via z.infer; reject unknown keys and out-of-range domain fields.","Reproduce and repair the broken schema composition and inference schema with real Zod 4.","Distinguish unknown input, validated output and authorization or persistence concerns."]} />
+
+## The problem we're solving
+
+A trusted profile DTO extends a base identity with a role. Combining object fields must preserve strictness and inferred TS types.
+
+**Broken behavior:** The starter allows all roles and unknown props and never bounds names or IDs.
+
+## Build the mental model
+
+Compose strict schemas with safeExtend and derive TS types via z.infer; reject unknown keys and out-of-range domain fields.
+
+**Predict before coding:** Only named reader/editor roles parse; unknown keys fail and TS types follow the schema.
+
+**Important boundary:** TypeScript types are erased at runtime. These exercises import Zod 4 from the repository's locked dependencies and run actual `safeParse` or `parse` assertions, not simulated validation. Runtime validation does not authenticate a caller, authorize object access, or persist data.
+
+## Prerequisites and preflight
+
+Read the preceding schema lesson and use the locked Node.js 24 dependencies. Open `labs/zod-composition-types/starter/solution.ts`. Run `ACADEMY_LAB_TARGET=starter npm run lab:zod-composition-types` in Bash or `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:zod-composition-types; Remove-Item Env:ACADEMY_LAB_TARGET` in PowerShell. The deliberately broken starter should fail the same assertions as the corrected solution.
+
+## Guided implementation
+
+<LessonStep number={1} title="Demonstrate the broken input boundary" file="labs/zod-composition-types/starter/solution.ts" expected="The starter accepts an invalid value or omits an expected transformation.">
+
+```ts
+import * as z from 'zod';
+export const User=z.object({id:z.string(),name:z.string(),role:z.string()});
+export type UserData=z.infer<typeof User>;
+```
+
+**Why this matters:** The starter allows all roles and unknown props and never bounds names or IDs.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the Zod 4 schema and typed output" file="labs/zod-composition-types/starter/solution.ts" expected="Only named reader/editor roles parse; unknown keys fail and TS types follow the schema.">
+
+```ts
+import * as z from 'zod';
+const Identity=z.strictObject({id:z.string().min(1),name:z.string().trim().min(2)});
+export const User=Identity.safeExtend({role:z.enum(['reader','editor'])});
+export type UserData=z.infer<typeof User>;
+```
+
+**Why this works:** Compose strict schemas with safeExtend and derive TS types via z.infer; reject unknown keys and out-of-range domain fields.
+
+</LessonStep>
+
+<LessonStep number={3} title="Assert valid, invalid and boundary behavior" file="labs/zod-composition-types/solution.test.mjs" expected="Real Zod 4 test assertions pass for the instructor and fail on the broken starter.">
+
+```js
+assert.deepEqual(mod.User.parse({id:'u1',name:' Ava ',role:'reader'}),{id:'u1',name:'Ava',role:'reader'});
+assert.equal(mod.User.safeParse({id:'u1',name:'Ava',role:'admin'}).success,false);
+assert.equal(mod.User.safeParse({id:'u1',name:'Ava',role:'reader',secret:1}).success,false);
+```
+
+**Representative application usage:**
+
+```ts
+import * as z from 'zod';
+const Base=z.strictObject({id:z.string().min(1)});
+const WithRole=Base.safeExtend({role:z.enum(['reader','editor'])});
+type User=z.infer<typeof WithRole>;
+// TS inference reflects the validated output, not an external database model.
+// Use safeExtend when preserving refinements matters.
+```
+
+**Security and operations:** Never log raw rejected payloads, secrets or personal data. Validate again at server boundaries; a browser schema is for usability, not authorization.
+
+</LessonStep>
+
+<Misconception claim="The starter allows all roles and unknown props and never bounds names or IDs." correction="Compose strict schemas with safeExtend and derive TS types via z.infer; reject unknown keys and out-of-range domain fields. Only successful schema parsing changes unknown values into validated output; it does not grant permissions." />
+
+<KnowledgeCheck question="Which Zod 4 rule is central to schema composition and inference?" choices={["TypeScript generics replace runtime parsing of unknown JSON.","Compose strict schemas with safeExtend and derive TS types via z.infer; reject unknown keys and out-of-range domain fields.","safeParse guarantees database transaction success.","A validated user identifier authorizes any organization-specific record."] } correctIndex={1} explanation="Compose strict schemas with safeExtend and derive TS types via z.infer; reject unknown keys and out-of-range domain fields." misconception="Use actual runtime schema parsing at trust boundaries, then independently authorize server operations." lessonId="09.01.07" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Reproduce:** The starter allows all roles and unknown props and never bounds names or IDs. **Diagnose:** compare invalid input with the schema's allowed runtime values. **Repair:** Compose strict schemas with safeExtend and derive TS types via z.infer; reject unknown keys and out-of-range domain fields. **Regression:** Only named reader/editor roles parse; unknown keys fail and TS types follow the schema. Preserve the failing test and use the resulting validated output rather than asserting a cast.
+
+## Guided local lab
+
+`labs/zod-composition-types/` includes a red learner starter, complete instructor implementation, actual Zod 4 acceptance tests and completion rubric. No public user-code evaluation service is used.
+
+<LabGate lessonId="09.01.07" labId="lab.zod.zod-composition-types" commands={["npm run lab:zod-composition-types","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+Which constraints belong in Zod, which belong in database consistency rules, and which require authentication or per-object authorization?
+
+## Official references
+
+- [Zod 4 official schema documentation](https://zod.dev/api)
+- [Zod 4 additional guidance](https://zod.dev/basics)
+

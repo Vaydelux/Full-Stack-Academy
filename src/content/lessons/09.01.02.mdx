@@ -1,0 +1,103 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Use safeParse as a discriminated result, inspect ZodError.issues with explicit paths and format field errors without leaking raw payloads.","Reproduce and repair the broken safeparse and error paths schema with real Zod 4.","Distinguish unknown input, validated output and authorization or persistence concerns."]} />
+
+## The problem we're solving
+
+A registration form receives invalid email and nested profile data. Throwing or trusting the input loses actionable field errors.
+
+**Broken behavior:** The starter always reports ok and echoes unvalidated input as trustworthy data.
+
+## Build the mental model
+
+Use safeParse as a discriminated result, inspect ZodError.issues with explicit paths and format field errors without leaking raw payloads.
+
+**Predict before coding:** Return ok=false and issue paths for invalid email or age; never throw for normal validation failures.
+
+**Important boundary:** TypeScript types are erased at runtime. These exercises import Zod 4 from the repository's locked dependencies and run actual `safeParse` or `parse` assertions, not simulated validation. Runtime validation does not authenticate a caller, authorize object access, or persist data.
+
+## Prerequisites and preflight
+
+Read the preceding schema lesson and use the locked Node.js 24 dependencies. Open `labs/zod-safeparse-issues/starter/solution.ts`. Run `ACADEMY_LAB_TARGET=starter npm run lab:zod-safeparse-issues` in Bash or `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:zod-safeparse-issues; Remove-Item Env:ACADEMY_LAB_TARGET` in PowerShell. The deliberately broken starter should fail the same assertions as the corrected solution.
+
+## Guided implementation
+
+<LessonStep number={1} title="Demonstrate the broken input boundary" file="labs/zod-safeparse-issues/starter/solution.ts" expected="The starter accepts an invalid value or omits an expected transformation.">
+
+```ts
+export function validateSignup(input:unknown){return {ok:true,data:input,issues:[]};}
+```
+
+**Why this matters:** The starter always reports ok and echoes unvalidated input as trustworthy data.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the Zod 4 schema and typed output" file="labs/zod-safeparse-issues/starter/solution.ts" expected="Return ok=false and issue paths for invalid email or age; never throw for normal validation failures.">
+
+```ts
+import * as z from 'zod';
+const Signup=z.strictObject({email:z.email(),age:z.number().int().min(18)});
+export function validateSignup(input:unknown){
+ const parsed=Signup.safeParse(input);
+ if(parsed.success)return {ok:true as const,data:parsed.data,issues:[]};
+ return {ok:false as const,issues:parsed.error.issues.map(issue=>({
+  path:issue.path.map(String).join('.'),message:issue.message,
+ }))};
+}
+```
+
+**Why this works:** Use safeParse as a discriminated result, inspect ZodError.issues with explicit paths and format field errors without leaking raw payloads.
+
+</LessonStep>
+
+<LessonStep number={3} title="Assert valid, invalid and boundary behavior" file="labs/zod-safeparse-issues/solution.test.mjs" expected="Real Zod 4 test assertions pass for the instructor and fail on the broken starter.">
+
+```js
+const bad=mod.validateSignup({email:'not-email',age:15});
+assert.equal(bad.ok,false);assert.ok(bad.issues.some(x=>x.path==='email'));assert.ok(bad.issues.some(x=>x.path==='age'));
+const good=mod.validateSignup({email:'learner@example.test',age:18});
+assert.equal(good.ok,true);assert.equal(good.data.age,18);
+assert.doesNotThrow(()=>mod.validateSignup(null));
+```
+
+**Representative application usage:**
+
+```ts
+import * as z from 'zod';
+const Profile=z.strictObject({contact:z.email(),age:z.number().min(18)});
+const checked=Profile.safeParse({contact:'bad',age:12});
+if(!checked.success){
+  const errors=z.flattenError(checked.error);
+  console.log(errors.fieldErrors); // field-specific messages, not secrets
+}
+// Zod 4 uses z.treeifyError/z.flattenError, not deprecated error.flatten().
+```
+
+**Security and operations:** Never log raw rejected payloads, secrets or personal data. Validate again at server boundaries; a browser schema is for usability, not authorization.
+
+</LessonStep>
+
+<Misconception claim="The starter always reports ok and echoes unvalidated input as trustworthy data." correction="Use safeParse as a discriminated result, inspect ZodError.issues with explicit paths and format field errors without leaking raw payloads. Only successful schema parsing changes unknown values into validated output; it does not grant permissions." />
+
+<KnowledgeCheck question="Which Zod 4 rule is central to safeparse and error paths?" choices={["TypeScript generics replace runtime parsing of unknown JSON.","Use safeParse as a discriminated result, inspect ZodError.issues with explicit paths and format field errors without leaking raw payloads.","safeParse guarantees database transaction success.","A validated user identifier authorizes any organization-specific record."] } correctIndex={1} explanation="Use safeParse as a discriminated result, inspect ZodError.issues with explicit paths and format field errors without leaking raw payloads." misconception="Use actual runtime schema parsing at trust boundaries, then independently authorize server operations." lessonId="09.01.02" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Reproduce:** The starter always reports ok and echoes unvalidated input as trustworthy data. **Diagnose:** compare invalid input with the schema's allowed runtime values. **Repair:** Use safeParse as a discriminated result, inspect ZodError.issues with explicit paths and format field errors without leaking raw payloads. **Regression:** Return ok=false and issue paths for invalid email or age; never throw for normal validation failures. Preserve the failing test and use the resulting validated output rather than asserting a cast.
+
+## Guided local lab
+
+`labs/zod-safeparse-issues/` includes a red learner starter, complete instructor implementation, actual Zod 4 acceptance tests and completion rubric. No public user-code evaluation service is used.
+
+<LabGate lessonId="09.01.02" labId="lab.zod.zod-safeparse-issues" commands={["npm run lab:zod-safeparse-issues","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+Which constraints belong in Zod, which belong in database consistency rules, and which require authentication or per-object authorization?
+
+## Official references
+
+- [Zod 4 official schema documentation](https://zod.dev/basics)
+- [Zod 4 additional guidance](https://zod.dev/error-formatting)
+

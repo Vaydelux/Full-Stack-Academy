@@ -1,0 +1,15 @@
+{
+  "id": "lab.zod.zod-discriminated-requests",
+  "lessonId": "09.01.06",
+  "title": "Zod 4 discriminated unions lab",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/zod-discriminated-requests/starter/solution.ts",
+  "solution": "labs/zod-discriminated-requests/solution/solution.ts",
+  "tests": "labs/zod-discriminated-requests/solution.test.mjs",
+  "verify": [
+    "npm run lab:zod-discriminated-requests"
+  ],
+  "expected": "Valid email/sms requests parse; unknown channel, invalid email and short phone are rejected.",
+  "security": "Real Zod 4 local parsing tests; no network, auth or database and no remote code execution."
+}

@@ -1,0 +1,39 @@
+{
+  "id": "09.01.08",
+  "title": "Lab validated profile form: Share one strict Zod 4 schema between browser practice and local acceptance tests; validate unknown input and expose only normalized, approved fields.",
+  "description": "Zod 4 schema design with actual runtime parsing, negative test cases, a deliberately broken learner implementation, instructor solution and security boundaries.",
+  "trackId": "09",
+  "moduleId": "09.01",
+  "level": "Intermediate",
+  "estimatedMinutes": 65,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "typescript": "5",
+    "zod": "4"
+  },
+  "prerequisites": [
+    "09.01.07"
+  ],
+  "objectives": [
+    "Share one strict Zod 4 schema between browser practice and local acceptance tests; validate unknown input and expose only normalized, approved fields.",
+    "Repair the failing zod-profile-form schema and verify rejection behavior.",
+    "Explain the difference between runtime parsing and authorization."
+  ],
+  "labId": "lab.zod.zod-profile-form",
+  "rubric": [
+    "I can explain Zod 4 runtime validation for lab validated profile form.",
+    "I can fix the failing 09.01.08 starter with a real schema.",
+    "I can demonstrate valid and invalid input without claiming backend authorization."
+  ],
+  "sources": [
+    {
+      "label": "Zod 4 core documentation",
+      "url": "https://zod.dev/basics"
+    },
+    {
+      "label": "Additional Zod 4 reference",
+      "url": "https://zod.dev/error-formatting"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "id": "lab.zod.zod-composition-types",
+  "lessonId": "09.01.07",
+  "title": "Zod 4 schema composition and inference lab",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/zod-composition-types/starter/solution.ts",
+  "solution": "labs/zod-composition-types/solution/solution.ts",
+  "tests": "labs/zod-composition-types/solution.test.mjs",
+  "verify": [
+    "npm run lab:zod-composition-types"
+  ],
+  "expected": "Only named reader/editor roles parse; unknown keys fail and TS types follow the schema.",
+  "security": "Real Zod 4 local parsing tests; no network, auth or database and no remote code execution."
+}

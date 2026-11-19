@@ -1,0 +1,100 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Use z.discriminatedUnion on a literal channel and define strict, branch-specific fields with validated values.","Reproduce and repair the broken discriminated unions schema with real Zod 4.","Distinguish unknown input, validated output and authorization or persistence concerns."]} />
+
+## The problem we're solving
+
+A notification request uses either an email destination or an SMS phone, but never both. Broad union branches allow invalid channel values.
+
+**Broken behavior:** The starter accepts unknown channels and unchecked destination strings.
+
+## Build the mental model
+
+Use z.discriminatedUnion on a literal channel and define strict, branch-specific fields with validated values.
+
+**Predict before coding:** Valid email/sms requests parse; unknown channel, invalid email and short phone are rejected.
+
+**Important boundary:** TypeScript types are erased at runtime. These exercises import Zod 4 from the repository's locked dependencies and run actual `safeParse` or `parse` assertions, not simulated validation. Runtime validation does not authenticate a caller, authorize object access, or persist data.
+
+## Prerequisites and preflight
+
+Read the preceding schema lesson and use the locked Node.js 24 dependencies. Open `labs/zod-discriminated-requests/starter/solution.ts`. Run `ACADEMY_LAB_TARGET=starter npm run lab:zod-discriminated-requests` in Bash or `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:zod-discriminated-requests; Remove-Item Env:ACADEMY_LAB_TARGET` in PowerShell. The deliberately broken starter should fail the same assertions as the corrected solution.
+
+## Guided implementation
+
+<LessonStep number={1} title="Demonstrate the broken input boundary" file="labs/zod-discriminated-requests/starter/solution.ts" expected="The starter accepts an invalid value or omits an expected transformation.">
+
+```ts
+import * as z from 'zod';
+export const Delivery=z.union([
+ z.object({channel:z.string(),address:z.string()}),
+ z.object({channel:z.string(),phone:z.string()}),
+]);
+```
+
+**Why this matters:** The starter accepts unknown channels and unchecked destination strings.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the Zod 4 schema and typed output" file="labs/zod-discriminated-requests/starter/solution.ts" expected="Valid email/sms requests parse; unknown channel, invalid email and short phone are rejected.">
+
+```ts
+import * as z from 'zod';
+export const Delivery=z.discriminatedUnion('channel',[
+ z.strictObject({channel:z.literal('email'),address:z.email()}),
+ z.strictObject({channel:z.literal('sms'),phone:z.string().regex(/^\+[1-9]\d{7,14}$/)}),
+]);
+```
+
+**Why this works:** Use z.discriminatedUnion on a literal channel and define strict, branch-specific fields with validated values.
+
+</LessonStep>
+
+<LessonStep number={3} title="Assert valid, invalid and boundary behavior" file="labs/zod-discriminated-requests/solution.test.mjs" expected="Real Zod 4 test assertions pass for the instructor and fail on the broken starter.">
+
+```js
+assert.equal(mod.Delivery.safeParse({channel:'email',address:'ava@example.test'}).success,true);
+assert.equal(mod.Delivery.safeParse({channel:'sms',phone:'+639123456789'}).success,true);
+assert.equal(mod.Delivery.safeParse({channel:'fax',address:'ava@example.test'}).success,false);
+assert.equal(mod.Delivery.safeParse({channel:'email',address:'not-email'}).success,false);
+```
+
+**Representative application usage:**
+
+```ts
+import * as z from 'zod';
+const Event=z.discriminatedUnion('kind',[
+ z.strictObject({kind:z.literal('created'),id:z.string().min(1)}),
+ z.strictObject({kind:z.literal('deleted'),id:z.string().min(1),hard:z.boolean()}),
+]);
+// TS narrows switch(event.kind) after successful parse; never assume inputs are valid before parse.
+```
+
+**Security and operations:** Never log raw rejected payloads, secrets or personal data. Validate again at server boundaries; a browser schema is for usability, not authorization.
+
+</LessonStep>
+
+<Misconception claim="The starter accepts unknown channels and unchecked destination strings." correction="Use z.discriminatedUnion on a literal channel and define strict, branch-specific fields with validated values. Only successful schema parsing changes unknown values into validated output; it does not grant permissions." />
+
+<KnowledgeCheck question="Which Zod 4 rule is central to discriminated unions?" choices={["TypeScript generics replace runtime parsing of unknown JSON.","Use z.discriminatedUnion on a literal channel and define strict, branch-specific fields with validated values.","safeParse guarantees database transaction success.","A validated user identifier authorizes any organization-specific record."] } correctIndex={1} explanation="Use z.discriminatedUnion on a literal channel and define strict, branch-specific fields with validated values." misconception="Use actual runtime schema parsing at trust boundaries, then independently authorize server operations." lessonId="09.01.06" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Reproduce:** The starter accepts unknown channels and unchecked destination strings. **Diagnose:** compare invalid input with the schema's allowed runtime values. **Repair:** Use z.discriminatedUnion on a literal channel and define strict, branch-specific fields with validated values. **Regression:** Valid email/sms requests parse; unknown channel, invalid email and short phone are rejected. Preserve the failing test and use the resulting validated output rather than asserting a cast.
+
+## Guided local lab
+
+`labs/zod-discriminated-requests/` includes a red learner starter, complete instructor implementation, actual Zod 4 acceptance tests and completion rubric. No public user-code evaluation service is used.
+
+<LabGate lessonId="09.01.06" labId="lab.zod.zod-discriminated-requests" commands={["npm run lab:zod-discriminated-requests","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+Which constraints belong in Zod, which belong in database consistency rules, and which require authentication or per-object authorization?
+
+## Official references
+
+- [Zod 4 official schema documentation](https://zod.dev/api)
+- [Zod 4 additional guidance](https://zod.dev/v4)
+

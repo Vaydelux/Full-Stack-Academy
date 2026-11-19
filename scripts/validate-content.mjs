@@ -29,7 +29,7 @@ const LessonMeta = z.strictObject({
   stack: z.record(z.string(), z.string().min(1)),
   prerequisites: z.array(z.string()),
   objectives: z.array(z.string().min(15)).min(3).max(8),
-  labId: z.string().regex(/^lab\.(react|foundation|next|ui)\.[a-z0-9-]+$/),
+  labId: z.string().regex(/^lab\.(react|foundation|next|ui|zod)\.[a-z0-9-]+$/),
   rubric: z.array(z.string().min(15)).min(3).max(8).optional(),
   sources: z.array(VerifySource).min(2),
 });
