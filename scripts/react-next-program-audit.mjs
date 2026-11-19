@@ -62,5 +62,5 @@ for(const topic of added){
  }
 }
 const checkpoint=readJson('docs/checkpoint.json');
-assert.deepEqual({lessons:checkpoint.snapshot.publishedLessons,mdx:checkpoint.snapshot.authoredMdxLessons,labs:checkpoint.snapshot.labFixtures,modules:checkpoint.snapshot.completeModules.length},{lessons:260,mdx:257,labs:257,modules:32});
+assert.deepEqual({lessons:checkpoint.snapshot.publishedLessons,mdx:checkpoint.snapshot.authoredMdxLessons,labs:checkpoint.snapshot.labFixtures,modules:checkpoint.snapshot.completeModules.length},{lessons:259,mdx:257,labs:257,modules:32});
 console.log(JSON.stringify({status:'static-structure-passed',newReact:react,newNext:next,newTotal:added.length,authoredLessonIds:checkpoint.snapshot.publishedLessons,mdx:checkpoint.snapshot.authoredMdxLessons,localLabManifests:checkpoint.snapshot.labFixtures,completeModules:checkpoint.snapshot.completeModules.length,notVerified:['actual tsx execution','TypeScript compilation','Next build','React DOM hydration','Next App Router','Chromium']},null,2));

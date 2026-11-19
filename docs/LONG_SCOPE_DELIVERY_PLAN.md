@@ -39,11 +39,11 @@ After the CSS-track candidate, a distinct branch `feat/js-ts-two-track-offline` 
 ## React + Next.js complete authoring program — 2026-11-19
 
 - **79 new topics** authored and committed on `feat/06-07-react-next-curriculum`; together with existing `06.01.01`, tracks `06` and `07` have **80 complete lesson slots**, in 10 modules.
-- **Source-only candidate totals:** 260 lesson IDs, 257 MDX articles, 257 offline labs, 32 complete modules, 629 remaining canonical topics. The hosted production website still has 61 lesson IDs; merged Git source is not deployed.
+- **Source-only candidate totals:** 259 lesson IDs, 257 MDX articles, 257 offline labs, 32 complete modules, 630 remaining canonical topics. The hosted production website still has 61 lesson IDs; merged Git source is not deployed.
 - **Testing boundaries:** Each React lab includes actual TSX component source and a React DOM Server initial-render test plus independent pure contract assertions. That cannot certify clicks, effects, hydration, transitions, aria-live updates or browser focus. Each Next.js lab includes real Next-oriented source and pure policy assertions, not a running App Router/caching integration test.
 - **Validation gates:** static structural preflight, Node24 locked install, typed fixtures, all 79 new lab contracts, old labs, lint, TypeScript, Next production compile, Chromium routes/mobile/SEO, and finally manual/accessibility/security review. Keep all reports separated by executed vs still planned.
 - **No GitHub Actions / Vercel:** new work is on a feature branch without an open PR. No deployment or cloud build is authorized; use local tests or a dedicated container with dependency access.
-- **Long-range scope:** track `08` next; 629 canonical IDs remain planned, plus reference encyclopedia backlog. Continue by complete tracks and maintain machine-readable checkpoints for other AI assistants.
+- **Long-range scope:** track `08` next; 630 canonical IDs remain planned, plus reference encyclopedia backlog. Continue by complete tracks and maintain machine-readable checkpoints for other AI assistants.
 
 ## Quality gate for every large batch
 

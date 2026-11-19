@@ -20,7 +20,7 @@
 ## Next strategic program after verification
 
 - [ ] Track `08` — APIs/backend foundations (next canonical topic `08.01.01`)
-- [ ] Expand the remaining **629 planned topic IDs**, prioritizing complete adjacent tracks rather than random content additions
+- [ ] Expand the remaining **630 planned topic IDs**, prioritizing complete adjacent tracks rather than random content additions
 - [ ] Expand encyclopedia: **303 index entries**, only **4 authored reference drafts**
 - [ ] Normalize and review actual Next.js 16 Cache Components examples against target project settings
 - [ ] Add browser-level React Testing Library interactions; current React fixtures prove initial SSR markup and pure state semantics, not hydrated UI behavior
@@ -33,4 +33,4 @@
 - [ ] Keep Vercel on existing production build. Three merge-related Vercel webhook attempts were **canceled**; no production deployment of newly merged source
 - [ ] Favor local QA over GitHub Actions until owner re-enables it. Do not weaken tests to create false green status
 
-**Branch-only proposed counts:** 260 authored/published lesson IDs; 257 MDX + 257 offline lab manifests; 32 complete modules; 889 canonical topics. **Live deployment remains at 61 lesson IDs** because deployment is paused. `docs/checkpoint.json` and `docs/REACT_NEXT_OFFLINE_ACCEPTANCE.md` are handoff sources.
+**Branch-only proposed counts:** 259 authored/published lesson IDs; 257 MDX + 257 offline lab manifests; 32 complete modules; 889 canonical topics. **Live deployment remains at 61 lesson IDs** because deployment is paused. `docs/checkpoint.json` and `docs/REACT_NEXT_OFFLINE_ACCEPTANCE.md` are handoff sources.
