@@ -1,0 +1,99 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Explain the derived state versus duplicated state mental model in React 19","Repair a controlled state or reducer example for react-derived-state","Verify expected and edge-case behavior through local checks"]} />
+
+## The problem we're solving
+
+A shopping cart updates its total as quantities change without risking a stale cached field. Storing the derived total separately creates two sources of truth that can disagree. The following exercise is React 19 and TypeScript 5 source checked into this repository, not a remote code runner.
+
+## Build the mental model
+
+Compute totals from the authoritative item list during render instead of synchronizing a second total state. A value that can be recomputed from current inputs should not drift out of sync with its source. **Important boundary:** A pure-function test validates state transitions and static React rendering checks initial markup; neither alone simulates an interactive browser or verifies hydration and effect behavior.
+
+**Predict before you run:** The total follows item prices and quantities and rejects negative quantities.
+
+## Prerequisites and preflight
+
+Review the previous canonical React topic, then open `labs/react-derived-state/starter/solution.tsx`. Use Node.js 24 with locked repository dependencies. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:react-derived-state`. PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:react-derived-state; Remove-Item Env:ACADEMY_LAB_TARGET`. The failing starter is intentional.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the initial defect" file="labs/react-derived-state/starter/solution.tsx" expected="A local assertion exposes the deliberately incorrect state rule.">
+
+Read this starter before editing. Predict the specific failing assertion and whether it is a render or transition failure.
+
+```tsx
+export type LineItem={id:string;price:number;quantity:number};
+export function cartTotal(_items:readonly LineItem[]) {return 0;}
+export function CartSummary({items}:{items:readonly LineItem[]}) {
+ return <output aria-label="Cart total">{cartTotal(items).toFixed(2)}</output>;
+}
+```
+
+**Why it fails:** Storing the derived total separately creates two sources of truth that can disagree.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the state ownership or transition" file="labs/react-derived-state/starter/solution.tsx" expected="The total follows item prices and quantities and rejects negative quantities.">
+
+Apply a correction that respects the relevant React snapshot, identity, immutability, or single-source-of-truth rule.
+
+```tsx
+export type LineItem={id:string;price:number;quantity:number};
+export function cartTotal(items:readonly LineItem[]) {
+ if(items.some(x=>!Number.isFinite(x.price)||x.price<0||!Number.isSafeInteger(x.quantity)||x.quantity<0)) throw new RangeError('Invalid cart item');
+ return items.reduce((sum,x)=>sum+x.price*x.quantity,0);
+}
+export function CartSummary({items}:{items:readonly LineItem[]}) {
+ return <output aria-label="Cart total">{cartTotal(items).toFixed(2)}</output>;
+}
+```
+
+**Why the repair works:** Compute totals from the authoritative item list during render instead of synchronizing a second total state.
+
+</LessonStep>
+
+<LessonStep number={3} title="Prove the happy path and a counterexample" file="labs/react-derived-state/solution.test.mjs" expected="A reviewed solution passes the local assertions; a restored defect fails.">
+
+Run `npm run lab:react-derived-state`, then change an input or restore the defect and repeat the command.
+
+```js
+const items=[{id:'a',price:12.5,quantity:2},{id:'b',price:4,quantity:3}];
+assert.equal(mod.cartTotal(items),37);assert.equal(mod.cartTotal([]),0);
+assert.throws(()=>mod.cartTotal([{id:'bad',price:10,quantity:-1}]),RangeError);
+assert.match(renderToStaticMarkup(createElement(mod.CartSummary,{items})),/37\.00/);
+```
+
+**What actually happened:** The total follows item prices and quantities and rejects negative quantities. For browser interaction evidence, add a dedicated DOM environment; this lesson's local test does not claim to simulate user events.
+
+</LessonStep>
+
+<Misconception claim="Storing the derived total separately creates two sources of truth that can disagree." correction="Compute totals from the authoritative item list during render instead of synchronizing a second total state. A value that can be recomputed from current inputs should not drift out of sync with its source." />
+
+<KnowledgeCheck question="Why derive a total rather than store a second total?" choices={["React automatically synchronizes any duplicate state stored in unrelated components.","A value that can be recomputed from current inputs should not drift out of sync with its source.","All React state is stored in the browser's localStorage by default.","Passing a compile-only TypeScript check proves a browser interaction works."] } correctIndex={1} explanation="A value that can be recomputed from current inputs should not drift out of sync with its source." misconception="Choose the state owner and transition model explicitly instead of relying on automatic synchronization." lessonId="06.02.03" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Symptom:** Storing the derived total separately creates two sources of truth that can disagree.
+
+**Root cause:** The starter violates the rule established in the mental model. Use a small input and read the actual prior state before changing code.
+
+**Repair:** Compute totals from the authoritative item list during render instead of synchronizing a second total state.
+
+**Regression test:** The total follows item prices and quantities and rejects negative quantities. Do not conclude that a test of a pure function proves component reconciliation or live event batching.
+
+## Guided local lab
+
+Inspect `labs/react-derived-state/starter`, repair the exported code, and run the local verifier. Hint ladder: identify the authoritative input; examine the old state snapshot; compare the instructor's updated function signature and branch behavior.
+
+<LabGate lessonId="06.02.03" labId="lab.react.react-derived-state" commands={["npm run lab:react-derived-state","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+What is the minimal authoritative state? How could the repaired approach regress, and which additional real-browser test would confirm behavior after a user interaction?
+
+## Official references
+
+- [React guide: Derived state versus duplicated state](https://react.dev/learn/choosing-the-state-structure)
+- [React documentation index](https://react.dev/learn)

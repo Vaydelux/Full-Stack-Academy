@@ -1,0 +1,34 @@
+{
+  "id": "06.02.04",
+  "title": "Updating arrays and objects: Use immutable updates so unchanged items preserve identity while the modified record receives a new object",
+  "description": "A React 19 and TypeScript 5 offline walkthrough of updating arrays and objects, with explicit state contracts, a reproducible defect and local regression tests.",
+  "trackId": "06",
+  "moduleId": "06.02",
+  "level": "Beginner",
+  "estimatedMinutes": 55,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "react": "19",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "06.02.03"
+  ],
+  "objectives": [
+    "Explain the state contract of updating arrays and objects",
+    "Fix a reproducible problem in react-immutable-updates",
+    "Verify representative and edge-case behavior using offline tests"
+  ],
+  "labId": "lab.react.react-immutable-updates",
+  "sources": [
+    {
+      "label": "React official guide: Updating arrays and objects",
+      "url": "https://react.dev/learn/updating-arrays-in-state"
+    },
+    {
+      "label": "React official documentation",
+      "url": "https://react.dev/learn"
+    }
+  ]
+}

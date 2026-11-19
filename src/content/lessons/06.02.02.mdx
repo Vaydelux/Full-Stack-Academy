@@ -1,0 +1,94 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Explain the batching and functional updates mental model in React 19","Repair a controlled state or reducer example for react-batched-updates","Verify expected and edge-case behavior through local checks"]} />
+
+## The problem we're solving
+
+An Add Two button must increment exactly twice even when React batches updates from one event. Two calls with the same captured value can enqueue identical replacements and lose an increment. The following exercise is React 19 and TypeScript 5 source checked into this repository, not a remote code runner.
+
+## Build the mental model
+
+When multiple queued changes depend on earlier changes, pass updater functions rather than a captured count. A functional setter receives the previous queued state, including earlier updates. **Important boundary:** A pure-function test validates state transitions and static React rendering checks initial markup; neither alone simulates an interactive browser or verifies hydration and effect behavior.
+
+**Predict before you run:** Two sequential functional updates increase any starting count by exactly two.
+
+## Prerequisites and preflight
+
+Review the previous canonical React topic, then open `labs/react-batched-updates/starter/solution.tsx`. Use Node.js 24 with locked repository dependencies. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:react-batched-updates`. PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:react-batched-updates; Remove-Item Env:ACADEMY_LAB_TARGET`. The failing starter is intentional.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the initial defect" file="labs/react-batched-updates/starter/solution.tsx" expected="A local assertion exposes the deliberately incorrect state rule.">
+
+Read this starter before editing. Predict the specific failing assertion and whether it is a render or transition failure.
+
+```tsx
+export function addTwo(start:number){return start+1;}
+export function BatchingCounter({initial=0}:{initial?:number}) {
+ return <button type="button">Count: {initial}</button>;
+}
+```
+
+**Why it fails:** Two calls with the same captured value can enqueue identical replacements and lose an increment.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the state ownership or transition" file="labs/react-batched-updates/starter/solution.tsx" expected="Two sequential functional updates increase any starting count by exactly two.">
+
+Apply a correction that respects the relevant React snapshot, identity, immutability, or single-source-of-truth rule.
+
+```tsx
+import {useState} from 'react';
+export function addTwo(start:number){return [1,1].reduce(n=>n+1,start);}
+export function BatchingCounter({initial=0}:{initial?:number}) {
+ const [count,setCount]=useState(initial);
+ return <button type="button" onClick={()=>{setCount(n=>n+1);setCount(n=>n+1);}}>Count: {count}</button>;
+}
+```
+
+**Why the repair works:** When multiple queued changes depend on earlier changes, pass updater functions rather than a captured count.
+
+</LessonStep>
+
+<LessonStep number={3} title="Prove the happy path and a counterexample" file="labs/react-batched-updates/solution.test.mjs" expected="A reviewed solution passes the local assertions; a restored defect fails.">
+
+Run `npm run lab:react-batched-updates`, then change an input or restore the defect and repeat the command.
+
+```js
+assert.equal(mod.addTwo(0),2);assert.equal(mod.addTwo(8),10);
+assert.match(renderToStaticMarkup(createElement(mod.BatchingCounter,{initial:8})),/Count: 8/);
+```
+
+**What actually happened:** Two sequential functional updates increase any starting count by exactly two. For browser interaction evidence, add a dedicated DOM environment; this lesson's local test does not claim to simulate user events.
+
+</LessonStep>
+
+<Misconception claim="Two calls with the same captured value can enqueue identical replacements and lose an increment." correction="When multiple queued changes depend on earlier changes, pass updater functions rather than a captured count. A functional setter receives the previous queued state, including earlier updates." />
+
+<KnowledgeCheck question="What prevents a lost increment when two updates are queued?" choices={["React automatically synchronizes any duplicate state stored in unrelated components.","A functional setter receives the previous queued state, including earlier updates.","All React state is stored in the browser's localStorage by default.","Passing a compile-only TypeScript check proves a browser interaction works."] } correctIndex={1} explanation="A functional setter receives the previous queued state, including earlier updates." misconception="Choose the state owner and transition model explicitly instead of relying on automatic synchronization." lessonId="06.02.02" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Symptom:** Two calls with the same captured value can enqueue identical replacements and lose an increment.
+
+**Root cause:** The starter violates the rule established in the mental model. Use a small input and read the actual prior state before changing code.
+
+**Repair:** When multiple queued changes depend on earlier changes, pass updater functions rather than a captured count.
+
+**Regression test:** Two sequential functional updates increase any starting count by exactly two. Do not conclude that a test of a pure function proves component reconciliation or live event batching.
+
+## Guided local lab
+
+Inspect `labs/react-batched-updates/starter`, repair the exported code, and run the local verifier. Hint ladder: identify the authoritative input; examine the old state snapshot; compare the instructor's updated function signature and branch behavior.
+
+<LabGate lessonId="06.02.02" labId="lab.react.react-batched-updates" commands={["npm run lab:react-batched-updates","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+What is the minimal authoritative state? How could the repaired approach regress, and which additional real-browser test would confirm behavior after a user interaction?
+
+## Official references
+
+- [React guide: Batching and functional updates](https://react.dev/learn/queueing-a-series-of-state-updates)
+- [React documentation index](https://react.dev/learn)

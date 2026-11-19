@@ -1,0 +1,15 @@
+{
+  "id": "lab.react.react-derived-state",
+  "lessonId": "06.02.03",
+  "title": "Practice derived state versus duplicated state with local fixtures",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/react-derived-state/starter/solution.tsx",
+  "solution": "labs/react-derived-state/solution/solution.tsx",
+  "tests": "labs/react-derived-state/solution.test.mjs",
+  "verify": [
+    "npm run lab:react-derived-state"
+  ],
+  "expected": "The total follows item prices and quantities and rejects negative quantities.",
+  "security": "Only checked-in source executes in a local Node test process; no public React code-execution endpoint exists."
+}

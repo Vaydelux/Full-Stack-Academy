@@ -1,0 +1,105 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Explain the component state preservation mental model in React 19","Repair a controlled state or reducer example for react-state-identity","Verify expected and edge-case behavior through local checks"]} />
+
+## The problem we're solving
+
+Switching between two people must not reuse the old person's in-progress draft. Giving every editor the same key retains the wrong record's local input state when switching profiles. The following exercise is React 19 and TypeScript 5 source checked into this repository, not a remote code runner.
+
+## Build the mental model
+
+React associates state with component identity and tree position; a deliberate key can reset a form for a new record. When a keyed component is replaced by a component with a different key at the same position. **Important boundary:** A pure-function test validates state transitions and static React rendering checks initial markup; neither alone simulates an interactive browser or verifies hydration and effect behavior.
+
+**Predict before you run:** The editor key matches the current person ID, and the initial rendered field shows the selected person.
+
+## Prerequisites and preflight
+
+Review the previous canonical React topic, then open `labs/react-state-identity/starter/solution.tsx`. Use Node.js 24 with locked repository dependencies. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:react-state-identity`. PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:react-state-identity; Remove-Item Env:ACADEMY_LAB_TARGET`. The failing starter is intentional.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the initial defect" file="labs/react-state-identity/starter/solution.tsx" expected="A local assertion exposes the deliberately incorrect state rule.">
+
+Read this starter before editing. Predict the specific failing assertion and whether it is a render or transition failure.
+
+```tsx
+import {useState} from 'react';
+export type Person={id:string;name:string};
+export function Editor({initialText}:{initialText:string}) {
+ const [text,setText]=useState(initialText);
+ return <label>Draft <input value={text} onChange={e=>setText(e.target.value)}/></label>;
+}
+export function ProfileSwitcher({person}:{person:Person}) {
+ return <section><h2>{person.name}</h2><Editor key="shared" initialText={person.name}/></section>;
+}
+```
+
+**Why it fails:** Giving every editor the same key retains the wrong record's local input state when switching profiles.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the state ownership or transition" file="labs/react-state-identity/starter/solution.tsx" expected="The editor key matches the current person ID, and the initial rendered field shows the selected person.">
+
+Apply a correction that respects the relevant React snapshot, identity, immutability, or single-source-of-truth rule.
+
+```tsx
+import {useState} from 'react';
+export type Person={id:string;name:string};
+export function Editor({initialText}:{initialText:string}) {
+ const [text,setText]=useState(initialText);
+ return <label>Draft <input value={text} onChange={e=>setText(e.target.value)}/></label>;
+}
+export function ProfileSwitcher({person}:{person:Person}) {
+ return <section><h2>{person.name}</h2><Editor key={person.id} initialText={person.name}/></section>;
+}
+```
+
+**Why the repair works:** React associates state with component identity and tree position; a deliberate key can reset a form for a new record.
+
+</LessonStep>
+
+<LessonStep number={3} title="Prove the happy path and a counterexample" file="labs/react-state-identity/solution.test.mjs" expected="A reviewed solution passes the local assertions; a restored defect fails.">
+
+Run `npm run lab:react-state-identity`, then change an input or restore the defect and repeat the command.
+
+```js
+const person={id:'p-9',name:'Ava'};
+const element=mod.ProfileSwitcher({person});
+assert.equal(element.props.children[1].key,'p-9');
+const html=renderToStaticMarkup(createElement(mod.ProfileSwitcher,{person}));
+assert.match(html,/<h2>Ava<\/h2>/);assert.match(html,/value="Ava"/);
+```
+
+**What actually happened:** The editor key matches the current person ID, and the initial rendered field shows the selected person. For browser interaction evidence, add a dedicated DOM environment; this lesson's local test does not claim to simulate user events.
+
+</LessonStep>
+
+<Misconception claim="Giving every editor the same key retains the wrong record's local input state when switching profiles." correction="React associates state with component identity and tree position; a deliberate key can reset a form for a new record. When a keyed component is replaced by a component with a different key at the same position." />
+
+<KnowledgeCheck question="When does a new key cause React to reset local state?" choices={["React automatically synchronizes any duplicate state stored in unrelated components.","When a keyed component is replaced by a component with a different key at the same position.","All React state is stored in the browser's localStorage by default.","Passing a compile-only TypeScript check proves a browser interaction works."] } correctIndex={1} explanation="When a keyed component is replaced by a component with a different key at the same position." misconception="Choose the state owner and transition model explicitly instead of relying on automatic synchronization." lessonId="06.02.05" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Symptom:** Giving every editor the same key retains the wrong record's local input state when switching profiles.
+
+**Root cause:** The starter violates the rule established in the mental model. Use a small input and read the actual prior state before changing code.
+
+**Repair:** React associates state with component identity and tree position; a deliberate key can reset a form for a new record.
+
+**Regression test:** The editor key matches the current person ID, and the initial rendered field shows the selected person. Do not conclude that a test of a pure function proves component reconciliation or live event batching.
+
+## Guided local lab
+
+Inspect `labs/react-state-identity/starter`, repair the exported code, and run the local verifier. Hint ladder: identify the authoritative input; examine the old state snapshot; compare the instructor's updated function signature and branch behavior.
+
+<LabGate lessonId="06.02.05" labId="lab.react.react-state-identity" commands={["npm run lab:react-state-identity","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+What is the minimal authoritative state? How could the repaired approach regress, and which additional real-browser test would confirm behavior after a user interaction?
+
+## Official references
+
+- [React guide: Component state preservation](https://react.dev/learn/preserving-and-resetting-state)
+- [React documentation index](https://react.dev/learn)
