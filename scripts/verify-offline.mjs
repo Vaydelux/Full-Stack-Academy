@@ -8,6 +8,8 @@ const steps = [
   'test',
   'test:learning-dashboard',
   'test:study-plan',
+  'test:lesson-discovery',
+  'test:learning-workflow',
   'validate',
   'verify:content',
   'checkpoint:check',
