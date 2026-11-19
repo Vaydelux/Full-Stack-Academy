@@ -184,3 +184,21 @@ test('competing conditional writes cannot both commit the same revision', async 
   assert.equal(authoritative.revision,2);
   assert.equal(authoritative.status,accepted[0].value.status);
 });
+
+async function rawRequestTarget(base, target) {
+  return new Promise((resolve, reject) => {
+    const req = httpRequest(base, { method: 'GET', path: target }, res => {
+      res.resume();
+      res.on('end', () => resolve(res.statusCode));
+    });
+    req.on('error', reject);
+    req.end();
+  });
+}
+
+test('rejects absolute-form request target even with a valid Host header', async () => fixture(async ({base}) => {
+  assert.equal(await rawRequestTarget(base, 'http://evil.example/api/health'), 400);
+}));
+test('rejects network-path HTTP targets', async () => fixture(async ({base}) => {
+  assert.equal(await rawRequestTarget(base, '//evil.example/api/health'), 400);
+}));
