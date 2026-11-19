@@ -1,6 +1,6 @@
 # Forms and Server State — real loopback vertical slice
 
-This is a **developer-only teaching capstone** for future canonical modules 09.02 (React Hook Form) and 09.03 (TanStack Query). It is not a production API and does not publish any academy lesson ID. The academy now provides an unindexed [project walkthrough](/learn/projects/forms-query) explaining the local exercise, but that page does not host the API.
+This is a **developer-only teaching capstone** for future canonical modules 09.02 (React Hook Form) and 09.03 (TanStack Query). It is not a production API and does not publish any academy lesson ID. The academy includes a project walkthrough at `/learn/projects/forms-query` explaining the local exercise, but that page does not host the API.
 
 ## What works without installing packages
 
