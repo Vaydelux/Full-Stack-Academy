@@ -19,6 +19,7 @@
     "test:forms-query-contract": "node --test tests/forms-query-contract.test.mjs",
     "test:forms-query-project-route": "node --test tests/forms-query-project-route.test.mjs",
     "test:forms-query-drafts": "node scripts/verify-forms-query-drafts.mjs",
+    "test:forms-query-draft-types": "node scripts/verify-forms-query-draft-types.mjs",
     "test:labs": "node scripts/run-local-labs.mjs",
     "verify:content": "node scripts/validate-content.mjs",
     "lab:browser-server": "node --test labs/browser-server/solution.test.mjs",
