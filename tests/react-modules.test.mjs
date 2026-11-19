@@ -15,6 +15,7 @@ test('15 React lessons are registered with complete, local-only fixture paths',(
   const meta=JSON.parse(read('src/content/lessons/'+id+'.meta.json'));
   const lab=JSON.parse(read('labs/'+name+'/lab.json'));
   assert.equal(meta.id,id);assert.equal(meta.labId,lab.id);assert.equal(lab.lessonId,id);
+  assert.ok(Array.isArray(meta.rubric)&&meta.rubric.length>=3,id+' needs an explicit self-assessment rubric');
   assert.match(registry,new RegExp("case '"+id.replaceAll('.','\\.')+"'"));
   assert.ok(published.includes('lessons/'+id+'.meta.json'));
   for(const file of [lab.starter,lab.solution,lab.tests])assert.ok(fs.statSync(path.join(root,file)).isFile(),file);
