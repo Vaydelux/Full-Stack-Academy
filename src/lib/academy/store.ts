@@ -578,12 +578,15 @@ export const useAcademy = create<AcademyStore>((set, get) => ({
       const rubric = s.progress.rubrics[lessonId] ?? [];
       const rubricOk = criteria.every((_, idx) => rubric.includes(idx));
       if (!quizOk || !rubricOk) return {};
+      const update = updateAndSaveProgress(s, (prev) => ({
+        ...prev,
+        complete: { ...prev.complete, [lessonId]: true },
+      }));
       return {
-        ...updateAndSaveProgress(s, (prev) => ({
-          ...prev,
-          complete: { ...prev.complete, [lessonId]: true },
-        })),
-        toast: { id: ++toastId, msg: `Lesson ${lessonId} marked complete`, tone: 'success' },
+        ...update,
+        toast: update.storageError
+          ? { id: ++toastId, msg: 'Lesson completion could not be saved on this device', tone: 'error' }
+          : { id: ++toastId, msg: `Lesson ${lessonId} marked complete`, tone: 'success' },
       };
     }),
 
