@@ -16,6 +16,7 @@ const steps = [
   'test:forms-query-project-route',
   'test:forms-query-drafts',
   'test:forms-query-draft-types',
+  'test:forms-query-react-api',
   'test:curriculum-readiness',
   'validate',
   'verify:content',
