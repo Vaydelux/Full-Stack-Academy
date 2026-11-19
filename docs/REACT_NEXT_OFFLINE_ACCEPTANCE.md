@@ -21,7 +21,9 @@
 - [x] 79 instructor + student source contracts and local tests; actual React TSX samples or Next App Router syntax examples included.
 - [x] Official documentation source links retained; no real keys, external services, registry calls or cloud builds.
 - [x] Registry, package commands, checkpoint and next-todo updated in same branch.
-- [ ] Run `npm run check:react-next:structure` and inspect any reported schema or missing path failures.
+- [ ] Execute local zero-dependency structure gate: `npm run check:react-next:structure`; repository-tree file-presence audit completed, but local script not executed
+- [ ] Execute local MDX compiler / TypeScript parser: `npm run check:react-next:syntax` (requires `npm ci`)
+- [ ] Execute local source security regressions: `npm run test:react-next:snippets`
 - [ ] Run 79 new actual lab tests (instructor positive and expected student negative), then all 257 labs.
 - [ ] Run Node24 lint, strict TS check, MDX content validation, Next production compile locally.
 - [ ] Run Chromium routes, sitemap, noindex and responsive readers on actual local build.
@@ -33,3 +35,7 @@
 ### Nonclaims
 
 The work is *authored code*, not production-ready verified course material yet. It does not imply a successful local npm install, a passing TypeScript or Next.js build, browser tests, deployment, cloud grading, real API authentication, or working App Router route examples in a running server. The source code intentionally separates actual pure assertions, React SSR initialization, and full request/client integration.
+
+## Local-only quality commands
+
+`npm run verify:react-next:cheap` checks file structure, all 80 MDX parses, 276 TS/TSX syntax parses and source-safety regressions. `npm run verify:react-next:full` adds all 79 instructor labs, all red starter checks, content and checkpoint checks, ESLint, strict TypeScript and a production Next build. The latter can consume **local** CPU/memory but no hosted GitHub Actions or Vercel usage. Neither command is claimed to have run in this editing environment.

@@ -10,9 +10,11 @@
 - [x] Cover all 10 complete modules: React elements, state, effects, concurrency, testing; Next App Router, RSC, caching, SEO, operations
 - [x] Register all 79 new MDX bodies, metadata, lab scripts and content checkpoint; preserve 06.01.01
 - [x] Retain `[skip ci]` commit messages, feature-branch-only work, no PR and no deployments
-- [ ] Run **local** `npm ci && npm run check:react-next:structure && npm run test:react-next:offline && npm run test:react-next:red && npm run lint && npm run typecheck && npm run build` when a clone/Node24/dependencies become available
+- [ ] Run **local** `npm ci && npm run verify:react-next:cheap && npm run test:react-next:offline && npm run test:react-next:red && npm run lint && npm run typecheck && npm run build` when a clone/Node24/dependencies become available
 - [ ] Run isolated Chromium smoke for 80 authored routes plus prior CSS/JS/TS/Git regression
-- [ ] Repair actual test/build defects; content is **unverified** until the above runs
+- [x] Repair reviewed examples: private handler defaults to 401 without verifier, publishing waits for successful persistence, document-title Effect restores previous state, Space shortcut avoids native controls
+- [x] Add local MDX compiler, TS/TSX parser, and fail-closed snippet checks with no extra dependencies
+- [ ] Repair any actual test/build defects; content is **unverified** until the above commands run
 - [ ] Do not merge large-scope branch or resume Vercel without explicit owner request
 
 ## Next strategic program after verification
