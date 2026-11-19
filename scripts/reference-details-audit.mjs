@@ -26,7 +26,7 @@ for(const ref of references){
  for(const field of ['syntax','parameters','returns','minimalExample','productionExample']){
   assert.ok(typeof ref[field]==='string'&&ref[field].trim().length>=20,'Missing '+field+': '+ref.id);
  }
- assert.equal(ref.status,'Authored reference draft');
+ assert.equal(ref.status,'Unverified draft');
  assert.ok(ref.commonMistakes.length>=2,'Expected real common mistakes: '+ref.id);
  assert.ok(ref.securityPerformanceNotes.length>=2,'Expected security/performance notes: '+ref.id);
  assert.ok(ref.relatedLessonIds.length>=1&&ref.relatedLessonIds.every(id=>lessonIds.has(id)),'Unknown related lesson: '+ref.id);

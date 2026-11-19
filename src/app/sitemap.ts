@@ -23,7 +23,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'monthly' as const,
       priority: 0.8,
     })),
-    ...AUTHORED_REFERENCES.map((ref) => ({
+    ...AUTHORED_REFERENCES.filter((ref) => ref.status !== 'Unverified draft').map((ref) => ({
       url: url(`/reference/${ref.id}`),
       changeFrequency: 'monthly' as const,
       priority: 0.7,

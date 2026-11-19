@@ -21,8 +21,8 @@ export async function generateMetadata({ params }: ReferencePageProps): Promise<
   return {
     title: `${authored?.heading ?? entry.title} | Developer Reference`,
     description: authored?.summary ?? `Indexed reference for ${entry.title}. Detailed documentation is not yet published.`,
-    robots: { index: Boolean(authored), follow: true },
-    alternates: authored && getPublicOrigin() ? { canonical: `/reference/${referenceId}` } : undefined,
+    robots: { index: Boolean(authored) && authored.status !== 'Unverified draft', follow: true },
+    alternates: authored && authored.status !== 'Unverified draft' && getPublicOrigin() ? { canonical: `/reference/${referenceId}` } : undefined,
   };
 }
 

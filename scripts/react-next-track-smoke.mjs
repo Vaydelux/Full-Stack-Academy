@@ -42,6 +42,14 @@ export async function verifyReactNextTrack({page,base,assert,wait}){
  assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'Reference explorer fits 320px without horizontal overflow');
  await explorer.getByRole('searchbox',{name:'Search by API, hook or concept'}).fill('cacheTag');
  await wait(explorer.getByRole('link',{name:/cacheTag/}));
+ // Draft reference details may be browsed but must not be indexed or listed in sitemap.
+ const draftResponse=await page.goto(base+'/reference/react-useoptimistic');
+ assert.equal(draftResponse.status(),200,'New React reference draft route should be accessible');
+ assert.ok(await page.locator('meta[name="robots"][content*="noindex"]').count()>0,'Unverified references remain noindex');
+ if(xml.includes('<loc>')){
+  assert.ok(!xml.includes('/reference/react-useoptimistic'),'Unverified reference excluded from sitemap');
+  assert.ok(xml.includes('/reference/zod-safeparse'),'Legacy authored reference preserved in sitemap');
+ }
  if(oldViewport)await page.setViewportSize(oldViewport);
  console.log('React + Next track browser smoke passed: 10 modules, 20 representative authored routes, 320px reader and reference explorer, planned noindex and sitemap policy');
 }
