@@ -19,6 +19,8 @@ node --test tests/forms-query-http.test.mjs
 node --test tests/forms-query-workflow.test.mjs
 node --test tests/forms-query-contract.test.mjs
 node --test tests/forms-query-project-route.test.mjs
+node --experimental-strip-types --test tests/forms-query-react-api.test.mjs tests/forms-query-policy.test.mjs
+node --test tests/forms-query-react-wiring.test.mjs
 ```
 
 The earlier HTTP suite passed 22/22 on the preceding version. The new workflow suite covers revision races, status filtering and hostile request targets; rerun all suites on this exact branch before release. An isolated handler-level simulation of 29 workflow scenarios and 11 contract assertions passed during development, but this is not a replacement for the Node network run.
@@ -75,7 +77,7 @@ The React source demonstrates:
 - cancelQueries, optimistic delete, snapshot rollback on error and invalidateQueries after settle;
 - failure, loading, retry and empty states.
 
-**Limitations:** the React view intentionally shows only the first page, and its optimistic snapshot rollback is safe only for one in-flight operation of each mutation class. It disables concurrent same-type mutations. Cross-type optimistic concurrency, infinite queries and full React browser qualification remain separate exercises. The full React runtime was not executable during this implementation because the npm registry was unreachable.
+**Current React reference:** the list uses a bounded ten-page `useInfiniteQuery`, filters each status into a separate query key, passes AbortSignal through to the real API client, and explicitly restarts from page one after a 409 stale cursor. A synchronous single-flight mutation guard prevents cross-type optimistic snapshot races. A successful POST clears its retry key before refreshing the query, so a later read failure cannot be mistaken for an unconfirmed create. Unknown POST outcomes retain the same key; terminal 4xx errors do not offer indefinite retries. **Limitations:** React package installation, real typecheck, browser interaction/a11y and SSR hydration remain unqualified. This in-memory API is not a production service. The full React runtime was not executable during this implementation because the npm registry was unreachable.
 
 ## Learning and implementation progression
 
