@@ -1,5 +1,9 @@
 import {createStore} from 'zustand/vanilla';
-export function makeQuantityStore(){return createStore()(set=>({
- quantities:[1,2],addQuantity:(quantity:number)=>set(state=>({quantities:[...state.quantities,quantity]})),
-}));}
-export const totalOf=(_state:{quantities:readonly number[]})=>0;
+type QtyState={quantities:number[];addQuantity:(quantity:number)=>void};
+export function makeQuantityStore(){
+ return createStore<QtyState>()(set=>({
+  quantities:[1,2],
+  addQuantity:quantity=>set(state=>({quantities:[...state.quantities,quantity]})),
+ }));
+}
+export const totalOf=(_state:QtyState)=>0;

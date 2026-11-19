@@ -28,12 +28,14 @@ Open `labs/zustand-url-search-state/starter/solution.ts`. Bash: `ACADEMY_LAB_TAR
 <LessonStep number={1} title="Reproduce the broken Zustand store behavior" file="labs/zustand-url-search-state/starter/solution.ts" expected="The red starter fails a meaningful offline assertion, not a missing dependency import.">
 
 ```ts
-import {createStore} from 'zustand/vanilla';
+import {createStore,type StoreApi} from 'zustand/vanilla';
+type Status='all'|'active';
+type QueryState={status:Status;setStatus:(status:Status)=>void};
 export function makeQueryStore(search:string){
- const status=new URLSearchParams(search).get('status')==='active'?'active':'all';
- return createStore()(set=>({status,setStatus:(status:string)=>set({status})}));
+ const status:Status=new URLSearchParams(search).get('status')==='active'?'active':'all';
+ return createStore<QueryState>()(set=>({status,setStatus:status=>set({status})}));
 }
-export const toQuery=(_store:unknown)=>'';
+export const toQuery=(_store:StoreApi<QueryState>)=>'';
 ```
 
 **Cause:** The starter's URL serializer always returns an empty string, so a selected filter cannot be linked.

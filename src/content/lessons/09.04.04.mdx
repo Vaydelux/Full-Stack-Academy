@@ -29,10 +29,14 @@ Open `labs/zustand-derived-subscription/starter/solution.ts`. Bash: `ACADEMY_LAB
 
 ```ts
 import {createStore} from 'zustand/vanilla';
-export function makeQuantityStore(){return createStore()(set=>({
- quantities:[1,2],addQuantity:(quantity:number)=>set(state=>({quantities:[...state.quantities,quantity]})),
-}));}
-export const totalOf=(_state:{quantities:readonly number[]})=>0;
+type QtyState={quantities:number[];addQuantity:(quantity:number)=>void};
+export function makeQuantityStore(){
+ return createStore<QtyState>()(set=>({
+  quantities:[1,2],
+  addQuantity:quantity=>set(state=>({quantities:[...state.quantities,quantity]})),
+ }));
+}
+export const totalOf=(_state:QtyState)=>0;
 ```
 
 **Cause:** The starter always returns a zero total despite changes to the real store's quantities.
