@@ -9,11 +9,11 @@
     "productionUrl": "https://fullstack-academy-ecru.vercel.app/"
   },
   "development": {
-    "branch": "feat/zustand5-state-boundaries-live",
-    "basePullRequest": 22,
-    "baseBranch": "feat/zod4-schema-design-and-live-lab",
-    "state": "zustand5-real-store-source-candidate-unverified",
-    "note": "09.04 is authored before 09.02/09.03 because Zustand 5 is already pinned, while RHF/Query need new lockfile dependencies. Planned/noindex boundary stays 09.02.01."
+    "branch": "feat/node24-http-api-vertical-slice",
+    "basePullRequest": 23,
+    "baseBranch": "feat/zustand5-state-boundaries-live",
+    "state": "node24-http-api-vertical-source-candidate",
+    "note": "16 new canonical Node + HTTP lessons with dependency-free actual Node core and local HTTP socket capstone. RHF 09.02 and Query 09.03 remain planned; noindex boundary stays 09.02.01."
   },
   "snapshot": {
     "tracks": 28,
@@ -22,9 +22,9 @@
     "indexedReferences": 303,
     "authoredReferenceDrafts": 38,
     "authoredInteractiveModels": 4,
-    "authoredMdxLessons": 305,
-    "publishedLessons": 306,
-    "labFixtures": 305,
+    "authoredMdxLessons": 321,
+    "publishedLessons": 322,
+    "labFixtures": 321,
     "completeModules": [
       "00.01",
       "00.02",
@@ -63,7 +63,9 @@
       "08.03",
       "08.04",
       "09.01",
-      "09.04"
+      "09.04",
+      "10.01",
+      "10.02"
     ]
   },
   "security": {
@@ -71,6 +73,6 @@
     "devHighFindings": 14,
     "exceptionExpires": "2026-12-02"
   },
-  "nextMilestone": "09.02",
-  "status": "unreleased-stacked-zustand5-state-boundaries"
+  "nextMilestone": "10.03",
+  "status": "unreleased-backend-vertical-slice"
 }

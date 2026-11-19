@@ -18,6 +18,8 @@ const steps = [
   'test:red-ui-track',
   'test:red-zod-foundations',
   'test:red-zustand-state',
+  'test:node-http',
+  'test:red-node-http',
   'build',
 ];
 
