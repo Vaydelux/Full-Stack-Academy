@@ -9,11 +9,9 @@
     "productionUrl": "https://fullstack-academy-ecru.vercel.app/"
   },
   "development": {
-    "branch": "feat/backend-security-openapi-complete",
-    "basePullRequest": 24,
-    "baseBranch": "feat/node24-http-api-vertical-slice",
-    "state": "complete-track-10-security-openapi-source-candidate",
-    "note": "32 source-authored Node/HTTP/Security/OpenAPI lessons across draft PR24+this branch; 10.03 and 10.04 now authored. No production security or complete OpenAPI tooling implied. 09.02/09.03 remain planned."
+    "branch": "main",
+    "state": "six-curriculum-prs-merged-plus-learner-dashboard-source-candidate",
+    "note": "PRs #20-#25 merged to main. Dashboard adds personalized local learning UX without changing catalog publication counts. No full local Node 24/Next/browser qualification; no Vercel/Actions inspection. Dashboard feature PR is to be merged."
   },
   "snapshot": {
     "tracks": 28,
@@ -75,6 +73,6 @@
     "devHighFindings": 14,
     "exceptionExpires": "2026-12-02"
   },
-  "nextMilestone": "11.01",
-  "status": "unreleased-full-backend-track10"
+  "nextMilestone": "09.02-09.03-real-packages-and-forms-query-vertical-slice",
+  "status": "source-merged-offline-release-qualification-pending"
 }

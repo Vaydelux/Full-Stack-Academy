@@ -1,40 +1,42 @@
-# Full-Stack Academy — Active development handoff (2026-11-19)
+# Full-Stack Academy — active development handoff (2026-11-19)
 
-## Source state, not hosted state
+## Current source state
 
-- `main` previously merged through owner-approved PRs #17–#19 and is not currently on this source branch.
-- Draft stacked milestone chain: **#20 Next.js 07.02–07.05 → #21 UI 08.01–08.04 → #22 Zod 09.01 → #23 Zustand 09.04 → #24 Node+HTTP 10.01–10.02 → current `feat/backend-security-openapi-complete` Security+OpenAPI 10.03–10.04**.
-- Proposed candidate snapshot after the six stacked layers: **338 distinct published IDs, 337 MDX lessons, 337 lab manifests, 42 completed modules, 38 authored reference drafts/303 indexed topics**. The 889-topic catalog has **551 still planned**.
-- **Full Track 10, all four modules (32 lessons), is source-authored** across #24 and current branch. `09.02.01` remains the **first unauthored canonical** lesson due to missing real React Hook Form and TanStack Query dependencies.
-- No Vercel or GitHub Actions was checked. These source totals are **NOT** the live production website.
+- **PRs #20, #21, #22, #23, #24 and #25 have all been merged into main**, in dependency order with normal merge commits. Last merge SHA: e64bacc33abd0bf6d5f1b50c6559af9321ef01de.
+- **Latest source-only milestone:** learner dashboard at /learn/dashboard (see docs/LEARNER_DASHBOARD_ACCEPTANCE.md), currently prepared on feat/learner-dashboard-progress-20261119 for a new PR and same-turn merge.
+- The six curriculum merges contain a *source candidate* of 338 unique published lesson IDs, 337 MDX articles, 337 lab manifests, 42 full modules, 38 authored references of 303 indexed, with 551 of 889 catalog topics still planned.
+- Full Track 10 covers 32 source-authored Node.js, HTTP, Security and OpenAPI lessons; demonstrations are teaching fixtures, **not** deployable public security architecture.
+- No GitHub Actions or Vercel verification was used. No full project Node 24 npm install, Next build/typecheck or Chromium acceptance occurred in this execution. **Main is not release-qualified by the merge alone.**
 
-## Delivered in current large-scope pass
+## Completed in this continuation
 
-- [x] `10.03.01–10.03.08`: trusted proxies, CORS/CSRF, cookie hardening, sliding-window limiter, streamed body limits, SSRF allowlist with explicit DNS/egress disclaimer, structured redaction and secure demo endpoint
-- [x] `10.04.01–10.04.08`: OpenAPI 3.1 structure, request/response semantics, bearer security schemes, IDs/examples, actual generator, compatibility checks, version strategy and live generated-client capstone
-- [x] All 16 articles have complete metadata, lab manifests, broken learner code, instructor code, 3 guided steps, quiz, misconception, official docs and completion rubrics
-- [x] Real checked-in OpenAPI 3.1.1 JSON + restricted JS generator + local bearer-demo HTTP server with actual cross-module HTTP tests
-- [x] Published/route registries, per-lab scripts, independent security+OpenAPI test script, strict red starter suite, source checks and local Chromium route smoke contract
-- [x] Fixed stale cumulative-count checks in 5 older suite files; exact global checkpoint remains separately audited
-- [x] GitHub source tree counts confirmed and all 16 metadata/MDX structures inspected
-- [x] **Actual Node 22 execution**: exact SHA-matched security and generated-client instructor capstones **2/2 passed**, corresponding red starters both failed with `ERR_ASSERTION`
+- [x] Merge PR #20 Next.js source
+- [x] Merge PR #21 UI systems
+- [x] Merge PR #22 Zod 4
+- [x] Merge PR #23 Zustand 5
+- [x] Merge PR #24 Node/HTTP
+- [x] Merge PR #25 security/OpenAPI
+- [x] Build learner dashboard pure read-model, route, navigation, module filters and progress/backup UI
+- [x] Harden import path to report browser storage write failures accurately
+- [x] Add pure model tests and wire into offline verification script
+- [x] Preserve published lesson counts; dashboard is an app route, not an authored lesson
 
-## What is NOT verified
+## Next cohesive large development blocks
 
-- [ ] Remaining 14 new instructors and 14 red learners as executable Node 24 tests
-- [ ] Full `npm ci && npm run verify:offline` on the exact head, including lint/tsc/content/checkpoint, 337 lab files, all red starters and Next build
-- [ ] Local Next+Chromium/browser checks, keyboard, 320px, screen reader and responsiveness
-- [ ] Full OpenAPI JSON Schema conformance; the generator intentionally supports only trusted static GET/POST endpoints
-- [ ] Production security (human identities, tenant authorization, secret management, TLS/egress, rate limits, persistent storage, audit logging)
-- [ ] Owner-approved qualification/rebase/merge convergence across draft PRs #20–#25
-- [ ] Review historical dev-only Picomatch exception before **2026-12-02 UTC**
+1. **Release qualification and UI acceptance:** full Node 24 checkout, npm ci, npm run verify:offline, local Chromium keyboard/mobile/screen reader; review the Picomatch dev advisory exception by 2026-12-02 UTC. Fix actual failures. No hosted/Actions checking required.
+2. **Forms and async server state (09.02 and 09.03, 16 canonical topics):** install/lock actual react-hook-form, @hookform/resolvers and @tanstack/react-query; implement a coherent form-to-API-to-cache vertical slice, instructor/red labs, optimistic rollback, abort/cancellation, validation and browser tests. These lessons remain **PLANNED** until packages and runnable tests exist.
+3. **NestJS Track 11 (32 topics):** real compatible locked NestJS packages, pipeline/DI/DTO/service/auth examples, isolated HTTP integration tests.
+4. **PostgreSQL Track 12 (40 topics):** actual ephemeral DB test harness, transactions, indexes, EXPLAIN, migration and rollback.
+5. **Prisma/Supabase Tracks 13–14 (64 topics):** generated real clients, migration/recovery and RLS denial tests, never a fake auth simulation presented as secure.
+6. **UX expansion:** resume/bookmarks/notes usability, calmer curriculum module browser, reference search, responsive/keyboard improvements with evidence.
 
-## Next genuinely large milestones
+## Outstanding verification, not claims of success
 
-- [ ] **Consolidation:** qualify PR #20 first with Node 24 and merge sequentially, rebase/retest each successor
-- [ ] **Block A:** 09.02 React Hook Form + 09.03 TanStack Query (16 topics) with real packages and a new lockfile, controlled mounted React integrations and error-state tests
-- [ ] **Block B:** NestJS 11.01–11.04 (32) with real `@nestjs/*` packages, DTO validation, pipeline, auth boundaries and HTTP tests
-- [ ] **Block C:** SQL/Postgres 12.01–12.05 (40), real DB migrations, concurrency and recovery evidence
-- [ ] **Block D:** Prisma/Supabase 13.01–14.04 (64) with verified RLS denial cases, Auth and migration checks
+- [ ] npm ci && npm run verify:offline on exact merged SHA, Node 24
+- [ ] npm run test:learning-dashboard (pure TS helper tests)
+- [ ] Local browser smoke for dashboard empty/in-progress/completed paths and 2 MB backup rejection
+- [ ] Multi-tab, localStorage disabled/quota exceeded, keyboard, 320px, reduced-motion, screen-reader navigation
+- [ ] Full lessons and lab tests from previous six PRs
+- [ ] Historical exception review due 2026-12-02 UTC
 
-**Source handoff:** `docs/TRACK10_SECURITY_OPENAPI_ACCEPTANCE.md`, `docs/LARGE_SCOPE_DELIVERY_PROGRAM.md`, `docs/checkpoint.json`, `AGENTS.md`. Do not open more unverified stacked PRs until a locally qualified merge plan reduces the six-layer risk.
+**Source truth:** AGENTS.md, docs/checkpoint.json, docs/PROJECT_CHECKPOINT.md, docs/LEARNER_DASHBOARD_ACCEPTANCE.md. Do not add another tower of stacked drafts; merge coherent qualified slices, and distinguish source completion from executable evidence.

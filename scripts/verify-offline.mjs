@@ -6,6 +6,7 @@ const steps = [
   'lint',
   'typecheck',
   'test',
+  'test:learning-dashboard',
   'validate',
   'verify:content',
   'checkpoint:check',
