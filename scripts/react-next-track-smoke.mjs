@@ -12,12 +12,12 @@ export async function verifyReactNextTrack({page,base,assert,wait}){
    assert.equal(await page.locator('meta[name="robots"][content*="noindex"]').count(),0,'Authored lesson must be indexable: '+id);
   }
  }
- await page.goto(base+'/learn/08.01.01');
+ await page.goto(base+'/learn/09.01.01');
  assert.ok(await page.locator('meta[name="robots"][content*="noindex"]').count()>0,'Unauthored backend topic remains noindex');
  const xml=await (await page.request.get(base+'/sitemap.xml')).text();
  if(xml.includes('<loc>')){
   for(const id of ['06.01.01','06.05.08','07.01.01','07.03.08','07.05.08'])assert.ok(xml.includes('/learn/'+id),'Configured sitemap includes new authored topic: '+id);
-  assert.ok(!xml.includes('/learn/08.01.01'),'Unauthored topic excluded from sitemap');
+  assert.ok(!xml.includes('/learn/09.01.01'),'Unauthored topic excluded from sitemap');
  }else assert.ok(xml.includes('<urlset'),'Offline builds without public origin must emit a valid empty sitemap');
  await page.setViewportSize({width:320,height:760});
  for(const id of ['06.04.08','07.03.05','07.05.08']){

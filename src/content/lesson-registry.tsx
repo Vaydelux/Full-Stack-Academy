@@ -258,6 +258,39 @@ import NextOps6 from './lessons/07.05.06.mdx';
 import NextOps7 from './lessons/07.05.07.mdx';
 import NextOps8 from './lessons/07.05.08.mdx';
 
+import UI1_1 from './lessons/08.01.01.mdx';
+import UI1_2 from './lessons/08.01.02.mdx';
+import UI1_3 from './lessons/08.01.03.mdx';
+import UI1_4 from './lessons/08.01.04.mdx';
+import UI1_5 from './lessons/08.01.05.mdx';
+import UI1_6 from './lessons/08.01.06.mdx';
+import UI1_7 from './lessons/08.01.07.mdx';
+import UI1_8 from './lessons/08.01.08.mdx';
+import UI2_1 from './lessons/08.02.01.mdx';
+import UI2_2 from './lessons/08.02.02.mdx';
+import UI2_3 from './lessons/08.02.03.mdx';
+import UI2_4 from './lessons/08.02.04.mdx';
+import UI2_5 from './lessons/08.02.05.mdx';
+import UI2_6 from './lessons/08.02.06.mdx';
+import UI2_7 from './lessons/08.02.07.mdx';
+import UI2_8 from './lessons/08.02.08.mdx';
+import UI3_1 from './lessons/08.03.01.mdx';
+import UI3_2 from './lessons/08.03.02.mdx';
+import UI3_3 from './lessons/08.03.03.mdx';
+import UI3_4 from './lessons/08.03.04.mdx';
+import UI3_5 from './lessons/08.03.05.mdx';
+import UI3_6 from './lessons/08.03.06.mdx';
+import UI3_7 from './lessons/08.03.07.mdx';
+import UI3_8 from './lessons/08.03.08.mdx';
+import UI4_1 from './lessons/08.04.01.mdx';
+import UI4_2 from './lessons/08.04.02.mdx';
+import UI4_3 from './lessons/08.04.03.mdx';
+import UI4_4 from './lessons/08.04.04.mdx';
+import UI4_5 from './lessons/08.04.05.mdx';
+import UI4_6 from './lessons/08.04.06.mdx';
+import UI4_7 from './lessons/08.04.07.mdx';
+import UI4_8 from './lessons/08.04.08.mdx';
+
 export function LessonArticle({lessonId}: {lessonId:string}) {
   switch (lessonId) {
     case '00.01.01': return <BrowserLesson />;
@@ -517,6 +550,38 @@ export function LessonArticle({lessonId}: {lessonId:string}) {
     case '07.05.06': return <NextOps6 />;
     case '07.05.07': return <NextOps7 />;
     case '07.05.08': return <NextOps8 />;
+    case '08.01.01': return <UI1_1 />;
+    case '08.01.02': return <UI1_2 />;
+    case '08.01.03': return <UI1_3 />;
+    case '08.01.04': return <UI1_4 />;
+    case '08.01.05': return <UI1_5 />;
+    case '08.01.06': return <UI1_6 />;
+    case '08.01.07': return <UI1_7 />;
+    case '08.01.08': return <UI1_8 />;
+    case '08.02.01': return <UI2_1 />;
+    case '08.02.02': return <UI2_2 />;
+    case '08.02.03': return <UI2_3 />;
+    case '08.02.04': return <UI2_4 />;
+    case '08.02.05': return <UI2_5 />;
+    case '08.02.06': return <UI2_6 />;
+    case '08.02.07': return <UI2_7 />;
+    case '08.02.08': return <UI2_8 />;
+    case '08.03.01': return <UI3_1 />;
+    case '08.03.02': return <UI3_2 />;
+    case '08.03.03': return <UI3_3 />;
+    case '08.03.04': return <UI3_4 />;
+    case '08.03.05': return <UI3_5 />;
+    case '08.03.06': return <UI3_6 />;
+    case '08.03.07': return <UI3_7 />;
+    case '08.03.08': return <UI3_8 />;
+    case '08.04.01': return <UI4_1 />;
+    case '08.04.02': return <UI4_2 />;
+    case '08.04.03': return <UI4_3 />;
+    case '08.04.04': return <UI4_4 />;
+    case '08.04.05': return <UI4_5 />;
+    case '08.04.06': return <UI4_6 />;
+    case '08.04.07': return <UI4_7 />;
+    case '08.04.08': return <UI4_8 />;
     default: return null;
   }
 }
