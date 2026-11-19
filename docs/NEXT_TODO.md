@@ -1,49 +1,57 @@
-# Full-Stack Academy — Current Engineering Handoff (2026-11-20)
+# Full-Stack Academy — Engineering Handoff (2026-11-20)
 
-## Mainline state, status and counts
+## Exact source state and progress
 
-- Source baseline: PRs #20–#31 are merged. Latest work is `feat/forms-query-resilience-real-contract-tests-20261120`: harden the real Forms/Query teaching application before publishing 09.02 and 09.03.
-- Canonical curriculum **28 tracks, 111 modules, 889 topics**. Published **338 unique IDs, 337 MDX articles / 337 published lab manifests, 42 complete modules**. There remain **551 unpublished** topics; **16** have staged MDX+red/instructor lab packs, leaving **535** topics without staged packs.
-- **No new RHF/Query topic is published by this feature.** The 16 completed source drafts live under `drafts/forms-query/` until npm library tests, negative-starter gates and Next/browser acceptance pass.
-- No GitHub Actions or Vercel checks. The education-only Task API remains loopback-bound, in-memory and unauthenticated; do not deploy it publicly.
+- **Merged through PR #32**, commit `3096d703`. Current feature branch `feat/native-task-idempotency-ui-recovery-20261120` hardens the dependency-free native Forms/Query UI and its browser qualification gate.
+- Curriculum source remains **28 tracks, 111 modules, 889 topics, 338 published unique lessons, 337 published MDX/lab manifests and 42 complete modules**.
+- **551 unpublished canonical topics** remain. Of those, **16 React Hook Form 09.02 / TanStack Query 09.03** lessons are staged with MDX/metadata/red starter/instructor source; the other 535 have not been staged. Staged is **not** published.
+- No GitHub Actions or Vercel checks. The education-only task server remains loopback-only, in-memory, unauthenticated and not deployable as a production public API.
 
-## Latest work completed in source
+## Current milestone implemented
 
-- [x] Replace the first-page-only standalone React task list with bounded TanStack Query 5 `useInfiniteQuery`, status-scoped stable keys, real API cursor usage, Load More, AbortSignal propagation and explicit 409 restart.
-- [x] Introduce one synchronous single-flight mutation boundary so create, status and delete cannot overlap optimistic snapshots; update all infinite-query pages during speculation, restore snapshots on failures, reset from page one after writes.
-- [x] Distinguish confirmed POST from subsequent GET failure. Preserve original payload and idempotency key for ambiguous network/503/429 outcomes, while rejecting indefinite retries after terminal validation/conflict responses.
-- [x] Strengthen standalone TypeScript API client validation and Node22 type-stripping import compatibility.
-- [x] Add 20-case true-socket **test source** for typed HTTP client (idempotent replay, lost POST response, input rejection, 14-item pagination, 409 cursors, 412 competing revision edits, delete, capacity and cancellation).
-- [x] Add 12 pure state/retry policy cases, 11 structural UI wiring cases, all wired into root offline gate and source qualification.
-- [x] Add optional local Node22+ Chrome/Edge/Chromium CDP browser gate for native HTML app: whitespace input, POST/PATCH/DELETE, status filters, 15-item pagination, mobile/tablet/desktop overflow and keyboard Tab focus.
-- [x] Extend staged TypeScript AST/syntax scan to all 34 staged TSX files plus six standalone React/Vite TS/TSX files.
-- [x] Correct staged 09.02.05, 09.03.05, 09.03.08 instructor examples; exact lesson/source MDX parity remains intact.
-- [x] Update academy project page, runbook, acceptance and agent handoff.
+- [x] Native browser form prevents a fresh POST while the outcome of the previous POST is unknown, preserving exact semantic payload and idempotency key for safe replay.
+- [x] Retryable/ambiguous response-loss, 408, 429 and 5xx states retain key; terminal other 4xx responses clear it. Explicit Discard uncertain attempt warns about potential duplicates and only then unlocks a new create.
+- [x] A confirmed 201 is not downgraded to an unknown result if the follow-up GET refresh fails.
+- [x] One synchronous mutation lock serializes native POST, conditional PATCH and DELETE. Existing/new task buttons, refresh and Load More are disabled during writes. Lock release uses finally for unexpected exceptions.
+- [x] Native UI markup and CSS add responsive Retry/Discard controls, touch targets and status messages.
+- [x] Add nine-case `tests/forms-query-native-ui.test.mjs` exercising real event logic via a dependency-free simulated DOM and the actual loopback API in a Node checkout. Wired into `verify:offline` and Forms/Query source qualification.
+- [x] Expand the separate real Chromium/Edge/Chrome CDP gate to **15 UI checks** using a pre-document, test-only fetch fault interceptor to exercise uncertain POST, terminal 422, committed POST + failed GET, stale cursor 409 and competing PATCH/DELETE.
+- [x] Update project walkthrough, runbook, workbook, acceptance, checkpoints and AGENTS.
 
-## Executed evidence (precise, not full release qualification)
+## Observed validation in this session
 
-- [x] **20/20** typed-client API scenarios executed against exact committed server/client logic in an **isolated mocked request/response harness**. First harness pass was 19/20 because it ignored custom server capacity; corrected harness passed 20/20 with original sources. This is **not** the real Node HTTP socket test run.
-- [x] **12/12** pure policy cases executed against type-stripped exact GitHub source with equivalent HTTP error class.
-- [x] **11/11** React UI source wiring assertions executed against exact GitHub files; not a React DOM test.
-- [x] **3/3** revised staged lesson/source snippet parity checks.
-- [x] Node 22.16 type-stripping minimal import sample executed locally; Chromium 144 CDP WebSocket handshake/JavaScript evaluation independently executed locally.
-- [ ] Real latest Node socket run over all six Forms/Query suites; full Git checkout was unavailable.
-- [ ] New Chromium script end-to-end on repository's real HTML app; headless CDP capability probe is **not** a pass of the site.
-- [ ] Actual compatible RHF/resolvers/TanStack/Zod npm installs and generated nested lockfile; no registry DNS.
-- [ ] Standalone React typecheck/build; mounted React DOM/browser flows, SSR hydration, mobile/zoom/screen reader.
-- [ ] Node24 root npm ci, all 337+ local labs and negative starters, content/checkpoint scripts, lint/typecheck/Next production build.
+- [x] **9/9** exact-source native event scenarios passed in an isolated **simulated DOM/mock HTTP transport** evaluator. Scenarios include response-loss duplicate prevention and same-key retry, discard, 422, GET read failure, stale cursor recovery, 12-row pagination, write lock and journal privacy.
+- [x] Native browser JavaScript, new Node test and CDP test-source grammar checks passed after handling ESM syntax.
+- [x] The new Chromium fault-injection source was parsed independently, and required `#retry` and `#discard` markup IDs were verified.
+- [x] PR #32 prior evidence: 20/20 typed client mocked HTTP, 12/12 policy and 11/11 source-wiring checks (historical).
+- [ ] **Real latest Node HTTP socket run** on a complete checkout (including nine new native UI tests and existing typed API tests).
+- [ ] **Real Chromium 15-case run** on actual native site; do not confuse the independently probed Chrome DevTools handshake with a successful site run.
+- [ ] **Nested React Hook Form / TanStack Query** npm-generated lockfile, real `npm ci`, typecheck/build and DOM/keyboard test.
+- [ ] **Root Node24** npm ci, verify:offline, 337+ labs, content contracts, lint/typecheck/Next production build.
+- [ ] Real positive/negative React library/DOM test for each of the 16 staged lessons, SSR hydration, screen reader, zoom/mobile acceptance.
 
-## Ordered next actions
+## Run on a full checkout
 
-1. **Qualify real HTTP immediately on any full Node 22/24 checkout:** `npm run qualify:forms-query:source` (uses genuine Node listeners and typed client test file). Fix and commit actual failures.
-2. **Qualify native browser:** `npm run qualify:forms-query:browser` with a local Chrome/Edge/Chromium binary; test actual 320px layout and keyboard/controls. This gate uses Node built-ins, not npm browser testing packages. Fix real defects.
-3. **Resolve real npm packages / lockfile on Node 24:** use official registry and `npm install` in nested `examples/forms-query-vertical/react-client`, commit npm-generated lock, and run `npm ci`, `npm run typecheck`, `npm run build`; then root `npm ci && npm run verify:offline`.
-4. **Mount real React tests for all 16 staged topics:** exercise library behavior, intentionally failing starters, 409/412 and idempotent response-loss, infinite cursor page resets, SSR hydration, keyboard a11y, color/contrast and reduced-motion.
-5. **Promote verified eight-topic modules atomically:** to `src/content/lessons/`, `labs/`, metadata/MDX registries, package scripts and `docs/checkpoint.json`; do not count source drafts as published.
-6. **Next curriculum batches:** NestJS 11 (32 topics), PostgreSQL 12 (40 topics), Prisma 13 + Supabase 14 (64 topics), then remaining tracks. Prioritize real runtime tests/denial boundaries over bulk generated drafts. Review dev-only security exception before **2026-12-02 UTC**.
+```bash
+npm run test:forms-query-native-ui
+npm run qualify:forms-query:source
+npm run qualify:forms-query:browser
 
-## Persistent references
+# After trusted real npm dependency installation and lockfile generation, Node 24:
+npm run qualify:forms-query:full
+```
 
-`AGENTS.md` · `docs/FORMS_QUERY_RESILIENCE_ACCEPTANCE.md` · `docs/FORMS_QUERY_16_STAGING_ACCEPTANCE.md` · `docs/CURRICULUM_FINISHING_ROADMAP.md` · `examples/forms-query-vertical/README.md` · `docs/checkpoint.json`.
+## Larger next milestones, in strict priority order
 
-Never equate source-authored, source-tested, mocked-transport tested, real-HTTP tested, React library typechecked, browser-qualified or production released.
+1. **P0 Qualification of this source** — Run the true Node HTTP and Chromium gates locally, fix actual failures, and qualify the existing live frontend on 320px/tablet/desktop, keyboard, 200% zoom and screen readers.
+2. **P1 Publish RHF + TanStack Query modules 09.02 and 09.03** — Install genuine libraries, generate the lockfile, check all 16 instructor samples, verify red starters genuinely fail, test Next hydration and promote one eight-topic module at a time only after the complete offline gate.
+3. **P2 NestJS Track 11 (32 topics)** — Dependency-locked DI, guards, validation and real HTTP tests.
+4. **P3 PostgreSQL Track 12 (40 topics)** — Real isolated Postgres, transactions, migrations, EXPLAIN, rollback and concurrency.
+5. **P4 Prisma Track 13 and Supabase Track 14 (64 topics)** — Real clients, schema migrations, Auth and denial-first RLS. Then work through the remaining specialization and capstone tracks according to `npm run status:curriculum`.
+6. Review historical dev-only dependency security exception before **2026-12-02 UTC**.
+
+## Persistent context
+
+Read `AGENTS.md`, `docs/FORMS_QUERY_NATIVE_UI_ACCEPTANCE.md`, `docs/FORMS_QUERY_RESILIENCE_ACCEPTANCE.md`, `docs/FORMS_QUERY_16_STAGING_ACCEPTANCE.md`, `docs/CURRICULUM_FINISHING_ROADMAP.md`, `docs/checkpoint.json` and `examples/forms-query-vertical/README.md`.
+
+Never equate code authored, simulated request handler checked, real socket verified, true browser qualified, npm library typechecked or deployed. Do not publish an unqualified lesson ID or invent package integrity hashes.
