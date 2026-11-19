@@ -1,0 +1,15 @@
+{
+  "id": "lab.next.next-sitemap-robots",
+  "lessonId": "07.04.03",
+  "title": "Next.js 16 sitemap and robots local lab",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/next-sitemap-robots/starter/solution.tsx",
+  "solution": "labs/next-sitemap-robots/solution/solution.tsx",
+  "tests": "labs/next-sitemap-robots/solution.test.mjs",
+  "verify": [
+    "npm run lab:next-sitemap-robots"
+  ],
+  "expected": "Only public published slugs enter the sitemap, without duplicate IDs.",
+  "security": "Static SEO and metadata models only. No browser crawlers, real-user telemetry or production origin used."
+}

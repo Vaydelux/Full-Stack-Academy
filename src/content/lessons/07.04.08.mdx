@@ -1,0 +1,104 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Audit indexability, canonical uniqueness and required metadata before treating a page as a published search result.","Repair the incomplete lab seo audit SEO or performance example.","Verify a legitimate and an edge-case result before browser qualification."]} />
+
+## The problem we're solving
+
+The team prepares a release with published and draft content, but an audit needs to flag missing descriptions, duplicate canonicals and draft indexing.
+
+**Defect:** The starter always reports no SEO issues, even for a visible draft with duplicate canonical.
+
+## Build the mental model
+
+Audit indexability, canonical uniqueness and required metadata before treating a page as a published search result.
+
+**Predict before running:** Draft marked indexable and published entries missing canonical or description generate explicit issues.
+
+The academy exercises reviewed TypeScript/React logic locally. It does not automatically exercise the Next.js Metadata API, search crawler, browser page loading, network waterfall, Lighthouse or real-user field metrics. Those are separate qualification gates.
+
+## Prerequisites and preflight
+
+Study the previous topic, use Node.js 24 with locked dependencies, and open `labs/next-seo-audit-capstone/starter/solution.tsx`. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:next-seo-audit-capstone`. PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:next-seo-audit-capstone; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the SEO or performance failure" file="labs/next-seo-audit-capstone/starter/solution.tsx" expected="The intentionally broken starter fails one acceptance assertion.">
+
+```tsx
+export type Page={id:string;published:boolean;index:boolean;canonical:string;description:string};
+export function auditPages(_pages:readonly Page[]):string[]{return [];}
+```
+
+**Why it fails:** The starter always reports no SEO issues, even for a visible draft with duplicate canonical.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the measurable contract" file="labs/next-seo-audit-capstone/starter/solution.tsx" expected="Draft marked indexable and published entries missing canonical or description generate explicit issues.">
+
+```tsx
+export type Page={id:string;published:boolean;index:boolean;canonical:string;description:string};
+export function auditPages(pages:readonly Page[]):string[]{
+ const issues:string[]=[];const canonical=new Set<string>();
+ for(const page of pages){
+  if(!page.published&&page.index)issues.push(page.id+':draft-indexed');
+  if(page.published&&page.index){
+   if(!page.description.trim())issues.push(page.id+':missing-description');
+   if(!page.canonical.startsWith('https://'))issues.push(page.id+':invalid-canonical');
+   if(canonical.has(page.canonical))issues.push(page.id+':duplicate-canonical');
+   canonical.add(page.canonical);
+  }
+ }
+ return issues;
+}
+```
+
+**Root principle:** Audit indexability, canonical uniqueness and required metadata before treating a page as a published search result.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify an edge case and examine framework usage" file="labs/next-seo-audit-capstone/solution.test.mjs" expected="A valid and an invalid input satisfy the instructor's local assertions.">
+
+```js
+const pages=[{id:'draft',published:false,index:true,canonical:'',description:''},{id:'a',published:true,index:true,canonical:'https://a.example/a',description:'A page'},{id:'b',published:true,index:true,canonical:'https://a.example/a',description:''}];
+assert.deepEqual(mod.auditPages(pages),['draft:draft-indexed','b:missing-description','b:duplicate-canonical']);
+assert.deepEqual(mod.auditPages([]),[]);
+```
+
+**Next.js 16 usage pattern (illustrative):**
+
+```tsx
+// Release audit, local only:
+// 1. Inspect generated sitemap and robots routes.
+// 2. Check canonical and Open Graph tags for every authored route.
+// 3. Validate JSON-LD in a schema validator.
+// 4. Run Lighthouse and evaluate field LCP/INP/CLS separately.
+// 5. Confirm the planned draft/noindex boundary excludes unpublished entries.
+```
+
+**Production nuance:** This auditing model detects selected metadata errors, not actual browser/crawler behavior or Search Console results. Combine it with a real Next production build and locally served route checks.
+
+</LessonStep>
+
+<Misconception claim="The starter always reports no SEO issues, even for a visible draft with duplicate canonical." correction="Audit indexability, canonical uniqueness and required metadata before treating a page as a published search result. A fixture assertion is not real search or field-performance evidence." />
+
+<KnowledgeCheck question="Which principle matters most for lab seo audit?" choices={["An offline unit assertion guarantees Google indexing and search ranking.","Audit indexability, canonical uniqueness and required metadata before treating a page as a published search result.","Every page and image should be preloaded for maximum speed.","robots.txt replaces authorization and secure data access."] } correctIndex={1} explanation="Audit indexability, canonical uniqueness and required metadata before treating a page as a published search result." misconception="Optimize discoverability and user experience through verifiable semantics and measurements." lessonId="07.04.08" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Symptom:** The starter always reports no SEO issues, even for a visible draft with duplicate canonical. **Reproduce:** record the failed assertion from the starter. **Repair:** Audit indexability, canonical uniqueness and required metadata before treating a page as a published search result. **Regression:** Draft marked indexable and published entries missing canonical or description generate explicit issues. Run a full Next production build, local browser audit and field/performance review for real release claims.
+
+## Guided local lab
+
+Use `labs/next-seo-audit-capstone/` for red starter, corrected instructor implementation, local tests and self-check rubric; no public user-code execution service is involved.
+
+<LabGate lessonId="07.04.08" labId="lab.next.next-seo-audit-capstone" commands={["npm run lab:next-seo-audit-capstone","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+Which SEO attributes can be checked statically, and which require observing the real crawler, browser or field traffic? What accessibility regression might a visual-only audit miss?
+
+## Official references
+
+- [Official reference: Lab SEO audit](https://nextjs.org/docs/app/api-reference/functions/generate-metadata)
+- [Supporting documentation](https://nextjs.org/docs/app/api-reference/file-conventions/metadata/sitemap)

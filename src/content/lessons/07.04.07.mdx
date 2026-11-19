@@ -1,0 +1,89 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Create a clear semantic hierarchy and internal links to published content; hide placeholder pages from indexing while keeping navigation discoverable.","Repair the incomplete content architecture for discoverability SEO or performance example.","Verify a legitimate and an edge-case result before browser qualification."]} />
+
+## The problem we're solving
+
+Documentation pages form a learning path but some links point to empty placeholders. Browsers and crawlers need a clean hierarchy of published content.
+
+**Defect:** The starter constructs navigation from every catalog entry, including unpublished topics.
+
+## Build the mental model
+
+Create a clear semantic hierarchy and internal links to published content; hide placeholder pages from indexing while keeping navigation discoverable.
+
+**Predict before running:** Only published chapters appear in the public table of contents and the original dataset is not mutated.
+
+The academy exercises reviewed TypeScript/React logic locally. It does not automatically exercise the Next.js Metadata API, search crawler, browser page loading, network waterfall, Lighthouse or real-user field metrics. Those are separate qualification gates.
+
+## Prerequisites and preflight
+
+Study the previous topic, use Node.js 24 with locked dependencies, and open `labs/next-content-architecture/starter/solution.tsx`. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:next-content-architecture`. PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:next-content-architecture; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the SEO or performance failure" file="labs/next-content-architecture/starter/solution.tsx" expected="The intentionally broken starter fails one acceptance assertion.">
+
+```tsx
+export type Section={id:string;title:string;published:boolean};
+export function publicOutline(items:readonly Section[]){return [...items];}
+```
+
+**Why it fails:** The starter constructs navigation from every catalog entry, including unpublished topics.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the measurable contract" file="labs/next-content-architecture/starter/solution.tsx" expected="Only published chapters appear in the public table of contents and the original dataset is not mutated.">
+
+```tsx
+export type Section={id:string;title:string;published:boolean};
+export function publicOutline(items:readonly Section[]){return items.filter(item=>item.published);}
+```
+
+**Root principle:** Create a clear semantic hierarchy and internal links to published content; hide placeholder pages from indexing while keeping navigation discoverable.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify an edge case and examine framework usage" file="labs/next-content-architecture/solution.test.mjs" expected="A valid and an invalid input satisfy the instructor's local assertions.">
+
+```js
+const items=[{id:'a',title:'React',published:true},{id:'b',title:'Draft',published:false}];
+assert.deepEqual(mod.publicOutline(items),[items[0]]);assert.equal(items.length,2);
+```
+
+**Next.js 16 usage pattern (illustrative):**
+
+```tsx
+// Article page structure
+return <main><nav aria-label="Breadcrumb"><Link href="/learn">Courses</Link></nav>
+ <article><h1>{lesson.title}</h1><nav aria-label="On this page">{sections.map(s=><Link key={s.id} href={'#'+s.id}>{s.title}</Link>)}</nav>
+ {sections.map(s=><section id={s.id} key={s.id}><h2>{s.title}</h2></section>)}</article></main>;
+```
+
+**Production nuance:** Good content information architecture is an accessibility and discoverability practice, not a guaranteed search ranking. Use correct heading order and avoid dead links.
+
+</LessonStep>
+
+<Misconception claim="The starter constructs navigation from every catalog entry, including unpublished topics." correction="Create a clear semantic hierarchy and internal links to published content; hide placeholder pages from indexing while keeping navigation discoverable. A fixture assertion is not real search or field-performance evidence." />
+
+<KnowledgeCheck question="Which principle matters most for content architecture for discoverability?" choices={["An offline unit assertion guarantees Google indexing and search ranking.","Create a clear semantic hierarchy and internal links to published content; hide placeholder pages from indexing while keeping navigation discoverable.","Every page and image should be preloaded for maximum speed.","robots.txt replaces authorization and secure data access."] } correctIndex={1} explanation="Create a clear semantic hierarchy and internal links to published content; hide placeholder pages from indexing while keeping navigation discoverable." misconception="Optimize discoverability and user experience through verifiable semantics and measurements." lessonId="07.04.07" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Symptom:** The starter constructs navigation from every catalog entry, including unpublished topics. **Reproduce:** record the failed assertion from the starter. **Repair:** Create a clear semantic hierarchy and internal links to published content; hide placeholder pages from indexing while keeping navigation discoverable. **Regression:** Only published chapters appear in the public table of contents and the original dataset is not mutated. Run a full Next production build, local browser audit and field/performance review for real release claims.
+
+## Guided local lab
+
+Use `labs/next-content-architecture/` for red starter, corrected instructor implementation, local tests and self-check rubric; no public user-code execution service is involved.
+
+<LabGate lessonId="07.04.07" labId="lab.next.next-content-architecture" commands={["npm run lab:next-content-architecture","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+Which SEO attributes can be checked statically, and which require observing the real crawler, browser or field traffic? What accessibility regression might a visual-only audit miss?
+
+## Official references
+
+- [Official reference: Content architecture for discoverability](https://nextjs.org/docs/app/getting-started/metadata-and-og-images)
+- [Supporting documentation](https://nextjs.org/docs/app/api-reference/components/link)

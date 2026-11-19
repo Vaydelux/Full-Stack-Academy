@@ -1,0 +1,15 @@
+{
+  "id": "lab.next.next-jsonld-safe",
+  "lessonId": "07.04.04",
+  "title": "Next.js 16 json-ld and structured data local lab",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/next-jsonld-safe/starter/solution.tsx",
+  "solution": "labs/next-jsonld-safe/solution/solution.tsx",
+  "tests": "labs/next-jsonld-safe/solution.test.mjs",
+  "verify": [
+    "npm run lab:next-jsonld-safe"
+  ],
+  "expected": "An attacker-provided closing script sequence becomes escaped text while ordinary JSON remains parseable.",
+  "security": "Static SEO and metadata models only. No browser crawlers, real-user telemetry or production origin used."
+}

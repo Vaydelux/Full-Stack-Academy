@@ -1,0 +1,39 @@
+{
+  "id": "07.04.04",
+  "title": "JSON-LD and structured data: Generate schema.org data from validated content and escape `<` in JSON-LD before embedding in a script; never inject untrusted raw HTML.",
+  "description": "Next.js 16 lesson in json-ld and structured data with secure metadata, accessibility, official references, a failing starter and local verification examples.",
+  "trackId": "07",
+  "moduleId": "07.04",
+  "level": "Intermediate",
+  "estimatedMinutes": 65,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "next": "16",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "07.04.03"
+  ],
+  "objectives": [
+    "Generate schema.org data from validated content and escape `<` in JSON-LD before embedding in a script; never inject untrusted raw HTML.",
+    "Repair the broken example for next-jsonld-safe.",
+    "Differentiate a deterministic source check from search, browser and field performance verification."
+  ],
+  "labId": "lab.next.next-jsonld-safe",
+  "rubric": [
+    "I can explain json-ld and structured data using Next.js 16 metadata conventions.",
+    "I can fix the 07.04.04 starter bug and prove an edge case.",
+    "I can describe additional accessibility, SEO and real-browser release checks."
+  ],
+  "sources": [
+    {
+      "label": "Next.js: JSON-LD and structured data",
+      "url": "https://nextjs.org/docs/app/guides/json-ld"
+    },
+    {
+      "label": "Supporting official resource",
+      "url": "https://nextjs.org/docs/app/getting-started/metadata-and-og-images"
+    }
+  ]
+}

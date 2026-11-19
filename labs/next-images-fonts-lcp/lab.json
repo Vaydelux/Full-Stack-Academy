@@ -1,0 +1,15 @@
+{
+  "id": "lab.next.next-images-fonts-lcp",
+  "lessonId": "07.04.05",
+  "title": "Next.js 16 images fonts and lcp local lab",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/next-images-fonts-lcp/starter/solution.tsx",
+  "solution": "labs/next-images-fonts-lcp/solution/solution.tsx",
+  "tests": "labs/next-images-fonts-lcp/solution.test.mjs",
+  "verify": [
+    "npm run lab:next-images-fonts-lcp"
+  ],
+  "expected": "Hero and regular imagery preserve positive width/height, while only the hero is marked preload-worthy.",
+  "security": "Static SEO and metadata models only. No browser crawlers, real-user telemetry or production origin used."
+}

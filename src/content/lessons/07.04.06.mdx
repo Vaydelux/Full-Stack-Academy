@@ -1,0 +1,103 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Classify LCP, INP and CLS using documented good/needs-improvement/poor thresholds, then measure the 75th percentile across real users.","Repair the incomplete core web vitals SEO or performance example.","Verify a legitimate and an edge-case result before browser qualification."]} />
+
+## The problem we're solving
+
+A performance audit reports Largest Contentful Paint, Interaction to Next Paint and Cumulative Layout Shift; the team must classify them consistently.
+
+**Defect:** The starter treats every positive metric as good, masking poor loading, interaction or layout stability.
+
+## Build the mental model
+
+Classify LCP, INP and CLS using documented good/needs-improvement/poor thresholds, then measure the 75th percentile across real users.
+
+**Predict before running:** LCP 2500 ms, INP 200 ms and CLS 0.1 are good; extreme values are poor.
+
+The academy exercises reviewed TypeScript/React logic locally. It does not automatically exercise the Next.js Metadata API, search crawler, browser page loading, network waterfall, Lighthouse or real-user field metrics. Those are separate qualification gates.
+
+## Prerequisites and preflight
+
+Study the previous topic, use Node.js 24 with locked dependencies, and open `labs/next-core-web-vitals/starter/solution.tsx`. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:next-core-web-vitals`. PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:next-core-web-vitals; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the SEO or performance failure" file="labs/next-core-web-vitals/starter/solution.tsx" expected="The intentionally broken starter fails one acceptance assertion.">
+
+```tsx
+export type Metric='LCP'|'INP'|'CLS';
+export function vitalsGrade(_metric:Metric,_value:number){return 'good';}
+```
+
+**Why it fails:** The starter treats every positive metric as good, masking poor loading, interaction or layout stability.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the measurable contract" file="labs/next-core-web-vitals/starter/solution.tsx" expected="LCP 2500 ms, INP 200 ms and CLS 0.1 are good; extreme values are poor.">
+
+```tsx
+export type Metric='LCP'|'INP'|'CLS';
+export function vitalsGrade(metric:Metric,value:number){
+ if(!Number.isFinite(value)||value<0)throw new RangeError('Invalid vital');
+ const good={LCP:2500,INP:200,CLS:0.1};const poor={LCP:4000,INP:500,CLS:0.25};
+ return value<=good[metric]?'good':value>poor[metric]?'poor':'needs-improvement';
+}
+```
+
+**Root principle:** Classify LCP, INP and CLS using documented good/needs-improvement/poor thresholds, then measure the 75th percentile across real users.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify an edge case and examine framework usage" file="labs/next-core-web-vitals/solution.test.mjs" expected="A valid and an invalid input satisfy the instructor's local assertions.">
+
+```js
+assert.equal(mod.vitalsGrade('LCP',2500),'good');
+assert.equal(mod.vitalsGrade('INP',200),'good');
+assert.equal(mod.vitalsGrade('CLS',0.1),'good');
+assert.equal(mod.vitalsGrade('LCP',4500),'poor');
+assert.equal(mod.vitalsGrade('INP',400),'needs-improvement');
+assert.throws(()=>mod.vitalsGrade('CLS',-0.1),RangeError);
+```
+
+**Next.js 16 usage pattern (illustrative):**
+
+```tsx
+// app/components/WebVitals.tsx
+'use client';
+import {useReportWebVitals} from 'next/web-vitals';
+export function WebVitals(){
+ useReportWebVitals(metric=>{
+   // Send only aggregate-safe diagnostics to a trusted endpoint; avoid user PII.
+   console.debug(metric.name,metric.value,metric.rating);
+ });
+ return null;
+}
+```
+
+**Production nuance:** The helper grades one observation, not a population or Google Search ranking. Field data should be assessed at p75 over representative traffic, and lab results are not a substitute for field measurement.
+
+</LessonStep>
+
+<Misconception claim="The starter treats every positive metric as good, masking poor loading, interaction or layout stability." correction="Classify LCP, INP and CLS using documented good/needs-improvement/poor thresholds, then measure the 75th percentile across real users. A fixture assertion is not real search or field-performance evidence." />
+
+<KnowledgeCheck question="Which principle matters most for core web vitals?" choices={["An offline unit assertion guarantees Google indexing and search ranking.","Classify LCP, INP and CLS using documented good/needs-improvement/poor thresholds, then measure the 75th percentile across real users.","Every page and image should be preloaded for maximum speed.","robots.txt replaces authorization and secure data access."] } correctIndex={1} explanation="Classify LCP, INP and CLS using documented good/needs-improvement/poor thresholds, then measure the 75th percentile across real users." misconception="Optimize discoverability and user experience through verifiable semantics and measurements." lessonId="07.04.06" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Symptom:** The starter treats every positive metric as good, masking poor loading, interaction or layout stability. **Reproduce:** record the failed assertion from the starter. **Repair:** Classify LCP, INP and CLS using documented good/needs-improvement/poor thresholds, then measure the 75th percentile across real users. **Regression:** LCP 2500 ms, INP 200 ms and CLS 0.1 are good; extreme values are poor. Run a full Next production build, local browser audit and field/performance review for real release claims.
+
+## Guided local lab
+
+Use `labs/next-core-web-vitals/` for red starter, corrected instructor implementation, local tests and self-check rubric; no public user-code execution service is involved.
+
+<LabGate lessonId="07.04.06" labId="lab.next.next-core-web-vitals" commands={["npm run lab:next-core-web-vitals","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+Which SEO attributes can be checked statically, and which require observing the real crawler, browser or field traffic? What accessibility regression might a visual-only audit miss?
+
+## Official references
+
+- [Official reference: Core Web Vitals](https://web.dev/articles/vitals)
+- [Supporting documentation](https://nextjs.org/docs/app/api-reference/functions/use-report-web-vitals)

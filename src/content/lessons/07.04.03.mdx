@@ -1,0 +1,95 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Produce sitemap URLs only for public published pages; use robots metadata for indexability, not robots.txt as an access-control mechanism.","Repair the incomplete sitemap and robots SEO or performance example.","Verify a legitimate and an edge-case result before browser qualification."]} />
+
+## The problem we're solving
+
+A course index includes both published tutorials and planned placeholders. Search engines should see only finished, publicly accessible pages in the sitemap.
+
+**Defect:** The starter publishes drafts and private pages as sitemap entries.
+
+## Build the mental model
+
+Produce sitemap URLs only for public published pages; use robots metadata for indexability, not robots.txt as an access-control mechanism.
+
+**Predict before running:** Only public published slugs enter the sitemap, without duplicate IDs.
+
+The academy exercises reviewed TypeScript/React logic locally. It does not automatically exercise the Next.js Metadata API, search crawler, browser page loading, network waterfall, Lighthouse or real-user field metrics. Those are separate qualification gates.
+
+## Prerequisites and preflight
+
+Study the previous topic, use Node.js 24 with locked dependencies, and open `labs/next-sitemap-robots/starter/solution.tsx`. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:next-sitemap-robots`. PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:next-sitemap-robots; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the SEO or performance failure" file="labs/next-sitemap-robots/starter/solution.tsx" expected="The intentionally broken starter fails one acceptance assertion.">
+
+```tsx
+export type Page={slug:string;published:boolean;public:boolean};
+export function sitemapSlugs(pages:readonly Page[]){return pages.map(x=>x.slug);}
+```
+
+**Why it fails:** The starter publishes drafts and private pages as sitemap entries.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the measurable contract" file="labs/next-sitemap-robots/starter/solution.tsx" expected="Only public published slugs enter the sitemap, without duplicate IDs.">
+
+```tsx
+export type Page={slug:string;published:boolean;public:boolean};
+export function sitemapSlugs(pages:readonly Page[]){
+ return [...new Set(pages.filter(x=>x.published&&x.public&&/^[a-z0-9-]+$/.test(x.slug)).map(x=>x.slug))];
+}
+```
+
+**Root principle:** Produce sitemap URLs only for public published pages; use robots metadata for indexability, not robots.txt as an access-control mechanism.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify an edge case and examine framework usage" file="labs/next-sitemap-robots/solution.test.mjs" expected="A valid and an invalid input satisfy the instructor's local assertions.">
+
+```js
+const pages=[{slug:'react',published:true,public:true},{slug:'draft',published:false,public:true},{slug:'secret',published:true,public:false},{slug:'react',published:true,public:true}];
+assert.deepEqual(mod.sitemapSlugs(pages),['react']);
+```
+
+**Next.js 16 usage pattern (illustrative):**
+
+```tsx
+// app/sitemap.ts
+import type {MetadataRoute} from 'next';
+export default async function sitemap():Promise<MetadataRoute.Sitemap>{
+ const slugs=await getPublicPublishedSlugs();
+ return slugs.map(slug=>({url:'https://academy.example/learn/'+slug}));
+}
+// app/robots.ts
+export default function robots(){return {rules:{userAgent:'*',allow:'/'},sitemap:'https://academy.example/sitemap.xml'};}
+```
+
+**Production nuance:** Robots exclusions are advisory to crawlers, not a privacy layer. Restricted content must be inaccessible without authorization. Actual sitemap/robots URLs must be inspected after building.
+
+</LessonStep>
+
+<Misconception claim="The starter publishes drafts and private pages as sitemap entries." correction="Produce sitemap URLs only for public published pages; use robots metadata for indexability, not robots.txt as an access-control mechanism. A fixture assertion is not real search or field-performance evidence." />
+
+<KnowledgeCheck question="Which principle matters most for sitemap and robots?" choices={["An offline unit assertion guarantees Google indexing and search ranking.","Produce sitemap URLs only for public published pages; use robots metadata for indexability, not robots.txt as an access-control mechanism.","Every page and image should be preloaded for maximum speed.","robots.txt replaces authorization and secure data access."] } correctIndex={1} explanation="Produce sitemap URLs only for public published pages; use robots metadata for indexability, not robots.txt as an access-control mechanism." misconception="Optimize discoverability and user experience through verifiable semantics and measurements." lessonId="07.04.03" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Symptom:** The starter publishes drafts and private pages as sitemap entries. **Reproduce:** record the failed assertion from the starter. **Repair:** Produce sitemap URLs only for public published pages; use robots metadata for indexability, not robots.txt as an access-control mechanism. **Regression:** Only public published slugs enter the sitemap, without duplicate IDs. Run a full Next production build, local browser audit and field/performance review for real release claims.
+
+## Guided local lab
+
+Use `labs/next-sitemap-robots/` for red starter, corrected instructor implementation, local tests and self-check rubric; no public user-code execution service is involved.
+
+<LabGate lessonId="07.04.03" labId="lab.next.next-sitemap-robots" commands={["npm run lab:next-sitemap-robots","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+Which SEO attributes can be checked statically, and which require observing the real crawler, browser or field traffic? What accessibility regression might a visual-only audit miss?
+
+## Official references
+
+- [Official reference: Sitemap and robots](https://nextjs.org/docs/app/api-reference/file-conventions/metadata/sitemap)
+- [Supporting documentation](https://nextjs.org/docs/app/api-reference/file-conventions/metadata/robots)

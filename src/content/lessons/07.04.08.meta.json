@@ -1,0 +1,39 @@
+{
+  "id": "07.04.08",
+  "title": "Lab SEO audit: Audit indexability, canonical uniqueness and required metadata before treating a page as a published search result.",
+  "description": "Next.js 16 lesson in lab seo audit with secure metadata, accessibility, official references, a failing starter and local verification examples.",
+  "trackId": "07",
+  "moduleId": "07.04",
+  "level": "Intermediate",
+  "estimatedMinutes": 65,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "next": "16",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "07.04.07"
+  ],
+  "objectives": [
+    "Audit indexability, canonical uniqueness and required metadata before treating a page as a published search result.",
+    "Repair the broken example for next-seo-audit-capstone.",
+    "Differentiate a deterministic source check from search, browser and field performance verification."
+  ],
+  "labId": "lab.next.next-seo-audit-capstone",
+  "rubric": [
+    "I can explain lab seo audit using Next.js 16 metadata conventions.",
+    "I can fix the 07.04.08 starter bug and prove an edge case.",
+    "I can describe additional accessibility, SEO and real-browser release checks."
+  ],
+  "sources": [
+    {
+      "label": "Next.js: Lab SEO audit",
+      "url": "https://nextjs.org/docs/app/api-reference/functions/generate-metadata"
+    },
+    {
+      "label": "Supporting official resource",
+      "url": "https://nextjs.org/docs/app/api-reference/file-conventions/metadata/sitemap"
+    }
+  ]
+}

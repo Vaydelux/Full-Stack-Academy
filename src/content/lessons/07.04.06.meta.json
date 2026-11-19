@@ -1,0 +1,39 @@
+{
+  "id": "07.04.06",
+  "title": "Core Web Vitals: Classify LCP, INP and CLS using documented good/needs-improvement/poor thresholds, then measure the 75th percentile across real users.",
+  "description": "Next.js 16 lesson in core web vitals with secure metadata, accessibility, official references, a failing starter and local verification examples.",
+  "trackId": "07",
+  "moduleId": "07.04",
+  "level": "Intermediate",
+  "estimatedMinutes": 65,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "next": "16",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "07.04.05"
+  ],
+  "objectives": [
+    "Classify LCP, INP and CLS using documented good/needs-improvement/poor thresholds, then measure the 75th percentile across real users.",
+    "Repair the broken example for next-core-web-vitals.",
+    "Differentiate a deterministic source check from search, browser and field performance verification."
+  ],
+  "labId": "lab.next.next-core-web-vitals",
+  "rubric": [
+    "I can explain core web vitals using Next.js 16 metadata conventions.",
+    "I can fix the 07.04.06 starter bug and prove an edge case.",
+    "I can describe additional accessibility, SEO and real-browser release checks."
+  ],
+  "sources": [
+    {
+      "label": "Next.js: Core Web Vitals",
+      "url": "https://web.dev/articles/vitals"
+    },
+    {
+      "label": "Supporting official resource",
+      "url": "https://nextjs.org/docs/app/api-reference/functions/use-report-web-vitals"
+    }
+  ]
+}

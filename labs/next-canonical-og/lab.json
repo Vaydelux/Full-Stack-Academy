@@ -1,0 +1,15 @@
+{
+  "id": "lab.next.next-canonical-og",
+  "lessonId": "07.04.02",
+  "title": "Next.js 16 canonical and open graph local lab",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/next-canonical-og/starter/solution.tsx",
+  "solution": "labs/next-canonical-og/solution/solution.tsx",
+  "tests": "labs/next-canonical-og/solution.test.mjs",
+  "verify": [
+    "npm run lab:next-canonical-og"
+  ],
+  "expected": "The known slug resolves to a single HTTPS origin; malicious or malformed IDs throw.",
+  "security": "Static SEO and metadata models only. No browser crawlers, real-user telemetry or production origin used."
+}

@@ -1,0 +1,95 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Build absolute canonical/OG URLs from an allowlisted site origin and validated route parameters; never trust arbitrary user-controlled origin strings.","Repair the incomplete canonical and open graph SEO or performance example.","Verify a legitimate and an edge-case result before browser qualification."]} />
+
+## The problem we're solving
+
+An article appears at a query-string variant and a canonical URL. Sharing and search indexing should refer to one trusted HTTPS origin.
+
+**Defect:** The starter accepts arbitrary external URLs as canonical destinations.
+
+## Build the mental model
+
+Build absolute canonical/OG URLs from an allowlisted site origin and validated route parameters; never trust arbitrary user-controlled origin strings.
+
+**Predict before running:** The known slug resolves to a single HTTPS origin; malicious or malformed IDs throw.
+
+The academy exercises reviewed TypeScript/React logic locally. It does not automatically exercise the Next.js Metadata API, search crawler, browser page loading, network waterfall, Lighthouse or real-user field metrics. Those are separate qualification gates.
+
+## Prerequisites and preflight
+
+Study the previous topic, use Node.js 24 with locked dependencies, and open `labs/next-canonical-og/starter/solution.tsx`. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:next-canonical-og`. PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:next-canonical-og; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the SEO or performance failure" file="labs/next-canonical-og/starter/solution.tsx" expected="The intentionally broken starter fails one acceptance assertion.">
+
+```tsx
+export function canonicalArticleUrl(_origin:string,slug:string){return slug;}
+```
+
+**Why it fails:** The starter accepts arbitrary external URLs as canonical destinations.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the measurable contract" file="labs/next-canonical-og/starter/solution.tsx" expected="The known slug resolves to a single HTTPS origin; malicious or malformed IDs throw.">
+
+```tsx
+export function canonicalArticleUrl(origin:string,slug:string){
+ const site=new URL(origin);
+ if(site.protocol!=='https:'||site.username||site.password||site.pathname!=='/'||site.search||site.hash)throw new Error('Invalid origin');
+ if(!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug))throw new Error('Invalid slug');
+ return new URL('/articles/'+slug,site).toString();
+}
+```
+
+**Root principle:** Build absolute canonical/OG URLs from an allowlisted site origin and validated route parameters; never trust arbitrary user-controlled origin strings.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify an edge case and examine framework usage" file="labs/next-canonical-og/solution.test.mjs" expected="A valid and an invalid input satisfy the instructor's local assertions.">
+
+```js
+assert.equal(mod.canonicalArticleUrl('https://academy.example','react-tips'),'https://academy.example/articles/react-tips');
+assert.throws(()=>mod.canonicalArticleUrl('http://academy.example','x'),/Invalid origin/);
+assert.throws(()=>mod.canonicalArticleUrl('https://academy.example','../admin'),/Invalid slug/);
+```
+
+**Next.js 16 usage pattern (illustrative):**
+
+```tsx
+// metadata export on a public article page
+export const metadata={
+ metadataBase:new URL('https://academy.example'),
+ alternates:{canonical:'/articles/react-tips'},
+ openGraph:{title:'React tips',url:'/articles/react-tips',type:'article',images:['/og/react-tips.png']}
+};
+```
+
+**Production nuance:** Canonicals cannot solve duplicate private content. Do not generate public OG images or metadata for access-controlled records. Verify the actual canonical and crawler response in the locally built app.
+
+</LessonStep>
+
+<Misconception claim="The starter accepts arbitrary external URLs as canonical destinations." correction="Build absolute canonical/OG URLs from an allowlisted site origin and validated route parameters; never trust arbitrary user-controlled origin strings. A fixture assertion is not real search or field-performance evidence." />
+
+<KnowledgeCheck question="Which principle matters most for canonical and open graph?" choices={["An offline unit assertion guarantees Google indexing and search ranking.","Build absolute canonical/OG URLs from an allowlisted site origin and validated route parameters; never trust arbitrary user-controlled origin strings.","Every page and image should be preloaded for maximum speed.","robots.txt replaces authorization and secure data access."] } correctIndex={1} explanation="Build absolute canonical/OG URLs from an allowlisted site origin and validated route parameters; never trust arbitrary user-controlled origin strings." misconception="Optimize discoverability and user experience through verifiable semantics and measurements." lessonId="07.04.02" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Symptom:** The starter accepts arbitrary external URLs as canonical destinations. **Reproduce:** record the failed assertion from the starter. **Repair:** Build absolute canonical/OG URLs from an allowlisted site origin and validated route parameters; never trust arbitrary user-controlled origin strings. **Regression:** The known slug resolves to a single HTTPS origin; malicious or malformed IDs throw. Run a full Next production build, local browser audit and field/performance review for real release claims.
+
+## Guided local lab
+
+Use `labs/next-canonical-og/` for red starter, corrected instructor implementation, local tests and self-check rubric; no public user-code execution service is involved.
+
+<LabGate lessonId="07.04.02" labId="lab.next.next-canonical-og" commands={["npm run lab:next-canonical-og","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+Which SEO attributes can be checked statically, and which require observing the real crawler, browser or field traffic? What accessibility regression might a visual-only audit miss?
+
+## Official references
+
+- [Official reference: Canonical and Open Graph](https://nextjs.org/docs/app/api-reference/functions/generate-metadata)
+- [Supporting documentation](https://nextjs.org/docs/app/getting-started/metadata-and-og-images)
