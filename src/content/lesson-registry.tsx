@@ -261,6 +261,39 @@ import NextFull30 from './lessons/07.05.06.mdx';
 import NextFull31 from './lessons/07.05.07.mdx';
 import NextFull32 from './lessons/07.05.08.mdx';
 
+import UiTrack1 from './lessons/08.01.01.mdx';
+import UiTrack2 from './lessons/08.01.02.mdx';
+import UiTrack3 from './lessons/08.01.03.mdx';
+import UiTrack4 from './lessons/08.01.04.mdx';
+import UiTrack5 from './lessons/08.01.05.mdx';
+import UiTrack6 from './lessons/08.01.06.mdx';
+import UiTrack7 from './lessons/08.01.07.mdx';
+import UiTrack8 from './lessons/08.01.08.mdx';
+import UiTrack9 from './lessons/08.02.01.mdx';
+import UiTrack10 from './lessons/08.02.02.mdx';
+import UiTrack11 from './lessons/08.02.03.mdx';
+import UiTrack12 from './lessons/08.02.04.mdx';
+import UiTrack13 from './lessons/08.02.05.mdx';
+import UiTrack14 from './lessons/08.02.06.mdx';
+import UiTrack15 from './lessons/08.02.07.mdx';
+import UiTrack16 from './lessons/08.02.08.mdx';
+import UiTrack17 from './lessons/08.03.01.mdx';
+import UiTrack18 from './lessons/08.03.02.mdx';
+import UiTrack19 from './lessons/08.03.03.mdx';
+import UiTrack20 from './lessons/08.03.04.mdx';
+import UiTrack21 from './lessons/08.03.05.mdx';
+import UiTrack22 from './lessons/08.03.06.mdx';
+import UiTrack23 from './lessons/08.03.07.mdx';
+import UiTrack24 from './lessons/08.03.08.mdx';
+import UiTrack25 from './lessons/08.04.01.mdx';
+import UiTrack26 from './lessons/08.04.02.mdx';
+import UiTrack27 from './lessons/08.04.03.mdx';
+import UiTrack28 from './lessons/08.04.04.mdx';
+import UiTrack29 from './lessons/08.04.05.mdx';
+import UiTrack30 from './lessons/08.04.06.mdx';
+import UiTrack31 from './lessons/08.04.07.mdx';
+import UiTrack32 from './lessons/08.04.08.mdx';
+
 export function LessonArticle({lessonId}: {lessonId:string}) {
   switch (lessonId) {
     case '00.01.01': return <BrowserLesson />;
@@ -520,6 +553,38 @@ export function LessonArticle({lessonId}: {lessonId:string}) {
     case '07.05.06': return <NextFull30 />;
     case '07.05.07': return <NextFull31 />;
     case '07.05.08': return <NextFull32 />;
+    case '08.01.01': return <UiTrack1 />;
+    case '08.01.02': return <UiTrack2 />;
+    case '08.01.03': return <UiTrack3 />;
+    case '08.01.04': return <UiTrack4 />;
+    case '08.01.05': return <UiTrack5 />;
+    case '08.01.06': return <UiTrack6 />;
+    case '08.01.07': return <UiTrack7 />;
+    case '08.01.08': return <UiTrack8 />;
+    case '08.02.01': return <UiTrack9 />;
+    case '08.02.02': return <UiTrack10 />;
+    case '08.02.03': return <UiTrack11 />;
+    case '08.02.04': return <UiTrack12 />;
+    case '08.02.05': return <UiTrack13 />;
+    case '08.02.06': return <UiTrack14 />;
+    case '08.02.07': return <UiTrack15 />;
+    case '08.02.08': return <UiTrack16 />;
+    case '08.03.01': return <UiTrack17 />;
+    case '08.03.02': return <UiTrack18 />;
+    case '08.03.03': return <UiTrack19 />;
+    case '08.03.04': return <UiTrack20 />;
+    case '08.03.05': return <UiTrack21 />;
+    case '08.03.06': return <UiTrack22 />;
+    case '08.03.07': return <UiTrack23 />;
+    case '08.03.08': return <UiTrack24 />;
+    case '08.04.01': return <UiTrack25 />;
+    case '08.04.02': return <UiTrack26 />;
+    case '08.04.03': return <UiTrack27 />;
+    case '08.04.04': return <UiTrack28 />;
+    case '08.04.05': return <UiTrack29 />;
+    case '08.04.06': return <UiTrack30 />;
+    case '08.04.07': return <UiTrack31 />;
+    case '08.04.08': return <UiTrack32 />;
     default: return null;
   }
 }
