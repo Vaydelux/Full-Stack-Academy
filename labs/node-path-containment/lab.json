@@ -1,0 +1,15 @@
+{
+  "id": "lab.node.node-path-containment",
+  "lessonId": "10.01.05",
+  "title": "Node.js 24 file system safety lab",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/node-path-containment/starter/solution.mjs",
+  "solution": "labs/node-path-containment/solution/solution.mjs",
+  "tests": "labs/node-path-containment/solution.test.mjs",
+  "verify": [
+    "npm run lab:node-path-containment"
+  ],
+  "expected": "Authorized files are readable; ../ and symbolic links escaping the root are rejected.",
+  "security": "Local trusted Node built-ins only. Production reverse proxy, OS policy, permissions and HTTP authentication require separate verification."
+}

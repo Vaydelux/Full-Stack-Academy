@@ -1,0 +1,101 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Parse environment variables as unknown strings into bounded runtime configuration and treat termination signals as requests for graceful cleanup.","Reproduce and repair process.env and signals with executable Node core modules.","Explain the production limit that a local API or system test cannot establish."]} />
+
+## The problem we're solving
+
+A missing or malformed PORT environment variable is silently accepted, then the server fails to bind a listener.
+
+**Deliberate defect:** The starter converts PORT with Number but never rejects NaN, zero, out-of-range ports or an invalid NODE_ENV. This exercise runs under Node.js 24 using built-in modules—no paid service, hosted data source or arbitrary learner-code runner.
+
+## Build the mental model
+
+Parse environment variables as unknown strings into bounded runtime configuration and treat termination signals as requests for graceful cleanup.
+
+**Predict before writing code:** Missing PORT uses a documented default; malformed values raise a clear configuration error.
+
+The exact Node.js API documentation is linked below. These exercises model concrete runtime behavior, not a screenshot of a server. They must not be interpreted as proof of container permission boundaries, a production reverse proxy or multi-process request isolation.
+
+## Prerequisites and preflight
+
+Prior knowledge: JavaScript promises and modules, TypeScript-style interfaces and API basics. Run a local Node.js 24 installation. Open `labs/node-env-signals/starter/solution.mjs`. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:node-env-signals`; PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:node-env-signals; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the runtime bug" file="labs/node-env-signals/starter/solution.mjs" expected="The starter fails a meaningful Node assertion.">
+
+```js
+export function readConfig(env){
+ return {port:Number(env.PORT??3000),mode:env.NODE_ENV??'development'};
+}
+```
+
+**Diagnosis:** The starter converts PORT with Number but never rejects NaN, zero, out-of-range ports or an invalid NODE_ENV.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the standard Node API usage" file="labs/node-env-signals/starter/solution.mjs" expected="Missing PORT uses a documented default; malformed values raise a clear configuration error.">
+
+```js
+export function readConfig(env){
+ const raw=env.PORT??'3000';
+ if(!/^[0-9]+$/.test(raw))throw new Error('Invalid PORT');
+ const port=Number(raw);
+ if(!Number.isSafeInteger(port)||port<1||port>65535)throw new Error('Invalid PORT');
+ const mode=env.NODE_ENV??'development';
+ if(!['development','test','production'].includes(mode))throw new Error('Invalid NODE_ENV');
+ return {port,mode};
+}
+```
+
+**Causal reasoning:** Parse environment variables as unknown strings into bounded runtime configuration and treat termination signals as requests for graceful cleanup.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify a success case and a failure boundary" file="labs/node-env-signals/solution.test.mjs" expected="The instructor solution passes a real Node test; the learner starter fails its intended assertion.">
+
+```js
+assert.deepEqual(mod.readConfig({}),{port:3000,mode:'development'});
+assert.deepEqual(mod.readConfig({PORT:'8080',NODE_ENV:'production'}),{port:8080,mode:'production'});
+for(const port of ['0','65536','abc','10.5','-1'])assert.throws(()=>mod.readConfig({PORT:port}),/Invalid PORT/);
+assert.throws(()=>mod.readConfig({NODE_ENV:'secret'}),/Invalid NODE_ENV/);
+```
+
+**Production-oriented integration example:**
+
+```js
+const config=readConfig(process.env);
+const server=http.createServer(handler);
+server.listen(config.port);
+process.once('SIGTERM',()=>server.close());
+// Don't expose all process.env to client components or logs.
+// Read secrets only on a trusted server and restrict accepted values.
+```
+
+The example is an explanatory snippet, not a separately compiled end-to-end production server. Observe error handling, resource cleanup and request ownership in an actual deployed environment before calling the behavior release-ready.
+
+</LessonStep>
+
+<Misconception claim="The starter converts PORT with Number but never rejects NaN, zero, out-of-range ports or an invalid NODE_ENV." correction="Parse environment variables as unknown strings into bounded runtime configuration and treat termination signals as requests for graceful cleanup. A local Node test verifies one runtime contract, not every production deployment or security property." />
+
+<KnowledgeCheck question="Which practice is essential for process.env and signals?" choices={["Static types automatically protect runtime files, sockets and process signals.","Parse environment variables as unknown strings into bounded runtime configuration and treat termination signals as requests for graceful cleanup.","Any error printed by Node proves the intended learner assertion failed.","A production service never needs resource limits or cleanup."] } correctIndex={1} explanation="Parse environment variables as unknown strings into bounded runtime configuration and treat termination signals as requests for graceful cleanup." misconception="Runtime behavior needs direct tests and explicit trust/resource boundaries." lessonId="10.01.02" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Bug:** The starter converts PORT with Number but never rejects NaN, zero, out-of-range ports or an invalid NODE_ENV. **Reproduction:** run the red starter and capture the asserted failure. **Fix:** Parse environment variables as unknown strings into bounded runtime configuration and treat termination signals as requests for graceful cleanup. **Regression:** Missing PORT uses a documented default; malformed values raise a clear configuration error. Add a negative scenario to guard the boundary.
+
+## Guided local lab
+
+The local project under `labs/node-env-signals/` contains a broken learner source file, a complete instructor solution, executable Node tests and a rubric. No server evaluates learner-supplied code; each lab runs on the learner's local machine.
+
+<LabGate lessonId="10.01.02" labId="lab.node.node-env-signals" commands={["npm run lab:node-env-signals","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+What resource can fail under real concurrent load, and which extra integration test would demonstrate correct isolation, deadlines or cleanup?
+
+## Official references
+
+- [Node.js official documentation for process.env and signals](https://nodejs.org/api/process.html#processenv)
+- [Supporting Node.js official API](https://nodejs.org/api/process.html#signal-events)

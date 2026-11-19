@@ -1,0 +1,113 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Hash the incoming stream incrementally using node:crypto and enforce a strict byte ceiling before retaining or persisting any bytes.","Reproduce and repair lab streaming upload with executable Node core modules.","Explain the production limit that a local API or system test cannot establish."]} />
+
+## The problem we're solving
+
+A service accepts an upload as a single unbounded buffer, letting large requests exhaust memory and suppressing useful integrity information.
+
+**Deliberate defect:** The starter hashes arbitrarily large content because it never checks the advertised byte budget. This exercise runs under Node.js 24 using built-in modules—no paid service, hosted data source or arbitrary learner-code runner.
+
+## Build the mental model
+
+Hash the incoming stream incrementally using node:crypto and enforce a strict byte ceiling before retaining or persisting any bytes.
+
+**Predict before writing code:** A small upload returns the correct SHA-256 digest; an oversized one fails before completion.
+
+The exact Node.js API documentation is linked below. These exercises model concrete runtime behavior, not a screenshot of a server. They must not be interpreted as proof of container permission boundaries, a production reverse proxy or multi-process request isolation.
+
+## Prerequisites and preflight
+
+Prior knowledge: JavaScript promises and modules, TypeScript-style interfaces and API basics. Run a local Node.js 24 installation. Open `labs/node-streaming-upload/starter/solution.mjs`. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:node-streaming-upload`; PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:node-streaming-upload; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the runtime bug" file="labs/node-streaming-upload/starter/solution.mjs" expected="The starter fails a meaningful Node assertion.">
+
+```js
+import {Readable} from 'node:stream';
+import {createHash} from 'node:crypto';
+export async function digestUpload(chunks,_maxBytes){
+ const hash=createHash('sha256');let bytes=0;
+ for await(const item of Readable.from(chunks)){
+  const chunk=Buffer.from(item);bytes+=chunk.length;hash.update(chunk);
+ }
+ return {bytes,sha256:hash.digest('hex')};
+}
+```
+
+**Diagnosis:** The starter hashes arbitrarily large content because it never checks the advertised byte budget.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the standard Node API usage" file="labs/node-streaming-upload/starter/solution.mjs" expected="A small upload returns the correct SHA-256 digest; an oversized one fails before completion.">
+
+```js
+import {Readable} from 'node:stream';
+import {createHash} from 'node:crypto';
+export async function digestUpload(chunks,maxBytes){
+ if(!Number.isSafeInteger(maxBytes)||maxBytes<0)throw new RangeError('Invalid byte limit');
+ const hash=createHash('sha256');let bytes=0;
+ for await(const item of Readable.from(chunks)){
+  const chunk=Buffer.isBuffer(item)?item:Buffer.from(item);
+  bytes+=chunk.byteLength;
+  if(bytes>maxBytes)throw new RangeError('Upload too large');
+  hash.update(chunk);
+ }
+ return {bytes,sha256:hash.digest('hex')};
+}
+```
+
+**Causal reasoning:** Hash the incoming stream incrementally using node:crypto and enforce a strict byte ceiling before retaining or persisting any bytes.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify a success case and a failure boundary" file="labs/node-streaming-upload/solution.test.mjs" expected="The instructor solution passes a real Node test; the learner starter fails its intended assertion.">
+
+```js
+assert.deepEqual(await mod.digestUpload(['hello'],5),{bytes:5,sha256:'2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824'});
+await assert.rejects(mod.digestUpload(['hello'],4),/Upload too large/);
+await assert.rejects(mod.digestUpload(['x'],-1),/Invalid byte limit/);
+```
+
+**Production-oriented integration example:**
+
+```js
+import {createHash} from 'node:crypto';
+const sha=createHash('sha256');
+for await (const chunk of req){ // req: Node IncomingMessage
+ totalBytes+=chunk.length;
+ if(totalBytes>MAX_UPLOAD_BYTES)throw new Error('Payload too large');
+ sha.update(chunk);
+}
+// Stream to a dedicated safe destination with backpressure and abort support.
+// Never build a production upload endpoint without auth, quotas and malware checks.
+```
+
+The example is an explanatory snippet, not a separately compiled end-to-end production server. Observe error handling, resource cleanup and request ownership in an actual deployed environment before calling the behavior release-ready.
+
+</LessonStep>
+
+<Misconception claim="The starter hashes arbitrarily large content because it never checks the advertised byte budget." correction="Hash the incoming stream incrementally using node:crypto and enforce a strict byte ceiling before retaining or persisting any bytes. A local Node test verifies one runtime contract, not every production deployment or security property." />
+
+<KnowledgeCheck question="Which practice is essential for lab streaming upload?" choices={["Static types automatically protect runtime files, sockets and process signals.","Hash the incoming stream incrementally using node:crypto and enforce a strict byte ceiling before retaining or persisting any bytes.","Any error printed by Node proves the intended learner assertion failed.","A production service never needs resource limits or cleanup."] } correctIndex={1} explanation="Hash the incoming stream incrementally using node:crypto and enforce a strict byte ceiling before retaining or persisting any bytes." misconception="Runtime behavior needs direct tests and explicit trust/resource boundaries." lessonId="10.01.08" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Bug:** The starter hashes arbitrarily large content because it never checks the advertised byte budget. **Reproduction:** run the red starter and capture the asserted failure. **Fix:** Hash the incoming stream incrementally using node:crypto and enforce a strict byte ceiling before retaining or persisting any bytes. **Regression:** A small upload returns the correct SHA-256 digest; an oversized one fails before completion. Add a negative scenario to guard the boundary.
+
+## Guided local lab
+
+The local project under `labs/node-streaming-upload/` contains a broken learner source file, a complete instructor solution, executable Node tests and a rubric. No server evaluates learner-supplied code; each lab runs on the learner's local machine.
+
+<LabGate lessonId="10.01.08" labId="lab.node.node-streaming-upload" commands={["npm run lab:node-streaming-upload","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+What resource can fail under real concurrent load, and which extra integration test would demonstrate correct isolation, deadlines or cleanup?
+
+## Official references
+
+- [Node.js official documentation for Lab streaming upload](https://nodejs.org/api/crypto.html#cryptocreatehashalgorithm-options)
+- [Supporting Node.js official API](https://nodejs.org/api/stream.html#readable-symbolasynciterator)

@@ -1,0 +1,97 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Measure process.memoryUsage and process.cpuUsage and distinguish RSS from V8 heap-used before optimizing CPU-bound work.","Reproduce and repair memory and cpu profiling with executable Node core modules.","Explain the production limit that a local API or system test cannot establish."]} />
+
+## The problem we're solving
+
+A telemetry dashboard reports zeros for RSS, heap and CPU because the metrics are mocked rather than sampled from the actual Node process.
+
+**Deliberate defect:** The starter returns fixed zeros and misleadingly labels them as real measurements. This exercise runs under Node.js 24 using built-in modules—no paid service, hosted data source or arbitrary learner-code runner.
+
+## Build the mental model
+
+Measure process.memoryUsage and process.cpuUsage and distinguish RSS from V8 heap-used before optimizing CPU-bound work.
+
+**Predict before writing code:** RSS/heap/CPU readings are nonnegative process metrics, not fabricated counters.
+
+The exact Node.js API documentation is linked below. These exercises model concrete runtime behavior, not a screenshot of a server. They must not be interpreted as proof of container permission boundaries, a production reverse proxy or multi-process request isolation.
+
+## Prerequisites and preflight
+
+Prior knowledge: JavaScript promises and modules, TypeScript-style interfaces and API basics. Run a local Node.js 24 installation. Open `labs/node-memory-cpu-metrics/starter/solution.mjs`. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:node-memory-cpu-metrics`; PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:node-memory-cpu-metrics; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the runtime bug" file="labs/node-memory-cpu-metrics/starter/solution.mjs" expected="The starter fails a meaningful Node assertion.">
+
+```js
+export function sampleRuntime(){
+ return {rss:0,heapUsed:0,userCpuMicros:0};
+}
+```
+
+**Diagnosis:** The starter returns fixed zeros and misleadingly labels them as real measurements.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the standard Node API usage" file="labs/node-memory-cpu-metrics/starter/solution.mjs" expected="RSS/heap/CPU readings are nonnegative process metrics, not fabricated counters.">
+
+```js
+export function sampleRuntime(){
+ const memory=process.memoryUsage();
+ const cpu=process.cpuUsage();
+ return {rss:memory.rss,heapUsed:memory.heapUsed,userCpuMicros:cpu.user};
+}
+```
+
+**Causal reasoning:** Measure process.memoryUsage and process.cpuUsage and distinguish RSS from V8 heap-used before optimizing CPU-bound work.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify a success case and a failure boundary" file="labs/node-memory-cpu-metrics/solution.test.mjs" expected="The instructor solution passes a real Node test; the learner starter fails its intended assertion.">
+
+```js
+const m=mod.sampleRuntime();
+assert.ok(Number.isFinite(m.rss)&&m.rss>0);
+assert.ok(Number.isFinite(m.heapUsed)&&m.heapUsed>0);
+assert.ok(Number.isFinite(m.userCpuMicros)&&m.userCpuMicros>=0);
+assert.ok(m.rss>=m.heapUsed);
+```
+
+**Production-oriented integration example:**
+
+```js
+const before=process.cpuUsage();
+const bytesBefore=process.memoryUsage().rss;
+// Run a representative workload while CPU profiling.
+// Collect process.cpuUsage(before) and process.memoryUsage().rss afterward.
+// CPU microseconds are not request latency and RSS is not just JS heap.
+```
+
+The example is an explanatory snippet, not a separately compiled end-to-end production server. Observe error handling, resource cleanup and request ownership in an actual deployed environment before calling the behavior release-ready.
+
+</LessonStep>
+
+<Misconception claim="The starter returns fixed zeros and misleadingly labels them as real measurements." correction="Measure process.memoryUsage and process.cpuUsage and distinguish RSS from V8 heap-used before optimizing CPU-bound work. A local Node test verifies one runtime contract, not every production deployment or security property." />
+
+<KnowledgeCheck question="Which practice is essential for memory and cpu profiling?" choices={["Static types automatically protect runtime files, sockets and process signals.","Measure process.memoryUsage and process.cpuUsage and distinguish RSS from V8 heap-used before optimizing CPU-bound work.","Any error printed by Node proves the intended learner assertion failed.","A production service never needs resource limits or cleanup."] } correctIndex={1} explanation="Measure process.memoryUsage and process.cpuUsage and distinguish RSS from V8 heap-used before optimizing CPU-bound work." misconception="Runtime behavior needs direct tests and explicit trust/resource boundaries." lessonId="10.01.06" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Bug:** The starter returns fixed zeros and misleadingly labels them as real measurements. **Reproduction:** run the red starter and capture the asserted failure. **Fix:** Measure process.memoryUsage and process.cpuUsage and distinguish RSS from V8 heap-used before optimizing CPU-bound work. **Regression:** RSS/heap/CPU readings are nonnegative process metrics, not fabricated counters. Add a negative scenario to guard the boundary.
+
+## Guided local lab
+
+The local project under `labs/node-memory-cpu-metrics/` contains a broken learner source file, a complete instructor solution, executable Node tests and a rubric. No server evaluates learner-supplied code; each lab runs on the learner's local machine.
+
+<LabGate lessonId="10.01.06" labId="lab.node.node-memory-cpu-metrics" commands={["npm run lab:node-memory-cpu-metrics","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+What resource can fail under real concurrent load, and which extra integration test would demonstrate correct isolation, deadlines or cleanup?
+
+## Official references
+
+- [Node.js official documentation for Memory and CPU profiling](https://nodejs.org/api/process.html#processmemoryusage)
+- [Supporting Node.js official API](https://nodejs.org/api/process.html#processcpuusagepreviousvalue)

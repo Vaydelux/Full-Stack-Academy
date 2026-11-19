@@ -1,0 +1,100 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Use Node's standard fetch and AbortSignal.timeout with an explicit HTTP status check; reject unexpected JSON content types before parsing.","Reproduce and repair fetch and abortsignal with executable Node core modules.","Explain the production limit that a local API or system test cannot establish."]} />
+
+## The problem we're solving
+
+A server fetches a slow upstream dependency and ignores cancellation, leaving hung requests and leaking internal error details.
+
+**Deliberate defect:** The starter ignores non-success status and treats HTML error pages as valid JSON. This exercise runs under Node.js 24 using built-in modules—no paid service, hosted data source or arbitrary learner-code runner.
+
+## Build the mental model
+
+Use Node's standard fetch and AbortSignal.timeout with an explicit HTTP status check; reject unexpected JSON content types before parsing.
+
+**Predict before writing code:** A JSON 200 response is parsed; an HTTP 503 response and an HTML content type are rejected.
+
+The exact Node.js API documentation is linked below. These exercises model concrete runtime behavior, not a screenshot of a server. They must not be interpreted as proof of container permission boundaries, a production reverse proxy or multi-process request isolation.
+
+## Prerequisites and preflight
+
+Prior knowledge: JavaScript promises and modules, TypeScript-style interfaces and API basics. Run a local Node.js 24 installation. Open `labs/node-fetch-abort/starter/solution.mjs`. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:node-fetch-abort`; PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:node-fetch-abort; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the runtime bug" file="labs/node-fetch-abort/starter/solution.mjs" expected="The starter fails a meaningful Node assertion.">
+
+```js
+export async function fetchJson(url,{fetchImpl=fetch}={}){
+ const response=await fetchImpl(url);
+ return response.text();
+}
+```
+
+**Diagnosis:** The starter ignores non-success status and treats HTML error pages as valid JSON.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the standard Node API usage" file="labs/node-fetch-abort/starter/solution.mjs" expected="A JSON 200 response is parsed; an HTTP 503 response and an HTML content type are rejected.">
+
+```js
+export async function fetchJson(url,{fetchImpl=fetch,timeoutMs=3000}={}){
+ if(!Number.isSafeInteger(timeoutMs)||timeoutMs<1||timeoutMs>30000)throw new RangeError('Invalid timeout');
+ const response=await fetchImpl(url,{signal:AbortSignal.timeout(timeoutMs),headers:{accept:'application/json'}});
+ if(!response.ok)throw new Error('Upstream HTTP '+response.status);
+ if(!/\bapplication\/(?:[\w.+-]*\+)?json\b/i.test(response.headers.get('content-type')??''))throw new Error('Unexpected content type');
+ return response.json();
+}
+```
+
+**Causal reasoning:** Use Node's standard fetch and AbortSignal.timeout with an explicit HTTP status check; reject unexpected JSON content types before parsing.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify a success case and a failure boundary" file="labs/node-fetch-abort/solution.test.mjs" expected="The instructor solution passes a real Node test; the learner starter fails its intended assertion.">
+
+```js
+assert.deepEqual(await mod.fetchJson('https://example.test',{fetchImpl:async()=>new Response(JSON.stringify({ok:true}),{status:200,headers:{'content-type':'application/json'}})}),{ok:true});
+await assert.rejects(mod.fetchJson('https://example.test',{fetchImpl:async()=>new Response('oops',{status:503})}),/Upstream HTTP 503/);
+await assert.rejects(mod.fetchJson('https://example.test',{fetchImpl:async()=>new Response('<html/>',{status:200,headers:{'content-type':'text/html'}})}),/Unexpected content type/);
+```
+
+**Production-oriented integration example:**
+
+```js
+const response=await fetch('https://api.example.test/status',{
+ signal:AbortSignal.timeout(3000),
+ headers:{accept:'application/json'},
+});
+if(!response.ok)throw new Error('Remote service failed');
+// Keep host allowlists and SSRF defenses on real server-side proxy fetches;
+// AbortSignal is a deadline, not a network-access policy.
+```
+
+The example is an explanatory snippet, not a separately compiled end-to-end production server. Observe error handling, resource cleanup and request ownership in an actual deployed environment before calling the behavior release-ready.
+
+</LessonStep>
+
+<Misconception claim="The starter ignores non-success status and treats HTML error pages as valid JSON." correction="Use Node's standard fetch and AbortSignal.timeout with an explicit HTTP status check; reject unexpected JSON content types before parsing. A local Node test verifies one runtime contract, not every production deployment or security property." />
+
+<KnowledgeCheck question="Which practice is essential for fetch and abortsignal?" choices={["Static types automatically protect runtime files, sockets and process signals.","Use Node's standard fetch and AbortSignal.timeout with an explicit HTTP status check; reject unexpected JSON content types before parsing.","Any error printed by Node proves the intended learner assertion failed.","A production service never needs resource limits or cleanup."] } correctIndex={1} explanation="Use Node's standard fetch and AbortSignal.timeout with an explicit HTTP status check; reject unexpected JSON content types before parsing." misconception="Runtime behavior needs direct tests and explicit trust/resource boundaries." lessonId="10.01.04" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Bug:** The starter ignores non-success status and treats HTML error pages as valid JSON. **Reproduction:** run the red starter and capture the asserted failure. **Fix:** Use Node's standard fetch and AbortSignal.timeout with an explicit HTTP status check; reject unexpected JSON content types before parsing. **Regression:** A JSON 200 response is parsed; an HTTP 503 response and an HTML content type are rejected. Add a negative scenario to guard the boundary.
+
+## Guided local lab
+
+The local project under `labs/node-fetch-abort/` contains a broken learner source file, a complete instructor solution, executable Node tests and a rubric. No server evaluates learner-supplied code; each lab runs on the learner's local machine.
+
+<LabGate lessonId="10.01.04" labId="lab.node.node-fetch-abort" commands={["npm run lab:node-fetch-abort","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+What resource can fail under real concurrent load, and which extra integration test would demonstrate correct isolation, deadlines or cleanup?
+
+## Official references
+
+- [Node.js official documentation for Fetch and AbortSignal](https://nodejs.org/api/globals.html#fetch)
+- [Supporting Node.js official API](https://nodejs.org/api/globals.html#static-method-abortsignaltimeoutdelay)

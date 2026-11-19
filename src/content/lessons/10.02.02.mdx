@@ -1,0 +1,105 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Parse Accept media ranges and q-values deliberately, honoring application/json, application/* and */* only when quality is nonzero.","Reproduce and repair the headers and content negotiation bug with genuine Web/Node HTTP APIs.","Define the actual security, concurrency and persistence limits of the local exercise."]} />
+
+## The problem we're solving
+
+A JSON-only endpoint returns a JSON response even when the client explicitly refuses it with Accept: application/json;q=0.
+
+**Fault to find:** The starter assumes every Accept header permits JSON and ignores quality zero. This track uses Node 24 built-ins and fetch-compatible `Response` where appropriate; no paid platform or remote arbitrary-code execution is needed.
+
+## Build the mental model
+
+Parse Accept media ranges and q-values deliberately, honoring application/json, application/* and */* only when quality is nonzero.
+
+**Expected repair:** Valid JSON/wildcard media ranges are allowed, while text/html-only or q=0 are rejected.
+
+HTTP semantics follow RFC 9110. Public errors can use RFC 9457 Problem Details; do not invent return codes or copy internal stack traces into public responses. Pure helper tests are useful but the final capstone runs a real loopback server and tests wire responses.
+
+## Prerequisites and preflight
+
+Complete the Node runtime module `10.01` first. Open `labs/http-accept-json/starter/solution.mjs` with Node 24. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:http-accept-json`. PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:http-accept-json; Remove-Item Env:ACADEMY_LAB_TARGET`. The learner starter should fail an actual assertion.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the incorrect HTTP contract" file="labs/http-accept-json/starter/solution.mjs" expected="The intentionally wrong code violates a real HTTP assertion.">
+
+```js
+export function acceptsJson(_accept){return true;}
+```
+
+**Where the contract fails:** The starter assumes every Accept header permits JSON and ignores quality zero.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement standards-based HTTP behavior" file="labs/http-accept-json/starter/solution.mjs" expected="Valid JSON/wildcard media ranges are allowed, while text/html-only or q=0 are rejected.">
+
+```js
+export function acceptsJson(accept='*/*'){
+ const ranges=String(accept).split(',');
+ return ranges.some(part=>{
+  const [raw,...params]=part.trim().split(';');
+  const media=raw.trim().toLowerCase();
+  if(!['application/json','application/*','*/*'].includes(media))return false;
+  const qPart=params.find(x=>x.trim().toLowerCase().startsWith('q='));
+  if(!qPart)return true;
+  const value=Number(qPart.split('=')[1]);
+  return Number.isFinite(value)&&value>0&&value<=1;
+ });
+}
+```
+
+**Why this is correct:** Parse Accept media ranges and q-values deliberately, honoring application/json, application/* and */* only when quality is nonzero.
+
+</LessonStep>
+
+<LessonStep number={3} title="Exercise negative and positive request cases" file="labs/http-accept-json/solution.test.mjs" expected="Instructor passes real Node HTTP assertions; learner starter fails. The capstone uses a real ephemeral loopback listener.">
+
+```js
+assert.equal(mod.acceptsJson('application/json'),true);
+assert.equal(mod.acceptsJson('text/html, application/json;q=0.7'),true);
+assert.equal(mod.acceptsJson('application/json;q=0'),false);
+assert.equal(mod.acceptsJson('text/html'),false);
+assert.equal(mod.acceptsJson('*/*'),true);
+```
+
+**Production adaptation and limits:**
+
+```js
+const accept=req.headers.accept??'*/*';
+if(!acceptsJson(accept)){
+ res.writeHead(406,{'content-type':'application/problem+json'});
+ res.end(JSON.stringify({type:'about:blank',title:'Not acceptable',status:406}));
+ return;
+}
+// A complete production negotiator also handles priorities, suffixes,
+// language preferences and a precise q-value grammar.
+```
+
+**Operational distinction:** The reference implementation intentionally excludes production identities, durable database transactions, distributed replay records, rate limiting, SSRF protection, and deployment. Those require separate lessons and genuine integration checks.
+
+</LessonStep>
+
+<Misconception claim="The starter assumes every Accept header permits JSON and ignores quality zero." correction="Parse Accept media ranges and q-values deliberately, honoring application/json, application/* and */* only when quality is nonzero. HTTP status and wire behavior must be tested, and a teaching API is not a production security boundary." />
+
+<KnowledgeCheck question="Which standards-based practice applies to headers and content negotiation?" choices={["Every endpoint can return 200 if it includes a descriptive JSON message.","Parse Accept media ranges and q-values deliberately, honoring application/json, application/* and */* only when quality is nonzero.","Node's type system automatically prevents replay, data leaks and invalid caching.","A localhost test certifies internet-facing authorization and denial-of-service safety."] } correctIndex={1} explanation="Parse Accept media ranges and q-values deliberately, honoring application/json, application/* and */* only when quality is nonzero." misconception="HTTP semantics and actual request ownership must be enforced, not merely described." lessonId="10.02.02" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Broken behavior:** The starter assumes every Accept header permits JSON and ignores quality zero. **Reproduce:** run the red starter. **Diagnose:** compare the response, headers or state transition against the official contract. **Repair:** Parse Accept media ranges and q-values deliberately, honoring application/json, application/* and */* only when quality is nonzero. **Regression:** Valid JSON/wildcard media ranges are allowed, while text/html-only or q=0 are rejected.
+
+## Guided local lab
+
+The local `labs/http-accept-json` fixture includes a deliberately broken implementation, completed instructor source, executable Node tests and self-assessment rubric. No server runs learner-submitted code.
+
+<LabGate lessonId="10.02.02" labId="lab.http.http-accept-json" commands={["npm run lab:http-accept-json","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+What difference would identity, concurrent server processes, durable storage or proxies make? Which negative integration test would prove that boundary?
+
+## Official references
+
+- [Official specification or API for Headers and content negotiation](https://www.rfc-editor.org/rfc/rfc9110#section-12)
+- [Supporting HTTP or Node standard](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Accept)

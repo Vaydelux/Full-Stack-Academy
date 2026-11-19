@@ -1,0 +1,196 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Build a loopback-only Node HTTP API with bounded JSON body parsing, consistent statuses, idempotency keys, filtering, ETags and RFC 9457 problem responses, and verify them over fetch.","Reproduce and repair the lab rest contract bug with genuine Web/Node HTTP APIs.","Define the actual security, concurrency and persistence limits of the local exercise."]} />
+
+## The problem we're solving
+
+A new developer knows HTTP methods but has never proven content types, data validation, replay safety, listing, caching and machine-readable errors over an actual socket.
+
+**Fault to find:** The starter returns 200 for every route and method, so it cannot honor any meaningful HTTP contract. This track uses Node 24 built-ins and fetch-compatible `Response` where appropriate; no paid platform or remote arbitrary-code execution is needed.
+
+## Build the mental model
+
+Build a loopback-only Node HTTP API with bounded JSON body parsing, consistent statuses, idempotency keys, filtering, ETags and RFC 9457 problem responses, and verify them over fetch.
+
+**Expected repair:** An ephemeral local server passes real fetch-based checks for error statuses, POST/replay/conflict, list filters and conditional 304.
+
+HTTP semantics follow RFC 9110. Public errors can use RFC 9457 Problem Details; do not invent return codes or copy internal stack traces into public responses. Pure helper tests are useful but the final capstone runs a real loopback server and tests wire responses.
+
+## Prerequisites and preflight
+
+Complete the Node runtime module `10.01` first. Open `labs/http-local-rest-contract/starter/solution.mjs` with Node 24. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:http-local-rest-contract`. PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:http-local-rest-contract; Remove-Item Env:ACADEMY_LAB_TARGET`. The learner starter should fail an actual assertion.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the incorrect HTTP contract" file="labs/http-local-rest-contract/starter/solution.mjs" expected="The intentionally wrong code violates a real HTTP assertion.">
+
+```js
+import {createServer} from 'node:http';
+// Deliberately broken: every method and route returns 200 and no task contract.
+export function buildServer(){
+ return createServer((_req,res)=>{
+  res.writeHead(200,{'content-type':'application/json'});
+  res.end(JSON.stringify({ok:true}));
+ });
+}
+
+```
+
+**Where the contract fails:** The starter returns 200 for every route and method, so it cannot honor any meaningful HTTP contract.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement standards-based HTTP behavior" file="labs/http-local-rest-contract/starter/solution.mjs" expected="An ephemeral local server passes real fetch-based checks for error statuses, POST/replay/conflict, list filters and conditional 304.">
+
+```js
+import {createServer} from 'node:http';
+import {createHash} from 'node:crypto';
+
+// Demo-only, unauthenticated, in-memory service for LOCAL 127.0.0.1 tests.
+// Not production-ready: no user identities, persistence, distributed locks or tenant isolation.
+const MAX_BYTES=4096;
+const json=(res,status,data,headers={})=>{
+ res.writeHead(status,{'content-type':'application/json; charset=utf-8','cache-control':'no-store',...headers});
+ res.end(status===204||status===304?'':JSON.stringify(data));
+};
+const problem=(res,status,title)=>{
+ res.writeHead(status,{'content-type':'application/problem+json','cache-control':'no-store'});
+ res.end(JSON.stringify({type:'about:blank',title,status}));
+};
+export function buildServer(){
+ const tasks=[];
+ const replay=new Map();
+ return createServer(async(req,res)=>{
+  try{
+   const url=new URL(req.url??'/', 'http://localhost');
+   if(url.pathname==='/health'&&req.method==='GET'){
+    return json(res,200,{ok:true});
+   }
+   if(url.pathname==='/api/tasks'&&req.method==='GET'){
+    const status=url.searchParams.get('status')??'all';
+    if(!['all','open','done'].includes(status))return problem(res,400,'Invalid status');
+    const limit=Number(url.searchParams.get('limit')??'20');
+    if(!Number.isInteger(limit)||limit<1||limit>50)return problem(res,400,'Invalid limit');
+    const filtered=tasks.filter(row=>status==='all'||row.status===status);
+    const body=JSON.stringify({items:filtered.slice(0,limit),total:filtered.length});
+    const tag='"'+createHash('sha256').update(body).digest('hex')+'"';
+    const matches=(req.headers['if-none-match']??'').split(',').map(s=>s.trim().replace(/^W\//,'')).includes(tag);
+    if(matches){res.writeHead(304,{'etag':tag,'cache-control':'private, no-cache'});return res.end();}
+    res.writeHead(200,{'content-type':'application/json; charset=utf-8','etag':tag,'cache-control':'private, no-cache'});
+    return res.end(body);
+   }
+   if(url.pathname==='/api/tasks'&&req.method==='POST'){
+    if(!/^application\/json(?:;|$)/i.test(req.headers['content-type']??''))return problem(res,415,'JSON required');
+    const key=req.headers['idempotency-key'];
+    if(typeof key!=='string'||!/^[a-zA-Z0-9_-]{1,64}$/.test(key))return problem(res,400,'Idempotency key required');
+    let bytes=0;
+    const chunks=[];
+    for await(const chunk of req){
+     bytes+=chunk.length;
+     if(bytes>MAX_BYTES)return problem(res,413,'Payload too large');
+     chunks.push(chunk);
+    }
+    let input;
+    try{input=JSON.parse(Buffer.concat(chunks).toString('utf8'));}
+    catch{return problem(res,400,'Malformed JSON');}
+    if(!input||Array.isArray(input)||typeof input!=='object'||Object.keys(input).some(k=>!['title','status'].includes(k))||
+      typeof input.title!=='string'||input.title.trim().length<2||input.title.length>80||
+      !['open','done'].includes(input.status))return problem(res,422,'Invalid task');
+    const normalized={title:input.title.trim(),status:input.status};
+    const fingerprint=createHash('sha256').update(JSON.stringify(normalized)).digest('hex');
+    const prior=replay.get(key);
+    if(prior){
+     if(prior.fingerprint!==fingerprint)return problem(res,409,'Idempotency key conflict');
+     return json(res,201,prior.record);
+    }
+    const record={id:'task-'+(tasks.length+1),...normalized};
+    tasks.push(record);replay.set(key,{fingerprint,record});
+    return json(res,201,record);
+   }
+   if(url.pathname==='/api/tasks'){
+    res.setHeader('allow','GET, POST');
+    return problem(res,405,'Method not allowed');
+   }
+   return problem(res,404,'Not found');
+  }catch{
+   return problem(res,500,'Internal server error');
+  }
+ });
+}
+
+```
+
+**Why this is correct:** Build a loopback-only Node HTTP API with bounded JSON body parsing, consistent statuses, idempotency keys, filtering, ETags and RFC 9457 problem responses, and verify them over fetch.
+
+</LessonStep>
+
+<LessonStep number={3} title="Exercise negative and positive request cases" file="labs/http-local-rest-contract/solution.test.mjs" expected="Instructor passes real Node HTTP assertions; learner starter fails. The capstone uses a real ephemeral loopback listener.">
+
+```js
+const server=mod.buildServer();
+await new Promise((resolve,reject)=>{server.once('error',reject);server.listen(0,'127.0.0.1',resolve);});
+const addr=server.address();
+const base='http://127.0.0.1:'+addr.port;
+try{
+ const notFound=await fetch(base+'/missing');
+ assert.equal(notFound.status,404);
+ assert.match(notFound.headers.get('content-type')??'',/problem\+json/);
+ const unsupported=await fetch(base+'/api/tasks',{method:'PATCH'});
+ assert.equal(unsupported.status,405);
+ assert.match(unsupported.headers.get('allow')??'',/GET, POST/);
+ const wrongType=await fetch(base+'/api/tasks',{method:'POST',headers:{'idempotency-key':'k1','content-type':'text/plain'},body:'wrong'});
+ assert.equal(wrongType.status,415);
+ const bad=await fetch(base+'/api/tasks',{method:'POST',headers:{'idempotency-key':'k2','content-type':'application/json'},body:JSON.stringify({title:'x',status:'open'})});
+ assert.equal(bad.status,422);
+ const opts={method:'POST',headers:{'idempotency-key':'task-one','content-type':'application/json'},body:JSON.stringify({title:'Learn HTTP',status:'open'})};
+ const created=await fetch(base+'/api/tasks',opts);assert.equal(created.status,201);
+ const first=await created.json();assert.equal(first.title,'Learn HTTP');
+ const replay=await fetch(base+'/api/tasks',opts);assert.equal(replay.status,201);
+ assert.equal((await replay.json()).id,first.id);
+ const conflict=await fetch(base+'/api/tasks',{...opts,body:JSON.stringify({title:'Different task',status:'open'})});
+ assert.equal(conflict.status,409);
+ const result=await fetch(base+'/api/tasks?status=open&limit=1');assert.equal(result.status,200);
+ assert.equal((await result.json()).total,1);
+ const tag=result.headers.get('etag');assert.ok(tag);
+ const cached=await fetch(base+'/api/tasks?status=open&limit=1',{headers:{'if-none-match':tag}});
+ assert.equal(cached.status,304);assert.equal(await cached.text(),'');
+}finally{await new Promise((resolve,reject)=>server.close(error=>error?reject(error):resolve()));}
+```
+
+**Production adaptation and limits:**
+
+```js
+// The instructor's buildServer() starts an actual Node http server on
+// an ephemeral 127.0.0.1 port in its local acceptance test.
+// It is intentionally UNAUTHENTICATED and in-memory for teaching only.
+// Do not expose it publicly before adding auth, tenant isolation, rate
+// limits, durable idempotency, structured audit logs and deployment tests.
+```
+
+**Operational distinction:** The reference implementation intentionally excludes production identities, durable database transactions, distributed replay records, rate limiting, SSRF protection, and deployment. Those require separate lessons and genuine integration checks.
+
+</LessonStep>
+
+<Misconception claim="The starter returns 200 for every route and method, so it cannot honor any meaningful HTTP contract." correction="Build a loopback-only Node HTTP API with bounded JSON body parsing, consistent statuses, idempotency keys, filtering, ETags and RFC 9457 problem responses, and verify them over fetch. HTTP status and wire behavior must be tested, and a teaching API is not a production security boundary." />
+
+<KnowledgeCheck question="Which standards-based practice applies to lab rest contract?" choices={["Every endpoint can return 200 if it includes a descriptive JSON message.","Build a loopback-only Node HTTP API with bounded JSON body parsing, consistent statuses, idempotency keys, filtering, ETags and RFC 9457 problem responses, and verify them over fetch.","Node's type system automatically prevents replay, data leaks and invalid caching.","A localhost test certifies internet-facing authorization and denial-of-service safety."] } correctIndex={1} explanation="Build a loopback-only Node HTTP API with bounded JSON body parsing, consistent statuses, idempotency keys, filtering, ETags and RFC 9457 problem responses, and verify them over fetch." misconception="HTTP semantics and actual request ownership must be enforced, not merely described." lessonId="10.02.08" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Broken behavior:** The starter returns 200 for every route and method, so it cannot honor any meaningful HTTP contract. **Reproduce:** run the red starter. **Diagnose:** compare the response, headers or state transition against the official contract. **Repair:** Build a loopback-only Node HTTP API with bounded JSON body parsing, consistent statuses, idempotency keys, filtering, ETags and RFC 9457 problem responses, and verify them over fetch. **Regression:** An ephemeral local server passes real fetch-based checks for error statuses, POST/replay/conflict, list filters and conditional 304.
+
+## Guided local lab
+
+The local `labs/http-local-rest-contract` fixture includes a deliberately broken implementation, completed instructor source, executable Node tests and self-assessment rubric. No server runs learner-submitted code.
+
+<LabGate lessonId="10.02.08" labId="lab.http.http-local-rest-contract" commands={["npm run lab:http-local-rest-contract","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+What difference would identity, concurrent server processes, durable storage or proxies make? Which negative integration test would prove that boundary?
+
+## Official references
+
+- [Official specification or API for Lab REST contract](https://nodejs.org/api/http.html#httpcreateserveroptions-requestlistener)
+- [Supporting HTTP or Node standard](https://www.rfc-editor.org/rfc/rfc9457.html)

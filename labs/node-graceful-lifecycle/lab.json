@@ -1,0 +1,15 @@
+{
+  "id": "lab.node.node-graceful-lifecycle",
+  "lessonId": "10.01.07",
+  "title": "Node.js 24 process lifecycle lab",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/node-graceful-lifecycle/starter/solution.mjs",
+  "solution": "labs/node-graceful-lifecycle/solution/solution.mjs",
+  "tests": "labs/node-graceful-lifecycle/solution.test.mjs",
+  "verify": [
+    "npm run lab:node-graceful-lifecycle"
+  ],
+  "expected": "Termination cleanup runs exactly once even when two signals arrive.",
+  "security": "Local trusted Node built-ins only. Production reverse proxy, OS policy, permissions and HTTP authentication require separate verification."
+}

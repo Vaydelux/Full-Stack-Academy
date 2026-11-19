@@ -1,0 +1,108 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Bound raw UTF-8 body size before JSON.parse, require an object payload and recursively reject prototype-sensitive object keys.","Reproduce and repair the json serialization bug with genuine Web/Node HTTP APIs.","Define the actual security, concurrency and persistence limits of the local exercise."]} />
+
+## The problem we're solving
+
+A request body parser decodes any arbitrary JSON and later spreads untrusted __proto__ keys into a plain object; it also ignores payload byte limits.
+
+**Fault to find:** The starter accepts prototype-polluting keys and unbounded JSON bodies. This track uses Node 24 built-ins and fetch-compatible `Response` where appropriate; no paid platform or remote arbitrary-code execution is needed.
+
+## Build the mental model
+
+Bound raw UTF-8 body size before JSON.parse, require an object payload and recursively reject prototype-sensitive object keys.
+
+**Expected repair:** Normal object JSON parses; oversized, malformed, array and __proto__ payloads are rejected.
+
+HTTP semantics follow RFC 9110. Public errors can use RFC 9457 Problem Details; do not invent return codes or copy internal stack traces into public responses. Pure helper tests are useful but the final capstone runs a real loopback server and tests wire responses.
+
+## Prerequisites and preflight
+
+Complete the Node runtime module `10.01` first. Open `labs/http-safe-json/starter/solution.mjs` with Node 24. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:http-safe-json`. PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:http-safe-json; Remove-Item Env:ACADEMY_LAB_TARGET`. The learner starter should fail an actual assertion.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the incorrect HTTP contract" file="labs/http-safe-json/starter/solution.mjs" expected="The intentionally wrong code violates a real HTTP assertion.">
+
+```js
+export function parseJsonObject(raw,_maxBytes=1024){
+ return JSON.parse(raw);
+}
+```
+
+**Where the contract fails:** The starter accepts prototype-polluting keys and unbounded JSON bodies.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement standards-based HTTP behavior" file="labs/http-safe-json/starter/solution.mjs" expected="Normal object JSON parses; oversized, malformed, array and __proto__ payloads are rejected.">
+
+```js
+export function parseJsonObject(raw,maxBytes=1024){
+ if(typeof raw!=='string'||!Number.isSafeInteger(maxBytes)||maxBytes<1)throw new TypeError('Invalid input');
+ if(Buffer.byteLength(raw)>maxBytes)throw new RangeError('Body too large');
+ const parsed=JSON.parse(raw);
+ if(!parsed||typeof parsed!=='object'||Array.isArray(parsed))throw new TypeError('Expected object');
+ const check=value=>{
+  if(!value||typeof value!=='object')return;
+  for(const key of Object.keys(value)){
+   if(['__proto__','constructor','prototype'].includes(key))throw new TypeError('Unsafe key');
+   check(value[key]);
+  }
+ };
+ check(parsed);return parsed;
+}
+```
+
+**Why this is correct:** Bound raw UTF-8 body size before JSON.parse, require an object payload and recursively reject prototype-sensitive object keys.
+
+</LessonStep>
+
+<LessonStep number={3} title="Exercise negative and positive request cases" file="labs/http-safe-json/solution.test.mjs" expected="Instructor passes real Node HTTP assertions; learner starter fails. The capstone uses a real ephemeral loopback listener.">
+
+```js
+assert.deepEqual(mod.parseJsonObject('{"name":"Ada"}'),{name:'Ada'});
+assert.throws(()=>mod.parseJsonObject('{"__proto__":{"polluted":true}}'),/Unsafe key/);
+assert.throws(()=>mod.parseJsonObject('{"name":"lengthy"}',4),/Body too large/);
+assert.throws(()=>mod.parseJsonObject('[]'),/Expected object/);
+```
+
+**Production adaptation and limits:**
+
+```js
+// On HTTP request: buffer size should be limited while streaming,
+// not only after the entire request has already been read.
+for await(const chunk of req){
+ received+=chunk.length;
+ if(received>MAX_REQUEST_BYTES)throw new Error('Body too large');
+}
+// After decoding: parse, validate schema, reject unsafe object keys,
+// and never Object.assign raw untrusted JSON into configuration prototypes.
+```
+
+**Operational distinction:** The reference implementation intentionally excludes production identities, durable database transactions, distributed replay records, rate limiting, SSRF protection, and deployment. Those require separate lessons and genuine integration checks.
+
+</LessonStep>
+
+<Misconception claim="The starter accepts prototype-polluting keys and unbounded JSON bodies." correction="Bound raw UTF-8 body size before JSON.parse, require an object payload and recursively reject prototype-sensitive object keys. HTTP status and wire behavior must be tested, and a teaching API is not a production security boundary." />
+
+<KnowledgeCheck question="Which standards-based practice applies to json serialization?" choices={["Every endpoint can return 200 if it includes a descriptive JSON message.","Bound raw UTF-8 body size before JSON.parse, require an object payload and recursively reject prototype-sensitive object keys.","Node's type system automatically prevents replay, data leaks and invalid caching.","A localhost test certifies internet-facing authorization and denial-of-service safety."] } correctIndex={1} explanation="Bound raw UTF-8 body size before JSON.parse, require an object payload and recursively reject prototype-sensitive object keys." misconception="HTTP semantics and actual request ownership must be enforced, not merely described." lessonId="10.02.03" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Broken behavior:** The starter accepts prototype-polluting keys and unbounded JSON bodies. **Reproduce:** run the red starter. **Diagnose:** compare the response, headers or state transition against the official contract. **Repair:** Bound raw UTF-8 body size before JSON.parse, require an object payload and recursively reject prototype-sensitive object keys. **Regression:** Normal object JSON parses; oversized, malformed, array and __proto__ payloads are rejected.
+
+## Guided local lab
+
+The local `labs/http-safe-json` fixture includes a deliberately broken implementation, completed instructor source, executable Node tests and self-assessment rubric. No server runs learner-submitted code.
+
+<LabGate lessonId="10.02.03" labId="lab.http.http-safe-json" commands={["npm run lab:http-safe-json","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+What difference would identity, concurrent server processes, durable storage or proxies make? Which negative integration test would prove that boundary?
+
+## Official references
+
+- [Official specification or API for JSON serialization](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/parse)
+- [Supporting HTTP or Node standard](https://owasp.org/www-community/attacks/Prototype_Pollution)

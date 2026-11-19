@@ -1,0 +1,15 @@
+{
+  "id": "lab.http.http-safe-json",
+  "lessonId": "10.02.03",
+  "title": "HTTP API json serialization local lab",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/http-safe-json/starter/solution.mjs",
+  "solution": "labs/http-safe-json/solution/solution.mjs",
+  "tests": "labs/http-safe-json/solution.test.mjs",
+  "verify": [
+    "npm run lab:http-safe-json"
+  ],
+  "expected": "Normal object JSON parses; oversized, malformed, array and __proto__ payloads are rejected.",
+  "security": "Local Node HTTP / Web standard only. Loopback capstone is intentionally unauthenticated, in-memory and not suitable as a public service."
+}

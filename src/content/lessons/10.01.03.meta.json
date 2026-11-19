@@ -1,0 +1,39 @@
+{
+  "id": "10.01.03",
+  "title": "Node streams and buffers",
+  "description": "Node.js 24 runtime lesson: A service counts UTF-8 chunks using JavaScript string length and therefore underestimates multibyte payloads, allowing the maximum byte limit to be bypassed. Includes executable core-module fixtures, a failing starter and instructor regression suite.",
+  "trackId": "10",
+  "moduleId": "10.01",
+  "level": "Intermediate",
+  "estimatedMinutes": 70,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "node": "24",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "10.01.02"
+  ],
+  "objectives": [
+    "Use Node Readable and Buffer.byteLength for true UTF-8 byte budgets, collecting bounded chunks and cancelling oversized input.",
+    "Repair node-stream-buffer-limit and prove a failure boundary.",
+    "Describe production risks not exercised by the local Node test."
+  ],
+  "labId": "lab.node.node-stream-buffer-limit",
+  "rubric": [
+    "I can explain the Node runtime contract for node streams and buffers.",
+    "I can reproduce and repair 10.01.03 with real Node core modules.",
+    "I can identify a security or load test needed before deployment."
+  ],
+  "sources": [
+    {
+      "label": "Official Node.js documentation",
+      "url": "https://nodejs.org/api/stream.html"
+    },
+    {
+      "label": "Supporting Node.js API",
+      "url": "https://nodejs.org/api/buffer.html#static-method-bufferbytelengthstring-encoding"
+    }
+  ]
+}

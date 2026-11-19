@@ -312,6 +312,23 @@ import ZustandState6 from './lessons/09.04.06.mdx';
 import ZustandState7 from './lessons/09.04.07.mdx';
 import ZustandState8 from './lessons/09.04.08.mdx';
 
+import BackendVertical1 from './lessons/10.01.01.mdx';
+import BackendVertical2 from './lessons/10.01.02.mdx';
+import BackendVertical3 from './lessons/10.01.03.mdx';
+import BackendVertical4 from './lessons/10.01.04.mdx';
+import BackendVertical5 from './lessons/10.01.05.mdx';
+import BackendVertical6 from './lessons/10.01.06.mdx';
+import BackendVertical7 from './lessons/10.01.07.mdx';
+import BackendVertical8 from './lessons/10.01.08.mdx';
+import BackendVertical9 from './lessons/10.02.01.mdx';
+import BackendVertical10 from './lessons/10.02.02.mdx';
+import BackendVertical11 from './lessons/10.02.03.mdx';
+import BackendVertical12 from './lessons/10.02.04.mdx';
+import BackendVertical13 from './lessons/10.02.05.mdx';
+import BackendVertical14 from './lessons/10.02.06.mdx';
+import BackendVertical15 from './lessons/10.02.07.mdx';
+import BackendVertical16 from './lessons/10.02.08.mdx';
+
 export function LessonArticle({lessonId}: {lessonId:string}) {
   switch (lessonId) {
     case '00.01.01': return <BrowserLesson />;
@@ -619,6 +636,22 @@ export function LessonArticle({lessonId}: {lessonId:string}) {
     case '09.04.06': return <ZustandState6 />;
     case '09.04.07': return <ZustandState7 />;
     case '09.04.08': return <ZustandState8 />;
+    case '10.01.01': return <BackendVertical1 />;
+    case '10.01.02': return <BackendVertical2 />;
+    case '10.01.03': return <BackendVertical3 />;
+    case '10.01.04': return <BackendVertical4 />;
+    case '10.01.05': return <BackendVertical5 />;
+    case '10.01.06': return <BackendVertical6 />;
+    case '10.01.07': return <BackendVertical7 />;
+    case '10.01.08': return <BackendVertical8 />;
+    case '10.02.01': return <BackendVertical9 />;
+    case '10.02.02': return <BackendVertical10 />;
+    case '10.02.03': return <BackendVertical11 />;
+    case '10.02.04': return <BackendVertical12 />;
+    case '10.02.05': return <BackendVertical13 />;
+    case '10.02.06': return <BackendVertical14 />;
+    case '10.02.07': return <BackendVertical15 />;
+    case '10.02.08': return <BackendVertical16 />;
     default: return null;
   }
 }

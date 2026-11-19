@@ -1,0 +1,15 @@
+{
+  "id": "lab.node.node-stream-buffer-limit",
+  "lessonId": "10.01.03",
+  "title": "Node.js 24 node streams and buffers lab",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/node-stream-buffer-limit/starter/solution.mjs",
+  "solution": "labs/node-stream-buffer-limit/solution/solution.mjs",
+  "tests": "labs/node-stream-buffer-limit/solution.test.mjs",
+  "verify": [
+    "npm run lab:node-stream-buffer-limit"
+  ],
+  "expected": "A UTF-8 euro sign consumes three bytes, and streams beyond the limit are rejected.",
+  "security": "Local trusted Node built-ins only. Production reverse proxy, OS policy, permissions and HTTP authentication require separate verification."
+}

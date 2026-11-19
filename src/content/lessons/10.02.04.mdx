@@ -1,0 +1,108 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Tie an idempotency key to the request fingerprint and in-flight promise; replay the same result, reject changed payloads and remove failed attempts.","Reproduce and repair the idempotency and retries bug with genuine Web/Node HTTP APIs.","Define the actual security, concurrency and persistence limits of the local exercise."]} />
+
+## The problem we're solving
+
+A client retries POST after losing a response; without deduplication the API creates two payments or jobs.
+
+**Fault to find:** The starter runs the business operation on every retry, producing duplicate effects. This track uses Node 24 built-ins and fetch-compatible `Response` where appropriate; no paid platform or remote arbitrary-code execution is needed.
+
+## Build the mental model
+
+Tie an idempotency key to the request fingerprint and in-flight promise; replay the same result, reject changed payloads and remove failed attempts.
+
+**Expected repair:** Concurrent same-key requests execute once; a changed payload with the same key produces a conflict.
+
+HTTP semantics follow RFC 9110. Public errors can use RFC 9457 Problem Details; do not invent return codes or copy internal stack traces into public responses. Pure helper tests are useful but the final capstone runs a real loopback server and tests wire responses.
+
+## Prerequisites and preflight
+
+Complete the Node runtime module `10.01` first. Open `labs/http-idempotency-retry/starter/solution.mjs` with Node 24. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:http-idempotency-retry`. PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:http-idempotency-retry; Remove-Item Env:ACADEMY_LAB_TARGET`. The learner starter should fail an actual assertion.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the incorrect HTTP contract" file="labs/http-idempotency-retry/starter/solution.mjs" expected="The intentionally wrong code violates a real HTTP assertion.">
+
+```js
+export function makeIdempotent(run){
+ return async(_key,payload)=>run(payload);
+}
+```
+
+**Where the contract fails:** The starter runs the business operation on every retry, producing duplicate effects.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement standards-based HTTP behavior" file="labs/http-idempotency-retry/starter/solution.mjs" expected="Concurrent same-key requests execute once; a changed payload with the same key produces a conflict.">
+
+```js
+import {createHash} from 'node:crypto';
+export function makeIdempotent(run){
+ const records=new Map();
+ return async(key,payload)=>{
+  if(typeof key!=='string'||!/^[A-Za-z0-9_-]{1,64}$/.test(key))throw new TypeError('Invalid idempotency key');
+  const fingerprint=createHash('sha256').update(JSON.stringify(payload)).digest('hex');
+  const existing=records.get(key);
+  if(existing){
+   if(existing.fingerprint!==fingerprint)return {status:409,conflict:true};
+   return existing.promise;
+  }
+  const promise=Promise.resolve().then(()=>run(payload));
+  records.set(key,{fingerprint,promise});
+  try{return await promise;}catch(error){records.delete(key);throw error;}
+ };
+}
+```
+
+**Why this is correct:** Tie an idempotency key to the request fingerprint and in-flight promise; replay the same result, reject changed payloads and remove failed attempts.
+
+</LessonStep>
+
+<LessonStep number={3} title="Exercise negative and positive request cases" file="labs/http-idempotency-retry/solution.test.mjs" expected="Instructor passes real Node HTTP assertions; learner starter fails. The capstone uses a real ephemeral loopback listener.">
+
+```js
+let calls=0;
+const invoke=mod.makeIdempotent(async payload=>{calls++;await Promise.resolve();return {id:'task-1',payload};});
+const [a,b]=await Promise.all([invoke('same',{title:'One'}),invoke('same',{title:'One'})]);
+assert.deepEqual(a,b);assert.equal(calls,1);
+assert.deepEqual(await invoke('same',{title:'Two'}),{status:409,conflict:true});
+assert.equal(calls,1);
+```
+
+**Production adaptation and limits:**
+
+```js
+// This in-memory exercise is not a distributed production store.
+// Use a durable database unique constraint on key + authenticated actor
+// and payload hash; define response retention TTL and replay semantics.
+// Concurrency and crashes must not permit duplicate real side effects.
+```
+
+**Operational distinction:** The reference implementation intentionally excludes production identities, durable database transactions, distributed replay records, rate limiting, SSRF protection, and deployment. Those require separate lessons and genuine integration checks.
+
+</LessonStep>
+
+<Misconception claim="The starter runs the business operation on every retry, producing duplicate effects." correction="Tie an idempotency key to the request fingerprint and in-flight promise; replay the same result, reject changed payloads and remove failed attempts. HTTP status and wire behavior must be tested, and a teaching API is not a production security boundary." />
+
+<KnowledgeCheck question="Which standards-based practice applies to idempotency and retries?" choices={["Every endpoint can return 200 if it includes a descriptive JSON message.","Tie an idempotency key to the request fingerprint and in-flight promise; replay the same result, reject changed payloads and remove failed attempts.","Node's type system automatically prevents replay, data leaks and invalid caching.","A localhost test certifies internet-facing authorization and denial-of-service safety."] } correctIndex={1} explanation="Tie an idempotency key to the request fingerprint and in-flight promise; replay the same result, reject changed payloads and remove failed attempts." misconception="HTTP semantics and actual request ownership must be enforced, not merely described." lessonId="10.02.04" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Broken behavior:** The starter runs the business operation on every retry, producing duplicate effects. **Reproduce:** run the red starter. **Diagnose:** compare the response, headers or state transition against the official contract. **Repair:** Tie an idempotency key to the request fingerprint and in-flight promise; replay the same result, reject changed payloads and remove failed attempts. **Regression:** Concurrent same-key requests execute once; a changed payload with the same key produces a conflict.
+
+## Guided local lab
+
+The local `labs/http-idempotency-retry` fixture includes a deliberately broken implementation, completed instructor source, executable Node tests and self-assessment rubric. No server runs learner-submitted code.
+
+<LabGate lessonId="10.02.04" labId="lab.http.http-idempotency-retry" commands={["npm run lab:http-idempotency-retry","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+What difference would identity, concurrent server processes, durable storage or proxies make? Which negative integration test would prove that boundary?
+
+## Official references
+
+- [Official specification or API for Idempotency and retries](https://www.rfc-editor.org/rfc/rfc9110#section-9.2.2)
+- [Supporting HTTP or Node standard](https://datatracker.ietf.org/doc/html/draft-ietf-httpapi-idempotency-key-header)

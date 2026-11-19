@@ -1,0 +1,39 @@
+{
+  "id": "10.02.07",
+  "title": "ETags and caching",
+  "description": "HTTP API fundamentals with standards-grounded Node.js examples, locally executable positive and negative contracts, and a complete real HTTP capstone.",
+  "trackId": "10",
+  "moduleId": "10.02",
+  "level": "Intermediate",
+  "estimatedMinutes": 75,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "node": "24",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "10.02.06"
+  ],
+  "objectives": [
+    "Generate a deterministic ETag for the representation and honor If-None-Match with 304 and no body for unchanged GET responses.",
+    "Repair the http-etag-conditional failing instructor contract.",
+    "Explain the production limitation of a local Node HTTP exercise."
+  ],
+  "labId": "lab.http.http-etag-conditional",
+  "rubric": [
+    "I can apply the HTTP semantics for etags and caching.",
+    "I can reproduce and fix the 10.02.07 defect with real Node or fetch APIs.",
+    "I can explain the security or durability work needed before deployment."
+  ],
+  "sources": [
+    {
+      "label": "Primary official standard / API",
+      "url": "https://www.rfc-editor.org/rfc/rfc9110#section-8.8"
+    },
+    {
+      "label": "Supporting HTTP specification",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/If-None-Match"
+    }
+  ]
+}

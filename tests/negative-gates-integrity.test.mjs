@@ -3,7 +3,7 @@ import test from 'node:test';
 import fs from 'node:fs';
 import path from 'node:path';
 const root=path.resolve(import.meta.dirname,'..');
-const paths=["tests/react-red-starters.test.mjs","tests/react-advanced-red-starters.test.mjs","tests/react-performance-red-starters.test.mjs","tests/next-router-red-starters.test.mjs","tests/next-full-red-starters.test.mjs","tests/ui-track-red-starters.test.mjs","tests/zod-foundations-red-starters.test.mjs","tests/zustand-state-red-starters.test.mjs"];
+const paths=["tests/react-red-starters.test.mjs","tests/react-advanced-red-starters.test.mjs","tests/react-performance-red-starters.test.mjs","tests/next-router-red-starters.test.mjs","tests/next-full-red-starters.test.mjs","tests/ui-track-red-starters.test.mjs","tests/zod-foundations-red-starters.test.mjs","tests/zustand-state-red-starters.test.mjs","tests/node-http-red-starters.test.mjs"];
 test('all red-starter gates require ERR_ASSERTION rather than a generic TAP failure',()=>{
  for(const p of paths){
   const file=fs.readFileSync(path.join(root,p),'utf8');

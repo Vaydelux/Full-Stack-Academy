@@ -1,0 +1,39 @@
+{
+  "id": "10.02.05",
+  "title": "Filtering, sorting and pagination",
+  "description": "HTTP API fundamentals with standards-grounded Node.js examples, locally executable positive and negative contracts, and a complete real HTTP capstone.",
+  "trackId": "10",
+  "moduleId": "10.02",
+  "level": "Intermediate",
+  "estimatedMinutes": 75,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "node": "24",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "10.02.04"
+  ],
+  "objectives": [
+    "Validate filter and sort query parameters against allowlists, sort/filter the authoritative result set before pagination and cap page size.",
+    "Repair the http-filter-page failing instructor contract.",
+    "Explain the production limitation of a local Node HTTP exercise."
+  ],
+  "labId": "lab.http.http-filter-page",
+  "rubric": [
+    "I can apply the HTTP semantics for filtering, sorting and pagination.",
+    "I can reproduce and fix the 10.02.05 defect with real Node or fetch APIs.",
+    "I can explain the security or durability work needed before deployment."
+  ],
+  "sources": [
+    {
+      "label": "Primary official standard / API",
+      "url": "https://www.rfc-editor.org/rfc/rfc9110"
+    },
+    {
+      "label": "Supporting HTTP specification",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams"
+    }
+  ]
+}
