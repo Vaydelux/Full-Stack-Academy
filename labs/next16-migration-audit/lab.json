@@ -1,0 +1,15 @@
+{
+  "id": "lab.next.next16-migration-audit",
+  "lessonId": "07.05.07",
+  "title": "Next.js 16 upgrade and migration checks local exercise",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/next16-migration-audit/starter/solution.tsx",
+  "solution": "labs/next16-migration-audit/solution/solution.tsx",
+  "tests": "labs/next16-migration-audit/solution.test.mjs",
+  "verify": [
+    "npm run lab:next16-migration-audit"
+  ],
+  "expected": "Each legacy convention yields a distinct migration warning.",
+  "security": "No real backend or production runtime; enforce server policies and negative HTTP tests separately."
+}

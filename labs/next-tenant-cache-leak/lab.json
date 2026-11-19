@@ -1,0 +1,15 @@
+{
+  "id": "lab.next.next-tenant-cache-leak",
+  "lessonId": "07.05.08",
+  "title": "Next.js 16 bug hunt auth cache leak local exercise",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/next-tenant-cache-leak/starter/solution.tsx",
+  "solution": "labs/next-tenant-cache-leak/solution/solution.tsx",
+  "tests": "labs/next-tenant-cache-leak/solution.test.mjs",
+  "verify": [
+    "npm run lab:next-tenant-cache-leak"
+  ],
+  "expected": "Own-tenant private read is request-scoped; cross-tenant and anonymous access are denied; public content may be shared.",
+  "security": "No real backend or production runtime; enforce server policies and negative HTTP tests separately."
+}

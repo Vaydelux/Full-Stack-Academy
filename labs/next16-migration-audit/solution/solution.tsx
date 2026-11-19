@@ -1,0 +1,1 @@
+export type Flags={middleware:boolean;syncParams:boolean;legacyCache:boolean};export function migrationFindings(flags:Flags):string[]{const issues:string[]=[];if(flags.middleware)issues.push('rename-to-proxy');if(flags.syncParams)issues.push('await-request-apis');if(flags.legacyCache)issues.push('review-cache-components-mode');return issues;}

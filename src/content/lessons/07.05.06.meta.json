@@ -1,0 +1,39 @@
+{
+  "id": "07.05.06",
+  "title": "Build and runtime diagnostics: Classify build errors at the correct boundary before changing code and record the exact commit, runtime and failing command.",
+  "description": "Next.js 16 operations topic build and runtime diagnostics, with a runnable local regression model, failing starter, correct instructor source and security caveats.",
+  "trackId": "07",
+  "moduleId": "07.05",
+  "level": "Intermediate",
+  "estimatedMinutes": 65,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "next": "16",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "07.05.05"
+  ],
+  "objectives": [
+    "Classify build errors at the correct boundary before changing code and record the exact commit, runtime and failing command.",
+    "Repair the next-diagnostic-triage defect and verify a denied or invalid case.",
+    "Explain why real runtime, security, or observability acceptance remains necessary."
+  ],
+  "labId": "lab.next.next-diagnostic-triage",
+  "rubric": [
+    "I can explain the correct Next 16 behavior for build and runtime diagnostics.",
+    "I can fix the 07.05.06 starter and explain the failing test.",
+    "I can plan an appropriate production-oriented integration test for the issue."
+  ],
+  "sources": [
+    {
+      "label": "Build and runtime diagnostics",
+      "url": "https://nextjs.org/docs/app/guides/production-checklist"
+    },
+    {
+      "label": "Supporting Next.js documentation",
+      "url": "https://nextjs.org/docs/app/guides/upgrading/version-16"
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+export type ErrorInput={requestId:string;operation:string;errorCode:string;token:string;email:string};export function sanitizeError(input:ErrorInput){const trim=(s:string)=>s.slice(0,80);return {requestId:trim(input.requestId),operation:trim(input.operation),errorCode:trim(input.errorCode)};}

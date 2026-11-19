@@ -1,0 +1,15 @@
+{
+  "id": "lab.next.next-diagnostic-triage",
+  "lessonId": "07.05.06",
+  "title": "Next.js 16 build and runtime diagnostics local exercise",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/next-diagnostic-triage/starter/solution.tsx",
+  "solution": "labs/next-diagnostic-triage/solution/solution.tsx",
+  "tests": "labs/next-diagnostic-triage/solution.test.mjs",
+  "verify": [
+    "npm run lab:next-diagnostic-triage"
+  ],
+  "expected": "Type errors, missing env and hydration regressions receive separate classifications.",
+  "security": "No real backend or production runtime; enforce server policies and negative HTTP tests separately."
+}

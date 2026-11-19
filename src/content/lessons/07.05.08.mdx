@@ -1,0 +1,84 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Authorize each tenant-scoped read and never globally share a cached private payload. Test cross-tenant denial with negative requests.","Reproduce and repair an operational or security defect with a local TypeScript model.","Identify the missing HTTP, runtime or security integration evidence."]} />
+
+## The problem we're solving
+
+Bug Hunt auth cache leak matters in a production-facing Next.js application. **Initial defect:** The starter allows any logged-in tenant to read another tenant's private record and labels it globally cacheable.
+
+## Build the mental model
+
+Authorize each tenant-scoped read and never globally share a cached private payload. Test cross-tenant denial with negative requests. **Predict:** Own-tenant private read is request-scoped; cross-tenant and anonymous access are denied; public content may be shared.
+
+These source tests are not a replacement for real Next.js build, authentic requests, tenant-scoped database reads, observability or production deployment checks.
+
+## Prerequisites and preflight
+
+Read the preceding Next.js topic and open `labs/next-tenant-cache-leak/starter/solution.tsx` with Node.js 24 and locked dependencies. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:next-tenant-cache-leak`. PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:next-tenant-cache-leak; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the broken baseline" file="labs/next-tenant-cache-leak/starter/solution.tsx" expected="A focused local acceptance assertion fails.">
+
+```tsx
+export type Principal={userId:string;tenantId:string}|null;export type Resource={tenantId:string;visibility:'public'|'private'};export function readDecision(actor:Principal,_resource:Resource){return {allowed:Boolean(actor),cache:'shared'};}
+```
+
+**Cause:** The starter allows any logged-in tenant to read another tenant's private record and labels it globally cacheable.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the boundary or diagnostic policy" file="labs/next-tenant-cache-leak/starter/solution.tsx" expected="Own-tenant private read is request-scoped; cross-tenant and anonymous access are denied; public content may be shared.">
+
+```tsx
+export type Principal={userId:string;tenantId:string}|null;export type Resource={tenantId:string;visibility:'public'|'private'};export function readDecision(actor:Principal,resource:Resource){if(resource.visibility==='public')return {allowed:true,cache:'shared'};return {allowed:Boolean(actor&&actor.tenantId===resource.tenantId),cache:'request'};}
+```
+
+**Principle:** Authorize each tenant-scoped read and never globally share a cached private payload. Test cross-tenant denial with negative requests.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify an allowed and a rejected scenario" file="labs/next-tenant-cache-leak/solution.test.mjs" expected="Instructor data contract passes; compiled framework integration remains a separate release gate.">
+
+```js
+const privateRow={tenantId:'t1',visibility:'private'};assert.deepEqual(mod.readDecision({userId:'u1',tenantId:'t1'},privateRow),{allowed:true,cache:'request'});assert.deepEqual(mod.readDecision({userId:'u2',tenantId:'t2'},privateRow),{allowed:false,cache:'request'});assert.deepEqual(mod.readDecision(null,privateRow),{allowed:false,cache:'request'});assert.deepEqual(mod.readDecision(null,{tenantId:'t1',visibility:'public'}),{allowed:true,cache:'shared'});
+```
+
+**Real Next.js-oriented example or investigation plan:**
+
+```tsx
+// Server-only read: never global-cache the private result
+const actor=await requireAuthenticatedUser();
+const report=await db.report.findFirst({where:{id:reportId,tenantId:actor.tenantId}});
+if(!report)notFound();
+return <ReportDetail report={toSafeClientDto(report)}/>;
+// Negative tests: T1 allowed T1, T2 forbidden T1, anonymous forbidden private T1.
+```
+
+These examples need correct imports, real infrastructure and security review before deployment.
+
+</LessonStep>
+
+<Misconception claim="The starter allows any logged-in tenant to read another tenant's private record and labels it globally cacheable." correction="Authorize each tenant-scoped read and never globally share a cached private payload. Test cross-tenant denial with negative requests. A local policy fixture does not prove the actual backend enforces that boundary." />
+
+<KnowledgeCheck question="Which production principle applies to bug hunt auth cache leak?" choices={["If the page renders, its backend authorization and runtime are automatically safe.","Authorize each tenant-scoped read and never globally share a cached private payload. Test cross-tenant denial with negative requests.","A git merge is the same as a passing production build.","Next.js client data can be trusted instead of checking server permissions."] } correctIndex={1} explanation="Authorize each tenant-scoped read and never globally share a cached private payload. Test cross-tenant denial with negative requests." misconception="Prove the real trust boundary with an independently run test." lessonId="07.05.08" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Failure:** The starter allows any logged-in tenant to read another tenant's private record and labels it globally cacheable. **Reproduction:** run the red starter and capture the failing assertion. **Repair:** Authorize each tenant-scoped read and never globally share a cached private payload. Test cross-tenant denial with negative requests. **Regression:** Own-tenant private read is request-scoped; cross-tenant and anonymous access are denied; public content may be shared. Validate the actual Next.js and HTTP behavior separately.
+
+## Guided local lab
+
+The local lab at `labs/next-tenant-cache-leak/` contains a starter, corrected instructor solution, acceptance checks and self-assessment rubric. The academy never evaluates learner code on its server.
+
+<LabGate lessonId="07.05.08" labId="lab.next.next-tenant-cache-leak" commands={["npm run lab:next-tenant-cache-leak","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+How might this bug be invisible to TypeScript? Which exact build, telemetry, or unauthorized HTTP request would prove the fix?
+
+## Official references
+
+- [Next.js official documentation: Bug Hunt auth cache leak](https://nextjs.org/docs/app/guides/data-security)
+- [Supporting framework guide](https://nextjs.org/docs/app/guides/migrating-to-cache-components)

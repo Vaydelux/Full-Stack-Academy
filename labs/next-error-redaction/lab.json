@@ -1,0 +1,15 @@
+{
+  "id": "lab.next.next-error-redaction",
+  "lessonId": "07.05.05",
+  "title": "Next.js 16 error tracking local exercise",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/next-error-redaction/starter/solution.tsx",
+  "solution": "labs/next-error-redaction/solution/solution.tsx",
+  "tests": "labs/next-error-redaction/solution.test.mjs",
+  "verify": [
+    "npm run lab:next-error-redaction"
+  ],
+  "expected": "Only requestId, operation and errorCode remain after redaction.",
+  "security": "No real backend or production runtime; enforce server policies and negative HTTP tests separately."
+}
