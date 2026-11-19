@@ -1,41 +1,42 @@
 # Full-Stack Academy — Current development handoff (2026-11-19)
 
-## Branch and source-truth status
+## Confirmed GitHub base and stacked PR order
 
-- `main` remains `651fb296`, through previously owner-approved PRs #17–#19. Those PRs did not receive a completed local Node/Next/Chromium qualification in this environment.
-- **Draft PR #20:** `feat/nextjs-16-complete-track-offline`, 32 Next.js 16 lessons (07.02–07.05), based on main.
-- **Draft PR #21:** `feat/ui-systems-track08-offline`, 32 UI Systems lessons (08.01–08.04) and live component gallery, stacked on PR #20.
-- **Current third stacked branch:** `feat/zod4-schema-design-and-live-lab`, based on PR #21 head `56da751`, adding 8 **genuinely Zod 4-powered** lessons and a live profile-validation exercise.
-- If all three source candidates are accepted, projected totals are **298 distinct published lesson IDs, 297 MDX lessons and 297 local lab manifests, 37 complete modules, 38 authored reference drafts of 303 indexed topics**; 591/889 canonical topics remain planned. Next `09.02.01`.
-- These are source counts, not a live-site or production quality claim. No Vercel or GitHub Actions was inspected.
+- `main`: `651fb296` following prior owner-approved merges #17–#19. Their full local test/build qualification was not executed in the connector-only environment.
+- Draft PR **#20**: `feat/nextjs-16-complete-track-offline`, Next.js 16 lessons 07.02–07.05, based on main.
+- Draft PR **#21**: `feat/ui-systems-track08-offline`, full Track 08 lessons and browser-only component gallery, stacked on #20.
+- Draft PR **#22**: `feat/zod4-schema-design-and-live-lab`, real Zod 4 lessons/labs and browser-only profile validation, stacked on #21.
+- **Current branch:** `feat/zustand5-state-boundaries-live`, based on PR #22 head `d3180b0`, adds the full **09.04 Zustand 5** module. Do not merge it before its predecessors without rebasing.
+- Proposed cumulative source snapshot: **306 unique published IDs, 305 MDX lessons, 305 lab manifests, 38 complete modules, 38 authored reference drafts of 303 indexed subjects**. Total catalog 889; **583 still planned**. `09.02.01` remains the first unauthored canonical lesson.
+- These are SOURCE counts, not published website metrics or executable quality evidence. No Vercel or GitHub Actions checks.
 
-## This Zod 4 development milestone
+## This milestone — 09.04 Zustand 5 (done at source level)
 
-- [x] `09.01.01–09.01.08`: strict schemas, primitives/enums, safeParse and nested issues, optional/nullable/defaults, refine/superRefine, transforms/coercion, discriminated unions, composition/inference, validated profile capstone
-- [x] Each lesson has three guided steps, real Zod implementation and actual Zod acceptance tests, red starter, rubric, misconception, quiz, official sources and local lab script
-- [x] Added shared, strict `src/lib/academy/zod-profile.ts` schema that is consumed by both the browser practice and instructor capstone
-- [x] Browser-only `/learn/zod-profile-lab` uses real Zod 4 parsing, field-specific ARIA validation errors and normalized preview with no storage/backend/network
-- [x] Added `zod:4` version contract, `lab.zod.*` validator support, publication registry, red starter gate, content integrity checks and local Chromium route/profile smoke contracts
-- [x] Completed the **Zod reference index category: 19 of 19** canonical entries now have authored drafts (18 new + existing safeParse); repository-wide total 38/303
-- [x] Corrected publication count overlap: `09.01.02` was previously interactive and adds no new unique published lesson ID
-- [x] Advanced noindex boundary to `09.02.01` (React Hook Form)
+- [x] `09.04.01–09.04.08`: local/URL/server state boundaries, selectors + subscribeWithSelector, persist partialize with a token exfiltration trap, derived state, multi-tab revision messages, URLSearchParams, avoiding duplicated remote caches, filters/preferences capstone
+- [x] Eight genuinely Zustand 5-powered vanilla stores with deliberately failing typed learner starters, instructor solutions and Node acceptance tests; no new dependencies because Zustand ^5 is already listed
+- [x] Corrected the intentionally broken starters to remain type-safe, avoiding false red gates caused by compile errors
+- [x] Per-mount `src/lib/academy/zustand-filters.ts` store factory with stable primitive selectors, typed actions and no remote records in global state
+- [x] Browser-only `/learn/state-boundaries-lab`: query, course/reference types, density options, reset, live results count, URL representation preview and code disclosure; no backend, localStorage or arbitrary-code execution
+- [x] Registered MDX/metadata, `zustand:5` stack version, `lab.zustand.*` schema support, eight npm lab commands, aggregate lab discovery, red-starter gate and browser route/gallery smoke
+- [x] Publication integrity tests and updated handoff. Noindex boundary **stays 09.02.01** because RHF and TanStack Query remain unauthored; intentional out-of-order work does not pretend they're finished
 
-## P0 acceptance — not executable here
+## P0 — Required executable qualification, still unexecuted
 
-- [ ] On exact stacked branch checkout using Node.js 24, run `npm ci && npm run verify:offline` (ESLint, TypeScript, content schema, source tests, 297 instructor labs, negative learners, Next build)
-- [ ] Run `npm run test:red-zod-foundations`; all 8 learner starters must fail genuine Zod assertions, not module load failures
-- [ ] Start local Next and isolated Chromium smoke in `scripts/browser-smoke.mjs`: published vs planned routes, form errors, normalized email/age, focus, 320px and reset
-- [ ] Confirm Zod 4.0+ locked dependency exposes the documented APIs; run package-lock integrity tests on Node 24
-- [ ] Reverify previously accepted dev-only Picomatch exception before expiry **2026-12-02 UTC**
-- [ ] Keep PR stacking disciplined: qualify/merge #20 first, then rebase/qualify #21, then rebase/qualify current Zod PR
+- [ ] Obtain a full local checkout with Node.js 24 and locked dependencies, then run `npm ci && npm run verify:offline` (lint, typecheck, source/content tests, 305 instructor labs, all red starter gates, Next production build)
+- [ ] Run `npm run test:red-zustand-state`: all eight intentionally broken learners must fail substantive store assertions, never missing imports or compiler errors
+- [ ] Local Next + isolated Chromium `scripts/browser-smoke.mjs`: eight authored Zustand routes, noindex at planned 09.02.01, gallery search/type/density/reset, 320px width, source code toggle
+- [ ] Verify Zustand 5 persist `createJSONStorage`/partialize in the actual locked dependency version; never store credentials in browser storage
+- [ ] Confirm React Strict Mode/hydration and verify stable selector output and store lifecycle in the live gallery, keyboard and screen-reader behavior, zoom and reduced-motion acceptance
+- [ ] Review historical dev-only Picomatch advisory exception before **2026-12-02 UTC**
+- [ ] Qualify and merge PRs in order (#20 → #21 → #22 → current Zustand PR), rebasing and repeating the full gate against each resulting head
 
-## Next strategic milestone
+## Next coherent major milestone (currently blocked by dependencies)
 
-- `09.02.01–09.02.08`: React Hook Form using `react-hook-form` and `@hookform/resolvers` with **new lockfile-pinned dependencies**. They are not installed in the current repo; do not claim real RHF Controller/useFieldArray tests until installed and run.
-- `09.03.01–09.03.08`: TanStack Query v5 requires `@tanstack/react-query` and matching hydration/SSR testing. Avoid faking actual QueryClient behavior with hand-rolled caching helpers.
-- `09.04.01–09.04.08`: Zustand v5 is already installed; actual vanilla stores can be tested when work reaches this module.
-- Expand other reference index-only categories and maintain calm reading-first mode separated from live practice and quick-reference mode
+- `09.02.01–09.02.08`: **React Hook Form**. Add real compatible `react-hook-form` and `@hookform/resolvers` to package.json and regenerate/test the lockfile; teach actual useForm, register, Controller, useFieldArray, Zod resolver, submit, focus and errors.
+- `09.03.01–09.03.08`: **TanStack Query v5**. Add and lock `@tanstack/react-query`; test actual QueryClient, key scope, mutations, rollback, infinite query, SSR and cancellation rather than fake cache models.
+- Keep `09.04` independently learnable but mark its position as an intentional dependency-aware delivery exception.
+- Continue the **38/303** searchable reference drafts toward comprehensive version-aware reference coverage.
 
-## Handoff
+## Handoff contract
 
-Read `docs/checkpoint.json`, `docs/ZOD4_SCHEMA_ACCEPTANCE.md`, `AGENTS.md` and `docs/NEXT_TODO.md`. Do not merge draft PRs merely because they are GitHub-mergeable; source inspection and an AI's confidence are not executable quality evidence.
+Read `docs/STATE_BOUNDARIES_ZUSTAND5_ACCEPTANCE.md`, `docs/checkpoint.json`, `AGENTS.md`, `docs/NEXT_TODO.md`. Do not conflate GitHub mergeability with a verified build, or a source-only exercise with proof of real browser/tenant security.
