@@ -22,7 +22,7 @@
           <label for="priority">Priority</label><select name="priority" id="priority" required><option value="normal">Normal</option><option value="low">Low</option><option value="high">High</option></select>
           <button id="save" type="submit" class="primary">Create task</button>
         </form>
-        <div class="status-wrap"><p id="form-status" role="status" aria-live="polite"></p><button type="button" id="retry" class="secondary hidden">Retry failed request</button></div>
+        <div class="status-wrap"><p id="form-status" role="status" aria-live="polite"></p><div class="retry-actions"><button type="button" id="retry" class="secondary hidden">Retry same request</button><button type="button" id="discard" class="secondary hidden">Discard uncertain attempt</button></div></div>
         <div class="note"><strong>Practice boundary</strong><p>Everything stays in process memory. This API has no user authentication, durable database or public-facing security controls.</p></div>
       </section>
       <section class="panel" aria-labelledby="tasks-title">
