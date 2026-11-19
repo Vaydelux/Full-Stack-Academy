@@ -1,3 +1,5 @@
+> **Current source snapshot (2026-11-19):** React PR #17 and #18 are merged to `main`, with local execution not yet verified. Feature branch `feat/react-testing-next-router-offline` adds React Testing/Performance 06.05 and Next.js App Router 07.01: proposed **228 source-published IDs, 225 MDX/labs and 28 complete modules**. The hosted site has not been checked; no Vercel or GitHub Actions checks performed. See [handoff](docs/NEXT_TODO.md) and [acceptance](docs/REACT_NEXT_ROUTER_ACCEPTANCE.md). Publishing is not a production-test claim.
+
 > **Source development checkpoint — 2026-11-19:** GitHub `main` contains 181 authored lesson IDs; draft PR #17 proposes 196 IDs; the stacked React Effects/Advanced candidate proposes **212 IDs / 209 MDX / 209 labs / 26 complete modules**. Neither PR is qualified as a hosted deployment. No Vercel or GitHub Actions checks are part of this offline development stage. [Current handoff](docs/NEXT_TODO.md) · [Advanced React acceptance](docs/REACT_EFFECTS_ADVANCED_ACCEPTANCE.md).
 
 # Full-Stack Engineering Academy · v1.1
