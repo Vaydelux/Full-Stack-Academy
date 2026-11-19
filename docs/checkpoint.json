@@ -9,11 +9,11 @@
     "productionUrl": "https://fullstack-academy-ecru.vercel.app/"
   },
   "development": {
-    "branch": "feat/ui-systems-track08-offline",
-    "lastMergedPr": 19,
-    "basePullRequest": 20,
-    "state": "ui-track-08-source-candidate-unverified",
-    "note": "Track 08 stacked on unmerged PR20; 32 new unique published MDX lessons plus eight CSS drafts and browser-only interactive gallery; executable verification pending."
+    "branch": "feat/zod4-schema-design-and-live-lab",
+    "basePullRequest": 21,
+    "baseBranch": "feat/ui-systems-track08-offline",
+    "state": "zod4-schema-design-source-candidate-unverified",
+    "note": "09.01.02 preexists as interactive model; 8 new MDX files contribute only 7 unique published IDs."
   },
   "snapshot": {
     "tracks": 28,
@@ -22,9 +22,9 @@
     "indexedReferences": 303,
     "authoredReferenceDrafts": 20,
     "authoredInteractiveModels": 4,
-    "authoredMdxLessons": 289,
-    "publishedLessons": 291,
-    "labFixtures": 289,
+    "authoredMdxLessons": 297,
+    "publishedLessons": 298,
+    "labFixtures": 297,
     "completeModules": [
       "00.01",
       "00.02",
@@ -61,7 +61,8 @@
       "08.01",
       "08.02",
       "08.03",
-      "08.04"
+      "08.04",
+      "09.01"
     ]
   },
   "security": {
@@ -69,6 +70,6 @@
     "devHighFindings": 14,
     "exceptionExpires": "2026-12-02"
   },
-  "nextMilestone": "09.01",
-  "status": "unreleased-stacked-ui-track-08"
+  "nextMilestone": "09.02",
+  "status": "unreleased-stacked-zod4-schema-track"
 }
