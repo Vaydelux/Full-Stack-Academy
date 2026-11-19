@@ -17,6 +17,16 @@ try{
  assert.equal(wrongType.status,415);
  const bad=await fetch(base+'/api/tasks',{method:'POST',headers:{'idempotency-key':'k2','content-type':'application/json'},body:JSON.stringify({title:'x',status:'open'})});
  assert.equal(bad.status,422);
+ const invalidLimit=await fetch(base+'/api/tasks?limit=100');
+ assert.equal(invalidLimit.status,400);
+ const missingKey=await fetch(base+'/api/tasks',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({title:'Allowed',status:'open'})});
+ assert.equal(missingKey.status,400);
+ const malformed=await fetch(base+'/api/tasks',{method:'POST',headers:{'content-type':'application/json','idempotency-key':'bad-json'},body:'{'});
+ assert.equal(malformed.status,400);
+ const extraField=await fetch(base+'/api/tasks',{method:'POST',headers:{'content-type':'application/json','idempotency-key':'extra-key'},body:JSON.stringify({title:'Allowed',status:'open',role:'admin'})});
+ assert.equal(extraField.status,422);
+ const tooBig=await fetch(base+'/api/tasks',{method:'POST',headers:{'content-type':'application/json','idempotency-key':'large'},body:JSON.stringify({title:'x'.repeat(5000),status:'open'})});
+ assert.equal(tooBig.status,413);
  const opts={method:'POST',headers:{'idempotency-key':'task-one','content-type':'application/json'},body:JSON.stringify({title:'Learn HTTP',status:'open'})};
  const created=await fetch(base+'/api/tasks',opts);assert.equal(created.status,201);
  const first=await created.json();assert.equal(first.title,'Learn HTTP');
