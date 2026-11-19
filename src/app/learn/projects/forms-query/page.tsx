@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { CodeBlock, DocNotice, DocShell } from '@/components/course/DocShell';
+import { lessons } from '@/lib/academy/curriculum';
 
 export const metadata: Metadata = {
   title: 'Reliable Task Workflow Project | Full-Stack Academy',
@@ -9,6 +10,13 @@ export const metadata: Metadata = {
 };
 
 const repository = 'https://github.com/Vaydelux/Full-Stack-Academy/blob/main/examples/forms-query-vertical';
+const stagedModuleRoadmap = [
+  { id: '09.02', title: 'React Hook Form', goal: 'Form ownership, validation and reliable asynchronous submission' },
+  { id: '09.03', title: 'TanStack Query', goal: 'Server cache identity, mutations, cancellation and concurrency' },
+].map(module => ({
+  ...module,
+  topics: lessons.filter(topic => topic.moduleId === module.id).sort((a, b) => a.id.localeCompare(b.id)),
+}));
 const steps = [
   { title: 'Validate and submit', copy: 'Client constraints make errors helpful, while strict server validation rejects untrusted inputs. Use a fresh idempotency key for a new task.', output: 'POST /api/tasks → 201 Created, or 422 Invalid task' },
   { title: 'Fetch and filter', copy: 'Read the current server list with a bounded page size and an optional status filter. Each list revision has its own pagination cursors.', output: 'GET /api/tasks?status=todo → 200 TaskPage' },
@@ -60,6 +68,37 @@ export default function FormsQueryProjectPage() {
         <h2 id="test-project" className="text-xl font-bold">3. Verify the HTTP contracts locally</h2>
         <CodeBlock file="Terminal · repository root" code={'node --test tests/forms-query-http.test.mjs\nnode --test tests/forms-query-workflow.test.mjs\nnode --test tests/forms-query-contract.test.mjs'} />
         <p className="text-sm leading-7 text-slate-600 dark:text-slate-300">The workflow suite covers stale revision rejection, invalid input, list cursor/filter isolation and spoofed Host rejection. The OpenAPI suite checks the documented request/response shape. A successful test run is separate from React browser acceptance.</p>
+      </section>
+      <section aria-labelledby="staged-roadmap" className="mt-10 border-t border-slate-200 pt-8 dark:border-white/10">
+        <p className="text-xs font-extrabold uppercase tracking-[.16em] text-cyan-700 dark:text-cyan-300">Curriculum preparation</p>
+        <h2 id="staged-roadmap" className="mt-2 text-xl font-bold">16-topic implementation roadmap</h2>
+        <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-600 dark:text-slate-300">
+          Each topic below has a separate guided MDX draft, a deliberately broken starter, an instructor implementation, and a lab acceptance contract in GitHub. The topics remain planned, not published or automatically graded, until their real packages and browser tests pass.
+        </p>
+        <div className="mt-5 grid gap-4 lg:grid-cols-2">
+          {stagedModuleRoadmap.map(module => (
+            <section key={module.id} aria-labelledby={'staged-' + module.id} className="min-w-0 rounded-2xl border border-slate-200 bg-white p-5 dark:border-white/10 dark:bg-white/[0.03]">
+              <p className="font-mono text-xs text-cyan-700 dark:text-cyan-300">{module.id} · {module.topics.length} topics</p>
+              <h3 id={'staged-' + module.id} className="mt-2 text-lg font-bold">{module.title}</h3>
+              <p className="mt-1 text-xs leading-6 text-slate-500">{module.goal}</p>
+              <ol className="mt-4 divide-y divide-slate-200 dark:divide-white/10">
+                {module.topics.map(topic => (
+                  <li key={topic.id} className="flex items-start justify-between gap-3 py-3">
+                    <div className="min-w-0">
+                      <span className="block font-mono text-[11px] text-slate-500">{topic.id}</span>
+                      <a href={'https://github.com/Vaydelux/Full-Stack-Academy/blob/main/drafts/forms-query/lessons/' + topic.id + '.mdx'}
+                        target="_blank" rel="noopener noreferrer"
+                        className="mt-1 block text-sm font-semibold text-cyan-700 underline-offset-2 hover:underline focus-visible:outline-2 focus-visible:outline-cyan-500 dark:text-cyan-300">
+                        {topic.title}
+                      </a>
+                    </div>
+                    <span className="shrink-0 rounded-full border border-slate-200 px-2 py-1 text-[10px] font-semibold text-slate-600 dark:border-white/20 dark:text-slate-300">Staged</span>
+                  </li>
+                ))}
+              </ol>
+            </section>
+          ))}
+        </div>
       </section>
       <section aria-labelledby="resources" className="mt-10 border-t border-slate-200 pt-7 dark:border-white/10">
         <h2 id="resources" className="text-xl font-bold">Source, exercises and references</h2>
