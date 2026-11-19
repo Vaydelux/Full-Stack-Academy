@@ -1,0 +1,39 @@
+{
+  "id": "09.01.01",
+  "title": "Objects, primitives, enums and literals: Use a Zod 4 strict object with bounded strings, enum values and explicit booleans to reject unexpected keys and impossible roles.",
+  "description": "Zod 4 schema design with actual runtime parsing, negative test cases, a deliberately broken learner implementation, instructor solution and security boundaries.",
+  "trackId": "09",
+  "moduleId": "09.01",
+  "level": "Intermediate",
+  "estimatedMinutes": 65,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "typescript": "5",
+    "zod": "4"
+  },
+  "prerequisites": [
+    "08.04.08"
+  ],
+  "objectives": [
+    "Use a Zod 4 strict object with bounded strings, enum values and explicit booleans to reject unexpected keys and impossible roles.",
+    "Repair the failing zod-object-primitives schema and verify rejection behavior.",
+    "Explain the difference between runtime parsing and authorization."
+  ],
+  "labId": "lab.zod.zod-object-primitives",
+  "rubric": [
+    "I can explain Zod 4 runtime validation for objects, primitives, enums and literals.",
+    "I can fix the failing 09.01.01 starter with a real schema.",
+    "I can demonstrate valid and invalid input without claiming backend authorization."
+  ],
+  "sources": [
+    {
+      "label": "Zod 4 core documentation",
+      "url": "https://zod.dev/api"
+    },
+    {
+      "label": "Additional Zod 4 reference",
+      "url": "https://zod.dev/basics"
+    }
+  ]
+}

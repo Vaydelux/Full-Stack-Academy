@@ -1,0 +1,99 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Distinguish optional (undefined), nullable (null), and default (missing input); deliberately choose output types and default semantics in Zod 4.","Reproduce and repair the broken optional, nullable and defaults schema with real Zod 4.","Distinguish unknown input, validated output and authorization or persistence concerns."]} />
+
+## The problem we're solving
+
+An optional biography can be null in API data and a missing notification preference should default to false; confusing null with undefined causes validation failures.
+
+**Broken behavior:** The starter treats a nullable biography as nonnullable and fails to produce default values.
+
+## Build the mental model
+
+Distinguish optional (undefined), nullable (null), and default (missing input); deliberately choose output types and default semantics in Zod 4.
+
+**Predict before coding:** Null biography parses, missing opt-in defaults to false, and locale defaults to en.
+
+**Important boundary:** TypeScript types are erased at runtime. These exercises import Zod 4 from the repository's locked dependencies and run actual `safeParse` or `parse` assertions, not simulated validation. Runtime validation does not authenticate a caller, authorize object access, or persist data.
+
+## Prerequisites and preflight
+
+Read the preceding schema lesson and use the locked Node.js 24 dependencies. Open `labs/zod-optional-defaults/starter/solution.ts`. Run `ACADEMY_LAB_TARGET=starter npm run lab:zod-optional-defaults` in Bash or `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:zod-optional-defaults; Remove-Item Env:ACADEMY_LAB_TARGET` in PowerShell. The deliberately broken starter should fail the same assertions as the corrected solution.
+
+## Guided implementation
+
+<LessonStep number={1} title="Demonstrate the broken input boundary" file="labs/zod-optional-defaults/starter/solution.ts" expected="The starter accepts an invalid value or omits an expected transformation.">
+
+```ts
+import * as z from 'zod';
+export const Prefs=z.strictObject({bio:z.string().optional(),optIn:z.boolean().optional(),locale:z.string().optional()});
+```
+
+**Why this matters:** The starter treats a nullable biography as nonnullable and fails to produce default values.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the Zod 4 schema and typed output" file="labs/zod-optional-defaults/starter/solution.ts" expected="Null biography parses, missing opt-in defaults to false, and locale defaults to en.">
+
+```ts
+import * as z from 'zod';
+export const Prefs=z.strictObject({
+ bio:z.string().nullable().optional(),
+ optIn:z.boolean().default(false),
+ locale:z.enum(['en','fil']).default('en'),
+});
+```
+
+**Why this works:** Distinguish optional (undefined), nullable (null), and default (missing input); deliberately choose output types and default semantics in Zod 4.
+
+</LessonStep>
+
+<LessonStep number={3} title="Assert valid, invalid and boundary behavior" file="labs/zod-optional-defaults/solution.test.mjs" expected="Real Zod 4 test assertions pass for the instructor and fail on the broken starter.">
+
+```js
+assert.deepEqual(mod.Prefs.parse({bio:null}),{bio:null,optIn:false,locale:'en'});
+assert.deepEqual(mod.Prefs.parse({}),{optIn:false,locale:'en'});
+assert.equal(mod.Prefs.safeParse({locale:'xx'}).success,false);
+```
+
+**Representative application usage:**
+
+```ts
+import * as z from 'zod';
+const Preferences=z.strictObject({
+ bio:z.string().nullable().optional(),
+ theme:z.enum(['light','dark']).default('light'),
+});
+// Optional means absent or undefined; nullable means null is valid.
+// In Zod 4, default short-circuits when input is undefined.
+// Use prefault() for pre-parse default behavior when appropriate.
+```
+
+**Security and operations:** Never log raw rejected payloads, secrets or personal data. Validate again at server boundaries; a browser schema is for usability, not authorization.
+
+</LessonStep>
+
+<Misconception claim="The starter treats a nullable biography as nonnullable and fails to produce default values." correction="Distinguish optional (undefined), nullable (null), and default (missing input); deliberately choose output types and default semantics in Zod 4. Only successful schema parsing changes unknown values into validated output; it does not grant permissions." />
+
+<KnowledgeCheck question="Which Zod 4 rule is central to optional, nullable and defaults?" choices={["TypeScript generics replace runtime parsing of unknown JSON.","Distinguish optional (undefined), nullable (null), and default (missing input); deliberately choose output types and default semantics in Zod 4.","safeParse guarantees database transaction success.","A validated user identifier authorizes any organization-specific record."] } correctIndex={1} explanation="Distinguish optional (undefined), nullable (null), and default (missing input); deliberately choose output types and default semantics in Zod 4." misconception="Use actual runtime schema parsing at trust boundaries, then independently authorize server operations." lessonId="09.01.03" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Reproduce:** The starter treats a nullable biography as nonnullable and fails to produce default values. **Diagnose:** compare invalid input with the schema's allowed runtime values. **Repair:** Distinguish optional (undefined), nullable (null), and default (missing input); deliberately choose output types and default semantics in Zod 4. **Regression:** Null biography parses, missing opt-in defaults to false, and locale defaults to en. Preserve the failing test and use the resulting validated output rather than asserting a cast.
+
+## Guided local lab
+
+`labs/zod-optional-defaults/` includes a red learner starter, complete instructor implementation, actual Zod 4 acceptance tests and completion rubric. No public user-code evaluation service is used.
+
+<LabGate lessonId="09.01.03" labId="lab.zod.zod-optional-defaults" commands={["npm run lab:zod-optional-defaults","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+Which constraints belong in Zod, which belong in database consistency rules, and which require authentication or per-object authorization?
+
+## Official references
+
+- [Zod 4 official schema documentation](https://zod.dev/api)
+- [Zod 4 additional guidance](https://zod.dev/v4/changelog)
+

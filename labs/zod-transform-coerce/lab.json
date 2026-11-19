@@ -1,0 +1,15 @@
+{
+  "id": "lab.zod.zod-transform-coerce",
+  "lessonId": "09.01.05",
+  "title": "Zod 4 transform and coercion lab",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/zod-transform-coerce/starter/solution.ts",
+  "solution": "labs/zod-transform-coerce/solution/solution.ts",
+  "tests": "labs/zod-transform-coerce/solution.test.mjs",
+  "verify": [
+    "npm run lab:zod-transform-coerce"
+  ],
+  "expected": "Parse age '21' to number 21, lowercase email, reject invalid or underage inputs.",
+  "security": "Real Zod 4 local parsing tests; no network, auth or database and no remote code execution."
+}

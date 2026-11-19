@@ -1,0 +1,39 @@
+{
+  "id": "09.01.06",
+  "title": "Discriminated unions: Use z.discriminatedUnion on a literal channel and define strict, branch-specific fields with validated values.",
+  "description": "Zod 4 schema design with actual runtime parsing, negative test cases, a deliberately broken learner implementation, instructor solution and security boundaries.",
+  "trackId": "09",
+  "moduleId": "09.01",
+  "level": "Intermediate",
+  "estimatedMinutes": 65,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "typescript": "5",
+    "zod": "4"
+  },
+  "prerequisites": [
+    "09.01.05"
+  ],
+  "objectives": [
+    "Use z.discriminatedUnion on a literal channel and define strict, branch-specific fields with validated values.",
+    "Repair the failing zod-discriminated-requests schema and verify rejection behavior.",
+    "Explain the difference between runtime parsing and authorization."
+  ],
+  "labId": "lab.zod.zod-discriminated-requests",
+  "rubric": [
+    "I can explain Zod 4 runtime validation for discriminated unions.",
+    "I can fix the failing 09.01.06 starter with a real schema.",
+    "I can demonstrate valid and invalid input without claiming backend authorization."
+  ],
+  "sources": [
+    {
+      "label": "Zod 4 core documentation",
+      "url": "https://zod.dev/api"
+    },
+    {
+      "label": "Additional Zod 4 reference",
+      "url": "https://zod.dev/v4"
+    }
+  ]
+}

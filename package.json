@@ -9,7 +9,7 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "validate": "python validate_package.py",
-    "test": "node --test tests/academy.test.mjs tests/hardening.test.mjs tests/course-routes.test.mjs tests/content.test.mjs tests/react-modules.test.mjs tests/react-interaction-source.test.mjs tests/react-effects-advanced.test.mjs tests/react-reference-library.test.mjs tests/offline-verification.test.mjs tests/react-next-milestone.test.mjs tests/next-full-track.test.mjs tests/ui-track.test.mjs",
+    "test": "node --test tests/academy.test.mjs tests/hardening.test.mjs tests/course-routes.test.mjs tests/content.test.mjs tests/react-modules.test.mjs tests/react-interaction-source.test.mjs tests/react-effects-advanced.test.mjs tests/react-reference-library.test.mjs tests/offline-verification.test.mjs tests/react-next-milestone.test.mjs tests/next-full-track.test.mjs tests/ui-track.test.mjs tests/zod-foundations.test.mjs",
     "test:labs": "node scripts/run-local-labs.mjs",
     "verify:content": "node scripts/validate-content.mjs",
     "lab:browser-server": "node --test labs/browser-server/solution.test.mjs",
@@ -311,7 +311,16 @@
     "lab:ui-browser-coverage": "tsx --test labs/ui-browser-coverage/solution.test.mjs",
     "lab:ui-cls-reserved-space": "tsx --test labs/ui-cls-reserved-space/solution.test.mjs",
     "lab:ui-ux-audit-capstone": "tsx --test labs/ui-ux-audit-capstone/solution.test.mjs",
-    "test:red-ui-track": "node --test tests/ui-track-red-starters.test.mjs"
+    "test:red-ui-track": "node --test tests/ui-track-red-starters.test.mjs",
+    "lab:zod-object-primitives": "tsx --test labs/zod-object-primitives/solution.test.mjs",
+    "lab:zod-safeparse-issues": "tsx --test labs/zod-safeparse-issues/solution.test.mjs",
+    "lab:zod-optional-defaults": "tsx --test labs/zod-optional-defaults/solution.test.mjs",
+    "lab:zod-cross-field-refine": "tsx --test labs/zod-cross-field-refine/solution.test.mjs",
+    "lab:zod-transform-coerce": "tsx --test labs/zod-transform-coerce/solution.test.mjs",
+    "lab:zod-discriminated-requests": "tsx --test labs/zod-discriminated-requests/solution.test.mjs",
+    "lab:zod-composition-types": "tsx --test labs/zod-composition-types/solution.test.mjs",
+    "lab:zod-profile-form": "tsx --test labs/zod-profile-form/solution.test.mjs",
+    "test:red-zod-foundations": "node --test tests/zod-foundations-red-starters.test.mjs"
   },
   "dependencies": {
     "clsx": "^2.1.1",

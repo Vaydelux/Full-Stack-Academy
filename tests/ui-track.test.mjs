@@ -39,7 +39,7 @@ test('full UI course snapshot and planned Zod noindex boundary stay aligned',()=
  assert.equal(cp.snapshot.completeModules.length,36);
  assert.match(read('scripts/validate-content.mjs'),/react\|foundation\|next\|ui/);
  for(const path of ['scripts/browser-smoke.mjs','scripts/next-full-track-smoke.mjs','scripts/ui-track-smoke.mjs']){
-  assert.ok(read(path).includes('09.01.01'),path);
+  assert.ok(read(path).includes('09.02.01'),path);
  }
 });
 test('UI Gallery is a real local interactive React client component and an accessible lesson link',()=>{
@@ -72,7 +72,7 @@ test('eight CSS quick references correspond to canonical index entries',()=>{
   assert.ok(section.includes('"id": "'+id+'"'),id+' no authored draft');
  }
  const cp=JSON.parse(read('docs/checkpoint.json'));
- assert.equal(cp.snapshot.authoredReferenceDrafts,20);
+ assert.equal(cp.snapshot.authoredReferenceDrafts,38);
 });
 
 test('manifest-based local lab runner avoids Windows command-line limits and checks file scope',()=>{

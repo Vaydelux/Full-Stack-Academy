@@ -1,0 +1,15 @@
+{
+  "id": "lab.zod.zod-safeparse-issues",
+  "lessonId": "09.01.02",
+  "title": "Zod 4 safeparse and error paths lab",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/zod-safeparse-issues/starter/solution.ts",
+  "solution": "labs/zod-safeparse-issues/solution/solution.ts",
+  "tests": "labs/zod-safeparse-issues/solution.test.mjs",
+  "verify": [
+    "npm run lab:zod-safeparse-issues"
+  ],
+  "expected": "Return ok=false and issue paths for invalid email or age; never throw for normal validation failures.",
+  "security": "Real Zod 4 local parsing tests; no network, auth or database and no remote code execution."
+}

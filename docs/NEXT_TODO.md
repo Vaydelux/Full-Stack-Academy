@@ -1,43 +1,41 @@
 # Full-Stack Academy — Current development handoff (2026-11-19)
 
-## Branch and verification truth
+## Branch and source-truth status
 
-- GitHub `main` is at `651fb296` with previous owner-approved merges #17–#19. Their local test/build qualification was not completed in these GitHub-connector-only sessions.
-- **PR #20** (draft): `feat/nextjs-16-complete-track-offline`, adds 32 Next.js lessons 07.02–07.05.
-- **Current stacked branch:** `feat/ui-systems-track08-offline` based on PR #20 at `9f41fb2`. It adds 32 UI Systems lessons 08.01–08.04; merge PR #20 first or rebase before integrating this branch.
-- Candidate source counts after both PRs: **291 unique published IDs, 289 MDX lessons and local labs, 36 complete modules**, 20 authored reference drafts of 303 indexed subjects. Canonical catalog 889 IDs; 598 remain planned if both source candidates qualify and merge.
-- These are **GitHub source counts, not production/hosted metrics**. No Vercel or GitHub Actions was inspected or relied upon.
+- `main` remains `651fb296`, through previously owner-approved PRs #17–#19. Those PRs did not receive a completed local Node/Next/Chromium qualification in this environment.
+- **Draft PR #20:** `feat/nextjs-16-complete-track-offline`, 32 Next.js 16 lessons (07.02–07.05), based on main.
+- **Draft PR #21:** `feat/ui-systems-track08-offline`, 32 UI Systems lessons (08.01–08.04) and live component gallery, stacked on PR #20.
+- **Current third stacked branch:** `feat/zod4-schema-design-and-live-lab`, based on PR #21 head `56da751`, adding 8 **genuinely Zod 4-powered** lessons and a live profile-validation exercise.
+- If all three source candidates are accepted, projected totals are **298 distinct published lesson IDs, 297 MDX lessons and 297 local lab manifests, 37 complete modules, 38 authored reference drafts of 303 indexed topics**; 591/889 canonical topics remain planned. Next `09.02.01`.
+- These are source counts, not a live-site or production quality claim. No Vercel or GitHub Actions was inspected.
 
-## Done at source level in Track 08
+## This Zod 4 development milestone
 
-- [x] `08.01.01–08.01.08`: Tailwind v4, CSS-first tokens, Radix primitives, shadcn Base UI/Radix adapters, typed variants, theme contrast, navigation, component gallery
-- [x] `08.02.01–08.02.08`: reduced motion, dialog, combobox/listbox, focus, status announcements, keyboard-reorder drag/drop, chart summaries, inaccessible dropdown debugging
-- [x] `08.03.01–08.03.08`: TanStack Table v8 columns, coherent sort/filter/pagination, virtualization, responsive data presentation, loading/error, optimistic changes, safe CSV exports, operational console
-- [x] `08.04.01–08.04.08`: hierarchy, typography/color, accessible form errors, usability heuristics, reduced motion, browser matrix, CLS and annotated UX review
-- [x] All 32 lessons have strict metadata, sources, three guided steps, quizzes, misconceptions, bug hunts, rubrics, red starters, instructor solutions, Node local tests and lab manifests
-- [x] Registered route/metadata and all lab scripts; added source-integrity, red-starter and Chromium smoke contracts
-- [x] Browser-only interactive gallery `/learn/ui-gallery`, linked from `08.01.08`: theme, width, variants, form, announcements, code samples; no server-side arbitrary code execution
-- [x] Eight new authored CSS/accessibility reference drafts: `var()`, `@media`, `@container`, `@layer`, `:focus-visible`, reduced motion, `color-scheme`, `clamp()`
-- [x] Updated planned/noindex boundary to `09.01.01` (first unauthored Zod topic)
-- [x] Replace Windows-fragile 11,688-character aggregate lab command with a manifest-driven, fail-fast local runner (batches of 20; source-authored, not executed)
-- [x] Checkpoint and developer acceptance handoff
+- [x] `09.01.01–09.01.08`: strict schemas, primitives/enums, safeParse and nested issues, optional/nullable/defaults, refine/superRefine, transforms/coercion, discriminated unions, composition/inference, validated profile capstone
+- [x] Each lesson has three guided steps, real Zod implementation and actual Zod acceptance tests, red starter, rubric, misconception, quiz, official sources and local lab script
+- [x] Added shared, strict `src/lib/academy/zod-profile.ts` schema that is consumed by both the browser practice and instructor capstone
+- [x] Browser-only `/learn/zod-profile-lab` uses real Zod 4 parsing, field-specific ARIA validation errors and normalized preview with no storage/backend/network
+- [x] Added `zod:4` version contract, `lab.zod.*` validator support, publication registry, red starter gate, content integrity checks and local Chromium route/profile smoke contracts
+- [x] Completed the **Zod reference index category: 19 of 19** canonical entries now have authored drafts (18 new + existing safeParse); repository-wide total 38/303
+- [x] Corrected publication count overlap: `09.01.02` was previously interactive and adds no new unique published lesson ID
+- [x] Advanced noindex boundary to `09.02.01` (React Hook Form)
 
-## P0 — Critical acceptance still unexecuted
+## P0 acceptance — not executable here
 
-- [ ] On a complete local clone with Node.js 24, run `npm ci && npm run verify:offline` and repair every failing lint, TS, repo test, content schema, checkpoint, lab or Next build step
-- [ ] Run `npm run test:red-ui-track` to confirm all 32 red starters fail meaningful assertions and their instructor solutions pass
-- [ ] Run isolated local Next + Chromium `scripts/browser-smoke.mjs`: 32 routes, sitemap/indexability, gallery theme/form/feedback/source interactions, 320px overflow
-- [ ] Manual WCAG 2.2 checks: keyboard focus and focus return, screen readers, touch, motion preference, contrast, zoom and responsive visual QA; automated source tests cannot establish these
-- [ ] Verify compiled CSS-first Tailwind v4, actual Radix/Base UI behavior and TanStack Table using separately locked dependencies before claiming their integrations work
-- [ ] Review known dev-only Picomatch 14-high advisory scope and expiry **2026-12-02 UTC**
-- [ ] Qualify PR #20 before merging PR #21; no production-ready claim until local evidence is recorded
+- [ ] On exact stacked branch checkout using Node.js 24, run `npm ci && npm run verify:offline` (ESLint, TypeScript, content schema, source tests, 297 instructor labs, negative learners, Next build)
+- [ ] Run `npm run test:red-zod-foundations`; all 8 learner starters must fail genuine Zod assertions, not module load failures
+- [ ] Start local Next and isolated Chromium smoke in `scripts/browser-smoke.mjs`: published vs planned routes, form errors, normalized email/age, focus, 320px and reset
+- [ ] Confirm Zod 4.0+ locked dependency exposes the documented APIs; run package-lock integrity tests on Node 24
+- [ ] Reverify previously accepted dev-only Picomatch exception before expiry **2026-12-02 UTC**
+- [ ] Keep PR stacking disciplined: qualify/merge #20 first, then rebase/qualify #21, then rebase/qualify current Zod PR
 
-## Next coherent milestone
+## Next strategic milestone
 
-- Track 09: Zod 4 and runtime validation, beginning at `09.01.01`
-- Grow the remaining 283 index-only quick references into practical version-aware reference pages
-- Keep the product reading-first: guided lesson, browser-only practice and searchable reference are distinct modes
+- `09.02.01–09.02.08`: React Hook Form using `react-hook-form` and `@hookform/resolvers` with **new lockfile-pinned dependencies**. They are not installed in the current repo; do not claim real RHF Controller/useFieldArray tests until installed and run.
+- `09.03.01–09.03.08`: TanStack Query v5 requires `@tanstack/react-query` and matching hydration/SSR testing. Avoid faking actual QueryClient behavior with hand-rolled caching helpers.
+- `09.04.01–09.04.08`: Zustand v5 is already installed; actual vanilla stores can be tested when work reaches this module.
+- Expand other reference index-only categories and maintain calm reading-first mode separated from live practice and quick-reference mode
 
-## Successor contract
+## Handoff
 
-Start with `AGENTS.md`, `docs/checkpoint.json`, `docs/UI_SYSTEMS_TRACK08_ACCEPTANCE.md`, and `docs/NEXTJS_16_FULL_TRACK_ACCEPTANCE.md`. Any further source count must be calculated from actual files and unique published IDs, not simple arithmetic.
+Read `docs/checkpoint.json`, `docs/ZOD4_SCHEMA_ACCEPTANCE.md`, `AGENTS.md` and `docs/NEXT_TODO.md`. Do not merge draft PRs merely because they are GitHub-mergeable; source inspection and an AI's confidence are not executable quality evidence.

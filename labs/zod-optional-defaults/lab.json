@@ -1,0 +1,15 @@
+{
+  "id": "lab.zod.zod-optional-defaults",
+  "lessonId": "09.01.03",
+  "title": "Zod 4 optional, nullable and defaults lab",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/zod-optional-defaults/starter/solution.ts",
+  "solution": "labs/zod-optional-defaults/solution/solution.ts",
+  "tests": "labs/zod-optional-defaults/solution.test.mjs",
+  "verify": [
+    "npm run lab:zod-optional-defaults"
+  ],
+  "expected": "Null biography parses, missing opt-in defaults to false, and locale defaults to en.",
+  "security": "Real Zod 4 local parsing tests; no network, auth or database and no remote code execution."
+}

@@ -1,0 +1,102 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Share one strict Zod 4 schema between browser practice and local acceptance tests; validate unknown input and expose only normalized, approved fields.","Reproduce and repair the broken lab validated profile form schema with real Zod 4.","Distinguish unknown input, validated output and authorization or persistence concerns."]} />
+
+## The problem we're solving
+
+A public profile form collects a display name, email, age, communication preference and required consent. Unknown fields and invalid values must be rejected, not sent to a remote API.
+
+**Broken behavior:** The starter returns success for untrusted input and does not normalize or reject any fields.
+
+## Build the mental model
+
+Share one strict Zod 4 schema between browser practice and local acceptance tests; validate unknown input and expose only normalized, approved fields.
+
+**Predict before coding:** Normalize valid input, reject underage, bad email, missing consent and unexpected keys.
+
+**Important boundary:** TypeScript types are erased at runtime. These exercises import Zod 4 from the repository's locked dependencies and run actual `safeParse` or `parse` assertions, not simulated validation. Runtime validation does not authenticate a caller, authorize object access, or persist data.
+
+## Prerequisites and preflight
+
+Read the preceding schema lesson and use the locked Node.js 24 dependencies. Open `labs/zod-profile-form/starter/solution.ts`. Run `ACADEMY_LAB_TARGET=starter npm run lab:zod-profile-form` in Bash or `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:zod-profile-form; Remove-Item Env:ACADEMY_LAB_TARGET` in PowerShell. The deliberately broken starter should fail the same assertions as the corrected solution.
+
+## Guided implementation
+
+<LessonStep number={1} title="Demonstrate the broken input boundary" file="labs/zod-profile-form/starter/solution.ts" expected="The starter accepts an invalid value or omits an expected transformation.">
+
+```ts
+export function validateProfile(input:unknown){return {success:true,data:input};}
+```
+
+**Why this matters:** The starter returns success for untrusted input and does not normalize or reject any fields.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the Zod 4 schema and typed output" file="labs/zod-profile-form/starter/solution.ts" expected="Normalize valid input, reject underage, bad email, missing consent and unexpected keys.">
+
+```ts
+export { validateProfile } from '../../../src/lib/academy/zod-profile';
+```
+
+**Why this works:** Share one strict Zod 4 schema between browser practice and local acceptance tests; validate unknown input and expose only normalized, approved fields.
+
+</LessonStep>
+
+<LessonStep number={3} title="Assert valid, invalid and boundary behavior" file="labs/zod-profile-form/solution.test.mjs" expected="Real Zod 4 test assertions pass for the instructor and fail on the broken starter.">
+
+```js
+const good=mod.validateProfile({displayName:' Ava ',email:'AVA@EXAMPLE.COM',age:'21',contact:'email',agreed:true});
+assert.equal(good.success,true);
+if(!good.success)throw new Error('Expected valid profile');
+assert.deepEqual(good.data,{displayName:'Ava',email:'ava@example.com',age:21,contact:'email',agreed:true});
+assert.equal(mod.validateProfile({displayName:'Ava',email:'ava@example.com',age:'17',agreed:true}).success,false);
+assert.equal(mod.validateProfile({displayName:'Ava',email:'ava@example.com',age:'21',agreed:false}).success,false);
+assert.equal(mod.validateProfile({displayName:'Ava',email:'ava@example.com',age:'21',agreed:true,role:'admin'}).success,false);
+```
+
+**Representative application usage:**
+
+```ts
+import {ProfileSchema} from '@/lib/academy/zod-profile';
+const incoming:unknown={displayName:' Ava ',email:'AVA@EXAMPLE.COM',age:'21',agreed:true};
+const result=ProfileSchema.safeParse(incoming);
+if(result.success){
+  console.log(result.data); // normalized, bounded and allowlisted DTO
+} else {
+  // z.flattenError(result.error).fieldErrors for accessible form feedback
+}
+// This lab uses the exact same schema as the browser-only gallery, not a mock.
+```
+
+**Security and operations:** Never log raw rejected payloads, secrets or personal data. Validate again at server boundaries; a browser schema is for usability, not authorization.
+
+</LessonStep>
+
+<Misconception claim="The starter returns success for untrusted input and does not normalize or reject any fields." correction="Share one strict Zod 4 schema between browser practice and local acceptance tests; validate unknown input and expose only normalized, approved fields. Only successful schema parsing changes unknown values into validated output; it does not grant permissions." />
+
+<KnowledgeCheck question="Which Zod 4 rule is central to lab validated profile form?" choices={["TypeScript generics replace runtime parsing of unknown JSON.","Share one strict Zod 4 schema between browser practice and local acceptance tests; validate unknown input and expose only normalized, approved fields.","safeParse guarantees database transaction success.","A validated user identifier authorizes any organization-specific record."] } correctIndex={1} explanation="Share one strict Zod 4 schema between browser practice and local acceptance tests; validate unknown input and expose only normalized, approved fields." misconception="Use actual runtime schema parsing at trust boundaries, then independently authorize server operations." lessonId="09.01.08" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Reproduce:** The starter returns success for untrusted input and does not normalize or reject any fields. **Diagnose:** compare invalid input with the schema's allowed runtime values. **Repair:** Share one strict Zod 4 schema between browser practice and local acceptance tests; validate unknown input and expose only normalized, approved fields. **Regression:** Normalize valid input, reject underage, bad email, missing consent and unexpected keys. Preserve the failing test and use the resulting validated output rather than asserting a cast.
+
+## Guided local lab
+
+`labs/zod-profile-form/` includes a red learner starter, complete instructor implementation, actual Zod 4 acceptance tests and completion rubric. No public user-code evaluation service is used.
+
+<LabGate lessonId="09.01.08" labId="lab.zod.zod-profile-form" commands={["npm run lab:zod-profile-form","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+Which constraints belong in Zod, which belong in database consistency rules, and which require authentication or per-object authorization?
+
+## Official references
+
+- [Zod 4 official schema documentation](https://zod.dev/basics)
+- [Zod 4 additional guidance](https://zod.dev/error-formatting)
+
+## Browser-only validation practice
+
+[Open the interactive Zod profile form](/learn/zod-profile-lab) to inspect real client-side Zod 4 normalization and field errors without submitting any data to a backend. The same `ProfileSchema` is tested in this offline exercise.
+

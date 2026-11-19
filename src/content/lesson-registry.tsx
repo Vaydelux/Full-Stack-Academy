@@ -294,6 +294,15 @@ import UiTrack30 from './lessons/08.04.06.mdx';
 import UiTrack31 from './lessons/08.04.07.mdx';
 import UiTrack32 from './lessons/08.04.08.mdx';
 
+import ZodFoundation1 from './lessons/09.01.01.mdx';
+import ZodFoundation2 from './lessons/09.01.02.mdx';
+import ZodFoundation3 from './lessons/09.01.03.mdx';
+import ZodFoundation4 from './lessons/09.01.04.mdx';
+import ZodFoundation5 from './lessons/09.01.05.mdx';
+import ZodFoundation6 from './lessons/09.01.06.mdx';
+import ZodFoundation7 from './lessons/09.01.07.mdx';
+import ZodFoundation8 from './lessons/09.01.08.mdx';
+
 export function LessonArticle({lessonId}: {lessonId:string}) {
   switch (lessonId) {
     case '00.01.01': return <BrowserLesson />;
@@ -585,6 +594,14 @@ export function LessonArticle({lessonId}: {lessonId:string}) {
     case '08.04.06': return <UiTrack30 />;
     case '08.04.07': return <UiTrack31 />;
     case '08.04.08': return <UiTrack32 />;
+    case '09.01.01': return <ZodFoundation1 />;
+    case '09.01.02': return <ZodFoundation2 />;
+    case '09.01.03': return <ZodFoundation3 />;
+    case '09.01.04': return <ZodFoundation4 />;
+    case '09.01.05': return <ZodFoundation5 />;
+    case '09.01.06': return <ZodFoundation6 />;
+    case '09.01.07': return <ZodFoundation7 />;
+    case '09.01.08': return <ZodFoundation8 />;
     default: return null;
   }
 }

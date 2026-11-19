@@ -1,0 +1,15 @@
+{
+  "id": "lab.zod.zod-cross-field-refine",
+  "lessonId": "09.01.04",
+  "title": "Zod 4 refine and superrefine lab",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/zod-cross-field-refine/starter/solution.ts",
+  "solution": "labs/zod-cross-field-refine/solution/solution.ts",
+  "tests": "labs/zod-cross-field-refine/solution.test.mjs",
+  "verify": [
+    "npm run lab:zod-cross-field-refine"
+  ],
+  "expected": "Reject mismatched confirmation and attach the custom issue to confirmPassword.",
+  "security": "Real Zod 4 local parsing tests; no network, auth or database and no remote code execution."
+}

@@ -16,6 +16,7 @@ const steps = [
   'test:red-next-router',
   'test:red-next-full',
   'test:red-ui-track',
+  'test:red-zod-foundations',
   'build',
 ];
 

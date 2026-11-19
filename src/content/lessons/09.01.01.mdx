@@ -1,0 +1,100 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Use a Zod 4 strict object with bounded strings, enum values and explicit booleans to reject unexpected keys and impossible roles.","Reproduce and repair the broken objects, primitives, enums and literals schema with real Zod 4.","Distinguish unknown input, validated output and authorization or persistence concerns."]} />
+
+## The problem we're solving
+
+An API accepts account settings with any role and silently strips extra keys; a developer assumes TypeScript types validate requests.
+
+**Broken behavior:** The starter uses open z.object and a generic role string, so invalid roles and surplus keys pass.
+
+## Build the mental model
+
+Use a Zod 4 strict object with bounded strings, enum values and explicit booleans to reject unexpected keys and impossible roles.
+
+**Predict before coding:** Trim the display name, reject unknown keys and reject roles outside reader/editor.
+
+**Important boundary:** TypeScript types are erased at runtime. These exercises import Zod 4 from the repository's locked dependencies and run actual `safeParse` or `parse` assertions, not simulated validation. Runtime validation does not authenticate a caller, authorize object access, or persist data.
+
+## Prerequisites and preflight
+
+Read the preceding schema lesson and use the locked Node.js 24 dependencies. Open `labs/zod-object-primitives/starter/solution.ts`. Run `ACADEMY_LAB_TARGET=starter npm run lab:zod-object-primitives` in Bash or `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:zod-object-primitives; Remove-Item Env:ACADEMY_LAB_TARGET` in PowerShell. The deliberately broken starter should fail the same assertions as the corrected solution.
+
+## Guided implementation
+
+<LessonStep number={1} title="Demonstrate the broken input boundary" file="labs/zod-object-primitives/starter/solution.ts" expected="The starter accepts an invalid value or omits an expected transformation.">
+
+```ts
+import * as z from 'zod';
+export const AccountSchema=z.object({displayName:z.string(),role:z.string(),active:z.boolean()});
+```
+
+**Why this matters:** The starter uses open z.object and a generic role string, so invalid roles and surplus keys pass.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the Zod 4 schema and typed output" file="labs/zod-object-primitives/starter/solution.ts" expected="Trim the display name, reject unknown keys and reject roles outside reader/editor.">
+
+```ts
+import * as z from 'zod';
+export const AccountSchema=z.strictObject({
+ displayName:z.string().trim().min(2).max(80),
+ role:z.enum(['reader','editor']),
+ active:z.boolean(),
+});
+```
+
+**Why this works:** Use a Zod 4 strict object with bounded strings, enum values and explicit booleans to reject unexpected keys and impossible roles.
+
+</LessonStep>
+
+<LessonStep number={3} title="Assert valid, invalid and boundary behavior" file="labs/zod-object-primitives/solution.test.mjs" expected="Real Zod 4 test assertions pass for the instructor and fail on the broken starter.">
+
+```js
+assert.deepEqual(mod.AccountSchema.parse({displayName:' Ava ',role:'reader',active:true}),{displayName:'Ava',role:'reader',active:true});
+assert.equal(mod.AccountSchema.safeParse({displayName:'Ava',role:'admin',active:true}).success,false);
+assert.equal(mod.AccountSchema.safeParse({displayName:'Ava',role:'reader',active:true,privateKey:'secret'}).success,false);
+```
+
+**Representative application usage:**
+
+```ts
+import * as z from 'zod';
+const Role=z.enum(['reader','editor']);
+const Document=z.strictObject({
+  name:z.string().trim().min(2),
+  role:Role,
+  published:z.literal(true),
+});
+const result=Document.safeParse({name:' Guide ',role:'reader',published:true});
+// Validate data at every API/form boundary instead of asserting it with 'as'.
+```
+
+**Security and operations:** Never log raw rejected payloads, secrets or personal data. Validate again at server boundaries; a browser schema is for usability, not authorization.
+
+</LessonStep>
+
+<Misconception claim="The starter uses open z.object and a generic role string, so invalid roles and surplus keys pass." correction="Use a Zod 4 strict object with bounded strings, enum values and explicit booleans to reject unexpected keys and impossible roles. Only successful schema parsing changes unknown values into validated output; it does not grant permissions." />
+
+<KnowledgeCheck question="Which Zod 4 rule is central to objects, primitives, enums and literals?" choices={["TypeScript generics replace runtime parsing of unknown JSON.","Use a Zod 4 strict object with bounded strings, enum values and explicit booleans to reject unexpected keys and impossible roles.","safeParse guarantees database transaction success.","A validated user identifier authorizes any organization-specific record."] } correctIndex={1} explanation="Use a Zod 4 strict object with bounded strings, enum values and explicit booleans to reject unexpected keys and impossible roles." misconception="Use actual runtime schema parsing at trust boundaries, then independently authorize server operations." lessonId="09.01.01" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Reproduce:** The starter uses open z.object and a generic role string, so invalid roles and surplus keys pass. **Diagnose:** compare invalid input with the schema's allowed runtime values. **Repair:** Use a Zod 4 strict object with bounded strings, enum values and explicit booleans to reject unexpected keys and impossible roles. **Regression:** Trim the display name, reject unknown keys and reject roles outside reader/editor. Preserve the failing test and use the resulting validated output rather than asserting a cast.
+
+## Guided local lab
+
+`labs/zod-object-primitives/` includes a red learner starter, complete instructor implementation, actual Zod 4 acceptance tests and completion rubric. No public user-code evaluation service is used.
+
+<LabGate lessonId="09.01.01" labId="lab.zod.zod-object-primitives" commands={["npm run lab:zod-object-primitives","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+Which constraints belong in Zod, which belong in database consistency rules, and which require authentication or per-object authorization?
+
+## Official references
+
+- [Zod 4 official schema documentation](https://zod.dev/api)
+- [Zod 4 additional guidance](https://zod.dev/basics)
+

@@ -1,0 +1,105 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Use refine for a single boolean invariant and superRefine for multiple custom, path-aware issues. In Zod 4, superRefine remains supported but is deprecated in favor of check.","Reproduce and repair the broken refine and superrefine schema with real Zod 4.","Distinguish unknown input, validated output and authorization or persistence concerns."]} />
+
+## The problem we're solving
+
+A password form has password and confirmation fields. Each field meets individual rules, but inconsistent values must still be rejected with an issue on the confirmation control.
+
+**Broken behavior:** The starter validates lengths but never compares confirmation to the original password.
+
+## Build the mental model
+
+Use refine for a single boolean invariant and superRefine for multiple custom, path-aware issues. In Zod 4, superRefine remains supported but is deprecated in favor of check.
+
+**Predict before coding:** Reject mismatched confirmation and attach the custom issue to confirmPassword.
+
+**Important boundary:** TypeScript types are erased at runtime. These exercises import Zod 4 from the repository's locked dependencies and run actual `safeParse` or `parse` assertions, not simulated validation. Runtime validation does not authenticate a caller, authorize object access, or persist data.
+
+## Prerequisites and preflight
+
+Read the preceding schema lesson and use the locked Node.js 24 dependencies. Open `labs/zod-cross-field-refine/starter/solution.ts`. Run `ACADEMY_LAB_TARGET=starter npm run lab:zod-cross-field-refine` in Bash or `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:zod-cross-field-refine; Remove-Item Env:ACADEMY_LAB_TARGET` in PowerShell. The deliberately broken starter should fail the same assertions as the corrected solution.
+
+## Guided implementation
+
+<LessonStep number={1} title="Demonstrate the broken input boundary" file="labs/zod-cross-field-refine/starter/solution.ts" expected="The starter accepts an invalid value or omits an expected transformation.">
+
+```ts
+import * as z from 'zod';
+export const Passwords=z.strictObject({password:z.string().min(8),confirmPassword:z.string().min(8)});
+```
+
+**Why this matters:** The starter validates lengths but never compares confirmation to the original password.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the Zod 4 schema and typed output" file="labs/zod-cross-field-refine/starter/solution.ts" expected="Reject mismatched confirmation and attach the custom issue to confirmPassword.">
+
+```ts
+import * as z from 'zod';
+export const Passwords=z.strictObject({
+ password:z.string().min(8),
+ confirmPassword:z.string().min(8),
+}).superRefine((values,ctx)=>{
+ if(values.password!==values.confirmPassword)ctx.addIssue({
+  code:'custom',path:['confirmPassword'],message:'Passwords do not match',
+ });
+});
+```
+
+**Why this works:** Use refine for a single boolean invariant and superRefine for multiple custom, path-aware issues. In Zod 4, superRefine remains supported but is deprecated in favor of check.
+
+</LessonStep>
+
+<LessonStep number={3} title="Assert valid, invalid and boundary behavior" file="labs/zod-cross-field-refine/solution.test.mjs" expected="Real Zod 4 test assertions pass for the instructor and fail on the broken starter.">
+
+```js
+assert.equal(mod.Passwords.safeParse({password:'12345678',confirmPassword:'12345678'}).success,true);
+const invalid=mod.Passwords.safeParse({password:'12345678',confirmPassword:'abcdefghi'});
+assert.equal(invalid.success,false);
+if(invalid.success)throw new Error('Expected rejected confirmation');
+assert.ok(invalid.error.issues.some(x=>x.path.join('.')==='confirmPassword'));
+```
+
+**Representative application usage:**
+
+```ts
+import * as z from 'zod';
+const Registration=z.strictObject({
+ pass:z.string().min(8),
+ confirmation:z.string().min(8),
+}).superRefine((value,ctx)=>{
+ if(value.pass!==value.confirmation)ctx.addIssue({code:'custom',path:['confirmation'],message:'Must match password'});
+});
+// Zod 4 also introduces .check() for lower-level refinements;
+// explain superRefine compatibility vs newer API before migrating.
+```
+
+**Security and operations:** Never log raw rejected payloads, secrets or personal data. Validate again at server boundaries; a browser schema is for usability, not authorization.
+
+</LessonStep>
+
+<Misconception claim="The starter validates lengths but never compares confirmation to the original password." correction="Use refine for a single boolean invariant and superRefine for multiple custom, path-aware issues. In Zod 4, superRefine remains supported but is deprecated in favor of check. Only successful schema parsing changes unknown values into validated output; it does not grant permissions." />
+
+<KnowledgeCheck question="Which Zod 4 rule is central to refine and superrefine?" choices={["TypeScript generics replace runtime parsing of unknown JSON.","Use refine for a single boolean invariant and superRefine for multiple custom, path-aware issues. In Zod 4, superRefine remains supported but is deprecated in favor of check.","safeParse guarantees database transaction success.","A validated user identifier authorizes any organization-specific record."] } correctIndex={1} explanation="Use refine for a single boolean invariant and superRefine for multiple custom, path-aware issues. In Zod 4, superRefine remains supported but is deprecated in favor of check." misconception="Use actual runtime schema parsing at trust boundaries, then independently authorize server operations." lessonId="09.01.04" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Reproduce:** The starter validates lengths but never compares confirmation to the original password. **Diagnose:** compare invalid input with the schema's allowed runtime values. **Repair:** Use refine for a single boolean invariant and superRefine for multiple custom, path-aware issues. In Zod 4, superRefine remains supported but is deprecated in favor of check. **Regression:** Reject mismatched confirmation and attach the custom issue to confirmPassword. Preserve the failing test and use the resulting validated output rather than asserting a cast.
+
+## Guided local lab
+
+`labs/zod-cross-field-refine/` includes a red learner starter, complete instructor implementation, actual Zod 4 acceptance tests and completion rubric. No public user-code evaluation service is used.
+
+<LabGate lessonId="09.01.04" labId="lab.zod.zod-cross-field-refine" commands={["npm run lab:zod-cross-field-refine","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+Which constraints belong in Zod, which belong in database consistency rules, and which require authentication or per-object authorization?
+
+## Official references
+
+- [Zod 4 official schema documentation](https://zod.dev/api)
+- [Zod 4 additional guidance](https://zod.dev/v4/changelog)
+

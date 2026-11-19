@@ -1,0 +1,15 @@
+{
+  "id": "lab.zod.zod-object-primitives",
+  "lessonId": "09.01.01",
+  "title": "Zod 4 objects, primitives, enums and literals lab",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/zod-object-primitives/starter/solution.ts",
+  "solution": "labs/zod-object-primitives/solution/solution.ts",
+  "tests": "labs/zod-object-primitives/solution.test.mjs",
+  "verify": [
+    "npm run lab:zod-object-primitives"
+  ],
+  "expected": "Trim the display name, reject unknown keys and reject roles outside reader/editor.",
+  "security": "Real Zod 4 local parsing tests; no network, auth or database and no remote code execution."
+}
