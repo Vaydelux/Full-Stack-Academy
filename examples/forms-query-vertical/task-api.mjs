@@ -82,7 +82,11 @@ export function createTaskApi({ host = '127.0.0.1', maxItems = MAX_ITEMS } = {})
       const ownOrigin = `http://${expectedHost}`;
       if (req.headers.origin && req.headers.origin !== ownOrigin) throw new HttpProblem(403, 'Cross-origin requests are not allowed');
       if (req.headers['sec-fetch-site'] === 'cross-site') throw new HttpProblem(403, 'Cross-site requests are not allowed');
-      const url = new URL(req.url ?? '/', ownOrigin);
+      // Accept only origin-form HTTP targets; never an absolute cross-origin URI.
+      if (!req.url?.startsWith('/') || req.url.startsWith('//') || req.url.includes('\\') || req.url.includes('#')) {
+        throw new HttpProblem(400, 'Invalid request target');
+      }
+      const url = new URL(req.url, ownOrigin);
       const staticFiles = {
         '/': ['index.html', 'text/html; charset=utf-8'],
         '/styles.css': ['styles.css', 'text/css; charset=utf-8'],
