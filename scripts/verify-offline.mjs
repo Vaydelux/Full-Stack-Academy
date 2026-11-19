@@ -19,6 +19,7 @@ const steps = [
   'test:forms-query-react-api',
   'test:forms-query-policy',
   'test:forms-query-react-wiring',
+  'test:forms-query-native-ui',
   'test:curriculum-readiness',
   'validate',
   'verify:content',

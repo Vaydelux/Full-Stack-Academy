@@ -7,6 +7,7 @@ const title = $('#title');
 const priority = $('#priority');
 const save = $('#save');
 const retry = $('#retry');
+const discard = $('#discard');
 const status = $('#form-status');
 const listStatus = $('#list-status');
 const list = $('#tasks');
@@ -28,7 +29,22 @@ function record(method, note) {
 clearLog.addEventListener('click', () => log.replaceChildren());
 let failedRequest = null;
 let busy = false;
+let reading = false;
 let activeController = null;
+
+function isRetryable(error) {
+  const status = error?.status;
+  return !Number.isInteger(status) || status === 408 || status === 429 || status >= 500;
+}
+function setWriteBusy(value) {
+  busy = value;
+  save.disabled = value || Boolean(failedRequest);
+  retry.disabled = value || !failedRequest;
+  discard.disabled = value || !failedRequest;
+  refresh.disabled = value || reading;
+  more.disabled = value || reading || !nextCursor;
+  list.querySelectorAll('.change-status, .remove').forEach(button => { button.disabled = value; });
+}
 let nextCursor = null;
 let records = [];
 
@@ -58,50 +74,54 @@ function render() {
     const next = task.status === 'todo' ? 'doing' : task.status === 'doing' ? 'done' : 'todo';
     advance.textContent = task.status === 'todo' ? 'Start' : task.status === 'doing' ? 'Complete' : 'Reopen';
     advance.setAttribute('aria-label', `${advance.textContent} task ${task.title}`);
+    advance.disabled = busy;
     advance.addEventListener('click', async () => {
-      advance.disabled = true;
+      if (busy) return;
+      setWriteBusy(true);
       try {
         await api.setStatus(task.id, next, task.revision);
         record('PATCH 200', `Status changed to ${next}; revision checked.`);
         await load(false);
         message(listStatus, 'Task updated using its latest revision.');
       } catch (error) {
-        advance.disabled = false;
         record(`PATCH ${error.status ?? 'error'}`, error.status === 412 ? 'Stale revision; refresh needed.' : 'Status update failed.');
         message(listStatus, error.status === 412
           ? 'Another edit won. Refresh the list before retrying.'
           : error.message ?? 'Status update failed.', true);
-      }
+      } finally { setWriteBusy(false); }
     });
     const remove = document.createElement('button');
     remove.type = 'button';
     remove.className = 'secondary remove';
     remove.textContent = 'Delete';
     remove.setAttribute('aria-label', `Delete ${task.title}`);
+    remove.disabled = busy;
     remove.addEventListener('click', async () => {
-      remove.disabled = true;
+      if (busy) return;
+      setWriteBusy(true);
       try {
         await api.remove(task.id);
         record('DELETE 204', 'Task removed; list cursor invalidated.');
         await load(false);
         message(listStatus, 'Task deleted. The list was refreshed.');
       } catch (error) {
-        remove.disabled = false;
         record(`DELETE ${error.status ?? 'error'}`, 'Delete did not complete.');
         message(listStatus, error.message ?? 'Delete failed.', true);
-      }
+      } finally { setWriteBusy(false); }
     });
     copy.append(label, details);
     item.append(copy, badge, state, advance, remove);
     list.append(item);
   }
   more.classList.toggle('hidden', !nextCursor);
+  more.disabled = busy || reading || !nextCursor;
   if (records.length === 0) message(listStatus, 'No tasks yet. Create a task to begin.');
 }
 async function load(append) {
   activeController?.abort();
   const controller = new AbortController();
   activeController = controller;
+  reading = true;
   refresh.disabled = true;
   more.disabled = true;
   message(listStatus, 'Loading tasks…');
@@ -122,39 +142,56 @@ async function load(append) {
       void load(false);
     } else message(listStatus, error.message ?? 'Unable to load tasks.', true);
   } finally {
-    if (controller === activeController) { refresh.disabled = false; more.disabled = false; }
+    if (controller === activeController) {
+      reading = false;
+      refresh.disabled = busy;
+      more.disabled = busy || !nextCursor;
+    }
   }
 }
 async function submit(operation) {
-  if (busy) return;
-  busy = true;
-  save.disabled = true;
-  retry.disabled = true;
-  message(status, 'Saving task…');
-  record('POST', 'Creating a task with a fresh or retained idempotency key.');
+  if (busy || (failedRequest && failedRequest.key !== operation.key)) return;
+  setWriteBusy(true);
+  try {
+    message(status, 'Saving task…');
+  record('POST', 'Sending a new or retained logical operation.');
+  let accepted = false;
   try {
     await api.create(operation.payload, { key: operation.key });
-    record('POST 201', 'Create accepted; refresh server cache.');
+    accepted = true;
+  } catch (error) {
+    const retryable = isRetryable(error);
+    failedRequest = retryable ? operation : null;
+    retry.classList.toggle('hidden', !retryable);
+    discard.classList.toggle('hidden', !retryable);
+    record(`POST ${error.status ?? 'error'}`, retryable
+      ? 'Result uncertain; original operation key retained.'
+      : 'Server rejected the request; no automatic retry.');
+    message(status, retryable
+      ? 'Result not confirmed. Retry the same request or explicitly discard it before creating another.'
+      : `Request rejected: ${error.message ?? 'Check the entered values.'}`, true);
+  }
+  if (accepted) {
     failedRequest = null;
     retry.classList.add('hidden');
+    discard.classList.add('hidden');
+    record('POST 201', 'Create confirmed; refreshing is a separate read.');
     form.reset();
-    message(status, 'Task created. You can safely submit another task.');
+    message(status, 'Task created. You can submit another task.');
+    // Never reinterpret a confirmed POST as an uncertain create if GET fails.
     await load(false);
     title.focus();
-  } catch (error) {
-    failedRequest = operation; // Retry the same semantic request with the same idempotency key.
-    record(`POST ${error.status ?? 'error'}`, 'Create did not confirm; retained key enables a safe retry.');
-    message(status, `Create failed: ${error.message ?? 'Network error'}. Retry is safe with the same key.`, true);
-    retry.classList.remove('hidden');
-  } finally {
-    busy = false;
-    save.disabled = false;
-    retry.disabled = false;
   }
+  } finally { setWriteBusy(false); }
 }
 form.addEventListener('submit', event => {
   event.preventDefault();
   if (busy) return;
+  if (failedRequest) {
+    message(status, 'Resolve the previous unconfirmed request first; retry it or discard its key.', true);
+    retry.focus();
+    return;
+  }
   if (!form.reportValidity()) return;
   const normalizedTitle = title.value.trim();
   if (normalizedTitle.length < 3) { title.setCustomValidity('Enter at least three non-whitespace characters.'); title.reportValidity(); return; }
@@ -162,8 +199,24 @@ form.addEventListener('submit', event => {
   void submit({ payload: { title: normalizedTitle, priority: priority.value }, key: crypto.randomUUID() });
 });
 title.addEventListener('input', () => title.setCustomValidity(''));
-retry.addEventListener('click', () => { if (failedRequest) void submit(failedRequest); });
-refresh.addEventListener('click', () => { void load(false); });
-filter.addEventListener('change', () => { records = []; nextCursor = null; void load(false); });
-more.addEventListener('click', () => { if (nextCursor) void load(true); });
+retry.addEventListener('click', () => { if (failedRequest && !busy) void submit(failedRequest); });
+discard.addEventListener('click', () => {
+  if (busy || !failedRequest) return;
+  failedRequest = null;
+  retry.classList.add('hidden');
+  discard.classList.add('hidden');
+  message(status, 'Previous outcome may have succeeded. Creating again could make a duplicate.', true);
+  setWriteBusy(false);
+  title.focus();
+});
+refresh.addEventListener('click', () => { if (!busy) void load(false); });
+filter.addEventListener('change', () => {
+  if (busy) return;
+  records = [];
+  nextCursor = null;
+  list.replaceChildren();
+  more.classList.add('hidden');
+  void load(false);
+});
+more.addEventListener('click', () => { if (!busy && nextCursor) void load(true); });
 void load(false);

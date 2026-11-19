@@ -1,8 +1,10 @@
+> **2026-11-20 native recovery extension:** The browser demo now serializes create/status/delete and blocks a new POST while an earlier outcome is uncertain. Learners can retry using the same idempotency key, or explicitly discard the attempt with a duplicate-risk warning. Terminal 422 errors do not trigger ambiguous retries and a confirmed POST stays confirmed if its follow-up GET fails. See [native acceptance](../../docs/FORMS_QUERY_NATIVE_UI_ACCEPTANCE.md).
+
 > **2026-11-20 project extension:** The local Task API now demonstrates a three-state workflow (todo, doing, done), revision ETag and If-Match conditional PATCH, 412 concurrency rejection, 428 missing-precondition rejection, status-bound pagination cursors and a browser request journal. Try two edits with the same revision, then refresh and retry the loser. The React client source illustrates filtered Query keys and optimistic rollback but remains uninstalled/unqualified. The 16 listed canonical topics below remain workbook drafts, **not published MDX lesson packages**. See [OpenAPI contract](task-workflow.openapi.json) and [acceptance](../../docs/FORMS_QUERY_WORKFLOW_V3_ACCEPTANCE.md).
 
 # Forms / Query Workbook — canonical 09.02 and 09.03 preparation
 
-**Source draft, not published lessons.** The complete lesson authoring contract still requires 16 individual MDX articles, metadata, instructor/learner fixtures and executable React/browser tests. This workbook captures one consistent progression against the real loopback Task API without inflating publication counts.
+**Source drafts, not published lessons.** All 16 topic-specific MDX drafts, metadata and red/instructor fixtures now live under `drafts/forms-query/`. Their actual React library/DOM tests, negative-starter regression checks and publication gates remain incomplete, so the canonical topics still have planned status. This workbook captures one consistent progression against the real loopback Task API without inflating publication counts.
 
 ## Track 09.02 — React Hook Form (8 canonical topics)
 

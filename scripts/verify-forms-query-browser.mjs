@@ -147,6 +147,31 @@ async function qualify() {
       if (!condition) throw new Error(detail);
     };
 
+    // This must be installed BEFORE document scripts run because task-client
+    // captures fetch at module initialization. It is test-only, never served.
+    await cdp.send('Page.addScriptToEvaluateOnNewDocument', { source: [
+      '(() => {',
+      'const nativeFetch=window.fetch.bind(window);',
+      'const faults={dropNextPost:false,forceNextPost422:false,failListAfterPost:false,failNextList:false,pauseNextPatch:false,patchPending:false,releasePatch:null,requests:[]};',
+      'window.__academyFaults=faults;',
+      'window.fetch=async (input,init={}) => {',
+      ' const url=new URL(input,window.location.href);',
+      ' const method=init.method || (input instanceof Request ? input.method : "GET");',
+      ' const headers=new Headers(init.headers || (input instanceof Request ? input.headers : undefined));',
+      ' faults.requests.push({method,path:url.pathname,key:headers.get("idempotency-key")});',
+      ' if(method==="POST"&&faults.forceNextPost422){faults.forceNextPost422=false;return new Response(JSON.stringify({status:422,title:"Invalid title"}),{status:422,headers:{"content-type":"application/problem+json"}});}',
+      ' if(method==="PATCH"&&faults.pauseNextPatch){faults.pauseNextPatch=false;faults.patchPending=true;await new Promise(resolve=>{faults.releasePatch=resolve});faults.patchPending=false;}',
+      ' if(method==="GET"&&url.pathname==="/api/tasks"&&faults.failNextList){faults.failNextList=false;throw new TypeError("Deliberately dropped GET");}',
+      ' const response=await nativeFetch(input,init);',
+      ' if(method==="POST"&&url.pathname==="/api/tasks"){',
+      '  if(faults.failListAfterPost){faults.failListAfterPost=false;faults.failNextList=true;}',
+      '  if(faults.dropNextPost){faults.dropNextPost=false;throw new TypeError("Response lost after commit");}',
+      ' }',
+      ' return response;',
+      '};',
+      '})();',
+    ].join('\n') });
+
     await cdp.send('Page.navigate', { url: base + '/' });
     await waitFor(async () => evaluate('document.readyState === "complete" && Boolean(document.getElementById("task-form"))'), 'native teaching form load');
     await waitFor(async () => evaluate('document.getElementById("list-status").textContent.includes("No tasks")'), 'initial empty state');
@@ -209,6 +234,60 @@ async function qualify() {
       await waitFor(async () => evaluate('document.querySelectorAll("#tasks li").length===15'), 'last five tasks');
       const unique = await evaluate('new Set([...document.querySelectorAll("#tasks li strong")].map(x=>x.textContent)).size');
       expect(unique === 15, 'Duplicate list rows after pagination');
+    });
+
+    await check('Stale pagination returns 409 and automatically restarts from the first page', async () => {
+      await evaluate('document.getElementById("refresh").click()');
+      await waitFor(async () => evaluate('document.querySelectorAll("#tasks li").length===10'), 'restart first ten');
+      const created = await evaluate('(async () => { const r=await fetch("/api/tasks",{method:"POST",headers:{"content-type":"application/json","idempotency-key":"browser-stale-cursor-0001"},body:JSON.stringify({title:"Newest after stale cursor",priority:"normal"})}); return r.status; })()', true);
+      expect(created === 201, 'Could not trigger a real new-list revision');
+      await evaluate('document.getElementById("load-more").click()');
+      await waitFor(async () => evaluate('document.getElementById("request-log").textContent.includes("GET 409")'), 'stale cursor was not rejected');
+      await waitFor(async () => evaluate('document.querySelector("#tasks li strong")?.textContent==="Newest after stale cursor"'), 'first page did not restart');
+    });
+
+    await check('Lost POST response requires the original key and blocks another fresh create', async () => {
+      const before = await evaluate('window.__academyFaults.requests.filter(r=>r.method==="POST").length');
+      await evaluate('(() => { window.__academyFaults.dropNextPost=true; const el=document.getElementById("title"); el.value="Browser uncertain write"; el.dispatchEvent(new Event("input",{bubbles:true})); document.getElementById("task-form").requestSubmit(); })()');
+      await waitFor(async () => evaluate('!document.getElementById("retry").classList.contains("hidden")'), 'same-key retry action');
+      expect(await evaluate('document.getElementById("save").disabled && !document.getElementById("discard").classList.contains("hidden")'), 'Create must remain locked while outcome is uncertain');
+      await evaluate('document.getElementById("task-form").requestSubmit()');
+      expect(await evaluate('window.__academyFaults.requests.filter(r=>r.method==="POST").length') === before + 1, 'Fresh create was not blocked');
+      await evaluate('document.getElementById("retry").click()');
+      await waitFor(async () => evaluate('document.getElementById("retry").classList.contains("hidden") && !document.getElementById("save").disabled'), 'safe replay confirmation');
+      const reused = await evaluate('(() => { const p=window.__academyFaults.requests.filter(r=>r.method==="POST"); return p.length>=2 && p.at(-2).key===p.at(-1).key; })()');
+      expect(reused, 'Retry regenerated a new idempotency key');
+    });
+
+    await check('Terminal validation error never suggests ambiguous retry', async () => {
+      await evaluate('(() => { window.__academyFaults.forceNextPost422=true; const el=document.getElementById("title"); el.value="Server rejects this"; el.dispatchEvent(new Event("input",{bubbles:true})); document.getElementById("task-form").requestSubmit(); })()');
+      await waitFor(async () => evaluate('document.getElementById("form-status").textContent.includes("Request rejected")'), 'terminal 422 user message');
+      expect(await evaluate('document.getElementById("retry").classList.contains("hidden") && !document.getElementById("save").disabled'), 'Terminal HTTP 422 should not lock the form');
+    });
+
+    await check('Confirmed POST with a failed GET must not re-offer an uncertain create', async () => {
+      await evaluate('(() => { window.__academyFaults.failListAfterPost=true; const el=document.getElementById("title"); el.value="Committed before failed GET"; el.dispatchEvent(new Event("input",{bubbles:true})); document.getElementById("task-form").requestSubmit(); })()');
+      await waitFor(async () => evaluate('document.getElementById("request-log").textContent.includes("GET error")'), 'injected failed refresh');
+      expect(await evaluate('document.getElementById("retry").classList.contains("hidden") && !document.getElementById("save").disabled && document.getElementById("form-status").textContent.includes("Task created")'), 'Confirmed POST was incorrectly treated as uncertain');
+      await evaluate('document.getElementById("refresh").click()');
+      await waitFor(async () => evaluate('document.querySelector("#tasks li strong")?.textContent==="Committed before failed GET"'), 'fresh read after recovered GET');
+    });
+
+    await check('Pending PATCH blocks a competing DELETE mutation', async () => {
+      await evaluate('(() => { window.__academyFaults.pauseNextPatch=true; document.querySelector("#tasks .change-status").click(); })()');
+      await waitFor(async () => evaluate('window.__academyFaults.patchPending===true'), 'in-flight delayed PATCH');
+      const noDelete = await evaluate('(() => { const before=window.__academyFaults.requests.filter(r=>r.method==="DELETE").length; const remove=document.querySelector("#tasks .remove"); const disabled=remove.disabled; remove.click(); return disabled && window.__academyFaults.requests.filter(r=>r.method==="DELETE").length===before; })()');
+      expect(noDelete, 'Concurrent delete was not blocked');
+      await evaluate('window.__academyFaults.releasePatch()');
+      await waitFor(async () => evaluate('window.__academyFaults.patchPending===false && !document.getElementById("save").disabled'), 'PATCH mutation completion');
+    });
+
+    await check('Discarding an uncertain attempt warns about possible duplicates', async () => {
+      await evaluate('(() => { window.__academyFaults.dropNextPost=true; const el=document.getElementById("title"); el.value="Discard with care"; el.dispatchEvent(new Event("input",{bubbles:true})); document.getElementById("task-form").requestSubmit(); })()');
+      await waitFor(async () => evaluate('!document.getElementById("discard").classList.contains("hidden")'), 'uncertain create discard option');
+      await evaluate('document.getElementById("discard").click()');
+      const status = await evaluate('({warning:document.getElementById("form-status").textContent,enabled:!document.getElementById("save").disabled,retryHidden:document.getElementById("retry").classList.contains("hidden")})');
+      expect(status.enabled && status.retryHidden && status.warning.includes('duplicate'), 'Explicit discard must warn and unlock');
     });
 
     await check('320px, tablet and desktop contain content without horizontal overflow', async () => {

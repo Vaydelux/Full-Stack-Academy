@@ -30,6 +30,7 @@ const checks=[
   program:'node',args:['--experimental-strip-types','--test',
    'tests/forms-query-react-api.test.mjs','tests/forms-query-policy.test.mjs']},
  {name:'React UI source contract (not browser DOM)',program:'node',args:['--test','tests/forms-query-react-wiring.test.mjs']},
+ {name:'Native form event logic with real Node HTTP and lightweight simulated DOM',program:'node',args:['--test','tests/forms-query-native-ui.test.mjs']},
 ];
 if(mode==='--full'){
  if(!fs.existsSync(path.join(root,'package-lock.json'))){

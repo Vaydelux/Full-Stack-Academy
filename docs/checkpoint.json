@@ -10,8 +10,8 @@
   },
   "development": {
     "branch": "main",
-    "state": "forms-query-resilience-source-qualified-execution-pending",
-    "note": "Post-PR31 feature: standalone React tasks now use status-keyed bounded useInfiniteQuery cursor paging, 409 reset, one synchronous cross-mutation guard and optimistic rollback across every cached page, idempotent POST unknown/terminal outcome split. Added 20-case Node actual socket test source, 12-case policy test, 11-case UI wiring test and optional native Chromium CDP browser script; expanded TSX source syntax gate. Executed in isolated harness: typed API 20/20 simulated request outcomes, policy 12/12, UI wiring 11/11, revised 3 lesson/source parities. Minimal Node22 TS stripping and Chrome CDP probing succeeded locally but latest actual Node socket tests, native site browser gate, real RHF/TanStack npm/React builds and full Next remain unexecuted because DNS unavailable. Published 338 unique IDs, 337 MDX/lab fixtures and 42 complete modules unchanged; 16 staged. No Vercel/Actions."
+    "state": "native-forms-query-recovery-source-checked",
+    "note": "After merged PR #32, native browser form now blocks new POST while an earlier outcome is unknown, preserves same idempotency key for network/408/429/5xx replay, rejects terminal 4xx retry, supports explicit duplicate-risk discard, serializes create/PATCH/DELETE, separates confirmed POST from GET refresh failure. Source tests: 9/9 exact committed native/server/client event cases passed in isolated simulated-DOM/mock HTTP harness, CDP browser gate expanded to 15 checks; native/client/browser JS and fault-injection source syntax checked. No actual latest Node socket or Chromium UI execution on a full checkout, no real npm/Next/React package qualification. 338 unique published IDs, 337 MDX/labs, 42 modules unchanged; 16 RHF/Query drafts staged. No GitHub Actions/Vercel."
   },
   "snapshot": {
     "tracks": 28,
@@ -73,6 +73,6 @@
     "devHighFindings": 14,
     "exceptionExpires": "2026-12-02"
   },
-  "nextMilestone": "run-real-forms-query-http-chromium-and-lock-rhf-query-then-publish-09.02-09.03",
-  "status": "forms-query-resilience-sourced-mock-qualified-real-node-browser-next-gates-pending"
+  "nextMilestone": "qualify-latest-native-nine-node-socket-and-fifteen-chromium-ui-then-publish-rhf-query",
+  "status": "native-forms-query-idempotency-and-cross-mutation-source-hardened-real-socket-browser-pending"
 }
