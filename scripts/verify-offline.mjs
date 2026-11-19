@@ -15,6 +15,7 @@ const steps = [
   'test:forms-query-contract',
   'test:forms-query-project-route',
   'test:forms-query-drafts',
+  'test:forms-query-draft-types',
   'validate',
   'verify:content',
   'checkpoint:check',
