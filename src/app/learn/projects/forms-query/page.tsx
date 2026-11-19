@@ -66,7 +66,7 @@ export default function FormsQueryProjectPage() {
       </section>
       <section aria-labelledby="test-project" className="mt-10">
         <h2 id="test-project" className="text-xl font-bold">3. Verify the HTTP contracts locally</h2>
-        <CodeBlock file="Terminal · repository root" code={'node --test tests/forms-query-http.test.mjs\nnode --test tests/forms-query-workflow.test.mjs\nnode --test tests/forms-query-contract.test.mjs'} />
+        <CodeBlock file="Terminal · repository root" code={'node --test tests/forms-query-http.test.mjs\nnode --test tests/forms-query-workflow.test.mjs\nnode --test tests/forms-query-contract.test.mjs\nnode --experimental-strip-types --test tests/forms-query-react-api.test.mjs tests/forms-query-policy.test.mjs\nnode --test tests/forms-query-react-wiring.test.mjs'} />
         <p className="text-sm leading-7 text-slate-600 dark:text-slate-300">The workflow suite covers stale revision rejection, invalid input, list cursor/filter isolation and spoofed Host rejection. The OpenAPI suite checks the documented request/response shape. A successful test run is separate from React browser acceptance.</p>
       </section>
       <section aria-labelledby="staged-roadmap" className="mt-10 border-t border-slate-200 pt-8 dark:border-white/10">
