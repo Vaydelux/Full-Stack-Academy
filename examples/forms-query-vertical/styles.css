@@ -48,8 +48,18 @@ input::placeholder { color: #8b9bb6; }
 .priority { font-size: .72rem; padding: .2rem .5rem; border-radius: .4rem; color: #bdd7ee; background: #ffffff12; }
 .priority.high { color: #ffc5aa; background: #a75a281f; }
 .priority.low { color: #afe9ca; background: #28a7731f; }
+.state { border-radius: .4rem; padding: .2rem .5rem; background: #456cbd22; color: #b9d5ff; font-size: .72rem; white-space: nowrap; }
+.state.doing { background: #cea45522; color: #ffe1a9; }
+.state.done { background: #22a87922; color: #aaf3d3; }
+.change-status { font-size: .75rem; padding: .48rem .68rem; }
+#status-filter { margin: .35rem 0 1rem; }
 .remove { font-size: .75rem; padding: .48rem .68rem; }
 .actions { margin-top: 1.5rem; }
+.trace-panel { margin-top: 1rem; border: 1px solid #ffffff22; border-radius: 1.2rem; padding: clamp(1rem, 2.5vw, 1.65rem); background: #111a2cdd; }
+.request-log { display: grid; gap: .45rem; list-style: none; padding: 0; margin: 1rem 0 0; max-height: 260px; overflow: auto; }
+.request-log li { display: flex; flex-wrap: wrap; gap: .65rem; align-items: baseline; border-radius: .6rem; background: #0a1323; border: 1px solid #ffffff12; padding: .65rem .8rem; font-size: .8rem; overflow-wrap: anywhere; }
+.request-log li strong { flex: 0 0 auto; font-family: ui-monospace, monospace; color: #95e9e9; }
+.request-log li span { color: #bdcee4; }
 .learning-strip { margin-top: 3rem; border-top: 1px solid #ffffff22; padding-top: 1.25rem; }
 .learning-items { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 1rem; }
 .learning-items p { margin: 0; color: #9eb2cb; font-size: .8rem; }

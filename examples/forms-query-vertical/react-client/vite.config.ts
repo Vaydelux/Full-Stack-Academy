@@ -8,6 +8,20 @@ export default defineConfig({
     host: '127.0.0.1',
     port: 5173,
     strictPort: true,
-    proxy: { '/api': 'http://127.0.0.1:3337' },
+    proxy: {
+      '/api': {
+        target: 'http://127.0.0.1:3337',
+        changeOrigin: true,
+        // A same-origin browser POST to Vite has Origin :5173; the local
+        // upstream validates :3337. Translate only the trusted Vite origin.
+        configure(proxy) {
+          proxy.on('proxyReq', (proxyReq, req) => {
+            if (req.headers.origin === 'http://127.0.0.1:5173') {
+              proxyReq.setHeader('origin', 'http://127.0.0.1:3337');
+            }
+          });
+        },
+      },
+    },
   },
 });

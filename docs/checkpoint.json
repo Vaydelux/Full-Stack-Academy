@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-11-19",
+  "updatedAt": "2026-11-20",
   "baseline": {
     "branch": "main",
     "sha": "394e6d0f620f4740912b0d50cbcbbf5aecc83e8e",
@@ -10,8 +10,8 @@
   },
   "development": {
     "branch": "main",
-    "state": "forms-query-http-capstone-tested-react-reference-source-unqualified",
-    "note": "After PR #28, implemented actual Node loopback forms/query teaching HTTP API, plain browser practice, isolated genuine RHF/TanStack Query React source (not installed or imported by main), corrected 16 planned course reference URLs, drafted canonical 16-topic workbook. 22/22 real local Node22 HTTP tests passed; no Node24 full Next/npm build, Vite package install or Chromium browser qualification. No Vercel/GitHub Actions used. RHF 09.02 and Query 09.03 remain planned."
+    "state": "forms-query-task-workflow-v3-source-candidate",
+    "note": "After PR #29, strict Host/Origin/request-target validation, revision-based status PATCH (412/428), status-filtered cursors, bounded browser request journal, isolated React status/rollback source, 6-operation OpenAPI 3.1.1, and two unindexed academy project routes. Exact source 29/29 mocked-request simulations, 11/11 spec assertions and 6/6 route assertions passed. No v3 real Node socket suite, full Node24 npm/Next/Vite build or browser acceptance; no Vercel/Actions. RHF 09.02/Query 09.03 remain PLANNED."
   },
   "snapshot": {
     "tracks": 28,
@@ -73,6 +73,6 @@
     "devHighFindings": 14,
     "exceptionExpires": "2026-12-02"
   },
-  "nextMilestone": "09.02-09.03-genuine-library-install-lockfile-16-mdx-labs-browser-qualification",
-  "status": "http-capstone-verified-react-draft-unpublished-release-gates-pending"
+  "nextMilestone": "qualify-v3-real-node-http-and-react-deps-then-publish-09.02-09.03",
+  "status": "task-workflow-v3-source-merged-mock-qualified-real-build-and-browser-pending"
 }

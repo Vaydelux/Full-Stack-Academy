@@ -27,12 +27,19 @@
       </section>
       <section class="panel" aria-labelledby="tasks-title">
         <div class="panel-top"><span class="section-index">02</span><h2 id="tasks-title">Server tasks</h2><button id="refresh" class="secondary push" type="button">Refresh</button></div>
+        <label for="status-filter">Filter by task status</label>
+        <select id="status-filter" aria-controls="tasks"><option value="all">All tasks</option><option value="todo">To do</option><option value="doing">In progress</option><option value="done">Completed</option></select>
         <p class="help">These entries come from GET /api/tasks. Refresh cancels the previous read. New writes invalidate the cursor.</p>
         <div id="list-status" role="status" aria-live="polite" class="status-wrap"></div>
         <ul id="tasks" class="tasks" aria-label="Task entries"></ul>
         <div class="actions"><button id="load-more" type="button" class="secondary hidden">Load more</button></div>
       </section>
     </div>
+    <section class="trace-panel" aria-labelledby="trace-heading">
+      <div class="panel-top"><span class="section-index">03</span><h2 id="trace-heading">Request lifecycle</h2><button id="clear-log" class="secondary push" type="button">Clear history</button></div>
+      <p class="help">See your local GET, POST, PATCH and DELETE interactions, including conflict recovery. Only operation metadata is shown—no task text or idempotency keys. This journal is temporary and not uploaded.</p>
+      <ol id="request-log" class="request-log" aria-label="Recent local HTTP operations"></ol>
+    </section>
     <section class="learning-strip"><h2>What this lab demonstrates</h2><div class="learning-items"><p><strong>Validation</strong>Native form constraints and independent server-side checks.</p><p><strong>Retries</strong>Idempotency keys prevent duplicate creates when reused.</p><p><strong>Remote state</strong>Fetching, abort signals, pagination and conflict recovery.</p><p><strong>Safety</strong>Loopback-only binding, no HTML injection, bounded request sizes.</p></div></section>
   </main>
   <footer>Educational prototype · No accounts, synchronization or production persistence · Do not bind to a public address</footer>

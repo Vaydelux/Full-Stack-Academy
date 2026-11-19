@@ -1,41 +1,53 @@
-# Full-Stack Academy — Current engineering handoff (2026-11-19)
+# Full-Stack Academy — Current development handoff (2026-11-20)
 
-## Completed source state
+## Source state and genuine qualification
 
-- Owner-directed PRs #20–#28 have merged into main before this feature. The curriculum source remains **338 published unique IDs, 337 MDX lessons/lab fixtures, 42 complete modules, 38 authored references, 303 indexed topics and 551 of 889 topics still planned**.
-- This next feature prepares **09.02 React Hook Form** and **09.03 TanStack Query** through a real runnable educational backend, an accessible native-form practice page and isolated genuine React Query/RHF reference source. It DOES NOT publish 16 new lesson IDs.
-- Fixed **16 planned topic reference URLs** to official RHF/resolver/TanStack docs rather than the incorrect blanket Zod link.
-- Real HTTP capstone at examples/forms-query-vertical/ (Node built-ins only): validation, body/field caps, idempotency replay/conflict, strict loopback origin, cursor paging and conflict recovery, deletion, CSP-protected static teaching UI, no arbitrary HTML.
-- Separate react-client/ has real React 19, RHF, @hookform/resolvers, TanStack Query 5 and Zod 4 imports and an interactive draft UI. The nested package manifest is **not installed, not locked and not imported into the main Next app**, so core app dependency graph is unchanged.
-- Source workbook with **all 16 canonical topic goals, guided exercises and observable acceptance expectations**, not fabricated completed MDX lessons.
-- 22/22 **real Node HTTP tests** passed in local sandbox; API source and test blobs match committed GitHub bytes. React TS/TSX syntax-only transpile passed with locally available TypeScript.
+- Owner-authorized PRs **#20–#29** have merged into `main`. The latest v3 feature branch adds a source-only larger milestone around the real local Forms/Query capstone; its PR will be merged separately.
+- Core catalog remains exactly **889 canonical topics in 111 modules and 28 tracks**, with **338 published unique IDs, 337 MDX lessons + 337 local lab manifests, 42 completed modules and 38 authored references**. The 16 09.02/09.03 topics are still PLANNED.
+- Available from academy `/learn/projects` and `/learn/projects/forms-query`: a guided **local-only** task workflow, runbook and tests. The page itself does not run an unauthenticated API on the Next server.
+- No GitHub Actions or Vercel inspections. No npm registry/GitHub clone DNS in the model's local runtime and no complete root Node 24 install/Next build or nested React typecheck/browser run. **A source merge is not release qualification.**
 
-## Important release blockers
+## v3 work implemented
 
-- [ ] Registry/GitHub clone access needs to work for a real full Node 24 checkout. Npm registry and github.com DNS could not resolve in this execution.
-- [ ] Use npm on an actual Node 24 checkout to install real package versions, generate package-lock and execute root and nested npm ci, typecheck, builds.
-- [ ] Test React form, Query cancellation, mutations, optimistic rollback, retry, responsiveness and keyboard using actual installed libraries in an isolated browser. Vite/react-client is currently **not runtime-qualified**.
-- [ ] Complete 09.02.01–09.02.08 and 09.03.01–09.03.08 as 16 actual MDX/meta/instructor/starter/negative-test/rubric packages. Only then register and increment published counts.
-- [ ] Run full existing 337+ lab and negative-starter suites, lint, TypeScript, content/checkpoint validation and Next build on the exact head.
-- [ ] Chromium launch stalled locally; perform desktop/tablet/320px, reduced-motion, screen-reader and focus checks before release.
-- [ ] Review historical dev-only Picomatch exception by **2026-12-02 UTC**.
-- [ ] Teaching API has no durable persistence or authorization. Never publicly deploy it; auth/TLS/tenant isolation, rate limiting and audit are future production boundaries, not built features.
+- [x] Strict loopback Host validation before static/API routing, Origin and Fetch Metadata cross-site denial, absolute/network-path request-target rejection
+- [x] RFC-compatible application/problem+json responses
+- [x] Task status todo/doing/done and per-task strong revision ETag
+- [x] GET-by-ID; conditional PATCH status requiring If-Match; 412 conflict/428 missing precondition
+- [x] Post-await atomic revision comparison so competing requests cannot both commit a stale edit
+- [x] Status-filtered list queries, revision/filter-scoped pagination and strict query shape; writes invalidate old cursors
+- [x] Browser-native task state transitions, filter and bounded metadata-only request journal
+- [x] Standalone nested genuine RHF/TanStack React source with filtered query keys, typed status mutations and optimistic rollback; local Vite proxy trusted Origin translation
+- [x] Complete OpenAPI 3.1.1 contract for six operations and corresponding contract assertions
+- [x] Internal unindexed Practice Projects list/detail routes, linked from curriculum/DocShell
+- [x] New root scripts in local `verify:offline`: workflow, contract and route checks
+- [x] Updated runbook, workbook, acceptance, checkpoint and AGENTS.md
 
-## Ordered next milestones
+## What was actually checked
 
-1. **P0 Qualification:** Node 24 npm ci + npm run verify:offline, exact SHA; nested React npm install/typecheck/build, local browser validation; correct failures. No hosted/Actions gates needed.
-2. **P1 Publish RHF/Query 16-topic track:** complete all canonical lesson packs and real frontend tests using examples/forms-query-vertical as source scaffolding, keep red starters intentionally assertion failing.
-3. **P2 NestJS 11.01–11.04:** 32 lessons with genuine packages, real DI and HTTP fixtures.
-4. **P3 PostgreSQL 12.01–12.05:** 40 lessons with actual database, isolation, transactions, EXPLAIN and rollback.
-5. **P4 Prisma + Supabase 13–14:** generated clients, actual schema migrations, denial-first RLS tests, Auth/Storage boundaries.
+- [x] 29/29 workflow cases against committed JavaScript source in an **isolated mocked HTTP request/response harness** (including a two-writer conflict)
+- [x] 11/11 exact-source OpenAPI contract checks
+- [x] 6/6 exact-source project route and boundary checks
+- [x] JavaScript syntax parsing of API/client/browser/test source, with a found test syntax error corrected before final run
+- [ ] **Real Node 22/24 HTTP suite on v3 branch**; 22 real HTTP tests passed previously on PR #29, but not re-executed against v3 changes
+- [ ] Real browser UI (native and nested React), keyboard/200% zoom/320px/screen reader, Vite Host/Origin proxy POST and 412 recovery
+- [ ] Root `npm ci`, lint/typecheck/Next build, exact 337+ lab/negative gates, Node 24 supported runtime
+- [ ] Nested React npm install, actual npm-generated lockfile, real typecheck/build and integration tests
 
-## Read first
+See [v3 acceptance](FORMS_QUERY_WORKFLOW_V3_ACCEPTANCE.md) for detailed evidence and exact commands.
 
-- AGENTS.md
-- docs/FORMS_QUERY_CAPSTONE_ACCEPTANCE.md
-- examples/forms-query-vertical/README.md
-- examples/forms-query-vertical/WORKBOOK.md
-- docs/FORMS_QUERY_NEXT_MILESTONE.md
-- docs/checkpoint.json
+## Prioritized next milestones
 
-Never conflate source-authored, locally tested and production-qualified. No GitHub Actions or Vercel checks were used for this continuation.
+1. **P0 Real network and browser qualification:** Full Node 24 checkout, `node --test tests/forms-query-*.test.mjs` (or the script names), `npm ci && npm run verify:offline`; verify Vite proxy and browser flows, remove actual defects. No hosted/Actions test gate needed.
+2. **P1 Publish React Hook Form 09.02 and TanStack Query 09.03 (16 canonical topics):** resolve compatible dependencies and lock with npm; complete per-topic MDX, metadata, instructor/negative starter, lab fixture, rubric, real library/browser tests. Keep unqualified topics PLANNED/noindex.
+3. **P2 Next NestJS Track 11 (32 topics):** real locked Nest package integrations, DI, request pipeline, validation, security boundaries and loopback tests.
+4. **P3 PostgreSQL Track 12 (40 topics):** actual local DB harness, transactions, migrations, EXPLAIN, rollback and concurrency checks.
+5. **P4 Prisma/Supabase Tracks 13–14 (64 topics):** actual generated client, schema migrations, Auth and denial-first RLS tests with audited boundaries.
+6. Review the historical dev-only **Picomatch security exception before 2026-12-02 UTC**.
+
+## Persistent project boundaries
+
+- Task API is educational single-process in-memory with NO users, tenant isolation, persistence, TLS, durable idempotency or rate limits. **Never expose it on the public internet.**
+- The React sample is a separate Vite project, not imported into production Next, until real packages/build/browser checks succeed.
+- Do not fabricate npm integrity hashes or claim 16 workbook drafts are published lessons.
+- Keep source-authored, local unit/simulation checked, real HTTP tested, browser qualified, and production released as distinct states.
+- Source truth: `AGENTS.md`, `docs/checkpoint.json`, `docs/FORMS_QUERY_WORKFLOW_V3_ACCEPTANCE.md`, `examples/forms-query-vertical/README.md`.
