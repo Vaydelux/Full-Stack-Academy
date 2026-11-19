@@ -183,7 +183,7 @@ test('competing conditional writes cannot both commit the same revision', async 
   const authoritative = await client.get(task.id);
   assert.equal(authoritative.revision,2);
   assert.equal(authoritative.status,accepted[0].value.status);
-});
+}));
 
 async function rawRequestTarget(base, target) {
   return new Promise((resolve, reject) => {
