@@ -1,7 +1,7 @@
 {
   "id": "lab.foundation.ui-drag-drop",
   "lessonId": "08.02.06",
-  "title": "Drag and drop in practice",
+  "title": "Drag and drop",
   "runtime": "react19-ui-ssr-pure-contract",
   "status": "authored",
   "starter": "labs/ui-drag-drop/starter/solution.ts",
