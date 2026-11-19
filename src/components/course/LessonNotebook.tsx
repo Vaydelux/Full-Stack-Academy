@@ -15,12 +15,16 @@ export function LessonNotebook({ lessonId }: { lessonId: string }) {
   const setNote = useAcademy(s => s.setNote);
   const toggleBookmark = useAcademy(s => s.toggleBookmark);
   const [draft, setDraft] = useState('');
+  const [lastSyncedNote, setLastSyncedNote] = useState('');
   const [feedback, setFeedback] = useState('');
 
   useEffect(() => { if (!hydrated) hydrate(); }, [hydrated, hydrate]);
   useEffect(() => {
-    if (hydrated) setDraft(savedNote);
-  }, [hydrated, lessonId, savedNote]);
+    if (!hydrated) return;
+    // Adopt external changes only when this form does not have unsaved edits.
+    setDraft(current => current === lastSyncedNote ? savedNote : current);
+    setLastSyncedNote(savedNote);
+  }, [hydrated, savedNote, lastSyncedNote]);
   const dirty = draft !== savedNote;
 
   function saveNote() {
