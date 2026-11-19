@@ -1,6 +1,6 @@
 'use client';
 
-import { useReducer, useState } from 'react';
+import { useReducer, useState, type FormEvent } from 'react';
 
 type Task = { id: string; label: string; done: boolean };
 type TaskAction =
@@ -46,7 +46,7 @@ export function ReactStateLab() {
   const [nextId, setNextId] = useState(3);
   const [selectedPerson, setSelectedPerson] = useState<'Ava' | 'Noel'>('Ava');
 
-  function addTask(event: React.FormEvent<HTMLFormElement>) {
+  function addTask(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const label = taskLabel.trim();
     if (!label) return;
