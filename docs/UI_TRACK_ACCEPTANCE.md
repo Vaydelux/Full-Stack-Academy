@@ -37,3 +37,10 @@ All lessons include three explicit guided steps, prediction, bug hunt, four-choi
 - [ ] Review the 14 high dev-tool advisory exception before 2026-12-02 UTC expiry
 
 **Reported state:** Complete source authoring, **not** successful local build or published website. Do not merge until observed tests and editorial review pass.
+
+## Source preflight snapshot (2026-11-19)
+
+- [x] Nontruncated tree: **289 MDX files, 289 metadata records, 289 lab manifests**; all 32 new UI Widget.tsx paths exist
+- [x] Each of the 32 new metadata documents has matching canonical id/module/level and at least three objectives plus two sources
+- [x] Delivery waves reconcile to 598 still-unauthored topics, with W01 track 08 source-authored and tracks 09–10 next
+- [ ] Actually execute Node24, TS/tsx, MDX and Chromium; current review remains **static only**

@@ -24,7 +24,7 @@ const modules=curriculum.modules.filter(m=>tracks.includes(m.id.split(".")[0])).
 const topicIds=curriculum.lessons.filter(t=>t.moduleId===m.id).map(t=>t.id).sort();
 return {id:m.id,title:m.title,topics:topicIds.length,alreadyAuthored:topicIds.filter(x=>published.has(x)).length,remaining:topicIds.filter(x=>!published.has(x)).length};
 });
-return {id:"W"+String(i+1).padStart(2,"0"),title:names[i],goal:goals[i],tracks,modules,topics:modules.reduce((n,m)=>n+m.topics,0),alreadyAuthored:modules.reduce((n,m)=>n+m.alreadyAuthored,0),remaining:modules.reduce((n,m)=>n+m.remaining,0),status:"planned-offline",gate:"Complete source, tests, local build, review and checkpoint before merging or enabling hosted builds"};
+return {id:"W"+String(i+1).padStart(2,"0"),title:names[i],goal:goals[i],tracks,modules,topics:modules.reduce((n,m)=>n+m.topics,0),alreadyAuthored:modules.reduce((n,m)=>n+m.alreadyAuthored,0),remaining:modules.reduce((n,m)=>n+m.remaining,0),status:modules.some(m=>m.remaining===0)?"in-progress-offline":"planned-offline",gate:"Complete source, tests, local build, review and checkpoint before merging or enabling hosted builds"};
 });
 return {schemaVersion:1,asOf:"2026-11-19",strategy:"Large offline whole-track waves; no split modules",baseline:{authoredLessonIds:snapshot.publishedLessons,authoredMdx:snapshot.authoredMdxLessons,labFixtures:snapshot.labFixtures,completeModules:snapshot.completeModules.length},catalog:{tracks:curriculum.tracks.length,modules:curriculum.modules.length,topicIds:curriculum.lessons.length},remainingAfterCurrent:curriculum.lessons.length-published.size,waves};
 }

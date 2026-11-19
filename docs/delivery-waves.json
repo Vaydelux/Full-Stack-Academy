@@ -113,7 +113,7 @@
       "topics": 96,
       "alreadyAuthored": 33,
       "remaining": 63,
-      "status": "planned-offline",
+      "status": "in-progress-offline",
       "gate": "Complete source, tests, local build, review and checkpoint before merging or enabling hosted builds"
     },
     {

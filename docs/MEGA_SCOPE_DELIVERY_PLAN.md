@@ -1,6 +1,6 @@
 # Full-Stack Academy — Seven-Wave Large-Scope Delivery Plan
 
-**As of November 19, 2026.** This plan is generated from the academy's canonical **889-topic** catalog, not invented lesson counts. The active React/Next feature branch holds **259 unique authored IDs** (257 MDX lessons plus 4 existing interactive models, with two overlaps). **598 unique topic IDs remain un-authored.**
+**As of November 19, 2026.** This plan is generated from the academy's canonical **889-topic** catalog, not invented lesson counts. The stacked UI feature branch now holds **291 unique authored lesson IDs** (289 MDX lessons plus 4 existing interactive models, with two overlaps). **598 unique topic IDs remain un-authored.**
 
 ## Why 7 large waves rather than dozens of tiny PRs
 
@@ -17,11 +17,13 @@ Work in **whole tracks and complete modules**, typically 80–104 canonical topi
 | W07 | 26–27 | 9 | 72 | 0 | 72 |
 | **Total** | 08–27 | **79** | **632** | **34** | **598** |
 
+The 34 already-authored future-track IDs comprise 32 new UI lessons plus existing interactive `09.01.02` and `15.02.04`. These two interactive lessons are counted once, not duplicated.
+
 ## Scope and architectural intent
 
 ### W01 — Professional frontend, forms & HTTP services (UI track authored; forms & HTTP next)
 
-Design system, client data and server-side HTTP API core. Exact tracks **08, 09, 10**, with 95 unauthored topic IDs and 12 canonical modules. Complete topic-level hands-on labs and a module capstone without claiming real cloud or database integration unless it was executed.
+Design system, client data and server-side HTTP API core. Exact tracks **08, 09, 10**, with 63 unauthored topic IDs and 12 canonical modules. Complete topic-level hands-on labs and a module capstone without claiming real cloud or database integration unless it was executed.
 
 ### W02 — Backend architecture & relational persistence
 
