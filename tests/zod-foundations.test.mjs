@@ -61,3 +61,14 @@ test('Zod foundation smoke preserves planned React Hook Form noindex boundary',(
   assert.ok(read(script).includes('09.02.01'),script);
  }
 });
+
+test('all 19 canonical Zod reference topics now have authored, source-linked drafts',()=>{
+ const category=JSON.parse(read('data/reference-index.json')).entries.filter(x=>x.category==='Zod');
+ assert.equal(category.length,19);
+ const section=read('src/lib/academy/authored-content.ts').split('export const AUTHORED_REFERENCES')[1].split('export function findAuthoredReference')[0];
+ for(const row of category){
+  assert.ok(section.includes('"id": "'+row.id+'"')||section.includes("id: '"+row.id+"'"),row.id+' missing authored draft');
+ }
+ const cp=JSON.parse(read('docs/checkpoint.json'));
+ assert.equal(cp.snapshot.authoredReferenceDrafts,38);
+});

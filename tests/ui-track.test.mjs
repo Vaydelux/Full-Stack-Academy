@@ -72,7 +72,7 @@ test('eight CSS quick references correspond to canonical index entries',()=>{
   assert.ok(section.includes('"id": "'+id+'"'),id+' no authored draft');
  }
  const cp=JSON.parse(read('docs/checkpoint.json'));
- assert.equal(cp.snapshot.authoredReferenceDrafts,20);
+ assert.equal(cp.snapshot.authoredReferenceDrafts,38);
 });
 
 test('manifest-based local lab runner avoids Windows command-line limits and checks file scope',()=>{

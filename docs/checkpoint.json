@@ -13,14 +13,14 @@
     "basePullRequest": 21,
     "baseBranch": "feat/ui-systems-track08-offline",
     "state": "zod4-schema-design-source-candidate-unverified",
-    "note": "09.01.02 preexists as interactive model; 8 new MDX files contribute only 7 unique published IDs."
+    "note": "09.01.02 is an existing published interactive model; 8 new Zod MDX add only 7 unique IDs. All 19 indexed Zod API items now have authored draft references. Executable Node and browser gates pending."
   },
   "snapshot": {
     "tracks": 28,
     "modules": 111,
     "catalogTopics": 889,
     "indexedReferences": 303,
-    "authoredReferenceDrafts": 20,
+    "authoredReferenceDrafts": 38,
     "authoredInteractiveModels": 4,
     "authoredMdxLessons": 297,
     "publishedLessons": 298,
