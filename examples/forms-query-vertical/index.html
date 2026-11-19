@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0f172a" />
+  <title>Forms and Server State — Local Practice</title>
+  <link rel="stylesheet" href="/styles.css" />
+  <script type="module" src="/browser.mjs"></script>
+</head>
+<body>
+  <a class="skip" href="#content">Skip to the task lab</a>
+  <header class="site-header"><span class="brand-mark" aria-hidden="true">{ }</span><div><strong>Full-Stack Academy</strong><small>Local practice environment</small></div><span class="offline-chip">Loopback demo</span></header>
+  <main id="content" class="layout">
+    <div class="intro"><p class="eyebrow">09.02 Forms · 09.03 Server state</p><h1>Build a reliable task workflow.</h1><p>Practice validation, honest server errors, idempotent requests, pagination, cancellation and recovery against a real local HTTP API. The browser example uses native forms and Fetch; the separate React implementation is not yet runtime-qualified.</p></div>
+    <div class="workspace">
+      <section class="panel" aria-labelledby="create-title">
+        <div class="panel-top"><span class="section-index">01</span><h2 id="create-title">Create a task</h2></div>
+        <form id="task-form" novalidate>
+          <label for="title">Task title</label><input id="title" name="title" type="text" minlength="3" maxlength="100" required autocomplete="off" placeholder="e.g. Practice schema validation" aria-describedby="title-help" />
+          <p id="title-help" class="help">3–100 characters. The server validates again.</p>
+          <label for="priority">Priority</label><select name="priority" id="priority" required><option value="normal">Normal</option><option value="low">Low</option><option value="high">High</option></select>
+          <button id="save" type="submit" class="primary">Create task</button>
+        </form>
+        <div class="status-wrap"><p id="form-status" role="status" aria-live="polite"></p><button type="button" id="retry" class="secondary hidden">Retry failed request</button></div>
+        <div class="note"><strong>Practice boundary</strong><p>Everything stays in process memory. This API has no user authentication, durable database or public-facing security controls.</p></div>
+      </section>
+      <section class="panel" aria-labelledby="tasks-title">
+        <div class="panel-top"><span class="section-index">02</span><h2 id="tasks-title">Server tasks</h2><button id="refresh" class="secondary push" type="button">Refresh</button></div>
+        <p class="help">These entries come from GET /api/tasks. Refresh cancels the previous read. New writes invalidate the cursor.</p>
+        <div id="list-status" role="status" aria-live="polite" class="status-wrap"></div>
+        <ul id="tasks" class="tasks" aria-label="Task entries"></ul>
+        <div class="actions"><button id="load-more" type="button" class="secondary hidden">Load more</button></div>
+      </section>
+    </div>
+    <section class="learning-strip"><h2>What this lab demonstrates</h2><div class="learning-items"><p><strong>Validation</strong>Native form constraints and independent server-side checks.</p><p><strong>Retries</strong>Idempotency keys prevent duplicate creates when reused.</p><p><strong>Remote state</strong>Fetching, abort signals, pagination and conflict recovery.</p><p><strong>Safety</strong>Loopback-only binding, no HTML injection, bounded request sizes.</p></div></section>
+  </main>
+  <footer>Educational prototype · No accounts, synchronization or production persistence · Do not bind to a public address</footer>
+</body>
+</html>
