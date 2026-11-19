@@ -14,8 +14,9 @@ Each topic includes an authored MDX article with three guided implementation ste
 
 - `labs/http-local-rest-contract/solution/solution.mjs` uses `node:http` and `node:crypto` with in-memory records, 409 replay conflicts, 201 creation, 404/405/415/422/413 status responses, JSON limits, ETags, and Problem Details.
 - `labs/http-local-rest-contract/solution.test.mjs` starts the server on port 0 at 127.0.0.1 and uses actual `fetch` calls, then closes the server.
-- **Executed successfully locally on Node.js 22.16.0**: original HTTP wire test passed (1/1) and separate manual HTTP requests returned intended statuses for missing idempotency key (400), bad limit (400), bad JSON (400), extra field (422), oversized body (413). No Node.js 24 run has been performed.
-- The expanded acceptance test now includes all those negative cases, but **this expanded exact test file has not been re-executed** after its GitHub source update.
+- **Exact checked-in Git blob verification (Node.js 22.16.0):** instructor `solution.mjs` SHA `5807f5a8d63fa969f427cc07c69ddb171e4aa645`, expanded `solution.test.mjs` SHA `b4a5dbd447ca4fbb6cd544b2e994f6ce047490ad`, learner starter SHA `d36f25707b5385854683c685e3bdb7c0c9b2a819`. Local `git hash-object` matched all three GitHub blob SHAs.
+- **Executed exact expanded instructor test successfully** using Node.js **22.16.0**: 1/1 tests passed over a real 127.0.0.1 ephemeral HTTP listener, including the extra 400/400/400/422/413 response cases, success/replay/conflict and conditional 304.
+- **Executed exact broken starter** with `ACADEMY_LAB_TARGET=starter`: nonzero exit (1), TAP `not ok 1`, and `code: 'ERR_ASSERTION'`. No Node.js 24 or full repository suite has been executed.
 - This API is intentionally **UNAUTHENTICATED**, **IN MEMORY**, and must not be deployed publicly. Persistence, real idempotency transactions, tenant authorization, CSRF/CORS, quotas, rate limits and audit logs are still separate production requirements.
 
 ## Proposed cumulative checkpoint (source, not hosted)

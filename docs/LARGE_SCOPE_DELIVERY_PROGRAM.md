@@ -12,7 +12,7 @@ These broad passes are longer in scope, not permission to skip runtime verificat
 
 | Increment | Canonical scope | Count | Actual required runtime/acceptance |
 |---|---|---:|---|
-| Node + REST | 10.01–10.02 | **16 authored source lessons** | Built-in Node 24, real HTTP loopback capstone (Node 22 smoke run; full Node 24 gate pending) |
+| Node + REST | 10.01–10.02 | **16 authored source lessons** | Built-in Node 24; exact GitHub blob-matched expanded HTTP capstone passed on local Node 22, including a real red starter; full Node 24 gate pending |
 | Backend security / OpenAPI | 10.03–10.04 | **16 planned** | Real HTTP negative tests, SSRF/limits/auth, OpenAPI 3.1 and generated client compatibility |
 | NestJS production architecture | 11.01–11.04 | **32 planned** | Pinned NestJS packages, compile, local HTTP tests, DTO validation and request pipeline |
 | PostgreSQL | 12.01–12.05 | **40 planned** | Real isolated Postgres, transaction races, query plans, backups and recovery |
@@ -42,7 +42,7 @@ PRs #20, #21, #22, #23 and the Node/HTTP candidate form a **five-layer stack**. 
 
 | Domain | Source audited | Node/lab executed | Browser/API integration | Production-ready |
 |---|---|---|---|---|
-| 10.01–10.02 new source | GitHub tree and metadata inspection | Not fully | REST capstone 1/1 on local Node 22; extra manual 4xx probes | No |
+| 10.01–10.02 new source | GitHub tree and metadata inspection | Not fully | Exact checked-in expanded REST capstone 1/1 on local Node 22, plus intentional starter ERR_ASSERTION; full Node 24 pending | No |
 | React + Next + UI + Zod + Zustand stacked sources | Source structures recorded in predecessor PRs | Not fully | Browser smoke scripts authored, not executed | No |
 | 09.02 / 09.03 | Not authored | No | No | No |
 | 10.03 / 10.04 and beyond | Planned | No | No | No |

@@ -13,7 +13,7 @@
 - [x] 16 canonical lessons with 3 guided steps each, source metadata, quiz, misconception, bug hunt, rubric, red starter, working instructor and official API sources
 - [x] Node 10.01 includes actual microtask ordering, environmental bounds, stream byte budgets, Fetch/AbortSignal, filesystem realpath, process metrics, lifecycle cleanup and streaming SHA-256 upload
 - [x] HTTP 10.02 includes RFC 9110 verbs, Accept negotiation, bounded JSON, idempotency, global sort/filter/page, RFC 9457 errors, ETags and **real local http server capstone**
-- [x] Local Node 22 integration run: instructor capstone test **1/1 pass**, manual 400/400/400/422/413 response probes. The expanded checked-in capstone test has not been re-run.
+- [x] Local Node 22 **exact blob-matched** expanded HTTP capstone test **1/1 pass**, including all five 4xx negative cases and 304; exact starter tested with `ACADEMY_LAB_TARGET=starter` and failed `ERR_ASSERTION` as intended. No Node 24 run.
 - [x] Registered all MDX and metadata, per-lab commands, independent Node test script and 16-case red-starter assertion guard; content schema supports `lab.node.*` and `lab.http.*`
 - [x] Added source integrity suite and local Next/Chromium route/sitemap/mobile smoke script
 
