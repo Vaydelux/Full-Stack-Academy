@@ -1,0 +1,15 @@
+{
+  "id": "lab.zustand.zustand-url-search-state",
+  "lessonId": "09.04.06",
+  "title": "Zustand 5 urlsearchparams as state local lab",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/zustand-url-search-state/starter/solution.ts",
+  "solution": "labs/zustand-url-search-state/solution/solution.ts",
+  "tests": "labs/zustand-url-search-state/solution.test.mjs",
+  "verify": [
+    "npm run lab:zustand-url-search-state"
+  ],
+  "expected": "Valid active status can be serialized to a URL and restored; invalid status defaults safely.",
+  "security": "Actual Zustand 5 vanilla stores execute locally; no network, browser secrets, authentication, persistence into real storage or remote code execution."
+}

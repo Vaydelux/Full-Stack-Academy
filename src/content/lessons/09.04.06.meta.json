@@ -1,0 +1,40 @@
+{
+  "id": "09.04.06",
+  "title": "URLSearchParams as state: Keep shareable filters in the URL as the source of truth and coordinate the visible Zustand UI state with parsed, allowlisted query parameters.",
+  "description": "A complete Zustand 5 state-boundaries lesson using actual vanilla stores, targeted subscriptions and safe client state ownership, including a red starter and offline regression tests.",
+  "trackId": "09",
+  "moduleId": "09.04",
+  "level": "Intermediate",
+  "estimatedMinutes": 65,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "typescript": "5",
+    "react": "19",
+    "zustand": "5"
+  },
+  "prerequisites": [
+    "09.04.05"
+  ],
+  "objectives": [
+    "Keep shareable filters in the URL as the source of truth and coordinate the visible Zustand UI state with parsed, allowlisted query parameters.",
+    "Repair the zustand-url-search-state intentionally broken Zustand 5 starter.",
+    "Explain what belongs in local, URL or authoritative remote data state."
+  ],
+  "labId": "lab.zustand.zustand-url-search-state",
+  "rubric": [
+    "I can explain the state ownership principle for urlsearchparams as state.",
+    "I can repair the 09.04.06 defect using actual Zustand 5 APIs.",
+    "I can identify persistence, privacy and hydration risks needing integration tests."
+  ],
+  "sources": [
+    {
+      "label": "Zustand 5 official APIs",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams"
+    },
+    {
+      "label": "Additional official guide",
+      "url": "https://zustand.docs.pmnd.rs/reference/apis/create-store"
+    }
+  ]
+}

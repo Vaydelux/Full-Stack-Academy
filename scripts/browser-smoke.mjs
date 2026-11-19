@@ -10,6 +10,7 @@ import { verifyNextFullTrack } from './next-full-track-smoke.mjs';
 import { verifyUiTrack } from './ui-track-smoke.mjs';
 import { verifyUiGallery } from './ui-gallery-smoke.mjs';
 import { verifyZodFoundation } from './zod-foundations-smoke.mjs';
+import { verifyZustandState } from './zustand-state-smoke.mjs';
 import { createRequire } from 'node:module';
 import path from 'node:path';
 
@@ -412,6 +413,7 @@ try {
   await verifyUiTrack({page,base,assert,wait});
   await verifyUiGallery({page,base,assert,wait});
   await verifyZodFoundation({page,base,assert,wait});
+  await verifyZustandState({page,base,assert,wait});
 
   await page.goto(base+'/?lesson=06.01.01&mode=practice');
   await wait(btn('Practice'));

@@ -1,0 +1,15 @@
+{
+  "id": "lab.zustand.zustand-local-url-server",
+  "lessonId": "09.04.01",
+  "title": "Zustand 5 local vs url vs server state local lab",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/zustand-local-url-server/starter/solution.ts",
+  "solution": "labs/zustand-local-url-server/solution/solution.ts",
+  "tests": "labs/zustand-local-url-server/solution.test.mjs",
+  "verify": [
+    "npm run lab:zustand-local-url-server"
+  ],
+  "expected": "A new vanilla Zustand store begins closed and responds to both open and close actions.",
+  "security": "Actual Zustand 5 vanilla stores execute locally; no network, browser secrets, authentication, persistence into real storage or remote code execution."
+}

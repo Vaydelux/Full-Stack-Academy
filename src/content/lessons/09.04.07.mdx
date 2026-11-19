@@ -1,0 +1,110 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Store only UI selection or preferences in Zustand; keep authoritative remote records in a server/query cache and derive the chosen record by ID.","Reproduce and repair the avoiding duplicated caches state bug with real Zustand 5 APIs.","Distinguish ephemeral UI state, shareable URL state and authoritative server data."]} />
+
+## The problem we're solving
+
+A remote task list already belongs in the server query cache, but an engineer copies whole task objects into Zustand and creates inconsistent stale data.
+
+**Broken behavior:** The starter stores and exposes a private copy of remote task data in shared UI state.
+
+## Build the mental model
+
+Store only UI selection or preferences in Zustand; keep authoritative remote records in a server/query cache and derive the chosen record by ID.
+
+**Predict:** Zustand stores just the selected ID and actions; record details come from the authoritative provided collection.
+
+**Evidence boundary:** The local test imports the real Zustand 5 `createStore` API and, where appropriate, the official middleware. The store is created afresh per test; it does not use a global request-scoped server singleton. Passing Node assertions does not prove browser hydration, cross-tab synchronization or HTTP authorization.
+
+## Prerequisites and preflight
+
+Complete `09.01.08` (Zod 4) before this module and the preceding `09.04` lesson as applicable. This is a dependency-safe module: Zustand 5 is already in the project's dependency manifest; React Hook Form and TanStack Query are covered in other planned modules. Run with locked dependencies under Node 24.
+
+Open `labs/zustand-dont-cache-records/starter/solution.ts`. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:zustand-dont-cache-records`; PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:zustand-dont-cache-records; Remove-Item Env:ACADEMY_LAB_TARGET`. The starter intentionally fails a substantive assertion.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the broken Zustand store behavior" file="labs/zustand-dont-cache-records/starter/solution.ts" expected="The red starter fails a meaningful offline assertion, not a missing dependency import.">
+
+```ts
+import {createStore} from 'zustand/vanilla';
+type Task={id:string;title:string};
+type Selection={selectedId:string|null;tasks:Task[];select:(id:string|null)=>void};
+export function makeSelectionStore(){
+ return createStore<Selection>()(set=>({
+  selectedId:null,tasks:[{id:'t1',title:'Sensitive'}],
+  select:selectedId=>set({selectedId}),
+ }));
+}
+export const selectedTask=(rows:readonly {id:string}[],id:string|null)=>{void rows;void id;return null;};
+```
+
+**Cause:** The starter stores and exposes a private copy of remote task data in shared UI state.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the corrected Zustand 5 store" file="labs/zustand-dont-cache-records/starter/solution.ts" expected="Zustand stores just the selected ID and actions; record details come from the authoritative provided collection.">
+
+```ts
+import {createStore} from 'zustand/vanilla';
+export type Selection={selectedId:string|null;select:(id:string|null)=>void};
+export function makeSelectionStore(){return createStore<Selection>()(set=>({
+ selectedId:null,select:selectedId=>set({selectedId}),
+}));}
+export function selectedTask<T extends {id:string}>(rows:readonly T[],id:string|null):T|null{
+ return id?rows.find(row=>row.id===id)??null:null;
+}
+```
+
+**Reasoning:** Store only UI selection or preferences in Zustand; keep authoritative remote records in a server/query cache and derive the chosen record by ID.
+
+</LessonStep>
+
+<LessonStep number={3} title="Run a real store mutation and regression check" file="labs/zustand-dont-cache-records/solution.test.mjs" expected="The correct instructor passes the Node/Zustand assertions, including denied or edge cases.">
+
+```js
+const store=mod.makeSelectionStore();
+assert.equal('tasks' in store.getState(),false);
+const records=[{id:'t1',title:'One'},{id:'t2',title:'Two'}];
+store.getState().select('t2');
+assert.deepEqual(mod.selectedTask(records,store.getState().selectedId),records[1]);
+assert.equal(mod.selectedTask(records,'missing'),null);
+```
+
+**React/browser usage pattern (illustrative until mounted and tested):**
+
+```tsx
+// UI state only: selectedTaskId, showDetails, user-visible table density.
+// Remote data stays in a validated API response / TanStack Query cache,
+// never duplicated into a parallel Zustand tasks array.
+// This avoids stale data drift and accidental multi-user record leakage.
+```
+
+**Trust boundary:** Never treat a UI role, selected row or persisted browser token as server authorization. Query data and private records still require server-side validation and access controls.
+
+</LessonStep>
+
+<Misconception claim="The starter stores and exposes a private copy of remote task data in shared UI state." correction="Store only UI selection or preferences in Zustand; keep authoritative remote records in a server/query cache and derive the chosen record by ID. Runtime Zustand state transitions do not establish backend authorization or cross-browser correctness." />
+
+<KnowledgeCheck question="What is the best state-management rule for avoiding duplicated caches?" choices={["A single global store should contain every request's server response and secrets.","Store only UI selection or preferences in Zustand; keep authoritative remote records in a server/query cache and derive the chosen record by ID.","Browser persistence securely hides access tokens from the user.","Any correct TypeScript type implies cross-tab and server data consistency."] } correctIndex={1} explanation="Store only UI selection or preferences in Zustand; keep authoritative remote records in a server/query cache and derive the chosen record by ID." misconception="Use each state mechanism for the data scope and lifetime it actually owns." lessonId="09.04.07" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Reproduce:** The starter stores and exposes a private copy of remote task data in shared UI state. **Diagnose:** trace the store action and ownership boundary. **Repair:** Store only UI selection or preferences in Zustand; keep authoritative remote records in a server/query cache and derive the chosen record by ID. **Regression:** Zustand stores just the selected ID and actions; record details come from the authoritative provided collection. Confirm browser and HTTP behavior separately when relevant.
+
+## Guided local lab
+
+The `labs/zustand-dont-cache-records/` exercise contains an intentionally broken learner starter, a reviewed instructor fix, real Zustand 5 Node assertions, and a completion rubric. No arbitrary learner code is executed by the academy server.
+
+<LabGate lessonId="09.04.07" labId="lab.zustand.zustand-dont-cache-records" commands={["npm run lab:zustand-dont-cache-records","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+Which state belongs to a local component, which should survive in a shareable URL, and which must remain in a server-backed cache? How would you reproduce a stale state bug in two tabs?
+
+## Official references
+
+- [Zustand 5 official reference](https://zustand.docs.pmnd.rs/reference/apis/create-store)
+- [Supporting official guide](https://zustand.docs.pmnd.rs/learn/guides/beginner-typescript)
+

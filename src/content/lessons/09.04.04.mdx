@@ -1,0 +1,108 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Keep one source of truth in Zustand and compute lightweight derived data from selected state; subscribe to stable slices rather than duplicating caches.","Reproduce and repair the derived state and store subscriptions state bug with real Zustand 5 APIs.","Distinguish ephemeral UI state, shareable URL state and authoritative server data."]} />
+
+## The problem we're solving
+
+A cart's total becomes stale because a developer stores a duplicated total separately and forgets to recompute it after adding an item.
+
+**Broken behavior:** The starter always returns a zero total despite changes to the real store's quantities.
+
+## Build the mental model
+
+Keep one source of truth in Zustand and compute lightweight derived data from selected state; subscribe to stable slices rather than duplicating caches.
+
+**Predict:** Totals change when quantities change, the previous state stays immutable and subscriptions observe updates.
+
+**Evidence boundary:** The local test imports the real Zustand 5 `createStore` API and, where appropriate, the official middleware. The store is created afresh per test; it does not use a global request-scoped server singleton. Passing Node assertions does not prove browser hydration, cross-tab synchronization or HTTP authorization.
+
+## Prerequisites and preflight
+
+Complete `09.01.08` (Zod 4) before this module and the preceding `09.04` lesson as applicable. This is a dependency-safe module: Zustand 5 is already in the project's dependency manifest; React Hook Form and TanStack Query are covered in other planned modules. Run with locked dependencies under Node 24.
+
+Open `labs/zustand-derived-subscription/starter/solution.ts`. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:zustand-derived-subscription`; PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:zustand-derived-subscription; Remove-Item Env:ACADEMY_LAB_TARGET`. The starter intentionally fails a substantive assertion.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the broken Zustand store behavior" file="labs/zustand-derived-subscription/starter/solution.ts" expected="The red starter fails a meaningful offline assertion, not a missing dependency import.">
+
+```ts
+import {createStore} from 'zustand/vanilla';
+type QtyState={quantities:number[];addQuantity:(quantity:number)=>void};
+export function makeQuantityStore(){
+ return createStore<QtyState>()(set=>({
+  quantities:[1,2],
+  addQuantity:quantity=>set(state=>({quantities:[...state.quantities,quantity]})),
+ }));
+}
+export const totalOf=(state:QtyState)=>{void state;return 0;};
+```
+
+**Cause:** The starter always returns a zero total despite changes to the real store's quantities.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the corrected Zustand 5 store" file="labs/zustand-derived-subscription/starter/solution.ts" expected="Totals change when quantities change, the previous state stays immutable and subscriptions observe updates.">
+
+```ts
+import {createStore} from 'zustand/vanilla';
+export type QtyState={quantities:number[];addQuantity:(quantity:number)=>void};
+export function makeQuantityStore(){return createStore<QtyState>()(set=>({
+ quantities:[1,2],addQuantity:quantity=>set(state=>({quantities:[...state.quantities,quantity]})),
+}));}
+export const totalOf=(state:Pick<QtyState,'quantities'>)=>state.quantities.reduce((sum,x)=>sum+x,0);
+```
+
+**Reasoning:** Keep one source of truth in Zustand and compute lightweight derived data from selected state; subscribe to stable slices rather than duplicating caches.
+
+</LessonStep>
+
+<LessonStep number={3} title="Run a real store mutation and regression check" file="labs/zustand-derived-subscription/solution.test.mjs" expected="The correct instructor passes the Node/Zustand assertions, including denied or edge cases.">
+
+```js
+const store=mod.makeQuantityStore();
+const initial=store.getState().quantities;
+assert.equal(mod.totalOf(store.getState()),3);
+let notified=0;const off=store.subscribe(()=>notified++);
+store.getState().addQuantity(4);
+assert.equal(mod.totalOf(store.getState()),7);
+assert.deepEqual(initial,[1,2]);assert.equal(notified,1);off();
+```
+
+**React/browser usage pattern (illustrative until mounted and tested):**
+
+```tsx
+const total=useStore(cartStore,state=>state.quantities.reduce((sum,x)=>sum+x,0));
+// A primitive number selector is stable. Don't store another total field
+// if it can be derived cheaply from the source quantities.
+// For expensive selectors use memoization carefully and measure before optimizing.
+```
+
+**Trust boundary:** Never treat a UI role, selected row or persisted browser token as server authorization. Query data and private records still require server-side validation and access controls.
+
+</LessonStep>
+
+<Misconception claim="The starter always returns a zero total despite changes to the real store's quantities." correction="Keep one source of truth in Zustand and compute lightweight derived data from selected state; subscribe to stable slices rather than duplicating caches. Runtime Zustand state transitions do not establish backend authorization or cross-browser correctness." />
+
+<KnowledgeCheck question="What is the best state-management rule for derived state and store subscriptions?" choices={["A single global store should contain every request's server response and secrets.","Keep one source of truth in Zustand and compute lightweight derived data from selected state; subscribe to stable slices rather than duplicating caches.","Browser persistence securely hides access tokens from the user.","Any correct TypeScript type implies cross-tab and server data consistency."] } correctIndex={1} explanation="Keep one source of truth in Zustand and compute lightweight derived data from selected state; subscribe to stable slices rather than duplicating caches." misconception="Use each state mechanism for the data scope and lifetime it actually owns." lessonId="09.04.04" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Reproduce:** The starter always returns a zero total despite changes to the real store's quantities. **Diagnose:** trace the store action and ownership boundary. **Repair:** Keep one source of truth in Zustand and compute lightweight derived data from selected state; subscribe to stable slices rather than duplicating caches. **Regression:** Totals change when quantities change, the previous state stays immutable and subscriptions observe updates. Confirm browser and HTTP behavior separately when relevant.
+
+## Guided local lab
+
+The `labs/zustand-derived-subscription/` exercise contains an intentionally broken learner starter, a reviewed instructor fix, real Zustand 5 Node assertions, and a completion rubric. No arbitrary learner code is executed by the academy server.
+
+<LabGate lessonId="09.04.04" labId="lab.zustand.zustand-derived-subscription" commands={["npm run lab:zustand-derived-subscription","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+Which state belongs to a local component, which should survive in a shareable URL, and which must remain in a server-backed cache? How would you reproduce a stale state bug in two tabs?
+
+## Official references
+
+- [Zustand 5 official reference](https://zustand.docs.pmnd.rs/reference/apis/create-store)
+- [Supporting official guide](https://zustand.docs.pmnd.rs/reference/hooks/use-store)
+

@@ -303,6 +303,15 @@ import ZodFoundation6 from './lessons/09.01.06.mdx';
 import ZodFoundation7 from './lessons/09.01.07.mdx';
 import ZodFoundation8 from './lessons/09.01.08.mdx';
 
+import ZustandState1 from './lessons/09.04.01.mdx';
+import ZustandState2 from './lessons/09.04.02.mdx';
+import ZustandState3 from './lessons/09.04.03.mdx';
+import ZustandState4 from './lessons/09.04.04.mdx';
+import ZustandState5 from './lessons/09.04.05.mdx';
+import ZustandState6 from './lessons/09.04.06.mdx';
+import ZustandState7 from './lessons/09.04.07.mdx';
+import ZustandState8 from './lessons/09.04.08.mdx';
+
 export function LessonArticle({lessonId}: {lessonId:string}) {
   switch (lessonId) {
     case '00.01.01': return <BrowserLesson />;
@@ -602,6 +611,14 @@ export function LessonArticle({lessonId}: {lessonId:string}) {
     case '09.01.06': return <ZodFoundation6 />;
     case '09.01.07': return <ZodFoundation7 />;
     case '09.01.08': return <ZodFoundation8 />;
+    case '09.04.01': return <ZustandState1 />;
+    case '09.04.02': return <ZustandState2 />;
+    case '09.04.03': return <ZustandState3 />;
+    case '09.04.04': return <ZustandState4 />;
+    case '09.04.05': return <ZustandState5 />;
+    case '09.04.06': return <ZustandState6 />;
+    case '09.04.07': return <ZustandState7 />;
+    case '09.04.08': return <ZustandState8 />;
     default: return null;
   }
 }

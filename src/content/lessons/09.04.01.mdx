@@ -1,0 +1,104 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Use Zustand for genuinely shared client UI state, the URL for linkable filters and a dedicated data cache for remote server records.","Reproduce and repair the local vs url vs server state state bug with real Zustand 5 APIs.","Distinguish ephemeral UI state, shareable URL state and authoritative server data."]} />
+
+## The problem we're solving
+
+A global dialog should be controlled by transient UI state, but a developer accidentally ignores the requested open/close action and confuses it with server records.
+
+**Broken behavior:** The starter's setOpen action always closes the dialog, so shared UI state cannot respond to an open request.
+
+## Build the mental model
+
+Use Zustand for genuinely shared client UI state, the URL for linkable filters and a dedicated data cache for remote server records.
+
+**Predict:** A new vanilla Zustand store begins closed and responds to both open and close actions.
+
+**Evidence boundary:** The local test imports the real Zustand 5 `createStore` API and, where appropriate, the official middleware. The store is created afresh per test; it does not use a global request-scoped server singleton. Passing Node assertions does not prove browser hydration, cross-tab synchronization or HTTP authorization.
+
+## Prerequisites and preflight
+
+Complete `09.01.08` (Zod 4) before this module and the preceding `09.04` lesson as applicable. This is a dependency-safe module: Zustand 5 is already in the project's dependency manifest; React Hook Form and TanStack Query are covered in other planned modules. Run with locked dependencies under Node 24.
+
+Open `labs/zustand-local-url-server/starter/solution.ts`. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:zustand-local-url-server`; PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:zustand-local-url-server; Remove-Item Env:ACADEMY_LAB_TARGET`. The starter intentionally fails a substantive assertion.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the broken Zustand store behavior" file="labs/zustand-local-url-server/starter/solution.ts" expected="The red starter fails a meaningful offline assertion, not a missing dependency import.">
+
+```ts
+import {createStore} from 'zustand/vanilla';
+type UIState={open:boolean;setOpen:(value:boolean)=>void};
+export function makeUiStore(){
+ return createStore<UIState>()(set=>({
+  open:false,
+  setOpen:value=>{void value;set({open:false});},
+ }));
+}
+```
+
+**Cause:** The starter's setOpen action always closes the dialog, so shared UI state cannot respond to an open request.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the corrected Zustand 5 store" file="labs/zustand-local-url-server/starter/solution.ts" expected="A new vanilla Zustand store begins closed and responds to both open and close actions.">
+
+```ts
+import {createStore} from 'zustand/vanilla';
+export type UIState={open:boolean;setOpen:(value:boolean)=>void};
+export function makeUiStore(){
+ return createStore<UIState>()(set=>({open:false,setOpen:value=>set({open:value})}));
+}
+```
+
+**Reasoning:** Use Zustand for genuinely shared client UI state, the URL for linkable filters and a dedicated data cache for remote server records.
+
+</LessonStep>
+
+<LessonStep number={3} title="Run a real store mutation and regression check" file="labs/zustand-local-url-server/solution.test.mjs" expected="The correct instructor passes the Node/Zustand assertions, including denied or edge cases.">
+
+```js
+const store=mod.makeUiStore();
+assert.equal(store.getInitialState().open,false);
+store.getState().setOpen(true);assert.equal(store.getState().open,true);
+store.getState().setOpen(false);assert.equal(store.getState().open,false);
+```
+
+**React/browser usage pattern (illustrative until mounted and tested):**
+
+```tsx
+import {createStore} from 'zustand/vanilla';
+import {useStore} from 'zustand';
+const modalStore=createStore<{open:boolean;setOpen:(v:boolean)=>void}>()(set=>({open:false,setOpen:v=>set({open:v})}));
+function ModalTrigger(){const open=useStore(modalStore,s=>s.open);return <button aria-expanded={open} onClick={()=>modalStore.getState().setOpen(!open)}>Details</button>}
+// A shared global singleton is fine for browser-only UI, but not for request-private server data.
+```
+
+**Trust boundary:** Never treat a UI role, selected row or persisted browser token as server authorization. Query data and private records still require server-side validation and access controls.
+
+</LessonStep>
+
+<Misconception claim="The starter's setOpen action always closes the dialog, so shared UI state cannot respond to an open request." correction="Use Zustand for genuinely shared client UI state, the URL for linkable filters and a dedicated data cache for remote server records. Runtime Zustand state transitions do not establish backend authorization or cross-browser correctness." />
+
+<KnowledgeCheck question="What is the best state-management rule for local vs url vs server state?" choices={["A single global store should contain every request's server response and secrets.","Use Zustand for genuinely shared client UI state, the URL for linkable filters and a dedicated data cache for remote server records.","Browser persistence securely hides access tokens from the user.","Any correct TypeScript type implies cross-tab and server data consistency."] } correctIndex={1} explanation="Use Zustand for genuinely shared client UI state, the URL for linkable filters and a dedicated data cache for remote server records." misconception="Use each state mechanism for the data scope and lifetime it actually owns." lessonId="09.04.01" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Reproduce:** The starter's setOpen action always closes the dialog, so shared UI state cannot respond to an open request. **Diagnose:** trace the store action and ownership boundary. **Repair:** Use Zustand for genuinely shared client UI state, the URL for linkable filters and a dedicated data cache for remote server records. **Regression:** A new vanilla Zustand store begins closed and responds to both open and close actions. Confirm browser and HTTP behavior separately when relevant.
+
+## Guided local lab
+
+The `labs/zustand-local-url-server/` exercise contains an intentionally broken learner starter, a reviewed instructor fix, real Zustand 5 Node assertions, and a completion rubric. No arbitrary learner code is executed by the academy server.
+
+<LabGate lessonId="09.04.01" labId="lab.zustand.zustand-local-url-server" commands={["npm run lab:zustand-local-url-server","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+Which state belongs to a local component, which should survive in a shareable URL, and which must remain in a server-backed cache? How would you reproduce a stale state bug in two tabs?
+
+## Official references
+
+- [Zustand 5 official reference](https://zustand.docs.pmnd.rs/reference/apis/create-store)
+- [Supporting official guide](https://zustand.docs.pmnd.rs/reference/hooks/use-store)
+

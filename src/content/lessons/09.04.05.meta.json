@@ -1,0 +1,40 @@
+{
+  "id": "09.04.05",
+  "title": "Multi-tab state coordination: Use an explicit message origin and monotonic revision gate when synchronizing selected client preferences between tabs; document conflict limitations.",
+  "description": "A complete Zustand 5 state-boundaries lesson using actual vanilla stores, targeted subscriptions and safe client state ownership, including a red starter and offline regression tests.",
+  "trackId": "09",
+  "moduleId": "09.04",
+  "level": "Intermediate",
+  "estimatedMinutes": 65,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "typescript": "5",
+    "react": "19",
+    "zustand": "5"
+  },
+  "prerequisites": [
+    "09.04.04"
+  ],
+  "objectives": [
+    "Use an explicit message origin and monotonic revision gate when synchronizing selected client preferences between tabs; document conflict limitations.",
+    "Repair the zustand-multitab-revisions intentionally broken Zustand 5 starter.",
+    "Explain what belongs in local, URL or authoritative remote data state."
+  ],
+  "labId": "lab.zustand.zustand-multitab-revisions",
+  "rubric": [
+    "I can explain the state ownership principle for multi-tab state coordination.",
+    "I can repair the 09.04.05 defect using actual Zustand 5 APIs.",
+    "I can identify persistence, privacy and hydration risks needing integration tests."
+  ],
+  "sources": [
+    {
+      "label": "Zustand 5 official APIs",
+      "url": "https://zustand.docs.pmnd.rs/reference/apis/create-store"
+    },
+    {
+      "label": "Additional official guide",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/API/Broadcast_Channel_API"
+    }
+  ]
+}

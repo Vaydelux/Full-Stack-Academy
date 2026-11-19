@@ -1,0 +1,115 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Use an explicit message origin and monotonic revision gate when synchronizing selected client preferences between tabs; document conflict limitations.","Reproduce and repair the multi-tab state coordination state bug with real Zustand 5 APIs.","Distinguish ephemeral UI state, shareable URL state and authoritative server data."]} />
+
+## The problem we're solving
+
+Two tabs update a local theme preference. A delayed message from an older revision arrives and overwrites a newer user choice.
+
+**Broken behavior:** The starter applies every incoming update, including messages from the same tab and stale revisions.
+
+## Build the mental model
+
+Use an explicit message origin and monotonic revision gate when synchronizing selected client preferences between tabs; document conflict limitations.
+
+**Predict:** New remote revision is accepted; stale or self-origin updates do not override more recent state.
+
+**Evidence boundary:** The local test imports the real Zustand 5 `createStore` API and, where appropriate, the official middleware. The store is created afresh per test; it does not use a global request-scoped server singleton. Passing Node assertions does not prove browser hydration, cross-tab synchronization or HTTP authorization.
+
+## Prerequisites and preflight
+
+Complete `09.01.08` (Zod 4) before this module and the preceding `09.04` lesson as applicable. This is a dependency-safe module: Zustand 5 is already in the project's dependency manifest; React Hook Form and TanStack Query are covered in other planned modules. Run with locked dependencies under Node 24.
+
+Open `labs/zustand-multitab-revisions/starter/solution.ts`. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:zustand-multitab-revisions`; PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:zustand-multitab-revisions; Remove-Item Env:ACADEMY_LAB_TARGET`. The starter intentionally fails a substantive assertion.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the broken Zustand store behavior" file="labs/zustand-multitab-revisions/starter/solution.ts" expected="The red starter fails a meaningful offline assertion, not a missing dependency import.">
+
+```ts
+import {createStore} from 'zustand/vanilla';
+export type Message={origin:string;revision:number;theme:'light'|'dark'};
+type TabState=Message&{setTheme:(theme:Message['theme'])=>void;applyRemote:(msg:Message)=>void};
+export function makeTabStore(origin:string){
+ return createStore<TabState>()(set=>({
+  origin,revision:0,theme:'light',
+  setTheme:theme=>set(state=>({theme,revision:state.revision+1})),
+  applyRemote:msg=>set({theme:msg.theme,revision:msg.revision}),
+ }));
+}
+```
+
+**Cause:** The starter applies every incoming update, including messages from the same tab and stale revisions.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the corrected Zustand 5 store" file="labs/zustand-multitab-revisions/starter/solution.ts" expected="New remote revision is accepted; stale or self-origin updates do not override more recent state.">
+
+```ts
+import {createStore} from 'zustand/vanilla';
+export type Message={origin:string;revision:number;theme:'light'|'dark'};
+type TabState=Message&{setTheme:(theme:Message['theme'])=>void;applyRemote:(message:Message)=>void};
+export function makeTabStore(origin:string){
+ return createStore<TabState>()((set,get)=>({
+  origin,revision:0,theme:'light',
+  setTheme:theme=>set(state=>({theme,revision:state.revision+1})),
+  applyRemote:message=>{if(message.origin!==origin&&Number.isSafeInteger(message.revision)&&message.revision>get().revision){
+   set({theme:message.theme,revision:message.revision});
+  }},
+ }));
+}
+```
+
+**Reasoning:** Use an explicit message origin and monotonic revision gate when synchronizing selected client preferences between tabs; document conflict limitations.
+
+</LessonStep>
+
+<LessonStep number={3} title="Run a real store mutation and regression check" file="labs/zustand-multitab-revisions/solution.test.mjs" expected="The correct instructor passes the Node/Zustand assertions, including denied or edge cases.">
+
+```js
+const tab=mod.makeTabStore('tab-a');
+tab.getState().setTheme('dark');assert.equal(tab.getState().revision,1);
+tab.getState().applyRemote({origin:'tab-b',revision:0,theme:'light'});assert.equal(tab.getState().theme,'dark');
+tab.getState().applyRemote({origin:'tab-a',revision:99,theme:'light'});assert.equal(tab.getState().theme,'dark');
+tab.getState().applyRemote({origin:'tab-b',revision:2,theme:'light'});assert.equal(tab.getState().theme,'light');assert.equal(tab.getState().revision,2);
+```
+
+**React/browser usage pattern (illustrative until mounted and tested):**
+
+```tsx
+// Browser-only coordination uses BroadcastChannel; here the store is the model.
+// const channel=new BroadcastChannel('academy-public-preferences');
+// channel.onmessage=event=>store.getState().applyRemote(event.data);
+// Call channel.close() on cleanup. Never broadcast tokens or private records.
+// Revision-only ordering does not solve simultaneous conflicting writes;
+// use version+origin tie-breaks or a single authoritative server when necessary.
+```
+
+**Trust boundary:** Never treat a UI role, selected row or persisted browser token as server authorization. Query data and private records still require server-side validation and access controls.
+
+</LessonStep>
+
+<Misconception claim="The starter applies every incoming update, including messages from the same tab and stale revisions." correction="Use an explicit message origin and monotonic revision gate when synchronizing selected client preferences between tabs; document conflict limitations. Runtime Zustand state transitions do not establish backend authorization or cross-browser correctness." />
+
+<KnowledgeCheck question="What is the best state-management rule for multi-tab state coordination?" choices={["A single global store should contain every request's server response and secrets.","Use an explicit message origin and monotonic revision gate when synchronizing selected client preferences between tabs; document conflict limitations.","Browser persistence securely hides access tokens from the user.","Any correct TypeScript type implies cross-tab and server data consistency."] } correctIndex={1} explanation="Use an explicit message origin and monotonic revision gate when synchronizing selected client preferences between tabs; document conflict limitations." misconception="Use each state mechanism for the data scope and lifetime it actually owns." lessonId="09.04.05" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Reproduce:** The starter applies every incoming update, including messages from the same tab and stale revisions. **Diagnose:** trace the store action and ownership boundary. **Repair:** Use an explicit message origin and monotonic revision gate when synchronizing selected client preferences between tabs; document conflict limitations. **Regression:** New remote revision is accepted; stale or self-origin updates do not override more recent state. Confirm browser and HTTP behavior separately when relevant.
+
+## Guided local lab
+
+The `labs/zustand-multitab-revisions/` exercise contains an intentionally broken learner starter, a reviewed instructor fix, real Zustand 5 Node assertions, and a completion rubric. No arbitrary learner code is executed by the academy server.
+
+<LabGate lessonId="09.04.05" labId="lab.zustand.zustand-multitab-revisions" commands={["npm run lab:zustand-multitab-revisions","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+Which state belongs to a local component, which should survive in a shareable URL, and which must remain in a server-backed cache? How would you reproduce a stale state bug in two tabs?
+
+## Official references
+
+- [Zustand 5 official reference](https://zustand.docs.pmnd.rs/reference/apis/create-store)
+- [Supporting official guide](https://developer.mozilla.org/en-US/docs/Web/API/Broadcast_Channel_API)
+

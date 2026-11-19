@@ -12,5 +12,6 @@ test('every UI Systems starter fails a substantive local assertion',{timeout:800
   assert.equal(result.error,undefined,slug+' cannot execute runner');
   assert.notEqual(result.status,0,slug+' starter unexpectedly passed');
   assert.match(result.stdout||'',/not ok\s+\d+/,slug+' must fail an assertion, not just fail to import');
+  assert.match(result.stdout||'',/code:\s*['"]ERR_ASSERTION['"]/,slug+': expected AssertionError, not import/transform failure');
  }
 });

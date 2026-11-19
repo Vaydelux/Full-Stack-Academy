@@ -7,7 +7,7 @@ const script=fs.readFileSync(path.join(root,'scripts/verify-offline.mjs'),'utf8'
 const pkg=JSON.parse(fs.readFileSync(path.join(root,'package.json'),'utf8'));
 test('offline quality gate invokes required local checks, without cloud deployment actions',()=>{
  assert.equal(pkg.scripts['verify:offline'],'node scripts/verify-offline.mjs');
- for(const name of ['lint','typecheck','test','validate','verify:content','checkpoint:check','test:labs','test:red-react','test:react-red-advanced','test:red-react-performance','test:red-next-router','test:red-next-full','test:red-ui-track','test:red-zod-foundations','build']){
+ for(const name of ['lint','typecheck','test','validate','verify:content','checkpoint:check','test:labs','test:red-react','test:react-red-advanced','test:red-react-performance','test:red-next-router','test:red-next-full','test:red-ui-track','test:red-zod-foundations','test:red-zustand-state','build']){
   assert.ok(script.includes("'"+name+"'"),name);
  }
  assert.match(script,/spawnSync\(command, args/);

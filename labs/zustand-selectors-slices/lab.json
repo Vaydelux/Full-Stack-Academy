@@ -1,0 +1,15 @@
+{
+  "id": "lab.zustand.zustand-selectors-slices",
+  "lessonId": "09.04.02",
+  "title": "Zustand 5 zustand selectors and slices local lab",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/zustand-selectors-slices/starter/solution.ts",
+  "solution": "labs/zustand-selectors-slices/solution/solution.ts",
+  "tests": "labs/zustand-selectors-slices/solution.test.mjs",
+  "verify": [
+    "npm run lab:zustand-selectors-slices"
+  ],
+  "expected": "Changing query leaves sort subscribers quiet; changing sort notifies them exactly once.",
+  "security": "Actual Zustand 5 vanilla stores execute locally; no network, browser secrets, authentication, persistence into real storage or remote code execution."
+}

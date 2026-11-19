@@ -9,11 +9,11 @@
     "productionUrl": "https://fullstack-academy-ecru.vercel.app/"
   },
   "development": {
-    "branch": "feat/zod4-schema-design-and-live-lab",
-    "basePullRequest": 21,
-    "baseBranch": "feat/ui-systems-track08-offline",
-    "state": "zod4-schema-design-source-candidate-unverified",
-    "note": "09.01.02 is an existing published interactive model; 8 new Zod MDX add only 7 unique IDs. All 19 indexed Zod API items now have authored draft references. Executable Node and browser gates pending."
+    "branch": "feat/zustand5-state-boundaries-live",
+    "basePullRequest": 22,
+    "baseBranch": "feat/zod4-schema-design-and-live-lab",
+    "state": "zustand5-real-store-source-candidate-unverified",
+    "note": "09.04 is authored before 09.02/09.03 because Zustand 5 is already pinned, while RHF/Query need new lockfile dependencies. Planned/noindex boundary stays 09.02.01."
   },
   "snapshot": {
     "tracks": 28,
@@ -22,9 +22,9 @@
     "indexedReferences": 303,
     "authoredReferenceDrafts": 38,
     "authoredInteractiveModels": 4,
-    "authoredMdxLessons": 297,
-    "publishedLessons": 298,
-    "labFixtures": 297,
+    "authoredMdxLessons": 305,
+    "publishedLessons": 306,
+    "labFixtures": 305,
     "completeModules": [
       "00.01",
       "00.02",
@@ -62,7 +62,8 @@
       "08.02",
       "08.03",
       "08.04",
-      "09.01"
+      "09.01",
+      "09.04"
     ]
   },
   "security": {
@@ -71,5 +72,5 @@
     "exceptionExpires": "2026-12-02"
   },
   "nextMilestone": "09.02",
-  "status": "unreleased-stacked-zod4-schema-track"
+  "status": "unreleased-stacked-zustand5-state-boundaries"
 }

@@ -1,0 +1,15 @@
+{
+  "id": "lab.zustand.zustand-derived-subscription",
+  "lessonId": "09.04.04",
+  "title": "Zustand 5 derived state and store subscriptions local lab",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/zustand-derived-subscription/starter/solution.ts",
+  "solution": "labs/zustand-derived-subscription/solution/solution.ts",
+  "tests": "labs/zustand-derived-subscription/solution.test.mjs",
+  "verify": [
+    "npm run lab:zustand-derived-subscription"
+  ],
+  "expected": "Totals change when quantities change, the previous state stays immutable and subscriptions observe updates.",
+  "security": "Actual Zustand 5 vanilla stores execute locally; no network, browser secrets, authentication, persistence into real storage or remote code execution."
+}

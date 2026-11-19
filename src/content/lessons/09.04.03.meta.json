@@ -1,0 +1,40 @@
+{
+  "id": "09.04.03",
+  "title": "Persistence risks: Use Zustand persist with a strict partialize allowlist and controlled hydration; localStorage is user-readable and must never become a secret store.",
+  "description": "A complete Zustand 5 state-boundaries lesson using actual vanilla stores, targeted subscriptions and safe client state ownership, including a red starter and offline regression tests.",
+  "trackId": "09",
+  "moduleId": "09.04",
+  "level": "Intermediate",
+  "estimatedMinutes": 65,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "typescript": "5",
+    "react": "19",
+    "zustand": "5"
+  },
+  "prerequisites": [
+    "09.04.02"
+  ],
+  "objectives": [
+    "Use Zustand persist with a strict partialize allowlist and controlled hydration; localStorage is user-readable and must never become a secret store.",
+    "Repair the zustand-persist-private intentionally broken Zustand 5 starter.",
+    "Explain what belongs in local, URL or authoritative remote data state."
+  ],
+  "labId": "lab.zustand.zustand-persist-private",
+  "rubric": [
+    "I can explain the state ownership principle for persistence risks.",
+    "I can repair the 09.04.03 defect using actual Zustand 5 APIs.",
+    "I can identify persistence, privacy and hydration risks needing integration tests."
+  ],
+  "sources": [
+    {
+      "label": "Zustand 5 official APIs",
+      "url": "https://zustand.docs.pmnd.rs/reference/middlewares/persist"
+    },
+    {
+      "label": "Additional official guide",
+      "url": "https://zustand.docs.pmnd.rs/reference/integrations/persisting-store-data"
+    }
+  ]
+}

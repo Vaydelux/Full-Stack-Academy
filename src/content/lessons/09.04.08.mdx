@@ -1,0 +1,118 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Create a request-isolated Zustand 5 vanilla store with typed actions, stable selectors and derived visible rows; do not persist or duplicate server-owned catalogue data.","Reproduce and repair the lab filters and preferences state bug with real Zustand 5 APIs.","Distinguish ephemeral UI state, shareable URL state and authoritative server data."]} />
+
+## The problem we're solving
+
+A course search UI needs a shareable query, optional type filter, and display density. A broken store ignores query updates and the result count never changes.
+
+**Broken behavior:** The starter ignores query and kind actions and returns all items regardless of the selected filter.
+
+## Build the mental model
+
+Create a request-isolated Zustand 5 vanilla store with typed actions, stable selectors and derived visible rows; do not persist or duplicate server-owned catalogue data.
+
+**Predict:** Search and kind filter real catalogue rows, density remains independent, and reset restores the defaults.
+
+**Evidence boundary:** The local test imports the real Zustand 5 `createStore` API and, where appropriate, the official middleware. The store is created afresh per test; it does not use a global request-scoped server singleton. Passing Node assertions does not prove browser hydration, cross-tab synchronization or HTTP authorization.
+
+## Prerequisites and preflight
+
+Complete `09.01.08` (Zod 4) before this module and the preceding `09.04` lesson as applicable. This is a dependency-safe module: Zustand 5 is already in the project's dependency manifest; React Hook Form and TanStack Query are covered in other planned modules. Run with locked dependencies under Node 24.
+
+Open `labs/zustand-filter-preference-capstone/starter/solution.ts`. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:zustand-filter-preference-capstone`; PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:zustand-filter-preference-capstone; Remove-Item Env:ACADEMY_LAB_TARGET`. The starter intentionally fails a substantive assertion.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the broken Zustand store behavior" file="labs/zustand-filter-preference-capstone/starter/solution.ts" expected="The red starter fails a meaningful offline assertion, not a missing dependency import.">
+
+```ts
+import {createStore} from 'zustand/vanilla';
+export type Kind='all'|'course'|'reference';
+type Density='compact'|'comfortable';
+type Filters={query:string;kind:Kind;density:Density;setQuery:(query:string)=>void;setKind:(kind:Kind)=>void;setDensity:(density:Density)=>void;reset:()=>void};
+export function createAcademyFilterStore(){
+ return createStore<Filters>()(()=>({
+  query:'',kind:'all',density:'comfortable',
+  setQuery:query=>{void query;},setKind:kind=>{void kind;},
+  setDensity:density=>{void density;},reset:()=>{},
+ }));
+}
+export function selectVisible<T>(items:readonly T[],filters:Filters){
+ void filters;return [...items];
+}
+```
+
+**Cause:** The starter ignores query and kind actions and returns all items regardless of the selected filter.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the corrected Zustand 5 store" file="labs/zustand-filter-preference-capstone/starter/solution.ts" expected="Search and kind filter real catalogue rows, density remains independent, and reset restores the defaults.">
+
+```ts
+export {createAcademyFilterStore,selectVisible} from '../../../src/lib/academy/zustand-filters';
+```
+
+**Reasoning:** Create a request-isolated Zustand 5 vanilla store with typed actions, stable selectors and derived visible rows; do not persist or duplicate server-owned catalogue data.
+
+</LessonStep>
+
+<LessonStep number={3} title="Run a real store mutation and regression check" file="labs/zustand-filter-preference-capstone/solution.test.mjs" expected="The correct instructor passes the Node/Zustand assertions, including denied or edge cases.">
+
+```js
+const store=mod.createAcademyFilterStore();
+const rows=[{id:'r',label:'React Essentials',type:'course'},{id:'z',label:'Zod Reference',type:'reference'},{id:'n',label:'Next Routing',type:'course'}];
+store.getState().setQuery('rea');store.getState().setKind('course');
+assert.deepEqual(mod.selectVisible(rows,store.getState()).map(row=>row.id),['r']);
+store.getState().setDensity('compact');assert.equal(store.getState().density,'compact');
+store.getState().reset();assert.equal(store.getState().query,'');assert.equal(store.getState().kind,'all');assert.equal(mod.selectVisible(rows,store.getState()).length,3);
+```
+
+**React/browser usage pattern (illustrative until mounted and tested):**
+
+```tsx
+import {useStore} from 'zustand';
+import {createAcademyFilterStore} from '@/lib/academy/zustand-filters';
+function FilteredView(){
+ const [store]=useState(createAcademyFilterStore);
+ const query=useStore(store,s=>s.query); // stable primitive selector
+ const kind=useStore(store,s=>s.kind);
+ const setQuery=useStore(store,s=>s.setQuery);
+ // Select visible rows from the authoritative catalogue, not a duplicate cache.
+ return <input aria-label="Search courses" value={query} onChange={e=>setQuery(e.target.value)}/>;
+}
+// Open /learn/state-boundaries-lab for mounted practice with the same store.
+```
+
+**Trust boundary:** Never treat a UI role, selected row or persisted browser token as server authorization. Query data and private records still require server-side validation and access controls.
+
+</LessonStep>
+
+<Misconception claim="The starter ignores query and kind actions and returns all items regardless of the selected filter." correction="Create a request-isolated Zustand 5 vanilla store with typed actions, stable selectors and derived visible rows; do not persist or duplicate server-owned catalogue data. Runtime Zustand state transitions do not establish backend authorization or cross-browser correctness." />
+
+<KnowledgeCheck question="What is the best state-management rule for lab filters and preferences?" choices={["A single global store should contain every request's server response and secrets.","Create a request-isolated Zustand 5 vanilla store with typed actions, stable selectors and derived visible rows; do not persist or duplicate server-owned catalogue data.","Browser persistence securely hides access tokens from the user.","Any correct TypeScript type implies cross-tab and server data consistency."] } correctIndex={1} explanation="Create a request-isolated Zustand 5 vanilla store with typed actions, stable selectors and derived visible rows; do not persist or duplicate server-owned catalogue data." misconception="Use each state mechanism for the data scope and lifetime it actually owns." lessonId="09.04.08" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Reproduce:** The starter ignores query and kind actions and returns all items regardless of the selected filter. **Diagnose:** trace the store action and ownership boundary. **Repair:** Create a request-isolated Zustand 5 vanilla store with typed actions, stable selectors and derived visible rows; do not persist or duplicate server-owned catalogue data. **Regression:** Search and kind filter real catalogue rows, density remains independent, and reset restores the defaults. Confirm browser and HTTP behavior separately when relevant.
+
+## Guided local lab
+
+The `labs/zustand-filter-preference-capstone/` exercise contains an intentionally broken learner starter, a reviewed instructor fix, real Zustand 5 Node assertions, and a completion rubric. No arbitrary learner code is executed by the academy server.
+
+<LabGate lessonId="09.04.08" labId="lab.zustand.zustand-filter-preference-capstone" commands={["npm run lab:zustand-filter-preference-capstone","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+Which state belongs to a local component, which should survive in a shareable URL, and which must remain in a server-backed cache? How would you reproduce a stale state bug in two tabs?
+
+## Official references
+
+- [Zustand 5 official reference](https://zustand.docs.pmnd.rs/reference/apis/create-store)
+- [Supporting official guide](https://zustand.docs.pmnd.rs/reference/hooks/use-store)
+
+## Browser-only Zustand practice
+
+[Open the interactive state boundaries lab](/learn/state-boundaries-lab) to exercise real, per-component Zustand stores with search, filters, density and reset. This example stores no private remote records and uses the same store as the instructor acceptance tests.
+
