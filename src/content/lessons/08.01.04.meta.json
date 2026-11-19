@@ -1,0 +1,41 @@
+{
+  "id": "08.01.04",
+  "title": "shadcn component composition",
+  "description": "Develop shadcn component composition using Tailwind v4 principles, accessible React markup and a meaningful offline bug-hunt lab.",
+  "trackId": "08",
+  "moduleId": "08.01",
+  "level": "Intermediate",
+  "estimatedMinutes": 60,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "react": "19",
+    "tailwind": "4",
+    "typescript": "5",
+    "node": "24"
+  },
+  "prerequisites": [
+    "08.01.03"
+  ],
+  "objectives": [
+    "Explain the accessibility and design invariant behind shadcn component composition",
+    "Reproduce and correct a meaningful failing student assertion",
+    "Identify what static SSR proves and what requires a real browser and keyboard"
+  ],
+  "labId": "lab.foundation.ui-shadcn-composition",
+  "sources": [
+    {
+      "label": "Official primary documentation",
+      "url": "https://ui.shadcn.com/docs/components/button"
+    },
+    {
+      "label": "Official accessibility/component reference",
+      "url": "https://ui.shadcn.com/docs/installation/next"
+    }
+  ],
+  "rubric": [
+    "Reproduce a user-facing failure from the starter",
+    "Repair the invariant without changing the assertions",
+    "Describe the remaining keyboard, browser and visual QA requirements"
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.ui-css-first-tokens",
+  "lessonId": "08.01.02",
+  "title": "CSS-first design tokens",
+  "runtime": "react19-ui-ssr-pure-contract",
+  "status": "authored",
+  "starter": "labs/ui-css-first-tokens/starter/solution.ts",
+  "solution": "labs/ui-css-first-tokens/solution/solution.ts",
+  "tests": "labs/ui-css-first-tokens/solution.test.mjs",
+  "verify": [
+    "npm run lab:ui-css-first-tokens"
+  ],
+  "expected": "Reviewed offline contract and initial semantic React markup, not browser interaction or visual fidelity.",
+  "security": "Only synthetic fixture data. No cloud, secrets, untrusted evaluation, authentication, deployment or hosted grader."
+}

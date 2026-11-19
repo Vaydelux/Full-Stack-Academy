@@ -1,0 +1,103 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Explain the accessibility and design invariant behind theme providers and contrast","Reproduce and correct a meaningful failing student assertion","Identify what static SSR proves and what requires a real browser and keyboard"]} />
+
+## The problem we're solving
+
+Dark-mode text is selected by visual intuition and the team never checks its foreground-to-background contrast ratio.
+
+## Build the mental model
+
+WCAG relative luminance uses linearized sRGB channels. For normal-sized text, target at least 4.5:1 contrast under WCAG AA, and evaluate every theme, disabled state and focus indicator separately. A React provider can switch tokens but cannot make poor color pairs compliant.
+
+**Predict first:** Pure black on white yields a 21:1 ratio and identical colors yield 1:1; theme compliance must still be checked in the browser.
+
+## Prerequisites and preflight
+
+Continue from [the previous topic](/learn/08.01.05). Read `labs/ui-theme-contrast/starter/solution.ts`, `labs/ui-theme-contrast/solution/solution.ts` and `labs/ui-theme-contrast/solution.test.mjs`. The TSX sample is rendered as initial HTML only; hydrated events, focus, visual contrast and overflow need separate browser tests.
+
+<LessonStep number={1} title="Reproduce the defective UI policy" file="labs/ui-theme-contrast/starter/solution.ts" expected="Student starter fails a meaningful assertion.">
+
+```ts
+
+export function solve(foreground:string,background:string):number{return foreground===background?1:1;}
+
+```
+
+**Predict:** Pure black on white yields a 21:1 ratio and identical colors yield 1:1; theme compliance must still be checked in the browser.
+
+**Diagnosis:** Dark-mode text is selected by visual intuition and the team never checks its foreground-to-background contrast ratio.
+
+**Proof:** Run `ACADEMY_LAB_TARGET=starter npm run lab:ui-theme-contrast`. The starter should fail the stated regression, not fail because of a missing dependency.
+
+</LessonStep>
+
+<LessonStep number={2} title="Fix the policy and verify edge cases" file="labs/ui-theme-contrast/starter/solution.ts" expected="Pure black on white yields a 21:1 ratio and identical colors yield 1:1; theme compliance must still be checked in the browser.">
+
+```ts
+
+export function solve(foreground:string,background:string):number{const lum=(hex:string)=>{if(!/^#[0-9a-f]{6}$/i.test(hex))throw new TypeError("Expected #RRGGBB");const c=[1,3,5].map(i=>parseInt(hex.slice(i,i+2),16)/255).map(v=>v<=0.04045?v/12.92:Math.pow((v+0.055)/1.055,2.4));return c[0]*0.2126+c[1]*0.7152+c[2]*0.0722;};const a=lum(foreground),b=lum(background);return (Math.max(a,b)+0.05)/(Math.min(a,b)+0.05);}
+
+```
+
+**Why it works:** WCAG relative luminance uses linearized sRGB channels. For normal-sized text, target at least 4.5:1 contrast under WCAG AA, and evaluate every theme, disabled state and focus indicator separately. A React provider can switch tokens but cannot make poor color pairs compliant.
+
+**Proof:** Run `npm run lab:ui-theme-contrast` and inspect the instructor test output.
+
+</LessonStep>
+
+<LessonStep number={3} title="Render the semantic React example" file="labs/ui-theme-contrast/solution/Widget.tsx" expected="Initial semantic markup renders without a runtime crash.">
+
+```tsx
+
+import React from "react";
+export function Workshop(){return <section aria-label="Contrast workshop"><h2>Theme contrast audit</h2><p className="text-slate-900 bg-white">Readable content needs measured contrast.</p></section>;}
+
+```
+
+This sample uses semantic React without requiring an uninstalled UI package. Server rendering does not execute handlers or certify focus management.
+
+**Proof:** The lab renders initial HTML with React DOM Server. A real browser check remains mandatory.
+
+</LessonStep>
+
+## Production library pattern
+
+```tsx
+/* Pair foreground and surface tokens, not only background variants. */
+:root{--surface: #ffffff;--on-surface: #0f172a;}
+.dark{--surface: #0f172a;--on-surface: #ffffff;}
+@theme inline{--color-surface: var(--surface);--color-on-surface: var(--on-surface);}
+```
+
+CSS tokens are not executed by this React SSR test. Verify computed colors, contrast, focus and reduced motion in each real theme.
+
+## Explore and verify
+
+Test long labels, keyboard-only usage, 320px width, reduced motion, contrast, errors and screen-reader announcements in a real browser.
+
+<Misconception claim="An SSR snapshot proves a component is keyboard accessible." correction="WCAG relative luminance uses linearized sRGB channels. For normal-sized text, target at least 4.5:1 contrast under WCAG AA, and evaluate every theme, disabled state and focus indicator separately. A React provider can switch tokens but cannot make poor color pairs compliant." />
+
+## Bug Hunt: reproduce, diagnose, repair
+
+Measure a theme with light text on near-white backgrounds and show the ratio before/after changing the token. Record at least normal-text 4.5:1 contrast and focus indication tests.
+
+<KnowledgeCheck question="What is the WCAG AA contrast target for typical normal text?" choices={["1:1","2:1","4.5:1","21:1 in all cases"]} correctIndex={2} explanation="WCAG relative luminance uses linearized sRGB channels. For normal-sized text, target at least 4.5:1 contrast under WCAG AA, and evaluate every theme, disabled state and focus indicator separately. A React provider can switch tokens but cannot make poor color pairs compliant." misconception="Offline SSR is not an interactive accessibility test." lessonId="08.01.06" />
+
+## Guided local lab
+
+Edit `labs/ui-theme-contrast/starter/solution.ts`; the actual test asserts meaningful positive and negative outcomes. `npm run lab:ui-theme-contrast` also renders initial React markup. Keyboard interactions, pointer behavior, focus trapping, browser layout and actual Radix/shadcn packages are separate integration gates.
+
+<LabGate lessonId="08.01.06" labId="lab.foundation.ui-theme-contrast" commands={["npm ci","npm run lab:ui-theme-contrast"]} interactive={false} />
+
+## Reflect
+
+What was broken, what exact assertion proves the repair, and which user interaction still requires a real browser or assistive technology?
+
+## Official references
+
+- [Primary framework documentation](https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html)
+
+- [Supporting accessibility and API guide](https://tailwindcss.com/docs/dark-mode)

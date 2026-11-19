@@ -1,0 +1,105 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Explain the accessibility and design invariant behind lab component gallery","Reproduce and correct a meaningful failing student assertion","Identify what static SSR proves and what requires a real browser and keyboard"]} />
+
+## The problem we're solving
+
+A component showcase includes duplicate IDs and unlabeled icon-only controls, so keyboard and assistive-technology users cannot identify actions reliably.
+
+## Build the mental model
+
+A reusable gallery should validate stable IDs and accessible labels, provide consistent design tokens, and separate presentational variants from behavior. Test every control across disabled, loading, error, dark/light and compact states.
+
+**Predict first:** Valid gallery elements keep unique IDs and nonempty accessible names, while duplicate or empty entries are rejected before rendering.
+
+## Prerequisites and preflight
+
+Continue from [the previous topic](/learn/08.01.07). Read `labs/ui-component-gallery/starter/solution.ts`, `labs/ui-component-gallery/solution/solution.ts` and `labs/ui-component-gallery/solution.test.mjs`. The TSX sample is rendered as initial HTML only; hydrated events, focus, visual contrast and overflow need separate browser tests.
+
+<LessonStep number={1} title="Reproduce the defective UI policy" file="labs/ui-component-gallery/starter/solution.ts" expected="Student starter fails a meaningful assertion.">
+
+```ts
+
+export type Spec={id:string;label:string;kind:"button"|"link"};export function solve(specs:readonly Spec[]){return [...specs];}
+
+```
+
+**Predict:** Valid gallery elements keep unique IDs and nonempty accessible names, while duplicate or empty entries are rejected before rendering.
+
+**Diagnosis:** A component showcase includes duplicate IDs and unlabeled icon-only controls, so keyboard and assistive-technology users cannot identify actions reliably.
+
+**Proof:** Run `ACADEMY_LAB_TARGET=starter npm run lab:ui-component-gallery`. The starter should fail the stated regression, not fail because of a missing dependency.
+
+</LessonStep>
+
+<LessonStep number={2} title="Fix the policy and verify edge cases" file="labs/ui-component-gallery/starter/solution.ts" expected="Valid gallery elements keep unique IDs and nonempty accessible names, while duplicate or empty entries are rejected before rendering.">
+
+```ts
+
+export type Spec={id:string;label:string;kind:"button"|"link"};export function solve(specs:readonly Spec[]){const seen=new Set<string>();return specs.map(s=>{if(!/^[a-z0-9-]+$/.test(s.id)||seen.has(s.id)||!s.label.trim())throw new TypeError("Unique IDs and accessible names required");seen.add(s.id);return {id:s.id,label:s.label.trim(),kind:s.kind};});}
+
+```
+
+**Why it works:** A reusable gallery should validate stable IDs and accessible labels, provide consistent design tokens, and separate presentational variants from behavior. Test every control across disabled, loading, error, dark/light and compact states.
+
+**Proof:** Run `npm run lab:ui-component-gallery` and inspect the instructor test output.
+
+</LessonStep>
+
+<LessonStep number={3} title="Render the semantic React example" file="labs/ui-component-gallery/solution/Widget.tsx" expected="Initial semantic markup renders without a runtime crash.">
+
+```tsx
+
+"use client";
+import React,{useState} from "react";
+import {solve} from "./solution";
+const items=solve([{id:"save",label:"Save",kind:"button"},{id:"reset",label:"Reset",kind:"button"}]);
+export function Workshop(){const [status,setStatus]=useState("Ready");return <main aria-label="Component gallery workshop"><h2>Component gallery</h2><div className="flex flex-wrap gap-3">{items.map(item=><button type="button" key={item.id} onClick={()=>setStatus(item.label+" selected")} className="rounded px-4 py-2 focus-visible:ring-2" >{item.label}</button>)}</div><p role="status">{status}</p></main>;}
+
+```
+
+This sample uses semantic React without requiring an uninstalled UI package. Server rendering does not execute handlers or certify focus management.
+
+**Proof:** The lab renders initial HTML with React DOM Server. A real browser check remains mandatory.
+
+</LessonStep>
+
+## Production library pattern
+
+```tsx
+import {Button} from "@/components/ui/button";
+const variantExamples=["default","outline","destructive"] as const;
+function VariantGallery(){return <section aria-label="Button variants">{variantExamples.map(variant=><Button key={variant} type="button" variant={variant}>{variant}</Button>)}</section>;}
+```
+
+The shadcn Button import is an illustrative integration recipe, not part of the offline fixture. Visual/browser qualification of the full gallery is pending.
+
+## Explore and verify
+
+Test long labels, keyboard-only usage, 320px width, reduced motion, contrast, errors and screen-reader announcements in a real browser.
+
+<Misconception claim="An SSR snapshot proves a component is keyboard accessible." correction="A reusable gallery should validate stable IDs and accessible labels, provide consistent design tokens, and separate presentational variants from behavior. Test every control across disabled, loading, error, dark/light and compact states." />
+
+## Bug Hunt: reproduce, diagnose, repair
+
+Start from a gallery with duplicated IDs, unnamed icon controls and inaccessible compact navigation. Fix each issue, then perform a real browser keyboard/zoom/contrast checklist across all gallery controls.
+
+<KnowledgeCheck question="What is a sensible minimum contract for a reusable UI gallery?" choices={["Unique stable IDs and meaningful accessible names","Duplicate IDs so styling is shared","Hidden unlabeled controls","Only a screenshot"]} correctIndex={0} explanation="A reusable gallery should validate stable IDs and accessible labels, provide consistent design tokens, and separate presentational variants from behavior. Test every control across disabled, loading, error, dark/light and compact states." misconception="Offline SSR is not an interactive accessibility test." lessonId="08.01.08" />
+
+## Guided local lab
+
+Edit `labs/ui-component-gallery/starter/solution.ts`; the actual test asserts meaningful positive and negative outcomes. `npm run lab:ui-component-gallery` also renders initial React markup. Keyboard interactions, pointer behavior, focus trapping, browser layout and actual Radix/shadcn packages are separate integration gates.
+
+<LabGate lessonId="08.01.08" labId="lab.foundation.ui-component-gallery" commands={["npm ci","npm run lab:ui-component-gallery"]} interactive={false} />
+
+## Reflect
+
+What was broken, what exact assertion proves the repair, and which user interaction still requires a real browser or assistive technology?
+
+## Official references
+
+- [Primary framework documentation](https://www.w3.org/WAI/ARIA/apg/practices/names-and-descriptions/)
+
+- [Supporting accessibility and API guide](https://ui.shadcn.com/docs/components/button)

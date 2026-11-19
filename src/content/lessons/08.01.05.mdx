@@ -1,0 +1,103 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Explain the accessibility and design invariant behind variant patterns and class merging","Reproduce and correct a meaningful failing student assertion","Identify what static SSR proves and what requires a real browser and keyboard"]} />
+
+## The problem we're solving
+
+Applying both px-2 and px-4 to a button creates a conflicting spacing contract that can change when classes are composed in different orders.
+
+## Build the mental model
+
+Use explicit component variants and a conflict-aware merge utility such as tailwind-merge when integrating dynamic Tailwind classes. A naive string concatenation cannot resolve conflicting utility families; the local exercise narrowly models horizontal padding precedence.
+
+**Predict first:** For the demonstrated px-* family, the later override replaces the earlier spacing class without discarding unrelated styles.
+
+## Prerequisites and preflight
+
+Continue from [the previous topic](/learn/08.01.04). Read `labs/ui-variant-merging/starter/solution.ts`, `labs/ui-variant-merging/solution/solution.ts` and `labs/ui-variant-merging/solution.test.mjs`. The TSX sample is rendered as initial HTML only; hydrated events, focus, visual contrast and overflow need separate browser tests.
+
+<LessonStep number={1} title="Reproduce the defective UI policy" file="labs/ui-variant-merging/starter/solution.ts" expected="Student starter fails a meaningful assertion.">
+
+```ts
+
+export function solve(base:string,override:string):string{return base+" "+override;}
+
+```
+
+**Predict:** For the demonstrated px-* family, the later override replaces the earlier spacing class without discarding unrelated styles.
+
+**Diagnosis:** Applying both px-2 and px-4 to a button creates a conflicting spacing contract that can change when classes are composed in different orders.
+
+**Proof:** Run `ACADEMY_LAB_TARGET=starter npm run lab:ui-variant-merging`. The starter should fail the stated regression, not fail because of a missing dependency.
+
+</LessonStep>
+
+<LessonStep number={2} title="Fix the policy and verify edge cases" file="labs/ui-variant-merging/starter/solution.ts" expected="For the demonstrated px-* family, the later override replaces the earlier spacing class without discarding unrelated styles.">
+
+```ts
+
+export function solve(base:string,override:string):string{const classes=base.split(/\s+/).filter(Boolean);const newer=override.split(/\s+/).filter(Boolean);return [...classes.filter(c=>!newer.some(n=>n.startsWith("px-")&&c.startsWith("px-"))),...newer].join(" ");}
+
+```
+
+**Why it works:** Use explicit component variants and a conflict-aware merge utility such as tailwind-merge when integrating dynamic Tailwind classes. A naive string concatenation cannot resolve conflicting utility families; the local exercise narrowly models horizontal padding precedence.
+
+**Proof:** Run `npm run lab:ui-variant-merging` and inspect the instructor test output.
+
+</LessonStep>
+
+<LessonStep number={3} title="Render the semantic React example" file="labs/ui-variant-merging/solution/Widget.tsx" expected="Initial semantic markup renders without a runtime crash.">
+
+```tsx
+
+import React from "react";
+export function Workshop(){return <article aria-label="Variant gallery workshop"><h2>Button variants</h2><button type="button" className="rounded px-4 py-2 font-medium">Primary variant</button></article>;}
+
+```
+
+This sample uses semantic React without requiring an uninstalled UI package. Server rendering does not execute handlers or certify focus management.
+
+**Proof:** The lab renders initial HTML with React DOM Server. A real browser check remains mandatory.
+
+</LessonStep>
+
+## Production library pattern
+
+```tsx
+import {clsx,type ClassValue} from "clsx";
+import {twMerge} from "tailwind-merge";
+export function cn(...inputs:ClassValue[]){return twMerge(clsx(inputs));}
+const button=cn("rounded px-2","px-4","focus-visible:ring-2");
+```
+
+Actual tailwind-merge and clsx behavior requires installing those packages. The narrow local pure function is deliberately not advertised as a full implementation.
+
+## Explore and verify
+
+Test long labels, keyboard-only usage, 320px width, reduced motion, contrast, errors and screen-reader announcements in a real browser.
+
+<Misconception claim="An SSR snapshot proves a component is keyboard accessible." correction="Use explicit component variants and a conflict-aware merge utility such as tailwind-merge when integrating dynamic Tailwind classes. A naive string concatenation cannot resolve conflicting utility families; the local exercise narrowly models horizontal padding precedence." />
+
+## Bug Hunt: reproduce, diagnose, repair
+
+Create a tiny matrix of variants with conflicting px utilities and compare output. Then verify that a real tailwind-merge handles arbitrary modifiers and state variants: do not generalize this simplified solver.
+
+<KnowledgeCheck question="Why use a Tailwind-aware class merge utility?" choices={["It enforces authentication","It resolves conflicting Tailwind utility families","It turns CSS into JavaScript","It guarantees accessible focus order"]} correctIndex={1} explanation="Use explicit component variants and a conflict-aware merge utility such as tailwind-merge when integrating dynamic Tailwind classes. A naive string concatenation cannot resolve conflicting utility families; the local exercise narrowly models horizontal padding precedence." misconception="Offline SSR is not an interactive accessibility test." lessonId="08.01.05" />
+
+## Guided local lab
+
+Edit `labs/ui-variant-merging/starter/solution.ts`; the actual test asserts meaningful positive and negative outcomes. `npm run lab:ui-variant-merging` also renders initial React markup. Keyboard interactions, pointer behavior, focus trapping, browser layout and actual Radix/shadcn packages are separate integration gates.
+
+<LabGate lessonId="08.01.05" labId="lab.foundation.ui-variant-merging" commands={["npm ci","npm run lab:ui-variant-merging"]} interactive={false} />
+
+## Reflect
+
+What was broken, what exact assertion proves the repair, and which user interaction still requires a real browser or assistive technology?
+
+## Official references
+
+- [Primary framework documentation](https://ui.shadcn.com/docs/installation)
+
+- [Supporting accessibility and API guide](https://tailwindcss.com/docs/styling-with-utility-classes)

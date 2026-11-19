@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.ui-component-gallery",
+  "lessonId": "08.01.08",
+  "title": "Lab component gallery",
+  "runtime": "react19-ui-ssr-pure-contract",
+  "status": "authored",
+  "starter": "labs/ui-component-gallery/starter/solution.ts",
+  "solution": "labs/ui-component-gallery/solution/solution.ts",
+  "tests": "labs/ui-component-gallery/solution.test.mjs",
+  "verify": [
+    "npm run lab:ui-component-gallery"
+  ],
+  "expected": "Reviewed offline contract and initial semantic React markup, not browser interaction or visual fidelity.",
+  "security": "Only synthetic fixture data. No cloud, secrets, untrusted evaluation, authentication, deployment or hosted grader."
+}

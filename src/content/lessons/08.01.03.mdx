@@ -1,0 +1,102 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Explain the accessibility and design invariant behind radix ui primitives","Reproduce and correct a meaningful failing student assertion","Identify what static SSR proves and what requires a real browser and keyboard"]} />
+
+## The problem we're solving
+
+An overlay merely toggles display:none and never gives its content a name or a predictable modal state.
+
+## Build the mental model
+
+Radix primitives provide behavioral foundations for dialogs, menus and other interactive patterns, but Radix must be selected and installed deliberately. Newer shadcn/ui configurations may use Base UI instead; the chosen primitive system determines the actual composition API.
+
+**Predict first:** An open dialog advertises its dialog role and accessible name; focus management still needs a real primitive and browser test.
+
+## Prerequisites and preflight
+
+Continue from [the previous topic](/learn/08.01.02). Read `labs/ui-radix-primitives/starter/solution.ts`, `labs/ui-radix-primitives/solution/solution.ts` and `labs/ui-radix-primitives/solution.test.mjs`. The TSX sample is rendered as initial HTML only; hydrated events, focus, visual contrast and overflow need separate browser tests.
+
+<LessonStep number={1} title="Reproduce the defective UI policy" file="labs/ui-radix-primitives/starter/solution.ts" expected="Student starter fails a meaningful assertion.">
+
+```ts
+
+export function solve(open:boolean){return {role:"generic",modal:false,labelled:false,visible:open};}
+
+```
+
+**Predict:** An open dialog advertises its dialog role and accessible name; focus management still needs a real primitive and browser test.
+
+**Diagnosis:** An overlay merely toggles display:none and never gives its content a name or a predictable modal state.
+
+**Proof:** Run `ACADEMY_LAB_TARGET=starter npm run lab:ui-radix-primitives`. The starter should fail the stated regression, not fail because of a missing dependency.
+
+</LessonStep>
+
+<LessonStep number={2} title="Fix the policy and verify edge cases" file="labs/ui-radix-primitives/starter/solution.ts" expected="An open dialog advertises its dialog role and accessible name; focus management still needs a real primitive and browser test.">
+
+```ts
+
+export function solve(open:boolean){return {role:"dialog",modal:open,labelled:true,visible:open};}
+
+```
+
+**Why it works:** Radix primitives provide behavioral foundations for dialogs, menus and other interactive patterns, but Radix must be selected and installed deliberately. Newer shadcn/ui configurations may use Base UI instead; the chosen primitive system determines the actual composition API.
+
+**Proof:** Run `npm run lab:ui-radix-primitives` and inspect the instructor test output.
+
+</LessonStep>
+
+<LessonStep number={3} title="Render the semantic React example" file="labs/ui-radix-primitives/solution/Widget.tsx" expected="Initial semantic markup renders without a runtime crash.">
+
+```tsx
+
+import React from "react";
+export function Workshop(){return <section aria-label="Modal semantics workshop"><h2>Named dialog shell</h2><div role="dialog" aria-modal="true" aria-labelledby="dialog-heading"><h3 id="dialog-heading">Confirm action</h3><button type="button">Cancel</button></div></section>;}
+
+```
+
+This sample uses semantic React without requiring an uninstalled UI package. Server rendering does not execute handlers or certify focus management.
+
+**Proof:** The lab renders initial HTML with React DOM Server. A real browser check remains mandatory.
+
+</LessonStep>
+
+## Production library pattern
+
+```tsx
+"use client";
+import * as Dialog from "@radix-ui/react-dialog";
+export function ConfirmDialog(){return <Dialog.Root><Dialog.Trigger>Open</Dialog.Trigger><Dialog.Portal><Dialog.Overlay/><Dialog.Content><Dialog.Title>Confirm action</Dialog.Title><Dialog.Description>Review this choice.</Dialog.Description><Dialog.Close>Cancel</Dialog.Close></Dialog.Content></Dialog.Portal></Dialog.Root>;}
+```
+
+Radix package installation and interactive focus tests are required. This academy fixture only checks static semantics, and the illustrative Radix snippet is not compiled by the lab.
+
+## Explore and verify
+
+Test long labels, keyboard-only usage, 320px width, reduced motion, contrast, errors and screen-reader announcements in a real browser.
+
+<Misconception claim="An SSR snapshot proves a component is keyboard accessible." correction="Radix primitives provide behavioral foundations for dialogs, menus and other interactive patterns, but Radix must be selected and installed deliberately. Newer shadcn/ui configurations may use Base UI instead; the chosen primitive system determines the actual composition API." />
+
+## Bug Hunt: reproduce, diagnose, repair
+
+Inspect an overlay without aria-labelledby and whose focus can move to background controls. Write the required semantics, then replace custom focus management with a tested primitive and verify Escape, focus return, and portal isolation.
+
+<KnowledgeCheck question="Which claim about Radix primitives is accurate?" choices={["They are always the only shadcn/ui base","They can supply dialog behavior when chosen and installed","Role attributes alone implement a focus trap","CSS opacity prevents background focus"]} correctIndex={1} explanation="Radix primitives provide behavioral foundations for dialogs, menus and other interactive patterns, but Radix must be selected and installed deliberately. Newer shadcn/ui configurations may use Base UI instead; the chosen primitive system determines the actual composition API." misconception="Offline SSR is not an interactive accessibility test." lessonId="08.01.03" />
+
+## Guided local lab
+
+Edit `labs/ui-radix-primitives/starter/solution.ts`; the actual test asserts meaningful positive and negative outcomes. `npm run lab:ui-radix-primitives` also renders initial React markup. Keyboard interactions, pointer behavior, focus trapping, browser layout and actual Radix/shadcn packages are separate integration gates.
+
+<LabGate lessonId="08.01.03" labId="lab.foundation.ui-radix-primitives" commands={["npm ci","npm run lab:ui-radix-primitives"]} interactive={false} />
+
+## Reflect
+
+What was broken, what exact assertion proves the repair, and which user interaction still requires a real browser or assistive technology?
+
+## Official references
+
+- [Primary framework documentation](https://www.radix-ui.com/primitives/docs/components/dialog)
+
+- [Supporting accessibility and API guide](https://ui.shadcn.com/docs/components/dialog)

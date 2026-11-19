@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.ui-theme-contrast",
+  "lessonId": "08.01.06",
+  "title": "Theme providers and contrast",
+  "runtime": "react19-ui-ssr-pure-contract",
+  "status": "authored",
+  "starter": "labs/ui-theme-contrast/starter/solution.ts",
+  "solution": "labs/ui-theme-contrast/solution/solution.ts",
+  "tests": "labs/ui-theme-contrast/solution.test.mjs",
+  "verify": [
+    "npm run lab:ui-theme-contrast"
+  ],
+  "expected": "Reviewed offline contract and initial semantic React markup, not browser interaction or visual fidelity.",
+  "security": "Only synthetic fixture data. No cloud, secrets, untrusted evaluation, authentication, deployment or hosted grader."
+}

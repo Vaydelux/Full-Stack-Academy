@@ -1,0 +1,103 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Explain the accessibility and design invariant behind css-first design tokens","Reproduce and correct a meaningful failing student assertion","Identify what static SSR proves and what requires a real browser and keyboard"]} />
+
+## The problem we're solving
+
+A button hardcodes a blue hex color in multiple variants, making dark mode and shared branding inconsistent.
+
+## Build the mental model
+
+Use semantic CSS custom properties and Tailwind v4 @theme mappings rather than repeating absolute color literals. Define foreground/background pairs, keep dark-mode mappings explicit, and measure contrast instead of guessing.
+
+**Predict first:** Default and dark modes resolve through distinct semantic tokens while components stop duplicating hardcoded hex colors.
+
+## Prerequisites and preflight
+
+Continue from [the previous topic](/learn/08.01.01). Read `labs/ui-css-first-tokens/starter/solution.ts`, `labs/ui-css-first-tokens/solution/solution.ts` and `labs/ui-css-first-tokens/solution.test.mjs`. The TSX sample is rendered as initial HTML only; hydrated events, focus, visual contrast and overflow need separate browser tests.
+
+<LessonStep number={1} title="Reproduce the defective UI policy" file="labs/ui-css-first-tokens/starter/solution.ts" expected="Student starter fails a meaningful assertion.">
+
+```ts
+
+export function solve(state:"default"|"dark"):string{return state==="dark"?"#2563eb":"#2563eb";}
+
+```
+
+**Predict:** Default and dark modes resolve through distinct semantic tokens while components stop duplicating hardcoded hex colors.
+
+**Diagnosis:** A button hardcodes a blue hex color in multiple variants, making dark mode and shared branding inconsistent.
+
+**Proof:** Run `ACADEMY_LAB_TARGET=starter npm run lab:ui-css-first-tokens`. The starter should fail the stated regression, not fail because of a missing dependency.
+
+</LessonStep>
+
+<LessonStep number={2} title="Fix the policy and verify edge cases" file="labs/ui-css-first-tokens/starter/solution.ts" expected="Default and dark modes resolve through distinct semantic tokens while components stop duplicating hardcoded hex colors.">
+
+```ts
+
+export function solve(state:"default"|"dark"):string{return state==="dark"?"var(--surface-action-dark)":"var(--surface-action)";}
+
+```
+
+**Why it works:** Use semantic CSS custom properties and Tailwind v4 @theme mappings rather than repeating absolute color literals. Define foreground/background pairs, keep dark-mode mappings explicit, and measure contrast instead of guessing.
+
+**Proof:** Run `npm run lab:ui-css-first-tokens` and inspect the instructor test output.
+
+</LessonStep>
+
+<LessonStep number={3} title="Render the semantic React example" file="labs/ui-css-first-tokens/solution/Widget.tsx" expected="Initial semantic markup renders without a runtime crash.">
+
+```tsx
+
+import React from "react";
+export function Workshop(){return <section aria-label="Token workshop"><h2>Semantic color tokens</h2><button type="button" className="bg-[var(--surface-action)] text-[var(--on-action)] px-4 py-2">Save changes</button></section>;}
+
+```
+
+This sample uses semantic React without requiring an uninstalled UI package. Server rendering does not execute handlers or certify focus management.
+
+**Proof:** The lab renders initial HTML with React DOM Server. A real browser check remains mandatory.
+
+</LessonStep>
+
+## Production library pattern
+
+```tsx
+/* CSS-first Tailwind v4 mapping */
+:root { --surface-action: oklch(0.52 0.15 240); --on-action: white; }
+.dark { --surface-action: oklch(0.68 0.13 240); --on-action: #080f1b; }
+@theme inline { --color-action: var(--surface-action); }
+```
+
+The CSS token mapping requires Tailwind v4 processing and computed-style verification. Server-rendering a className does not establish color contrast.
+
+## Explore and verify
+
+Test long labels, keyboard-only usage, 320px width, reduced motion, contrast, errors and screen-reader announcements in a real browser.
+
+<Misconception claim="An SSR snapshot proves a component is keyboard accessible." correction="Use semantic CSS custom properties and Tailwind v4 @theme mappings rather than repeating absolute color literals. Define foreground/background pairs, keep dark-mode mappings explicit, and measure contrast instead of guessing." />
+
+## Bug Hunt: reproduce, diagnose, repair
+
+Trace a low-contrast dark-theme button back to a hardcoded utility. Replace it with a semantic foreground/background pair and record the computed contrast in each theme.
+
+<KnowledgeCheck question="Why use semantic design tokens?" choices={["To eliminate all CSS","To express meaning and change themes consistently","To make color contrast unnecessary","To hide values from the browser"]} correctIndex={1} explanation="Use semantic CSS custom properties and Tailwind v4 @theme mappings rather than repeating absolute color literals. Define foreground/background pairs, keep dark-mode mappings explicit, and measure contrast instead of guessing." misconception="Offline SSR is not an interactive accessibility test." lessonId="08.01.02" />
+
+## Guided local lab
+
+Edit `labs/ui-css-first-tokens/starter/solution.ts`; the actual test asserts meaningful positive and negative outcomes. `npm run lab:ui-css-first-tokens` also renders initial React markup. Keyboard interactions, pointer behavior, focus trapping, browser layout and actual Radix/shadcn packages are separate integration gates.
+
+<LabGate lessonId="08.01.02" labId="lab.foundation.ui-css-first-tokens" commands={["npm ci","npm run lab:ui-css-first-tokens"]} interactive={false} />
+
+## Reflect
+
+What was broken, what exact assertion proves the repair, and which user interaction still requires a real browser or assistive technology?
+
+## Official references
+
+- [Primary framework documentation](https://tailwindcss.com/docs/theme)
+
+- [Supporting accessibility and API guide](https://ui.shadcn.com/docs/theming)

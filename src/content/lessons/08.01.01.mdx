@@ -1,0 +1,103 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Explain the accessibility and design invariant behind tailwind v4 configuration","Reproduce and correct a meaningful failing student assertion","Identify what static SSR proves and what requires a real browser and keyboard"]} />
+
+## The problem we're solving
+
+A migrated stylesheet still relies on legacy v3 @tailwind directives, so the v4 build no longer follows the recommended CSS-first entrypoint.
+
+## Build the mental model
+
+Tailwind v4 uses a CSS-first setup with @import "tailwindcss". Keep custom tokens in CSS using @theme and use the framework's current PostCSS/Vite integration rather than assuming an old JavaScript config drives everything.
+
+**Predict first:** The corrected stylesheet uses @import, and an explicit @theme token avoids legacy v3 directives.
+
+## Prerequisites and preflight
+
+Continue from [the previous topic](/learn/07.05.08). Read `labs/ui-tailwind-v4-config/starter/solution.ts`, `labs/ui-tailwind-v4-config/solution/solution.ts` and `labs/ui-tailwind-v4-config/solution.test.mjs`. The TSX sample is rendered as initial HTML only; hydrated events, focus, visual contrast and overflow need separate browser tests.
+
+<LessonStep number={1} title="Reproduce the defective UI policy" file="labs/ui-tailwind-v4-config/starter/solution.ts" expected="Student starter fails a meaningful assertion.">
+
+```ts
+
+export function solve():string{return "@tailwind base;\n@tailwind components;\n@tailwind utilities;";}
+
+```
+
+**Predict:** The corrected stylesheet uses @import, and an explicit @theme token avoids legacy v3 directives.
+
+**Diagnosis:** A migrated stylesheet still relies on legacy v3 @tailwind directives, so the v4 build no longer follows the recommended CSS-first entrypoint.
+
+**Proof:** Run `ACADEMY_LAB_TARGET=starter npm run lab:ui-tailwind-v4-config`. The starter should fail the stated regression, not fail because of a missing dependency.
+
+</LessonStep>
+
+<LessonStep number={2} title="Fix the policy and verify edge cases" file="labs/ui-tailwind-v4-config/starter/solution.ts" expected="The corrected stylesheet uses @import, and an explicit @theme token avoids legacy v3 directives.">
+
+```ts
+
+export function solve():string{return '@import "tailwindcss";\n@theme { --color-brand-500: oklch(0.6 0.15 220); }';}
+
+```
+
+**Why it works:** Tailwind v4 uses a CSS-first setup with @import "tailwindcss". Keep custom tokens in CSS using @theme and use the framework's current PostCSS/Vite integration rather than assuming an old JavaScript config drives everything.
+
+**Proof:** Run `npm run lab:ui-tailwind-v4-config` and inspect the instructor test output.
+
+</LessonStep>
+
+<LessonStep number={3} title="Render the semantic React example" file="labs/ui-tailwind-v4-config/solution/Widget.tsx" expected="Initial semantic markup renders without a runtime crash.">
+
+```tsx
+
+import React from "react";
+export function Workshop(){return <main aria-label="Tailwind v4 workshop"><h2>CSS-first utilities</h2><p className="font-semibold text-slate-700">Brand tokens come from CSS</p></main>;}
+
+```
+
+This sample uses semantic React without requiring an uninstalled UI package. Server rendering does not execute handlers or certify focus management.
+
+**Proof:** The lab renders initial HTML with React DOM Server. A real browser check remains mandatory.
+
+</LessonStep>
+
+## Production library pattern
+
+```tsx
+/* src/app/globals.css */
+@import "tailwindcss";
+@theme { --color-brand-500: oklch(0.61 0.15 225); }
+/* Validate with Tailwind v4’s real build tool */
+```
+
+The code shown above is CSS, not TSX; the snippet is illustrative and not compiled by React SSR. Actual Tailwind CSS processing is a separate local build gate.
+
+## Explore and verify
+
+Test long labels, keyboard-only usage, 320px width, reduced motion, contrast, errors and screen-reader announcements in a real browser.
+
+<Misconception claim="An SSR snapshot proves a component is keyboard accessible." correction="Tailwind v4 uses a CSS-first setup with @import \"tailwindcss\". Keep custom tokens in CSS using @theme and use the framework's current PostCSS/Vite integration rather than assuming an old JavaScript config drives everything." />
+
+## Bug Hunt: reproduce, diagnose, repair
+
+Search for @tailwind base, components, and utilities in an upgrade diff, explain the v4 replacement, then verify class scanning with an actual local Tailwind build before claiming styles work.
+
+<KnowledgeCheck question="What starts a Tailwind v4 CSS-first stylesheet?" choices={["@tailwind base","@import \"tailwindcss\";","tailwind.config.js as the only entry","A JSX import of tailwind.config"]} correctIndex={1} explanation="Tailwind v4 uses a CSS-first setup with @import \"tailwindcss\". Keep custom tokens in CSS using @theme and use the framework's current PostCSS/Vite integration rather than assuming an old JavaScript config drives everything." misconception="Offline SSR is not an interactive accessibility test." lessonId="08.01.01" />
+
+## Guided local lab
+
+Edit `labs/ui-tailwind-v4-config/starter/solution.ts`; the actual test asserts meaningful positive and negative outcomes. `npm run lab:ui-tailwind-v4-config` also renders initial React markup. Keyboard interactions, pointer behavior, focus trapping, browser layout and actual Radix/shadcn packages are separate integration gates.
+
+<LabGate lessonId="08.01.01" labId="lab.foundation.ui-tailwind-v4-config" commands={["npm ci","npm run lab:ui-tailwind-v4-config"]} interactive={false} />
+
+## Reflect
+
+What was broken, what exact assertion proves the repair, and which user interaction still requires a real browser or assistive technology?
+
+## Official references
+
+- [Primary framework documentation](https://tailwindcss.com/docs/functions-and-directives)
+
+- [Supporting accessibility and API guide](https://tailwindcss.com/docs/upgrade-guide)

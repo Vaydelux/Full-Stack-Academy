@@ -1,0 +1,1 @@
+export function solve(base:string,override:string):string{const classes=base.split(/\s+/).filter(Boolean);const newer=override.split(/\s+/).filter(Boolean);return [...classes.filter(c=>!newer.some(n=>n.startsWith("px-")&&c.startsWith("px-"))),...newer].join(" ");}

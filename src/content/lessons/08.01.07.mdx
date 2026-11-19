@@ -1,0 +1,103 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Explain the accessibility and design invariant behind responsive navigation","Reproduce and correct a meaningful failing student assertion","Identify what static SSR proves and what requires a real browser and keyboard"]} />
+
+## The problem we're solving
+
+An eight-item desktop navigation is forced onto a 320px screen, producing offscreen links and keyboard focus that disappears outside the viewport.
+
+## Build the mental model
+
+Use a stable responsive navigation model: provide semantic nav and labeled controls, show a compact disclosure on small screens, preserve focus when collapsing and test 200% zoom. A 768px breakpoint is an example policy, not a universal guarantee.
+
+**Predict first:** A narrow viewport chooses compact navigation, while desktop width chooses full navigation. The actual collapse animation and focus behavior still need browser QA.
+
+## Prerequisites and preflight
+
+Continue from [the previous topic](/learn/08.01.06). Read `labs/ui-responsive-navigation/starter/solution.ts`, `labs/ui-responsive-navigation/solution/solution.ts` and `labs/ui-responsive-navigation/solution.test.mjs`. The TSX sample is rendered as initial HTML only; hydrated events, focus, visual contrast and overflow need separate browser tests.
+
+<LessonStep number={1} title="Reproduce the defective UI policy" file="labs/ui-responsive-navigation/starter/solution.ts" expected="Student starter fails a meaningful assertion.">
+
+```ts
+
+export function solve(width:number):"compact"|"full"{return "full";}
+
+```
+
+**Predict:** A narrow viewport chooses compact navigation, while desktop width chooses full navigation. The actual collapse animation and focus behavior still need browser QA.
+
+**Diagnosis:** An eight-item desktop navigation is forced onto a 320px screen, producing offscreen links and keyboard focus that disappears outside the viewport.
+
+**Proof:** Run `ACADEMY_LAB_TARGET=starter npm run lab:ui-responsive-navigation`. The starter should fail the stated regression, not fail because of a missing dependency.
+
+</LessonStep>
+
+<LessonStep number={2} title="Fix the policy and verify edge cases" file="labs/ui-responsive-navigation/starter/solution.ts" expected="A narrow viewport chooses compact navigation, while desktop width chooses full navigation. The actual collapse animation and focus behavior still need browser QA.">
+
+```ts
+
+export function solve(width:number):"compact"|"full"{if(!Number.isFinite(width)||width<0)throw new TypeError("Invalid viewport");return width<768?"compact":"full";}
+
+```
+
+**Why it works:** Use a stable responsive navigation model: provide semantic nav and labeled controls, show a compact disclosure on small screens, preserve focus when collapsing and test 200% zoom. A 768px breakpoint is an example policy, not a universal guarantee.
+
+**Proof:** Run `npm run lab:ui-responsive-navigation` and inspect the instructor test output.
+
+</LessonStep>
+
+<LessonStep number={3} title="Render the semantic React example" file="labs/ui-responsive-navigation/solution/Widget.tsx" expected="Initial semantic markup renders without a runtime crash.">
+
+```tsx
+
+"use client";
+import React,{useState} from "react";
+export function Workshop(){const [open,setOpen]=useState(false);return <section aria-label="Navigation workshop"><h2>Responsive navigation</h2><button type="button" aria-controls="mobile-links" aria-expanded={open} onClick={()=>setOpen(x=>!x)}>Menu</button><nav aria-label="Primary" id="mobile-links" hidden={!open}><a href="/learn">Lessons</a><a href="/reference">References</a></nav></section>;}
+
+```
+
+This sample uses semantic React without requiring an uninstalled UI package. Server rendering does not execute handlers or certify focus management.
+
+**Proof:** The lab renders initial HTML with React DOM Server. A real browser check remains mandatory.
+
+</LessonStep>
+
+## Production library pattern
+
+```tsx
+"use client";
+import React,{useState} from "react";
+export function MobileNav(){const [open,setOpen]=useState(false);return <><button type="button" aria-controls="links" aria-expanded={open} onClick={()=>setOpen(v=>!v)}>Menu</button><nav id="links" aria-label="Main" hidden={!open}><a href="/learn">Learn</a></nav></>;}
+```
+
+The pure contract only checks a breakpoint decision; an actual responsive layout and keyboard navigation must be measured in Chromium/Firefox/Safari.
+
+## Explore and verify
+
+Test long labels, keyboard-only usage, 320px width, reduced motion, contrast, errors and screen-reader announcements in a real browser.
+
+<Misconception claim="An SSR snapshot proves a component is keyboard accessible." correction="Use a stable responsive navigation model: provide semantic nav and labeled controls, show a compact disclosure on small screens, preserve focus when collapsing and test 200% zoom. A 768px breakpoint is an example policy, not a universal guarantee." />
+
+## Bug Hunt: reproduce, diagnose, repair
+
+At 320px and 200% zoom, inspect invisible-focus and horizontal-overflow bugs. Test opening, Escape behavior if implemented, Tab order, expanded state and focus placement.
+
+<KnowledgeCheck question="What makes small-screen navigation accessible?" choices={["Only hiding items with CSS","A semantic nav, a labeled toggle and correct expanded/focus behavior","Removing keyboard focus","A fixed 1000px width"]} correctIndex={1} explanation="Use a stable responsive navigation model: provide semantic nav and labeled controls, show a compact disclosure on small screens, preserve focus when collapsing and test 200% zoom. A 768px breakpoint is an example policy, not a universal guarantee." misconception="Offline SSR is not an interactive accessibility test." lessonId="08.01.07" />
+
+## Guided local lab
+
+Edit `labs/ui-responsive-navigation/starter/solution.ts`; the actual test asserts meaningful positive and negative outcomes. `npm run lab:ui-responsive-navigation` also renders initial React markup. Keyboard interactions, pointer behavior, focus trapping, browser layout and actual Radix/shadcn packages are separate integration gates.
+
+<LabGate lessonId="08.01.07" labId="lab.foundation.ui-responsive-navigation" commands={["npm ci","npm run lab:ui-responsive-navigation"]} interactive={false} />
+
+## Reflect
+
+What was broken, what exact assertion proves the repair, and which user interaction still requires a real browser or assistive technology?
+
+## Official references
+
+- [Primary framework documentation](https://www.w3.org/WAI/ARIA/apg/patterns/disclosure/)
+
+- [Supporting accessibility and API guide](https://tailwindcss.com/docs/responsive-design)

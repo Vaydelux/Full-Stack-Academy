@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.ui-radix-primitives",
+  "lessonId": "08.01.03",
+  "title": "Radix UI primitives",
+  "runtime": "react19-ui-ssr-pure-contract",
+  "status": "authored",
+  "starter": "labs/ui-radix-primitives/starter/solution.ts",
+  "solution": "labs/ui-radix-primitives/solution/solution.ts",
+  "tests": "labs/ui-radix-primitives/solution.test.mjs",
+  "verify": [
+    "npm run lab:ui-radix-primitives"
+  ],
+  "expected": "Reviewed offline contract and initial semantic React markup, not browser interaction or visual fidelity.",
+  "security": "Only synthetic fixture data. No cloud, secrets, untrusted evaluation, authentication, deployment or hosted grader."
+}

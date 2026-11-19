@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.ui-responsive-navigation",
+  "lessonId": "08.01.07",
+  "title": "Responsive navigation",
+  "runtime": "react19-ui-ssr-pure-contract",
+  "status": "authored",
+  "starter": "labs/ui-responsive-navigation/starter/solution.ts",
+  "solution": "labs/ui-responsive-navigation/solution/solution.ts",
+  "tests": "labs/ui-responsive-navigation/solution.test.mjs",
+  "verify": [
+    "npm run lab:ui-responsive-navigation"
+  ],
+  "expected": "Reviewed offline contract and initial semantic React markup, not browser interaction or visual fidelity.",
+  "security": "Only synthetic fixture data. No cloud, secrets, untrusted evaluation, authentication, deployment or hosted grader."
+}

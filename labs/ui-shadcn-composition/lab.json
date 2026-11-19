@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.ui-shadcn-composition",
+  "lessonId": "08.01.04",
+  "title": "shadcn component composition",
+  "runtime": "react19-ui-ssr-pure-contract",
+  "status": "authored",
+  "starter": "labs/ui-shadcn-composition/starter/solution.ts",
+  "solution": "labs/ui-shadcn-composition/solution/solution.ts",
+  "tests": "labs/ui-shadcn-composition/solution.test.mjs",
+  "verify": [
+    "npm run lab:ui-shadcn-composition"
+  ],
+  "expected": "Reviewed offline contract and initial semantic React markup, not browser interaction or visual fidelity.",
+  "security": "Only synthetic fixture data. No cloud, secrets, untrusted evaluation, authentication, deployment or hosted grader."
+}

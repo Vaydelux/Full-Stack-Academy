@@ -1,0 +1,1 @@
+export type Spec={id:string;label:string;kind:"button"|"link"};export function solve(specs:readonly Spec[]){const seen=new Set<string>();return specs.map(s=>{if(!/^[a-z0-9-]+$/.test(s.id)||seen.has(s.id)||!s.label.trim())throw new TypeError("Unique IDs and accessible names required");seen.add(s.id);return {id:s.id,label:s.label.trim(),kind:s.kind};});}

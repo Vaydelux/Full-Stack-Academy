@@ -1,0 +1,102 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Explain the accessibility and design invariant behind shadcn component composition","Reproduce and correct a meaningful failing student assertion","Identify what static SSR proves and what requires a real browser and keyboard"]} />
+
+## The problem we're solving
+
+A shared button swallows the disabled state and unintentionally submits every form because the native button type is omitted.
+
+## Build the mental model
+
+shadcn/ui installs component source into your application, where composition and ownership remain yours. Keep native button semantics (type, disabled, accessible names) and choose the current primitive implementation deliberately instead of treating copied components as an opaque hosted service.
+
+**Predict first:** The button is a non-submitting native control with a disabled state tied to pending work.
+
+## Prerequisites and preflight
+
+Continue from [the previous topic](/learn/08.01.03). Read `labs/ui-shadcn-composition/starter/solution.ts`, `labs/ui-shadcn-composition/solution/solution.ts` and `labs/ui-shadcn-composition/solution.test.mjs`. The TSX sample is rendered as initial HTML only; hydrated events, focus, visual contrast and overflow need separate browser tests.
+
+<LessonStep number={1} title="Reproduce the defective UI policy" file="labs/ui-shadcn-composition/starter/solution.ts" expected="Student starter fails a meaningful assertion.">
+
+```ts
+
+export function solve(loading:boolean){return {disabled:false,type:"submit",label:"Save"};}
+
+```
+
+**Predict:** The button is a non-submitting native control with a disabled state tied to pending work.
+
+**Diagnosis:** A shared button swallows the disabled state and unintentionally submits every form because the native button type is omitted.
+
+**Proof:** Run `ACADEMY_LAB_TARGET=starter npm run lab:ui-shadcn-composition`. The starter should fail the stated regression, not fail because of a missing dependency.
+
+</LessonStep>
+
+<LessonStep number={2} title="Fix the policy and verify edge cases" file="labs/ui-shadcn-composition/starter/solution.ts" expected="The button is a non-submitting native control with a disabled state tied to pending work.">
+
+```ts
+
+export function solve(loading:boolean){return {disabled:loading,type:"button",label:loading?"Saving…":"Save"};}
+
+```
+
+**Why it works:** shadcn/ui installs component source into your application, where composition and ownership remain yours. Keep native button semantics (type, disabled, accessible names) and choose the current primitive implementation deliberately instead of treating copied components as an opaque hosted service.
+
+**Proof:** Run `npm run lab:ui-shadcn-composition` and inspect the instructor test output.
+
+</LessonStep>
+
+<LessonStep number={3} title="Render the semantic React example" file="labs/ui-shadcn-composition/solution/Widget.tsx" expected="Initial semantic markup renders without a runtime crash.">
+
+```tsx
+
+import React from "react";
+export function Workshop(){return <section aria-label="Component composition workshop"><h2>Safe button composition</h2><button type="button" disabled={false} aria-label="Save profile" className="rounded-md px-4 py-2">Save profile</button></section>;}
+
+```
+
+This sample uses semantic React without requiring an uninstalled UI package. Server rendering does not execute handlers or certify focus management.
+
+**Proof:** The lab renders initial HTML with React DOM Server. A real browser check remains mandatory.
+
+</LessonStep>
+
+## Production library pattern
+
+```tsx
+"use client";
+import {Button} from "@/components/ui/button";
+function SaveAction({pending}:{pending:boolean}){return <Button type="button" disabled={pending} aria-label={pending?"Saving profile":"Save profile"}>{pending?"Saving…":"Save"}</Button>;}
+```
+
+The import assumes you have intentionally added a shadcn Button source file. This snippet is illustrative; the offline lab verifies only the native equivalent.
+
+## Explore and verify
+
+Test long labels, keyboard-only usage, 320px width, reduced motion, contrast, errors and screen-reader announcements in a real browser.
+
+<Misconception claim="An SSR snapshot proves a component is keyboard accessible." correction="shadcn/ui installs component source into your application, where composition and ownership remain yours. Keep native button semantics (type, disabled, accessible names) and choose the current primitive implementation deliberately instead of treating copied components as an opaque hosted service." />
+
+## Bug Hunt: reproduce, diagnose, repair
+
+Place the starter inside an HTML form and observe the unintended submit. Add type=button for auxiliary actions, preserve disabled and name, then test keyboard and pending states in an actual browser.
+
+<KnowledgeCheck question="What does shadcn/ui primarily give the app?" choices={["A hosted runtime required for every click","Editable component source and composition patterns","Automatic authorization for forms","A mandatory single primitive backend"]} correctIndex={1} explanation="shadcn/ui installs component source into your application, where composition and ownership remain yours. Keep native button semantics (type, disabled, accessible names) and choose the current primitive implementation deliberately instead of treating copied components as an opaque hosted service." misconception="Offline SSR is not an interactive accessibility test." lessonId="08.01.04" />
+
+## Guided local lab
+
+Edit `labs/ui-shadcn-composition/starter/solution.ts`; the actual test asserts meaningful positive and negative outcomes. `npm run lab:ui-shadcn-composition` also renders initial React markup. Keyboard interactions, pointer behavior, focus trapping, browser layout and actual Radix/shadcn packages are separate integration gates.
+
+<LabGate lessonId="08.01.04" labId="lab.foundation.ui-shadcn-composition" commands={["npm ci","npm run lab:ui-shadcn-composition"]} interactive={false} />
+
+## Reflect
+
+What was broken, what exact assertion proves the repair, and which user interaction still requires a real browser or assistive technology?
+
+## Official references
+
+- [Primary framework documentation](https://ui.shadcn.com/docs/components/button)
+
+- [Supporting accessibility and API guide](https://ui.shadcn.com/docs/installation/next)

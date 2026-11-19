@@ -1,0 +1,15 @@
+{
+  "id": "lab.foundation.ui-tailwind-v4-config",
+  "lessonId": "08.01.01",
+  "title": "Tailwind v4 configuration",
+  "runtime": "react19-ui-ssr-pure-contract",
+  "status": "authored",
+  "starter": "labs/ui-tailwind-v4-config/starter/solution.ts",
+  "solution": "labs/ui-tailwind-v4-config/solution/solution.ts",
+  "tests": "labs/ui-tailwind-v4-config/solution.test.mjs",
+  "verify": [
+    "npm run lab:ui-tailwind-v4-config"
+  ],
+  "expected": "Reviewed offline contract and initial semantic React markup, not browser interaction or visual fidelity.",
+  "security": "Only synthetic fixture data. No cloud, secrets, untrusted evaluation, authentication, deployment or hosted grader."
+}
