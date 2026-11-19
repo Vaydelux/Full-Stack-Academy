@@ -12,6 +12,8 @@ const steps = [
   'test:labs',
   'test:red-react',
   'test:react-red-advanced',
+  'test:red-react-performance',
+  'test:red-next-router',
   'build',
 ];
 
