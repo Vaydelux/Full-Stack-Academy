@@ -211,6 +211,23 @@ import ReactAdvanced14 from './lessons/06.04.06.mdx';
 import ReactAdvanced15 from './lessons/06.04.07.mdx';
 import ReactAdvanced16 from './lessons/06.04.08.mdx';
 
+import Milestone1 from './lessons/06.05.01.mdx';
+import Milestone2 from './lessons/06.05.02.mdx';
+import Milestone3 from './lessons/06.05.03.mdx';
+import Milestone4 from './lessons/06.05.04.mdx';
+import Milestone5 from './lessons/06.05.05.mdx';
+import Milestone6 from './lessons/06.05.06.mdx';
+import Milestone7 from './lessons/06.05.07.mdx';
+import Milestone8 from './lessons/06.05.08.mdx';
+import Milestone9 from './lessons/07.01.01.mdx';
+import Milestone10 from './lessons/07.01.02.mdx';
+import Milestone11 from './lessons/07.01.03.mdx';
+import Milestone12 from './lessons/07.01.04.mdx';
+import Milestone13 from './lessons/07.01.05.mdx';
+import Milestone14 from './lessons/07.01.06.mdx';
+import Milestone15 from './lessons/07.01.07.mdx';
+import Milestone16 from './lessons/07.01.08.mdx';
+
 export function LessonArticle({lessonId}: {lessonId:string}) {
   switch (lessonId) {
     case '00.01.01': return <BrowserLesson />;
@@ -422,6 +439,22 @@ export function LessonArticle({lessonId}: {lessonId:string}) {
     case '06.04.06': return <ReactAdvanced14 />;
     case '06.04.07': return <ReactAdvanced15 />;
     case '06.04.08': return <ReactAdvanced16 />;
+    case '06.05.01': return <Milestone1 />;
+    case '06.05.02': return <Milestone2 />;
+    case '06.05.03': return <Milestone3 />;
+    case '06.05.04': return <Milestone4 />;
+    case '06.05.05': return <Milestone5 />;
+    case '06.05.06': return <Milestone6 />;
+    case '06.05.07': return <Milestone7 />;
+    case '06.05.08': return <Milestone8 />;
+    case '07.01.01': return <Milestone9 />;
+    case '07.01.02': return <Milestone10 />;
+    case '07.01.03': return <Milestone11 />;
+    case '07.01.04': return <Milestone12 />;
+    case '07.01.05': return <Milestone13 />;
+    case '07.01.06': return <Milestone14 />;
+    case '07.01.07': return <Milestone15 />;
+    case '07.01.08': return <Milestone16 />;
     default: return null;
   }
 }
