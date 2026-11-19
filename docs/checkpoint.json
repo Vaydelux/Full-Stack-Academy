@@ -10,8 +10,8 @@
   },
   "development": {
     "branch": "main",
-    "state": "learning-workflow-v2-source-merged-release-gates-pending",
-    "note": "After PRs #20–#27, add bookmark/note controls on published lesson pages, dashboard saved library, searched and paginated published course index, storage failure feedback and cross-tab theme/progress refresh. Existing Zod v1 backup accepts missing bookmarks. 14 discovery + 11 planner + 7 wiring checks passed via isolated transformed-source JS runner; full Node 24 checkout/npm/Next/Chromium NOT executed. RHF 09.02/Query 09.03 remain planned. No GitHub Actions or Vercel checked."
+    "state": "forms-query-http-capstone-tested-react-reference-source-unqualified",
+    "note": "After PR #28, implemented actual Node loopback forms/query teaching HTTP API, plain browser practice, isolated genuine RHF/TanStack Query React source (not installed or imported by main), corrected 16 planned course reference URLs, drafted canonical 16-topic workbook. 22/22 real local Node22 HTTP tests passed; no Node24 full Next/npm build, Vite package install or Chromium browser qualification. No Vercel/GitHub Actions used. RHF 09.02 and Query 09.03 remain planned."
   },
   "snapshot": {
     "tracks": 28,
@@ -73,6 +73,6 @@
     "devHighFindings": 14,
     "exceptionExpires": "2026-12-02"
   },
-  "nextMilestone": "09.02-09.03-real-package-forms-query-vertical-slice",
-  "status": "learning-workflow-v2-source-merged-full-release-qualification-pending"
+  "nextMilestone": "09.02-09.03-genuine-library-install-lockfile-16-mdx-labs-browser-qualification",
+  "status": "http-capstone-verified-react-draft-unpublished-release-gates-pending"
 }
