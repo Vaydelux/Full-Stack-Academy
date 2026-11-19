@@ -1,0 +1,39 @@
+{
+  "id": "08.04.03",
+  "title": "Form accessibility: Associate persistent visible labels and error descriptions with each input, and announce actionable validation feedback.",
+  "description": "Design QA lesson for form accessibility with a reproducible starter defect, instructor repair, offline regression suite and explicit browser and accessibility limits.",
+  "trackId": "08",
+  "moduleId": "08.04",
+  "level": "Intermediate",
+  "estimatedMinutes": 65,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "typescript": "5",
+    "react": "19"
+  },
+  "prerequisites": [
+    "08.04.02"
+  ],
+  "objectives": [
+    "Associate persistent visible labels and error descriptions with each input, and announce actionable validation feedback.",
+    "Repair the reproducible defect in ui-form-error-contract.",
+    "Identify real user, accessibility or browser QA beyond form accessibility source tests."
+  ],
+  "labId": "lab.ui.ui-form-error-contract",
+  "rubric": [
+    "I can explain the methodology behind form accessibility.",
+    "I can fix the 08.04.03 bug and validate a negative case.",
+    "I can name direct accessibility or UX evidence that the source model cannot provide."
+  ],
+  "sources": [
+    {
+      "label": "Official reference for Form accessibility",
+      "url": "https://www.w3.org/WAI/WCAG22/Understanding/error-identification"
+    },
+    {
+      "label": "Supporting standard",
+      "url": "https://www.w3.org/WAI/WCAG22/Understanding/labels-or-instructions"
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "id": "08.04.05",
+  "title": "Reduced motion testing: Respect reduced-motion preference while preserving state feedback and focus indicators. The UI must not rely on animation to communicate success.",
+  "description": "Design QA lesson for reduced motion testing with a reproducible starter defect, instructor repair, offline regression suite and explicit browser and accessibility limits.",
+  "trackId": "08",
+  "moduleId": "08.04",
+  "level": "Intermediate",
+  "estimatedMinutes": 65,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "typescript": "5",
+    "react": "19"
+  },
+  "prerequisites": [
+    "08.04.04"
+  ],
+  "objectives": [
+    "Respect reduced-motion preference while preserving state feedback and focus indicators. The UI must not rely on animation to communicate success.",
+    "Repair the reproducible defect in ui-reduced-motion-audit.",
+    "Identify real user, accessibility or browser QA beyond reduced motion testing source tests."
+  ],
+  "labId": "lab.ui.ui-reduced-motion-audit",
+  "rubric": [
+    "I can explain the methodology behind reduced motion testing.",
+    "I can fix the 08.04.05 bug and validate a negative case.",
+    "I can name direct accessibility or UX evidence that the source model cannot provide."
+  ],
+  "sources": [
+    {
+      "label": "Official reference for Reduced motion testing",
+      "url": "https://www.w3.org/WAI/WCAG22/Understanding/animation-from-interactions.html"
+    },
+    {
+      "label": "Supporting standard",
+      "url": "https://motion.dev/docs/react-accessibility"
+    }
+  ]
+}

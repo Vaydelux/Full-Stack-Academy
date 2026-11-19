@@ -1,0 +1,15 @@
+{
+  "id": "lab.ui.ui-heuristic-severity",
+  "lessonId": "08.04.04",
+  "title": "UI QA usability heuristics local lab",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/ui-heuristic-severity/starter/solution.tsx",
+  "solution": "labs/ui-heuristic-severity/solution/solution.tsx",
+  "tests": "labs/ui-heuristic-severity/solution.test.mjs",
+  "verify": [
+    "npm run lab:ui-heuristic-severity"
+  ],
+  "expected": "A recurring blocker ranks higher than a minor cosmetic issue, with reproducible scoring.",
+  "security": "Offline model and no real screen reader, field telemetry, device or cloud test."
+}

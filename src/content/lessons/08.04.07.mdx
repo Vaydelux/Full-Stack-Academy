@@ -1,0 +1,83 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Reserve image/embed aspect ratio and display size before data arrives to avoid unexpected content movement.","Diagnose and repair the deliberately broken cls and layout stability example.","Separate local model correctness from actual user observations, accessibility and cross-browser qualification."]} />
+
+## The problem we're solving
+
+The starter reserves zero height for images, risking layout shift. Mature design QA tests user comprehension, accessibility, visual hierarchy and realistic layout under stress, not merely whether an interface renders.
+
+## Build the mental model
+
+Reserve image/embed aspect ratio and display size before data arrives to avoid unexpected content movement.
+
+**Expected outcome:** The reserved height reflects width and aspect ratio; invalid dimensions are rejected.
+
+**Evidence boundary:** This local test verifies a deterministic model or audit decision. It cannot claim a WCAG audit, human usability result, assistive technology behavior, actual CLS/LCP measurement, or cross-browser compatibility. Collect those in a real locally served application with documented scenarios.
+
+## Prerequisites and preflight
+
+Read the previous UI lesson. Use Node 24 and the repository's lockfile. Open `labs/ui-cls-reserved-space/starter/solution.tsx`. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:ui-cls-reserved-space`; PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:ui-cls-reserved-space; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Observe the broken design QA contract" file="labs/ui-cls-reserved-space/starter/solution.tsx" expected="The starter fails an assertion for a reproducible quality issue.">
+
+```tsx
+export function reservedHeight(_width:number,_naturalW:number,_naturalH:number){return 0;}
+```
+
+**Failure:** The starter reserves zero height for images, risking layout shift.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the typed quality model" file="labs/ui-cls-reserved-space/starter/solution.tsx" expected="The reserved height reflects width and aspect ratio; invalid dimensions are rejected.">
+
+```tsx
+export function reservedHeight(width:number,naturalW:number,naturalH:number){if([width,naturalW,naturalH].some(x=>!Number.isFinite(x)||x<=0))throw new RangeError('Invalid dimensions');return width*naturalH/naturalW;}
+```
+
+**Reasoning:** Reserve image/embed aspect ratio and display size before data arrives to avoid unexpected content movement.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify the edge case and plan real-device checks" file="labs/ui-cls-reserved-space/solution.test.mjs" expected="Instructor solution passes local checks; real UX/quality evidence is collected separately.">
+
+```js
+assert.equal(mod.reservedHeight(720,1440,900),450);assert.equal(mod.reservedHeight(320,640,480),240);assert.throws(()=>mod.reservedHeight(320,0,480),RangeError);
+```
+
+**Representative UI example and QA checklist:**
+
+```tsx
+<figure><img src="/diagram.webp" alt="Architecture diagram" width="1440" height="900"/><figcaption>System overview</figcaption></figure>
+// For ads, embeds and asynchronous results reserve an estimated slot before they load.
+// Good field CLS <=0.1 at p75; this arithmetic fixture is not a real CLS measurement.
+```
+
+A high-quality release gate combines keyboard and touch interaction, actual screen-reader observations, image/embedding stability, and valid WCAG/heuristic assessment.
+
+</LessonStep>
+
+<Misconception claim="The starter reserves zero height for images, risking layout shift." correction="Reserve image/embed aspect ratio and display size before data arrives to avoid unexpected content movement. Automated model tests alone cannot establish WCAG or real-user experience." />
+
+<KnowledgeCheck question="Which QA strategy applies to cls and layout stability?" choices={["A unit test is sufficient evidence that every browser and screen reader works.","Reserve image/embed aspect ratio and display size before data arrives to avoid unexpected content movement.","A successful screenshot proves all error states and keyboard flows.","A designer can replace usability testing with color preference surveys."] } correctIndex={1} explanation="Reserve image/embed aspect ratio and display size before data arrives to avoid unexpected content movement." misconception="Collect directly observable evidence for the user experience being evaluated." lessonId="08.04.07" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Bug:** The starter reserves zero height for images, risking layout shift. **Reproduce:** run the red starter and capture the failing assertion. **Repair:** Reserve image/embed aspect ratio and display size before data arrives to avoid unexpected content movement. **Regression:** The reserved height reflects width and aspect ratio; invalid dimensions are rejected. Extend the review to an actual browser/device when the component is integrated.
+
+## Guided local lab
+
+`labs/ui-cls-reserved-space/` contains the learner's broken implementation, full instructor code, offline acceptance and rubric. The public academy does not execute arbitrary learner code.
+
+<LabGate lessonId="08.04.07" labId="lab.ui.ui-cls-reserved-space" commands={["npm run lab:ui-cls-reserved-space","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+What UX risk could still exist after these local assertions pass, and which concrete accessibility or cross-browser observation would expose it?
+
+## Official references
+
+- [Primary official reference: CLS and layout stability](https://web.dev/articles/optimize-cls)
+- [Supporting standard and documentation](https://web.dev/articles/cls)

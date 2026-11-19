@@ -1,0 +1,15 @@
+{
+  "id": "lab.ui.ui-reduced-motion-audit",
+  "lessonId": "08.04.05",
+  "title": "UI QA reduced motion testing local lab",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/ui-reduced-motion-audit/starter/solution.tsx",
+  "solution": "labs/ui-reduced-motion-audit/solution/solution.tsx",
+  "tests": "labs/ui-reduced-motion-audit/solution.test.mjs",
+  "verify": [
+    "npm run lab:ui-reduced-motion-audit"
+  ],
+  "expected": "Reduced motion removes displacement; both modes retain visible state changes.",
+  "security": "Offline model and no real screen reader, field telemetry, device or cloud test."
+}

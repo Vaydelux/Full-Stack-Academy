@@ -1,0 +1,39 @@
+{
+  "id": "08.04.08",
+  "title": "Lab annotated UX review: Review a real flow against clear categories—keyboard, contrast, error feedback, layout stability and mobile reachability—and return actionable high-priority findings.",
+  "description": "Design QA lesson for lab annotated ux review with a reproducible starter defect, instructor repair, offline regression suite and explicit browser and accessibility limits.",
+  "trackId": "08",
+  "moduleId": "08.04",
+  "level": "Intermediate",
+  "estimatedMinutes": 65,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "typescript": "5",
+    "react": "19"
+  },
+  "prerequisites": [
+    "08.04.07"
+  ],
+  "objectives": [
+    "Review a real flow against clear categories—keyboard, contrast, error feedback, layout stability and mobile reachability—and return actionable high-priority findings.",
+    "Repair the reproducible defect in ui-ux-audit-capstone.",
+    "Identify real user, accessibility or browser QA beyond lab annotated ux review source tests."
+  ],
+  "labId": "lab.ui.ui-ux-audit-capstone",
+  "rubric": [
+    "I can explain the methodology behind lab annotated ux review.",
+    "I can fix the 08.04.08 bug and validate a negative case.",
+    "I can name direct accessibility or UX evidence that the source model cannot provide."
+  ],
+  "sources": [
+    {
+      "label": "Official reference for Lab annotated UX review",
+      "url": "https://www.w3.org/TR/WCAG22/"
+    },
+    {
+      "label": "Supporting standard",
+      "url": "https://www.nngroup.com/articles/how-to-rate-the-severity-of-usability-problems/"
+    }
+  ]
+}

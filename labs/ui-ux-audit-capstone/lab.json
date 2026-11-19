@@ -1,0 +1,15 @@
+{
+  "id": "lab.ui.ui-ux-audit-capstone",
+  "lessonId": "08.04.08",
+  "title": "UI QA lab annotated ux review local lab",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/ui-ux-audit-capstone/starter/solution.tsx",
+  "solution": "labs/ui-ux-audit-capstone/solution/solution.tsx",
+  "tests": "labs/ui-ux-audit-capstone/solution.test.mjs",
+  "verify": [
+    "npm run lab:ui-ux-audit-capstone"
+  ],
+  "expected": "A failed keyboard, contrast or error criterion becomes an explicit finding; all passing criteria produce no findings.",
+  "security": "Offline model and no real screen reader, field telemetry, device or cloud test."
+}

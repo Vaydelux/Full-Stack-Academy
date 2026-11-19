@@ -1,0 +1,39 @@
+{
+  "id": "08.04.07",
+  "title": "CLS and layout stability: Reserve image/embed aspect ratio and display size before data arrives to avoid unexpected content movement.",
+  "description": "Design QA lesson for cls and layout stability with a reproducible starter defect, instructor repair, offline regression suite and explicit browser and accessibility limits.",
+  "trackId": "08",
+  "moduleId": "08.04",
+  "level": "Intermediate",
+  "estimatedMinutes": 65,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "typescript": "5",
+    "react": "19"
+  },
+  "prerequisites": [
+    "08.04.06"
+  ],
+  "objectives": [
+    "Reserve image/embed aspect ratio and display size before data arrives to avoid unexpected content movement.",
+    "Repair the reproducible defect in ui-cls-reserved-space.",
+    "Identify real user, accessibility or browser QA beyond cls and layout stability source tests."
+  ],
+  "labId": "lab.ui.ui-cls-reserved-space",
+  "rubric": [
+    "I can explain the methodology behind cls and layout stability.",
+    "I can fix the 08.04.07 bug and validate a negative case.",
+    "I can name direct accessibility or UX evidence that the source model cannot provide."
+  ],
+  "sources": [
+    {
+      "label": "Official reference for CLS and layout stability",
+      "url": "https://web.dev/articles/optimize-cls"
+    },
+    {
+      "label": "Supporting standard",
+      "url": "https://web.dev/articles/cls"
+    }
+  ]
+}

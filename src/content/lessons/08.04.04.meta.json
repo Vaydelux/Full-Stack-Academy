@@ -1,0 +1,39 @@
+{
+  "id": "08.04.04",
+  "title": "Usability heuristics: Prioritize usability findings by impact and recurrence, record evidence and map fixes to the user journey rather than subjective visual preference.",
+  "description": "Design QA lesson for usability heuristics with a reproducible starter defect, instructor repair, offline regression suite and explicit browser and accessibility limits.",
+  "trackId": "08",
+  "moduleId": "08.04",
+  "level": "Intermediate",
+  "estimatedMinutes": 65,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "typescript": "5",
+    "react": "19"
+  },
+  "prerequisites": [
+    "08.04.03"
+  ],
+  "objectives": [
+    "Prioritize usability findings by impact and recurrence, record evidence and map fixes to the user journey rather than subjective visual preference.",
+    "Repair the reproducible defect in ui-heuristic-severity.",
+    "Identify real user, accessibility or browser QA beyond usability heuristics source tests."
+  ],
+  "labId": "lab.ui.ui-heuristic-severity",
+  "rubric": [
+    "I can explain the methodology behind usability heuristics.",
+    "I can fix the 08.04.04 bug and validate a negative case.",
+    "I can name direct accessibility or UX evidence that the source model cannot provide."
+  ],
+  "sources": [
+    {
+      "label": "Official reference for Usability heuristics",
+      "url": "https://www.nngroup.com/articles/ten-usability-heuristics/"
+    },
+    {
+      "label": "Supporting standard",
+      "url": "https://www.nngroup.com/articles/how-to-rate-the-severity-of-usability-problems/"
+    }
+  ]
+}

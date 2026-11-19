@@ -1,0 +1,1 @@
+export type TypeRole='heading'|'body'|'caption';export function typography(role:TypeRole){const styles:Record<TypeRole,string>={heading:'text-2xl font-bold tracking-tight',body:'text-base leading-7',caption:'text-sm leading-5'};return styles[role];}

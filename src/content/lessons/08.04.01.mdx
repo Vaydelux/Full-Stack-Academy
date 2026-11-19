@@ -1,0 +1,83 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Define an intentional spacing rhythm and semantic heading hierarchy instead of multiplying arbitrary pixel offsets.","Diagnose and repair the deliberately broken visual hierarchy and spacing example.","Separate local model correctness from actual user observations, accessibility and cross-browser qualification."]} />
+
+## The problem we're solving
+
+The starter produces non-grid spacing for the same component role. Mature design QA tests user comprehension, accessibility, visual hierarchy and realistic layout under stress, not merely whether an interface renders.
+
+## Build the mental model
+
+Define an intentional spacing rhythm and semantic heading hierarchy instead of multiplying arbitrary pixel offsets.
+
+**Expected outcome:** An index into a 4px-based scale returns consistent predictable spacing.
+
+**Evidence boundary:** This local test verifies a deterministic model or audit decision. It cannot claim a WCAG audit, human usability result, assistive technology behavior, actual CLS/LCP measurement, or cross-browser compatibility. Collect those in a real locally served application with documented scenarios.
+
+## Prerequisites and preflight
+
+Read the previous UI lesson. Use Node 24 and the repository's lockfile. Open `labs/ui-visual-rhythm/starter/solution.tsx`. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:ui-visual-rhythm`; PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:ui-visual-rhythm; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Observe the broken design QA contract" file="labs/ui-visual-rhythm/starter/solution.tsx" expected="The starter fails an assertion for a reproducible quality issue.">
+
+```tsx
+export function spaceFor(step:number){return step*5;}
+```
+
+**Failure:** The starter produces non-grid spacing for the same component role.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the typed quality model" file="labs/ui-visual-rhythm/starter/solution.tsx" expected="An index into a 4px-based scale returns consistent predictable spacing.">
+
+```tsx
+export function spaceFor(step:number){if(!Number.isInteger(step)||step<0||step>12)throw new RangeError('Invalid step');return step*4;}
+```
+
+**Reasoning:** Define an intentional spacing rhythm and semantic heading hierarchy instead of multiplying arbitrary pixel offsets.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify the edge case and plan real-device checks" file="labs/ui-visual-rhythm/solution.test.mjs" expected="Instructor solution passes local checks; real UX/quality evidence is collected separately.">
+
+```js
+assert.equal(mod.spaceFor(1),4);assert.equal(mod.spaceFor(6),24);assert.throws(()=>mod.spaceFor(13),RangeError);
+```
+
+**Representative UI example and QA checklist:**
+
+```tsx
+<main><h1>Course Library</h1><section aria-labelledby="continue"><h2 id="continue">Continue learning</h2><p>Resume your lesson.</p></section></main>
+/* Use consistent CSS tokens: --space-1:4px; --space-6:24px. */
+// Visual size does not replace correct heading semantics.
+```
+
+A high-quality release gate combines keyboard and touch interaction, actual screen-reader observations, image/embedding stability, and valid WCAG/heuristic assessment.
+
+</LessonStep>
+
+<Misconception claim="The starter produces non-grid spacing for the same component role." correction="Define an intentional spacing rhythm and semantic heading hierarchy instead of multiplying arbitrary pixel offsets. Automated model tests alone cannot establish WCAG or real-user experience." />
+
+<KnowledgeCheck question="Which QA strategy applies to visual hierarchy and spacing?" choices={["A unit test is sufficient evidence that every browser and screen reader works.","Define an intentional spacing rhythm and semantic heading hierarchy instead of multiplying arbitrary pixel offsets.","A successful screenshot proves all error states and keyboard flows.","A designer can replace usability testing with color preference surveys."] } correctIndex={1} explanation="Define an intentional spacing rhythm and semantic heading hierarchy instead of multiplying arbitrary pixel offsets." misconception="Collect directly observable evidence for the user experience being evaluated." lessonId="08.04.01" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Bug:** The starter produces non-grid spacing for the same component role. **Reproduce:** run the red starter and capture the failing assertion. **Repair:** Define an intentional spacing rhythm and semantic heading hierarchy instead of multiplying arbitrary pixel offsets. **Regression:** An index into a 4px-based scale returns consistent predictable spacing. Extend the review to an actual browser/device when the component is integrated.
+
+## Guided local lab
+
+`labs/ui-visual-rhythm/` contains the learner's broken implementation, full instructor code, offline acceptance and rubric. The public academy does not execute arbitrary learner code.
+
+<LabGate lessonId="08.04.01" labId="lab.ui.ui-visual-rhythm" commands={["npm run lab:ui-visual-rhythm","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+What UX risk could still exist after these local assertions pass, and which concrete accessibility or cross-browser observation would expose it?
+
+## Official references
+
+- [Primary official reference: Visual hierarchy and spacing](https://www.w3.org/WAI/WCAG22/Understanding/info-and-relationships.html)
+- [Supporting standard and documentation](https://tailwindcss.com/docs/theme)

@@ -1,0 +1,1 @@
+export function reservedHeight(width:number,naturalW:number,naturalH:number){if([width,naturalW,naturalH].some(x=>!Number.isFinite(x)||x<=0))throw new RangeError('Invalid dimensions');return width*naturalH/naturalW;}

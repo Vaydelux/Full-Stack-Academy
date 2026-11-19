@@ -1,0 +1,1 @@
+export type Coverage={engine:string;input:string};export function coverageComplete(items:readonly Coverage[]){const engines=new Set(items.map(x=>x.engine));const inputs=new Set(items.map(x=>x.input));return ['chromium','firefox','webkit'].every(x=>engines.has(x))&&['keyboard','touch'].every(x=>inputs.has(x));}

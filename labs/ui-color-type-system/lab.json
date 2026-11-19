@@ -1,0 +1,15 @@
+{
+  "id": "lab.ui.ui-color-type-system",
+  "lessonId": "08.04.02",
+  "title": "UI QA color and typography systems local lab",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/ui-color-type-system/starter/solution.tsx",
+  "solution": "labs/ui-color-type-system/solution/solution.tsx",
+  "tests": "labs/ui-color-type-system/solution.test.mjs",
+  "verify": [
+    "npm run lab:ui-color-type-system"
+  ],
+  "expected": "Heading and body map to distinct token pairs and small labels retain appropriate contrast.",
+  "security": "Offline model and no real screen reader, field telemetry, device or cloud test."
+}

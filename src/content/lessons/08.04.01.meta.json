@@ -1,0 +1,39 @@
+{
+  "id": "08.04.01",
+  "title": "Visual hierarchy and spacing: Define an intentional spacing rhythm and semantic heading hierarchy instead of multiplying arbitrary pixel offsets.",
+  "description": "Design QA lesson for visual hierarchy and spacing with a reproducible starter defect, instructor repair, offline regression suite and explicit browser and accessibility limits.",
+  "trackId": "08",
+  "moduleId": "08.04",
+  "level": "Intermediate",
+  "estimatedMinutes": 65,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "typescript": "5",
+    "react": "19"
+  },
+  "prerequisites": [
+    "08.03.08"
+  ],
+  "objectives": [
+    "Define an intentional spacing rhythm and semantic heading hierarchy instead of multiplying arbitrary pixel offsets.",
+    "Repair the reproducible defect in ui-visual-rhythm.",
+    "Identify real user, accessibility or browser QA beyond visual hierarchy and spacing source tests."
+  ],
+  "labId": "lab.ui.ui-visual-rhythm",
+  "rubric": [
+    "I can explain the methodology behind visual hierarchy and spacing.",
+    "I can fix the 08.04.01 bug and validate a negative case.",
+    "I can name direct accessibility or UX evidence that the source model cannot provide."
+  ],
+  "sources": [
+    {
+      "label": "Official reference for Visual hierarchy and spacing",
+      "url": "https://www.w3.org/WAI/WCAG22/Understanding/info-and-relationships.html"
+    },
+    {
+      "label": "Supporting standard",
+      "url": "https://tailwindcss.com/docs/theme"
+    }
+  ]
+}

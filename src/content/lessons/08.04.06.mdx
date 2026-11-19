@@ -1,0 +1,84 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Build a repeatable browser and input-device coverage matrix instead of assuming passing Chromium tests prove Safari and Firefox behavior.","Diagnose and repair the deliberately broken cross-browser testing example.","Separate local model correctness from actual user observations, accessibility and cross-browser qualification."]} />
+
+## The problem we're solving
+
+The starter reports full coverage after one desktop browser test. Mature design QA tests user comprehension, accessibility, visual hierarchy and realistic layout under stress, not merely whether an interface renders.
+
+## Build the mental model
+
+Build a repeatable browser and input-device coverage matrix instead of assuming passing Chromium tests prove Safari and Firefox behavior.
+
+**Expected outcome:** Complete coverage requires Chromium, Firefox and WebKit with keyboard and touch/mobile coverage.
+
+**Evidence boundary:** This local test verifies a deterministic model or audit decision. It cannot claim a WCAG audit, human usability result, assistive technology behavior, actual CLS/LCP measurement, or cross-browser compatibility. Collect those in a real locally served application with documented scenarios.
+
+## Prerequisites and preflight
+
+Read the previous UI lesson. Use Node 24 and the repository's lockfile. Open `labs/ui-browser-coverage/starter/solution.tsx`. Bash: `ACADEMY_LAB_TARGET=starter npm run lab:ui-browser-coverage`; PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:ui-browser-coverage; Remove-Item Env:ACADEMY_LAB_TARGET`.
+
+## Guided implementation
+
+<LessonStep number={1} title="Observe the broken design QA contract" file="labs/ui-browser-coverage/starter/solution.tsx" expected="The starter fails an assertion for a reproducible quality issue.">
+
+```tsx
+export type Coverage={engine:string;input:string};export function coverageComplete(items:readonly Coverage[]){return items.length>0;}
+```
+
+**Failure:** The starter reports full coverage after one desktop browser test.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the typed quality model" file="labs/ui-browser-coverage/starter/solution.tsx" expected="Complete coverage requires Chromium, Firefox and WebKit with keyboard and touch/mobile coverage.">
+
+```tsx
+export type Coverage={engine:string;input:string};export function coverageComplete(items:readonly Coverage[]){const engines=new Set(items.map(x=>x.engine));const inputs=new Set(items.map(x=>x.input));return ['chromium','firefox','webkit'].every(x=>engines.has(x))&&['keyboard','touch'].every(x=>inputs.has(x));}
+```
+
+**Reasoning:** Build a repeatable browser and input-device coverage matrix instead of assuming passing Chromium tests prove Safari and Firefox behavior.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify the edge case and plan real-device checks" file="labs/ui-browser-coverage/solution.test.mjs" expected="Instructor solution passes local checks; real UX/quality evidence is collected separately.">
+
+```js
+assert.equal(mod.coverageComplete([{engine:'chromium',input:'mouse'}]),false);assert.equal(mod.coverageComplete([{engine:'chromium',input:'keyboard'},{engine:'firefox',input:'keyboard'},{engine:'webkit',input:'touch'}]),true);assert.equal(mod.coverageComplete([]),false);
+```
+
+**Representative UI example and QA checklist:**
+
+```tsx
+// Recommended Playwright projects: chromium, firefox, webkit.
+// Test 320px, 200% zoom, keyboard focus, file upload and reduced motion.
+// Real mobile browsers and assistive technologies still need device checks.
+// Source checks cannot prove Safari-specific rendering or touch behavior.
+```
+
+A high-quality release gate combines keyboard and touch interaction, actual screen-reader observations, image/embedding stability, and valid WCAG/heuristic assessment.
+
+</LessonStep>
+
+<Misconception claim="The starter reports full coverage after one desktop browser test." correction="Build a repeatable browser and input-device coverage matrix instead of assuming passing Chromium tests prove Safari and Firefox behavior. Automated model tests alone cannot establish WCAG or real-user experience." />
+
+<KnowledgeCheck question="Which QA strategy applies to cross-browser testing?" choices={["A unit test is sufficient evidence that every browser and screen reader works.","Build a repeatable browser and input-device coverage matrix instead of assuming passing Chromium tests prove Safari and Firefox behavior.","A successful screenshot proves all error states and keyboard flows.","A designer can replace usability testing with color preference surveys."] } correctIndex={1} explanation="Build a repeatable browser and input-device coverage matrix instead of assuming passing Chromium tests prove Safari and Firefox behavior." misconception="Collect directly observable evidence for the user experience being evaluated." lessonId="08.04.06" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Bug:** The starter reports full coverage after one desktop browser test. **Reproduce:** run the red starter and capture the failing assertion. **Repair:** Build a repeatable browser and input-device coverage matrix instead of assuming passing Chromium tests prove Safari and Firefox behavior. **Regression:** Complete coverage requires Chromium, Firefox and WebKit with keyboard and touch/mobile coverage. Extend the review to an actual browser/device when the component is integrated.
+
+## Guided local lab
+
+`labs/ui-browser-coverage/` contains the learner's broken implementation, full instructor code, offline acceptance and rubric. The public academy does not execute arbitrary learner code.
+
+<LabGate lessonId="08.04.06" labId="lab.ui.ui-browser-coverage" commands={["npm run lab:ui-browser-coverage","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+What UX risk could still exist after these local assertions pass, and which concrete accessibility or cross-browser observation would expose it?
+
+## Official references
+
+- [Primary official reference: Cross-browser testing](https://www.w3.org/WAI/test-evaluate/)
+- [Supporting standard and documentation](https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Testing)
