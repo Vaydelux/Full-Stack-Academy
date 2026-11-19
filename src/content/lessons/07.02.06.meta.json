@@ -1,0 +1,39 @@
+{
+  "id": "07.02.06",
+  "title": "Suspense streaming: Suspense enables parts of the tree to reveal when ready; provide meaningful fallback UI without confusing loaded data and in-flight work.",
+  "description": "Next.js 16 suspense streaming using precise server/client execution boundaries, a failing TypeScript starter, corrected instructor source and local verification.",
+  "trackId": "07",
+  "moduleId": "07.02",
+  "level": "Intermediate",
+  "estimatedMinutes": 60,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "next": "16",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "07.02.05"
+  ],
+  "objectives": [
+    "Suspense enables parts of the tree to reveal when ready; provide meaningful fallback UI without confusing loaded data and in-flight work.",
+    "Repair the reproducible failure in next-suspense-streaming.",
+    "Distinguish an offline model assertion from real Next.js compilation and security integration."
+  ],
+  "labId": "lab.next.next-suspense-streaming",
+  "rubric": [
+    "I can explain suspense streaming without conflating server and client execution.",
+    "I can reproduce and repair the 07.02.06 starter failure.",
+    "I can identify the additional Next.js build and security evidence this lesson does not execute."
+  ],
+  "sources": [
+    {
+      "label": "Next.js: Suspense streaming",
+      "url": "https://nextjs.org/docs/app/getting-started/linking-and-navigating"
+    },
+    {
+      "label": "Supporting Next.js guide",
+      "url": "https://react.dev/reference/react/Suspense"
+    }
+  ]
+}

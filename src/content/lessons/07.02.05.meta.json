@@ -1,0 +1,39 @@
+{
+  "id": "07.02.05",
+  "title": "Route handlers and BFF: Validate URL parameters at the route boundary, bound resource consumption and return a stable response/error contract.",
+  "description": "Next.js 16 route handlers and bff using precise server/client execution boundaries, a failing TypeScript starter, corrected instructor source and local verification.",
+  "trackId": "07",
+  "moduleId": "07.02",
+  "level": "Intermediate",
+  "estimatedMinutes": 60,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "next": "16",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "07.02.04"
+  ],
+  "objectives": [
+    "Validate URL parameters at the route boundary, bound resource consumption and return a stable response/error contract.",
+    "Repair the reproducible failure in next-route-handler-bff.",
+    "Distinguish an offline model assertion from real Next.js compilation and security integration."
+  ],
+  "labId": "lab.next.next-route-handler-bff",
+  "rubric": [
+    "I can explain route handlers and bff without conflating server and client execution.",
+    "I can reproduce and repair the 07.02.05 starter failure.",
+    "I can identify the additional Next.js build and security evidence this lesson does not execute."
+  ],
+  "sources": [
+    {
+      "label": "Next.js: Route handlers and BFF",
+      "url": "https://nextjs.org/docs/app/api-reference/file-conventions/route"
+    },
+    {
+      "label": "Supporting Next.js guide",
+      "url": "https://nextjs.org/docs/app/guides/backend-for-frontend"
+    }
+  ]
+}

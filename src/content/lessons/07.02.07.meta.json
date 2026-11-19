@@ -1,0 +1,39 @@
+{
+  "id": "07.02.07",
+  "title": "Secret handling and server-only: Keep credentials in server-only modules, use narrow DTO projections, and audit the imported client dependency graph.",
+  "description": "Next.js 16 secret handling and server-only using precise server/client execution boundaries, a failing TypeScript starter, corrected instructor source and local verification.",
+  "trackId": "07",
+  "moduleId": "07.02",
+  "level": "Intermediate",
+  "estimatedMinutes": 60,
+  "status": "authored",
+  "reviewedAt": "2026-11-19",
+  "stack": {
+    "next": "16",
+    "typescript": "5"
+  },
+  "prerequisites": [
+    "07.02.06"
+  ],
+  "objectives": [
+    "Keep credentials in server-only modules, use narrow DTO projections, and audit the imported client dependency graph.",
+    "Repair the reproducible failure in next-server-only-secrets.",
+    "Distinguish an offline model assertion from real Next.js compilation and security integration."
+  ],
+  "labId": "lab.next.next-server-only-secrets",
+  "rubric": [
+    "I can explain secret handling and server-only without conflating server and client execution.",
+    "I can reproduce and repair the 07.02.07 starter failure.",
+    "I can identify the additional Next.js build and security evidence this lesson does not execute."
+  ],
+  "sources": [
+    {
+      "label": "Next.js: Secret handling and server-only",
+      "url": "https://nextjs.org/docs/app/guides/data-security"
+    },
+    {
+      "label": "Supporting Next.js guide",
+      "url": "https://nextjs.org/docs/app/getting-started/server-and-client-components"
+    }
+  ]
+}

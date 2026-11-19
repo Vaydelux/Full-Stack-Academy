@@ -1,0 +1,105 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["The `use client` directive defines a client module boundary, not a global rendering switch. Keep server-side data access out of the client graph.","Repair the deliberately broken server vs client components contract.","Verify a valid and an invalid boundary condition locally without claiming Next.js framework execution."]} />
+
+## The problem we're solving
+
+A course detail page can read database records on the server, while a small Save button needs browser state. Marking the whole page as a Client Component would ship unnecessary code and can expose unsafe imports.
+
+**Symptom:** The starter treats every source module as a Client Component, even when it has no client directive.
+
+## Build the mental model
+
+The `use client` directive defines a client module boundary, not a global rendering switch. Keep server-side data access out of the client graph.
+
+**Predict first:** A true leading client directive is detected; an ordinary Server Component defaults to server.
+
+The local fixture tests only an isolated TypeScript/React contract; actual Server Component compilation, network transport, streaming, Server Actions, security isolation and browser hydration require a separate compiled Next.js 16 application and integration tests.
+
+## Prerequisites and preflight
+
+Read `07.01.08` and the preceding module's topic before using this example. Open `labs/next-server-client-boundary/starter/solution.tsx`. With Node.js 24 and locked dependencies, run `ACADEMY_LAB_TARGET=starter npm run lab:next-server-client-boundary` (PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:next-server-client-boundary; Remove-Item Env:ACADEMY_LAB_TARGET`). The starter is intentionally red.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the broken boundary" file="labs/next-server-client-boundary/starter/solution.tsx" expected="At least one test assertion exposes the documented failure.">
+
+```tsx
+export type Boundary='server'|'client';
+export function detectBoundary(_source:string):Boundary{return 'client';}
+export function BoundaryLabel({source}:{source:string}){return <p>{detectBoundary(source)}</p>;}
+```
+
+**Root cause:** The starter treats every source module as a Client Component, even when it has no client directive.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement a minimal correct contract" file="labs/next-server-client-boundary/starter/solution.tsx" expected="A true leading client directive is detected; an ordinary Server Component defaults to server.">
+
+```tsx
+export type Boundary='server'|'client';
+export function detectBoundary(source:string):Boundary{
+ const first=source.trimStart().split(/\r?\n/,1)[0].trim();
+ return /^(['"])use client\1;?$/.test(first)?'client':'server';
+}
+export function BoundaryLabel({source}:{source:string}){return <p>{detectBoundary(source)}</p>;}
+```
+
+**Why it works:** The `use client` directive defines a client module boundary, not a global rendering switch. Keep server-side data access out of the client graph.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify an edge case and inspect the Next.js shape" file="labs/next-server-client-boundary/solution.test.mjs" expected="The instructor contract passes offline tests. Framework behavior is not asserted without a Next build.">
+
+```js
+assert.equal(mod.detectBoundary("'use client';\nexport function Button(){}"),'client');
+assert.equal(mod.detectBoundary("export async function Page(){}"),'server');
+assert.match(renderToStaticMarkup(createElement(mod.BoundaryLabel,{source:"export default function Page(){}"})),/>server</);
+```
+
+**Framework-oriented example (illustrative; needs real imports and infrastructure):**
+
+```tsx
+// app/courses/[id]/page.tsx (Server Component by default)
+import { SaveButton } from './SaveButton';
+export default async function CoursePage({params}:{params:Promise<{id:string}>}) {
+ const {id}=await params;
+ const course=await getAuthorizedCourse(id); // server-only data layer
+ return <main><h1>{course.title}</h1><SaveButton courseId={course.id}/></main>;
+}
+// app/courses/[id]/SaveButton.tsx
+'use client';
+import { useState } from 'react';
+export function SaveButton({courseId}:{courseId:string}) {
+ const [saved,setSaved]=useState(false);
+ return <button onClick={()=>setSaved(x=>!x)}>Save {courseId}: {String(saved)}</button>;
+}
+```
+
+**Boundary note:** The teaching helper only identifies a simple leading directive, not all legal JavaScript prologue syntax. A genuine Next compiler determines the module graph. All props crossing the boundary must be React-serializable.
+
+</LessonStep>
+
+<Misconception claim="The starter treats every source module as a Client Component, even when it has no client directive." correction="The `use client` directive defines a client module boundary, not a global rendering switch. Keep server-side data access out of the client graph. A fixture test cannot establish the actual compiled boundary or authorization." />
+
+<KnowledgeCheck question="What rule matters most for server vs client components?" choices={["All client code is automatically authorized by Next.js.","The `use client` directive defines a client module boundary, not a global rendering switch. Keep server-side data access out of the client graph.","Server rendering means an API has no externally reachable endpoints.","A passing SSR assertion establishes hydration and backend security."] } correctIndex={1} explanation="The `use client` directive defines a client module boundary, not a global rendering switch. Keep server-side data access out of the client graph." misconception="The server/client division changes execution boundaries, not who is authorized to access a particular record." lessonId="07.02.01" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Reproduce:** The starter treats every source module as a Client Component, even when it has no client directive. **Diagnose:** trace the input and execution boundary. **Repair:** The `use client` directive defines a client module boundary, not a global rendering switch. Keep server-side data access out of the client graph. **Regression:** A true leading client directive is detected; an ordinary Server Component defaults to server. Use a real Next build and network test for server and client behavior.
+
+## Guided local lab
+
+Practice in `labs/next-server-client-boundary/`, with a broken starter, instructor fix, offline regression checks, and learner rubric. No untrusted code runs on the academy server.
+
+<LabGate lessonId="07.02.01" labId="lab.next.next-server-client-boundary" commands={["npm run lab:next-server-client-boundary","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+Which server-side operation cannot be trusted to the browser? How would you demonstrate unauthorized access is rejected in a real deployed endpoint?
+
+## Official references
+
+- [Official Next.js reference: Server vs Client Components](https://nextjs.org/docs/app/getting-started/server-and-client-components)
+- [Supporting official guide](https://nextjs.org/docs/app/api-reference/directives/use-client)

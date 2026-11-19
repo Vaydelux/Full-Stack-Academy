@@ -1,0 +1,15 @@
+{
+  "id": "lab.next.next-server-only-secrets",
+  "lessonId": "07.02.07",
+  "title": "Next.js 16 secret handling and server-only local lab",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/next-server-only-secrets/starter/solution.tsx",
+  "solution": "labs/next-server-only-secrets/solution/solution.tsx",
+  "tests": "labs/next-server-only-secrets/solution.test.mjs",
+  "verify": [
+    "npm run lab:next-server-only-secrets"
+  ],
+  "expected": "Browser props contain only a user's public name and ID; no internal key field or value is present.",
+  "security": "Local reviewed model test. No real Server Action or backend is executed by this fixture."
+}

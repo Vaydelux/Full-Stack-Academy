@@ -1,0 +1,15 @@
+{
+  "id": "lab.next.next-suspense-streaming",
+  "lessonId": "07.02.06",
+  "title": "Next.js 16 suspense streaming local lab",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/next-suspense-streaming/starter/solution.tsx",
+  "solution": "labs/next-suspense-streaming/solution/solution.tsx",
+  "tests": "labs/next-suspense-streaming/solution.test.mjs",
+  "verify": [
+    "npm run lab:next-suspense-streaming"
+  ],
+  "expected": "Pending displays a status, ready displays the content, and errors remain distinct from loading.",
+  "security": "Local reviewed model test. No real Server Action or backend is executed by this fixture."
+}

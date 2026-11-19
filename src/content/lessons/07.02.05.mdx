@@ -1,0 +1,98 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Validate URL parameters at the route boundary, bound resource consumption and return a stable response/error contract.","Repair the deliberately broken route handlers and bff contract.","Verify a valid and an invalid boundary condition locally without claiming Next.js framework execution."]} />
+
+## The problem we're solving
+
+A browser asks for paginated public resources through a Next.js Route Handler. The handler must reject extreme page sizes before querying a backend.
+
+**Symptom:** The starter trusts any limit, including zero, negative and unbounded values.
+
+## Build the mental model
+
+Validate URL parameters at the route boundary, bound resource consumption and return a stable response/error contract.
+
+**Predict first:** Limits 1–50 are allowed, invalid values rejected, and absent limit defaults to 20.
+
+The local fixture tests only an isolated TypeScript/React contract; actual Server Component compilation, network transport, streaming, Server Actions, security isolation and browser hydration require a separate compiled Next.js 16 application and integration tests.
+
+## Prerequisites and preflight
+
+Read `07.01.08` and the preceding module's topic before using this example. Open `labs/next-route-handler-bff/starter/solution.tsx`. With Node.js 24 and locked dependencies, run `ACADEMY_LAB_TARGET=starter npm run lab:next-route-handler-bff` (PowerShell: `$env:ACADEMY_LAB_TARGET='starter'; npm run lab:next-route-handler-bff; Remove-Item Env:ACADEMY_LAB_TARGET`). The starter is intentionally red.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the broken boundary" file="labs/next-route-handler-bff/starter/solution.tsx" expected="At least one test assertion exposes the documented failure.">
+
+```tsx
+export function parsePageSize(raw:string|null){return raw===null?20:Number(raw);}
+```
+
+**Root cause:** The starter trusts any limit, including zero, negative and unbounded values.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement a minimal correct contract" file="labs/next-route-handler-bff/starter/solution.tsx" expected="Limits 1–50 are allowed, invalid values rejected, and absent limit defaults to 20.">
+
+```tsx
+export function parsePageSize(raw:string|null):number|null{
+ if(raw===null)return 20;
+ if(!/^\d{1,2}$/.test(raw))return null;
+ const value=Number(raw);
+ return Number.isSafeInteger(value)&&value>=1&&value<=50?value:null;
+}
+```
+
+**Why it works:** Validate URL parameters at the route boundary, bound resource consumption and return a stable response/error contract.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify an edge case and inspect the Next.js shape" file="labs/next-route-handler-bff/solution.test.mjs" expected="The instructor contract passes offline tests. Framework behavior is not asserted without a Next build.">
+
+```js
+assert.equal(mod.parsePageSize(null),20);assert.equal(mod.parsePageSize('50'),50);
+assert.equal(mod.parsePageSize('999'),null);assert.equal(mod.parsePageSize('0'),null);
+assert.equal(mod.parsePageSize('-1'),null);assert.equal(mod.parsePageSize('oops'),null);
+```
+
+**Framework-oriented example (illustrative; needs real imports and infrastructure):**
+
+```tsx
+// app/api/courses/route.ts (illustrative; validate & authorize actual data access)
+import { NextRequest,NextResponse } from 'next/server';
+export async function GET(request:NextRequest){
+ const raw=request.nextUrl.searchParams.get('limit');
+ const limit=parsePageSize(raw);
+ if(limit===null)return NextResponse.json({error:'Invalid limit'},{status:400});
+ const courses=await publicCourses.list({limit});
+ return NextResponse.json({data:courses});
+}
+```
+
+**Boundary note:** Route Handlers are public endpoints, not implicit authenticated APIs. Never interpolate user-supplied URLs into a server fetch without SSRF controls. Put rate limits and authorization on real handlers.
+
+</LessonStep>
+
+<Misconception claim="The starter trusts any limit, including zero, negative and unbounded values." correction="Validate URL parameters at the route boundary, bound resource consumption and return a stable response/error contract. A fixture test cannot establish the actual compiled boundary or authorization." />
+
+<KnowledgeCheck question="What rule matters most for route handlers and bff?" choices={["All client code is automatically authorized by Next.js.","Validate URL parameters at the route boundary, bound resource consumption and return a stable response/error contract.","Server rendering means an API has no externally reachable endpoints.","A passing SSR assertion establishes hydration and backend security."] } correctIndex={1} explanation="Validate URL parameters at the route boundary, bound resource consumption and return a stable response/error contract." misconception="The server/client division changes execution boundaries, not who is authorized to access a particular record." lessonId="07.02.05" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+**Reproduce:** The starter trusts any limit, including zero, negative and unbounded values. **Diagnose:** trace the input and execution boundary. **Repair:** Validate URL parameters at the route boundary, bound resource consumption and return a stable response/error contract. **Regression:** Limits 1–50 are allowed, invalid values rejected, and absent limit defaults to 20. Use a real Next build and network test for server and client behavior.
+
+## Guided local lab
+
+Practice in `labs/next-route-handler-bff/`, with a broken starter, instructor fix, offline regression checks, and learner rubric. No untrusted code runs on the academy server.
+
+<LabGate lessonId="07.02.05" labId="lab.next.next-route-handler-bff" commands={["npm run lab:next-route-handler-bff","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+Which server-side operation cannot be trusted to the browser? How would you demonstrate unauthorized access is rejected in a real deployed endpoint?
+
+## Official references
+
+- [Official Next.js reference: Route handlers and BFF](https://nextjs.org/docs/app/api-reference/file-conventions/route)
+- [Supporting official guide](https://nextjs.org/docs/app/guides/backend-for-frontend)

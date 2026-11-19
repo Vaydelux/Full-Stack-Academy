@@ -1,0 +1,15 @@
+{
+  "id": "lab.next.next-serialization-projection",
+  "lessonId": "07.02.03",
+  "title": "Next.js 16 serialization boundaries local lab",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/next-serialization-projection/starter/solution.tsx",
+  "solution": "labs/next-serialization-projection/solution/solution.tsx",
+  "tests": "labs/next-serialization-projection/solution.test.mjs",
+  "verify": [
+    "npm run lab:next-serialization-projection"
+  ],
+  "expected": "Only id, title and ISO date cross the boundary; private token and Date instance are excluded.",
+  "security": "Local reviewed model test. No real Server Action or backend is executed by this fixture."
+}

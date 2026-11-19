@@ -1,0 +1,15 @@
+{
+  "id": "lab.next.next-server-client-boundary",
+  "lessonId": "07.02.01",
+  "title": "Next.js 16 server vs client components local lab",
+  "runtime": "node-24",
+  "status": "authored",
+  "starter": "labs/next-server-client-boundary/starter/solution.tsx",
+  "solution": "labs/next-server-client-boundary/solution/solution.tsx",
+  "tests": "labs/next-server-client-boundary/solution.test.mjs",
+  "verify": [
+    "npm run lab:next-server-client-boundary"
+  ],
+  "expected": "A true leading client directive is detected; an ordinary Server Component defaults to server.",
+  "security": "Local reviewed model test. No real Server Action or backend is executed by this fixture."
+}
