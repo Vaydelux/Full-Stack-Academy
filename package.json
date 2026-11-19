@@ -14,6 +14,7 @@
     "test:study-plan": "node --experimental-strip-types --test tests/study-plan.test.mjs",
     "test:lesson-discovery": "node --experimental-strip-types --test tests/lesson-discovery.test.mjs",
     "test:learning-workflow": "node --test tests/learning-workflow-integrity.test.mjs",
+    "test:forms-query-http": "node --test tests/forms-query-http.test.mjs",
     "test:labs": "node scripts/run-local-labs.mjs",
     "verify:content": "node scripts/validate-content.mjs",
     "lab:browser-server": "node --test labs/browser-server/solution.test.mjs",
