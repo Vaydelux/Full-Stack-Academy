@@ -59,3 +59,12 @@ Source: `docs/MEGA_SCOPE_DELIVERY_PLAN.md` and `docs/delivery-waves.json`. Verif
 - [x] Add pure reference-filter tests and browser smoke scenarios (not executed yet)
 - [x] Keep 16 newly authored reference drafts noindex and out of the sitemap until verified, while preserving four legacy authored reference URLs
 - [ ] Review reference page accessibility and source version drift before release
+
+## Source quality checkpoint (no cloud tools)
+
+- [x] Verify entire branch tree counts: 257 MDX, 257 metadata, 257 labs, 39 React component fixtures, 40 Next source examples
+- [x] Cross-check 16 React/Next reference records against 303-item index and 889-item catalog
+- [x] Validate delivery wave generator and saved manifest reconcile to 630 remaining IDs
+- [x] Execute five pure reference-filter behaviors in memory (type-erased source; not a replacement for repo/tsx tests)
+- [x] Keep 16 new reference drafts `noindex` and outside XML sitemap pending verification
+- [ ] Run full local dependency-backed tests and browser checks before merge

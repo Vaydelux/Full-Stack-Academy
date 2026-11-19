@@ -55,3 +55,13 @@
 Start with the `npm run verify:react-next:cheap` local gate and fix all real failures without bypassing tests. Then run `npm run verify:react-next:full`, the reference search tests, Chromium and security review. Keep results in the checkpoint. After qualification, begin **W01: tracks 08, 09 and 10** as a single 96-topic scope (95 remain unauthored) with whole-module capstones and the same red/green test standard. The final seven waves cover all remaining 630 topics and culminate in an enterprise full-stack capstone; do not mark future waves as authored before their actual files exist.
 
 This handoff is durable even if a different AI takes over. It contains explicit module IDs, commands, evidence levels and blockers. Do not repeat already completed authoring work; continue from the active branch and its current Git commit.
+
+## Final static source audit (branch source before documentation-only handoff commit)
+
+- Exact audited source commit: `fc0f45339e7d18b997b002751a7532411d99488f`; `main` still `7e8f42d`.
+- The untruncated repository tree contains **257 MDX articles**, **257 metadata files**, **257 lab manifests**, **39 new React SSR component fixtures** and **40 new Next.js example source files**.
+- Sixteen new reference records passed in-memory index/category/lesson/URL/depth checks, and the deterministic seven-wave manifest matches the source catalog: 630 remaining unique topics.
+- The *actual checked-in TypeScript reference-filter source* was type-erased in memory and exercised against five behavioral scenarios (case-insensitive matching, category/detailed filters, empty state, stable groups and non-mutation), all passed. This **does not** mean the repo's `tsx` test command or Next UI has run.
+- Confirmed that new reference drafts are accessible but marked **noindex** and excluded from the sitemap until editorial verification; four legacy authored reference URLs preserve their existing index policy.
+- **No GitHub Actions or Vercel lookup/execution was made during this milestone**. Automatic provider-side hooks on pushes cannot be certified without checking those services.
+- Detailed per-gate evidence is also in `docs/offline-qa-evidence.json`.

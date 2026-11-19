@@ -47,3 +47,12 @@ The work is *authored code*, not production-ready verified course material yet. 
 - [x] Local typed filter tests, reference schema parser and browser-search smoke checks authored
 - [ ] Execute local `npm run reference:check && npm run test:reference-search` and full Chromium smoke
 - [ ] Editorial review of hook rules, request authorization and cache semantics; syntax/static audit is not a substitute for interactive testing
+
+## Observed offline source review (not a local build)
+
+- [x] Untruncated Git source tree confirms all 79 new topic pairs/fixtures and canonical registration counts
+- [x] 16 React/Next reference details audited against index IDs, related lessons, official HTTPS URL requirements and minimum content depth
+- [x] Five pure reference-search behaviors passed after type erasure of the committed helper source
+- [x] Seven-wave manifest reconciles to exactly 630 remaining unique topics
+- [x] New unverified reference pages are noindex and excluded from sitemap
+- [ ] Actual Node/tsx, TypeScript/MDX parser, Next production build and Playwright remain **unrun**

@@ -1,0 +1,84 @@
+{
+  "schemaVersion": 1,
+  "auditedAt": "2026-11-19",
+  "branch": "feat/06-07-react-next-curriculum",
+  "auditedSourceHead": "fc0f45339e7d18b997b002751a7532411d99488f",
+  "observedMainHead": "7e8f42d9303701abc3d32e2af007161dfafbb49d",
+  "status": "static-source-audit-only",
+  "sourceTree": {
+    "complete": true,
+    "totalFiles": 2715,
+    "mdxArticles": 257,
+    "metadataFiles": 257,
+    "labManifests": 257,
+    "reactSsrComponentFixtures": 39,
+    "nextCodeExamples": 40
+  },
+  "curriculum": {
+    "catalogIds": 889,
+    "uniqueAuthoredIds": 259,
+    "unAuthoredIds": 630,
+    "completeModules": 32
+  },
+  "references": {
+    "indexedSubjects": 303,
+    "authoredDrafts": 20,
+    "newDrafts": 16,
+    "newDraftSeo": "noindex/no sitemap",
+    "schemaAndMappings": "in-memory validated"
+  },
+  "authoredTests": {
+    "referenceFilterCases": {
+      "performed": 5,
+      "passed": 5,
+      "method": "Evaluated actual committed helper source with TypeScript-only annotations stripped in a local JavaScript V8 isolate; not a tsc or Next run"
+    },
+    "nextReactSyntaxGate": {
+      "written": true,
+      "executed": false
+    },
+    "instructorLabs": {
+      "written": true,
+      "executed": false
+    },
+    "intentionallyRedStarterLabs": {
+      "written": true,
+      "executed": false
+    },
+    "sourceSafetySnippetGate": {
+      "written": true,
+      "executed": false,
+      "sourceAssertionsEquivalentInspected": 5
+    },
+    "chromium": {
+      "written": true,
+      "executed": false
+    }
+  },
+  "roadmap": {
+    "waves": 7,
+    "canonicalFutureTopics": 632,
+    "alreadyAuthoredFutureInteractiveIds": 2,
+    "remaining": 630,
+    "manifestCheckedInMemory": true
+  },
+  "pendingLocalCommands": [
+    "npm ci",
+    "npm run verify:react-next:cheap",
+    "npm run test:react-next:offline",
+    "npm run test:react-next:red",
+    "npm run test:reference-search",
+    "npm run lint",
+    "npm run typecheck",
+    "npm run build",
+    "local Chromium smoke"
+  ],
+  "restrictions": {
+    "githubActions": "Not called or checked",
+    "vercel": "Not called or checked",
+    "deployment": "Not manually initiated",
+    "pr": "No feature PR opened",
+    "merge": "Feature branch not merged"
+  },
+  "knownCaveat": "GitHub pushes may still trigger configured third-party webhook builds; provider-side status is intentionally not checked because of the owner's instruction."
+}
