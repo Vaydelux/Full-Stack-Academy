@@ -59,7 +59,7 @@ This milestone additionally introduces `scripts/forms-query-draft-preview-smoke.
 npm run qualify:forms-query:preview-browser
 ```
 
-This gate checks all **16** preview URLs and project links, HTTP 200, noindex metadata, the expected lesson headings, responsive 320/768px overflow, previous/next links, invalid IDs returning HTTP 404, and safe quiz persistence. It submits an actual correct draft quiz and checks the browser's `fullstack-academy-v1` storage does **not** record credit, including after reload. It then answers a published 09.04.01 knowledge check and asserts the **published** lesson still gets saved.
+This gate checks all **16** preview URLs and project links, HTTP 200, noindex metadata, the expected lesson headings, responsive 320/768px overflow, previous/next links, invalid IDs returning HTTP 404, and safe quiz persistence. The production smoke runs it in a **separate ephemeral Playwright browser context**, keeping the deliberate published-quiz write from contaminating other tests. It submits an actual correct draft quiz and checks the browser's `fullstack-academy-v1` storage does **not** record credit, including after reload. It then answers a published 09.04.01 knowledge check and asserts the **published** lesson still gets saved.
 
 The new source contract has **ten** Node test cases (previously nine), including assertions that the Playwright runner is registered. **Neither the ten Node cases nor the new Playwright gate has executed in this environment.** The root Node24/Next build and actual assistive-technology review remain mandatory.
 
