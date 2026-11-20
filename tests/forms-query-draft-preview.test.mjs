@@ -22,18 +22,24 @@ test('all 16 draft previews have explicit MDX imports and registry entries',()=>
  }
  assert.equal((registry.match(/^import DraftLesson\d+ from /gm)||[]).length,16);
 });
-test('draft pages never join the real published curriculum',()=>{
+test('draft pages remain separate until each whole module is fully published',()=>{
  const mdx=read('src/content/lesson-registry.tsx');
  const published=read('src/lib/academy/published.ts');
- for(const id of ids){
-  assert.doesNotMatch(mdx,new RegExp("./lessons/"+id.replaceAll('.','\\.')+"\\.mdx"));
-  assert.doesNotMatch(published,new RegExp("lessons/"+id.replaceAll('.','\\.')+"\\.meta\\.json"));
+ for(const moduleId of ['09.02','09.03']){
+  const moduleIds=ids.filter(id=>id.startsWith(moduleId+'.'));
+  const statuses=moduleIds.map(id=>({
+    id,mdx:mdx.includes('./lessons/'+id+'.mdx'),
+    metadata:published.includes('lessons/'+id+'.meta.json')
+  }));
+  assert.ok(statuses.every(x=>!x.mdx&&!x.metadata) ||
+    statuses.every(x=>x.mdx&&x.metadata),'Module must publish atomically');
  }
 });
 test('all draft URLs have explicit static params with no arbitrary dynamic IDs',()=>{
  assert.match(page,/export const dynamicParams = false/);
  assert.match(page,/generateStaticParams\(\)/);
- assert.match(page,/FORMS_QUERY_DRAFT_IDS\.map\(/);
+ assert.match(page,/remainingDraftIds\.map\(/);
+ assert.match(page,/isPublishedLesson\(lessonId\)/);
  assert.match(page,/isFormsQueryDraftId\(lessonId\)/);
  assert.match(page,/notFound\(\)/);
 });
@@ -54,7 +60,8 @@ test('preview content remains separate from published progress and completion fl
  assert.doesNotMatch(page,/LocalLessonCompletion|markLessonComplete|LessonNotebook/);
 });
 test('project roadmap links to local previews and preserves GitHub source inspection',()=>{
- assert.match(project,/<Link href=\{'\/learn\/projects\/forms-query\/drafts\/' \+ topic\.id\}/);
+ assert.match(project,/isPublishedLesson\(topic\.id\) \? '\/learn\/' \+ topic\.id/);
+ assert.match(project,/Published lesson/);
  assert.match(project,/View MDX source/);
  assert.match(project,/do not grant course progress/);
 });
@@ -96,6 +103,8 @@ test('real browser smoke exercises all previews and verifies actual persisted qu
  const runner=read('scripts/forms-query-draft-preview-browser-runner.mjs');
  const pkg=JSON.parse(read('package.json'));
  assert.match(smoke,/for\(const \[index,topic\] of drafts\.entries\(\)\)/);
+ assert.match(smoke,/liveIds/);
+ assert.match(smoke,/canonical\.filter\(x=>!liveIds\.has\(x\.id\)\)/);
  assert.match(smoke,/meta\[name="robots"\]\[content\*="noindex"\]/);
  assert.match(smoke,/await persistedQuiz\(page,first\)/);
  assert.match(smoke,/await persistedQuiz\(page,published\)/);

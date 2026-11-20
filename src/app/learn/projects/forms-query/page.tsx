@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { CodeBlock, DocNotice, DocShell } from '@/components/course/DocShell';
 import { lessons } from '@/lib/academy/curriculum';
+import { isPublishedLesson } from '@/lib/academy/published';
 
 export const metadata: Metadata = {
   title: 'Reliable Task Workflow Project | Full-Stack Academy',
@@ -95,17 +96,17 @@ export default function FormsQueryProjectPage() {
                   <li key={topic.id} className="flex items-start justify-between gap-3 py-3">
                     <div className="min-w-0">
                       <span className="block font-mono text-[11px] text-slate-500">{topic.id}</span>
-                      <Link href={'/learn/projects/forms-query/drafts/' + topic.id}
+                      <Link href={isPublishedLesson(topic.id) ? '/learn/' + topic.id : '/learn/projects/forms-query/drafts/' + topic.id}
                         className="mt-1 block text-sm font-semibold text-cyan-700 underline-offset-2 hover:underline focus-visible:outline-2 focus-visible:outline-cyan-500 dark:text-cyan-300">
                         {topic.title}
                       </Link>
-                      <a href={'https://github.com/Vaydelux/Full-Stack-Academy/blob/main/drafts/forms-query/lessons/' + topic.id + '.mdx'}
+                      <a href={'https://github.com/Vaydelux/Full-Stack-Academy/blob/main/' + (isPublishedLesson(topic.id) ? 'src/content/lessons/' : 'drafts/forms-query/lessons/') + topic.id + '.mdx'}
                         target="_blank" rel="noopener noreferrer"
                         className="mt-1 inline-block text-xs text-slate-600 underline-offset-2 hover:underline dark:text-slate-400">
                         View MDX source
                       </a>
                     </div>
-                    <span className="shrink-0 rounded-full border border-slate-200 px-2 py-1 text-[10px] font-semibold text-slate-600 dark:border-white/20 dark:text-slate-300">Draft preview</span>
+                    <span className="shrink-0 rounded-full border border-slate-200 px-2 py-1 text-[10px] font-semibold text-slate-600 dark:border-white/20 dark:text-slate-300">{isPublishedLesson(topic.id) ? 'Published lesson' : 'Draft preview'}</span>
                   </li>
                 ))}
               </ol>

@@ -9,21 +9,25 @@ import {
   isFormsQueryDraftId,
 } from '@/content/forms-query-draft-registry';
 import { lessonMap, moduleMap } from '@/lib/academy/curriculum';
+import { isPublishedLesson } from '@/lib/academy/published';
 
 type Props = { params: Promise<{ lessonId: string }> };
 const projectUrl = '/learn/projects/forms-query';
 const draftUrl = (id: string) => projectUrl + '/drafts/' + id;
+// A promoted topic must disappear from draft navigation immediately on rebuild.
+const remainingDraftIds = FORMS_QUERY_DRAFT_IDS.filter(id => !isPublishedLesson(id));
 
 // These previews are intentionally never emitted as published course lessons.
 export const dynamicParams = false;
 
 export function generateStaticParams() {
-  return FORMS_QUERY_DRAFT_IDS.map(lessonId => ({ lessonId }));
+  return remainingDraftIds.map(lessonId => ({ lessonId }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lessonId } = await params;
-  const lesson = isFormsQueryDraftId(lessonId) ? lessonMap.get(lessonId) : undefined;
+  const lesson = isFormsQueryDraftId(lessonId) && !isPublishedLesson(lessonId)
+    ? lessonMap.get(lessonId) : undefined;
   return {
     title: lesson ? `${lesson.title} — Draft Preview | Full-Stack Academy` : 'Draft not found | Full-Stack Academy',
     description: lesson
@@ -35,12 +39,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function FormsQueryDraftPage({ params }: Props) {
   const { lessonId } = await params;
-  if (!isFormsQueryDraftId(lessonId)) notFound();
+  if (!isFormsQueryDraftId(lessonId) || isPublishedLesson(lessonId)) notFound();
   const lesson = lessonMap.get(lessonId);
   if (!lesson) notFound();
-  const position = FORMS_QUERY_DRAFT_IDS.indexOf(lessonId);
-  const previous = position > 0 ? FORMS_QUERY_DRAFT_IDS[position - 1] : null;
-  const next = position < FORMS_QUERY_DRAFT_IDS.length - 1 ? FORMS_QUERY_DRAFT_IDS[position + 1] : null;
+  const position = remainingDraftIds.indexOf(lessonId);
+  const previous = position > 0 ? remainingDraftIds[position - 1] : null;
+  const next = position < remainingDraftIds.length - 1 ? remainingDraftIds[position + 1] : null;
   const moduleTitle = moduleMap.get(lesson.moduleId)?.title ?? lesson.module;
 
   return (
