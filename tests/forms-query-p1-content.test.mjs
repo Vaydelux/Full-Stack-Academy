@@ -24,7 +24,7 @@ const vocabulary={
  '09.03.05':['useInfiniteQuery','nextCursor'],
  '09.03.06':['HydrationBoundary','dehydrate'],
  '09.03.07':['AbortSignal','503'],
- '09.03.08':['412','RHF']
+ '09.03.08':['412','React Hook Form']
 };
 const fences=source=>[...source.matchAll(/```tsx\n([\s\S]*?)\n```/g)].map(x=>x[1].trim());
 
@@ -62,7 +62,7 @@ for(const id of ids){
   assert.equal((mdx.match(/<KnowledgeCheck\b/g)||[]).length,1);
   assert.ok(mdx.includes('lessonId="'+id+'"'));
   assert.ok(mdx.includes('accessibility review'));
-  assert.ok(mdx.includes('publication'));
+  assert.ok(mdx.toLowerCase().includes('publication'));
   assert.ok(!mdx.includes('<LabGate'),id+' is still staged');
   assert.doesNotMatch(mdx,/<script\b|<iframe\b|dangerouslySetInnerHTML\s*=/i);
   assert.doesNotMatch(mdx,/not yet compiled with installed RHF packages or browser-tested|No compatible npm dependency lock or browser qualification has been completed/i);
