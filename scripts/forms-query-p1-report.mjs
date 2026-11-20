@@ -3,10 +3,12 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {inspectFormsQueryPromotion} from './forms-query-promotion-readiness.mjs';
+import {inspectQueryPublicationCandidates} from './verify-forms-query-query-candidates.mjs';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const flags=new Set(process.argv.slice(2));
 if([...flags].some(x=>!['--json','--check'].includes(x)))throw Error('Usage: --json|--check');
 const audit=inspectFormsQueryPromotion();
+const queryCandidates=inspectQueryPublicationCandidates();
 const exists=p=>fs.existsSync(path.join(root,p));
 const previews=exists('src/content/forms-query-draft-registry.tsx')&&
  exists('src/app/learn/projects/forms-query/drafts/[lessonId]/page.tsx')&&
@@ -21,6 +23,9 @@ const output={
  program:'P1 — Forms and remote state',
  date:'2026-11-20',
  claimedRuntimeOrA11yExecution:false,
+ queryCandidatePacks:queryCandidates.candidateCount,
+ queryCandidateSourceErrors:queryCandidates.issues,
+ queryRuntimeBrowserQualified:false,
  previewSourcesPresent:previews,
  publicationSnapshot:audit.snapshot,
  modules:each,
@@ -30,4 +35,4 @@ const output={
 };
 if(flags.has('--json'))console.log(JSON.stringify(output,null,2));
 else for(const m of each)console.log(m.id+': '+m.staged+'/'+m.topics+' staged; '+m.published+' published; '+m.blockers.length+' blockers');
-if(flags.has('--check')&&(!previews||audit.sourceErrors.length||each.some(m=>!m.sourceReady||m.topics!==8)))process.exitCode=1;
+if(flags.has('--check')&&(!previews||audit.sourceErrors.length||queryCandidates.issues.length||each.some(m=>!m.sourceReady||m.topics!==8)))process.exitCode=1;

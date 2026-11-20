@@ -10,8 +10,8 @@
   },
   "development": {
     "branch": "feat/p1-rhf-eight-lesson-depth-20261120",
-    "state": "p1-09.02-source-projection-validated-eight-articles",
-    "note": "RHF 09.02 publication projection now rewrites prepublication warnings in all eight candidate articles while retaining their original TSX examples and interactive lesson content. Executed the pure MDX renderer against 8/8 actual GitHub candidate files; all returned correctly without release-only warnings, with three lesson steps and preserved code fences. No Node24/npm/Next build, Chromium or named human accessibility review has run. Live 338/889; PR #38 unmerged."
+    "state": "p1-rhf-and-query-sixteen-staged-eight-query-candidate-packs",
+    "note": "P1 PR #38 now has eight complete RHF source candidate packs and eight TanStack Query source candidate packs (09.03.01–08), including 09.03 SSR providers/task-list files and eight isolated real browser/SSR test entry points. Added Source-only Query parity audit with strict module status and P1 dashboard integration. Source packaging alone does not publish these lessons, run Chromium, or constitute human accessibility approval. Live 338/889."
   },
   "snapshot": {
     "tracks": 28,
@@ -73,6 +73,6 @@
     "devHighFindings": 14,
     "exceptionExpires": "2026-12-02"
   },
-  "nextMilestone": "Run the full Node24 release gates and review human a11y on exact source SHA; then --apply RHF 09.02 and commit the qualified local 346/889 snapshot.",
+  "nextMilestone": "Run 09.02 Node24/Chromium/Next and human screen-reader gates, locally promote and commit 346, then qualify all eight 09.03 Query and SSR candidates for 354.",
   "status": "p1-rhf-eight-release-candidate-bundles-structurally-complete-not-published"
 }

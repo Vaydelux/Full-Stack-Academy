@@ -426,7 +426,9 @@
     "lab:forms-query-ssr-hydration": "node scripts/verify-query-release-browser.mjs --lab ssr-hydration",
     "lab:forms-query-retries-cancellation": "node scripts/verify-query-release-browser.mjs --lab retries-cancellation",
     "lab:forms-query-remote-task-capstone": "node scripts/verify-query-release-browser.mjs --lab remote-task-capstone",
-    "test:forms-query-query-browser-gate": "node --test tests/forms-query-query-browser-gate.test.mjs"
+    "test:forms-query-query-browser-gate": "node --test tests/forms-query-query-browser-gate.test.mjs",
+    "status:forms-query-query-candidates": "node scripts/verify-forms-query-query-candidates.mjs --json",
+    "test:forms-query-query-candidates": "node scripts/verify-forms-query-query-candidates.mjs --check && node --test tests/forms-query-query-candidates.test.mjs"
   },
   "dependencies": {
     "clsx": "^2.1.1",
