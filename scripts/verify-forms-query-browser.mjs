@@ -10,6 +10,7 @@ import { mkdtemp, readFile, rm } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { tmpdir, platform } from 'node:os';
 import path from 'node:path';
+import { classifyTaskBrowserPage } from './forms-query-browser-navigation.mjs';
 
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 const rootUser = typeof process.geteuid === 'function' && process.geteuid() === 0;
@@ -95,6 +96,26 @@ async function connectCdp(endpoint) {
   };
 }
 
+async function waitForNativeDocument(evaluate, timeoutMs = 8_000) {
+  const deadline = Date.now() + timeoutMs;
+  let lastURL = 'unavailable';
+  while (Date.now() < deadline) {
+    let state;
+    try {
+      state = await evaluate('({href:location.href,ready:document.readyState,hasForm:Boolean(document.getElementById("task-form")),body:(document.body?.innerText??"").slice(0,500)})');
+    } catch {
+      await sleep(120); // Chromium is still committing the navigation.
+      continue;
+    }
+    if (typeof state?.href === 'string') lastURL = state.href.slice(0, 160);
+    const result = classifyTaskBrowserPage(state);
+    if (result.kind === 'ready') return;
+    if (result.kind === 'blocked') throw new Error(result.message);
+    await sleep(120);
+  }
+  throw new Error('Native task document did not load; last browser URL: ' + lastURL + '. The browser test did not run.');
+}
+
 async function waitFor(predicate, detail, timeoutMs = 8_000) {
   const end = Date.now() + timeoutMs;
   while (Date.now() < end) {
@@ -172,8 +193,14 @@ async function qualify() {
       '})();',
     ].join('\n') });
 
+    // Confirm the server really serves the page before assessing Chromium.
+    // A managed-browser policy block is not a task API or UI failure.
+    const serverPage = await fetch(base + '/');
+    if (!serverPage.ok || !(await serverPage.text()).includes('id="task-form"')) {
+      throw new Error('Loopback task API did not serve the native HTML form; browser qualification refused.');
+    }
     await cdp.send('Page.navigate', { url: base + '/' });
-    await waitFor(async () => evaluate('document.readyState === "complete" && Boolean(document.getElementById("task-form"))'), 'native teaching form load');
+    await waitForNativeDocument(evaluate);
     await waitFor(async () => evaluate('document.getElementById("list-status").textContent.includes("No tasks")'), 'initial empty state');
 
     await check('Document has accessible form, filter and request journal', async () => {

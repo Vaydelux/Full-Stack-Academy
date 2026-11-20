@@ -20,6 +20,7 @@ const steps = [
   'test:forms-query-policy',
   'test:forms-query-react-wiring',
   'test:forms-query-native-ui',
+  'test:forms-query-browser-navigation',
   'test:curriculum-readiness',
   'validate',
   'verify:content',

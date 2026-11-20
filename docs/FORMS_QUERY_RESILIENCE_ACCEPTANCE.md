@@ -1,3 +1,5 @@
+> **LATEST SOURCE-EXECUTION UPDATE (2026-11-20):** The 20 typed React API client scenarios previously validated only with mocked handler transport have now passed **20/20 against real Node HTTP sockets** in a Git blob-matched partial checkout. Combined six-suite result 102/102 passes, including browser-navigation classification; Chromium itself remains blocked by managed policy and React/Next builds are unqualified. See [new accepted evidence](FORMS_QUERY_REAL_NODE_ACCEPTANCE.md). Historical test-status details below refer to the earlier PR #32 development session.
+
 # Forms / Query Resilience — acceptance and release status
 
 **Development checkpoint:** 2026-11-20 (Asia/Manila)
