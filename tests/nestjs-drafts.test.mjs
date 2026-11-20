@@ -56,3 +56,9 @@ test('WebSocket rooms are joined only after a verified tenant context exists',()
  assert.match(solution,/client\.join\('tenant:' \+ tenantId\)/);
  assert.match(solution,/this\.server\.to\('tenant:' \+ tenantId\)/);
 });
+
+test('unqualified Nest draft source is excluded from the Next root lint pipeline',()=>{
+ const config=read('eslint.config.mjs');
+ assert.match(config,/"drafts\/nestjs\/\*\*"/);
+ assert.match(config,/"examples\/nestjs-vertical\/\*\*"/);
+});

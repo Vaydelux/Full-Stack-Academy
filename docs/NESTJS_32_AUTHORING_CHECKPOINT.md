@@ -15,6 +15,10 @@ Each lesson is an MDX article with three guided steps, realistic negative and in
 
 An isolated `examples/nestjs-vertical/` package targets **NestJS 12, TypeScript 6, Node 24.9+**, including eight real framework test cases (11.01) comparing instructor behavior and intentionally failed learner cases. Its tests were **authored, NOT executed**. The npm registry was unavailable in this environment; no real lockfile was generated, and its qualifying command refuses to pass without one.
 
+## Root project isolation
+
+The root Next.js `tsconfig.json` and ESLint config exclude the unqualified Nest 12 drafts and nested runtime harness. This keeps TypeScript 6 decorator samples from entering the existing Next/React TypeScript 5 build or being misjudged by unrelated Next lint rules. The Nest runtime package has its own compiler and semantic checks, and **must be independently qualified** before publishing. Compiled `dist/` output is ignored in Git.
+
 ## Source validation
 
 ```bash
