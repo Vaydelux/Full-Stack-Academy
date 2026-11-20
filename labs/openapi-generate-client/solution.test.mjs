@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 const mod=await import('./'+(process.env.ACADEMY_LAB_TARGET==='starter'?'starter':'solution')+'/solution.mjs');
 test("10.04.05 Client code generation: real OpenAPI 3.1 contract",async()=>{
-const {loadTaskSpec}=await import('../../../examples/task-contract/load-spec.mjs');
+const {loadTaskSpec}=await import('../../examples/task-contract/load-spec.mjs');
 const document=await loadTaskSpec();
 const source=mod.generateClient(document);
 assert.match(source,/export function createClient/);assert.match(source,/listNotes/);

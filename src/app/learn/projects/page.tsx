@@ -24,7 +24,6 @@ export default function PracticeProjectsPage() {
           <div className="mt-4 flex flex-wrap gap-2 text-xs text-slate-500">
             <span className="rounded-full border border-slate-300 px-3 py-1 dark:border-white/20">Loopback only</span>
             <span className="rounded-full border border-slate-300 px-3 py-1 dark:border-white/20">No production auth</span>
-            <span className="rounded-full border border-slate-300 px-3 py-1 dark:border-white/20">React install pending</span>
           </div>
           <Link href="/learn/projects/forms-query" className="mt-5 inline-flex min-h-10 items-center rounded-lg bg-cyan-700 px-4 py-2 text-sm font-bold text-white hover:bg-cyan-800">View project and run locally</Link>
         </article>

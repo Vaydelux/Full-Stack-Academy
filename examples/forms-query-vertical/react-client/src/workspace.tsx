@@ -174,7 +174,7 @@ export function TaskWorkspace() {
       <div className="columns">
         <section aria-labelledby="create-heading" className="panel">
           <h2 id="create-heading">Create a task</h2>
-          <form noValidate onSubmit={handleSubmit(onSubmit)}>
+          <form noValidate onSubmit={event => { void handleSubmit(onSubmit)(event); }}>
             <label htmlFor="task-title">Task title</label>
             <input id="task-title" placeholder="Practice reliable mutation recovery" maxLength={100}
               aria-invalid={Boolean(errors.title)}

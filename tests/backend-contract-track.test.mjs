@@ -68,9 +68,13 @@ test('actual generated SDK and real loopback API are present, with strict red st
  assert.ok(read('scripts/verify-offline.mjs').includes("'test:red-backend-contract'"));
  assert.ok(read('scripts/validate-content.mjs').includes('security|openapi'));
 });
-test('the local browser route smoke includes all backend lessons and first planned noindex',()=>{
+test('the local browser route smoke includes all backend lessons and first planned noindex',async()=>{
  const smoke=read('scripts/backend-contract-track-smoke.mjs');
- assert.ok(smoke.includes("10.03.")&&smoke.includes("10.04."));
+ const {backendContractLessonIds}=await import('../scripts/backend-contract-track-smoke.mjs');
+ assert.deepEqual(backendContractLessonIds, [
+  '10.03.01','10.03.02','10.03.03','10.03.04','10.03.05','10.03.06','10.03.07','10.03.08',
+  '10.04.01','10.04.02','10.04.03','10.04.04','10.04.05','10.04.06','10.04.07','10.04.08',
+ ]);
  assert.ok(smoke.includes("09.02.01"));
  assert.ok(read('scripts/browser-smoke.mjs').includes('verifyBackendContractTrack'));
 });

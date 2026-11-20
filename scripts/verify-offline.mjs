@@ -26,6 +26,7 @@ const steps = [
   'verify:content',
   'checkpoint:check',
   'test:labs',
+  'test:red-starters',
   'test:red-react',
   'test:react-red-advanced',
   'test:red-react-performance',

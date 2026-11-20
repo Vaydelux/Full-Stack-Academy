@@ -25,6 +25,7 @@
     "test:forms-query-react-wiring": "node --test tests/forms-query-react-wiring.test.mjs",
     "test:forms-query-native-ui": "node --test tests/forms-query-native-ui.test.mjs",
     "qualify:forms-query:browser": "node scripts/verify-forms-query-browser.mjs",
+    "qualify:forms-query:react-browser": "node scripts/verify-forms-query-react-browser.mjs",
     "test:forms-query-browser-navigation": "node --test tests/forms-query-browser-navigation.test.mjs",
     "qualify:forms-query:source": "node scripts/qualify-forms-query.mjs --source",
     "qualify:forms-query:full": "node scripts/qualify-forms-query.mjs --full",

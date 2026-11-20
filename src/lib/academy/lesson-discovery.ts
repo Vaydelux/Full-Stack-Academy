@@ -87,16 +87,16 @@ export function discoverPublishedLessons(
     .map((lesson, index) => {
       const title = text(lesson.title);
       const id = text(lesson.id);
-      const module = text(lesson.moduleTitle);
+      const moduleTitle = text(lesson.moduleTitle);
       const description = text(lesson.description ?? '');
-      const haystack = [id, title, module, description, text(lesson.level), text(lesson.moduleId)].join(' ');
+      const haystack = [id, title, moduleTitle, description, text(lesson.level), text(lesson.moduleId)].join(' ');
       if (options.moduleId && lesson.moduleId !== options.moduleId) return null;
       if (options.level && lesson.level !== options.level) return null;
       if (tokens.some(token => !haystack.includes(token))) return null;
       const score = search
         ? (id === search ? 120 : id.startsWith(search) ? 80 : 0) +
           (title === search ? 100 : title.startsWith(search) ? 60 : 0) +
-          tokens.reduce((n, token) => n + (title.includes(token) ? 12 : module.includes(token) ? 5 : 0), 0)
+          tokens.reduce((n, token) => n + (title.includes(token) ? 12 : moduleTitle.includes(token) ? 5 : 0), 0)
         : 0;
       return { lesson, index, score };
     })

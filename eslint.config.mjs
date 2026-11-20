@@ -10,6 +10,8 @@ const eslintConfig = [
       ".next/**",
       "out/**",
       "build/**",
+      "examples/forms-query-vertical/react-client/dist/**",
+      "examples/forms-query-vertical/.ssr-qualification-*/**",
       "next-env.d.ts",
       "public/**",
       "preview-src/**",

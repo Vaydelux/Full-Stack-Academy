@@ -20,7 +20,7 @@ export default function ZodProfilePracticePage(){
   <h1 className="mt-3 text-3xl font-extrabold tracking-tight sm:text-4xl">Validate a profile with Zod</h1>
   <p className="my-6 max-w-3xl text-sm leading-7 text-slate-600 dark:text-slate-300">
    Use genuine Zod 4 validation in your browser. Inspect normalized output, rejected fields and accessible errors.
-   This practice doesn't send information to a backend, save it in storage or register an account.
+   This practice runs in browser memory.
   </p>
   <ZodProfileLab />
   <p className="mt-8 text-sm"><Link href="/learn/09.01.08" className="font-semibold text-cyan-700 underline underline-offset-4 dark:text-cyan-300">Return to the Zod profile capstone lesson</Link></p>

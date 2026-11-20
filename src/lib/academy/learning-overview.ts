@@ -66,9 +66,9 @@ export function createLearningOverview(
     const lesson: OverviewLesson = { ...item, minutes };
     const done = progress.complete[item.id] === true;
     const inProgress = !done && isStarted(item.id, progress);
-    let module = byModule.get(item.moduleId);
-    if (!module) {
-      module = {
+    let moduleOverview = byModule.get(item.moduleId);
+    if (!moduleOverview) {
+      moduleOverview = {
         id: item.moduleId,
         title: moduleTitles[item.moduleId] ?? item.moduleId,
         lessons: [],
@@ -77,23 +77,23 @@ export function createLearningOverview(
         remainingMinutes: 0,
         nextLesson: null,
       };
-      byModule.set(item.moduleId, module);
+      byModule.set(item.moduleId, moduleOverview);
     }
-    module.lessons.push(lesson);
+    moduleOverview.lessons.push(lesson);
     total++;
     if (done) {
       completed++;
-      module.completed++;
+      moduleOverview.completed++;
     } else {
       remainingMinutes += minutes;
-      module.remainingMinutes += minutes;
-      if (!module.nextLesson || (inProgress && !isStarted(module.nextLesson.id, progress))) {
-        module.nextLesson = lesson;
+      moduleOverview.remainingMinutes += minutes;
+      if (!moduleOverview.nextLesson || (inProgress && !isStarted(moduleOverview.nextLesson.id, progress))) {
+        moduleOverview.nextLesson = lesson;
       }
       if (!firstUnfinished) firstUnfinished = lesson;
       if (inProgress) {
         started++;
-        module.started++;
+        moduleOverview.started++;
         if (!firstInProgress) firstInProgress = lesson;
       }
     }

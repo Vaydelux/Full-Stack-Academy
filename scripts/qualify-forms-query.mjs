@@ -44,11 +44,14 @@ if(mode==='--full'){
  }
  checks.push(
   {name:'Root dependency reinstall',program:'npm',args:['ci']},
-  {name:'Entire academy offline quality gate including 16 staged TSX syntax scans',program:'npm',args:['run','verify:offline']},
+  {name:'Entire academy offline quality gate including 16 staged TSX syntax scans',program:'npm',args:['run','verify:offline'],timeout:900_000},
   {name:'Nested React dependency reinstall',program:'npm',args:['ci','--prefix',nested]},
   {name:'Nested RHF/TanStack React typecheck',program:'npm',args:['run','typecheck','--prefix',nested]},
+  {name:'All staged lesson variants typechecked with installed libraries',program:'npm',args:['run','typecheck:staged','--prefix',nested]},
   {name:'Nested React production build',program:'npm',args:['run','build','--prefix',nested]},
-  {name:'Native practice UI via real local Chromium CDP',program:'node',args:['scripts/verify-forms-query-browser.mjs']}
+  {name:'Native practice UI via real local Chromium CDP',program:'node',args:['scripts/verify-forms-query-browser.mjs']},
+  {name:'React practice UI and staged lesson behavior in real Chromium',program:'node',args:['scripts/verify-forms-query-react-browser.mjs']},
+  {name:'Academy production build smoke in real Chromium',program:'node',args:['scripts/verify-academy-browser.mjs'],timeout:330_000}
  );
 }
 const passed=[];
@@ -60,7 +63,7 @@ for(const check of checks){
   executable=process.env.ComSpec||'cmd.exe';
   argv=['/d','/s','/c','npm '+check.args.join(' ')];
  }
- const result=spawnSync(executable,argv,{cwd:root,env:process.env,stdio:'inherit',timeout:240_000});
+ const result=spawnSync(executable,argv,{cwd:root,env:process.env,stdio:'inherit',timeout:check.timeout??240_000});
  if(result.error||result.status!==0){
   console.error(JSON.stringify({mode,failed:check.name,passed,exitStatus:result.status,error:result.error?.message},null,2));
   process.exit(1);
@@ -69,7 +72,7 @@ for(const check of checks){
 }
 console.log(JSON.stringify({
  mode,sourceAndScriptedChecks:'passed',checks:passed,
- realReactBrowserAcceptance:'NOT EXECUTED BY THIS COMMAND',
+ realReactBrowserAcceptance:mode==='--full'?'React practice and staged client lesson behavior passed':'Not executed in source mode',
  fullAcademyReleaseQualified:false,
- nextAction:'Run real DOM, keyboard, 320px/mobile, SSR-hydration and server failure recovery browser tests before promoting or deploying.'
+ nextAction:'Complete manual accessibility checks and apply the academy publication gates before promotion.'
 },null,2));

@@ -14,17 +14,15 @@ export function LessonNotebook({ lessonId }: { lessonId: string }) {
   const storageError = useAcademy(s => s.storageError);
   const setNote = useAcademy(s => s.setNote);
   const toggleBookmark = useAcademy(s => s.toggleBookmark);
-  const [draft, setDraft] = useState('');
-  const [lastSyncedNote, setLastSyncedNote] = useState('');
+  const [note, setLocalNote] = useState({ saved: savedNote, draft: savedNote });
   const [feedback, setFeedback] = useState('');
 
   useEffect(() => { if (!hydrated) hydrate(); }, [hydrated, hydrate]);
-  useEffect(() => {
-    if (!hydrated) return;
+  if (hydrated && note.saved !== savedNote) {
     // Adopt external changes only when this form does not have unsaved edits.
-    setDraft(current => current === lastSyncedNote ? savedNote : current);
-    setLastSyncedNote(savedNote);
-  }, [hydrated, savedNote, lastSyncedNote]);
+    setLocalNote({ saved: savedNote, draft: note.draft === note.saved ? savedNote : note.draft });
+  }
+  const draft = note.draft;
   const dirty = draft !== savedNote;
 
   function saveNote() {
@@ -57,7 +55,7 @@ export function LessonNotebook({ lessonId }: { lessonId: string }) {
         <p className="mt-3 text-xs leading-6 text-slate-500">Keep a question, code insight or next action beside this article. Notes stay in this browser and are included in progress backups. Do not save passwords or secrets.</p>
         <label htmlFor={'lesson-note-' + lessonId} className="mt-3 block text-xs font-semibold">Note for {lessonId}</label>
         <textarea id={'lesson-note-' + lessonId} value={draft} maxLength={20000} rows={5}
-          disabled={!hydrated} onChange={e => { setDraft(e.target.value); setFeedback(''); }}
+          disabled={!hydrated} onChange={e => { setLocalNote({ saved: savedNote, draft: e.target.value }); setFeedback(''); }}
           className="mt-2 w-full resize-y rounded-xl border border-slate-300 bg-white p-3 text-sm leading-6 text-slate-900 outline-offset-2 focus-visible:outline-cyan-600 disabled:opacity-60 dark:border-white/20 dark:bg-[#101116] dark:text-slate-100"
           placeholder="What should you remember or practice next?" />
         <div className="mt-3 flex flex-wrap items-center justify-between gap-3">

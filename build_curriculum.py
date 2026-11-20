@@ -173,6 +173,25 @@ Capstone Phase E Defense | Bug bounty style review; Fault injection drill; Archi
 '''),
 ]
 
+lesson_references = {
+    '09.02.01': 'https://react-hook-form.com/get-started',
+    '09.02.02': 'https://react-hook-form.com/docs/usecontroller/controller',
+    '09.02.03': 'https://github.com/react-hook-form/resolvers#zod',
+    '09.02.04': 'https://react-hook-form.com/docs/usefieldarray',
+    '09.02.05': 'https://react-hook-form.com/docs/useform/handlesubmit',
+    '09.02.06': 'https://react-hook-form.com/docs/useform/reset',
+    '09.02.07': 'https://react-hook-form.com/docs/useform/seterror',
+    '09.02.08': 'https://react-hook-form.com/docs/useform/formstate',
+    '09.03.01': 'https://tanstack.com/query/latest/docs/framework/react/guides/query-keys',
+    '09.03.02': 'https://tanstack.com/query/latest/docs/framework/react/guides/important-defaults',
+    '09.03.03': 'https://tanstack.com/query/latest/docs/framework/react/guides/invalidations-from-mutations',
+    '09.03.04': 'https://tanstack.com/query/latest/docs/framework/react/guides/optimistic-updates',
+    '09.03.05': 'https://tanstack.com/query/latest/docs/framework/react/guides/infinite-queries',
+    '09.03.06': 'https://tanstack.com/query/latest/docs/framework/react/guides/advanced-ssr',
+    '09.03.07': 'https://tanstack.com/query/latest/docs/framework/react/guides/query-cancellation',
+    '09.03.08': 'https://tanstack.com/query/latest/docs/framework/react/guides/mutations',
+}
+
 records=[]; modules=[]; refs={}
 for ti,(idx,title,level,outcome,docs,data) in enumerate(tracks):
     rows=[x.strip() for x in data.strip().splitlines() if x.strip()]
@@ -188,7 +207,7 @@ for ti,(idx,title,level,outcome,docs,data) in enumerate(tracks):
             lid=f'{mid}.{li+1:02d}'
             lesson_type = 'lab' if lt.lower().startswith(('lab ','guided lab')) else 'debug' if lt.lower().startswith(('bug hunt','debug')) else 'lesson'
             eta=50 if lesson_type=='lab' else 30 if lesson_type=='debug' else 18
-            records.append({'id':lid,'slug':f'l{idx}-{mi+1:02d}-{li+1:02d}','trackId':idx,'track':title,'moduleId':mid,'module':mod,'title':lt,'level':level,'type':lesson_type,'estimatedMinutes':eta,'status':'planned','referenceUrl':docs,'prerequisites':[]})
+            records.append({'id':lid,'slug':f'l{idx}-{mi+1:02d}-{li+1:02d}','trackId':idx,'track':title,'moduleId':mid,'module':mod,'title':lt,'level':level,'type':lesson_type,'estimatedMinutes':eta,'status':'planned','referenceUrl':lesson_references.get(lid, docs),'prerequisites':[]})
     refs[title]=docs
 
 # Reference glossary registry: short titled entries organized by domain.

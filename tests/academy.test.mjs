@@ -70,7 +70,7 @@ test('prototype/catalog.js matches JSON source of truth', () => {
 });
 
 test('no leftover boilerplate directories or Nebula/Z.ai references exist in src/', () => {
-  const bannedDirs = ['.zscripts', 'Caddyfile', 'mini-services', 'examples', 'prisma', 'db', 'download', 'upload', 'tailwind.config.ts'];
+  const bannedDirs = ['.zscripts', 'Caddyfile', 'mini-services', 'prisma', 'db', 'download', 'upload', 'tailwind.config.ts'];
   for (const rel of bannedDirs) {
     assert.equal(fs.existsSync(path.join(ROOT, rel)), false, `Boilerplate still present: ${rel}`);
   }

@@ -5,7 +5,7 @@ import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
 
 ## The problem we're solving
 
-A support search must expose a query field with an accessible name and announce its result count. **Failure case:** The starter uses unlabeled input markup, so getByRole('searchbox',{name:'Search support'}) cannot find it.
+A support search must expose a query field with an accessible name and announce its result count. **Failure case:** The starter uses unlabeled input markup, so `getByRole('searchbox', { name: 'Search support' })` cannot find it.
 
 ## Build the mental model
 
@@ -30,7 +30,7 @@ export function SupportSearch({results}:{results:number}){
 }
 ```
 
-**Diagnosis:** The starter uses unlabeled input markup, so getByRole('searchbox',{name:'Search support'}) cannot find it. Before reading the answer, identify the user-visible symptom, not just the line number.
+**Diagnosis:** The starter uses unlabeled input markup, so `getByRole('searchbox', { name: 'Search support' })` cannot find it. Before reading the answer, identify the user-visible symptom, not just the line number.
 
 </LessonStep>
 
@@ -67,7 +67,7 @@ assert.match(html,/id="support-query"/);assert.match(html,/role="status">1 resul
 
 ## Bug Hunt: reproduce, diagnose and repair
 
-**Reproduce:** Run the intentionally broken starter and record the failed assertion. **Investigate:** The starter uses unlabeled input markup, so getByRole('searchbox',{name:'Search support'}) cannot find it. **Repair:** Prefer roles and associated labels over brittle CSS classes, positions or test IDs when querying UI. **Verify:** The searchbox has a proper accessible name and results use a status region.
+**Reproduce:** Run the intentionally broken starter and record the failed assertion. **Investigate:** The starter uses unlabeled input markup, so `getByRole('searchbox', { name: 'Search support' })` cannot find it. **Repair:** Prefer roles and associated labels over brittle CSS classes, positions or test IDs when querying UI. **Verify:** The searchbox has a proper accessible name and results use a status region.
 
 ## Guided local lab
 

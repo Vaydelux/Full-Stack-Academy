@@ -1,7 +1,9 @@
-// Source-authored smoke for isolated locally served Next and Chromium; not executed by the source writer.
+export const backendContractLessonIds = ['03','04'].flatMap(module =>
+ Array.from({length:8},(_,i)=>'10.'+module+'.'+String(i+1).padStart(2,'0')));
+
 export async function verifyBackendContractTrack({page,base,assert,wait}){
  const saved=page.viewportSize();
- const ids=['03','04'].flatMap(module=>Array.from({length:8},(_,i)=>'10.'+module+'.'+String(i+1).padStart(2,'0')));
+ const ids=backendContractLessonIds;
  for(const id of ids){
   const response=await page.goto(base+'/learn/'+id);
   assert.equal(response.status(),200,'Security/OpenAPI published lesson '+id);

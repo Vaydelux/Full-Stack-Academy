@@ -15,7 +15,7 @@ export function Pager(){
   },
   getNextPageParam:last=>last.nextCursor,
   maxPages:10,
-  retry:(count,error)=>count<1&&!/^HTTP 4\\d\\d$/.test(String(error.message)),
+  retry:(count,error)=>count<1&&!/^HTTP 4\d\d$/.test(String(error.message)),
  });
  if(pages.isPending)return <p role="status">Loading pages…</p>;
  if(pages.isError)return <div role="alert">Pagination failed.

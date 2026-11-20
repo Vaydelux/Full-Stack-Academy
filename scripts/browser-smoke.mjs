@@ -21,7 +21,10 @@ if (!browserRoot) throw new Error('ACADEMY_BROWSER_ROOT must point to the isolat
 const require = createRequire(path.join(browserRoot, 'package.json'));
 const { chromium } = require('playwright');
 const base = process.env.ACADEMY_BASE_URL ?? 'http://127.0.0.1:3100';
-const browser = await chromium.launch({ headless: true });
+const browser = await chromium.launch({
+  headless: true,
+  ...(process.env.ACADEMY_CHROME_BIN ? { executablePath: process.env.ACADEMY_CHROME_BIN } : {}),
+});
 const context = await browser.newContext({ viewport: { width: 1440, height: 900 }, reducedMotion: 'reduce' });
 const page = await context.newPage();
 const errors = [];
@@ -418,6 +421,12 @@ try {
   await verifyZustandState({page,base,assert,wait});
   await verifyNodeHttpTrack({page,base,assert,wait});
   await verifyBackendContractTrack({page,base,assert,wait});
+
+  const formsProject = await page.goto(base + '/learn/projects/forms-query');
+  assert.equal(formsProject.status(), 200);
+  await wait(page.getByRole('heading', { name: 'Reliable Task Workflow' }));
+  await wait(page.getByText('npm run qualify:forms-query:react-browser', { exact: true }));
+  assert.equal(await page.locator('meta[name="robots"][content*="noindex"]').count(), 1);
 
   await page.goto(base+'/?lesson=06.01.01&mode=practice');
   await wait(btn('Practice'));
