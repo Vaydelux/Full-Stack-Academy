@@ -65,3 +65,9 @@ The release tool now also supports `npm run promote:forms-query:rhf -- --simulat
 ### Fail-fast JavaScript parse gate
 
 `npm run test:js-syntax` runs real `node --check` on the complete `scripts/` and `tests/` MJS sets plus all eight candidate browser-test entry points, with no package imports or browser execution. It is now the first step of `npm run verify:offline`. This prevents another malformed command-line conditional from surviving until late in the release suite. The current feature-branch source was checked separately using V8 syntax parsing after import stripping; 36/36 changed JS files parsed. **The complete repository Node check and browser runs remain unexecuted here.**
+
+### Accessibility review provenance (source fingerprint)
+
+The `--plan` output now includes `reviewedSourceSha256`: a deterministic hash of the eight release articles, metadata, starter/instructor code, browser acceptance tests, draft and published UI integration code. This is not a secret; it binds a human review to the exact source that was reviewed. The human review JSON must use the same value in `sourceSha256`. If any reviewed file changes, `--apply` refuses that older evidence.
+
+A deliberately **unapproved** example record is available at `docs/release-evidence/forms-query-09.02-accessibility.example.json`. Do not rename it as real evidence until a named reviewer has actually checked keyboard navigation, 200%-zoom layout and a named screen reader across the eight topics. Copy the truthful, completed record to `docs/release-evidence/forms-query-09.02-accessibility.json`, commit it, then execute from a clean worktree. Review artifacts can be committed without changing the fingerprint because the record itself is excluded from the hashed source. The hash authenticates the reviewed artifact version; it does not prove review quality or substitute for a human test.

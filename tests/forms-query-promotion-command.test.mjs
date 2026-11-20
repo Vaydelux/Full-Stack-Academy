@@ -19,6 +19,7 @@ test('the read-only plan works before or after a complete eight-topic publicatio
  assert.equal(plan.sourceCandidates.length,8);
  assert.ok(plan.publishedBefore>=338&&plan.publishedBefore<=889);
  assert.equal(plan.rootDependenciesUnchanged,true);
+ assert.match(plan.reviewedSourceSha256,/^[a-f0-9]{64}$/);
  assert.equal(plan.targetPublished,plan.alreadyPublished?plan.publishedBefore:plan.publishedBefore+8);
  assert.equal(read('docs/checkpoint.json'),before,'Planning must not change the checkpoint');
 });
@@ -29,6 +30,7 @@ test('apply is explicit and requires real browser, human review and Node24',()=>
  assert.match(program,/ACADEMY_BROWSER_ROOT/);
  assert.match(program,/humanEvidence\(\)/);
  assert.match(program,/reviewer\.date/);
+ assert.match(program,/evidence\.sourceSha256,reviewFingerprint\(\)/);
  assert.match(program,/git',\['status','--porcelain'\]/);
 });
 test('the promote runner performs genuine full tests before and after publication',()=>{

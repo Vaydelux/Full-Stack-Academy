@@ -10,8 +10,8 @@
   },
   "development": {
     "branch": "feat/p1-rhf-eight-lesson-depth-20261120",
-    "state": "p1-rhf-dependency-isolated-transition-safe-and-promotion-command-authored",
-    "note": "PR #38 now has 8/8 source-complete RHF publication bundles, genuine nested React dependency lock (no unnecessary root RHF deps), transition-safe lesson/draft navigation and curriculum counts, sequential browser-lab runner, and a guarded --plan/--apply publication command with pre/post actual local gates and file rollback. Node24 npm/Next/Chromium/manual screen-reader checks have not run in this environment. Until those gates pass and apply is run, 09.02 stays unpublished and total is 338/889."
+    "state": "p1-rhf-rehearsal-source-syntax-and-accessibility-provenance",
+    "note": "P1 PR #38 adds a non-mutating 50-file publication rehearsal and a fail-fast `node --check` gate across 101 scripts, tests and candidate lab files; a discovered invalid parentheses in the RHF audit CLI was fixed. Eight candidate metadata and lab contracts passed source inspection. Accessibility approval must now include SHA-256 of the exact reviewed RHF content, test sources and UI and cannot reuse stale evidence. No full Node24/npm/Chromium or human a11y review has executed in this environment. Published remains 338/889."
   },
   "snapshot": {
     "tracks": 28,
@@ -73,6 +73,6 @@
     "devHighFindings": 14,
     "exceptionExpires": "2026-12-02"
   },
-  "nextMilestone": "Node24 checkout run promote:forms-query:rhf --plan then real user-reviewed accessibility evidence and guarded --apply for 09.02",
+  "nextMilestone": "run Node24 source/real Chromium gates; conduct real keyboard/screen-reader/200%-zoom audit matching --plan SHA-256; run --apply and validate 346 published",
   "status": "p1-rhf-eight-release-candidate-bundles-structurally-complete-not-published"
 }
