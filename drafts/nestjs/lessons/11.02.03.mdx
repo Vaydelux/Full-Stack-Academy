@@ -1,0 +1,98 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Nest guards make an access decision before protected route handling.","GET /private returns 403 with no authorization; authorized test principal can pass.","A toy Bearer string is only an educational fixture; production must verify signed credentials and scope."]} />
+
+## The problem we're solving
+
+A guard always returns true and the route accepts unauthenticated requests. The request pipeline is a composition of stages rather than a single controller method: middleware prepares the request, a guard decides permission, pipes parse inputs, interceptors wrap handler execution and filters normalize failures. Each stage needs its own test because correct TypeScript does not prove real HTTP behavior.
+
+## Build the mental model
+
+Nest guards make an access decision before protected route handling. The stage where the problem occurs matters: moving validation into an authorization check or moving a security decision into a response interceptor can accidentally expose the handler. Trace the request lifecycle from ingress to exit, and record both expected success and denial.
+
+**Prediction:** A guard always returns true and the route accepts unauthenticated requests. Explain whether the handler is reached, and what an HTTP client should observe.
+
+**Release scope:** These examples target NestJS 12, Node 24, TypeScript 6. They are authored drafts, not compiler-qualified or published material. A toy Bearer string is only an educational fixture; production must verify signed credentials and scope.
+
+## Prerequisites and preflight
+
+Complete 11.02.02 and read the official request lifecycle documentation. Work with `drafts/nestjs/labs/guards-authorization/starter.ts` and `drafts/nestjs/labs/guards-authorization/solution.ts`; keep framework packages version-pinned. The student should be able to name the request stage that owns this responsibility and reproduce its failure before seeing a fix.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the request-pipeline bug" file="drafts/nestjs/labs/guards-authorization/starter.ts" expected="A guard always returns true and the route accepts unauthenticated requests.">
+
+```ts
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+@Injectable()
+export class AccessGuard implements CanActivate {
+  canActivate(_context: ExecutionContext) { return true; } // BUG: fail open
+}
+```
+
+**What to inspect:** Distinguish a declaration of a decorator or interface from the actual runtime decision. A guard always returns true and the route accepts unauthenticated requests. Instrument only safe diagnostic markers and do not leak incoming credentials.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the correct stage" file="drafts/nestjs/labs/guards-authorization/solution.ts" expected="Nest guards make an access decision before protected route handling.">
+
+```ts
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+@Injectable()
+export class AccessGuard implements CanActivate {
+  canActivate(context: ExecutionContext): boolean {
+    const req = context.switchToHttp().getRequest<{ headers: { authorization?: string } }>();
+    return req.headers.authorization === 'Bearer teaching-only';
+  }
+}
+```
+
+**Why this design:** Nest guards make an access decision before protected route handling. A toy Bearer string is only an educational fixture; production must verify signed credentials and scope.
+
+</LessonStep>
+
+<LessonStep number={3} title="Exercise positive and denial cases" file="drafts/nestjs/labs/guards-authorization/lab.json" expected="GET /private returns 403 with no authorization; authorized test principal can pass.">
+
+**Positive scenario:** GET /private returns 403 with no authorization; authorized test principal can pass.
+
+**Negative scenario:** Run the original starter against the same assertion; its specific failure should demonstrate: A guard always returns true and the route accepts unauthenticated requests. A compilation error or missing npm dependency is **not** an acceptable negative test.
+
+**Versioned test:** Use an actual Nest 12 application or Nest testing module plus real HTTP requests where appropriate. The test must prove the stage is effective, not merely that the right method name appears in code.
+
+</LessonStep>
+
+## Operational failure analysis
+
+If the UI shows a generic error, classify the failure at the nearest authoritative boundary. A 400 is invalid input, a 403 is denied access, a 404 is missing resource and a 503 is a failed dependency; do not collapse these into one “success” or one database error. Log correlation IDs with bounded length rather than sensitive headers. Run both a happy-path request and a deliberate failure using independently constructed test clients.
+
+**Design decision:** Nest guards make an access decision before protected route handling.
+
+**Regression condition:** GET /private returns 403 with no authorization; authorized test principal can pass.
+
+**Security review:** A toy Bearer string is only an educational fixture; production must verify signed credentials and scope.
+
+<Misconception claim="A guard always returns true and the route accepts unauthenticated requests." correction="Nest guards make an access decision before protected route handling." />
+
+<KnowledgeCheck question="Which verification proves guards and authorization?" choices={["A decorator's name exists in source.","A real Nest request reaches the correct stage and demonstrates the specified positive and negative outcomes.","An interface type was exported.","The UI hides the endpoint, so it must be protected."]} correctIndex={1} explanation="Nest guards make an access decision before protected route handling." misconception="A guard always returns true and the route accepts unauthenticated requests." lessonId="11.02.03" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+1. **Reproduce:** A guard always returns true and the route accepts unauthenticated requests.
+2. **Diagnose:** Identify exactly where middleware, guards, pipes, interceptors, filters or request context become authoritative.
+3. **Repair:** Nest guards make an access decision before protected route handling.
+4. **Regression:** GET /private returns 403 with no authorization; authorized test principal can pass.
+5. **Trust boundary:** A toy Bearer string is only an educational fixture; production must verify signed credentials and scope.
+
+## Guided local lab
+
+Starter, instructor and acceptance requirements live in `drafts/nestjs/labs/guards-authorization/`. They are intentionally **staged**. No `LabGate` or completed-course credit is issued until the Nest 12 runtime and HTTP denial cases have been qualified with a real installed dependency lock.
+
+## Reflect
+
+What is the earliest stage that can reject a bad request safely? Which behavior must still be checked by the handler, service or database? How would you test two concurrent requests to catch accidental context mixing or an authorization bypass?
+
+## Official references
+
+- [NestJS overview](https://docs.nestjs.com/)
+- [Focused NestJS documentation](https://docs.nestjs.com/guards)

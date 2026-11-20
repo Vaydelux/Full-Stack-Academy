@@ -1,0 +1,101 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Use PipeTransform to turn unknown request payloads into parsed typed data or an explicit 400.","POST an invalid title to receive 400; POST a valid title and see a normalized payload.","A TypeScript DTO annotation does not validate incoming JSON without a runtime pipe."]} />
+
+## The problem we're solving
+
+A malformed body reaches the controller unchanged and may produce an unexpected 500. The request pipeline is a composition of stages rather than a single controller method: middleware prepares the request, a guard decides permission, pipes parse inputs, interceptors wrap handler execution and filters normalize failures. Each stage needs its own test because correct TypeScript does not prove real HTTP behavior.
+
+## Build the mental model
+
+Use PipeTransform to turn unknown request payloads into parsed typed data or an explicit 400. The stage where the problem occurs matters: moving validation into an authorization check or moving a security decision into a response interceptor can accidentally expose the handler. Trace the request lifecycle from ingress to exit, and record both expected success and denial.
+
+**Prediction:** A malformed body reaches the controller unchanged and may produce an unexpected 500. Explain whether the handler is reached, and what an HTTP client should observe.
+
+**Release scope:** These examples target NestJS 12, Node 24, TypeScript 6. They are authored drafts, not compiler-qualified or published material. A TypeScript DTO annotation does not validate incoming JSON without a runtime pipe.
+
+## Prerequisites and preflight
+
+Complete 11.02.01 and read the official request lifecycle documentation. Work with `drafts/nestjs/labs/pipes-zod-validation/starter.ts` and `drafts/nestjs/labs/pipes-zod-validation/solution.ts`; keep framework packages version-pinned. The student should be able to name the request stage that owns this responsibility and reproduce its failure before seeing a fix.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the request-pipeline bug" file="drafts/nestjs/labs/pipes-zod-validation/starter.ts" expected="A malformed body reaches the controller unchanged and may produce an unexpected 500.">
+
+```ts
+import { Injectable, PipeTransform } from '@nestjs/common';
+@Injectable()
+export class CreateTaskPipe implements PipeTransform {
+  transform(value: unknown) { return value; } // BUG: no runtime parsing
+}
+```
+
+**What to inspect:** Distinguish a declaration of a decorator or interface from the actual runtime decision. A malformed body reaches the controller unchanged and may produce an unexpected 500. Instrument only safe diagnostic markers and do not leak incoming credentials.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the correct stage" file="drafts/nestjs/labs/pipes-zod-validation/solution.ts" expected="Use PipeTransform to turn unknown request payloads into parsed typed data or an explicit 400.">
+
+```ts
+import { BadRequestException, Injectable, PipeTransform } from '@nestjs/common';
+import { z } from 'zod';
+const Body = z.object({ title: z.string().trim().min(3).max(100) });
+@Injectable()
+export class CreateTaskPipe implements PipeTransform {
+  transform(value: unknown) {
+    const result = Body.safeParse(value);
+    if (!result.success) throw new BadRequestException('Invalid task input');
+    return result.data;
+  }
+}
+```
+
+**Why this design:** Use PipeTransform to turn unknown request payloads into parsed typed data or an explicit 400. A TypeScript DTO annotation does not validate incoming JSON without a runtime pipe.
+
+</LessonStep>
+
+<LessonStep number={3} title="Exercise positive and denial cases" file="drafts/nestjs/labs/pipes-zod-validation/lab.json" expected="POST an invalid title to receive 400; POST a valid title and see a normalized payload.">
+
+**Positive scenario:** POST an invalid title to receive 400; POST a valid title and see a normalized payload.
+
+**Negative scenario:** Run the original starter against the same assertion; its specific failure should demonstrate: A malformed body reaches the controller unchanged and may produce an unexpected 500. A compilation error or missing npm dependency is **not** an acceptable negative test.
+
+**Versioned test:** Use an actual Nest 12 application or Nest testing module plus real HTTP requests where appropriate. The test must prove the stage is effective, not merely that the right method name appears in code.
+
+</LessonStep>
+
+## Operational failure analysis
+
+If the UI shows a generic error, classify the failure at the nearest authoritative boundary. A 400 is invalid input, a 403 is denied access, a 404 is missing resource and a 503 is a failed dependency; do not collapse these into one “success” or one database error. Log correlation IDs with bounded length rather than sensitive headers. Run both a happy-path request and a deliberate failure using independently constructed test clients.
+
+**Design decision:** Use PipeTransform to turn unknown request payloads into parsed typed data or an explicit 400.
+
+**Regression condition:** POST an invalid title to receive 400; POST a valid title and see a normalized payload.
+
+**Security review:** A TypeScript DTO annotation does not validate incoming JSON without a runtime pipe.
+
+<Misconception claim="A malformed body reaches the controller unchanged and may produce an unexpected 500." correction="Use PipeTransform to turn unknown request payloads into parsed typed data or an explicit 400." />
+
+<KnowledgeCheck question="Which verification proves pipes and zod validation?" choices={["A decorator's name exists in source.","A real Nest request reaches the correct stage and demonstrates the specified positive and negative outcomes.","An interface type was exported.","The UI hides the endpoint, so it must be protected."]} correctIndex={1} explanation="Use PipeTransform to turn unknown request payloads into parsed typed data or an explicit 400." misconception="A malformed body reaches the controller unchanged and may produce an unexpected 500." lessonId="11.02.02" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+1. **Reproduce:** A malformed body reaches the controller unchanged and may produce an unexpected 500.
+2. **Diagnose:** Identify exactly where middleware, guards, pipes, interceptors, filters or request context become authoritative.
+3. **Repair:** Use PipeTransform to turn unknown request payloads into parsed typed data or an explicit 400.
+4. **Regression:** POST an invalid title to receive 400; POST a valid title and see a normalized payload.
+5. **Trust boundary:** A TypeScript DTO annotation does not validate incoming JSON without a runtime pipe.
+
+## Guided local lab
+
+Starter, instructor and acceptance requirements live in `drafts/nestjs/labs/pipes-zod-validation/`. They are intentionally **staged**. No `LabGate` or completed-course credit is issued until the Nest 12 runtime and HTTP denial cases have been qualified with a real installed dependency lock.
+
+## Reflect
+
+What is the earliest stage that can reject a bad request safely? Which behavior must still be checked by the handler, service or database? How would you test two concurrent requests to catch accidental context mixing or an authorization bypass?
+
+## Official references
+
+- [NestJS overview](https://docs.nestjs.com/)
+- [Focused NestJS documentation](https://docs.nestjs.com/pipes)

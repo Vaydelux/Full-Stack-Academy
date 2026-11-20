@@ -1,0 +1,18 @@
+{
+  "id": "draft.nestjs.pipes-zod-validation",
+  "lessonId": "11.02.02",
+  "title": "Pipes and Zod validation",
+  "sourceStatus": "draft-unverified",
+  "runtime": "node-24-nestjs-12-typescript-6",
+  "starter": "drafts/nestjs/labs/pipes-zod-validation/starter.ts",
+  "solution": "drafts/nestjs/labs/pipes-zod-validation/solution.ts",
+  "expectedPositive": "POST an invalid title to receive 400; POST a valid title and see a normalized payload.",
+  "expectedNegative": "A malformed body reaches the controller unchanged and may produce an unexpected 500.",
+  "requiresRealNestTest": true,
+  "requiresRealHttpTest": true,
+  "readyToPublish": false,
+  "officialReferences": [
+    "https://docs.nestjs.com/",
+    "https://docs.nestjs.com/pipes"
+  ]
+}

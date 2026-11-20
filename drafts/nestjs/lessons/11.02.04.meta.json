@@ -1,0 +1,27 @@
+{
+  "id": "11.02.04",
+  "title": "Interceptors and tracing",
+  "trackId": "11",
+  "moduleId": "11.02",
+  "sourceStatus": "draft-unverified",
+  "estimatedMinutes": 60,
+  "stack": {
+    "node": "24",
+    "typescript": "6",
+    "nestjs": "12"
+  },
+  "prerequisites": [
+    "11.02.03"
+  ],
+  "objective": "An interceptor should preserve the route result while adding a bounded response envelope or trace metadata.",
+  "misconception": "The interceptor discards the route return value, so clients receive unrelated content.",
+  "acceptance": "A handler returning a task remains visible in the intercepted result and contains a request trace ID.",
+  "securityBoundary": "Do not echo access tokens, cookies, or private headers as tracing metadata.",
+  "labSlug": "interceptors-tracing",
+  "officialReferences": [
+    "https://docs.nestjs.com/",
+    "https://docs.nestjs.com/interceptors"
+  ],
+  "reviewStatus": "unreviewed",
+  "runtimeQualification": "not-run"
+}

@@ -1,0 +1,27 @@
+{
+  "id": "11.02.01",
+  "title": "Middleware execution",
+  "trackId": "11",
+  "moduleId": "11.02",
+  "sourceStatus": "draft-unverified",
+  "estimatedMinutes": 60,
+  "stack": {
+    "node": "24",
+    "typescript": "6",
+    "nestjs": "12"
+  },
+  "prerequisites": [
+    "11.01.08"
+  ],
+  "objective": "Middleware has to call next exactly once after attaching safe request data.",
+  "misconception": "The HTTP handler never runs because middleware forgets to call next.",
+  "acceptance": "GET /tasks completes and carries a correlation ID without hanging.",
+  "securityBoundary": "Do not create a trust boundary from an unverified client-supplied header.",
+  "labSlug": "middleware-execution",
+  "officialReferences": [
+    "https://docs.nestjs.com/",
+    "https://docs.nestjs.com/middleware"
+  ],
+  "reviewStatus": "unreviewed",
+  "runtimeQualification": "not-run"
+}
