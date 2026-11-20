@@ -13,6 +13,7 @@ import {inspectRHFPublicationCandidates} from './verify-forms-query-rhf-candidat
 import {inspectFormsQueryPromotion} from './forms-query-promotion-readiness.mjs';
 import {rhfReviewFingerprint} from './forms-query-review-fingerprint.mjs';
 import {renderPublishedRHFArticle} from './forms-query-release-article.mjs';
+import {projectionFingerprint,verifyProjectionOnDisk} from './forms-query-projection-integrity.mjs';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const local=p=>path.join(root,p);
 const read=p=>fs.readFileSync(local(p),'utf8');
@@ -174,7 +175,7 @@ export function simulateRHFPromotion(){
  check(generated.filter(p=>p.startsWith('labs/forms-query-')).length===32,'Expected 8 complete lab packs');
  check(generated.length===50,'Expected 48 lesson/lab files and two synchronized registries');
  if(problems.length)throw new Error('RHF publication rehearsal failed: '+JSON.stringify(problems));
- return {moduleId:'09.02',status:'source-rehearsal-passed',sourceOnly:true,changesWritten:0,
+ return {moduleId:'09.02',status:'source-rehearsal-passed',sourceOnly:true,changesWritten:0,projectionSha256:projectionFingerprint(writes).sha256,
   projectedPublished:plan.targetPublished,filesPrepared:generated.length,lessons:ids.length,
   lessonFiles:16,labFiles:32,registries:2,
   warning:'No Node24, npm, Chromium or actual human accessibility verification performed. Simulated date was never written.'};
@@ -190,12 +191,14 @@ function applyWrites(writes, expectedReviewedSha){
    fs.writeFileSync(local(file),content);
    done.push(file);
   }
+  verifyProjectionOnDisk(writes,read);
   run('npm',['run','checkpoint:write'],30_000);
   // The first full test suite before promotion cannot substitute for testing
   // the published Next MDX imports, regenerated routes, new lab manifests,
   // and source-derived checkpoint AFTER promotion.
   run('npm',['run','verify:offline']);
   run('npm',['run','qualify:forms-query:preview-browser'],420_000);
+  verifyProjectionOnDisk(writes,read);
   assert.equal(rhfReviewFingerprint(),expectedReviewedSha,
    'Reviewed source drifted during postpublication checks; rolling back local publication');
   const checkpoint=json('docs/checkpoint.json').snapshot;

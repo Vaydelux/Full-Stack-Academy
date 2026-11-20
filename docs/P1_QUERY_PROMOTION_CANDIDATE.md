@@ -59,3 +59,7 @@ This refuses a dirty worktree, missing Node24/Chromium, missing/stale human revi
 The current connected GitHub environment cannot clone dependencies locally. **No complete Node 24/npm install, Next production/SSR build, real Chromium run or human accessibility review has been executed here**. Source V8 syntax checks and pure MDX projections are not substitutes. PR #38 remains draft until those gates actually run. PR #39 covers separate P2 NestJS drafting and should not be merged as a substitute for P1 release qualification.
 
 Next action: execute the source-only suite and 54-file simulation in a complete Node24 checkout, then run genuine acceptance and accessibility checks before applying any publication.
+
+### Exact publication-file integrity
+
+Both RHF and Query release scripts now compute a deterministic SHA-256 over every generated relative file path and its UTF-8 bytes. Each source-only rehearsal prints `projectionSha256`, without granting browser or human review approval. In a real guarded `--apply`, the files are read back immediately after being written and again after all postpublication checks. Any mismatch or missing file rejects the release inside the existing rollback transaction. The isolated `test:forms-query-projection-integrity` suite exercises sorting, tampering, path traversal and missing-file detection.

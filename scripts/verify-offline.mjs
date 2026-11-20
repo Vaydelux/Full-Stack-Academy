@@ -32,6 +32,7 @@ const steps = [
   'test:forms-query-query-candidates',
   'test:forms-query-query-release-article',
   'test:forms-query-query-promotion',
+  'test:forms-query-projection-integrity',
   'test:forms-query-dependency-boundary',
   'test:forms-query-lab-runner',
   'test:forms-query-promotion-command',

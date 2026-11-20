@@ -45,7 +45,8 @@ const checks=[
   args:['--test','tests/forms-query-query-candidates.test.mjs',
    'tests/forms-query-query-browser-gate.test.mjs',
    'tests/forms-query-query-release-article.test.mjs',
-   'tests/forms-query-query-promotion.test.mjs']},
+   'tests/forms-query-query-promotion.test.mjs',
+   'tests/forms-query-projection-integrity.test.mjs']},
 ];
 if(mode==='--full'){
  if(!fs.existsSync(path.join(root,'package-lock.json'))){

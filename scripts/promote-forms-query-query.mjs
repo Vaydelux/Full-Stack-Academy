@@ -12,6 +12,7 @@ import {inspectQueryPublicationCandidates} from './verify-forms-query-query-cand
 import {inspectFormsQueryPromotion} from './forms-query-promotion-readiness.mjs';
 import {renderPublishedQueryArticle} from './forms-query-query-release-article.mjs';
 import {queryReviewFingerprint} from './forms-query-query-review-fingerprint.mjs';
+import {projectionFingerprint,verifyProjectionOnDisk} from './forms-query-projection-integrity.mjs';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const local=p=>path.join(root,p);
 const read=p=>fs.readFileSync(local(p),'utf8');
@@ -161,7 +162,7 @@ export function simulateQueryPublication(){
  }
  return {moduleId:'09.03',status:'source-rehearsal-passed',sourceOnly:true,
   rhfPrerequisitePublished:plan.rhfPrerequisitePublished,
-  projectionAfterPrerequisites:354,files:projection.size,lessonFiles:lessons,
+  projectionAfterPrerequisites:354,files:projection.size,projectionSha256:projectionFingerprint(projection).sha256,lessonFiles:lessons,
   labFiles:labs,ssrSupportFiles:extras,registries:2,changesWritten:0,
   warning:'This is not real npm, Next SSR, Chromium, human accessibility or publication evidence.'};
 }
@@ -175,9 +176,11 @@ function applyTransaction(projection,reviewSha){
    fs.writeFileSync(local(file),content);
    written.push(file);
   }
+  verifyProjectionOnDisk(projection,read);
   exec('npm',['run','checkpoint:write'],30_000);
   exec('npm',['run','verify:offline']);
   exec('npm',['run','qualify:forms-query:preview-browser'],420_000);
+  verifyProjectionOnDisk(projection,read);
   assert.equal(queryReviewFingerprint(),reviewSha,'Reviewed Query content changed during postflight');
   const checkpoint=json('docs/checkpoint.json');
   assert.equal(checkpoint.snapshot.publishedLessons,354);
