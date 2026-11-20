@@ -13,6 +13,7 @@ import { verifyZodFoundation } from './zod-foundations-smoke.mjs';
 import { verifyZustandState } from './zustand-state-smoke.mjs';
 import { verifyNodeHttpTrack } from './node-http-track-smoke.mjs';
 import { verifyBackendContractTrack } from './backend-contract-track-smoke.mjs';
+import { verifyFormsQueryDraftPreviews } from './forms-query-draft-preview-smoke.mjs';
 import { createRequire } from 'node:module';
 import path from 'node:path';
 
@@ -427,6 +428,19 @@ try {
   await wait(page.getByRole('heading', { name: 'Reliable Task Workflow' }));
   await wait(page.getByText('npm run qualify:forms-query:react-browser', { exact: true }));
   assert.equal(await page.locator('meta[name="robots"][content*="noindex"]').count(), 1);
+
+  // Use an isolated browser context: the published-quiz control case writes
+  // progress on purpose, and must not alter the rest of this smoke session.
+  const previewContext = await browser.newContext({ viewport: { width: 1440, height: 900 }, reducedMotion: 'reduce' });
+  const previewPage = await previewContext.newPage();
+  const previewErrors = [];
+  previewPage.on('pageerror', error => previewErrors.push(error.message));
+  try {
+    await verifyFormsQueryDraftPreviews({page: previewPage,base});
+    assert.deepEqual(previewErrors, [], 'No unhandled preview page errors');
+  } finally {
+    await previewContext.close();
+  }
 
   await page.goto(base+'/?lesson=06.01.01&mode=practice');
   await wait(btn('Practice'));

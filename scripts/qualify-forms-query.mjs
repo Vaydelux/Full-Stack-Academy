@@ -33,6 +33,7 @@ const checks=[
  {name:'Native form event logic with real Node HTTP and lightweight simulated DOM',program:'node',args:['--test','tests/forms-query-native-ui.test.mjs']},
  {name:'Browser navigation diagnostics without Chromium',program:'node',args:['--test','tests/forms-query-browser-navigation.test.mjs']},
  {name:'Publication structural readiness and release hygiene (no promotion)',program:'node',args:['--test','tests/forms-query-promotion-readiness.test.mjs','tests/forms-query-release-hygiene.test.mjs']},
+ {name:'Draft lesson preview URLs, noindex and progress isolation',program:'node',args:['--test','tests/forms-query-draft-preview.test.mjs']},
 ];
 if(mode==='--full'){
  if(!fs.existsSync(path.join(root,'package-lock.json'))){
