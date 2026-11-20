@@ -32,6 +32,7 @@ const steps = [
   'test:forms-query-lab-runner',
   'test:forms-query-promotion-command',
   'test:forms-query-promotion-rehearsal',
+  'test:forms-query-review-fingerprint',
   'test:curriculum-readiness',
   'test:publication-phases',
   'validate',

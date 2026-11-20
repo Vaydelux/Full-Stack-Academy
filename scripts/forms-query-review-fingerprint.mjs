@@ -12,7 +12,7 @@ const read=p=>fs.readFileSync(path.join(root,p),'utf8');
 const ids=Array.from({length:8},(_,i)=>'09.02.'+String(i+1).padStart(2,'0'));
 const base='release-candidates/forms-query/09.02';
 
-export function rhfReviewFingerprint(){
+export function rhfReviewFingerprint({readSource=read}={}){
  const shared=[
   'src/content/forms-query-draft-registry.tsx',
   'src/app/learn/projects/forms-query/drafts/[lessonId]/page.tsx',
@@ -24,7 +24,7 @@ export function rhfReviewFingerprint(){
   'scripts/verify-forms-query-staged-rhf.mjs'
  ];
  const items=ids.flatMap(id=>{
-  const slug=JSON.parse(read('drafts/forms-query/lessons/'+id+'.meta.json')).labSlug;
+  const slug=JSON.parse(readSource('drafts/forms-query/lessons/'+id+'.meta.json')).labSlug;
   const lab='forms-query-'+slug;
   return [
    base+'/lessons/'+id+'.mdx',
@@ -38,7 +38,7 @@ export function rhfReviewFingerprint(){
  const sha=createHash('sha256');
  for(const item of [...new Set([...shared,...items])].sort()){
   sha.update(item+'\0');
-  sha.update(read(item));
+  sha.update(readSource(item));
   sha.update('\0');
  }
  return sha.digest('hex');
