@@ -33,6 +33,8 @@
     "qualify:forms-query:full": "node scripts/qualify-forms-query.mjs --full",
     "status:curriculum": "node scripts/curriculum-readiness.mjs",
     "test:curriculum-readiness": "node scripts/curriculum-readiness.mjs --check",
+    "status:publication-phases": "node scripts/curriculum-phase-program.mjs --markdown",
+    "test:publication-phases": "node scripts/curriculum-phase-program.mjs --check && node --test tests/curriculum-phase-program.test.mjs",
     "test:labs": "node scripts/run-local-labs.mjs",
     "verify:content": "node scripts/validate-content.mjs",
     "lab:browser-server": "node --test labs/browser-server/solution.test.mjs",

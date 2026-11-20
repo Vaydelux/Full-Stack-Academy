@@ -1,3 +1,16 @@
+# Publication-first master priority — 2026-11-20
+
+Finish the **889 existing canonical topics**, one verified module at a time, **before expanding the academy**. New source-derived seven-phase plan and acceptance gates: `docs/ACADEMY_889_PUBLICATION_PROGRAM.md`.
+
+- Current: **338 published, 551 unpublished**, 16 Forms/Query drafts staged, 535 topics not drafted, **69 incomplete modules**.
+- **P1 active:** 09.02 React Hook Form (8) then 09.03 TanStack Query (8); target 354. **PR #36 is unmerged** until actual full Next MDX/browser acceptance, so do not present the preview as released.
+- **P2–P7:** NestJS, PostgreSQL, Prisma/Supabase, security/caching/realtime/integrations, quality/operations/architecture, mobile/enterprise/capstones. Targets are **386, 426, 490, 609, 753, 889**.
+- The special lesson **15.02.04 is already published** as an interactive article. Phase P5 has 119 remaining topics, not 120.
+- Local source commands: `npm run status:publication-phases`, `node scripts/curriculum-phase-program.mjs --phase P1 --json`, `npm run test:publication-phases`.
+- Before any module is called published: runnable positive+negative lab tests, locked runtime dependencies, metadata and both registries, full Node24 Next build, browser/keyboard and named screen-reader/200% zoom review. No fake green results and no GitHub Actions/Vercel.
+
+---
+
 # Full-Stack Academy — Current Engineering Handoff (2026-11-20)
 
 ## Latest mainline reviewed
