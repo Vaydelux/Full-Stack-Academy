@@ -28,6 +28,24 @@ npm run qualify:forms-query:full
 
 The Playwright setup uses `ACADEMY_BROWSER_ROOT` for an isolated browser installation and can optionally use `ACADEMY_CHROME_BIN` for an installed local Chromium executable. The focused browser gate now allocates loopback ports dynamically; it does not call hosted CI or Vercel. These commands are **authored, not executed** in this environment (Node22, no npm/GitHub DNS or installed React/Playwright). Real human keyboard navigation, named screen reader, 200% zoom, contrast and responsive review must also be recorded.
 
+## Automated, fail-closed module promotion
+
+The publication command is now committed. **Planning is read-only**:
+
+```bash
+npm run promote:forms-query:rhf -- --plan
+```
+
+Once a real reviewer has filled `docs/release-evidence/forms-query-09.02-accessibility.json` after actual keyboard, named screen-reader and 200% zoom testing, and a genuine Node24/Playwright checkout exists:
+
+```bash
+npm run promote:forms-query:rhf -- --apply
+```
+
+Apply performs `npm ci` in both workspaces, full Forms/Query suite and real Chromium checks **before** writing eight published lessons; then atomically prepares 8 live MDX/meta pairs, 8 lab source/test packages, both static registries and the source-derived checkpoint. It reruns the full offline academy quality gate and draft preview browser smoke on the **new published build**. If a step fails, source files and checkpoint roll back; no GitHub merge/deployment is invoked. The resulting local changes must still be reviewed and committed before the published count can change in GitHub.
+
+No execution or approval is claimed for this environment. The `--apply` command must never be used without genuine assistive-technology evidence. **Current published count: 338/889.**
+
 ### Publication blockers
 
 1. **Nested runtime boundary:** the genuine nested React/Vite package and npm lockfile already contain React Hook Form 7 and `@hookform/resolvers` 7. Keep those runtime dependencies isolated; the root Next app only renders fenced MDX examples. Both root and nested `npm ci` still need to pass on the exact release candidate.

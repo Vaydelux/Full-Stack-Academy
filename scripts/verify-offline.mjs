@@ -29,6 +29,7 @@ const steps = [
   'test:forms-query-rhf-candidates',
   'test:forms-query-dependency-boundary',
   'test:forms-query-lab-runner',
+  'test:forms-query-promotion-command',
   'test:curriculum-readiness',
   'test:publication-phases',
   'validate',

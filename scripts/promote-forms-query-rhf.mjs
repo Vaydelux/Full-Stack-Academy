@@ -52,8 +52,8 @@ function sourcePlan(){
  const promotion=inspectFormsQueryPromotion();
  if(promotion.sourceErrors.length)throw new Error('Draft source errors: '+JSON.stringify(promotion.sourceErrors));
  const module=promotion.modules.find(m=>m.id==='09.02');
- if(!module||module.published!==0)throw new Error('Only an entirely unpublished RHF module may be promoted');
- if(module.staged!==8)throw new Error('Eight source-valid RHF drafts are required');
+ if(!module||![0,8].includes(module.published))throw new Error('RHF publication must be atomic: zero or eight');
+ if(module.published===0&&module.staged!==8)throw new Error('Eight source-valid RHF drafts are required');
  const versions=json('content/stack-versions.json');
  assert.equal(versions.reactHookForm,'7');
  assert.equal(versions.tanstackQuery,'5');
@@ -65,7 +65,9 @@ function sourcePlan(){
   assert.equal(lock.packages?.['']?.dependencies?.[dep],nested.dependencies[dep]);
   assert.match(lock.packages?.['node_modules/'+dep]?.integrity??'',/^sha512-/);
  }
- return {moduleId:'09.02',publishedBefore:promotion.snapshot.published,targetPublished:promotion.snapshot.published+8,
+ return {moduleId:'09.02',publishedBefore:promotion.snapshot.published,
+  targetPublished:promotion.snapshot.published+(8-module.published),
+  alreadyPublished:module.published===8,
   sourceCandidates:ids,rootDependenciesUnchanged:true,
   requiredCommands:['npm ci','npm ci --prefix examples/forms-query-vertical/react-client',
    'npm run qualify:forms-query:full','npm run qualify:forms-query:rhf-browser',
@@ -165,6 +167,7 @@ const plan=sourcePlan();
 if(mode==='--plan'){
  console.log(JSON.stringify({...plan,status:'unpublished; no files changed'},null,2));
 }else{
+ if(plan.alreadyPublished)throw new Error('RHF 09.02 is already published; apply cannot overwrite it');
  if(Number(process.versions.node.split('.')[0])!==24)throw new Error('Promotion requires Node.js 24');
  if(!process.env.ACADEMY_BROWSER_ROOT)throw new Error('Real Playwright browser installation required');
  if(capture('git',['status','--porcelain']))throw new Error('Start promotion from a clean Git worktree');

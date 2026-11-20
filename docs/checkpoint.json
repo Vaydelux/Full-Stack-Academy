@@ -10,8 +10,8 @@
   },
   "development": {
     "branch": "feat/p1-rhf-eight-lesson-depth-20261120",
-    "state": "p1-09.02-eight-publication-candidates-and-browser-tests-authored",
-    "note": "PR #38 now includes all sixteen substantive P1 draft guides, sixteen noindex draft preview routes, and eight 09.02 RHF non-live publication candidates: 8 MDX, 8 metadata projections, 8 proposed lab manifests, 8 red and 8 green TSX assets, and 8 authored per-lab browser test wrappers. The dedicated RHF browser runner uses ephemeral loopback ports. Source structure was re-fetched/audited for all 8/8 bundles; actual Node24/Next/Chromium/browser/manual screen-reader qualification is still unexecuted; root RHF/resolver lock and a11y approval remain blockers. Published snapshot stays 338/889 with 42 complete modules."
+    "state": "p1-rhf-dependency-isolated-transition-safe-and-promotion-command-authored",
+    "note": "PR #38 now has 8/8 source-complete RHF publication bundles, genuine nested React dependency lock (no unnecessary root RHF deps), transition-safe lesson/draft navigation and curriculum counts, sequential browser-lab runner, and a guarded --plan/--apply publication command with pre/post actual local gates and file rollback. Node24 npm/Next/Chromium/manual screen-reader checks have not run in this environment. Until those gates pass and apply is run, 09.02 stays unpublished and total is 338/889."
   },
   "snapshot": {
     "tracks": 28,
@@ -73,6 +73,6 @@
     "devHighFindings": 14,
     "exceptionExpires": "2026-12-02"
   },
-  "nextMilestone": "run-p1-rhf-candidate-source-and-node24-browser-gates-then-promote-09.02-eight-lessons-atomically",
+  "nextMilestone": "Node24 checkout run promote:forms-query:rhf --plan then real user-reviewed accessibility evidence and guarded --apply for 09.02",
   "status": "p1-rhf-eight-release-candidate-bundles-structurally-complete-not-published"
 }

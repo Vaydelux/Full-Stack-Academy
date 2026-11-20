@@ -410,7 +410,9 @@
     "status:forms-query-rhf-candidates": "node scripts/verify-forms-query-rhf-candidates.mjs --json",
     "test:forms-query-rhf-candidates": "node scripts/verify-forms-query-rhf-candidates.mjs --check && node --test tests/forms-query-rhf-candidates.test.mjs",
     "test:forms-query-dependency-boundary": "node --test tests/forms-query-dependency-boundary.test.mjs",
-    "test:forms-query-lab-runner": "node --test tests/forms-query-lab-runner.test.mjs"
+    "test:forms-query-lab-runner": "node --test tests/forms-query-lab-runner.test.mjs",
+    "promote:forms-query:rhf": "node scripts/promote-forms-query-rhf.mjs",
+    "test:forms-query-promotion-command": "node --test tests/forms-query-promotion-command.test.mjs"
   },
   "dependencies": {
     "clsx": "^2.1.1",

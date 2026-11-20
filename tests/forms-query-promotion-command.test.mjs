@@ -1,0 +1,52 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import {spawnSync} from 'node:child_process';
+import {fileURLToPath} from 'node:url';
+const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
+const read=p=>fs.readFileSync(path.join(root,p),'utf8');
+const program=read('scripts/promote-forms-query-rhf.mjs');
+const pkg=JSON.parse(read('package.json'));
+
+test('the read-only plan works before or after a complete eight-topic publication',()=>{
+ const before=read('docs/checkpoint.json');
+ const result=spawnSync(process.execPath,['scripts/promote-forms-query-rhf.mjs','--plan'],
+  {cwd:root,encoding:'utf8',timeout:30000});
+ assert.equal(result.status,0,result.stderr);
+ const plan=JSON.parse(result.stdout);
+ assert.equal(plan.moduleId,'09.02');
+ assert.equal(plan.sourceCandidates.length,8);
+ assert.ok([338,346,354].includes(plan.publishedBefore));
+ assert.equal(plan.rootDependenciesUnchanged,true);
+ assert.equal(plan.targetPublished,plan.alreadyPublished?plan.publishedBefore:plan.publishedBefore+8);
+ assert.equal(read('docs/checkpoint.json'),before,'Planning must not change the checkpoint');
+});
+test('apply is explicit and requires real browser, human review and Node24',()=>{
+ assert.equal(pkg.scripts['promote:forms-query:rhf'],'node scripts/promote-forms-query-rhf.mjs');
+ assert.match(program,/--plan','--apply'/);
+ assert.match(program,/Number\(process\.versions\.node\.split\('\.'\)\[0\]\)!==24/);
+ assert.match(program,/ACADEMY_BROWSER_ROOT/);
+ assert.match(program,/humanEvidence\(\)/);
+ assert.match(program,/reviewer\.date/);
+ assert.match(program,/git',\['status','--porcelain'\]/);
+});
+test('the promote runner performs genuine full tests before and after publication',()=>{
+ for(const marker of [
+  "run('npm',['ci'])",
+  "run('npm',['run','qualify:forms-query:full'])",
+  "run('npm',['run','qualify:forms-query:rhf-browser']",
+  "run('npm',['run','checkpoint:write']",
+  "run('npm',['run','verify:offline'])",
+  "run('npm',['run','qualify:forms-query:preview-browser']"
+ ])assert.ok(program.includes(marker),'Missing mandatory gate: '+marker);
+ assert.match(program,/docs\/release-evidence\/forms-query-09\.02-accessibility\.json/);
+});
+test('transition writes both registries and all eight lab assets with rollback on failure',()=>{
+ assert.match(program,/src\/content\/lesson-registry\.tsx/);
+ assert.match(program,/src\/lib\/academy\/published\.ts/);
+ assert.match(program,/labs\/'\+lab\+'\/solution\.test\.mjs/);
+ assert.match(program,/previous\.set\('docs\/checkpoint\.json'/);
+ assert.match(program,/done\.reverse\(\)/);
+ assert.match(program,/fs\.rmSync\(local\(file\),\{force:true\}\)/);
+});
