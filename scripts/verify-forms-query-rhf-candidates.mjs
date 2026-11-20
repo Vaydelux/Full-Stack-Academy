@@ -44,7 +44,11 @@ export function inspectRHFPublicationCandidates(){
    const labId='lab.react.forms-query-'+slug,labName='forms-query-'+slug;
    if(proposed.id!==labId||proposed.lessonId!==id||proposed.title!==topic.title)fail(id,'Proposed lab metadata mismatch');
    if(proposed.starter!=='labs/'+labName+'/starter/solution.tsx'||proposed.solution!=='labs/'+labName+'/solution/solution.tsx')fail(id,'Proposed instructor or starter path mismatch');
-   if(proposed.tests!=='labs/'+labName+'/solution.test.mjs'||labCandidate.testsImplemented!==false)fail(id,'Real per-lab test still required');
+   if(proposed.tests!=='labs/'+labName+'/solution.test.mjs'||labCandidate.testsImplemented!==true)fail(id,'Expected authored per-lab real browser acceptance test');
+   const executableTest=read(labDir+'/solution.test.mjs');
+   if(!executableTest.includes('spawnSync(process.execPath')||
+      !executableTest.includes("'--lab','"+slug+"'")||
+      !executableTest.includes('assert.equal(result.status,0'))fail(id,'Candidate test does not execute its named browser lab');
    if(!proposed.verify.includes('npm run lab:'+labName)||pkg.scripts['lab:'+labName]!=='node scripts/verify-rhf-release-browser.mjs --lab '+slug)fail(id,'Missing per-lab browser script');
    if(!article.includes('<LabGate lessonId="'+id+'" labId="'+labId+'"'))fail(id,'Candidate article missing planned LabGate');
    if((article.match(/<LessonStep\b/g)||[]).length!==3||!article.includes('<KnowledgeCheck'))fail(id,'Teaching structure missing');
@@ -59,7 +63,7 @@ export function inspectRHFPublicationCandidates(){
       registry.includes('./lessons/'+id+'.mdx')||
       published.includes('lessons/'+id+'.meta.json'))fail(id,'Unqualified source has entered the live published registry');
    records.push({id,title:topic.title,labSlug:slug,publishCandidatePresent:true,
-    runtimeTestsExecuted:false,manualAccessibilityApproved:false,readyToPublish:false});
+    runtimeTestAuthored:true,runtimeTestsExecuted:false,manualAccessibilityApproved:false,readyToPublish:false});
   }catch(error){fail(id,String(error.message??error));}
  }
  if(checkpoint.publishedLessons!==338)fail('checkpoint','Published baseline unexpectedly changed in source-only candidate');
@@ -68,7 +72,7 @@ export function inspectRHFPublicationCandidates(){
  return {moduleId:'09.02',candidateCount:records.length,records,issues,
   sourceValid:issues.length===0,readyToPublish:false,publishedCount:checkpoint.publishedLessons,
   pending:{rootDependencies:missingRoot,rootDependencyLockQualification:true,
-   perLabTestImplementations:8,realChromiumAcceptance:true,humanAssistiveTechnologyReview:true,
+   perLabTestImplementations:0,perLabTestsUnrun:8,realChromiumAcceptance:true,humanAssistiveTechnologyReview:true,
    exactCandidateNextBuild:true},
   note:'Source bundle audit only; candidate existence never grants lesson progress or publication'};
 }

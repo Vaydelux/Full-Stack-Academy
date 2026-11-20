@@ -46,6 +46,19 @@ test('source-level JSON report is valid and does not claim runtime execution',()
  const report=JSON.parse(output);
  assert.equal(report.candidateCount,8);
  assert.equal(report.publishedCount,338);
- assert.equal(report.pending.perLabTestImplementations,8);
+ assert.equal(report.pending.perLabTestImplementations,0);
+ assert.equal(report.pending.perLabTestsUnrun,8);
  assert.equal(report.readyToPublish,false);
+});
+
+test('all eight planned lab test files really spawn the exact lesson browser gate',()=>{
+ for(const lesson of audit.records){
+  const path='release-candidates/forms-query/09.02/labs/forms-query-'+lesson.labSlug+'/solution.test.mjs';
+  const source=read(path);
+  assert.ok(source.includes('spawnSync(process.execPath'),lesson.id);
+  assert.ok(source.includes("'--lab','"+lesson.labSlug+"'"),lesson.id);
+  assert.ok(source.includes('assert.equal(result.status,0'),lesson.id);
+  assert.equal(lesson.runtimeTestAuthored,true);
+  assert.equal(lesson.runtimeTestsExecuted,false);
+ }
 });

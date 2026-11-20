@@ -1,3 +1,5 @@
+> **P1 09.02 promotion preparation (2026-11-20):** Eight complete *source* release bundles now exist outside the published registry with MDX, draft-to-live metadata projections, red/green lab sources and authored browser-backed test files. A dedicated dynamic-port RHF browser gate and strict candidate audit have been added. Runtime/browser/manual acceptance has not executed, so published count remains 338. [RHF release handoff](P1_RHF_PROMOTION_CANDIDATE.md).
+
 # P1 content and preview candidate — acceptance handoff
 
 **Date:** 2026-11-20  
