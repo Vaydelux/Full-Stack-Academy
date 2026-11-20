@@ -1,3 +1,5 @@
+> **Candidate update — 2026-11-20:** Draft preview source previously in PR #36 has been consolidated into PR #38 alongside topic-specific guides for all 16 P1 lessons. This is **not** permission to publish or evidence of passing a new Next/Chromium/browser/a11y run. Current verified published total remains 338. See `docs/P1_CONTENT_PREVIEW_ACCEPTANCE.md` and `npm run status:forms-query-p1`.
+
 # Full-Stack Academy — Complete the Existing 889 Topics First
 
 **Program established:** 2026-11-20  

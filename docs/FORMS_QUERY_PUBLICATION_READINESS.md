@@ -1,3 +1,5 @@
+> **2026-11-20 candidate handoff:** This document's earlier baseline is historical. PR #38 now combines 16 deeper source lessons and draft preview routes with automated source checks, but new Next/Playwright/human accessibility qualifications remain unexecuted for the candidate. The official published snapshot is still 338 IDs. Consult `docs/P1_CONTENT_PREVIEW_ACCEPTANCE.md` before attempting module promotion.
+
 # Forms/Query 09.02 + 09.03 — Publication Readiness & Release Plan
 
 **Checked against main:** `ec518b41cdb08003580a865a213311d1660dfd9f` (2026-11-20).  
