@@ -102,7 +102,9 @@ test('real browser smoke exercises all previews and verifies actual persisted qu
  assert.match(smoke,/await answerQuiz\(page,first/);
  assert.match(smoke,/await answerQuiz\(page,published/);
  assert.match(smoke,/route\('09\.03\.99'\)/);
- assert.match(full,/await verifyFormsQueryDraftPreviews\(\{page,base\}\)/);
+ assert.match(full,/await verifyFormsQueryDraftPreviews\(\{page: previewPage,base\}\)/);
+ assert.match(full,/const previewContext = await browser\.newContext\(/);
+ assert.match(full,/await previewContext\.close\(\)/);
  assert.match(launch,/--draft-preview/);
  assert.match(runner,/await verifyFormsQueryDraftPreviews\(\{page,base\}\)/);
  assert.equal(pkg.scripts['qualify:forms-query:preview-browser'],
