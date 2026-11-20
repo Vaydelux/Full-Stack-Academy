@@ -10,8 +10,8 @@
   },
   "development": {
     "branch": "feat/p1-rhf-eight-lesson-depth-20261120",
-    "state": "p1-16-lesson-source-candidates-isolated-release-rehearsals",
-    "note": "Expanded P1 PR #38 across eight RHF 09.02 + eight TanStack Query 09.03 candidate lessons, with verified 16/16 Query TSX source blob parity; Query 09.03 includes 4 additional SSR hydration support files. Query isolated Chromium/SSR command, strict source audit, 54-file no-write rehearsal, real named human review SHA-256 and gated transactional publisher were authored. Fixed SSR fixture to retarget its server prefetch to ephemeral API port; direct Query candidate lab wrappers now locate project root and compare exact test bytes. Source qualifier and JS syntax gates now cover both modules; no actual full Node24/npm/Next/Chromium or real human screen-reader review yet. Published remains 338/889."
+    "state": "p1-rhf-and-query-16-candidate-lesson-deep-release-preparation",
+    "note": "Large-scope P1 expansion: 16 prepared source-only lesson candidates across 09.02 RHF and 09.03 TanStack Query. Eight Query candidate bundles, 52 candidate files including 4 Next SSR support files, all red/green copies exactly match source (16 Git blob pairs). Source auditor, 8 isolated Query browser/SSR gate entries, SHA-bound named accessibility review, and 54-file guarded publication simulation have been committed. Real Next SSR fixture handles dynamic loopback port. Source qualification and syntax gate include both modules. Actual 8/8 Query published-copy transformations and eight metadata/lab schema pairs passed source-level checks; no real Node24/npm/Chromium or human review run. PR #38 draft, live 338/889."
   },
   "snapshot": {
     "tracks": 28,
@@ -73,6 +73,6 @@
     "devHighFindings": 14,
     "exceptionExpires": "2026-12-02"
   },
-  "nextMilestone": "Run Node24 source/real-library/Next SSR/Chromium tests on exact PR branch, complete RHF accessibility evidence and promote 09.02 to 346; then review Query 09.03 accessibility and promote to 354, never skipping the prerequisite.",
+  "nextMilestone": "Run complete Node24/npm/Next/Chromium source and release gates; named human accessibility; guarded RHF publication 346/889; gated Query publication 354/889; then proceed to P2 NestJS.",
   "status": "p1-rhf-eight-release-candidate-bundles-structurally-complete-not-published"
 }

@@ -55,3 +55,15 @@ test('the generic readiness audit refuses stale human review in both P1 modules'
  assert.match(inspector,/Forms\/Query lesson\/UI fingerprint/);
  assert.doesNotMatch(inspector,/obsolete RHF lesson\/UI fingerprint/);
 });
+
+test('Query --apply refuses a missing RHF prerequisite before installing or writing files',()=>{
+ const checkpoint=JSON.parse(read('docs/checkpoint.json'));
+ // After a genuine RHF release this negative case no longer applies.
+ if(checkpoint.snapshot.completeModules.includes('09.02'))return;
+ const before=read('docs/checkpoint.json');
+ const result=spawnSync(process.execPath,['scripts/promote-forms-query-query.mjs','--apply'],
+  {encoding:'utf8',timeout:30000});
+ assert.notEqual(result.status,0);
+ assert.match(result.stderr,/RHF 09\.02 must be published before Query 09\.03/);
+ assert.equal(read('docs/checkpoint.json'),before);
+});
