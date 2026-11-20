@@ -49,3 +49,9 @@ test('review SHA requirements apply to both RHF and Query readiness, not just pu
  const inspector=read('scripts/forms-query-promotion-readiness.mjs');
  assert.match(inspector,/e.sourceSha256===\(moduleId==='09.02'\?rhfReviewFingerprint\(\):queryReviewFingerprint\(\)\)/);
 });
+
+test('the generic readiness audit refuses stale human review in both P1 modules',()=>{
+ const inspector=read('scripts/forms-query-promotion-readiness.mjs');
+ assert.match(inspector,/Forms\/Query lesson\/UI fingerprint/);
+ assert.doesNotMatch(inspector,/obsolete RHF lesson\/UI fingerprint/);
+});

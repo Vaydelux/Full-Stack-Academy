@@ -89,7 +89,7 @@ export function inspectFormsQueryPromotion(){
     e.sourceSha256===(moduleId==='09.02'?rhfReviewFingerprint():queryReviewFingerprint());
   }catch{fail(moduleId,'Malformed human review record')}
   if(exists(evidence)&&!a11y){
-   fail(moduleId,'Accessibility evidence is incomplete or tied to an obsolete RHF lesson/UI fingerprint');
+   fail(moduleId,'Accessibility evidence is incomplete or tied to an obsolete Forms/Query lesson/UI fingerprint');
   }
   const group=topics.filter(t=>t.moduleId===moduleId),blockers=[];
   if(group.length!==8||group.some(t=>!t.stagedValid&&!t.published))blockers.push('No valid staged or fully published source');

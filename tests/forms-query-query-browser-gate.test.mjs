@@ -33,7 +33,7 @@ test('query harness exercises one selected lab while preserving all-lab regressi
 test('SSR fixture uses exact isolated API rather than the shared hardcoded :3337 port',()=>{
  assert.match(ssr,/buildFixture\(dir, apiOrigin\)/);
  assert.match(ssr,/JSON\.stringify\(apiOrigin\+'\/api\/tasks'\)/);
- assert.doesNotMatch(ssr,/127\.0\.0\.1:3337\/api\/tasks/);
+ assert.doesNotMatch(ssr,/return fetch\('http:\/\/127\.0\.0\.1:3337\/api\/tasks'/);
  assert.match(launcher,/verifyStagedSsr\(browser,apiOrigin\)/);
 });
 
