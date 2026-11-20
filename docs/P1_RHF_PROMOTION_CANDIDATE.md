@@ -77,3 +77,7 @@ Both the publication command and the independent readiness inspector now verify 
 The regression suite `npm run test:forms-query-review-fingerprint` now exercises the real SHA-256 function against actual source reads and in-memory mutations: a lesson edit and instructor solution edit must change the digest, while the two generated live registry files are excluded. This is a source-integrity test, not a substitute for a human accessibility review.
 
 **Time-of-check/time-of-use safeguard:** After the full Node24/npm/Chromium preflight and before touching any lesson, the apply command verifies the reviewed SHA-256 again and refuses a dirty Git checkout. It also verifies unchanged reviewed source once the local publication run succeeds. This avoids silently publishing a different candidate than the one that passed the human review.
+
+### Learner-facing publication copy
+
+The `renderPublishedRHFArticle` converter now replaces the stale draft-only Scope, Prerequisites, and Guided Lab prose in all eight published lesson projections. Original candidate MDX remains explicitly unpublished until real acceptance. The transformer fails closed on missing/duplicate markers, preserves starter/instructor code fences and lesson components, and points the published page at the correct locked React workspace and local lab scripts. The real Node source suite includes `npm run test:forms-query-published-article`.

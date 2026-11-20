@@ -415,7 +415,8 @@
     "test:forms-query-promotion-command": "node --test tests/forms-query-promotion-command.test.mjs",
     "test:forms-query-promotion-rehearsal": "node --test tests/forms-query-promotion-rehearsal.test.mjs",
     "test:js-syntax": "node scripts/verify-js-syntax.mjs",
-    "test:forms-query-review-fingerprint": "node --test tests/forms-query-review-fingerprint.test.mjs"
+    "test:forms-query-review-fingerprint": "node --test tests/forms-query-review-fingerprint.test.mjs",
+    "test:forms-query-published-article": "node --test tests/forms-query-published-article.test.mjs"
   },
   "dependencies": {
     "clsx": "^2.1.1",

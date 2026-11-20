@@ -21,7 +21,8 @@ export function rhfReviewFingerprint({readSource=read}={}){
   'src/components/course/LessonBlocks.tsx',
   'src/components/course/KnowledgeCheck.tsx',
   'scripts/verify-rhf-release-browser.mjs',
-  'scripts/verify-forms-query-staged-rhf.mjs'
+  'scripts/verify-forms-query-staged-rhf.mjs',
+  'scripts/forms-query-release-article.mjs'
  ];
  const items=ids.flatMap(id=>{
   const slug=JSON.parse(readSource('drafts/forms-query/lessons/'+id+'.meta.json')).labSlug;

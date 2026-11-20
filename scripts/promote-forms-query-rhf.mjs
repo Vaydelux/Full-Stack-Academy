@@ -12,6 +12,7 @@ import {fileURLToPath} from 'node:url';
 import {inspectRHFPublicationCandidates} from './verify-forms-query-rhf-candidates.mjs';
 import {inspectFormsQueryPromotion} from './forms-query-promotion-readiness.mjs';
 import {rhfReviewFingerprint} from './forms-query-review-fingerprint.mjs';
+import {renderPublishedRHFArticle} from './forms-query-release-article.mjs';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const local=p=>path.join(root,p);
 const read=p=>fs.readFileSync(local(p),'utf8');
@@ -98,13 +99,7 @@ function preparedWrites(reviewedAt){
   assert.equal(candidate.publicationReady,false);
   assert.equal(labCandidate.testsImplemented,true);
   assert.equal(labCandidate.runtimeTestsExecuted,false,'Candidate is not a runtime attestation');
-  let mdx=read(mdxPath);
-  mdx=mdx.replace(
-   'Once the final candidate passes real browser/library and accessibility review, use the registered',
-   'Use the published');
-  mdx=mdx.replace(
-   'This candidate is **not published** until release gates complete.',
-   'This authored lesson was released through real browser, source and accessibility gates.');
+  const mdx=renderPublishedRHFArticle(read(mdxPath),{id,slug});
   assert.ok(mdx.includes('<LabGate lessonId="'+id+'"'));
   writes.set('src/content/lessons/'+id+'.mdx',mdx);
   writes.set('src/content/lessons/'+id+'.meta.json',JSON.stringify(metadata,null,2)+'\n');
