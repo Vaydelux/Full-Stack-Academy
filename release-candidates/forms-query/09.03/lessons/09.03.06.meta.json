@@ -1,0 +1,51 @@
+{
+  "candidateFor": "09.03.06",
+  "publicationReady": false,
+  "targetPath": "src/content/lessons/09.03.06.meta.json",
+  "publishedMetadata": {
+    "id": "09.03.06",
+    "title": "Suspense and SSR hydration",
+    "description": "A practical TanStack Query 5 lesson teaching suspense and ssr hydration using real Next.js 16 server rendering and client hydration scenarios with separate starter and instructor assertions.",
+    "trackId": "09",
+    "moduleId": "09.03",
+    "level": "Intermediate",
+    "estimatedMinutes": 63,
+    "status": "authored",
+    "reviewedAt": null,
+    "stack": {
+      "react": "19",
+      "typescript": "5",
+      "tanstackQuery": "5"
+    },
+    "prerequisites": [
+      "09.03.05"
+    ],
+    "objectives": [
+      "Prefetch safe public data in a Next.js Server Component, dehydrate it, and hydrate the same query key on the client.",
+      "In a real Next.js app, compare server and client query keys exactly. Inspect dehydrated state and verify only safe anonymous data appears; test hydration with a mounted QueryClientProvider.",
+      "Never dehydrate authentication tokens, internal service responses, another user's tasks or secrets into a public HTML payload. This server-only example is not a Vite browser route."
+    ],
+    "labId": "lab.react.forms-query-ssr-hydration",
+    "rubric": [
+      "Prefetch safe public data in a Next.js Server Component, dehydrate it, and hydrate the same query key on the client.",
+      "In a real Next.js app, compare server and client query keys exactly. Inspect dehydrated state and verify only safe anonymous data appears; test hydration with a mounted QueryClientProvider.",
+      "I can distinguish cache freshness, HTTP success and server authorization."
+    ],
+    "sources": [
+      {
+        "label": "Primary official reference",
+        "url": "https://tanstack.com/query/latest/docs/framework/react/guides/advanced-ssr"
+      },
+      {
+        "label": "Supporting official reference",
+        "url": "https://tanstack.com/query/latest/docs/framework/react/guides/ssr"
+      }
+    ]
+  },
+  "blockedOn": [
+    "Genuine nested npm, React Query browser and Next SSR acceptance",
+    "Actual production MDX and lesson registry build",
+    "Named human keyboard, 200% zoom and screen-reader review"
+  ],
+  "requiredVerifyScript": "npm run lab:forms-query-ssr-hydration"
+}
