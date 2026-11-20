@@ -15,7 +15,7 @@ A Query key is the identity of a remote resource view. Filter, scope and paginat
 
 **Predict before coding:** Switching filters must yield distinct cache entries; reselecting a recent filter can reuse its own result without displaying another filter's rows.
 
-**Version and deployment scope:** TanStack Query v5, React 19, TypeScript 5. The Task API is a locally bound, in-memory, unauthenticated fixture. No compatible npm dependency lock or browser qualification has been completed, so this draft cannot be marked published.
+**Version and deployment scope:** TanStack Query v5, React 19, TypeScript 5. The Task API is a locally bound, in-memory, unauthenticated fixture. Earlier committed notes report locked local Chrome/SSR tests on November 20, 2026; they have not been rerun for this candidate. Publication, canonical lab registration and human accessibility review remain outstanding.
 
 ## Prerequisites and preflight
 
@@ -85,6 +85,21 @@ export default function TaskList({status}:{status:Filter}) {
 3. **Repair:** Design stable structured query keys containing every filter and pass the Query signal to the actual HTTP request.
 4. **Regression:** Switch between todo and done. Inspect Query Devtools and verify different keys; no cross-filter content leakage. Cancel a request by switching rapidly.
 5. **Security and operations:** Never include access tokens or raw private task titles in a query key; tenant scope belongs in a secure key namespace and server authorization.
+
+## Production decision guide: cache keys encode the full view
+
+A query key identifies *which server view* the cache represents, not just which endpoint was called. A list filtered by todo is a different view from a list filtered by done. Include every effective filter and relevant scope in a structured key, for example `['tasks', { status, sort }]`. If filters share a single `['tasks']` key, one response can appear under the wrong selection even though the HTTP endpoint behaved correctly.
+
+| Observation | Query design | Failure to detect |
+| --- | --- | --- |
+| Switch from todo to done | Different structured keys | Cross-filter cache leakage |
+| Revisit an existing filter | Reuse that view's cache under policy | Unnecessary duplicate GET |
+| Change account or tenant | Separate cache namespace and clear stale identity | Prior user's rows appear |
+| Abort an obsolete request | Forward query's `signal` into fetch | Late response replaces the current view |
+
+**Independent exercise:** Fetch todo, switch immediately to done, and switch back. Predict which cache slots exist, then trigger a slow request and cancel it. Verify the query function actually forwards the signal; merely accepting a `signal` parameter without using it is insufficient.
+
+**Trust boundary:** Query keys are not backend authorization, and browser caches may be inspected. Do not include access tokens or raw private task titles in keys. A server must enforce tenant access on *every* request, including a request for an older cached identifier.
 
 ## Guided local lab
 

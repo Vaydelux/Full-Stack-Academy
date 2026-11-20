@@ -15,7 +15,7 @@ staleTime determines when cached data is considered stale; gcTime determines how
 
 **Predict before coding:** A ten-second staleTime may prevent an immediate refetch; after the freshness window, refocus or remount can revalidate. gcTime starts after a query becomes unused.
 
-**Version and deployment scope:** TanStack Query v5, React 19, TypeScript 5. The Task API is a locally bound, in-memory, unauthenticated fixture. No compatible npm dependency lock or browser qualification has been completed, so this draft cannot be marked published.
+**Version and deployment scope:** TanStack Query v5, React 19, TypeScript 5. The Task API is a locally bound, in-memory, unauthenticated fixture. Earlier committed notes report locked local Chrome/SSR tests on November 20, 2026; they have not been rerun for this candidate. Publication, canonical lab registration and human accessibility review remain outstanding.
 
 ## Prerequisites and preflight
 
@@ -85,6 +85,21 @@ export function Tasks(){
 3. **Repair:** Separate staleTime freshness from gcTime eviction of unused cache entries, and predict focus/refetch behavior.
 4. **Regression:** Read immediately twice, refocus at 2 seconds, then refocus after 11 seconds. Explain which reads should reuse cached data and when inactive queries are garbage-collected.
 5. **Security and operations:** Never assume cache freshness is authorization. A 401/403 must be handled at the server boundary even if a previous cached object existed.
+
+## Production decision guide: freshness and residency are different clocks
+
+`staleTime` describes how long a cached response is considered fresh. `gcTime` describes how long an *inactive* query can remain in cache before collection. An active query does not disappear merely because an inactive garbage-collection timer would have elapsed. A stale response may be displayed immediately while a background refetch takes place, depending on the query configuration.
+
+| Setting or event | What it controls | Typical misconception |
+| --- | --- | --- |
+| Short `staleTime` | When data becomes eligible for refetch | Stale means data was removed |
+| Longer `gcTime` | How long unused entries persist | GC makes active queries refresh |
+| Window refocus | Can refetch stale active data | Focus always causes network traffic |
+| New observer on fresh data | May reuse cached value | Every mount must fetch again |
+
+**Independent exercise:** Read twice immediately, refocus at two seconds and again after eleven seconds. Explain which reads should display cached data and when a request is expected. Unmount the query and predict whether its cache survives the configured inactive interval.
+
+**Risk boundary:** Cached data is not proof that a user remains authorized. A 401/403 or logout flow must invalidate sensitive cached views and avoid leaking the previous user's records into another session. Choose timeouts based on data volatility, not merely perceived speed.
 
 ## Guided local lab
 

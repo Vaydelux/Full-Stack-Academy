@@ -15,7 +15,7 @@ Use RHF for local input, Query for remote server state, and the API's If-Match r
 
 **Predict before coding:** A valid task POST updates the list; 422 blocks or shows an error; 412 requires refetch; a failed optimistic deletion must roll back.
 
-**Version and deployment scope:** TanStack Query v5, React 19, TypeScript 5. The Task API is a locally bound, in-memory, unauthenticated fixture. No compatible npm dependency lock or browser qualification has been completed, so this draft cannot be marked published.
+**Version and deployment scope:** TanStack Query v5, React 19, TypeScript 5. The Task API is a locally bound, in-memory, unauthenticated fixture. Earlier committed notes report locked local Chrome/SSR tests on November 20, 2026; they have not been rerun for this candidate. Publication, canonical lab registration and human accessibility review remain outstanding.
 
 ## Prerequisites and preflight
 
@@ -213,6 +213,22 @@ export default function RemoteTaskCapstone(){
 3. **Repair:** Integrate RHF/Zod validation, same-origin authenticated-by-nobody teaching POST, Query list/invalidation, conditional status PATCH and explicit error recovery.
 4. **Regression:** Using the actual loopback API and installed RHF/Query, prove valid create→GET refresh, invalid title no-POST, 422/error retry, 412 version conflict and a rollback path in the companion task workspace.
 5. **Security and operations:** The teaching API is in-memory and unauthenticated. Do not deploy this workflow publicly or imply that Zod/client query keys provide access control.
+
+## Production decision guide: compose the complete remote workflow
+
+The capstone combines three separate owners: React Hook Form validates the current draft, TanStack Query manages read caches, and the HTTP API is authoritative for creates and status changes. Their contracts should be observable independently. A good UI can still be incorrect when it loses an idempotency key, forgets to invalidate an affected filter or mislabels an HTTP 412 revision conflict as success.
+
+| Journey | Expected evidence | Failure path to prove |
+| --- | --- | --- |
+| Create valid task | One POST, confirmed record, GET refresh | No duplicate on replay |
+| Submit invalid title | Inline error; no POST | Server still rejects direct bad input |
+| Change task status | Version-aware PATCH then refreshed list | 412 conflict refreshes authoritative revision |
+| Optimistic delete | Temporary removal then confirmation | Failed delete restores snapshot |
+| Change filters quickly | Separate keys and cancellation | No stale cross-filter task data |
+
+**Independent exercise:** Run the loopback API, create a valid task, change its status and force a version conflict from another request. Then simulate a lost POST response and a failed optimistic delete. For each step, distinguish the browser preview, cached query records and server-accepted state.
+
+**Deployment boundary:** This practice service binds locally, stores records in memory and has no authentication. It must never be described as a production multi-user API. Client-side schemas and query keys do not grant access; production systems need server-side identity, authorization and durable idempotency.
 
 ## Guided local lab
 

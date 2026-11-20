@@ -15,7 +15,7 @@ The server creates a request-scoped QueryClient, prefetches a query, then passes
 
 **Predict before coding:** The first client render uses the prefetched cache; a later refetch occurs only when freshness policy requires it.
 
-**Version and deployment scope:** TanStack Query v5, React 19, TypeScript 5. The Task API is a locally bound, in-memory, unauthenticated fixture. No compatible npm dependency lock or browser qualification has been completed, so this draft cannot be marked published.
+**Version and deployment scope:** TanStack Query v5, React 19, TypeScript 5. The Task API is a locally bound, in-memory, unauthenticated fixture. Earlier committed notes report locked local Chrome/SSR tests on November 20, 2026; they have not been rerun for this candidate. Publication, canonical lab registration and human accessibility review remain outstanding.
 
 ## Prerequisites and preflight
 
@@ -87,6 +87,21 @@ export default async function Page(){
 3. **Repair:** Prefetch safe public data in a Next.js Server Component, dehydrate it, and hydrate the same query key on the client.
 4. **Regression:** In a real Next.js app, compare server and client query keys exactly. Inspect dehydrated state and verify only safe anonymous data appears; test hydration with a mounted QueryClientProvider.
 5. **Security and operations:** Never dehydrate authentication tokens, internal service responses, another user's tasks or secrets into a public HTML payload. This server-only example is not a Vite browser route.
+
+## Production decision guide: SSR hydration preserves identity, not secrecy
+
+Server prefetch and client hydration work when both sides describe the *same query key and data contract*. In Next.js a Server Component can prefetch safe data, `dehydrate` the cache and pass it through `HydrationBoundary` to a client tree with a matching `QueryClientProvider`. If the client asks for a different key, it may fetch again and ignore the prefetched record.
+
+| Server/client mismatch | Observable result | Correction |
+| --- | --- | --- |
+| Different keys | Client refetch or missing initial data | Share a stable key factory |
+| Wrong provider boundary | Cache is not visible to hooks | Mount provider around hydrated consumers |
+| Per-request data in a global cache | Cross-request leakage risk | Create isolated request-scoped clients |
+| Secret in dehydrated state | Sensitive value embedded in HTML | Prefetch only safely exposable data |
+
+**Independent exercise:** Inspect the dehydrated payload, compare server/client keys byte for byte and confirm the page hydrates without an unnecessary duplicate query. Intentionally change the key and explain the extra fetch. Audit the serialized HTML for tokens or another user's tasks.
+
+**Trust boundary:** SSR HTML is observable to the recipient. Do not dehydrate service keys, session credentials or other users' private records. A successful hydration test proves cache wiring, not authentication, access control or authorization.
 
 ## Guided local lab
 
