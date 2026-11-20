@@ -130,6 +130,56 @@ function preparedWrites(reviewedAt){
   'Refusing to overwrite existing published artifact: '+file);
  return writes;
 }
+
+/** In-memory publication rehearsal. Never writes a live article or records approval. */
+export function simulateRHFPromotion(){
+ const plan=sourcePlan();
+ if(plan.alreadyPublished)return {moduleId:'09.02',status:'already-published',writes:0,sourceOnly:true};
+ // This date is ONLY a schema fixture for an in-memory projection; it is not
+ // evidence of a review, and is not written to disk or returned as approval.
+ const writes=preparedWrites('2000-01-01');
+ const problems=[];
+ const check=(cond,reason)=>{if(!cond)problems.push(reason)};
+ const generated=Array.from(writes.keys());
+ const registry=writes.get('src/content/lesson-registry.tsx');
+ const published=writes.get('src/lib/academy/published.ts');
+ const versions=json('content/stack-versions.json');
+ const pkg=json('package.json');
+ for(const id of ids){
+  const slug=json('drafts/forms-query/lessons/'+id+'.meta.json').labSlug;
+  const lab='forms-query-'+slug;
+  const article=writes.get('src/content/lessons/'+id+'.mdx');
+  const meta=JSON.parse(writes.get('src/content/lessons/'+id+'.meta.json'));
+  const manifest=JSON.parse(writes.get('labs/'+lab+'/lab.json'));
+  check(meta.id===id&&meta.moduleId==='09.02'&&meta.trackId==='09','Canonical metadata mismatch '+id);
+  check(meta.reviewedAt==='2000-01-01','Simulated review date missing '+id);
+  check(meta.labId==='lab.react.'+lab,'Lab ID mismatch '+id);
+  check(meta.description?.length>=40,'Description too short '+id);
+  check(meta.level==='Intermediate','Level mismatch '+id);
+  check(meta.title.length>=4,'Title too short '+id);
+  check(meta.estimatedMinutes>=5&&meta.estimatedMinutes<=180,'Lesson duration invalid '+id);
+  check(meta.status==='authored'&&meta.rubric?.length>=3,'Rubric/status invalid '+id);
+  check(meta.objectives?.length>=3&&meta.objectives.every(x=>x.length>=15),'Lesson objectives invalid '+id);
+  check(meta.sources?.length>=2&&meta.sources.every(x=>x.label.length>=3&&x.url.startsWith('https://')&&article.includes(x.url)),'Source references invalid '+id);
+  check(Object.entries(meta.stack).every(([key,value])=>versions[key]===value),'Unpinned runtime version '+id);
+  check(article.includes('<LabGate lessonId="'+id+'"')&&article.includes('## Bug Hunt')&&article.includes('## Official references')&&article.includes('<KnowledgeCheck')&&
+     (article.match(/<LessonStep\b/g)||[]).length>=3,'MDX teaching sections invalid '+id);
+  check(manifest.id===meta.labId&&manifest.lessonId===id&&manifest.status==='authored','Lab manifest mismatch '+id);
+  check(manifest.title.length>=10&&manifest.expected.length>=20&&manifest.security.length>=20,'Lab description invalid '+id);
+  check([manifest.starter,manifest.solution,manifest.tests].every(p=>writes.has(p)),'Missing generated lab assets '+id);
+  check(manifest.verify.length>0&&manifest.verify.every(cmd=>cmd.startsWith('npm run ')&&pkg.scripts?.[cmd.slice(8)]),'Undefined lab command '+id);
+  check(registry.includes("'"+id+"': return <PublishedRHF")&&published.includes("lessons/"+id+".meta.json"),'Incomplete published registries '+id);
+ }
+ check(generated.filter(p=>p.startsWith('src/content/lessons/')).length===16,'Expected 8 published MDX + 8 metadata');
+ check(generated.filter(p=>p.startsWith('labs/forms-query-')).length===32,'Expected 8 complete lab packs');
+ check(generated.length===50,'Expected 48 lesson/lab files and two synchronized registries');
+ if(problems.length)throw new Error('RHF publication rehearsal failed: '+JSON.stringify(problems));
+ return {moduleId:'09.02',status:'source-rehearsal-passed',sourceOnly:true,changesWritten:0,
+  projectedPublished:plan.targetPublished,filesPrepared:generated.length,lessons:ids.length,
+  lessonFiles:16,labFiles:32,registries:2,
+  warning:'No Node24, npm, Chromium or actual human accessibility verification performed. Simulated date was never written.'};
+}
+
 function applyWrites(writes){
  const previous=new Map(),done=[];
  for(const [file] of writes)previous.set(file,fs.existsSync(local(file))?read(file):null);
@@ -162,10 +212,12 @@ function applyWrites(writes){
  }
 }
 const mode=process.argv[2]??'--plan';
-if(process.argv.length>3||!['--plan','--apply'].includes(mode))throw new Error('Usage: npm run promote:forms-query:rhf -- --plan|--apply');
+if(process.argv.length>3||!['--plan','--simulate','--apply'].includes(mode))throw new Error('Usage: npm run promote:forms-query:rhf -- --plan|--simulate|--apply');
 const plan=sourcePlan();
 if(mode==='--plan'){
  console.log(JSON.stringify({...plan,status:plan.alreadyPublished?'already published; no files changed':'unpublished; no files changed'},null,2));
+}else if(mode==='--simulate'){
+ console.log(JSON.stringify(simulateRHFPromotion(),null,2));
 }else{
  if(plan.alreadyPublished)throw new Error('RHF 09.02 is already published; apply cannot overwrite it');
  if(Number(process.versions.node.split('.')[0])!==24)throw new Error('Promotion requires Node.js 24');

@@ -57,3 +57,7 @@ No execution or approval is claimed for this environment. The `--apply` command 
 **Current published snapshot: 338/889, 42 complete modules.** Eight RHF release candidates are structurally assembled, which is genuine engineering progress but **not equivalent to publishing**. The remaining 09.03 TanStack Query lessons are still staged (not candidate-promoted) and must follow the same gated eight-topic process.
 
 **After promotion:** The read-only `--plan` mode reports the module as already published, while `--apply` refuses to reapply. The source-readiness audits support retaining original red/green draft fixtures without double-counting their lesson IDs. Published links replace draft links on the academy project page.
+
+### Pre-release source rehearsal
+
+The release tool now also supports `npm run promote:forms-query:rhf -- --simulate`. This mode calls the **actual eight-lesson generator** in memory, verifies the strict published metadata/lab-contract fields, all eight MDX articles and both generated registries, and reports 50 expected writes **without changing files**. It uses an explicitly fictional schema date `2000-01-01` only in memory; that is not reviewer evidence or publication approval. The normal `--apply` still requires genuine real-world accessibility evidence and Node24/Chromium acceptance.

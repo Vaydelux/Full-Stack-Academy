@@ -30,6 +30,7 @@ const steps = [
   'test:forms-query-dependency-boundary',
   'test:forms-query-lab-runner',
   'test:forms-query-promotion-command',
+  'test:forms-query-promotion-rehearsal',
   'test:curriculum-readiness',
   'test:publication-phases',
   'validate',
