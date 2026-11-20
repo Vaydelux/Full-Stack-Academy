@@ -1,0 +1,27 @@
+{
+  "id": "11.01.02",
+  "title": "Controllers and routing",
+  "trackId": "11",
+  "moduleId": "11.01",
+  "sourceStatus": "draft-unverified",
+  "estimatedMinutes": 60,
+  "stack": {
+    "node": "24",
+    "typescript": "6",
+    "nestjs": "12"
+  },
+  "prerequisites": [
+    "11.01.01"
+  ],
+  "objective": "A decorator route segment and its @Param key must refer to the same named value.",
+  "misconception": "GET /tasks/t1 passes undefined as the requested ID.",
+  "acceptance": "Request /tasks/t1 and confirm t1 is used; request an unknown ID and receive 404.",
+  "securityBoundary": "Keep URL paths stable, return a 404 for unknown records and avoid exposing errors through string interpolation.",
+  "labSlug": "controllers-routing",
+  "officialReferences": [
+    "https://docs.nestjs.com/",
+    "https://docs.nestjs.com/controllers"
+  ],
+  "reviewStatus": "unreviewed",
+  "runtimeQualification": "not-run"
+}

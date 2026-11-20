@@ -1,0 +1,18 @@
+{
+  "id": "draft.nestjs.dependency-injection-scopes",
+  "lessonId": "11.01.04",
+  "title": "Dependency injection scopes",
+  "sourceStatus": "draft-unverified",
+  "runtime": "node-24-nestjs-12-typescript-6",
+  "starter": "drafts/nestjs/labs/dependency-injection-scopes/starter.ts",
+  "solution": "drafts/nestjs/labs/dependency-injection-scopes/solution.ts",
+  "expectedPositive": "Create two independent request scopes and confirm the derived IDs are isolated.",
+  "expectedNegative": "The service stores a previous request ID; concurrent users can observe another request's context.",
+  "requiresRealNestTest": true,
+  "requiresRealHttpTest": true,
+  "readyToPublish": false,
+  "officialReferences": [
+    "https://docs.nestjs.com/",
+    "https://docs.nestjs.com/fundamentals/injection-scopes"
+  ]
+}

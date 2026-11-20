@@ -1,0 +1,27 @@
+{
+  "id": "11.01.03",
+  "title": "Injectable providers",
+  "trackId": "11",
+  "moduleId": "11.01",
+  "sourceStatus": "draft-unverified",
+  "estimatedMinutes": 60,
+  "stack": {
+    "node": "24",
+    "typescript": "6",
+    "nestjs": "12"
+  },
+  "prerequisites": [
+    "11.01.02"
+  ],
+  "objective": "Nest resolves registered providers through the container rather than manual new statements in controllers.",
+  "misconception": "A controller manually instantiates a service, bypassing DI overrides and per-request lifecycle.",
+  "acceptance": "Resolve the controller through Test.createTestingModule and override its service with a fake.",
+  "securityBoundary": "Register the service in the owning module and inject through the constructor.",
+  "labSlug": "injectable-providers",
+  "officialReferences": [
+    "https://docs.nestjs.com/",
+    "https://docs.nestjs.com/providers"
+  ],
+  "reviewStatus": "unreviewed",
+  "runtimeQualification": "not-run"
+}
