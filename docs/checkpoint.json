@@ -10,8 +10,8 @@
   },
   "development": {
     "branch": "feat/p1-rhf-eight-lesson-depth-20261120",
-    "state": "p1-rhf-atomic-promotion-integrity-hardening-with-sha256-regression",
-    "note": "Continued P1 PR #38: extracted a stable SHA-256 review fingerprint used by both source-readiness and the guarded promoter; excluded generated live registries so review remains valid during the atomic transition; added in-memory mutation tests proving lesson/instructor edits invalidate the hash. The apply path now checks SHA and clean Git tree again after long Node24/npm/browser preflight and checks reviewed source after publication. New checks are authored and 6 changed JS modules parse in V8; full Node24/npm/Chromium/browser and named human accessibility still unexecuted. Live snapshot 338/889, 42 complete modules."
+    "state": "p1-09.02-source-projection-validated-eight-articles",
+    "note": "RHF 09.02 publication projection now rewrites prepublication warnings in all eight candidate articles while retaining their original TSX examples and interactive lesson content. Executed the pure MDX renderer against 8/8 actual GitHub candidate files; all returned correctly without release-only warnings, with three lesson steps and preserved code fences. No Node24/npm/Next build, Chromium or named human accessibility review has run. Live 338/889; PR #38 unmerged."
   },
   "snapshot": {
     "tracks": 28,
@@ -73,6 +73,6 @@
     "devHighFindings": 14,
     "exceptionExpires": "2026-12-02"
   },
-  "nextMilestone": "Run real Node24/npm/browser/Next source and publication simulations; complete hash-bound keyboard, screen-reader and zoom review; perform guarded 09.02 --apply then verify and commit 346/889.",
+  "nextMilestone": "Run the full Node24 release gates and review human a11y on exact source SHA; then --apply RHF 09.02 and commit the qualified local 346/889 snapshot.",
   "status": "p1-rhf-eight-release-candidate-bundles-structurally-complete-not-published"
 }

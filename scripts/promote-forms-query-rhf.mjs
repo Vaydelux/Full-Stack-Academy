@@ -201,6 +201,17 @@ function applyWrites(writes, expectedReviewedSha){
   const checkpoint=json('docs/checkpoint.json').snapshot;
   assert.equal(checkpoint.publishedLessons,346);
   assert.ok(checkpoint.completeModules.includes('09.02'));
+  // Update release provenance only after the complete postpublication suite
+  // passes; this describes a qualified *local worktree*, not a deployment.
+  const record=json('docs/checkpoint.json');
+  record.status='p1-rhf-09.02-local-publication-qualified-awaiting-commit';
+  record.development={
+   ...record.development,
+   state:'p1-09.02-locally-qualified-8-lessons-awaiting-commit',
+   note:'Eight RHF 09.02 lessons passed the guarded local Node24/npm/Chromium release pipeline and human accessibility evidence check. This worktree is not automatically committed, merged or deployed. Reviewer evidence: '+evidencePath+'; source SHA-256: '+expectedReviewedSha
+  };
+  record.nextMilestone='Review and commit 09.02 local qualified publication, merge verified PR, then qualify 09.03 TanStack Query.';
+  fs.writeFileSync(local('docs/checkpoint.json'),JSON.stringify(record,null,2)+'\n');
   console.log('RHF 09.02 promotion prepared: 346/889. Review and commit these local changes; no GitHub merge or deployment performed.');
  }catch(error){
   console.error('Release failed; restoring original local source tree and checkpoint');

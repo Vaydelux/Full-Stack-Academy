@@ -81,3 +81,7 @@ The regression suite `npm run test:forms-query-review-fingerprint` now exercises
 ### Learner-facing publication copy
 
 The `renderPublishedRHFArticle` converter now replaces the stale draft-only Scope, Prerequisites, and Guided Lab prose in all eight published lesson projections. Original candidate MDX remains explicitly unpublished until real acceptance. The transformer fails closed on missing/duplicate markers, preserves starter/instructor code fences and lesson components, and points the published page at the correct locked React workspace and local lab scripts. The real Node source suite includes `npm run test:forms-query-published-article`.
+
+### Checkpoint after a qualified local promotion
+
+The `--apply` flow regenerates the source-derived lesson snapshot and then runs all postpublication checks. **Only after those checks pass**, it changes `docs/checkpoint.json` to a `locally-qualified-...-awaiting-commit` development status, records the exact review source SHA-256 and evidence path, and points at module 09.03 as the next phase. It does not call the work deployed or merged. On a failure, the old checkpoint and generated files are restored.

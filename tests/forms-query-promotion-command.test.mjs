@@ -71,3 +71,14 @@ test('the apply path rechecks fingerprint and clean worktree after long qualific
  assert.match(program,/function applyWrites\(writes, expectedReviewedSha\)/);
  assert.match(program,/applyWrites\(writes,reviewer\.sourceSha256\)/);
 });
+
+test('successful local promotion records qualified worktree, not deployed status',()=>{
+ assert.match(program,/p1-rhf-09\.02-local-publication-qualified-awaiting-commit/);
+ assert.match(program,/worktree is not automatically committed, merged or deployed/);
+ assert.match(program,/record\.nextMilestone='Review and commit 09\.02/);
+ const update=program.indexOf("record.status='p1-rhf-09.02-local-publication-qualified-awaiting-commit'");
+ const postflight=program.indexOf("run('npm',['run','qualify:forms-query:preview-browser']");
+ assert.ok(update>postflight,'Provenance must be recorded only after full postflight');
+ const failureHandler=program.indexOf('}catch(error)',update);
+ assert.ok(failureHandler>update,'Checkpoint update must remain inside rollback scope');
+});
