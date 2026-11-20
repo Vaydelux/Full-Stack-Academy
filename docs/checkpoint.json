@@ -10,8 +10,8 @@
   },
   "development": {
     "branch": "feat/p1-rhf-eight-lesson-depth-20261120",
-    "state": "p1-unified-preview-and-sixteen-content-guides-unverified",
-    "note": "P1 source candidate consolidates #36 noindex draft preview, quiz-progress isolation, 16 individualized lesson production guides, and source regressions into #38. Existing 338 published IDs/337 MDX+labs/42 modules are not changed. Runtime Next24/browser/manual accessibility remain unverified for this candidate; PR must remain unmerged until gates pass."
+    "state": "p1-09.02-eight-publication-candidates-and-browser-tests-authored",
+    "note": "PR #38 now includes all sixteen substantive P1 draft guides, sixteen noindex draft preview routes, and eight 09.02 RHF non-live publication candidates: 8 MDX, 8 metadata projections, 8 proposed lab manifests, 8 red and 8 green TSX assets, and 8 authored per-lab browser test wrappers. The dedicated RHF browser runner uses ephemeral loopback ports. Source structure was re-fetched/audited for all 8/8 bundles; actual Node24/Next/Chromium/browser/manual screen-reader qualification is still unexecuted; root RHF/resolver lock and a11y approval remain blockers. Published snapshot stays 338/889 with 42 complete modules."
   },
   "snapshot": {
     "tracks": 28,
@@ -73,6 +73,6 @@
     "devHighFindings": 14,
     "exceptionExpires": "2026-12-02"
   },
-  "nextMilestone": "run-p1-node24-qualification-then-atomic-publish-09.02-before-09.03",
-  "status": "p1-draft-preview-content-implemented-publication-blocked-on-runtime-and-a11y"
+  "nextMilestone": "run-p1-rhf-candidate-source-and-node24-browser-gates-then-promote-09.02-eight-lessons-atomically",
+  "status": "p1-rhf-eight-release-candidate-bundles-structurally-complete-not-published"
 }
