@@ -1,38 +1,44 @@
-# Full-Stack Academy — Current Engineering Handoff (2026-11-20)
+# Full-Stack Academy — Engineering Handoff (2026-11-20)
 
-## Latest mainline reviewed
+## Current target and release boundary
 
-- **Latest observed main before this feature:** `ec518b41cdb08003580a865a213311d1660dfd9f`, merge of `fix/local-release-qualification` at 2026-11-20 07:12 UTC. This is **four commits ahead of PR #34**, with new Node24/local React, Vite, browser and SSR qualification, source repairs and nested npm lock.
-- That merged checkpoint reports Node **24.22.3** root `verify:offline`/Next build, 130 Forms/Query cases, 15 native Chrome checks, seven React workflow cases, all 16 positive instructor and negative starter cases, isolated SSR hydration, and the full locked `qualify:forms-query:full`. **Those are reported prior local results; the present environment cannot rerun the full Node24/browser pipeline.**
-- **Canonical curriculum:** 28 tracks, 111 modules, 889 topics. **338 published unique lessons / 337 MDX and published lab manifests / 42 complete modules**; 551 topics not published, with 16 09.02/09.03 lesson packs staged, 535 not yet staged.
+- **Base:** PR #35 merged on main at `7893779b14a995310ca25a1826c790fad642d4a8`. Current feature `feat/forms-query-readable-draft-preview-20261120` adds safely navigable in-academy staged reading pages.
+- **Published curriculum remains:** 28 tracks, 111 modules, 889 canonical topics, **338 unique published lessons, 337 authored MDX and live lab manifests, 42 completed modules**. 16 RHF/Query topics are draft-staged and preview-only, **not published**; 535 more topics are unstaged.
+- Baseline Windows Node 24.22.3 local qualification **reported** root offline/Next build, 130 Forms/Query Node cases, 15 native Chrome checks, seven React-workspace flows, all sixteen staged instructor + negative-starter Chrome behavior checks and isolated SSR hydration. The newly imported MDX preview route was **not part of that build**.
+- No GitHub Actions, Vercel checks, fake npm locks or production deployments in this workflow.
 
-## New larger-scope publication-preflight milestone
+## Milestone now implemented
 
-- [x] Inspected all changes introduced after PR #34. Corrected one release-hygiene defect: **three generated Vite `react-client/dist/` assets were tracked in Git despite an existing ignore rule**. They have been removed from version control; the genuine nested React `package-lock.json` remains committed.
-- [x] Added `scripts/forms-query-promotion-readiness.mjs`, a read-only fail-closed inspection of all 16 canonical staged topics: catalog identity, lesson/module IDs, primary official URLs, rubric, MDX/code-source parity, intentional red/green fixtures, browser scenario presence, and incomplete publication across the two registries and canonical lab paths.
-- [x] Gate supports `--check` for structural consistency, `--json` for future agent handoff, and `--strict` to reject a purported publication without human accessibility evidence, correct published dependencies/stack pins, canonical lab/MDX files and both registries. **Strict is expected to reject the current staged modules.**
-- [x] Added nine publication-readiness regression assertions, four build-artifact/lockfile hygiene tests, and `npm run status:forms-query-promotion` / `npm run test:forms-query-promotion` scripts; registered these in `verify:offline` and Forms/Query `--source` qualification.
-- [x] Documented a module-by-module atomic publication integration and a reviewer-authored accessibility-evidence schema in `docs/FORMS_QUERY_PUBLICATION_READINESS.md`. The script does not fabricate manual checks or publish lessons.
-- [ ] Run the new Node tests on a complete local checkout with npm available; the model's local Node22 shell cannot resolve GitHub/npm DNS, so the latest root Node24/Next build, browser and the new complete-checkout script have **not** run in this environment.
+- [x] Add **16 explicit noindex MDX reading routes** `/learn/projects/forms-query/drafts/<lessonId>`, with static allowlisted IDs, canonical lesson titles, source links and previous/next sequence.
+- [x] Make the Forms/Query project page link each staged topic to a readable academy page rather than only a raw GitHub MDX source, preserving the raw-source option.
+- [x] Add a scoped client-only `DraftLessonScope` around preview article content; the shared KnowledgeCheck renders quiz practice but **never calls markQuizPassed in draft preview**. Published lessons outside this scope still save locally as before.
+- [x] Update all 16 staged MDX articles to remove obsolete claims that no locked React dependencies/Chrome tests exist. Their code fences and test fixtures remain unchanged. The newer text acknowledges historical reported qualification but says that publication and human accessibility checks remain outstanding.
+- [x] Add `tests/forms-query-draft-preview.test.mjs` (9 authored Node cases), add the npm test command, integrate it into `verify:offline` and Forms/Query source qualification.
+- [x] Direct GitHub-source review: all sixteen MDX files have the expected trusted imports, correct KnowledgeCheck lesson ID, no LabGate or embedded script/iframe, no stale qualification phrase. Static mapping/route/quiz-source assertions passed.
+- [ ] **Actual Node execution of the new test file and Next MDX production build** on a full installed checkout; this current runtime cannot resolve GitHub/npm DNS and cannot execute a fresh React/Next application.
 
-## Priority work remaining
-
-1. Run `npm run test:forms-query-promotion` and `npm run qualify:forms-query:source` on the full Node24 checkout. Fix structural failures if any. Check Git's staged/committed diff has no generated `dist/`.
-2. **Human accessibility review for all 16 exercises**: keyboard-only flow, error/status announcements using a named screen reader, focus after mutations, 200% zoom at 320px/tablet/desktop and reduced-motion. Store true reviewer evidence only after hands-on testing, per the documented JSON schema.
-3. **Publish 09.02 (8 React Hook Form lessons) first** with root RHF/resolver deps and trusted npm-generated lock; strict MDX metadata, 8 real executable lab manifests/positive and negative tests, LessonArticle and MDX_METADATA imports, and reconcile the staging validators. Run all root/full/browser gates on that exact publication commit.
-4. **Publish 09.03 (8 TanStack Query lessons)** only after 09.02 is green. Add TanStack Query root runtime, query-key/isolation/cursor/optimistic rollback tests, and repeat publication gates. Target when both pass: **354 published unique lessons, 353 MDX/labs, 44 completed modules**; current totals remain **338/337/42**.
-5. Then build NestJS (32), PostgreSQL (40), Prisma and Supabase (64) lesson batches using actual backend runtimes and trustworthy tests, not source-only completion claims.
-6. Review the existing dev-only security exception before **2026-12-02 UTC**.
-
-## Commands and durable references
+## Immediate P0 on a full Node 24 checkout
 
 ```bash
-npm run status:forms-query-promotion
+npm ci
+npm run test:forms-query-draft-preview
 npm run test:forms-query-promotion
-npm run qualify:forms-query:source
+npm run verify:offline
 npm run qualify:forms-query:full
 ```
 
-`docs/FORMS_QUERY_PUBLICATION_READINESS.md` — module publication steps/evidence; `docs/FORMS_QUERY_REAL_NODE_ACCEPTANCE.md` — prior 102 real Node tests; `docs/FORMS_QUERY_16_STAGING_ACCEPTANCE.md` — originally staged sources; `docs/CURRICULUM_FINISHING_ROADMAP.md` — full 889-topic roadmap; `AGENTS.md` — contributor guidance; `docs/checkpoint.json` — published source counts.
+Open all 16 preview URLs locally; inspect MDX compilation, keyboard focus, 320px–desktop/200% zoom wrapping, quiz announcements, noindex header, and previous/next links. Verify a correct quiz in a preview does not mutate persisted course progress while an existing **published** quiz still does. Record real browser/a11y evidence, fix failures before release.
 
-**Guardrails:** No GitHub Actions, no Vercel checks, no fake npm lock integrity, no unqualified lesson publication. Distinguish historical reported checks from rerun results on a new candidate.
+## P1: Integrate fully qualified canonical RHF/Query modules
+
+1. Obtain human keyboard + named screen reader + 200% zoom review for each of the 16 exercises. Do not invent reviewer evidence; see `docs/FORMS_QUERY_PUBLICATION_READINESS.md`.
+2. Package 09.02 as eight canonical `src/content/lessons/*.mdx` + strict `*.meta.json` + runnable `labs/forms-query-*/` manifests with positive/negative tests; integrate both published registries, real root RHF/resolver deps and a trustworthy npm-generated root lock.
+3. Reconcile `verify-forms-query-drafts.mjs` with promotions so module publishing cannot silently diverge from the staged verified source. Run the complete offline and browser qualification against the exact candidate. **Only then** move 338 → 346 published, 337 → 345 MDX/labs, 42 → 43 complete modules.
+4. Repeat for 09.03 TanStack Query with real root Query dep, conditional retry/optimistic rollback and Next SSR behavior. **Only after verified publication**, move counts to 354/353/44.
+5. Continue NestJS 11, PostgreSQL 12, Prisma 13 and Supabase 14 as actual runtime-tested course units. Review the dev-only security exception before **2026-12-02 UTC**.
+
+## Required references
+
+`AGENTS.md`, `docs/FORMS_QUERY_DRAFT_PREVIEW_ACCEPTANCE.md`, `docs/FORMS_QUERY_PUBLICATION_READINESS.md`, `docs/FORMS_QUERY_REAL_NODE_ACCEPTANCE.md`, `drafts/forms-query/README.md`, `docs/checkpoint.json`.
+
+**Noindex readable preview ≠ published lesson; source assertion ≠ real Next compile; staged browser demo check ≠ human assistive-technology approval.**
