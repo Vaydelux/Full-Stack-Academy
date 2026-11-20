@@ -99,3 +99,11 @@ test('module sums reconcile to baseline including all phase targets',()=>{
  assert.equal(all.reduce((s,m)=>s+m.staged,0),program.baseline.staged);
  assert.equal(all.length,program.scheduledModules);
 });
+
+test('retaining historical draft source after publication never doubles staged counts',()=>{
+ const programWithRelease=first(['09.02.01','09.02.02'],['09.03.01']);
+ assert.equal(programWithRelease.baseline.published,2);
+ assert.equal(programWithRelease.baseline.staged,1);
+ assert.equal(programWithRelease.phases[0].modules[0].staged,0);
+ assert.equal(programWithRelease.phases[0].modules[0].published,2);
+});

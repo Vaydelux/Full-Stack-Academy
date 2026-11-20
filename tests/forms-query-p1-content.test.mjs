@@ -72,13 +72,21 @@ test('preview publication boundary remains isolated from the live lesson registr
  const preview=read('src/content/forms-query-draft-registry.tsx');
  const live=read('src/content/lesson-registry.tsx');
  const metadata=read('src/lib/academy/published.ts');
- for(const id of ids){
-  assert.ok(preview.includes("'"+id+"'"),id+' absent from preview');
-  assert.ok(!live.includes('./lessons/'+id+'.mdx'),id+' prematurely published in MDX');
-  assert.ok(!metadata.includes('lessons/'+id+'.meta.json'),id+' prematurely published in metadata');
+ for(const id of ids)assert.ok(preview.includes("'"+id+"'"),id+' absent from source preview');
+ for(const mod of ['09.02','09.03']){
+  const states=ids.filter(id=>id.startsWith(mod+'.')).map(id=>({
+   mdx:live.includes('./lessons/'+id+'.mdx'),
+   metadata:metadata.includes('lessons/'+id+'.meta.json')
+  }));
+  assert.ok(states.every(x=>!x.mdx&&!x.metadata)||
+   states.every(x=>x.mdx&&x.metadata),'Only complete eight-lesson modules may publish');
  }
- const checkpoint=json('docs/checkpoint.json');
- assert.equal(checkpoint.snapshot.publishedLessons,338);
- assert.equal(checkpoint.snapshot.authoredMdxLessons,337);
- assert.equal(checkpoint.snapshot.labFixtures,337);
+ const checkpoint=json('docs/checkpoint.json').snapshot;
+ const liveMdx=fs.readdirSync(path.join(root,'src/content/lessons')).filter(x=>x.endsWith('.meta.json')).length;
+ const labs=fs.readdirSync(path.join(root,'labs')).filter(dir=>
+  fs.existsSync(path.join(root,'labs',dir,'lab.json'))).length;
+ assert.equal(checkpoint.authoredMdxLessons,liveMdx);
+ assert.equal(checkpoint.labFixtures,labs);
+ assert.equal(checkpoint.publishedLessons,338+
+  ids.filter(id=>live.includes('./lessons/'+id+'.mdx')).length);
 });

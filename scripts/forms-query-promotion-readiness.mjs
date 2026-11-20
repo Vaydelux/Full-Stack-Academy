@@ -106,7 +106,7 @@ export function inspectFormsQueryPromotion(){
   }
   if(!versions.reactHookForm||!versions.tanstackQuery)blockers.push('Missing published stack major pins');
   if(!exists('examples/forms-query-vertical/react-client/package-lock.json'))blockers.push('Nested npm lockfile absent');
-  modules.push({id:moduleId,total:entries.length,staged:group.filter(x=>x.stagedValid).length,
+  modules.push({id:moduleId,total:entries.length,staged:group.filter(x=>x.stagedValid&&!x.published).length,
    published:group.filter(x=>x.published).length,a11y,blockers,ready:blockers.length===0});
  }
  const snapshot=json('docs/checkpoint.json').snapshot;

@@ -107,7 +107,13 @@ export function readPublicationProgram(){
  const staged=fs.existsSync(stagingDir)
   ?fs.readdirSync(stagingDir).filter(name=>name.endsWith('.meta.json')).map(name=>json('drafts/forms-query/lessons/'+name).id)
   :[];
- const report=buildPublicationProgram({curriculum,publishedIds:[...new Set([...interactive,...mdx])],stagedIds:staged});
+ // Historical draft assets may be retained for repeatable instructor/browser tests.
+ // A topic is staged only while it is NOT actually published.
+ const publishedIds=[...new Set([...interactive,...mdx])];
+ const publishedSet=new Set(publishedIds);
+ const report=buildPublicationProgram({
+  curriculum,publishedIds,stagedIds:staged.filter(id=>!publishedSet.has(id))
+ });
  const checkpoint=json('docs/checkpoint.json').snapshot;
  assert.equal(report.baseline.topics,checkpoint.catalogTopics,'Canonical topic count drifts from checkpoint');
  assert.equal(report.baseline.published,checkpoint.publishedLessons,'Publication count drifts from checkpoint');
