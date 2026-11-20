@@ -9,9 +9,9 @@
     "productionUrl": "https://fullstack-academy-ecru.vercel.app/"
   },
   "development": {
-    "branch": "fix/local-release-qualification",
-    "state": "forms-query-local-build-and-browser-verified",
-    "note": "Node 24.22.3 and Chrome 156 qualified the locked Forms/Query practice app and all 16 staged lesson pairs, including the isolated Next hydration fixture. The 130-case Forms/Query source suite, native browser gate, Next production build and academy browser smoke passed locally. Manual accessibility and integration into publication registries remain pending. Published source snapshot is 338 unique IDs, 337 MDX and lab manifests, and 42 completed modules."
+    "branch": "main",
+    "state": "16-forms-query-lessons-staged-release-readiness-audited",
+    "note": "Latest main ec518b41 merged Node24.22.3 Windows local qualification with 130 Forms/Query Node scenarios, locked Vite/React, 15 native Chrome checks, seven React workspace flows, all sixteen instructor positive/negative starter cases, isolated Next SSR hydration and full verify:offline/Next build (reported in committed latest handoff; not rerun by this runtime). New feature adds read-only 16-topic promotion readiness --check/--json/--strict, 9 regression tests and 4 Git artifact/lockfile checks, and removes three accidentally tracked Vite dist output files. Nested npm lock is retained. Manual named screen-reader/keyboard/200% zoom review, root production RHF/Query deps and canonical atomic publication remain pending. GitHub/npm DNS blocked current Node22 local checkout; new full gate not run. 338 published unique IDs, 337 MDX/labs and 42 completed modules unchanged; 16 staged."
   },
   "snapshot": {
     "tracks": 28,
@@ -73,6 +73,6 @@
     "devHighFindings": 14,
     "exceptionExpires": "2026-12-02"
   },
-  "nextMilestone": "qualify-react-npm-node24-next-and-approved-chromium-then-promote-09.02-09.03",
-  "status": "forms-query-102-real-node-tests-passed-browser-policy-blocked-react-gates-pending"
+  "nextMilestone": "complete-a11y-evidence-then-publish-09.02-and-09.03-as-separately-tested-8-lesson-modules",
+  "status": "forms-query-local-qualified-publication-atomicity-and-accessibility-preflight-pending"
 }

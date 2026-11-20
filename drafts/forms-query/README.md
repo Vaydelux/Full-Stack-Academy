@@ -1,3 +1,5 @@
+> **Publication check added 2026-11-20:** Run `npm run status:forms-query-promotion` for actionable per-module source, runtime-dependency, canonical-registry and manual-accessibility blockers. `npm run test:forms-query-promotion` checks 16 source/MDX/fixture contracts plus Git release hygiene. `node scripts/forms-query-promotion-readiness.mjs --strict` is **expected to fail** until full module publication and human screen-reader/keyboard/200% zoom evidence exists. Details: [publication readiness](../../docs/FORMS_QUERY_PUBLICATION_READINESS.md). Do not mark `readyToPublish` true or edit the published checkpoint to bypass these gates.
+
 # Forms and Query — 16-lesson prepublication staging
 
 **This directory is not a published course.** It stages the canonical 09.02 React Hook Form and 09.03 TanStack Query topics as individual guided MDX drafts with red starters, instructor solutions, and acceptance contracts.
