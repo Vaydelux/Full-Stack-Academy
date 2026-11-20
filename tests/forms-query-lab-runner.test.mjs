@@ -16,5 +16,6 @@ test('browser-backed labs run sequentially after cheap suites',()=>{
  assert.match(source,/manifest\.runtime\.includes\('browser'\)/);
  assert.match(source,/for\(const file of browserFiles\)/);
  assert.match(source,/spawnSync\(process\.execPath,\['--import','tsx','--test',file\]/);
- assert.match(source,/timeout:180000/);
+ assert.match(source,/const timeout=file\.includes\('forms-query-ssr-hydration\/'\)/);
+ assert.match(source,/900_000 : 300_000/);
 });

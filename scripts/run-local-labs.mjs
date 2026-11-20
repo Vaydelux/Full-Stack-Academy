@@ -47,8 +47,12 @@ for(let i=0;i<files.length;i+=batchSize){
 if(!process.exitCode){
  for(const file of browserFiles){
   console.log('\n=== Browser-backed local lab: '+file+' ===');
+  // Next SSR hydration compiles an isolated production Next fixture. Do not
+  // inherit the short single-browser timeout for the build + hydration pass.
+  const timeout=file.includes('forms-query-ssr-hydration/')
+   ? 900_000 : 300_000;
   const result=spawnSync(process.execPath,['--import','tsx','--test',file],{
-   cwd:root,env:process.env,stdio:'inherit',timeout:180000,
+   cwd:root,env:process.env,stdio:'inherit',timeout,
   });
   if(result.error||result.status!==0){
    console.error('Browser-backed lab failed:',result.error?.message??'exit '+result.status);
