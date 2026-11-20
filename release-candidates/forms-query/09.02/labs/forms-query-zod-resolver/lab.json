@@ -1,0 +1,46 @@
+{
+  "candidateFor": "09.02.03",
+  "promotionReady": false,
+  "candidateOnly": true,
+  "proposedPublishedLabManifest": {
+    "id": "lab.react.forms-query-zod-resolver",
+    "lessonId": "09.02.03",
+    "title": "Zod resolvers",
+    "runtime": "react-19-rhf-7-zod-4-browser-node-24",
+    "status": "authored",
+    "starter": "labs/forms-query-zod-resolver/starter/solution.tsx",
+    "solution": "labs/forms-query-zod-resolver/solution/solution.tsx",
+    "tests": "labs/forms-query-zod-resolver/solution.test.mjs",
+    "verify": [
+      "npm run lab:forms-query-zod-resolver",
+      "npm run qualify:forms-query:react-browser"
+    ],
+    "expected": "The string `  done ` must be transformed to `done`. `   ` and a 101-character title must not invoke the submit callback. Server 422 must still be handled.",
+    "security": "zodResolver is not authorization or persistence. The loopback API rejects invalid title/priority independently and must not trust the browser schema."
+  },
+  "sourceContract": {
+    "id": "draft.forms.zod-resolver",
+    "lessonId": "09.02.03",
+    "title": "Zod resolvers",
+    "sourceStatus": "staged-unverified",
+    "runtime": "react-19-rhf-7-zod-4-ts-5",
+    "starter": "drafts/forms-query/labs/zod-resolver/starter.tsx",
+    "solution": "drafts/forms-query/labs/zod-resolver/solution.tsx",
+    "expectedPositive": "The string `  done ` must be transformed to `done`. `   ` and a 101-character title must not invoke the submit callback. Server 422 must still be handled.",
+    "expectedNegative": "The form has no resolver, so a whitespace title reaches the submit handler.",
+    "securityBoundary": "zodResolver is not authorization or persistence. The loopback API rejects invalid title/priority independently and must not trust the browser schema.",
+    "officialReferences": [
+      "https://github.com/react-hook-form/resolvers#zod",
+      "https://zod.dev/basics"
+    ],
+    "requiresRealLibraryTest": true,
+    "requiresRealBrowserTest": true,
+    "readyToPublish": false
+  },
+  "testsImplemented": false,
+  "requirements": [
+    "Implement per-lab executable positive and intentionally failing starter assertions",
+    "Run the installed RHF/react-dom browser qualification on exact release commit",
+    "Record physical accessibility reviewer and 200 percent zoom test"
+  ]
+}

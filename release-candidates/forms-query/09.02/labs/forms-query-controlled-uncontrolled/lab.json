@@ -1,0 +1,46 @@
+{
+  "candidateFor": "09.02.01",
+  "promotionReady": false,
+  "candidateOnly": true,
+  "proposedPublishedLabManifest": {
+    "id": "lab.react.forms-query-controlled-uncontrolled",
+    "lessonId": "09.02.01",
+    "title": "Controlled vs uncontrolled inputs",
+    "runtime": "react-19-rhf-7-zod-4-browser-node-24",
+    "status": "authored",
+    "starter": "labs/forms-query-controlled-uncontrolled/starter/solution.tsx",
+    "solution": "labs/forms-query-controlled-uncontrolled/solution/solution.tsx",
+    "tests": "labs/forms-query-controlled-uncontrolled/solution.test.mjs",
+    "verify": [
+      "npm run lab:forms-query-controlled-uncontrolled",
+      "npm run qualify:forms-query:react-browser"
+    ],
+    "expected": "Type `Practice HTTP` using the keyboard and submit; the output must reflect the text. Submitting an empty or two-character title must not update the output.",
+    "security": "The browser must validate for usability, but the HTTP server still checks the 3–100 character title and allowed priorities."
+  },
+  "sourceContract": {
+    "id": "draft.forms.controlled-uncontrolled",
+    "lessonId": "09.02.01",
+    "title": "Controlled vs uncontrolled inputs",
+    "sourceStatus": "staged-unverified",
+    "runtime": "react-19-rhf-7-zod-4-ts-5",
+    "starter": "drafts/forms-query/labs/controlled-uncontrolled/starter.tsx",
+    "solution": "drafts/forms-query/labs/controlled-uncontrolled/solution.tsx",
+    "expectedPositive": "Type `Practice HTTP` using the keyboard and submit; the output must reflect the text. Submitting an empty or two-character title must not update the output.",
+    "expectedNegative": "The title is hard-coded and never updated by the registered field.",
+    "securityBoundary": "The browser must validate for usability, but the HTTP server still checks the 3–100 character title and allowed priorities.",
+    "officialReferences": [
+      "https://react-hook-form.com/get-started",
+      "https://react-hook-form.com/docs/useform/register"
+    ],
+    "requiresRealLibraryTest": true,
+    "requiresRealBrowserTest": true,
+    "readyToPublish": false
+  },
+  "testsImplemented": false,
+  "requirements": [
+    "Implement per-lab executable positive and intentionally failing starter assertions",
+    "Run the installed RHF/react-dom browser qualification on exact release commit",
+    "Record physical accessibility reviewer and 200 percent zoom test"
+  ]
+}
