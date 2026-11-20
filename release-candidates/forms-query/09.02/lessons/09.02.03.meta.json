@@ -1,0 +1,52 @@
+{
+  "candidateFor": "09.02.03",
+  "publicationReady": false,
+  "publishedMetadata": {
+    "id": "09.02.03",
+    "title": "Zod resolvers",
+    "description": "Use zodResolver with distinct schema input and transformed output types; validate unknown values at the HTTP boundary too. This guided lab analyzes and repairs a real React Hook Form state or submission failure.",
+    "trackId": "09",
+    "moduleId": "09.02",
+    "level": "Intermediate",
+    "estimatedMinutes": 55,
+    "status": "authored",
+    "reviewedAt": null,
+    "stack": {
+      "react": "19",
+      "typescript": "5",
+      "zod": "4",
+      "reactHookForm": "7"
+    },
+    "prerequisites": [
+      "09.02.02"
+    ],
+    "objectives": [
+      "Use zodResolver with distinct schema input and transformed output types; validate unknown values at the HTTP boundary too.",
+      "The string `  done ` must be transformed to `done`. `   ` and a 101-character title must not invoke the submit callback. Server 422 must still be handled.",
+      "zodResolver is not authorization or persistence. The loopback API rejects invalid title/priority independently and must not trust the browser schema."
+    ],
+    "labId": "lab.react.forms-query-zod-resolver",
+    "rubric": [
+      "Use zodResolver with distinct schema input and transformed output types; validate unknown values at the HTTP boundary too.",
+      "The string `  done ` must be transformed to `done`. `   ` and a 101-character title must not invoke the submit callback. Server 422 must still be handled.",
+      "I can explain why client validation is not server authorization."
+    ],
+    "sources": [
+      {
+        "label": "Primary official reference",
+        "url": "https://github.com/react-hook-form/resolvers#zod"
+      },
+      {
+        "label": "Supporting official reference",
+        "url": "https://zod.dev/basics"
+      }
+    ]
+  },
+  "targetPath": "src/content/lessons/09.02.03.meta.json",
+  "blockedOn": [
+    "Genuine root npm dependency lock",
+    "Real exercise acceptance and Chromium",
+    "Named human keyboard/assistive-technology review"
+  ],
+  "requiredVerifyScript": "npm run lab:forms-query-zod-resolver"
+}

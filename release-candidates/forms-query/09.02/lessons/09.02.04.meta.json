@@ -1,0 +1,52 @@
+{
+  "candidateFor": "09.02.04",
+  "publicationReady": false,
+  "publishedMetadata": {
+    "id": "09.02.04",
+    "title": "Dynamic field arrays",
+    "description": "Preserve field-array identity with fields[].id, controlled append/remove, and bounded dynamic inputs. This guided lab analyzes and repairs a real React Hook Form state or submission failure.",
+    "trackId": "09",
+    "moduleId": "09.02",
+    "level": "Intermediate",
+    "estimatedMinutes": 55,
+    "status": "authored",
+    "reviewedAt": null,
+    "stack": {
+      "react": "19",
+      "typescript": "5",
+      "zod": "4",
+      "reactHookForm": "7"
+    },
+    "prerequisites": [
+      "09.02.03"
+    ],
+    "objectives": [
+      "Preserve field-array identity with fields[].id, controlled append/remove, and bounded dynamic inputs.",
+      "Type unique values in three rows; remove the middle row. The remaining values must match their original logical items. Adding past eight rows must be disabled.",
+      "Never accept arbitrary numbers of dynamic rows on the server; cap collection lengths and validate each nested item."
+    ],
+    "labId": "lab.react.forms-query-dynamic-field-arrays",
+    "rubric": [
+      "Preserve field-array identity with fields[].id, controlled append/remove, and bounded dynamic inputs.",
+      "Type unique values in three rows; remove the middle row. The remaining values must match their original logical items. Adding past eight rows must be disabled.",
+      "I can explain why client validation is not server authorization."
+    ],
+    "sources": [
+      {
+        "label": "Primary official reference",
+        "url": "https://react-hook-form.com/docs/usefieldarray"
+      },
+      {
+        "label": "Supporting official reference",
+        "url": "https://react-hook-form.com/docs/useform/register"
+      }
+    ]
+  },
+  "targetPath": "src/content/lessons/09.02.04.meta.json",
+  "blockedOn": [
+    "Genuine root npm dependency lock",
+    "Real exercise acceptance and Chromium",
+    "Named human keyboard/assistive-technology review"
+  ],
+  "requiredVerifyScript": "npm run lab:forms-query-dynamic-field-arrays"
+}

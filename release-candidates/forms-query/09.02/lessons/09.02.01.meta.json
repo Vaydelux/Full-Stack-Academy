@@ -1,0 +1,52 @@
+{
+  "candidateFor": "09.02.01",
+  "publicationReady": false,
+  "publishedMetadata": {
+    "id": "09.02.01",
+    "title": "Controlled vs uncontrolled inputs",
+    "description": "Distinguish a React-controlled input from an uncontrolled field registered with React Hook Form, and keep a single source of truth. This guided lab analyzes and repairs a real React Hook Form state or submission failure.",
+    "trackId": "09",
+    "moduleId": "09.02",
+    "level": "Intermediate",
+    "estimatedMinutes": 55,
+    "status": "authored",
+    "reviewedAt": null,
+    "stack": {
+      "react": "19",
+      "typescript": "5",
+      "zod": "4",
+      "reactHookForm": "7"
+    },
+    "prerequisites": [
+      "09.01.08"
+    ],
+    "objectives": [
+      "Distinguish a React-controlled input from an uncontrolled field registered with React Hook Form, and keep a single source of truth.",
+      "Type `Practice HTTP` using the keyboard and submit; the output must reflect the text. Submitting an empty or two-character title must not update the output.",
+      "The browser must validate for usability, but the HTTP server still checks the 3–100 character title and allowed priorities."
+    ],
+    "labId": "lab.react.forms-query-controlled-uncontrolled",
+    "rubric": [
+      "Distinguish a React-controlled input from an uncontrolled field registered with React Hook Form, and keep a single source of truth.",
+      "Type `Practice HTTP` using the keyboard and submit; the output must reflect the text. Submitting an empty or two-character title must not update the output.",
+      "I can explain why client validation is not server authorization."
+    ],
+    "sources": [
+      {
+        "label": "Primary official reference",
+        "url": "https://react-hook-form.com/get-started"
+      },
+      {
+        "label": "Supporting official reference",
+        "url": "https://react-hook-form.com/docs/useform/register"
+      }
+    ]
+  },
+  "targetPath": "src/content/lessons/09.02.01.meta.json",
+  "blockedOn": [
+    "Genuine root npm dependency lock",
+    "Real exercise acceptance and Chromium",
+    "Named human keyboard/assistive-technology review"
+  ],
+  "requiredVerifyScript": "npm run lab:forms-query-controlled-uncontrolled"
+}
