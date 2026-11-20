@@ -55,3 +55,5 @@ No execution or approval is claimed for this environment. The `--apply` command 
 5. Only after the module gate is green, copy candidate MDX/metadata/labs to `src/content/lessons/` and `labs/`, provide an actual reviewedAt and verified nested runtime lock, and atomically update both published registries and checkpoint (target **346/889**, 43 complete modules). Reconcile staged/draft preview logic to avoid duplicate routes. Re-run all release checks after making this promotion.
 
 **Current published snapshot: 338/889, 42 complete modules.** Eight RHF release candidates are structurally assembled, which is genuine engineering progress but **not equivalent to publishing**. The remaining 09.03 TanStack Query lessons are still staged (not candidate-promoted) and must follow the same gated eight-topic process.
+
+**After promotion:** The read-only `--plan` mode reports the module as already published, while `--apply` refuses to reapply. The source-readiness audits support retaining original red/green draft fixtures without double-counting their lesson IDs. Published links replace draft links on the academy project page.

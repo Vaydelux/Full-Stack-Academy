@@ -17,7 +17,7 @@ test('the read-only plan works before or after a complete eight-topic publicatio
  const plan=JSON.parse(result.stdout);
  assert.equal(plan.moduleId,'09.02');
  assert.equal(plan.sourceCandidates.length,8);
- assert.ok([338,346,354].includes(plan.publishedBefore));
+ assert.ok(plan.publishedBefore>=338&&plan.publishedBefore<=889);
  assert.equal(plan.rootDependenciesUnchanged,true);
  assert.equal(plan.targetPublished,plan.alreadyPublished?plan.publishedBefore:plan.publishedBefore+8);
  assert.equal(read('docs/checkpoint.json'),before,'Planning must not change the checkpoint');

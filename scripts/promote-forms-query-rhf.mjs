@@ -165,7 +165,7 @@ const mode=process.argv[2]??'--plan';
 if(process.argv.length>3||!['--plan','--apply'].includes(mode))throw new Error('Usage: npm run promote:forms-query:rhf -- --plan|--apply');
 const plan=sourcePlan();
 if(mode==='--plan'){
- console.log(JSON.stringify({...plan,status:'unpublished; no files changed'},null,2));
+ console.log(JSON.stringify({...plan,status:plan.alreadyPublished?'already published; no files changed':'unpublished; no files changed'},null,2));
 }else{
  if(plan.alreadyPublished)throw new Error('RHF 09.02 is already published; apply cannot overwrite it');
  if(Number(process.versions.node.split('.')[0])!==24)throw new Error('Promotion requires Node.js 24');
