@@ -45,9 +45,23 @@ No learner article's TSX code fences, instructor code, red starter, quiz questio
 
 - Reviewed all **16** draft MDX files on the feature branch: top-level imports only the two existing trusted lesson UI modules; exact canonical quiz ID exists; no `<LabGate>`, embedded `<script>`, `<iframe>`, or detected dangerous DOM injection.
 - Verified 16 explicit MDX registry imports, all sixteen map entries, no presence of those IDs in the published registries, whitelist routing, noindex metadata, and client preview context protection.
-- New `tests/forms-query-draft-preview.test.mjs` contains **nine** Node source integrity cases; registered with `npm run test:forms-query-draft-preview`, root `verify:offline`, and Forms/Query source qualification.
+- New `tests/forms-query-draft-preview.test.mjs` contains **ten** Node source integrity cases; registered with `npm run test:forms-query-draft-preview`, root `verify:offline`, and Forms/Query source qualification.
 - The 16 MDX content checks and registry/route/progress assertions were evaluated directly against connected GitHub file contents and passed. The exact new **Node test command was not run on a complete checkout**, nor was a Next production build, browser render, keyboard/screen-reader audit or deploy.
 - No root/nested package dependency changes; no GitHub Actions or Vercel checks.
+
+## New real browser acceptance gate (authored, not executed here)
+
+This milestone additionally introduces `scripts/forms-query-draft-preview-smoke.mjs` and a targeted Playwright runner. The existing production academy smoke now invokes it automatically, so `npm run qualify:forms-query:full` checks the preview pages when run in a compatible local environment.
+
+```bash
+# Requires installed root Next dependencies, a successful local production
+# build, and ACADEMY_BROWSER_ROOT with the isolated local Playwright package.
+npm run qualify:forms-query:preview-browser
+```
+
+This gate checks all **16** preview URLs and project links, HTTP 200, noindex metadata, the expected lesson headings, responsive 320/768px overflow, previous/next links, invalid IDs returning HTTP 404, and safe quiz persistence. It submits an actual correct draft quiz and checks the browser's `fullstack-academy-v1` storage does **not** record credit, including after reload. It then answers a published 09.04.01 knowledge check and asserts the **published** lesson still gets saved.
+
+The new source contract has **ten** Node test cases (previously nine), including assertions that the Playwright runner is registered. **Neither the ten Node cases nor the new Playwright gate has executed in this environment.** The root Node24/Next build and actual assistive-technology review remain mandatory.
 
 ## Next qualification / publication work
 
