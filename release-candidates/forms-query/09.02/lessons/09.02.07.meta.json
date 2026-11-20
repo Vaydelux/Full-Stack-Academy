@@ -1,0 +1,52 @@
+{
+  "candidateFor": "09.02.07",
+  "publicationReady": false,
+  "publishedMetadata": {
+    "id": "09.02.07",
+    "title": "Server errors and focus",
+    "description": "Represent authoritative HTTP errors in accessible form feedback and restore focus to the first relevant input. This guided lab analyzes and repairs a real React Hook Form state or submission failure.",
+    "trackId": "09",
+    "moduleId": "09.02",
+    "level": "Intermediate",
+    "estimatedMinutes": 55,
+    "status": "authored",
+    "reviewedAt": null,
+    "stack": {
+      "react": "19",
+      "typescript": "5",
+      "zod": "4",
+      "reactHookForm": "7"
+    },
+    "prerequisites": [
+      "09.02.06"
+    ],
+    "objectives": [
+      "Represent authoritative HTTP errors in accessible form feedback and restore focus to the first relevant input.",
+      "Mock 422 then 503. The 422 path must set title error and focus; 503 must set root.server without claiming success.",
+      "Never print untrusted server error bodies as HTML; use trusted generic descriptions and text nodes for any constrained message."
+    ],
+    "labId": "lab.react.forms-query-server-error-focus",
+    "rubric": [
+      "Represent authoritative HTTP errors in accessible form feedback and restore focus to the first relevant input.",
+      "Mock 422 then 503. The 422 path must set title error and focus; 503 must set root.server without claiming success.",
+      "I can explain why client validation is not server authorization."
+    ],
+    "sources": [
+      {
+        "label": "Primary official reference",
+        "url": "https://react-hook-form.com/docs/useform/seterror"
+      },
+      {
+        "label": "Supporting official reference",
+        "url": "https://react-hook-form.com/docs/useform/setfocus"
+      }
+    ]
+  },
+  "targetPath": "src/content/lessons/09.02.07.meta.json",
+  "blockedOn": [
+    "Genuine root npm dependency lock",
+    "Real exercise acceptance and Chromium",
+    "Named human keyboard/assistive-technology review"
+  ],
+  "requiredVerifyScript": "npm run lab:forms-query-server-error-focus"
+}

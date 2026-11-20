@@ -1,0 +1,117 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Find and remove duplicated form state, stale previews, and uncontrolled-to-controlled mismatches.","Type, reset and programmatically update the field; preview and submitted payload must be consistent, with no independent useState shadow.","Treat displayed form previews as user content; React text interpolation escapes text, while innerHTML would introduce an XSS risk."]} />
+
+## The problem we're solving
+
+A title preview reads a separate useState variable, while the submit handler reads React Hook Form's registered field. Typing changes one value and submitting sends another.
+
+**What breaks in the learner starter:** Separate useState preview and RHF input values drift after reset or programmatic update.
+
+## Build the mental model
+
+React Hook Form owns registered values. useWatch observes form state without introducing another writable duplicate source.
+
+**Predict before coding:** Typing must update both preview and submitted payload from the same registered field value. Reset should clear both.
+
+**Scope:** This staged article uses genuine React Hook Form v7 interfaces and React 19 patterns. Earlier committed notes report locked local Chrome/TypeScript qualification of the starter and instructor exercises on November 20, 2026; those checks have not been rerun for this candidate. Publication and human accessibility review remain outstanding. The companion Node loopback Task API is educational, unauthenticated and in-memory.
+
+## Prerequisites and preflight
+
+Read the preceding canonical module lessons and `drafts/forms-query/README.md`. The staged exercise is in `drafts/forms-query/labs/form-state-bug-hunt/`. Install and lock real compatible npm packages *before* promoting this draft to the production academy. Do not copy the starter to the published lab registry until its negative test is observable.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the red starter" file="drafts/forms-query/labs/form-state-bug-hunt/starter.tsx" expected="Separate useState preview and RHF input values drift after reset or programmatic update.">
+
+```tsx
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+export default function PreviewForm(){
+ const [preview,setPreview]=useState('Saved title');
+ const {register,handleSubmit}=useForm<{title:string}>({defaultValues:{title:''}});
+ return <form onSubmit={handleSubmit(console.log)}>
+  <label>Title<input {...register('title')}/></label>
+  <p>Preview: {preview}</p><button onClick={()=>setPreview('Changed')}>Change preview</button>
+  <button type="submit">Save</button>
+ </form>;
+}
+```
+
+**Observe:** A title preview reads a separate useState variable, while the submit handler reads React Hook Form's registered field. Typing changes one value and submitting sends another.
+
+</LessonStep>
+
+<LessonStep number={2} title="Apply the instructor repair" file="drafts/forms-query/labs/form-state-bug-hunt/solution.tsx" expected="Typing must update both preview and submitted payload from the same registered field value. Reset should clear both.">
+
+```tsx
+import { useForm, useWatch } from 'react-hook-form';
+export default function PreviewForm(){
+ const {register,handleSubmit,control,reset,setValue}=useForm<{title:string}>({defaultValues:{title:''}});
+ const preview=useWatch({control,name:'title',defaultValue:''});
+ return <form onSubmit={handleSubmit(console.log)}>
+  <label htmlFor="preview-title">Title</label><input id="preview-title" {...register('title',{required:true})}/>
+  <p aria-live="polite">Preview: {preview}</p>
+  <button type="button" onClick={()=>setValue('title','Suggested title',{shouldDirty:true})}>Use suggested title</button>
+  <button type="button" onClick={()=>reset({title:''})}>Reset</button>
+  <button type="submit">Save</button>
+ </form>;
+}
+```
+
+**Why:** React Hook Form owns registered values. useWatch observes form state without introducing another writable duplicate source.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify behavior at the real boundary" file="drafts/forms-query/labs/form-state-bug-hunt/lab.json" expected="Type, reset and programmatically update the field; preview and submitted payload must be consistent, with no independent useState shadow.">
+
+**Acceptance scenario:** Type, reset and programmatically update the field; preview and submitted payload must be consistent, with no independent useState shadow.
+
+**Debug the failure:** reproduce the bad behavior in the starter, make the smallest correction, then repeat the positive case and a genuinely failing negative case. This must be automated using real RHF/React packages and a DOM harness before the lesson is published.
+
+**Trust boundary:** Treat displayed form previews as user content; React text interpolation escapes text, while innerHTML would introduce an XSS risk.
+
+</LessonStep>
+
+<Misconception claim="Separate useState preview and RHF input values drift after reset or programmatic update." correction="React Hook Form owns registered values. useWatch observes form state without introducing another writable duplicate source." />
+
+<KnowledgeCheck question="Which repair best addresses bug hunt mismatched form state?" choices={["Always trust the browser to enforce security.","Use one authoritative form state and verify the tested behavior.","Ignore non-200 HTTP responses if fetch resolved.","Treat TypeScript types as runtime authorization."]} correctIndex={1} explanation="React Hook Form owns registered values. useWatch observes form state without introducing another writable duplicate source." misconception="Separate useState preview and RHF input values drift after reset or programmatic update." lessonId="09.02.08" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+1. **Reproduce:** Separate useState preview and RHF input values drift after reset or programmatic update.
+2. **Diagnose:** Locate who owns the current value, where it is transformed, and which effect or async boundary can invalidate assumptions.
+3. **Repair:** Find and remove duplicated form state, stale previews, and uncontrolled-to-controlled mismatches.
+4. **Regression:** Type, reset and programmatically update the field; preview and submitted payload must be consistent, with no independent useState shadow.
+5. **Operational boundary:** Treat displayed form previews as user content; React text interpolation escapes text, while innerHTML would introduce an XSS risk.
+
+## Production decision guide: derive previews from the form
+
+A preview is a view of the current title, not an independent source of editable state. When the registered RHF input owns the title, use `useWatch` (or an appropriate `watch` subscription) to render it, and `setValue` to apply a suggestion to that same field. An extra `useState` copy can drift after reset, programmatic updates or rerenders.
+
+| Action | Single source of truth | Typical bug |
+| --- | --- | --- |
+| Type title | Registered field value | Preview uses stale component state |
+| Apply suggestion | One `setValue` update | Submission sends older title |
+| Reset form | RHF default baseline | Shadow preview remains |
+| Submit | `handleSubmit` data | Confirmation differs from sent value |
+
+**Independent exercise:** Type a title, activate the suggested title, submit, then reset. After each action, record expected input and preview values. Explicitly distinguish the current draft from the last submitted result; these values can legitimately have different lifetimes.
+
+**Security boundary:** User-provided preview text belongs in React text interpolation, not HTML injection. Unified state fixes consistency bugs; it does not establish that a server accepted a record. Revalidate submitted values at the HTTP boundary.
+
+## Guided local lab
+
+Once the final candidate passes real browser/library and accessibility review, use the registered `labs/forms-query-form-state-bug-hunt/` exercise with `npm run lab:forms-query-form-state-bug-hunt`. Its starter must fail a meaningful behavior assertion, and the instructor solution must pass. This candidate is **not published** until release gates complete.
+
+<LabGate lessonId="09.02.08" labId="lab.react.forms-query-form-state-bug-hunt" commands={["npm run lab:forms-query-form-state-bug-hunt","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+What did the learner believe to be the source of truth before the repair? What user-visible state would diverge under failure, cancellation or a stale server response?
+
+## Official references
+
+- [Primary official reference](https://react-hook-form.com/docs/useform/formstate)
+- [Supporting official reference](https://react-hook-form.com/docs/usewatch)
