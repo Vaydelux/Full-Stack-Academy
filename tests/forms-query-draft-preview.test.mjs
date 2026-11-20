@@ -87,3 +87,24 @@ test('draft reading flow provides visible source and previous/next navigation',(
  assert.match(page,/Previous draft/);
  assert.match(page,/Next draft/);
 });
+
+
+test('real browser smoke exercises all previews and verifies actual persisted quiz boundaries',()=>{
+ const smoke=read('scripts/forms-query-draft-preview-smoke.mjs');
+ const full=read('scripts/browser-smoke.mjs');
+ const launch=read('scripts/verify-academy-browser.mjs');
+ const runner=read('scripts/forms-query-draft-preview-browser-runner.mjs');
+ const pkg=JSON.parse(read('package.json'));
+ assert.match(smoke,/for\(const \[index,topic\] of drafts\.entries\(\)\)/);
+ assert.match(smoke,/meta\[name="robots"\]\[content\*="noindex"\]/);
+ assert.match(smoke,/await persistedQuiz\(page,first\)/);
+ assert.match(smoke,/await persistedQuiz\(page,published\)/);
+ assert.match(smoke,/await answerQuiz\(page,first/);
+ assert.match(smoke,/await answerQuiz\(page,published/);
+ assert.match(smoke,/route\('09\.03\.99'\)/);
+ assert.match(full,/await verifyFormsQueryDraftPreviews\(\{page,base\}\)/);
+ assert.match(launch,/--draft-preview/);
+ assert.match(runner,/await verifyFormsQueryDraftPreviews\(\{page,base\}\)/);
+ assert.equal(pkg.scripts['qualify:forms-query:preview-browser'],
+  'node scripts/verify-academy-browser.mjs --draft-preview');
+});
