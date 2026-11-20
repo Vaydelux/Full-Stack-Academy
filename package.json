@@ -432,7 +432,8 @@
     "test:forms-query-query-release-article": "node --test tests/forms-query-query-release-article.test.mjs",
     "promote:forms-query:query": "node scripts/promote-forms-query-query.mjs",
     "test:forms-query-query-promotion": "node --test tests/forms-query-query-promotion.test.mjs",
-    "test:forms-query-projection-integrity": "node --test tests/forms-query-projection-integrity.test.mjs"
+    "test:forms-query-projection-integrity": "node --test tests/forms-query-projection-integrity.test.mjs",
+    "test:forms-query-p1-report": "node --test tests/forms-query-p1-report.test.mjs"
   },
   "dependencies": {
     "clsx": "^2.1.1",

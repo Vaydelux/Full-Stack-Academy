@@ -26,6 +26,7 @@ const steps = [
   'test:forms-query-rhf-editorial',
   'test:forms-query-draft-preview',
   'test:forms-query-p1-content',
+  'test:forms-query-p1-report',
   'test:forms-query-rhf-browser-gate',
   'test:forms-query-query-browser-gate',
   'test:forms-query-rhf-candidates',
