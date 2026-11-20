@@ -10,8 +10,8 @@
   },
   "development": {
     "branch": "main",
-    "state": "native-forms-query-recovery-source-checked",
-    "note": "After merged PR #32, native browser form now blocks new POST while an earlier outcome is unknown, preserves same idempotency key for network/408/429/5xx replay, rejects terminal 4xx retry, supports explicit duplicate-risk discard, serializes create/PATCH/DELETE, separates confirmed POST from GET refresh failure. Source tests: 9/9 exact committed native/server/client event cases passed in isolated simulated-DOM/mock HTTP harness, CDP browser gate expanded to 15 checks; native/client/browser JS and fault-injection source syntax checked. No actual latest Node socket or Chromium UI execution on a full checkout, no real npm/Next/React package qualification. 338 unique published IDs, 337 MDX/labs, 42 modules unchanged; 16 RHF/Query drafts staged. No GitHub Actions/Vercel."
+    "state": "forms-query-source-verified-real-http-chrome-policy-blocked",
+    "note": "Latest partial local checkout reconstructed byte-for-byte from GitHub blob sources. Node22.16 test run: 22 HTTP, 29 workflow, 20 TypeScript client, 9 native-DOM events over real sockets, 12 policy, 10 new browser-navigation diagnostic = 102/102 actual Node tests passed, 0 fail/skip. Chromium144 CDP started but managed organization policy blocked http://127.0.0.1, resulting in chrome-error://chromewebdata/ although Node health/HTML returned 200. New fail-fast classifier reports policy block and does not bypass it. No actual Chrome UI, root Node24/npm Next, nested RHF/Query installation/build, or 16 staged lesson runtime qualification. Published source snapshot unchanged 338 unique IDs/337 MDX+labs/42 completed modules. No GitHub Actions or Vercel."
   },
   "snapshot": {
     "tracks": 28,
@@ -73,6 +73,6 @@
     "devHighFindings": 14,
     "exceptionExpires": "2026-12-02"
   },
-  "nextMilestone": "qualify-latest-native-nine-node-socket-and-fifteen-chromium-ui-then-publish-rhf-query",
-  "status": "native-forms-query-idempotency-and-cross-mutation-source-hardened-real-socket-browser-pending"
+  "nextMilestone": "qualify-react-npm-node24-next-and-approved-chromium-then-promote-09.02-09.03",
+  "status": "forms-query-102-real-node-tests-passed-browser-policy-blocked-react-gates-pending"
 }
