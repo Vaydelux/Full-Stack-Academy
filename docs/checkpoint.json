@@ -10,8 +10,8 @@
   },
   "development": {
     "branch": "feat/p1-rhf-eight-lesson-depth-20261120",
-    "state": "p1-rhf-rehearsal-source-syntax-and-accessibility-provenance",
-    "note": "P1 PR #38 adds a non-mutating 50-file publication rehearsal and a fail-fast `node --check` gate across 101 scripts, tests and candidate lab files; a discovered invalid parentheses in the RHF audit CLI was fixed. Eight candidate metadata and lab contracts passed source inspection. Accessibility approval must now include SHA-256 of the exact reviewed RHF content, test sources and UI and cannot reuse stale evidence. No full Node24/npm/Chromium or human a11y review has executed in this environment. Published remains 338/889."
+    "state": "p1-rhf-atomic-promotion-integrity-hardening-with-sha256-regression",
+    "note": "Continued P1 PR #38: extracted a stable SHA-256 review fingerprint used by both source-readiness and the guarded promoter; excluded generated live registries so review remains valid during the atomic transition; added in-memory mutation tests proving lesson/instructor edits invalidate the hash. The apply path now checks SHA and clean Git tree again after long Node24/npm/browser preflight and checks reviewed source after publication. New checks are authored and 6 changed JS modules parse in V8; full Node24/npm/Chromium/browser and named human accessibility still unexecuted. Live snapshot 338/889, 42 complete modules."
   },
   "snapshot": {
     "tracks": 28,
@@ -73,6 +73,6 @@
     "devHighFindings": 14,
     "exceptionExpires": "2026-12-02"
   },
-  "nextMilestone": "run Node24 source/real Chromium gates; conduct real keyboard/screen-reader/200%-zoom audit matching --plan SHA-256; run --apply and validate 346 published",
+  "nextMilestone": "Run real Node24/npm/browser/Next source and publication simulations; complete hash-bound keyboard, screen-reader and zoom review; perform guarded 09.02 --apply then verify and commit 346/889.",
   "status": "p1-rhf-eight-release-candidate-bundles-structurally-complete-not-published"
 }

@@ -62,3 +62,10 @@ test('human evidence and the source-readiness audit use the same immutable RHF f
  assert.doesNotMatch(helper,/src\/content\/lesson-registry\.tsx|src\/lib\/academy\/published\.ts/);
  assert.match(helper,/src\/app\/learn\/projects\/forms-query\/page\.tsx/);
 });
+
+test('the apply path rechecks fingerprint and clean worktree after long qualification',()=>{
+ assert.match(program,/assert\.equal\(rhfReviewFingerprint\(\),reviewer\.sourceSha256/);
+ assert.match(program,/Preflight modified the Git worktree/);
+ assert.match(program,/Reviewed RHF source changed during qualification/);
+ assert.match(program,/Reviewed lesson source drifted during publication/);
+});

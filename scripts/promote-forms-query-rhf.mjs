@@ -234,6 +234,15 @@ if(mode==='--plan'){
  run('npm',['ci','--prefix','examples/forms-query-vertical/react-client']);
  run('npm',['run','qualify:forms-query:full']);
  run('npm',['run','qualify:forms-query:rhf-browser'],420_000);
+ // The lengthy checks may change files (including review-sensitive sources).
+ // Never publish against a stale review or a modified/untracked release input.
+ assert.equal(rhfReviewFingerprint(),reviewer.sourceSha256,
+  'Reviewed RHF source changed during qualification: repeat accessibility review');
+ if(capture('git',['status','--porcelain'])){
+  throw new Error('Preflight modified the Git worktree; inspect changes before publication');
+ }
  const writes=preparedWrites(reviewer.date);
  applyWrites(writes);
+ assert.equal(rhfReviewFingerprint(),reviewer.sourceSha256,
+  'Reviewed lesson source drifted during publication; do not commit the result');
 }
