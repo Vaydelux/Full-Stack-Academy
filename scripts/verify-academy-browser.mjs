@@ -20,7 +20,9 @@ try {
   app = require('next')({ dev: false, dir: root, hostname, port });
   await app.prepare();
   server.on('request', app.getRequestHandler());
-  const smokeScript = fileURLToPath(new URL('./browser-smoke.mjs', import.meta.url));
+  const draftOnly = process.argv.length === 3 && process.argv[2] === '--draft-preview';
+  if (process.argv.length > (draftOnly ? 3 : 2)) throw new Error('Usage: node scripts/verify-academy-browser.mjs [--draft-preview]');
+  const smokeScript = fileURLToPath(new URL(draftOnly ? './forms-query-draft-preview-browser-runner.mjs' : './browser-smoke.mjs', import.meta.url));
   await new Promise((resolve, reject) => {
     const smoke = spawn(process.execPath, [smokeScript], {
       cwd: root,
