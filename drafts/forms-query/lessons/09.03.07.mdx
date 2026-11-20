@@ -15,7 +15,7 @@ TanStack Query supplies signal to queryFn. Pass it to fetch, throw for non-2xx H
 
 **Predict before coding:** Canceling a stale query should not cache a late response; HTTP 422 must not be retried, while an intermittent 503 can be retried a bounded number of times.
 
-**Version and deployment scope:** TanStack Query v5, React 19, TypeScript 5. The Task API is a locally bound, in-memory, unauthenticated fixture. No compatible npm dependency lock or browser qualification has been completed, so this draft cannot be marked published.
+**Version and deployment scope:** TanStack Query v5, React 19, TypeScript 5. The Task API is a locally bound, in-memory, unauthenticated fixture. The nested React npm lockfile and local Chrome/SSR tests were reported as passing on November 20, 2026. Publication, canonical academy lab registration and human accessibility review remain separate outstanding gates.
 
 ## Prerequisites and preflight
 
