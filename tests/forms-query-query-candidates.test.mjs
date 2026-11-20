@@ -32,3 +32,14 @@ test('candidate status flags distinguish structural --check from the intentional
  const strict=spawnSync(process.execPath,['scripts/verify-forms-query-query-candidates.mjs','--strict'],{cwd:root,encoding:'utf8'});
  assert.equal(strict.status,1);
 });
+
+test('each candidate browser wrapper resolves the real repo and compares exact compiled lab bytes',()=>{
+ for(const lesson of report.records){
+  const code=read('release-candidates/forms-query/09.03/labs/forms-query-'+lesson.labSlug+'/solution.test.mjs');
+  assert.match(code,/while\(root!==path\.dirname\(root\)/);
+  assert.match(code,/fs\.readFileSync\(path\.join\(here,variant,'solution\.tsx'\)/);
+  assert.match(code,/fs\.readFileSync\(path\.join\(sourceDir,variant\+'\.tsx'\)/);
+  assert.match(code,/publicationGranted/);
+  if(lesson.labSlug==='ssr-hydration')assert.match(code,/SSR support file drift/);
+ }
+});
