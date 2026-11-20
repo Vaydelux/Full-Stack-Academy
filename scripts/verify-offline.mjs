@@ -3,6 +3,7 @@
 import { spawnSync } from 'node:child_process';
 
 const steps = [
+  'test:js-syntax',
   'lint',
   'typecheck',
   'test',

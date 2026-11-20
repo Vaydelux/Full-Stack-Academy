@@ -61,3 +61,7 @@ No execution or approval is claimed for this environment. The `--apply` command 
 ### Pre-release source rehearsal
 
 The release tool now also supports `npm run promote:forms-query:rhf -- --simulate`. This mode calls the **actual eight-lesson generator** in memory, verifies the strict published metadata/lab-contract fields, all eight MDX articles and both generated registries, and reports 50 expected writes **without changing files**. It uses an explicitly fictional schema date `2000-01-01` only in memory; that is not reviewer evidence or publication approval. The normal `--apply` still requires genuine real-world accessibility evidence and Node24/Chromium acceptance.
+
+### Fail-fast JavaScript parse gate
+
+`npm run test:js-syntax` runs real `node --check` on the complete `scripts/` and `tests/` MJS sets plus all eight candidate browser-test entry points, with no package imports or browser execution. It is now the first step of `npm run verify:offline`. This prevents another malformed command-line conditional from surviving until late in the release suite. The current feature-branch source was checked separately using V8 syntax parsing after import stripping; 36/36 changed JS files parsed. **The complete repository Node check and browser runs remain unexecuted here.**
