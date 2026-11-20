@@ -87,6 +87,12 @@ test('preview publication boundary remains isolated from the live lesson registr
   fs.existsSync(path.join(root,'labs',dir,'lab.json'))).length;
  assert.equal(checkpoint.authoredMdxLessons,liveMdx);
  assert.equal(checkpoint.labFixtures,labs);
- assert.equal(checkpoint.publishedLessons,338+
-  ids.filter(id=>live.includes('./lessons/'+id+'.mdx')).length);
+ const source=read('src/lib/academy/authored-content.ts');
+ const section=source.match(/export const AUTHORED_LESSON_IDS\\s*=\\s*\\[([^\\]]+)\\]/);
+ assert.ok(section,'Missing authored interactive lessons');
+ const interactive=[...section[1].matchAll(/'([^']+)'/g)].map(x=>x[1]);
+ const metadataIds=fs.readdirSync(path.join(root,'src/content/lessons'))
+  .filter(name=>name.endsWith('.meta.json'))
+  .map(name=>json('src/content/lessons/'+name).id);
+ assert.equal(checkpoint.publishedLessons,new Set([...interactive,...metadataIds]).size);
 });

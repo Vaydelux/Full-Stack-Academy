@@ -58,15 +58,38 @@ export function inspectRHFPublicationCandidates(){
       starter!==original[0]||solution!==original[1])fail(id,'Candidate source differs from qualified draft examples');
    if(stageLab.lessonId!==id||stageLab.readyToPublish!==false)fail(id,'Staged lab status changed unexpectedly');
    for(const url of staged.officialReferences)if(!article.includes(url))fail(id,'Candidate missing official reference');
-   if(fs.existsSync(file('src/content/lessons/'+id+'.meta.json'))||
-      fs.existsSync(file('labs/'+labName+'/lab.json'))||
-      registry.includes('./lessons/'+id+'.mdx')||
-      published.includes('lessons/'+id+'.meta.json'))fail(id,'Unqualified source has entered the live published registry');
+   const livePaths={
+    mdx:'src/content/lessons/'+id+'.mdx',
+    meta:'src/content/lessons/'+id+'.meta.json',
+    lab:'labs/'+labName+'/lab.json'
+   };
+   const installed=[
+    fs.existsSync(file(livePaths.mdx)),
+    fs.existsSync(file(livePaths.meta)),
+    fs.existsSync(file(livePaths.lab)),
+    registry.includes('./lessons/'+id+'.mdx'),
+    published.includes('lessons/'+id+'.meta.json')
+   ];
+   const publishedHere=installed.every(Boolean);
+   if(installed.some(Boolean)&&!publishedHere)fail(id,'Partial live registry or lab publication');
+   if(publishedHere){
+    const liveMeta=json(livePaths.meta),liveLab=json(livePaths.lab);
+    if(liveMeta.id!==id||liveMeta.labId!==labId||!liveMeta.reviewedAt||
+       liveLab.id!==labId||liveLab.lessonId!==id||
+       liveLab.tests!=='labs/'+labName+'/solution.test.mjs'){
+      fail(id,'Promoted metadata or lab no longer matches the candidate contract');
+    }
+   }
    records.push({id,title:topic.title,labSlug:slug,publishCandidatePresent:true,
-    runtimeTestAuthored:true,runtimeTestsExecuted:false,manualAccessibilityApproved:false,readyToPublish:false});
+    published:publishedHere,runtimeTestAuthored:true,
+    runtimeTestsExecuted:'not-established-by-this-source-audit',
+    manualAccessibilityApproved:'not-established-by-this-source-audit',
+    readyToPublish:false});
   }catch(error){fail(id,String(error.message??error));}
  }
- if(checkpoint.publishedLessons!==338)fail('checkpoint','Published baseline unexpectedly changed in source-only candidate');
+ const publishedRHF=records.filter(x=>x.published).length;
+ if(publishedRHF!==0&&publishedRHF!==8)fail('module','RHF publication must include exactly eight topics');
+ if(checkpoint.publishedLessons<338+publishedRHF)fail('checkpoint','Checkpoint is smaller than the live RHF publication');
  if(records.length!==8)fail('module','Exactly eight complete candidate packs required');
  const nested=json('examples/forms-query-vertical/react-client/package.json');
  const nestedLock=json('examples/forms-query-vertical/react-client/package-lock.json');
