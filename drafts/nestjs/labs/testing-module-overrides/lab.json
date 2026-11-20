@@ -1,0 +1,18 @@
+{
+  "id": "draft.nestjs.testing-module-overrides",
+  "lessonId": "11.04.05",
+  "title": "Testing modules and overrides",
+  "sourceStatus": "draft-unverified",
+  "runtime": "node-24-nestjs-12-typescript-6",
+  "starter": "drafts/nestjs/labs/testing-module-overrides/starter.ts",
+  "solution": "drafts/nestjs/labs/testing-module-overrides/solution.ts",
+  "expectedPositive": "The service resolves with an injected fake mailer and no network calls are made.",
+  "expectedNegative": "The testing module resolves the live mailer and would send real emails.",
+  "requiresRealNestTest": true,
+  "requiresRealHttpTest": true,
+  "readyToPublish": false,
+  "officialReferences": [
+    "https://docs.nestjs.com/",
+    "https://docs.nestjs.com/fundamentals/testing"
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "id": "draft.nestjs.websocket-gateways",
+  "lessonId": "11.04.03",
+  "title": "WebSocket gateways",
+  "sourceStatus": "draft-unverified",
+  "runtime": "node-24-nestjs-12-typescript-6",
+  "starter": "drafts/nestjs/labs/websocket-gateways/starter.ts",
+  "solution": "drafts/nestjs/labs/websocket-gateways/solution.ts",
+  "expectedPositive": "Two tenant sockets connect; each receives only events for its own authorized tenant.",
+  "expectedNegative": "The gateway broadcasts one tenant's task update to every connected client.",
+  "requiresRealNestTest": true,
+  "requiresRealHttpTest": true,
+  "readyToPublish": false,
+  "officialReferences": [
+    "https://docs.nestjs.com/",
+    "https://docs.nestjs.com/websockets/gateways"
+  ]
+}

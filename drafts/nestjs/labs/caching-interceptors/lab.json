@@ -1,0 +1,18 @@
+{
+  "id": "draft.nestjs.caching-interceptors",
+  "lessonId": "11.04.06",
+  "title": "Caching and interceptors",
+  "sourceStatus": "draft-unverified",
+  "runtime": "node-24-nestjs-12-typescript-6",
+  "starter": "drafts/nestjs/labs/caching-interceptors/starter.ts",
+  "solution": "drafts/nestjs/labs/caching-interceptors/solution.ts",
+  "expectedPositive": "With two verified tenants, cached records never cross the tenant boundary and expire after TTL.",
+  "expectedNegative": "A single path-only cache entry can return tenant A's response to tenant B.",
+  "requiresRealNestTest": true,
+  "requiresRealHttpTest": true,
+  "readyToPublish": false,
+  "officialReferences": [
+    "https://docs.nestjs.com/",
+    "https://docs.nestjs.com/techniques/caching"
+  ]
+}
