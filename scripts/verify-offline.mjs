@@ -23,6 +23,7 @@ const steps = [
   'test:forms-query-browser-navigation',
   'test:forms-query-promotion',
   'test:curriculum-readiness',
+  'test:publication-phases',
   'validate',
   'verify:content',
   'checkpoint:check',

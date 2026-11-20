@@ -10,8 +10,8 @@
   },
   "development": {
     "branch": "main",
-    "state": "16-forms-query-lessons-staged-release-readiness-audited",
-    "note": "Latest main ec518b41 merged Node24.22.3 Windows local qualification with 130 Forms/Query Node scenarios, locked Vite/React, 15 native Chrome checks, seven React workspace flows, all sixteen instructor positive/negative starter cases, isolated Next SSR hydration and full verify:offline/Next build (reported in committed latest handoff; not rerun by this runtime). New feature adds read-only 16-topic promotion readiness --check/--json/--strict, 9 regression tests and 4 Git artifact/lockfile checks, and removes three accidentally tracked Vite dist output files. Nested npm lock is retained. Manual named screen-reader/keyboard/200% zoom review, root production RHF/Query deps and canonical atomic publication remain pending. GitHub/npm DNS blocked current Node22 local checkout; new full gate not run. 338 published unique IDs, 337 MDX/labs and 42 completed modules unchanged; 16 staged."
+    "state": "seven-phase-curriculum-publication-program-source-audited",
+    "note": "Source-derived seven-phase plan covers all 551 remaining unique canonical lessons in 69 incomplete modules, with P1 Forms/Query 16 staged and 535 not staged. Existing 15.02.04 published interactive topic is preserved; phase targets 354/386/426/490/609/753/889. Authored 13 phase planner regression cases, all 13 evaluated successfully in a source-backed isolated JavaScript evaluator using actual canonical catalog, published metadata imports and authored IDs; not a full Node checkout/npm or Next build. Published snapshot stays 338 IDs/337 MDX+labs/42 modules. PR #36 new 16 MDX preview route remains unmerged pending full Node24 Next/Chrome qualification. No GitHub Actions/Vercel used."
   },
   "snapshot": {
     "tracks": 28,
@@ -73,6 +73,6 @@
     "devHighFindings": 14,
     "exceptionExpires": "2026-12-02"
   },
-  "nextMilestone": "complete-a11y-evidence-then-publish-09.02-and-09.03-as-separately-tested-8-lesson-modules",
-  "status": "forms-query-local-qualified-publication-atomicity-and-accessibility-preflight-pending"
+  "nextMilestone": "qualify-pr36-next-mdx-browser-then-publish-09.02-09.03-and-advance-phases",
+  "status": "curriculum-889-seven-phase-program-p1-forms-query-publication-unverified"
 }
