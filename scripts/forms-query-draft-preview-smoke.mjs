@@ -45,18 +45,38 @@ export async function verifyFormsQueryDraftPreviews({page,base}){
    assert.equal(await page.locator('a[href="'+target+'"]').count(),1,
     'Project roadmap must link to the correct live/draft route for '+topic.id);
   }
+  // Exercise both portrait and landscape for every draft. Fully sample seven
+  // representative viewport sizes on the opening topic of each module.
+  // No visual pass is implied until this actual Playwright smoke has run.
+  const responsiveViewports=[
+   {width:320,height:780},{width:375,height:812},{width:414,height:896},
+   {width:768,height:1024},{width:812,height:375},
+   {width:1024,height:768},{width:1440,height:900},
+  ];
+  let viewportChecks=0;
   for(const [index,topic] of drafts.entries()){
-   await page.setViewportSize({width:index%2===0?320:768,height:860});
-   const response=await page.goto(base+route(topic.id),{waitUntil:'domcontentloaded'});
-   assert.equal(response?.status(),200,'Draft route failed '+topic.id);
-   await page.getByRole('heading',{name:topic.title,level:1,exact:true}).waitFor();
-   await page.getByRole('article',{name:'Preview article '+topic.id}).waitFor();
-   assert.equal(await page.locator('meta[name="robots"][content*="noindex"]').count(),1,
-    'Unpublished preview must be noindex: '+topic.id);
-   await page.getByText('Draft preview, not an accredited or published lesson.',{exact:false}).first().waitFor();
-   await page.getByText('Draft preview: answers are for practice only and never save course completion.',{exact:true}).waitFor();
-   assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth),
-    'Horizontal document overflow at '+topic.id);
+   const sample=topic.id.endsWith('.01')?responsiveViewports:
+    index%2===0?[responsiveViewports[0],responsiveViewports[4]]:
+     [responsiveViewports[1],responsiveViewports[3]];
+   for(const viewport of sample){
+    await page.setViewportSize(viewport);
+    const response=await page.goto(base+route(topic.id),{waitUntil:'domcontentloaded'});
+    assert.equal(response?.status(),200,'Draft route failed '+topic.id+' at '+viewport.width+'x'+viewport.height);
+    await page.getByRole('heading',{name:topic.title,level:1,exact:true}).waitFor();
+    await page.getByRole('article',{name:'Preview article '+topic.id}).waitFor();
+    assert.equal(await page.locator('meta[name="robots"][content*="noindex"]').count(),1,
+     'Unpublished preview must be noindex: '+topic.id);
+    await page.getByText('Draft preview, not an accredited or published lesson.',{exact:false}).first().waitFor();
+    await page.getByText('Draft preview: answers are for practice only and never save course completion.',{exact:true}).waitFor();
+    const sizes=await page.evaluate(()=>({
+     viewport:window.innerWidth,
+     document:document.documentElement.scrollWidth,
+     body:document.body.scrollWidth,
+    }));
+    assert.ok(sizes.document<=sizes.viewport&&sizes.body<=sizes.viewport,
+     'Page overflow on '+topic.id+' at '+viewport.width+'x'+viewport.height+': '+JSON.stringify(sizes));
+    viewportChecks++;
+   }
    if(index<drafts.length-1)assert.equal(await page.locator('nav[aria-label="Draft lesson sequence"] a[href="'+route(drafts[index+1].id)+'"]').count(),1,'Missing next draft');
    if(index>0)assert.equal(await page.locator('nav[aria-label="Draft lesson sequence"] a[href="'+route(drafts[index-1].id)+'"]').count(),1,'Missing previous draft');
   }
@@ -84,7 +104,7 @@ export async function verifyFormsQueryDraftPreviews({page,base}){
 
   const invalid=await page.goto(base+route('09.03.99'),{waitUntil:'domcontentloaded'});
   assert.equal(invalid?.status(),404,'Unknown draft IDs should be 404');
-  console.log('Forms/Query preview browser gate passed: '+drafts.length+' noindex drafts, '+liveIds.size+' existing published metadata, navigation and quiz isolation');
+  console.log('Forms/Query preview browser gate passed: '+drafts.length+' noindex drafts, '+viewportChecks+' viewport/layout checks, '+liveIds.size+' existing published metadata, navigation and quiz isolation');
  }finally{
   if(originalViewport)await page.setViewportSize(originalViewport);
  }

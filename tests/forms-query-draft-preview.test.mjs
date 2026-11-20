@@ -119,3 +119,14 @@ test('real browser smoke exercises all previews and verifies actual persisted qu
  assert.equal(pkg.scripts['qualify:forms-query:preview-browser'],
   'node scripts/verify-academy-browser.mjs --draft-preview');
 });
+
+test('real preview acceptance includes portrait, landscape, tablet, desktop and document overflow checks',()=>{
+ const smoke=read('scripts/forms-query-draft-preview-smoke.mjs');
+ for(const [w,h] of [[320,780],[375,812],[414,896],[768,1024],[812,375],[1024,768],[1440,900]]){
+  assert.match(smoke,new RegExp('width:'+w+',height:'+h));
+ }
+ assert.match(smoke,/topic\.id\.endsWith\('\.01'\)\?responsiveViewports/);
+ assert.match(smoke,/sizes\.document<=sizes\.viewport&&sizes\.body<=sizes\.viewport/);
+ assert.match(smoke,/viewportChecks\+\+/);
+ assert.match(smoke,/No visual pass is implied/);
+});

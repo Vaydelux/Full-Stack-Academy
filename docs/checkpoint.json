@@ -10,8 +10,8 @@
   },
   "development": {
     "branch": "feat/p1-rhf-eight-lesson-depth-20261120",
-    "state": "p1-rhf-and-query-16-candidate-lesson-deep-release-preparation",
-    "note": "Large-scope P1 expansion: 16 prepared source-only lesson candidates across 09.02 RHF and 09.03 TanStack Query. Eight Query candidate bundles, 52 candidate files including 4 Next SSR support files, all red/green copies exactly match source (16 Git blob pairs). Source auditor, 8 isolated Query browser/SSR gate entries, SHA-bound named accessibility review, and 54-file guarded publication simulation have been committed. Real Next SSR fixture handles dynamic loopback port. Source qualification and syntax gate include both modules. Actual 8/8 Query published-copy transformations and eight metadata/lab schema pairs passed source-level checks; no real Node24/npm/Chromium or human review run. PR #38 draft, live 338/889."
+    "state": "p1-source-projection-integrity-plus-responsive-preview-gates",
+    "note": "Published remains 338/889. Both guarded RHF/Query promotions now fingerprint all 50/54 generated files and check exact on-disk bytes before and after postflight. Real isolated Node22 test execution passed 3/3 integrity cases; the full academy/Next/Chromium suite remains unexecuted. The draft preview Playwright smoke is extended to seven phone/tablet/desktop/landscape presets across the 16 staged lessons; those browser assertions are authored but have not been run in this environment."
   },
   "snapshot": {
     "tracks": 28,

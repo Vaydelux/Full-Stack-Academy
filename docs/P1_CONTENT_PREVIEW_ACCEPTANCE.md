@@ -45,3 +45,7 @@ An external Playwright installation and Chromium executable are required by the 
 ## PR overlap
 
 Original PR #36 proposed the preview independently against an older base and was unmergeable. PR #38 now contains the preview source as well as both topic guides; avoid merging both branches independently without verifying their overlap. Do not treat this consolidation as a release approval.
+
+### Expanded responsive preview regression (authored; no browser executed)
+
+The Playwright preview smoke now checks every unpublished lesson at two portrait/landscape-or-tablet sizes, and each module's opening lesson across seven widths and orientations: 320×780, 375×812, 414×896, 768×1024, 812×375 landscape, 1024×768 and 1440×900. For each visit it checks reachable routes, noindex metadata, visible lesson headings, preview-only progress messaging and both document/body scroll overflow. This adds automated layout coverage but cannot replace physical keyboard, 200% zoom or named screen-reader review.
