@@ -10,8 +10,8 @@
   },
   "development": {
     "branch": "feat/p1-rhf-eight-lesson-depth-20261120",
-    "state": "p1-rhf-and-query-sixteen-staged-eight-query-candidate-packs",
-    "note": "P1 PR #38 now has eight complete RHF source candidate packs and eight TanStack Query source candidate packs (09.03.01–08), including 09.03 SSR providers/task-list files and eight isolated real browser/SSR test entry points. Added Source-only Query parity audit with strict module status and P1 dashboard integration. Source packaging alone does not publish these lessons, run Chromium, or constitute human accessibility approval. Live 338/889."
+    "state": "p1-16-lesson-source-candidates-isolated-release-rehearsals",
+    "note": "Expanded P1 PR #38 across eight RHF 09.02 + eight TanStack Query 09.03 candidate lessons, with verified 16/16 Query TSX source blob parity; Query 09.03 includes 4 additional SSR hydration support files. Query isolated Chromium/SSR command, strict source audit, 54-file no-write rehearsal, real named human review SHA-256 and gated transactional publisher were authored. Fixed SSR fixture to retarget its server prefetch to ephemeral API port; direct Query candidate lab wrappers now locate project root and compare exact test bytes. Source qualifier and JS syntax gates now cover both modules; no actual full Node24/npm/Next/Chromium or real human screen-reader review yet. Published remains 338/889."
   },
   "snapshot": {
     "tracks": 28,
@@ -73,6 +73,6 @@
     "devHighFindings": 14,
     "exceptionExpires": "2026-12-02"
   },
-  "nextMilestone": "Run 09.02 Node24/Chromium/Next and human screen-reader gates, locally promote and commit 346, then qualify all eight 09.03 Query and SSR candidates for 354.",
+  "nextMilestone": "Run Node24 source/real-library/Next SSR/Chromium tests on exact PR branch, complete RHF accessibility evidence and promote 09.02 to 346; then review Query 09.03 accessibility and promote to 354, never skipping the prerequisite.",
   "status": "p1-rhf-eight-release-candidate-bundles-structurally-complete-not-published"
 }

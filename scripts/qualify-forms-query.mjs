@@ -36,6 +36,16 @@ const checks=[
  {name:'Draft lesson preview URLs, noindex and progress isolation',program:'node',args:['--test','tests/forms-query-draft-preview.test.mjs']},
  {name:'Eight RHF publication bundle source and lab test contracts',program:'node',args:['--test','tests/forms-query-rhf-candidates.test.mjs']},
  {name:'Sixteen individualized teaching guides and code source consistency',program:'node',args:['--test','tests/forms-query-p1-content.test.mjs']},
+ {name:'Source-only RHF release generator, reviewer fingerprint and exact published MDX projection',program:'node',
+  args:['--test','tests/forms-query-promotion-command.test.mjs',
+   'tests/forms-query-promotion-rehearsal.test.mjs',
+   'tests/forms-query-published-article.test.mjs',
+   'tests/forms-query-review-fingerprint.test.mjs']},
+ {name:'Eight Query candidate packs, Next SSR contracts, source hash, and read-only promotion rehearsal',program:'node',
+  args:['--test','tests/forms-query-query-candidates.test.mjs',
+   'tests/forms-query-query-browser-gate.test.mjs',
+   'tests/forms-query-query-release-article.test.mjs',
+   'tests/forms-query-query-promotion.test.mjs']},
 ];
 if(mode==='--full'){
  if(!fs.existsSync(path.join(root,'package-lock.json'))){
@@ -48,7 +58,7 @@ if(mode==='--full'){
  }
  checks.push(
   {name:'Root dependency reinstall',program:'npm',args:['ci']},
-  {name:'Entire academy offline quality gate including 16 staged TSX syntax scans',program:'npm',args:['run','verify:offline'],timeout:900_000},
+  {name:'Entire academy offline quality gate including 16 staged TSX syntax scans',program:'npm',args:['run','verify:offline'],timeout:2_700_000},
   {name:'Nested React dependency reinstall',program:'npm',args:['ci','--prefix',nested]},
   {name:'Nested RHF/TanStack React typecheck',program:'npm',args:['run','typecheck','--prefix',nested]},
   {name:'All staged lesson variants typechecked with installed libraries',program:'npm',args:['run','typecheck:staged','--prefix',nested]},

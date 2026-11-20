@@ -8,7 +8,8 @@ import {spawnSync} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
-const targets=['scripts','tests','release-candidates/forms-query/09.02/labs'];
+const targets=['scripts','tests','release-candidates/forms-query/09.02/labs',
+ 'release-candidates/forms-query/09.03/labs'];
 const files=[];
 function collect(relative){
  const absolute=path.join(root,relative);

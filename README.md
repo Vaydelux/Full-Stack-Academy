@@ -156,3 +156,18 @@ Eight browser-native tutorials with standalone HTML/JS starter/solution fixtures
 ## Accessibility Foundations (01.03) — release candidate
 
 Nine authored lessons and local starter/solution projects with accessible keyboard navigation, focus restoration, landmarks and status regions, W3C WCAG 2.2 principles, WCAG contrast ratio calculator, names and descriptions, original diagram alternatives plus accessible table, reduced-motion controls and a keyboard audit capstone. Node contract tests and Chromium keyboard/accessibility smoke added. These are educational checks and **not a formal WCAG 2.2 conformance audit**. Publication counts and production release are pending green CI, preview verification and merge.
+
+### P1 forms and remote-state publication — RHF / TanStack Query
+
+The academy has sixteen **unpublished source candidates** across React Hook Form (`09.02`) and TanStack Query (`09.03`), each with red/green TSX exercises. They are not counted as course completion until a full verified release. Published curriculum remains **338/889**.
+
+Review source readiness without producing any publication changes:
+
+```bash
+npm run test:js-syntax
+npm run qualify:forms-query:source
+npm run promote:forms-query:rhf -- --simulate
+npm run promote:forms-query:query -- --simulate
+```
+
+RHF must publish first. On a clean checkout with Node.js 24 and genuine Chromium/Next SSR execution, only `--apply` can publish, and it requires named, source-fingerprint-bound keyboard, screen-reader and 200% zoom evidence. The guarded publishers update local files and checkpoint, **not** GitHub branches, Vercel or production deployments. See `docs/P1_RHF_PROMOTION_CANDIDATE.md` and `docs/FORMS_QUERY_NEXT_MILESTONE.md`.
