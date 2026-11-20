@@ -37,10 +37,12 @@
     "requiresRealBrowserTest": true,
     "readyToPublish": false
   },
-  "testsImplemented": false,
+  "testsImplemented": true,
   "requirements": [
-    "Implement per-lab executable positive and intentionally failing starter assertions",
-    "Run the installed RHF/react-dom browser qualification on exact release commit",
-    "Record physical accessibility reviewer and 200 percent zoom test"
-  ]
+    "Run Node 24 with genuine nested React dependency lock",
+    "Execute real Chromium positive/negative assertions for this lab",
+    "Run full candidate Next build and published release smoke",
+    "Record actual keyboard, 200-percent zoom and named screen-reader evidence"
+  ],
+  "runtimeTestsExecuted": false
 }
