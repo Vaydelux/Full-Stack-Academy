@@ -19,9 +19,9 @@ test('all eight published RHF articles have live instructions without changing t
   assert.ok(published.includes('labs/forms-query-'+slug+'/'));
   assert.ok(published.includes('labId="lab.react.forms-query-'+slug+'"'));
   assert.deepEqual(fences(published),fences(candidate),id+' changed instructor/starter TSX');
-  assert.equal((published.match(/<LessonStep\\b/g)||[]).length,3);
-  assert.equal((published.match(/<KnowledgeCheck\\b/g)||[]).length,1);
-  assert.equal((published.match(/<LabGate\\b/g)||[]).length,1);
+  assert.equal((published.match(/<LessonStep\b/g)||[]).length,3);
+  assert.equal((published.match(/<KnowledgeCheck\b/g)||[]).length,1);
+  assert.equal((published.match(/<LabGate\b/g)||[]).length,1);
   assert.ok(candidate.includes('This candidate is **not published**'),id+' original draft was unexpectedly edited');
  }
 });
@@ -29,7 +29,7 @@ test('missing or duplicate release markers fail closed',()=>{
  const id='09.02.01',slug='controlled-uncontrolled';
  const candidate=read('release-candidates/forms-query/09.02/lessons/'+id+'.mdx');
  assert.throws(()=>renderPublishedRHFArticle(candidate.replace('**Scope:** This staged article','**Scope:** Removed marker'),{id,slug}),/release marker/);
- assert.throws(()=>renderPublishedRHFArticle(candidate+'\\n**Scope:** This staged article duplicate',{id,slug}),/release marker/);
+ assert.throws(()=>renderPublishedRHFArticle(candidate+'\n**Scope:** This staged article duplicate',{id,slug}),/release marker/);
  assert.throws(()=>renderPublishedRHFArticle(candidate,{id,slug:'../outside'}),/slug/);
 });
 test('screen-reader guidance remains applicable after release',()=>{
