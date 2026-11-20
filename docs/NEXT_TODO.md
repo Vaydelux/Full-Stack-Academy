@@ -13,7 +13,8 @@
 - [x] Make the Forms/Query project page link each staged topic to a readable academy page rather than only a raw GitHub MDX source, preserving the raw-source option.
 - [x] Add a scoped client-only `DraftLessonScope` around preview article content; the shared KnowledgeCheck renders quiz practice but **never calls markQuizPassed in draft preview**. Published lessons outside this scope still save locally as before.
 - [x] Update all 16 staged MDX articles to remove obsolete claims that no locked React dependencies/Chrome tests exist. Their code fences and test fixtures remain unchanged. The newer text acknowledges historical reported qualification but says that publication and human accessibility checks remain outstanding.
-- [x] Add `tests/forms-query-draft-preview.test.mjs` (9 authored Node cases), add the npm test command, integrate it into `verify:offline` and Forms/Query source qualification.
+- [x] Add `tests/forms-query-draft-preview.test.mjs` (10 authored Node cases), register the npm test, and integrate it into `verify:offline` and Forms/Query source qualification.
+- [x] Add `scripts/forms-query-draft-preview-smoke.mjs` real Playwright coverage of all 16 preview pages, responsive widths, robots metadata, links, 404, and draft-vs-published quiz persistence. Hook into academy production browser smoke and expose `npm run qualify:forms-query:preview-browser` as a targeted local gate.
 - [x] Direct GitHub-source review: all sixteen MDX files have the expected trusted imports, correct KnowledgeCheck lesson ID, no LabGate or embedded script/iframe, no stale qualification phrase. Static mapping/route/quiz-source assertions passed.
 - [ ] **Actual Node execution of the new test file and Next MDX production build** on a full installed checkout; this current runtime cannot resolve GitHub/npm DNS and cannot execute a fresh React/Next application.
 
