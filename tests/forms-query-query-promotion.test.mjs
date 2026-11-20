@@ -67,3 +67,9 @@ test('Query --apply refuses a missing RHF prerequisite before installing or writ
  assert.match(result.stderr,/RHF 09\.02 must be published before Query 09\.03/);
  assert.equal(read('docs/checkpoint.json'),before);
 });
+
+test('Query rollback restores partial writes when writeFileSync throws',()=>{
+ const attempt=program.indexOf('written.push(file);');
+ const write=program.indexOf('fs.writeFileSync(local(file),content);');
+ assert.ok(attempt>=0&&write>=0&&attempt<write,'Partially written Query files must be restored');
+});

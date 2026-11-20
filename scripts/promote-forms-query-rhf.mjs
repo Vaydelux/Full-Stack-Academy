@@ -188,8 +188,10 @@ function applyWrites(writes, expectedReviewedSha){
  try{
   for(const [file,content] of writes){
    fs.mkdirSync(path.dirname(local(file)),{recursive:true});
-   fs.writeFileSync(local(file),content);
+   // Record this path BEFORE attempting a write: an I/O failure can leave a
+   // truncated file that still must be removed/restored by the rollback.
    done.push(file);
+   fs.writeFileSync(local(file),content);
   }
   verifyProjectionOnDisk(writes,read);
   run('npm',['run','checkpoint:write'],30_000);

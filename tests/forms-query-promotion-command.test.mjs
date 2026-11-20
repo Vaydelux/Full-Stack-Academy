@@ -82,3 +82,9 @@ test('successful local promotion records qualified worktree, not deployed status
  const failureHandler=program.indexOf('}catch(error)',update);
  assert.ok(failureHandler>update,'Checkpoint update must remain inside rollback scope');
 });
+
+test('RHF rollback tracks the write before it can truncate a file',()=>{
+ const attempt=program.indexOf('done.push(file);');
+ const write=program.indexOf('fs.writeFileSync(local(file),content);');
+ assert.ok(attempt>=0&&write>=0&&attempt<write,'Partially written RHF files must be restored');
+});

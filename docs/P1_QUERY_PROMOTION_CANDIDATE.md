@@ -63,3 +63,5 @@ Next action: execute the source-only suite and 54-file simulation in a complete 
 ### Exact publication-file integrity
 
 Both RHF and Query release scripts now compute a deterministic SHA-256 over every generated relative file path and its UTF-8 bytes. Each source-only rehearsal prints `projectionSha256`, without granting browser or human review approval. In a real guarded `--apply`, the files are read back immediately after being written and again after all postpublication checks. Any mismatch or missing file rejects the release inside the existing rollback transaction. The isolated `test:forms-query-projection-integrity` suite exercises sorting, tampering, path traversal and missing-file detection.
+
+**I/O failure rollback:** Both guarded publishers now add each file to their restoration list *before* attempting `writeFileSync`, so a partial or truncated output from a failed write is restored on caught exceptions. This is exception-based rollback protection—not filesystem-power-loss atomicity or a substitute for Git review. The SHA-256 projection readback still checks all files before and after the full postflight.

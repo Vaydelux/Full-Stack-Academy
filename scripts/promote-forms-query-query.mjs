@@ -173,8 +173,9 @@ function applyTransaction(projection,reviewSha){
  try{
   for(const [file,content] of projection){
    fs.mkdirSync(path.dirname(local(file)),{recursive:true});
-   fs.writeFileSync(local(file),content);
+   // Include partial writes in the restoration set even if writeFileSync fails.
    written.push(file);
+   fs.writeFileSync(local(file),content);
   }
   verifyProjectionOnDisk(projection,read);
   exec('npm',['run','checkpoint:write'],30_000);
