@@ -24,13 +24,13 @@ Complete 11.04.02. Start with `drafts/nestjs/labs/websocket-gateways/starter.ts`
 <LessonStep number={1} title="Demonstrate the broken advanced boundary" file="drafts/nestjs/labs/websocket-gateways/starter.ts" expected="The gateway broadcasts one tenant's task update to every connected client.">
 
 ```ts
-import { SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
+import { MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import type { Server } from 'socket.io';
 @WebSocketGateway()
 export class TaskGateway {
   @WebSocketServer() server!: Server;
   @SubscribeMessage('task')
-  publish(body: { tenantId: string; title: string }) {
+  publish(@MessageBody() body: { tenantId: string; title: string }) {
     this.server.emit('task', body); // BUG: all tenants receive it
   }
 }
