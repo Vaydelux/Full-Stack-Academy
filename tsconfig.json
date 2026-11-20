@@ -38,6 +38,9 @@
   "exclude": [
     "node_modules",
     "prototype",
-    "preview-src"
+    "preview-src",
+    "drafts/forms-query",
+    "examples/forms-query-vertical/react-client",
+    "examples/forms-query-vertical/.ssr-qualification-*"
   ]
 }
