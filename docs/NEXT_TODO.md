@@ -1,3 +1,5 @@
+> **2026-11-20 P2 source progress:** A feature branch now contains **32 new NestJS 12 lesson drafts** (11.01–11.04) with 160 article/metadata/lab-source assets, plus eight authored-but-unexecuted real Nest test cases and a fail-closed source gate. Together with 16 P1 drafts, that is **48 staged, 503 not yet drafted, 338 published**. The P1 publication PR is #38; overlapping #36 was closed. This is authoring progress, not release certification. [P2 handoff](NESTJS_32_AUTHORING_CHECKPOINT.md).
+
 # Publication-first master priority — 2026-11-20
 
 Finish the **889 existing canonical topics**, one verified module at a time, **before expanding the academy**. New source-derived seven-phase plan and acceptance gates: `docs/ACADEMY_889_PUBLICATION_PROGRAM.md`.

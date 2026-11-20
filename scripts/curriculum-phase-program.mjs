@@ -103,10 +103,13 @@ export function readPublicationProgram(){
  const metaDir=path.join(root,'src/content/lessons');
  const mdxFiles=fs.readdirSync(metaDir).filter(name=>name.endsWith('.meta.json'));
  const mdx=mdxFiles.map(name=>json('src/content/lessons/'+name).id);
- const stagingDir=path.join(root,'drafts/forms-query/lessons');
- const staged=fs.existsSync(stagingDir)
-  ?fs.readdirSync(stagingDir).filter(name=>name.endsWith('.meta.json')).map(name=>json('drafts/forms-query/lessons/'+name).id)
-  :[];
+ const stagingPaths=['drafts/forms-query/lessons','drafts/nestjs/lessons'];
+ const staged=stagingPaths.flatMap(dir=>{
+  const stagingDir=path.join(root,dir);
+  return fs.existsSync(stagingDir)
+   ?fs.readdirSync(stagingDir).filter(name=>name.endsWith('.meta.json')).map(name=>json(dir+'/'+name).id)
+   :[];
+ });
  const report=buildPublicationProgram({curriculum,publishedIds:[...new Set([...interactive,...mdx])],stagedIds:staged});
  const checkpoint=json('docs/checkpoint.json').snapshot;
  assert.equal(report.baseline.topics,checkpoint.catalogTopics,'Canonical topic count drifts from checkpoint');

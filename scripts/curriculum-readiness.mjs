@@ -17,10 +17,13 @@ const interactive=[...idsSection[1].matchAll(/'([^']+)'/g)].map(x=>x[1]);
 const mdxFiles=fs.readdirSync(path.join(root,'src/content/lessons')).filter(name=>name.endsWith('.meta.json'));
 const mdx=mdxFiles.map(name=>JSON.parse(read('src/content/lessons/'+name)).id);
 const published=new Set([...interactive,...mdx]);
-const stagingRoot=path.join(root,'drafts/forms-query/lessons');
-const staged=fs.existsSync(stagingRoot)
- ? new Set(fs.readdirSync(stagingRoot).filter(n=>n.endsWith('.meta.json')).map(n=>JSON.parse(read('drafts/forms-query/lessons/'+n)).id))
- : new Set();
+const stagedRoots=['drafts/forms-query/lessons','drafts/nestjs/lessons'];
+const staged=new Set(stagedRoots.flatMap(dir=>{
+ const stagingRoot=path.join(root,dir);
+ return fs.existsSync(stagingRoot)
+  ?fs.readdirSync(stagingRoot).filter(n=>n.endsWith('.meta.json')).map(n=>JSON.parse(read(dir+'/'+n)).id)
+  : [];
+}));
 const modules=curriculum.modules.map(module=>{
  const topics=curriculum.lessons.filter(topic=>topic.moduleId===module.id);
  const actual=topics.filter(topic=>published.has(topic.id)).length;

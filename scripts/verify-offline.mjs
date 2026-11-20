@@ -24,6 +24,7 @@ const steps = [
   'test:forms-query-promotion',
   'test:curriculum-readiness',
   'test:publication-phases',
+  'test:nestjs-drafts',
   'validate',
   'verify:content',
   'checkpoint:check',

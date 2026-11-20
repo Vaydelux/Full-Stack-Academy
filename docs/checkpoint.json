@@ -9,9 +9,9 @@
     "productionUrl": "https://fullstack-academy-ecru.vercel.app/"
   },
   "development": {
-    "branch": "main",
-    "state": "seven-phase-curriculum-publication-program-source-audited",
-    "note": "Source-derived seven-phase plan covers all 551 remaining unique canonical lessons in 69 incomplete modules, with P1 Forms/Query 16 staged and 535 not staged. Existing 15.02.04 published interactive topic is preserved; phase targets 354/386/426/490/609/753/889. Authored 13 phase planner regression cases, all 13 evaluated successfully in a source-backed isolated JavaScript evaluator using actual canonical catalog, published metadata imports and authored IDs; not a full Node checkout/npm or Next build. Published snapshot stays 338 IDs/337 MDX+labs/42 modules. PR #36 new 16 MDX preview route remains unmerged pending full Node24 Next/Chrome qualification. No GitHub Actions/Vercel used."
+    "branch": "feat/p2-nestjs-32-authoring-20261120",
+    "state": "p2-nestjs-32-source-authored-runtime-blocked",
+    "note": "32 canonical NestJS 12 topics (11.01–11.04) have draft MDX, metadata and red/green source assets under drafts/nestjs, with source audit and eight actual Nest integration tests authored but not executed (no trusted npm lock). P1 16 Forms/Query drafts remain on main and PR #38 expands them. This candidate contains 48 staged source topics total; published snapshot remains 338/889 and 42 complete modules."
   },
   "snapshot": {
     "tracks": 28,
@@ -73,6 +73,6 @@
     "devHighFindings": 14,
     "exceptionExpires": "2026-12-02"
   },
-  "nextMilestone": "qualify-pr36-next-mdx-browser-then-publish-09.02-09.03-and-advance-phases",
-  "status": "curriculum-889-seven-phase-program-p1-forms-query-publication-unverified"
+  "nextMilestone": "qualify-nestjs-source-and-npm-lock-then-p1-runtime-gates-before-atomic-publication",
+  "status": "p2-nestjs-32-draft-source-ready-not-published"
 }
