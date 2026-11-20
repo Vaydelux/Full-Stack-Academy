@@ -6,6 +6,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {rhfReviewFingerprint} from './forms-query-review-fingerprint.mjs';
+import {queryReviewFingerprint} from './forms-query-query-review-fingerprint.mjs';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const file=p=>path.join(root,p);
 const exists=p=>fs.existsSync(file(p));
@@ -84,12 +85,10 @@ export function inspectFormsQueryPromotion(){
     typeof e.reviewer==='string'&&e.reviewer.trim().length>=3&&typeof e.screenReader==='string'&&e.screenReader.trim().length>=3&&
     typeof e.date==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(e.date)&&
     Array.isArray(e.lessonIds)&&entries.every(x=>e.lessonIds.includes(x.id))&&
-    (moduleId!=='09.02'||(
-     /^[a-f0-9]{64}$/.test(e.sourceSha256??'')&&
-     e.sourceSha256===rhfReviewFingerprint()
-    ));
+    /^[a-f0-9]{64}$/.test(e.sourceSha256??'')&&
+    e.sourceSha256===(moduleId==='09.02'?rhfReviewFingerprint():queryReviewFingerprint());
   }catch{fail(moduleId,'Malformed human review record')}
-  if(exists(evidence)&&!a11y&&moduleId==='09.02'){
+  if(exists(evidence)&&!a11y){
    fail(moduleId,'Accessibility evidence is incomplete or tied to an obsolete RHF lesson/UI fingerprint');
   }
   const group=topics.filter(t=>t.moduleId===moduleId),blockers=[];

@@ -429,7 +429,9 @@
     "test:forms-query-query-browser-gate": "node --test tests/forms-query-query-browser-gate.test.mjs",
     "status:forms-query-query-candidates": "node scripts/verify-forms-query-query-candidates.mjs --json",
     "test:forms-query-query-candidates": "node scripts/verify-forms-query-query-candidates.mjs --check && node --test tests/forms-query-query-candidates.test.mjs",
-    "test:forms-query-query-release-article": "node --test tests/forms-query-query-release-article.test.mjs"
+    "test:forms-query-query-release-article": "node --test tests/forms-query-query-release-article.test.mjs",
+    "promote:forms-query:query": "node scripts/promote-forms-query-query.mjs",
+    "test:forms-query-query-promotion": "node --test tests/forms-query-query-promotion.test.mjs"
   },
   "dependencies": {
     "clsx": "^2.1.1",
