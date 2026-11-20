@@ -13,7 +13,7 @@ const drafts = new URL('../drafts/forms-query/labs/ssr-hydration/', import.meta.
 const fixtureRoot = fileURLToPath(new URL('../examples/forms-query-vertical/', import.meta.url));
 const host = '127.0.0.1';
 
-async function buildFixture(dir) {
+async function buildFixture(dir, apiOrigin) {
   const app = path.join(dir, 'app');
   const scope = path.join(dir, 'node_modules', '@tanstack');
   await mkdir(scope, { recursive: true });
@@ -56,7 +56,7 @@ async function buildFixture(dir) {
   ].join('\n'));
   await writeFile(path.join(app, 'api', 'tasks', 'route.ts'), [
     'export async function GET(request: Request) {',
-    "  return fetch('http://127.0.0.1:3337/api/tasks' + new URL(request.url).search, { cache: 'no-store' });",
+    "  return fetch(" + JSON.stringify(apiOrigin+'/api/tasks') + " + new URL(request.url).search, { cache: 'no-store' });",
     '}',
   ].join('\n'));
   await new Promise((resolve, reject) => {
@@ -89,7 +89,7 @@ export async function verifyStagedSsr(browser, apiOrigin) {
   const previousNodeEnv = process.env.NODE_ENV;
   let app;
   try {
-    await buildFixture(dir);
+    await buildFixture(dir, apiOrigin);
     await new Promise((resolve, reject) => {
       server.once('error', reject);
       server.listen(0, host, resolve);

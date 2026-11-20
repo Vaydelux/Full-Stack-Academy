@@ -234,8 +234,10 @@ async function seedPaging(apiOrigin) {
   for (let index = 1; index <= 25; index++) await createTask(apiOrigin, 'Staged paging fixture ' + index);
 }
 
-export async function verifyStagedQuery(browser, apiOrigin) {
-  for (const [lab, verify] of Object.entries(labs)) {
+export async function verifyStagedQuery(browser, apiOrigin, {onlyLab=null,origin='http://127.0.0.1:5173'}={}) {
+  if(onlyLab!==null&&!Object.hasOwn(labs,onlyLab))throw Error('Unknown TanStack Query lab: '+onlyLab);
+  const selected=onlyLab===null?Object.entries(labs):[[onlyLab,labs[onlyLab]]];
+  for (const [lab, verify] of selected) {
     for (const variant of ['solution', 'starter']) {
       const page = await browser.newPage();
       page.setDefaultTimeout(10_000);
@@ -254,7 +256,7 @@ export async function verifyStagedQuery(browser, apiOrigin) {
           };
         });
         const open = async () => {
-          await page.goto('http://127.0.0.1:5173/qualification/?' + new URLSearchParams({ lab, variant }));
+          await page.goto(origin+'/qualification/?' + new URLSearchParams({ lab, variant }));
           await button(page, 'Toggle lesson').waitFor();
         };
         if (variant === 'solution') await verify(page, variant, open, apiOrigin);

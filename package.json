@@ -416,7 +416,17 @@
     "test:forms-query-promotion-rehearsal": "node --test tests/forms-query-promotion-rehearsal.test.mjs",
     "test:js-syntax": "node scripts/verify-js-syntax.mjs",
     "test:forms-query-review-fingerprint": "node --test tests/forms-query-review-fingerprint.test.mjs",
-    "test:forms-query-published-article": "node --test tests/forms-query-published-article.test.mjs"
+    "test:forms-query-published-article": "node --test tests/forms-query-published-article.test.mjs",
+    "qualify:forms-query:query-browser": "node scripts/verify-query-release-browser.mjs",
+    "lab:forms-query-query-keys": "node scripts/verify-query-release-browser.mjs --lab query-keys",
+    "lab:forms-query-stale-garbage": "node scripts/verify-query-release-browser.mjs --lab stale-garbage",
+    "lab:forms-query-mutation-invalidation": "node scripts/verify-query-release-browser.mjs --lab mutation-invalidation",
+    "lab:forms-query-optimistic-rollback": "node scripts/verify-query-release-browser.mjs --lab optimistic-rollback",
+    "lab:forms-query-infinite-queries": "node scripts/verify-query-release-browser.mjs --lab infinite-queries",
+    "lab:forms-query-ssr-hydration": "node scripts/verify-query-release-browser.mjs --lab ssr-hydration",
+    "lab:forms-query-retries-cancellation": "node scripts/verify-query-release-browser.mjs --lab retries-cancellation",
+    "lab:forms-query-remote-task-capstone": "node scripts/verify-query-release-browser.mjs --lab remote-task-capstone",
+    "test:forms-query-query-browser-gate": "node --test tests/forms-query-query-browser-gate.test.mjs"
   },
   "dependencies": {
     "clsx": "^2.1.1",
