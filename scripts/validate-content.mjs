@@ -94,6 +94,10 @@ for (const name of metaFiles) {
   }
   assert.ok((body.match(/<LessonStep\b/g) ?? []).length >= 3, `Lesson ${meta.id} needs at least 3 guided steps`);
   assert.ok(!/-----BEGIN (?:RSA |EC )?PRIVATE KEY-----|SUPABASE_SERVICE_ROLE_KEY\s*=\s*\S+/i.test(body), 'Do not publish secrets in MDX');
+  // Preview status must never leak into a published lesson, including when
+  // published files are prepared manually rather than through the RHF promoter.
+  assert.ok(!/This staged article|This candidate is \*\*not published\*\*|Publication and human accessibility review remain outstanding|before promoting this draft/i.test(body),
+    'Draft-only release copy in published MDX '+meta.id);
   for (const source of meta.sources) {
     assert.ok(body.includes(source.url), `Official reference is not linked in lesson: ${source.url}`);
   }

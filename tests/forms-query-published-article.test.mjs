@@ -39,3 +39,10 @@ test('screen-reader guidance remains applicable after release',()=>{
  assert.match(published,/test error announcements and focus recovery with a real screen reader and keyboard/);
  assert.doesNotMatch(published,/before publication/);
 });
+
+test('published MDX validator fails on stale release-only wording',()=>{
+ const validator=read('scripts/validate-content.mjs');
+ assert.match(validator,/Draft-only release copy in published MDX/);
+ assert.match(validator,/This staged article/);
+ assert.match(validator,/Publication and human accessibility review remain outstanding/);
+});
