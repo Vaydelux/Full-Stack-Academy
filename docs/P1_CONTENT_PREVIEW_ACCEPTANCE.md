@@ -49,3 +49,7 @@ Original PR #36 proposed the preview independently against an older base and was
 ### Expanded responsive preview regression (authored; no browser executed)
 
 The Playwright preview smoke now checks every unpublished lesson at two portrait/landscape-or-tablet sizes, and each module's opening lesson across seven widths and orientations: 320×780, 375×812, 414×896, 768×1024, 812×375 landscape, 1024×768 and 1440×900. For each visit it checks reachable routes, noindex metadata, visible lesson headings, preview-only progress messaging and both document/body scroll overflow. This adds automated layout coverage but cannot replace physical keyboard, 200% zoom or named screen-reader review.
+
+### Coverage preserved after RHF/Query publication
+
+The same production Playwright browser gate now also discovers all **published** P1 lesson IDs from the real metadata files and revisits their `/learn/{lessonId}` routes. It checks the published guided article and narrow/landscape layout for every promoted topic, and seven viewport sizes on each published module's first lesson. Therefore source-to-live promotion cannot silently remove the topics from responsive acceptance. This adds automated route/layout coverage only; no Chromium run, 200% zoom, keyboard or human screen-reader review has yet been performed for the candidate branch.

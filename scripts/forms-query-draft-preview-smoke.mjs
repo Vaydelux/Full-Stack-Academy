@@ -80,6 +80,32 @@ export async function verifyFormsQueryDraftPreviews({page,base}){
    if(index<drafts.length-1)assert.equal(await page.locator('nav[aria-label="Draft lesson sequence"] a[href="'+route(drafts[index+1].id)+'"]').count(),1,'Missing next draft');
    if(index>0)assert.equal(await page.locator('nav[aria-label="Draft lesson sequence"] a[href="'+route(drafts[index-1].id)+'"]').count(),1,'Missing previous draft');
   }
+  // Promoted lessons leave the draft catalog, but they MUST remain in
+  // responsive/accessible route smoke. Check live lesson MDX and lab shell
+  // without mutating course progress or pretending this is a human review.
+  const publishedTopics=canonical.filter(topic=>liveIds.has(topic.id));
+  let publishedViewportChecks=0;
+  for(const topic of publishedTopics){
+   const sample=topic.id.endsWith('.01')?responsiveViewports:
+    [responsiveViewports[0],responsiveViewports[4]];
+   for(const viewport of sample){
+    await page.setViewportSize(viewport);
+    const response=await page.goto(base+'/learn/'+topic.id,{waitUntil:'domcontentloaded'});
+    assert.equal(response?.status(),200,
+     'Published P1 route failed '+topic.id+' at '+viewport.width+'x'+viewport.height);
+    await page.getByRole('heading',{name:topic.title,level:1,exact:true}).waitFor();
+    await page.getByRole('article',{name:'Guided lesson'}).waitFor();
+    const sizes=await page.evaluate(()=>({
+     viewport:window.innerWidth,
+     document:document.documentElement.scrollWidth,
+     body:document.body.scrollWidth,
+    }));
+    assert.ok(sizes.document<=sizes.viewport&&sizes.body<=sizes.viewport,
+     'Published P1 lesson overflow '+topic.id+' at '+viewport.width+'x'+viewport.height+
+     ': '+JSON.stringify(sizes));
+    publishedViewportChecks++;
+   }
+  }
   await page.setViewportSize({width:1440,height:900});
   if(drafts.length){
     const first=drafts[0].id;
@@ -104,7 +130,7 @@ export async function verifyFormsQueryDraftPreviews({page,base}){
 
   const invalid=await page.goto(base+route('09.03.99'),{waitUntil:'domcontentloaded'});
   assert.equal(invalid?.status(),404,'Unknown draft IDs should be 404');
-  console.log('Forms/Query preview browser gate passed: '+drafts.length+' noindex drafts, '+viewportChecks+' viewport/layout checks, '+liveIds.size+' existing published metadata, navigation and quiz isolation');
+  console.log('Forms/Query preview browser gate passed: '+drafts.length+' noindex drafts, '+viewportChecks+' draft viewport checks, '+publishedViewportChecks+' published P1 viewport checks, '+liveIds.size+' published metadata records, navigation and quiz isolation');
  }finally{
   if(originalViewport)await page.setViewportSize(originalViewport);
  }

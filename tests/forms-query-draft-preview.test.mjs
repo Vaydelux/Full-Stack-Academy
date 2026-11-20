@@ -130,3 +130,13 @@ test('real preview acceptance includes portrait, landscape, tablet, desktop and 
  assert.match(smoke,/viewportChecks\+\+/);
  assert.match(smoke,/No visual pass is implied/);
 });
+
+test('after module publication, all published P1 lesson URLs remain in responsive smoke',()=>{
+ const smoke=read('scripts/forms-query-draft-preview-smoke.mjs');
+ assert.match(smoke,/const publishedTopics=canonical\.filter\(topic=>liveIds\.has\(topic\.id\)\)/);
+ assert.match(smoke,/for\(const topic of publishedTopics\)/);
+ assert.match(smoke,/page\.goto\(base\+'\/learn\/'\+topic\.id/);
+ assert.match(smoke,/name:'Guided lesson'/);
+ assert.match(smoke,/publishedViewportChecks\+\+/);
+ assert.match(smoke,/Published P1 lesson overflow/);
+});
