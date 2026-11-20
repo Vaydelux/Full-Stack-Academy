@@ -27,6 +27,8 @@
     "qualify:forms-query:browser": "node scripts/verify-forms-query-browser.mjs",
     "qualify:forms-query:react-browser": "node scripts/verify-forms-query-react-browser.mjs",
     "test:forms-query-browser-navigation": "node --test tests/forms-query-browser-navigation.test.mjs",
+    "status:forms-query-promotion": "node scripts/forms-query-promotion-readiness.mjs --json",
+    "test:forms-query-promotion": "node scripts/forms-query-promotion-readiness.mjs --check && node --test tests/forms-query-promotion-readiness.test.mjs tests/forms-query-release-hygiene.test.mjs",
     "qualify:forms-query:source": "node scripts/qualify-forms-query.mjs --source",
     "qualify:forms-query:full": "node scripts/qualify-forms-query.mjs --full",
     "status:curriculum": "node scripts/curriculum-readiness.mjs",
