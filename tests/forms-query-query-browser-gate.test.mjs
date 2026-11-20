@@ -36,3 +36,10 @@ test('SSR fixture uses exact isolated API rather than the shared hardcoded :3337
  assert.doesNotMatch(ssr,/127\.0\.0\.1:3337\/api\/tasks/);
  assert.match(launcher,/verifyStagedSsr\(browser,apiOrigin\)/);
 });
+
+test('isolated SSR Next fixture retargets both server prefetch and route handler to its ephemeral API',()=>{
+ assert.match(ssr,/prefetched\.replace\(fixed,apiOrigin\+'\/api\/tasks'\)/);
+ assert.match(ssr,/const fixed='http:\/\/127\.0\.0\.1:3337\/api\/tasks'/);
+ assert.match(ssr,/prefetched\.split\(fixed\)\.length,2/);
+ assert.match(ssr,/writeFile\(path\.join\(app,'solution\.tsx'\)/);
+});

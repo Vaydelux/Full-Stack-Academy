@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
-import { copyFile, cp, mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises';
+import { copyFile, cp, mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { createServer } from 'node:http';
 import { createRequire } from 'node:module';
 import path from 'node:path';
@@ -29,6 +29,15 @@ async function buildFixture(dir, apiOrigin) {
   for (const file of ['starter.tsx', 'solution.tsx', 'task-list.tsx', 'providers.tsx']) {
     await copyFile(new URL(file, drafts), path.join(app, file));
   }
+  // The published teaching example documents :3337 for interactive use, but
+  // the isolated browser qualification uses a random loopback port. Rebind
+  // only the temporary Next fixture's server prefetch URL, not the lesson or
+  // committed draft/instructor file. Reject unexpected source changes.
+  const prefetched=await readFile(new URL('solution.tsx',drafts),'utf8');
+  const fixed='http://127.0.0.1:3337/api/tasks';
+  assert.equal(prefetched.split(fixed).length,2,'Expected one local fixture prefetch URL');
+  await writeFile(path.join(app,'solution.tsx'),
+    prefetched.replace(fixed,apiOrigin+'/api/tasks'));
   await writeFile(path.join(app, 'solution', 'page.tsx'), [
     "export const dynamic = 'force-dynamic';",
     "export { default } from '../solution';",

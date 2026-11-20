@@ -63,3 +63,5 @@ Until packages and source tests genuinely run: keep 09.02 and 09.03 marked plann
 ## Delivery policy
 
 One cohesive feature branch/PR after lock resolution, reviewable commits per module, locally executable verification, explicit limitations. Do not rely on GitHub Actions or Vercel checks for qualification; do not skip real Node/browser checks merely because the assistant wrote the code.
+
+> **Updated release engineering (2026-11-20, P1 Query):** All eight Query 09.03 candidate packages are now checked in outside the live lesson registry, with source parity and SSR hydration provider files. An isolated real-browser runner supports each named Query exercise and Next SSR hydration. The SSR qualification fixture now rewrites its temporary server-side prefetch URL to the actual ephemeral loopback API port, instead of falsely requiring fixed port 3337. A guarded `promote:forms-query:query -- --plan|--simulate|--apply` command prepares all 54 files, but **refuses apply until RHF 09.02 is actually published and all genuine Node 24, Chromium, Next SSR, keyboard, zoom and screen-reader gates have passed**. Live count remains 338, not 354.
