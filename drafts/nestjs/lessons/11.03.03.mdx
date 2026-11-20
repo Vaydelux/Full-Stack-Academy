@@ -1,0 +1,95 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Persistent entities may hold sensitive fields that must not be serialized into public DTOs.","An account DTO response has only public id and displayName; hidden fields are absent.","DTO shaping is not role authorization; enforce permissions before selecting records."]} />
+
+## The problem we're solving
+
+An API returns a stored account object including passwordHash and internalRole. Building a domain feature demands more than a decorated controller. Real services have invariants, dependencies, persistence contracts and externally visible behavior. When any one layer owns work it cannot safely verify, the resulting application becomes difficult to test and may expose private state.
+
+## Build the mental model
+
+Persistent entities may hold sensitive fields that must not be serialized into public DTOs. Design the feature by drawing arrows from controller → application service → repository/port → persistence. Dependencies should point toward stable contracts; inbound HTTP is an adapter, not the business model. A real Nest module composes these pieces, while transaction boundaries belong near the persistence operation that must be atomic.
+
+**Prediction:** An API returns a stored account object including passwordHash and internalRole. Name the exact state that differs after this failure, and who can observe it.
+
+**Scope:** NestJS 12, Node.js 24, TypeScript 6. This is **staged authoring only**. It has not passed a real installed Nest build, PostgreSQL integration (when applicable), or browser/manual accessibility qualification.
+
+## Prerequisites and preflight
+
+Complete 11.03.02 and review the two source files under `drafts/nestjs/labs/domain-entities-dtos/`. The failing starter is intentionally wrong, but a real negative test must fail from the semantic contract, not from unresolved packages. For persistence, do not replace the real transaction or parameterization proof with an array or a SQL string search.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the domain-layer defect" file="drafts/nestjs/labs/domain-entities-dtos/starter.ts" expected="An API returns a stored account object including passwordHash and internalRole.">
+
+```ts
+export type Account = { id: string; displayName: string; passwordHash: string; internalRole: string };
+export function accountDto(entity: Account) {
+  return { ...entity }; // BUG: spreads private properties
+}
+```
+
+**Observation:** An API returns a stored account object including passwordHash and internalRole. Notice where this source chooses the owning layer and what runtime assertion must fail.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the domain boundary" file="drafts/nestjs/labs/domain-entities-dtos/solution.ts" expected="Persistent entities may hold sensitive fields that must not be serialized into public DTOs.">
+
+```ts
+export type Account = { id: string; displayName: string; passwordHash: string; internalRole: string };
+export type AccountDto = { id: string; displayName: string };
+export function accountDto(entity: Account): AccountDto {
+  return { id: entity.id, displayName: entity.displayName };
+}
+```
+
+**Reasoning:** Persistent entities may hold sensitive fields that must not be serialized into public DTOs. DTO shaping is not role authorization; enforce permissions before selecting records.
+
+</LessonStep>
+
+<LessonStep number={3} title="Qualify the real service contract" file="drafts/nestjs/labs/domain-entities-dtos/lab.json" expected="An account DTO response has only public id and displayName; hidden fields are absent.">
+
+**Expected result:** An account DTO response has only public id and displayName; hidden fields are absent.
+
+**Negative case:** Run the broken starter through the same dependency container, HTTP harness, or transaction test. Confirm a specific failed assertion caused by the bug, not a package-import failure.
+
+**Security and concurrency check:** DTO shaping is not role authorization; enforce permissions before selecting records.
+
+</LessonStep>
+
+## Architecture trade-offs
+
+Directly constructing a service or returning a database entity can be tempting because it reduces boilerplate. It also hides dependency seams and blurs the trust boundary. The practical alternative is not to abstract everything; keep one small interface for a dependency that legitimately varies and enforce invariants in exactly one authoritative place. Favor explicit module imports/exports over globally available providers.
+
+- **Correctness invariant:** Persistent entities may hold sensitive fields that must not be serialized into public DTOs.
+- **Reproducible failure:** An API returns a stored account object including passwordHash and internalRole.
+- **Acceptance evidence:** An account DTO response has only public id and displayName; hidden fields are absent.
+- **Risk that remains:** DTO shaping is not role authorization; enforce permissions before selecting records.
+
+In a multi-request system, repeat the test with two independent users and at least one failure after an intermediate operation. A UI test cannot prove a transaction rollback; only the real persistence adapter can.
+
+<Misconception claim="An API returns a stored account object including passwordHash and internalRole." correction="Persistent entities may hold sensitive fields that must not be serialized into public DTOs." />
+
+<KnowledgeCheck question="Which design is safest for domain entities vs dtos?" choices={["Make the controller hold every stateful dependency permanently.","Keep business rules in an injectable service and verify the boundary with actual runtime behavior.","Expose persistent entities directly because TypeScript hides private fields.","Treat a mock array as proof of database transactions."]} correctIndex={1} explanation="Persistent entities may hold sensitive fields that must not be serialized into public DTOs." misconception="An API returns a stored account object including passwordHash and internalRole." lessonId="11.03.03" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+1. **Reproduce:** An API returns a stored account object including passwordHash and internalRole.
+2. **Diagnose:** Determine whether the bug belongs to a controller, injectable provider, repository, module export or transaction.
+3. **Repair:** Persistent entities may hold sensitive fields that must not be serialized into public DTOs.
+4. **Regression:** An account DTO response has only public id and displayName; hidden fields are absent.
+5. **Trust boundary:** DTO shaping is not role authorization; enforce permissions before selecting records.
+
+## Guided local lab
+
+The corresponding `starter.ts`, `solution.ts`, and machine-readable `lab.json` are under `drafts/nestjs/labs/domain-entities-dtos/`. These remain source exercises awaiting package installation, real library execution and module acceptance. No published course-progress event or `LabGate` is registered.
+
+## Reflect
+
+What is the narrowest seam that should be replaceable in a test? What would fail if two requests overlap? Which case demands a real PostgreSQL connection instead of a local unit test, and how would you prove an error cannot leave a partial write?
+
+## Official references
+
+- [NestJS documentation](https://docs.nestjs.com/)
+- [Focused official reference](https://docs.nestjs.com/techniques/serialization)

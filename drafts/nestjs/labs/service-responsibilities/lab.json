@@ -1,0 +1,18 @@
+{
+  "id": "draft.nestjs.service-responsibilities",
+  "lessonId": "11.03.01",
+  "title": "Service responsibilities",
+  "sourceStatus": "draft-unverified",
+  "runtime": "node-24-nestjs-12-typescript-6",
+  "starter": "drafts/nestjs/labs/service-responsibilities/starter.ts",
+  "solution": "drafts/nestjs/labs/service-responsibilities/solution.ts",
+  "expectedPositive": "A unit test invokes TasksService directly and rejects blank names; HTTP invokes the same service.",
+  "expectedNegative": "The controller directly mutates records and allows blank task names.",
+  "requiresRealNestTest": true,
+  "requiresRealHttpTest": false,
+  "readyToPublish": false,
+  "officialReferences": [
+    "https://docs.nestjs.com/",
+    "https://docs.nestjs.com/providers"
+  ]
+}

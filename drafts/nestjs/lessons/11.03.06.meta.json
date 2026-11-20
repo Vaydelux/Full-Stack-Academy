@@ -1,0 +1,27 @@
+{
+  "id": "11.03.06",
+  "title": "Application transactions",
+  "trackId": "11",
+  "moduleId": "11.03",
+  "sourceStatus": "draft-unverified",
+  "estimatedMinutes": 60,
+  "stack": {
+    "node": "24",
+    "typescript": "6",
+    "nestjs": "12"
+  },
+  "prerequisites": [
+    "11.03.05"
+  ],
+  "objective": "Multi-write invariants require a real database transaction with rollback on failure.",
+  "misconception": "A service performs two writes without a transaction; one succeeds when the other fails.",
+  "acceptance": "Force a second-write error and verify the database has neither write after rollback.",
+  "securityBoundary": "A fake in-memory array cannot certify PostgreSQL transaction isolation or rollback.",
+  "labSlug": "application-transactions",
+  "officialReferences": [
+    "https://docs.nestjs.com/",
+    "https://docs.nestjs.com/techniques/database"
+  ],
+  "reviewStatus": "unreviewed",
+  "runtimeQualification": "not-run"
+}

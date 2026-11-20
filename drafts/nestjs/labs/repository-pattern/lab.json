@@ -1,0 +1,18 @@
+{
+  "id": "draft.nestjs.repository-pattern",
+  "lessonId": "11.03.02",
+  "title": "Repository pattern",
+  "sourceStatus": "draft-unverified",
+  "runtime": "node-24-nestjs-12-typescript-6",
+  "starter": "drafts/nestjs/labs/repository-pattern/starter.ts",
+  "solution": "drafts/nestjs/labs/repository-pattern/solution.ts",
+  "expectedPositive": "A hostile quote-containing title is passed as a parameter rather than interpolated SQL.",
+  "expectedNegative": "A task title is concatenated into a raw SQL query, allowing injection.",
+  "requiresRealNestTest": true,
+  "requiresRealHttpTest": false,
+  "readyToPublish": false,
+  "officialReferences": [
+    "https://docs.nestjs.com/",
+    "https://docs.nestjs.com/fundamentals/custom-providers"
+  ]
+}
