@@ -55,7 +55,9 @@ export class ApiModule {
         provide: API_URL,
         useFactory: async () => {
           const raw = process.env.API_URL ?? 'https://example.org';
-          return new URL(raw).toString();
+          const endpoint = new URL(raw);
+          if (endpoint.protocol !== 'https:') throw new Error('HTTPS API URL required');
+          return endpoint.toString();
         },
       }],
       exports: [API_URL],

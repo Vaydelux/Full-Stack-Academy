@@ -42,3 +42,17 @@ test('a missing npm lock and manual qualification cannot be treated as green',()
   assert.ok(module.blockers.some(x=>x.includes('accessibility')));
  }
 });
+
+test('the Nest 12 lab uses ESM emission and suppresses tracked build output',()=>{
+ const tsconfig=JSON.parse(read('examples/nestjs-vertical/tsconfig.json'));
+ assert.equal(tsconfig.compilerOptions.module,'ESNext');
+ assert.equal(tsconfig.compilerOptions.moduleResolution,'Bundler');
+ assert.match(read('.gitignore'),/^\/examples\/nestjs-vertical\/dist\/$/m);
+});
+test('WebSocket rooms are joined only after a verified tenant context exists',()=>{
+ const solution=read('drafts/nestjs/labs/websocket-gateways/solution.ts');
+ assert.match(solution,/handleConnection\(client: Socket\)/);
+ assert.match(solution,/client\.disconnect\(true\)/);
+ assert.match(solution,/client\.join\('tenant:' \+ tenantId\)/);
+ assert.match(solution,/this\.server\.to\('tenant:' \+ tenantId\)/);
+});
