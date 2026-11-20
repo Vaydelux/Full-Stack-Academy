@@ -25,7 +25,31 @@ export function inspectFormsQueryPromotion(){
   if(entries.length!==8)fail(moduleId,'Not eight canonical lessons');
   for(const item of entries){
    const id=item.id,base='drafts/forms-query/lessons/'+id;
-   if(!exists(base+'.mdx')||!exists(base+'.meta.json')){fail(id,'Missing draft lesson');continue}
+   const liveMdx='src/content/lessons/'+id+'.mdx';
+   const liveMeta='src/content/lessons/'+id+'.meta.json';
+   const hasDraft=exists(base+'.mdx')&&exists(base+'.meta.json');
+   // After atomic publication the original draft may be retired or moved.
+   // Do not demand an unverified draft to prove a correctly published lesson.
+   if(!hasDraft){
+    if(!exists(liveMdx)||!exists(liveMeta)){fail(id,'Neither staged source nor complete published source exists');continue}
+    const p=json(liveMeta),slug=p.labId?.match(/^lab\.react\.forms-query-([a-z0-9-]+)$/)?.[1];
+    if(!slug){fail(id,'Published lesson has no canonical Forms/Query lab ID');continue}
+    const manifestPath='labs/forms-query-'+slug+'/lab.json';
+    const imported=registry.includes('./lessons/'+id+'.mdx')&&indexed.includes('lessons/'+id+'.meta.json');
+    const published=exists(manifestPath)&&imported;
+    if(!published)fail(id,'Published MDX, metadata, lab and both registries must appear atomically');
+    if(p.id!==id||p.moduleId!==moduleId||p.title!==item.title||p.status!=='authored'&&p.status!=='verified'){
+     fail(id,'Published lesson metadata does not match canonical content');
+    }
+    if(published){
+     const lab=json(manifestPath);
+     if(lab.lessonId!==id||lab.id!==p.labId||!exists(lab.tests)||!exists(lab.starter)||!exists(lab.solution)){
+      fail(id,'Published lab manifest or executable assets are incomplete');
+     }
+    }
+    topics.push({id,moduleId,slug,stagedValid:false,published});
+    continue;
+   }
    const meta=json(base+'.meta.json'),mdx=read(base+'.mdx'),slug=meta.labSlug;
    if(typeof slug!=='string'||!/^[a-z][a-z0-9-]*$/.test(slug)){fail(id,'Invalid lab slug');continue}
    const lab='drafts/forms-query/labs/'+slug+'/';
@@ -60,7 +84,7 @@ export function inspectFormsQueryPromotion(){
     Array.isArray(e.lessonIds)&&entries.every(x=>e.lessonIds.includes(x.id));
   }catch{fail(moduleId,'Malformed human review record')}
   const group=topics.filter(t=>t.moduleId===moduleId),blockers=[];
-  if(group.length!==8||group.some(t=>!t.stagedValid))blockers.push('Source staging incomplete');
+  if(group.length!==8||group.some(t=>!t.stagedValid&&!t.published))blockers.push('No valid staged or fully published source');
   if(!a11y)blockers.push('Human keyboard/screen-reader/200% zoom review not recorded');
   if(group.some(t=>!t.published))blockers.push('Published MDX/metadata/lab/registry integration pending');
   if(moduleId==='09.02'&&(!pkg.dependencies?.['react-hook-form']||!pkg.dependencies?.['@hookform/resolvers']))blockers.push('Root runtime missing RHF/resolvers');
@@ -71,6 +95,11 @@ export function inspectFormsQueryPromotion(){
    published:group.filter(x=>x.published).length,a11y,blockers,ready:blockers.length===0});
  }
  const snapshot=json('docs/checkpoint.json').snapshot;
+ const actualMdx=fs.readdirSync(file('src/content/lessons')).filter(name=>name.endsWith('.meta.json')).length;
+ const actualLabs=fs.readdirSync(file('labs')).filter(slug=>exists('labs/'+slug+'/lab.json')).length;
+ if(snapshot.authoredMdxLessons!==actualMdx||snapshot.labFixtures!==actualLabs){
+  fail('checkpoint','Published MDX or lab count does not match actual repository files');
+ }
  return {status:modules.every(m=>m.ready)&&!sourceErrors.length?'ready':'prepublication',modules,topics,sourceErrors,
   snapshot:{published:snapshot.publishedLessons,mdx:snapshot.authoredMdxLessons,labs:snapshot.labFixtures},
   nestedDependenciesPresent:['react-hook-form','@hookform/resolvers','@tanstack/react-query'].every(n=>n in nested.dependencies),
