@@ -30,6 +30,7 @@
     "status:forms-query-promotion": "node scripts/forms-query-promotion-readiness.mjs --json",
     "test:forms-query-promotion": "node scripts/forms-query-promotion-readiness.mjs --check && node --test tests/forms-query-promotion-readiness.test.mjs tests/forms-query-release-hygiene.test.mjs",
     "test:forms-query-draft-preview": "node --test tests/forms-query-draft-preview.test.mjs",
+    "qualify:forms-query:preview-browser": "node scripts/verify-academy-browser.mjs --draft-preview",
     "qualify:forms-query:source": "node scripts/qualify-forms-query.mjs --source",
     "qualify:forms-query:full": "node scripts/qualify-forms-query.mjs --full",
     "status:curriculum": "node scripts/curriculum-readiness.mjs",
