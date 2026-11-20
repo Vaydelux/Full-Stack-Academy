@@ -185,7 +185,7 @@ export function simulateRHFPromotion(){
   warning:'No Node24, npm, Chromium or actual human accessibility verification performed. Simulated date was never written.'};
 }
 
-function applyWrites(writes){
+function applyWrites(writes, expectedReviewedSha){
  const previous=new Map(),done=[];
  for(const [file] of writes)previous.set(file,fs.existsSync(local(file))?read(file):null);
  previous.set('docs/checkpoint.json',read('docs/checkpoint.json'));
@@ -201,6 +201,8 @@ function applyWrites(writes){
   // and source-derived checkpoint AFTER promotion.
   run('npm',['run','verify:offline']);
   run('npm',['run','qualify:forms-query:preview-browser'],420_000);
+  assert.equal(rhfReviewFingerprint(),expectedReviewedSha,
+   'Reviewed source drifted during postpublication checks; rolling back local publication');
   const checkpoint=json('docs/checkpoint.json').snapshot;
   assert.equal(checkpoint.publishedLessons,346);
   assert.ok(checkpoint.completeModules.includes('09.02'));
@@ -242,7 +244,5 @@ if(mode==='--plan'){
   throw new Error('Preflight modified the Git worktree; inspect changes before publication');
  }
  const writes=preparedWrites(reviewer.date);
- applyWrites(writes);
- assert.equal(rhfReviewFingerprint(),reviewer.sourceSha256,
-  'Reviewed lesson source drifted during publication; do not commit the result');
+ applyWrites(writes,reviewer.sourceSha256);
 }

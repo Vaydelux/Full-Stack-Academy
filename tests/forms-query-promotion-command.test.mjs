@@ -67,5 +67,7 @@ test('the apply path rechecks fingerprint and clean worktree after long qualific
  assert.match(program,/assert\.equal\(rhfReviewFingerprint\(\),reviewer\.sourceSha256/);
  assert.match(program,/Preflight modified the Git worktree/);
  assert.match(program,/Reviewed RHF source changed during qualification/);
- assert.match(program,/Reviewed lesson source drifted during publication/);
+ assert.match(program,/Reviewed source drifted during postpublication checks; rolling back local publication/);
+ assert.match(program,/function applyWrites\(writes, expectedReviewedSha\)/);
+ assert.match(program,/applyWrites\(writes,reviewer\.sourceSha256\)/);
 });
