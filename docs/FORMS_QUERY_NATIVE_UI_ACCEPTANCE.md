@@ -1,3 +1,5 @@
+> **LATEST SOURCE-EXECUTION UPDATE (2026-11-20):** The nine native simulated-DOM scenarios described below have now passed **9/9 using actual Node HTTP sockets**, not only the old mock handler transport. Together with 22 HTTP + 29 workflow + 20 typed-client + 12 policy + 10 new browser-navigation tests, **102/102 tests passed** against SHA-matched repository source on Node 22.16. Managed Chromium blocked local navigation; no actual UI browser check passed. See [updated evidence](FORMS_QUERY_REAL_NODE_ACCEPTANCE.md); statements below describing prior simulated-only results remain historical.
+
 # Forms/Query — Native Browser Correctness Milestone
 
 **Development date:** 2026-11-20
