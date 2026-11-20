@@ -18,7 +18,9 @@ const VerifySource = z.strictObject({
 });
 const LessonMeta = z.strictObject({
   id: z.string().regex(/^\d{2}\.\d{2}\.\d{2}$/),
-  title: z.string().min(15),
+  // Some canonical topic labels are intentionally concise (MVCC, JOINs, Zod resolvers).
+  // Validate against the canonical catalog for short titles below.
+  title: z.string().min(4),
   description: z.string().min(40),
   trackId: z.string().regex(/^\d{2}$/),
   moduleId: z.string().regex(/^\d{2}\.\d{2}$/),
@@ -66,6 +68,8 @@ for (const name of metaFiles) {
   ids.add(meta.id);
   const entry = catalogLessons.get(meta.id);
   assert.ok(entry, `MDX lesson absent from canonical curriculum: ${meta.id}`);
+  assert.ok(meta.title === entry.title || meta.title.length >= 15,
+    `Short published lesson title must exactly match its canonical topic: ${meta.id}`);
   assert.equal(meta.trackId, entry.trackId);
   assert.equal(meta.moduleId, entry.moduleId);
   assert.equal(meta.level, entry.level);

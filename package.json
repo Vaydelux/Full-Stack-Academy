@@ -406,7 +406,9 @@
     "lab:forms-query-reset-dirty": "node scripts/verify-rhf-release-browser.mjs --lab reset-dirty",
     "lab:forms-query-server-error-focus": "node scripts/verify-rhf-release-browser.mjs --lab server-error-focus",
     "lab:forms-query-form-state-bug-hunt": "node scripts/verify-rhf-release-browser.mjs --lab form-state-bug-hunt",
-    "test:forms-query-rhf-browser-gate": "node --test tests/forms-query-rhf-browser-gate.test.mjs"
+    "test:forms-query-rhf-browser-gate": "node --test tests/forms-query-rhf-browser-gate.test.mjs",
+    "status:forms-query-rhf-candidates": "node scripts/verify-forms-query-rhf-candidates.mjs --json",
+    "test:forms-query-rhf-candidates": "node scripts/verify-forms-query-rhf-candidates.mjs --check && node --test tests/forms-query-rhf-candidates.test.mjs"
   },
   "dependencies": {
     "clsx": "^2.1.1",

@@ -26,6 +26,7 @@ const steps = [
   'test:forms-query-draft-preview',
   'test:forms-query-p1-content',
   'test:forms-query-rhf-browser-gate',
+  'test:forms-query-rhf-candidates',
   'test:curriculum-readiness',
   'test:publication-phases',
   'validate',
