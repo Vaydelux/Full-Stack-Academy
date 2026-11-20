@@ -36,7 +36,7 @@ The publication command is now committed. **Planning is read-only**:
 npm run promote:forms-query:rhf -- --plan
 ```
 
-Once a real reviewer has filled `docs/release-evidence/forms-query-09.02-accessibility.json` after actual keyboard, named screen-reader and 200% zoom testing, and a genuine Node24/Playwright checkout exists:
+Once a real reviewer has completed keyboard, named screen-reader and 200% zoom testing, **committed the truthful `docs/release-evidence/forms-query-09.02-accessibility.json` on the candidate branch** (the promotion tool requires a clean worktree), and a genuine Node24/Playwright checkout exists:
 
 ```bash
 npm run promote:forms-query:rhf -- --apply

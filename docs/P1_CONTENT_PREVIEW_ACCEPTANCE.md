@@ -38,7 +38,7 @@ An external Playwright installation and Chromium executable are required by the 
 ## P1 release order
 
 1. Qualify candidate preview and existing 16 staged positive/negative practice apps.
-2. Publish **only 09.02** atomically with eight canonical MDX+metadata entries, eight real lab manifests with executable and negative tests, root runtime dependencies+trusted lockfile, both registries and released accessibility evidence. *Target* 346 published, 43 complete modules; current count is 338/42.
+2. Publish **only 09.02** atomically with eight canonical MDX+metadata entries, eight real lab manifests with executable and negative tests, independently locked React teaching runtime, both registries and released accessibility evidence. *Target* 346 published, 43 complete modules; current count is 338/42.
 3. Qualify and publish **09.03** in a separate module release unit, target 354 published, 44 complete modules.
 4. Proceed to P2 NestJS 32 topics in eight-topic modules after P1 is genuinely finished. No new product expansion before the existing 889 canonical topics are complete.
 
