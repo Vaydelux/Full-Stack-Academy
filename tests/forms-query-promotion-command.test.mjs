@@ -45,7 +45,8 @@ test('the promote runner performs genuine full tests before and after publicatio
 test('transition writes both registries and all eight lab assets with rollback on failure',()=>{
  assert.match(program,/src\/content\/lesson-registry\.tsx/);
  assert.match(program,/src\/lib\/academy\/published\.ts/);
- assert.match(program,/labs\/'\+lab\+'\/solution\.test\.mjs/);
+ assert.match(program,/for\(const name of \['starter\/solution\.tsx','solution\/solution\.tsx','solution\.test\.mjs'\]\)/);
+ assert.match(program,/writes\.set\('labs\/'\+lab\+'\/'\+name/);
  assert.match(program,/previous\.set\('docs\/checkpoint\.json'/);
  assert.match(program,/done\.reverse\(\)/);
  assert.match(program,/fs\.rmSync\(local\(file\),\{force:true\}\)/);
