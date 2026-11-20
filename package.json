@@ -396,7 +396,17 @@
     "test:forms-query-p1-content": "node --test tests/forms-query-p1-content.test.mjs",
     "status:forms-query-p1": "node scripts/forms-query-p1-report.mjs --json",
     "test:forms-query-p1-source": "node scripts/forms-query-p1-report.mjs --check && node --test tests/forms-query-p1-content.test.mjs tests/forms-query-draft-preview.test.mjs",
-    "qualify:forms-query:preview-browser": "node scripts/verify-academy-browser.mjs --draft-preview"
+    "qualify:forms-query:preview-browser": "node scripts/verify-academy-browser.mjs --draft-preview",
+    "qualify:forms-query:rhf-browser": "node scripts/verify-rhf-release-browser.mjs",
+    "lab:forms-query-controlled-uncontrolled": "node scripts/verify-rhf-release-browser.mjs --lab controlled-uncontrolled",
+    "lab:forms-query-register-controller": "node scripts/verify-rhf-release-browser.mjs --lab register-controller",
+    "lab:forms-query-zod-resolver": "node scripts/verify-rhf-release-browser.mjs --lab zod-resolver",
+    "lab:forms-query-dynamic-field-arrays": "node scripts/verify-rhf-release-browser.mjs --lab dynamic-field-arrays",
+    "lab:forms-query-async-submission": "node scripts/verify-rhf-release-browser.mjs --lab async-submission",
+    "lab:forms-query-reset-dirty": "node scripts/verify-rhf-release-browser.mjs --lab reset-dirty",
+    "lab:forms-query-server-error-focus": "node scripts/verify-rhf-release-browser.mjs --lab server-error-focus",
+    "lab:forms-query-form-state-bug-hunt": "node scripts/verify-rhf-release-browser.mjs --lab form-state-bug-hunt",
+    "test:forms-query-rhf-browser-gate": "node --test tests/forms-query-rhf-browser-gate.test.mjs"
   },
   "dependencies": {
     "clsx": "^2.1.1",
