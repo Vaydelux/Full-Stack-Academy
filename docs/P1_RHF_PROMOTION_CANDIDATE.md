@@ -30,10 +30,10 @@ The Playwright setup uses `ACADEMY_BROWSER_ROOT` for an isolated browser install
 
 ### Publication blockers
 
-1. The root Next.js dependencies and **genuine root npm lockfile** still lack React Hook Form 7 and `@hookform/resolvers` 7; never synthesize registry integrity hashes.
-2. The published stack pin file needs both `reactHookForm: "7"` and `tanstackQuery: "5"`; root-lock compatibility must be qualified.
+1. **Nested runtime boundary:** the genuine nested React/Vite package and npm lockfile already contain React Hook Form 7 and `@hookform/resolvers` 7. Keep those runtime dependencies isolated; the root Next app only renders fenced MDX examples. Both root and nested `npm ci` still need to pass on the exact release candidate.
+2. The published stack pin file now records `reactHookForm: "7"` and `tanstackQuery: "5"`. The nested lockfile must remain consistent and pass genuine npm/TypeScript/Chromium runtime checks.
 3. Eight browser-backed lab acceptance wrappers exist but have **not executed**. Full academy Next MDX compile, typecheck, existing lab suites and real Chromium navigation must pass at the exact candidate SHA.
 4. A named person must complete keyboard, screen-reader and 200% zoom review; candidate metadata has no fabricated approval.
-5. Only after the module gate is green, copy candidate MDX/metadata/labs to `src/content/lessons/` and `labs/`, provide actual reviewedAt and an integrated root dependency lock, and atomically update both published registries and checkpoint (target **346/889**, 43 complete modules). Reconcile staged/draft preview logic to avoid duplicate routes. Re-run all release checks after making this promotion.
+5. Only after the module gate is green, copy candidate MDX/metadata/labs to `src/content/lessons/` and `labs/`, provide an actual reviewedAt and verified nested runtime lock, and atomically update both published registries and checkpoint (target **346/889**, 43 complete modules). Reconcile staged/draft preview logic to avoid duplicate routes. Re-run all release checks after making this promotion.
 
 **Current published snapshot: 338/889, 42 complete modules.** Eight RHF release candidates are structurally assembled, which is genuine engineering progress but **not equivalent to publishing**. The remaining 09.03 TanStack Query lessons are still staged (not candidate-promoted) and must follow the same gated eight-topic process.

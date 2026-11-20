@@ -68,10 +68,19 @@ export function inspectRHFPublicationCandidates(){
  }
  if(checkpoint.publishedLessons!==338)fail('checkpoint','Published baseline unexpectedly changed in source-only candidate');
  if(records.length!==8)fail('module','Exactly eight complete candidate packs required');
- const missingRoot=['react-hook-form','@hookform/resolvers'].filter(dep=>!pkg.dependencies?.[dep]);
+ const nested=json('examples/forms-query-vertical/react-client/package.json');
+ const nestedLock=json('examples/forms-query-vertical/react-client/package-lock.json');
+ const missingNested=['react-hook-form','@hookform/resolvers'].filter(dep=>
+  !nested.dependencies?.[dep]||
+  nestedLock.packages?.['']?.dependencies?.[dep]!==nested.dependencies[dep]||
+  !nestedLock.packages?.['node_modules/'+dep]?.integrity);
+ const siteImports=read('src/content/lesson-registry.tsx');
+ if(/from ['"](?:react-hook-form|@hookform\/resolvers|@tanstack\/react-query)['"]/.test(siteImports)){
+  fail('root','Published MDX registry must not import RHF/Query teaching runtimes');
+ }
  return {moduleId:'09.02',candidateCount:records.length,records,issues,
   sourceValid:issues.length===0,readyToPublish:false,publishedCount:checkpoint.publishedLessons,
-  pending:{rootDependencies:missingRoot,rootDependencyLockQualification:true,
+  pending:{nestedDependencyDefects:missingNested,isolatedReactRuntimeQualification:true,
    perLabTestImplementations:0,perLabTestsUnrun:8,realChromiumAcceptance:true,humanAssistiveTechnologyReview:true,
    exactCandidateNextBuild:true},
   note:'Source bundle audit only; candidate existence never grants lesson progress or publication'};

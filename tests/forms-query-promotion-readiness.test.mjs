@@ -44,3 +44,13 @@ test('audit explicitly states that execution and assistive technology are out-of
  assert.match(report.warning,/does not execute/i);
  assert.match(report.warning,/screen reader/i);
 });
+
+test('RHF/Query learning packages stay in the locked nested exercise workspace',()=>{
+ const rhf=report.modules.find(m=>m.id==='09.02');
+ const query=report.modules.find(m=>m.id==='09.03');
+ assert.equal(report.nestedDependenciesPresent,true);
+ assert.equal(rhf.blockers.some(x=>x.includes('Root runtime missing')),false);
+ assert.equal(query.blockers.some(x=>x.includes('Root runtime missing')),false);
+ assert.equal(rhf.blockers.some(x=>x.includes('Nested npm lock')),false);
+ assert.equal(query.blockers.some(x=>x.includes('Nested npm lock')),false);
+});

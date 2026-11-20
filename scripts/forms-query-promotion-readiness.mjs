@@ -88,8 +88,22 @@ export function inspectFormsQueryPromotion(){
   if(group.length!==8||group.some(t=>!t.stagedValid&&!t.published))blockers.push('No valid staged or fully published source');
   if(!a11y)blockers.push('Human keyboard/screen-reader/200% zoom review not recorded');
   if(group.some(t=>!t.published))blockers.push('Published MDX/metadata/lab/registry integration pending');
-  if(moduleId==='09.02'&&(!pkg.dependencies?.['react-hook-form']||!pkg.dependencies?.['@hookform/resolvers']))blockers.push('Root runtime missing RHF/resolvers');
-  if(moduleId==='09.03'&&!pkg.dependencies?.['@tanstack/react-query'])blockers.push('Root runtime missing TanStack Query');
+  // Published MDX pages contain fenced teaching source, not live RHF/Query runtime imports.
+  // The actual React apps are compiled and executed in the independently locked Vite workspace.
+  // Requiring RHF/Query in the Next root would bloat production without qualifying exercises.
+  const nestedDeps=moduleId==='09.02'
+    ? ['react-hook-form','@hookform/resolvers']
+    : ['@tanstack/react-query'];
+  for(const dep of nestedDeps)if(!nested.dependencies?.[dep]){
+    blockers.push('Nested React teaching runtime missing '+dep);
+  }
+  if(exists('examples/forms-query-vertical/react-client/package-lock.json')){
+    const lock=json('examples/forms-query-vertical/react-client/package-lock.json');
+    for(const dep of nestedDeps)if(lock.packages?.['']?.dependencies?.[dep]!==nested.dependencies?.[dep]
+      || !lock.packages?.['node_modules/'+dep]?.integrity){
+      blockers.push('Nested npm lock does not match or authenticate '+dep);
+    }
+  }
   if(!versions.reactHookForm||!versions.tanstackQuery)blockers.push('Missing published stack major pins');
   if(!exists('examples/forms-query-vertical/react-client/package-lock.json'))blockers.push('Nested npm lockfile absent');
   modules.push({id:moduleId,total:entries.length,staged:group.filter(x=>x.stagedValid).length,
