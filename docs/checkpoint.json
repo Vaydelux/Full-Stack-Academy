@@ -9,9 +9,9 @@
     "productionUrl": "https://fullstack-academy-ecru.vercel.app/"
   },
   "development": {
-    "branch": "main",
-    "state": "seven-phase-curriculum-publication-program-source-audited",
-    "note": "Source-derived seven-phase plan covers all 551 remaining unique canonical lessons in 69 incomplete modules, with P1 Forms/Query 16 staged and 535 not staged. Existing 15.02.04 published interactive topic is preserved; phase targets 354/386/426/490/609/753/889. Authored 13 phase planner regression cases, all 13 evaluated successfully in a source-backed isolated JavaScript evaluator using actual canonical catalog, published metadata imports and authored IDs; not a full Node checkout/npm or Next build. Published snapshot stays 338 IDs/337 MDX+labs/42 modules. PR #36 new 16 MDX preview route remains unmerged pending full Node24 Next/Chrome qualification. No GitHub Actions/Vercel used."
+    "branch": "feat/p1-rhf-eight-lesson-depth-20261120",
+    "state": "p1-unified-preview-and-sixteen-content-guides-unverified",
+    "note": "P1 source candidate consolidates #36 noindex draft preview, quiz-progress isolation, 16 individualized lesson production guides, and source regressions into #38. Existing 338 published IDs/337 MDX+labs/42 modules are not changed. Runtime Next24/browser/manual accessibility remain unverified for this candidate; PR must remain unmerged until gates pass."
   },
   "snapshot": {
     "tracks": 28,
@@ -73,6 +73,6 @@
     "devHighFindings": 14,
     "exceptionExpires": "2026-12-02"
   },
-  "nextMilestone": "qualify-pr36-next-mdx-browser-then-publish-09.02-09.03-and-advance-phases",
-  "status": "curriculum-889-seven-phase-program-p1-forms-query-publication-unverified"
+  "nextMilestone": "run-p1-node24-qualification-then-atomic-publish-09.02-before-09.03",
+  "status": "p1-draft-preview-content-implemented-publication-blocked-on-runtime-and-a11y"
 }

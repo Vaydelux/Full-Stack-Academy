@@ -34,6 +34,7 @@ const checks=[
  {name:'Browser navigation diagnostics without Chromium',program:'node',args:['--test','tests/forms-query-browser-navigation.test.mjs']},
  {name:'Publication structural readiness and release hygiene (no promotion)',program:'node',args:['--test','tests/forms-query-promotion-readiness.test.mjs','tests/forms-query-release-hygiene.test.mjs']},
  {name:'Draft lesson preview URLs, noindex and progress isolation',program:'node',args:['--test','tests/forms-query-draft-preview.test.mjs']},
+ {name:'Sixteen individualized teaching guides and code source consistency',program:'node',args:['--test','tests/forms-query-p1-content.test.mjs']},
 ];
 if(mode==='--full'){
  if(!fs.existsSync(path.join(root,'package-lock.json'))){

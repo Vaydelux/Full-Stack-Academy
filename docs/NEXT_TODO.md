@@ -1,3 +1,5 @@
+> **P1 candidate consolidation — 2026-11-20:** PR #38 now contains all 16 individualized RHF/Query lesson guides and the noindex reading preview previously proposed in PR #36. Added `test:forms-query-p1-content`, `test:forms-query-draft-preview`, `status:forms-query-p1`, and real Playwright preview command. The candidate has not passed a full Node24/Next/browser/manual a11y run and is **not published**. Published snapshot remains **338/889**. Use `docs/P1_CONTENT_PREVIEW_ACCEPTANCE.md` for exact handoff. Do not merge PR #38 until gates are verified.
+
 > **Phase P1 editorial checkpoint (2026-11-20):** Eight 09.02 RHF drafts received individualized decision guides and regressions, without changing their red/green TSX examples. Run `npm run test:forms-query-rhf-editorial` plus all release gates on a Node24 checkout. **No lessons published in this milestone**; count remains 338/889. Details: `docs/P1_RHF_EDITORIAL_ACCEPTANCE.md`.
 
 # Publication-first master priority — 2026-11-20
