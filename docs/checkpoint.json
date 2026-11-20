@@ -10,8 +10,8 @@
   },
   "development": {
     "branch": "main",
-    "state": "16-forms-query-lessons-staged-release-readiness-audited",
-    "note": "Latest main ec518b41 merged Node24.22.3 Windows local qualification with 130 Forms/Query Node scenarios, locked Vite/React, 15 native Chrome checks, seven React workspace flows, all sixteen instructor positive/negative starter cases, isolated Next SSR hydration and full verify:offline/Next build (reported in committed latest handoff; not rerun by this runtime). New feature adds read-only 16-topic promotion readiness --check/--json/--strict, 9 regression tests and 4 Git artifact/lockfile checks, and removes three accidentally tracked Vite dist output files. Nested npm lock is retained. Manual named screen-reader/keyboard/200% zoom review, root production RHF/Query deps and canonical atomic publication remain pending. GitHub/npm DNS blocked current Node22 local checkout; new full gate not run. 338 published unique IDs, 337 MDX/labs and 42 completed modules unchanged; 16 staged."
+    "state": "sixteen-forms-query-preview-pages-source-ready",
+    "note": "Following PR #35, 16 draft Forms/Query MDX articles are explicitly imported into noindex academy reading routes with static whitelist, sequential navigation, GitHub source link and unpublished warning. DraftLessonScope prevents KnowledgeCheck from granting local course progress in draft pages while published lessons outside context retain their existing behavior. Corrected outdated qualification claims in 16 MDX sources without editing code-fence examples. Nine preview source regression tests registered in offline/source gates; exact GitHub-backed 16 MDX import/quiz/no-LabGate inspections and route/progress static checks passed. No latest Node test command or root Next MDX compiled build/browser test executed due unavailable full checkout/GitHub+npm DNS in local runtime. Historical Node24 Windows Chrome/SSR staged tests remain reported prior evidence only. Published snapshot unchanged 338 unique IDs, 337 authored MDX+labs, 42 completed modules; 16 preview-only topics unqualified."
   },
   "snapshot": {
     "tracks": 28,
@@ -73,6 +73,6 @@
     "devHighFindings": 14,
     "exceptionExpires": "2026-12-02"
   },
-  "nextMilestone": "complete-a11y-evidence-then-publish-09.02-and-09.03-as-separately-tested-8-lesson-modules",
-  "status": "forms-query-local-qualified-publication-atomicity-and-accessibility-preflight-pending"
+  "nextMilestone": "run-full-node24-next-preview-render-and-a11y-then-atomic-rhf-query-publication",
+  "status": "forms-query-16-readable-noindex-draft-previews-source-audited-next-build-pending"
 }
