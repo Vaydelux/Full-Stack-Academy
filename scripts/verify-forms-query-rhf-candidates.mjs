@@ -34,6 +34,7 @@ export function inspectRHFPublicationCandidates(){
    const stageLab=json('drafts/forms-query/labs/'+slug+'/lab.json');
    if(candidate.publicationReady!==false||candidate.reviewedAt===true)fail(id,'Candidate metadata claims publication readiness');
    if(candidate.targetPath!=='src/content/lessons/'+id+'.meta.json')fail(id,'Incorrect publish target path');
+   if(candidate.blockedOn?.some(x=>/root npm dependency lock|root RHF|root resolver/i.test(x)))fail(id,'Obsolete root runtime blocker; teaching dependencies belong in nested lab');
    if(proj.id!==id||proj.title!==topic.title||proj.trackId!=='09'||proj.moduleId!=='09.02'||proj.level!==topic.level)fail(id,'Published metadata projection mismatches the catalog');
    if(proj.status!=='authored'||proj.reviewedAt!==null)fail(id,'Publication review date cannot be invented');
    if(!Array.isArray(proj.objectives)||proj.objectives.length<3||!Array.isArray(proj.rubric)||proj.rubric.length<3)fail(id,'Missing pedagogy/rubric metadata');

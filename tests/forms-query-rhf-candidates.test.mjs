@@ -68,3 +68,12 @@ test('publication candidates allow exactly zero or all eight live lessons',()=>{
  assert.ok(live===0||live===8);
  assert.equal(audit.records.every(x=>x.publishCandidatePresent),true);
 });
+
+test('all candidate metadata blockers respect the isolated locked React lab',()=>{
+ for(const lesson of audit.records){
+  const manifest=JSON.parse(read('release-candidates/forms-query/09.02/lessons/'+lesson.id+'.meta.json'));
+  assert.equal(manifest.blockedOn.some(x=>/root npm dependency lock|root RHF|root resolver/i.test(x)),false);
+  assert.ok(manifest.blockedOn.some(x=>x.includes('nested npm ci')));
+  assert.ok(manifest.blockedOn.some(x=>x.includes('screen reader')));
+ }
+});

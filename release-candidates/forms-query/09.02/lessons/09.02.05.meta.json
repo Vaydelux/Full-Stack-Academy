@@ -44,9 +44,9 @@
   },
   "targetPath": "src/content/lessons/09.02.05.meta.json",
   "blockedOn": [
-    "Genuine root npm dependency lock",
-    "Real exercise acceptance and Chromium",
-    "Named human keyboard/assistive-technology review"
+    "Run genuine nested npm ci and actual React Hook Form/Chromium positive and negative checks",
+    "Pass published Next MDX route/build and local lab acceptance on exact candidate",
+    "Record actual reviewer, screen reader, keyboard and 200% zoom evidence"
   ],
   "requiredVerifyScript": "npm run lab:forms-query-async-submission"
 }
