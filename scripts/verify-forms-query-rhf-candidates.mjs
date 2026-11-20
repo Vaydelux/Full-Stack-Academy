@@ -117,5 +117,5 @@ if(process.argv[1]&&fileURLToPath(import.meta.url)===path.resolve(process.argv[1
  else console.log('RHF 09.02 publication candidates: '+result.candidateCount+'/8 structural packs; '+result.issues.length+
   ' source issues; published '+result.publishedCount+'; real release gates PENDING.');
  if(result.issues.length)console.error(JSON.stringify(result.issues,null,2));
- if((flags.has('--check')&&result.issues.length)||(flags.has('--strict'&&!result.readyToPublish))process.exitCode=1;
+ if((flags.has('--check') && result.issues.length) || (flags.has('--strict') && !result.readyToPublish))process.exitCode=1;
 }

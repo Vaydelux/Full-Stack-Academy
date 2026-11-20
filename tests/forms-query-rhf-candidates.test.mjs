@@ -34,6 +34,13 @@ test('short exact canonical titles are valid while arbitrary short titles remain
  assert.equal(zod.publishedMetadata.title,'Zod resolvers');
  assert.equal(zod.publishedMetadata.reviewedAt,null);
 });
+test('candidate source --check exits successfully when source is structurally valid',()=>{
+ const command=spawnSync(process.execPath,['scripts/verify-forms-query-rhf-candidates.mjs','--check'],
+  {cwd:root,encoding:'utf8'});
+ assert.equal(command.status,0,command.stderr);
+ assert.match(command.stdout,/8\/8 structural packs/);
+});
+
 test('the strict release flag fails safely without synthesizing reviewer approval',()=>{
  const command=spawnSync(process.execPath,['scripts/verify-forms-query-rhf-candidates.mjs','--strict'],
   {cwd:root,encoding:'utf8'});
