@@ -89,6 +89,21 @@ export default function TaskForm(){
 4. **Regression:** The string `  done ` must be transformed to `done`. `   ` and a 101-character title must not invoke the submit callback. Server 422 must still be handled.
 5. **Operational boundary:** zodResolver is not authorization or persistence. The loopback API rejects invalid title/priority independently and must not trust the browser schema.
 
+## Production decision guide: two parsing boundaries and two value types
+
+A transforming Zod schema distinguishes the entered value from the parsed result. When the schema trims text, `z.input<typeof schema>` describes what arrives from the form and `z.output<typeof schema>` describes the validated result. TypeScript does not perform that conversion at runtime; the resolver must actually run. The server must independently parse untrusted JSON even if the same policy is used in the browser.
+
+| Value | Browser outcome | HTTP boundary |
+| --- | --- | --- |
+| Spaces only | Reject after trimming | Reject direct API requests too |
+| Padded valid title | Return normalized title | Validate the normalized record |
+| 101-character title | Field validation error | Return 422-style error |
+| Wrong priority or unexpected JSON | No trusted client guarantee | Parse and reject the request |
+
+**Independent exercise:** Trace the raw textbox value, the resolver output and the API payload for `"  done "`. Repeat with `"   "`. Show that the invalid case never calls the successful submission callback.
+
+**Boundary rule:** A shared schema reduces duplication, not trust boundaries. The backend must validate its own request data. Render known field errors as text, preserve user input on a 422 and avoid treating a correct TypeScript type as authorization.
+
 ## Guided local lab
 
 The staged red starter and instructor solution are available in `drafts/forms-query/labs/zod-resolver/`. The acceptance specification describes behaviors to implement and verify with actual library packages. This is **not** a published or automatically graded lab and has no LabGate until tests pass.

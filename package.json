@@ -390,7 +390,8 @@
     "lab:openapi-version-strategy": "node --test labs/openapi-version-strategy/solution.test.mjs",
     "lab:openapi-generated-client-capstone": "node --test labs/openapi-generated-client-capstone/solution.test.mjs",
     "test:backend-contract": "node --test labs/security-proxy-tls/solution.test.mjs labs/security-cors-csrf/solution.test.mjs labs/security-session-cookies/solution.test.mjs labs/security-request-limiter/solution.test.mjs labs/security-body-size/solution.test.mjs labs/security-ssrf-allowlist/solution.test.mjs labs/security-log-redaction/solution.test.mjs labs/security-insecure-endpoint/solution.test.mjs labs/openapi-document-layout/solution.test.mjs labs/openapi-request-response/solution.test.mjs labs/openapi-bearer-schemes/solution.test.mjs labs/openapi-operation-ids/solution.test.mjs labs/openapi-generate-client/solution.test.mjs labs/openapi-contract-compat/solution.test.mjs labs/openapi-version-strategy/solution.test.mjs labs/openapi-generated-client-capstone/solution.test.mjs",
-    "test:red-backend-contract": "node --test tests/backend-contract-red-starters.test.mjs"
+    "test:red-backend-contract": "node --test tests/backend-contract-red-starters.test.mjs",
+    "test:forms-query-rhf-editorial": "node --test tests/forms-query-rhf-editorial.test.mjs"
   },
   "dependencies": {
     "clsx": "^2.1.1",

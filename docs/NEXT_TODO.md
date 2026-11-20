@@ -1,3 +1,5 @@
+> **Phase P1 editorial checkpoint (2026-11-20):** Eight 09.02 RHF drafts received individualized decision guides and regressions, without changing their red/green TSX examples. Run `npm run test:forms-query-rhf-editorial` plus all release gates on a Node24 checkout. **No lessons published in this milestone**; count remains 338/889. Details: `docs/P1_RHF_EDITORIAL_ACCEPTANCE.md`.
+
 # Publication-first master priority — 2026-11-20
 
 Finish the **889 existing canonical topics**, one verified module at a time, **before expanding the academy**. New source-derived seven-phase plan and acceptance gates: `docs/ACADEMY_889_PUBLICATION_PROGRAM.md`.

@@ -90,6 +90,21 @@ export default function SettingsForm(){
 4. **Regression:** Enter a nonempty title, force server 503, and verify the field remains dirty. Repeat with 201 and confirm reset clears it.
 5. **Operational boundary:** Do not store private form drafts or server error bodies into telemetry by default; client state may contain sensitive data.
 
+## Production decision guide: reset only after a confirmation
+
+`isDirty` compares current values against RHF defaults; it is not a database-persistence signal. `dirtyFields` describes per-field edits, not what an API accepted. Calling `reset()` before the result arrives can destroy the only surviving user draft if the request fails or the response is lost.
+
+| Transition | Expected draft | Reset policy |
+| --- | --- | --- |
+| Initial edit | Keep typed value | No reset |
+| Request pending | Keep value, prevent duplicates | No reset |
+| Server returns 503 | Keep value for retry | No reset |
+| Server confirms 201 | Display confirmation | Reset to intended baseline |
+
+**Independent exercise:** Save a valid title with a forced 503, inspect `isDirty` and confirm the text remains editable. Repeat with a 201 and confirm the reset. Explain why a loading spinner is not a saved acknowledgement.
+
+**Advanced boundary:** If the server normalizes the saved record, an edit form should reset against the *confirmed server value* rather than an arbitrary initial value. New remote data arriving during a dirty edit needs an explicit conflict policy. Do not send private draft content into analytics or error telemetry by default.
+
 ## Guided local lab
 
 The staged red starter and instructor solution are available in `drafts/forms-query/labs/reset-dirty/`. The acceptance specification describes behaviors to implement and verify with actual library packages. This is **not** a published or automatically graded lab and has no LabGate until tests pass.

@@ -22,6 +22,7 @@ const steps = [
   'test:forms-query-native-ui',
   'test:forms-query-browser-navigation',
   'test:forms-query-promotion',
+  'test:forms-query-rhf-editorial',
   'test:curriculum-readiness',
   'test:publication-phases',
   'validate',

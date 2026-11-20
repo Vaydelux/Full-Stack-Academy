@@ -115,6 +115,21 @@ export default function RetryForm(){
 4. **Regression:** Simulate an accepted 201 with a lost response. Retry must preserve both body and key. Double-click while pending and verify no second fetch starts.
 5. **Operational boundary:** An in-memory idempotency key protects only one process lifetime. Real billing/financial mutations require durable server-side deduplication.
 
+## Production decision guide: separate a retry from a new command
+
+An ambiguous response is not proof that the server did nothing. A create can be committed before the browser loses the response. A retry of the **same logical command** must retain the original request body and idempotency key; changing only the key can create a duplicate. A genuinely new task needs a fresh logical key. A local in-flight guard prevents ordinary double clicks, but not requests from another tab or device.
+
+| Observation | Client policy | Backend responsibility |
+| --- | --- | --- |
+| Two clicks while pending | Send one request | Deduplicate concurrently |
+| Accepted create, response lost | Retry the same body and key | Return the prior outcome |
+| User edits after uncertain result | Do not reuse key with a different body | Reject conflicting reuse |
+| Different intentional task | Use a new key | Commit independently |
+
+**Independent exercise:** Simulate a successful 201 that never reaches the browser, then replay. Count actual server effects, not just client calls. Change the retry key and explain precisely when duplication becomes possible.
+
+**Real-system caveat:** Aborting a fetch does not guarantee the server aborted the operation. For important financial, order or account mutations, deduplication must be durable, correctly scoped and expire under a deliberate retention policy. The educational loopback API is not a payment ledger.
+
 ## Guided local lab
 
 The staged red starter and instructor solution are available in `drafts/forms-query/labs/async-submission/`. The acceptance specification describes behaviors to implement and verify with actual library packages. This is **not** a published or automatically graded lab and has no LabGate until tests pass.
