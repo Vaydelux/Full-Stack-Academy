@@ -21,6 +21,7 @@ const steps = [
   'test:forms-query-react-wiring',
   'test:forms-query-native-ui',
   'test:forms-query-browser-navigation',
+  'test:forms-query-promotion',
   'test:curriculum-readiness',
   'validate',
   'verify:content',
