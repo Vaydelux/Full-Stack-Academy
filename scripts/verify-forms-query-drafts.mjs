@@ -10,7 +10,8 @@ import { fileURLToPath } from 'node:url';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const staging=path.join(root,'drafts','forms-query');
-const read=relative=>fs.readFileSync(path.join(root,relative),'utf8');
+const normalizeLineEndings=text=>text.replaceAll('\r\n','\n');
+const read=relative=>normalizeLineEndings(fs.readFileSync(path.join(root,relative),'utf8'));
 const readJSON=relative=>JSON.parse(read(relative));
 const catalog=readJSON('data/curriculum.json').lessons;
 const expected=catalog.filter(x=>x.moduleId==='09.02'||x.moduleId==='09.03').sort((a,b)=>a.id.localeCompare(b.id));
@@ -22,7 +23,7 @@ const safeFile=relative=>{
  const resolved=path.resolve(root,relative);
  assert.ok(resolved.startsWith(staging+path.sep),'Lab path escapes staging root');
  assert.ok(fs.statSync(resolved).isFile(), 'Missing source '+relative);
- return fs.readFileSync(resolved,'utf8');
+ return normalizeLineEndings(fs.readFileSync(resolved,'utf8'));
 };
 
 check('canonical staging scope',()=>{

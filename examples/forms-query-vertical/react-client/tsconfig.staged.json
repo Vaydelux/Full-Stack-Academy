@@ -1,0 +1,14 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "paths": {
+      "react-hook-form": ["./node_modules/react-hook-form"],
+      "@hookform/resolvers/zod": ["./node_modules/@hookform/resolvers/zod"],
+      "@tanstack/react-query": ["./node_modules/@tanstack/react-query"],
+      "zod": ["./node_modules/zod"],
+      "react": ["./node_modules/@types/react"],
+      "react/jsx-runtime": ["./node_modules/@types/react/jsx-runtime.d.ts"]
+    }
+  },
+  "include": ["../../../drafts/forms-query/labs/**/*.tsx"]
+}

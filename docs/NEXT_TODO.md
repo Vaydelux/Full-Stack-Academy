@@ -2,11 +2,21 @@
 
 ## Current status and source of truth
 
-- Most recent prior merge: **PR #33** (`b8b466d7e380b02eaf60e12eabea30eb17f89172`). This branch `feat/forms-query-real-node-92-browser-diagnostics-20261120` establishes actual Node socket evidence and fail-fast browser navigation diagnostics.
+- Baseline: **PR #34**, merged at `00f601d5`. Local qualification work is on `fix/local-release-qualification`.
 - **28 tracks / 111 modules / 889 topics / 338 published unique lessons / 337 published MDX+lab manifests / 42 completed modules.** **551 topics unpublished**, 16 React Hook Form 09.02 + TanStack Query 09.03 topics staged with MDX/metadata/red+instructor assets, 535 unstaged.
 - **No RHF/Query staged lesson has been promoted or published.** No Actions or Vercel checks used. The task API is intentionally unauthenticated, memory-only and bound to local loopback; do not publicly deploy it.
 
-## P0 — Concrete qualification evidence just completed
+## Current local qualification
+
+- Node 24.22.3 resolved the real nested React/Vite lockfile. The Vite build, client typecheck and typecheck of all 16 staged starter/instructor pairs passed. The root and nested npm audits each reported zero findings for the installed dependency graphs.
+- All 130 Forms/Query Node cases and the 16-pack staging source contract passed. Chrome passed 15 native checks and seven React workspace scenarios against the actual loopback API. The case with a lost POST response committed once and replayed the same request key.
+- All 16 instructor examples passed their behavior assertions in Chrome, and each starter triggered its intended failing assertion. The isolated Next SSR fixture rendered prefetched data in HTML, hydrated the cache without a fresh browser fetch, and demonstrated the starter fetching after hydration.
+- The academy's `verify:offline` passed on Node 24. It covered lint, TypeScript, content and checkpoint integrity, all 337 published lab manifests, the negative-starter gates and the Next production build. The academy production browser smoke passed locally.
+- The combined `npm run qualify:forms-query:full` completed all 15 steps from locked reinstalls through the three Chrome gates on this branch.
+- Before promotion, complete manual accessibility review, including screen-reader announcements and zoom. Integrate one eight-topic module at a time into the published registries and lab entry points, then run the publication gates on that candidate.
+- The next curriculum batches remain NestJS track 11, PostgreSQL track 12, Prisma track 13 and Supabase track 14.
+
+## Historical PR #34 qualification
 
 - [x] Reconstructed a **partial local checkout** with the original GitHub source blobs, verifying source files and test suites against their exact Git blob SHAs. Node 22.16.0, real ephemeral localhost HTTP listener, no npm/browser testing package.
 - [x] **22/22** repository-owned `forms-query-http` Node HTTP tests, including static serving/CSP, validation, idempotency, pagination and host security.
@@ -20,7 +30,7 @@
 - [x] Add a pure browser-page classifier and 10 Node tests; the browser gate now checks the actual document state, reports policy errors clearly, and independently verifies the served HTML before declaring readiness. Never bypass enterprise/browser policy.
 - [x] Register diagnostic tests in `package.json`, `verify:offline` and Forms/Query source qualification; preserve previous 15 native Chromium UI checks as a separate future gate.
 
-## Next unfinished release gates (do not mark complete)
+## Release gates recorded at PR #34
 
 1. **Real browser on a permitted local machine:** run `npm run qualify:forms-query:browser` and fix the actual native UI failures if any. Inspect responsive 320px/tablet/desktop, keyboard/zoom/focus and screen-reader expectations. The managed browser here blocked the site—this is NOT a UI success.
 2. **Full Node24 source checkout:** run `npm run qualify:forms-query:source`, `npm ci`, all offline scripts, all 337 published lab manifests/negative starters, lint/typecheck/Next production build. The 102-case run is a partial test checkout and does not prove the full academy.
@@ -41,7 +51,7 @@ npm run test:forms-query-browser-navigation
 # Native UI in an approved local Chromium/Chrome/Edge (blocked here):
 npm run qualify:forms-query:browser
 
-# Full Node24/npm/root+nested application qualification:
+# Node 24/root and nested builds, both local browser gates, and staged SSR:
 npm run qualify:forms-query:full
 ```
 

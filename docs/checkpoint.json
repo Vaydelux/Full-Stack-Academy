@@ -9,9 +9,9 @@
     "productionUrl": "https://fullstack-academy-ecru.vercel.app/"
   },
   "development": {
-    "branch": "main",
-    "state": "forms-query-source-verified-real-http-chrome-policy-blocked",
-    "note": "Latest partial local checkout reconstructed byte-for-byte from GitHub blob sources. Node22.16 test run: 22 HTTP, 29 workflow, 20 TypeScript client, 9 native-DOM events over real sockets, 12 policy, 10 new browser-navigation diagnostic = 102/102 actual Node tests passed, 0 fail/skip. Chromium144 CDP started but managed organization policy blocked http://127.0.0.1, resulting in chrome-error://chromewebdata/ although Node health/HTML returned 200. New fail-fast classifier reports policy block and does not bypass it. No actual Chrome UI, root Node24/npm Next, nested RHF/Query installation/build, or 16 staged lesson runtime qualification. Published source snapshot unchanged 338 unique IDs/337 MDX+labs/42 completed modules. No GitHub Actions or Vercel."
+    "branch": "fix/local-release-qualification",
+    "state": "forms-query-local-build-and-browser-verified",
+    "note": "Node 24.22.3 and Chrome 156 qualified the locked Forms/Query practice app and all 16 staged lesson pairs, including the isolated Next hydration fixture. The 130-case Forms/Query source suite, native browser gate, Next production build and academy browser smoke passed locally. Manual accessibility and integration into publication registries remain pending. Published source snapshot is 338 unique IDs, 337 MDX and lab manifests, and 42 completed modules."
   },
   "snapshot": {
     "tracks": 28,

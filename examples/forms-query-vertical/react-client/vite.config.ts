@@ -4,6 +4,8 @@ import react from '@vitejs/plugin-react';
 // Only for local loopback teaching. Never point the proxy at a public backend.
 export default defineConfig({
   plugins: [react()],
+  // The standalone client uses plain CSS and must not load Next's parent config.
+  css: { postcss: { plugins: [] } },
   server: {
     host: '127.0.0.1',
     port: 5173,

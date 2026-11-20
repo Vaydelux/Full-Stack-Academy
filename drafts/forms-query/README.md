@@ -4,17 +4,17 @@
 
 ## Why staging matters
 
-The production registry (`src/content/lesson-registry.tsx`, `src/lib/academy/published.ts`) and `labs/` are intentionally untouched. The lab runner automatically executes every registered lab, and the root runtime has not installed/locked react-hook-form, @hookform/resolvers or @tanstack/react-query. Publishing these files before real npm/Next/browser qualification would misrepresent verification.
+The examples use the locked dependencies in `examples/forms-query-vertical/react-client`. The academy publication registries and the published lab runner receive each module when it is ready for promotion.
 
-Each draft includes: problem, mental model, prediction, three guided implementation steps, a realistic bug hunt, knowledge check, private security boundary, primary and secondary official references, red starter, solution, lab.json contract and test plan. Examples use React Hook Form v7, TanStack Query v5, React 19, TypeScript 5 and Zod 4. **These version targets are advisory until npm resolves and writes its own lockfile.**
+Each draft includes a problem, mental model, prediction, three guided implementation steps, a bug hunt, knowledge check, rubric, official references, starter, solution and lab contract. The examples use React Hook Form 7, TanStack Query 5, React 19, TypeScript 5 and Zod 4.
 
 ## Promotion gate
 
-1. Generate a real trusted `package-lock.json` using npm from compatible RHF, Zod resolver and TanStack Query packages on the actual Node 24 checkout.
-2. Inspect and run each staged solution against real packages. Write runnable positive assertions and a reproducibly failing negative starter for each lesson. Use React Testing Library/Vitest or the academy's established harness, not regex-only source assertions.
-3. Fix TypeScript and accessibility issues in each example; exercise keyboard and screen reader errors at mobile widths.
-4. Promote an entire module (all 8 topics) atomically into `src/content/lessons/`, `labs/`, `src/content/lesson-registry.tsx`, `src/lib/academy/published.ts`, `package.json` and `docs/checkpoint.json`.
-5. Run local `npm ci && npm run verify:offline` and nested React typecheck/build before marking any lesson `authored` or `verified`. Do not bypass release gates based on AI confidence.
+1. Use Node 24 and install the root and nested lockfiles with `npm ci`.
+2. Run `npm run typecheck:staged --prefix examples/forms-query-vertical/react-client` and `npm run qualify:forms-query:react-browser` with the browser setup in the [project README](../../examples/forms-query-vertical/README.md). All 16 instructor examples passed their assertions in Chrome, and each starter produced its expected assertion failure.
+3. Review keyboard, screen-reader announcements, focus and zoom across the staged exercises.
+4. Promote one full module (all eight topics) into `src/content/lessons/`, `labs/`, `src/content/lesson-registry.tsx`, `src/lib/academy/published.ts`, `package.json` and `docs/checkpoint.json`.
+5. Run the local qualification and academy browser smoke on the publication candidate.
 
 The staging validator in `scripts/verify-forms-query-drafts.mjs` checks metadata, canonical order, required teaching elements and starter/solution file presence. It **does not execute RHF/TanStack** and cannot qualify a lesson by itself.
 

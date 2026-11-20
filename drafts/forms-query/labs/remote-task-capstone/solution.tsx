@@ -27,7 +27,7 @@ export default function RemoteTaskCapstone(){
  const [notice,setNotice]=useState('');
  const [mutationError,setMutationError]=useState('');
  const key=['tasks',{status:filter,limit:10}] as const;
- const attempt=useRef<Attempt|null>(null);
+ const [attempt,setAttempt]=useState<Attempt|null>(null);
  const submitting=useRef(false);
  const form=useForm<z.input<typeof TaskInput>,unknown,z.output<typeof TaskInput>>({
   resolver:zodResolver(TaskInput),defaultValues:{title:'',priority:'normal'},
@@ -88,14 +88,14 @@ export default function RemoteTaskCapstone(){
  });
  async function send(operation:Attempt){
   if(submitting.current)return;
-  submitting.current=true;attempt.current=operation;setNotice('Submitting…');
+  submitting.current=true;setAttempt(operation);setNotice('Submitting…');
   try{
    await create.mutateAsync(operation);
-   attempt.current=null;form.reset();setNotice('Created; fetching fresh server data');
+   setAttempt(null);form.reset();setNotice('Created; fetching fresh server data');
    void queryClient.resetQueries({queryKey:['tasks']});
   }catch(error){
-   const transient=!(error instanceof StatusError)||error.status===429||error.status>=500;
-   if(!transient)attempt.current=null;
+   const transient=!(error instanceof StatusError)||error.status===408||error.status===429||error.status>=500;
+   if(!transient)setAttempt(null);
    setNotice(transient?'Result unconfirmed; retry with the SAME key.':'Request rejected; correct the input before a new create.');
    form.setError('root.server',{message:String(error)});
   }finally{submitting.current=false;}
@@ -103,10 +103,10 @@ export default function RemoteTaskCapstone(){
  const anyPending=create.isPending||status.isPending||remove.isPending;
  return <section>
   <h2>Remote task workflow</h2>
-  <form onSubmit={form.handleSubmit(async data=>{
-   if(attempt.current)return;
+  <form onSubmit={event=>{void form.handleSubmit(async data=>{
+   if(attempt)return;
    await send({body:data,key:crypto.randomUUID()});
-  })}>
+  })(event);}}>
    <label htmlFor="cap-title">Task title</label>
    <input id="cap-title" {...form.register('title')} aria-invalid={!!form.formState.errors.title}
     aria-describedby={form.formState.errors.title?'cap-title-error':undefined}/>
@@ -115,11 +115,11 @@ export default function RemoteTaskCapstone(){
    <select id="cap-priority" {...form.register('priority')}>
     <option value="normal">Normal</option><option value="low">Low</option><option value="high">High</option>
    </select>
-   <button type="submit" disabled={anyPending||!!attempt.current}>Create</button>
+   <button type="submit" disabled={anyPending||!!attempt}>Create</button>
   </form>
   {form.formState.errors.root?.server&&<p role="alert">{form.formState.errors.root.server.message}</p>}
-  <button type="button" disabled={anyPending||!attempt.current}
-   onClick={()=>{if(attempt.current)void send(attempt.current)}}>Retry same create</button>
+  <button type="button" disabled={anyPending||!attempt}
+   onClick={()=>{if(attempt)void send(attempt)}}>Retry same create</button>
   <p role="status">{notice}</p>
   <label htmlFor="task-status-filter">Filter tasks</label>
   <select id="task-status-filter" value={filter} onChange={event=>setFilter(event.target.value as 'all'|TaskState)}>

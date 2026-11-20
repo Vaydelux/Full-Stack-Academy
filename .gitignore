@@ -17,6 +17,8 @@ node_modules
 
 # production
 /build
+/examples/forms-query-vertical/react-client/dist/
+/examples/forms-query-vertical/.ssr-qualification-*/
 
 # misc
 .DS_Store

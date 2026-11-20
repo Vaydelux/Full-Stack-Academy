@@ -51,7 +51,7 @@ The test server uses an ephemeral loopback port (no privileged port). It is star
 - The server binds to 127.0.0.1 or ::1 only, rejects spoofed Host and absolute HTTP request targets, and rejects mismatched Origin / cross-site Fetch Metadata. No wildcard CORS is issued. Vite's local proxy rewrites only its exact trusted dev Origin to the local API Origin.
 - There are **no accounts, durable database, authorization, TLS, production rate limits or multi-user isolation**. Do not deploy to an internet-facing host.
 
-## Real React Hook Form + TanStack Query source (UNQUALIFIED until npm install)
+## React Hook Form and TanStack Query practice
 
 A separate Vite project lives in react-client/. It imports the **real** packages rather than fake teaching replicas. Its manifest declares React 19, RHF 7, @hookform/resolvers 7, TanStack Query 5 and Zod 4. The manifest is deliberately isolated from the root Next.js package so a missing library never breaks the academy site.
 
@@ -65,13 +65,21 @@ Then in another terminal:
 
 ```bash
 cd examples/forms-query-vertical/react-client
-npm install
+npm ci
 npm run typecheck
 npm run build
 npm run dev
 ```
 
-Visit http://127.0.0.1:5173/ . Vite forwards /api to the loopback server; use no public reverse proxy. The nested project intentionally does **not** have a checked-in package-lock until npm can resolve the package registry; do not claim it is reproducible or CI-qualified yet. Review the resolved dependency tree, commit the actual npm-generated lockfile, then rerun the checks against that exact head before publishing as lessons.
+Visit http://127.0.0.1:5173/ . Vite forwards `/api` to the loopback server. The nested lockfile fixes the real React Hook Form, resolver, Query, Zod and Vite versions used for local verification.
+
+From the repository root, install both locked dependency trees with Node 24. For browser verification, set `ACADEMY_BROWSER_ROOT` to the root of an isolated Playwright installation. Set `ACADEMY_CHROME_BIN` when using an installed Chrome or Edge executable. Keep ports 3337 and 5173 available for the test runner.
+
+```bash
+npm run qualify:forms-query:browser
+npm run qualify:forms-query:react-browser
+npm run typecheck:staged --prefix examples/forms-query-vertical/react-client
+```
 
 The React source demonstrates:
 - useForm and zodResolver, typed input/output, accessible field errors and submit gating;
@@ -81,7 +89,7 @@ The React source demonstrates:
 - cancelQueries, optimistic delete, snapshot rollback on error and invalidateQueries after settle;
 - failure, loading, retry and empty states.
 
-**Current React reference:** the list uses a bounded ten-page `useInfiniteQuery`, filters each status into a separate query key, passes AbortSignal through to the real API client, and explicitly restarts from page one after a 409 stale cursor. A synchronous single-flight mutation guard prevents cross-type optimistic snapshot races. A successful POST clears its retry key before refreshing the query, so a later read failure cannot be mistaken for an unconfirmed create. Unknown POST outcomes retain the same key; terminal 4xx errors do not offer indefinite retries. **Limitations:** React package installation, real typecheck, browser interaction/a11y and SSR hydration remain unqualified. This in-memory API is not a production service. The full React runtime was not executable during this implementation because the npm registry was unreachable.
+The list caps `useInfiniteQuery` at ten pages, keys cached data by status, forwards the request abort signal, and restarts on a 409 stale cursor. A single-flight mutation guard protects optimistic snapshots. A confirmed POST clears the retry key before refreshing the list. An unconfirmed POST retains the original key and payload. The local Chrome gate covers these recovery paths and the staged lessons, including SSR. Manual accessibility review remains pending.
 
 ## Learning and implementation progression
 

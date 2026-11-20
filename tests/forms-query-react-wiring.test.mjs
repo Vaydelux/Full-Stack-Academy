@@ -76,9 +76,10 @@ test('React UI supports smaller layouts and keyboard focus', () => {
   assert.match(stylesheet, /prefers-reduced-motion/);
 });
 
-test('academy project page continues to label source as unqualified', () => {
+test('academy project page documents locked install and qualification for staged lessons', () => {
   assert.match(project, /staged|Staged/);
-  assert.match(project, /npm install/);
+  assert.match(project, /npm ci/);
+  assert.match(project, /qualify:forms-query:react-browser/);
   assert.match(project, /index: false/);
 });
 

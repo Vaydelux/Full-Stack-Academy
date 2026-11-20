@@ -40,7 +40,7 @@ export default function FormsQueryProjectPage() {
       </p>
       <div className="mt-6">
         <DocNotice>
-          <strong>Local developer project, not a hosted API.</strong> The server stores everything in memory, binds only to loopback and does not have authentication or durable storage. Do not expose it to the internet. The separate React example still requires a real npm install, typecheck and browser review before its parent lessons can be published.
+          <strong>Local developer project.</strong> The unauthenticated API stores tasks in memory and binds to loopback. Run it on the same machine as your browser.
         </DocNotice>
       </div>
       <section aria-labelledby="run-project" className="mt-9">
@@ -49,8 +49,8 @@ export default function FormsQueryProjectPage() {
         <CodeBlock file="Terminal · repository root" code="node examples/forms-query-vertical/task-api.mjs" />
         <p className="text-sm">Open <code className="rounded bg-slate-200 px-1 dark:bg-white/10">http://127.0.0.1:3337/</code> in a browser running on the same machine.</p>
         <h3 className="mt-6 text-base font-bold">Optional separate React client (requires package installation)</h3>
-        <CodeBlock file="Second terminal · local machine" code={'cd examples/forms-query-vertical/react-client\nnpm install\nnpm run typecheck\nnpm run dev'} />
-        <p className="text-sm leading-7 text-slate-600 dark:text-slate-300">Visit <code className="rounded bg-slate-200 px-1 dark:bg-white/10">http://127.0.0.1:5173/</code> only after those commands pass. The React package lockfile and browser qualification are still outstanding; the app should not be considered ready merely because source exists.</p>
+        <CodeBlock file="Second terminal · local machine" code={'cd examples/forms-query-vertical/react-client\nnpm ci\nnpm run typecheck\nnpm run dev'} />
+        <p className="text-sm leading-7 text-slate-600 dark:text-slate-300">Visit <code className="rounded bg-slate-200 px-1 dark:bg-white/10">http://127.0.0.1:5173/</code> after Vite starts. Use Node.js 24 to match the local qualification environment.</p>
       </section>
       <section aria-labelledby="flow" className="mt-10">
         <h2 id="flow" className="text-xl font-bold">2. Follow the request lifecycle</h2>
@@ -71,13 +71,15 @@ export default function FormsQueryProjectPage() {
         <p className="text-sm leading-7 text-slate-600 dark:text-slate-300">The workflow suite covers stale revision rejection, invalid input, list cursor/filter isolation and spoofed Host rejection. The new typed-client HTTP suite verifies actual page cursors, idempotent replay and competing writes. Source checks do not substitute for mounted React browser tests.</p>
         <h3 className="mt-6 text-base font-bold">Optional real Chrome/Edge/Chromium UI gate</h3>
         <CodeBlock file="Terminal · local Node 22+ and a browser installed" code="npm run qualify:forms-query:browser" />
-        <p className="text-sm leading-7 text-slate-600 dark:text-slate-300">This separate browser gate launches the native task UI on loopback and checks real form submission, terminal errors, response-loss retries, explicit discard, status-update locking, stale cursor recovery, mobile overflow and keyboard focus. It does not run RHF or TanStack Query; those packages require their own browser qualification. No cloud service or GitHub Actions are used.</p>
+        <p className="text-sm leading-7 text-slate-600 dark:text-slate-300">The native browser gate checks form submission, response-loss retries, explicit discard, status updates, stale cursor recovery, mobile layout and keyboard focus.</p>
+        <CodeBlock file="Terminal · Node 24 and isolated Playwright" code="npm run qualify:forms-query:react-browser" />
+        <p className="text-sm leading-7 text-slate-600 dark:text-slate-300">The React browser gate also exercises both variants of each staged lesson, including Next.js hydration.</p>
       </section>
       <section aria-labelledby="staged-roadmap" className="mt-10 border-t border-slate-200 pt-8 dark:border-white/10">
         <p className="text-xs font-extrabold uppercase tracking-[.16em] text-cyan-700 dark:text-cyan-300">Curriculum preparation</p>
         <h2 id="staged-roadmap" className="mt-2 text-xl font-bold">16-topic implementation roadmap</h2>
         <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-600 dark:text-slate-300">
-          Each topic below has a separate guided MDX draft, a deliberately broken starter, an instructor implementation, and a lab acceptance contract in GitHub. The topics remain planned, not published or automatically graded, until their real packages and browser tests pass.
+          Each staged topic includes a guided draft, a deliberately broken starter, an instructor implementation and a lab acceptance contract. Manual accessibility review and academy integration remain before publication.
         </p>
         <div className="mt-5 grid gap-4 lg:grid-cols-2">
           {stagedModuleRoadmap.map(module => (
