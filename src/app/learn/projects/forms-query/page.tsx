@@ -79,7 +79,10 @@ export default function FormsQueryProjectPage() {
         <p className="text-xs font-extrabold uppercase tracking-[.16em] text-cyan-700 dark:text-cyan-300">Curriculum preparation</p>
         <h2 id="staged-roadmap" className="mt-2 text-xl font-bold">16-topic implementation roadmap</h2>
         <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-600 dark:text-slate-300">
-          Each staged topic includes a guided draft, a deliberately broken starter, an instructor implementation and a lab acceptance contract. Manual accessibility review and academy integration remain before publication.
+          Each staged topic includes a readable, on-site draft preview, a deliberately broken starter,
+          an instructor implementation and a lab acceptance contract. Previews are not indexed, do
+          not grant course progress and do not execute the TSX exercises. Manual accessibility review
+          and academy integration remain required before publication.
         </p>
         <div className="mt-5 grid gap-4 lg:grid-cols-2">
           {stagedModuleRoadmap.map(module => (
@@ -92,13 +95,17 @@ export default function FormsQueryProjectPage() {
                   <li key={topic.id} className="flex items-start justify-between gap-3 py-3">
                     <div className="min-w-0">
                       <span className="block font-mono text-[11px] text-slate-500">{topic.id}</span>
-                      <a href={'https://github.com/Vaydelux/Full-Stack-Academy/blob/main/drafts/forms-query/lessons/' + topic.id + '.mdx'}
-                        target="_blank" rel="noopener noreferrer"
+                      <Link href={'/learn/projects/forms-query/drafts/' + topic.id}
                         className="mt-1 block text-sm font-semibold text-cyan-700 underline-offset-2 hover:underline focus-visible:outline-2 focus-visible:outline-cyan-500 dark:text-cyan-300">
                         {topic.title}
+                      </Link>
+                      <a href={'https://github.com/Vaydelux/Full-Stack-Academy/blob/main/drafts/forms-query/lessons/' + topic.id + '.mdx'}
+                        target="_blank" rel="noopener noreferrer"
+                        className="mt-1 inline-block text-xs text-slate-600 underline-offset-2 hover:underline dark:text-slate-400">
+                        View MDX source
                       </a>
                     </div>
-                    <span className="shrink-0 rounded-full border border-slate-200 px-2 py-1 text-[10px] font-semibold text-slate-600 dark:border-white/20 dark:text-slate-300">Staged</span>
+                    <span className="shrink-0 rounded-full border border-slate-200 px-2 py-1 text-[10px] font-semibold text-slate-600 dark:border-white/20 dark:text-slate-300">Draft preview</span>
                   </li>
                 ))}
               </ol>
