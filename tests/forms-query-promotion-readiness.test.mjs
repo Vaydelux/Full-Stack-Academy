@@ -1,4 +1,5 @@
 import test from 'node:test';
+import fs from 'node:fs';
 import assert from 'node:assert/strict';
 import { inspectFormsQueryPromotion } from '../scripts/forms-query-promotion-readiness.mjs';
 
@@ -53,4 +54,10 @@ test('RHF/Query learning packages stay in the locked nested exercise workspace',
  assert.equal(query.blockers.some(x=>x.includes('Root runtime missing')),false);
  assert.equal(rhf.blockers.some(x=>x.includes('Nested npm lock')),false);
  assert.equal(query.blockers.some(x=>x.includes('Nested npm lock')),false);
+});
+
+test('source audit invalidates review evidence when RHF lesson/UI files change',()=>{
+ const program=fs.readFileSync(new URL('../scripts/forms-query-promotion-readiness.mjs',import.meta.url),'utf8');
+ assert.match(program,/e\.sourceSha256===rhfReviewFingerprint\(\)/);
+ assert.match(program,/obsolete RHF lesson\/UI fingerprint/);
 });

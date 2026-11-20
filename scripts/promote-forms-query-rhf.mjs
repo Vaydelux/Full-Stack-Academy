@@ -7,11 +7,11 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import assert from 'node:assert/strict';
-import {createHash} from 'node:crypto';
 import {spawnSync} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
 import {inspectRHFPublicationCandidates} from './verify-forms-query-rhf-candidates.mjs';
 import {inspectFormsQueryPromotion} from './forms-query-promotion-readiness.mjs';
+import {rhfReviewFingerprint} from './forms-query-review-fingerprint.mjs';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const local=p=>path.join(root,p);
 const read=p=>fs.readFileSync(local(p),'utf8');
@@ -33,49 +33,12 @@ function capture(command,args){
  if(result.error||result.status!==0)throw new Error('Could not inspect local Git state');
  return result.stdout.trim();
 }
-/** Tie human review to the actual MDX, lab examples and published/preview UI.
- * Review evidence files are intentionally excluded so recording approval does
- * not invalidate the fingerprint of the code that was actually reviewed.
- */
-function reviewFingerprint(){
- const shared=[
-  'src/content/forms-query-draft-registry.tsx',
-  'src/app/learn/projects/forms-query/drafts/[lessonId]/page.tsx',
-  'src/app/learn/[lessonId]/page.tsx',
-  'src/components/course/LessonBlocks.tsx',
-  'src/components/course/KnowledgeCheck.tsx',
-  'src/content/lesson-registry.tsx',
-  'src/lib/academy/published.ts',
-  'scripts/verify-rhf-release-browser.mjs',
-  'scripts/verify-forms-query-staged-rhf.mjs'
- ];
- const items=ids.flatMap(id=>{
-  const slug=json('drafts/forms-query/lessons/'+id+'.meta.json').labSlug;
-  const lab='forms-query-'+slug;
-  return [
-   labRoot+'/lessons/'+id+'.mdx',
-   labRoot+'/lessons/'+id+'.meta.json',
-   labRoot+'/labs/'+lab+'/lab.json',
-   labRoot+'/labs/'+lab+'/starter/solution.tsx',
-   labRoot+'/labs/'+lab+'/solution/solution.tsx',
-   labRoot+'/labs/'+lab+'/solution.test.mjs'
-  ];
- });
- const sha=createHash('sha256');
- for(const item of [...new Set([...shared,...items])].sort()){
-  sha.update(item+'\0');
-  sha.update(read(item));
-  sha.update('\0');
- }
- return sha.digest('hex');
-}
-
 function humanEvidence(){
  if(!fs.existsSync(local(evidencePath)))throw new Error('Real human accessibility review is required at '+evidencePath);
  const evidence=json(evidencePath);
  assert.equal(evidence.moduleId,'09.02');
  assert.match(evidence.sourceSha256??'',/^[a-f0-9]{64}$/);
- assert.equal(evidence.sourceSha256,reviewFingerprint(),
+ assert.equal(evidence.sourceSha256,rhfReviewFingerprint(),
   'Accessibility review belongs to different lesson/lab/UI source; repeat actual review');
  assert.equal(evidence.reviewed,true);
  assert.equal(evidence.keyboard,true);
@@ -110,7 +73,7 @@ function sourcePlan(){
   targetPublished:promotion.snapshot.published+(8-module.published),
   alreadyPublished:module.published===8,
   sourceCandidates:ids,rootDependenciesUnchanged:true,
-  reviewedSourceSha256:reviewFingerprint(),
+  reviewedSourceSha256:rhfReviewFingerprint(),
   requiredCommands:['npm ci','npm ci --prefix examples/forms-query-vertical/react-client',
    'npm run qualify:forms-query:full','npm run qualify:forms-query:rhf-browser',
    'npm run verify:offline','npm run qualify:forms-query:preview-browser'],

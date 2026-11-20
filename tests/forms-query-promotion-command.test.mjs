@@ -30,7 +30,7 @@ test('apply is explicit and requires real browser, human review and Node24',()=>
  assert.match(program,/ACADEMY_BROWSER_ROOT/);
  assert.match(program,/humanEvidence\(\)/);
  assert.match(program,/reviewer\.date/);
- assert.match(program,/evidence\.sourceSha256,reviewFingerprint\(\)/);
+ assert.match(program,/evidence\.sourceSha256,rhfReviewFingerprint\(\)/);
  assert.match(program,/git',\['status','--porcelain'\]/);
 });
 test('the promote runner performs genuine full tests before and after publication',()=>{
@@ -52,4 +52,13 @@ test('transition writes both registries and all eight lab assets with rollback o
  assert.match(program,/previous\.set\('docs\/checkpoint\.json'/);
  assert.match(program,/done\.reverse\(\)/);
  assert.match(program,/fs\.rmSync\(local\(file\),\{force:true\}\)/);
+});
+
+test('human evidence and the source-readiness audit use the same immutable RHF fingerprint',()=>{
+ const readiness=read('scripts/forms-query-promotion-readiness.mjs');
+ const helper=read('scripts/forms-query-review-fingerprint.mjs');
+ assert.match(program,/rhfReviewFingerprint\(\)/);
+ assert.match(readiness,/e\.sourceSha256===rhfReviewFingerprint\(\)/);
+ assert.doesNotMatch(helper,/src\/content\/lesson-registry\.tsx|src\/lib\/academy\/published\.ts/);
+ assert.match(helper,/src\/app\/learn\/projects\/forms-query\/page\.tsx/);
 });
