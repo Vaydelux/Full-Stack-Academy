@@ -2,6 +2,7 @@
 
 import { useId, useState } from 'react';
 import { useAcademy } from '@/lib/academy/store';
+import { useDraftLessonScope } from '@/components/course/DraftLessonScope';
 
 export function KnowledgeCheck({
   question, choices, correctIndex, explanation, misconception, lessonId,
@@ -14,6 +15,7 @@ export function KnowledgeCheck({
   lessonId?: string;
 }) {
   const group = useId();
+  const draftPreview = useDraftLessonScope();
   const [selected, setSelected] = useState<number | null>(null);
   const [submitted, setSubmitted] = useState(false);
   const passed = submitted && selected === correctIndex;
@@ -32,7 +34,7 @@ export function KnowledgeCheck({
           ))}
         </div>
       </fieldset>
-      <button type="button" disabled={selected === null} onClick={() => { setSubmitted(true); if (lessonId && selected === correctIndex) { const store = useAcademy.getState(); if (!store.hydrated) store.hydrate(); useAcademy.getState().markQuizPassed(lessonId); } }} className="mt-4 rounded-lg bg-cyan-700 px-4 py-2 text-xs font-bold text-white disabled:cursor-not-allowed disabled:opacity-40 dark:bg-[#00F0FF] dark:text-[#090A0F]">
+      <button type="button" disabled={selected === null} onClick={() => { setSubmitted(true); if (!draftPreview && lessonId && selected === correctIndex) { const store = useAcademy.getState(); if (!store.hydrated) store.hydrate(); useAcademy.getState().markQuizPassed(lessonId); } }} className="mt-4 rounded-lg bg-cyan-700 px-4 py-2 text-xs font-bold text-white disabled:cursor-not-allowed disabled:opacity-40 dark:bg-[#00F0FF] dark:text-[#090A0F]">
         Check answer
       </button>
       {submitted && (
@@ -42,7 +44,7 @@ export function KnowledgeCheck({
           {!passed && <button type="button" className="mt-2 text-xs font-semibold underline" onClick={() => { setSelected(null); setSubmitted(false); }}>Retry question</button>}
         </div>
       )}
-      <p className="mt-3 text-xs text-slate-500">{lessonId ? 'Correct answers save local self-assessment progress.' : 'Practice only; answers here are not stored as verified course credit.'}</p>
+      <p className="mt-3 text-xs text-slate-500">{draftPreview ? 'Draft preview: answers are for practice only and never save course completion.' : lessonId ? 'Correct answers save local self-assessment progress.' : 'Practice only; answers here are not stored as verified course credit.'}</p>
     </section>
   );
 }
