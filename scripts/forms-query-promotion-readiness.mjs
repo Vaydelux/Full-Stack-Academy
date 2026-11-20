@@ -80,7 +80,8 @@ export function inspectFormsQueryPromotion(){
   if(exists(evidence))try{
    const e=json(evidence);
    a11y=e.moduleId===moduleId&&e.reviewed===true&&e.keyboard===true&&e.zoom200===true&&
-    typeof e.reviewer==='string'&&e.reviewer.length>=3&&typeof e.screenReader==='string'&&e.screenReader.length>=3&&
+    typeof e.reviewer==='string'&&e.reviewer.trim().length>=3&&typeof e.screenReader==='string'&&e.screenReader.trim().length>=3&&
+    typeof e.date==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(e.date)&&
     Array.isArray(e.lessonIds)&&entries.every(x=>e.lessonIds.includes(x.id));
   }catch{fail(moduleId,'Malformed human review record')}
   const group=topics.filter(t=>t.moduleId===moduleId),blockers=[];
