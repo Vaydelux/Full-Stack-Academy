@@ -116,3 +116,26 @@ test('11.04.07 liveness distinct from dependency readiness (Nest controller)', a
     assert.deepEqual(controller.ready(), { status: 'ready' });
   });
 });
+
+
+test('11.04.08 production-style skeleton binds loopback on an ephemeral test port', async () => {
+  const { bootstrap } = await load('production-service-skeleton', 'solution');
+  const app = await bootstrap(0);
+  try {
+    assert.equal(app.getHttpAdapter().getType(), 'fastify');
+    const address = app.getHttpServer().address();
+    assert.equal(address.address, '127.0.0.1');
+    assert.ok(address.port > 0);
+    const response = await fetch('http://127.0.0.1:' + address.port + '/missing');
+    assert.equal(response.status, 404);
+  } finally { await app.close(); }
+
+  // Do not execute the intentionally unsafe starter: it binds a public interface.
+  // Verify its broken fixture still demonstrates the exact exposure learners must fix.
+  const { readFile } = await import('node:fs/promises');
+  const { fileURLToPath } = await import('node:url');
+  const starterPath = fileURLToPath(new URL('../../../drafts/nestjs/labs/production-service-skeleton/starter.ts', import.meta.url));
+  const starter = await readFile(starterPath, 'utf8');
+  assert.match(starter, /0\\.0\\.0\\.0/);
+  assert.doesNotMatch(starter, /enableShutdownHooks\\s*\\(/);
+});
