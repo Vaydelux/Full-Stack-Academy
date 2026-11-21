@@ -437,11 +437,12 @@
     "test:vercel-freeze": "node --test tests/vercel-freeze.test.mjs",
     "verify:vercel-freeze": "node scripts/verify-vercel-freeze.mjs",
     "status:nestjs-drafts": "node scripts/verify-nestjs-drafts.mjs --json",
-    "test:nestjs-drafts": "node scripts/verify-nestjs-drafts.mjs --check && node --test tests/nestjs-drafts.test.mjs && node examples/nestjs-vertical/scripts/verify-runtime-test-coverage.mjs --check && node --test examples/nestjs-vertical/tests/runtime-coverage-source.test.mjs && npm run test:nestjs-offline-transactions && npm run test:nestjs-offline-contracts",
+    "test:nestjs-drafts": "node scripts/verify-nestjs-drafts.mjs --check && node --test tests/nestjs-drafts.test.mjs && node examples/nestjs-vertical/scripts/verify-runtime-test-coverage.mjs --check && node --test examples/nestjs-vertical/tests/runtime-coverage-source.test.mjs && npm run test:nestjs-offline-transactions && npm run test:nestjs-offline-contracts && npm run test:nestjs-offline-lock",
     "qualify:nestjs:architecture": "npm run qualify --prefix examples/nestjs-vertical",
     "status:nestjs-test-coverage": "node examples/nestjs-vertical/scripts/verify-runtime-test-coverage.mjs --json",
     "test:nestjs-offline-transactions": "node --experimental-strip-types --test examples/nestjs-vertical/tests/transactions.offline.test.mjs",
-    "test:nestjs-offline-contracts": "node --experimental-transform-types --test examples/nestjs-vertical/tests/pure-contracts.offline.test.mjs"
+    "test:nestjs-offline-contracts": "node --experimental-transform-types --test examples/nestjs-vertical/tests/pure-contracts.offline.test.mjs",
+    "test:nestjs-offline-lock": "node --test examples/nestjs-vertical/tests/lock-integrity.offline.test.mjs"
   },
   "dependencies": {
     "clsx": "^2.1.1",
