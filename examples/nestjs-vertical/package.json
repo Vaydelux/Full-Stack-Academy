@@ -10,8 +10,11 @@
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "build": "tsc -p tsconfig.json",
     "test:architecture": "node --test tests/architecture.test.mjs",
-    "qualify": "node scripts/require-lock.mjs && npm ci && npm run typecheck && npm run build && npm run test:architecture && npm run test:pipeline",
-    "test:pipeline": "node --test tests/request-pipeline.test.mjs"
+    "qualify": "node scripts/require-lock.mjs && npm ci && npm run typecheck && npm run build && npm run test:runtime",
+    "test:pipeline": "node --test tests/request-pipeline.test.mjs",
+    "test:domain": "node --test tests/domain-modules.test.mjs",
+    "test:advanced": "node --test tests/advanced.test.mjs",
+    "test:runtime": "node --test tests/*.test.mjs"
   },
   "dependencies": {
     "@nestjs/common": "^12.5.1",
