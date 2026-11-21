@@ -52,3 +52,20 @@ npm run qualify:release
 ```
 
 `npm run qualify:release` is a runtime gate, not a substitute for root Next browser/human accessibility review. None of the above commands have run in this session.
+
+## Offline source integrity and revised transaction example
+
+A *dependency-free* source coverage gate now runs before any npm lock/install attempt:
+
+```bash
+npm run test:source-coverage
+# From repository root:
+npm run test:nestjs-drafts
+npm run status:nestjs-test-coverage
+```
+
+It requires each of the 32 canonical NestJS lesson IDs to be tested against its matching metadata `labSlug`, prevents accidental `test.skip`/`test.only`/`test.todo`, verifies real integration-test entrypoints, and syntax-checks suite files without loading packages. Results are **not** a claim of runtime success. The full `npm run qualify:release` remains mandatory for P2 approval.
+
+The 11.03.06 teaching transfer now rejects missing wallets and insufficient funds by checking the result `rowCount` of each parameterized UPDATE, and preserves the failed operation if rollback also fails. It requires **one checked-out database client across BEGIN/UPDATE/COMMIT/ROLLBACK**; a pooled query convenience method that changes connections between statements is unsafe. The amount is fixed at one integer unit for instructional clarity. It is not payment-grade: do not treat the example as handling retries, idempotency, ledger entries, multi-currency amounts or reconciliation.
+
+The real Socket.IO integration test now proves both isolation directions and reproduces the intentionally insecure student's global broadcast over a real loopback gateway. These integrations and the repaired transfer need execution on Node24 with actual dependencies. `require-lock.mjs` deliberately refuses unsupported Node runtimes.
