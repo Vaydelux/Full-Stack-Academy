@@ -133,3 +133,9 @@ Added `pg`, `socket.io-client`, and `@types/pg` to the nested lab dependencies, 
 Next acceptance: on a trusted Node 24 checkout, run `npm ci && npm run test:nestjs-drafts && npm run verify:offline` from the root; in `examples/nestjs-vertical`, run `npm install --package-lock-only`, commit the real lock, configure a disposable `PG_TEST_URL` with `ACADEMY_ISOLATED_PG=YES`, then run `npm run qualify:release`. Fix *observed* compiler/runtime failures before promotion; do not bypass failing assertions or invent evidence.
 
 **Freeze remains:** 338/889 live lessons, PR #39 draft/unmerged, P1 RHF then Query before any P2 publish, Vercel deployment disabled.
+
+## Expanded dependency-free offline qualification — November 21
+
+Added and committed three runnable Node-built-in tests: `transactions.offline.test.mjs` (7), `pure-contracts.offline.test.mjs` (11) and `lock-integrity.offline.test.mjs` (8). These exercise actual TS instructor and starter files where possible without installing Nest; the lock tests use in-memory fixture objects and **do not generate a fake lock**. The pure manifest validator is shared with the release lock guard, which still refuses unsupported Node versions and requires a genuine npm lock plus `npm ci`.
+
+All 26 tests passed locally in a temporary reconstructed subset on Node22. This is reproducible **behavioral evidence**, but not a full checked-out Node24 qualification, and it does not change any publication flags. See [complete offline checkpoint](NESTJS_OFFLINE_QUALIFICATION_CHECKPOINT_20261121.md).
