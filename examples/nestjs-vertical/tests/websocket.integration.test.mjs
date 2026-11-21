@@ -1,7 +1,6 @@
 import 'reflect-metadata';
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { once } from 'node:events';
 import { Module } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { FastifyAdapter } from '@nestjs/platform-fastify';
@@ -20,12 +19,20 @@ async function connect(origin, token, tenantId) {
     timeout: 3500,
     auth: { token, tenantId }, // spoofable tenantId must be ignored on server
   });
-  client.connect();
   try {
-    await Promise.race([
-      once(client, 'connect'),
-      once(client, 'connect_error').then(([error]) => { throw error; }),
-    ]);
+    await new Promise((resolve, reject) => {
+      const timer = setTimeout(() => fail(Error('Socket connect timed out')), 4000);
+      const cleanup = () => {
+        clearTimeout(timer);
+        client.off('connect', succeed);
+        client.off('connect_error', fail);
+      };
+      const succeed = () => { cleanup(); resolve(); };
+      const fail = error => { cleanup(); reject(error); };
+      client.on('connect', succeed);
+      client.on('connect_error', fail);
+      client.connect();
+    });
     return client;
   } catch (error) {
     client.disconnect();
@@ -77,10 +84,6 @@ test('11.04.03 two authenticated clients cannot receive another tenant broadcast
     bob.on('task', data => bobMessages.push(data));
     const ack = await emitAck(alice, 'task', { title: '  isolated  ', tenantId: 'bob' });
     assert.deepEqual(ack, { accepted: true });
-    // Send an explicit synchronization ping through each socket after the broadcast.
-    await Promise.all([emitAck(alice, 'ping', {}), emitAck(bob, 'ping', {})].map(
-      p => p.catch(() => undefined),
-    ));
     await new Promise(resolve => setTimeout(resolve, 150));
     assert.deepEqual(aliceMessages, [{ title: 'isolated' }]);
     assert.deepEqual(bobMessages, [], 'Bob must not receive Alice tenant broadcasts');
