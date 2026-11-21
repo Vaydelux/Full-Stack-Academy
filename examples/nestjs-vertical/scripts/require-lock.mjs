@@ -8,6 +8,10 @@ function fail(message) {
   console.error('NestJS runtime is NOT qualified: ' + message);
   process.exit(2);
 }
+const [nodeMajor, nodeMinor] = process.versions.node.split('.').map(Number);
+if (nodeMajor !== 24 || nodeMinor < 9) {
+  fail('Release qualification requires the project-pinned Node.js 24.9+ runtime; detected ' + process.version);
+}
 if (!fs.existsSync(lockPath)) {
   fail('Generate a genuine npm registry-resolved package-lock.json in examples/nestjs-vertical; never invent integrity data.');
 }
