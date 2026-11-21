@@ -35,6 +35,23 @@ test('11.03.06 committed transfer and actual PostgreSQL rollback', { timeout: 30
       { id: 'a', balance: 4 },
       { id: 'b', balance: 1 },
     ], 'Both updates must commit together');
+
+    // A zero-row UPDATE must not silently mark a transfer as successful.
+    await assert.rejects(transfer(client, 'unknown', 'b'), /Source wallet missing/);
+    await assert.rejects(transfer(client, 'a', 'unknown'), /Destination wallet missing/);
+    await assert.rejects(transfer(client, 'a', 'a'), /Distinct wallet IDs/);
+    result = await client.query('SELECT id,balance FROM wallets ORDER BY id');
+    assert.deepEqual(result.rows, [
+      { id: 'a', balance: 4 },
+      { id: 'b', balance: 1 },
+    ], 'Missing wallet and self-transfer attempts must not change balances');
+    await client.query("UPDATE wallets SET balance=0 WHERE id='a'");
+    await assert.rejects(transfer(client, 'a', 'b'), /insufficient balance/);
+    result = await client.query('SELECT id,balance FROM wallets ORDER BY id');
+    assert.deepEqual(result.rows, [
+      { id: 'a', balance: 0 },
+      { id: 'b', balance: 1 },
+    ], 'Insufficient balance must not credit destination');
   } finally {
     await client.end();
   }
