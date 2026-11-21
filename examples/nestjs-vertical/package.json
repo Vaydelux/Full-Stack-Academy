@@ -14,7 +14,11 @@
     "test:pipeline": "node --test tests/request-pipeline.test.mjs",
     "test:domain": "node --test tests/domain-modules.test.mjs",
     "test:advanced": "node --test tests/advanced.test.mjs",
-    "test:runtime": "node --test tests/architecture.test.mjs tests/request-pipeline.test.mjs tests/domain-modules.test.mjs tests/advanced.test.mjs"
+    "test:runtime": "node --test tests/architecture.test.mjs tests/request-pipeline.test.mjs tests/domain-modules.test.mjs tests/advanced.test.mjs",
+    "test:integration:pg": "node --test tests/postgres.integration.test.mjs",
+    "test:integration:sockets": "node --test tests/websocket.integration.test.mjs",
+    "qualify:integration": "node scripts/require-lock.mjs && npm run typecheck && npm run build && npm run test:integration:pg && npm run test:integration:sockets",
+    "qualify:release": "npm run qualify && npm run qualify:integration"
   },
   "dependencies": {
     "@nestjs/common": "^12.5.1",
@@ -27,10 +31,13 @@
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2",
     "zod": "^4.0.2",
-    "socket.io": "^4.8.1"
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1",
+    "pg": "^8.13.1"
   },
   "devDependencies": {
     "typescript": "^6.0.3",
-    "@types/node": "^24.0.0"
+    "@types/node": "^24.0.0",
+    "@types/pg": "^8.11.10"
   }
 }
