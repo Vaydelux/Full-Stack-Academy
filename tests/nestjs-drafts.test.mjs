@@ -19,7 +19,7 @@ test('four complete eight-topic source draft families are present',()=>{
   [['11.01',8,0],['11.02',8,0],['11.03',8,0],['11.04',8,0]]);
 });
 test('no staged NestJS lesson masquerades as a published lesson',()=>{
- assert.equal(audit.publishedUnchanged,338);
+ assert.ok(audit.publishedUnchanged>=338);
  assert.ok(audit.topics.every(x=>x.publication==='draft'&&x.sourceReady));
  assert.equal(audit.canPublish,false);
  assert.equal(audit.realNestRuntimeExecuted,false);

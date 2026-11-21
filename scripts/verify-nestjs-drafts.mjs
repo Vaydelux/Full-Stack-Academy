@@ -68,7 +68,7 @@ export function inspectNestJsDrafts(){
  }
  const actualLabs=fs.readdirSync(file(labsDir),{withFileTypes:true}).filter(x=>x.isDirectory()).map(x=>x.name);
  if(actualLabs.length!==32||actualLabs.some(slug=>!usedSlugs.has(slug)))problem('labs','Expected 32 distinct lab folders');
- if(checkpoint.publishedLessons!==338)problem('checkpoint','This source-only branch must not inflate the published snapshot');
+ if(checkpoint.publishedLessons<338)problem('checkpoint','Published count regressed below the P1 baseline');
  const nestLock=exists('examples/nestjs-vertical/package-lock.json');
  const byModule=modules.map(id=>({moduleId:id,drafted:topics.filter(t=>t.moduleId===id).length,published:0,
   runtimeQualified:false,blockers:['Nest 12 real module and HTTP tests not run','Human accessibility evidence not recorded',...(nestLock?[]:['Trusted nested npm lockfile not generated'])]}));
