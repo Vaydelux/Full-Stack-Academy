@@ -116,3 +116,20 @@ Added `tests/websocket.integration.test.mjs` for two independently authenticated
 Added `pg`, `socket.io-client`, and `@types/pg` to the nested lab dependencies, and `qualify:release` to sequentially run the 32-topic suite and both live integration suites. Rebuild the genuine lockfile from npm before executing it. Source-only JavaScript parse checks succeeded for the two new files, not execution.
 
 **Release state:** PR #39 remains draft/unmerged; main still has 338 published lessons; Vercel deployment is frozen. Runtime outcomes, dependency integrity, WebSocket isolation and real DB rollback are not yet verified, and no human a11y sign-off exists.
+
+## November 21 — expanded quality and transaction correctness (PR #39 continuation)
+
+**Actual code changes:**
+- Added `examples/nestjs-vertical/scripts/verify-runtime-test-coverage.mjs`: a Node built-ins-only, read-only audit that maps the 32 canonical 11.01–11.04 IDs to their exact staged lab slugs and test bodies; refuses missing, duplicated, skipped, focused or misassigned coverage; checks both real-integration scripts and nested release-runner wiring; syntax-checks the six test programs. The report explicitly sets `runtimeExecuted: false`, `integrationExecuted: false`, and `readyToPublish: false`.
+- Added six mutation-oriented source tests in `tests/runtime-coverage-source.test.mjs`. Mapped all 32 canonical lessons directly against their eight-topic suites and metadata through GitHub source inspection. A separate V8 evaluation of the audit function detected missing, duplicate, wrong-slug and skipped declarations in synthetic cases; the **full Node test runner is not claimed executed**.
+- Wired `test:source-coverage` into nested `qualify`, and the same source gate into root `test:nestjs-drafts` (therefore root `verify:offline`). The new status command is `npm run status:nestjs-test-coverage`.
+- Corrected the `11.03.06` transaction instructor source: reject same-wallet transfers before BEGIN, ensure source has a balance and exists, check both UPDATE `rowCount` values, ROLLBACK when either required wallet is absent, and preserve both original and rollback errors with `AggregateError` if rollback itself fails. Matched the original MDX instructor code fence **exactly** to the changed `solution.ts`.
+- Expanded the domain test with missing source, missing destination, self-transfer and failed rollback contract cases; expanded real PostgreSQL integration test to assert these checks against a temporary table and to prove unchanged balances.
+- Strengthened the live Socket.IO test: two-way Alice/Bob tenant separation, spoofed tenant fields, invalid payloads, rejected unauthenticated connections, and an explicitly run intentionally vulnerable student gateway proving cross-tenant leakage. Only local ephemeral loopback ports are used.
+- Nested lock validator now rejects non-Node 24.9+ toolchains instead of merely relying on the package engine declaration.
+
+**Evidence and limitations:** New files were parsed as JavaScript source, source/MDX parity was checked, and 32/32 topic-to-slug associations were checked via GitHub contents. This session has local Node 22 and no GitHub/npm DNS, so **no real `npm ci`, TS6 compile, Nest HTTP tests, PostgreSQL integration, Socket.IO runtime tests, Next production build, Chromium browser test, or named human accessibility review was completed**. The absence of a true npm-generated nested lock continues to block the release gate.
+
+Next acceptance: on a trusted Node 24 checkout, run `npm ci && npm run test:nestjs-drafts && npm run verify:offline` from the root; in `examples/nestjs-vertical`, run `npm install --package-lock-only`, commit the real lock, configure a disposable `PG_TEST_URL` with `ACADEMY_ISOLATED_PG=YES`, then run `npm run qualify:release`. Fix *observed* compiler/runtime failures before promotion; do not bypass failing assertions or invent evidence.
+
+**Freeze remains:** 338/889 live lessons, PR #39 draft/unmerged, P1 RHF then Query before any P2 publish, Vercel deployment disabled.
