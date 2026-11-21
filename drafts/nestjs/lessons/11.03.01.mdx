@@ -1,0 +1,109 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Keep transport decorators in controllers and business invariants in injectable services.","A unit test invokes TasksService directly and rejects blank names; HTTP invokes the same service.","Validation in a controller alone cannot protect calls from jobs, events and other modules."]} />
+
+## The problem we're solving
+
+The controller directly mutates records and allows blank task names. Building a domain feature demands more than a decorated controller. Real services have invariants, dependencies, persistence contracts and externally visible behavior. When any one layer owns work it cannot safely verify, the resulting application becomes difficult to test and may expose private state.
+
+## Build the mental model
+
+Keep transport decorators in controllers and business invariants in injectable services. Design the feature by drawing arrows from controller → application service → repository/port → persistence. Dependencies should point toward stable contracts; inbound HTTP is an adapter, not the business model. A real Nest module composes these pieces, while transaction boundaries belong near the persistence operation that must be atomic.
+
+**Prediction:** The controller directly mutates records and allows blank task names. Name the exact state that differs after this failure, and who can observe it.
+
+**Scope:** NestJS 12, Node.js 24, TypeScript 6. This is **staged authoring only**. It has not passed a real installed Nest build, PostgreSQL integration (when applicable), or browser/manual accessibility qualification.
+
+## Prerequisites and preflight
+
+Complete 11.02.08 and review the two source files under `drafts/nestjs/labs/service-responsibilities/`. The failing starter is intentionally wrong, but a real negative test must fail from the semantic contract, not from unresolved packages. For persistence, do not replace the real transaction or parameterization proof with an array or a SQL string search.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the domain-layer defect" file="drafts/nestjs/labs/service-responsibilities/starter.ts" expected="The controller directly mutates records and allows blank task names.">
+
+```ts
+import { Body, Controller, Post } from '@nestjs/common';
+@Controller('tasks')
+export class TasksController {
+  private tasks: string[] = [];
+  @Post() create(@Body() body: { title: string }) {
+    this.tasks.push(body.title); // BUG: no invariant and business logic in transport
+    return { title: body.title };
+  }
+}
+```
+
+**Observation:** The controller directly mutates records and allows blank task names. Notice where this source chooses the owning layer and what runtime assertion must fail.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the domain boundary" file="drafts/nestjs/labs/service-responsibilities/solution.ts" expected="Keep transport decorators in controllers and business invariants in injectable services.">
+
+```ts
+import { BadRequestException, Body, Controller, Injectable, Post } from '@nestjs/common';
+@Injectable()
+export class TasksService {
+  private tasks: string[] = [];
+  create(title: string) {
+    if (title.trim().length < 3) throw new BadRequestException('Invalid title');
+    const value = title.trim(); this.tasks.push(value); return { title: value };
+  }
+}
+@Controller('tasks')
+export class TasksController {
+  constructor(private readonly tasks: TasksService) {}
+  @Post() create(@Body() body: { title: string }) { return this.tasks.create(body.title); }
+}
+```
+
+**Reasoning:** Keep transport decorators in controllers and business invariants in injectable services. Validation in a controller alone cannot protect calls from jobs, events and other modules.
+
+</LessonStep>
+
+<LessonStep number={3} title="Qualify the real service contract" file="drafts/nestjs/labs/service-responsibilities/lab.json" expected="A unit test invokes TasksService directly and rejects blank names; HTTP invokes the same service.">
+
+**Expected result:** A unit test invokes TasksService directly and rejects blank names; HTTP invokes the same service.
+
+**Negative case:** Run the broken starter through the same dependency container, HTTP harness, or transaction test. Confirm a specific failed assertion caused by the bug, not a package-import failure.
+
+**Security and concurrency check:** Validation in a controller alone cannot protect calls from jobs, events and other modules.
+
+</LessonStep>
+
+## Architecture trade-offs
+
+Directly constructing a service or returning a database entity can be tempting because it reduces boilerplate. It also hides dependency seams and blurs the trust boundary. The practical alternative is not to abstract everything; keep one small interface for a dependency that legitimately varies and enforce invariants in exactly one authoritative place. Favor explicit module imports/exports over globally available providers.
+
+- **Correctness invariant:** Keep transport decorators in controllers and business invariants in injectable services.
+- **Reproducible failure:** The controller directly mutates records and allows blank task names.
+- **Acceptance evidence:** A unit test invokes TasksService directly and rejects blank names; HTTP invokes the same service.
+- **Risk that remains:** Validation in a controller alone cannot protect calls from jobs, events and other modules.
+
+In a multi-request system, repeat the test with two independent users and at least one failure after an intermediate operation. A UI test cannot prove a transaction rollback; only the real persistence adapter can.
+
+<Misconception claim="The controller directly mutates records and allows blank task names." correction="Keep transport decorators in controllers and business invariants in injectable services." />
+
+<KnowledgeCheck question="Which design is safest for service responsibilities?" choices={["Make the controller hold every stateful dependency permanently.","Keep business rules in an injectable service and verify the boundary with actual runtime behavior.","Expose persistent entities directly because TypeScript hides private fields.","Treat a mock array as proof of database transactions."]} correctIndex={1} explanation="Keep transport decorators in controllers and business invariants in injectable services." misconception="The controller directly mutates records and allows blank task names." lessonId="11.03.01" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+1. **Reproduce:** The controller directly mutates records and allows blank task names.
+2. **Diagnose:** Determine whether the bug belongs to a controller, injectable provider, repository, module export or transaction.
+3. **Repair:** Keep transport decorators in controllers and business invariants in injectable services.
+4. **Regression:** A unit test invokes TasksService directly and rejects blank names; HTTP invokes the same service.
+5. **Trust boundary:** Validation in a controller alone cannot protect calls from jobs, events and other modules.
+
+## Guided local lab
+
+The corresponding `starter.ts`, `solution.ts`, and machine-readable `lab.json` are under `drafts/nestjs/labs/service-responsibilities/`. These remain source exercises awaiting package installation, real library execution and module acceptance. No published course-progress event or `LabGate` is registered.
+
+## Reflect
+
+What is the narrowest seam that should be replaceable in a test? What would fail if two requests overlap? Which case demands a real PostgreSQL connection instead of a local unit test, and how would you prove an error cannot leave a partial write?
+
+## Official references
+
+- [NestJS documentation](https://docs.nestjs.com/)
+- [Focused official reference](https://docs.nestjs.com/providers)

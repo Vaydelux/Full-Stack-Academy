@@ -1,0 +1,27 @@
+{
+  "id": "11.03.01",
+  "title": "Service responsibilities",
+  "trackId": "11",
+  "moduleId": "11.03",
+  "sourceStatus": "draft-unverified",
+  "estimatedMinutes": 60,
+  "stack": {
+    "node": "24",
+    "typescript": "6",
+    "nestjs": "12"
+  },
+  "prerequisites": [
+    "11.02.08"
+  ],
+  "objective": "Keep transport decorators in controllers and business invariants in injectable services.",
+  "misconception": "The controller directly mutates records and allows blank task names.",
+  "acceptance": "A unit test invokes TasksService directly and rejects blank names; HTTP invokes the same service.",
+  "securityBoundary": "Validation in a controller alone cannot protect calls from jobs, events and other modules.",
+  "labSlug": "service-responsibilities",
+  "officialReferences": [
+    "https://docs.nestjs.com/",
+    "https://docs.nestjs.com/providers"
+  ],
+  "reviewStatus": "unreviewed",
+  "runtimeQualification": "not-run"
+}

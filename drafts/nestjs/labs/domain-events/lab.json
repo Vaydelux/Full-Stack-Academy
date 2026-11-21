@@ -1,0 +1,18 @@
+{
+  "id": "draft.nestjs.domain-events",
+  "lessonId": "11.03.07",
+  "title": "Domain events",
+  "sourceStatus": "draft-unverified",
+  "runtime": "node-24-nestjs-12-typescript-6",
+  "starter": "drafts/nestjs/labs/domain-events/starter.ts",
+  "solution": "drafts/nestjs/labs/domain-events/solution.ts",
+  "expectedPositive": "On a failed save, no success event is emitted; on confirmation, one event is raised.",
+  "expectedNegative": "A task-created event is emitted before persistence succeeds, triggering false notifications.",
+  "requiresRealNestTest": true,
+  "requiresRealHttpTest": false,
+  "readyToPublish": false,
+  "officialReferences": [
+    "https://docs.nestjs.com/",
+    "https://docs.nestjs.com/techniques/events"
+  ]
+}

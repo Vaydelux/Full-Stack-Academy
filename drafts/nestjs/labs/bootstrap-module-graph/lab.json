@@ -1,0 +1,18 @@
+{
+  "id": "draft.nestjs.bootstrap-module-graph",
+  "lessonId": "11.01.01",
+  "title": "Bootstrap and module graph",
+  "sourceStatus": "draft-unverified",
+  "runtime": "node-24-nestjs-12-typescript-6",
+  "starter": "drafts/nestjs/labs/bootstrap-module-graph/starter.ts",
+  "solution": "drafts/nestjs/labs/bootstrap-module-graph/solution.ts",
+  "expectedPositive": "Boot the full Nest application and check that GET /tasks is registered.",
+  "expectedNegative": "A GET /tasks returns 404 even though TasksController exists in source.",
+  "requiresRealNestTest": true,
+  "requiresRealHttpTest": true,
+  "readyToPublish": false,
+  "officialReferences": [
+    "https://docs.nestjs.com/",
+    "https://docs.nestjs.com/modules"
+  ]
+}

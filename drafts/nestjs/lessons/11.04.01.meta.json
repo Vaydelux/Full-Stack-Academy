@@ -1,0 +1,27 @@
+{
+  "id": "11.04.01",
+  "title": "Custom providers and tokens",
+  "trackId": "11",
+  "moduleId": "11.04",
+  "sourceStatus": "draft-unverified",
+  "estimatedMinutes": 65,
+  "stack": {
+    "node": "24",
+    "typescript": "6",
+    "nestjs": "12"
+  },
+  "prerequisites": [
+    "11.03.08"
+  ],
+  "objective": "A stable injection token separates the contract from the concrete adapter.",
+  "misconception": "A service creates an adapter directly and cannot be replaced inside TestingModule.",
+  "acceptance": "Override a symbol token and prove the service consumes an injected fake.",
+  "securityBoundary": "Prefer scoped, explicit provider exports; do not expose secret credential providers globally.",
+  "labSlug": "custom-provider-tokens",
+  "officialReferences": [
+    "https://docs.nestjs.com/",
+    "https://docs.nestjs.com/fundamentals/custom-providers"
+  ],
+  "reviewStatus": "unreviewed",
+  "runtimeQualification": "not-run"
+}

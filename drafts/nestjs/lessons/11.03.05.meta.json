@@ -1,0 +1,27 @@
+{
+  "id": "11.03.05",
+  "title": "Cross-module boundaries",
+  "trackId": "11",
+  "moduleId": "11.03",
+  "sourceStatus": "draft-unverified",
+  "estimatedMinutes": 60,
+  "stack": {
+    "node": "24",
+    "typescript": "6",
+    "nestjs": "12"
+  },
+  "prerequisites": [
+    "11.03.04"
+  ],
+  "objective": "A provider must be exported by its owning module and imported through that module to be visible elsewhere.",
+  "misconception": "ReportsModule imports TasksModule but cannot resolve TasksService because it is not exported.",
+  "acceptance": "Compile a real Nest TestingModule and resolve ReportsService with a mocked TasksService provider.",
+  "securityBoundary": "Avoid broad global modules that expose private services across unrelated trust boundaries.",
+  "labSlug": "cross-module-boundaries",
+  "officialReferences": [
+    "https://docs.nestjs.com/",
+    "https://docs.nestjs.com/modules"
+  ],
+  "reviewStatus": "unreviewed",
+  "runtimeQualification": "not-run"
+}

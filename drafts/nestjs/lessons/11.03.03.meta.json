@@ -1,0 +1,27 @@
+{
+  "id": "11.03.03",
+  "title": "Domain entities vs DTOs",
+  "trackId": "11",
+  "moduleId": "11.03",
+  "sourceStatus": "draft-unverified",
+  "estimatedMinutes": 60,
+  "stack": {
+    "node": "24",
+    "typescript": "6",
+    "nestjs": "12"
+  },
+  "prerequisites": [
+    "11.03.02"
+  ],
+  "objective": "Persistent entities may hold sensitive fields that must not be serialized into public DTOs.",
+  "misconception": "An API returns a stored account object including passwordHash and internalRole.",
+  "acceptance": "An account DTO response has only public id and displayName; hidden fields are absent.",
+  "securityBoundary": "DTO shaping is not role authorization; enforce permissions before selecting records.",
+  "labSlug": "domain-entities-dtos",
+  "officialReferences": [
+    "https://docs.nestjs.com/",
+    "https://docs.nestjs.com/techniques/serialization"
+  ],
+  "reviewStatus": "unreviewed",
+  "runtimeQualification": "not-run"
+}

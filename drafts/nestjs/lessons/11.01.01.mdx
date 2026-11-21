@@ -1,0 +1,99 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["The root module must import a feature module for its controllers to become routes.","Boot the full Nest application and check that GET /tasks is registered.","Declare TasksModule and import it into AppModule; do not directly construct the feature controller."]} />
+
+## The problem we're solving
+
+A GET /tasks returns 404 even though TasksController exists in source. A team reviewing a NestJS service must understand *why* this is a failure, not merely memorize decorator names. This lesson isolates the failure in one short source file so the learner can compare the runtime contract before and after the change.
+
+## Build the mental model
+
+The root module must import a feature module for its controllers to become routes. In NestJS 12, decorators register metadata used by the Nest runtime; the TypeScript class is not automatically a route or managed provider. A running application must still compose its modules, resolve dependencies, and handle failures at the actual HTTP or service boundary.
+
+**Predict:** Before reading the instructor solution, describe the client-visible response or container behavior when the broken starter is used. A GET /tasks returns 404 even though TasksController exists in source.
+
+**Trust and version boundary:** Target Node.js 24, TypeScript 6 and NestJS 12 with real installed packages. The repository has not yet completed an npm-locked Nest runtime test for this draft. Source existence is not evidence of a functioning server. Declare TasksModule and import it into AppModule; do not directly construct the feature controller.
+
+## Prerequisites and preflight
+
+Complete 10.04.08 first. Inspect `drafts/nestjs/labs/bootstrap-module-graph/starter.ts` and `drafts/nestjs/labs/bootstrap-module-graph/solution.ts`. A real acceptance suite must compile these files with official Nest 12 dependencies and prove both a failing starter assertion and the instructor's positive behavior. No fabricated dependency lock or mocked framework API is allowed.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the incorrect framework behavior" file="drafts/nestjs/labs/bootstrap-module-graph/starter.ts" expected="A GET /tasks returns 404 even though TasksController exists in source.">
+
+```ts
+import { Controller, Get, Module } from '@nestjs/common';
+@Controller('tasks')
+export class TasksController { @Get() list() { return [{ id: 't1' }]; } }
+// BUG: this feature module is never imported by the root.
+@Module({ controllers: [TasksController] })
+export class TasksModule {}
+@Module({})
+export class AppModule {}
+```
+
+**Observe:** A GET /tasks returns 404 even though TasksController exists in source. Ask whether the bug comes from TypeScript syntax, dependency injection metadata, request processing, or server state. Test the *observable effect*, not a substring in source code.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement a focused NestJS repair" file="drafts/nestjs/labs/bootstrap-module-graph/solution.ts" expected="The root module must import a feature module for its controllers to become routes.">
+
+```ts
+import { Controller, Get, Module } from '@nestjs/common';
+@Controller('tasks')
+export class TasksController { @Get() list() { return [{ id: 't1' }]; } }
+@Module({ controllers: [TasksController] })
+export class TasksModule {}
+@Module({ imports: [TasksModule] })
+export class AppModule {}
+```
+
+**Reasoning:** The root module must import a feature module for its controllers to become routes. Declare TasksModule and import it into AppModule; do not directly construct the feature controller. This repair does not imply that external users are authorized; it solves only the bounded lesson contract.
+
+</LessonStep>
+
+<LessonStep number={3} title="Prove both boundaries using the real Nest runtime" file="drafts/nestjs/labs/bootstrap-module-graph/lab.json" expected="Boot the full Nest application and check that GET /tasks is registered.">
+
+**Instructor acceptance:** Boot the full Nest application and check that GET /tasks is registered.
+
+**Negative test:** The learner starter must fail because a GET /tasks returns 404 even though TasksController exists in source. This should be a semantic assertion failure after the application actually starts, not a missing package or misconfigured test runner.
+
+**Safety case:** Declare TasksModule and import it into AppModule; do not directly construct the feature controller.
+
+</LessonStep>
+
+## Design alternatives and debugging strategy
+
+A quick workaround would hide the immediate symptom, but it would leave the original ownership or lifecycle error intact. Start by tracing the source that creates the Nest application and the providers registered in its module graph; then inspect the exact request path, active context, or emitted response affected by this lesson. Prefer an isolated test that can be run repeatedly without a live external database or credential.
+
+- **When it is appropriate:** The root module must import a feature module for its controllers to become routes.
+- **When it is not enough:** If multiple requests, tenants, or worker processes are involved, test the same boundary under concurrency and treat incoming data as untrusted.
+- **How to confirm the repair:** Boot the full Nest application and check that GET /tasks is registered.
+- **What to document:** The expected failure code, verification command, dependency version, and whether a browser, HTTP, or service-layer test actually executed.
+
+<Misconception claim="A GET /tasks returns 404 even though TasksController exists in source." correction="The root module must import a feature module for its controllers to become routes." />
+
+<KnowledgeCheck question="What should the reviewer verify for bootstrap and module graph?" choices={["The source contains a decorator, so the runtime must work.","The real Nest application exhibits the specified behavior and rejects the broken case.","TypeScript types alone authorize incoming requests.","A mocked substring search proves the HTTP contract."]} correctIndex={1} explanation="The root module must import a feature module for its controllers to become routes." misconception="A GET /tasks returns 404 even though TasksController exists in source." lessonId="11.01.01" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+1. **Reproduce:** A GET /tasks returns 404 even though TasksController exists in source.
+2. **Diagnose:** Identify the module, provider, request stage, or lifecycle owner responsible for the symptom.
+3. **Repair:** The root module must import a feature module for its controllers to become routes.
+4. **Regression:** Boot the full Nest application and check that GET /tasks is registered.
+5. **Trust boundary:** Declare TasksModule and import it into AppModule; do not directly construct the feature controller.
+
+## Guided local lab
+
+The red starter and instructor solution are versioned under `drafts/nestjs/labs/bootstrap-module-graph/`. This remains a **draft**, without a published `LabGate` or course credit. Its runtime test, native Fastify request behavior where applicable, and accessible error handling must pass the dedicated module release gate before publication.
+
+## Reflect
+
+Why does the wrong behavior survive a superficial code review? What observable assertion would detect it reliably after a Nest or TypeScript major upgrade? Which aspect still requires a true service integration test rather than a class-only unit test?
+
+## Official references
+
+- [Canonical Nest documentation](https://docs.nestjs.com/)
+- [Focused Nest documentation](https://docs.nestjs.com/modules)

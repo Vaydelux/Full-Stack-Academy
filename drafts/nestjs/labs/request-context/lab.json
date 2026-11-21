@@ -1,0 +1,18 @@
+{
+  "id": "draft.nestjs.request-context",
+  "lessonId": "11.02.07",
+  "title": "Request context",
+  "sourceStatus": "draft-unverified",
+  "runtime": "node-24-nestjs-12-typescript-6",
+  "starter": "drafts/nestjs/labs/request-context/starter.ts",
+  "solution": "drafts/nestjs/labs/request-context/solution.ts",
+  "expectedPositive": "Interleave two asynchronous requests and verify each retains its own ID.",
+  "expectedNegative": "One request overwrites another request's correlation ID under concurrency.",
+  "requiresRealNestTest": true,
+  "requiresRealHttpTest": true,
+  "readyToPublish": false,
+  "officialReferences": [
+    "https://docs.nestjs.com/",
+    "https://docs.nestjs.com/recipes/async-local-storage"
+  ]
+}

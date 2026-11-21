@@ -1,0 +1,27 @@
+{
+  "id": "11.01.05",
+  "title": "Config and env validation",
+  "trackId": "11",
+  "moduleId": "11.01",
+  "sourceStatus": "draft-unverified",
+  "estimatedMinutes": 60,
+  "stack": {
+    "node": "24",
+    "typescript": "6",
+    "nestjs": "12"
+  },
+  "prerequisites": [
+    "11.01.04"
+  ],
+  "objective": "Parse environment settings once at the composition root before opening any network port.",
+  "misconception": "A malformed PORT is converted into NaN and the application fails during startup.",
+  "acceptance": "Exercise valid PORT=3337, absent PORT, and invalid PORT=abc independently.",
+  "securityBoundary": "Do not log secrets or return raw environment values to clients.",
+  "labSlug": "config-env-validation",
+  "officialReferences": [
+    "https://docs.nestjs.com/",
+    "https://docs.nestjs.com/techniques/configuration"
+  ],
+  "reviewStatus": "unreviewed",
+  "runtimeQualification": "not-run"
+}

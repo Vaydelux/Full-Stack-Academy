@@ -103,10 +103,13 @@ export function readPublicationProgram(){
  const metaDir=path.join(root,'src/content/lessons');
  const mdxFiles=fs.readdirSync(metaDir).filter(name=>name.endsWith('.meta.json'));
  const mdx=mdxFiles.map(name=>json('src/content/lessons/'+name).id);
- const stagingDir=path.join(root,'drafts/forms-query/lessons');
- const staged=fs.existsSync(stagingDir)
-  ?fs.readdirSync(stagingDir).filter(name=>name.endsWith('.meta.json')).map(name=>json('drafts/forms-query/lessons/'+name).id)
-  :[];
+ const stagingDirs=['drafts/forms-query/lessons','drafts/nestjs/lessons'];
+ const staged=stagingDirs.flatMap(dir=>{
+  const folder=path.join(root,dir);
+  return fs.existsSync(folder)
+   ?fs.readdirSync(folder).filter(name=>name.endsWith('.meta.json')).map(name=>json(dir+'/'+name).id)
+   :[];
+ });
  // Historical draft assets may be retained for repeatable instructor/browser tests.
  // A topic is staged only while it is NOT actually published.
  const publishedIds=[...new Set([...interactive,...mdx])];

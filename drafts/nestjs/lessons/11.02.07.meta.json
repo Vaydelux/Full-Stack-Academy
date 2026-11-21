@@ -1,0 +1,27 @@
+{
+  "id": "11.02.07",
+  "title": "Request context",
+  "trackId": "11",
+  "moduleId": "11.02",
+  "sourceStatus": "draft-unverified",
+  "estimatedMinutes": 60,
+  "stack": {
+    "node": "24",
+    "typescript": "6",
+    "nestjs": "12"
+  },
+  "prerequisites": [
+    "11.02.06"
+  ],
+  "objective": "A request-context value belongs in a per-request async execution scope, not a mutable process global.",
+  "misconception": "One request overwrites another request's correlation ID under concurrency.",
+  "acceptance": "Interleave two asynchronous requests and verify each retains its own ID.",
+  "securityBoundary": "Never store access tokens or sensitive user profiles in diagnostic context.",
+  "labSlug": "request-context",
+  "officialReferences": [
+    "https://docs.nestjs.com/",
+    "https://docs.nestjs.com/recipes/async-local-storage"
+  ],
+  "reviewStatus": "unreviewed",
+  "runtimeQualification": "not-run"
+}

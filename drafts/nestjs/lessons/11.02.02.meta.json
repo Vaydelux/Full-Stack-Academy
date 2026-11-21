@@ -1,0 +1,27 @@
+{
+  "id": "11.02.02",
+  "title": "Pipes and Zod validation",
+  "trackId": "11",
+  "moduleId": "11.02",
+  "sourceStatus": "draft-unverified",
+  "estimatedMinutes": 60,
+  "stack": {
+    "node": "24",
+    "typescript": "6",
+    "nestjs": "12"
+  },
+  "prerequisites": [
+    "11.02.01"
+  ],
+  "objective": "Use PipeTransform to turn unknown request payloads into parsed typed data or an explicit 400.",
+  "misconception": "A malformed body reaches the controller unchanged and may produce an unexpected 500.",
+  "acceptance": "POST an invalid title to receive 400; POST a valid title and see a normalized payload.",
+  "securityBoundary": "A TypeScript DTO annotation does not validate incoming JSON without a runtime pipe.",
+  "labSlug": "pipes-zod-validation",
+  "officialReferences": [
+    "https://docs.nestjs.com/",
+    "https://docs.nestjs.com/pipes"
+  ],
+  "reviewStatus": "unreviewed",
+  "runtimeQualification": "not-run"
+}

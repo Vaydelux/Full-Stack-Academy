@@ -1,0 +1,27 @@
+{
+  "id": "11.03.02",
+  "title": "Repository pattern",
+  "trackId": "11",
+  "moduleId": "11.03",
+  "sourceStatus": "draft-unverified",
+  "estimatedMinutes": 60,
+  "stack": {
+    "node": "24",
+    "typescript": "6",
+    "nestjs": "12"
+  },
+  "prerequisites": [
+    "11.03.01"
+  ],
+  "objective": "Domain services should use an injectable repository contract instead of building SQL strings.",
+  "misconception": "A task title is concatenated into a raw SQL query, allowing injection.",
+  "acceptance": "A hostile quote-containing title is passed as a parameter rather than interpolated SQL.",
+  "securityBoundary": "Use parameterized queries and server-side tenant predicates in real database tests.",
+  "labSlug": "repository-pattern",
+  "officialReferences": [
+    "https://docs.nestjs.com/",
+    "https://docs.nestjs.com/fundamentals/custom-providers"
+  ],
+  "reviewStatus": "unreviewed",
+  "runtimeQualification": "not-run"
+}

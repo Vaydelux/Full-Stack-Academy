@@ -1,0 +1,27 @@
+{
+  "id": "11.01.08",
+  "title": "Lab hello API",
+  "trackId": "11",
+  "moduleId": "11.01",
+  "sourceStatus": "draft-unverified",
+  "estimatedMinutes": 60,
+  "stack": {
+    "node": "24",
+    "typescript": "6",
+    "nestjs": "12"
+  },
+  "prerequisites": [
+    "11.01.07"
+  ],
+  "objective": "A health endpoint must reflect actual service readiness instead of returning a constant green response.",
+  "misconception": "The endpoint returns status up when a required service is unavailable.",
+  "acceptance": "With readiness true return 200; with readiness false return 503; check both through real HTTP.",
+  "securityBoundary": "Bind locally for practice; production readiness requires actual dependency probes and safe failure data.",
+  "labSlug": "hello-api-capstone",
+  "officialReferences": [
+    "https://docs.nestjs.com/",
+    "https://docs.nestjs.com/recipes/terminus"
+  ],
+  "reviewStatus": "unreviewed",
+  "runtimeQualification": "not-run"
+}

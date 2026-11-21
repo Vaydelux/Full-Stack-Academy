@@ -17,10 +17,13 @@ const interactive=[...idsSection[1].matchAll(/'([^']+)'/g)].map(x=>x[1]);
 const mdxFiles=fs.readdirSync(path.join(root,'src/content/lessons')).filter(name=>name.endsWith('.meta.json'));
 const mdx=mdxFiles.map(name=>JSON.parse(read('src/content/lessons/'+name)).id);
 const published=new Set([...interactive,...mdx]);
-const stagingRoot=path.join(root,'drafts/forms-query/lessons');
-const staged=fs.existsSync(stagingRoot)
- ? new Set(fs.readdirSync(stagingRoot).filter(n=>n.endsWith('.meta.json')).map(n=>JSON.parse(read('drafts/forms-query/lessons/'+n)).id))
- : new Set();
+const stagingDirs=['drafts/forms-query/lessons','drafts/nestjs/lessons'];
+const staged=new Set(stagingDirs.flatMap(dir=>{
+ const folder=path.join(root,dir);
+ return fs.existsSync(folder)
+  ?fs.readdirSync(folder).filter(name=>name.endsWith('.meta.json')).map(name=>JSON.parse(read(dir+'/'+name)).id)
+  :[];
+}));
 // Draft source files can remain for red/green lab qualification after publication.
 const stagedUnpublished=new Set([...staged].filter(id=>!published.has(id)));
 const modules=curriculum.modules.map(module=>{

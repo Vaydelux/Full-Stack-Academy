@@ -1,0 +1,18 @@
+{
+  "id": "draft.nestjs.middleware-execution",
+  "lessonId": "11.02.01",
+  "title": "Middleware execution",
+  "sourceStatus": "draft-unverified",
+  "runtime": "node-24-nestjs-12-typescript-6",
+  "starter": "drafts/nestjs/labs/middleware-execution/starter.ts",
+  "solution": "drafts/nestjs/labs/middleware-execution/solution.ts",
+  "expectedPositive": "GET /tasks completes and carries a correlation ID without hanging.",
+  "expectedNegative": "The HTTP handler never runs because middleware forgets to call next.",
+  "requiresRealNestTest": true,
+  "requiresRealHttpTest": true,
+  "readyToPublish": false,
+  "officialReferences": [
+    "https://docs.nestjs.com/",
+    "https://docs.nestjs.com/middleware"
+  ]
+}

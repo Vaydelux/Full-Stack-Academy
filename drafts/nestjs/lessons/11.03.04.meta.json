@@ -1,0 +1,27 @@
+{
+  "id": "11.03.04",
+  "title": "Dependency inversion",
+  "trackId": "11",
+  "moduleId": "11.03",
+  "sourceStatus": "draft-unverified",
+  "estimatedMinutes": 60,
+  "stack": {
+    "node": "24",
+    "typescript": "6",
+    "nestjs": "12"
+  },
+  "prerequisites": [
+    "11.03.03"
+  ],
+  "objective": "Business code depends on an abstract port injected by a token, not a concrete database constructor.",
+  "misconception": "TasksService always constructs PostgresTaskStore, making isolated tests impossible.",
+  "acceptance": "Override the TASK_STORE token with a fake and verify service behavior without network access.",
+  "securityBoundary": "Concrete storage adapters still must enforce tenant filters and parameterized queries.",
+  "labSlug": "dependency-inversion",
+  "officialReferences": [
+    "https://docs.nestjs.com/",
+    "https://docs.nestjs.com/fundamentals/custom-providers"
+  ],
+  "reviewStatus": "unreviewed",
+  "runtimeQualification": "not-run"
+}

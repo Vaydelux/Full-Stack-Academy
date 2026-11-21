@@ -1,0 +1,27 @@
+{
+  "id": "11.01.01",
+  "title": "Bootstrap and module graph",
+  "trackId": "11",
+  "moduleId": "11.01",
+  "sourceStatus": "draft-unverified",
+  "estimatedMinutes": 60,
+  "stack": {
+    "node": "24",
+    "typescript": "6",
+    "nestjs": "12"
+  },
+  "prerequisites": [
+    "10.04.08"
+  ],
+  "objective": "The root module must import a feature module for its controllers to become routes.",
+  "misconception": "A GET /tasks returns 404 even though TasksController exists in source.",
+  "acceptance": "Boot the full Nest application and check that GET /tasks is registered.",
+  "securityBoundary": "Declare TasksModule and import it into AppModule; do not directly construct the feature controller.",
+  "labSlug": "bootstrap-module-graph",
+  "officialReferences": [
+    "https://docs.nestjs.com/",
+    "https://docs.nestjs.com/modules"
+  ],
+  "reviewStatus": "unreviewed",
+  "runtimeQualification": "not-run"
+}

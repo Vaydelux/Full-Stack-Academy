@@ -1,0 +1,27 @@
+{
+  "id": "11.02.08",
+  "title": "Bug Hunt guard order",
+  "trackId": "11",
+  "moduleId": "11.02",
+  "sourceStatus": "draft-unverified",
+  "estimatedMinutes": 60,
+  "stack": {
+    "node": "24",
+    "typescript": "6",
+    "nestjs": "12"
+  },
+  "prerequisites": [
+    "11.02.07"
+  ],
+  "objective": "Guards run before pipes, making authorization an independent boundary for protected requests.",
+  "misconception": "The guard authorizes everyone and the team mistakenly relies on validation to protect private records.",
+  "acceptance": "Unauthenticated requests are denied before a handler executes; authorized invalid bodies still return 400.",
+  "securityBoundary": "Authorization must not depend on client-side form validation, a permissive guard, or a role string in JSON.",
+  "labSlug": "guard-order-bug-hunt",
+  "officialReferences": [
+    "https://docs.nestjs.com/",
+    "https://docs.nestjs.com/faq/request-lifecycle"
+  ],
+  "reviewStatus": "unreviewed",
+  "runtimeQualification": "not-run"
+}

@@ -1,0 +1,27 @@
+{
+  "id": "11.04.08",
+  "title": "Lab production service skeleton",
+  "trackId": "11",
+  "moduleId": "11.04",
+  "sourceStatus": "draft-unverified",
+  "estimatedMinutes": 65,
+  "stack": {
+    "node": "24",
+    "typescript": "6",
+    "nestjs": "12"
+  },
+  "prerequisites": [
+    "11.04.07"
+  ],
+  "objective": "A release candidate needs explicit adapter, loopback fixture binding, shutdown hooks and bounded error exposure.",
+  "misconception": "The practice API binds publicly on 0.0.0.0 and lacks a shutdown hook.",
+  "acceptance": "Boot a Nest Fastify app only on 127.0.0.1, pass an HTTP smoke test and close cleanly.",
+  "securityBoundary": "No real authentication or persistent storage is provided in this educational skeleton.",
+  "labSlug": "production-service-skeleton",
+  "officialReferences": [
+    "https://docs.nestjs.com/",
+    "https://docs.nestjs.com/techniques/performance"
+  ],
+  "reviewStatus": "unreviewed",
+  "runtimeQualification": "not-run"
+}

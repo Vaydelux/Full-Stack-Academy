@@ -1,0 +1,18 @@
+{
+  "id": "draft.nestjs.controllers-routing",
+  "lessonId": "11.01.02",
+  "title": "Controllers and routing",
+  "sourceStatus": "draft-unverified",
+  "runtime": "node-24-nestjs-12-typescript-6",
+  "starter": "drafts/nestjs/labs/controllers-routing/starter.ts",
+  "solution": "drafts/nestjs/labs/controllers-routing/solution.ts",
+  "expectedPositive": "Request /tasks/t1 and confirm t1 is used; request an unknown ID and receive 404.",
+  "expectedNegative": "GET /tasks/t1 passes undefined as the requested ID.",
+  "requiresRealNestTest": true,
+  "requiresRealHttpTest": true,
+  "readyToPublish": false,
+  "officialReferences": [
+    "https://docs.nestjs.com/",
+    "https://docs.nestjs.com/controllers"
+  ]
+}
