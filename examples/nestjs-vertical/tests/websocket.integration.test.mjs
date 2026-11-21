@@ -6,95 +6,115 @@ import { NestFactory } from '@nestjs/core';
 import { FastifyAdapter } from '@nestjs/platform-fastify';
 import { io } from 'socket.io-client';
 
-const allowedTokens = new Map([
+// Test fixture only: this is not a production identity provider.
+const tokenTenant = new Map([
   ['test-alice-secret', 'alice'],
   ['test-bob-secret', 'bob'],
 ]);
+const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
-async function connect(origin, token, tenantId) {
+function connect(origin, token, tenantId) {
   const client = io(origin, {
-    autoConnect: false,
-    transports: ['websocket'],
-    reconnection: false,
-    timeout: 3500,
-    auth: { token, tenantId }, // spoofable tenantId must be ignored on server
+    autoConnect: false, reconnection: false, transports: ['websocket'],
+    timeout: 3500, auth: { token, tenantId },
   });
-  try {
-    await new Promise((resolve, reject) => {
-      const timer = setTimeout(() => fail(Error('Socket connect timed out')), 4000);
-      const cleanup = () => {
-        clearTimeout(timer);
-        client.off('connect', succeed);
-        client.off('connect_error', fail);
-      };
-      const succeed = () => { cleanup(); resolve(); };
-      const fail = error => { cleanup(); reject(error); };
-      client.on('connect', succeed);
-      client.on('connect_error', fail);
-      client.connect();
-    });
-    return client;
-  } catch (error) {
-    client.disconnect();
-    throw error;
-  }
-}
-function emitAck(client, event, payload) {
   return new Promise((resolve, reject) => {
-    client.timeout(3000).emit(event, payload, (error, response) => {
-      if (error) reject(error);
-      else resolve(response);
-    });
+    const timer = setTimeout(() => fail(Error('Socket.IO connection timed out')), 4500);
+    const cleanup = () => {
+      clearTimeout(timer);
+      client.off('connect', success);
+      client.off('connect_error', fail);
+    };
+    const success = () => { cleanup(); resolve(client); };
+    const fail = error => { cleanup(); client.disconnect(); reject(error); };
+    client.on('connect', success);
+    client.on('connect_error', fail);
+    client.connect();
   });
 }
-test('11.04.03 two authenticated clients cannot receive another tenant broadcast', { timeout: 20000 }, async () => {
-  const { TaskGateway } = await import('../dist/websocket-gateways/solution.js');
-  class TestModule {}
-  Module({ providers: [TaskGateway] })(TestModule);
-  const app = await NestFactory.create(TestModule, new FastifyAdapter(), { logger: false });
+function emitAck(client, payload) {
+  return new Promise((resolve, reject) => client.timeout(3500).emit('task', payload, (error, result) =>
+    error ? reject(error) : resolve(result)));
+}
+function nextTask(client) {
+  return new Promise((resolve, reject) => {
+    const timer = setTimeout(() => { client.off('task', onTask); reject(Error('Missing expected task event')); }, 3500);
+    const onTask = body => { clearTimeout(timer); client.off('task', onTask); resolve(body); };
+    client.on('task', onTask);
+  });
+}
+async function withGateway(variant, run) {
+  const { TaskGateway } = await import('../dist/websocket-gateways/' + variant + '.js');
+  class IsolatedModule {}
+  Module({ providers: [TaskGateway] })(IsolatedModule);
+  const app = await NestFactory.create(IsolatedModule, new FastifyAdapter(), { logger: false });
   const clients = [];
   try {
     await app.listen(0, '127.0.0.1');
     const server = app.get(TaskGateway).server;
-    assert.ok(server, 'Real Socket.IO gateway must be connected to Nest');
-
-    // Server assigns identity from the test token, NEVER from a client-supplied tenant.
-    // This is a test-only handshake and not production authentication.
+    assert.ok(server, 'Socket.IO adapter must initialize an actual gateway');
     server.use((socket, next) => {
-      const assigned = allowedTokens.get(socket.handshake.auth?.token);
-      if (!assigned) return next(Error('UNAUTHORIZED'));
-      socket.data.tenantId = assigned;
+      const identity = tokenTenant.get(socket.handshake.auth?.token);
+      if (!identity) return next(Error('UNAUTHORIZED'));
+      // Never trust auth.tenantId: derive tenant from authenticated credentials.
+      socket.data.tenantId = identity;
       next();
     });
     const address = app.getHttpServer().address();
     const origin = 'http://127.0.0.1:' + address.port;
-    const alice = await connect(origin, 'test-alice-secret', 'bob');
-    clients.push(alice);
-    const bob = await connect(origin, 'test-bob-secret', 'alice');
-    clients.push(bob);
-
-    // Let gateway.handleConnection join both authenticated socket rooms.
-    const rooms = server.sockets.adapter.rooms;
-    assert.ok(rooms.get('tenant:alice')?.has(alice.id));
-    assert.ok(rooms.get('tenant:bob')?.has(bob.id));
-
-    const aliceMessages = [];
-    const bobMessages = [];
-    alice.on('task', data => aliceMessages.push(data));
-    bob.on('task', data => bobMessages.push(data));
-    const ack = await emitAck(alice, 'task', { title: '  isolated  ', tenantId: 'bob' });
-    assert.deepEqual(ack, { accepted: true });
-    await new Promise(resolve => setTimeout(resolve, 150));
-    assert.deepEqual(aliceMessages, [{ title: 'isolated' }]);
-    assert.deepEqual(bobMessages, [], 'Bob must not receive Alice tenant broadcasts');
-
-    await assert.rejects(
-      connect(origin, 'incorrect', 'alice'),
-      /UNAUTHORIZED/,
-      'Invalid credentials must not result in a connected tenant socket',
-    );
+    const register = async (token, claimedTenant) => {
+      const client = await connect(origin, token, claimedTenant);
+      clients.push(client);
+      return client;
+    };
+    await run({ origin, server, register });
   } finally {
     for (const client of clients) client.disconnect();
     await app.close();
   }
+}
+test('11.04.03 real Socket.IO isolates both authenticated tenants and rejects unauthorized handshakes', { timeout: 20000 }, async () => {
+  await withGateway('solution', async ({ origin, server, register }) => {
+    const alice = await register('test-alice-secret', 'bob');
+    const bob = await register('test-bob-secret', 'alice');
+    const rooms = server.sockets.adapter.rooms;
+    assert.ok(rooms.get('tenant:alice')?.has(alice.id), 'Alice identity must come from the server');
+    assert.ok(rooms.get('tenant:bob')?.has(bob.id), 'Bob identity must come from the server');
+
+    const aliceMessages = [];
+    const bobMessages = [];
+    alice.on('task', payload => aliceMessages.push(payload));
+    bob.on('task', payload => bobMessages.push(payload));
+
+    assert.deepEqual(await emitAck(alice, { title: '  alpha  ', tenantId: 'bob' }), { accepted: true });
+    assert.deepEqual(await nextExpected(aliceMessages, 1), [{ title: 'alpha' }]);
+    await sleep(200);
+    assert.deepEqual(bobMessages, [], 'Alice may not send into Bob tenant via forged message body');
+
+    assert.deepEqual(await emitAck(bob, { title: '  beta  ', tenantId: 'alice' }), { accepted: true });
+    assert.deepEqual(await nextExpected(bobMessages, 1), [{ title: 'beta' }]);
+    await sleep(200);
+    assert.deepEqual(aliceMessages, [{ title: 'alpha' }], 'Bob may not broadcast into Alice tenant');
+
+    assert.deepEqual(await emitAck(alice, { title: '' }), { error: 'INVALID_TASK' });
+    assert.deepEqual(await emitAck(bob, { title: 'x'.repeat(101) }), { error: 'INVALID_TASK' });
+    await assert.rejects(connect(origin, 'incorrect', 'alice'), /UNAUTHORIZED/);
+  });
+});
+async function nextExpected(messages, count) {
+  for (let attempt = 0; attempt < 35 && messages.length < count; attempt++) await sleep(20);
+  assert.equal(messages.length, count, 'Expected a same-tenant broadcast');
+  return messages;
+}
+
+test('11.04.03 intentionally broken student gateway exposes cross-tenant broadcast in real Socket.IO', { timeout: 15000 }, async () => {
+  await withGateway('starter', async ({ register }) => {
+    const alice = await register('test-alice-secret', 'alice');
+    const bob = await register('test-bob-secret', 'bob');
+    const leaked = nextTask(bob);
+    // The deliberately broken starter calls server.emit(), broadcasting across rooms.
+    alice.emit('task', { title: 'private', tenantId: 'alice' });
+    assert.deepEqual(await leaked, { title: 'private', tenantId: 'alice' },
+      'Negative starter must reproduce a concrete cross-tenant exposure');
+  });
 });
