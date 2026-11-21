@@ -41,6 +41,8 @@
     "preview-src",
     "drafts/forms-query",
     "examples/forms-query-vertical/react-client",
-    "examples/forms-query-vertical/.ssr-qualification-*"
+    "examples/forms-query-vertical/.ssr-qualification-*",
+    "drafts/nestjs",
+    "examples/nestjs-vertical"
   ]
 }
