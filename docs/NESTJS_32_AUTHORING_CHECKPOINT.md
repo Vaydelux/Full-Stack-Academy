@@ -76,3 +76,33 @@ Added `examples/nestjs-vertical/tests/request-pipeline.test.mjs`, wired into the
 - 11.02.08: guard denies missing/insufficient permissions.
 
 These are **new test sources, not executed test results**. The missing genuine npm lock and unavailable real Nest install continue to block runtime qualification. The remaining 11.02.06 and 11.02.07 require specific real tests; P2 publication remains blocked. The `main` published count stays 338/889 and Vercel Git deploy remains frozen.
+
+## November 21 — 32-topic runtime test authoring expansion (NOT executed)
+
+All **32 canonical NestJS draft topics** now have a corresponding authored test scenario in the isolated Node test runner:
+
+| Module | Runtime test file | Tests authored | Qualification limitations |
+| --- | --- | ---: | --- |
+| 11.01 Architecture | `tests/architecture.test.mjs` | 8 | Real Nest compile, Fastify and DI remain unexecuted |
+| 11.02 Request pipeline | `tests/request-pipeline.test.mjs` | 8 | Middleware, validation, authorization, interceptors, DTO redaction and concurrent AsyncLocalStorage need real runtime |
+| 11.03 Domain modules | `tests/domain-modules.test.mjs` | 8 | Transaction test proves mocked SQL command flow **only**; isolated real PostgreSQL still mandatory |
+| 11.04 Advanced Nest | `tests/advanced.test.mjs` | 8 | Gateway uses an in-process tenant-room contract mock, **not** authenticated two-client Socket.IO isolation; production skeleton's unsafe starter is deliberately not executed |
+
+The 11.04.08 instructor skeleton now accepts an optional test-only ephemeral port, while continuing to bind `127.0.0.1`; the default remains 3337. This makes loopback Fastify smoke testing possible without a public socket or port collision. The starter is checked as source-only due to its deliberately unsafe `0.0.0.0` listener.
+
+`npm run qualify` now guards the genuine nested npm lock, runs `npm ci`, typechecking, compilation and **all four runtime suites** through `npm run test:runtime`. The lock guard checks both dependency sections, root identity, resolved direct packages and integrity fields. This guard cannot replace actual npm integrity verification.
+
+**No Node24/Nest12/TS6 compiled or executed result is claimed.** This environment cannot resolve the GitHub/npm registry and the nested npm lock is still missing. All 32 test scenarios are authored but **0/32 have been freshly executed here**. Source-only acceptance, 11.03 PostgreSQL transaction rollback, real two-tenant authenticated sockets, complete Next build, browser a11y and named human screen-reader reviews still block publication.
+
+Run on a Node 24 development machine with the registry available:
+
+```bash
+npm ci
+npm run test:nestjs-drafts
+npm run verify:offline
+cd examples/nestjs-vertical
+npm install --package-lock-only
+npm run qualify
+```
+
+After real runtime failures are fixed, commit the npm-generated lockfile and exact test evidence. Do not publish or merge this draft merely because tests have been authored. The **live count is still 338/889**, P1 must release first, and the Vercel freeze remains in force.
