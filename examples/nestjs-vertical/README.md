@@ -69,3 +69,9 @@ It requires each of the 32 canonical NestJS lesson IDs to be tested against its 
 The 11.03.06 teaching transfer now rejects missing wallets and insufficient funds by checking the result `rowCount` of each parameterized UPDATE, and preserves the failed operation if rollback also fails. It requires **one checked-out database client across BEGIN/UPDATE/COMMIT/ROLLBACK**; a pooled query convenience method that changes connections between statements is unsafe. The amount is fixed at one integer unit for instructional clarity. It is not payment-grade: do not treat the example as handling retries, idempotency, ledger entries, multi-currency amounts or reconciliation.
 
 The real Socket.IO integration test now proves both isolation directions and reproduces the intentionally insecure student's global broadcast over a real loopback gateway. These integrations and the repaired transfer need execution on Node24 with actual dependencies. `require-lock.mjs` deliberately refuses unsupported Node runtimes.
+
+## Reproducible no-registry test gate
+
+Run `npm run test:offline` from this nested workspace (or `npm run test:nestjs-offline` at the repository root) to execute **26 deterministic source behavioral tests** without Nest or a database. This includes 7 transactional contracts, 11 additional backend contracts and 8 in-memory npm-lock verification tests. The `test:source-coverage` and `qualify` commands include the offline gate. The pure lock validator reports manifest structure only; package authenticity is established later by actual `npm ci`.
+
+The Node22 test run used a temporary isolated reconstruction and passed 26/26. It **does not** establish full Nest/TypeScript/PostgreSQL/Socket.IO runtime readiness. See `docs/NESTJS_OFFLINE_QUALIFICATION_CHECKPOINT_20261121.md` for exact results and blockers.
