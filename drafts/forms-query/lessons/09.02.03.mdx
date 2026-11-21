@@ -15,7 +15,7 @@ Zod 4 parses and transforms runtime input. React Hook Form supports the schema i
 
 **Predict before coding:** A title containing spaces only must be blocked before POST, while a valid padded title becomes trimmed in handleSubmit.
 
-**Scope:** This staged article uses genuine React Hook Form v7 interfaces and React 19 patterns. The source is not yet compiled with installed RHF packages or browser-tested. The companion Node loopback Task API is educational, unauthenticated and in-memory.
+**Scope:** This staged article uses genuine React Hook Form v7 interfaces and React 19 patterns. Earlier committed notes report locked local Chrome/TypeScript qualification of the starter and instructor exercises on November 20, 2026; those checks have not been rerun for this candidate. Publication and human accessibility review remain outstanding. The companion Node loopback Task API is educational, unauthenticated and in-memory.
 
 ## Prerequisites and preflight
 
@@ -88,6 +88,21 @@ export default function TaskForm(){
 3. **Repair:** Use zodResolver with distinct schema input and transformed output types; validate unknown values at the HTTP boundary too.
 4. **Regression:** The string `  done ` must be transformed to `done`. `   ` and a 101-character title must not invoke the submit callback. Server 422 must still be handled.
 5. **Operational boundary:** zodResolver is not authorization or persistence. The loopback API rejects invalid title/priority independently and must not trust the browser schema.
+
+## Production decision guide: two parsing boundaries and two value types
+
+A transforming Zod schema distinguishes the entered value from the parsed result. When the schema trims text, `z.input<typeof schema>` describes what arrives from the form and `z.output<typeof schema>` describes the validated result. TypeScript does not perform that conversion at runtime; the resolver must actually run. The server must independently parse untrusted JSON even if the same policy is used in the browser.
+
+| Value | Browser outcome | HTTP boundary |
+| --- | --- | --- |
+| Spaces only | Reject after trimming | Reject direct API requests too |
+| Padded valid title | Return normalized title | Validate the normalized record |
+| 101-character title | Field validation error | Return 422-style error |
+| Wrong priority or unexpected JSON | No trusted client guarantee | Parse and reject the request |
+
+**Independent exercise:** Trace the raw textbox value, the resolver output and the API payload for `"  done "`. Repeat with `"   "`. Show that the invalid case never calls the successful submission callback.
+
+**Boundary rule:** A shared schema reduces duplication, not trust boundaries. The backend must validate its own request data. Render known field errors as text, preserve user input on a 422 and avoid treating a correct TypeScript type as authorization.
 
 ## Guided local lab
 

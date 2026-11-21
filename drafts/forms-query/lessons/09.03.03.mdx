@@ -15,7 +15,7 @@ Queries describe remote reads; mutations perform writes. Invalidate the relevant
 
 **Predict before coding:** After a valid 201 POST, the task should appear in the refreshed todo list even when that list is separately cached from done/doing views.
 
-**Version and deployment scope:** TanStack Query v5, React 19, TypeScript 5. The Task API is a locally bound, in-memory, unauthenticated fixture. No compatible npm dependency lock or browser qualification has been completed, so this draft cannot be marked published.
+**Version and deployment scope:** TanStack Query v5, React 19, TypeScript 5. The Task API is a locally bound, in-memory, unauthenticated fixture. Earlier committed notes report locked local Chrome/SSR tests on November 20, 2026; they have not been rerun for this candidate. Publication, canonical lab registration and human accessibility review remain outstanding.
 
 ## Prerequisites and preflight
 
@@ -86,6 +86,21 @@ export function CreateTask(){
 3. **Repair:** Use useMutation for writes, attach one logical idempotency key, and invalidate all affected query views after confirmed success.
 4. **Regression:** Create with a valid key; verify one 201, then a GET refreshes the matching list. A 422 must never produce an invalidation-based success state.
 5. **Security and operations:** A retry that regenerates the idempotency key may produce duplicate tasks. Avoid retrying unauthorized or validation failures automatically.
+
+## Production decision guide: acknowledge writes before refreshing reads
+
+`useMutation` models a write whose success or failure is independent from query observation. On a confirmed successful create, invalidate every list view whose membership or aggregate count might have changed. Invalidation does not mean the original POST succeeded, and blindly displaying success because a GET refreshed can obscure a failed mutation.
+
+| Write outcome | UI response | Cache decision |
+| --- | --- | --- |
+| 201 confirmed | Show accepted create | Invalidate affected task views |
+| 422 validation failure | Keep draft and show field error | Do not claim success |
+| Ambiguous lost response | Preserve logical retry key | Reconcile before creating again |
+| 401/403 denied | Show access failure | Never retry automatically as an authorized write |
+
+**Independent exercise:** Create one task and observe a single POST followed by refreshed GET data. Repeat with a 422 and assert that no success state or success-only cache invalidation occurs. Toggle between filtered lists to verify the newly created record appears only where it belongs.
+
+**Idempotency rule:** For retries of the same logical mutation, preserve the payload and idempotency key. Generating a new key can double-create resources after response loss; automatic retries must be bounded and conditional on the failure type.
 
 ## Guided local lab
 

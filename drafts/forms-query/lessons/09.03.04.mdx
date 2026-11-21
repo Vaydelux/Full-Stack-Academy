@@ -15,7 +15,7 @@ An optimistic update is speculative. cancelQueries protects the snapshot from in
 
 **Predict before coding:** During a failed DELETE, the row disappears briefly and then reappears. A successful delete stays removed after refetch.
 
-**Version and deployment scope:** TanStack Query v5, React 19, TypeScript 5. The Task API is a locally bound, in-memory, unauthenticated fixture. No compatible npm dependency lock or browser qualification has been completed, so this draft cannot be marked published.
+**Version and deployment scope:** TanStack Query v5, React 19, TypeScript 5. The Task API is a locally bound, in-memory, unauthenticated fixture. Earlier committed notes report locked local Chrome/SSR tests on November 20, 2026; they have not been rerun for this candidate. Publication, canonical lab registration and human accessibility review remain outstanding.
 
 ## Prerequisites and preflight
 
@@ -93,6 +93,21 @@ export function DeleteButton({id}:{id:string}){
 3. **Repair:** Snapshot affected query data before an optimistic delete, roll back on failure, and reconcile after the mutation settles.
 4. **Regression:** Force DELETE 404 or transport failure. The cached row must be restored. Success must invalidate server data. Disable concurrent deletes or implement version-aware compensation.
 5. **Security and operations:** Snapshot rollback only remains correct when conflicting updates are serialized or reconciled; overlapping optimistic mutations need a more careful policy.
+
+## Production decision guide: rollback is a concurrency problem
+
+An optimistic update makes the interface react before the server confirms an operation. A correct delete flow cancels or coordinates relevant reads, snapshots the affected query values, removes the row temporarily and restores the snapshot on failure. On settlement, invalidate or reconcile against authoritative server state. This simple model is sound only when overlapping mutations cannot overwrite each other's snapshots.
+
+| Event | Optimistic cache action | Verification |
+| --- | --- | --- |
+| Delete begins | Snapshot then remove row | UI updates promptly |
+| Server returns 404 or fails | Restore previous rows | Original row returns |
+| Delete succeeds | Reconcile with server | Row stays removed |
+| Two deletes overlap | Serialize or use version-aware compensation | One rollback cannot erase another success |
+
+**Independent exercise:** Force a failing delete after the row disappears. Assert that its title, status and list position recover. Then make the delete succeed and verify a fresh server read. Repeat with two near-simultaneous operations and explain why the naive single-snapshot approach could restore stale data.
+
+**Security boundary:** Client cache rollback is a presentation safeguard. It cannot undo a committed server write, authorize a deletion or resolve multi-user conflicts without a backend revision/ETag or equivalent authoritative protocol.
 
 ## Guided local lab
 

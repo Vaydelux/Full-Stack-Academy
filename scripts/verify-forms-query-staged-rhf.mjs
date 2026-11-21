@@ -164,8 +164,12 @@ const labs = {
   },
 };
 
-export async function verifyStagedRHF(browser) {
-  for (const [lab, verify] of Object.entries(labs)) {
+export async function verifyStagedRHF(browser, { onlyLab = null, origin = 'http://127.0.0.1:5173' } = {}) {
+  if (onlyLab !== null && !Object.hasOwn(labs, onlyLab)) {
+    throw new Error('Unknown React Hook Form lab: ' + String(onlyLab));
+  }
+  const selected = onlyLab === null ? Object.entries(labs) : [[onlyLab, labs[onlyLab]]];
+  for (const [lab, verify] of selected) {
     for (const variant of ['solution', 'starter']) {
       const page = await browser.newPage();
       page.setDefaultTimeout(10_000);
@@ -178,7 +182,7 @@ export async function verifyStagedRHF(browser) {
           console.log = value => window.lessonSubmissions.push(value);
         });
         const search = new URLSearchParams({ lab, variant });
-        await page.goto('http://127.0.0.1:5173/qualification/?' + search);
+        await page.goto(origin + '/qualification/?' + search);
         await page.getByRole('textbox').first().waitFor();
         if (variant === 'solution') await verify(page, variant);
         else await assert.rejects(() => verify(page, variant), { code: 'ERR_ASSERTION' });

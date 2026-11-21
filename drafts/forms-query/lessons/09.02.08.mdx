@@ -15,7 +15,7 @@ React Hook Form owns registered values. useWatch observes form state without int
 
 **Predict before coding:** Typing must update both preview and submitted payload from the same registered field value. Reset should clear both.
 
-**Scope:** This staged article uses genuine React Hook Form v7 interfaces and React 19 patterns. The source is not yet compiled with installed RHF packages or browser-tested. The companion Node loopback Task API is educational, unauthenticated and in-memory.
+**Scope:** This staged article uses genuine React Hook Form v7 interfaces and React 19 patterns. Earlier committed notes report locked local Chrome/TypeScript qualification of the starter and instructor exercises on November 20, 2026; those checks have not been rerun for this candidate. Publication and human accessibility review remain outstanding. The companion Node loopback Task API is educational, unauthenticated and in-memory.
 
 ## Prerequisites and preflight
 
@@ -85,6 +85,21 @@ export default function PreviewForm(){
 3. **Repair:** Find and remove duplicated form state, stale previews, and uncontrolled-to-controlled mismatches.
 4. **Regression:** Type, reset and programmatically update the field; preview and submitted payload must be consistent, with no independent useState shadow.
 5. **Operational boundary:** Treat displayed form previews as user content; React text interpolation escapes text, while innerHTML would introduce an XSS risk.
+
+## Production decision guide: derive previews from the form
+
+A preview is a view of the current title, not an independent source of editable state. When the registered RHF input owns the title, use `useWatch` (or an appropriate `watch` subscription) to render it, and `setValue` to apply a suggestion to that same field. An extra `useState` copy can drift after reset, programmatic updates or rerenders.
+
+| Action | Single source of truth | Typical bug |
+| --- | --- | --- |
+| Type title | Registered field value | Preview uses stale component state |
+| Apply suggestion | One `setValue` update | Submission sends older title |
+| Reset form | RHF default baseline | Shadow preview remains |
+| Submit | `handleSubmit` data | Confirmation differs from sent value |
+
+**Independent exercise:** Type a title, activate the suggested title, submit, then reset. After each action, record expected input and preview values. Explicitly distinguish the current draft from the last submitted result; these values can legitimately have different lifetimes.
+
+**Security boundary:** User-provided preview text belongs in React text interpolation, not HTML injection. Unified state fixes consistency bugs; it does not establish that a server accepted a record. Revalidate submitted values at the HTTP boundary.
 
 ## Guided local lab
 

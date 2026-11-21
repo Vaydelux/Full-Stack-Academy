@@ -1,3 +1,5 @@
+> **2026-11-20 candidate handoff:** This document's earlier baseline is historical. PR #38 now combines 16 deeper source lessons and draft preview routes with automated source checks, but new Next/Playwright/human accessibility qualifications remain unexecuted for the candidate. The official published snapshot is still 338 IDs. Consult `docs/P1_CONTENT_PREVIEW_ACCEPTANCE.md` before attempting module promotion.
+
 # Forms/Query 09.02 + 09.03 — Publication Readiness & Release Plan
 
 **Checked against main:** `ec518b41cdb08003580a865a213311d1660dfd9f` (2026-11-20).  
@@ -26,7 +28,7 @@ npm run test:forms-query-promotion
 node scripts/forms-query-promotion-readiness.mjs --strict
 ```
 
-`scripts/forms-query-promotion-readiness.mjs` checks **each canonical 09.02 and 09.03 topic** for title, module, official reference, prerequisites, red/starter code fence parity, genuine browser-verification entry and publication-atomicity. Its source errors fail `--check`. Its `--strict` mode additionally requires real published assets, registries, root dependencies, published stack-version pins and **human accessibility evidence**. This tool cannot manufacture browser or assistive-technology qualifications.
+`scripts/forms-query-promotion-readiness.mjs` checks **each canonical 09.02 and 09.03 topic** for title, module, official reference, prerequisites, red/starter code fence parity, genuine browser-verification entry and publication-atomicity. Its source errors fail `--check`. Its `--strict` mode additionally requires real published assets, registries, locked nested exercise dependencies, published stack-version pins and **human accessibility evidence**. This tool cannot manufacture browser or assistive-technology qualifications.
 
 ### Required manual accessibility evidence (not yet completed)
 
@@ -53,7 +55,7 @@ The reviewer should test actual keyboard-only forms, expected focus after submis
 
 ## Publication integration: one full eight-topic module at a time
 
-1. **Pin published dependencies** in the root npm manifest: React Hook Form 7, `@hookform/resolvers` 7, TanStack Query 5, the major keys `reactHookForm` / `tanstackQuery` in `content/stack-versions.json`, and update the **root** lockfile with genuine `npm install` on a trusted registry. Nested lockfile must remain intact. Never fabricate integrity hashes.
+1. **Keep the runtime isolated:** React Hook Form 7, `@hookform/resolvers` 7 and TanStack Query 5 already have a genuine integrity-locked manifest in `examples/forms-query-vertical/react-client/`. The Next academy renders fenced MDX source only and does **not** need these packages added to its root dependencies. Major keys `reactHookForm: "7"` and `tanstackQuery: "5"` are already pinned in `content/stack-versions.json`. Run both real `npm ci` commands in a Node24 checkout before promotion.
 2. **Produce canonical MDX and metadata**, respecting the strict `scripts/validate-content.mjs` schemas. The staged `sourceStatus` metadata is not the same as the published `status:'authored'` format. Replace draft-only directions in MDX with real published lab commands; add `<LabGate interactive={false} />` to avoid misleading links to unimplemented in-browser exercises.
 3. **Publish 8 executable lab folders**, with stable `lab.react.forms-query-*` IDs, substantive tests that really execute the library, red starters with explicit expected assertion failures, and `npm run lab:forms-query-*` scripts. Never count a copied TSX file as a verified runnable lab. The root `test:labs` runner must discover the new manifests correctly.
 4. **Update both static registries atomically**: `src/content/lesson-registry.tsx` must import/render each MDX page; `src/lib/academy/published.ts` must import/index the metadata. Check `generateStaticParams()` and role/unknown-route behavior. Preserve all existing IDs.

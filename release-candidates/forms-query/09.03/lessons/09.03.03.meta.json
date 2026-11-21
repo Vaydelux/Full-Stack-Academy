@@ -1,0 +1,51 @@
+{
+  "candidateFor": "09.03.03",
+  "publicationReady": false,
+  "targetPath": "src/content/lessons/09.03.03.meta.json",
+  "publishedMetadata": {
+    "id": "09.03.03",
+    "title": "Mutations and invalidation",
+    "description": "An applied TanStack Query 5 module on mutations and invalidation, integrating real HTTP, cache state, failure recovery, and separate instructor/browser acceptance.",
+    "trackId": "09",
+    "moduleId": "09.03",
+    "level": "Intermediate",
+    "estimatedMinutes": 63,
+    "status": "authored",
+    "reviewedAt": null,
+    "stack": {
+      "react": "19",
+      "typescript": "5",
+      "tanstackQuery": "5"
+    },
+    "prerequisites": [
+      "09.03.02"
+    ],
+    "objectives": [
+      "Use useMutation for writes, attach one logical idempotency key, and invalidate all affected query views after confirmed success.",
+      "Create with a valid key; verify one 201, then a GET refreshes the matching list. A 422 must never produce an invalidation-based success state.",
+      "A retry that regenerates the idempotency key may produce duplicate tasks. Avoid retrying unauthorized or validation failures automatically."
+    ],
+    "labId": "lab.react.forms-query-mutation-invalidation",
+    "rubric": [
+      "Use useMutation for writes, attach one logical idempotency key, and invalidate all affected query views after confirmed success.",
+      "Create with a valid key; verify one 201, then a GET refreshes the matching list. A 422 must never produce an invalidation-based success state.",
+      "I can distinguish cache freshness, HTTP success and server authorization."
+    ],
+    "sources": [
+      {
+        "label": "Primary official reference",
+        "url": "https://tanstack.com/query/latest/docs/framework/react/guides/invalidations-from-mutations"
+      },
+      {
+        "label": "Supporting official reference",
+        "url": "https://tanstack.com/query/latest/docs/framework/react/guides/mutations"
+      }
+    ]
+  },
+  "blockedOn": [
+    "Actual nested npm ci and Query browser red/green acceptance",
+    "Next production route/MDX build",
+    "Real named keyboard, screen-reader and 200% zoom review"
+  ],
+  "requiredVerifyScript": "npm run lab:forms-query-mutation-invalidation"
+}

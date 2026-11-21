@@ -1,0 +1,51 @@
+{
+  "candidateFor": "09.03.04",
+  "publicationReady": false,
+  "targetPath": "src/content/lessons/09.03.04.meta.json",
+  "publishedMetadata": {
+    "id": "09.03.04",
+    "title": "Optimistic updates and rollback",
+    "description": "An applied TanStack Query 5 module on optimistic updates and rollback, integrating real HTTP, cache state, failure recovery, and separate instructor/browser acceptance.",
+    "trackId": "09",
+    "moduleId": "09.03",
+    "level": "Intermediate",
+    "estimatedMinutes": 63,
+    "status": "authored",
+    "reviewedAt": null,
+    "stack": {
+      "react": "19",
+      "typescript": "5",
+      "tanstackQuery": "5"
+    },
+    "prerequisites": [
+      "09.03.03"
+    ],
+    "objectives": [
+      "Snapshot affected query data before an optimistic delete, roll back on failure, and reconcile after the mutation settles.",
+      "Force DELETE 404 or transport failure. The cached row must be restored. Success must invalidate server data. Disable concurrent deletes or implement version-aware compensation.",
+      "Snapshot rollback only remains correct when conflicting updates are serialized or reconciled; overlapping optimistic mutations need a more careful policy."
+    ],
+    "labId": "lab.react.forms-query-optimistic-rollback",
+    "rubric": [
+      "Snapshot affected query data before an optimistic delete, roll back on failure, and reconcile after the mutation settles.",
+      "Force DELETE 404 or transport failure. The cached row must be restored. Success must invalidate server data. Disable concurrent deletes or implement version-aware compensation.",
+      "I can distinguish cache freshness, HTTP success and server authorization."
+    ],
+    "sources": [
+      {
+        "label": "Primary official reference",
+        "url": "https://tanstack.com/query/latest/docs/framework/react/guides/optimistic-updates"
+      },
+      {
+        "label": "Supporting official reference",
+        "url": "https://tanstack.com/query/latest/docs/framework/react/reference/useMutation"
+      }
+    ]
+  },
+  "blockedOn": [
+    "Actual nested npm ci and Query browser red/green acceptance",
+    "Next production route/MDX build",
+    "Real named keyboard, screen-reader and 200% zoom review"
+  ],
+  "requiredVerifyScript": "npm run lab:forms-query-optimistic-rollback"
+}

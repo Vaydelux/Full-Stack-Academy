@@ -1,0 +1,120 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Use register for a native input and Controller for a non-native controlled picker without creating duplicate form state.","Click or keyboard-activate the rating button twice, then submit; the handler must receive rating 3 rather than 1. Verify the title is also registered.","A rating picker still needs a semantic accessible name and keyboard focus; wrapping an inaccessible custom control in Controller does not make it accessible."]} />
+
+## The problem we're solving
+
+An accessible star-rating widget accepts value and onChange but not an input ref. A developer spreads register into it and assumes React Hook Form can read the selected value.
+
+**What breaks in the learner starter:** The custom control never receives the form-owned value or onChange handler.
+
+## Build the mental model
+
+Use register when a native control provides ref/name/onChange. For a controlled third-party component, Controller bridges field.value and field.onChange.
+
+**Predict before coding:** The naive widget never reports its selected rating to handleSubmit; Controller makes the custom control participate in the form.
+
+**Scope:** This staged article uses genuine React Hook Form v7 interfaces and React 19 patterns. Earlier committed notes report locked local Chrome/TypeScript qualification of the starter and instructor exercises on November 20, 2026; those checks have not been rerun for this candidate. Publication and human accessibility review remain outstanding. The companion Node loopback Task API is educational, unauthenticated and in-memory.
+
+## Prerequisites and preflight
+
+Read the preceding canonical module lessons and `drafts/forms-query/README.md`. The staged exercise is in `drafts/forms-query/labs/register-controller/`. Install and lock real compatible npm packages *before* promoting this draft to the production academy. Do not copy the starter to the published lab registry until its negative test is observable.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the red starter" file="drafts/forms-query/labs/register-controller/starter.tsx" expected="The custom control never receives the form-owned value or onChange handler.">
+
+```tsx
+import { useForm } from 'react-hook-form';
+function Rating({ value, onChange }: {value:number;onChange:(n:number)=>void}) {
+ return <button type="button" onClick={()=>onChange(value===5?1:value+1)}>Rating: {value}</button>;
+}
+export default function ReviewForm(){
+ const { register, handleSubmit }=useForm<{title:string;rating:number}>({defaultValues:{title:'',rating:1}});
+ return <form onSubmit={handleSubmit(console.log)}>
+  <input aria-label="Review title" {...register('title')} />
+  <Rating value={1} onChange={()=>{}} />
+  <button type="submit">Save</button>
+ </form>;
+}
+```
+
+**Observe:** An accessible star-rating widget accepts value and onChange but not an input ref. A developer spreads register into it and assumes React Hook Form can read the selected value.
+
+</LessonStep>
+
+<LessonStep number={2} title="Apply the instructor repair" file="drafts/forms-query/labs/register-controller/solution.tsx" expected="The naive widget never reports its selected rating to handleSubmit; Controller makes the custom control participate in the form.">
+
+```tsx
+import { Controller, useForm } from 'react-hook-form';
+function Rating({ value, onChange }: {value:number;onChange:(n:number)=>void}) {
+ return <button type="button" aria-label="Increase rating" onClick={()=>onChange(value===5?1:value+1)}>Rating: {value}</button>;
+}
+export default function ReviewForm(){
+ const { register, control, handleSubmit }=useForm<{title:string;rating:number}>({defaultValues:{title:'',rating:1}});
+ return <form onSubmit={handleSubmit(console.log)}>
+  <label htmlFor="review-title">Review title</label>
+  <input id="review-title" {...register('title',{required:true})} />
+  <Controller name="rating" control={control} render={({field})=>
+    <Rating value={field.value} onChange={field.onChange} />} />
+  <button type="submit">Save</button>
+ </form>;
+}
+```
+
+**Why:** Use register when a native control provides ref/name/onChange. For a controlled third-party component, Controller bridges field.value and field.onChange.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify behavior at the real boundary" file="drafts/forms-query/labs/register-controller/lab.json" expected="Click or keyboard-activate the rating button twice, then submit; the handler must receive rating 3 rather than 1. Verify the title is also registered.">
+
+**Acceptance scenario:** Click or keyboard-activate the rating button twice, then submit; the handler must receive rating 3 rather than 1. Verify the title is also registered.
+
+**Debug the failure:** reproduce the bad behavior in the starter, make the smallest correction, then repeat the positive case and a genuinely failing negative case. This must be automated using real RHF/React packages and a DOM harness before the lesson is published.
+
+**Trust boundary:** A rating picker still needs a semantic accessible name and keyboard focus; wrapping an inaccessible custom control in Controller does not make it accessible.
+
+</LessonStep>
+
+<Misconception claim="The custom control never receives the form-owned value or onChange handler." correction="Use register when a native control provides ref/name/onChange. For a controlled third-party component, Controller bridges field.value and field.onChange." />
+
+<KnowledgeCheck question="Which repair best addresses register and controller?" choices={["Always trust the browser to enforce security.","Use one authoritative form state and verify the tested behavior.","Ignore non-200 HTTP responses if fetch resolved.","Treat TypeScript types as runtime authorization."]} correctIndex={1} explanation="Use register when a native control provides ref/name/onChange. For a controlled third-party component, Controller bridges field.value and field.onChange." misconception="The custom control never receives the form-owned value or onChange handler." lessonId="09.02.02" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+1. **Reproduce:** The custom control never receives the form-owned value or onChange handler.
+2. **Diagnose:** Locate who owns the current value, where it is transformed, and which effect or async boundary can invalidate assumptions.
+3. **Repair:** Use register for a native input and Controller for a non-native controlled picker without creating duplicate form state.
+4. **Regression:** Click or keyboard-activate the rating button twice, then submit; the handler must receive rating 3 rather than 1. Verify the title is also registered.
+5. **Operational boundary:** A rating picker still needs a semantic accessible name and keyboard focus; wrapping an inaccessible custom control in Controller does not make it accessible.
+
+## Production decision guide: adapt custom controls without duplicating form state
+
+`register` suits native inputs with refs and standard input events. A custom rating widget may require a controlled `value` and `onChange` API. `Controller` connects that API to RHF; its `field` includes the value, change/blur handlers, name and ref. Using only the displayed rating while forgetting `field.onChange` lets the widget appear to work while submission stays at its initial value.
+
+| Symptom | Likely cause | Check |
+| --- | --- | --- |
+| Rating changes on screen but submits 1 | Widget has independent state | Assert `handleSubmit` data |
+| Form never becomes dirty | The picker is disconnected | Inspect defaults and onChange |
+| Keyboard users cannot select a rating | Click-only widget | Tab, Space and Enter |
+| Error focus never reaches the picker | Ref not forwarded to focusable target | Trigger an invalid selection |
+
+**Independent exercise:** Fill the registered title, keyboard-activate the rating twice, and predict the submitted title/rating pair. Then deliberately disconnect the widget's change handler and identify the first incorrect observable value.
+
+**Accessibility is a separate responsibility.** A `Controller` adapter does not automatically create a button role, label, visible focus or keyboard support. Prefer native controls where practical. Give controlled components complete defaults so dirty-state comparisons have a meaningful baseline.
+
+## Guided local lab
+
+Once the final candidate passes real browser/library and accessibility review, use the registered `labs/forms-query-register-controller/` exercise with `npm run lab:forms-query-register-controller`. Its starter must fail a meaningful behavior assertion, and the instructor solution must pass. This candidate is **not published** until release gates complete.
+
+<LabGate lessonId="09.02.02" labId="lab.react.forms-query-register-controller" commands={["npm run lab:forms-query-register-controller","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+What did the learner believe to be the source of truth before the repair? What user-visible state would diverge under failure, cancellation or a stale server response?
+
+## Official references
+
+- [Primary official reference](https://react-hook-form.com/docs/usecontroller/controller)
+- [Supporting official reference](https://react-hook-form.com/docs/useform/register)

@@ -1,0 +1,118 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Use useMutation for writes, attach one logical idempotency key, and invalidate all affected query views after confirmed success.","Create with a valid key; verify one 201, then a GET refreshes the matching list. A 422 must never produce an invalidation-based success state.","A retry that regenerates the idempotency key may produce duplicate tasks. Avoid retrying unauthorized or validation failures automatically."]} />
+
+## The problem we're solving
+
+A newly created task shows a green success toast, but it does not appear in any filtered list because the POST mutation was not followed by a cache invalidation.
+
+**Broken behavior in the starter:** The starter sends a POST without invalidating task-list queries and has no idempotency contract.
+
+## Build the mental model
+
+Queries describe remote reads; mutations perform writes. Invalidate the relevant query namespace when writes succeed, then let refetch reconcile client state with server truth.
+
+**Predict before coding:** After a valid 201 POST, the task should appear in the refreshed todo list even when that list is separately cached from done/doing views.
+
+**Version and deployment scope:** TanStack Query v5, React 19, TypeScript 5. The Task API is a locally bound, in-memory, unauthenticated fixture. Earlier committed notes report locked local Chrome/SSR tests on November 20, 2026; they have not been rerun for this candidate. Publication, canonical lab registration and human accessibility review remain outstanding.
+
+## Prerequisites and preflight
+
+Review the preceding canonical topics, including React Hook Form's validated POST boundary. Start with `drafts/forms-query/labs/mutation-invalidation/starter.tsx`, and compare with the instructor source only after predicting the incorrect result.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the faulty remote-state assumption" file="drafts/forms-query/labs/mutation-invalidation/starter.tsx" expected="The starter sends a POST without invalidating task-list queries and has no idempotency contract.">
+
+```tsx
+import { useMutation } from '@tanstack/react-query';
+export function CreateTask(){
+ const create=useMutation({mutationFn:()=>fetch('/api/tasks',{method:'POST',body:'{}'})});
+ return <button onClick={()=>create.mutate()}>Create</button>;
+}
+```
+
+**Why it fails:** A newly created task shows a green success toast, but it does not appear in any filtered list because the POST mutation was not followed by a cache invalidation.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the correct TanStack Query behavior" file="drafts/forms-query/labs/mutation-invalidation/solution.tsx" expected="After a valid 201 POST, the task should appear in the refreshed todo list even when that list is separately cached from done/doing views.">
+
+```tsx
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+export function CreateTask(){
+ const client=useQueryClient();
+ const create=useMutation({
+  mutationFn:async({title,key}:{title:string;key:string})=>{
+   const response=await fetch('/api/tasks',{method:'POST',headers:{
+    'content-type':'application/json','idempotency-key':key
+   },body:JSON.stringify({title,priority:'normal'})});
+   if(!response.ok)throw new Error('HTTP '+response.status);
+   return response.json();
+  },
+  retry:false,
+  onSuccess:async()=>{await client.invalidateQueries({queryKey:['tasks']});},
+ });
+ return <button type="button" disabled={create.isPending}
+  onClick={()=>create.mutate({title:'Practice cache invalidation',key:crypto.randomUUID()})}>
+  {create.isPending?'Saving…':'Create task'}
+ </button>;
+}
+```
+
+**What changed:** Queries describe remote reads; mutations perform writes. Invalidate the relevant query namespace when writes succeed, then let refetch reconcile client state with server truth.
+
+</LessonStep>
+
+<LessonStep number={3} title="Assert real HTTP and cache behavior" file="drafts/forms-query/labs/mutation-invalidation/lab.json" expected="Create with a valid key; verify one 201, then a GET refreshes the matching list. A 422 must never produce an invalidation-based success state.">
+
+**Observe:** Create with a valid key; verify one 201, then a GET refreshes the matching list. A 422 must never produce an invalidation-based success state.
+
+**Required evidence before publishing:** Use real installed TanStack Query with a mounted QueryClientProvider and an actual loopback HTTP fixture. Record the expected red assertion for the starter and a green assertion for the instructor. Inspect request counts and body shape; static source checks are insufficient for release.
+
+**Boundary:** A retry that regenerates the idempotency key may produce duplicate tasks. Avoid retrying unauthorized or validation failures automatically.
+
+</LessonStep>
+
+<Misconception claim="The starter sends a POST without invalidating task-list queries and has no idempotency contract." correction="Queries describe remote reads; mutations perform writes. Invalidate the relevant query namespace when writes succeed, then let refetch reconcile client state with server truth." />
+
+<KnowledgeCheck question="What is the reliable approach to mutations and invalidation?" choices={["Assume cached browser state equals server truth forever.","Use TanStack Query resource identity and the server's HTTP contract.","Ignore failure responses to keep the UI fast.","Disable all validation once the code typechecks."]} correctIndex={1} explanation="Queries describe remote reads; mutations perform writes. Invalidate the relevant query namespace when writes succeed, then let refetch reconcile client state with server truth." misconception="The starter sends a POST without invalidating task-list queries and has no idempotency contract." lessonId="09.03.03" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+1. **Reproduce:** The starter sends a POST without invalidating task-list queries and has no idempotency contract.
+2. **Diagnose:** Trace the query key, cancellation boundary, remote response, cache update and invalidation.
+3. **Repair:** Use useMutation for writes, attach one logical idempotency key, and invalidate all affected query views after confirmed success.
+4. **Regression:** Create with a valid key; verify one 201, then a GET refreshes the matching list. A 422 must never produce an invalidation-based success state.
+5. **Security and operations:** A retry that regenerates the idempotency key may produce duplicate tasks. Avoid retrying unauthorized or validation failures automatically.
+
+## Production decision guide: acknowledge writes before refreshing reads
+
+`useMutation` models a write whose success or failure is independent from query observation. On a confirmed successful create, invalidate every list view whose membership or aggregate count might have changed. Invalidation does not mean the original POST succeeded, and blindly displaying success because a GET refreshed can obscure a failed mutation.
+
+| Write outcome | UI response | Cache decision |
+| --- | --- | --- |
+| 201 confirmed | Show accepted create | Invalidate affected task views |
+| 422 validation failure | Keep draft and show field error | Do not claim success |
+| Ambiguous lost response | Preserve logical retry key | Reconcile before creating again |
+| 401/403 denied | Show access failure | Never retry automatically as an authorized write |
+
+**Independent exercise:** Create one task and observe a single POST followed by refreshed GET data. Repeat with a 422 and assert that no success state or success-only cache invalidation occurs. Toggle between filtered lists to verify the newly created record appears only where it belongs.
+
+**Idempotency rule:** For retries of the same logical mutation, preserve the payload and idempotency key. Generating a new key can double-create resources after response loss; automatic retries must be bounded and conditional on the failure type.
+
+## Guided local lab
+
+This is an **unpublished release candidate**. Execute the real Query v5 lab and named accessibility checks before publishing. The starter is deliberately broken; the instructor solution must pass its behavior assertions when registered at `labs/forms-query-mutation-invalidation/`.
+
+<LabGate lessonId="09.03.03" labId="lab.react.forms-query-mutation-invalidation" commands={["npm run lab:forms-query-mutation-invalidation","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+What should happen if the server returns an old result, a 409 stale cursor, a 412 conditional-write conflict or a network error? Which layer owns each recovery decision?
+
+## Official references
+
+- [Primary official reference](https://tanstack.com/query/latest/docs/framework/react/guides/invalidations-from-mutations)
+- [Supporting official reference](https://tanstack.com/query/latest/docs/framework/react/guides/mutations)

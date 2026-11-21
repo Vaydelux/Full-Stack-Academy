@@ -1,0 +1,48 @@
+{
+  "candidateFor": "09.02.04",
+  "promotionReady": false,
+  "candidateOnly": true,
+  "proposedPublishedLabManifest": {
+    "id": "lab.react.forms-query-dynamic-field-arrays",
+    "lessonId": "09.02.04",
+    "title": "Dynamic field arrays",
+    "runtime": "react-19-rhf-7-zod-4-browser-node-24",
+    "status": "authored",
+    "starter": "labs/forms-query-dynamic-field-arrays/starter/solution.tsx",
+    "solution": "labs/forms-query-dynamic-field-arrays/solution/solution.tsx",
+    "tests": "labs/forms-query-dynamic-field-arrays/solution.test.mjs",
+    "verify": [
+      "npm run lab:forms-query-dynamic-field-arrays",
+      "npm run qualify:forms-query:react-browser"
+    ],
+    "expected": "Type unique values in three rows; remove the middle row. The remaining values must match their original logical items. Adding past eight rows must be disabled.",
+    "security": "Never accept arbitrary numbers of dynamic rows on the server; cap collection lengths and validate each nested item."
+  },
+  "sourceContract": {
+    "id": "draft.forms.dynamic-field-arrays",
+    "lessonId": "09.02.04",
+    "title": "Dynamic field arrays",
+    "sourceStatus": "staged-unverified",
+    "runtime": "react-19-rhf-7-zod-4-ts-5",
+    "starter": "drafts/forms-query/labs/dynamic-field-arrays/starter.tsx",
+    "solution": "drafts/forms-query/labs/dynamic-field-arrays/solution.tsx",
+    "expectedPositive": "Type unique values in three rows; remove the middle row. The remaining values must match their original logical items. Adding past eight rows must be disabled.",
+    "expectedNegative": "The starter uses key={index} and allows unlimited rows; reordering or deleting can shift user edits.",
+    "securityBoundary": "Never accept arbitrary numbers of dynamic rows on the server; cap collection lengths and validate each nested item.",
+    "officialReferences": [
+      "https://react-hook-form.com/docs/usefieldarray",
+      "https://react-hook-form.com/docs/useform/register"
+    ],
+    "requiresRealLibraryTest": true,
+    "requiresRealBrowserTest": true,
+    "readyToPublish": false
+  },
+  "testsImplemented": true,
+  "requirements": [
+    "Run Node 24 with genuine nested React dependency lock",
+    "Execute real Chromium positive/negative assertions for this lab",
+    "Run full candidate Next build and published release smoke",
+    "Record actual keyboard, 200-percent zoom and named screen-reader evidence"
+  ],
+  "runtimeTestsExecuted": false
+}

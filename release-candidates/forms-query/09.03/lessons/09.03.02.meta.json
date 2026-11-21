@@ -1,0 +1,51 @@
+{
+  "candidateFor": "09.03.02",
+  "publicationReady": false,
+  "targetPath": "src/content/lessons/09.03.02.meta.json",
+  "publishedMetadata": {
+    "id": "09.03.02",
+    "title": "Stale time and garbage collection",
+    "description": "A practical TanStack Query 5 lesson on stale time and garbage collection, with a real starter bug, instructor repair, HTTP/cache invariants and a separate browser or Next SSR acceptance exercise.",
+    "trackId": "09",
+    "moduleId": "09.03",
+    "level": "Intermediate",
+    "estimatedMinutes": 63,
+    "status": "authored",
+    "reviewedAt": null,
+    "stack": {
+      "react": "19",
+      "typescript": "5",
+      "tanstackQuery": "5"
+    },
+    "prerequisites": [
+      "09.03.01"
+    ],
+    "objectives": [
+      "Separate staleTime freshness from gcTime eviction of unused cache entries, and predict focus/refetch behavior.",
+      "Read immediately twice, refocus at 2 seconds, then refocus after 11 seconds. Explain which reads should reuse cached data and when inactive queries are garbage-collected.",
+      "Never assume cache freshness is authorization. A 401/403 must be handled at the server boundary even if a previous cached object existed."
+    ],
+    "labId": "lab.react.forms-query-stale-garbage",
+    "rubric": [
+      "Separate staleTime freshness from gcTime eviction of unused cache entries, and predict focus/refetch behavior.",
+      "Read immediately twice, refocus at 2 seconds, then refocus after 11 seconds. Explain which reads should reuse cached data and when inactive queries are garbage-collected.",
+      "I can distinguish cache freshness, HTTP success and server authorization."
+    ],
+    "sources": [
+      {
+        "label": "Primary official reference",
+        "url": "https://tanstack.com/query/latest/docs/framework/react/guides/important-defaults"
+      },
+      {
+        "label": "Supporting official reference",
+        "url": "https://tanstack.com/query/latest/docs/framework/react/reference/useQuery"
+      }
+    ]
+  },
+  "blockedOn": [
+    "Real Query v5 nested npm/Chromium acceptance",
+    "Exact candidate Next.js production build",
+    "Independent named keyboard, 200-percent zoom and screen-reader review"
+  ],
+  "requiredVerifyScript": "npm run lab:forms-query-stale-garbage"
+}
