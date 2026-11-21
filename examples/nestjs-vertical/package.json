@@ -10,7 +10,7 @@
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "build": "tsc -p tsconfig.json",
     "test:architecture": "node --test tests/architecture.test.mjs",
-    "qualify": "node scripts/require-lock.mjs && npm ci && npm run typecheck && npm run build && npm run test:runtime",
+    "qualify": "npm run test:source-coverage && node scripts/require-lock.mjs && npm ci && npm run typecheck && npm run build && npm run test:runtime",
     "test:pipeline": "node --test tests/request-pipeline.test.mjs",
     "test:domain": "node --test tests/domain-modules.test.mjs",
     "test:advanced": "node --test tests/advanced.test.mjs",
@@ -18,7 +18,8 @@
     "test:integration:pg": "node --test tests/postgres.integration.test.mjs",
     "test:integration:sockets": "node --test tests/websocket.integration.test.mjs",
     "qualify:integration": "node scripts/require-lock.mjs && npm run typecheck && npm run build && npm run test:integration:pg && npm run test:integration:sockets",
-    "qualify:release": "npm run qualify && npm run qualify:integration"
+    "qualify:release": "npm run qualify && npm run qualify:integration",
+    "test:source-coverage": "node scripts/verify-runtime-test-coverage.mjs --check && node --test tests/runtime-coverage-source.test.mjs"
   },
   "dependencies": {
     "@nestjs/common": "^12.5.1",
