@@ -106,3 +106,13 @@ npm run qualify
 ```
 
 After real runtime failures are fixed, commit the npm-generated lockfile and exact test evidence. Do not publish or merge this draft merely because tests have been authored. The **live count is still 338/889**, P1 must release first, and the Vercel freeze remains in force.
+
+## November 21 — genuine service integration gates staged
+
+Added `tests/postgres.integration.test.mjs` for real transactional rollback and commit against a **session-private temporary table**, requiring opt-in dedicated PostgreSQL credentials. This closes the prior **mock-only assertion design gap**, but actual PostgreSQL tests remain **unexecuted**.
+
+Added `tests/websocket.integration.test.mjs` for two independently authenticated live Socket.IO clients, server-assigned tenant identity, adversarial client-provided tenant spoofing and non-delivery of cross-tenant broadcasts. Token mapping is deliberately test-only. The previously authored in-process room contract remains part of the 32-topic suite. The real connection test is **unexecuted**.
+
+Added `pg`, `socket.io-client`, and `@types/pg` to the nested lab dependencies, and `qualify:release` to sequentially run the 32-topic suite and both live integration suites. Rebuild the genuine lockfile from npm before executing it. Source-only JavaScript parse checks succeeded for the two new files, not execution.
+
+**Release state:** PR #39 remains draft/unmerged; main still has 338 published lessons; Vercel deployment is frozen. Runtime outcomes, dependency integrity, WebSocket isolation and real DB rollback are not yet verified, and no human a11y sign-off exists.
