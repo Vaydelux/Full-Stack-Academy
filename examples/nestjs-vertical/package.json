@@ -14,7 +14,7 @@
     "test:pipeline": "node --test tests/request-pipeline.test.mjs",
     "test:domain": "node --test tests/domain-modules.test.mjs",
     "test:advanced": "node --test tests/advanced.test.mjs",
-    "test:runtime": "node --test tests/*.test.mjs"
+    "test:runtime": "node --test tests/architecture.test.mjs tests/request-pipeline.test.mjs tests/domain-modules.test.mjs tests/advanced.test.mjs"
   },
   "dependencies": {
     "@nestjs/common": "^12.5.1",
