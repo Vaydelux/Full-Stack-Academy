@@ -136,6 +136,6 @@ test('11.04.08 production-style skeleton binds loopback on an ephemeral test por
   const { fileURLToPath } = await import('node:url');
   const starterPath = fileURLToPath(new URL('../../../drafts/nestjs/labs/production-service-skeleton/starter.ts', import.meta.url));
   const starter = await readFile(starterPath, 'utf8');
-  assert.match(starter, /0\\.0\\.0\\.0/);
-  assert.doesNotMatch(starter, /enableShutdownHooks\\s*\\(/);
+  assert.match(starter, /0\.0\.0\.0/);
+  assert.doesNotMatch(starter, /enableShutdownHooks\s*\(/);
 });
