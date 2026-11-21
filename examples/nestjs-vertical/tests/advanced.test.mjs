@@ -7,7 +7,8 @@ import { Test } from '@nestjs/testing';
 const load = (slug, variant) => import('../dist/' + slug + '/' + variant + '.js');
 async function redGreen(slug, probe) {
   await probe(await load(slug, 'solution'));
-  await assert.rejects(() => probe(await load(slug, 'starter')), 'Starter must fail a semantic assertion: ' + slug);
+  const starter = await load(slug, 'starter');
+  await assert.rejects(async () => probe(starter), 'Starter must fail a semantic assertion: ' + slug);
 }
 const httpContext = req => ({ switchToHttp: () => ({ getRequest: () => req }) });
 
