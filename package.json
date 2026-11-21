@@ -437,8 +437,9 @@
     "test:vercel-freeze": "node --test tests/vercel-freeze.test.mjs",
     "verify:vercel-freeze": "node scripts/verify-vercel-freeze.mjs",
     "status:nestjs-drafts": "node scripts/verify-nestjs-drafts.mjs --json",
-    "test:nestjs-drafts": "node scripts/verify-nestjs-drafts.mjs --check && node --test tests/nestjs-drafts.test.mjs",
-    "qualify:nestjs:architecture": "npm run qualify --prefix examples/nestjs-vertical"
+    "test:nestjs-drafts": "node scripts/verify-nestjs-drafts.mjs --check && node --test tests/nestjs-drafts.test.mjs && node examples/nestjs-vertical/scripts/verify-runtime-test-coverage.mjs --check && node --test examples/nestjs-vertical/tests/runtime-coverage-source.test.mjs",
+    "qualify:nestjs:architecture": "npm run qualify --prefix examples/nestjs-vertical",
+    "status:nestjs-test-coverage": "node examples/nestjs-vertical/scripts/verify-runtime-test-coverage.mjs --json"
   },
   "dependencies": {
     "clsx": "^2.1.1",
