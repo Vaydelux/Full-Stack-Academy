@@ -62,14 +62,17 @@ test('11.03.05 module exports its service across the import boundary', async () 
   });
 });
 
-test('11.03.06 transaction contract emits BEGIN/COMMIT and ROLLBACK on failure (mock only)', async () => {
+test('11.03.06 enforces atomic transfer and rejects missing/insufficient wallets (mock contract)', async () => {
   await redGreen('application-transactions', async ({ transfer }) => {
     const successful = [];
-    await transfer({ query: async (...args) => successful.push(args) }, 'a', 'b');
+    await transfer({ query: async (...args) => {
+      successful.push(args);
+      return { rowCount: 1 };
+    } }, 'a', 'b');
     assert.deepEqual(successful.map(x => x[0]), [
       'BEGIN',
-      'UPDATE wallets SET balance=balance-1 WHERE id=$1',
-      'UPDATE wallets SET balance=balance+1 WHERE id=$1',
+      'UPDATE wallets SET balance=balance-1 WHERE id=$1 AND balance>=1 RETURNING id',
+      'UPDATE wallets SET balance=balance+1 WHERE id=$1 RETURNING id',
       'COMMIT',
     ]);
     assert.deepEqual(successful[1][1], ['a']);
@@ -80,10 +83,48 @@ test('11.03.06 transaction contract emits BEGIN/COMMIT and ROLLBACK on failure (
       query: async (...args) => {
         failed.push(args[0]);
         if (args[0].includes('balance+1')) throw Error('simulated write failure');
+        return { rowCount: 1 };
       },
     }, 'a', 'b'), /simulated write failure/);
     assert.equal(failed.at(-1), 'ROLLBACK');
     assert.ok(!failed.includes('COMMIT'));
+
+    const missingSource = [];
+    await assert.rejects(transfer({
+      query: async (sql) => {
+        missingSource.push(sql);
+        return { rowCount: sql.includes('balance-1') ? 0 : 1 };
+      },
+    }, 'missing', 'b'), /Source wallet missing or insufficient balance/);
+    assert.equal(missingSource.at(-1), 'ROLLBACK');
+
+    const missingDestination = [];
+    await assert.rejects(transfer({
+      query: async (sql) => {
+        missingDestination.push(sql);
+        return { rowCount: sql.includes('balance+1') ? 0 : 1 };
+      },
+    }, 'a', 'missing'), /Destination wallet missing/);
+    assert.equal(missingDestination.at(-1), 'ROLLBACK');
+
+    const noOp = [];
+    await assert.rejects(transfer({
+      query: async sql => { noOp.push(sql); return { rowCount: 1 }; },
+    }, 'a', 'a'), /Distinct wallet IDs/);
+    assert.deepEqual(noOp, [], 'Self-transfer must reject before starting a transaction');
+
+    const rollbackFailed = [];
+    await assert.rejects(transfer({
+      query: async sql => {
+        rollbackFailed.push(sql);
+        if (sql === 'ROLLBACK') throw Error('rollback connection lost');
+        if (sql.includes('balance+1')) throw Error('credit failed');
+        return { rowCount: 1 };
+      },
+    }, 'a', 'b'), error => error instanceof AggregateError &&
+      error.errors.length === 2 &&
+      error.errors[0].message === 'credit failed' &&
+      error.errors[1].message === 'rollback connection lost');
   });
 });
 
