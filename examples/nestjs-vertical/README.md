@@ -29,3 +29,26 @@ The `11.03.06` transaction behavior test uses a mock client to verify BEGIN/COMM
 The `11.04.03` gateway test verifies tenant-room targeting through a mocked transport; **it is not two authenticated Socket.IO client isolation evidence**. A real handshake middleware and two independent authenticated clients are required before promotion. The `11.04.08` instructor runs only on loopback using port 0 during tests; the unsafe publicly bound starter is inspected without execution.
 
 No full qualification was run in the authoring environment. Do not mark 32/32 green until real runtime evidence is collected.
+
+## Real integration release gates — November 21, 2026
+
+Two additional **authored, unexecuted** integration tests are now required before declaring P2 verified:
+
+- `npm run test:integration:pg` — creates a PostgreSQL **temporary** wallets table on a dedicated client, forces a real integer-overflow failure on the second UPDATE, asserts the first debit is rolled back, and checks the success case commits both changes. The test fails unless `PG_TEST_URL` and `ACADEMY_ISOLATED_PG=YES` are supplied. Set the URL to a **disposable isolated database**, never production. It does not alter permanent schemas.
+- `npm run test:integration:sockets` — launches an actual Nest/Fastify/Socket.IO gateway on ephemeral loopback, authenticates two independent clients using **test-only** token-to-tenant middleware, attempts to spoof tenant identity in the client handshake and message, and asserts a tenant's events do not reach the other. The toy credentials are **not** a production authentication design.
+
+The production-like service skeleton remains a teaching sample, not an internet-facing hardened server. These tests establish only their specific behaviors, and still require actual execution and security review.
+
+`npm run qualify:release` runs the existing lock/install/compile/32-topic runtime suite, then both integration suites; it is **expected to fail** without a genuine lockfile and a dedicated PostgreSQL test environment. New direct dependencies `pg`, `socket.io-client`, and `@types/pg` also require fresh genuine npm lock resolution. Never hand-author lockfile integrity.
+
+Run on an appropriate Node 24 machine:
+
+```sh
+cd examples/nestjs-vertical
+npm install --package-lock-only
+export ACADEMY_ISOLATED_PG=YES
+export PG_TEST_URL='postgres://test-user:...@localhost:5432/academy_test'
+npm run qualify:release
+```
+
+`npm run qualify:release` is a runtime gate, not a substitute for root Next browser/human accessibility review. None of the above commands have run in this session.
