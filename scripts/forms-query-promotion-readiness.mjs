@@ -5,6 +5,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import {rhfReviewFingerprint} from './forms-query-review-fingerprint.mjs';
+import {queryReviewFingerprint} from './forms-query-query-review-fingerprint.mjs';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const file=p=>path.join(root,p);
 const exists=p=>fs.existsSync(file(p));
@@ -82,17 +84,36 @@ export function inspectFormsQueryPromotion(){
    a11y=e.moduleId===moduleId&&e.reviewed===true&&e.keyboard===true&&e.zoom200===true&&
     typeof e.reviewer==='string'&&e.reviewer.trim().length>=3&&typeof e.screenReader==='string'&&e.screenReader.trim().length>=3&&
     typeof e.date==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(e.date)&&
-    Array.isArray(e.lessonIds)&&entries.every(x=>e.lessonIds.includes(x.id));
+    Array.isArray(e.lessonIds)&&entries.every(x=>e.lessonIds.includes(x.id))&&
+    /^[a-f0-9]{64}$/.test(e.sourceSha256??'')&&
+    e.sourceSha256===(moduleId==='09.02'?rhfReviewFingerprint():queryReviewFingerprint());
   }catch{fail(moduleId,'Malformed human review record')}
+  if(exists(evidence)&&!a11y){
+   fail(moduleId,'Accessibility evidence is incomplete or tied to an obsolete Forms/Query lesson/UI fingerprint');
+  }
   const group=topics.filter(t=>t.moduleId===moduleId),blockers=[];
   if(group.length!==8||group.some(t=>!t.stagedValid&&!t.published))blockers.push('No valid staged or fully published source');
   if(!a11y)blockers.push('Human keyboard/screen-reader/200% zoom review not recorded');
   if(group.some(t=>!t.published))blockers.push('Published MDX/metadata/lab/registry integration pending');
-  if(moduleId==='09.02'&&(!pkg.dependencies?.['react-hook-form']||!pkg.dependencies?.['@hookform/resolvers']))blockers.push('Root runtime missing RHF/resolvers');
-  if(moduleId==='09.03'&&!pkg.dependencies?.['@tanstack/react-query'])blockers.push('Root runtime missing TanStack Query');
+  // Published MDX pages contain fenced teaching source, not live RHF/Query runtime imports.
+  // The actual React apps are compiled and executed in the independently locked Vite workspace.
+  // Requiring RHF/Query in the Next root would bloat production without qualifying exercises.
+  const nestedDeps=moduleId==='09.02'
+    ? ['react-hook-form','@hookform/resolvers']
+    : ['@tanstack/react-query'];
+  for(const dep of nestedDeps)if(!nested.dependencies?.[dep]){
+    blockers.push('Nested React teaching runtime missing '+dep);
+  }
+  if(exists('examples/forms-query-vertical/react-client/package-lock.json')){
+    const lock=json('examples/forms-query-vertical/react-client/package-lock.json');
+    for(const dep of nestedDeps)if(lock.packages?.['']?.dependencies?.[dep]!==nested.dependencies?.[dep]
+      || !lock.packages?.['node_modules/'+dep]?.integrity){
+      blockers.push('Nested npm lock does not match or authenticate '+dep);
+    }
+  }
   if(!versions.reactHookForm||!versions.tanstackQuery)blockers.push('Missing published stack major pins');
   if(!exists('examples/forms-query-vertical/react-client/package-lock.json'))blockers.push('Nested npm lockfile absent');
-  modules.push({id:moduleId,total:entries.length,staged:group.filter(x=>x.stagedValid).length,
+  modules.push({id:moduleId,total:entries.length,staged:group.filter(x=>x.stagedValid&&!x.published).length,
    published:group.filter(x=>x.published).length,a11y,blockers,ready:blockers.length===0});
  }
  const snapshot=json('docs/checkpoint.json').snapshot;

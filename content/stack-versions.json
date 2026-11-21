@@ -7,5 +7,7 @@
   "prisma": "7",
   "zod": "4",
   "postgresql": "17",
-  "zustand": "5"
+  "zustand": "5",
+  "reactHookForm": "7",
+  "tanstackQuery": "5"
 }

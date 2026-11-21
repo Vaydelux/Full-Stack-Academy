@@ -15,7 +15,7 @@ useFieldArray tracks a stable generated field ID. Use field.id for React keys; t
 
 **Predict before coding:** After removing a middle row, the remaining input content must stay attached to the correct item.
 
-**Scope:** This staged article uses genuine React Hook Form v7 interfaces and React 19 patterns. The source is not yet compiled with installed RHF packages or browser-tested. The companion Node loopback Task API is educational, unauthenticated and in-memory.
+**Scope:** This staged article uses genuine React Hook Form v7 interfaces and React 19 patterns. Earlier committed notes report locked local Chrome/TypeScript qualification of the starter and instructor exercises on November 20, 2026; those checks have not been rerun for this candidate. Publication and human accessibility review remain outstanding. The companion Node loopback Task API is educational, unauthenticated and in-memory.
 
 ## Prerequisites and preflight
 
@@ -87,6 +87,21 @@ export default function StepsForm(){
 3. **Repair:** Preserve field-array identity with fields[].id, controlled append/remove, and bounded dynamic inputs.
 4. **Regression:** Type unique values in three rows; remove the middle row. The remaining values must match their original logical items. Adding past eight rows must be disabled.
 5. **Operational boundary:** Never accept arbitrary numbers of dynamic rows on the server; cap collection lengths and validate each nested item.
+
+## Production decision guide: row identity is not the same as row index
+
+Field arrays expose both the row's current nested-field index and a stable generated `field.id`. Use the current index to register the path and the generated ID as React's list key. If you use `key={index}`, deleting a middle row can reuse a component instance for the wrong logical item, making displayed values or nested widget state appear to jump.
+
+| Action | Expected invariant | Regression |
+| --- | --- | --- |
+| Append | Existing rows retain their content | Previous entry clears |
+| Remove middle row | First and last values stay with their items | Wrong text survives |
+| Reorder | Values follow logical rows | Widget state follows old position |
+| Add beyond eight rows | UI refuses append | Unbounded row creation |
+
+**Independent exercise:** Enter three distinct labels, remove the middle one, and compare the remaining rendered inputs with the RHF submission payload. Locate any `key={index}` and reason about React reconciliation before changing the remove logic.
+
+**Security boundary:** A disabled Add button is not an API limit. The server must cap the collection length and validate every nested value because a direct HTTP client can bypass browser controls. For accessible rows, keep labels and errors associated with the correct field after deletion.
 
 ## Guided local lab
 

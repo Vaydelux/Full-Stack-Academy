@@ -15,7 +15,7 @@ An infinite query stores a sequence of pages plus page parameters. Use the API's
 
 **Predict before coding:** Load More appends exactly the next page. After a 409 stale-cursor response, restart the list rather than appending incompatible results.
 
-**Version and deployment scope:** TanStack Query v5, React 19, TypeScript 5. The Task API is a locally bound, in-memory, unauthenticated fixture. No compatible npm dependency lock or browser qualification has been completed, so this draft cannot be marked published.
+**Version and deployment scope:** TanStack Query v5, React 19, TypeScript 5. The Task API is a locally bound, in-memory, unauthenticated fixture. Earlier committed notes report locked local Chrome/SSR tests on November 20, 2026; they have not been rerun for this candidate. Publication, canonical lab registration and human accessibility review remain outstanding.
 
 ## Prerequisites and preflight
 
@@ -94,6 +94,21 @@ export function Pager(){
 3. **Repair:** Paginate the real cursor API with useInfiniteQuery, a correct next-page parameter, and stale-cursor recovery.
 4. **Regression:** Create 25 todo tasks; fetch pages 10+10+5 without duplicates. After adding a new task, the previous cursor should return 409 and the client should restart.
 5. **Security and operations:** Bound displayed pages and total task payloads. Infinite query caches can grow without limits; trim or evict older pages when appropriate.
+
+## Production decision guide: cursors, revisions and memory bounds
+
+Cursor pagination preserves a server-defined continuation point; guessing numeric offsets may skip or repeat items when records are inserted between reads. `useInfiniteQuery` needs a correct `getNextPageParam` derived from the response's `nextCursor`. It also needs a strategy for stale cursors and a bound on cached pages so a long session does not accumulate unlimited payloads.
+
+| Condition | Correct decision | Regression |
+| --- | --- | --- |
+| First 10 of 25 records | Read `nextCursor` | Client guesses page 2 offset |
+| Final page has 5 records | Stop when cursor is absent | Extra duplicate request |
+| Dataset changed mid-pagination | Reset on stale cursor or 409 | Mixed generations of rows |
+| User scrolls for an hour | Bound retained pages/records | Unbounded memory growth |
+
+**Independent exercise:** Seed twenty-five tasks and verify pages of 10, 10 and 5 with no duplicate IDs. Insert a new task before fetching the next page, force a stale-cursor response and restart from the first page. Observe cancellation when leaving the view.
+
+**Design tradeoff:** A bounded cache improves memory use but may require rereading evicted pages during backscroll. Pick a page retention policy that matches device constraints, and never rely on the client-side cursor to enforce server authorization.
 
 ## Guided local lab
 

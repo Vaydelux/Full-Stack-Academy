@@ -1,0 +1,41 @@
+{
+  "candidateFor": "09.03.04",
+  "promotionReady": false,
+  "candidateOnly": true,
+  "proposedPublishedLabManifest": {
+    "id": "lab.react.forms-query-optimistic-rollback",
+    "lessonId": "09.03.04",
+    "title": "Optimistic updates and rollback",
+    "runtime": "browser-react-19-tanstack-query-5-node-24",
+    "status": "authored",
+    "starter": "labs/forms-query-optimistic-rollback/starter/solution.tsx",
+    "solution": "labs/forms-query-optimistic-rollback/solution/solution.tsx",
+    "tests": "labs/forms-query-optimistic-rollback/solution.test.mjs",
+    "verify": [
+      "npm run lab:forms-query-optimistic-rollback"
+    ],
+    "expected": "Force DELETE 404 or transport failure. The cached row must be restored. Success must invalidate server data. Disable concurrent deletes or implement version-aware compensation.",
+    "security": "Snapshot rollback only remains correct when conflicting updates are serialized or reconciled; overlapping optimistic mutations need a more careful policy."
+  },
+  "sourceContract": {
+    "id": "draft.query.optimistic-rollback",
+    "lessonId": "09.03.04",
+    "title": "Optimistic updates and rollback",
+    "sourceStatus": "staged-unverified",
+    "runtime": "react-19-tanstack-query-5-ts-5",
+    "starter": "drafts/forms-query/labs/optimistic-rollback/starter.tsx",
+    "solution": "drafts/forms-query/labs/optimistic-rollback/solution.tsx",
+    "expectedPositive": "Force DELETE 404 or transport failure. The cached row must be restored. Success must invalidate server data. Disable concurrent deletes or implement version-aware compensation.",
+    "expectedNegative": "The starter removes the row in cache but never saves or restores the previous snapshot after an HTTP error.",
+    "securityBoundary": "Snapshot rollback only remains correct when conflicting updates are serialized or reconciled; overlapping optimistic mutations need a more careful policy.",
+    "officialReferences": [
+      "https://tanstack.com/query/latest/docs/framework/react/guides/optimistic-updates",
+      "https://tanstack.com/query/latest/docs/framework/react/reference/useMutation"
+    ],
+    "requiresRealLibraryTest": true,
+    "requiresRealBrowserTest": true,
+    "readyToPublish": false
+  },
+  "testsImplemented": true,
+  "runtimeTestsExecuted": false
+}

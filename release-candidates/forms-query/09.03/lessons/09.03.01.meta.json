@@ -1,0 +1,51 @@
+{
+  "candidateFor": "09.03.01",
+  "publicationReady": false,
+  "targetPath": "src/content/lessons/09.03.01.meta.json",
+  "publishedMetadata": {
+    "id": "09.03.01",
+    "title": "Query keys and caching",
+    "description": "A practical TanStack Query 5 lesson on query keys and caching, with a real starter bug, instructor repair, HTTP/cache invariants and a separate browser or Next SSR acceptance exercise.",
+    "trackId": "09",
+    "moduleId": "09.03",
+    "level": "Intermediate",
+    "estimatedMinutes": 63,
+    "status": "authored",
+    "reviewedAt": null,
+    "stack": {
+      "react": "19",
+      "typescript": "5",
+      "tanstackQuery": "5"
+    },
+    "prerequisites": [
+      "09.02.08"
+    ],
+    "objectives": [
+      "Design stable structured query keys containing every filter and pass the Query signal to the actual HTTP request.",
+      "Switch between todo and done. Inspect Query Devtools and verify different keys; no cross-filter content leakage. Cancel a request by switching rapidly.",
+      "Never include access tokens or raw private task titles in a query key; tenant scope belongs in a secure key namespace and server authorization."
+    ],
+    "labId": "lab.react.forms-query-query-keys",
+    "rubric": [
+      "Design stable structured query keys containing every filter and pass the Query signal to the actual HTTP request.",
+      "Switch between todo and done. Inspect Query Devtools and verify different keys; no cross-filter content leakage. Cancel a request by switching rapidly.",
+      "I can distinguish cache freshness, HTTP success and server authorization."
+    ],
+    "sources": [
+      {
+        "label": "Primary official reference",
+        "url": "https://tanstack.com/query/latest/docs/framework/react/guides/query-keys"
+      },
+      {
+        "label": "Supporting official reference",
+        "url": "https://tanstack.com/query/latest/docs/framework/react/guides/query-cancellation"
+      }
+    ]
+  },
+  "blockedOn": [
+    "Real Query v5 nested npm/Chromium acceptance",
+    "Exact candidate Next.js production build",
+    "Independent named keyboard, 200-percent zoom and screen-reader review"
+  ],
+  "requiredVerifyScript": "npm run lab:forms-query-query-keys"
+}

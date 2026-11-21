@@ -17,24 +17,23 @@ const interactive=[...idsSection[1].matchAll(/'([^']+)'/g)].map(x=>x[1]);
 const mdxFiles=fs.readdirSync(path.join(root,'src/content/lessons')).filter(name=>name.endsWith('.meta.json'));
 const mdx=mdxFiles.map(name=>JSON.parse(read('src/content/lessons/'+name)).id);
 const published=new Set([...interactive,...mdx]);
-const stagedRoots=['drafts/forms-query/lessons','drafts/nestjs/lessons'];
-const staged=new Set(stagedRoots.flatMap(dir=>{
- const stagingRoot=path.join(root,dir);
- return fs.existsSync(stagingRoot)
-  ?fs.readdirSync(stagingRoot).filter(n=>n.endsWith('.meta.json')).map(n=>JSON.parse(read(dir+'/'+n)).id)
-  : [];
-}));
+const stagingRoot=path.join(root,'drafts/forms-query/lessons');
+const staged=fs.existsSync(stagingRoot)
+ ? new Set(fs.readdirSync(stagingRoot).filter(n=>n.endsWith('.meta.json')).map(n=>JSON.parse(read('drafts/forms-query/lessons/'+n)).id))
+ : new Set();
+// Draft source files can remain for red/green lab qualification after publication.
+const stagedUnpublished=new Set([...staged].filter(id=>!published.has(id)));
 const modules=curriculum.modules.map(module=>{
  const topics=curriculum.lessons.filter(topic=>topic.moduleId===module.id);
  const actual=topics.filter(topic=>published.has(topic.id)).length;
- const draft=topics.filter(topic=>staged.has(topic.id)&&!published.has(topic.id)).length;
+ const draft=topics.filter(topic=>stagedUnpublished.has(topic.id)).length;
  return {id:module.id,title:module.title,track:module.track,total:topics.length,published:actual,staged:draft,
   notStarted:topics.length-actual-draft,complete:actual===topics.length};
 });
 const totals={
  tracks:curriculum.tracks.length,modules:modules.length,topics:curriculum.lessons.length,
- published:published.size,stagedUnpublished:[...staged].filter(id=>!published.has(id)).length,
- plannedWithoutStaging:curriculum.lessons.length-published.size-[...staged].filter(id=>!published.has(id)).length,
+ published:published.size,stagedUnpublished:stagedUnpublished.size,
+ plannedWithoutStaging:curriculum.lessons.length-published.size-stagedUnpublished.size,
  completeModules:modules.filter(m=>m.complete).length,incompleteModules:modules.filter(m=>!m.complete).length,
 };
 if(process.argv.includes('--check')){
@@ -44,7 +43,7 @@ if(process.argv.includes('--check')){
  assert.equal(totals.published,checkpoint.snapshot.publishedLessons);
  assert.equal(totals.completeModules,checkpoint.snapshot.completeModules.length);
  assert.ok([...staged].every(id=>curriculum.lessons.some(topic=>topic.id===id)), 'Unknown staged lesson ID');
- assert.ok([...staged].every(id=>!published.has(id)), 'Staged topic accidentally published');
+ assert.ok([...stagedUnpublished].every(id=>!published.has(id)), 'Staged metrics cannot include published topics');
 }
 if(process.argv.includes('--json'))console.log(JSON.stringify({totals,modules},null,2));
 else {

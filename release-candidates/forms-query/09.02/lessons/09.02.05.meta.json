@@ -1,0 +1,52 @@
+{
+  "candidateFor": "09.02.05",
+  "publicationReady": false,
+  "publishedMetadata": {
+    "id": "09.02.05",
+    "title": "Async submissions",
+    "description": "Prevent duplicate side effects and reuse one idempotency key for retries of the same logical request. This guided lab analyzes and repairs a real React Hook Form state or submission failure.",
+    "trackId": "09",
+    "moduleId": "09.02",
+    "level": "Intermediate",
+    "estimatedMinutes": 55,
+    "status": "authored",
+    "reviewedAt": null,
+    "stack": {
+      "react": "19",
+      "typescript": "5",
+      "zod": "4",
+      "reactHookForm": "7"
+    },
+    "prerequisites": [
+      "09.02.04"
+    ],
+    "objectives": [
+      "Prevent duplicate side effects and reuse one idempotency key for retries of the same logical request.",
+      "Simulate an accepted 201 with a lost response. Retry must preserve both body and key. Double-click while pending and verify no second fetch starts.",
+      "An in-memory idempotency key protects only one process lifetime. Real billing/financial mutations require durable server-side deduplication."
+    ],
+    "labId": "lab.react.forms-query-async-submission",
+    "rubric": [
+      "Prevent duplicate side effects and reuse one idempotency key for retries of the same logical request.",
+      "Simulate an accepted 201 with a lost response. Retry must preserve both body and key. Double-click while pending and verify no second fetch starts.",
+      "I can explain why client validation is not server authorization."
+    ],
+    "sources": [
+      {
+        "label": "Primary official reference",
+        "url": "https://react-hook-form.com/docs/useform/handlesubmit"
+      },
+      {
+        "label": "Supporting official reference",
+        "url": "https://tanstack.com/query/latest/docs/framework/react/guides/mutations"
+      }
+    ]
+  },
+  "targetPath": "src/content/lessons/09.02.05.meta.json",
+  "blockedOn": [
+    "Run genuine nested npm ci and actual React Hook Form/Chromium positive and negative checks",
+    "Pass published Next MDX route/build and local lab acceptance on exact candidate",
+    "Record actual reviewer, screen reader, keyboard and 200% zoom evidence"
+  ],
+  "requiredVerifyScript": "npm run lab:forms-query-async-submission"
+}

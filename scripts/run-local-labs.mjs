@@ -9,6 +9,7 @@ import { spawnSync } from 'node:child_process';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const labsRoot=path.join(root,'labs');
 const files=[];
+const browserFiles=[];
 const seen=new Set();
 for(const entry of fs.readdirSync(labsRoot,{withFileTypes:true}).filter(x=>x.isDirectory()).sort((a,b)=>a.name.localeCompare(b.name))){
  const manifestPath=path.join(labsRoot,entry.name,'lab.json');
@@ -22,9 +23,11 @@ for(const entry of fs.readdirSync(labsRoot,{withFileTypes:true}).filter(x=>x.isD
  if(!resolved.startsWith(root+path.sep)||!fs.statSync(resolved).isFile())throw new Error('Missing or outside-root lab test: '+testFile);
  if(seen.has(resolved))throw new Error('Duplicate lab acceptance file: '+testFile);
  seen.add(resolved);
- files.push(testFile);
+ // Real-browser labs must not start dozens of Chromium processes in one test batch.
+ if(typeof manifest.runtime==='string'&&manifest.runtime.includes('browser'))browserFiles.push(testFile);
+ else files.push(testFile);
 }
-if(!files.length)throw new Error('No local labs discovered');
+if(!files.length&&!browserFiles.length)throw new Error('No local labs discovered');
 
 const batchSize=20;
 for(let i=0;i<files.length;i+=batchSize){
@@ -40,4 +43,23 @@ for(let i=0;i<files.length;i+=batchSize){
   break;
  }
 }
-if(!process.exitCode)console.log('All '+files.length+' instructor lab test files completed successfully.');
+
+if(!process.exitCode){
+ for(const file of browserFiles){
+  console.log('\n=== Browser-backed local lab: '+file+' ===');
+  // Next SSR hydration compiles an isolated production Next fixture. Do not
+  // inherit the short single-browser timeout for the build + hydration pass.
+  const timeout=file.includes('forms-query-ssr-hydration/')
+   ? 900_000 : 300_000;
+  const result=spawnSync(process.execPath,['--import','tsx','--test',file],{
+   cwd:root,env:process.env,stdio:'inherit',timeout,
+  });
+  if(result.error||result.status!==0){
+   console.error('Browser-backed lab failed:',result.error?.message??'exit '+result.status);
+   process.exitCode=1;
+   break;
+  }
+ }
+}
+if(!process.exitCode)console.log('All '+(files.length+browserFiles.length)+' instructor lab test files completed successfully.');
+

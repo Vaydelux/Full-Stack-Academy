@@ -1,0 +1,117 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Separate staleTime freshness from gcTime eviction of unused cache entries, and predict focus/refetch behavior.","Read immediately twice, refocus at 2 seconds, then refocus after 11 seconds. Explain which reads should reuse cached data and when inactive queries are garbage-collected.","Never assume cache freshness is authorization. A 401/403 must be handled at the server boundary even if a previous cached object existed."]} />
+
+## The problem we're solving
+
+A learner sets staleTime to infinity and expects a fresh server list after a new task was created in another tab. Another sets gcTime to zero expecting it to prevent stale reads, but it only causes cache eviction.
+
+**Broken behavior in the starter:** The starter sets infinite freshness and zero cache lifetime, conflating staleness and garbage collection.
+
+## Build the mental model
+
+staleTime determines when cached data is considered stale; gcTime determines how long an unused query remains cached. Neither makes server data immutable.
+
+**Predict before coding:** A ten-second staleTime may prevent an immediate refetch; after the freshness window, refocus or remount can revalidate. gcTime starts after a query becomes unused.
+
+**Version and deployment scope:** TanStack Query v5, React 19, TypeScript 5. The Task API is a locally bound, in-memory, unauthenticated fixture. Earlier committed notes report locked local Chrome/SSR tests on November 20, 2026; they have not been rerun for this candidate. Publication, canonical lab registration and human accessibility review remain outstanding.
+
+## Prerequisites and preflight
+
+Review the preceding canonical topics, including React Hook Form's validated POST boundary. Start with `drafts/forms-query/labs/stale-garbage/starter.tsx`, and compare with the instructor source only after predicting the incorrect result.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the faulty remote-state assumption" file="drafts/forms-query/labs/stale-garbage/starter.tsx" expected="The starter sets infinite freshness and zero cache lifetime, conflating staleness and garbage collection.">
+
+```tsx
+import { useQuery } from '@tanstack/react-query';
+export function Tasks(){
+ const query=useQuery({queryKey:['tasks'],queryFn:()=>fetch('/api/tasks').then(r=>r.json()),
+  staleTime:Infinity,gcTime:0});
+ return <output>{query.data?.items?.length??0}</output>;
+}
+```
+
+**Why it fails:** A learner sets staleTime to infinity and expects a fresh server list after a new task was created in another tab. Another sets gcTime to zero expecting it to prevent stale reads, but it only causes cache eviction.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the correct TanStack Query behavior" file="drafts/forms-query/labs/stale-garbage/solution.tsx" expected="A ten-second staleTime may prevent an immediate refetch; after the freshness window, refocus or remount can revalidate. gcTime starts after a query becomes unused.">
+
+```tsx
+import { useQuery } from '@tanstack/react-query';
+export function Tasks(){
+ const query=useQuery({
+  queryKey:['tasks',{limit:10}],
+  queryFn:async({signal})=>{
+   const response=await fetch('/api/tasks?limit=10',{signal});
+   if(!response.ok)throw new Error('HTTP '+response.status);
+   return response.json() as Promise<{items:{id:string}[]}>;
+  },
+  staleTime:10_000,
+  gcTime:5*60_000,
+  refetchOnWindowFocus:true,
+ });
+ if(query.isPending)return <p>Loading…</p>;
+ if(query.isError)return <p role="alert">Server tasks unavailable.</p>;
+ return <output>{query.data.items.length} task(s)</output>;
+}
+```
+
+**What changed:** staleTime determines when cached data is considered stale; gcTime determines how long an unused query remains cached. Neither makes server data immutable.
+
+</LessonStep>
+
+<LessonStep number={3} title="Assert real HTTP and cache behavior" file="drafts/forms-query/labs/stale-garbage/lab.json" expected="Read immediately twice, refocus at 2 seconds, then refocus after 11 seconds. Explain which reads should reuse cached data and when inactive queries are garbage-collected.">
+
+**Observe:** Read immediately twice, refocus at 2 seconds, then refocus after 11 seconds. Explain which reads should reuse cached data and when inactive queries are garbage-collected.
+
+**Required evidence before publishing:** Use real installed TanStack Query with a mounted QueryClientProvider and an actual loopback HTTP fixture. Record the expected red assertion for the starter and a green assertion for the instructor. Inspect request counts and body shape; static source checks are insufficient for release.
+
+**Boundary:** Never assume cache freshness is authorization. A 401/403 must be handled at the server boundary even if a previous cached object existed.
+
+</LessonStep>
+
+<Misconception claim="The starter sets infinite freshness and zero cache lifetime, conflating staleness and garbage collection." correction="staleTime determines when cached data is considered stale; gcTime determines how long an unused query remains cached. Neither makes server data immutable." />
+
+<KnowledgeCheck question="What is the reliable approach to stale time and garbage collection?" choices={["Assume cached browser state equals server truth forever.","Use TanStack Query resource identity and the server's HTTP contract.","Ignore failure responses to keep the UI fast.","Disable all validation once the code typechecks."]} correctIndex={1} explanation="staleTime determines when cached data is considered stale; gcTime determines how long an unused query remains cached. Neither makes server data immutable." misconception="The starter sets infinite freshness and zero cache lifetime, conflating staleness and garbage collection." lessonId="09.03.02" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+1. **Reproduce:** The starter sets infinite freshness and zero cache lifetime, conflating staleness and garbage collection.
+2. **Diagnose:** Trace the query key, cancellation boundary, remote response, cache update and invalidation.
+3. **Repair:** Separate staleTime freshness from gcTime eviction of unused cache entries, and predict focus/refetch behavior.
+4. **Regression:** Read immediately twice, refocus at 2 seconds, then refocus after 11 seconds. Explain which reads should reuse cached data and when inactive queries are garbage-collected.
+5. **Security and operations:** Never assume cache freshness is authorization. A 401/403 must be handled at the server boundary even if a previous cached object existed.
+
+## Production decision guide: freshness and residency are different clocks
+
+`staleTime` describes how long a cached response is considered fresh. `gcTime` describes how long an *inactive* query can remain in cache before collection. An active query does not disappear merely because an inactive garbage-collection timer would have elapsed. A stale response may be displayed immediately while a background refetch takes place, depending on the query configuration.
+
+| Setting or event | What it controls | Typical misconception |
+| --- | --- | --- |
+| Short `staleTime` | When data becomes eligible for refetch | Stale means data was removed |
+| Longer `gcTime` | How long unused entries persist | GC makes active queries refresh |
+| Window refocus | Can refetch stale active data | Focus always causes network traffic |
+| New observer on fresh data | May reuse cached value | Every mount must fetch again |
+
+**Independent exercise:** Read twice immediately, refocus at two seconds and again after eleven seconds. Explain which reads should display cached data and when a request is expected. Unmount the query and predict whether its cache survives the configured inactive interval.
+
+**Risk boundary:** Cached data is not proof that a user remains authorized. A 401/403 or logout flow must invalidate sensitive cached views and avoid leaking the previous user's records into another session. Choose timeouts based on data volatility, not merely perceived speed.
+
+## Guided local lab
+
+The source below is a **release candidate, not yet published**. Only after Node 24, real Query v5/browser verification and independent accessibility review may its counterpart be registered at `labs/forms-query-stale-garbage/`. The starter is intentionally broken and instructor corrections must pass substantive assertions.
+
+<LabGate lessonId="09.03.02" labId="lab.react.forms-query-stale-garbage" commands={["npm run lab:forms-query-stale-garbage","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+What should happen if the server returns an old result, a 409 stale cursor, a 412 conditional-write conflict or a network error? Which layer owns each recovery decision?
+
+## Official references
+
+- [Primary official reference](https://tanstack.com/query/latest/docs/framework/react/guides/important-defaults)
+- [Supporting official reference](https://tanstack.com/query/latest/docs/framework/react/reference/useQuery)

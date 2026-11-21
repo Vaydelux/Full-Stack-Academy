@@ -1,0 +1,41 @@
+{
+  "candidateFor": "09.03.02",
+  "promotionReady": false,
+  "candidateOnly": true,
+  "proposedPublishedLabManifest": {
+    "id": "lab.react.forms-query-stale-garbage",
+    "lessonId": "09.03.02",
+    "title": "Stale time and garbage collection",
+    "runtime": "browser-react-19-tanstack-query-5-node-24",
+    "status": "authored",
+    "starter": "labs/forms-query-stale-garbage/starter/solution.tsx",
+    "solution": "labs/forms-query-stale-garbage/solution/solution.tsx",
+    "tests": "labs/forms-query-stale-garbage/solution.test.mjs",
+    "verify": [
+      "npm run lab:forms-query-stale-garbage"
+    ],
+    "expected": "Read immediately twice, refocus at 2 seconds, then refocus after 11 seconds. Explain which reads should reuse cached data and when inactive queries are garbage-collected.",
+    "security": "Never assume cache freshness is authorization. A 401/403 must be handled at the server boundary even if a previous cached object existed."
+  },
+  "sourceContract": {
+    "id": "draft.query.stale-garbage",
+    "lessonId": "09.03.02",
+    "title": "Stale time and garbage collection",
+    "sourceStatus": "staged-unverified",
+    "runtime": "react-19-tanstack-query-5-ts-5",
+    "starter": "drafts/forms-query/labs/stale-garbage/starter.tsx",
+    "solution": "drafts/forms-query/labs/stale-garbage/solution.tsx",
+    "expectedPositive": "Read immediately twice, refocus at 2 seconds, then refocus after 11 seconds. Explain which reads should reuse cached data and when inactive queries are garbage-collected.",
+    "expectedNegative": "The starter sets infinite freshness and zero cache lifetime, conflating staleness and garbage collection.",
+    "securityBoundary": "Never assume cache freshness is authorization. A 401/403 must be handled at the server boundary even if a previous cached object existed.",
+    "officialReferences": [
+      "https://tanstack.com/query/latest/docs/framework/react/guides/important-defaults",
+      "https://tanstack.com/query/latest/docs/framework/react/reference/useQuery"
+    ],
+    "requiresRealLibraryTest": true,
+    "requiresRealBrowserTest": true,
+    "readyToPublish": false
+  },
+  "testsImplemented": true,
+  "runtimeTestsExecuted": false
+}

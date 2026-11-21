@@ -15,7 +15,7 @@ TanStack Query supplies signal to queryFn. Pass it to fetch, throw for non-2xx H
 
 **Predict before coding:** Canceling a stale query should not cache a late response; HTTP 422 must not be retried, while an intermittent 503 can be retried a bounded number of times.
 
-**Version and deployment scope:** TanStack Query v5, React 19, TypeScript 5. The Task API is a locally bound, in-memory, unauthenticated fixture. No compatible npm dependency lock or browser qualification has been completed, so this draft cannot be marked published.
+**Version and deployment scope:** TanStack Query v5, React 19, TypeScript 5. The Task API is a locally bound, in-memory, unauthenticated fixture. Earlier committed notes report locked local Chrome/SSR tests on November 20, 2026; they have not been rerun for this candidate. Publication, canonical lab registration and human accessibility review remain outstanding.
 
 ## Prerequisites and preflight
 
@@ -85,6 +85,22 @@ export function TaskList(){
 3. **Repair:** Pass AbortSignal into fetch, distinguish HTTP 4xx and 5xx, and bound automatic retry behavior.
 4. **Regression:** Abort an in-flight request on unmount; ensure no stale result is committed. Mock 422 (zero retries), 503 (bounded retries), and a network failure.
 5. **Security and operations:** Do not retry credential failures or validation errors; aggressive retries can amplify a production incident and expose service capacity limits.
+
+## Production decision guide: retry only failures that may recover
+
+An `AbortSignal` is the request lifecycle's cancellation boundary. The query function must pass that signal to `fetch` so outdated work can stop when an observer changes or disappears. HTTP failures also need explicit classification: a resolved `fetch` with status 422 is still an error outcome that should be surfaced, not retried like a transient 503.
+
+| Failure | Retry policy | Reason |
+| --- | --- | --- |
+| 422 invalid request | Zero automatic retries | Repeating cannot repair input |
+| 401/403 access denied | Zero automatic retries | Repeating may amplify denial |
+| 503 unavailable | Limited backoff retries | Failure may be temporary |
+| Network interruption | Bounded conditional retry | Recovery is possible |
+| Abort on unmount/filter change | Cancel, no stale commit | View is no longer current |
+
+**Independent exercise:** Capture a slow request, navigate away and verify the supplied signal is aborted. Simulate 422 then 503 and count attempts. A fixed retry count without status classification is incorrect: it wastes capacity and can make validation failures seem sluggish.
+
+**Operational boundary:** A retry storm multiplies backend load during an incident. Respect server rate limits, use jittered backoff for recoverable errors and avoid treating mutation retries as safe unless the server offers an idempotent command contract.
 
 ## Guided local lab
 

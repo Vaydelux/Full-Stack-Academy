@@ -40,6 +40,3 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 *.log
-
-# local NestJS qualification output; never commit compiled exercise code
-/examples/nestjs-vertical/dist/

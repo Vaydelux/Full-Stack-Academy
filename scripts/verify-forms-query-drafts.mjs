@@ -110,12 +110,27 @@ check('extra/missing lab directory',()=>{
  assert.equal(labs.length,16);
  assert.deepEqual(labs.sort(),[...allSlugs].sort());
 });
-check('no accidental live registry publication',()=>{
+check('whole-module publication atomicity across both registries and labs',()=>{
  const published=read('src/lib/academy/published.ts');
  const registry=read('src/content/lesson-registry.tsx');
- for(const lesson of expected){
-  assert.ok(!published.includes('lessons/'+lesson.id+'.meta.json'),'Premature metadata publication');
-  assert.ok(!registry.includes('lessons/'+lesson.id+'.mdx'),'Premature MDX publication');
+ for(const moduleId of ['09.02','09.03']){
+  const status=expected.filter(x=>x.moduleId===moduleId).map(item=>{
+   const meta=readJSON('drafts/forms-query/lessons/'+item.id+'.meta.json');
+   const lab='labs/forms-query-'+meta.labSlug+'/lab.json';
+   const mdx='src/content/lessons/'+item.id+'.mdx';
+   const metadata='src/content/lessons/'+item.id+'.meta.json';
+   const exists=p=>fs.existsSync(path.join(root,p));
+   const parts=[
+    published.includes('lessons/'+item.id+'.meta.json'),
+    registry.includes('./lessons/'+item.id+'.mdx'),
+    exists(mdx),exists(metadata),exists(lab)
+   ];
+   assert.ok(parts.every(Boolean)||parts.every(x=>!x),
+    'Partial live lesson publication '+item.id);
+   return parts.every(Boolean);
+  });
+  assert.ok(status.every(Boolean)||status.every(x=>!x),
+   'Publication must release the whole eight-lesson module '+moduleId);
  }
 });
 const summary={expected:expected.length,passed,checks:expected.length+4,failures:problems.length,staged:true,realLibraryTestsExecuted:false,realBrowserTestsExecuted:false};

@@ -1,0 +1,52 @@
+{
+  "candidateFor": "09.02.08",
+  "publicationReady": false,
+  "publishedMetadata": {
+    "id": "09.02.08",
+    "title": "Bug Hunt mismatched form state",
+    "description": "Find and remove duplicated form state, stale previews, and uncontrolled-to-controlled mismatches. This guided lab analyzes and repairs a real React Hook Form state or submission failure.",
+    "trackId": "09",
+    "moduleId": "09.02",
+    "level": "Intermediate",
+    "estimatedMinutes": 60,
+    "status": "authored",
+    "reviewedAt": null,
+    "stack": {
+      "react": "19",
+      "typescript": "5",
+      "zod": "4",
+      "reactHookForm": "7"
+    },
+    "prerequisites": [
+      "09.02.07"
+    ],
+    "objectives": [
+      "Find and remove duplicated form state, stale previews, and uncontrolled-to-controlled mismatches.",
+      "Type, reset and programmatically update the field; preview and submitted payload must be consistent, with no independent useState shadow.",
+      "Treat displayed form previews as user content; React text interpolation escapes text, while innerHTML would introduce an XSS risk."
+    ],
+    "labId": "lab.react.forms-query-form-state-bug-hunt",
+    "rubric": [
+      "Find and remove duplicated form state, stale previews, and uncontrolled-to-controlled mismatches.",
+      "Type, reset and programmatically update the field; preview and submitted payload must be consistent, with no independent useState shadow.",
+      "I can explain why client validation is not server authorization."
+    ],
+    "sources": [
+      {
+        "label": "Primary official reference",
+        "url": "https://react-hook-form.com/docs/useform/formstate"
+      },
+      {
+        "label": "Supporting official reference",
+        "url": "https://react-hook-form.com/docs/usewatch"
+      }
+    ]
+  },
+  "targetPath": "src/content/lessons/09.02.08.meta.json",
+  "blockedOn": [
+    "Run genuine nested npm ci and actual React Hook Form/Chromium positive and negative checks",
+    "Pass published Next MDX route/build and local lab acceptance on exact candidate",
+    "Record actual reviewer, screen reader, keyboard and 200% zoom evidence"
+  ],
+  "requiredVerifyScript": "npm run lab:forms-query-form-state-bug-hunt"
+}

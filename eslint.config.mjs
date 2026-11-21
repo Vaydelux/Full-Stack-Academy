@@ -15,8 +15,6 @@ const eslintConfig = [
       "next-env.d.ts",
       "public/**",
       "preview-src/**",
-      "drafts/nestjs/**",
-      "examples/nestjs-vertical/**",
       "prototype/**",
     ],
   },

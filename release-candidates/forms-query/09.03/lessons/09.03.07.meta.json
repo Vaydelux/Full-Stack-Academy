@@ -1,0 +1,51 @@
+{
+  "candidateFor": "09.03.07",
+  "publicationReady": false,
+  "targetPath": "src/content/lessons/09.03.07.meta.json",
+  "publishedMetadata": {
+    "id": "09.03.07",
+    "title": "Retries and cancellation",
+    "description": "TanStack Query 5 applied lesson for retries and cancellation, featuring a deliberately broken starter, instructor fix, real HTTP/React cache behavior, and security-aware failure handling.",
+    "trackId": "09",
+    "moduleId": "09.03",
+    "level": "Intermediate",
+    "estimatedMinutes": 63,
+    "status": "authored",
+    "reviewedAt": null,
+    "stack": {
+      "react": "19",
+      "typescript": "5",
+      "tanstackQuery": "5"
+    },
+    "prerequisites": [
+      "09.03.06"
+    ],
+    "objectives": [
+      "Pass AbortSignal into fetch, distinguish HTTP 4xx and 5xx, and bound automatic retry behavior.",
+      "Abort an in-flight request on unmount; ensure no stale result is committed. Mock 422 (zero retries), 503 (bounded retries), and a network failure.",
+      "Do not retry credential failures or validation errors; aggressive retries can amplify a production incident and expose service capacity limits."
+    ],
+    "labId": "lab.react.forms-query-retries-cancellation",
+    "rubric": [
+      "Pass AbortSignal into fetch, distinguish HTTP 4xx and 5xx, and bound automatic retry behavior.",
+      "Abort an in-flight request on unmount; ensure no stale result is committed. Mock 422 (zero retries), 503 (bounded retries), and a network failure.",
+      "I can distinguish cache freshness, HTTP success and server authorization."
+    ],
+    "sources": [
+      {
+        "label": "Primary official reference",
+        "url": "https://tanstack.com/query/latest/docs/framework/react/guides/query-cancellation"
+      },
+      {
+        "label": "Supporting official reference",
+        "url": "https://tanstack.com/query/latest/docs/framework/react/guides/query-retries"
+      }
+    ]
+  },
+  "blockedOn": [
+    "Genuine nested Query 5 browser/Next SSR red-green acceptance",
+    "Published Next build and route verification",
+    "Named keyboard, screen-reader and 200-percent zoom review"
+  ],
+  "requiredVerifyScript": "npm run lab:forms-query-retries-cancellation"
+}

@@ -1,0 +1,52 @@
+{
+  "candidateFor": "09.02.02",
+  "publicationReady": false,
+  "publishedMetadata": {
+    "id": "09.02.02",
+    "title": "Register and Controller",
+    "description": "Use register for a native input and Controller for a non-native controlled picker without creating duplicate form state. This guided lab analyzes and repairs a real React Hook Form state or submission failure.",
+    "trackId": "09",
+    "moduleId": "09.02",
+    "level": "Intermediate",
+    "estimatedMinutes": 55,
+    "status": "authored",
+    "reviewedAt": null,
+    "stack": {
+      "react": "19",
+      "typescript": "5",
+      "zod": "4",
+      "reactHookForm": "7"
+    },
+    "prerequisites": [
+      "09.02.01"
+    ],
+    "objectives": [
+      "Use register for a native input and Controller for a non-native controlled picker without creating duplicate form state.",
+      "Click or keyboard-activate the rating button twice, then submit; the handler must receive rating 3 rather than 1. Verify the title is also registered.",
+      "A rating picker still needs a semantic accessible name and keyboard focus; wrapping an inaccessible custom control in Controller does not make it accessible."
+    ],
+    "labId": "lab.react.forms-query-register-controller",
+    "rubric": [
+      "Use register for a native input and Controller for a non-native controlled picker without creating duplicate form state.",
+      "Click or keyboard-activate the rating button twice, then submit; the handler must receive rating 3 rather than 1. Verify the title is also registered.",
+      "I can explain why client validation is not server authorization."
+    ],
+    "sources": [
+      {
+        "label": "Primary official reference",
+        "url": "https://react-hook-form.com/docs/usecontroller/controller"
+      },
+      {
+        "label": "Supporting official reference",
+        "url": "https://react-hook-form.com/docs/useform/register"
+      }
+    ]
+  },
+  "targetPath": "src/content/lessons/09.02.02.meta.json",
+  "blockedOn": [
+    "Run genuine nested npm ci and actual React Hook Form/Chromium positive and negative checks",
+    "Pass published Next MDX route/build and local lab acceptance on exact candidate",
+    "Record actual reviewer, screen reader, keyboard and 200% zoom evidence"
+  ],
+  "requiredVerifyScript": "npm run lab:forms-query-register-controller"
+}

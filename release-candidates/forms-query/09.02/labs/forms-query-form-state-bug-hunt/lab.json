@@ -1,0 +1,48 @@
+{
+  "candidateFor": "09.02.08",
+  "promotionReady": false,
+  "candidateOnly": true,
+  "proposedPublishedLabManifest": {
+    "id": "lab.react.forms-query-form-state-bug-hunt",
+    "lessonId": "09.02.08",
+    "title": "Bug Hunt mismatched form state",
+    "runtime": "react-19-rhf-7-zod-4-browser-node-24",
+    "status": "authored",
+    "starter": "labs/forms-query-form-state-bug-hunt/starter/solution.tsx",
+    "solution": "labs/forms-query-form-state-bug-hunt/solution/solution.tsx",
+    "tests": "labs/forms-query-form-state-bug-hunt/solution.test.mjs",
+    "verify": [
+      "npm run lab:forms-query-form-state-bug-hunt",
+      "npm run qualify:forms-query:react-browser"
+    ],
+    "expected": "Type, reset and programmatically update the field; preview and submitted payload must be consistent, with no independent useState shadow.",
+    "security": "Treat displayed form previews as user content; React text interpolation escapes text, while innerHTML would introduce an XSS risk."
+  },
+  "sourceContract": {
+    "id": "draft.forms.form-state-bug-hunt",
+    "lessonId": "09.02.08",
+    "title": "Bug Hunt mismatched form state",
+    "sourceStatus": "staged-unverified",
+    "runtime": "react-19-rhf-7-zod-4-ts-5",
+    "starter": "drafts/forms-query/labs/form-state-bug-hunt/starter.tsx",
+    "solution": "drafts/forms-query/labs/form-state-bug-hunt/solution.tsx",
+    "expectedPositive": "Type, reset and programmatically update the field; preview and submitted payload must be consistent, with no independent useState shadow.",
+    "expectedNegative": "Separate useState preview and RHF input values drift after reset or programmatic update.",
+    "securityBoundary": "Treat displayed form previews as user content; React text interpolation escapes text, while innerHTML would introduce an XSS risk.",
+    "officialReferences": [
+      "https://react-hook-form.com/docs/useform/formstate",
+      "https://react-hook-form.com/docs/usewatch"
+    ],
+    "requiresRealLibraryTest": true,
+    "requiresRealBrowserTest": true,
+    "readyToPublish": false
+  },
+  "testsImplemented": true,
+  "requirements": [
+    "Run Node 24 with genuine nested React dependency lock",
+    "Execute real Chromium positive/negative assertions for this lab",
+    "Run full candidate Next build and published release smoke",
+    "Record actual keyboard, 200-percent zoom and named screen-reader evidence"
+  ],
+  "runtimeTestsExecuted": false
+}

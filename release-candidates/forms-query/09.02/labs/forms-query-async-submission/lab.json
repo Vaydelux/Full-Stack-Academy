@@ -1,0 +1,48 @@
+{
+  "candidateFor": "09.02.05",
+  "promotionReady": false,
+  "candidateOnly": true,
+  "proposedPublishedLabManifest": {
+    "id": "lab.react.forms-query-async-submission",
+    "lessonId": "09.02.05",
+    "title": "Async submissions",
+    "runtime": "react-19-rhf-7-zod-4-browser-node-24",
+    "status": "authored",
+    "starter": "labs/forms-query-async-submission/starter/solution.tsx",
+    "solution": "labs/forms-query-async-submission/solution/solution.tsx",
+    "tests": "labs/forms-query-async-submission/solution.test.mjs",
+    "verify": [
+      "npm run lab:forms-query-async-submission",
+      "npm run qualify:forms-query:react-browser"
+    ],
+    "expected": "Simulate an accepted 201 with a lost response. Retry must preserve both body and key. Double-click while pending and verify no second fetch starts.",
+    "security": "An in-memory idempotency key protects only one process lifetime. Real billing/financial mutations require durable server-side deduplication."
+  },
+  "sourceContract": {
+    "id": "draft.forms.async-submission",
+    "lessonId": "09.02.05",
+    "title": "Async submissions",
+    "sourceStatus": "staged-unverified",
+    "runtime": "react-19-rhf-7-zod-4-ts-5",
+    "starter": "drafts/forms-query/labs/async-submission/starter.tsx",
+    "solution": "drafts/forms-query/labs/async-submission/solution.tsx",
+    "expectedPositive": "Simulate an accepted 201 with a lost response. Retry must preserve both body and key. Double-click while pending and verify no second fetch starts.",
+    "expectedNegative": "The starter generates a new idempotency key for every retry and has no in-flight lock.",
+    "securityBoundary": "An in-memory idempotency key protects only one process lifetime. Real billing/financial mutations require durable server-side deduplication.",
+    "officialReferences": [
+      "https://react-hook-form.com/docs/useform/handlesubmit",
+      "https://tanstack.com/query/latest/docs/framework/react/guides/mutations"
+    ],
+    "requiresRealLibraryTest": true,
+    "requiresRealBrowserTest": true,
+    "readyToPublish": false
+  },
+  "testsImplemented": true,
+  "requirements": [
+    "Run Node 24 with genuine nested React dependency lock",
+    "Execute real Chromium positive/negative assertions for this lab",
+    "Run full candidate Next build and published release smoke",
+    "Record actual keyboard, 200-percent zoom and named screen-reader evidence"
+  ],
+  "runtimeTestsExecuted": false
+}

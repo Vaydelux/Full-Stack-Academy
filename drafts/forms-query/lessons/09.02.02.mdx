@@ -15,7 +15,7 @@ Use register when a native control provides ref/name/onChange. For a controlled 
 
 **Predict before coding:** The naive widget never reports its selected rating to handleSubmit; Controller makes the custom control participate in the form.
 
-**Scope:** This staged article uses genuine React Hook Form v7 interfaces and React 19 patterns. The source is not yet compiled with installed RHF packages or browser-tested. The companion Node loopback Task API is educational, unauthenticated and in-memory.
+**Scope:** This staged article uses genuine React Hook Form v7 interfaces and React 19 patterns. Earlier committed notes report locked local Chrome/TypeScript qualification of the starter and instructor exercises on November 20, 2026; those checks have not been rerun for this candidate. Publication and human accessibility review remain outstanding. The companion Node loopback Task API is educational, unauthenticated and in-memory.
 
 ## Prerequisites and preflight
 
@@ -88,6 +88,21 @@ export default function ReviewForm(){
 3. **Repair:** Use register for a native input and Controller for a non-native controlled picker without creating duplicate form state.
 4. **Regression:** Click or keyboard-activate the rating button twice, then submit; the handler must receive rating 3 rather than 1. Verify the title is also registered.
 5. **Operational boundary:** A rating picker still needs a semantic accessible name and keyboard focus; wrapping an inaccessible custom control in Controller does not make it accessible.
+
+## Production decision guide: adapt custom controls without duplicating form state
+
+`register` suits native inputs with refs and standard input events. A custom rating widget may require a controlled `value` and `onChange` API. `Controller` connects that API to RHF; its `field` includes the value, change/blur handlers, name and ref. Using only the displayed rating while forgetting `field.onChange` lets the widget appear to work while submission stays at its initial value.
+
+| Symptom | Likely cause | Check |
+| --- | --- | --- |
+| Rating changes on screen but submits 1 | Widget has independent state | Assert `handleSubmit` data |
+| Form never becomes dirty | The picker is disconnected | Inspect defaults and onChange |
+| Keyboard users cannot select a rating | Click-only widget | Tab, Space and Enter |
+| Error focus never reaches the picker | Ref not forwarded to focusable target | Trigger an invalid selection |
+
+**Independent exercise:** Fill the registered title, keyboard-activate the rating twice, and predict the submitted title/rating pair. Then deliberately disconnect the widget's change handler and identify the first incorrect observable value.
+
+**Accessibility is a separate responsibility.** A `Controller` adapter does not automatically create a button role, label, visible focus or keyboard support. Prefer native controls where practical. Give controlled components complete defaults so dirty-state comparisons have a meaningful baseline.
 
 ## Guided local lab
 

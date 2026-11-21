@@ -1,0 +1,51 @@
+{
+  "candidateFor": "09.03.05",
+  "publicationReady": false,
+  "targetPath": "src/content/lessons/09.03.05.meta.json",
+  "publishedMetadata": {
+    "id": "09.03.05",
+    "title": "Infinite queries",
+    "description": "A practical TanStack Query 5 lesson teaching infinite queries using real React Query cache behavior and HTTP failure scenarios with separate starter and instructor assertions.",
+    "trackId": "09",
+    "moduleId": "09.03",
+    "level": "Intermediate",
+    "estimatedMinutes": 63,
+    "status": "authored",
+    "reviewedAt": null,
+    "stack": {
+      "react": "19",
+      "typescript": "5",
+      "tanstackQuery": "5"
+    },
+    "prerequisites": [
+      "09.03.04"
+    ],
+    "objectives": [
+      "Paginate the real cursor API with useInfiniteQuery, a correct next-page parameter, and stale-cursor recovery.",
+      "Create 25 todo tasks; fetch pages 10+10+5 without duplicates. After adding a new task, the previous cursor should return 409 and the client should restart.",
+      "Bound displayed pages and total task payloads. Infinite query caches can grow without limits; trim or evict older pages when appropriate."
+    ],
+    "labId": "lab.react.forms-query-infinite-queries",
+    "rubric": [
+      "Paginate the real cursor API with useInfiniteQuery, a correct next-page parameter, and stale-cursor recovery.",
+      "Create 25 todo tasks; fetch pages 10+10+5 without duplicates. After adding a new task, the previous cursor should return 409 and the client should restart.",
+      "I can distinguish cache freshness, HTTP success and server authorization."
+    ],
+    "sources": [
+      {
+        "label": "Primary official reference",
+        "url": "https://tanstack.com/query/latest/docs/framework/react/guides/infinite-queries"
+      },
+      {
+        "label": "Supporting official reference",
+        "url": "https://tanstack.com/query/latest/docs/framework/react/reference/useInfiniteQuery"
+      }
+    ]
+  },
+  "blockedOn": [
+    "Genuine nested npm, React Query browser and Next SSR acceptance",
+    "Actual production MDX and lesson registry build",
+    "Named human keyboard, 200% zoom and screen-reader review"
+  ],
+  "requiredVerifyScript": "npm run lab:forms-query-infinite-queries"
+}

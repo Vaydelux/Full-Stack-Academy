@@ -1,0 +1,246 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Integrate RHF/Zod validation, same-origin authenticated-by-nobody teaching POST, Query list/invalidation, conditional status PATCH and explicit error recovery.","Using the actual loopback API and installed RHF/Query, prove valid create→GET refresh, invalid title no-POST, 422/error retry, 412 version conflict and a rollback path in the companion task workspace.","The teaching API is in-memory and unauthenticated. Do not deploy this workflow publicly or imply that Zod/client query keys provide access control."]} />
+
+## The problem we're solving
+
+The UI validates a task title, creates a task, then shows a stale todo list. Completing the task silently overwrites a teammate's newer update and failed deletes disappear permanently.
+
+**Broken behavior in the starter:** The starter submits unvalidated data to the wrong endpoint and never invalidates remote list state.
+
+## Build the mental model
+
+Use RHF for local input, Query for remote server state, and the API's If-Match revision for conflicting writes. Distinguish source-authored code from production authorization.
+
+**Predict before coding:** A valid task POST updates the list; 422 blocks or shows an error; 412 requires refetch; a failed optimistic deletion must roll back.
+
+**Version and deployment scope:** TanStack Query v5, React 19, TypeScript 5. The Task API is a locally bound, in-memory, unauthenticated fixture. Earlier committed notes report locked local Chrome/SSR tests on November 20, 2026; they have not been rerun for this candidate. Publication, canonical lab registration and human accessibility review remain outstanding.
+
+## Prerequisites and preflight
+
+Review the preceding canonical topics, including React Hook Form's validated POST boundary. Start with `drafts/forms-query/labs/remote-task-capstone/starter.tsx`, and compare with the instructor source only after predicting the incorrect result.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the faulty remote-state assumption" file="drafts/forms-query/labs/remote-task-capstone/starter.tsx" expected="The starter submits unvalidated data to the wrong endpoint and never invalidates remote list state.">
+
+```tsx
+import { useForm } from 'react-hook-form';
+export default function NewTask(){
+ const form=useForm<{title:string}>();
+ return <form onSubmit={form.handleSubmit(async data=>{
+  await fetch('/api/tasks',{method:'POST',body:JSON.stringify(data)});
+ })}><input aria-label="Title" {...form.register('title')} /><button>Save</button></form>;
+}
+```
+
+**Why it fails:** The UI validates a task title, creates a task, then shows a stale todo list. Completing the task silently overwrites a teammate's newer update and failed deletes disappear permanently.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the correct TanStack Query behavior" file="drafts/forms-query/labs/remote-task-capstone/solution.tsx" expected="A valid task POST updates the list; 422 blocks or shows an error; 412 requires refetch; a failed optimistic deletion must roll back.">
+
+```tsx
+import { useRef, useState } from 'react';
+import * as z from 'zod';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+
+const TaskInput=z.object({
+ title:z.string().trim().min(3).max(100),
+ priority:z.enum(['low','normal','high']),
+});
+type TaskState='todo'|'doing'|'done';
+type Task={id:string;title:string;priority:'low'|'normal'|'high';status:TaskState;revision:number};
+type Page={items:Task[];nextCursor:string|null};
+type Attempt={body:z.output<typeof TaskInput>;key:string};
+class StatusError extends Error {
+ readonly status:number;
+ constructor(status:number){super('HTTP '+status);this.status=status;}
+}
+async function request<T>(url:string,init:RequestInit={}):Promise<T>{
+ const response=await fetch(url,{...init,credentials:'same-origin',cache:'no-store',redirect:'error'});
+ if(!response.ok)throw new StatusError(response.status);
+ return (response.status===204?null:await response.json()) as T;
+}
+export default function RemoteTaskCapstone(){
+ const queryClient=useQueryClient();
+ const [filter,setFilter]=useState<'all'|TaskState>('all');
+ const [notice,setNotice]=useState('');
+ const [mutationError,setMutationError]=useState('');
+ const key=['tasks',{status:filter,limit:10}] as const;
+ const [attempt,setAttempt]=useState<Attempt|null>(null);
+ const submitting=useRef(false);
+ const form=useForm<z.input<typeof TaskInput>,unknown,z.output<typeof TaskInput>>({
+  resolver:zodResolver(TaskInput),defaultValues:{title:'',priority:'normal'},
+ });
+ const list=useQuery({
+  queryKey:key,
+  queryFn:({signal})=>request<Page>('/api/tasks?'+new URLSearchParams({
+   status:filter,limit:'10',
+  }),{signal}),
+  staleTime:10_000,
+ });
+ const create=useMutation({
+  mutationFn:(operation:Attempt)=>request<Task>('/api/tasks',{
+   method:'POST',headers:{'content-type':'application/json','idempotency-key':operation.key},
+   body:JSON.stringify(operation.body),
+  }),
+  retry:false,
+ });
+ const status=useMutation({
+  mutationFn:({task,next}:{task:Task;next:TaskState})=>request<Task>(
+   '/api/tasks/'+encodeURIComponent(task.id),{
+    method:'PATCH',headers:{
+     'content-type':'application/json','if-match':'"'+task.revision+'"',
+    },
+    body:JSON.stringify({status:next}),
+   }),
+  onMutate:async({task,next})=>{
+   await queryClient.cancelQueries({queryKey:key});
+   const before=queryClient.getQueryData<Page>(key);
+   queryClient.setQueryData<Page>(key,current=>current?{
+    ...current,items:current.items
+     .map(item=>item.id===task.id?{...item,status:next}:item)
+     .filter(item=>filter==='all'||item.status===filter),
+   }:current);
+   return {before,key};
+  },
+  onError:(error,_task,context)=>{
+   if(context?.before)queryClient.setQueryData(context.key,context.before);
+   setMutationError('Status update failed: '+String(error)+'; refresh stale revisions.');
+  },
+  onSettled:()=>{void queryClient.resetQueries({queryKey:['tasks']});},
+ });
+ const remove=useMutation({
+  mutationFn:(task:Task)=>request<null>('/api/tasks/'+encodeURIComponent(task.id),{method:'DELETE'}),
+  onMutate:async(task)=>{
+   await queryClient.cancelQueries({queryKey:key});
+   const before=queryClient.getQueryData<Page>(key);
+   queryClient.setQueryData<Page>(key,current=>current?{
+    ...current,items:current.items.filter(item=>item.id!==task.id),
+   }:current);
+   return {before,key};
+  },
+  onError:(error,_task,context)=>{
+   if(context?.before)queryClient.setQueryData(context.key,context.before);
+   setMutationError('Delete failed: '+String(error)+'; task restored.');
+  },
+  onSettled:()=>{void queryClient.resetQueries({queryKey:['tasks']});},
+ });
+ async function send(operation:Attempt){
+  if(submitting.current)return;
+  submitting.current=true;setAttempt(operation);setNotice('Submitting…');
+  try{
+   await create.mutateAsync(operation);
+   setAttempt(null);form.reset();setNotice('Created; fetching fresh server data');
+   void queryClient.resetQueries({queryKey:['tasks']});
+  }catch(error){
+   const transient=!(error instanceof StatusError)||error.status===408||error.status===429||error.status>=500;
+   if(!transient)setAttempt(null);
+   setNotice(transient?'Result unconfirmed; retry with the SAME key.':'Request rejected; correct the input before a new create.');
+   form.setError('root.server',{message:String(error)});
+  }finally{submitting.current=false;}
+ }
+ const anyPending=create.isPending||status.isPending||remove.isPending;
+ return <section>
+  <h2>Remote task workflow</h2>
+  <form onSubmit={event=>{void form.handleSubmit(async data=>{
+   if(attempt)return;
+   await send({body:data,key:crypto.randomUUID()});
+  })(event);}}>
+   <label htmlFor="cap-title">Task title</label>
+   <input id="cap-title" {...form.register('title')} aria-invalid={!!form.formState.errors.title}
+    aria-describedby={form.formState.errors.title?'cap-title-error':undefined}/>
+   {form.formState.errors.title&&<p id="cap-title-error" role="alert">{form.formState.errors.title.message}</p>}
+   <label htmlFor="cap-priority">Priority</label>
+   <select id="cap-priority" {...form.register('priority')}>
+    <option value="normal">Normal</option><option value="low">Low</option><option value="high">High</option>
+   </select>
+   <button type="submit" disabled={anyPending||!!attempt}>Create</button>
+  </form>
+  {form.formState.errors.root?.server&&<p role="alert">{form.formState.errors.root.server.message}</p>}
+  <button type="button" disabled={anyPending||!attempt}
+   onClick={()=>{if(attempt)void send(attempt)}}>Retry same create</button>
+  <p role="status">{notice}</p>
+  <label htmlFor="task-status-filter">Filter tasks</label>
+  <select id="task-status-filter" value={filter} onChange={event=>setFilter(event.target.value as 'all'|TaskState)}>
+   <option value="all">All tasks</option><option value="todo">To do</option>
+   <option value="doing">In progress</option><option value="done">Completed</option>
+  </select>
+  {list.isPending?<p role="status">Loading…</p>:list.isError?<p role="alert">Read failed.</p>:
+   <ul>{list.data.items.map(task=>{
+    const next:TaskState=task.status==='todo'?'doing':task.status==='doing'?'done':'todo';
+    return <li key={task.id}>
+     <strong>{task.title}</strong> <small>{task.status} · revision {task.revision}</small>
+     <button type="button" disabled={anyPending} onClick={()=>{
+      setMutationError('');status.mutate({task,next});
+     }}>Move to {next}</button>
+     <button type="button" disabled={anyPending} onClick={()=>{
+      setMutationError('');remove.mutate(task);
+     }}>Delete</button>
+    </li>;
+   })}</ul>}
+  {mutationError&&<p role="alert">{mutationError}</p>}
+ </section>;
+}
+```
+
+**What changed:** Use RHF for local input, Query for remote server state, and the API's If-Match revision for conflicting writes. Distinguish source-authored code from production authorization.
+
+</LessonStep>
+
+<LessonStep number={3} title="Assert real HTTP and cache behavior" file="drafts/forms-query/labs/remote-task-capstone/lab.json" expected="Using the actual loopback API and installed RHF/Query, prove valid create→GET refresh, invalid title no-POST, 422/error retry, 412 version conflict and a rollback path in the companion task workspace.">
+
+**Observe:** Using the actual loopback API and installed RHF/Query, prove valid create→GET refresh, invalid title no-POST, 422/error retry, 412 version conflict and a rollback path in the companion task workspace.
+
+**Required evidence before publishing:** Use real installed TanStack Query with a mounted QueryClientProvider and an actual loopback HTTP fixture. Record the expected red assertion for the starter and a green assertion for the instructor. Inspect request counts and body shape; static source checks are insufficient for release.
+
+**Boundary:** The teaching API is in-memory and unauthenticated. Do not deploy this workflow publicly or imply that Zod/client query keys provide access control.
+
+</LessonStep>
+
+<Misconception claim="The starter submits unvalidated data to the wrong endpoint and never invalidates remote list state." correction="Use RHF for local input, Query for remote server state, and the API's If-Match revision for conflicting writes. Distinguish source-authored code from production authorization." />
+
+<KnowledgeCheck question="What is the reliable approach to lab remote task list?" choices={["Assume cached browser state equals server truth forever.","Use TanStack Query resource identity and the server's HTTP contract.","Ignore failure responses to keep the UI fast.","Disable all validation once the code typechecks."]} correctIndex={1} explanation="Use RHF for local input, Query for remote server state, and the API's If-Match revision for conflicting writes. Distinguish source-authored code from production authorization." misconception="The starter submits unvalidated data to the wrong endpoint and never invalidates remote list state." lessonId="09.03.08" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+1. **Reproduce:** The starter submits unvalidated data to the wrong endpoint and never invalidates remote list state.
+2. **Diagnose:** Trace the query key, cancellation boundary, remote response, cache update and invalidation.
+3. **Repair:** Integrate RHF/Zod validation, same-origin authenticated-by-nobody teaching POST, Query list/invalidation, conditional status PATCH and explicit error recovery.
+4. **Regression:** Using the actual loopback API and installed RHF/Query, prove valid create→GET refresh, invalid title no-POST, 422/error retry, 412 version conflict and a rollback path in the companion task workspace.
+5. **Security and operations:** The teaching API is in-memory and unauthenticated. Do not deploy this workflow publicly or imply that Zod/client query keys provide access control.
+
+## Production decision guide: compose the complete remote workflow
+
+The capstone combines three separate owners: React Hook Form validates the current draft, TanStack Query manages read caches, and the HTTP API is authoritative for creates and status changes. Their contracts should be observable independently. A good UI can still be incorrect when it loses an idempotency key, forgets to invalidate an affected filter or mislabels an HTTP 412 revision conflict as success.
+
+| Journey | Expected evidence | Failure path to prove |
+| --- | --- | --- |
+| Create valid task | One POST, confirmed record, GET refresh | No duplicate on replay |
+| Submit invalid title | Inline error; no POST | Server still rejects direct bad input |
+| Change task status | Version-aware PATCH then refreshed list | 412 conflict refreshes authoritative revision |
+| Optimistic delete | Temporary removal then confirmation | Failed delete restores snapshot |
+| Change filters quickly | Separate keys and cancellation | No stale cross-filter task data |
+
+**Independent exercise:** Run the loopback API, create a valid task, change its status and force a version conflict from another request. Then simulate a lost POST response and a failed optimistic delete. For each step, distinguish the browser preview, cached query records and server-accepted state.
+
+**Deployment boundary:** This practice service binds locally, stores records in memory and has no authentication. It must never be described as a production multi-user API. Client-side schemas and query keys do not grant access; production systems need server-side identity, authorization and durable idempotency.
+
+## Guided local lab
+
+**Unpublished release candidate.** This lab must pass real Query v5 browser/instructor red-green verification, the exact published Next production build and named accessibility review before course progress is enabled. Proposed local lab: `labs/forms-query-remote-task-capstone/`.
+
+<LabGate lessonId="09.03.08" labId="lab.react.forms-query-remote-task-capstone" commands={["npm run lab:forms-query-remote-task-capstone","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+What should happen if the server returns an old result, a 409 stale cursor, a 412 conditional-write conflict or a network error? Which layer owns each recovery decision?
+
+## Official references
+
+- [Primary official reference](https://tanstack.com/query/latest/docs/framework/react/guides/mutations)
+- [Supporting official reference](https://react-hook-form.com/docs/useform/handlesubmit)

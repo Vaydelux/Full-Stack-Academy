@@ -1,0 +1,41 @@
+{
+  "candidateFor": "09.03.07",
+  "promotionReady": false,
+  "candidateOnly": true,
+  "proposedPublishedLabManifest": {
+    "id": "lab.react.forms-query-retries-cancellation",
+    "lessonId": "09.03.07",
+    "title": "Retries and cancellation",
+    "runtime": "browser-react-19-tanstack-query-5-node-24",
+    "status": "authored",
+    "starter": "labs/forms-query-retries-cancellation/starter/solution.tsx",
+    "solution": "labs/forms-query-retries-cancellation/solution/solution.tsx",
+    "tests": "labs/forms-query-retries-cancellation/solution.test.mjs",
+    "verify": [
+      "npm run lab:forms-query-retries-cancellation"
+    ],
+    "expected": "Abort an in-flight request on unmount; ensure no stale result is committed. Mock 422 (zero retries), 503 (bounded retries), and a network failure.",
+    "security": "Do not retry credential failures or validation errors; aggressive retries can amplify a production incident and expose service capacity limits."
+  },
+  "sourceContract": {
+    "id": "draft.query.retries-cancellation",
+    "lessonId": "09.03.07",
+    "title": "Retries and cancellation",
+    "sourceStatus": "staged-unverified",
+    "runtime": "react-19-tanstack-query-5-ts-5",
+    "starter": "drafts/forms-query/labs/retries-cancellation/starter.tsx",
+    "solution": "drafts/forms-query/labs/retries-cancellation/solution.tsx",
+    "expectedPositive": "Abort an in-flight request on unmount; ensure no stale result is committed. Mock 422 (zero retries), 503 (bounded retries), and a network failure.",
+    "expectedNegative": "The starter discards AbortSignal, ignores response.ok, and retries errors indiscriminately.",
+    "securityBoundary": "Do not retry credential failures or validation errors; aggressive retries can amplify a production incident and expose service capacity limits.",
+    "officialReferences": [
+      "https://tanstack.com/query/latest/docs/framework/react/guides/query-cancellation",
+      "https://tanstack.com/query/latest/docs/framework/react/guides/query-retries"
+    ],
+    "requiresRealLibraryTest": true,
+    "requiresRealBrowserTest": true,
+    "readyToPublish": false
+  },
+  "testsImplemented": true,
+  "runtimeTestsExecuted": false
+}

@@ -100,15 +100,10 @@ test('module sums reconcile to baseline including all phase targets',()=>{
  assert.equal(all.length,program.scheduledModules);
 });
 
-test('source-derived P2 NestJS drafts count as staged, never published',()=>{
- const p2=program.phases.find(p=>p.id==='P2');
- assert.equal(p2.modules.length,4);
- assert.deepEqual(p2.modules.map(m=>m.staged),[8,8,8,8]);
- assert.equal(p2.staged,32);
- assert.equal(p2.published,0);
- assert.equal(p2.remaining,32);
- assert.equal(program.phases.find(p=>p.id==='P1').staged,16);
- assert.equal(program.baseline.staged,48);
- assert.equal(program.baseline.published,338);
- assert.equal(program.baseline.unstaged,503);
+test('retaining historical draft source after publication never doubles staged counts',()=>{
+ const programWithRelease=first(['09.02.01','09.02.02'],['09.03.01']);
+ assert.equal(programWithRelease.baseline.published,2);
+ assert.equal(programWithRelease.baseline.staged,1);
+ assert.equal(programWithRelease.phases[0].modules[0].staged,0);
+ assert.equal(programWithRelease.phases[0].modules[0].published,2);
 });

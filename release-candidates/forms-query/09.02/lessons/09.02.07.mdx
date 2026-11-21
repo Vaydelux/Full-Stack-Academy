@@ -1,0 +1,125 @@
+import { LearningGoals, LessonStep, Misconception, LabGate } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Represent authoritative HTTP errors in accessible form feedback and restore focus to the first relevant input.","Mock 422 then 503. The 422 path must set title error and focus; 503 must set root.server without claiming success.","Never print untrusted server error bodies as HTML; use trusted generic descriptions and text nodes for any constrained message."]} />
+
+## The problem we're solving
+
+A server rejects a task with 422, but the app displays Success because fetch did not throw. A screen-reader user receives no field association or retry guidance.
+
+**What breaks in the learner starter:** The starter treats a fetch response as success without checking response.ok.
+
+## Build the mental model
+
+Fetch resolves on HTTP 4xx/5xx; inspect response.ok. Map field validation into setError, root failures into root.server, and use setFocus for correction.
+
+**Predict before coding:** A 422 response must never show success; the title field should be focused and identified as invalid, with role alert text.
+
+**Scope:** This staged article uses genuine React Hook Form v7 interfaces and React 19 patterns. Earlier committed notes report locked local Chrome/TypeScript qualification of the starter and instructor exercises on November 20, 2026; those checks have not been rerun for this candidate. Publication and human accessibility review remain outstanding. The companion Node loopback Task API is educational, unauthenticated and in-memory.
+
+## Prerequisites and preflight
+
+Read the preceding canonical module lessons and `drafts/forms-query/README.md`. The staged exercise is in `drafts/forms-query/labs/server-error-focus/`. Install and lock real compatible npm packages *before* promoting this draft to the production academy. Do not copy the starter to the published lab registry until its negative test is observable.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the red starter" file="drafts/forms-query/labs/server-error-focus/starter.tsx" expected="The starter treats a fetch response as success without checking response.ok.">
+
+```tsx
+import { useForm } from 'react-hook-form';
+export default function ErrorForm(){
+ const {register,handleSubmit}=useForm<{title:string}>();
+ return <form onSubmit={handleSubmit(async ({title})=>{
+  await fetch('/api/tasks',{method:'POST',body:JSON.stringify({title})});
+  alert('Saved'); // wrong: HTTP 422 still resolves
+ })}><input aria-label="Task title" {...register('title')}/><button>Save</button></form>;
+}
+```
+
+**Observe:** A server rejects a task with 422, but the app displays Success because fetch did not throw. A screen-reader user receives no field association or retry guidance.
+
+</LessonStep>
+
+<LessonStep number={2} title="Apply the instructor repair" file="drafts/forms-query/labs/server-error-focus/solution.tsx" expected="A 422 response must never show success; the title field should be focused and identified as invalid, with role alert text.">
+
+```tsx
+import { useForm } from 'react-hook-form';
+export default function ErrorForm(){
+ const {register,handleSubmit,setError,setFocus,formState:{errors}}=useForm<{title:string}>({defaultValues:{title:''}});
+ return <form onSubmit={handleSubmit(async ({title})=>{
+  try{
+   const response=await fetch('/api/tasks',{method:'POST',headers:{
+    'content-type':'application/json','idempotency-key':crypto.randomUUID()
+   },body:JSON.stringify({title,priority:'normal'})});
+   if(response.status===422){
+    setError('title',{type:'server',message:'Title must be between 3 and 100 characters'});
+    setFocus('title');return;
+   }
+   if(!response.ok)throw Error('HTTP '+response.status);
+  }catch{setError('root.server',{message:'Could not save. Retry after checking the connection.'});}
+ })}>
+  <label htmlFor="task-title">Task title</label>
+  <input id="task-title" {...register('title',{required:true})}
+   aria-invalid={!!errors.title} aria-describedby={errors.title?'title-error':undefined}/>
+  {errors.title&&<p id="title-error" role="alert">{errors.title.message}</p>}
+  {errors.root?.server&&<p role="alert">{errors.root.server.message}</p>}
+  <button>Save</button>
+ </form>;
+}
+```
+
+**Why:** Fetch resolves on HTTP 4xx/5xx; inspect response.ok. Map field validation into setError, root failures into root.server, and use setFocus for correction.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify behavior at the real boundary" file="drafts/forms-query/labs/server-error-focus/lab.json" expected="Mock 422 then 503. The 422 path must set title error and focus; 503 must set root.server without claiming success.">
+
+**Acceptance scenario:** Mock 422 then 503. The 422 path must set title error and focus; 503 must set root.server without claiming success.
+
+**Debug the failure:** reproduce the bad behavior in the starter, make the smallest correction, then repeat the positive case and a genuinely failing negative case. This must be automated using real RHF/React packages and a DOM harness before the lesson is published.
+
+**Trust boundary:** Never print untrusted server error bodies as HTML; use trusted generic descriptions and text nodes for any constrained message.
+
+</LessonStep>
+
+<Misconception claim="The starter treats a fetch response as success without checking response.ok." correction="Fetch resolves on HTTP 4xx/5xx; inspect response.ok. Map field validation into setError, root failures into root.server, and use setFocus for correction." />
+
+<KnowledgeCheck question="Which repair best addresses server errors and focus?" choices={["Always trust the browser to enforce security.","Use one authoritative form state and verify the tested behavior.","Ignore non-200 HTTP responses if fetch resolved.","Treat TypeScript types as runtime authorization."]} correctIndex={1} explanation="Fetch resolves on HTTP 4xx/5xx; inspect response.ok. Map field validation into setError, root failures into root.server, and use setFocus for correction." misconception="The starter treats a fetch response as success without checking response.ok." lessonId="09.02.07" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+1. **Reproduce:** The starter treats a fetch response as success without checking response.ok.
+2. **Diagnose:** Locate who owns the current value, where it is transformed, and which effect or async boundary can invalidate assumptions.
+3. **Repair:** Represent authoritative HTTP errors in accessible form feedback and restore focus to the first relevant input.
+4. **Regression:** Mock 422 then 503. The 422 path must set title error and focus; 503 must set root.server without claiming success.
+5. **Operational boundary:** Never print untrusted server error bodies as HTML; use trusted generic descriptions and text nodes for any constrained message.
+
+## Production decision guide: errors have owners and focus targets
+
+A fulfilled `fetch` call may have HTTP status 422 or 503; successful transport is not a successful save. Invalid title input is a field error, while an unavailable API is a form-level error. The two conditions require different corrective actions and should never display a success message.
+
+| Result | Feedback owner | Keyboard acceptance |
+| --- | --- | --- |
+| 422 title rejected | Title field | Error is announced and input focused |
+| 503 unavailable | Form-level server status | Error can be discovered without a mouse |
+| 201 accepted | Confirmed success state | Stale errors do not linger |
+| Unrecognized API error | Generic safe failure text | No unsafe HTML insertion |
+
+**Independent exercise:** Mock 422, then 503, and test with the keyboard. Check the active element, `aria-invalid`, the error relationship via `aria-describedby` and the number of confirmed saves. A visible red sentence alone is not sufficient.
+
+**Security boundary:** Use trusted generic error descriptions or constrained server codes. Do not interpolate untrusted error-body markup, internal stack traces or raw HTML into the form. Error announcements and focus recovery need testing by a real screen-reader user before publication.
+
+## Guided local lab
+
+Once the final candidate passes real browser/library and accessibility review, use the registered `labs/forms-query-server-error-focus/` exercise with `npm run lab:forms-query-server-error-focus`. Its starter must fail a meaningful behavior assertion, and the instructor solution must pass. This candidate is **not published** until release gates complete.
+
+<LabGate lessonId="09.02.07" labId="lab.react.forms-query-server-error-focus" commands={["npm run lab:forms-query-server-error-focus","npm run test:labs"]} interactive={false} />
+
+## Reflect
+
+What did the learner believe to be the source of truth before the repair? What user-visible state would diverge under failure, cancellation or a stale server response?
+
+## Official references
+
+- [Primary official reference](https://react-hook-form.com/docs/useform/seterror)
+- [Supporting official reference](https://react-hook-form.com/docs/useform/setfocus)

@@ -1,0 +1,52 @@
+{
+  "candidateFor": "09.02.06",
+  "publicationReady": false,
+  "publishedMetadata": {
+    "id": "09.02.06",
+    "title": "Reset and dirty state",
+    "description": "Understand isDirty, dirtyFields, defaultValues, reset(), and preserving drafts after a failed request. This guided lab analyzes and repairs a real React Hook Form state or submission failure.",
+    "trackId": "09",
+    "moduleId": "09.02",
+    "level": "Intermediate",
+    "estimatedMinutes": 55,
+    "status": "authored",
+    "reviewedAt": null,
+    "stack": {
+      "react": "19",
+      "typescript": "5",
+      "zod": "4",
+      "reactHookForm": "7"
+    },
+    "prerequisites": [
+      "09.02.05"
+    ],
+    "objectives": [
+      "Understand isDirty, dirtyFields, defaultValues, reset(), and preserving drafts after a failed request.",
+      "Enter a nonempty title, force server 503, and verify the field remains dirty. Repeat with 201 and confirm reset clears it.",
+      "Do not store private form drafts or server error bodies into telemetry by default; client state may contain sensitive data."
+    ],
+    "labId": "lab.react.forms-query-reset-dirty",
+    "rubric": [
+      "Understand isDirty, dirtyFields, defaultValues, reset(), and preserving drafts after a failed request.",
+      "Enter a nonempty title, force server 503, and verify the field remains dirty. Repeat with 201 and confirm reset clears it.",
+      "I can explain why client validation is not server authorization."
+    ],
+    "sources": [
+      {
+        "label": "Primary official reference",
+        "url": "https://react-hook-form.com/docs/useform/reset"
+      },
+      {
+        "label": "Supporting official reference",
+        "url": "https://react-hook-form.com/docs/useform/formstate"
+      }
+    ]
+  },
+  "targetPath": "src/content/lessons/09.02.06.meta.json",
+  "blockedOn": [
+    "Run genuine nested npm ci and actual React Hook Form/Chromium positive and negative checks",
+    "Pass published Next MDX route/build and local lab acceptance on exact candidate",
+    "Record actual reviewer, screen reader, keyboard and 200% zoom evidence"
+  ],
+  "requiredVerifyScript": "npm run lab:forms-query-reset-dirty"
+}
