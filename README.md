@@ -173,3 +173,7 @@ npm run promote:forms-query:query -- --simulate
 RHF must publish first. On a clean checkout with Node.js 24 and genuine Chromium/Next SSR execution, only `--apply` can publish, and it requires named, source-fingerprint-bound keyboard, screen-reader and 200% zoom evidence. The guarded publishers update local files and checkpoint, **not** GitHub branches, Vercel or production deployments. See `docs/P1_RHF_PROMOTION_CANDIDATE.md` and `docs/FORMS_QUERY_NEXT_MILESTONE.md`.
 
 > **Deployment intentionally frozen:** Git-triggered Vercel deployments are disabled via `vercel.json` and the linked project's Ignored Build Step. GitHub Academy workflow is manual-only during the source-only P1 merge. See [docs/DEPLOYMENT_FREEZE.md](docs/DEPLOYMENT_FREEZE.md). No automatic application release on merge.
+
+## P2 NestJS 12 — 32 source-only course drafts
+
+The 11.01–11.04 track has 32 authored MDX draft lessons with paired red starter/instructor TypeScript examples under `drafts/nestjs/` and an isolated NestJS 12 teaching harness in `examples/nestjs-vertical/`. Run `npm run status:nestjs-drafts` or `npm run test:nestjs-drafts` for source-only integrity. Real Nest compilation and HTTP/WebSocket/persistence qualification require a trusted npm-generated lock, Node 24, and runtime test evidence. This work is not live publication; the academy remains **338/889 published**. See `docs/NESTJS_32_AUTHORING_CHECKPOINT.md`. Vercel Git auto-deploy remains intentionally disabled.

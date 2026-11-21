@@ -1,3 +1,5 @@
+> **P2 current checkpoint:** PR #39 now descends from the merged P1 `main` and retains all 32 NestJS drafts without overwriting the Vercel freeze. `status:nestjs-drafts` and the curriculum readiness report count 48 staged P1+P2 topics, with **338 published**. The NestJS library lock and all runtime/human release gates remain pending; do not publish P2 yet.
+
 > **Merge freeze:** Vercel Git deployment disabled by repository + linked-project controls; Academy workflow now manual-only. Source-only PR #38 can merge without publishing 09.02/09.03. Re-enable only by deliberate separate release decision. See `docs/DEPLOYMENT_FREEZE.md`.
 
 > **P1 release handoff:** See `docs/P1_QUERY_PROMOTION_CANDIDATE.md` for the eight TanStack Query packages, source-parity evidence, SSR port fix, complete local commands, human review SHA requirements and strict RHF-first publication order (338→346→354). PR #38 is draft; no runtime/human release gates have been executed here.

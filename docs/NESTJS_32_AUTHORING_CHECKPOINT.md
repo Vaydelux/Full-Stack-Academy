@@ -59,3 +59,7 @@ This advances **authored content**, not published counts. Avoid changing status 
 - `scripts/verify-nestjs-drafts.mjs`: deterministic source audit, explicit strict refusal
 - `scripts/curriculum-phase-program.mjs`: now counts the P2 drafts without mistaking them for publication
 - `examples/nestjs-vertical/README.md`: runtime installation procedure and security constraints
+
+## Conflict-free P2 continuation (November 21, 2026)
+
+The original PR #39 branched before the P1 16-lesson source-only merge, making it unmergeable. It was reconciled with a **two-parent merge commit** carrying all 169 P2-only added files forward into the exact merged P1 tree, then integrating only NestJS-specific source checks, nested build exclusions and curriculum accounting. This preserves the repository-level `vercel.json` Git deployment freeze, the linked Vercel build-skip setting, manual-only GitHub Academy workflow and all P1 release integrity guards. No NestJS lessons are in production MDX registries. Do **not** merge this P2 candidate until at least the Nest runtime dependency/lock and tests can be qualified, and do not misrepresent source audits as framework acceptance.
