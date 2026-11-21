@@ -63,3 +63,16 @@ This advances **authored content**, not published counts. Avoid changing status 
 ## Conflict-free P2 continuation (November 21, 2026)
 
 The original PR #39 branched before the P1 16-lesson source-only merge, making it unmergeable. It was reconciled with a **two-parent merge commit** carrying all 169 P2-only added files forward into the exact merged P1 tree, then integrating only NestJS-specific source checks, nested build exclusions and curriculum accounting. This preserves the repository-level `vercel.json` Git deployment freeze, the linked Vercel build-skip setting, manual-only GitHub Academy workflow and all P1 release integrity guards. No NestJS lessons are in production MDX registries. Do **not** merge this P2 candidate until at least the Nest runtime dependency/lock and tests can be qualified, and do not misrepresent source audits as framework acceptance.
+
+## November 21 continuation — request pipeline behavioral gate
+
+Added `examples/nestjs-vertical/tests/request-pipeline.test.mjs`, wired into the isolated workspace's `npm run qualify` sequence. Six P2 11.02 topics now have authored **positive instructor / negative starter** runtime assertions:
+
+- 11.02.01: unique correlation IDs and `next()` invocation.
+- 11.02.02: Zod title trimming and malformed-input rejection.
+- 11.02.03: denied missing/invalid authorization; approved teaching-only token.
+- 11.02.04: RxJS interceptor must call the handler and preserve its payload.
+- 11.02.05: mapped HTTP status and sanitized error response.
+- 11.02.08: guard denies missing/insufficient permissions.
+
+These are **new test sources, not executed test results**. The missing genuine npm lock and unavailable real Nest install continue to block runtime qualification. The remaining 11.02.06 and 11.02.07 require specific real tests; P2 publication remains blocked. The `main` published count stays 338/889 and Vercel Git deploy remains frozen.
