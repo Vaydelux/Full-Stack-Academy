@@ -86,3 +86,32 @@ test('11.02.08 permission guard denies anonymous and unauthorized requests', asy
     assert.equal(guard.canActivate(context({ user: { permissions: ['tasks:read'] } })), true);
   });
 });
+
+
+test('11.02.06 public response does not expose stored password hashes', async () => {
+  await checkBoth('structured-responses', async ({ accountResponse }) => {
+    const account = { id: 'u1', displayName: 'Student', passwordHash: 'sensitive-hash' };
+    assert.deepEqual(accountResponse(account), { id: 'u1', displayName: 'Student' });
+    assert.doesNotMatch(JSON.stringify(accountResponse(account)), /sensitive-hash/);
+  });
+});
+
+test('11.02.07 concurrent AsyncLocalStorage requests never share context', async () => {
+  await checkBoth('request-context', async ({ withRequest, requestId }) => {
+    let allowFirst;
+    const holdFirst = new Promise(resolve => { allowFirst = resolve; });
+    let notifyStarted;
+    const started = new Promise(resolve => { notifyStarted = resolve; });
+    const first = withRequest('one', async () => {
+      notifyStarted();
+      await holdFirst;
+      return requestId();
+    });
+    await started;
+    const second = await withRequest('two', async () => requestId());
+    allowFirst();
+    assert.equal(second, 'two');
+    assert.equal(await first, 'one');
+    assert.equal(requestId(), undefined);
+  });
+});
