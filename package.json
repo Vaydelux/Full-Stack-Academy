@@ -433,7 +433,9 @@
     "promote:forms-query:query": "node scripts/promote-forms-query-query.mjs",
     "test:forms-query-query-promotion": "node --test tests/forms-query-query-promotion.test.mjs",
     "test:forms-query-projection-integrity": "node --test tests/forms-query-projection-integrity.test.mjs",
-    "test:forms-query-p1-report": "node --test tests/forms-query-p1-report.test.mjs"
+    "test:forms-query-p1-report": "node --test tests/forms-query-p1-report.test.mjs",
+    "test:vercel-freeze": "node --test tests/vercel-freeze.test.mjs",
+    "verify:vercel-freeze": "node scripts/verify-vercel-freeze.mjs"
   },
   "dependencies": {
     "clsx": "^2.1.1",

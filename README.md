@@ -171,3 +171,5 @@ npm run promote:forms-query:query -- --simulate
 ```
 
 RHF must publish first. On a clean checkout with Node.js 24 and genuine Chromium/Next SSR execution, only `--apply` can publish, and it requires named, source-fingerprint-bound keyboard, screen-reader and 200% zoom evidence. The guarded publishers update local files and checkpoint, **not** GitHub branches, Vercel or production deployments. See `docs/P1_RHF_PROMOTION_CANDIDATE.md` and `docs/FORMS_QUERY_NEXT_MILESTONE.md`.
+
+> **Deployment intentionally frozen:** Git-triggered Vercel deployments are disabled via `vercel.json` and the linked project's Ignored Build Step. GitHub Academy workflow is manual-only during the source-only P1 merge. See [docs/DEPLOYMENT_FREEZE.md](docs/DEPLOYMENT_FREEZE.md). No automatic application release on merge.

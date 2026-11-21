@@ -1,10 +1,9 @@
 name: Academy Quality Gates
 
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+  # Explicitly initiated qualification only. Do not use push/PR triggers
+  # while source-only P1 work is merged and Vercel deployments are frozen.
+  workflow_dispatch:
 
 permissions:
   contents: read
