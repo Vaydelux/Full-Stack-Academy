@@ -39,21 +39,36 @@ export async function transfer(db: PgClient, from: string, to: string) {
 <LessonStep number={2} title="Repair the domain boundary" file="drafts/nestjs/labs/application-transactions/solution.ts" expected="Multi-write invariants require a real database transaction with rollback on failure.">
 
 ```ts
-export interface PgClient { query(sql: string, values?: unknown[]): Promise<unknown>; }
+export interface PgResult { rowCount: number | null; }
+export interface PgClient {
+  // Must be a single checked-out PostgreSQL client for the entire transaction.
+  query(sql: string, values?: readonly unknown[]): Promise<PgResult>;
+}
 export async function transfer(db: PgClient, from: string, to: string) {
+  if (!from || !to || from === to) throw new Error('Distinct wallet IDs are required');
   await db.query('BEGIN');
   try {
-    await db.query('UPDATE wallets SET balance=balance-1 WHERE id=$1', [from]);
-    await db.query('UPDATE wallets SET balance=balance+1 WHERE id=$1', [to]);
+    const debited = await db.query(
+      'UPDATE wallets SET balance=balance-1 WHERE id=$1 AND balance>=1 RETURNING id', [from],
+    );
+    if (debited.rowCount !== 1) throw new Error('Source wallet missing or insufficient balance');
+    const credited = await db.query(
+      'UPDATE wallets SET balance=balance+1 WHERE id=$1 RETURNING id', [to],
+    );
+    if (credited.rowCount !== 1) throw new Error('Destination wallet missing');
     await db.query('COMMIT');
   } catch (error) {
-    await db.query('ROLLBACK');
+    try {
+      await db.query('ROLLBACK');
+    } catch (rollbackError) {
+      throw new AggregateError([error, rollbackError], 'Transfer failed and rollback also failed');
+    }
     throw error;
   }
 }
 ```
 
-**Reasoning:** Multi-write invariants require a real database transaction with rollback on failure. A fake in-memory array cannot certify PostgreSQL transaction isolation or rollback.
+**Reasoning:** Multi-write invariants require a real database transaction with rollback on failure. A fake in-memory array cannot certify PostgreSQL transaction isolation or rollback. The checked-out database client must remain the **same connection** across BEGIN, both updates, COMMIT and ROLLBACK. The debit requires available balance, both writes must affect exactly one wallet, and a missing recipient must roll back the debit. This is a one-unit educational example, not a production payment or idempotency implementation.
 
 </LessonStep>
 
