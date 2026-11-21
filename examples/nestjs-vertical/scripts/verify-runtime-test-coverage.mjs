@@ -22,8 +22,8 @@ const integrations = {
 };
 const read = filename => fs.readFileSync(filename, 'utf8');
 const local = name => path.join(workspace, name);
-function report(issues) {
-  return { kind: 'nestjs-source-test-coverage', authored: 32,
+function report(issues, authored = 0) {
+  return { kind: 'nestjs-source-test-coverage', authored,
     runtimeExecuted: false, integrationExecuted: false,
     readyToPublish: false, issues, valid: issues.length === 0 };
 }
@@ -93,11 +93,13 @@ export function inspectNestRuntimeCoverage() {
   }
   if (ids.length !== 32) issues.push('Canonical catalog must contain exactly 32 NestJS topics, found ' + ids.length);
   const allSuiteFiles = [];
+  let authored = 0;
   for (const [moduleId, filename] of Object.entries(suites)) {
     const filepath = local('tests/' + filename);
     const expected = ids.filter(item => item.moduleId === moduleId).map(item => item.id);
     try {
       const source = read(filepath);
+      authored += [...source.matchAll(/^\s*test\(\s*['\"]11\.\d{2}\.\d{2}\b/gm)].length;
       issues.push(...auditSuite(source, moduleId, expected, slugForId));
       allSuiteFiles.push(filepath);
     } catch (error) { issues.push(moduleId + ': cannot read test: ' + error.message); }
@@ -135,7 +137,7 @@ export function inspectNestRuntimeCoverage() {
     if (checked.status !== 0) issues.push('JavaScript syntax error in ' + path.basename(filepath) + ': ' +
       (checked.stderr || checked.error?.message || 'unknown').slice(0, 300));
   }
-  return report(issues);
+  return report(issues, authored);
 }
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.argv[1])) {
@@ -146,7 +148,7 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.a
   } else {
     const result = inspectNestRuntimeCoverage();
     if (args.includes('--json')) console.log(JSON.stringify(result, null, 2));
-    else console.log('NestJS runtime source coverage: 32 canonical topic tests + 2 live-service tests; ' +
+    else console.log('NestJS runtime source coverage: ' + result.authored + ' detected topic tests; 2 live-service source checks; ' +
       result.issues.length + ' source issues. Runtime qualification NOT EXECUTED.');
     if (result.issues.length) {
       console.error(result.issues.join('\n'));
