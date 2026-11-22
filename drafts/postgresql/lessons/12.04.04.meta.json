@@ -1,0 +1,20 @@
+{
+  "id": "12.04.04",
+  "trackId": "12",
+  "moduleId": "12.04",
+  "title": "Keyset pagination",
+  "labSlug": "keyset-feed",
+  "sourceStatus": "draft-unverified",
+  "reviewStatus": "unreviewed",
+  "runtimeQualification": "not-run",
+  "estimatedMinutes": 60,
+  "prerequisites": [
+    "12.04.03"
+  ],
+  "officialReferences": [
+    "https://www.postgresql.org/docs/current/queries-limit.html",
+    "https://www.postgresql.org/docs/current/using-explain.html"
+  ],
+  "evidenceMode": "sql-contract",
+  "securityBoundary": "Cursor columns need compatible stable comparison semantics, a deterministic ORDER BY, and tenant-scoped filters. Keyset pagination does not solve arbitrary deep page-number jumps or authorization."
+}

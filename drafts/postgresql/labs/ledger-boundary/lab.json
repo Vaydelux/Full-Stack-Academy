@@ -1,0 +1,15 @@
+{
+  "id": "draft.postgresql.ledger-boundary",
+  "lessonId": "12.03.07",
+  "title": "Transaction boundaries",
+  "sourceStatus": "draft-unverified",
+  "runtimeQualification": "not-run",
+  "readyToPublish": false,
+  "qualificationKind": "single-session-sql-semantics",
+  "requiresSeparateConcurrencyReview": true,
+  "fixture": "examples/postgresql-transactions/fixture.sql",
+  "starter": "drafts/postgresql/labs/ledger-boundary/starter.sql",
+  "solution": "drafts/postgresql/labs/ledger-boundary/solution.sql",
+  "acceptance": "drafts/postgresql/labs/ledger-boundary/acceptance.sql",
+  "reference": "https://www.postgresql.org/docs/current/tutorial-transactions.html"
+}

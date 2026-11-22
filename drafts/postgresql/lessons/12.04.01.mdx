@@ -1,0 +1,93 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["EXPLAIN estimates a plan; EXPLAIN ANALYZE executes a statement and records actual rows, time, and instrumentation. The cost units are planner estimates, not milliseconds.","Record database version, dataset cardinality, actual row count, buffers and latency for three runs. Explain estimated versus actual rows. Do not assert a performance win without a matched workload and measured baseline.","EXPLAIN ANALYZE executes statements. Only use SELECT against disposable data here; be cautious with DML. On a tiny teaching table PostgreSQL may correctly choose a sequential scan, so no exact plan node is a grading contract."]} />
+
+## Performance question to investigate
+
+**EXPLAIN ANALYZE.** EXPLAIN estimates a plan; EXPLAIN ANALYZE executes a statement and records actual rows, time, and instrumentation. The cost units are planner estimates, not milliseconds.
+
+**Broken assumption:** The starter only requests an estimated plan. It cannot demonstrate actual execution, rows, and buffer activity.
+
+The purpose of performance engineering is not to collect more indexes or force a particular query-plan node. It is to establish the correctness of the result, define a representative workload, observe the measured behavior, then decide whether one carefully scoped change produces a sustainable benefit.
+
+This lesson uses a small synthetic multi-tenant task feed. Results can be inspected without a real account, production traffic or secrets. **It is a draft manuscript, not published course content.**
+
+## Mental model
+
+EXPLAIN estimates a plan; EXPLAIN ANALYZE executes a statement and records actual rows, time, and instrumentation. The cost units are planner estimates, not milliseconds.
+
+EXPLAIN ANALYZE executes statements. Only use SELECT against disposable data here; be cautious with DML. On a tiny teaching table PostgreSQL may correctly choose a sequential scan, so no exact plan node is a grading contract.
+
+Keep logical query correctness, physical access paths, and application-perceived latency as separate concerns. The planner may choose a sequential scan on a tiny table even when an appropriate index exists. It is incorrect to fail a lesson just because the exact node does not match a screenshot.
+
+## Before executing
+
+Complete **12.03.08**. Read `examples/postgresql-performance/fixture.sql` and `drafts/postgresql/labs/explain-analyze-evidence/`. The synthetic fixture contains alpha and beta projects and tasks with stable timestamps, an archived task, a deterministic ID tie-breaker and several statuses.
+
+**Evidence mode:** This is a measured/manual evidence lab. The normal SQL-contract runner does not execute this lesson or claim an automated performance success. You need a disposable local PostgreSQL 17+ instance for any real performance work.
+
+## Guided investigation
+
+<LessonStep number={1} title="Establish the unsafe or incomplete baseline" file="drafts/postgresql/labs/explain-analyze-evidence/starter.sql" expected="The starter only requests an estimated plan. It cannot demonstrate actual execution, rows, and buffer activity.">
+
+```sql
+EXPLAIN SELECT id,title FROM perf_tasks WHERE tenant_id='alpha' AND status='todo';
+```
+
+**Expected limitation:** The starter only requests an estimated plan. It cannot demonstrate actual execution, rows, and buffer activity. Explain whether the problem is a missing predicate, a wrong index definition, an expensive query pattern or missing runtime evidence. Distinguish real measurements from a prediction about likely performance.
+
+</LessonStep>
+
+<LessonStep number={2} title="Apply the hypothesis-driven repair" file="drafts/postgresql/labs/explain-analyze-evidence/solution.sql" expected="EXPLAIN estimates a plan; EXPLAIN ANALYZE executes a statement and records actual rows, time, and instrumentation. The cost units are planner estimates, not milliseconds.">
+
+```sql
+EXPLAIN (ANALYZE, BUFFERS, FORMAT JSON)
+SELECT id,title FROM perf_tasks WHERE tenant_id='alpha' AND status='todo';
+```
+
+**Reasoning:** EXPLAIN estimates a plan; EXPLAIN ANALYZE executes a statement and records actual rows, time, and instrumentation. The cost units are planner estimates, not milliseconds. Treat the repaired SQL as a hypothesis, not an automatically proven speedup. The final acceptance must still check correctness and the appropriate kind of evidence.
+
+</LessonStep>
+
+<LessonStep number={3} title="Capture repeatable evidence and negative boundaries" file="drafts/postgresql/labs/explain-analyze-evidence/acceptance.md" expected="Record database version, dataset cardinality, actual row count, buffers and latency for three runs. Explain estimated versus actual rows. Do not assert a performance win without a matched workload and measured baseline.">
+
+The acceptance checklist requires human-collected plan and/or operational measurements, which cannot be replaced by looking for text in a SQL file. Capture before/after evidence in the disposable environment.
+
+**Proof to collect:** Record database version, dataset cardinality, actual row count, buffers and latency for three runs. Explain estimated versus actual rows. Do not assert a performance win without a matched workload and measured baseline.
+
+**Caveat:** EXPLAIN ANALYZE executes statements. Only use SELECT against disposable data here; be cautious with DML. On a tiny teaching table PostgreSQL may correctly choose a sequential scan, so no exact plan node is a grading contract.
+
+</LessonStep>
+
+## Production trade-offs
+
+EXPLAIN estimates a plan; EXPLAIN ANALYZE executes a statement and records actual rows, time, and instrumentation. The cost units are planner estimates, not milliseconds.
+
+Record database version, dataset cardinality, actual row count, buffers and latency for three runs. Explain estimated versus actual rows. Do not assert a performance win without a matched workload and measured baseline.
+
+EXPLAIN ANALYZE executes statements. Only use SELECT against disposable data here; be cautious with DML. On a tiny teaching table PostgreSQL may correctly choose a sequential scan, so no exact plan node is a grading contract.
+
+When query execution moves into a real Next.js/NestJS application, measure request concurrency and database calls as well as SQL time. Remember that schema changes alter future write costs, vacuum work and storage. An index may improve a selective read but slow bulk inserts; a pooled connection may conserve memory but alter transaction/session semantics.
+
+## Bug Hunt
+
+1. Predict why the starter is incomplete: The starter only requests an estimated plan. It cannot demonstrate actual execution, rows, and buffer activity.
+2. Run it only against disposable local data and capture correctness first.
+3. Implement the repaired query, index, or maintenance action.
+4. Compare the appropriate evidence: Record database version, dataset cardinality, actual row count, buffers and latency for three runs. Explain estimated versus actual rows. Do not assert a performance win without a matched workload and measured baseline.
+5. Explain why the result does not remove this boundary: EXPLAIN ANALYZE executes statements. Only use SELECT against disposable data here; be cautious with DML. On a tiny teaching table PostgreSQL may correctly choose a sequential scan, so no exact plan node is a grading contract.
+
+<Misconception claim={"The starter only requests an estimated plan. It cannot demonstrate actual execution, rows, and buffer activity."} correction={"EXPLAIN estimates a plan; EXPLAIN ANALYZE executes a statement and records actual rows, time, and instrumentation. The cost units are planner estimates, not milliseconds."} />
+<KnowledgeCheck question={"Why might PostgreSQL choose a sequential scan even when an index exists?"} choices={["It has a bug by definition","A small table or unselective filter may make scanning cheaper","Indexes are never considered","EXPLAIN creates a new table"]} correctIndex={1} explanation={"EXPLAIN estimates a plan; EXPLAIN ANALYZE executes a statement and records actual rows, time, and instrumentation. The cost units are planner estimates, not milliseconds."} misconception={"EXPLAIN ANALYZE executes statements. Only use SELECT against disposable data here; be cautious with DML. On a tiny teaching table PostgreSQL may correctly choose a sequential scan, so no exact plan node is a grading contract."} lessonId="12.04.01" />
+
+## Challenge and review
+
+Imagine the same query executed from 12 API replicas against one shared database. Describe the expected p95 latency, memory pressure, index maintenance cost, and database connection budget. Which metrics would falsify your optimization? What tenant isolation and input validation would be needed before exposing the query as an API?
+
+**Release boundary:** A passing source audit does not count as a real query benchmark. This module requires explicit manual evidence; it cannot be promoted based on the automated SQL-contract subset. Human accessibility review and the full application release gate are separate.
+
+## Official references
+
+- [PostgreSQL reference — EXPLAIN ANALYZE](https://www.postgresql.org/docs/current/using-explain.html)
+- [Using EXPLAIN](https://www.postgresql.org/docs/current/using-explain.html)

@@ -1,0 +1,20 @@
+{
+  "id": "12.05.08",
+  "title": "Lab recover sample database",
+  "trackId": "12",
+  "moduleId": "12.05",
+  "labSlug": "recovery-capstone-drill",
+  "sourceStatus": "draft-unverified",
+  "runtimeQualification": "not-run",
+  "reviewStatus": "unreviewed",
+  "estimatedMinutes": 100,
+  "prerequisites": [
+    "12.05.07"
+  ],
+  "officialReferences": [
+    "https://www.postgresql.org/docs/current/app-pgrestore.html",
+    "https://www.postgresql.org/docs/current/backup.html"
+  ],
+  "evidenceMode": "manual-evidence",
+  "securityBoundary": "Never use production credentials or destructive `--clean` against an existing environment. The runbook is deliberately manual and cannot be auto-certified by a source scan or a backup filename."
+}

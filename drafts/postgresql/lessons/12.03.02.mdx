@@ -1,0 +1,96 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Workers should claim work atomically. FOR UPDATE SKIP LOCKED is useful for queue-like tasks because locked rows can be skipped by other consumers.","Reproduce and explain the negative SQL assertion before changing the solution.","This one-connection assertion only checks the claimed state, not actual competing workers or deadlock victim selection. Reproduce lock conflicts and retries in two independent sessions; keep transactions short and acquire locks in a consistent order."]} />
+
+## Problem and observable invariant
+
+**Locking and deadlocks.** Workers should claim work atomically. FOR UPDATE SKIP LOCKED is useful for queue-like tasks because locked rows can be skipped by other consumers.
+
+**Failure scenario:** The starter only selects a ready job; the job stays ready and another worker could pick the same ID.
+
+Imagine a multi-tenant SaaS application receiving two overlapping requests. The browser can be refreshed or closed between API calls, and another worker can operate on the same database rows. Correctness must be expressed in terms of the records that PostgreSQL allows to commit, not a successful HTTP response or a pleasant UI state.
+
+The acceptance contract in this module deliberately distinguishes two kinds of evidence: a **single-connection semantic SQL test**, which the included runner can verify, and a **true concurrent-session test**, which requires coordinated independent transactions. Never infer the latter from the former.
+
+## Mental model and vocabulary
+
+Workers should claim work atomically. FOR UPDATE SKIP LOCKED is useful for queue-like tasks because locked rows can be skipped by other consumers.
+
+This one-connection assertion only checks the claimed state, not actual competing workers or deadlock victim selection. Reproduce lock conflicts and retries in two independent sessions; keep transactions short and acquire locks in a consistent order.
+
+This is a working example of an *invariant*: a property that should continue to hold if the request is retried, a second process starts, the database is under load, or the same function is called from another API route. Describe the invariant in plain language and as a database result before writing code.
+
+## Starting state
+
+Complete **12.03.01** and inspect `examples/postgresql-transactions/fixture.sql`. The fixture uses alpha and beta tenants, wallet balances 10 and 2 for alpha, a small job queue, idempotency requests, and an audit-events table. All objects are PostgreSQL **temporary tables** in a disposable test transaction. The starter and solution each run against their own fresh fixture so red and green runs cannot contaminate each other.
+
+### Prediction
+
+The learner starter is expected to fail this module's named semantic assertion. Before executing, write which row, balance, key, or status changes incorrectly. Include at least one negative assertion. An exit code is not meaningful evidence if the failure is actually a missing table, SQL syntax error, or unavailable database.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the broken business contract" file="drafts/postgresql/labs/locking-queue-claims/starter.sql" expected="The starter only selects a ready job; the job stays ready and another worker could pick the same ID.">
+
+```sql
+CREATE TEMP TABLE lesson_claim AS
+SELECT id,status FROM training_jobs WHERE status='ready' ORDER BY id LIMIT 1;
+```
+
+**Diagnose:** The starter only selects a ready job; the job stays ready and another worker could pick the same ID. Read all predicates and row-count expectations. Which operations can be repeated? Which steps change shared state? What does a second writer observe while the first transaction is uncommitted?
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the corrected database operation" file="drafts/postgresql/labs/locking-queue-claims/solution.sql" expected="Workers should claim work atomically. FOR UPDATE SKIP LOCKED is useful for queue-like tasks because locked rows can be skipped by other consumers.">
+
+```sql
+UPDATE training_jobs SET status='running'
+WHERE id=(SELECT id FROM training_jobs WHERE status='ready' ORDER BY id FOR UPDATE SKIP LOCKED LIMIT 1);
+CREATE TEMP TABLE lesson_claim AS SELECT id,status FROM training_jobs WHERE status='running';
+```
+
+**Why this is safer:** Workers should claim work atomically. FOR UPDATE SKIP LOCKED is useful for queue-like tasks because locked rows can be skipped by other consumers. The repaired SQL is not presented as complete production application logic: callers still need authentication, object-level authorization, timeout/retry behavior and clear error mapping.
+
+</LessonStep>
+
+<LessonStep number={3} title="Prove the semantic contract and map the concurrency gap" file="drafts/postgresql/labs/locking-queue-claims/acceptance.sql" expected="Green SQL passes; red SQL fails the lesson's specific semantic assertion.">
+
+Open `drafts/postgresql/labs/locking-queue-claims/acceptance.sql` to review the exact `DO` checks. The real PostgreSQL runner must see the instructor pass and the starter fail with **12.03.02** in its SQL exception text. The runner starts a fresh session for each variant and issues `ROLLBACK` even for successful cases.
+
+**Scope warning:** This one-connection assertion only checks the claimed state, not actual competing workers or deadlock victim selection. Reproduce lock conflicts and retries in two independent sessions; keep transactions short and acquire locks in a consistent order. That additional evidence is not bundled into the single-session acceptance result. Record it separately on a trusted test server before marking this module runtime-qualified.
+
+</LessonStep>
+
+## Correctness, concurrency and failure modes
+
+Workers should claim work atomically. FOR UPDATE SKIP LOCKED is useful for queue-like tasks because locked rows can be skipped by other consumers.
+
+The starter only selects a ready job; the job stays ready and another worker could pick the same ID.
+
+This one-connection assertion only checks the claimed state, not actual competing workers or deadlock victim selection. Reproduce lock conflicts and retries in two independent sessions; keep transactions short and acquire locks in a consistent order.
+
+A useful production verification matrix varies input identity, tenant, the number of concurrent writers, repeated request keys and observed SQLSTATE outcomes. When a conflict occurs, the correct application behavior is usually to report it or retry the *whole* safe operation from a new snapshot—not to silently overwrite the last writer's state.
+
+## Bug Hunt
+
+1. Predict the specific broken state: The starter only selects a ready job; the job stays ready and another worker could pick the same ID.
+2. Run the starter in the disposable test fixture and capture the **named** acceptance failure.
+3. Apply the corrected SQL: Workers should claim work atomically. FOR UPDATE SKIP LOCKED is useful for queue-like tasks because locked rows can be skipped by other consumers.
+4. Re-run both variants and compare database state and result cardinality.
+5. Design the independent multi-session experiment needed to validate: This one-connection assertion only checks the claimed state, not actual competing workers or deadlock victim selection. Reproduce lock conflicts and retries in two independent sessions; keep transactions short and acquire locks in a consistent order.
+
+<Misconception claim={"The starter only selects a ready job; the job stays ready and another worker could pick the same ID."} correction={"Workers should claim work atomically. FOR UPDATE SKIP LOCKED is useful for queue-like tasks because locked rows can be skipped by other consumers."} />
+
+<KnowledgeCheck question={"What is the role of SKIP LOCKED in a worker claim?"} choices={["It authorizes any user","It skips rows currently locked by another transaction","It disables the transaction log","It deduplicates all future messages"]} correctIndex={1} explanation={"Workers should claim work atomically. FOR UPDATE SKIP LOCKED is useful for queue-like tasks because locked rows can be skipped by other consumers."} misconception={"This one-connection assertion only checks the claimed state, not actual competing workers or deadlock victim selection. Reproduce lock conflicts and retries in two independent sessions; keep transactions short and acquire locks in a consistent order."} lessonId="12.03.02" />
+
+## Practice extension and reflection
+
+Sketch an API endpoint that executes this query through one checked-out transaction connection. Include structured error handling for lock timeouts, unique-constraint errors, stale versions and aborted transactions, as applicable. State when retries are safe. If you put multiple statements into a transaction but the side effect crosses an external payment provider or message broker, use an outbox or idempotency strategy rather than claiming PostgreSQL can commit the remote system atomically.
+
+**Release boundary:** This material is a source-authored, unverified draft. It cannot be marked learner-complete or deployed as a hosted lab. A local `psql` run proves only the listed semantic tests, not the manual concurrency extension or human accessibility signoff.
+
+## Official references
+
+- [PostgreSQL official documentation — Locking and deadlocks](https://www.postgresql.org/docs/current/explicit-locking.html)
+- [Transactions tutorial](https://www.postgresql.org/docs/current/tutorial-transactions.html)

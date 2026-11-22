@@ -1,0 +1,1 @@
+ANALYZE perf_tasks;

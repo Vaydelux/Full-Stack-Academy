@@ -1,0 +1,97 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Streaming replicas may lag or disappear. Production read routing needs explicit consistency requirements, role monitoring, and a failover strategy.","On two disposable configured PostgreSQL servers, record primary and standby roles, sender/receiver status, WAL positions, observed replay lag and recovery behavior after an intentional safe failure.","An empty pg_stat_replication result on a standalone test server is not evidence of healthy replication. This module cannot auto-create a second PostgreSQL instance or prove failover safety."]} />
+
+## Operational problem
+
+**Replication and replicas.** Streaming replicas may lag or disappear. Production read routing needs explicit consistency requirements, role monitoring, and a failover strategy.
+
+**Common failure:** The starter checks whether the local server is in recovery but does not inspect sender/receiver status or whether a replica is actually caught up.
+
+Database operations differ from syntax tutorials: observing a configuration setting, successfully creating a backup file, and actually recovering an application are three distinct kinds of evidence. A successful command cannot prove availability, restoration, consistency, or acceptable recovery time without a controlled independent drill.
+
+This article is a **staged, unpublished manuscript**. The academy's learner-facing registry intentionally excludes it until the separate release and operator-review gates are satisfied.
+
+## Mental model and risk
+
+Streaming replicas may lag or disappear. Production read routing needs explicit consistency requirements, role monitoring, and a failover strategy.
+
+An empty pg_stat_replication result on a standalone test server is not evidence of healthy replication. This module cannot auto-create a second PostgreSQL instance or prove failover safety.
+
+A production-grade runbook needs a named responsible operator, target environment, prerequisite privileges, allowable downtime, credentials/secret-handling instructions, rollback/abort conditions and verifiable success evidence. Keep database tests isolated from the real application's data and users.
+
+## Preparation
+
+Complete **12.05.01**. Review the synthetic temporary-table dataset in `examples/postgresql-operations/fixture.sql`, then inspect `drafts/postgresql/labs/replica-observability/`. The starter and instructor snippets below are read-only or limited to the fixture's temporary table unless explicitly stated otherwise.
+
+**Qualification mode:** This lesson requires independent, manual operational evidence. No automated SQL runner is permitted to report full recovery/replication/security success for it.
+
+## Guided exercise
+
+<LessonStep number={1} title="Identify the unsafe assumption" file="drafts/postgresql/labs/replica-observability/starter.sql" expected="The starter checks whether the local server is in recovery but does not inspect sender/receiver status or whether a replica is actually caught up.">
+
+```sql
+SELECT pg_is_in_recovery() AS is_replica;
+```
+
+**What is missing?** The starter checks whether the local server is in recovery but does not inspect sender/receiver status or whether a replica is actually caught up. State why the observed source or output is insufficient evidence of operational readiness.
+
+</LessonStep>
+
+<LessonStep number={2} title="Inspect real state or implement a safe repair" file="drafts/postgresql/labs/replica-observability/solution.sql" expected="Streaming replicas may lag or disappear. Production read routing needs explicit consistency requirements, role monitoring, and a failover strategy.">
+
+```sql
+SELECT pg_is_in_recovery() AS is_replica;
+SELECT application_name,state,sync_state,write_lag,flush_lag,replay_lag FROM pg_stat_replication;
+SELECT status,received_lsn,latest_end_lsn FROM pg_stat_wal_receiver;
+```
+
+**Interpretation:** Streaming replicas may lag or disappear. Production read routing needs explicit consistency requirements, role monitoring, and a failover strategy. This command is illustrative and must be used only on authorized, isolated test infrastructure.
+
+</LessonStep>
+
+<LessonStep number={3} title="Capture release-quality verification evidence" file="drafts/postgresql/labs/replica-observability/acceptance.md" expected="On two disposable configured PostgreSQL servers, record primary and standby roles, sender/receiver status, WAL positions, observed replay lag and recovery behavior after an intentional safe failure.">
+
+Open the acceptance.md operator runbook. Execute the safe steps on dedicated test infrastructure; collect actual evidence and obtain reviewer signoff. Source parity is not a substitute for this exercise.
+
+**Proof checklist:** On two disposable configured PostgreSQL servers, record primary and standby roles, sender/receiver status, WAL positions, observed replay lag and recovery behavior after an intentional safe failure.
+
+**Safety boundary:** An empty pg_stat_replication result on a standalone test server is not evidence of healthy replication. This module cannot auto-create a second PostgreSQL instance or prove failover safety.
+
+</LessonStep>
+
+## Failure modes and recovery design
+
+Streaming replicas may lag or disappear. Production read routing needs explicit consistency requirements, role monitoring, and a failover strategy.
+
+The starter checks whether the local server is in recovery but does not inspect sender/receiver status or whether a replica is actually caught up.
+
+An empty pg_stat_replication result on a standalone test server is not evidence of healthy replication. This module cannot auto-create a second PostgreSQL instance or prove failover safety.
+
+Practice describing a failure in terms of its blast radius, detection signal and recovery path. What would happen if the database were unavailable during a migration, WAL archives were missing, a pooled connection lost session state, or an operator accidentally targeted production? Identify the prerequisite that would prevent or contain each failure.
+
+## Bug Hunt
+
+1. State the specific unsafe assumption: The starter checks whether the local server is in recovery but does not inspect sender/receiver status or whether a replica is actually caught up.
+2. Perform the non-destructive observation from the starter and explain its limits.
+3. Compare the corrected action: Streaming replicas may lag or disappear. Production read routing needs explicit consistency requirements, role monitoring, and a failover strategy.
+4. Capture evidence independently: On two disposable configured PostgreSQL servers, record primary and standby roles, sender/receiver status, WAL positions, observed replay lag and recovery behavior after an intentional safe failure.
+5. Write the abort condition and the safest fallback: An empty pg_stat_replication result on a standalone test server is not evidence of healthy replication. This module cannot auto-create a second PostgreSQL instance or prove failover safety.
+
+<Misconception claim={"The starter checks whether the local server is in recovery but does not inspect sender/receiver status or whether a replica is actually caught up."} correction={"Streaming replicas may lag or disappear. Production read routing needs explicit consistency requirements, role monitoring, and a failover strategy."} />
+
+<KnowledgeCheck question={"Does pg_is_in_recovery()=false prove a healthy streaming replica?"} choices={["Yes, always","No; it often identifies a primary and says nothing about replica lag","Yes, it measures RPO","No, because SQL cannot read server state"]} correctIndex={1} explanation={"Streaming replicas may lag or disappear. Production read routing needs explicit consistency requirements, role monitoring, and a failover strategy."} misconception={"An empty pg_stat_replication result on a standalone test server is not evidence of healthy replication. This module cannot auto-create a second PostgreSQL instance or prove failover safety."} lessonId="12.05.02" />
+
+## Practice extension
+
+Write an operational runbook that can be followed by a second developer who has never seen your environment. Specify the real host selector, approved test database name, least-privilege role, safety checks, expected output, cleanup, and an audit of what did or did not succeed.
+
+For backup/restore tasks, attach only sanitized non-sensitive evidence. Explain the distinction between a backup, a restore drill, and point-in-time recovery; none of those should be marked qualified from a source-only check. For permission work, test a denied operation as deliberately as a successful read.
+
+**Publication boundary:** This source pack remains unverified. It cannot be used to certify a live database, count a student lesson as complete, or trigger a Vercel deployment. Real PostgreSQL and human review are mandatory.
+
+## Official references
+
+- [PostgreSQL official reference — Replication and replicas](https://www.postgresql.org/docs/current/warm-standby.html)
+- [PostgreSQL Backup and Restore](https://www.postgresql.org/docs/current/backup.html)

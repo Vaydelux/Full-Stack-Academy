@@ -1,0 +1,97 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["A connection pooler mediates many application sessions over fewer backend connections. The right mode and pool size depend on transaction/session semantics, replica count, memory and operational headroom.","Document the number of app replicas, per-process pools, pooler mode, backend connection budget and load-test traces. Verify session features (temporary tables, LISTEN, prepared statements, advisory locks) against the chosen pooling mode.","A settings SELECT cannot establish PgBouncer configuration or throughput. Do not assume transaction pooling preserves session state. Pooler testing needs a separate running pooler and load generator."]} />
+
+## Operational problem
+
+**Connection pooler configuration.** A connection pooler mediates many application sessions over fewer backend connections. The right mode and pool size depend on transaction/session semantics, replica count, memory and operational headroom.
+
+**Common failure:** The starter reads a ceiling but ignores reserved connections and currently observed usage across workers and replicas.
+
+Database operations differ from syntax tutorials: observing a configuration setting, successfully creating a backup file, and actually recovering an application are three distinct kinds of evidence. A successful command cannot prove availability, restoration, consistency, or acceptable recovery time without a controlled independent drill.
+
+This article is a **staged, unpublished manuscript**. The academy's learner-facing registry intentionally excludes it until the separate release and operator-review gates are satisfied.
+
+## Mental model and risk
+
+A connection pooler mediates many application sessions over fewer backend connections. The right mode and pool size depend on transaction/session semantics, replica count, memory and operational headroom.
+
+A settings SELECT cannot establish PgBouncer configuration or throughput. Do not assume transaction pooling preserves session state. Pooler testing needs a separate running pooler and load generator.
+
+A production-grade runbook needs a named responsible operator, target environment, prerequisite privileges, allowable downtime, credentials/secret-handling instructions, rollback/abort conditions and verifiable success evidence. Keep database tests isolated from the real application's data and users.
+
+## Preparation
+
+Complete **12.05.05**. Review the synthetic temporary-table dataset in `examples/postgresql-operations/fixture.sql`, then inspect `drafts/postgresql/labs/pooler-capacity-plan/`. The starter and instructor snippets below are read-only or limited to the fixture's temporary table unless explicitly stated otherwise.
+
+**Qualification mode:** This lesson requires independent, manual operational evidence. No automated SQL runner is permitted to report full recovery/replication/security success for it.
+
+## Guided exercise
+
+<LessonStep number={1} title="Identify the unsafe assumption" file="drafts/postgresql/labs/pooler-capacity-plan/starter.sql" expected="The starter reads a ceiling but ignores reserved connections and currently observed usage across workers and replicas.">
+
+```sql
+SELECT current_setting('max_connections') AS max_connections;
+```
+
+**What is missing?** The starter reads a ceiling but ignores reserved connections and currently observed usage across workers and replicas. State why the observed source or output is insufficient evidence of operational readiness.
+
+</LessonStep>
+
+<LessonStep number={2} title="Inspect real state or implement a safe repair" file="drafts/postgresql/labs/pooler-capacity-plan/solution.sql" expected="A connection pooler mediates many application sessions over fewer backend connections. The right mode and pool size depend on transaction/session semantics, replica count, memory and operational headroom.">
+
+```sql
+SELECT current_setting('max_connections')::int AS max_connections,
+       current_setting('superuser_reserved_connections')::int AS reserved_connections,
+       (SELECT count(*) FROM pg_stat_activity) AS observed_connections;
+```
+
+**Interpretation:** A connection pooler mediates many application sessions over fewer backend connections. The right mode and pool size depend on transaction/session semantics, replica count, memory and operational headroom. This command is illustrative and must be used only on authorized, isolated test infrastructure.
+
+</LessonStep>
+
+<LessonStep number={3} title="Capture release-quality verification evidence" file="drafts/postgresql/labs/pooler-capacity-plan/acceptance.md" expected="Document the number of app replicas, per-process pools, pooler mode, backend connection budget and load-test traces. Verify session features (temporary tables, LISTEN, prepared statements, advisory locks) against the chosen pooling mode.">
+
+Open the acceptance.md operator runbook. Execute the safe steps on dedicated test infrastructure; collect actual evidence and obtain reviewer signoff. Source parity is not a substitute for this exercise.
+
+**Proof checklist:** Document the number of app replicas, per-process pools, pooler mode, backend connection budget and load-test traces. Verify session features (temporary tables, LISTEN, prepared statements, advisory locks) against the chosen pooling mode.
+
+**Safety boundary:** A settings SELECT cannot establish PgBouncer configuration or throughput. Do not assume transaction pooling preserves session state. Pooler testing needs a separate running pooler and load generator.
+
+</LessonStep>
+
+## Failure modes and recovery design
+
+A connection pooler mediates many application sessions over fewer backend connections. The right mode and pool size depend on transaction/session semantics, replica count, memory and operational headroom.
+
+The starter reads a ceiling but ignores reserved connections and currently observed usage across workers and replicas.
+
+A settings SELECT cannot establish PgBouncer configuration or throughput. Do not assume transaction pooling preserves session state. Pooler testing needs a separate running pooler and load generator.
+
+Practice describing a failure in terms of its blast radius, detection signal and recovery path. What would happen if the database were unavailable during a migration, WAL archives were missing, a pooled connection lost session state, or an operator accidentally targeted production? Identify the prerequisite that would prevent or contain each failure.
+
+## Bug Hunt
+
+1. State the specific unsafe assumption: The starter reads a ceiling but ignores reserved connections and currently observed usage across workers and replicas.
+2. Perform the non-destructive observation from the starter and explain its limits.
+3. Compare the corrected action: A connection pooler mediates many application sessions over fewer backend connections. The right mode and pool size depend on transaction/session semantics, replica count, memory and operational headroom.
+4. Capture evidence independently: Document the number of app replicas, per-process pools, pooler mode, backend connection budget and load-test traces. Verify session features (temporary tables, LISTEN, prepared statements, advisory locks) against the chosen pooling mode.
+5. Write the abort condition and the safest fallback: A settings SELECT cannot establish PgBouncer configuration or throughput. Do not assume transaction pooling preserves session state. Pooler testing needs a separate running pooler and load generator.
+
+<Misconception claim={"The starter reads a ceiling but ignores reserved connections and currently observed usage across workers and replicas."} correction={"A connection pooler mediates many application sessions over fewer backend connections. The right mode and pool size depend on transaction/session semantics, replica count, memory and operational headroom."} />
+
+<KnowledgeCheck question={"What is a common risk of transaction pooling?"} choices={["Queries cannot use indexes","Session-affine features may not survive reassignment across backend sessions","It always creates infinite backend connections","It disables PostgreSQL ACID"]} correctIndex={1} explanation={"A connection pooler mediates many application sessions over fewer backend connections. The right mode and pool size depend on transaction/session semantics, replica count, memory and operational headroom."} misconception={"A settings SELECT cannot establish PgBouncer configuration or throughput. Do not assume transaction pooling preserves session state. Pooler testing needs a separate running pooler and load generator."} lessonId="12.05.06" />
+
+## Practice extension
+
+Write an operational runbook that can be followed by a second developer who has never seen your environment. Specify the real host selector, approved test database name, least-privilege role, safety checks, expected output, cleanup, and an audit of what did or did not succeed.
+
+For backup/restore tasks, attach only sanitized non-sensitive evidence. Explain the distinction between a backup, a restore drill, and point-in-time recovery; none of those should be marked qualified from a source-only check. For permission work, test a denied operation as deliberately as a successful read.
+
+**Publication boundary:** This source pack remains unverified. It cannot be used to certify a live database, count a student lesson as complete, or trigger a Vercel deployment. Real PostgreSQL and human review are mandatory.
+
+## Official references
+
+- [PostgreSQL official reference — Connection pooler configuration](https://www.postgresql.org/docs/current/runtime-config-connection.html)
+- [PostgreSQL Backup and Restore](https://www.postgresql.org/docs/current/backup.html)

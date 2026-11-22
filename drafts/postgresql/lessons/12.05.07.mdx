@@ -1,0 +1,99 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["A backup is useful only if a separate restore is successful and its content and permissions are verified. Record timing, checksum, ownership, schema version and application compatibility.","Create a non-temporary sample table in a disposable academy_test database, perform pg_dump -Fc, restore into a new database named academy_test_restore, compare deterministic hashes and role/extension compatibility, then destroy the disposable target.","The temporary fixture used for source examples is intentionally not a valid pg_dump restore artifact. A real restore drill requires two dedicated, non-production databases and manual authorization; the source scanner cannot certify it."]} />
+
+## Operational problem
+
+**Restore drills.** A backup is useful only if a separate restore is successful and its content and permissions are verified. Record timing, checksum, ownership, schema version and application compatibility.
+
+**Common failure:** The starter records only row count from the original database and never tests recovery into an isolated target.
+
+Database operations differ from syntax tutorials: observing a configuration setting, successfully creating a backup file, and actually recovering an application are three distinct kinds of evidence. A successful command cannot prove availability, restoration, consistency, or acceptable recovery time without a controlled independent drill.
+
+This article is a **staged, unpublished manuscript**. The academy's learner-facing registry intentionally excludes it until the separate release and operator-review gates are satisfied.
+
+## Mental model and risk
+
+A backup is useful only if a separate restore is successful and its content and permissions are verified. Record timing, checksum, ownership, schema version and application compatibility.
+
+The temporary fixture used for source examples is intentionally not a valid pg_dump restore artifact. A real restore drill requires two dedicated, non-production databases and manual authorization; the source scanner cannot certify it.
+
+A production-grade runbook needs a named responsible operator, target environment, prerequisite privileges, allowable downtime, credentials/secret-handling instructions, rollback/abort conditions and verifiable success evidence. Keep database tests isolated from the real application's data and users.
+
+## Preparation
+
+Complete **12.05.06**. Review the synthetic temporary-table dataset in `examples/postgresql-operations/fixture.sql`, then inspect `drafts/postgresql/labs/restore-drill-evidence/`. The starter and instructor snippets below are read-only or limited to the fixture's temporary table unless explicitly stated otherwise.
+
+**Qualification mode:** This lesson requires independent, manual operational evidence. No automated SQL runner is permitted to report full recovery/replication/security success for it.
+
+## Guided exercise
+
+<LessonStep number={1} title="Identify the unsafe assumption" file="drafts/postgresql/labs/restore-drill-evidence/starter.sql" expected="The starter records only row count from the original database and never tests recovery into an isolated target.">
+
+```sql
+SELECT count(*) AS records_before FROM ops_tasks;
+```
+
+**What is missing?** The starter records only row count from the original database and never tests recovery into an isolated target. State why the observed source or output is insufficient evidence of operational readiness.
+
+</LessonStep>
+
+<LessonStep number={2} title="Inspect real state or implement a safe repair" file="drafts/postgresql/labs/restore-drill-evidence/solution.sql" expected="A backup is useful only if a separate restore is successful and its content and permissions are verified. Record timing, checksum, ownership, schema version and application compatibility.">
+
+```sql
+SELECT count(*) AS records_before,
+       md5(string_agg(id::text || ':' || state, '|' ORDER BY id)) AS before_checksum
+FROM ops_tasks;
+```
+
+**Interpretation:** A backup is useful only if a separate restore is successful and its content and permissions are verified. Record timing, checksum, ownership, schema version and application compatibility. This command is illustrative and must be used only on authorized, isolated test infrastructure.
+
+</LessonStep>
+
+<LessonStep number={3} title="Capture release-quality verification evidence" file="drafts/postgresql/labs/restore-drill-evidence/acceptance.md" expected="Create a non-temporary sample table in a disposable academy_test database, perform pg_dump -Fc, restore into a new database named academy_test_restore, compare deterministic hashes and role/extension compatibility, then destroy the disposable target.">
+
+Open the acceptance.md operator runbook. Execute the safe steps on dedicated test infrastructure; collect actual evidence and obtain reviewer signoff. Source parity is not a substitute for this exercise.
+
+**Proof checklist:** Create a non-temporary sample table in a disposable academy_test database, perform pg_dump -Fc, restore into a new database named academy_test_restore, compare deterministic hashes and role/extension compatibility, then destroy the disposable target.
+
+**Safety boundary:** The temporary fixture used for source examples is intentionally not a valid pg_dump restore artifact. A real restore drill requires two dedicated, non-production databases and manual authorization; the source scanner cannot certify it.
+
+</LessonStep>
+
+## Failure modes and recovery design
+
+A backup is useful only if a separate restore is successful and its content and permissions are verified. Record timing, checksum, ownership, schema version and application compatibility.
+
+The starter records only row count from the original database and never tests recovery into an isolated target.
+
+The temporary fixture used for source examples is intentionally not a valid pg_dump restore artifact. A real restore drill requires two dedicated, non-production databases and manual authorization; the source scanner cannot certify it.
+
+Practice describing a failure in terms of its blast radius, detection signal and recovery path. What would happen if the database were unavailable during a migration, WAL archives were missing, a pooled connection lost session state, or an operator accidentally targeted production? Identify the prerequisite that would prevent or contain each failure.
+
+## Bug Hunt
+
+1. State the specific unsafe assumption: The starter records only row count from the original database and never tests recovery into an isolated target.
+2. Perform the non-destructive observation from the starter and explain its limits.
+3. Compare the corrected action: A backup is useful only if a separate restore is successful and its content and permissions are verified. Record timing, checksum, ownership, schema version and application compatibility.
+4. Capture evidence independently: Create a non-temporary sample table in a disposable academy_test database, perform pg_dump -Fc, restore into a new database named academy_test_restore, compare deterministic hashes and role/extension compatibility, then destroy the disposable target.
+5. Write the abort condition and the safest fallback: The temporary fixture used for source examples is intentionally not a valid pg_dump restore artifact. A real restore drill requires two dedicated, non-production databases and manual authorization; the source scanner cannot certify it.
+
+<Misconception claim={"The starter records only row count from the original database and never tests recovery into an isolated target."} correction={"A backup is useful only if a separate restore is successful and its content and permissions are verified. Record timing, checksum, ownership, schema version and application compatibility."} />
+
+<KnowledgeCheck question={"What turns a backup file into verified recovery evidence?"} choices={["Its .dump file extension","A successful isolated restore and data/integrity verification","An unchecked file size","A green SQL syntax test"]} correctIndex={1} explanation={"A backup is useful only if a separate restore is successful and its content and permissions are verified. Record timing, checksum, ownership, schema version and application compatibility."} misconception={"The temporary fixture used for source examples is intentionally not a valid pg_dump restore artifact. A real restore drill requires two dedicated, non-production databases and manual authorization; the source scanner cannot certify it."} lessonId="12.05.07" />
+
+**Integrity distinction:** The SQL `md5(string_agg(...))` snippet is only a quick educational row-comparison fingerprint. MD5 is not collision-resistant and cannot authenticate a backup. For a serious restore drill, use a cryptographic file checksum such as SHA-256, verify schema and role ownership, compare independently generated application invariants, and retain sanitized signed evidence where the threat model requires it.
+
+## Practice extension
+
+Write an operational runbook that can be followed by a second developer who has never seen your environment. Specify the real host selector, approved test database name, least-privilege role, safety checks, expected output, cleanup, and an audit of what did or did not succeed.
+
+For backup/restore tasks, attach only sanitized non-sensitive evidence. Explain the distinction between a backup, a restore drill, and point-in-time recovery; none of those should be marked qualified from a source-only check. For permission work, test a denied operation as deliberately as a successful read.
+
+**Publication boundary:** This source pack remains unverified. It cannot be used to certify a live database, count a student lesson as complete, or trigger a Vercel deployment. Real PostgreSQL and human review are mandatory.
+
+## Official references
+
+- [PostgreSQL official reference — Restore drills](https://www.postgresql.org/docs/current/backup-dump.html)
+- [PostgreSQL Backup and Restore](https://www.postgresql.org/docs/current/backup.html)

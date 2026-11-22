@@ -1,0 +1,15 @@
+{
+  "id": "draft.postgresql.recovery-capstone-drill",
+  "lessonId": "12.05.08",
+  "title": "Lab recover sample database",
+  "sourceStatus": "draft-unverified",
+  "runtimeQualification": "not-run",
+  "readyToPublish": false,
+  "qualificationKind": "manual-evidence",
+  "fixture": "examples/postgresql-operations/fixture.sql",
+  "starter": "drafts/postgresql/labs/recovery-capstone-drill/starter.sql",
+  "solution": "drafts/postgresql/labs/recovery-capstone-drill/solution.sql",
+  "acceptanceDoc": "drafts/postgresql/labs/recovery-capstone-drill/acceptance.md",
+  "requiresOperationalReview": true,
+  "reference": "https://www.postgresql.org/docs/current/app-pgrestore.html"
+}

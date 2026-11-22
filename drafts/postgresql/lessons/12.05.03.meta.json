@@ -1,0 +1,20 @@
+{
+  "id": "12.05.03",
+  "title": "Schema migration safety",
+  "trackId": "12",
+  "moduleId": "12.05",
+  "labSlug": "expand-backfill-contract",
+  "sourceStatus": "draft-unverified",
+  "runtimeQualification": "not-run",
+  "reviewStatus": "unreviewed",
+  "estimatedMinutes": 65,
+  "prerequisites": [
+    "12.05.02"
+  ],
+  "officialReferences": [
+    "https://www.postgresql.org/docs/current/ddl-alter.html",
+    "https://www.postgresql.org/docs/current/backup.html"
+  ],
+  "evidenceMode": "sql-contract",
+  "securityBoundary": "A tiny temporary-table success does not qualify a production migration: on large tables lock duration, transaction size, replication lag, deployment ordering and rollback strategy require independent evaluation."
+}

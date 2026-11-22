@@ -1,0 +1,19 @@
+{
+  "id": "12.03.07",
+  "title": "Transaction boundaries",
+  "trackId": "12",
+  "moduleId": "12.03",
+  "labSlug": "ledger-boundary",
+  "sourceStatus": "draft-unverified",
+  "reviewStatus": "unreviewed",
+  "runtimeQualification": "not-run",
+  "estimatedMinutes": 60,
+  "prerequisites": [
+    "12.03.06"
+  ],
+  "officialReferences": [
+    "https://www.postgresql.org/docs/current/tutorial-transactions.html",
+    "https://www.postgresql.org/docs/current/tutorial-transactions.html"
+  ],
+  "securityBoundary": "The SQL runner wraps all three statements in one transaction, but does not prove rollback under a simulated write failure. Add deliberate failure injection and verify the audit row and both balances roll back on the same checked-out database connection."
+}

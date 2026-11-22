@@ -1,0 +1,15 @@
+{
+  "id": "draft.postgresql.database-environment-identity",
+  "lessonId": "12.05.04",
+  "title": "Environment isolation",
+  "sourceStatus": "draft-unverified",
+  "runtimeQualification": "not-run",
+  "readyToPublish": false,
+  "qualificationKind": "sql-contract",
+  "fixture": "examples/postgresql-operations/fixture.sql",
+  "starter": "drafts/postgresql/labs/database-environment-identity/starter.sql",
+  "solution": "drafts/postgresql/labs/database-environment-identity/solution.sql",
+  "acceptance": "drafts/postgresql/labs/database-environment-identity/acceptance.sql",
+  "requiresOperationalReview": true,
+  "reference": "https://www.postgresql.org/docs/current/functions-info.html"
+}

@@ -1,0 +1,15 @@
+{
+  "id": "draft.postgresql.mvcc-tuple-identity",
+  "lessonId": "12.03.03",
+  "title": "MVCC",
+  "sourceStatus": "draft-unverified",
+  "runtimeQualification": "not-run",
+  "readyToPublish": false,
+  "qualificationKind": "single-session-sql-semantics",
+  "requiresSeparateConcurrencyReview": true,
+  "fixture": "examples/postgresql-transactions/fixture.sql",
+  "starter": "drafts/postgresql/labs/mvcc-tuple-identity/starter.sql",
+  "solution": "drafts/postgresql/labs/mvcc-tuple-identity/solution.sql",
+  "acceptance": "drafts/postgresql/labs/mvcc-tuple-identity/acceptance.sql",
+  "reference": "https://www.postgresql.org/docs/current/mvcc-intro.html"
+}

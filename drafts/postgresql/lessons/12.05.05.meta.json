@@ -1,0 +1,20 @@
+{
+  "id": "12.05.05",
+  "title": "Roles and least privilege",
+  "trackId": "12",
+  "moduleId": "12.05",
+  "labSlug": "least-privilege-roles",
+  "sourceStatus": "draft-unverified",
+  "runtimeQualification": "not-run",
+  "reviewStatus": "unreviewed",
+  "estimatedMinutes": 65,
+  "prerequisites": [
+    "12.05.04"
+  ],
+  "officialReferences": [
+    "https://www.postgresql.org/docs/current/user-manag.html",
+    "https://www.postgresql.org/docs/current/backup.html"
+  ],
+  "evidenceMode": "manual-evidence",
+  "securityBoundary": "SELECT from pg_roles is read-only metadata inspection, not a privilege grant or a complete access audit. Creating test roles and exercising denial paths requires an isolated DBA-controlled lab."
+}

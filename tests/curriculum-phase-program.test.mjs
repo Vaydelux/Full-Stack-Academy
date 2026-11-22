@@ -115,8 +115,13 @@ test('staged modules remain accurately tracked during draft-to-published transit
  const p3=current.phases.find(p=>p.id==='P3');
  assert.deepEqual(p1.modules.map(m=>m.published+m.staged),[8,8]);
  assert.deepEqual(p2.modules.map(m=>m.published+m.staged),[8,8,8,8]);
- assert.deepEqual(p3.modules.filter(m=>['12.01','12.02'].includes(m.id))
-  .map(m=>[m.id,m.published+m.staged]),[['12.01',8],['12.02',8]]);
+ assert.deepEqual(p3.modules.filter(m=>m.staged>0)
+  .map(m=>[m.id,m.published+m.staged]),
+  [['12.01',8],['12.02',8],['12.03',8],['12.04',8],['12.05',8]]);
+ assert.equal(current.baseline.published,338);
+ assert.equal(current.baseline.staged,88);
+ assert.equal(current.baseline.unstaged,463);
+ assert.equal(p3.staged,40);
  assert.equal(current.baseline.published+current.baseline.staged+current.baseline.unstaged,
   current.baseline.topics);
  assert.equal(current.baseline.topics,889);

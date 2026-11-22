@@ -1,0 +1,20 @@
+{
+  "id": "12.04.08",
+  "trackId": "12",
+  "moduleId": "12.04",
+  "title": "Lab profile slow query",
+  "labSlug": "profile-slow-query",
+  "sourceStatus": "draft-unverified",
+  "reviewStatus": "unreviewed",
+  "runtimeQualification": "not-run",
+  "estimatedMinutes": 95,
+  "prerequisites": [
+    "12.04.07"
+  ],
+  "officialReferences": [
+    "https://www.postgresql.org/docs/current/using-explain.html",
+    "https://www.postgresql.org/docs/current/using-explain.html"
+  ],
+  "evidenceMode": "manual-evidence",
+  "securityBoundary": "A nine-row fixture is too small to establish an index advantage. Recreate this comparison on a sufficiently large disposable dataset; consider cache warming and write amplification, and do not force a plan to fabricate a speedup."
+}

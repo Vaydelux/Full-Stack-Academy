@@ -1,0 +1,15 @@
+{
+  "id": "draft.postgresql.concurrent-lost-update-lab",
+  "lessonId": "12.03.08",
+  "title": "Lab concurrent update simulation",
+  "sourceStatus": "draft-unverified",
+  "runtimeQualification": "not-run",
+  "readyToPublish": false,
+  "qualificationKind": "single-session-sql-semantics",
+  "requiresSeparateConcurrencyReview": true,
+  "fixture": "examples/postgresql-transactions/fixture.sql",
+  "starter": "drafts/postgresql/labs/concurrent-lost-update-lab/starter.sql",
+  "solution": "drafts/postgresql/labs/concurrent-lost-update-lab/solution.sql",
+  "acceptance": "drafts/postgresql/labs/concurrent-lost-update-lab/acceptance.sql",
+  "reference": "https://www.postgresql.org/docs/current/transaction-iso.html"
+}

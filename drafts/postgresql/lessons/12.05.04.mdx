@@ -1,0 +1,95 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Environment identity must come from the actual connection, not hardcoded configuration claims. Test databases need independent credentials, names, permissions, and retention policies.","Compare the actual current_database and current_user with the application configuration. The runner must refuse remote hosts and non-academy_test database names before any SQL is issued.","This is a connection-identity sanity test, not proof of network isolation, secrets separation, firewall policy or absence of cross-environment credentials. Independently inspect infrastructure settings."]} />
+
+## Operational problem
+
+**Environment isolation.** Environment identity must come from the actual connection, not hardcoded configuration claims. Test databases need independent credentials, names, permissions, and retention policies.
+
+**Common failure:** The starter labels every connection as production/admin regardless of the actual database or active role.
+
+Database operations differ from syntax tutorials: observing a configuration setting, successfully creating a backup file, and actually recovering an application are three distinct kinds of evidence. A successful command cannot prove availability, restoration, consistency, or acceptable recovery time without a controlled independent drill.
+
+This article is a **staged, unpublished manuscript**. The academy's learner-facing registry intentionally excludes it until the separate release and operator-review gates are satisfied.
+
+## Mental model and risk
+
+Environment identity must come from the actual connection, not hardcoded configuration claims. Test databases need independent credentials, names, permissions, and retention policies.
+
+This is a connection-identity sanity test, not proof of network isolation, secrets separation, firewall policy or absence of cross-environment credentials. Independently inspect infrastructure settings.
+
+A production-grade runbook needs a named responsible operator, target environment, prerequisite privileges, allowable downtime, credentials/secret-handling instructions, rollback/abort conditions and verifiable success evidence. Keep database tests isolated from the real application's data and users.
+
+## Preparation
+
+Complete **12.05.03**. Review the synthetic temporary-table dataset in `examples/postgresql-operations/fixture.sql`, then inspect `drafts/postgresql/labs/database-environment-identity/`. The starter and instructor snippets below are read-only or limited to the fixture's temporary table unless explicitly stated otherwise.
+
+**Qualification mode:** The SQL behavior has a named real PostgreSQL semantic acceptance assertion. This does not certify the entire production operations procedure.
+
+## Guided exercise
+
+<LessonStep number={1} title="Identify the unsafe assumption" file="drafts/postgresql/labs/database-environment-identity/starter.sql" expected="The starter labels every connection as production/admin regardless of the actual database or active role.">
+
+```sql
+CREATE TEMP VIEW lesson_environment AS SELECT 'production'::text AS database_name,'admin'::text AS connected_role;
+```
+
+**What is missing?** The starter labels every connection as production/admin regardless of the actual database or active role. State why the observed source or output is insufficient evidence of operational readiness.
+
+</LessonStep>
+
+<LessonStep number={2} title="Inspect real state or implement a safe repair" file="drafts/postgresql/labs/database-environment-identity/solution.sql" expected="Environment identity must come from the actual connection, not hardcoded configuration claims. Test databases need independent credentials, names, permissions, and retention policies.">
+
+```sql
+CREATE TEMP VIEW lesson_environment AS SELECT current_database()::text AS database_name,current_user::text AS connected_role;
+```
+
+**Interpretation:** Environment identity must come from the actual connection, not hardcoded configuration claims. Test databases need independent credentials, names, permissions, and retention policies. This command is illustrative and must be used only on authorized, isolated test infrastructure.
+
+</LessonStep>
+
+<LessonStep number={3} title="Capture release-quality verification evidence" file="drafts/postgresql/labs/database-environment-identity/acceptance.sql" expected="Compare the actual current_database and current_user with the application configuration. The runner must refuse remote hosts and non-academy_test database names before any SQL is issued.">
+
+Execute the named semantic SQL acceptance against the fixture using a dedicated loopback test database. The runner requires a green instructor outcome and a red starter failure with the exact lesson ID.
+
+**Proof checklist:** Compare the actual current_database and current_user with the application configuration. The runner must refuse remote hosts and non-academy_test database names before any SQL is issued.
+
+**Safety boundary:** This is a connection-identity sanity test, not proof of network isolation, secrets separation, firewall policy or absence of cross-environment credentials. Independently inspect infrastructure settings.
+
+</LessonStep>
+
+## Failure modes and recovery design
+
+Environment identity must come from the actual connection, not hardcoded configuration claims. Test databases need independent credentials, names, permissions, and retention policies.
+
+The starter labels every connection as production/admin regardless of the actual database or active role.
+
+This is a connection-identity sanity test, not proof of network isolation, secrets separation, firewall policy or absence of cross-environment credentials. Independently inspect infrastructure settings.
+
+Practice describing a failure in terms of its blast radius, detection signal and recovery path. What would happen if the database were unavailable during a migration, WAL archives were missing, a pooled connection lost session state, or an operator accidentally targeted production? Identify the prerequisite that would prevent or contain each failure.
+
+## Bug Hunt
+
+1. State the specific unsafe assumption: The starter labels every connection as production/admin regardless of the actual database or active role.
+2. Perform the non-destructive observation from the starter and explain its limits.
+3. Compare the corrected action: Environment identity must come from the actual connection, not hardcoded configuration claims. Test databases need independent credentials, names, permissions, and retention policies.
+4. Capture evidence independently: Compare the actual current_database and current_user with the application configuration. The runner must refuse remote hosts and non-academy_test database names before any SQL is issued.
+5. Write the abort condition and the safest fallback: This is a connection-identity sanity test, not proof of network isolation, secrets separation, firewall policy or absence of cross-environment credentials. Independently inspect infrastructure settings.
+
+<Misconception claim={"The starter labels every connection as production/admin regardless of the actual database or active role."} correction={"Environment identity must come from the actual connection, not hardcoded configuration claims. Test databases need independent credentials, names, permissions, and retention policies."} />
+
+<KnowledgeCheck question={"Which source proves which database a live session is connected to?"} choices={["A hardcoded environment label","current_database() from that session","The frontend theme","An unrelated `.env.example`"]} correctIndex={1} explanation={"Environment identity must come from the actual connection, not hardcoded configuration claims. Test databases need independent credentials, names, permissions, and retention policies."} misconception={"This is a connection-identity sanity test, not proof of network isolation, secrets separation, firewall policy or absence of cross-environment credentials. Independently inspect infrastructure settings."} lessonId="12.05.04" />
+
+## Practice extension
+
+Write an operational runbook that can be followed by a second developer who has never seen your environment. Specify the real host selector, approved test database name, least-privilege role, safety checks, expected output, cleanup, and an audit of what did or did not succeed.
+
+For backup/restore tasks, attach only sanitized non-sensitive evidence. Explain the distinction between a backup, a restore drill, and point-in-time recovery; none of those should be marked qualified from a source-only check. For permission work, test a denied operation as deliberately as a successful read.
+
+**Publication boundary:** This source pack remains unverified. It cannot be used to certify a live database, count a student lesson as complete, or trigger a Vercel deployment. Real PostgreSQL and human review are mandatory.
+
+## Official references
+
+- [PostgreSQL official reference — Environment isolation](https://www.postgresql.org/docs/current/functions-info.html)
+- [PostgreSQL Backup and Restore](https://www.postgresql.org/docs/current/backup.html)

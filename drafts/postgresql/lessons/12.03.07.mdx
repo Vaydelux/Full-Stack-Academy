@@ -1,0 +1,96 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["A business operation may include a state update and an audit record; both must be part of one database transaction or recovered coherently.","Reproduce and explain the negative SQL assertion before changing the solution.","The SQL runner wraps all three statements in one transaction, but does not prove rollback under a simulated write failure. Add deliberate failure injection and verify the audit row and both balances roll back on the same checked-out database connection."]} />
+
+## Problem and observable invariant
+
+**Transaction boundaries.** A business operation may include a state update and an audit record; both must be part of one database transaction or recovered coherently.
+
+**Failure scenario:** The starter moves wallet units but skips the required audit event, leaving no durable record of the operation.
+
+Imagine a multi-tenant SaaS application receiving two overlapping requests. The browser can be refreshed or closed between API calls, and another worker can operate on the same database rows. Correctness must be expressed in terms of the records that PostgreSQL allows to commit, not a successful HTTP response or a pleasant UI state.
+
+The acceptance contract in this module deliberately distinguishes two kinds of evidence: a **single-connection semantic SQL test**, which the included runner can verify, and a **true concurrent-session test**, which requires coordinated independent transactions. Never infer the latter from the former.
+
+## Mental model and vocabulary
+
+A business operation may include a state update and an audit record; both must be part of one database transaction or recovered coherently.
+
+The SQL runner wraps all three statements in one transaction, but does not prove rollback under a simulated write failure. Add deliberate failure injection and verify the audit row and both balances roll back on the same checked-out database connection.
+
+This is a working example of an *invariant*: a property that should continue to hold if the request is retried, a second process starts, the database is under load, or the same function is called from another API route. Describe the invariant in plain language and as a database result before writing code.
+
+## Starting state
+
+Complete **12.03.06** and inspect `examples/postgresql-transactions/fixture.sql`. The fixture uses alpha and beta tenants, wallet balances 10 and 2 for alpha, a small job queue, idempotency requests, and an audit-events table. All objects are PostgreSQL **temporary tables** in a disposable test transaction. The starter and solution each run against their own fresh fixture so red and green runs cannot contaminate each other.
+
+### Prediction
+
+The learner starter is expected to fail this module's named semantic assertion. Before executing, write which row, balance, key, or status changes incorrectly. Include at least one negative assertion. An exit code is not meaningful evidence if the failure is actually a missing table, SQL syntax error, or unavailable database.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the broken business contract" file="drafts/postgresql/labs/ledger-boundary/starter.sql" expected="The starter moves wallet units but skips the required audit event, leaving no durable record of the operation.">
+
+```sql
+UPDATE training_wallets SET balance=balance-2 WHERE tenant_id='alpha' AND id='A';
+UPDATE training_wallets SET balance=balance+2 WHERE tenant_id='alpha' AND id='B';
+```
+
+**Diagnose:** The starter moves wallet units but skips the required audit event, leaving no durable record of the operation. Read all predicates and row-count expectations. Which operations can be repeated? Which steps change shared state? What does a second writer observe while the first transaction is uncommitted?
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the corrected database operation" file="drafts/postgresql/labs/ledger-boundary/solution.sql" expected="A business operation may include a state update and an audit record; both must be part of one database transaction or recovered coherently.">
+
+```sql
+UPDATE training_wallets SET balance=balance-2 WHERE tenant_id='alpha' AND id='A';
+UPDATE training_wallets SET balance=balance+2 WHERE tenant_id='alpha' AND id='B';
+INSERT INTO training_events(tenant_id,event_kind,amount) VALUES('alpha','transfer.completed',2);
+```
+
+**Why this is safer:** A business operation may include a state update and an audit record; both must be part of one database transaction or recovered coherently. The repaired SQL is not presented as complete production application logic: callers still need authentication, object-level authorization, timeout/retry behavior and clear error mapping.
+
+</LessonStep>
+
+<LessonStep number={3} title="Prove the semantic contract and map the concurrency gap" file="drafts/postgresql/labs/ledger-boundary/acceptance.sql" expected="Green SQL passes; red SQL fails the lesson's specific semantic assertion.">
+
+Open `drafts/postgresql/labs/ledger-boundary/acceptance.sql` to review the exact `DO` checks. The real PostgreSQL runner must see the instructor pass and the starter fail with **12.03.07** in its SQL exception text. The runner starts a fresh session for each variant and issues `ROLLBACK` even for successful cases.
+
+**Scope warning:** The SQL runner wraps all three statements in one transaction, but does not prove rollback under a simulated write failure. Add deliberate failure injection and verify the audit row and both balances roll back on the same checked-out database connection. That additional evidence is not bundled into the single-session acceptance result. Record it separately on a trusted test server before marking this module runtime-qualified.
+
+</LessonStep>
+
+## Correctness, concurrency and failure modes
+
+A business operation may include a state update and an audit record; both must be part of one database transaction or recovered coherently.
+
+The starter moves wallet units but skips the required audit event, leaving no durable record of the operation.
+
+The SQL runner wraps all three statements in one transaction, but does not prove rollback under a simulated write failure. Add deliberate failure injection and verify the audit row and both balances roll back on the same checked-out database connection.
+
+A useful production verification matrix varies input identity, tenant, the number of concurrent writers, repeated request keys and observed SQLSTATE outcomes. When a conflict occurs, the correct application behavior is usually to report it or retry the *whole* safe operation from a new snapshot—not to silently overwrite the last writer's state.
+
+## Bug Hunt
+
+1. Predict the specific broken state: The starter moves wallet units but skips the required audit event, leaving no durable record of the operation.
+2. Run the starter in the disposable test fixture and capture the **named** acceptance failure.
+3. Apply the corrected SQL: A business operation may include a state update and an audit record; both must be part of one database transaction or recovered coherently.
+4. Re-run both variants and compare database state and result cardinality.
+5. Design the independent multi-session experiment needed to validate: The SQL runner wraps all three statements in one transaction, but does not prove rollback under a simulated write failure. Add deliberate failure injection and verify the audit row and both balances roll back on the same checked-out database connection.
+
+<Misconception claim={"The starter moves wallet units but skips the required audit event, leaving no durable record of the operation."} correction={"A business operation may include a state update and an audit record; both must be part of one database transaction or recovered coherently."} />
+
+<KnowledgeCheck question={"What must be inside the same DB transaction for an atomic wallet operation?"} choices={["Only the first UPDATE","Both balance updates and the durable related event","Only the HTTP response","Only the UI loading indicator"]} correctIndex={1} explanation={"A business operation may include a state update and an audit record; both must be part of one database transaction or recovered coherently."} misconception={"The SQL runner wraps all three statements in one transaction, but does not prove rollback under a simulated write failure. Add deliberate failure injection and verify the audit row and both balances roll back on the same checked-out database connection."} lessonId="12.03.07" />
+
+## Practice extension and reflection
+
+Sketch an API endpoint that executes this query through one checked-out transaction connection. Include structured error handling for lock timeouts, unique-constraint errors, stale versions and aborted transactions, as applicable. State when retries are safe. If you put multiple statements into a transaction but the side effect crosses an external payment provider or message broker, use an outbox or idempotency strategy rather than claiming PostgreSQL can commit the remote system atomically.
+
+**Release boundary:** This material is a source-authored, unverified draft. It cannot be marked learner-complete or deployed as a hosted lab. A local `psql` run proves only the listed semantic tests, not the manual concurrency extension or human accessibility signoff.
+
+## Official references
+
+- [PostgreSQL official documentation — Transaction boundaries](https://www.postgresql.org/docs/current/tutorial-transactions.html)
+- [Transactions tutorial](https://www.postgresql.org/docs/current/tutorial-transactions.html)

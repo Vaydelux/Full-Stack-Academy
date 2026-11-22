@@ -1,0 +1,66 @@
+{
+  "moduleId": "12.03",
+  "title": "Transactions & Concurrency",
+  "sourceStatus": "draft-unverified",
+  "runtimeQualification": "not-run",
+  "readyToPublish": false,
+  "fixture": "examples/postgresql-transactions/fixture.sql",
+  "lessons": [
+    {
+      "id": "12.03.01",
+      "title": "ACID and isolation levels",
+      "slug": "acid-atomic-transfer",
+      "qualificationKind": "single-session-sql-semantics",
+      "extraReview": "real two-session concurrency required"
+    },
+    {
+      "id": "12.03.02",
+      "title": "Locking and deadlocks",
+      "slug": "locking-queue-claims",
+      "qualificationKind": "single-session-sql-semantics",
+      "extraReview": "real two-session concurrency required"
+    },
+    {
+      "id": "12.03.03",
+      "title": "MVCC",
+      "slug": "mvcc-tuple-identity",
+      "qualificationKind": "single-session-sql-semantics",
+      "extraReview": "real two-session concurrency required"
+    },
+    {
+      "id": "12.03.04",
+      "title": "Optimistic concurrency",
+      "slug": "optimistic-version-update",
+      "qualificationKind": "single-session-sql-semantics",
+      "extraReview": "real two-session concurrency required"
+    },
+    {
+      "id": "12.03.05",
+      "title": "Idempotency records",
+      "slug": "idempotency-key-store",
+      "qualificationKind": "single-session-sql-semantics",
+      "extraReview": "real two-session concurrency required"
+    },
+    {
+      "id": "12.03.06",
+      "title": "Unique race protections",
+      "slug": "unique-key-races",
+      "qualificationKind": "single-session-sql-semantics",
+      "extraReview": "real two-session concurrency required"
+    },
+    {
+      "id": "12.03.07",
+      "title": "Transaction boundaries",
+      "slug": "ledger-boundary",
+      "qualificationKind": "single-session-sql-semantics",
+      "extraReview": "real two-session concurrency required"
+    },
+    {
+      "id": "12.03.08",
+      "title": "Lab concurrent update simulation",
+      "slug": "concurrent-lost-update-lab",
+      "qualificationKind": "single-session-sql-semantics",
+      "extraReview": "real two-session concurrency required"
+    }
+  ]
+}

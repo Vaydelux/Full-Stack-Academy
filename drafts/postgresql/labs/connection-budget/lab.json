@@ -1,0 +1,15 @@
+{
+  "id": "draft.postgresql.connection-budget",
+  "lessonId": "12.04.06",
+  "title": "Pooling and connection limits",
+  "sourceStatus": "draft-unverified",
+  "runtimeQualification": "not-run",
+  "readyToPublish": false,
+  "qualificationKind": "sql-contract",
+  "fixture": "examples/postgresql-performance/fixture.sql",
+  "starter": "drafts/postgresql/labs/connection-budget/starter.sql",
+  "solution": "drafts/postgresql/labs/connection-budget/solution.sql",
+  "acceptance": "drafts/postgresql/labs/connection-budget/acceptance.sql",
+  "manualPerformanceReviewRequired": true,
+  "reference": "https://www.postgresql.org/docs/current/runtime-config-connection.html"
+}

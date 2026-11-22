@@ -1,0 +1,92 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["A composite B-tree index is ordered by leading keys. Equality on tenant_id followed by an ordered range of created_at and id can support a tenant-scoped newest-first query.","Inspect pg_indexes.indexdef for the tenant-first key order, then EXPLAIN the query on realistic data and evaluate planner estimates instead of asserting a specific plan shape on the fixture.","The index definition can be correct while the planner chooses a sequential scan. Real EXPLAIN with representative cardinality and statistics is still required to demonstrate a latency benefit."]} />
+
+## Performance question to investigate
+
+**B tree and composite indexes.** A composite B-tree index is ordered by leading keys. Equality on tenant_id followed by an ordered range of created_at and id can support a tenant-scoped newest-first query.
+
+**Broken assumption:** The starter indexes only the sort column. In a multi-tenant feed, it does not encode the tenant filter as the leading index key.
+
+The purpose of performance engineering is not to collect more indexes or force a particular query-plan node. It is to establish the correctness of the result, define a representative workload, observe the measured behavior, then decide whether one carefully scoped change produces a sustainable benefit.
+
+This lesson uses a small synthetic multi-tenant task feed. Results can be inspected without a real account, production traffic or secrets. **It is a draft manuscript, not published course content.**
+
+## Mental model
+
+A composite B-tree index is ordered by leading keys. Equality on tenant_id followed by an ordered range of created_at and id can support a tenant-scoped newest-first query.
+
+The index definition can be correct while the planner chooses a sequential scan. Real EXPLAIN with representative cardinality and statistics is still required to demonstrate a latency benefit.
+
+Keep logical query correctness, physical access paths, and application-perceived latency as separate concerns. The planner may choose a sequential scan on a tiny table even when an appropriate index exists. It is incorrect to fail a lesson just because the exact node does not match a screenshot.
+
+## Before executing
+
+Complete **12.04.01**. Read `examples/postgresql-performance/fixture.sql` and `drafts/postgresql/labs/composite-index-order/`. The synthetic fixture contains alpha and beta projects and tasks with stable timestamps, an archived task, a deterministic ID tie-breaker and several statuses.
+
+**Evidence mode:** An automated semantic SQL contract can test a schema or result-set invariant. Real plan efficiency is still measured separately. You need a disposable local PostgreSQL 17+ instance for any real performance work.
+
+## Guided investigation
+
+<LessonStep number={1} title="Establish the unsafe or incomplete baseline" file="drafts/postgresql/labs/composite-index-order/starter.sql" expected="The starter indexes only the sort column. In a multi-tenant feed, it does not encode the tenant filter as the leading index key.">
+
+```sql
+CREATE INDEX perf_tenant_feed_idx ON perf_tasks(created_at DESC);
+```
+
+**Expected limitation:** The starter indexes only the sort column. In a multi-tenant feed, it does not encode the tenant filter as the leading index key. Explain whether the problem is a missing predicate, a wrong index definition, an expensive query pattern or missing runtime evidence. Distinguish real measurements from a prediction about likely performance.
+
+</LessonStep>
+
+<LessonStep number={2} title="Apply the hypothesis-driven repair" file="drafts/postgresql/labs/composite-index-order/solution.sql" expected="A composite B-tree index is ordered by leading keys. Equality on tenant_id followed by an ordered range of created_at and id can support a tenant-scoped newest-first query.">
+
+```sql
+CREATE INDEX perf_tenant_feed_idx ON perf_tasks(tenant_id, created_at DESC, id DESC);
+```
+
+**Reasoning:** A composite B-tree index is ordered by leading keys. Equality on tenant_id followed by an ordered range of created_at and id can support a tenant-scoped newest-first query. Treat the repaired SQL as a hypothesis, not an automatically proven speedup. The final acceptance must still check correctness and the appropriate kind of evidence.
+
+</LessonStep>
+
+<LessonStep number={3} title="Capture repeatable evidence and negative boundaries" file="drafts/postgresql/labs/composite-index-order/acceptance.sql" expected="Inspect pg_indexes.indexdef for the tenant-first key order, then EXPLAIN the query on realistic data and evaluate planner estimates instead of asserting a specific plan shape on the fixture.">
+
+The checked-in acceptance SQL asserts a specific named semantic invariant against both red and green variants. It must not mistake a syntax error for a valid failing student starter.
+
+**Proof to collect:** Inspect pg_indexes.indexdef for the tenant-first key order, then EXPLAIN the query on realistic data and evaluate planner estimates instead of asserting a specific plan shape on the fixture.
+
+**Caveat:** The index definition can be correct while the planner chooses a sequential scan. Real EXPLAIN with representative cardinality and statistics is still required to demonstrate a latency benefit.
+
+</LessonStep>
+
+## Production trade-offs
+
+A composite B-tree index is ordered by leading keys. Equality on tenant_id followed by an ordered range of created_at and id can support a tenant-scoped newest-first query.
+
+Inspect pg_indexes.indexdef for the tenant-first key order, then EXPLAIN the query on realistic data and evaluate planner estimates instead of asserting a specific plan shape on the fixture.
+
+The index definition can be correct while the planner chooses a sequential scan. Real EXPLAIN with representative cardinality and statistics is still required to demonstrate a latency benefit.
+
+When query execution moves into a real Next.js/NestJS application, measure request concurrency and database calls as well as SQL time. Remember that schema changes alter future write costs, vacuum work and storage. An index may improve a selective read but slow bulk inserts; a pooled connection may conserve memory but alter transaction/session semantics.
+
+## Bug Hunt
+
+1. Predict why the starter is incomplete: The starter indexes only the sort column. In a multi-tenant feed, it does not encode the tenant filter as the leading index key.
+2. Run it only against disposable local data and capture correctness first.
+3. Implement the repaired query, index, or maintenance action.
+4. Compare the appropriate evidence: Inspect pg_indexes.indexdef for the tenant-first key order, then EXPLAIN the query on realistic data and evaluate planner estimates instead of asserting a specific plan shape on the fixture.
+5. Explain why the result does not remove this boundary: The index definition can be correct while the planner chooses a sequential scan. Real EXPLAIN with representative cardinality and statistics is still required to demonstrate a latency benefit.
+
+<Misconception claim={"The starter indexes only the sort column. In a multi-tenant feed, it does not encode the tenant filter as the leading index key."} correction={"A composite B-tree index is ordered by leading keys. Equality on tenant_id followed by an ordered range of created_at and id can support a tenant-scoped newest-first query."} />
+<KnowledgeCheck question={"Why put the equality tenant key before newest-first sort fields?"} choices={["Because columns must be alphabetical","To make tenant equality a leading search restriction","To bypass permissions","Because it always forces an index scan"]} correctIndex={1} explanation={"A composite B-tree index is ordered by leading keys. Equality on tenant_id followed by an ordered range of created_at and id can support a tenant-scoped newest-first query."} misconception={"The index definition can be correct while the planner chooses a sequential scan. Real EXPLAIN with representative cardinality and statistics is still required to demonstrate a latency benefit."} lessonId="12.04.02" />
+
+## Challenge and review
+
+Imagine the same query executed from 12 API replicas against one shared database. Describe the expected p95 latency, memory pressure, index maintenance cost, and database connection budget. Which metrics would falsify your optimization? What tenant isolation and input validation would be needed before exposing the query as an API?
+
+**Release boundary:** A passing source audit does not count as a real query benchmark. The single-session schema contract and real planner effectiveness are distinct checks. Human accessibility review and the full application release gate are separate.
+
+## Official references
+
+- [PostgreSQL reference — B tree and composite indexes](https://www.postgresql.org/docs/current/indexes-multicolumn.html)
+- [Using EXPLAIN](https://www.postgresql.org/docs/current/using-explain.html)

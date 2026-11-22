@@ -1,0 +1,58 @@
+{
+  "moduleId": "12.05",
+  "title": "Operations & Recovery",
+  "sourceStatus": "draft-unverified",
+  "runtimeQualification": "not-run",
+  "readyToPublish": false,
+  "fixture": "examples/postgresql-operations/fixture.sql",
+  "lessons": [
+    {
+      "id": "12.05.01",
+      "title": "Backups and PITR concepts",
+      "slug": "backup-pitr-readiness",
+      "qualificationKind": "manual-evidence"
+    },
+    {
+      "id": "12.05.02",
+      "title": "Replication and replicas",
+      "slug": "replica-observability",
+      "qualificationKind": "manual-evidence"
+    },
+    {
+      "id": "12.05.03",
+      "title": "Schema migration safety",
+      "slug": "expand-backfill-contract",
+      "qualificationKind": "sql-contract"
+    },
+    {
+      "id": "12.05.04",
+      "title": "Environment isolation",
+      "slug": "database-environment-identity",
+      "qualificationKind": "sql-contract"
+    },
+    {
+      "id": "12.05.05",
+      "title": "Roles and least privilege",
+      "slug": "least-privilege-roles",
+      "qualificationKind": "manual-evidence"
+    },
+    {
+      "id": "12.05.06",
+      "title": "Connection pooler configuration",
+      "slug": "pooler-capacity-plan",
+      "qualificationKind": "manual-evidence"
+    },
+    {
+      "id": "12.05.07",
+      "title": "Restore drills",
+      "slug": "restore-drill-evidence",
+      "qualificationKind": "manual-evidence"
+    },
+    {
+      "id": "12.05.08",
+      "title": "Lab recover sample database",
+      "slug": "recovery-capstone-drill",
+      "qualificationKind": "manual-evidence"
+    }
+  ]
+}

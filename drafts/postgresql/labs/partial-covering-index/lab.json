@@ -1,0 +1,15 @@
+{
+  "id": "draft.postgresql.partial-covering-index",
+  "lessonId": "12.04.03",
+  "title": "Partial and covering indexes",
+  "sourceStatus": "draft-unverified",
+  "runtimeQualification": "not-run",
+  "readyToPublish": false,
+  "qualificationKind": "sql-contract",
+  "fixture": "examples/postgresql-performance/fixture.sql",
+  "starter": "drafts/postgresql/labs/partial-covering-index/starter.sql",
+  "solution": "drafts/postgresql/labs/partial-covering-index/solution.sql",
+  "acceptance": "drafts/postgresql/labs/partial-covering-index/acceptance.sql",
+  "manualPerformanceReviewRequired": true,
+  "reference": "https://www.postgresql.org/docs/current/indexes-partial.html"
+}

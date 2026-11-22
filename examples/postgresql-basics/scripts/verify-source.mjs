@@ -46,8 +46,8 @@ export function inspectPostgresDrafts(){
    entries.push({id,title:row.title,slug,status:'draft-unverified'});
   }catch(error){problem(id,error.message);}
  }
- if(fs.readdirSync(path.join(root,'drafts/postgresql/lessons')).filter(x=>x.endsWith('.mdx')).length!==8)problem('drafts','Wrong MDX count');
- if(fs.readdirSync(path.join(root,'drafts/postgresql/labs'),{withFileTypes:true}).filter(x=>x.isDirectory()).length!==8)problem('labs','Wrong lab folder count');
+ if(fs.readdirSync(path.join(root,'drafts/postgresql/lessons')).filter(x=>/^12\.01\.\d{2}\.mdx$/.test(x)).length!==8)problem('drafts','Wrong MDX count');
+ if(used.size!==8)problem('labs','Wrong number of canonical 12.01 lab slugs');
  if(!exists('examples/postgresql-basics/fixture.sql'))problem('fixture','Missing SQL fixture');
  const published=json('docs/checkpoint.json').snapshot.publishedLessons;
  if(published!==338)problem('checkpoint','Source must not modify published baseline');

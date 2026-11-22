@@ -1,0 +1,58 @@
+{
+  "moduleId": "12.04",
+  "title": "Query Performance",
+  "sourceStatus": "draft-unverified",
+  "runtimeQualification": "not-run",
+  "readyToPublish": false,
+  "fixture": "examples/postgresql-performance/fixture.sql",
+  "lessons": [
+    {
+      "id": "12.04.01",
+      "title": "EXPLAIN ANALYZE",
+      "slug": "explain-analyze-evidence",
+      "qualificationKind": "manual-evidence"
+    },
+    {
+      "id": "12.04.02",
+      "title": "B tree and composite indexes",
+      "slug": "composite-index-order",
+      "qualificationKind": "sql-contract"
+    },
+    {
+      "id": "12.04.03",
+      "title": "Partial and covering indexes",
+      "slug": "partial-covering-index",
+      "qualificationKind": "sql-contract"
+    },
+    {
+      "id": "12.04.04",
+      "title": "Keyset pagination",
+      "slug": "keyset-feed",
+      "qualificationKind": "sql-contract"
+    },
+    {
+      "id": "12.04.05",
+      "title": "N plus one queries",
+      "slug": "n-plus-one-diagnostics",
+      "qualificationKind": "manual-evidence"
+    },
+    {
+      "id": "12.04.06",
+      "title": "Pooling and connection limits",
+      "slug": "connection-budget",
+      "qualificationKind": "sql-contract"
+    },
+    {
+      "id": "12.04.07",
+      "title": "Vacuum and maintenance",
+      "slug": "vacuum-maintenance",
+      "qualificationKind": "manual-evidence"
+    },
+    {
+      "id": "12.04.08",
+      "title": "Lab profile slow query",
+      "slug": "profile-slow-query",
+      "qualificationKind": "manual-evidence"
+    }
+  ]
+}

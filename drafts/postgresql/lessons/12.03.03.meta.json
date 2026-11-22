@@ -1,0 +1,19 @@
+{
+  "id": "12.03.03",
+  "title": "MVCC",
+  "trackId": "12",
+  "moduleId": "12.03",
+  "labSlug": "mvcc-tuple-identity",
+  "sourceStatus": "draft-unverified",
+  "reviewStatus": "unreviewed",
+  "runtimeQualification": "not-run",
+  "estimatedMinutes": 60,
+  "prerequisites": [
+    "12.03.02"
+  ],
+  "officialReferences": [
+    "https://www.postgresql.org/docs/current/mvcc-intro.html",
+    "https://www.postgresql.org/docs/current/tutorial-transactions.html"
+  ],
+  "securityBoundary": "Inspecting xmin is educational only; it is not a stable application version counter. A true MVCC lesson additionally requires simultaneous readers/writers under Read Committed and Repeatable Read, with independently observed snapshots."
+}

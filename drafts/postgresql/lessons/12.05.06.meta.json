@@ -1,0 +1,20 @@
+{
+  "id": "12.05.06",
+  "title": "Connection pooler configuration",
+  "trackId": "12",
+  "moduleId": "12.05",
+  "labSlug": "pooler-capacity-plan",
+  "sourceStatus": "draft-unverified",
+  "runtimeQualification": "not-run",
+  "reviewStatus": "unreviewed",
+  "estimatedMinutes": 65,
+  "prerequisites": [
+    "12.05.05"
+  ],
+  "officialReferences": [
+    "https://www.postgresql.org/docs/current/runtime-config-connection.html",
+    "https://www.postgresql.org/docs/current/backup.html"
+  ],
+  "evidenceMode": "manual-evidence",
+  "securityBoundary": "A settings SELECT cannot establish PgBouncer configuration or throughput. Do not assume transaction pooling preserves session state. Pooler testing needs a separate running pooler and load generator."
+}

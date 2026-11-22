@@ -1,0 +1,19 @@
+{
+  "id": "12.03.05",
+  "title": "Idempotency records",
+  "trackId": "12",
+  "moduleId": "12.03",
+  "labSlug": "idempotency-key-store",
+  "sourceStatus": "draft-unverified",
+  "reviewStatus": "unreviewed",
+  "runtimeQualification": "not-run",
+  "estimatedMinutes": 60,
+  "prerequisites": [
+    "12.03.04"
+  ],
+  "officialReferences": [
+    "https://www.postgresql.org/docs/current/sql-insert.html",
+    "https://www.postgresql.org/docs/current/tutorial-transactions.html"
+  ],
+  "securityBoundary": "Production idempotency also needs a request-payload hash, expiry policy, in-flight locking, durable business result and atomic relationship to side effects. ON CONFLICT alone does not make external payments exactly once."
+}

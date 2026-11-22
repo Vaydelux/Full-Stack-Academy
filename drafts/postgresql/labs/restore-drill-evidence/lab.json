@@ -1,0 +1,15 @@
+{
+  "id": "draft.postgresql.restore-drill-evidence",
+  "lessonId": "12.05.07",
+  "title": "Restore drills",
+  "sourceStatus": "draft-unverified",
+  "runtimeQualification": "not-run",
+  "readyToPublish": false,
+  "qualificationKind": "manual-evidence",
+  "fixture": "examples/postgresql-operations/fixture.sql",
+  "starter": "drafts/postgresql/labs/restore-drill-evidence/starter.sql",
+  "solution": "drafts/postgresql/labs/restore-drill-evidence/solution.sql",
+  "acceptanceDoc": "drafts/postgresql/labs/restore-drill-evidence/acceptance.md",
+  "requiresOperationalReview": true,
+  "reference": "https://www.postgresql.org/docs/current/backup-dump.html"
+}
