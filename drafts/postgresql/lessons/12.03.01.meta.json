@@ -1,0 +1,19 @@
+{
+  "id": "12.03.01",
+  "title": "ACID and isolation levels",
+  "trackId": "12",
+  "moduleId": "12.03",
+  "labSlug": "acid-atomic-transfer",
+  "sourceStatus": "draft-unverified",
+  "reviewStatus": "unreviewed",
+  "runtimeQualification": "not-run",
+  "estimatedMinutes": 60,
+  "prerequisites": [
+    "12.02.08"
+  ],
+  "officialReferences": [
+    "https://www.postgresql.org/docs/current/transaction-iso.html",
+    "https://www.postgresql.org/docs/current/tutorial-transactions.html"
+  ],
+  "securityBoundary": "Repeatable Read and Serializable describe visibility across concurrent transactions; a single-session balance assertion cannot prove either isolation level. Run a separate two-session experiment before treating this lesson as concurrency-qualified."
+}

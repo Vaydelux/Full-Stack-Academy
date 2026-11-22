@@ -1,0 +1,19 @@
+{
+  "id": "12.03.04",
+  "title": "Optimistic concurrency",
+  "trackId": "12",
+  "moduleId": "12.03",
+  "labSlug": "optimistic-version-update",
+  "sourceStatus": "draft-unverified",
+  "reviewStatus": "unreviewed",
+  "runtimeQualification": "not-run",
+  "estimatedMinutes": 60,
+  "prerequisites": [
+    "12.03.03"
+  ],
+  "officialReferences": [
+    "https://www.postgresql.org/docs/current/sql-update.html",
+    "https://www.postgresql.org/docs/current/tutorial-transactions.html"
+  ],
+  "securityBoundary": "Real APIs must read the updated row count and return a conflict/retry decision when it is zero; silent zero-row updates are not sufficient. Re-reading state before a retry may change the business meaning."
+}

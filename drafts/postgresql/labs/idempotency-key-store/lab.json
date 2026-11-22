@@ -1,0 +1,15 @@
+{
+  "id": "draft.postgresql.idempotency-key-store",
+  "lessonId": "12.03.05",
+  "title": "Idempotency records",
+  "sourceStatus": "draft-unverified",
+  "runtimeQualification": "not-run",
+  "readyToPublish": false,
+  "qualificationKind": "single-session-sql-semantics",
+  "requiresSeparateConcurrencyReview": true,
+  "fixture": "examples/postgresql-transactions/fixture.sql",
+  "starter": "drafts/postgresql/labs/idempotency-key-store/starter.sql",
+  "solution": "drafts/postgresql/labs/idempotency-key-store/solution.sql",
+  "acceptance": "drafts/postgresql/labs/idempotency-key-store/acceptance.sql",
+  "reference": "https://www.postgresql.org/docs/current/sql-insert.html"
+}

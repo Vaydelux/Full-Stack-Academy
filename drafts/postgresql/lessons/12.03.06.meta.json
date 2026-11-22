@@ -1,0 +1,19 @@
+{
+  "id": "12.03.06",
+  "title": "Unique race protections",
+  "trackId": "12",
+  "moduleId": "12.03",
+  "labSlug": "unique-key-races",
+  "sourceStatus": "draft-unverified",
+  "reviewStatus": "unreviewed",
+  "runtimeQualification": "not-run",
+  "estimatedMinutes": 60,
+  "prerequisites": [
+    "12.03.05"
+  ],
+  "officialReferences": [
+    "https://www.postgresql.org/docs/current/ddl-constraints.html",
+    "https://www.postgresql.org/docs/current/tutorial-transactions.html"
+  ],
+  "securityBoundary": "A uniqueness constraint prevents duplicate committed keys; it does not make an unrelated read-modify-write sequence atomic. The actual two-client race still needs a concurrency test and error handling for SQLSTATE 23505."
+}

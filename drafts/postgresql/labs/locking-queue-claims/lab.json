@@ -1,0 +1,15 @@
+{
+  "id": "draft.postgresql.locking-queue-claims",
+  "lessonId": "12.03.02",
+  "title": "Locking and deadlocks",
+  "sourceStatus": "draft-unverified",
+  "runtimeQualification": "not-run",
+  "readyToPublish": false,
+  "qualificationKind": "single-session-sql-semantics",
+  "requiresSeparateConcurrencyReview": true,
+  "fixture": "examples/postgresql-transactions/fixture.sql",
+  "starter": "drafts/postgresql/labs/locking-queue-claims/starter.sql",
+  "solution": "drafts/postgresql/labs/locking-queue-claims/solution.sql",
+  "acceptance": "drafts/postgresql/labs/locking-queue-claims/acceptance.sql",
+  "reference": "https://www.postgresql.org/docs/current/explicit-locking.html"
+}

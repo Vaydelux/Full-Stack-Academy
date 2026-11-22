@@ -1,0 +1,19 @@
+{
+  "id": "12.03.02",
+  "title": "Locking and deadlocks",
+  "trackId": "12",
+  "moduleId": "12.03",
+  "labSlug": "locking-queue-claims",
+  "sourceStatus": "draft-unverified",
+  "reviewStatus": "unreviewed",
+  "runtimeQualification": "not-run",
+  "estimatedMinutes": 60,
+  "prerequisites": [
+    "12.03.01"
+  ],
+  "officialReferences": [
+    "https://www.postgresql.org/docs/current/explicit-locking.html",
+    "https://www.postgresql.org/docs/current/tutorial-transactions.html"
+  ],
+  "securityBoundary": "This one-connection assertion only checks the claimed state, not actual competing workers or deadlock victim selection. Reproduce lock conflicts and retries in two independent sessions; keep transactions short and acquire locks in a consistent order."
+}

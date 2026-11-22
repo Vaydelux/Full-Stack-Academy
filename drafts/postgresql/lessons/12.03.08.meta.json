@@ -1,0 +1,19 @@
+{
+  "id": "12.03.08",
+  "title": "Lab concurrent update simulation",
+  "trackId": "12",
+  "moduleId": "12.03",
+  "labSlug": "concurrent-lost-update-lab",
+  "sourceStatus": "draft-unverified",
+  "reviewStatus": "unreviewed",
+  "runtimeQualification": "not-run",
+  "estimatedMinutes": 90,
+  "prerequisites": [
+    "12.03.07"
+  ],
+  "officialReferences": [
+    "https://www.postgresql.org/docs/current/transaction-iso.html",
+    "https://www.postgresql.org/docs/current/tutorial-transactions.html"
+  ],
+  "securityBoundary": "This red/green is deterministic sequential simulation, NOT a real two-session concurrency qualification. The advanced lab must coordinate two independently connected writers with barriers and assert one conflict plus no lost update."
+}

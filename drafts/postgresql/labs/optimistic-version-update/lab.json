@@ -1,0 +1,15 @@
+{
+  "id": "draft.postgresql.optimistic-version-update",
+  "lessonId": "12.03.04",
+  "title": "Optimistic concurrency",
+  "sourceStatus": "draft-unverified",
+  "runtimeQualification": "not-run",
+  "readyToPublish": false,
+  "qualificationKind": "single-session-sql-semantics",
+  "requiresSeparateConcurrencyReview": true,
+  "fixture": "examples/postgresql-transactions/fixture.sql",
+  "starter": "drafts/postgresql/labs/optimistic-version-update/starter.sql",
+  "solution": "drafts/postgresql/labs/optimistic-version-update/solution.sql",
+  "acceptance": "drafts/postgresql/labs/optimistic-version-update/acceptance.sql",
+  "reference": "https://www.postgresql.org/docs/current/sql-update.html"
+}
