@@ -1,0 +1,25 @@
+{
+  "id": "12.01.04",
+  "title": "GROUP BY and aggregates",
+  "trackId": "12",
+  "moduleId": "12.01",
+  "sourceStatus": "draft-unverified",
+  "estimatedMinutes": 55,
+  "stack": {
+    "postgresql": "17+"
+  },
+  "prerequisites": [
+    "12.01.03"
+  ],
+  "objective": "Aggregate functions summarize groups; LEFT JOIN plus COUNT(child.id) preserves a group with zero related rows. COUNT(*) counts outer rows, not existing children.",
+  "misconception": "The starter counts the joined row, losing the difference between an empty project and a project with one task.",
+  "acceptance": "SQL SUM skips NULL values; COALESCE changes an empty sum into zero. Explain why WHERE child.status = ... would turn a LEFT JOIN into an effective INNER JOIN.",
+  "labSlug": "grouping-aggregates",
+  "officialReferences": [
+    "https://www.postgresql.org/docs/current/tutorial-agg.html",
+    "https://www.postgresql.org/docs/current/tutorial.html"
+  ],
+  "securityBoundary": "COUNT(*) returns one for the unmatched outer row, so it does not mean one task exists.",
+  "reviewStatus": "unreviewed",
+  "runtimeQualification": "not-run"
+}

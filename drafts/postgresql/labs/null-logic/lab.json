@@ -1,0 +1,19 @@
+{
+  "id": "draft.postgresql.null-logic",
+  "lessonId": "12.01.06",
+  "title": "NULL and three-valued logic",
+  "sourceStatus": "draft-unverified",
+  "runtime": "PostgreSQL 17+",
+  "starter": "drafts/postgresql/labs/null-logic/starter.sql",
+  "solution": "drafts/postgresql/labs/null-logic/solution.sql",
+  "acceptance": "drafts/postgresql/labs/null-logic/acceptance.sql",
+  "fixture": "examples/postgresql-basics/fixture.sql",
+  "expectedPositive": "Instructor SQL passes 12.01.06 acceptance on a disposable real PostgreSQL connection",
+  "expectedNegative": "Learner starter must fail the same 12.01.06 acceptance assertion",
+  "requiresRealPostgresTest": true,
+  "readyToPublish": false,
+  "officialReferences": [
+    "https://www.postgresql.org/docs/current/functions-comparison.html",
+    "https://www.postgresql.org/docs/current/tutorial.html"
+  ]
+}

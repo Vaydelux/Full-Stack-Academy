@@ -1,0 +1,57 @@
+{
+  "moduleId": "12.01",
+  "sourceStatus": "draft-unverified",
+  "runtimeQualification": "not-run",
+  "readyToPublish": false,
+  "fixture": "examples/postgresql-basics/fixture.sql",
+  "lessons": [
+    {
+      "id": "12.01.01",
+      "slug": "tables-types",
+      "title": "Tables rows columns and types",
+      "reference": "https://www.postgresql.org/docs/current/ddl-basics.html"
+    },
+    {
+      "id": "12.01.02",
+      "slug": "select-filter-order",
+      "title": "SELECT WHERE ORDER BY",
+      "reference": "https://www.postgresql.org/docs/current/queries-order.html"
+    },
+    {
+      "id": "12.01.03",
+      "slug": "relational-joins",
+      "title": "JOINs",
+      "reference": "https://www.postgresql.org/docs/current/tutorial-join.html"
+    },
+    {
+      "id": "12.01.04",
+      "slug": "grouping-aggregates",
+      "title": "GROUP BY and aggregates",
+      "reference": "https://www.postgresql.org/docs/current/tutorial-agg.html"
+    },
+    {
+      "id": "12.01.05",
+      "slug": "foreign-keys-constraints",
+      "title": "Foreign keys and constraints",
+      "reference": "https://www.postgresql.org/docs/current/ddl-constraints.html"
+    },
+    {
+      "id": "12.01.06",
+      "slug": "null-logic",
+      "title": "NULL and three-valued logic",
+      "reference": "https://www.postgresql.org/docs/current/functions-comparison.html"
+    },
+    {
+      "id": "12.01.07",
+      "slug": "ctes-subqueries",
+      "title": "CTEs and subqueries",
+      "reference": "https://www.postgresql.org/docs/current/queries-with.html"
+    },
+    {
+      "id": "12.01.08",
+      "slug": "query-workbook",
+      "title": "Lab query workbook",
+      "reference": "https://www.postgresql.org/docs/current/queries-table-expressions.html"
+    }
+  ]
+}

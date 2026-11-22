@@ -1,0 +1,25 @@
+{
+  "id": "12.01.07",
+  "title": "CTEs and subqueries",
+  "trackId": "12",
+  "moduleId": "12.01",
+  "sourceStatus": "draft-unverified",
+  "estimatedMinutes": 55,
+  "stack": {
+    "postgresql": "17+"
+  },
+  "prerequisites": [
+    "12.01.06"
+  ],
+  "objective": "A common table expression names intermediate relational results and makes a multi-step query easier to review. A CTE does not automatically enforce security or improve performance.",
+  "misconception": "The starter aggregates all tenants before filtering and leaks beta's project through the report.",
+  "acceptance": "Explain CTE versus inline subquery, why a CTE name is not a persisted table, and why placement of tenant filters matters. Read EXPLAIN before making performance claims about materialization.",
+  "labSlug": "ctes-subqueries",
+  "officialReferences": [
+    "https://www.postgresql.org/docs/current/queries-with.html",
+    "https://www.postgresql.org/docs/current/tutorial.html"
+  ],
+  "securityBoundary": "A beautifully factored CTE can still return unauthorized data if its predicates are wrong.",
+  "reviewStatus": "unreviewed",
+  "runtimeQualification": "not-run"
+}

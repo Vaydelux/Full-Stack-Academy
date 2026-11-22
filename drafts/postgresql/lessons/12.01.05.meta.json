@@ -1,0 +1,25 @@
+{
+  "id": "12.01.05",
+  "title": "Foreign keys and constraints",
+  "trackId": "12",
+  "moduleId": "12.01",
+  "sourceStatus": "draft-unverified",
+  "estimatedMinutes": 55,
+  "stack": {
+    "postgresql": "17+"
+  },
+  "prerequisites": [
+    "12.01.04"
+  ],
+  "objective": "PRIMARY KEY, FOREIGN KEY and CHECK are data invariants, not optional form hints. Constraints reject invalid writes even when the application has a bug.",
+  "misconception": "The starter's task-notes table accepts an orphan task reference and a whitespace-only note.",
+  "acceptance": "An FK prevents orphan IDs but does not guarantee the same tenant; cross-tenant composite keys and authorization policies are covered later. CHECK constraints accept UNKNOWN, so pair constraints with NOT NULL deliberately.",
+  "labSlug": "foreign-keys-constraints",
+  "officialReferences": [
+    "https://www.postgresql.org/docs/current/ddl-constraints.html",
+    "https://www.postgresql.org/docs/current/tutorial.html"
+  ],
+  "securityBoundary": "Neither UI validation nor TypeScript types prevent direct SQL clients from inserting invalid rows.",
+  "reviewStatus": "unreviewed",
+  "runtimeQualification": "not-run"
+}

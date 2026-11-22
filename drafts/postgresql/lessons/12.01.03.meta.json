@@ -1,0 +1,25 @@
+{
+  "id": "12.01.03",
+  "title": "JOINs",
+  "trackId": "12",
+  "moduleId": "12.01",
+  "sourceStatus": "draft-unverified",
+  "estimatedMinutes": 55,
+  "stack": {
+    "postgresql": "17+"
+  },
+  "prerequisites": [
+    "12.01.02"
+  ],
+  "objective": "A join combines related entities through their key relationships. The join cardinality determines whether rows disappear or multiply.",
+  "misconception": "The starter joins the project to a user with the same numeric ID, not its owner_id; it also has no tenant scope.",
+  "acceptance": "A JOIN on similarly named IDs is not evidence of a relationship. Read the foreign-key declaration and choose INNER JOIN versus LEFT JOIN intentionally. A database key alone does not enforce row-level authorization.",
+  "labSlug": "relational-joins",
+  "officialReferences": [
+    "https://www.postgresql.org/docs/current/tutorial-join.html",
+    "https://www.postgresql.org/docs/current/tutorial.html"
+  ],
+  "securityBoundary": "Incorrect ON predicates can silently return no rows—or connect a record to the wrong person.",
+  "reviewStatus": "unreviewed",
+  "runtimeQualification": "not-run"
+}

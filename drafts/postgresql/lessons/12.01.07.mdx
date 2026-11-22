@@ -1,0 +1,111 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["A common table expression names intermediate relational results and makes a multi-step query easier to review. A CTE does not automatically enforce security or improve performance.","Explain CTE versus inline subquery, why a CTE name is not a persisted table, and why placement of tenant filters matters. Read EXPLAIN before making performance claims about materialization.","A beautifully factored CTE can still return unauthorized data if its predicates are wrong."]} />
+
+## The problem we're solving
+
+**CTEs and subqueries.** The starter aggregates all tenants before filtering and leaks beta's project through the report.
+
+Consider a small project-management database. Users belong to tenants; projects have owners; tasks belong to projects. A report may look plausible while producing the wrong rows, exposing sensitive information, or dropping empty groups. You will begin with an intentionally incorrect SQL exercise, predict its observable failure, and then repair it.
+
+## Mental model and vocabulary
+
+A common table expression names intermediate relational results and makes a multi-step query easier to review. A CTE does not automatically enforce security or improve performance.
+
+Explain CTE versus inline subquery, why a CTE name is not a persisted table, and why placement of tenant filters matters. Read EXPLAIN before making performance claims about materialization.
+
+**Predict first:** Before running the red starter, describe which tenant, ID, column, or count will be incorrect. Name the row you expect to see or not see. The goal is an invariant you can assert in a real PostgreSQL session, not mere SQL syntax acceptance.
+
+**Scope:** PostgreSQL SQL semantics using a disposable session fixture; this is a staged, not-yet-published article. The examples target PostgreSQL 17 or later but have **not** been executed against a real PostgreSQL server in this environment. The shared fixture is teaching data, not a production authorization system.
+
+## Before you code
+
+Complete **12.01.06**, then inspect `examples/postgresql-basics/fixture.sql` and the three lesson-specific files in `drafts/postgresql/labs/ctes-subqueries/`. There are four users across two tenants, four projects (one empty), and six tasks with different status and NULL values. These edge cases are intentional.
+
+Use a disposable, explicitly opted-in test database. A real-`psql` verifier must prove that the instructor passes and the intentionally broken starter fails. Never test with production credentials. The fixture creates **temporary tables** and the runner wraps the session in a rollback.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the wrong result" file="drafts/postgresql/labs/ctes-subqueries/starter.sql" expected="The starter aggregates all tenants before filtering and leaks beta's project through the report.">
+
+```sql
+CREATE TEMP VIEW lesson_result AS
+WITH task_counts AS (
+ SELECT project_id, COUNT(*) AS task_count
+ FROM academy_tasks GROUP BY project_id
+)
+SELECT project_id, task_count
+FROM task_counts WHERE task_count >= 1;
+```
+
+**Diagnosis:** The starter aggregates all tenants before filtering and leaks beta's project through the report. Compare your predicted wrong row or count with what the starter actually produces. A successful SQL command is not proof that its result is correct.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the relational contract" file="drafts/postgresql/labs/ctes-subqueries/solution.sql" expected="A common table expression names intermediate relational results and makes a multi-step query easier to review. A CTE does not automatically enforce security or improve performance.">
+
+```sql
+CREATE TEMP VIEW lesson_result AS
+WITH task_counts AS (
+ SELECT t.project_id, COUNT(*) AS task_count
+ FROM academy_tasks t
+ WHERE t.tenant_id = 'alpha'
+ GROUP BY t.project_id
+)
+SELECT p.id AS project_id, c.task_count
+FROM academy_projects p
+JOIN task_counts c ON c.project_id = p.id
+WHERE p.tenant_id = 'alpha' AND c.task_count >= 2;
+```
+
+**Why the repair works:** A common table expression names intermediate relational results and makes a multi-step query easier to review. A CTE does not automatically enforce security or improve performance. Review the SQL predicate or constraint that excludes invalid rows and preserves required ones. If a client dynamically constructs SQL, bind parameters rather than interpolating untrusted data; these checked-in statements are intentionally static fixtures.
+
+</LessonStep>
+
+<LessonStep number={3} title="Run the real PostgreSQL acceptance gate" file="drafts/postgresql/labs/ctes-subqueries/acceptance.sql" expected="The instructor passes and the learner starter fails on the same dataset.">
+
+The acceptance contract asserts the expected real database behavior. The verifier runs fixture + instructor/learner SQL + assertions in **one disposable PostgreSQL connection** per case, then rolls back. A returned error is acceptable for the starter only when it comes from the lesson's **specific semantic acceptance assertion**, not from missing tables or invalid SQL.
+
+**Expected outcome:** Explain CTE versus inline subquery, why a CTE name is not a persisted table, and why placement of tenant filters matters. Read EXPLAIN before making performance claims about materialization.
+
+**Negative case:** A beautifully factored CTE can still return unauthorized data if its predicates are wrong.
+
+</LessonStep>
+
+## Reason it through
+
+Explain CTE versus inline subquery, why a CTE name is not a persisted table, and why placement of tenant filters matters. Read EXPLAIN before making performance claims about materialization.
+
+Draw the relevant row set: **users → projects → tasks**. Identify whether this operation projects columns, filters rows, combines relations, aggregates groups, or enforces a physical constraint. A data-layer restriction should not be replaced by a frontend filter; the browser cannot enforce another client's access to storage.
+
+## Edge cases and trust boundaries
+
+A beautifully factored CTE can still return unauthorized data if its predicates are wrong.
+
+For production systems, distinguish this basic query exercise from actual role privileges, row-level security, constraints across tenant boundaries, input validation, indexes, transaction isolation, and migration safety. Those topics appear in later canonical PostgreSQL and Supabase modules. The teaching fixture deliberately uses static tenant IDs and does not implement real authentication.
+
+## Bug Hunt
+
+1. **Reproduce:** The starter aggregates all tenants before filtering and leaks beta's project through the report.
+2. **Predict:** State the exact unexpected row or wrong aggregate.
+3. **Repair:** A common table expression names intermediate relational results and makes a multi-step query easier to review. A CTE does not automatically enforce security or improve performance.
+4. **Regression:** Explain CTE versus inline subquery, why a CTE name is not a persisted table, and why placement of tenant filters matters. Read EXPLAIN before making performance claims about materialization.
+5. **Boundary:** A beautifully factored CTE can still return unauthorized data if its predicates are wrong.
+
+<Misconception claim={"The starter aggregates all tenants before filtering and leaks beta's project through the report."} correction={"A common table expression names intermediate relational results and makes a multi-step query easier to review. A CTE does not automatically enforce security or improve performance."} />
+
+<KnowledgeCheck question={"What does WITH task_counts AS (...) create?"} choices={["A permanent table","A named statement-local intermediate result","A row-level security policy","An automatically indexed table"]} correctIndex={1} explanation={"A common table expression names intermediate relational results and makes a multi-step query easier to review. A CTE does not automatically enforce security or improve performance."} misconception={"A beautifully factored CTE can still return unauthorized data if its predicates are wrong."} lessonId="12.01.07" />
+
+## Guided local lab
+
+The source-staged files are under `drafts/postgresql/labs/ctes-subqueries/`. The learner's broken SQL and instructor's corrected SQL are **not** registered as published lessons or progress-completing labs. Run `node examples/postgresql-basics/scripts/qualify.mjs` from the repository root only on a dedicated PostgreSQL instance with the documented environment safeguards. No source scan is a substitute for real SQL execution.
+
+## Reflect
+
+If a second tenant or an empty relation were added tomorrow, which exact assertion would detect leakage or a silent counting error? Would the same query remain correct when parameterized in an API? What additional controls would protect access to the underlying tables?
+
+## Official references
+
+- [PostgreSQL official reference for CTEs and subqueries](https://www.postgresql.org/docs/current/queries-with.html)
+- [PostgreSQL SQL tutorial](https://www.postgresql.org/docs/current/tutorial.html)

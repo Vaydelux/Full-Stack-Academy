@@ -1,0 +1,19 @@
+{
+  "id": "draft.postgresql.ctes-subqueries",
+  "lessonId": "12.01.07",
+  "title": "CTEs and subqueries",
+  "sourceStatus": "draft-unverified",
+  "runtime": "PostgreSQL 17+",
+  "starter": "drafts/postgresql/labs/ctes-subqueries/starter.sql",
+  "solution": "drafts/postgresql/labs/ctes-subqueries/solution.sql",
+  "acceptance": "drafts/postgresql/labs/ctes-subqueries/acceptance.sql",
+  "fixture": "examples/postgresql-basics/fixture.sql",
+  "expectedPositive": "Instructor SQL passes 12.01.07 acceptance on a disposable real PostgreSQL connection",
+  "expectedNegative": "Learner starter must fail the same 12.01.07 acceptance assertion",
+  "requiresRealPostgresTest": true,
+  "readyToPublish": false,
+  "officialReferences": [
+    "https://www.postgresql.org/docs/current/queries-with.html",
+    "https://www.postgresql.org/docs/current/tutorial.html"
+  ]
+}

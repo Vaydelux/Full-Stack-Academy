@@ -1,0 +1,25 @@
+{
+  "id": "12.01.08",
+  "title": "Lab query workbook",
+  "trackId": "12",
+  "moduleId": "12.01",
+  "sourceStatus": "draft-unverified",
+  "estimatedMinutes": 85,
+  "stack": {
+    "postgresql": "17+"
+  },
+  "prerequisites": [
+    "12.01.07"
+  ],
+  "objective": "A realistic query combines joins, tenant/user boundaries, filtering, grouping, and deterministic output, then proves both expected rows and excluded rows.",
+  "misconception": "The starter counts finished work and includes disabled users or other tenants in the owner report.",
+  "acceptance": "Trace cardinality from users to projects to tasks. Consider a user with no projects, a project with no tasks, a NULL estimate and a task in another tenant. Verify empty groups and security exclusions in addition to happy-path totals.",
+  "labSlug": "query-workbook",
+  "officialReferences": [
+    "https://www.postgresql.org/docs/current/queries-table-expressions.html",
+    "https://www.postgresql.org/docs/current/tutorial.html"
+  ],
+  "securityBoundary": "JOIN and GROUP BY can produce plausible counts while still double-counting rows, dropping empty groups or leaking tenant data.",
+  "reviewStatus": "unreviewed",
+  "runtimeQualification": "not-run"
+}

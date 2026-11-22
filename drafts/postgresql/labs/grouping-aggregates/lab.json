@@ -1,0 +1,19 @@
+{
+  "id": "draft.postgresql.grouping-aggregates",
+  "lessonId": "12.01.04",
+  "title": "GROUP BY and aggregates",
+  "sourceStatus": "draft-unverified",
+  "runtime": "PostgreSQL 17+",
+  "starter": "drafts/postgresql/labs/grouping-aggregates/starter.sql",
+  "solution": "drafts/postgresql/labs/grouping-aggregates/solution.sql",
+  "acceptance": "drafts/postgresql/labs/grouping-aggregates/acceptance.sql",
+  "fixture": "examples/postgresql-basics/fixture.sql",
+  "expectedPositive": "Instructor SQL passes 12.01.04 acceptance on a disposable real PostgreSQL connection",
+  "expectedNegative": "Learner starter must fail the same 12.01.04 acceptance assertion",
+  "requiresRealPostgresTest": true,
+  "readyToPublish": false,
+  "officialReferences": [
+    "https://www.postgresql.org/docs/current/tutorial-agg.html",
+    "https://www.postgresql.org/docs/current/tutorial.html"
+  ]
+}
