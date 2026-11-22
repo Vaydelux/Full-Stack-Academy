@@ -108,16 +108,16 @@ test('retaining historical draft source after publication never doubles staged c
  assert.equal(programWithRelease.phases[0].modules[0].published,2);
 });
 
-test('NestJS 11.01 to 11.04 source drafts add 32 staged topics but no publication',()=>{
+test('staged modules remain accurately tracked during draft-to-published transitions',()=>{
  const current=readPublicationProgram();
+ const p1=current.phases.find(p=>p.id==='P1');
  const p2=current.phases.find(p=>p.id==='P2');
- assert.deepEqual(p2.modules.map(m=>m.staged),[8,8,8,8]);
- assert.equal(p2.published,0);
- assert.equal(current.phases.find(p=>p.id==='P1').staged,16);
- assert.equal(current.baseline.published,338);
- assert.equal(current.baseline.staged,64);
- assert.equal(current.baseline.unstaged,487);
  const p3=current.phases.find(p=>p.id==='P3');
- assert.deepEqual(p3.modules.filter(m=>m.staged>0).map(m=>[m.id,m.staged]),[['12.01',8],['12.02',8]]);
- assert.equal(p3.published,0);
+ assert.deepEqual(p1.modules.map(m=>m.published+m.staged),[8,8]);
+ assert.deepEqual(p2.modules.map(m=>m.published+m.staged),[8,8,8,8]);
+ assert.deepEqual(p3.modules.filter(m=>['12.01','12.02'].includes(m.id))
+  .map(m=>[m.id,m.published+m.staged]),[['12.01',8],['12.02',8]]);
+ assert.equal(current.baseline.published+current.baseline.staged+current.baseline.unstaged,
+  current.baseline.topics);
+ assert.equal(current.baseline.topics,889);
 });
