@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { firstValueFrom, of } from 'rxjs';
+import { firstValueFrom, of, throwError } from 'rxjs';
 import { Test } from '@nestjs/testing';
 
 const load = (slug, variant) => import('../dist/' + slug + '/' + variant + '.js');
@@ -44,7 +44,7 @@ test('11.04.02 async dynamic configuration rejects plaintext HTTP and exports HT
   });
 });
 
-test('11.04.03 gateway denies missing tenant context and targets only tenant room (unit contract)', async () => {
+test('11.04.03 gateway validates unknown payloads and strictly isolates rooms', async () => {
   await redGreen('websocket-gateways', async ({ TaskGateway }) => {
     const emitted = [];
     const gateway = new TaskGateway();
@@ -63,6 +63,10 @@ test('11.04.03 gateway denies missing tenant context and targets only tenant roo
     assert.deepEqual(gateway.publish(alice, { title: '  example  ' }), { accepted: true });
     assert.deepEqual(emitted, [{ room: 'tenant:alice', event: 'task', body: { title: 'example' } }]);
     assert.deepEqual(gateway.publish(anonymous, { title: 'x' }), { error: 'UNAUTHORIZED' });
+    for (const invalid of [null, undefined, [], {}, { title: 42 }, { title: [] }, { title: ' ' }, { title: 'x'.repeat(101) }]) {
+      assert.deepEqual(gateway.publish(alice, invalid), { error: 'INVALID_TASK' }, 'Unexpected acceptance of invalid payload');
+    }
+    assert.equal(emitted.length, 1, 'Rejected messages cannot broadcast to a tenant');
   });
 });
 
@@ -89,20 +93,39 @@ test('11.04.05 testing fixture injects a fake mailer, not live adapter', async (
   });
 });
 
-test('11.04.06 GET cache partitions tenants and bypasses anonymous/non-GET', async () => {
+test('11.04.06 cache isolates users inside tenants, bounds storage and invalidates on writes', async () => {
   await redGreen('caching-interceptors', async ({ TasksCacheInterceptor }) => {
     const interceptor = new TasksCacheInterceptor();
     let calls = 0;
     const handler = { handle: () => of({ counter: ++calls }) };
-    const run = async (tenantId, method = 'GET') => firstValueFrom(interceptor.intercept(
-      httpContext({ method, url: '/tasks', user: tenantId ? { tenantId } : undefined }),
-      handler,
-    ));
-    assert.deepEqual(await run('a'), { counter: 1 });
-    assert.deepEqual(await run('a'), { counter: 1 });
-    assert.deepEqual(await run('b'), { counter: 2 });
-    assert.deepEqual(await run(undefined), { counter: 3 });
-    assert.deepEqual(await run('a', 'POST'), { counter: 4 });
+    const request = (tenantId, userId, method = 'GET', url = '/tasks', next = handler) =>
+      firstValueFrom(interceptor.intercept(
+        httpContext({ method, url, user: tenantId ? { tenantId, userId } : undefined }),
+        next,
+      ));
+    assert.deepEqual(await request('a', 'alice'), { counter: 1 });
+    assert.deepEqual(await request('a', 'alice'), { counter: 1 }, 'Second GET should use the cache');
+    assert.deepEqual(await request('a', 'bob'), { counter: 2 }, 'Users in the same tenant may have different permissions');
+    assert.deepEqual(await request('b', 'alice'), { counter: 3 });
+    assert.deepEqual(await request(undefined, undefined), { counter: 4 }, 'Anonymous requests must bypass cache');
+    assert.deepEqual(await request('a', undefined), { counter: 5 }, 'Missing user identity must bypass cache');
+    assert.deepEqual(await request('a', 'alice', 'POST'), { counter: 6 }, 'Mutations are never cached');
+    assert.deepEqual(await request('a', 'alice'), { counter: 7 }, 'POST must invalidate tenant cache');
+    assert.deepEqual(await request('a', 'bob'), { counter: 8 }, 'All users in a mutated tenant must be invalidated');
+    assert.deepEqual(await request('b', 'alice'), { counter: 3 }, 'Another tenant remains cached');
+    await assert.rejects(request('a', 'alice', 'POST', '/tasks', {
+      handle: () => throwError(() => Error('failed mutation')),
+    }), /failed mutation/);
+    assert.deepEqual(await request('a', 'alice'), { counter: 7 }, 'Failed mutations must not invalidate cached reads');
+
+    for (let i = 0; i < 105; i++) await request('bounded', 'user-' + i);
+    assert.ok(interceptor.cache.size <= 100, 'Bounded retention must not exceed 100 entries');
+    const key = JSON.stringify(['a', 'alice', '/tasks']);
+    // The bounded cycle may evict the entry; explicitly repopulate before expiry testing.
+    await request('a', 'alice');
+    interceptor.cache.get(key).until = Date.now() - 1;
+    const beforeExpiryFetch = calls;
+    assert.deepEqual(await request('a', 'alice'), { counter: beforeExpiryFetch + 1 }, 'Expired data must be refetched');
   });
 });
 
