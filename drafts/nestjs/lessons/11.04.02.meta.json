@@ -1,0 +1,27 @@
+{
+  "id": "11.04.02",
+  "title": "Async module configuration",
+  "trackId": "11",
+  "moduleId": "11.04",
+  "sourceStatus": "draft-unverified",
+  "estimatedMinutes": 65,
+  "stack": {
+    "node": "24",
+    "typescript": "6",
+    "nestjs": "12"
+  },
+  "prerequisites": [
+    "11.04.01"
+  ],
+  "objective": "Dynamic modules should resolve and validate async configuration before exposing clients to consumers.",
+  "misconception": "The module injects an unresolved Promise in place of a usable endpoint configuration.",
+  "acceptance": "Resolve the injected config and assert its URL is valid; invalid config must abort startup.",
+  "securityBoundary": "Never log raw credentials, and do not create connections before configuration is validated.",
+  "labSlug": "async-module-configuration",
+  "officialReferences": [
+    "https://docs.nestjs.com/",
+    "https://docs.nestjs.com/fundamentals/dynamic-modules"
+  ],
+  "reviewStatus": "unreviewed",
+  "runtimeQualification": "not-run"
+}

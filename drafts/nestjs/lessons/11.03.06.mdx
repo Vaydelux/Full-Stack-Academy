@@ -1,0 +1,119 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Multi-write invariants require a real database transaction with rollback on failure.","Force a second-write error and verify the database has neither write after rollback.","A fake in-memory array cannot certify PostgreSQL transaction isolation or rollback."]} />
+
+## The problem we're solving
+
+A service performs two writes without a transaction; one succeeds when the other fails. Building a domain feature demands more than a decorated controller. Real services have invariants, dependencies, persistence contracts and externally visible behavior. When any one layer owns work it cannot safely verify, the resulting application becomes difficult to test and may expose private state.
+
+## Build the mental model
+
+Multi-write invariants require a real database transaction with rollback on failure. Design the feature by drawing arrows from controller → application service → repository/port → persistence. Dependencies should point toward stable contracts; inbound HTTP is an adapter, not the business model. A real Nest module composes these pieces, while transaction boundaries belong near the persistence operation that must be atomic.
+
+**Prediction:** A service performs two writes without a transaction; one succeeds when the other fails. Name the exact state that differs after this failure, and who can observe it.
+
+**Scope:** NestJS 12, Node.js 24, TypeScript 6. This is **staged authoring only**. It has not passed a real installed Nest build, PostgreSQL integration (when applicable), or browser/manual accessibility qualification.
+
+## Prerequisites and preflight
+
+Complete 11.03.05 and review the two source files under `drafts/nestjs/labs/application-transactions/`. The failing starter is intentionally wrong, but a real negative test must fail from the semantic contract, not from unresolved packages. For persistence, do not replace the real transaction or parameterization proof with an array or a SQL string search.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the domain-layer defect" file="drafts/nestjs/labs/application-transactions/starter.ts" expected="A service performs two writes without a transaction; one succeeds when the other fails.">
+
+```ts
+export interface PgClient { query(sql: string, values?: unknown[]): Promise<unknown>; }
+export async function transfer(db: PgClient, from: string, to: string) {
+  await db.query('UPDATE wallets SET balance=balance-1 WHERE id=$1', [from]);
+  await db.query('UPDATE wallets SET balance=balance+1 WHERE id=$1', [to]);
+  // BUG: no BEGIN/COMMIT/ROLLBACK; a partial transfer may persist
+}
+```
+
+**Observation:** A service performs two writes without a transaction; one succeeds when the other fails. Notice where this source chooses the owning layer and what runtime assertion must fail.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the domain boundary" file="drafts/nestjs/labs/application-transactions/solution.ts" expected="Multi-write invariants require a real database transaction with rollback on failure.">
+
+```ts
+export interface PgResult { rowCount: number | null; }
+export interface PgClient {
+  // Must be a single checked-out PostgreSQL client for the entire transaction.
+  query(sql: string, values?: readonly unknown[]): Promise<PgResult>;
+}
+export async function transfer(db: PgClient, from: string, to: string) {
+  if (!from || !to || from === to) throw new Error('Distinct wallet IDs are required');
+  await db.query('BEGIN');
+  try {
+    const debited = await db.query(
+      'UPDATE wallets SET balance=balance-1 WHERE id=$1 AND balance>=1 RETURNING id', [from],
+    );
+    if (debited.rowCount !== 1) throw new Error('Source wallet missing or insufficient balance');
+    const credited = await db.query(
+      'UPDATE wallets SET balance=balance+1 WHERE id=$1 RETURNING id', [to],
+    );
+    if (credited.rowCount !== 1) throw new Error('Destination wallet missing');
+    await db.query('COMMIT');
+  } catch (error) {
+    try {
+      await db.query('ROLLBACK');
+    } catch (rollbackError) {
+      throw new AggregateError([error, rollbackError], 'Transfer failed and rollback also failed');
+    }
+    throw error;
+  }
+}
+```
+
+**Reasoning:** Multi-write invariants require a real database transaction with rollback on failure. A fake in-memory array cannot certify PostgreSQL transaction isolation or rollback. The checked-out database client must remain the **same connection** across BEGIN, both updates, COMMIT and ROLLBACK. The debit requires available balance, both writes must affect exactly one wallet, and a missing recipient must roll back the debit. This is a one-unit educational example, not a production payment or idempotency implementation.
+
+</LessonStep>
+
+<LessonStep number={3} title="Qualify the real service contract" file="drafts/nestjs/labs/application-transactions/lab.json" expected="Force a second-write error and verify the database has neither write after rollback.">
+
+**Expected result:** Force a second-write error and verify the database has neither write after rollback.
+
+**Negative case:** Run the broken starter through the same dependency container, HTTP harness, or transaction test. Confirm a specific failed assertion caused by the bug, not a package-import failure.
+
+**Security and concurrency check:** A fake in-memory array cannot certify PostgreSQL transaction isolation or rollback.
+
+</LessonStep>
+
+## Architecture trade-offs
+
+Directly constructing a service or returning a database entity can be tempting because it reduces boilerplate. It also hides dependency seams and blurs the trust boundary. The practical alternative is not to abstract everything; keep one small interface for a dependency that legitimately varies and enforce invariants in exactly one authoritative place. Favor explicit module imports/exports over globally available providers.
+
+- **Correctness invariant:** Multi-write invariants require a real database transaction with rollback on failure.
+- **Reproducible failure:** A service performs two writes without a transaction; one succeeds when the other fails.
+- **Acceptance evidence:** Force a second-write error and verify the database has neither write after rollback.
+- **Risk that remains:** A fake in-memory array cannot certify PostgreSQL transaction isolation or rollback.
+
+In a multi-request system, repeat the test with two independent users and at least one failure after an intermediate operation. A UI test cannot prove a transaction rollback; only the real persistence adapter can.
+
+<Misconception claim="A service performs two writes without a transaction; one succeeds when the other fails." correction="Multi-write invariants require a real database transaction with rollback on failure." />
+
+<KnowledgeCheck question="Which design is safest for application transactions?" choices={["Make the controller hold every stateful dependency permanently.","Keep business rules in an injectable service and verify the boundary with actual runtime behavior.","Expose persistent entities directly because TypeScript hides private fields.","Treat a mock array as proof of database transactions."]} correctIndex={1} explanation="Multi-write invariants require a real database transaction with rollback on failure." misconception="A service performs two writes without a transaction; one succeeds when the other fails." lessonId="11.03.06" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+1. **Reproduce:** A service performs two writes without a transaction; one succeeds when the other fails.
+2. **Diagnose:** Determine whether the bug belongs to a controller, injectable provider, repository, module export or transaction.
+3. **Repair:** Multi-write invariants require a real database transaction with rollback on failure.
+4. **Regression:** Force a second-write error and verify the database has neither write after rollback.
+5. **Trust boundary:** A fake in-memory array cannot certify PostgreSQL transaction isolation or rollback.
+
+## Guided local lab
+
+The corresponding `starter.ts`, `solution.ts`, and machine-readable `lab.json` are under `drafts/nestjs/labs/application-transactions/`. These remain source exercises awaiting package installation, real library execution and module acceptance. No published course-progress event or `LabGate` is registered.
+
+## Reflect
+
+What is the narrowest seam that should be replaceable in a test? What would fail if two requests overlap? Which case demands a real PostgreSQL connection instead of a local unit test, and how would you prove an error cannot leave a partial write?
+
+## Official references
+
+- [NestJS documentation](https://docs.nestjs.com/)
+- [Focused official reference](https://docs.nestjs.com/techniques/database)

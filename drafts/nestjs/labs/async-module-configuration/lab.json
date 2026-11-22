@@ -1,0 +1,18 @@
+{
+  "id": "draft.nestjs.async-module-configuration",
+  "lessonId": "11.04.02",
+  "title": "Async module configuration",
+  "sourceStatus": "draft-unverified",
+  "runtime": "node-24-nestjs-12-typescript-6",
+  "starter": "drafts/nestjs/labs/async-module-configuration/starter.ts",
+  "solution": "drafts/nestjs/labs/async-module-configuration/solution.ts",
+  "expectedPositive": "Resolve the injected config and assert its URL is valid; invalid config must abort startup.",
+  "expectedNegative": "The module injects an unresolved Promise in place of a usable endpoint configuration.",
+  "requiresRealNestTest": true,
+  "requiresRealHttpTest": true,
+  "readyToPublish": false,
+  "officialReferences": [
+    "https://docs.nestjs.com/",
+    "https://docs.nestjs.com/fundamentals/dynamic-modules"
+  ]
+}

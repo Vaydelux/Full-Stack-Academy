@@ -1,0 +1,18 @@
+{
+  "id": "draft.nestjs.production-service-skeleton",
+  "lessonId": "11.04.08",
+  "title": "Lab production service skeleton",
+  "sourceStatus": "draft-unverified",
+  "runtime": "node-24-nestjs-12-typescript-6",
+  "starter": "drafts/nestjs/labs/production-service-skeleton/starter.ts",
+  "solution": "drafts/nestjs/labs/production-service-skeleton/solution.ts",
+  "expectedPositive": "Boot a Nest Fastify app only on 127.0.0.1, pass an HTTP smoke test and close cleanly.",
+  "expectedNegative": "The practice API binds publicly on 0.0.0.0 and lacks a shutdown hook.",
+  "requiresRealNestTest": true,
+  "requiresRealHttpTest": true,
+  "readyToPublish": false,
+  "officialReferences": [
+    "https://docs.nestjs.com/",
+    "https://docs.nestjs.com/techniques/performance"
+  ]
+}

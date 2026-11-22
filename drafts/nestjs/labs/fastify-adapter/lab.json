@@ -1,0 +1,18 @@
+{
+  "id": "draft.nestjs.fastify-adapter",
+  "lessonId": "11.01.06",
+  "title": "Fastify adapter",
+  "sourceStatus": "draft-unverified",
+  "runtime": "node-24-nestjs-12-typescript-6",
+  "starter": "drafts/nestjs/labs/fastify-adapter/starter.ts",
+  "solution": "drafts/nestjs/labs/fastify-adapter/solution.ts",
+  "expectedPositive": "Start the real application, inspect its adapter type and issue a GET /health request.",
+  "expectedNegative": "The app uses Nest's default HTTP platform even though tests expect Fastify.",
+  "requiresRealNestTest": true,
+  "requiresRealHttpTest": true,
+  "readyToPublish": false,
+  "officialReferences": [
+    "https://docs.nestjs.com/",
+    "https://docs.nestjs.com/techniques/performance"
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "id": "11.02.06",
+  "title": "Structured responses",
+  "trackId": "11",
+  "moduleId": "11.02",
+  "sourceStatus": "draft-unverified",
+  "estimatedMinutes": 60,
+  "stack": {
+    "node": "24",
+    "typescript": "6",
+    "nestjs": "12"
+  },
+  "prerequisites": [
+    "11.02.05"
+  ],
+  "objective": "Response DTOs should expose intentionally selected public fields rather than returning persistent entities unchanged.",
+  "misconception": "A serialized user record includes passwordHash in the HTTP response.",
+  "acceptance": "GET /account returns only id, displayName, and stable public fields.",
+  "securityBoundary": "Never assume JSON serialization or a TypeScript interface automatically redacts secrets.",
+  "labSlug": "structured-responses",
+  "officialReferences": [
+    "https://docs.nestjs.com/",
+    "https://docs.nestjs.com/techniques/serialization"
+  ],
+  "reviewStatus": "unreviewed",
+  "runtimeQualification": "not-run"
+}

@@ -1,0 +1,18 @@
+{
+  "id": "draft.nestjs.application-transactions",
+  "lessonId": "11.03.06",
+  "title": "Application transactions",
+  "sourceStatus": "draft-unverified",
+  "runtime": "node-24-nestjs-12-typescript-6",
+  "starter": "drafts/nestjs/labs/application-transactions/starter.ts",
+  "solution": "drafts/nestjs/labs/application-transactions/solution.ts",
+  "expectedPositive": "Force a second-write error and verify the database has neither write after rollback.",
+  "expectedNegative": "A service performs two writes without a transaction; one succeeds when the other fails.",
+  "requiresRealNestTest": true,
+  "requiresRealHttpTest": false,
+  "readyToPublish": false,
+  "officialReferences": [
+    "https://docs.nestjs.com/",
+    "https://docs.nestjs.com/techniques/database"
+  ]
+}

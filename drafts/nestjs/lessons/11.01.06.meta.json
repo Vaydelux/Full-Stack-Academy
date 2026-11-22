@@ -1,0 +1,27 @@
+{
+  "id": "11.01.06",
+  "title": "Fastify adapter",
+  "trackId": "11",
+  "moduleId": "11.01",
+  "sourceStatus": "draft-unverified",
+  "estimatedMinutes": 60,
+  "stack": {
+    "node": "24",
+    "typescript": "6",
+    "nestjs": "12"
+  },
+  "prerequisites": [
+    "11.01.05"
+  ],
+  "objective": "Nest's Fastify adapter must be provided explicitly when the teaching app promises Fastify behavior.",
+  "misconception": "The app uses Nest's default HTTP platform even though tests expect Fastify.",
+  "acceptance": "Start the real application, inspect its adapter type and issue a GET /health request.",
+  "securityBoundary": "Keep the example loopback-only; do not expose its unauthenticated endpoints publicly.",
+  "labSlug": "fastify-adapter",
+  "officialReferences": [
+    "https://docs.nestjs.com/",
+    "https://docs.nestjs.com/techniques/performance"
+  ],
+  "reviewStatus": "unreviewed",
+  "runtimeQualification": "not-run"
+}

@@ -1,0 +1,27 @@
+{
+  "id": "11.01.04",
+  "title": "Dependency injection scopes",
+  "trackId": "11",
+  "moduleId": "11.01",
+  "sourceStatus": "draft-unverified",
+  "estimatedMinutes": 60,
+  "stack": {
+    "node": "24",
+    "typescript": "6",
+    "nestjs": "12"
+  },
+  "prerequisites": [
+    "11.01.03"
+  ],
+  "objective": "Request-specific data must never be retained in a global singleton provider.",
+  "misconception": "The service stores a previous request ID; concurrent users can observe another request's context.",
+  "acceptance": "Create two independent request scopes and confirm the derived IDs are isolated.",
+  "securityBoundary": "Use Scope.REQUEST only when required; request-scoped providers increase allocation cost.",
+  "labSlug": "dependency-injection-scopes",
+  "officialReferences": [
+    "https://docs.nestjs.com/",
+    "https://docs.nestjs.com/fundamentals/injection-scopes"
+  ],
+  "reviewStatus": "unreviewed",
+  "runtimeQualification": "not-run"
+}

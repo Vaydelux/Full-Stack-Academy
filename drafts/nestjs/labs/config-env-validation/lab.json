@@ -1,0 +1,18 @@
+{
+  "id": "draft.nestjs.config-env-validation",
+  "lessonId": "11.01.05",
+  "title": "Config and env validation",
+  "sourceStatus": "draft-unverified",
+  "runtime": "node-24-nestjs-12-typescript-6",
+  "starter": "drafts/nestjs/labs/config-env-validation/starter.ts",
+  "solution": "drafts/nestjs/labs/config-env-validation/solution.ts",
+  "expectedPositive": "Exercise valid PORT=3337, absent PORT, and invalid PORT=abc independently.",
+  "expectedNegative": "A malformed PORT is converted into NaN and the application fails during startup.",
+  "requiresRealNestTest": true,
+  "requiresRealHttpTest": true,
+  "readyToPublish": false,
+  "officialReferences": [
+    "https://docs.nestjs.com/",
+    "https://docs.nestjs.com/techniques/configuration"
+  ]
+}

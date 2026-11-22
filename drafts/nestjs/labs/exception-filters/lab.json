@@ -1,0 +1,18 @@
+{
+  "id": "draft.nestjs.exception-filters",
+  "lessonId": "11.02.05",
+  "title": "Exception filters",
+  "sourceStatus": "draft-unverified",
+  "runtime": "node-24-nestjs-12-typescript-6",
+  "starter": "drafts/nestjs/labs/exception-filters/starter.ts",
+  "solution": "drafts/nestjs/labs/exception-filters/solution.ts",
+  "expectedPositive": "A NotFoundException retains status 404 with a safe error code; unknown exceptions are 500.",
+  "expectedNegative": "The filter sends an HTTP 500 for a known 404 and exposes the raw exception message.",
+  "requiresRealNestTest": true,
+  "requiresRealHttpTest": true,
+  "readyToPublish": false,
+  "officialReferences": [
+    "https://docs.nestjs.com/",
+    "https://docs.nestjs.com/exception-filters"
+  ]
+}

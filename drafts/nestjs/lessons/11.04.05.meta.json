@@ -1,0 +1,27 @@
+{
+  "id": "11.04.05",
+  "title": "Testing modules and overrides",
+  "trackId": "11",
+  "moduleId": "11.04",
+  "sourceStatus": "draft-unverified",
+  "estimatedMinutes": 65,
+  "stack": {
+    "node": "24",
+    "typescript": "6",
+    "nestjs": "12"
+  },
+  "prerequisites": [
+    "11.04.04"
+  ],
+  "objective": "Provider overrides let integration-style tests exercise real Nest DI without contacting external systems.",
+  "misconception": "The testing module resolves the live mailer and would send real emails.",
+  "acceptance": "The service resolves with an injected fake mailer and no network calls are made.",
+  "securityBoundary": "Keep test credentials isolated and block accidental production endpoints.",
+  "labSlug": "testing-module-overrides",
+  "officialReferences": [
+    "https://docs.nestjs.com/",
+    "https://docs.nestjs.com/fundamentals/testing"
+  ],
+  "reviewStatus": "unreviewed",
+  "runtimeQualification": "not-run"
+}

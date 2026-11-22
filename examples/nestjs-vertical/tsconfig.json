@@ -1,0 +1,50 @@
+{
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "target": "ES2022",
+    "lib": [
+      "ES2022",
+      "DOM"
+    ],
+    "strict": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "rootDir": "../../drafts/nestjs/labs",
+    "outDir": "./dist",
+    "declaration": false,
+    "sourceMap": false,
+    "types": [
+      "node"
+    ],
+    "typeRoots": [
+      "./node_modules/@types"
+    ],
+    "paths": {
+      "@nestjs/*": [
+        "./node_modules/@nestjs/*"
+      ],
+      "rxjs": [
+        "./node_modules/rxjs"
+      ],
+      "rxjs/*": [
+        "./node_modules/rxjs/*"
+      ],
+      "zod": [
+        "./node_modules/zod"
+      ],
+      "socket.io": [
+        "./node_modules/socket.io"
+      ]
+    }
+  },
+  "include": [
+    "../../drafts/nestjs/labs/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
+}

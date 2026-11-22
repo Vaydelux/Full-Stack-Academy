@@ -1,0 +1,105 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["A long-running provider must stop timers and close connections as Nest shuts down.","After shutdown, a spy confirms the resource's close method was called exactly once.","Handle SIGTERM with bounded work; never continue accepting traffic after critical dependency loss."]} />
+
+## The problem we're solving
+
+The resource remains active after app.close, causing hanging processes and duplicate work. At this level, correctness must survive a process restart, a concurrent request, an unavailable dependency, or an unauthorized caller. An advanced Nest decorator is only useful when the test proves that its registration, runtime scope and error behavior match the intended design.
+
+## Build the mental model
+
+A long-running provider must stop timers and close connections as Nest shuts down. Always identify the owner of state and the point where a failure becomes visible: at the DI container, on the socket, in the request interceptor, at shutdown or in a production health probe. A secure design is not merely a code style; it is the combination of runtime boundaries and a reproducible denial case.
+
+**Predict:** The resource remains active after app.close, causing hanging processes and duplicate work. Explain what fails under a second client, a shutdown event or a missing dependency.
+
+**Version scope:** Node 24, TypeScript 6, NestJS 12. Source is **staged and unverified**. Real Nest compiler, HTTP/WebSocket and any external-service qualification have not run for these drafts.
+
+## Prerequisites and preflight
+
+Complete 11.04.03. Start with `drafts/nestjs/labs/graceful-shutdown/starter.ts` and attempt the specified acceptance case. Do not accidentally use a production account, remote server, email service or database; the practice harness is loopback-only. Any dependent package must be installed and integrity-locked from a real package registry before a runtime pass can be claimed.
+
+## Guided implementation
+
+<LessonStep number={1} title="Demonstrate the broken advanced boundary" file="drafts/nestjs/labs/graceful-shutdown/starter.ts" expected="The resource remains active after app.close, causing hanging processes and duplicate work.">
+
+```ts
+import { Injectable } from '@nestjs/common';
+export class Connection { close() {} }
+@Injectable()
+export class Worker {
+  constructor(private readonly connection: Connection) {}
+  // BUG: no lifecycle contract, connection never closed
+}
+```
+
+**Failure to observe:** The resource remains active after app.close, causing hanging processes and duplicate work. Explain whether a second tenant, a failed connection, or a shutdown sequence exposes the problem.
+
+</LessonStep>
+
+<LessonStep number={2} title="Apply the versioned NestJS repair" file="drafts/nestjs/labs/graceful-shutdown/solution.ts" expected="A long-running provider must stop timers and close connections as Nest shuts down.">
+
+```ts
+import { Injectable, OnApplicationShutdown } from '@nestjs/common';
+export class Connection { close() {} }
+@Injectable()
+export class Worker implements OnApplicationShutdown {
+  private stopped = false;
+  constructor(private readonly connection: Connection) {}
+  onApplicationShutdown() {
+    if (this.stopped) return;
+    this.stopped = true;
+    this.connection.close();
+  }
+}
+```
+
+**Why it works:** A long-running provider must stop timers and close connections as Nest shuts down. Handle SIGTERM with bounded work; never continue accepting traffic after critical dependency loss.
+
+</LessonStep>
+
+<LessonStep number={3} title="Qualify real integrations and denial paths" file="drafts/nestjs/labs/graceful-shutdown/lab.json" expected="After shutdown, a spy confirms the resource's close method was called exactly once.">
+
+**Positive contract:** After shutdown, a spy confirms the resource's close method was called exactly once.
+
+**Negative contract:** The source starter must fail an assertion because the resource remains active after app.close, causing hanging processes and duplicate work. The green solution must pass under an actual Nest testing module or socket/HTTP adapter where applicable.
+
+**Trust boundary:** Handle SIGTERM with bounded work; never continue accepting traffic after critical dependency loss.
+
+</LessonStep>
+
+## Operational and security review
+
+A green response from one synchronous unit test is not proof of production reliability. Review two independent request contexts, a malformed payload, an intentional dependency failure and a resource-release scenario. Do not expose a demo health endpoint or test gateway to the public internet. For anything that could send or store private data, use independently authenticated test principals and negative access checks.
+
+- **Design invariant:** A long-running provider must stop timers and close connections as Nest shuts down.
+- **Observable regression:** The resource remains active after app.close, causing hanging processes and duplicate work.
+- **Acceptance:** After shutdown, a spy confirms the resource's close method was called exactly once.
+- **Remaining risk:** Handle SIGTERM with bounded work; never continue accepting traffic after critical dependency loss.
+
+The lesson's instructor snippet demonstrates the mechanism but is not a deployable complete production server. Real deployment needs credential management, TLS, limits, structured logging, shutdown and isolation that are deliberately outside this individual exercise.
+
+<Misconception claim="The resource remains active after app.close, causing hanging processes and duplicate work." correction="A long-running provider must stop timers and close connections as Nest shuts down." />
+
+<KnowledgeCheck question="What should a release reviewer demand for lifecycle graceful shutdown?" choices={["A passing source-text search is sufficient.","The actual Nest runtime shows the specified positive case and a meaningful denial or failure case.","A project compiles, so tenancy is proven.","A local demo endpoint may safely be exposed publicly without auth."]} correctIndex={1} explanation="A long-running provider must stop timers and close connections as Nest shuts down." misconception="The resource remains active after app.close, causing hanging processes and duplicate work." lessonId="11.04.04" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+1. **Reproduce:** The resource remains active after app.close, causing hanging processes and duplicate work.
+2. **Diagnose:** Find the responsible Nest container, socket, interceptor, test override or shutdown stage.
+3. **Repair:** A long-running provider must stop timers and close connections as Nest shuts down.
+4. **Regression:** After shutdown, a spy confirms the resource's close method was called exactly once.
+5. **Safety constraint:** Handle SIGTERM with bounded work; never continue accepting traffic after critical dependency loss.
+
+## Guided local lab
+
+The staged `drafts/nestjs/labs/graceful-shutdown/` folder contains a deliberately incorrect learner source, instructor repair and acceptance manifest. A future package-locked Nest 12 harness must run the real positive and negative checks before these can become published lab fixtures. No `LabGate` or course-progress claim is present.
+
+## Reflect
+
+Would this repair remain valid if there were two tenants, a stopped database or an interrupted deployment? Which test must run in a real Fastify adapter or WebSocket connection rather than by directly calling a class method? What is the smallest trustworthy negative case?
+
+## Official references
+
+- [NestJS documentation](https://docs.nestjs.com/)
+- [Focused official reference](https://docs.nestjs.com/fundamentals/lifecycle-events)

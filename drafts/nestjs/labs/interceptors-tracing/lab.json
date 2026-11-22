@@ -1,0 +1,18 @@
+{
+  "id": "draft.nestjs.interceptors-tracing",
+  "lessonId": "11.02.04",
+  "title": "Interceptors and tracing",
+  "sourceStatus": "draft-unverified",
+  "runtime": "node-24-nestjs-12-typescript-6",
+  "starter": "drafts/nestjs/labs/interceptors-tracing/starter.ts",
+  "solution": "drafts/nestjs/labs/interceptors-tracing/solution.ts",
+  "expectedPositive": "A handler returning a task remains visible in the intercepted result and contains a request trace ID.",
+  "expectedNegative": "The interceptor discards the route return value, so clients receive unrelated content.",
+  "requiresRealNestTest": true,
+  "requiresRealHttpTest": true,
+  "readyToPublish": false,
+  "officialReferences": [
+    "https://docs.nestjs.com/",
+    "https://docs.nestjs.com/interceptors"
+  ]
+}

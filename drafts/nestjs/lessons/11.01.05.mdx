@@ -1,0 +1,94 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Parse environment settings once at the composition root before opening any network port.","Exercise valid PORT=3337, absent PORT, and invalid PORT=abc independently.","Do not log secrets or return raw environment values to clients."]} />
+
+## The problem we're solving
+
+A malformed PORT is converted into NaN and the application fails during startup. A team reviewing a NestJS service must understand *why* this is a failure, not merely memorize decorator names. This lesson isolates the failure in one short source file so the learner can compare the runtime contract before and after the change.
+
+## Build the mental model
+
+Parse environment settings once at the composition root before opening any network port. In NestJS 12, decorators register metadata used by the Nest runtime; the TypeScript class is not automatically a route or managed provider. A running application must still compose its modules, resolve dependencies, and handle failures at the actual HTTP or service boundary.
+
+**Predict:** Before reading the instructor solution, describe the client-visible response or container behavior when the broken starter is used. A malformed PORT is converted into NaN and the application fails during startup.
+
+**Trust and version boundary:** Target Node.js 24, TypeScript 6 and NestJS 12 with real installed packages. The repository has not yet completed an npm-locked Nest runtime test for this draft. Source existence is not evidence of a functioning server. Do not log secrets or return raw environment values to clients.
+
+## Prerequisites and preflight
+
+Complete 11.01.04 first. Inspect `drafts/nestjs/labs/config-env-validation/starter.ts` and `drafts/nestjs/labs/config-env-validation/solution.ts`. A real acceptance suite must compile these files with official Nest 12 dependencies and prove both a failing starter assertion and the instructor's positive behavior. No fabricated dependency lock or mocked framework API is allowed.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the incorrect framework behavior" file="drafts/nestjs/labs/config-env-validation/starter.ts" expected="A malformed PORT is converted into NaN and the application fails during startup.">
+
+```ts
+export function parsePort(raw: string | undefined): number {
+  return Number(raw ?? '3337'); // BUG: NaN, fractional and unsafe values pass through
+}
+export const apiPort = parsePort(process.env.PORT);
+```
+
+**Observe:** A malformed PORT is converted into NaN and the application fails during startup. Ask whether the bug comes from TypeScript syntax, dependency injection metadata, request processing, or server state. Test the *observable effect*, not a substring in source code.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement a focused NestJS repair" file="drafts/nestjs/labs/config-env-validation/solution.ts" expected="Parse environment settings once at the composition root before opening any network port.">
+
+```ts
+import { z } from 'zod';
+const PortSchema = z.coerce.number().int().min(1024).max(65535);
+export function parsePort(raw: string | undefined): number {
+  return PortSchema.parse(raw ?? '3337');
+}
+export const apiPort = parsePort(process.env.PORT);
+```
+
+**Reasoning:** Parse environment settings once at the composition root before opening any network port. Do not log secrets or return raw environment values to clients. This repair does not imply that external users are authorized; it solves only the bounded lesson contract.
+
+</LessonStep>
+
+<LessonStep number={3} title="Prove both boundaries using the real Nest runtime" file="drafts/nestjs/labs/config-env-validation/lab.json" expected="Exercise valid PORT=3337, absent PORT, and invalid PORT=abc independently.">
+
+**Instructor acceptance:** Exercise valid PORT=3337, absent PORT, and invalid PORT=abc independently.
+
+**Negative test:** The learner starter must fail because a malformed PORT is converted into NaN and the application fails during startup. This should be a semantic assertion failure after the application actually starts, not a missing package or misconfigured test runner.
+
+**Safety case:** Do not log secrets or return raw environment values to clients.
+
+</LessonStep>
+
+## Design alternatives and debugging strategy
+
+A quick workaround would hide the immediate symptom, but it would leave the original ownership or lifecycle error intact. Start by tracing the source that creates the Nest application and the providers registered in its module graph; then inspect the exact request path, active context, or emitted response affected by this lesson. Prefer an isolated test that can be run repeatedly without a live external database or credential.
+
+- **When it is appropriate:** Parse environment settings once at the composition root before opening any network port.
+- **When it is not enough:** If multiple requests, tenants, or worker processes are involved, test the same boundary under concurrency and treat incoming data as untrusted.
+- **How to confirm the repair:** Exercise valid PORT=3337, absent PORT, and invalid PORT=abc independently.
+- **What to document:** The expected failure code, verification command, dependency version, and whether a browser, HTTP, or service-layer test actually executed.
+
+<Misconception claim="A malformed PORT is converted into NaN and the application fails during startup." correction="Parse environment settings once at the composition root before opening any network port." />
+
+<KnowledgeCheck question="What should the reviewer verify for config and env validation?" choices={["The source contains a decorator, so the runtime must work.","The real Nest application exhibits the specified behavior and rejects the broken case.","TypeScript types alone authorize incoming requests.","A mocked substring search proves the HTTP contract."]} correctIndex={1} explanation="Parse environment settings once at the composition root before opening any network port." misconception="A malformed PORT is converted into NaN and the application fails during startup." lessonId="11.01.05" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+1. **Reproduce:** A malformed PORT is converted into NaN and the application fails during startup.
+2. **Diagnose:** Identify the module, provider, request stage, or lifecycle owner responsible for the symptom.
+3. **Repair:** Parse environment settings once at the composition root before opening any network port.
+4. **Regression:** Exercise valid PORT=3337, absent PORT, and invalid PORT=abc independently.
+5. **Trust boundary:** Do not log secrets or return raw environment values to clients.
+
+## Guided local lab
+
+The red starter and instructor solution are versioned under `drafts/nestjs/labs/config-env-validation/`. This remains a **draft**, without a published `LabGate` or course credit. Its runtime test, native Fastify request behavior where applicable, and accessible error handling must pass the dedicated module release gate before publication.
+
+## Reflect
+
+Why does the wrong behavior survive a superficial code review? What observable assertion would detect it reliably after a Nest or TypeScript major upgrade? Which aspect still requires a true service integration test rather than a class-only unit test?
+
+## Official references
+
+- [Canonical Nest documentation](https://docs.nestjs.com/)
+- [Focused Nest documentation](https://docs.nestjs.com/techniques/configuration)

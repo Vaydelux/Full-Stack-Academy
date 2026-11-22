@@ -1,0 +1,18 @@
+{
+  "id": "draft.nestjs.injectable-providers",
+  "lessonId": "11.01.03",
+  "title": "Injectable providers",
+  "sourceStatus": "draft-unverified",
+  "runtime": "node-24-nestjs-12-typescript-6",
+  "starter": "drafts/nestjs/labs/injectable-providers/starter.ts",
+  "solution": "drafts/nestjs/labs/injectable-providers/solution.ts",
+  "expectedPositive": "Resolve the controller through Test.createTestingModule and override its service with a fake.",
+  "expectedNegative": "A controller manually instantiates a service, bypassing DI overrides and per-request lifecycle.",
+  "requiresRealNestTest": true,
+  "requiresRealHttpTest": true,
+  "readyToPublish": false,
+  "officialReferences": [
+    "https://docs.nestjs.com/",
+    "https://docs.nestjs.com/providers"
+  ]
+}

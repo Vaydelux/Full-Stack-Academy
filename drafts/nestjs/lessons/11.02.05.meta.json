@@ -1,0 +1,27 @@
+{
+  "id": "11.02.05",
+  "title": "Exception filters",
+  "trackId": "11",
+  "moduleId": "11.02",
+  "sourceStatus": "draft-unverified",
+  "estimatedMinutes": 60,
+  "stack": {
+    "node": "24",
+    "typescript": "6",
+    "nestjs": "12"
+  },
+  "prerequisites": [
+    "11.02.04"
+  ],
+  "objective": "An HttpException filter must return a safe status and predictable response body without leaking internals.",
+  "misconception": "The filter sends an HTTP 500 for a known 404 and exposes the raw exception message.",
+  "acceptance": "A NotFoundException retains status 404 with a safe error code; unknown exceptions are 500.",
+  "securityBoundary": "Never return stack traces, SQL fragments, service keys, or raw internal errors.",
+  "labSlug": "exception-filters",
+  "officialReferences": [
+    "https://docs.nestjs.com/",
+    "https://docs.nestjs.com/exception-filters"
+  ],
+  "reviewStatus": "unreviewed",
+  "runtimeQualification": "not-run"
+}

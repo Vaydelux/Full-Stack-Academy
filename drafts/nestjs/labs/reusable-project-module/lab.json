@@ -1,0 +1,18 @@
+{
+  "id": "draft.nestjs.reusable-project-module",
+  "lessonId": "11.03.08",
+  "title": "Lab reusable project module",
+  "sourceStatus": "draft-unverified",
+  "runtime": "node-24-nestjs-12-typescript-6",
+  "starter": "drafts/nestjs/labs/reusable-project-module/starter.ts",
+  "solution": "drafts/nestjs/labs/reusable-project-module/solution.ts",
+  "expectedPositive": "Resolve ProjectsController from a real Nest module and replace the store token for tests.",
+  "expectedNegative": "ProjectsController directly constructs its service, making the module hard to override.",
+  "requiresRealNestTest": true,
+  "requiresRealHttpTest": true,
+  "readyToPublish": false,
+  "officialReferences": [
+    "https://docs.nestjs.com/",
+    "https://docs.nestjs.com/modules"
+  ]
+}

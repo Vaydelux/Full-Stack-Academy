@@ -1,0 +1,27 @@
+{
+  "id": "11.03.08",
+  "title": "Lab reusable project module",
+  "trackId": "11",
+  "moduleId": "11.03",
+  "sourceStatus": "draft-unverified",
+  "estimatedMinutes": 60,
+  "stack": {
+    "node": "24",
+    "typescript": "6",
+    "nestjs": "12"
+  },
+  "prerequisites": [
+    "11.03.07"
+  ],
+  "objective": "A reusable projects feature should encapsulate service, controller and store token in an explicit Nest module.",
+  "misconception": "ProjectsController directly constructs its service, making the module hard to override.",
+  "acceptance": "Resolve ProjectsController from a real Nest module and replace the store token for tests.",
+  "securityBoundary": "An in-memory demo repository is not production persistence or multi-tenant authorization.",
+  "labSlug": "reusable-project-module",
+  "officialReferences": [
+    "https://docs.nestjs.com/",
+    "https://docs.nestjs.com/modules"
+  ],
+  "reviewStatus": "unreviewed",
+  "runtimeQualification": "not-run"
+}

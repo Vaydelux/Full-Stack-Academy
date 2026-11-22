@@ -1,0 +1,124 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Realtime events must target only an authorized room after establishing a verified socket identity.","Two tenant sockets connect; each receives only events for its own authorized tenant.","Treat client-supplied room names as untrusted; authenticate the handshake before joining."]} />
+
+## The problem we're solving
+
+The gateway broadcasts one tenant's task update to every connected client. At this level, correctness must survive a process restart, a concurrent request, an unavailable dependency, or an unauthorized caller. An advanced Nest decorator is only useful when the test proves that its registration, runtime scope and error behavior match the intended design.
+
+## Build the mental model
+
+Realtime events must target only an authorized room after establishing a verified socket identity. Always identify the owner of state and the point where a failure becomes visible: at the DI container, on the socket, in the request interceptor, at shutdown or in a production health probe. A secure design is not merely a code style; it is the combination of runtime boundaries and a reproducible denial case.
+
+**Predict:** The gateway broadcasts one tenant's task update to every connected client. Explain what fails under a second client, a shutdown event or a missing dependency.
+
+**Version scope:** Node 24, TypeScript 6, NestJS 12. Source is **staged and unverified**. Real Nest compiler, HTTP/WebSocket and any external-service qualification have not run for these drafts.
+
+## Prerequisites and preflight
+
+Complete 11.04.02. Start with `drafts/nestjs/labs/websocket-gateways/starter.ts` and attempt the specified acceptance case. Do not accidentally use a production account, remote server, email service or database; the practice harness is loopback-only. Any dependent package must be installed and integrity-locked from a real package registry before a runtime pass can be claimed.
+
+## Guided implementation
+
+<LessonStep number={1} title="Demonstrate the broken advanced boundary" file="drafts/nestjs/labs/websocket-gateways/starter.ts" expected="The gateway broadcasts one tenant's task update to every connected client.">
+
+```ts
+import { MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
+import type { Server } from 'socket.io';
+@WebSocketGateway()
+export class TaskGateway {
+  @WebSocketServer() server!: Server;
+  @SubscribeMessage('task')
+  publish(@MessageBody() body: { tenantId: string; title: string }) {
+    this.server.emit('task', body); // BUG: all tenants receive it
+  }
+}
+```
+
+**Failure to observe:** The gateway broadcasts one tenant's task update to every connected client. Explain whether a second tenant, a failed connection, or a shutdown sequence exposes the problem.
+
+</LessonStep>
+
+<LessonStep number={2} title="Apply the versioned NestJS repair" file="drafts/nestjs/labs/websocket-gateways/solution.ts" expected="Realtime events must target only an authorized room after establishing a verified socket identity.">
+
+```ts
+import { ConnectedSocket, MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer, OnGatewayConnection } from '@nestjs/websockets';
+import type { Server, Socket } from 'socket.io';
+@WebSocketGateway()
+export class TaskGateway implements OnGatewayConnection {
+  @WebSocketServer() server!: Server;
+  handleConnection(client: Socket) {
+    const tenantId: unknown = client.data.tenantId; // assigned by authenticated handshake middleware
+    if (typeof tenantId !== 'string' || !tenantId.trim()) {
+      client.disconnect(true);
+      return;
+    }
+    void client.join('tenant:' + tenantId);
+  }
+  @SubscribeMessage('task')
+  publish(@ConnectedSocket() client: Socket, @MessageBody() body: unknown) {
+    const tenantId: unknown = client.data.tenantId;
+    if (typeof tenantId !== 'string' || !tenantId.trim()) return { error: 'UNAUTHORIZED' };
+    if (!body || typeof body !== 'object' || Array.isArray(body)) return { error: 'INVALID_TASK' };
+    const title: unknown = (body as Record<string, unknown>).title;
+    if (typeof title !== 'string') return { error: 'INVALID_TASK' };
+    const trimmed = title.trim();
+    if (!trimmed || trimmed.length > 100) return { error: 'INVALID_TASK' };
+    this.server.to('tenant:' + tenantId).emit('task', { title: trimmed });
+    return { accepted: true };
+  }
+}
+```
+
+**Why it works:** Realtime events must target only an authorized room after establishing a verified socket identity. Treat client-supplied room names as untrusted; authenticate the handshake before joining.
+
+</LessonStep>
+
+<LessonStep number={3} title="Qualify real integrations and denial paths" file="drafts/nestjs/labs/websocket-gateways/lab.json" expected="Two tenant sockets connect; each receives only events for its own authorized tenant.">
+
+**Positive contract:** Two tenant sockets connect; each receives only events for its own authorized tenant.
+
+**Negative contract:** The source starter must fail an assertion because the gateway broadcasts one tenant's task update to every connected client. The green solution must pass under an actual Nest testing module or socket/HTTP adapter where applicable.
+
+**Trust boundary:** Treat client-supplied room names as untrusted; authenticate the handshake before joining.
+
+</LessonStep>
+
+**Updated verification boundary:** The server must treat message bodies as unknown JSON until their shape and title type are validated. A null body, array, numeric title or empty string must return INVALID_TASK without throwing or broadcasting. The authenticated server—not a client-supplied tenant field—must assign the socket tenant.
+
+## Operational and security review
+
+A green response from one synchronous unit test is not proof of production reliability. Review two independent request contexts, a malformed payload, an intentional dependency failure and a resource-release scenario. Do not expose a demo health endpoint or test gateway to the public internet. For anything that could send or store private data, use independently authenticated test principals and negative access checks.
+
+- **Design invariant:** Realtime events must target only an authorized room after establishing a verified socket identity.
+- **Observable regression:** The gateway broadcasts one tenant's task update to every connected client.
+- **Acceptance:** Two tenant sockets connect; each receives only events for its own authorized tenant.
+- **Remaining risk:** Treat client-supplied room names as untrusted; authenticate the handshake before joining.
+
+The lesson's instructor snippet demonstrates the mechanism but is not a deployable complete production server. Real deployment needs credential management, TLS, limits, structured logging, shutdown and isolation that are deliberately outside this individual exercise.
+
+<Misconception claim="The gateway broadcasts one tenant's task update to every connected client." correction="Realtime events must target only an authorized room after establishing a verified socket identity." />
+
+<KnowledgeCheck question="What should a release reviewer demand for websocket gateways?" choices={["A passing source-text search is sufficient.","The actual Nest runtime shows the specified positive case and a meaningful denial or failure case.","A project compiles, so tenancy is proven.","A local demo endpoint may safely be exposed publicly without auth."]} correctIndex={1} explanation="Realtime events must target only an authorized room after establishing a verified socket identity." misconception="The gateway broadcasts one tenant's task update to every connected client." lessonId="11.04.03" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+1. **Reproduce:** The gateway broadcasts one tenant's task update to every connected client.
+2. **Diagnose:** Find the responsible Nest container, socket, interceptor, test override or shutdown stage.
+3. **Repair:** Realtime events must target only an authorized room after establishing a verified socket identity.
+4. **Regression:** Two tenant sockets connect; each receives only events for its own authorized tenant.
+5. **Safety constraint:** Treat client-supplied room names as untrusted; authenticate the handshake before joining.
+
+## Guided local lab
+
+The staged `drafts/nestjs/labs/websocket-gateways/` folder contains a deliberately incorrect learner source, instructor repair and acceptance manifest. A future package-locked Nest 12 harness must run the real positive and negative checks before these can become published lab fixtures. No `LabGate` or course-progress claim is present.
+
+## Reflect
+
+Would this repair remain valid if there were two tenants, a stopped database or an interrupted deployment? Which test must run in a real Fastify adapter or WebSocket connection rather than by directly calling a class method? What is the smallest trustworthy negative case?
+
+## Official references
+
+- [NestJS documentation](https://docs.nestjs.com/)
+- [Focused official reference](https://docs.nestjs.com/websockets/gateways)

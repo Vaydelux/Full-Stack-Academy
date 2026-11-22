@@ -1,0 +1,18 @@
+{
+  "id": "draft.nestjs.guard-order-bug-hunt",
+  "lessonId": "11.02.08",
+  "title": "Bug Hunt guard order",
+  "sourceStatus": "draft-unverified",
+  "runtime": "node-24-nestjs-12-typescript-6",
+  "starter": "drafts/nestjs/labs/guard-order-bug-hunt/starter.ts",
+  "solution": "drafts/nestjs/labs/guard-order-bug-hunt/solution.ts",
+  "expectedPositive": "Unauthenticated requests are denied before a handler executes; authorized invalid bodies still return 400.",
+  "expectedNegative": "The guard authorizes everyone and the team mistakenly relies on validation to protect private records.",
+  "requiresRealNestTest": true,
+  "requiresRealHttpTest": true,
+  "readyToPublish": false,
+  "officialReferences": [
+    "https://docs.nestjs.com/",
+    "https://docs.nestjs.com/faq/request-lifecycle"
+  ]
+}

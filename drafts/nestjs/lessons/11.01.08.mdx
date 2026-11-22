@@ -1,0 +1,104 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["A health endpoint must reflect actual service readiness instead of returning a constant green response.","With readiness true return 200; with readiness false return 503; check both through real HTTP.","Bind locally for practice; production readiness requires actual dependency probes and safe failure data."]} />
+
+## The problem we're solving
+
+The endpoint returns status up when a required service is unavailable. A team reviewing a NestJS service must understand *why* this is a failure, not merely memorize decorator names. This lesson isolates the failure in one short source file so the learner can compare the runtime contract before and after the change.
+
+## Build the mental model
+
+A health endpoint must reflect actual service readiness instead of returning a constant green response. In NestJS 12, decorators register metadata used by the Nest runtime; the TypeScript class is not automatically a route or managed provider. A running application must still compose its modules, resolve dependencies, and handle failures at the actual HTTP or service boundary.
+
+**Predict:** Before reading the instructor solution, describe the client-visible response or container behavior when the broken starter is used. The endpoint returns status up when a required service is unavailable.
+
+**Trust and version boundary:** Target Node.js 24, TypeScript 6 and NestJS 12 with real installed packages. The repository has not yet completed an npm-locked Nest runtime test for this draft. Source existence is not evidence of a functioning server. Bind locally for practice; production readiness requires actual dependency probes and safe failure data.
+
+## Prerequisites and preflight
+
+Complete 11.01.07 first. Inspect `drafts/nestjs/labs/hello-api-capstone/starter.ts` and `drafts/nestjs/labs/hello-api-capstone/solution.ts`. A real acceptance suite must compile these files with official Nest 12 dependencies and prove both a failing starter assertion and the instructor's positive behavior. No fabricated dependency lock or mocked framework API is allowed.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the incorrect framework behavior" file="drafts/nestjs/labs/hello-api-capstone/starter.ts" expected="The endpoint returns status up when a required service is unavailable.">
+
+```ts
+import { Controller, Get } from '@nestjs/common';
+export class Readiness { ready = false; }
+@Controller('health')
+export class HealthController {
+  constructor(private readonly readiness: Readiness) {}
+  @Get() status() { return { status: 'up' }; } // BUG: never consult readiness
+}
+```
+
+**Observe:** The endpoint returns status up when a required service is unavailable. Ask whether the bug comes from TypeScript syntax, dependency injection metadata, request processing, or server state. Test the *observable effect*, not a substring in source code.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement a focused NestJS repair" file="drafts/nestjs/labs/hello-api-capstone/solution.ts" expected="A health endpoint must reflect actual service readiness instead of returning a constant green response.">
+
+```ts
+import { Controller, Get, Injectable, Module, ServiceUnavailableException } from '@nestjs/common';
+@Injectable()
+export class Readiness { ready = false; }
+@Controller('health')
+export class HealthController {
+  constructor(private readonly readiness: Readiness) {}
+  @Get() status() {
+    if (!this.readiness.ready) throw new ServiceUnavailableException('Not ready');
+    return { status: 'up' };
+  }
+}
+@Module({ providers: [Readiness], controllers: [HealthController] })
+export class HealthModule {}
+```
+
+**Reasoning:** A health endpoint must reflect actual service readiness instead of returning a constant green response. Bind locally for practice; production readiness requires actual dependency probes and safe failure data. This repair does not imply that external users are authorized; it solves only the bounded lesson contract.
+
+</LessonStep>
+
+<LessonStep number={3} title="Prove both boundaries using the real Nest runtime" file="drafts/nestjs/labs/hello-api-capstone/lab.json" expected="With readiness true return 200; with readiness false return 503; check both through real HTTP.">
+
+**Instructor acceptance:** With readiness true return 200; with readiness false return 503; check both through real HTTP.
+
+**Negative test:** The learner starter must fail because the endpoint returns status up when a required service is unavailable. This should be a semantic assertion failure after the application actually starts, not a missing package or misconfigured test runner.
+
+**Safety case:** Bind locally for practice; production readiness requires actual dependency probes and safe failure data.
+
+</LessonStep>
+
+## Design alternatives and debugging strategy
+
+A quick workaround would hide the immediate symptom, but it would leave the original ownership or lifecycle error intact. Start by tracing the source that creates the Nest application and the providers registered in its module graph; then inspect the exact request path, active context, or emitted response affected by this lesson. Prefer an isolated test that can be run repeatedly without a live external database or credential.
+
+- **When it is appropriate:** A health endpoint must reflect actual service readiness instead of returning a constant green response.
+- **When it is not enough:** If multiple requests, tenants, or worker processes are involved, test the same boundary under concurrency and treat incoming data as untrusted.
+- **How to confirm the repair:** With readiness true return 200; with readiness false return 503; check both through real HTTP.
+- **What to document:** The expected failure code, verification command, dependency version, and whether a browser, HTTP, or service-layer test actually executed.
+
+<Misconception claim="The endpoint returns status up when a required service is unavailable." correction="A health endpoint must reflect actual service readiness instead of returning a constant green response." />
+
+<KnowledgeCheck question="What should the reviewer verify for lab hello api?" choices={["The source contains a decorator, so the runtime must work.","The real Nest application exhibits the specified behavior and rejects the broken case.","TypeScript types alone authorize incoming requests.","A mocked substring search proves the HTTP contract."]} correctIndex={1} explanation="A health endpoint must reflect actual service readiness instead of returning a constant green response." misconception="The endpoint returns status up when a required service is unavailable." lessonId="11.01.08" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+1. **Reproduce:** The endpoint returns status up when a required service is unavailable.
+2. **Diagnose:** Identify the module, provider, request stage, or lifecycle owner responsible for the symptom.
+3. **Repair:** A health endpoint must reflect actual service readiness instead of returning a constant green response.
+4. **Regression:** With readiness true return 200; with readiness false return 503; check both through real HTTP.
+5. **Trust boundary:** Bind locally for practice; production readiness requires actual dependency probes and safe failure data.
+
+## Guided local lab
+
+The red starter and instructor solution are versioned under `drafts/nestjs/labs/hello-api-capstone/`. This remains a **draft**, without a published `LabGate` or course credit. Its runtime test, native Fastify request behavior where applicable, and accessible error handling must pass the dedicated module release gate before publication.
+
+## Reflect
+
+Why does the wrong behavior survive a superficial code review? What observable assertion would detect it reliably after a Nest or TypeScript major upgrade? Which aspect still requires a true service integration test rather than a class-only unit test?
+
+## Official references
+
+- [Canonical Nest documentation](https://docs.nestjs.com/)
+- [Focused Nest documentation](https://docs.nestjs.com/recipes/terminus)
