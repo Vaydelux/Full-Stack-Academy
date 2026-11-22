@@ -450,7 +450,10 @@
     "test:course-roadmap": "node --experimental-strip-types --test tests/course-roadmap.test.mjs",
     "test:postgresql-modeling-source": "node examples/postgresql-modeling/scripts/verify-source.mjs --check && node --test examples/postgresql-modeling/tests/source.test.mjs",
     "status:postgresql-modeling": "node examples/postgresql-modeling/scripts/verify-source.mjs --json",
-    "qualify:postgresql:12-02": "node examples/postgresql-modeling/scripts/qualify.mjs"
+    "qualify:postgresql:12-02": "node examples/postgresql-modeling/scripts/qualify.mjs",
+    "test:postgresql-p3-source": "node examples/postgresql-p3/scripts/verify-source.mjs --check && node --test examples/postgresql-p3/tests/source.test.mjs examples/postgresql-p3/tests/qualify-source.test.mjs",
+    "status:postgresql-p3": "node examples/postgresql-p3/scripts/verify-source.mjs --json",
+    "qualify:postgresql:p3": "node examples/postgresql-p3/scripts/qualify.mjs"
   },
   "dependencies": {
     "clsx": "^2.1.1",

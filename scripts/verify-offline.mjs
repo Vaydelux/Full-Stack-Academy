@@ -46,6 +46,7 @@ const steps = [
   'test:publication-phases',
   'test:course-roadmap',
   'test:postgresql-modeling-source',
+  'test:postgresql-p3-source',
   'test:postgresql-drafts',
   'validate',
   'verify:content',
