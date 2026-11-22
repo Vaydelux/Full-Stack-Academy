@@ -4,17 +4,23 @@ import type { Server, Socket } from 'socket.io';
 export class TaskGateway implements OnGatewayConnection {
   @WebSocketServer() server!: Server;
   handleConnection(client: Socket) {
-    const tenantId = client.data.tenantId as string | undefined; // set by verified handshake middleware
-    if (!tenantId) { client.disconnect(true); return; }
+    const tenantId: unknown = client.data.tenantId; // assigned by authenticated handshake middleware
+    if (typeof tenantId !== 'string' || !tenantId.trim()) {
+      client.disconnect(true);
+      return;
+    }
     void client.join('tenant:' + tenantId);
   }
   @SubscribeMessage('task')
-  publish(@ConnectedSocket() client: Socket, @MessageBody() body: { title: string }) {
-    const tenantId = client.data.tenantId as string | undefined;
-    if (!tenantId) return { error: 'UNAUTHORIZED' };
-    const title = body.title?.trim();
-    if (!title || title.length > 100) return { error: 'INVALID_TASK' };
-    this.server.to('tenant:' + tenantId).emit('task', { title });
+  publish(@ConnectedSocket() client: Socket, @MessageBody() body: unknown) {
+    const tenantId: unknown = client.data.tenantId;
+    if (typeof tenantId !== 'string' || !tenantId.trim()) return { error: 'UNAUTHORIZED' };
+    if (!body || typeof body !== 'object' || Array.isArray(body)) return { error: 'INVALID_TASK' };
+    const title: unknown = (body as Record<string, unknown>).title;
+    if (typeof title !== 'string') return { error: 'INVALID_TASK' };
+    const trimmed = title.trim();
+    if (!trimmed || trimmed.length > 100) return { error: 'INVALID_TASK' };
+    this.server.to('tenant:' + tenantId).emit('task', { title: trimmed });
     return { accepted: true };
   }
 }
