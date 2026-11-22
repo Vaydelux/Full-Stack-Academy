@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import { isPublishedLesson } from '@/lib/academy/published';
 import { lessonsByModule, modulesByTrack, tracks, trackMap } from '@/lib/academy/curriculum';
 import { DocShell, DocNotice } from '@/components/course/DocShell';
+import { readCourseProgress } from '@/lib/academy/course-progress-server';
 
 type TrackPageProps = { params: Promise<{ trackId: string }> };
 
@@ -26,6 +27,9 @@ export default async function TrackPage({ params }: TrackPageProps) {
   const track = trackMap.get(trackId);
   if (!track) notFound();
   const modules = modulesByTrack.get(trackId) ?? [];
+  const roadmap=readCourseProgress();
+  const draftedIds=new Set(roadmap.draftIds);
+  const progressByModule=new Map(roadmap.phases.flatMap(p=>p.modules).map(m=>[m.id,m]));
   const count = modules.reduce((total, module) => total + (lessonsByModule.get(module.id)?.length ?? 0), 0);
   return (
     <DocShell>
@@ -42,16 +46,18 @@ export default async function TrackPage({ params }: TrackPageProps) {
           <section key={module.id} className="rounded-xl border border-slate-200 bg-white p-4 dark:border-white/10 dark:bg-white/[0.03]">
             <h2 className="text-lg font-bold">{module.id} · {module.title}</h2>
             <p className="mt-1 text-xs leading-6 text-slate-500">{module.outcome}</p>
+            {progressByModule.get(module.id) && <p className="mt-2 text-xs text-slate-500">{progressByModule.get(module.id)!.published} published · {progressByModule.get(module.id)!.drafted} drafted · {progressByModule.get(module.id)!.toAuthor} planned</p>}
             <ol className="mt-4 space-y-1.5">
               {(lessonsByModule.get(module.id) ?? []).map((lesson) => {
                 const published = isPublishedLesson(lesson.id);
+                const drafted=!published && draftedIds.has(lesson.id);
                 return (
                   <li key={lesson.id}>
                     <Link href={`/learn/${lesson.id}`} className="flex items-start gap-3 rounded-lg p-2 hover:bg-slate-100 dark:hover:bg-white/[0.05]">
                       <span className="mt-0.5 shrink-0 font-mono text-[11px] text-slate-500">{lesson.id}</span>
                       <span className="min-w-0 flex-1 text-sm">{lesson.title}</span>
                       <span className={`shrink-0 text-[10px] font-semibold ${published ? 'text-emerald-700 dark:text-emerald-400' : 'text-slate-500'}`}>
-                        {published ? 'Published' : 'Planned'}
+                        {published ? 'Published' : drafted ? 'Draft — not available' : 'Planned'}
                       </span>
                     </Link>
                   </li>

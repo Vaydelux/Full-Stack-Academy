@@ -1,0 +1,105 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Tenant-aware composite foreign keys reject data that points at another tenant's entity, even when the referenced numeric ID is valid globally.","The composite foreign key must match both tenant and project ID against a composite referenced key. A cross-tenant reference is rejected at the database boundary.","A composite FK does not replace RLS, object-level authorization, row ownership checks, or per-tenant token verification. A privileged SQL connection can still query another tenant's rows unless other controls are in place."]} />
+
+## The real modeling problem
+
+**Multi-tenant data models.** The application sends tenant alpha's attachment metadata but points it to a project owned by beta. An unrelated integer foreign key—or no foreign key—does not validate tenant ownership.
+
+A web framework can validate a request, but it cannot make an inconsistent relational design safe after several independent writers, scheduled jobs, or migrations start modifying the same data. In this lesson you will identify the invariant, observe a *real* negative SQL case, repair the schema or query, and write down the boundary that the database does **not** guarantee.
+
+## Mental model
+
+Tenant-aware composite foreign keys reject data that points at another tenant's entity, even when the referenced numeric ID is valid globally.
+
+The composite foreign key must match both tenant and project ID against a composite referenced key. A cross-tenant reference is rejected at the database boundary.
+
+**Predict before running SQL:** Which row, relationship, constraint, or audit event will be incorrect? Identify a specific permitted case and a specific forbidden case. A SQL command that returns without a syntax error is not proof that it represents the business domain.
+
+## Prerequisites and test setup
+
+Complete **12.02.03**. Read `examples/postgresql-modeling/fixture.sql`, then the three files under `drafts/postgresql/labs/tenant-composite-fk/`. The fixture creates temporary users, projects, and tasks for two organizations with intentionally overlapping identity values. You must use a disposable, local test database, never production.
+
+**Runtime:** PostgreSQL 17 or later. The lesson is an **unpublished draft**. Source integrity can be reviewed without PostgreSQL; the actual positive and negative SQL scenarios have not yet executed here.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the unsafe relational design" file="drafts/postgresql/labs/tenant-composite-fk/starter.sql" expected="The application sends tenant alpha's attachment metadata but points it to a project owned by beta. An unrelated integer foreign key—or no foreign key—does not validate tenant ownership.">
+
+```sql
+CREATE TEMP TABLE lesson_attachments (
+ id integer PRIMARY KEY,
+ tenant_id text NOT NULL,
+ project_id integer NOT NULL,
+ filename text NOT NULL
+);
+```
+
+**Broken invariant:** The application sends tenant alpha's attachment metadata but points it to a project owned by beta. An unrelated integer foreign key—or no foreign key—does not validate tenant ownership.
+
+Explain why this schema or query is insufficient **before** changing it. Compare its meaning with the intended data model instead of accepting a green SQL syntax check.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the corrected relationship or constraint" file="drafts/postgresql/labs/tenant-composite-fk/solution.sql" expected="The composite foreign key must match both tenant and project ID against a composite referenced key. A cross-tenant reference is rejected at the database boundary.">
+
+```sql
+CREATE TEMP TABLE lesson_attachments (
+ id integer PRIMARY KEY,
+ tenant_id text NOT NULL,
+ project_id integer NOT NULL,
+ filename text NOT NULL,
+ FOREIGN KEY (tenant_id, project_id)
+   REFERENCES modeling_projects(tenant_id, id)
+);
+```
+
+**Reasoning:** The composite foreign key must match both tenant and project ID against a composite referenced key. A cross-tenant reference is rejected at the database boundary.
+
+In a production system, migration changes must preserve existing data and support concurrent writers. This solution models one invariant using disposable temporary tables so the learner can prove correctness without modifying an existing application schema.
+
+</LessonStep>
+
+<LessonStep number={3} title="Test both valid and forbidden outcomes in PostgreSQL" file="drafts/postgresql/labs/tenant-composite-fk/acceptance.sql" expected="The corrected SQL passes while the starter fails the named semantic assertion.">
+
+Read `drafts/postgresql/labs/tenant-composite-fk/acceptance.sql`. It does not merely search source text. It executes SQL assertions in a `DO` block, including the negative case for this topic. The runner creates the fixture, runs the instructor or starter on a fresh connection inside a rollback-only transaction, and verifies that failure comes from this lesson's named assertion rather than a missing relation or syntax error.
+
+**Acceptance contract:** The composite foreign key must match both tenant and project ID against a composite referenced key. A cross-tenant reference is rejected at the database boundary.
+
+**Observed failure to investigate:** The application sends tenant alpha's attachment metadata but points it to a project owned by beta. An unrelated integer foreign key—or no foreign key—does not validate tenant ownership.
+
+If the learner starter errors for an unrelated reason, that is a broken learning exercise. Fix the source fixture, not the acceptance expectations.
+
+</LessonStep>
+
+## Architectural trade-offs
+
+Tenant-aware composite foreign keys reject data that points at another tenant's entity, even when the referenced numeric ID is valid globally.
+
+A composite FK does not replace RLS, object-level authorization, row ownership checks, or per-tenant token verification. A privileged SQL connection can still query another tenant's rows unless other controls are in place.
+
+The right choice can change with workload size, tenant access patterns, migration risk and operational constraints. Optimize a schema only after correctness and measured query behavior. A trigger, index, or foreign key is not evidence of complete application authorization.
+
+## Bug hunt and regression reasoning
+
+1. **Reproduce:** The application sends tenant alpha's attachment metadata but points it to a project owned by beta. An unrelated integer foreign key—or no foreign key—does not validate tenant ownership.
+2. **Diagnose:** Find which fact, key, constraint, or tenant predicate is missing.
+3. **Repair:** The composite foreign key must match both tenant and project ID against a composite referenced key. A cross-tenant reference is rejected at the database boundary.
+4. **Retest:** Run the same acceptance against both the learner's red starter and instructor's green SQL.
+5. **Boundary:** A composite FK does not replace RLS, object-level authorization, row ownership checks, or per-tenant token verification. A privileged SQL connection can still query another tenant's rows unless other controls are in place.
+
+<Misconception claim={"The application sends tenant alpha's attachment metadata but points it to a project owned by beta. An unrelated integer foreign key—or no foreign key—does not validate tenant ownership."} correction={"Tenant-aware composite foreign keys reject data that points at another tenant's entity, even when the referenced numeric ID is valid globally."} />
+
+<KnowledgeCheck question={"What does a tenant/project composite foreign key guarantee?"} choices={["That any logged-in user can read the project","That both identifiers refer to an existing pair","That JWTs are correctly verified","That a project name is unique"]} correctIndex={1} explanation={"The composite foreign key must match both tenant and project ID against a composite referenced key. A cross-tenant reference is rejected at the database boundary."} misconception={"A composite FK does not replace RLS, object-level authorization, row ownership checks, or per-tenant token verification. A privileged SQL connection can still query another tenant's rows unless other controls are in place."} lessonId="12.02.04" />
+
+## Practice and reflection
+
+Write down which entity owns each row and which keys uniquely identify an authorized relationship. Then consider whether concurrent inserts, soft-deleted rows or alternate tenant IDs could defeat your design. Which assertion would prove the forbidden case stays forbidden even when the frontend sends malformed or malicious input?
+
+The SQL files are **draft teaching materials**. They are not imported into the learner-facing lesson registry, cannot update learner progress, and require real PostgreSQL testing plus a separate publication review before release.
+
+## Official references
+
+- [PostgreSQL reference — Multi-tenant data models](https://www.postgresql.org/docs/current/ddl-constraints.html)
+- [PostgreSQL SQL tutorial](https://www.postgresql.org/docs/current/tutorial-sql.html)

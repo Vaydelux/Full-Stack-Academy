@@ -115,6 +115,9 @@ test('NestJS 11.01 to 11.04 source drafts add 32 staged topics but no publicatio
  assert.equal(p2.published,0);
  assert.equal(current.phases.find(p=>p.id==='P1').staged,16);
  assert.equal(current.baseline.published,338);
- assert.equal(current.baseline.staged,48);
- assert.equal(current.baseline.unstaged,503);
+ assert.equal(current.baseline.staged,64);
+ assert.equal(current.baseline.unstaged,487);
+ const p3=current.phases.find(p=>p.id==='P3');
+ assert.deepEqual(p3.modules.filter(m=>m.staged>0).map(m=>[m.id,m.staged]),[['12.01',8],['12.02',8]]);
+ assert.equal(p3.published,0);
 });

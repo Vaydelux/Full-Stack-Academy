@@ -1,0 +1,23 @@
+{
+  "id": "12.02.02",
+  "trackId": "12",
+  "moduleId": "12.02",
+  "title": "Primary and surrogate keys",
+  "labSlug": "surrogate-natural-keys",
+  "sourceStatus": "draft-unverified",
+  "runtimeQualification": "not-run",
+  "reviewStatus": "unreviewed",
+  "estimatedMinutes": 60,
+  "prerequisites": [
+    "12.02.01"
+  ],
+  "objectives": [
+    "A surrogate identity gives a record a stable internal reference while a scoped unique constraint protects a business key such as a tenant-specific email address.",
+    "The identity is a stable internal key; the tenant/email uniqueness rule models the actual business relationship and can evolve independently of the primary key."
+  ],
+  "securityBoundary": "Surrogate keys do not by themselves enforce tenancy. Queries, composite foreign keys and application authorization still need tenant context.",
+  "officialReferences": [
+    "https://www.postgresql.org/docs/current/ddl-constraints.html",
+    "https://www.postgresql.org/docs/current/tutorial-sql.html"
+  ]
+}

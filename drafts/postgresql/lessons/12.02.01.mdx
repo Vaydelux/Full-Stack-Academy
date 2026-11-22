@@ -1,0 +1,105 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["A normalized model stores each repeating fact in its own relation. Contacts and email addresses have different cardinalities: one contact can own zero, one, or many addresses.","The child table has one address per row, a foreign key to its owner, and a compound primary key that rejects a duplicate address for the same person.","Normalization is a logical data-integrity decision, not a performance guarantee. Denormalized read models must have an explicit refresh and reconciliation strategy."]} />
+
+## The real modeling problem
+
+**Normalization and denormalization.** A signup form allows a user to add multiple contact emails. The first design stores comma-separated addresses in one column. Searching, deduplicating, and constraining an individual address becomes unreliable.
+
+A web framework can validate a request, but it cannot make an inconsistent relational design safe after several independent writers, scheduled jobs, or migrations start modifying the same data. In this lesson you will identify the invariant, observe a *real* negative SQL case, repair the schema or query, and write down the boundary that the database does **not** guarantee.
+
+## Mental model
+
+A normalized model stores each repeating fact in its own relation. Contacts and email addresses have different cardinalities: one contact can own zero, one, or many addresses.
+
+The child table has one address per row, a foreign key to its owner, and a compound primary key that rejects a duplicate address for the same person.
+
+**Predict before running SQL:** Which row, relationship, constraint, or audit event will be incorrect? Identify a specific permitted case and a specific forbidden case. A SQL command that returns without a syntax error is not proof that it represents the business domain.
+
+## Prerequisites and test setup
+
+Complete **12.01.08**. Read `examples/postgresql-modeling/fixture.sql`, then the three files under `drafts/postgresql/labs/normalization-boundaries/`. The fixture creates temporary users, projects, and tasks for two organizations with intentionally overlapping identity values. You must use a disposable, local test database, never production.
+
+**Runtime:** PostgreSQL 17 or later. The lesson is an **unpublished draft**. Source integrity can be reviewed without PostgreSQL; the actual positive and negative SQL scenarios have not yet executed here.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the unsafe relational design" file="drafts/postgresql/labs/normalization-boundaries/starter.sql" expected="A signup form allows a user to add multiple contact emails. The first design stores comma-separated addresses in one column. Searching, deduplicating, and constraining an individual address becomes unreliable.">
+
+```sql
+CREATE TEMP TABLE lesson_contacts (
+ id integer PRIMARY KEY,
+ display_name text NOT NULL,
+ email_addresses text NOT NULL
+);
+```
+
+**Broken invariant:** A signup form allows a user to add multiple contact emails. The first design stores comma-separated addresses in one column. Searching, deduplicating, and constraining an individual address becomes unreliable.
+
+Explain why this schema or query is insufficient **before** changing it. Compare its meaning with the intended data model instead of accepting a green SQL syntax check.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the corrected relationship or constraint" file="drafts/postgresql/labs/normalization-boundaries/solution.sql" expected="The child table has one address per row, a foreign key to its owner, and a compound primary key that rejects a duplicate address for the same person.">
+
+```sql
+CREATE TEMP TABLE lesson_contacts (
+ id integer PRIMARY KEY,
+ display_name text NOT NULL
+);
+CREATE TEMP TABLE lesson_contact_addresses (
+ contact_id integer NOT NULL REFERENCES lesson_contacts(id),
+ address text NOT NULL,
+ PRIMARY KEY (contact_id, address)
+);
+```
+
+**Reasoning:** The child table has one address per row, a foreign key to its owner, and a compound primary key that rejects a duplicate address for the same person.
+
+In a production system, migration changes must preserve existing data and support concurrent writers. This solution models one invariant using disposable temporary tables so the learner can prove correctness without modifying an existing application schema.
+
+</LessonStep>
+
+<LessonStep number={3} title="Test both valid and forbidden outcomes in PostgreSQL" file="drafts/postgresql/labs/normalization-boundaries/acceptance.sql" expected="The corrected SQL passes while the starter fails the named semantic assertion.">
+
+Read `drafts/postgresql/labs/normalization-boundaries/acceptance.sql`. It does not merely search source text. It executes SQL assertions in a `DO` block, including the negative case for this topic. The runner creates the fixture, runs the instructor or starter on a fresh connection inside a rollback-only transaction, and verifies that failure comes from this lesson's named assertion rather than a missing relation or syntax error.
+
+**Acceptance contract:** The child table has one address per row, a foreign key to its owner, and a compound primary key that rejects a duplicate address for the same person.
+
+**Observed failure to investigate:** A signup form allows a user to add multiple contact emails. The first design stores comma-separated addresses in one column. Searching, deduplicating, and constraining an individual address becomes unreliable.
+
+If the learner starter errors for an unrelated reason, that is a broken learning exercise. Fix the source fixture, not the acceptance expectations.
+
+</LessonStep>
+
+## Architectural trade-offs
+
+A normalized model stores each repeating fact in its own relation. Contacts and email addresses have different cardinalities: one contact can own zero, one, or many addresses.
+
+Normalization is a logical data-integrity decision, not a performance guarantee. Denormalized read models must have an explicit refresh and reconciliation strategy.
+
+The right choice can change with workload size, tenant access patterns, migration risk and operational constraints. Optimize a schema only after correctness and measured query behavior. A trigger, index, or foreign key is not evidence of complete application authorization.
+
+## Bug hunt and regression reasoning
+
+1. **Reproduce:** A signup form allows a user to add multiple contact emails. The first design stores comma-separated addresses in one column. Searching, deduplicating, and constraining an individual address becomes unreliable.
+2. **Diagnose:** Find which fact, key, constraint, or tenant predicate is missing.
+3. **Repair:** The child table has one address per row, a foreign key to its owner, and a compound primary key that rejects a duplicate address for the same person.
+4. **Retest:** Run the same acceptance against both the learner's red starter and instructor's green SQL.
+5. **Boundary:** Normalization is a logical data-integrity decision, not a performance guarantee. Denormalized read models must have an explicit refresh and reconciliation strategy.
+
+<Misconception claim={"A signup form allows a user to add multiple contact emails. The first design stores comma-separated addresses in one column. Searching, deduplicating, and constraining an individual address becomes unreliable."} correction={"A normalized model stores each repeating fact in its own relation. Contacts and email addresses have different cardinalities: one contact can own zero, one, or many addresses."} />
+
+<KnowledgeCheck question={"Which representation lets PostgreSQL constrain each email independently?"} choices={["A comma-separated varchar","One child row per contact/email pair with a foreign key","A JSON string with no schema","An unbounded array inside the user's name field"]} correctIndex={1} explanation={"The child table has one address per row, a foreign key to its owner, and a compound primary key that rejects a duplicate address for the same person."} misconception={"Normalization is a logical data-integrity decision, not a performance guarantee. Denormalized read models must have an explicit refresh and reconciliation strategy."} lessonId="12.02.01" />
+
+## Practice and reflection
+
+Write down which entity owns each row and which keys uniquely identify an authorized relationship. Then consider whether concurrent inserts, soft-deleted rows or alternate tenant IDs could defeat your design. Which assertion would prove the forbidden case stays forbidden even when the frontend sends malformed or malicious input?
+
+The SQL files are **draft teaching materials**. They are not imported into the learner-facing lesson registry, cannot update learner progress, and require real PostgreSQL testing plus a separate publication review before release.
+
+## Official references
+
+- [PostgreSQL reference — Normalization and denormalization](https://www.postgresql.org/docs/current/ddl-constraints.html)
+- [PostgreSQL SQL tutorial](https://www.postgresql.org/docs/current/tutorial-sql.html)

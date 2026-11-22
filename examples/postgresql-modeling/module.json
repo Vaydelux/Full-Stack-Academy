@@ -1,0 +1,58 @@
+{
+  "moduleId": "12.02",
+  "title": "Relational Modeling",
+  "sourceStatus": "draft-unverified",
+  "runtimeQualification": "not-run",
+  "readyToPublish": false,
+  "fixture": "examples/postgresql-modeling/fixture.sql",
+  "lessons": [
+    {
+      "id": "12.02.01",
+      "slug": "normalization-boundaries",
+      "title": "Normalization and denormalization",
+      "reference": "https://www.postgresql.org/docs/current/ddl-constraints.html"
+    },
+    {
+      "id": "12.02.02",
+      "slug": "surrogate-natural-keys",
+      "title": "Primary and surrogate keys",
+      "reference": "https://www.postgresql.org/docs/current/ddl-constraints.html"
+    },
+    {
+      "id": "12.02.03",
+      "slug": "many-to-many-memberships",
+      "title": "Many-to-many relationships",
+      "reference": "https://www.postgresql.org/docs/current/ddl-constraints.html"
+    },
+    {
+      "id": "12.02.04",
+      "slug": "tenant-composite-fk",
+      "title": "Multi-tenant data models",
+      "reference": "https://www.postgresql.org/docs/current/ddl-constraints.html"
+    },
+    {
+      "id": "12.02.05",
+      "slug": "soft-delete-history",
+      "title": "Soft delete and history",
+      "reference": "https://www.postgresql.org/docs/current/indexes-partial.html"
+    },
+    {
+      "id": "12.02.06",
+      "slug": "scoped-check-unique",
+      "title": "Check and unique constraints",
+      "reference": "https://www.postgresql.org/docs/current/indexes-expressional.html"
+    },
+    {
+      "id": "12.02.07",
+      "slug": "immutable-audit-records",
+      "title": "Audit tables",
+      "reference": "https://www.postgresql.org/docs/current/sql-createtrigger.html"
+    },
+    {
+      "id": "12.02.08",
+      "slug": "missing-tenant-filter",
+      "title": "Bug Hunt missing tenant filter",
+      "reference": "https://www.postgresql.org/docs/current/ddl-rowsecurity.html"
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "id": "12.02.05",
+  "trackId": "12",
+  "moduleId": "12.02",
+  "title": "Soft delete and history",
+  "labSlug": "soft-delete-history",
+  "sourceStatus": "draft-unverified",
+  "runtimeQualification": "not-run",
+  "reviewStatus": "unreviewed",
+  "estimatedMinutes": 60,
+  "prerequisites": [
+    "12.02.04"
+  ],
+  "objectives": [
+    "Soft deletion separates active records from historical records. A partial uniqueness rule can permit reusing an archived label while preventing duplicates among active labels.",
+    "The partial unique index applies only to active labels, while the trigger records the archive transition in a separate table for review."
+  ],
+  "securityBoundary": "Soft delete is not a substitute for retention policy, access revocation, legal erasure or a cryptographically protected audit trail. The example logs only the transition and is not a complete event-sourcing system.",
+  "officialReferences": [
+    "https://www.postgresql.org/docs/current/indexes-partial.html",
+    "https://www.postgresql.org/docs/current/tutorial-sql.html"
+  ]
+}

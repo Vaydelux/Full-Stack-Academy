@@ -68,6 +68,15 @@ export default function CourseIndex() {
           })}
         </div>
       </section>
+      <section aria-label="Course publication progress" className="mt-7 rounded-xl border border-slate-200 bg-white p-4 dark:border-white/10 dark:bg-white/[0.035]">
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <h2 className="text-base font-bold">How complete is the course?</h2>
+            <p className="mt-1 max-w-2xl text-sm leading-6 text-slate-600 dark:text-slate-300">See what is published, what has been authored but still needs qualification, and which modules are planned. This differs from your personal learning progress.</p>
+          </div>
+          <Link href="/learn/roadmap" className="inline-flex min-h-10 items-center rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold hover:border-cyan-500 dark:border-white/20">View course roadmap</Link>
+        </div>
+      </section>
       <PublishedLessonExplorer catalog={publishedCatalog} />
       <section aria-labelledby="tracks-title" className="mt-10">
         <h2 id="tracks-title" className="mb-4 text-xl font-bold">Tracks and subtopics</h2>
