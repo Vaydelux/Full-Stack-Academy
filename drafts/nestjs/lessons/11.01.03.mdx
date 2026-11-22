@@ -1,0 +1,103 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Nest resolves registered providers through the container rather than manual new statements in controllers.","Resolve the controller through Test.createTestingModule and override its service with a fake.","Register the service in the owning module and inject through the constructor."]} />
+
+## The problem we're solving
+
+A controller manually instantiates a service, bypassing DI overrides and per-request lifecycle. A team reviewing a NestJS service must understand *why* this is a failure, not merely memorize decorator names. This lesson isolates the failure in one short source file so the learner can compare the runtime contract before and after the change.
+
+## Build the mental model
+
+Nest resolves registered providers through the container rather than manual new statements in controllers. In NestJS 12, decorators register metadata used by the Nest runtime; the TypeScript class is not automatically a route or managed provider. A running application must still compose its modules, resolve dependencies, and handle failures at the actual HTTP or service boundary.
+
+**Predict:** Before reading the instructor solution, describe the client-visible response or container behavior when the broken starter is used. A controller manually instantiates a service, bypassing DI overrides and per-request lifecycle.
+
+**Trust and version boundary:** Target Node.js 24, TypeScript 6 and NestJS 12 with real installed packages. The repository has not yet completed an npm-locked Nest runtime test for this draft. Source existence is not evidence of a functioning server. Register the service in the owning module and inject through the constructor.
+
+## Prerequisites and preflight
+
+Complete 11.01.02 first. Inspect `drafts/nestjs/labs/injectable-providers/starter.ts` and `drafts/nestjs/labs/injectable-providers/solution.ts`. A real acceptance suite must compile these files with official Nest 12 dependencies and prove both a failing starter assertion and the instructor's positive behavior. No fabricated dependency lock or mocked framework API is allowed.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the incorrect framework behavior" file="drafts/nestjs/labs/injectable-providers/starter.ts" expected="A controller manually instantiates a service, bypassing DI overrides and per-request lifecycle.">
+
+```ts
+import { Controller, Get, Module } from '@nestjs/common';
+export class TasksService { count() { return 1; } }
+@Controller('tasks')
+export class TasksController {
+  private readonly tasks = new TasksService(); // BUG: skips container
+  @Get('count') count() { return { count: this.tasks.count() }; }
+}
+@Module({ controllers: [TasksController] })
+export class TasksModule {}
+```
+
+**Observe:** A controller manually instantiates a service, bypassing DI overrides and per-request lifecycle. Ask whether the bug comes from TypeScript syntax, dependency injection metadata, request processing, or server state. Test the *observable effect*, not a substring in source code.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement a focused NestJS repair" file="drafts/nestjs/labs/injectable-providers/solution.ts" expected="Nest resolves registered providers through the container rather than manual new statements in controllers.">
+
+```ts
+import { Controller, Get, Injectable, Module } from '@nestjs/common';
+@Injectable()
+export class TasksService { count() { return 1; } }
+@Controller('tasks')
+export class TasksController {
+  constructor(private readonly tasks: TasksService) {}
+  @Get('count') count() { return { count: this.tasks.count() }; }
+}
+@Module({ controllers: [TasksController], providers: [TasksService] })
+export class TasksModule {}
+```
+
+**Reasoning:** Nest resolves registered providers through the container rather than manual new statements in controllers. Register the service in the owning module and inject through the constructor. This repair does not imply that external users are authorized; it solves only the bounded lesson contract.
+
+</LessonStep>
+
+<LessonStep number={3} title="Prove both boundaries using the real Nest runtime" file="drafts/nestjs/labs/injectable-providers/lab.json" expected="Resolve the controller through Test.createTestingModule and override its service with a fake.">
+
+**Instructor acceptance:** Resolve the controller through Test.createTestingModule and override its service with a fake.
+
+**Negative test:** The learner starter must fail because a controller manually instantiates a service, bypassing DI overrides and per-request lifecycle. This should be a semantic assertion failure after the application actually starts, not a missing package or misconfigured test runner.
+
+**Safety case:** Register the service in the owning module and inject through the constructor.
+
+</LessonStep>
+
+## Design alternatives and debugging strategy
+
+A quick workaround would hide the immediate symptom, but it would leave the original ownership or lifecycle error intact. Start by tracing the source that creates the Nest application and the providers registered in its module graph; then inspect the exact request path, active context, or emitted response affected by this lesson. Prefer an isolated test that can be run repeatedly without a live external database or credential.
+
+- **When it is appropriate:** Nest resolves registered providers through the container rather than manual new statements in controllers.
+- **When it is not enough:** If multiple requests, tenants, or worker processes are involved, test the same boundary under concurrency and treat incoming data as untrusted.
+- **How to confirm the repair:** Resolve the controller through Test.createTestingModule and override its service with a fake.
+- **What to document:** The expected failure code, verification command, dependency version, and whether a browser, HTTP, or service-layer test actually executed.
+
+<Misconception claim="A controller manually instantiates a service, bypassing DI overrides and per-request lifecycle." correction="Nest resolves registered providers through the container rather than manual new statements in controllers." />
+
+<KnowledgeCheck question="What should the reviewer verify for injectable providers?" choices={["The source contains a decorator, so the runtime must work.","The real Nest application exhibits the specified behavior and rejects the broken case.","TypeScript types alone authorize incoming requests.","A mocked substring search proves the HTTP contract."]} correctIndex={1} explanation="Nest resolves registered providers through the container rather than manual new statements in controllers." misconception="A controller manually instantiates a service, bypassing DI overrides and per-request lifecycle." lessonId="11.01.03" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+1. **Reproduce:** A controller manually instantiates a service, bypassing DI overrides and per-request lifecycle.
+2. **Diagnose:** Identify the module, provider, request stage, or lifecycle owner responsible for the symptom.
+3. **Repair:** Nest resolves registered providers through the container rather than manual new statements in controllers.
+4. **Regression:** Resolve the controller through Test.createTestingModule and override its service with a fake.
+5. **Trust boundary:** Register the service in the owning module and inject through the constructor.
+
+## Guided local lab
+
+The red starter and instructor solution are versioned under `drafts/nestjs/labs/injectable-providers/`. This remains a **draft**, without a published `LabGate` or course credit. Its runtime test, native Fastify request behavior where applicable, and accessible error handling must pass the dedicated module release gate before publication.
+
+## Reflect
+
+Why does the wrong behavior survive a superficial code review? What observable assertion would detect it reliably after a Nest or TypeScript major upgrade? Which aspect still requires a true service integration test rather than a class-only unit test?
+
+## Official references
+
+- [Canonical Nest documentation](https://docs.nestjs.com/)
+- [Focused Nest documentation](https://docs.nestjs.com/providers)

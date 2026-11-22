@@ -1,0 +1,102 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Domain services should use an injectable repository contract instead of building SQL strings.","A hostile quote-containing title is passed as a parameter rather than interpolated SQL.","Use parameterized queries and server-side tenant predicates in real database tests."]} />
+
+## The problem we're solving
+
+A task title is concatenated into a raw SQL query, allowing injection. Building a domain feature demands more than a decorated controller. Real services have invariants, dependencies, persistence contracts and externally visible behavior. When any one layer owns work it cannot safely verify, the resulting application becomes difficult to test and may expose private state.
+
+## Build the mental model
+
+Domain services should use an injectable repository contract instead of building SQL strings. Design the feature by drawing arrows from controller → application service → repository/port → persistence. Dependencies should point toward stable contracts; inbound HTTP is an adapter, not the business model. A real Nest module composes these pieces, while transaction boundaries belong near the persistence operation that must be atomic.
+
+**Prediction:** A task title is concatenated into a raw SQL query, allowing injection. Name the exact state that differs after this failure, and who can observe it.
+
+**Scope:** NestJS 12, Node.js 24, TypeScript 6. This is **staged authoring only**. It has not passed a real installed Nest build, PostgreSQL integration (when applicable), or browser/manual accessibility qualification.
+
+## Prerequisites and preflight
+
+Complete 11.03.01 and review the two source files under `drafts/nestjs/labs/repository-pattern/`. The failing starter is intentionally wrong, but a real negative test must fail from the semantic contract, not from unresolved packages. For persistence, do not replace the real transaction or parameterization proof with an array or a SQL string search.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the domain-layer defect" file="drafts/nestjs/labs/repository-pattern/starter.ts" expected="A task title is concatenated into a raw SQL query, allowing injection.">
+
+```ts
+export interface QueryClient { query(sql: string): Promise<unknown>; }
+export class TaskRepository {
+  constructor(private readonly db: QueryClient) {}
+  findTitle(title: string) {
+    return this.db.query("SELECT * FROM tasks WHERE title = '" + title + "'"); // BUG
+  }
+}
+```
+
+**Observation:** A task title is concatenated into a raw SQL query, allowing injection. Notice where this source chooses the owning layer and what runtime assertion must fail.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the domain boundary" file="drafts/nestjs/labs/repository-pattern/solution.ts" expected="Domain services should use an injectable repository contract instead of building SQL strings.">
+
+```ts
+export interface QueryClient {
+  query(sql: string, params: readonly unknown[]): Promise<unknown>;
+}
+export class TaskRepository {
+  constructor(private readonly db: QueryClient) {}
+  findTitle(title: string) {
+    return this.db.query('SELECT * FROM tasks WHERE title = $1', [title]);
+  }
+}
+```
+
+**Reasoning:** Domain services should use an injectable repository contract instead of building SQL strings. Use parameterized queries and server-side tenant predicates in real database tests.
+
+</LessonStep>
+
+<LessonStep number={3} title="Qualify the real service contract" file="drafts/nestjs/labs/repository-pattern/lab.json" expected="A hostile quote-containing title is passed as a parameter rather than interpolated SQL.">
+
+**Expected result:** A hostile quote-containing title is passed as a parameter rather than interpolated SQL.
+
+**Negative case:** Run the broken starter through the same dependency container, HTTP harness, or transaction test. Confirm a specific failed assertion caused by the bug, not a package-import failure.
+
+**Security and concurrency check:** Use parameterized queries and server-side tenant predicates in real database tests.
+
+</LessonStep>
+
+## Architecture trade-offs
+
+Directly constructing a service or returning a database entity can be tempting because it reduces boilerplate. It also hides dependency seams and blurs the trust boundary. The practical alternative is not to abstract everything; keep one small interface for a dependency that legitimately varies and enforce invariants in exactly one authoritative place. Favor explicit module imports/exports over globally available providers.
+
+- **Correctness invariant:** Domain services should use an injectable repository contract instead of building SQL strings.
+- **Reproducible failure:** A task title is concatenated into a raw SQL query, allowing injection.
+- **Acceptance evidence:** A hostile quote-containing title is passed as a parameter rather than interpolated SQL.
+- **Risk that remains:** Use parameterized queries and server-side tenant predicates in real database tests.
+
+In a multi-request system, repeat the test with two independent users and at least one failure after an intermediate operation. A UI test cannot prove a transaction rollback; only the real persistence adapter can.
+
+<Misconception claim="A task title is concatenated into a raw SQL query, allowing injection." correction="Domain services should use an injectable repository contract instead of building SQL strings." />
+
+<KnowledgeCheck question="Which design is safest for repository pattern?" choices={["Make the controller hold every stateful dependency permanently.","Keep business rules in an injectable service and verify the boundary with actual runtime behavior.","Expose persistent entities directly because TypeScript hides private fields.","Treat a mock array as proof of database transactions."]} correctIndex={1} explanation="Domain services should use an injectable repository contract instead of building SQL strings." misconception="A task title is concatenated into a raw SQL query, allowing injection." lessonId="11.03.02" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+1. **Reproduce:** A task title is concatenated into a raw SQL query, allowing injection.
+2. **Diagnose:** Determine whether the bug belongs to a controller, injectable provider, repository, module export or transaction.
+3. **Repair:** Domain services should use an injectable repository contract instead of building SQL strings.
+4. **Regression:** A hostile quote-containing title is passed as a parameter rather than interpolated SQL.
+5. **Trust boundary:** Use parameterized queries and server-side tenant predicates in real database tests.
+
+## Guided local lab
+
+The corresponding `starter.ts`, `solution.ts`, and machine-readable `lab.json` are under `drafts/nestjs/labs/repository-pattern/`. These remain source exercises awaiting package installation, real library execution and module acceptance. No published course-progress event or `LabGate` is registered.
+
+## Reflect
+
+What is the narrowest seam that should be replaceable in a test? What would fail if two requests overlap? Which case demands a real PostgreSQL connection instead of a local unit test, and how would you prove an error cannot leave a partial write?
+
+## Official references
+
+- [NestJS documentation](https://docs.nestjs.com/)
+- [Focused official reference](https://docs.nestjs.com/fundamentals/custom-providers)

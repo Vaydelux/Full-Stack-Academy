@@ -1,0 +1,102 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Middleware has to call next exactly once after attaching safe request data.","GET /tasks completes and carries a correlation ID without hanging.","Do not create a trust boundary from an unverified client-supplied header."]} />
+
+## The problem we're solving
+
+The HTTP handler never runs because middleware forgets to call next. The request pipeline is a composition of stages rather than a single controller method: middleware prepares the request, a guard decides permission, pipes parse inputs, interceptors wrap handler execution and filters normalize failures. Each stage needs its own test because correct TypeScript does not prove real HTTP behavior.
+
+## Build the mental model
+
+Middleware has to call next exactly once after attaching safe request data. The stage where the problem occurs matters: moving validation into an authorization check or moving a security decision into a response interceptor can accidentally expose the handler. Trace the request lifecycle from ingress to exit, and record both expected success and denial.
+
+**Prediction:** The HTTP handler never runs because middleware forgets to call next. Explain whether the handler is reached, and what an HTTP client should observe.
+
+**Release scope:** These examples target NestJS 12, Node 24, TypeScript 6. They are authored drafts, not compiler-qualified or published material. Do not create a trust boundary from an unverified client-supplied header.
+
+## Prerequisites and preflight
+
+Complete 11.01.08 and read the official request lifecycle documentation. Work with `drafts/nestjs/labs/middleware-execution/starter.ts` and `drafts/nestjs/labs/middleware-execution/solution.ts`; keep framework packages version-pinned. The student should be able to name the request stage that owns this responsibility and reproduce its failure before seeing a fix.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the request-pipeline bug" file="drafts/nestjs/labs/middleware-execution/starter.ts" expected="The HTTP handler never runs because middleware forgets to call next.">
+
+```ts
+import { Injectable, NestMiddleware } from '@nestjs/common';
+@Injectable()
+export class CorrelationMiddleware implements NestMiddleware {
+  use(req: { correlationId?: string }, _res: unknown, next: () => void) {
+    req.correlationId = 'fixed-id';
+    // BUG: request never reaches its handler.
+  }
+}
+```
+
+**What to inspect:** Distinguish a declaration of a decorator or interface from the actual runtime decision. The HTTP handler never runs because middleware forgets to call next. Instrument only safe diagnostic markers and do not leak incoming credentials.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the correct stage" file="drafts/nestjs/labs/middleware-execution/solution.ts" expected="Middleware has to call next exactly once after attaching safe request data.">
+
+```ts
+import { randomUUID } from 'node:crypto';
+import { Injectable, NestMiddleware } from '@nestjs/common';
+@Injectable()
+export class CorrelationMiddleware implements NestMiddleware {
+  use(req: { correlationId?: string }, _res: unknown, next: () => void) {
+    req.correlationId = randomUUID();
+    next();
+  }
+}
+```
+
+**Why this design:** Middleware has to call next exactly once after attaching safe request data. Do not create a trust boundary from an unverified client-supplied header.
+
+</LessonStep>
+
+<LessonStep number={3} title="Exercise positive and denial cases" file="drafts/nestjs/labs/middleware-execution/lab.json" expected="GET /tasks completes and carries a correlation ID without hanging.">
+
+**Positive scenario:** GET /tasks completes and carries a correlation ID without hanging.
+
+**Negative scenario:** Run the original starter against the same assertion; its specific failure should demonstrate: The HTTP handler never runs because middleware forgets to call next. A compilation error or missing npm dependency is **not** an acceptable negative test.
+
+**Versioned test:** Use an actual Nest 12 application or Nest testing module plus real HTTP requests where appropriate. The test must prove the stage is effective, not merely that the right method name appears in code.
+
+</LessonStep>
+
+## Operational failure analysis
+
+If the UI shows a generic error, classify the failure at the nearest authoritative boundary. A 400 is invalid input, a 403 is denied access, a 404 is missing resource and a 503 is a failed dependency; do not collapse these into one “success” or one database error. Log correlation IDs with bounded length rather than sensitive headers. Run both a happy-path request and a deliberate failure using independently constructed test clients.
+
+**Design decision:** Middleware has to call next exactly once after attaching safe request data.
+
+**Regression condition:** GET /tasks completes and carries a correlation ID without hanging.
+
+**Security review:** Do not create a trust boundary from an unverified client-supplied header.
+
+<Misconception claim="The HTTP handler never runs because middleware forgets to call next." correction="Middleware has to call next exactly once after attaching safe request data." />
+
+<KnowledgeCheck question="Which verification proves middleware execution?" choices={["A decorator's name exists in source.","A real Nest request reaches the correct stage and demonstrates the specified positive and negative outcomes.","An interface type was exported.","The UI hides the endpoint, so it must be protected."]} correctIndex={1} explanation="Middleware has to call next exactly once after attaching safe request data." misconception="The HTTP handler never runs because middleware forgets to call next." lessonId="11.02.01" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+1. **Reproduce:** The HTTP handler never runs because middleware forgets to call next.
+2. **Diagnose:** Identify exactly where middleware, guards, pipes, interceptors, filters or request context become authoritative.
+3. **Repair:** Middleware has to call next exactly once after attaching safe request data.
+4. **Regression:** GET /tasks completes and carries a correlation ID without hanging.
+5. **Trust boundary:** Do not create a trust boundary from an unverified client-supplied header.
+
+## Guided local lab
+
+Starter, instructor and acceptance requirements live in `drafts/nestjs/labs/middleware-execution/`. They are intentionally **staged**. No `LabGate` or completed-course credit is issued until the Nest 12 runtime and HTTP denial cases have been qualified with a real installed dependency lock.
+
+## Reflect
+
+What is the earliest stage that can reject a bad request safely? Which behavior must still be checked by the handler, service or database? How would you test two concurrent requests to catch accidental context mixing or an authorization bypass?
+
+## Official references
+
+- [NestJS overview](https://docs.nestjs.com/)
+- [Focused NestJS documentation](https://docs.nestjs.com/middleware)

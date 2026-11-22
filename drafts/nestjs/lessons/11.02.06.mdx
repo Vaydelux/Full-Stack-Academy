@@ -1,0 +1,94 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Response DTOs should expose intentionally selected public fields rather than returning persistent entities unchanged.","GET /account returns only id, displayName, and stable public fields.","Never assume JSON serialization or a TypeScript interface automatically redacts secrets."]} />
+
+## The problem we're solving
+
+A serialized user record includes passwordHash in the HTTP response. The request pipeline is a composition of stages rather than a single controller method: middleware prepares the request, a guard decides permission, pipes parse inputs, interceptors wrap handler execution and filters normalize failures. Each stage needs its own test because correct TypeScript does not prove real HTTP behavior.
+
+## Build the mental model
+
+Response DTOs should expose intentionally selected public fields rather than returning persistent entities unchanged. The stage where the problem occurs matters: moving validation into an authorization check or moving a security decision into a response interceptor can accidentally expose the handler. Trace the request lifecycle from ingress to exit, and record both expected success and denial.
+
+**Prediction:** A serialized user record includes passwordHash in the HTTP response. Explain whether the handler is reached, and what an HTTP client should observe.
+
+**Release scope:** These examples target NestJS 12, Node 24, TypeScript 6. They are authored drafts, not compiler-qualified or published material. Never assume JSON serialization or a TypeScript interface automatically redacts secrets.
+
+## Prerequisites and preflight
+
+Complete 11.02.05 and read the official request lifecycle documentation. Work with `drafts/nestjs/labs/structured-responses/starter.ts` and `drafts/nestjs/labs/structured-responses/solution.ts`; keep framework packages version-pinned. The student should be able to name the request stage that owns this responsibility and reproduce its failure before seeing a fix.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the request-pipeline bug" file="drafts/nestjs/labs/structured-responses/starter.ts" expected="A serialized user record includes passwordHash in the HTTP response.">
+
+```ts
+export interface Account { id: string; displayName: string; passwordHash: string; }
+export function accountResponse(account: Account) {
+  return account; // BUG: leaks passwordHash
+}
+```
+
+**What to inspect:** Distinguish a declaration of a decorator or interface from the actual runtime decision. A serialized user record includes passwordHash in the HTTP response. Instrument only safe diagnostic markers and do not leak incoming credentials.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the correct stage" file="drafts/nestjs/labs/structured-responses/solution.ts" expected="Response DTOs should expose intentionally selected public fields rather than returning persistent entities unchanged.">
+
+```ts
+export interface Account { id: string; displayName: string; passwordHash: string; }
+export interface PublicAccount { id: string; displayName: string; }
+export function accountResponse(account: Account): PublicAccount {
+  return { id: account.id, displayName: account.displayName };
+}
+```
+
+**Why this design:** Response DTOs should expose intentionally selected public fields rather than returning persistent entities unchanged. Never assume JSON serialization or a TypeScript interface automatically redacts secrets.
+
+</LessonStep>
+
+<LessonStep number={3} title="Exercise positive and denial cases" file="drafts/nestjs/labs/structured-responses/lab.json" expected="GET /account returns only id, displayName, and stable public fields.">
+
+**Positive scenario:** GET /account returns only id, displayName, and stable public fields.
+
+**Negative scenario:** Run the original starter against the same assertion; its specific failure should demonstrate: A serialized user record includes passwordHash in the HTTP response. A compilation error or missing npm dependency is **not** an acceptable negative test.
+
+**Versioned test:** Use an actual Nest 12 application or Nest testing module plus real HTTP requests where appropriate. The test must prove the stage is effective, not merely that the right method name appears in code.
+
+</LessonStep>
+
+## Operational failure analysis
+
+If the UI shows a generic error, classify the failure at the nearest authoritative boundary. A 400 is invalid input, a 403 is denied access, a 404 is missing resource and a 503 is a failed dependency; do not collapse these into one “success” or one database error. Log correlation IDs with bounded length rather than sensitive headers. Run both a happy-path request and a deliberate failure using independently constructed test clients.
+
+**Design decision:** Response DTOs should expose intentionally selected public fields rather than returning persistent entities unchanged.
+
+**Regression condition:** GET /account returns only id, displayName, and stable public fields.
+
+**Security review:** Never assume JSON serialization or a TypeScript interface automatically redacts secrets.
+
+<Misconception claim="A serialized user record includes passwordHash in the HTTP response." correction="Response DTOs should expose intentionally selected public fields rather than returning persistent entities unchanged." />
+
+<KnowledgeCheck question="Which verification proves structured responses?" choices={["A decorator's name exists in source.","A real Nest request reaches the correct stage and demonstrates the specified positive and negative outcomes.","An interface type was exported.","The UI hides the endpoint, so it must be protected."]} correctIndex={1} explanation="Response DTOs should expose intentionally selected public fields rather than returning persistent entities unchanged." misconception="A serialized user record includes passwordHash in the HTTP response." lessonId="11.02.06" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+1. **Reproduce:** A serialized user record includes passwordHash in the HTTP response.
+2. **Diagnose:** Identify exactly where middleware, guards, pipes, interceptors, filters or request context become authoritative.
+3. **Repair:** Response DTOs should expose intentionally selected public fields rather than returning persistent entities unchanged.
+4. **Regression:** GET /account returns only id, displayName, and stable public fields.
+5. **Trust boundary:** Never assume JSON serialization or a TypeScript interface automatically redacts secrets.
+
+## Guided local lab
+
+Starter, instructor and acceptance requirements live in `drafts/nestjs/labs/structured-responses/`. They are intentionally **staged**. No `LabGate` or completed-course credit is issued until the Nest 12 runtime and HTTP denial cases have been qualified with a real installed dependency lock.
+
+## Reflect
+
+What is the earliest stage that can reject a bad request safely? Which behavior must still be checked by the handler, service or database? How would you test two concurrent requests to catch accidental context mixing or an authorization bypass?
+
+## Official references
+
+- [NestJS overview](https://docs.nestjs.com/)
+- [Focused NestJS documentation](https://docs.nestjs.com/techniques/serialization)

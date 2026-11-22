@@ -1,0 +1,102 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["A decorator route segment and its @Param key must refer to the same named value.","Request /tasks/t1 and confirm t1 is used; request an unknown ID and receive 404.","Keep URL paths stable, return a 404 for unknown records and avoid exposing errors through string interpolation."]} />
+
+## The problem we're solving
+
+GET /tasks/t1 passes undefined as the requested ID. A team reviewing a NestJS service must understand *why* this is a failure, not merely memorize decorator names. This lesson isolates the failure in one short source file so the learner can compare the runtime contract before and after the change.
+
+## Build the mental model
+
+A decorator route segment and its @Param key must refer to the same named value. In NestJS 12, decorators register metadata used by the Nest runtime; the TypeScript class is not automatically a route or managed provider. A running application must still compose its modules, resolve dependencies, and handle failures at the actual HTTP or service boundary.
+
+**Predict:** Before reading the instructor solution, describe the client-visible response or container behavior when the broken starter is used. GET /tasks/t1 passes undefined as the requested ID.
+
+**Trust and version boundary:** Target Node.js 24, TypeScript 6 and NestJS 12 with real installed packages. The repository has not yet completed an npm-locked Nest runtime test for this draft. Source existence is not evidence of a functioning server. Keep URL paths stable, return a 404 for unknown records and avoid exposing errors through string interpolation.
+
+## Prerequisites and preflight
+
+Complete 11.01.01 first. Inspect `drafts/nestjs/labs/controllers-routing/starter.ts` and `drafts/nestjs/labs/controllers-routing/solution.ts`. A real acceptance suite must compile these files with official Nest 12 dependencies and prove both a failing starter assertion and the instructor's positive behavior. No fabricated dependency lock or mocked framework API is allowed.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the incorrect framework behavior" file="drafts/nestjs/labs/controllers-routing/starter.ts" expected="GET /tasks/t1 passes undefined as the requested ID.">
+
+```ts
+import { Controller, Get, NotFoundException, Param } from '@nestjs/common';
+@Controller('tasks')
+export class TasksController {
+  @Get(':id')
+  find(@Param('taskId') id: string) { // BUG: route declares :id, not :taskId
+    if (id !== 't1') throw new NotFoundException();
+    return { id };
+  }
+}
+```
+
+**Observe:** GET /tasks/t1 passes undefined as the requested ID. Ask whether the bug comes from TypeScript syntax, dependency injection metadata, request processing, or server state. Test the *observable effect*, not a substring in source code.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement a focused NestJS repair" file="drafts/nestjs/labs/controllers-routing/solution.ts" expected="A decorator route segment and its @Param key must refer to the same named value.">
+
+```ts
+import { Controller, Get, NotFoundException, Param } from '@nestjs/common';
+@Controller('tasks')
+export class TasksController {
+  @Get(':id')
+  find(@Param('id') id: string) {
+    if (id !== 't1') throw new NotFoundException();
+    return { id };
+  }
+}
+```
+
+**Reasoning:** A decorator route segment and its @Param key must refer to the same named value. Keep URL paths stable, return a 404 for unknown records and avoid exposing errors through string interpolation. This repair does not imply that external users are authorized; it solves only the bounded lesson contract.
+
+</LessonStep>
+
+<LessonStep number={3} title="Prove both boundaries using the real Nest runtime" file="drafts/nestjs/labs/controllers-routing/lab.json" expected="Request /tasks/t1 and confirm t1 is used; request an unknown ID and receive 404.">
+
+**Instructor acceptance:** Request /tasks/t1 and confirm t1 is used; request an unknown ID and receive 404.
+
+**Negative test:** The learner starter must fail because gET /tasks/t1 passes undefined as the requested ID. This should be a semantic assertion failure after the application actually starts, not a missing package or misconfigured test runner.
+
+**Safety case:** Keep URL paths stable, return a 404 for unknown records and avoid exposing errors through string interpolation.
+
+</LessonStep>
+
+## Design alternatives and debugging strategy
+
+A quick workaround would hide the immediate symptom, but it would leave the original ownership or lifecycle error intact. Start by tracing the source that creates the Nest application and the providers registered in its module graph; then inspect the exact request path, active context, or emitted response affected by this lesson. Prefer an isolated test that can be run repeatedly without a live external database or credential.
+
+- **When it is appropriate:** A decorator route segment and its @Param key must refer to the same named value.
+- **When it is not enough:** If multiple requests, tenants, or worker processes are involved, test the same boundary under concurrency and treat incoming data as untrusted.
+- **How to confirm the repair:** Request /tasks/t1 and confirm t1 is used; request an unknown ID and receive 404.
+- **What to document:** The expected failure code, verification command, dependency version, and whether a browser, HTTP, or service-layer test actually executed.
+
+<Misconception claim="GET /tasks/t1 passes undefined as the requested ID." correction="A decorator route segment and its @Param key must refer to the same named value." />
+
+<KnowledgeCheck question="What should the reviewer verify for controllers and routing?" choices={["The source contains a decorator, so the runtime must work.","The real Nest application exhibits the specified behavior and rejects the broken case.","TypeScript types alone authorize incoming requests.","A mocked substring search proves the HTTP contract."]} correctIndex={1} explanation="A decorator route segment and its @Param key must refer to the same named value." misconception="GET /tasks/t1 passes undefined as the requested ID." lessonId="11.01.02" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+1. **Reproduce:** GET /tasks/t1 passes undefined as the requested ID.
+2. **Diagnose:** Identify the module, provider, request stage, or lifecycle owner responsible for the symptom.
+3. **Repair:** A decorator route segment and its @Param key must refer to the same named value.
+4. **Regression:** Request /tasks/t1 and confirm t1 is used; request an unknown ID and receive 404.
+5. **Trust boundary:** Keep URL paths stable, return a 404 for unknown records and avoid exposing errors through string interpolation.
+
+## Guided local lab
+
+The red starter and instructor solution are versioned under `drafts/nestjs/labs/controllers-routing/`. This remains a **draft**, without a published `LabGate` or course credit. Its runtime test, native Fastify request behavior where applicable, and accessible error handling must pass the dedicated module release gate before publication.
+
+## Reflect
+
+Why does the wrong behavior survive a superficial code review? What observable assertion would detect it reliably after a Nest or TypeScript major upgrade? Which aspect still requires a true service integration test rather than a class-only unit test?
+
+## Official references
+
+- [Canonical Nest documentation](https://docs.nestjs.com/)
+- [Focused Nest documentation](https://docs.nestjs.com/controllers)

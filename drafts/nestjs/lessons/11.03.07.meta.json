@@ -1,0 +1,27 @@
+{
+  "id": "11.03.07",
+  "title": "Domain events",
+  "trackId": "11",
+  "moduleId": "11.03",
+  "sourceStatus": "draft-unverified",
+  "estimatedMinutes": 60,
+  "stack": {
+    "node": "24",
+    "typescript": "6",
+    "nestjs": "12"
+  },
+  "prerequisites": [
+    "11.03.06"
+  ],
+  "objective": "Events should be emitted after a committed operation, with durable delivery for critical side effects.",
+  "misconception": "A task-created event is emitted before persistence succeeds, triggering false notifications.",
+  "acceptance": "On a failed save, no success event is emitted; on confirmation, one event is raised.",
+  "securityBoundary": "For durable notifications use an outbox or queue; process-local emitters can lose events.",
+  "labSlug": "domain-events",
+  "officialReferences": [
+    "https://docs.nestjs.com/",
+    "https://docs.nestjs.com/techniques/events"
+  ],
+  "reviewStatus": "unreviewed",
+  "runtimeQualification": "not-run"
+}

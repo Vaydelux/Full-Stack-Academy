@@ -1,0 +1,140 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["A cache interceptor must isolate verified tenant views and apply a finite TTL.","With two verified tenants, cached records never cross the tenant boundary and expire after TTL.","Only cache safe GET views; use bounded retention and never cache credentials or personalized failures."]} />
+
+## The problem we're solving
+
+A single path-only cache entry can return tenant A's response to tenant B. At this level, correctness must survive a process restart, a concurrent request, an unavailable dependency, or an unauthorized caller. An advanced Nest decorator is only useful when the test proves that its registration, runtime scope and error behavior match the intended design.
+
+## Build the mental model
+
+A cache interceptor must isolate verified tenant views and apply a finite TTL. Always identify the owner of state and the point where a failure becomes visible: at the DI container, on the socket, in the request interceptor, at shutdown or in a production health probe. A secure design is not merely a code style; it is the combination of runtime boundaries and a reproducible denial case.
+
+**Predict:** A single path-only cache entry can return tenant A's response to tenant B. Explain what fails under a second client, a shutdown event or a missing dependency.
+
+**Version scope:** Node 24, TypeScript 6, NestJS 12. Source is **staged and unverified**. Real Nest compiler, HTTP/WebSocket and any external-service qualification have not run for these drafts.
+
+## Prerequisites and preflight
+
+Complete 11.04.05. Start with `drafts/nestjs/labs/caching-interceptors/starter.ts` and attempt the specified acceptance case. Do not accidentally use a production account, remote server, email service or database; the practice harness is loopback-only. Any dependent package must be installed and integrity-locked from a real package registry before a runtime pass can be claimed.
+
+## Guided implementation
+
+<LessonStep number={1} title="Demonstrate the broken advanced boundary" file="drafts/nestjs/labs/caching-interceptors/starter.ts" expected="A single path-only cache entry can return tenant A's response to tenant B.">
+
+```ts
+import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nestjs/common';
+import { of } from 'rxjs';
+@Injectable()
+export class TasksCacheInterceptor implements NestInterceptor {
+  private readonly cache = new Map<string, unknown>();
+  intercept(ctx: ExecutionContext, next: CallHandler) {
+    const req = ctx.switchToHttp().getRequest<{ url: string }>();
+    const cached = this.cache.get(req.url);
+    return cached === undefined ? next.handle() : of(cached); // BUG: path-only key
+  }
+}
+```
+
+**Failure to observe:** A single path-only cache entry can return tenant A's response to tenant B. Explain whether a second tenant, a failed connection, or a shutdown sequence exposes the problem.
+
+</LessonStep>
+
+<LessonStep number={2} title="Apply the versioned NestJS repair" file="drafts/nestjs/labs/caching-interceptors/solution.ts" expected="A cache interceptor must isolate verified tenant views and apply a finite TTL.">
+
+```ts
+import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nestjs/common';
+import { of } from 'rxjs';
+import { tap } from 'rxjs/operators';
+type Cached = { tenantId: string; until: number; value: unknown };
+@Injectable()
+export class TasksCacheInterceptor implements NestInterceptor {
+  private readonly cache = new Map<string, Cached>();
+  intercept(ctx: ExecutionContext, next: CallHandler) {
+    const req = ctx.switchToHttp().getRequest<{
+      url: string; method: string; user?: { tenantId?: string; userId?: string };
+    }>();
+    const tenantId = req.user?.tenantId;
+    if (typeof tenantId !== 'string' || !tenantId.trim()) return next.handle();
+    if (req.method !== 'GET') {
+      // Mutations invalidate only after a successful next emission, never on errors.
+      return next.handle().pipe(tap(() => {
+        for (const [key, entry] of this.cache) {
+          if (entry.tenantId === tenantId) this.cache.delete(key);
+        }
+      }));
+    }
+    const userId = req.user?.userId;
+    if (typeof userId !== 'string' || !userId.trim() ||
+        typeof req.url !== 'string' || !req.url.startsWith('/')) return next.handle();
+    // Include both identities: users within a tenant may have different permissions.
+    const key = JSON.stringify([tenantId, userId, req.url]);
+    const entry = this.cache.get(key);
+    if (entry) {
+      if (entry.until > Date.now()) return of(entry.value);
+      this.cache.delete(key);
+    }
+    return next.handle().pipe(tap(value => {
+      // Bounded cache: evict the oldest entry before admitting a new one.
+      if (!this.cache.has(key) && this.cache.size >= 100) {
+        const oldestKey = this.cache.keys().next().value;
+        if (oldestKey !== undefined) this.cache.delete(oldestKey);
+      }
+      this.cache.set(key, { tenantId, value, until: Date.now() + 1000 });
+    }));
+  }
+}
+```
+
+**Why it works:** A cache interceptor must isolate verified tenant views and apply a finite TTL. Only cache safe GET views; use bounded retention and never cache credentials or personalized failures.
+
+</LessonStep>
+
+<LessonStep number={3} title="Qualify real integrations and denial paths" file="drafts/nestjs/labs/caching-interceptors/lab.json" expected="With two verified tenants, cached records never cross the tenant boundary and expire after TTL.">
+
+**Positive contract:** With two verified tenants, cached records never cross the tenant boundary and expire after TTL.
+
+**Negative contract:** The source starter must fail an assertion because a single path-only cache entry can return tenant A's response to tenant B. The green solution must pass under an actual Nest testing module or socket/HTTP adapter where applicable.
+
+**Trust boundary:** Only cache safe GET views; use bounded retention and never cache credentials or personalized failures.
+
+</LessonStep>
+
+**Updated verification boundary:** Tenant isolation alone is not sufficient when users in one tenant have different permissions. The example now keys cached GET responses by both verified tenant and user IDs, bypasses caching without those identities, bounds the cache to 100 entries, expires responses after one second and invalidates that tenant's entries after successful mutations. In-memory caching remains a teaching example, not a distributed permissions-aware cache.
+
+## Operational and security review
+
+A green response from one synchronous unit test is not proof of production reliability. Review two independent request contexts, a malformed payload, an intentional dependency failure and a resource-release scenario. Do not expose a demo health endpoint or test gateway to the public internet. For anything that could send or store private data, use independently authenticated test principals and negative access checks.
+
+- **Design invariant:** A cache interceptor must isolate verified tenant views and apply a finite TTL.
+- **Observable regression:** A single path-only cache entry can return tenant A's response to tenant B.
+- **Acceptance:** With two verified tenants, cached records never cross the tenant boundary and expire after TTL.
+- **Remaining risk:** Only cache safe GET views; use bounded retention and never cache credentials or personalized failures.
+
+The lesson's instructor snippet demonstrates the mechanism but is not a deployable complete production server. Real deployment needs credential management, TLS, limits, structured logging, shutdown and isolation that are deliberately outside this individual exercise.
+
+<Misconception claim="A single path-only cache entry can return tenant A's response to tenant B." correction="A cache interceptor must isolate verified tenant views and apply a finite TTL." />
+
+<KnowledgeCheck question="What should a release reviewer demand for caching and interceptors?" choices={["A passing source-text search is sufficient.","The actual Nest runtime shows the specified positive case and a meaningful denial or failure case.","A project compiles, so tenancy is proven.","A local demo endpoint may safely be exposed publicly without auth."]} correctIndex={1} explanation="A cache interceptor must isolate verified tenant views and apply a finite TTL." misconception="A single path-only cache entry can return tenant A's response to tenant B." lessonId="11.04.06" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+1. **Reproduce:** A single path-only cache entry can return tenant A's response to tenant B.
+2. **Diagnose:** Find the responsible Nest container, socket, interceptor, test override or shutdown stage.
+3. **Repair:** A cache interceptor must isolate verified tenant views and apply a finite TTL.
+4. **Regression:** With two verified tenants, cached records never cross the tenant boundary and expire after TTL.
+5. **Safety constraint:** Only cache safe GET views; use bounded retention and never cache credentials or personalized failures.
+
+## Guided local lab
+
+The staged `drafts/nestjs/labs/caching-interceptors/` folder contains a deliberately incorrect learner source, instructor repair and acceptance manifest. A future package-locked Nest 12 harness must run the real positive and negative checks before these can become published lab fixtures. No `LabGate` or course-progress claim is present.
+
+## Reflect
+
+Would this repair remain valid if there were two tenants, a stopped database or an interrupted deployment? Which test must run in a real Fastify adapter or WebSocket connection rather than by directly calling a class method? What is the smallest trustworthy negative case?
+
+## Official references
+
+- [NestJS documentation](https://docs.nestjs.com/)
+- [Focused official reference](https://docs.nestjs.com/techniques/caching)

@@ -1,0 +1,27 @@
+{
+  "id": "11.02.03",
+  "title": "Guards and authorization",
+  "trackId": "11",
+  "moduleId": "11.02",
+  "sourceStatus": "draft-unverified",
+  "estimatedMinutes": 60,
+  "stack": {
+    "node": "24",
+    "typescript": "6",
+    "nestjs": "12"
+  },
+  "prerequisites": [
+    "11.02.02"
+  ],
+  "objective": "Nest guards make an access decision before protected route handling.",
+  "misconception": "A guard always returns true and the route accepts unauthenticated requests.",
+  "acceptance": "GET /private returns 403 with no authorization; authorized test principal can pass.",
+  "securityBoundary": "A toy Bearer string is only an educational fixture; production must verify signed credentials and scope.",
+  "labSlug": "guards-authorization",
+  "officialReferences": [
+    "https://docs.nestjs.com/",
+    "https://docs.nestjs.com/guards"
+  ],
+  "reviewStatus": "unreviewed",
+  "runtimeQualification": "not-run"
+}

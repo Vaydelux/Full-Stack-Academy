@@ -1,0 +1,99 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Nest's Fastify adapter must be provided explicitly when the teaching app promises Fastify behavior.","Start the real application, inspect its adapter type and issue a GET /health request.","Keep the example loopback-only; do not expose its unauthenticated endpoints publicly."]} />
+
+## The problem we're solving
+
+The app uses Nest's default HTTP platform even though tests expect Fastify. A team reviewing a NestJS service must understand *why* this is a failure, not merely memorize decorator names. This lesson isolates the failure in one short source file so the learner can compare the runtime contract before and after the change.
+
+## Build the mental model
+
+Nest's Fastify adapter must be provided explicitly when the teaching app promises Fastify behavior. In NestJS 12, decorators register metadata used by the Nest runtime; the TypeScript class is not automatically a route or managed provider. A running application must still compose its modules, resolve dependencies, and handle failures at the actual HTTP or service boundary.
+
+**Predict:** Before reading the instructor solution, describe the client-visible response or container behavior when the broken starter is used. The app uses Nest's default HTTP platform even though tests expect Fastify.
+
+**Trust and version boundary:** Target Node.js 24, TypeScript 6 and NestJS 12 with real installed packages. The repository has not yet completed an npm-locked Nest runtime test for this draft. Source existence is not evidence of a functioning server. Keep the example loopback-only; do not expose its unauthenticated endpoints publicly.
+
+## Prerequisites and preflight
+
+Complete 11.01.05 first. Inspect `drafts/nestjs/labs/fastify-adapter/starter.ts` and `drafts/nestjs/labs/fastify-adapter/solution.ts`. A real acceptance suite must compile these files with official Nest 12 dependencies and prove both a failing starter assertion and the instructor's positive behavior. No fabricated dependency lock or mocked framework API is allowed.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the incorrect framework behavior" file="drafts/nestjs/labs/fastify-adapter/starter.ts" expected="The app uses Nest's default HTTP platform even though tests expect Fastify.">
+
+```ts
+import { NestFactory } from '@nestjs/core';
+import { Module } from '@nestjs/common';
+@Module({})
+export class AppModule {}
+export async function createApp() {
+  return NestFactory.create(AppModule); // BUG: default adapter is not Fastify
+}
+```
+
+**Observe:** The app uses Nest's default HTTP platform even though tests expect Fastify. Ask whether the bug comes from TypeScript syntax, dependency injection metadata, request processing, or server state. Test the *observable effect*, not a substring in source code.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement a focused NestJS repair" file="drafts/nestjs/labs/fastify-adapter/solution.ts" expected="Nest's Fastify adapter must be provided explicitly when the teaching app promises Fastify behavior.">
+
+```ts
+import { NestFactory } from '@nestjs/core';
+import { Module } from '@nestjs/common';
+import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
+@Module({})
+export class AppModule {}
+export async function createApp(): Promise<NestFastifyApplication> {
+  return NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter());
+}
+```
+
+**Reasoning:** Nest's Fastify adapter must be provided explicitly when the teaching app promises Fastify behavior. Keep the example loopback-only; do not expose its unauthenticated endpoints publicly. This repair does not imply that external users are authorized; it solves only the bounded lesson contract.
+
+</LessonStep>
+
+<LessonStep number={3} title="Prove both boundaries using the real Nest runtime" file="drafts/nestjs/labs/fastify-adapter/lab.json" expected="Start the real application, inspect its adapter type and issue a GET /health request.">
+
+**Instructor acceptance:** Start the real application, inspect its adapter type and issue a GET /health request.
+
+**Negative test:** The learner starter must fail because the app uses Nest's default HTTP platform even though tests expect Fastify. This should be a semantic assertion failure after the application actually starts, not a missing package or misconfigured test runner.
+
+**Safety case:** Keep the example loopback-only; do not expose its unauthenticated endpoints publicly.
+
+</LessonStep>
+
+## Design alternatives and debugging strategy
+
+A quick workaround would hide the immediate symptom, but it would leave the original ownership or lifecycle error intact. Start by tracing the source that creates the Nest application and the providers registered in its module graph; then inspect the exact request path, active context, or emitted response affected by this lesson. Prefer an isolated test that can be run repeatedly without a live external database or credential.
+
+- **When it is appropriate:** Nest's Fastify adapter must be provided explicitly when the teaching app promises Fastify behavior.
+- **When it is not enough:** If multiple requests, tenants, or worker processes are involved, test the same boundary under concurrency and treat incoming data as untrusted.
+- **How to confirm the repair:** Start the real application, inspect its adapter type and issue a GET /health request.
+- **What to document:** The expected failure code, verification command, dependency version, and whether a browser, HTTP, or service-layer test actually executed.
+
+<Misconception claim="The app uses Nest's default HTTP platform even though tests expect Fastify." correction="Nest's Fastify adapter must be provided explicitly when the teaching app promises Fastify behavior." />
+
+<KnowledgeCheck question="What should the reviewer verify for fastify adapter?" choices={["The source contains a decorator, so the runtime must work.","The real Nest application exhibits the specified behavior and rejects the broken case.","TypeScript types alone authorize incoming requests.","A mocked substring search proves the HTTP contract."]} correctIndex={1} explanation="Nest's Fastify adapter must be provided explicitly when the teaching app promises Fastify behavior." misconception="The app uses Nest's default HTTP platform even though tests expect Fastify." lessonId="11.01.06" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+1. **Reproduce:** The app uses Nest's default HTTP platform even though tests expect Fastify.
+2. **Diagnose:** Identify the module, provider, request stage, or lifecycle owner responsible for the symptom.
+3. **Repair:** Nest's Fastify adapter must be provided explicitly when the teaching app promises Fastify behavior.
+4. **Regression:** Start the real application, inspect its adapter type and issue a GET /health request.
+5. **Trust boundary:** Keep the example loopback-only; do not expose its unauthenticated endpoints publicly.
+
+## Guided local lab
+
+The red starter and instructor solution are versioned under `drafts/nestjs/labs/fastify-adapter/`. This remains a **draft**, without a published `LabGate` or course credit. Its runtime test, native Fastify request behavior where applicable, and accessible error handling must pass the dedicated module release gate before publication.
+
+## Reflect
+
+Why does the wrong behavior survive a superficial code review? What observable assertion would detect it reliably after a Nest or TypeScript major upgrade? Which aspect still requires a true service integration test rather than a class-only unit test?
+
+## Official references
+
+- [Canonical Nest documentation](https://docs.nestjs.com/)
+- [Focused Nest documentation](https://docs.nestjs.com/techniques/performance)

@@ -1,0 +1,107 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["A provider must be exported by its owning module and imported through that module to be visible elsewhere.","Compile a real Nest TestingModule and resolve ReportsService with a mocked TasksService provider.","Avoid broad global modules that expose private services across unrelated trust boundaries."]} />
+
+## The problem we're solving
+
+ReportsModule imports TasksModule but cannot resolve TasksService because it is not exported. Building a domain feature demands more than a decorated controller. Real services have invariants, dependencies, persistence contracts and externally visible behavior. When any one layer owns work it cannot safely verify, the resulting application becomes difficult to test and may expose private state.
+
+## Build the mental model
+
+A provider must be exported by its owning module and imported through that module to be visible elsewhere. Design the feature by drawing arrows from controller → application service → repository/port → persistence. Dependencies should point toward stable contracts; inbound HTTP is an adapter, not the business model. A real Nest module composes these pieces, while transaction boundaries belong near the persistence operation that must be atomic.
+
+**Prediction:** ReportsModule imports TasksModule but cannot resolve TasksService because it is not exported. Name the exact state that differs after this failure, and who can observe it.
+
+**Scope:** NestJS 12, Node.js 24, TypeScript 6. This is **staged authoring only**. It has not passed a real installed Nest build, PostgreSQL integration (when applicable), or browser/manual accessibility qualification.
+
+## Prerequisites and preflight
+
+Complete 11.03.04 and review the two source files under `drafts/nestjs/labs/cross-module-boundaries/`. The failing starter is intentionally wrong, but a real negative test must fail from the semantic contract, not from unresolved packages. For persistence, do not replace the real transaction or parameterization proof with an array or a SQL string search.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the domain-layer defect" file="drafts/nestjs/labs/cross-module-boundaries/starter.ts" expected="ReportsModule imports TasksModule but cannot resolve TasksService because it is not exported.">
+
+```ts
+import { Injectable, Module } from '@nestjs/common';
+@Injectable()
+export class TasksService { count() { return 1; } }
+@Module({ providers: [TasksService] }) // BUG: missing exports
+export class TasksModule {}
+@Injectable()
+export class ReportsService { constructor(private readonly tasks: TasksService) {} }
+@Module({ imports: [TasksModule], providers: [ReportsService] })
+export class ReportsModule {}
+```
+
+**Observation:** ReportsModule imports TasksModule but cannot resolve TasksService because it is not exported. Notice where this source chooses the owning layer and what runtime assertion must fail.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the domain boundary" file="drafts/nestjs/labs/cross-module-boundaries/solution.ts" expected="A provider must be exported by its owning module and imported through that module to be visible elsewhere.">
+
+```ts
+import { Injectable, Module } from '@nestjs/common';
+@Injectable()
+export class TasksService { count() { return 1; } }
+@Module({ providers: [TasksService], exports: [TasksService] })
+export class TasksModule {}
+@Injectable()
+export class ReportsService {
+  constructor(private readonly tasks: TasksService) {}
+  count() { return this.tasks.count(); }
+}
+@Module({ imports: [TasksModule], providers: [ReportsService] })
+export class ReportsModule {}
+```
+
+**Reasoning:** A provider must be exported by its owning module and imported through that module to be visible elsewhere. Avoid broad global modules that expose private services across unrelated trust boundaries.
+
+</LessonStep>
+
+<LessonStep number={3} title="Qualify the real service contract" file="drafts/nestjs/labs/cross-module-boundaries/lab.json" expected="Compile a real Nest TestingModule and resolve ReportsService with a mocked TasksService provider.">
+
+**Expected result:** Compile a real Nest TestingModule and resolve ReportsService with a mocked TasksService provider.
+
+**Negative case:** Run the broken starter through the same dependency container, HTTP harness, or transaction test. Confirm a specific failed assertion caused by the bug, not a package-import failure.
+
+**Security and concurrency check:** Avoid broad global modules that expose private services across unrelated trust boundaries.
+
+</LessonStep>
+
+## Architecture trade-offs
+
+Directly constructing a service or returning a database entity can be tempting because it reduces boilerplate. It also hides dependency seams and blurs the trust boundary. The practical alternative is not to abstract everything; keep one small interface for a dependency that legitimately varies and enforce invariants in exactly one authoritative place. Favor explicit module imports/exports over globally available providers.
+
+- **Correctness invariant:** A provider must be exported by its owning module and imported through that module to be visible elsewhere.
+- **Reproducible failure:** ReportsModule imports TasksModule but cannot resolve TasksService because it is not exported.
+- **Acceptance evidence:** Compile a real Nest TestingModule and resolve ReportsService with a mocked TasksService provider.
+- **Risk that remains:** Avoid broad global modules that expose private services across unrelated trust boundaries.
+
+In a multi-request system, repeat the test with two independent users and at least one failure after an intermediate operation. A UI test cannot prove a transaction rollback; only the real persistence adapter can.
+
+<Misconception claim="ReportsModule imports TasksModule but cannot resolve TasksService because it is not exported." correction="A provider must be exported by its owning module and imported through that module to be visible elsewhere." />
+
+<KnowledgeCheck question="Which design is safest for cross-module boundaries?" choices={["Make the controller hold every stateful dependency permanently.","Keep business rules in an injectable service and verify the boundary with actual runtime behavior.","Expose persistent entities directly because TypeScript hides private fields.","Treat a mock array as proof of database transactions."]} correctIndex={1} explanation="A provider must be exported by its owning module and imported through that module to be visible elsewhere." misconception="ReportsModule imports TasksModule but cannot resolve TasksService because it is not exported." lessonId="11.03.05" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+1. **Reproduce:** ReportsModule imports TasksModule but cannot resolve TasksService because it is not exported.
+2. **Diagnose:** Determine whether the bug belongs to a controller, injectable provider, repository, module export or transaction.
+3. **Repair:** A provider must be exported by its owning module and imported through that module to be visible elsewhere.
+4. **Regression:** Compile a real Nest TestingModule and resolve ReportsService with a mocked TasksService provider.
+5. **Trust boundary:** Avoid broad global modules that expose private services across unrelated trust boundaries.
+
+## Guided local lab
+
+The corresponding `starter.ts`, `solution.ts`, and machine-readable `lab.json` are under `drafts/nestjs/labs/cross-module-boundaries/`. These remain source exercises awaiting package installation, real library execution and module acceptance. No published course-progress event or `LabGate` is registered.
+
+## Reflect
+
+What is the narrowest seam that should be replaceable in a test? What would fail if two requests overlap? Which case demands a real PostgreSQL connection instead of a local unit test, and how would you prove an error cannot leave a partial write?
+
+## Official references
+
+- [NestJS documentation](https://docs.nestjs.com/)
+- [Focused official reference](https://docs.nestjs.com/modules)

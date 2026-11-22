@@ -1,0 +1,18 @@
+{
+  "id": "draft.nestjs.lifecycle-hooks",
+  "lessonId": "11.01.07",
+  "title": "Lifecycle hooks",
+  "sourceStatus": "draft-unverified",
+  "runtime": "node-24-nestjs-12-typescript-6",
+  "starter": "drafts/nestjs/labs/lifecycle-hooks/starter.ts",
+  "solution": "drafts/nestjs/labs/lifecycle-hooks/solution.ts",
+  "expectedPositive": "Call app.close and ensure the provider has released its interval.",
+  "expectedNegative": "A provider opens a polling timer but never stops it, keeping the process alive.",
+  "requiresRealNestTest": true,
+  "requiresRealHttpTest": true,
+  "readyToPublish": false,
+  "officialReferences": [
+    "https://docs.nestjs.com/",
+    "https://docs.nestjs.com/fundamentals/lifecycle-events"
+  ]
+}

@@ -1,0 +1,117 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["A reusable projects feature should encapsulate service, controller and store token in an explicit Nest module.","Resolve ProjectsController from a real Nest module and replace the store token for tests.","An in-memory demo repository is not production persistence or multi-tenant authorization."]} />
+
+## The problem we're solving
+
+ProjectsController directly constructs its service, making the module hard to override. Building a domain feature demands more than a decorated controller. Real services have invariants, dependencies, persistence contracts and externally visible behavior. When any one layer owns work it cannot safely verify, the resulting application becomes difficult to test and may expose private state.
+
+## Build the mental model
+
+A reusable projects feature should encapsulate service, controller and store token in an explicit Nest module. Design the feature by drawing arrows from controller → application service → repository/port → persistence. Dependencies should point toward stable contracts; inbound HTTP is an adapter, not the business model. A real Nest module composes these pieces, while transaction boundaries belong near the persistence operation that must be atomic.
+
+**Prediction:** ProjectsController directly constructs its service, making the module hard to override. Name the exact state that differs after this failure, and who can observe it.
+
+**Scope:** NestJS 12, Node.js 24, TypeScript 6. This is **staged authoring only**. It has not passed a real installed Nest build, PostgreSQL integration (when applicable), or browser/manual accessibility qualification.
+
+## Prerequisites and preflight
+
+Complete 11.03.07 and review the two source files under `drafts/nestjs/labs/reusable-project-module/`. The failing starter is intentionally wrong, but a real negative test must fail from the semantic contract, not from unresolved packages. For persistence, do not replace the real transaction or parameterization proof with an array or a SQL string search.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the domain-layer defect" file="drafts/nestjs/labs/reusable-project-module/starter.ts" expected="ProjectsController directly constructs its service, making the module hard to override.">
+
+```ts
+import { Controller, Get, Module } from '@nestjs/common';
+export class ProjectsService { list() { return [{ id: 'p1' }]; } }
+@Controller('projects')
+export class ProjectsController {
+  private service = new ProjectsService(); // BUG: bypasses DI
+  @Get() list() { return this.service.list(); }
+}
+@Module({ controllers: [ProjectsController] })
+export class ProjectsModule {}
+```
+
+**Observation:** ProjectsController directly constructs its service, making the module hard to override. Notice where this source chooses the owning layer and what runtime assertion must fail.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the domain boundary" file="drafts/nestjs/labs/reusable-project-module/solution.ts" expected="A reusable projects feature should encapsulate service, controller and store token in an explicit Nest module.">
+
+```ts
+import { Controller, Get, Injectable, Module } from '@nestjs/common';
+export const PROJECT_STORE = Symbol('PROJECT_STORE');
+export interface ProjectStore { list(): { id: string }[]; }
+@Injectable()
+export class ProjectsService {
+  constructor(@InjectProjectStore() private readonly store: ProjectStore) {}
+  list() { return this.store.list(); }
+}
+// Explicit token decorator keeps the module's dependency boundary clear.
+import { Inject } from '@nestjs/common';
+function InjectProjectStore(): ParameterDecorator { return Inject(PROJECT_STORE); }
+@Controller('projects')
+export class ProjectsController {
+  constructor(private readonly service: ProjectsService) {}
+  @Get() list() { return this.service.list(); }
+}
+@Module({
+  providers: [ProjectsService, { provide: PROJECT_STORE, useValue: { list: () => [{ id: 'p1' }] } }],
+  controllers: [ProjectsController],
+  exports: [ProjectsService]
+})
+export class ProjectsModule {}
+```
+
+**Reasoning:** A reusable projects feature should encapsulate service, controller and store token in an explicit Nest module. An in-memory demo repository is not production persistence or multi-tenant authorization.
+
+</LessonStep>
+
+<LessonStep number={3} title="Qualify the real service contract" file="drafts/nestjs/labs/reusable-project-module/lab.json" expected="Resolve ProjectsController from a real Nest module and replace the store token for tests.">
+
+**Expected result:** Resolve ProjectsController from a real Nest module and replace the store token for tests.
+
+**Negative case:** Run the broken starter through the same dependency container, HTTP harness, or transaction test. Confirm a specific failed assertion caused by the bug, not a package-import failure.
+
+**Security and concurrency check:** An in-memory demo repository is not production persistence or multi-tenant authorization.
+
+</LessonStep>
+
+## Architecture trade-offs
+
+Directly constructing a service or returning a database entity can be tempting because it reduces boilerplate. It also hides dependency seams and blurs the trust boundary. The practical alternative is not to abstract everything; keep one small interface for a dependency that legitimately varies and enforce invariants in exactly one authoritative place. Favor explicit module imports/exports over globally available providers.
+
+- **Correctness invariant:** A reusable projects feature should encapsulate service, controller and store token in an explicit Nest module.
+- **Reproducible failure:** ProjectsController directly constructs its service, making the module hard to override.
+- **Acceptance evidence:** Resolve ProjectsController from a real Nest module and replace the store token for tests.
+- **Risk that remains:** An in-memory demo repository is not production persistence or multi-tenant authorization.
+
+In a multi-request system, repeat the test with two independent users and at least one failure after an intermediate operation. A UI test cannot prove a transaction rollback; only the real persistence adapter can.
+
+<Misconception claim="ProjectsController directly constructs its service, making the module hard to override." correction="A reusable projects feature should encapsulate service, controller and store token in an explicit Nest module." />
+
+<KnowledgeCheck question="Which design is safest for lab reusable project module?" choices={["Make the controller hold every stateful dependency permanently.","Keep business rules in an injectable service and verify the boundary with actual runtime behavior.","Expose persistent entities directly because TypeScript hides private fields.","Treat a mock array as proof of database transactions."]} correctIndex={1} explanation="A reusable projects feature should encapsulate service, controller and store token in an explicit Nest module." misconception="ProjectsController directly constructs its service, making the module hard to override." lessonId="11.03.08" />
+
+## Bug Hunt: reproduce, diagnose and repair
+
+1. **Reproduce:** ProjectsController directly constructs its service, making the module hard to override.
+2. **Diagnose:** Determine whether the bug belongs to a controller, injectable provider, repository, module export or transaction.
+3. **Repair:** A reusable projects feature should encapsulate service, controller and store token in an explicit Nest module.
+4. **Regression:** Resolve ProjectsController from a real Nest module and replace the store token for tests.
+5. **Trust boundary:** An in-memory demo repository is not production persistence or multi-tenant authorization.
+
+## Guided local lab
+
+The corresponding `starter.ts`, `solution.ts`, and machine-readable `lab.json` are under `drafts/nestjs/labs/reusable-project-module/`. These remain source exercises awaiting package installation, real library execution and module acceptance. No published course-progress event or `LabGate` is registered.
+
+## Reflect
+
+What is the narrowest seam that should be replaceable in a test? What would fail if two requests overlap? Which case demands a real PostgreSQL connection instead of a local unit test, and how would you prove an error cannot leave a partial write?
+
+## Official references
+
+- [NestJS documentation](https://docs.nestjs.com/)
+- [Focused official reference](https://docs.nestjs.com/modules)

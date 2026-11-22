@@ -1,0 +1,18 @@
+{
+  "id": "draft.nestjs.structured-responses",
+  "lessonId": "11.02.06",
+  "title": "Structured responses",
+  "sourceStatus": "draft-unverified",
+  "runtime": "node-24-nestjs-12-typescript-6",
+  "starter": "drafts/nestjs/labs/structured-responses/starter.ts",
+  "solution": "drafts/nestjs/labs/structured-responses/solution.ts",
+  "expectedPositive": "GET /account returns only id, displayName, and stable public fields.",
+  "expectedNegative": "A serialized user record includes passwordHash in the HTTP response.",
+  "requiresRealNestTest": true,
+  "requiresRealHttpTest": true,
+  "readyToPublish": false,
+  "officialReferences": [
+    "https://docs.nestjs.com/",
+    "https://docs.nestjs.com/techniques/serialization"
+  ]
+}

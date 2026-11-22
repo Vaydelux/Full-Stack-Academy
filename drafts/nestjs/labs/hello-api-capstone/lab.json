@@ -1,0 +1,18 @@
+{
+  "id": "draft.nestjs.hello-api-capstone",
+  "lessonId": "11.01.08",
+  "title": "Lab hello API",
+  "sourceStatus": "draft-unverified",
+  "runtime": "node-24-nestjs-12-typescript-6",
+  "starter": "drafts/nestjs/labs/hello-api-capstone/starter.ts",
+  "solution": "drafts/nestjs/labs/hello-api-capstone/solution.ts",
+  "expectedPositive": "With readiness true return 200; with readiness false return 503; check both through real HTTP.",
+  "expectedNegative": "The endpoint returns status up when a required service is unavailable.",
+  "requiresRealNestTest": true,
+  "requiresRealHttpTest": true,
+  "readyToPublish": false,
+  "officialReferences": [
+    "https://docs.nestjs.com/",
+    "https://docs.nestjs.com/recipes/terminus"
+  ]
+}
