@@ -45,12 +45,9 @@ SELECT id,status FROM training_jobs WHERE status='ready' ORDER BY id LIMIT 1;
 <LessonStep number={2} title="Implement the corrected database operation" file="drafts/postgresql/labs/locking-queue-claims/solution.sql" expected="Workers should claim work atomically. FOR UPDATE SKIP LOCKED is useful for queue-like tasks because locked rows can be skipped by other consumers.">
 
 ```sql
-CREATE TEMP TABLE lesson_claim AS
-WITH claimed AS (
- UPDATE training_jobs SET status='running'
- WHERE id=(SELECT id FROM training_jobs WHERE status='ready' ORDER BY id FOR UPDATE SKIP LOCKED LIMIT 1)
- RETURNING id,status
-) SELECT id,status FROM claimed;
+UPDATE training_jobs SET status='running'
+WHERE id=(SELECT id FROM training_jobs WHERE status='ready' ORDER BY id FOR UPDATE SKIP LOCKED LIMIT 1);
+CREATE TEMP TABLE lesson_claim AS SELECT id,status FROM training_jobs WHERE status='running';
 ```
 
 **Why this is safer:** Workers should claim work atomically. FOR UPDATE SKIP LOCKED is useful for queue-like tasks because locked rows can be skipped by other consumers. The repaired SQL is not presented as complete production application logic: callers still need authentication, object-level authorization, timeout/retry behavior and clear error mapping.

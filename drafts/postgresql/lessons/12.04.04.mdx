@@ -35,7 +35,7 @@ Complete **12.04.03**. Read `examples/postgresql-performance/fixture.sql` and `d
 CREATE TEMP VIEW lesson_page AS
 SELECT id,tenant_id,created_at FROM perf_tasks
 WHERE tenant_id='alpha'
-ORDER BY created_at DESC,id DESC LIMIT 2 OFFSET 1;
+ORDER BY created_at DESC,id DESC LIMIT 2 OFFSET 2;
 ```
 
 **Expected limitation:** OFFSET 1 uses a page-number position rather than the given last-seen cursor. New rows inserted ahead of the cursor can shift page boundaries. Explain whether the problem is a missing predicate, a wrong index definition, an expensive query pattern or missing runtime evidence. Distinguish real measurements from a prediction about likely performance.
