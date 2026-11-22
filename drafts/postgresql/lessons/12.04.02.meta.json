@@ -1,0 +1,20 @@
+{
+  "id": "12.04.02",
+  "trackId": "12",
+  "moduleId": "12.04",
+  "title": "B tree and composite indexes",
+  "labSlug": "composite-index-order",
+  "sourceStatus": "draft-unverified",
+  "reviewStatus": "unreviewed",
+  "runtimeQualification": "not-run",
+  "estimatedMinutes": 60,
+  "prerequisites": [
+    "12.04.01"
+  ],
+  "officialReferences": [
+    "https://www.postgresql.org/docs/current/indexes-multicolumn.html",
+    "https://www.postgresql.org/docs/current/using-explain.html"
+  ],
+  "evidenceMode": "sql-contract",
+  "securityBoundary": "The index definition can be correct while the planner chooses a sequential scan. Real EXPLAIN with representative cardinality and statistics is still required to demonstrate a latency benefit."
+}

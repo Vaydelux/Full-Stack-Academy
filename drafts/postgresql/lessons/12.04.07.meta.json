@@ -1,0 +1,20 @@
+{
+  "id": "12.04.07",
+  "trackId": "12",
+  "moduleId": "12.04",
+  "title": "Vacuum and maintenance",
+  "labSlug": "vacuum-maintenance",
+  "sourceStatus": "draft-unverified",
+  "reviewStatus": "unreviewed",
+  "runtimeQualification": "not-run",
+  "estimatedMinutes": 60,
+  "prerequisites": [
+    "12.04.06"
+  ],
+  "officialReferences": [
+    "https://www.postgresql.org/docs/current/sql-vacuum.html",
+    "https://www.postgresql.org/docs/current/using-explain.html"
+  ],
+  "evidenceMode": "manual-evidence",
+  "securityBoundary": "VACUUM cannot run inside a transaction block. This exercise must be run manually outside the rollback-only SQL-contract runner, against a dedicated disposable database. A tiny fixture cannot demonstrate meaningful bloat."
+}

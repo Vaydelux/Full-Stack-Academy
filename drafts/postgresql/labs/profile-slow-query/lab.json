@@ -1,0 +1,15 @@
+{
+  "id": "draft.postgresql.profile-slow-query",
+  "lessonId": "12.04.08",
+  "title": "Lab profile slow query",
+  "sourceStatus": "draft-unverified",
+  "runtimeQualification": "not-run",
+  "readyToPublish": false,
+  "qualificationKind": "manual-evidence",
+  "fixture": "examples/postgresql-performance/fixture.sql",
+  "starter": "drafts/postgresql/labs/profile-slow-query/starter.sql",
+  "solution": "drafts/postgresql/labs/profile-slow-query/solution.sql",
+  "acceptanceDoc": "drafts/postgresql/labs/profile-slow-query/acceptance.md",
+  "manualPerformanceReviewRequired": true,
+  "reference": "https://www.postgresql.org/docs/current/using-explain.html"
+}

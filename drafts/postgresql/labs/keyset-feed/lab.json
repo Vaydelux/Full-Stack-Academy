@@ -1,0 +1,15 @@
+{
+  "id": "draft.postgresql.keyset-feed",
+  "lessonId": "12.04.04",
+  "title": "Keyset pagination",
+  "sourceStatus": "draft-unverified",
+  "runtimeQualification": "not-run",
+  "readyToPublish": false,
+  "qualificationKind": "sql-contract",
+  "fixture": "examples/postgresql-performance/fixture.sql",
+  "starter": "drafts/postgresql/labs/keyset-feed/starter.sql",
+  "solution": "drafts/postgresql/labs/keyset-feed/solution.sql",
+  "acceptance": "drafts/postgresql/labs/keyset-feed/acceptance.sql",
+  "manualPerformanceReviewRequired": true,
+  "reference": "https://www.postgresql.org/docs/current/queries-limit.html"
+}

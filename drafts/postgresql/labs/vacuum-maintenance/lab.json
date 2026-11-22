@@ -1,0 +1,15 @@
+{
+  "id": "draft.postgresql.vacuum-maintenance",
+  "lessonId": "12.04.07",
+  "title": "Vacuum and maintenance",
+  "sourceStatus": "draft-unverified",
+  "runtimeQualification": "not-run",
+  "readyToPublish": false,
+  "qualificationKind": "manual-evidence",
+  "fixture": "examples/postgresql-performance/fixture.sql",
+  "starter": "drafts/postgresql/labs/vacuum-maintenance/starter.sql",
+  "solution": "drafts/postgresql/labs/vacuum-maintenance/solution.sql",
+  "acceptanceDoc": "drafts/postgresql/labs/vacuum-maintenance/acceptance.md",
+  "manualPerformanceReviewRequired": true,
+  "reference": "https://www.postgresql.org/docs/current/sql-vacuum.html"
+}

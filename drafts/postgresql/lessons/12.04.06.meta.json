@@ -1,0 +1,20 @@
+{
+  "id": "12.04.06",
+  "trackId": "12",
+  "moduleId": "12.04",
+  "title": "Pooling and connection limits",
+  "labSlug": "connection-budget",
+  "sourceStatus": "draft-unverified",
+  "reviewStatus": "unreviewed",
+  "runtimeQualification": "not-run",
+  "estimatedMinutes": 60,
+  "prerequisites": [
+    "12.04.05"
+  ],
+  "officialReferences": [
+    "https://www.postgresql.org/docs/current/runtime-config-connection.html",
+    "https://www.postgresql.org/docs/current/using-explain.html"
+  ],
+  "evidenceMode": "sql-contract",
+  "securityBoundary": "A source-derived setting is not a validated pool configuration. Verify real pooler mode, maximum backend connections, transaction-level assumptions, idle eviction and instrumentation before load testing."
+}

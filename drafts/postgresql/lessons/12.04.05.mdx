@@ -1,0 +1,98 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["An N+1 pattern issues one query for the list of parents and then one additional query for each parent. Detect it by counting real database calls, not only by inspecting SQL text.","Instrument the real client query executor. Compare calls as project count increases (1, 10, 100), row cardinality and response bytes. Avoid claiming an improvement without measured results.","A JOIN can multiply parent rows and be inefficient for deeply nested relationships. Alternatives include two batched IN queries, data loaders, and aggregate JSON; measure total calls and bytes."]} />
+
+## Performance question to investigate
+
+**N plus one queries.** An N+1 pattern issues one query for the list of parents and then one additional query for each parent. Detect it by counting real database calls, not only by inspecting SQL text.
+
+**Broken assumption:** The starter illustrates repeated per-project queries. An API loop that repeats the second query for every returned project causes network and planning overhead.
+
+The purpose of performance engineering is not to collect more indexes or force a particular query-plan node. It is to establish the correctness of the result, define a representative workload, observe the measured behavior, then decide whether one carefully scoped change produces a sustainable benefit.
+
+This lesson uses a small synthetic multi-tenant task feed. Results can be inspected without a real account, production traffic or secrets. **It is a draft manuscript, not published course content.**
+
+## Mental model
+
+An N+1 pattern issues one query for the list of parents and then one additional query for each parent. Detect it by counting real database calls, not only by inspecting SQL text.
+
+A JOIN can multiply parent rows and be inefficient for deeply nested relationships. Alternatives include two batched IN queries, data loaders, and aggregate JSON; measure total calls and bytes.
+
+Keep logical query correctness, physical access paths, and application-perceived latency as separate concerns. The planner may choose a sequential scan on a tiny table even when an appropriate index exists. It is incorrect to fail a lesson just because the exact node does not match a screenshot.
+
+## Before executing
+
+Complete **12.04.04**. Read `examples/postgresql-performance/fixture.sql` and `drafts/postgresql/labs/n-plus-one-diagnostics/`. The synthetic fixture contains alpha and beta projects and tasks with stable timestamps, an archived task, a deterministic ID tie-breaker and several statuses.
+
+**Evidence mode:** This is a measured/manual evidence lab. The normal SQL-contract runner does not execute this lesson or claim an automated performance success. You need a disposable local PostgreSQL 17+ instance for any real performance work.
+
+## Guided investigation
+
+<LessonStep number={1} title="Establish the unsafe or incomplete baseline" file="drafts/postgresql/labs/n-plus-one-diagnostics/starter.sql" expected="The starter illustrates repeated per-project queries. An API loop that repeats the second query for every returned project causes network and planning overhead.">
+
+```sql
+SELECT id,name FROM perf_projects WHERE tenant_id='alpha';
+SELECT id,title FROM perf_tasks WHERE tenant_id='alpha' AND project_id=10;
+SELECT id,title FROM perf_tasks WHERE tenant_id='alpha' AND project_id=11;
+```
+
+**Expected limitation:** The starter illustrates repeated per-project queries. An API loop that repeats the second query for every returned project causes network and planning overhead. Explain whether the problem is a missing predicate, a wrong index definition, an expensive query pattern or missing runtime evidence. Distinguish real measurements from a prediction about likely performance.
+
+</LessonStep>
+
+<LessonStep number={2} title="Apply the hypothesis-driven repair" file="drafts/postgresql/labs/n-plus-one-diagnostics/solution.sql" expected="An N+1 pattern issues one query for the list of parents and then one additional query for each parent. Detect it by counting real database calls, not only by inspecting SQL text.">
+
+```sql
+SELECT p.id,p.name,t.id AS task_id,t.title AS task_title
+FROM perf_projects p
+LEFT JOIN perf_tasks t ON t.project_id=p.id AND t.tenant_id=p.tenant_id
+WHERE p.tenant_id='alpha'
+ORDER BY p.id,t.id;
+```
+
+**Reasoning:** An N+1 pattern issues one query for the list of parents and then one additional query for each parent. Detect it by counting real database calls, not only by inspecting SQL text. Treat the repaired SQL as a hypothesis, not an automatically proven speedup. The final acceptance must still check correctness and the appropriate kind of evidence.
+
+</LessonStep>
+
+<LessonStep number={3} title="Capture repeatable evidence and negative boundaries" file="drafts/postgresql/labs/n-plus-one-diagnostics/acceptance.md" expected="Instrument the real client query executor. Compare calls as project count increases (1, 10, 100), row cardinality and response bytes. Avoid claiming an improvement without measured results.">
+
+The acceptance checklist requires human-collected plan and/or operational measurements, which cannot be replaced by looking for text in a SQL file. Capture before/after evidence in the disposable environment.
+
+**Proof to collect:** Instrument the real client query executor. Compare calls as project count increases (1, 10, 100), row cardinality and response bytes. Avoid claiming an improvement without measured results.
+
+**Caveat:** A JOIN can multiply parent rows and be inefficient for deeply nested relationships. Alternatives include two batched IN queries, data loaders, and aggregate JSON; measure total calls and bytes.
+
+</LessonStep>
+
+## Production trade-offs
+
+An N+1 pattern issues one query for the list of parents and then one additional query for each parent. Detect it by counting real database calls, not only by inspecting SQL text.
+
+Instrument the real client query executor. Compare calls as project count increases (1, 10, 100), row cardinality and response bytes. Avoid claiming an improvement without measured results.
+
+A JOIN can multiply parent rows and be inefficient for deeply nested relationships. Alternatives include two batched IN queries, data loaders, and aggregate JSON; measure total calls and bytes.
+
+When query execution moves into a real Next.js/NestJS application, measure request concurrency and database calls as well as SQL time. Remember that schema changes alter future write costs, vacuum work and storage. An index may improve a selective read but slow bulk inserts; a pooled connection may conserve memory but alter transaction/session semantics.
+
+## Bug Hunt
+
+1. Predict why the starter is incomplete: The starter illustrates repeated per-project queries. An API loop that repeats the second query for every returned project causes network and planning overhead.
+2. Run it only against disposable local data and capture correctness first.
+3. Implement the repaired query, index, or maintenance action.
+4. Compare the appropriate evidence: Instrument the real client query executor. Compare calls as project count increases (1, 10, 100), row cardinality and response bytes. Avoid claiming an improvement without measured results.
+5. Explain why the result does not remove this boundary: A JOIN can multiply parent rows and be inefficient for deeply nested relationships. Alternatives include two batched IN queries, data loaders, and aggregate JSON; measure total calls and bytes.
+
+<Misconception claim={"The starter illustrates repeated per-project queries. An API loop that repeats the second query for every returned project causes network and planning overhead."} correction={"An N+1 pattern issues one query for the list of parents and then one additional query for each parent. Detect it by counting real database calls, not only by inspecting SQL text."} />
+<KnowledgeCheck question={"What is the defining symptom of N+1?"} choices={["A table has more than one index","A query is repeated once per parent record after fetching parents","Every SQL JOIN is invalid","The page has 101 DOM nodes"]} correctIndex={1} explanation={"An N+1 pattern issues one query for the list of parents and then one additional query for each parent. Detect it by counting real database calls, not only by inspecting SQL text."} misconception={"A JOIN can multiply parent rows and be inefficient for deeply nested relationships. Alternatives include two batched IN queries, data loaders, and aggregate JSON; measure total calls and bytes."} lessonId="12.04.05" />
+
+## Challenge and review
+
+Imagine the same query executed from 12 API replicas against one shared database. Describe the expected p95 latency, memory pressure, index maintenance cost, and database connection budget. Which metrics would falsify your optimization? What tenant isolation and input validation would be needed before exposing the query as an API?
+
+**Release boundary:** A passing source audit does not count as a real query benchmark. This module requires explicit manual evidence; it cannot be promoted based on the automated SQL-contract subset. Human accessibility review and the full application release gate are separate.
+
+## Official references
+
+- [PostgreSQL reference — N plus one queries](https://www.postgresql.org/docs/current/tutorial-join.html)
+- [Using EXPLAIN](https://www.postgresql.org/docs/current/using-explain.html)

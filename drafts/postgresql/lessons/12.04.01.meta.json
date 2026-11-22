@@ -1,0 +1,20 @@
+{
+  "id": "12.04.01",
+  "trackId": "12",
+  "moduleId": "12.04",
+  "title": "EXPLAIN ANALYZE",
+  "labSlug": "explain-analyze-evidence",
+  "sourceStatus": "draft-unverified",
+  "reviewStatus": "unreviewed",
+  "runtimeQualification": "not-run",
+  "estimatedMinutes": 60,
+  "prerequisites": [
+    "12.03.08"
+  ],
+  "officialReferences": [
+    "https://www.postgresql.org/docs/current/using-explain.html",
+    "https://www.postgresql.org/docs/current/using-explain.html"
+  ],
+  "evidenceMode": "manual-evidence",
+  "securityBoundary": "EXPLAIN ANALYZE executes statements. Only use SELECT against disposable data here; be cautious with DML. On a tiny teaching table PostgreSQL may correctly choose a sequential scan, so no exact plan node is a grading contract."
+}

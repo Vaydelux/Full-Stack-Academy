@@ -1,0 +1,98 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Keyset pagination requests rows strictly after a cursor under a total order. A unique tie-breaker such as id makes pages deterministic across repeated timestamps.","For the fixture cursor after (timestamp Jan 8,id 8), require IDs 7 and 6; reject rows before or after the intended page or belonging to beta.","Cursor columns need compatible stable comparison semantics, a deterministic ORDER BY, and tenant-scoped filters. Keyset pagination does not solve arbitrary deep page-number jumps or authorization."]} />
+
+## Performance question to investigate
+
+**Keyset pagination.** Keyset pagination requests rows strictly after a cursor under a total order. A unique tie-breaker such as id makes pages deterministic across repeated timestamps.
+
+**Broken assumption:** OFFSET 1 uses a page-number position rather than the given last-seen cursor. New rows inserted ahead of the cursor can shift page boundaries.
+
+The purpose of performance engineering is not to collect more indexes or force a particular query-plan node. It is to establish the correctness of the result, define a representative workload, observe the measured behavior, then decide whether one carefully scoped change produces a sustainable benefit.
+
+This lesson uses a small synthetic multi-tenant task feed. Results can be inspected without a real account, production traffic or secrets. **It is a draft manuscript, not published course content.**
+
+## Mental model
+
+Keyset pagination requests rows strictly after a cursor under a total order. A unique tie-breaker such as id makes pages deterministic across repeated timestamps.
+
+Cursor columns need compatible stable comparison semantics, a deterministic ORDER BY, and tenant-scoped filters. Keyset pagination does not solve arbitrary deep page-number jumps or authorization.
+
+Keep logical query correctness, physical access paths, and application-perceived latency as separate concerns. The planner may choose a sequential scan on a tiny table even when an appropriate index exists. It is incorrect to fail a lesson just because the exact node does not match a screenshot.
+
+## Before executing
+
+Complete **12.04.03**. Read `examples/postgresql-performance/fixture.sql` and `drafts/postgresql/labs/keyset-feed/`. The synthetic fixture contains alpha and beta projects and tasks with stable timestamps, an archived task, a deterministic ID tie-breaker and several statuses.
+
+**Evidence mode:** An automated semantic SQL contract can test a schema or result-set invariant. Real plan efficiency is still measured separately. You need a disposable local PostgreSQL 17+ instance for any real performance work.
+
+## Guided investigation
+
+<LessonStep number={1} title="Establish the unsafe or incomplete baseline" file="drafts/postgresql/labs/keyset-feed/starter.sql" expected="OFFSET 1 uses a page-number position rather than the given last-seen cursor. New rows inserted ahead of the cursor can shift page boundaries.">
+
+```sql
+CREATE TEMP VIEW lesson_page AS
+SELECT id,tenant_id,created_at FROM perf_tasks
+WHERE tenant_id='alpha'
+ORDER BY created_at DESC,id DESC LIMIT 2 OFFSET 1;
+```
+
+**Expected limitation:** OFFSET 1 uses a page-number position rather than the given last-seen cursor. New rows inserted ahead of the cursor can shift page boundaries. Explain whether the problem is a missing predicate, a wrong index definition, an expensive query pattern or missing runtime evidence. Distinguish real measurements from a prediction about likely performance.
+
+</LessonStep>
+
+<LessonStep number={2} title="Apply the hypothesis-driven repair" file="drafts/postgresql/labs/keyset-feed/solution.sql" expected="Keyset pagination requests rows strictly after a cursor under a total order. A unique tie-breaker such as id makes pages deterministic across repeated timestamps.">
+
+```sql
+CREATE TEMP VIEW lesson_page AS
+SELECT id,tenant_id,created_at FROM perf_tasks
+WHERE tenant_id='alpha' AND (created_at,id) < ('2026-01-08 00:00:00+00'::timestamptz,8)
+ORDER BY created_at DESC,id DESC LIMIT 2;
+```
+
+**Reasoning:** Keyset pagination requests rows strictly after a cursor under a total order. A unique tie-breaker such as id makes pages deterministic across repeated timestamps. Treat the repaired SQL as a hypothesis, not an automatically proven speedup. The final acceptance must still check correctness and the appropriate kind of evidence.
+
+</LessonStep>
+
+<LessonStep number={3} title="Capture repeatable evidence and negative boundaries" file="drafts/postgresql/labs/keyset-feed/acceptance.sql" expected="For the fixture cursor after (timestamp Jan 8,id 8), require IDs 7 and 6; reject rows before or after the intended page or belonging to beta.">
+
+The checked-in acceptance SQL asserts a specific named semantic invariant against both red and green variants. It must not mistake a syntax error for a valid failing student starter.
+
+**Proof to collect:** For the fixture cursor after (timestamp Jan 8,id 8), require IDs 7 and 6; reject rows before or after the intended page or belonging to beta.
+
+**Caveat:** Cursor columns need compatible stable comparison semantics, a deterministic ORDER BY, and tenant-scoped filters. Keyset pagination does not solve arbitrary deep page-number jumps or authorization.
+
+</LessonStep>
+
+## Production trade-offs
+
+Keyset pagination requests rows strictly after a cursor under a total order. A unique tie-breaker such as id makes pages deterministic across repeated timestamps.
+
+For the fixture cursor after (timestamp Jan 8,id 8), require IDs 7 and 6; reject rows before or after the intended page or belonging to beta.
+
+Cursor columns need compatible stable comparison semantics, a deterministic ORDER BY, and tenant-scoped filters. Keyset pagination does not solve arbitrary deep page-number jumps or authorization.
+
+When query execution moves into a real Next.js/NestJS application, measure request concurrency and database calls as well as SQL time. Remember that schema changes alter future write costs, vacuum work and storage. An index may improve a selective read but slow bulk inserts; a pooled connection may conserve memory but alter transaction/session semantics.
+
+## Bug Hunt
+
+1. Predict why the starter is incomplete: OFFSET 1 uses a page-number position rather than the given last-seen cursor. New rows inserted ahead of the cursor can shift page boundaries.
+2. Run it only against disposable local data and capture correctness first.
+3. Implement the repaired query, index, or maintenance action.
+4. Compare the appropriate evidence: For the fixture cursor after (timestamp Jan 8,id 8), require IDs 7 and 6; reject rows before or after the intended page or belonging to beta.
+5. Explain why the result does not remove this boundary: Cursor columns need compatible stable comparison semantics, a deterministic ORDER BY, and tenant-scoped filters. Keyset pagination does not solve arbitrary deep page-number jumps or authorization.
+
+<Misconception claim={"OFFSET 1 uses a page-number position rather than the given last-seen cursor. New rows inserted ahead of the cursor can shift page boundaries."} correction={"Keyset pagination requests rows strictly after a cursor under a total order. A unique tie-breaker such as id makes pages deterministic across repeated timestamps."} />
+<KnowledgeCheck question={"What makes keyset pagination stable under new items inserted at the front?"} choices={["An unconditional OFFSET","Comparing a stable last-seen cursor under deterministic ordering","Sorting exclusively in the browser","Using a random ORDER BY"]} correctIndex={1} explanation={"Keyset pagination requests rows strictly after a cursor under a total order. A unique tie-breaker such as id makes pages deterministic across repeated timestamps."} misconception={"Cursor columns need compatible stable comparison semantics, a deterministic ORDER BY, and tenant-scoped filters. Keyset pagination does not solve arbitrary deep page-number jumps or authorization."} lessonId="12.04.04" />
+
+## Challenge and review
+
+Imagine the same query executed from 12 API replicas against one shared database. Describe the expected p95 latency, memory pressure, index maintenance cost, and database connection budget. Which metrics would falsify your optimization? What tenant isolation and input validation would be needed before exposing the query as an API?
+
+**Release boundary:** A passing source audit does not count as a real query benchmark. The single-session schema contract and real planner effectiveness are distinct checks. Human accessibility review and the full application release gate are separate.
+
+## Official references
+
+- [PostgreSQL reference — Keyset pagination](https://www.postgresql.org/docs/current/queries-limit.html)
+- [Using EXPLAIN](https://www.postgresql.org/docs/current/using-explain.html)

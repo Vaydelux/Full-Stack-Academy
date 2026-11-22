@@ -1,0 +1,20 @@
+{
+  "id": "12.04.05",
+  "trackId": "12",
+  "moduleId": "12.04",
+  "title": "N plus one queries",
+  "labSlug": "n-plus-one-diagnostics",
+  "sourceStatus": "draft-unverified",
+  "reviewStatus": "unreviewed",
+  "runtimeQualification": "not-run",
+  "estimatedMinutes": 60,
+  "prerequisites": [
+    "12.04.04"
+  ],
+  "officialReferences": [
+    "https://www.postgresql.org/docs/current/tutorial-join.html",
+    "https://www.postgresql.org/docs/current/using-explain.html"
+  ],
+  "evidenceMode": "manual-evidence",
+  "securityBoundary": "A JOIN can multiply parent rows and be inefficient for deeply nested relationships. Alternatives include two batched IN queries, data loaders, and aggregate JSON; measure total calls and bytes."
+}

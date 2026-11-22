@@ -1,0 +1,15 @@
+{
+  "id": "draft.postgresql.composite-index-order",
+  "lessonId": "12.04.02",
+  "title": "B tree and composite indexes",
+  "sourceStatus": "draft-unverified",
+  "runtimeQualification": "not-run",
+  "readyToPublish": false,
+  "qualificationKind": "sql-contract",
+  "fixture": "examples/postgresql-performance/fixture.sql",
+  "starter": "drafts/postgresql/labs/composite-index-order/starter.sql",
+  "solution": "drafts/postgresql/labs/composite-index-order/solution.sql",
+  "acceptance": "drafts/postgresql/labs/composite-index-order/acceptance.sql",
+  "manualPerformanceReviewRequired": true,
+  "reference": "https://www.postgresql.org/docs/current/indexes-multicolumn.html"
+}

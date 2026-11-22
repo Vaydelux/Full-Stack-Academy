@@ -1,0 +1,15 @@
+{
+  "id": "draft.postgresql.explain-analyze-evidence",
+  "lessonId": "12.04.01",
+  "title": "EXPLAIN ANALYZE",
+  "sourceStatus": "draft-unverified",
+  "runtimeQualification": "not-run",
+  "readyToPublish": false,
+  "qualificationKind": "manual-evidence",
+  "fixture": "examples/postgresql-performance/fixture.sql",
+  "starter": "drafts/postgresql/labs/explain-analyze-evidence/starter.sql",
+  "solution": "drafts/postgresql/labs/explain-analyze-evidence/solution.sql",
+  "acceptanceDoc": "drafts/postgresql/labs/explain-analyze-evidence/acceptance.md",
+  "manualPerformanceReviewRequired": true,
+  "reference": "https://www.postgresql.org/docs/current/using-explain.html"
+}

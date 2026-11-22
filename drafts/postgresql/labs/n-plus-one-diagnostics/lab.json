@@ -1,0 +1,15 @@
+{
+  "id": "draft.postgresql.n-plus-one-diagnostics",
+  "lessonId": "12.04.05",
+  "title": "N plus one queries",
+  "sourceStatus": "draft-unverified",
+  "runtimeQualification": "not-run",
+  "readyToPublish": false,
+  "qualificationKind": "manual-evidence",
+  "fixture": "examples/postgresql-performance/fixture.sql",
+  "starter": "drafts/postgresql/labs/n-plus-one-diagnostics/starter.sql",
+  "solution": "drafts/postgresql/labs/n-plus-one-diagnostics/solution.sql",
+  "acceptanceDoc": "drafts/postgresql/labs/n-plus-one-diagnostics/acceptance.md",
+  "manualPerformanceReviewRequired": true,
+  "reference": "https://www.postgresql.org/docs/current/tutorial-join.html"
+}
