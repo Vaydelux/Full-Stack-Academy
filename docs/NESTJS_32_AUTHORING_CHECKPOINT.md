@@ -139,3 +139,9 @@ Next acceptance: on a trusted Node 24 checkout, run `npm ci && npm run test:nest
 Added and committed three runnable Node-built-in tests: `transactions.offline.test.mjs` (7), `pure-contracts.offline.test.mjs` (11) and `lock-integrity.offline.test.mjs` (8). These exercise actual TS instructor and starter files where possible without installing Nest; the lock tests use in-memory fixture objects and **do not generate a fake lock**. The pure manifest validator is shared with the release lock guard, which still refuses unsupported Node versions and requires a genuine npm lock plus `npm ci`.
 
 All 26 tests passed locally in a temporary reconstructed subset on Node22. This is reproducible **behavioral evidence**, but not a full checked-out Node24 qualification, and it does not change any publication flags. See [complete offline checkpoint](NESTJS_OFFLINE_QUALIFICATION_CHECKPOINT_20261121.md).
+
+## November 22 — security repairs and complete instructor-source parity audit
+
+The teaching implementations for 11.04.03 WebSocket, 11.04.06 cache, and 11.03.01 service were repaired for malformed JSON, per-user/tenant response isolation with mutation invalidation, and explicit bad-request handling. All three lesson MDX code fences were updated in lockstep; 11.04.08's earlier stale instructor bootstrap was also reconciled. A fresh direct GitHub inspection verified the second TypeScript code fence in **every one of the 32 lessons** exactly matched its checked-in solution source.
+
+38 assertions on the exact-blob TS sources passed after transpiling with locally available TypeScript 5.8 and minimal Nest/RxJS mocks (11 WebSocket, 12 cache, 15 domain service). No Node24/Nest12/TS6, real Socket.IO network or database claims are made. See [detailed security checkpoint](NESTJS_20261122_SECURITY_SOURCE_QUALIFICATION.md), including blob IDs and the remaining clean-machine qualification.
