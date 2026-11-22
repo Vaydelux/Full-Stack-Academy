@@ -83,6 +83,8 @@ Practice describing a failure in terms of its blast radius, detection signal and
 
 <KnowledgeCheck question={"Which result is a credible recovery-capstone outcome?"} choices={["An untested backup command","A fresh isolated restore with verified rows, roles and measurable recovery time","A diagram alone","A SELECT from the original database"]} correctIndex={1} explanation={"Recovery qualification must be repeatable: backup creation, clean restore target, schema inspection, data reconciliation, application smoke test and documented RTO/RPO."} misconception={"Never use production credentials or destructive `--clean` against an existing environment. The runbook is deliberately manual and cannot be auto-certified by a source scan or a backup filename."} lessonId="12.05.08" />
 
+**Integrity distinction:** The SQL `md5(string_agg(...))` snippet is only a quick educational row-comparison fingerprint. MD5 is not collision-resistant and cannot authenticate a backup. For a serious restore drill, use a cryptographic file checksum such as SHA-256, verify schema and role ownership, compare independently generated application invariants, and retain sanitized signed evidence where the threat model requires it.
+
 ## Practice extension
 
 Write an operational runbook that can be followed by a second developer who has never seen your environment. Specify the real host selector, approved test database name, least-privilege role, safety checks, expected output, cleanup, and an audit of what did or did not succeed.
