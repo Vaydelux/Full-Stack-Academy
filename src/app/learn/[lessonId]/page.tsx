@@ -9,6 +9,7 @@ import { LessonArticle } from '@/content/lesson-registry';
 import { MDX_METADATA, PUBLISHED_LESSON_IDS, lessonRubric } from '@/lib/academy/published';
 import { LocalLessonCompletion } from '@/components/course/LocalLessonCompletion';
 import { LessonNotebook } from '@/components/course/LessonNotebook';
+import { readCourseProgress } from '@/lib/academy/course-progress-server';
 
 type LessonPageProps = { params: Promise<{ lessonId: string }> };
 
@@ -37,6 +38,7 @@ export default async function LessonPage({ params }: LessonPageProps) {
   const authored = AUTHORED_LESSONS[lessonId];
   const mdxMeta = MDX_METADATA.get(lessonId);
   const localRubric = mdxMeta ? lessonRubric(lessonId) : undefined;
+  const staged = !authored && !mdxMeta && readCourseProgress().draftIds.includes(lessonId);
   return (
     <DocShell active={authored || mdxMeta ? lessonId : undefined}>
       <nav aria-label="Breadcrumb" className="mb-5 text-xs text-slate-500">
@@ -51,8 +53,12 @@ export default async function LessonPage({ params }: LessonPageProps) {
       {(authored || mdxMeta) && <LessonNotebook key={lessonId} lessonId={lessonId} />}
       {!authored && !mdxMeta ? (
         <div className="mt-7 space-y-5">
-          <DocNotice><strong>Planned lesson — not published.</strong> This entry is part of the long-term curriculum. It does not yet have a verified tutorial, runnable lab, or grading evidence, so it cannot be marked complete.</DocNotice>
-          <p className="text-sm leading-7 text-slate-600 dark:text-slate-300">For now, use the module context and the linked official documentation. This topic will be updated after its examples, exercises, and editorial checks are complete.</p>
+          <DocNotice><strong>{staged ? 'Authored draft — not published.' : 'Planned lesson — not published.'}</strong> {staged
+            ? 'The tutorial and its practice sources have been written, but their full runtime, editorial and accessibility qualification is still pending. This lesson is not yet available or completable.'
+            : 'This topic is part of the planned curriculum and does not yet have a reviewed tutorial or runnable release-qualified lab.'}</DocNotice>
+          <p className="text-sm leading-7 text-slate-600 dark:text-slate-300">{staged
+            ? 'The manuscript is tracked in the course development roadmap. Until release checks pass, use the official documentation below and choose an available lesson from the published curriculum.'
+            : 'For now, use the module context and the official documentation. This topic will be updated once its examples, exercises and editorial checks are complete.'}</p>
           <a href={lesson.referenceUrl} target="_blank" rel="noopener noreferrer" className="text-sm font-semibold text-cyan-700 hover:underline dark:text-[#7DEBFF]">Read official documentation</a>
         </div>
       ) : mdxMeta ? (

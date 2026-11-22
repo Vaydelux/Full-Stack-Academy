@@ -1,0 +1,18 @@
+{
+  "id": "draft.postgresql.normalization-boundaries",
+  "lessonId": "12.02.01",
+  "title": "Normalization and denormalization",
+  "sourceStatus": "draft-unverified",
+  "readyToPublish": false,
+  "runtimeQualification": "not-run",
+  "runtime": "PostgreSQL 17+",
+  "starter": "drafts/postgresql/labs/normalization-boundaries/starter.sql",
+  "solution": "drafts/postgresql/labs/normalization-boundaries/solution.sql",
+  "acceptance": "drafts/postgresql/labs/normalization-boundaries/acceptance.sql",
+  "fixture": "examples/postgresql-modeling/fixture.sql",
+  "expectedRed": "Starter must fail the lesson's named semantic acceptance assertion",
+  "expectedGreen": "Instructor must pass the same assertions on a real PostgreSQL test connection",
+  "officialReferences": [
+    "https://www.postgresql.org/docs/current/ddl-constraints.html"
+  ]
+}

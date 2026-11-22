@@ -1,0 +1,23 @@
+{
+  "id": "12.02.01",
+  "trackId": "12",
+  "moduleId": "12.02",
+  "title": "Normalization and denormalization",
+  "labSlug": "normalization-boundaries",
+  "sourceStatus": "draft-unverified",
+  "runtimeQualification": "not-run",
+  "reviewStatus": "unreviewed",
+  "estimatedMinutes": 60,
+  "prerequisites": [
+    "12.01.08"
+  ],
+  "objectives": [
+    "A normalized model stores each repeating fact in its own relation. Contacts and email addresses have different cardinalities: one contact can own zero, one, or many addresses.",
+    "The child table has one address per row, a foreign key to its owner, and a compound primary key that rejects a duplicate address for the same person."
+  ],
+  "securityBoundary": "Normalization is a logical data-integrity decision, not a performance guarantee. Denormalized read models must have an explicit refresh and reconciliation strategy.",
+  "officialReferences": [
+    "https://www.postgresql.org/docs/current/ddl-constraints.html",
+    "https://www.postgresql.org/docs/current/tutorial-sql.html"
+  ]
+}

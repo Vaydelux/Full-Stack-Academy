@@ -1,0 +1,18 @@
+{
+  "id": "draft.postgresql.soft-delete-history",
+  "lessonId": "12.02.05",
+  "title": "Soft delete and history",
+  "sourceStatus": "draft-unverified",
+  "readyToPublish": false,
+  "runtimeQualification": "not-run",
+  "runtime": "PostgreSQL 17+",
+  "starter": "drafts/postgresql/labs/soft-delete-history/starter.sql",
+  "solution": "drafts/postgresql/labs/soft-delete-history/solution.sql",
+  "acceptance": "drafts/postgresql/labs/soft-delete-history/acceptance.sql",
+  "fixture": "examples/postgresql-modeling/fixture.sql",
+  "expectedRed": "Starter must fail the lesson's named semantic acceptance assertion",
+  "expectedGreen": "Instructor must pass the same assertions on a real PostgreSQL test connection",
+  "officialReferences": [
+    "https://www.postgresql.org/docs/current/indexes-partial.html"
+  ]
+}

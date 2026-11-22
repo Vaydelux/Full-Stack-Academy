@@ -1,0 +1,107 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["A junction table identifies one association between two entities. Its primary key must cover the full relationship, or valid memberships will be rejected.","The primary key includes tenant, member and project, and both references carry the same tenant to prevent cross-organization associations.","A many-to-many table can accumulate duplicate or unauthorized roles if the unique key or permission boundary is missing. Composite foreign keys validate identities, not actor permissions."]} />
+
+## The real modeling problem
+
+**Many-to-many relationships.** A collaborator can be on several projects. A membership table keyed only by tenant and member prevents joining a second project.
+
+A web framework can validate a request, but it cannot make an inconsistent relational design safe after several independent writers, scheduled jobs, or migrations start modifying the same data. In this lesson you will identify the invariant, observe a *real* negative SQL case, repair the schema or query, and write down the boundary that the database does **not** guarantee.
+
+## Mental model
+
+A junction table identifies one association between two entities. Its primary key must cover the full relationship, or valid memberships will be rejected.
+
+The primary key includes tenant, member and project, and both references carry the same tenant to prevent cross-organization associations.
+
+**Predict before running SQL:** Which row, relationship, constraint, or audit event will be incorrect? Identify a specific permitted case and a specific forbidden case. A SQL command that returns without a syntax error is not proof that it represents the business domain.
+
+## Prerequisites and test setup
+
+Complete **12.02.02**. Read `examples/postgresql-modeling/fixture.sql`, then the three files under `drafts/postgresql/labs/many-to-many-memberships/`. The fixture creates temporary users, projects, and tasks for two organizations with intentionally overlapping identity values. You must use a disposable, local test database, never production.
+
+**Runtime:** PostgreSQL 17 or later. The lesson is an **unpublished draft**. Source integrity can be reviewed without PostgreSQL; the actual positive and negative SQL scenarios have not yet executed here.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the unsafe relational design" file="drafts/postgresql/labs/many-to-many-memberships/starter.sql" expected="A collaborator can be on several projects. A membership table keyed only by tenant and member prevents joining a second project.">
+
+```sql
+CREATE TEMP TABLE lesson_memberships (
+ tenant_id text NOT NULL,
+ member_id integer NOT NULL,
+ project_id integer NOT NULL,
+ PRIMARY KEY (tenant_id, member_id),
+ FOREIGN KEY (tenant_id,member_id) REFERENCES modeling_members(tenant_id,id),
+ FOREIGN KEY (tenant_id,project_id) REFERENCES modeling_projects(tenant_id,id)
+);
+```
+
+**Broken invariant:** A collaborator can be on several projects. A membership table keyed only by tenant and member prevents joining a second project.
+
+Explain why this schema or query is insufficient **before** changing it. Compare its meaning with the intended data model instead of accepting a green SQL syntax check.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the corrected relationship or constraint" file="drafts/postgresql/labs/many-to-many-memberships/solution.sql" expected="The primary key includes tenant, member and project, and both references carry the same tenant to prevent cross-organization associations.">
+
+```sql
+CREATE TEMP TABLE lesson_memberships (
+ tenant_id text NOT NULL,
+ member_id integer NOT NULL,
+ project_id integer NOT NULL,
+ PRIMARY KEY (tenant_id, member_id, project_id),
+ FOREIGN KEY (tenant_id,member_id) REFERENCES modeling_members(tenant_id,id),
+ FOREIGN KEY (tenant_id,project_id) REFERENCES modeling_projects(tenant_id,id)
+);
+```
+
+**Reasoning:** The primary key includes tenant, member and project, and both references carry the same tenant to prevent cross-organization associations.
+
+In a production system, migration changes must preserve existing data and support concurrent writers. This solution models one invariant using disposable temporary tables so the learner can prove correctness without modifying an existing application schema.
+
+</LessonStep>
+
+<LessonStep number={3} title="Test both valid and forbidden outcomes in PostgreSQL" file="drafts/postgresql/labs/many-to-many-memberships/acceptance.sql" expected="The corrected SQL passes while the starter fails the named semantic assertion.">
+
+Read `drafts/postgresql/labs/many-to-many-memberships/acceptance.sql`. It does not merely search source text. It executes SQL assertions in a `DO` block, including the negative case for this topic. The runner creates the fixture, runs the instructor or starter on a fresh connection inside a rollback-only transaction, and verifies that failure comes from this lesson's named assertion rather than a missing relation or syntax error.
+
+**Acceptance contract:** The primary key includes tenant, member and project, and both references carry the same tenant to prevent cross-organization associations.
+
+**Observed failure to investigate:** A collaborator can be on several projects. A membership table keyed only by tenant and member prevents joining a second project.
+
+If the learner starter errors for an unrelated reason, that is a broken learning exercise. Fix the source fixture, not the acceptance expectations.
+
+</LessonStep>
+
+## Architectural trade-offs
+
+A junction table identifies one association between two entities. Its primary key must cover the full relationship, or valid memberships will be rejected.
+
+A many-to-many table can accumulate duplicate or unauthorized roles if the unique key or permission boundary is missing. Composite foreign keys validate identities, not actor permissions.
+
+The right choice can change with workload size, tenant access patterns, migration risk and operational constraints. Optimize a schema only after correctness and measured query behavior. A trigger, index, or foreign key is not evidence of complete application authorization.
+
+## Bug hunt and regression reasoning
+
+1. **Reproduce:** A collaborator can be on several projects. A membership table keyed only by tenant and member prevents joining a second project.
+2. **Diagnose:** Find which fact, key, constraint, or tenant predicate is missing.
+3. **Repair:** The primary key includes tenant, member and project, and both references carry the same tenant to prevent cross-organization associations.
+4. **Retest:** Run the same acceptance against both the learner's red starter and instructor's green SQL.
+5. **Boundary:** A many-to-many table can accumulate duplicate or unauthorized roles if the unique key or permission boundary is missing. Composite foreign keys validate identities, not actor permissions.
+
+<Misconception claim={"A collaborator can be on several projects. A membership table keyed only by tenant and member prevents joining a second project."} correction={"A junction table identifies one association between two entities. Its primary key must cover the full relationship, or valid memberships will be rejected."} />
+
+<KnowledgeCheck question={"What is the correct primary key for an association scoped by tenant?"} choices={["member_id alone","project_id alone","tenant_id, member_id, project_id","display_name and project title"]} correctIndex={2} explanation={"The primary key includes tenant, member and project, and both references carry the same tenant to prevent cross-organization associations."} misconception={"A many-to-many table can accumulate duplicate or unauthorized roles if the unique key or permission boundary is missing. Composite foreign keys validate identities, not actor permissions."} lessonId="12.02.03" />
+
+## Practice and reflection
+
+Write down which entity owns each row and which keys uniquely identify an authorized relationship. Then consider whether concurrent inserts, soft-deleted rows or alternate tenant IDs could defeat your design. Which assertion would prove the forbidden case stays forbidden even when the frontend sends malformed or malicious input?
+
+The SQL files are **draft teaching materials**. They are not imported into the learner-facing lesson registry, cannot update learner progress, and require real PostgreSQL testing plus a separate publication review before release.
+
+## Official references
+
+- [PostgreSQL reference — Many-to-many relationships](https://www.postgresql.org/docs/current/ddl-constraints.html)
+- [PostgreSQL SQL tutorial](https://www.postgresql.org/docs/current/tutorial-sql.html)

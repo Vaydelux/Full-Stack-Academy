@@ -153,6 +153,7 @@ export function LearningDashboard() {
         ) : <p className="mt-2 text-sm">Every currently published lesson is marked complete. New lessons will appear here as the course grows.</p>}
       </section>
 
+      <p className="mt-5 text-sm text-slate-500">Looking for the course author's publication progress? <Link href="/learn/roadmap" className="font-semibold text-cyan-700 underline underline-offset-4 dark:text-cyan-300">View curriculum roadmap</Link>. Your own completions and notes are tracked separately.</p>
       <StudyPlanPanel />
       <SavedLessonShelf catalog={publishedCatalog} />
 

@@ -1,0 +1,23 @@
+{
+  "id": "12.02.06",
+  "trackId": "12",
+  "moduleId": "12.02",
+  "title": "Check and unique constraints",
+  "labSlug": "scoped-check-unique",
+  "sourceStatus": "draft-unverified",
+  "runtimeQualification": "not-run",
+  "reviewStatus": "unreviewed",
+  "estimatedMinutes": 60,
+  "prerequisites": [
+    "12.02.05"
+  ],
+  "objectives": [
+    "A CHECK constraint validates each row's invariant. An expression unique index can enforce case-insensitive uniqueness within one tenant.",
+    "The nonnegative quantity CHECK rejects impossible inventory and the unique expression index normalizes the SKU comparison by lowercasing before enforcing tenant-scoped uniqueness."
+  ],
+  "securityBoundary": "CHECK treats NULL as unknown; NOT NULL must be explicit. Case-folding behavior may vary with collation and Unicode; define a normalized SKU policy before using this as a production identifier.",
+  "officialReferences": [
+    "https://www.postgresql.org/docs/current/indexes-expressional.html",
+    "https://www.postgresql.org/docs/current/tutorial-sql.html"
+  ]
+}

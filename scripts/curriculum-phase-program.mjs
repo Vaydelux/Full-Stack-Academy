@@ -15,15 +15,8 @@ const read=relative=>fs.readFileSync(path.join(root,relative),'utf8');
 const json=relative=>JSON.parse(read(relative));
 const unique=(values,label)=>{const u=new Set(values);assert.equal(u.size,values.length,'Duplicate '+label);return u;};
 
-export const PHASE_DEFINITIONS=Object.freeze([
- { id:'P1', title:'Forms and remote state', tracks:['09'], modules:['09.02','09.03'], result:'Finish React Hook Form and TanStack Query: 16 drafted topic packs' },
- { id:'P2', title:'Backend services with NestJS', tracks:['11'], result:'Dependency injection, guards, modules and API architecture' },
- { id:'P3', title:'PostgreSQL and relational data', tracks:['12'], result:'Real SQL, transactions, indexing and disaster recovery' },
- { id:'P4', title:'Prisma and Supabase', tracks:['13','14'], result:'Versioned ORM migrations, Auth, RLS and storage' },
- { id:'P5', title:'Security and application services', tracks:['15','16','17','18'], result:'Identity, Redis/queues, realtime, files and integration boundaries' },
- { id:'P6', title:'Quality, operations and architecture', tracks:['19','20','21','22','23'], result:'Testing, CI/CD, SRE, performance and system design' },
- { id:'P7', title:'Platforms and graduation capstones', tracks:['24','25','26','27'], result:'Offline/mobile, advanced data, enterprise governance and capstones' },
-]);
+export const PHASE_DEFINITIONS=Object.freeze(json('data/publication-phases.json'));
+
 
 export function buildPublicationProgram({curriculum,publishedIds,stagedIds=[]}){
  const all=curriculum.lessons;
@@ -103,7 +96,7 @@ export function readPublicationProgram(){
  const metaDir=path.join(root,'src/content/lessons');
  const mdxFiles=fs.readdirSync(metaDir).filter(name=>name.endsWith('.meta.json'));
  const mdx=mdxFiles.map(name=>json('src/content/lessons/'+name).id);
- const stagingDirs=['drafts/forms-query/lessons','drafts/nestjs/lessons'];
+ const stagingDirs=['drafts/forms-query/lessons','drafts/nestjs/lessons','drafts/postgresql/lessons'];
  const staged=stagingDirs.flatMap(dir=>{
   const folder=path.join(root,dir);
   return fs.existsSync(folder)

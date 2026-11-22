@@ -1,0 +1,23 @@
+{
+  "id": "12.02.04",
+  "trackId": "12",
+  "moduleId": "12.02",
+  "title": "Multi-tenant data models",
+  "labSlug": "tenant-composite-fk",
+  "sourceStatus": "draft-unverified",
+  "runtimeQualification": "not-run",
+  "reviewStatus": "unreviewed",
+  "estimatedMinutes": 60,
+  "prerequisites": [
+    "12.02.03"
+  ],
+  "objectives": [
+    "Tenant-aware composite foreign keys reject data that points at another tenant's entity, even when the referenced numeric ID is valid globally.",
+    "The composite foreign key must match both tenant and project ID against a composite referenced key. A cross-tenant reference is rejected at the database boundary."
+  ],
+  "securityBoundary": "A composite FK does not replace RLS, object-level authorization, row ownership checks, or per-tenant token verification. A privileged SQL connection can still query another tenant's rows unless other controls are in place.",
+  "officialReferences": [
+    "https://www.postgresql.org/docs/current/ddl-constraints.html",
+    "https://www.postgresql.org/docs/current/tutorial-sql.html"
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "id": "draft.postgresql.missing-tenant-filter",
+  "lessonId": "12.02.08",
+  "title": "Bug Hunt missing tenant filter",
+  "sourceStatus": "draft-unverified",
+  "readyToPublish": false,
+  "runtimeQualification": "not-run",
+  "runtime": "PostgreSQL 17+",
+  "starter": "drafts/postgresql/labs/missing-tenant-filter/starter.sql",
+  "solution": "drafts/postgresql/labs/missing-tenant-filter/solution.sql",
+  "acceptance": "drafts/postgresql/labs/missing-tenant-filter/acceptance.sql",
+  "fixture": "examples/postgresql-modeling/fixture.sql",
+  "expectedRed": "Starter must fail the lesson's named semantic acceptance assertion",
+  "expectedGreen": "Instructor must pass the same assertions on a real PostgreSQL test connection",
+  "officialReferences": [
+    "https://www.postgresql.org/docs/current/ddl-rowsecurity.html"
+  ]
+}

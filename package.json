@@ -446,7 +446,11 @@
     "test:nestjs-offline": "npm run test:nestjs-offline-transactions && npm run test:nestjs-offline-contracts && npm run test:nestjs-offline-lock",
     "test:postgresql-drafts": "node examples/postgresql-basics/scripts/verify-source.mjs --check && node --test examples/postgresql-basics/tests/source.test.mjs",
     "status:postgresql-drafts": "node examples/postgresql-basics/scripts/verify-source.mjs --json",
-    "qualify:postgresql:12-01": "node examples/postgresql-basics/scripts/qualify.mjs"
+    "qualify:postgresql:12-01": "node examples/postgresql-basics/scripts/qualify.mjs",
+    "test:course-roadmap": "node --experimental-strip-types --test tests/course-roadmap.test.mjs",
+    "test:postgresql-modeling-source": "node examples/postgresql-modeling/scripts/verify-source.mjs --check && node --test examples/postgresql-modeling/tests/source.test.mjs",
+    "status:postgresql-modeling": "node examples/postgresql-modeling/scripts/verify-source.mjs --json",
+    "qualify:postgresql:12-02": "node examples/postgresql-modeling/scripts/qualify.mjs"
   },
   "dependencies": {
     "clsx": "^2.1.1",

@@ -1,0 +1,23 @@
+{
+  "id": "12.02.07",
+  "trackId": "12",
+  "moduleId": "12.02",
+  "title": "Audit tables",
+  "labSlug": "immutable-audit-records",
+  "sourceStatus": "draft-unverified",
+  "runtimeQualification": "not-run",
+  "reviewStatus": "unreviewed",
+  "estimatedMinutes": 60,
+  "prerequisites": [
+    "12.02.06"
+  ],
+  "objectives": [
+    "An audit record identifies actor, tenant, action and time, and should not be silently rewritten using ordinary UPDATE or DELETE paths.",
+    "The table requires an actor and a trigger refuses both mutation operations. The acceptance contract tests that a real database rejects changes rather than trusting application conventions."
+  ],
+  "securityBoundary": "A database owner or privileged administrator can disable or bypass a trigger. Real tamper-evident audit systems also require external retention, least-privilege roles and operational controls.",
+  "officialReferences": [
+    "https://www.postgresql.org/docs/current/sql-createtrigger.html",
+    "https://www.postgresql.org/docs/current/tutorial-sql.html"
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "id": "12.02.08",
+  "trackId": "12",
+  "moduleId": "12.02",
+  "title": "Bug Hunt missing tenant filter",
+  "labSlug": "missing-tenant-filter",
+  "sourceStatus": "draft-unverified",
+  "runtimeQualification": "not-run",
+  "reviewStatus": "unreviewed",
+  "estimatedMinutes": 75,
+  "prerequisites": [
+    "12.02.07"
+  ],
+  "objectives": [
+    "A correct SQL query can be an authorization vulnerability if it omits the tenant boundary. The result set needs an explicit positive and negative tenant assertion.",
+    "The tenant predicate reduces the result set before data is returned. The tests insist on known allowed rows and explicit exclusion of cross-tenant rows."
+  ],
+  "securityBoundary": "A hardcoded tenant in a fixture does not enforce authorization in a web app. Production code must bind a verified request tenant, enforce object-level authorization, and preferably add database RLS with independently tested roles.",
+  "officialReferences": [
+    "https://www.postgresql.org/docs/current/ddl-rowsecurity.html",
+    "https://www.postgresql.org/docs/current/tutorial-sql.html"
+  ]
+}

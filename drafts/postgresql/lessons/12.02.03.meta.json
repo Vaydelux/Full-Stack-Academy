@@ -1,0 +1,23 @@
+{
+  "id": "12.02.03",
+  "trackId": "12",
+  "moduleId": "12.02",
+  "title": "Many-to-many relationships",
+  "labSlug": "many-to-many-memberships",
+  "sourceStatus": "draft-unverified",
+  "runtimeQualification": "not-run",
+  "reviewStatus": "unreviewed",
+  "estimatedMinutes": 60,
+  "prerequisites": [
+    "12.02.02"
+  ],
+  "objectives": [
+    "A junction table identifies one association between two entities. Its primary key must cover the full relationship, or valid memberships will be rejected.",
+    "The primary key includes tenant, member and project, and both references carry the same tenant to prevent cross-organization associations."
+  ],
+  "securityBoundary": "A many-to-many table can accumulate duplicate or unauthorized roles if the unique key or permission boundary is missing. Composite foreign keys validate identities, not actor permissions.",
+  "officialReferences": [
+    "https://www.postgresql.org/docs/current/ddl-constraints.html",
+    "https://www.postgresql.org/docs/current/tutorial-sql.html"
+  ]
+}
