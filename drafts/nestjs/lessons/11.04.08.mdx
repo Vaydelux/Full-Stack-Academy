@@ -47,10 +47,11 @@ import { Module } from '@nestjs/common';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
 @Module({})
 export class AppModule {}
-export async function bootstrap(): Promise<NestFastifyApplication> {
+export async function bootstrap(port = 3337): Promise<NestFastifyApplication> {
+  if (!Number.isInteger(port) || port < 0 || port > 65535) throw new Error('Invalid local port');
   const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter());
   app.enableShutdownHooks();
-  await app.listen(3337, '127.0.0.1');
+  await app.listen(port, '127.0.0.1');
   return app; // caller must await app.close() after the local smoke test
 }
 ```
@@ -68,6 +69,8 @@ export async function bootstrap(): Promise<NestFastifyApplication> {
 **Trust boundary:** No real authentication or persistent storage is provided in this educational skeleton.
 
 </LessonStep>
+
+**Updated verification boundary:** The instructor bootstrap accepts an optional local port argument so automated tests use port 0, while retaining the default loopback-only port 3337 and refusing invalid ports. This is a test fixture, not an internet-facing production server.
 
 ## Operational and security review
 
