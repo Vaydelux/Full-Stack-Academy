@@ -1,0 +1,97 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Recovery qualification must be repeatable: backup creation, clean restore target, schema inspection, data reconciliation, application smoke test and documented RTO/RPO.","Use the module's restore-drill runbook to create a dedicated persistent sample schema on a local test database, dump it, restore to academy_test_restore, verify row counts and checksum, collect errors and elapsed duration, and document clean-up.","Never use production credentials or destructive `--clean` against an existing environment. The runbook is deliberately manual and cannot be auto-certified by a source scan or a backup filename."]} />
+
+## Operational problem
+
+**Lab recover sample database.** Recovery qualification must be repeatable: backup creation, clean restore target, schema inspection, data reconciliation, application smoke test and documented RTO/RPO.
+
+**Common failure:** The starter can display live rows but has no evidence that any backup was created or that the rows would survive a database loss.
+
+Database operations differ from syntax tutorials: observing a configuration setting, successfully creating a backup file, and actually recovering an application are three distinct kinds of evidence. A successful command cannot prove availability, restoration, consistency, or acceptable recovery time without a controlled independent drill.
+
+This article is a **staged, unpublished manuscript**. The academy's learner-facing registry intentionally excludes it until the separate release and operator-review gates are satisfied.
+
+## Mental model and risk
+
+Recovery qualification must be repeatable: backup creation, clean restore target, schema inspection, data reconciliation, application smoke test and documented RTO/RPO.
+
+Never use production credentials or destructive `--clean` against an existing environment. The runbook is deliberately manual and cannot be auto-certified by a source scan or a backup filename.
+
+A production-grade runbook needs a named responsible operator, target environment, prerequisite privileges, allowable downtime, credentials/secret-handling instructions, rollback/abort conditions and verifiable success evidence. Keep database tests isolated from the real application's data and users.
+
+## Preparation
+
+Complete **12.05.07**. Review the synthetic temporary-table dataset in `examples/postgresql-operations/fixture.sql`, then inspect `drafts/postgresql/labs/recovery-capstone-drill/`. The starter and instructor snippets below are read-only or limited to the fixture's temporary table unless explicitly stated otherwise.
+
+**Qualification mode:** This lesson requires independent, manual operational evidence. No automated SQL runner is permitted to report full recovery/replication/security success for it.
+
+## Guided exercise
+
+<LessonStep number={1} title="Identify the unsafe assumption" file="drafts/postgresql/labs/recovery-capstone-drill/starter.sql" expected="The starter can display live rows but has no evidence that any backup was created or that the rows would survive a database loss.">
+
+```sql
+SELECT id,state FROM ops_tasks ORDER BY id;
+```
+
+**What is missing?** The starter can display live rows but has no evidence that any backup was created or that the rows would survive a database loss. State why the observed source or output is insufficient evidence of operational readiness.
+
+</LessonStep>
+
+<LessonStep number={2} title="Inspect real state or implement a safe repair" file="drafts/postgresql/labs/recovery-capstone-drill/solution.sql" expected="Recovery qualification must be repeatable: backup creation, clean restore target, schema inspection, data reconciliation, application smoke test and documented RTO/RPO.">
+
+```sql
+SELECT count(*) AS recovered_rows,
+       md5(string_agg(id::text || ':' || state, '|' ORDER BY id)) AS recovered_checksum
+FROM ops_tasks;
+```
+
+**Interpretation:** Recovery qualification must be repeatable: backup creation, clean restore target, schema inspection, data reconciliation, application smoke test and documented RTO/RPO. This command is illustrative and must be used only on authorized, isolated test infrastructure.
+
+</LessonStep>
+
+<LessonStep number={3} title="Capture release-quality verification evidence" file="drafts/postgresql/labs/recovery-capstone-drill/acceptance.md" expected="Use the module's restore-drill runbook to create a dedicated persistent sample schema on a local test database, dump it, restore to academy_test_restore, verify row counts and checksum, collect errors and elapsed duration, and document clean-up.">
+
+Open the acceptance.md operator runbook. Execute the safe steps on dedicated test infrastructure; collect actual evidence and obtain reviewer signoff. Source parity is not a substitute for this exercise.
+
+**Proof checklist:** Use the module's restore-drill runbook to create a dedicated persistent sample schema on a local test database, dump it, restore to academy_test_restore, verify row counts and checksum, collect errors and elapsed duration, and document clean-up.
+
+**Safety boundary:** Never use production credentials or destructive `--clean` against an existing environment. The runbook is deliberately manual and cannot be auto-certified by a source scan or a backup filename.
+
+</LessonStep>
+
+## Failure modes and recovery design
+
+Recovery qualification must be repeatable: backup creation, clean restore target, schema inspection, data reconciliation, application smoke test and documented RTO/RPO.
+
+The starter can display live rows but has no evidence that any backup was created or that the rows would survive a database loss.
+
+Never use production credentials or destructive `--clean` against an existing environment. The runbook is deliberately manual and cannot be auto-certified by a source scan or a backup filename.
+
+Practice describing a failure in terms of its blast radius, detection signal and recovery path. What would happen if the database were unavailable during a migration, WAL archives were missing, a pooled connection lost session state, or an operator accidentally targeted production? Identify the prerequisite that would prevent or contain each failure.
+
+## Bug Hunt
+
+1. State the specific unsafe assumption: The starter can display live rows but has no evidence that any backup was created or that the rows would survive a database loss.
+2. Perform the non-destructive observation from the starter and explain its limits.
+3. Compare the corrected action: Recovery qualification must be repeatable: backup creation, clean restore target, schema inspection, data reconciliation, application smoke test and documented RTO/RPO.
+4. Capture evidence independently: Use the module's restore-drill runbook to create a dedicated persistent sample schema on a local test database, dump it, restore to academy_test_restore, verify row counts and checksum, collect errors and elapsed duration, and document clean-up.
+5. Write the abort condition and the safest fallback: Never use production credentials or destructive `--clean` against an existing environment. The runbook is deliberately manual and cannot be auto-certified by a source scan or a backup filename.
+
+<Misconception claim={"The starter can display live rows but has no evidence that any backup was created or that the rows would survive a database loss."} correction={"Recovery qualification must be repeatable: backup creation, clean restore target, schema inspection, data reconciliation, application smoke test and documented RTO/RPO."} />
+
+<KnowledgeCheck question={"Which result is a credible recovery-capstone outcome?"} choices={["An untested backup command","A fresh isolated restore with verified rows, roles and measurable recovery time","A diagram alone","A SELECT from the original database"]} correctIndex={1} explanation={"Recovery qualification must be repeatable: backup creation, clean restore target, schema inspection, data reconciliation, application smoke test and documented RTO/RPO."} misconception={"Never use production credentials or destructive `--clean` against an existing environment. The runbook is deliberately manual and cannot be auto-certified by a source scan or a backup filename."} lessonId="12.05.08" />
+
+## Practice extension
+
+Write an operational runbook that can be followed by a second developer who has never seen your environment. Specify the real host selector, approved test database name, least-privilege role, safety checks, expected output, cleanup, and an audit of what did or did not succeed.
+
+For backup/restore tasks, attach only sanitized non-sensitive evidence. Explain the distinction between a backup, a restore drill, and point-in-time recovery; none of those should be marked qualified from a source-only check. For permission work, test a denied operation as deliberately as a successful read.
+
+**Publication boundary:** This source pack remains unverified. It cannot be used to certify a live database, count a student lesson as complete, or trigger a Vercel deployment. Real PostgreSQL and human review are mandatory.
+
+## Official references
+
+- [PostgreSQL official reference — Lab recover sample database](https://www.postgresql.org/docs/current/app-pgrestore.html)
+- [PostgreSQL Backup and Restore](https://www.postgresql.org/docs/current/backup.html)

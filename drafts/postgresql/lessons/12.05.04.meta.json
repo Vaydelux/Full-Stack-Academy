@@ -1,0 +1,20 @@
+{
+  "id": "12.05.04",
+  "title": "Environment isolation",
+  "trackId": "12",
+  "moduleId": "12.05",
+  "labSlug": "database-environment-identity",
+  "sourceStatus": "draft-unverified",
+  "runtimeQualification": "not-run",
+  "reviewStatus": "unreviewed",
+  "estimatedMinutes": 65,
+  "prerequisites": [
+    "12.05.03"
+  ],
+  "officialReferences": [
+    "https://www.postgresql.org/docs/current/functions-info.html",
+    "https://www.postgresql.org/docs/current/backup.html"
+  ],
+  "evidenceMode": "sql-contract",
+  "securityBoundary": "This is a connection-identity sanity test, not proof of network isolation, secrets separation, firewall policy or absence of cross-environment credentials. Independently inspect infrastructure settings."
+}

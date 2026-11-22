@@ -1,0 +1,20 @@
+{
+  "id": "12.05.01",
+  "title": "Backups and PITR concepts",
+  "trackId": "12",
+  "moduleId": "12.05",
+  "labSlug": "backup-pitr-readiness",
+  "sourceStatus": "draft-unverified",
+  "runtimeQualification": "not-run",
+  "reviewStatus": "unreviewed",
+  "estimatedMinutes": 65,
+  "prerequisites": [
+    "12.04.08"
+  ],
+  "officialReferences": [
+    "https://www.postgresql.org/docs/current/continuous-archiving.html",
+    "https://www.postgresql.org/docs/current/backup.html"
+  ],
+  "evidenceMode": "manual-evidence",
+  "securityBoundary": "Changing archive_mode or wal_level often requires a restart and is out of scope. Do not change production instance settings to perform this lesson. The learner can only qualify PITR by a genuine recovery exercise in a separate instance."
+}

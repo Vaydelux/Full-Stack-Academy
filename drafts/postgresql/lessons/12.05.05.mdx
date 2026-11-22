@@ -1,0 +1,96 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Separate migration, runtime, read-only and backup roles. Grant only the minimum object privileges necessary for each operation and avoid long-lived superuser application credentials.","Using a non-superuser local test account, inspect role flags, schema/table privileges and an explicit negative test that the runtime role cannot create roles or read an unrelated schema. Record the connected role, object and SQLSTATE.","SELECT from pg_roles is read-only metadata inspection, not a privilege grant or a complete access audit. Creating test roles and exercising denial paths requires an isolated DBA-controlled lab."]} />
+
+## Operational problem
+
+**Roles and least privilege.** Separate migration, runtime, read-only and backup roles. Grant only the minimum object privileges necessary for each operation and avoid long-lived superuser application credentials.
+
+**Common failure:** The starter prints a role name without checking whether the login is a superuser or can create roles/databases.
+
+Database operations differ from syntax tutorials: observing a configuration setting, successfully creating a backup file, and actually recovering an application are three distinct kinds of evidence. A successful command cannot prove availability, restoration, consistency, or acceptable recovery time without a controlled independent drill.
+
+This article is a **staged, unpublished manuscript**. The academy's learner-facing registry intentionally excludes it until the separate release and operator-review gates are satisfied.
+
+## Mental model and risk
+
+Separate migration, runtime, read-only and backup roles. Grant only the minimum object privileges necessary for each operation and avoid long-lived superuser application credentials.
+
+SELECT from pg_roles is read-only metadata inspection, not a privilege grant or a complete access audit. Creating test roles and exercising denial paths requires an isolated DBA-controlled lab.
+
+A production-grade runbook needs a named responsible operator, target environment, prerequisite privileges, allowable downtime, credentials/secret-handling instructions, rollback/abort conditions and verifiable success evidence. Keep database tests isolated from the real application's data and users.
+
+## Preparation
+
+Complete **12.05.04**. Review the synthetic temporary-table dataset in `examples/postgresql-operations/fixture.sql`, then inspect `drafts/postgresql/labs/least-privilege-roles/`. The starter and instructor snippets below are read-only or limited to the fixture's temporary table unless explicitly stated otherwise.
+
+**Qualification mode:** This lesson requires independent, manual operational evidence. No automated SQL runner is permitted to report full recovery/replication/security success for it.
+
+## Guided exercise
+
+<LessonStep number={1} title="Identify the unsafe assumption" file="drafts/postgresql/labs/least-privilege-roles/starter.sql" expected="The starter prints a role name without checking whether the login is a superuser or can create roles/databases.">
+
+```sql
+SELECT current_user AS connected_role;
+```
+
+**What is missing?** The starter prints a role name without checking whether the login is a superuser or can create roles/databases. State why the observed source or output is insufficient evidence of operational readiness.
+
+</LessonStep>
+
+<LessonStep number={2} title="Inspect real state or implement a safe repair" file="drafts/postgresql/labs/least-privilege-roles/solution.sql" expected="Separate migration, runtime, read-only and backup roles. Grant only the minimum object privileges necessary for each operation and avoid long-lived superuser application credentials.">
+
+```sql
+SELECT rolname,rolsuper,rolcreatedb,rolcreaterole,rolcanlogin
+FROM pg_roles WHERE rolname=current_user;
+```
+
+**Interpretation:** Separate migration, runtime, read-only and backup roles. Grant only the minimum object privileges necessary for each operation and avoid long-lived superuser application credentials. This command is illustrative and must be used only on authorized, isolated test infrastructure.
+
+</LessonStep>
+
+<LessonStep number={3} title="Capture release-quality verification evidence" file="drafts/postgresql/labs/least-privilege-roles/acceptance.md" expected="Using a non-superuser local test account, inspect role flags, schema/table privileges and an explicit negative test that the runtime role cannot create roles or read an unrelated schema. Record the connected role, object and SQLSTATE.">
+
+Open the acceptance.md operator runbook. Execute the safe steps on dedicated test infrastructure; collect actual evidence and obtain reviewer signoff. Source parity is not a substitute for this exercise.
+
+**Proof checklist:** Using a non-superuser local test account, inspect role flags, schema/table privileges and an explicit negative test that the runtime role cannot create roles or read an unrelated schema. Record the connected role, object and SQLSTATE.
+
+**Safety boundary:** SELECT from pg_roles is read-only metadata inspection, not a privilege grant or a complete access audit. Creating test roles and exercising denial paths requires an isolated DBA-controlled lab.
+
+</LessonStep>
+
+## Failure modes and recovery design
+
+Separate migration, runtime, read-only and backup roles. Grant only the minimum object privileges necessary for each operation and avoid long-lived superuser application credentials.
+
+The starter prints a role name without checking whether the login is a superuser or can create roles/databases.
+
+SELECT from pg_roles is read-only metadata inspection, not a privilege grant or a complete access audit. Creating test roles and exercising denial paths requires an isolated DBA-controlled lab.
+
+Practice describing a failure in terms of its blast radius, detection signal and recovery path. What would happen if the database were unavailable during a migration, WAL archives were missing, a pooled connection lost session state, or an operator accidentally targeted production? Identify the prerequisite that would prevent or contain each failure.
+
+## Bug Hunt
+
+1. State the specific unsafe assumption: The starter prints a role name without checking whether the login is a superuser or can create roles/databases.
+2. Perform the non-destructive observation from the starter and explain its limits.
+3. Compare the corrected action: Separate migration, runtime, read-only and backup roles. Grant only the minimum object privileges necessary for each operation and avoid long-lived superuser application credentials.
+4. Capture evidence independently: Using a non-superuser local test account, inspect role flags, schema/table privileges and an explicit negative test that the runtime role cannot create roles or read an unrelated schema. Record the connected role, object and SQLSTATE.
+5. Write the abort condition and the safest fallback: SELECT from pg_roles is read-only metadata inspection, not a privilege grant or a complete access audit. Creating test roles and exercising denial paths requires an isolated DBA-controlled lab.
+
+<Misconception claim={"The starter prints a role name without checking whether the login is a superuser or can create roles/databases."} correction={"Separate migration, runtime, read-only and backup roles. Grant only the minimum object privileges necessary for each operation and avoid long-lived superuser application credentials."} />
+
+<KnowledgeCheck question={"Which role should a web application's normal runtime typically use?"} choices={["An unrestricted superuser","A scoped login with only required schema and object permissions","The PostgreSQL cluster owner","Any role shared with development and production"]} correctIndex={1} explanation={"Separate migration, runtime, read-only and backup roles. Grant only the minimum object privileges necessary for each operation and avoid long-lived superuser application credentials."} misconception={"SELECT from pg_roles is read-only metadata inspection, not a privilege grant or a complete access audit. Creating test roles and exercising denial paths requires an isolated DBA-controlled lab."} lessonId="12.05.05" />
+
+## Practice extension
+
+Write an operational runbook that can be followed by a second developer who has never seen your environment. Specify the real host selector, approved test database name, least-privilege role, safety checks, expected output, cleanup, and an audit of what did or did not succeed.
+
+For backup/restore tasks, attach only sanitized non-sensitive evidence. Explain the distinction between a backup, a restore drill, and point-in-time recovery; none of those should be marked qualified from a source-only check. For permission work, test a denied operation as deliberately as a successful read.
+
+**Publication boundary:** This source pack remains unverified. It cannot be used to certify a live database, count a student lesson as complete, or trigger a Vercel deployment. Real PostgreSQL and human review are mandatory.
+
+## Official references
+
+- [PostgreSQL official reference — Roles and least privilege](https://www.postgresql.org/docs/current/user-manag.html)
+- [PostgreSQL Backup and Restore](https://www.postgresql.org/docs/current/backup.html)

@@ -1,0 +1,15 @@
+{
+  "id": "draft.postgresql.pooler-capacity-plan",
+  "lessonId": "12.05.06",
+  "title": "Connection pooler configuration",
+  "sourceStatus": "draft-unverified",
+  "runtimeQualification": "not-run",
+  "readyToPublish": false,
+  "qualificationKind": "manual-evidence",
+  "fixture": "examples/postgresql-operations/fixture.sql",
+  "starter": "drafts/postgresql/labs/pooler-capacity-plan/starter.sql",
+  "solution": "drafts/postgresql/labs/pooler-capacity-plan/solution.sql",
+  "acceptanceDoc": "drafts/postgresql/labs/pooler-capacity-plan/acceptance.md",
+  "requiresOperationalReview": true,
+  "reference": "https://www.postgresql.org/docs/current/runtime-config-connection.html"
+}

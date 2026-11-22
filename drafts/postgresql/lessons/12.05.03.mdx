@@ -1,0 +1,97 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Expand–backfill–contract separates compatible schema expansion, historical data migration, and enforcement of a new invariant. The application and migration must remain compatible during deployment.","Run schema expansion, backfill and constraint enforcement on an isolated dataset; prove no missing priority, correct inherited state mappings and the column's NOT NULL status.","A tiny temporary-table success does not qualify a production migration: on large tables lock duration, transaction size, replication lag, deployment ordering and rollback strategy require independent evaluation."]} />
+
+## Operational problem
+
+**Schema migration safety.** Expand–backfill–contract separates compatible schema expansion, historical data migration, and enforcement of a new invariant. The application and migration must remain compatible during deployment.
+
+**Common failure:** The starter adds a nullable priority column but never backfills existing rows or enforces the intended non-null rule.
+
+Database operations differ from syntax tutorials: observing a configuration setting, successfully creating a backup file, and actually recovering an application are three distinct kinds of evidence. A successful command cannot prove availability, restoration, consistency, or acceptable recovery time without a controlled independent drill.
+
+This article is a **staged, unpublished manuscript**. The academy's learner-facing registry intentionally excludes it until the separate release and operator-review gates are satisfied.
+
+## Mental model and risk
+
+Expand–backfill–contract separates compatible schema expansion, historical data migration, and enforcement of a new invariant. The application and migration must remain compatible during deployment.
+
+A tiny temporary-table success does not qualify a production migration: on large tables lock duration, transaction size, replication lag, deployment ordering and rollback strategy require independent evaluation.
+
+A production-grade runbook needs a named responsible operator, target environment, prerequisite privileges, allowable downtime, credentials/secret-handling instructions, rollback/abort conditions and verifiable success evidence. Keep database tests isolated from the real application's data and users.
+
+## Preparation
+
+Complete **12.05.02**. Review the synthetic temporary-table dataset in `examples/postgresql-operations/fixture.sql`, then inspect `drafts/postgresql/labs/expand-backfill-contract/`. The starter and instructor snippets below are read-only or limited to the fixture's temporary table unless explicitly stated otherwise.
+
+**Qualification mode:** The SQL behavior has a named real PostgreSQL semantic acceptance assertion. This does not certify the entire production operations procedure.
+
+## Guided exercise
+
+<LessonStep number={1} title="Identify the unsafe assumption" file="drafts/postgresql/labs/expand-backfill-contract/starter.sql" expected="The starter adds a nullable priority column but never backfills existing rows or enforces the intended non-null rule.">
+
+```sql
+ALTER TABLE ops_tasks ADD COLUMN priority integer;
+```
+
+**What is missing?** The starter adds a nullable priority column but never backfills existing rows or enforces the intended non-null rule. State why the observed source or output is insufficient evidence of operational readiness.
+
+</LessonStep>
+
+<LessonStep number={2} title="Inspect real state or implement a safe repair" file="drafts/postgresql/labs/expand-backfill-contract/solution.sql" expected="Expand–backfill–contract separates compatible schema expansion, historical data migration, and enforcement of a new invariant. The application and migration must remain compatible during deployment.">
+
+```sql
+ALTER TABLE ops_tasks ADD COLUMN priority integer;
+UPDATE ops_tasks SET priority=CASE WHEN state='open' THEN 2 ELSE 1 END;
+ALTER TABLE ops_tasks ALTER COLUMN priority SET NOT NULL;
+```
+
+**Interpretation:** Expand–backfill–contract separates compatible schema expansion, historical data migration, and enforcement of a new invariant. The application and migration must remain compatible during deployment. This command is illustrative and must be used only on authorized, isolated test infrastructure.
+
+</LessonStep>
+
+<LessonStep number={3} title="Capture release-quality verification evidence" file="drafts/postgresql/labs/expand-backfill-contract/acceptance.sql" expected="Run schema expansion, backfill and constraint enforcement on an isolated dataset; prove no missing priority, correct inherited state mappings and the column's NOT NULL status.">
+
+Execute the named semantic SQL acceptance against the fixture using a dedicated loopback test database. The runner requires a green instructor outcome and a red starter failure with the exact lesson ID.
+
+**Proof checklist:** Run schema expansion, backfill and constraint enforcement on an isolated dataset; prove no missing priority, correct inherited state mappings and the column's NOT NULL status.
+
+**Safety boundary:** A tiny temporary-table success does not qualify a production migration: on large tables lock duration, transaction size, replication lag, deployment ordering and rollback strategy require independent evaluation.
+
+</LessonStep>
+
+## Failure modes and recovery design
+
+Expand–backfill–contract separates compatible schema expansion, historical data migration, and enforcement of a new invariant. The application and migration must remain compatible during deployment.
+
+The starter adds a nullable priority column but never backfills existing rows or enforces the intended non-null rule.
+
+A tiny temporary-table success does not qualify a production migration: on large tables lock duration, transaction size, replication lag, deployment ordering and rollback strategy require independent evaluation.
+
+Practice describing a failure in terms of its blast radius, detection signal and recovery path. What would happen if the database were unavailable during a migration, WAL archives were missing, a pooled connection lost session state, or an operator accidentally targeted production? Identify the prerequisite that would prevent or contain each failure.
+
+## Bug Hunt
+
+1. State the specific unsafe assumption: The starter adds a nullable priority column but never backfills existing rows or enforces the intended non-null rule.
+2. Perform the non-destructive observation from the starter and explain its limits.
+3. Compare the corrected action: Expand–backfill–contract separates compatible schema expansion, historical data migration, and enforcement of a new invariant. The application and migration must remain compatible during deployment.
+4. Capture evidence independently: Run schema expansion, backfill and constraint enforcement on an isolated dataset; prove no missing priority, correct inherited state mappings and the column's NOT NULL status.
+5. Write the abort condition and the safest fallback: A tiny temporary-table success does not qualify a production migration: on large tables lock duration, transaction size, replication lag, deployment ordering and rollback strategy require independent evaluation.
+
+<Misconception claim={"The starter adds a nullable priority column but never backfills existing rows or enforces the intended non-null rule."} correction={"Expand–backfill–contract separates compatible schema expansion, historical data migration, and enforcement of a new invariant. The application and migration must remain compatible during deployment."} />
+
+<KnowledgeCheck question={"Why use expand–backfill–contract for evolving production schemas?"} choices={["To skip data verification","To stage compatible changes before enforcing the new contract","To disable backups","Because all ALTER TABLE statements are lock-free"]} correctIndex={1} explanation={"Expand–backfill–contract separates compatible schema expansion, historical data migration, and enforcement of a new invariant. The application and migration must remain compatible during deployment."} misconception={"A tiny temporary-table success does not qualify a production migration: on large tables lock duration, transaction size, replication lag, deployment ordering and rollback strategy require independent evaluation."} lessonId="12.05.03" />
+
+## Practice extension
+
+Write an operational runbook that can be followed by a second developer who has never seen your environment. Specify the real host selector, approved test database name, least-privilege role, safety checks, expected output, cleanup, and an audit of what did or did not succeed.
+
+For backup/restore tasks, attach only sanitized non-sensitive evidence. Explain the distinction between a backup, a restore drill, and point-in-time recovery; none of those should be marked qualified from a source-only check. For permission work, test a denied operation as deliberately as a successful read.
+
+**Publication boundary:** This source pack remains unverified. It cannot be used to certify a live database, count a student lesson as complete, or trigger a Vercel deployment. Real PostgreSQL and human review are mandatory.
+
+## Official references
+
+- [PostgreSQL official reference — Schema migration safety](https://www.postgresql.org/docs/current/ddl-alter.html)
+- [PostgreSQL Backup and Restore](https://www.postgresql.org/docs/current/backup.html)

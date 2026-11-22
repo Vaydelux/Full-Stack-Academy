@@ -1,0 +1,15 @@
+{
+  "id": "draft.postgresql.least-privilege-roles",
+  "lessonId": "12.05.05",
+  "title": "Roles and least privilege",
+  "sourceStatus": "draft-unverified",
+  "runtimeQualification": "not-run",
+  "readyToPublish": false,
+  "qualificationKind": "manual-evidence",
+  "fixture": "examples/postgresql-operations/fixture.sql",
+  "starter": "drafts/postgresql/labs/least-privilege-roles/starter.sql",
+  "solution": "drafts/postgresql/labs/least-privilege-roles/solution.sql",
+  "acceptanceDoc": "drafts/postgresql/labs/least-privilege-roles/acceptance.md",
+  "requiresOperationalReview": true,
+  "reference": "https://www.postgresql.org/docs/current/user-manag.html"
+}

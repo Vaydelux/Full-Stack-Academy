@@ -1,0 +1,20 @@
+{
+  "id": "12.05.07",
+  "title": "Restore drills",
+  "trackId": "12",
+  "moduleId": "12.05",
+  "labSlug": "restore-drill-evidence",
+  "sourceStatus": "draft-unverified",
+  "runtimeQualification": "not-run",
+  "reviewStatus": "unreviewed",
+  "estimatedMinutes": 65,
+  "prerequisites": [
+    "12.05.06"
+  ],
+  "officialReferences": [
+    "https://www.postgresql.org/docs/current/backup-dump.html",
+    "https://www.postgresql.org/docs/current/backup.html"
+  ],
+  "evidenceMode": "manual-evidence",
+  "securityBoundary": "The temporary fixture used for source examples is intentionally not a valid pg_dump restore artifact. A real restore drill requires two dedicated, non-production databases and manual authorization; the source scanner cannot certify it."
+}

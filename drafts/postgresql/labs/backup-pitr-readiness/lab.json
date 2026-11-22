@@ -1,0 +1,15 @@
+{
+  "id": "draft.postgresql.backup-pitr-readiness",
+  "lessonId": "12.05.01",
+  "title": "Backups and PITR concepts",
+  "sourceStatus": "draft-unverified",
+  "runtimeQualification": "not-run",
+  "readyToPublish": false,
+  "qualificationKind": "manual-evidence",
+  "fixture": "examples/postgresql-operations/fixture.sql",
+  "starter": "drafts/postgresql/labs/backup-pitr-readiness/starter.sql",
+  "solution": "drafts/postgresql/labs/backup-pitr-readiness/solution.sql",
+  "acceptanceDoc": "drafts/postgresql/labs/backup-pitr-readiness/acceptance.md",
+  "requiresOperationalReview": true,
+  "reference": "https://www.postgresql.org/docs/current/continuous-archiving.html"
+}

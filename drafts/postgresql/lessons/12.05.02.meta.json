@@ -1,0 +1,20 @@
+{
+  "id": "12.05.02",
+  "title": "Replication and replicas",
+  "trackId": "12",
+  "moduleId": "12.05",
+  "labSlug": "replica-observability",
+  "sourceStatus": "draft-unverified",
+  "runtimeQualification": "not-run",
+  "reviewStatus": "unreviewed",
+  "estimatedMinutes": 65,
+  "prerequisites": [
+    "12.05.01"
+  ],
+  "officialReferences": [
+    "https://www.postgresql.org/docs/current/warm-standby.html",
+    "https://www.postgresql.org/docs/current/backup.html"
+  ],
+  "evidenceMode": "manual-evidence",
+  "securityBoundary": "An empty pg_stat_replication result on a standalone test server is not evidence of healthy replication. This module cannot auto-create a second PostgreSQL instance or prove failover safety."
+}

@@ -1,0 +1,15 @@
+{
+  "id": "draft.postgresql.replica-observability",
+  "lessonId": "12.05.02",
+  "title": "Replication and replicas",
+  "sourceStatus": "draft-unverified",
+  "runtimeQualification": "not-run",
+  "readyToPublish": false,
+  "qualificationKind": "manual-evidence",
+  "fixture": "examples/postgresql-operations/fixture.sql",
+  "starter": "drafts/postgresql/labs/replica-observability/starter.sql",
+  "solution": "drafts/postgresql/labs/replica-observability/solution.sql",
+  "acceptanceDoc": "drafts/postgresql/labs/replica-observability/acceptance.md",
+  "requiresOperationalReview": true,
+  "reference": "https://www.postgresql.org/docs/current/warm-standby.html"
+}
