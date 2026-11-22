@@ -96,8 +96,13 @@ test('11.04.03 real Socket.IO isolates both authenticated tenants and rejects un
     await sleep(200);
     assert.deepEqual(aliceMessages, [{ title: 'alpha' }], 'Bob may not broadcast into Alice tenant');
 
-    assert.deepEqual(await emitAck(alice, { title: '' }), { error: 'INVALID_TASK' });
+    for (const invalid of [null, {}, [], { title: 42 }, { title: [] }, { title: '' }, { title: 'x'.repeat(101) }]) {
+      assert.deepEqual(await emitAck(alice, invalid), { error: 'INVALID_TASK' });
+    }
     assert.deepEqual(await emitAck(bob, { title: 'x'.repeat(101) }), { error: 'INVALID_TASK' });
+    await sleep(150);
+    assert.deepEqual(aliceMessages, [{ title: 'alpha' }], 'Malformed payloads must never broadcast');
+    assert.deepEqual(bobMessages, [{ title: 'beta' }], 'Malformed payloads must never leak');
     await assert.rejects(connect(origin, 'incorrect', 'alice'), /UNAUTHORIZED/);
   });
 });
