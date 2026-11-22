@@ -31,7 +31,7 @@ Use a disposable, explicitly opted-in test database. A real-`psql` verifier must
 
 ```sql
 CREATE TEMP VIEW lesson_result AS
-SELECT id, display_name, email FROM academy_users;
+SELECT id, display_name, active, email FROM academy_users;
 ```
 
 **Diagnosis:** The starter leaks the users' email field and includes a second tenant. Compare your predicted wrong row or count with what the starter actually produces. A successful SQL command is not proof that its result is correct.
