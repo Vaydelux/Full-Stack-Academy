@@ -435,7 +435,10 @@
     "test:forms-query-projection-integrity": "node --test tests/forms-query-projection-integrity.test.mjs",
     "test:forms-query-p1-report": "node --test tests/forms-query-p1-report.test.mjs",
     "test:vercel-freeze": "node --test tests/vercel-freeze.test.mjs",
-    "verify:vercel-freeze": "node scripts/verify-vercel-freeze.mjs"
+    "verify:vercel-freeze": "node scripts/verify-vercel-freeze.mjs",
+    "test:postgresql-drafts": "node examples/postgresql-basics/scripts/verify-source.mjs --check && node --test examples/postgresql-basics/tests/source.test.mjs",
+    "status:postgresql-drafts": "node examples/postgresql-basics/scripts/verify-source.mjs --json",
+    "qualify:postgresql:12-01": "node examples/postgresql-basics/scripts/qualify.mjs"
   },
   "dependencies": {
     "clsx": "^2.1.1",

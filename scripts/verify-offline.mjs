@@ -43,6 +43,7 @@ const steps = [
   'test:forms-query-review-fingerprint',
   'test:curriculum-readiness',
   'test:publication-phases',
+  'test:postgresql-drafts',
   'validate',
   'verify:content',
   'checkpoint:check',
