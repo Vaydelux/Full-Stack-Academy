@@ -1,0 +1,19 @@
+{
+  "id": "draft.postgresql.foreign-keys-constraints",
+  "lessonId": "12.01.05",
+  "title": "Foreign keys and constraints",
+  "sourceStatus": "draft-unverified",
+  "runtime": "PostgreSQL 17+",
+  "starter": "drafts/postgresql/labs/foreign-keys-constraints/starter.sql",
+  "solution": "drafts/postgresql/labs/foreign-keys-constraints/solution.sql",
+  "acceptance": "drafts/postgresql/labs/foreign-keys-constraints/acceptance.sql",
+  "fixture": "examples/postgresql-basics/fixture.sql",
+  "expectedPositive": "Instructor SQL passes 12.01.05 acceptance on a disposable real PostgreSQL connection",
+  "expectedNegative": "Learner starter must fail the same 12.01.05 acceptance assertion",
+  "requiresRealPostgresTest": true,
+  "readyToPublish": false,
+  "officialReferences": [
+    "https://www.postgresql.org/docs/current/ddl-constraints.html",
+    "https://www.postgresql.org/docs/current/tutorial.html"
+  ]
+}

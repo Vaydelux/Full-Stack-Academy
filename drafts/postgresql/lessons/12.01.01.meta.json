@@ -1,0 +1,25 @@
+{
+  "id": "12.01.01",
+  "title": "Tables rows columns and types",
+  "trackId": "12",
+  "moduleId": "12.01",
+  "sourceStatus": "draft-unverified",
+  "estimatedMinutes": 55,
+  "stack": {
+    "postgresql": "17+"
+  },
+  "prerequisites": [
+    "10.04.08"
+  ],
+  "objective": "Rows represent individual facts; columns have enforced PostgreSQL types and nullable constraints. A SELECT list must expose only fields the consumer is authorized to read.",
+  "misconception": "The starter leaks the users' email field and includes a second tenant.",
+  "acceptance": "Store a status as boolean instead of inventing text values; enforce tenant filtering in a data access boundary, not only in a UI. Inspect the result view's columns with information_schema to confirm the exact public projection.",
+  "labSlug": "tables-types",
+  "officialReferences": [
+    "https://www.postgresql.org/docs/current/ddl-basics.html",
+    "https://www.postgresql.org/docs/current/tutorial.html"
+  ],
+  "securityBoundary": "A query can succeed while exposing data from another tenant or leaking email. Testing only SELECT success is insufficient.",
+  "reviewStatus": "unreviewed",
+  "runtimeQualification": "not-run"
+}

@@ -443,7 +443,10 @@
     "test:nestjs-offline-transactions": "node --experimental-strip-types --test examples/nestjs-vertical/tests/transactions.offline.test.mjs",
     "test:nestjs-offline-contracts": "node --experimental-transform-types --test examples/nestjs-vertical/tests/pure-contracts.offline.test.mjs",
     "test:nestjs-offline-lock": "node --test examples/nestjs-vertical/tests/lock-integrity.offline.test.mjs",
-    "test:nestjs-offline": "npm run test:nestjs-offline-transactions && npm run test:nestjs-offline-contracts && npm run test:nestjs-offline-lock"
+    "test:nestjs-offline": "npm run test:nestjs-offline-transactions && npm run test:nestjs-offline-contracts && npm run test:nestjs-offline-lock",
+    "test:postgresql-drafts": "node examples/postgresql-basics/scripts/verify-source.mjs --check && node --test examples/postgresql-basics/tests/source.test.mjs",
+    "status:postgresql-drafts": "node examples/postgresql-basics/scripts/verify-source.mjs --json",
+    "qualify:postgresql:12-01": "node examples/postgresql-basics/scripts/qualify.mjs"
   },
   "dependencies": {
     "clsx": "^2.1.1",

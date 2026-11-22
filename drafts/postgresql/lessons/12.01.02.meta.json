@@ -1,0 +1,25 @@
+{
+  "id": "12.01.02",
+  "title": "SELECT WHERE ORDER BY",
+  "trackId": "12",
+  "moduleId": "12.01",
+  "sourceStatus": "draft-unverified",
+  "estimatedMinutes": 55,
+  "stack": {
+    "postgresql": "17+"
+  },
+  "prerequisites": [
+    "12.01.01"
+  ],
+  "objective": "WHERE reduces the candidate rows; ORDER BY establishes deterministic order, especially important for paging and test assertions.",
+  "misconception": "The starter sorts all tasks, including a different tenant and completed work, instead of finding alpha's open tasks.",
+  "acceptance": "Explain why an ORDER BY inside a view is not a reliable contract for clients querying that view. Apply ORDER BY in the final consuming SELECT, and add a unique tie-breaker to pagination.",
+  "labSlug": "select-filter-order",
+  "officialReferences": [
+    "https://www.postgresql.org/docs/current/queries-order.html",
+    "https://www.postgresql.org/docs/current/tutorial.html"
+  ],
+  "securityBoundary": "Without a tenant and status predicate, even correctly sorted rows can disclose unrelated tasks.",
+  "reviewStatus": "unreviewed",
+  "runtimeQualification": "not-run"
+}

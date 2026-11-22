@@ -1,0 +1,19 @@
+{
+  "id": "draft.postgresql.query-workbook",
+  "lessonId": "12.01.08",
+  "title": "Lab query workbook",
+  "sourceStatus": "draft-unverified",
+  "runtime": "PostgreSQL 17+",
+  "starter": "drafts/postgresql/labs/query-workbook/starter.sql",
+  "solution": "drafts/postgresql/labs/query-workbook/solution.sql",
+  "acceptance": "drafts/postgresql/labs/query-workbook/acceptance.sql",
+  "fixture": "examples/postgresql-basics/fixture.sql",
+  "expectedPositive": "Instructor SQL passes 12.01.08 acceptance on a disposable real PostgreSQL connection",
+  "expectedNegative": "Learner starter must fail the same 12.01.08 acceptance assertion",
+  "requiresRealPostgresTest": true,
+  "readyToPublish": false,
+  "officialReferences": [
+    "https://www.postgresql.org/docs/current/queries-table-expressions.html",
+    "https://www.postgresql.org/docs/current/tutorial.html"
+  ]
+}

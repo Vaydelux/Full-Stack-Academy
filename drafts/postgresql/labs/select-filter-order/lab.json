@@ -1,0 +1,19 @@
+{
+  "id": "draft.postgresql.select-filter-order",
+  "lessonId": "12.01.02",
+  "title": "SELECT WHERE ORDER BY",
+  "sourceStatus": "draft-unverified",
+  "runtime": "PostgreSQL 17+",
+  "starter": "drafts/postgresql/labs/select-filter-order/starter.sql",
+  "solution": "drafts/postgresql/labs/select-filter-order/solution.sql",
+  "acceptance": "drafts/postgresql/labs/select-filter-order/acceptance.sql",
+  "fixture": "examples/postgresql-basics/fixture.sql",
+  "expectedPositive": "Instructor SQL passes 12.01.02 acceptance on a disposable real PostgreSQL connection",
+  "expectedNegative": "Learner starter must fail the same 12.01.02 acceptance assertion",
+  "requiresRealPostgresTest": true,
+  "readyToPublish": false,
+  "officialReferences": [
+    "https://www.postgresql.org/docs/current/queries-order.html",
+    "https://www.postgresql.org/docs/current/tutorial.html"
+  ]
+}

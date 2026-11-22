@@ -1,0 +1,99 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["NULL is not an ordinary value. Comparisons with NULL produce UNKNOWN, and WHERE keeps only predicates that evaluate to TRUE.","Test the truth tables for TRUE AND UNKNOWN and FALSE AND UNKNOWN. Use IS NULL and IS NOT NULL, and consider IS DISTINCT FROM when comparing nullable values without UNKNOWN.","COALESCE can be useful for display, but replacing every NULL with a fake sentinel can corrupt business meaning."]} />
+
+## The problem we're solving
+
+**NULL and three-valued logic.** The starter checks due_on = NULL, which selects no overdue-unscheduled rows instead of matching NULL dates.
+
+Consider a small project-management database. Users belong to tenants; projects have owners; tasks belong to projects. A report may look plausible while producing the wrong rows, exposing sensitive information, or dropping empty groups. You will begin with an intentionally incorrect SQL exercise, predict its observable failure, and then repair it.
+
+## Mental model and vocabulary
+
+NULL is not an ordinary value. Comparisons with NULL produce UNKNOWN, and WHERE keeps only predicates that evaluate to TRUE.
+
+Test the truth tables for TRUE AND UNKNOWN and FALSE AND UNKNOWN. Use IS NULL and IS NOT NULL, and consider IS DISTINCT FROM when comparing nullable values without UNKNOWN.
+
+**Predict first:** Before running the red starter, describe which tenant, ID, column, or count will be incorrect. Name the row you expect to see or not see. The goal is an invariant you can assert in a real PostgreSQL session, not mere SQL syntax acceptance.
+
+**Scope:** PostgreSQL SQL semantics using a disposable session fixture; this is a staged, not-yet-published article. The examples target PostgreSQL 17 or later but have **not** been executed against a real PostgreSQL server in this environment. The shared fixture is teaching data, not a production authorization system.
+
+## Before you code
+
+Complete **12.01.05**, then inspect `examples/postgresql-basics/fixture.sql` and the three lesson-specific files in `drafts/postgresql/labs/null-logic/`. There are four users across two tenants, four projects (one empty), and six tasks with different status and NULL values. These edge cases are intentional.
+
+Use a disposable, explicitly opted-in test database. A real-`psql` verifier must prove that the instructor passes and the intentionally broken starter fails. Never test with production credentials. The fixture creates **temporary tables** and the runner wraps the session in a rollback.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the wrong result" file="drafts/postgresql/labs/null-logic/starter.sql" expected="The starter checks due_on = NULL, which selects no overdue-unscheduled rows instead of matching NULL dates.">
+
+```sql
+CREATE TEMP VIEW lesson_result AS
+SELECT id, title FROM academy_tasks
+WHERE tenant_id = 'alpha' AND due_on = NULL;
+```
+
+**Diagnosis:** The starter checks due_on = NULL, which selects no overdue-unscheduled rows instead of matching NULL dates. Compare your predicted wrong row or count with what the starter actually produces. A successful SQL command is not proof that its result is correct.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the relational contract" file="drafts/postgresql/labs/null-logic/solution.sql" expected="NULL is not an ordinary value. Comparisons with NULL produce UNKNOWN, and WHERE keeps only predicates that evaluate to TRUE.">
+
+```sql
+CREATE TEMP VIEW lesson_result AS
+SELECT id, title FROM academy_tasks
+WHERE tenant_id = 'alpha' AND due_on IS NULL;
+```
+
+**Why the repair works:** NULL is not an ordinary value. Comparisons with NULL produce UNKNOWN, and WHERE keeps only predicates that evaluate to TRUE. Review the SQL predicate or constraint that excludes invalid rows and preserves required ones. If a client dynamically constructs SQL, bind parameters rather than interpolating untrusted data; these checked-in statements are intentionally static fixtures.
+
+</LessonStep>
+
+<LessonStep number={3} title="Run the real PostgreSQL acceptance gate" file="drafts/postgresql/labs/null-logic/acceptance.sql" expected="The instructor passes and the learner starter fails on the same dataset.">
+
+The acceptance contract asserts the expected real database behavior. The verifier runs fixture + instructor/learner SQL + assertions in **one disposable PostgreSQL connection** per case, then rolls back. A returned error is acceptable for the starter only when it comes from the lesson's **specific semantic acceptance assertion**, not from missing tables or invalid SQL.
+
+**Expected outcome:** Test the truth tables for TRUE AND UNKNOWN and FALSE AND UNKNOWN. Use IS NULL and IS NOT NULL, and consider IS DISTINCT FROM when comparing nullable values without UNKNOWN.
+
+**Negative case:** COALESCE can be useful for display, but replacing every NULL with a fake sentinel can corrupt business meaning.
+
+</LessonStep>
+
+## Reason it through
+
+Test the truth tables for TRUE AND UNKNOWN and FALSE AND UNKNOWN. Use IS NULL and IS NOT NULL, and consider IS DISTINCT FROM when comparing nullable values without UNKNOWN.
+
+Draw the relevant row set: **users → projects → tasks**. Identify whether this operation projects columns, filters rows, combines relations, aggregates groups, or enforces a physical constraint. A data-layer restriction should not be replaced by a frontend filter; the browser cannot enforce another client's access to storage.
+
+## Edge cases and trust boundaries
+
+COALESCE can be useful for display, but replacing every NULL with a fake sentinel can corrupt business meaning.
+
+For production systems, distinguish this basic query exercise from actual role privileges, row-level security, constraints across tenant boundaries, input validation, indexes, transaction isolation, and migration safety. Those topics appear in later canonical PostgreSQL and Supabase modules. The teaching fixture deliberately uses static tenant IDs and does not implement real authentication.
+
+## Bug Hunt
+
+1. **Reproduce:** The starter checks due_on = NULL, which selects no overdue-unscheduled rows instead of matching NULL dates.
+2. **Predict:** State the exact unexpected row or wrong aggregate.
+3. **Repair:** NULL is not an ordinary value. Comparisons with NULL produce UNKNOWN, and WHERE keeps only predicates that evaluate to TRUE.
+4. **Regression:** Test the truth tables for TRUE AND UNKNOWN and FALSE AND UNKNOWN. Use IS NULL and IS NOT NULL, and consider IS DISTINCT FROM when comparing nullable values without UNKNOWN.
+5. **Boundary:** COALESCE can be useful for display, but replacing every NULL with a fake sentinel can corrupt business meaning.
+
+<Misconception claim={"The starter checks due_on = NULL, which selects no overdue-unscheduled rows instead of matching NULL dates."} correction={"NULL is not an ordinary value. Comparisons with NULL produce UNKNOWN, and WHERE keeps only predicates that evaluate to TRUE."} />
+
+<KnowledgeCheck question={"How do you identify rows with no due date?"} choices={["due_on = NULL","due_on IS NULL","due_on <> NULL","due_on = ''"]} correctIndex={1} explanation={"NULL is not an ordinary value. Comparisons with NULL produce UNKNOWN, and WHERE keeps only predicates that evaluate to TRUE."} misconception={"COALESCE can be useful for display, but replacing every NULL with a fake sentinel can corrupt business meaning."} lessonId="12.01.06" />
+
+## Guided local lab
+
+The source-staged files are under `drafts/postgresql/labs/null-logic/`. The learner's broken SQL and instructor's corrected SQL are **not** registered as published lessons or progress-completing labs. Run `node examples/postgresql-basics/scripts/qualify.mjs` from the repository root only on a dedicated PostgreSQL instance with the documented environment safeguards. No source scan is a substitute for real SQL execution.
+
+## Reflect
+
+If a second tenant or an empty relation were added tomorrow, which exact assertion would detect leakage or a silent counting error? Would the same query remain correct when parameterized in an API? What additional controls would protect access to the underlying tables?
+
+## Official references
+
+- [PostgreSQL official reference for NULL and three-valued logic](https://www.postgresql.org/docs/current/functions-comparison.html)
+- [PostgreSQL SQL tutorial](https://www.postgresql.org/docs/current/tutorial.html)

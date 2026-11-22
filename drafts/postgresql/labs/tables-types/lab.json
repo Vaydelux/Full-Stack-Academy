@@ -1,0 +1,19 @@
+{
+  "id": "draft.postgresql.tables-types",
+  "lessonId": "12.01.01",
+  "title": "Tables rows columns and types",
+  "sourceStatus": "draft-unverified",
+  "runtime": "PostgreSQL 17+",
+  "starter": "drafts/postgresql/labs/tables-types/starter.sql",
+  "solution": "drafts/postgresql/labs/tables-types/solution.sql",
+  "acceptance": "drafts/postgresql/labs/tables-types/acceptance.sql",
+  "fixture": "examples/postgresql-basics/fixture.sql",
+  "expectedPositive": "Instructor SQL passes 12.01.01 acceptance on a disposable real PostgreSQL connection",
+  "expectedNegative": "Learner starter must fail the same 12.01.01 acceptance assertion",
+  "requiresRealPostgresTest": true,
+  "readyToPublish": false,
+  "officialReferences": [
+    "https://www.postgresql.org/docs/current/ddl-basics.html",
+    "https://www.postgresql.org/docs/current/tutorial.html"
+  ]
+}

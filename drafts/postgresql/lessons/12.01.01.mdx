@@ -1,0 +1,98 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Rows represent individual facts; columns have enforced PostgreSQL types and nullable constraints. A SELECT list must expose only fields the consumer is authorized to read.","Store a status as boolean instead of inventing text values; enforce tenant filtering in a data access boundary, not only in a UI. Inspect the result view's columns with information_schema to confirm the exact public projection.","A query can succeed while exposing data from another tenant or leaking email. Testing only SELECT success is insufficient."]} />
+
+## The problem we're solving
+
+**Tables rows columns and types.** The starter leaks the users' email field and includes a second tenant.
+
+Consider a small project-management database. Users belong to tenants; projects have owners; tasks belong to projects. A report may look plausible while producing the wrong rows, exposing sensitive information, or dropping empty groups. You will begin with an intentionally incorrect SQL exercise, predict its observable failure, and then repair it.
+
+## Mental model and vocabulary
+
+Rows represent individual facts; columns have enforced PostgreSQL types and nullable constraints. A SELECT list must expose only fields the consumer is authorized to read.
+
+Store a status as boolean instead of inventing text values; enforce tenant filtering in a data access boundary, not only in a UI. Inspect the result view's columns with information_schema to confirm the exact public projection.
+
+**Predict first:** Before running the red starter, describe which tenant, ID, column, or count will be incorrect. Name the row you expect to see or not see. The goal is an invariant you can assert in a real PostgreSQL session, not mere SQL syntax acceptance.
+
+**Scope:** PostgreSQL SQL semantics using a disposable session fixture; this is a staged, not-yet-published article. The examples target PostgreSQL 17 or later but have **not** been executed against a real PostgreSQL server in this environment. The shared fixture is teaching data, not a production authorization system.
+
+## Before you code
+
+Complete **10.04.08**, then inspect `examples/postgresql-basics/fixture.sql` and the three lesson-specific files in `drafts/postgresql/labs/tables-types/`. There are four users across two tenants, four projects (one empty), and six tasks with different status and NULL values. These edge cases are intentional.
+
+Use a disposable, explicitly opted-in test database. A real-`psql` verifier must prove that the instructor passes and the intentionally broken starter fails. Never test with production credentials. The fixture creates **temporary tables** and the runner wraps the session in a rollback.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the wrong result" file="drafts/postgresql/labs/tables-types/starter.sql" expected="The starter leaks the users' email field and includes a second tenant.">
+
+```sql
+CREATE TEMP VIEW lesson_result AS
+SELECT id, display_name, active, email FROM academy_users;
+```
+
+**Diagnosis:** The starter leaks the users' email field and includes a second tenant. Compare your predicted wrong row or count with what the starter actually produces. A successful SQL command is not proof that its result is correct.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the relational contract" file="drafts/postgresql/labs/tables-types/solution.sql" expected="Rows represent individual facts; columns have enforced PostgreSQL types and nullable constraints. A SELECT list must expose only fields the consumer is authorized to read.">
+
+```sql
+CREATE TEMP VIEW lesson_result AS
+SELECT id, display_name, active
+FROM academy_users WHERE tenant_id = 'alpha';
+```
+
+**Why the repair works:** Rows represent individual facts; columns have enforced PostgreSQL types and nullable constraints. A SELECT list must expose only fields the consumer is authorized to read. Review the SQL predicate or constraint that excludes invalid rows and preserves required ones. If a client dynamically constructs SQL, bind parameters rather than interpolating untrusted data; these checked-in statements are intentionally static fixtures.
+
+</LessonStep>
+
+<LessonStep number={3} title="Run the real PostgreSQL acceptance gate" file="drafts/postgresql/labs/tables-types/acceptance.sql" expected="The instructor passes and the learner starter fails on the same dataset.">
+
+The acceptance contract asserts the expected real database behavior. The verifier runs fixture + instructor/learner SQL + assertions in **one disposable PostgreSQL connection** per case, then rolls back. A returned error is acceptable for the starter only when it comes from the lesson's **specific semantic acceptance assertion**, not from missing tables or invalid SQL.
+
+**Expected outcome:** Store a status as boolean instead of inventing text values; enforce tenant filtering in a data access boundary, not only in a UI. Inspect the result view's columns with information_schema to confirm the exact public projection.
+
+**Negative case:** A query can succeed while exposing data from another tenant or leaking email. Testing only SELECT success is insufficient.
+
+</LessonStep>
+
+## Reason it through
+
+Store a status as boolean instead of inventing text values; enforce tenant filtering in a data access boundary, not only in a UI. Inspect the result view's columns with information_schema to confirm the exact public projection.
+
+Draw the relevant row set: **users → projects → tasks**. Identify whether this operation projects columns, filters rows, combines relations, aggregates groups, or enforces a physical constraint. A data-layer restriction should not be replaced by a frontend filter; the browser cannot enforce another client's access to storage.
+
+## Edge cases and trust boundaries
+
+A query can succeed while exposing data from another tenant or leaking email. Testing only SELECT success is insufficient.
+
+For production systems, distinguish this basic query exercise from actual role privileges, row-level security, constraints across tenant boundaries, input validation, indexes, transaction isolation, and migration safety. Those topics appear in later canonical PostgreSQL and Supabase modules. The teaching fixture deliberately uses static tenant IDs and does not implement real authentication.
+
+## Bug Hunt
+
+1. **Reproduce:** The starter leaks the users' email field and includes a second tenant.
+2. **Predict:** State the exact unexpected row or wrong aggregate.
+3. **Repair:** Rows represent individual facts; columns have enforced PostgreSQL types and nullable constraints. A SELECT list must expose only fields the consumer is authorized to read.
+4. **Regression:** Store a status as boolean instead of inventing text values; enforce tenant filtering in a data access boundary, not only in a UI. Inspect the result view's columns with information_schema to confirm the exact public projection.
+5. **Boundary:** A query can succeed while exposing data from another tenant or leaking email. Testing only SELECT success is insufficient.
+
+<Misconception claim={"The starter leaks the users' email field and includes a second tenant."} correction={"Rows represent individual facts; columns have enforced PostgreSQL types and nullable constraints. A SELECT list must expose only fields the consumer is authorized to read."} />
+
+<KnowledgeCheck question={"Which SELECT is suitable for an alpha-tenant public user list?"} choices={["SELECT * FROM academy_users","SELECT id,display_name,active FROM academy_users WHERE tenant_id = 'alpha'","SELECT email FROM academy_users","SELECT * FROM academy_users WHERE id > 0"]} correctIndex={1} explanation={"Rows represent individual facts; columns have enforced PostgreSQL types and nullable constraints. A SELECT list must expose only fields the consumer is authorized to read."} misconception={"A query can succeed while exposing data from another tenant or leaking email. Testing only SELECT success is insufficient."} lessonId="12.01.01" />
+
+## Guided local lab
+
+The source-staged files are under `drafts/postgresql/labs/tables-types/`. The learner's broken SQL and instructor's corrected SQL are **not** registered as published lessons or progress-completing labs. Run `node examples/postgresql-basics/scripts/qualify.mjs` from the repository root only on a dedicated PostgreSQL instance with the documented environment safeguards. No source scan is a substitute for real SQL execution.
+
+## Reflect
+
+If a second tenant or an empty relation were added tomorrow, which exact assertion would detect leakage or a silent counting error? Would the same query remain correct when parameterized in an API? What additional controls would protect access to the underlying tables?
+
+## Official references
+
+- [PostgreSQL official reference for Tables rows columns and types](https://www.postgresql.org/docs/current/ddl-basics.html)
+- [PostgreSQL SQL tutorial](https://www.postgresql.org/docs/current/tutorial.html)

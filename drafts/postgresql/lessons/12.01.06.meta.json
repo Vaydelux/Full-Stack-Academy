@@ -1,0 +1,25 @@
+{
+  "id": "12.01.06",
+  "title": "NULL and three-valued logic",
+  "trackId": "12",
+  "moduleId": "12.01",
+  "sourceStatus": "draft-unverified",
+  "estimatedMinutes": 55,
+  "stack": {
+    "postgresql": "17+"
+  },
+  "prerequisites": [
+    "12.01.05"
+  ],
+  "objective": "NULL is not an ordinary value. Comparisons with NULL produce UNKNOWN, and WHERE keeps only predicates that evaluate to TRUE.",
+  "misconception": "The starter checks due_on = NULL, which selects no overdue-unscheduled rows instead of matching NULL dates.",
+  "acceptance": "Test the truth tables for TRUE AND UNKNOWN and FALSE AND UNKNOWN. Use IS NULL and IS NOT NULL, and consider IS DISTINCT FROM when comparing nullable values without UNKNOWN.",
+  "labSlug": "null-logic",
+  "officialReferences": [
+    "https://www.postgresql.org/docs/current/functions-comparison.html",
+    "https://www.postgresql.org/docs/current/tutorial.html"
+  ],
+  "securityBoundary": "COALESCE can be useful for display, but replacing every NULL with a fake sentinel can corrupt business meaning.",
+  "reviewStatus": "unreviewed",
+  "runtimeQualification": "not-run"
+}

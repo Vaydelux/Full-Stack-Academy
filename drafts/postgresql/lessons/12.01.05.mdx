@@ -1,0 +1,103 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["PRIMARY KEY, FOREIGN KEY and CHECK are data invariants, not optional form hints. Constraints reject invalid writes even when the application has a bug.","An FK prevents orphan IDs but does not guarantee the same tenant; cross-tenant composite keys and authorization policies are covered later. CHECK constraints accept UNKNOWN, so pair constraints with NOT NULL deliberately.","Neither UI validation nor TypeScript types prevent direct SQL clients from inserting invalid rows."]} />
+
+## The problem we're solving
+
+**Foreign keys and constraints.** The starter's task-notes table accepts an orphan task reference and a whitespace-only note.
+
+Consider a small project-management database. Users belong to tenants; projects have owners; tasks belong to projects. A report may look plausible while producing the wrong rows, exposing sensitive information, or dropping empty groups. You will begin with an intentionally incorrect SQL exercise, predict its observable failure, and then repair it.
+
+## Mental model and vocabulary
+
+PRIMARY KEY, FOREIGN KEY and CHECK are data invariants, not optional form hints. Constraints reject invalid writes even when the application has a bug.
+
+An FK prevents orphan IDs but does not guarantee the same tenant; cross-tenant composite keys and authorization policies are covered later. CHECK constraints accept UNKNOWN, so pair constraints with NOT NULL deliberately.
+
+**Predict first:** Before running the red starter, describe which tenant, ID, column, or count will be incorrect. Name the row you expect to see or not see. The goal is an invariant you can assert in a real PostgreSQL session, not mere SQL syntax acceptance.
+
+**Scope:** PostgreSQL SQL semantics using a disposable session fixture; this is a staged, not-yet-published article. The examples target PostgreSQL 17 or later but have **not** been executed against a real PostgreSQL server in this environment. The shared fixture is teaching data, not a production authorization system.
+
+## Before you code
+
+Complete **12.01.04**, then inspect `examples/postgresql-basics/fixture.sql` and the three lesson-specific files in `drafts/postgresql/labs/foreign-keys-constraints/`. There are four users across two tenants, four projects (one empty), and six tasks with different status and NULL values. These edge cases are intentional.
+
+Use a disposable, explicitly opted-in test database. A real-`psql` verifier must prove that the instructor passes and the intentionally broken starter fails. Never test with production credentials. The fixture creates **temporary tables** and the runner wraps the session in a rollback.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the wrong result" file="drafts/postgresql/labs/foreign-keys-constraints/starter.sql" expected="The starter's task-notes table accepts an orphan task reference and a whitespace-only note.">
+
+```sql
+CREATE TEMP TABLE lesson_notes (
+ id integer PRIMARY KEY,
+ task_id integer,
+ body text
+);
+```
+
+**Diagnosis:** The starter's task-notes table accepts an orphan task reference and a whitespace-only note. Compare your predicted wrong row or count with what the starter actually produces. A successful SQL command is not proof that its result is correct.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the relational contract" file="drafts/postgresql/labs/foreign-keys-constraints/solution.sql" expected="PRIMARY KEY, FOREIGN KEY and CHECK are data invariants, not optional form hints. Constraints reject invalid writes even when the application has a bug.">
+
+```sql
+CREATE TEMP TABLE lesson_notes (
+ id integer PRIMARY KEY,
+ task_id integer NOT NULL REFERENCES academy_tasks(id),
+ body text NOT NULL CHECK (length(btrim(body)) >= 3)
+);
+```
+
+**Why the repair works:** PRIMARY KEY, FOREIGN KEY and CHECK are data invariants, not optional form hints. Constraints reject invalid writes even when the application has a bug. Review the SQL predicate or constraint that excludes invalid rows and preserves required ones. If a client dynamically constructs SQL, bind parameters rather than interpolating untrusted data; these checked-in statements are intentionally static fixtures.
+
+</LessonStep>
+
+<LessonStep number={3} title="Run the real PostgreSQL acceptance gate" file="drafts/postgresql/labs/foreign-keys-constraints/acceptance.sql" expected="The instructor passes and the learner starter fails on the same dataset.">
+
+The acceptance contract asserts the expected real database behavior. The verifier runs fixture + instructor/learner SQL + assertions in **one disposable PostgreSQL connection** per case, then rolls back. A returned error is acceptable for the starter only when it comes from the lesson's **specific semantic acceptance assertion**, not from missing tables or invalid SQL.
+
+**Expected outcome:** An FK prevents orphan IDs but does not guarantee the same tenant; cross-tenant composite keys and authorization policies are covered later. CHECK constraints accept UNKNOWN, so pair constraints with NOT NULL deliberately.
+
+**Negative case:** Neither UI validation nor TypeScript types prevent direct SQL clients from inserting invalid rows.
+
+</LessonStep>
+
+## Reason it through
+
+An FK prevents orphan IDs but does not guarantee the same tenant; cross-tenant composite keys and authorization policies are covered later. CHECK constraints accept UNKNOWN, so pair constraints with NOT NULL deliberately.
+
+Draw the relevant row set: **users → projects → tasks**. Identify whether this operation projects columns, filters rows, combines relations, aggregates groups, or enforces a physical constraint. A data-layer restriction should not be replaced by a frontend filter; the browser cannot enforce another client's access to storage.
+
+## Edge cases and trust boundaries
+
+Neither UI validation nor TypeScript types prevent direct SQL clients from inserting invalid rows.
+
+For production systems, distinguish this basic query exercise from actual role privileges, row-level security, constraints across tenant boundaries, input validation, indexes, transaction isolation, and migration safety. Those topics appear in later canonical PostgreSQL and Supabase modules. The teaching fixture deliberately uses static tenant IDs and does not implement real authentication.
+
+## Bug Hunt
+
+1. **Reproduce:** The starter's task-notes table accepts an orphan task reference and a whitespace-only note.
+2. **Predict:** State the exact unexpected row or wrong aggregate.
+3. **Repair:** PRIMARY KEY, FOREIGN KEY and CHECK are data invariants, not optional form hints. Constraints reject invalid writes even when the application has a bug.
+4. **Regression:** An FK prevents orphan IDs but does not guarantee the same tenant; cross-tenant composite keys and authorization policies are covered later. CHECK constraints accept UNKNOWN, so pair constraints with NOT NULL deliberately.
+5. **Boundary:** Neither UI validation nor TypeScript types prevent direct SQL clients from inserting invalid rows.
+
+<Misconception claim={"The starter's task-notes table accepts an orphan task reference and a whitespace-only note."} correction={"PRIMARY KEY, FOREIGN KEY and CHECK are data invariants, not optional form hints. Constraints reject invalid writes even when the application has a bug."} />
+
+<KnowledgeCheck question={"Which database feature stops an orphan task reference?"} choices={["An HTML required attribute","A FOREIGN KEY constraint","A TypeScript interface","A frontend select dropdown"]} correctIndex={1} explanation={"PRIMARY KEY, FOREIGN KEY and CHECK are data invariants, not optional form hints. Constraints reject invalid writes even when the application has a bug."} misconception={"Neither UI validation nor TypeScript types prevent direct SQL clients from inserting invalid rows."} lessonId="12.01.05" />
+
+## Guided local lab
+
+The source-staged files are under `drafts/postgresql/labs/foreign-keys-constraints/`. The learner's broken SQL and instructor's corrected SQL are **not** registered as published lessons or progress-completing labs. Run `node examples/postgresql-basics/scripts/qualify.mjs` from the repository root only on a dedicated PostgreSQL instance with the documented environment safeguards. No source scan is a substitute for real SQL execution.
+
+## Reflect
+
+If a second tenant or an empty relation were added tomorrow, which exact assertion would detect leakage or a silent counting error? Would the same query remain correct when parameterized in an API? What additional controls would protect access to the underlying tables?
+
+## Official references
+
+- [PostgreSQL official reference for Foreign keys and constraints](https://www.postgresql.org/docs/current/ddl-constraints.html)
+- [PostgreSQL SQL tutorial](https://www.postgresql.org/docs/current/tutorial.html)

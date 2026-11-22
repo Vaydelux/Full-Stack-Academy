@@ -1,0 +1,110 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Aggregate functions summarize groups; LEFT JOIN plus COUNT(child.id) preserves a group with zero related rows. COUNT(*) counts outer rows, not existing children.","SQL SUM skips NULL values; COALESCE changes an empty sum into zero. Explain why WHERE child.status = ... would turn a LEFT JOIN into an effective INNER JOIN.","COUNT(*) returns one for the unmatched outer row, so it does not mean one task exists."]} />
+
+## The problem we're solving
+
+**GROUP BY and aggregates.** The starter counts the joined row, losing the difference between an empty project and a project with one task.
+
+Consider a small project-management database. Users belong to tenants; projects have owners; tasks belong to projects. A report may look plausible while producing the wrong rows, exposing sensitive information, or dropping empty groups. You will begin with an intentionally incorrect SQL exercise, predict its observable failure, and then repair it.
+
+## Mental model and vocabulary
+
+Aggregate functions summarize groups; LEFT JOIN plus COUNT(child.id) preserves a group with zero related rows. COUNT(*) counts outer rows, not existing children.
+
+SQL SUM skips NULL values; COALESCE changes an empty sum into zero. Explain why WHERE child.status = ... would turn a LEFT JOIN into an effective INNER JOIN.
+
+**Predict first:** Before running the red starter, describe which tenant, ID, column, or count will be incorrect. Name the row you expect to see or not see. The goal is an invariant you can assert in a real PostgreSQL session, not mere SQL syntax acceptance.
+
+**Scope:** PostgreSQL SQL semantics using a disposable session fixture; this is a staged, not-yet-published article. The examples target PostgreSQL 17 or later but have **not** been executed against a real PostgreSQL server in this environment. The shared fixture is teaching data, not a production authorization system.
+
+## Before you code
+
+Complete **12.01.03**, then inspect `examples/postgresql-basics/fixture.sql` and the three lesson-specific files in `drafts/postgresql/labs/grouping-aggregates/`. There are four users across two tenants, four projects (one empty), and six tasks with different status and NULL values. These edge cases are intentional.
+
+Use a disposable, explicitly opted-in test database. A real-`psql` verifier must prove that the instructor passes and the intentionally broken starter fails. Never test with production credentials. The fixture creates **temporary tables** and the runner wraps the session in a rollback.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the wrong result" file="drafts/postgresql/labs/grouping-aggregates/starter.sql" expected="The starter counts the joined row, losing the difference between an empty project and a project with one task.">
+
+```sql
+CREATE TEMP VIEW lesson_result AS
+SELECT p.id AS project_id,
+       COUNT(*) AS task_count,
+       COALESCE(SUM(t.estimate_hours), 0) AS planned_hours
+FROM academy_projects p
+LEFT JOIN academy_tasks t ON t.project_id = p.id
+WHERE p.tenant_id = 'alpha'
+GROUP BY p.id;
+```
+
+**Diagnosis:** The starter counts the joined row, losing the difference between an empty project and a project with one task. Compare your predicted wrong row or count with what the starter actually produces. A successful SQL command is not proof that its result is correct.
+
+</LessonStep>
+
+<LessonStep number={2} title="Repair the relational contract" file="drafts/postgresql/labs/grouping-aggregates/solution.sql" expected="Aggregate functions summarize groups; LEFT JOIN plus COUNT(child.id) preserves a group with zero related rows. COUNT(*) counts outer rows, not existing children.">
+
+```sql
+CREATE TEMP VIEW lesson_result AS
+SELECT p.id AS project_id,
+       COUNT(t.id) AS task_count,
+       COALESCE(SUM(t.estimate_hours), 0) AS planned_hours
+FROM academy_projects p
+LEFT JOIN academy_tasks t
+ ON t.project_id = p.id AND t.tenant_id = p.tenant_id
+WHERE p.tenant_id = 'alpha'
+GROUP BY p.id;
+```
+
+**Why the repair works:** Aggregate functions summarize groups; LEFT JOIN plus COUNT(child.id) preserves a group with zero related rows. COUNT(*) counts outer rows, not existing children. Review the SQL predicate or constraint that excludes invalid rows and preserves required ones. If a client dynamically constructs SQL, bind parameters rather than interpolating untrusted data; these checked-in statements are intentionally static fixtures.
+
+</LessonStep>
+
+<LessonStep number={3} title="Run the real PostgreSQL acceptance gate" file="drafts/postgresql/labs/grouping-aggregates/acceptance.sql" expected="The instructor passes and the learner starter fails on the same dataset.">
+
+The acceptance contract asserts the expected real database behavior. The verifier runs fixture + instructor/learner SQL + assertions in **one disposable PostgreSQL connection** per case, then rolls back. A returned error is acceptable for the starter only when it comes from the lesson's **specific semantic acceptance assertion**, not from missing tables or invalid SQL.
+
+**Expected outcome:** SQL SUM skips NULL values; COALESCE changes an empty sum into zero. Explain why WHERE child.status = ... would turn a LEFT JOIN into an effective INNER JOIN.
+
+**Negative case:** COUNT(*) returns one for the unmatched outer row, so it does not mean one task exists.
+
+</LessonStep>
+
+## Reason it through
+
+SQL SUM skips NULL values; COALESCE changes an empty sum into zero. Explain why WHERE child.status = ... would turn a LEFT JOIN into an effective INNER JOIN.
+
+Draw the relevant row set: **users → projects → tasks**. Identify whether this operation projects columns, filters rows, combines relations, aggregates groups, or enforces a physical constraint. A data-layer restriction should not be replaced by a frontend filter; the browser cannot enforce another client's access to storage.
+
+## Edge cases and trust boundaries
+
+COUNT(*) returns one for the unmatched outer row, so it does not mean one task exists.
+
+For production systems, distinguish this basic query exercise from actual role privileges, row-level security, constraints across tenant boundaries, input validation, indexes, transaction isolation, and migration safety. Those topics appear in later canonical PostgreSQL and Supabase modules. The teaching fixture deliberately uses static tenant IDs and does not implement real authentication.
+
+## Bug Hunt
+
+1. **Reproduce:** The starter counts the joined row, losing the difference between an empty project and a project with one task.
+2. **Predict:** State the exact unexpected row or wrong aggregate.
+3. **Repair:** Aggregate functions summarize groups; LEFT JOIN plus COUNT(child.id) preserves a group with zero related rows. COUNT(*) counts outer rows, not existing children.
+4. **Regression:** SQL SUM skips NULL values; COALESCE changes an empty sum into zero. Explain why WHERE child.status = ... would turn a LEFT JOIN into an effective INNER JOIN.
+5. **Boundary:** COUNT(*) returns one for the unmatched outer row, so it does not mean one task exists.
+
+<Misconception claim={"The starter counts the joined row, losing the difference between an empty project and a project with one task."} correction={"Aggregate functions summarize groups; LEFT JOIN plus COUNT(child.id) preserves a group with zero related rows. COUNT(*) counts outer rows, not existing children."} />
+
+<KnowledgeCheck question={"What counts real child rows in a LEFT JOIN?"} choices={["COUNT(*)","COUNT(child.id)","COUNT(1) without any join","SUM(parent.id)"]} correctIndex={1} explanation={"Aggregate functions summarize groups; LEFT JOIN plus COUNT(child.id) preserves a group with zero related rows. COUNT(*) counts outer rows, not existing children."} misconception={"COUNT(*) returns one for the unmatched outer row, so it does not mean one task exists."} lessonId="12.01.04" />
+
+## Guided local lab
+
+The source-staged files are under `drafts/postgresql/labs/grouping-aggregates/`. The learner's broken SQL and instructor's corrected SQL are **not** registered as published lessons or progress-completing labs. Run `node examples/postgresql-basics/scripts/qualify.mjs` from the repository root only on a dedicated PostgreSQL instance with the documented environment safeguards. No source scan is a substitute for real SQL execution.
+
+## Reflect
+
+If a second tenant or an empty relation were added tomorrow, which exact assertion would detect leakage or a silent counting error? Would the same query remain correct when parameterized in an API? What additional controls would protect access to the underlying tables?
+
+## Official references
+
+- [PostgreSQL official reference for GROUP BY and aggregates](https://www.postgresql.org/docs/current/tutorial-agg.html)
+- [PostgreSQL SQL tutorial](https://www.postgresql.org/docs/current/tutorial.html)
