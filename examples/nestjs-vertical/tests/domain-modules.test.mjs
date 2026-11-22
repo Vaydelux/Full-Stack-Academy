@@ -16,7 +16,14 @@ test('11.03.01 service enforces invariants separate from request transport', asy
     assert.equal(typeof mod.TasksService, 'function');
     const service = new mod.TasksService();
     assert.deepEqual(service.create('  do work  '), { title: 'do work' });
-    assert.throws(() => service.create('x'));
+    for (const invalid of ['x', 42, null, undefined, '', [], {}, 'x'.repeat(101)]) {
+      assert.throws(() => service.create(invalid), { name: 'BadRequestException' });
+    }
+    const controller = new mod.TasksController(service);
+    assert.deepEqual(controller.create({ title: '  another task  ' }), { title: 'another task' });
+    for (const invalidBody of [null, [], 42, { title: 42 }, { title: ' ' }]) {
+      assert.throws(() => controller.create(invalidBody), { name: 'BadRequestException' });
+    }
   });
 });
 
