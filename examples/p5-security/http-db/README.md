@@ -78,3 +78,15 @@ The HTTP-to-database instructor fixture now **drops privileges inside each reque
 Before starting HTTP acceptance, `privileges.sql` probes this runtime role and fails closed if the five expected permissions don't match. Cleanup also drops the generated role after dropping its schema. The new `least-privilege.test.mjs` supplies 12 source/mock regression checks; these **do not** establish that PostgreSQL has executed the SQL successfully.
 
 See [LEARNER_LAB.md](./LEARNER_LAB.md) for step-by-step exercises and evidence requirements. The lab must not be promoted to a production security architecture: the test connection administrator is still privileged, and a custom `p5.actor` setting is not a trusted identity boundary for arbitrary direct database clients.
+
+## Identity-table privacy isolation (2026-11-23)
+
+Earlier capstone iterations protected document reads and writes with PostgreSQL RLS, but the runtime role still held unrestricted `SELECT` privileges on synthetic `users` and `memberships`. A restricted document endpoint does **not** imply those identity tables are private when a database role can query them directly.
+
+The instructor fixture now enables row-level security on **users** and **memberships** as well, limiting runtime-role SELECT visibility to the actor derived from the signed synthetic test session. The separate schema-owning fixture administrator remains able to revoke a test membership; no RLS policy grants identity-table writes to the runtime role.
+
+The **instructor-only** `privacy.sql` probe executes as the restricted role inside a transaction. Before starting HTTP qualification, `proveIdentityScope` verifies all four known synthetic actors (Alice, Bob, viewer and suspended): precisely one visible user, one visible membership, no cross-actor user/membership rows, no cross-tenant documents and the expected own-tenant document count. Any mismatch fails the qualification, even if HTTP document tests would otherwise pass. This probe is not exposed as an HTTP route.
+
+Run the additional negative tests through `npm run test:p5-httpdb-source`; `privacy.test.mjs` adds **12 source/mock tests**. These do **not** execute a real PostgreSQL server. The optional live SQL probe is part of `npm run qualify:p5:http-db` and must run in the disposable PostgreSQL 17+ environment before any DB qualification claim.
+
+**Model boundary:** `p5.actor` is trusted only in this synthetic server-owned workflow. A caller with direct database connection rights can set PostgreSQL custom session variables; that pattern is not an authentication mechanism for production. Deployable systems require independent identity, pooling, session protections, and a review of all roles and grants.

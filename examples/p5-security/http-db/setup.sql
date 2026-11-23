@@ -16,6 +16,14 @@ REVOKE ALL ON ALL TABLES IN SCHEMA :"schema" FROM PUBLIC;
 GRANT USAGE ON SCHEMA :"schema" TO :"runtime_role";
 GRANT SELECT ON :"schema".users, :"schema".memberships TO :"runtime_role";
 GRANT SELECT, UPDATE(title), DELETE ON :"schema".documents TO :"runtime_role";
+-- Identity rows must not leak across tenants simply because the runtime
+-- needs SELECT grants to evaluate document policies.
+ALTER TABLE :"schema".users ENABLE ROW LEVEL SECURITY;
+ALTER TABLE :"schema".memberships ENABLE ROW LEVEL SECURITY;
+CREATE POLICY p5_user_self ON :"schema".users FOR SELECT TO :"runtime_role"
+  USING (id=current_setting('p5.actor',true));
+CREATE POLICY p5_membership_self ON :"schema".memberships FOR SELECT TO :"runtime_role"
+  USING (user_id=current_setting('p5.actor',true));
 ALTER TABLE :"schema".documents ENABLE ROW LEVEL SECURITY;
 ALTER TABLE :"schema".documents FORCE ROW LEVEL SECURITY;
 CREATE POLICY p5_select ON :"schema".documents FOR SELECT USING (

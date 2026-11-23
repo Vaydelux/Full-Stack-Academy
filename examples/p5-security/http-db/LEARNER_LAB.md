@@ -57,3 +57,15 @@ Report four statuses separately: source checks, Node 24 environment, actual Post
 **Instructor acceptance rubric:** show at least one permitted tenant request and one cross-tenant denial, revoked membership denial, successful runtime-privilege probe, a complete database qualification log for the exact commit, no cleanup failure, and a written statement of remaining unverified production boundaries. Do not award a database qualification based only on source inspection.
 
 Official references: [PostgreSQL 17 SET ROLE](https://www.postgresql.org/docs/17/sql-set-role.html), [PostgreSQL 17 RLS](https://www.postgresql.org/docs/17/ddl-rowsecurity.html), and [PostgreSQL 17 GRANT](https://www.postgresql.org/docs/17/sql-grant.html).
+
+## Extension — Identity-table privacy beyond document IDOR
+
+The capstone has an additional privacy failure mode: a role might be unable to read another tenant's *documents* but still enumerate every user and organization membership. A UI/API access check alone does not prevent this if raw SQL credentials are exposed or a database path is incorrectly authorized.
+
+1. Compare the read grants in `setup.sql` with the `p5_user_self` and `p5_membership_self` row-level policies. Identify why both grants **and** policies are required.
+2. Inspect `privacy.sql`, which sets `p5.actor` from the verified synthetic identity, then switches to the dedicated runtime role. It checks visible identity rows, cross-actor rows, own-tenant documents and cross-tenant documents.
+3. Run `npm run test:p5-httpdb-source`. Deliberately alter a fixture's reported `otherMemberships` value in a local disposable copy and observe that `proveIdentityScope` rejects it.
+4. When a real disposable PostgreSQL 17+ container is available, run the actual qualification and verify that privacy proof passes for Alice, Bob, viewer and suspended. Capture exact logs. **Do not** conclude a passing source test proves RLS.
+5. Explain why membership revocation must be an authorized **administrator** action outside public HTTP routes, and why an application role must not receive membership UPDATE rights.
+
+**Success criterion:** database-run evidence shows each actor sees only its own identity and membership, zero other-tenant documents and the expected eligible document count, with no runtime capability to edit identity records. Reference [PostgreSQL row security](https://www.postgresql.org/docs/17/ddl-rowsecurity.html) and [PostgreSQL GRANT](https://www.postgresql.org/docs/17/sql-grant.html).

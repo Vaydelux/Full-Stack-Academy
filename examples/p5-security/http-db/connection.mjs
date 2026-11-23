@@ -28,7 +28,7 @@ export function createRepository(env=process.env,{executor=exec}={}) {
   const runtimeRole='p5r_'+schema.slice(4);
   const connectionEnv={PATH:env.PATH||'/usr/bin:/bin',PGHOST:'127.0.0.1',PGHOSTADDR:'127.0.0.1',PGPORT:String(target.port),PGDATABASE:target.db,PGUSER:target.user,PGPASSWORD:target.password,PGCONNECT_TIMEOUT:'5',PGSSLMODE:'disable'};
   async function run(file,params={}) {
-    if(!['preflight.sql','setup.sql','query.sql','cleanup.sql','revoke.sql','privileges.sql'].includes(file))throw Error('Unknown SQL file');
+    if(!['preflight.sql','setup.sql','query.sql','cleanup.sql','revoke.sql','privileges.sql','privacy.sql'].includes(file))throw Error('Unknown SQL file');
     if(!schemaPattern.test(schema)||!/^p5r_[a-f0-9]{16}$/.test(runtimeRole))throw Error('Unsafe lab identifier');
     const args=['-X','-w','-q','-A','-t','-v','ON_ERROR_STOP=1','-v','schema='+schema,'-v','runtime_role='+runtimeRole];
     for(const [key,value] of Object.entries(params)){
@@ -57,6 +57,21 @@ export function createRepository(env=process.env,{executor=exec}={}) {
       const value=JSON.parse(await run('privileges.sql'));
       if(value.role!==runtimeRole||value.canEditMemberships!==false||value.canEditUsers!==false||value.canCreateObjects!==false||value.canReadDocuments!==true||value.canUpdateDocuments!==true)throw Error('Runtime role privileges do not meet the lab policy');
       return value;
+    },
+    async proveIdentityScope(userId){
+      // Instructor-only check. Never expose arbitrary actor/tenant selection via HTTP.
+      const fixtures={alice:['alpha',2],bob:['beta',1],viewer:['alpha',2],suspended:['alpha',0]};
+      if(!Object.hasOwn(fixtures,userId))throw Error('Unknown synthetic identity');
+      const [tenantId,documentCount]=fixtures[userId];
+      const data=await run('privacy.sql',{actor:userId,tenant_id:tenantId});
+      let proof;
+      try{proof=JSON.parse(data)}catch{throw Error('Invalid identity privacy response')}
+      if(proof?.role!==runtimeRole||proof.actor!==userId||
+        proof.visibleUsers!==1||proof.visibleMemberships!==1||
+        proof.otherUsers!==0||proof.otherMemberships!==0||
+        proof.otherTenantDocuments!==0||proof.visibleDocuments!==documentCount)
+        throw Error('Identity-table RLS privacy boundary failed');
+      return {actor:userId,passed:true,visibleDocuments:proof.visibleDocuments};
     },
     async revokeForQualification(userId){
       // Never expose this fixture-admin method as an HTTP route.
