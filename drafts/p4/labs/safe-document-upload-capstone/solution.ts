@@ -2,7 +2,9 @@
 async function createUploadIntent(actor: VerifiedActor, documentId: string) {
   if (!actor.canWrite || !actor.tenantId || !actor.userId)
     throw new Error("Forbidden");
-  const objectPath = actor.userId + "/" + documentId + ".pdf";
+  if (!/^[a-f0-9]{8}-[a-f0-9]{4}-[1-8][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i.test(documentId))
+    throw new Error("Invalid document ID");
+  const objectPath = actor.userId + "/" + documentId.toLowerCase() + ".pdf";
   // Durable PENDING row is tenant-scoped and unique by object path.
   await prisma.document.create({ data: {
     tenantId: actor.tenantId, ownerId: actor.userId,
