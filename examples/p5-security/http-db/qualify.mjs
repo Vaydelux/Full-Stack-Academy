@@ -6,13 +6,13 @@ import {createHttpDbLab} from './server.mjs';
 // Genuine psql + ephemeral HTTP integration; never runs during install/build.
 let repo;
 try{repo=createRepository(process.env);}catch(err){console.error('BLOCKED: '+err.message);process.exit(2);}
-let setupDone=false,server;
+let setupAttempted=false,server;
 let checks=0;
 const equal=(actual,expected)=>{assert.equal(actual,expected);checks++;};
 const match=(actual,regex)=>{assert.match(actual,regex);checks++;};
 try{
  await repo.preflight();
- await repo.setup();setupDone=true;
+ setupAttempted=true;await repo.setup();
  const app=createHttpDbLab(repo);server=app.server;
  server.listen(0,'127.0.0.1');await once(server,'listening');
  const base='http://127.0.0.1:'+server.address().port;
@@ -25,6 +25,12 @@ try{
  equal((await request('alice','/documents/alpha-1')).data.title,'Alpha');
  equal((await request('bob','/documents/beta-1')).data.title,'Beta');
  equal((await request('viewer','/documents/alpha-1')).status,200);
+ const concurrent=await Promise.all([
+  request('alice','/documents/alpha-1'),request('alice','/documents/beta-1'),
+  request('bob','/documents/beta-1'),request('viewer','/documents/alpha-1')
+ ]);
+ equal(concurrent[0].status,200);equal(concurrent[1].status,404);
+ equal(concurrent[2].status,200);equal(concurrent[3].status,200);
  equal((await request('alice','/documents/beta-1')).status,404);
  equal((await request('alice','/documents/beta-1',{method:'PATCH',body:{title:'Attack'}})).status,404);
  equal((await request('alice','/documents/beta-1',{method:'DELETE'})).status,404);
@@ -58,9 +64,13 @@ try{
  equal((await fetch(base+'/documents/alpha-1',{headers:{cookie:'academy_session='+live}})).status,404);
  equal((await request('bob','/documents/beta-1')).data.title,'Beta');
  equal((await request('alice','/documents/alpha-1',{method:'PATCH',body:{title:'Replay'}})).status,404);
+ const afterRevoke=await Promise.all([request('alice','/documents/alpha-1'),request('bob','/documents/beta-1')]);
+ equal(afterRevoke[0].status,404);equal(afterRevoke[1].status,200);
+ equal((await request('bob','/documents/beta-1',{method:'DELETE'})).status,200);
+ equal((await request('bob','/documents/beta-1')).status,404);
  console.log('P5_REAL_HTTP_POSTGRESQL_PASSED checks='+checks);
 }catch(err){console.error('FAILED: real HTTP-to-PostgreSQL qualification: '+err.message);process.exitCode=1;}
 finally{
  if(server){server.closeAllConnections();await new Promise(resolve=>server.close(resolve));}
- if(setupDone){try{await repo.cleanup();}catch(err){console.error('WARNING: isolated schema cleanup failed; inspect the dedicated disposable cluster');process.exitCode=1;}}
+ if(setupAttempted){try{await repo.cleanup();}catch(err){console.error('WARNING: isolated schema cleanup failed; inspect the dedicated disposable cluster');process.exitCode=1;}}
 }
