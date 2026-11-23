@@ -464,12 +464,14 @@
     "test:p5-rls-source": "node --test examples/p5-security/rls-lab/guards.test.mjs",
     "qualify:p5:rls": "node examples/p5-security/rls-lab/qualify-rls.mjs",
     "test:p5-curriculum-source": "node examples/p5-security/source/audit.mjs && node --test examples/p5-security/source/audit.test.mjs",
-    "test:p5-bundle": "npm run test:p5-security && npm run test:p5-postgresql-source && npm run test:p5-rls-source && npm run test:p5-curriculum-source && npm run test:p5-httpdb-source && npm run test:p5-container-source && npm run test:p5-evidence-source",
+    "test:p5-bundle": "npm run test:p5-security && npm run test:p5-postgresql-source && npm run test:p5-rls-source && npm run test:p5-curriculum-source && npm run test:p5-httpdb-source && npm run test:p5-container-source && npm run test:p5-evidence-source && npm run test:p5-cache-jobs && npm run test:p5-redis-source",
     "test:p5-httpdb-source": "node --test examples/p5-security/http-db/source.test.mjs examples/p5-security/http-db/hardening.test.mjs examples/p5-security/http-db/least-privilege.test.mjs examples/p5-security/http-db/privacy.test.mjs",
     "qualify:p5:http-db": "node examples/p5-security/http-db/qualify.mjs",
     "test:p5-container-source": "node --test examples/p5-security/container/run-container.test.mjs",
     "qualify:p5:container": "node examples/p5-security/container/run-container.mjs",
-    "test:p5-evidence-source": "node --test examples/p5-security/container/evidence.test.mjs examples/p5-security/container/verify-evidence.test.mjs"
+    "test:p5-evidence-source": "node --test examples/p5-security/container/evidence.test.mjs examples/p5-security/container/verify-evidence.test.mjs",
+    "test:p5-cache-jobs": "node --test examples/p5-cache-jobs/cache.test.mjs examples/p5-cache-jobs/outbox.test.mjs",
+    "test:p5-redis-source": "node examples/p5-cache-jobs/verify-track.mjs && node --test examples/p5-cache-jobs/verify-track.test.mjs"
   },
   "dependencies": {
     "clsx": "^2.1.1",

@@ -1,0 +1,18 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {auditRedisTrack} from './verify-track.mjs';
+const topics=Array.from({length:4},(_,m)=>Array.from({length:8},(_,n)=>({trackId:'16',moduleId:'16.0'+(m+1),id:'16.0'+(m+1)+'.'+String(n+1).padStart(2,'0'),title:'Topic '+m+' '+n}))).flat();
+const catalog={lessons:topics};
+const article=t=>['---','id: "'+t.id+'"','title: "'+t.title+'"','module: "'+t.moduleId+'"','status: "draft-unverified"','readyToPublish: false','---','## Step 1 — Model','one','## Step 2 — Reproduce','two','## Step 3 — Verify','three','## Knowledge check','Question','https://redis.io/docs/latest/'].join('\n');
+const pages=Object.fromEntries(topics.map(t=>[t.id,article(t)]));
+const run=(overrides={},publishedRegistry='')=>auditRedisTrack({catalog,publishedRegistry,load:id=>overrides[id]??pages[id]});
+test('accepts a valid 32-topic unpublished source tree',()=>assert.equal(run().ok,true));
+test('rejects missing manuscript',()=>{const id=topics[0].id;assert.ok(auditRedisTrack({catalog,load:key=>{if(key===id)throw Error('missing');return pages[key]}}).errors.some(x=>x.includes('Missing draft')))});
+test('rejects wrong title',()=>{const t=topics[0];assert.ok(run({[t.id]:pages[t.id].replace(t.title,'wrong')}).errors.some(x=>x.includes('title')))});
+test('rejects unsafe publication flag',()=>{const t=topics[0];assert.ok(run({[t.id]:pages[t.id].replace('readyToPublish: false','readyToPublish: true')}).errors.some(x=>x.includes('unsafe')))});
+test('rejects missing guided step',()=>{const t=topics[0];assert.ok(run({[t.id]:pages[t.id].replace('## Step 2','## Other')}).errors.some(x=>x.includes('step 2')))});
+test('rejects wrong draft status',()=>{const t=topics[0];assert.ok(run({[t.id]:pages[t.id].replace('draft-unverified','published')}).errors.some(x=>x.includes('status')))});
+test('rejects a premature live registry import',()=>assert.ok(run({},topics[0].id+'.mdx').errors.some(x=>x.includes('prematurely'))));
+test('rejects noncanonical topic count',()=>assert.equal(auditRedisTrack({catalog:{lessons:topics.slice(1)},load:id=>pages[id]}).ok,false));
+test('rejects duplicate canonical ID',()=>{const dupe={lessons:[...topics,{...topics[0]}]};const r=auditRedisTrack({catalog:dupe,load:id=>pages[id]});assert.ok(r.errors.some(x=>x.includes('Duplicate')))});
+test('rejects missing official URL',()=>{const t=topics[0];assert.ok(run({[t.id]:pages[t.id].replace('https://redis.io/docs/latest/','nothing')}).errors.some(x=>x.includes('source URL')))});

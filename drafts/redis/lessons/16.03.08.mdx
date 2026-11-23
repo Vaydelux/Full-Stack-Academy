@@ -1,0 +1,69 @@
+---
+id: "16.03.08"
+title: "Lab email dispatch"
+module: "16.03"
+status: "draft-unverified"
+readyToPublish: false
+---
+
+# Lab email dispatch
+
+> Unpublished source lesson. This manuscript and its example are educational, not production-qualified or a deployable service.
+
+## Learning outcomes
+
+Explain the underlying correctness problem, identify the unsafe assumption, select an operationally defensible alternative, and reproduce a positive and negative test on synthetic data.
+
+## Context
+
+An email integration must recover after a provider outage.
+
+The objective is a predictable data flow, not adding Redis or BullMQ simply because they are popular. Decide which state is authoritative, which work can be repeated, and which failure modes require human recovery.
+
+## Step 1 — Build the mental model
+
+Complete the outbox simulator and exercise retries, leases, idempotent effect and redrive.
+
+**Draw the boundary:** Describe the producer or HTTP caller, trusted tenant context, authoritative store, cache or queue, worker, and external side effect. Mark everything that could become stale or be delivered twice.
+
+## Step 2 — Reproduce the unsafe behavior
+
+The route assumes enqueue is the same as successfully sending an email.
+
+**Guided task:** Make a prediction before running the fixture. Record the input, the unsafe observed outcome, and why the outcome violates the intended freshness, isolation, delivery, or recovery invariant. Never use real customer data.
+
+## Step 3 — Implement and verify the correction
+
+Complete the outbox simulator and exercise retries, leases, idempotent effect and redrive.
+
+**Acceptance scenario:** Run node --test examples/p5-cache-jobs/outbox.test.mjs and capture the negative cases.
+
+Run the relevant offline teaching suite from the repository root:
+
+```bash
+node --test examples/p5-cache-jobs/outbox.test.mjs
+```
+
+In the test notes, separate what the in-memory fixture genuinely observed from Redis/BullMQ behavior that still needs a live integration environment.
+
+## Misconception
+
+The in-memory simulator is not BullMQ and does not survive process restarts.
+
+## Knowledge check
+
+1. What is authoritative in this scenario, and what state is derived or replayable?
+2. What precise sequence of requests or job deliveries would expose the unsafe design?
+3. Which two observations distinguish success from a silent failure?
+4. What remains unverified until a real Redis/BullMQ integration or external provider is exercised?
+
+**Instructor rubric:** Accept only a traced scenario, corrected invariant, reproducible success and failure case, and a clear statement of the limits of simulation.
+
+## References
+
+- [BullMQ patterns](https://docs.bullmq.io/patterns/idempotent-jobs)
+- [BullMQ guide](https://docs.bullmq.io/guide/jobs/retrying-job)
+
+## Publication conditions
+
+Review the lesson individually; verify its runnable exercise, source/version compatibility, Node 24 and integration evidence, accessible learning interactions and the Academy's existing sequential P1–P5 release gates. Do **not** import the manuscript into the published registry until those gates pass.
