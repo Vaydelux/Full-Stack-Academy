@@ -52,3 +52,9 @@ A successful container run would qualify the **synthetic teaching fixtures**: DB
 The separate **full Next.js release gate** (`npm ci`, `npm run verify:offline`, production build, browser accessibility, human/security review) remains mandatory. P5 lessons stay unpublished until earlier P1–P4 phases and all applicable release checks pass.
 
 This capability was authored and its Node guard tests were executed on Node 22; **Docker, Node 24 container build, and PostgreSQL runtime execution could not be performed in the authoring environment**. Do not mark those checks passed until genuine Compose logs exist.
+
+## Verified repository layout
+
+The source test uses paths relative to `container/run-container.test.mjs`, which must resolve to `../http-db/cleanup.sql` and `../http-db/qualify.mjs`. The previous test source accidentally used `../cleanup.sql` and `../qualify.mjs`, paths that existed only in a rearranged local fixture. It failed when checked against the actual repository structure. This path defect was reproduced and corrected; execute the tests from the repository root to avoid false passes.
+
+The HTTP-to-PostgreSQL qualifier now also creates a temporary, non-login runtime role; its real PostgreSQL privilege checks remain **unverified** until Docker runs against an isolated PostgreSQL 17+ instance.

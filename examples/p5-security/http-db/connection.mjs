@@ -25,11 +25,12 @@ export function validateDatabaseTarget(env) {
 export function createRepository(env=process.env,{executor=exec}={}) {
   const target=validateDatabaseTarget(env);
   const schema='p5h_'+randomBytes(8).toString('hex');
+  const runtimeRole='p5r_'+schema.slice(4);
   const connectionEnv={PATH:env.PATH||'/usr/bin:/bin',PGHOST:'127.0.0.1',PGHOSTADDR:'127.0.0.1',PGPORT:String(target.port),PGDATABASE:target.db,PGUSER:target.user,PGPASSWORD:target.password,PGCONNECT_TIMEOUT:'5',PGSSLMODE:'disable'};
   async function run(file,params={}) {
-    if(!['preflight.sql','setup.sql','query.sql','cleanup.sql','revoke.sql'].includes(file))throw Error('Unknown SQL file');
-    if(!schemaPattern.test(schema))throw Error('Unsafe schema');
-    const args=['-X','-w','-q','-A','-t','-v','ON_ERROR_STOP=1','-v','schema='+schema];
+    if(!['preflight.sql','setup.sql','query.sql','cleanup.sql','revoke.sql','privileges.sql'].includes(file))throw Error('Unknown SQL file');
+    if(!schemaPattern.test(schema)||!/^p5r_[a-f0-9]{16}$/.test(runtimeRole))throw Error('Unsafe lab identifier');
+    const args=['-X','-w','-q','-A','-t','-v','ON_ERROR_STOP=1','-v','schema='+schema,'-v','runtime_role='+runtimeRole];
     for(const [key,value] of Object.entries(params)){
       if(!/^[A-Z_a-z][A-Za-z0-9_]*$/.test(key)||typeof value!=='string')throw Error('Invalid SQL variable');
       args.push('-v',key+'='+value);
@@ -45,13 +46,18 @@ export function createRepository(env=process.env,{executor=exec}={}) {
     const value=await run('query.sql',{actor,doc_id:docId,title,[actions[name]]:'1'});
     try{return JSON.parse(value)}catch{throw Error('Invalid SQL response')}
   }
-  return {schema,
+  return {schema,runtimeRole,
     async preflight(){
       const result=JSON.parse(await run('preflight.sql'));
       if(result.database!==target.db||!Number.isInteger(result.serverVersion)||result.serverVersion<170000||result.rowSecurity!=='on'||result.super||result.bypass)throw Error('Database identity or RLS-bypass role is unsafe');
       return {ok:true};
     },
     setup:()=>run('setup.sql'),cleanup:()=>run('cleanup.sql'),action,
+    async runtimePrivileges(){
+      const value=JSON.parse(await run('privileges.sql'));
+      if(value.role!==runtimeRole||value.canEditMemberships!==false||value.canEditUsers!==false||value.canCreateObjects!==false||value.canReadDocuments!==true||value.canUpdateDocuments!==true)throw Error('Runtime role privileges do not meet the lab policy');
+      return value;
+    },
     async revokeForQualification(userId){
       // Never expose this fixture-admin method as an HTTP route.
       if(!idPattern.test(userId))throw Error('Invalid user ID');

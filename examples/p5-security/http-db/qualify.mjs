@@ -13,6 +13,12 @@ const match=(actual,regex)=>{assert.match(actual,regex);checks++;};
 try{
  await repo.preflight();
  setupAttempted=true;await repo.setup();
+ const privilegeEvidence=await repo.runtimePrivileges();
+ equal(privilegeEvidence.canEditMemberships,false);
+ equal(privilegeEvidence.canEditUsers,false);
+ equal(privilegeEvidence.canCreateObjects,false);
+ equal(privilegeEvidence.canReadDocuments,true);
+ equal(privilegeEvidence.canUpdateDocuments,true);
  const app=createHttpDbLab(repo);server=app.server;
  server.listen(0,'127.0.0.1');await once(server,'listening');
  const base='http://127.0.0.1:'+server.address().port;

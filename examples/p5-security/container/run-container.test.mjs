@@ -56,8 +56,8 @@ test('missing Docker fails closed',()=>{
 test('rejects unapproved project names',()=>assert.throws(()=>runContainerQualification({project:'some-other-project',spawn:()=>{throw Error('must not execute')}}),/Invalid isolated/));
 
 test('setup cleanup fixture is idempotent and concurrency checks are included',()=>{
- const sql=readFileSync(new URL('../cleanup.sql',import.meta.url),'utf8');
- const qualify=readFileSync(new URL('../qualify.mjs',import.meta.url),'utf8');
+ const sql=readFileSync(new URL('../http-db/cleanup.sql',import.meta.url),'utf8');
+ const qualify=readFileSync(new URL('../http-db/qualify.mjs',import.meta.url),'utf8');
  assert.match(sql,/DROP SCHEMA IF EXISTS/);
  assert.match(qualify,/setupAttempted=true;await repo.setup/);
  assert.match(qualify,/Promise.all/);

@@ -68,3 +68,13 @@ npm run qualify:p5:http-db
 ```
 
 **Scope warning:** these are intentionally synthetic sessions and a teaching-only per-request `psql` adapter. Session cookies are not issued by a real IdP, uploads are only intent metadata (no file bytes or malware scanning), and a database actor GUC is trusted only because the pedagogical HTTP server sets it from a verified synthetic principal. This is not a reusable production security architecture. Do not enable the Academy's publication or deployment based on source tests.
+
+## Repository-layout and runtime-role hardening
+
+The container source test now resolves `../http-db/cleanup.sql` and `../http-db/qualify.mjs` from its actual repository folder rather than a rearranged local fixture. This closes an observed `ENOENT` failure.
+
+The HTTP-to-database instructor fixture now **drops privileges inside each request transaction**. Database setup creates a uniquely named NOLOGIN, non-bypass runtime role with schema USAGE, read access to synthetic identity/membership rows, and SELECT/limited UPDATE/DELETE on documents. It does **not** have membership updates, user updates or schema CREATE. The separate fixture administrator retains only the required privileged setup, revocation and cleanup operations.
+
+Before starting HTTP acceptance, `privileges.sql` probes this runtime role and fails closed if the five expected permissions don't match. Cleanup also drops the generated role after dropping its schema. The new `least-privilege.test.mjs` supplies 12 source/mock regression checks; these **do not** establish that PostgreSQL has executed the SQL successfully.
+
+See [LEARNER_LAB.md](./LEARNER_LAB.md) for step-by-step exercises and evidence requirements. The lab must not be promoted to a production security architecture: the test connection administrator is still privileged, and a custom `p5.actor` setting is not a trusted identity boundary for arbitrary direct database clients.

@@ -1,6 +1,8 @@
 \set ON_ERROR_STOP on
 BEGIN;
 SET LOCAL p5.actor TO :'actor';
+-- Privilege drop is confined to the transaction and is not caller-selected.
+SET LOCAL ROLE :"runtime_role";
 \if :{?P5_READ}
 SELECT COALESCE((SELECT json_build_object('id',d.id,'title',d.title)::text FROM :"schema".documents d WHERE d.id=:'doc_id'), 'null');
 \endif
