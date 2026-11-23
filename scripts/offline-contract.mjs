@@ -22,7 +22,7 @@ const P5_REQUIRED = Object.freeze([
  'test:p5-integrations-labs','test:p5-integrations-source',
  'test:p5-integrations-http','test:p5-postgres-search-source',
  'test:p5-webhook-integrity',
- 'test:p5-durable-inbox','test:p5-durable-http',
+ 'test:p5-durable-inbox','test:p5-durable-http','test:p5-multiprocess-inbox',
 ]);
 const unique=(a)=>new Set(a).size===a.length;
 

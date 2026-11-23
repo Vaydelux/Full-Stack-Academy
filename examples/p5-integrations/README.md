@@ -57,3 +57,23 @@ npm run test:release-gate-coverage
 ## Snapshot size safety (post-merge hardening)
 
 Snapshot capacity is bounded at write time by `maxStoreBytes` (default 16 MiB), the same ceiling enforced when reopening the file. Oversize writes return `inbox-storage-capacity` without modifying the last valid committed snapshot. This limit is independent of the event-count and per-event byte limits. A tested safe restart is not a claim of multi-process safety, actual cloud storage durability or real provider delivery.
+
+## Cross-process local-filesystem write fencing (2026-11-24)
+
+The opt-in `DurableWebhookInbox` now obtains a **private atomic `<store>.lock` directory** for its entire compare/serialize/fsync/rename/sync operation. The expected snapshot checksum is re-read **inside** the lock; only one local-filesystem writer can commit at a time. A competing writer receives `inbox-busy` or `stale-inbox-snapshot`, **not** a silent last-writer-wins overwrite. Stale `inspect`, `accept`, `claim` and `settle` calls also reject old views; reopen an instance to retry after a conflict.
+
+A crash after atomic replacement but before directory sync is **commit-uncertain**. The active instance is poisoned (`inbox-reopen-required`) and must be reconciled using a new instance. An instructor-only optional `afterRename` fault-injection hook tests that behavior; do not use it with real secrets.
+
+```bash
+npm run test:p5-durable-inbox
+npm run test:p5-multiprocess-inbox
+npm run test:release-gate-coverage
+```
+
+The multi-process test creates independent child Node processes that race on acceptance and claiming, six separate repetitions each, plus crash-orphan lock, stale-reader and post-rename uncertainty tests.
+
+**Important safety limits:**
+- This protects against lost updates on **one local filesystem supporting atomic directory creation and rename**. No NFS/SMB, distributed leases, shared-nothing replicas, remote object storage or real database concurrency has been qualified.
+- The lock is **fail-closed** on a crashed worker: it is never automatically removed. Stop **all** writer processes and positively verify no writer can still operate before an administrator manually removes `<store>.lock`. Never remove the lock merely because it looks old.
+- Instances with stale snapshots must reopen; this is conflict detection, not automatic queue availability. Leases and external side effects still need PostgreSQL transactional outbox/inbox and idempotent provider adapters in a real service.
+- A local partial Node 22 checkout tested this file with a matching synthetic `signWebhook` helper; full Node24 Next/browser, production PostgreSQL and real vendor tests remain outstanding. No publication or deployment is implied.

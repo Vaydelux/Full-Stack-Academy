@@ -1,6 +1,6 @@
-/** Single-process, disposable teaching inbox. Not a production queue or a DB. */
+/** Local-filesystem teaching inbox with exclusive writer coordination. Not a production queue or a DB. */
 import {createCipheriv,createDecipheriv,createHash,randomBytes,randomUUID,timingSafeEqual} from 'node:crypto';
-import {closeSync,existsSync,fsyncSync,lstatSync,openSync,readFileSync,realpathSync,renameSync,unlinkSync,writeFileSync} from 'node:fs';
+import {closeSync,existsSync,fsyncSync,lstatSync,mkdirSync,openSync,readFileSync,realpathSync,renameSync,rmdirSync,unlinkSync,writeFileSync} from 'node:fs';
 import {dirname,isAbsolute,resolve} from 'node:path';
 import {signWebhook} from './labs.mjs';
 
@@ -13,14 +13,16 @@ const decrypt=(key,row)=>{try{const iv=Buffer.from(row.iv,'base64url'),c=createD
 const copyMeta=row=>({id:row.id,provider:row.provider,tenantId:row.tenantId,eventId:row.eventId,status:row.status,attempts:row.attempts,leaseExpiresAt:row.leaseExpiresAt});
 
 export class DurableWebhookInbox {
- #path;#key;#clock;#leaseMs;#maxEvents;#maxAttempts;#maxStoreBytes;#rows;#snapshot;
- constructor({filePath,encryptionKey,clock=()=>Date.now(),leaseMs=30_000,maxEvents=1000,maxAttempts=4,maxStoreBytes=16*1024*1024}){
+ #path;#key;#clock;#leaseMs;#maxEvents;#maxAttempts;#maxStoreBytes;#rows;#snapshot;#faulted=false;#afterRename;
+ constructor({filePath,encryptionKey,clock=()=>Date.now(),leaseMs=30_000,maxEvents=1000,maxAttempts=4,maxStoreBytes=16*1024*1024,afterRename=null}){
   assert(typeof filePath==='string'&&isAbsolute(filePath),'invalid-store-path');
   assert(Buffer.isBuffer(encryptionKey)&&encryptionKey.length===32,'invalid-encryption-key');
   assert(Number.isSafeInteger(leaseMs)&&leaseMs>=100&&leaseMs<=300_000,'invalid-lease');
   assert(Number.isSafeInteger(maxEvents)&&maxEvents>=1&&maxEvents<=10_000,'invalid-capacity');
   assert(Number.isSafeInteger(maxAttempts)&&maxAttempts>=1&&maxAttempts<=20,'invalid-attempts');
   assert(Number.isSafeInteger(maxStoreBytes)&&maxStoreBytes>=512&&maxStoreBytes<=16*1024*1024,'invalid-store-limit');
+  assert(afterRename===null||typeof afterRename==='function','invalid-fault-injector');
+  this.#afterRename=afterRename;
   const dir=dirname(filePath),info=lstatSync(dir);
   assert(info.isDirectory()&&!info.isSymbolicLink()&&(info.mode&0o077)===0,'insecure-store-directory');
   assert(realpathSync(dir)===dir,'noncanonical-store-directory');
@@ -41,18 +43,33 @@ export class DurableWebhookInbox {
    this.#rows=entries;
   }else {this.#rows=new Map();this.#snapshot=null;}
  }
- #persist(){
-  // Optimistic stale-instance check: single process only; not a cross-process lock.
+ #assertFresh(){
+  assert(!this.#faulted,'inbox-reopen-required');
   const current=existsSync(this.#path)?digest(readFileSync(this.#path)):null;
   assert(current===this.#snapshot,'stale-inbox-snapshot');
-  const tmp=this.#path+'.'+randomUUID()+'.tmp';let fd;
+ }
+ #persist(){
+  // A local mkdir is an exclusive cross-process lock on supported local filesystems.
+  // Do not auto-reclaim a crash-orphaned lock: another worker may still own it.
+  // An operator must stop all writers and verify the owner is gone before cleanup.
+  const lockDir=this.#path+'.lock';
+  try{mkdirSync(lockDir,{mode:0o700});}
+  catch(err){if(err?.code==='EEXIST')throw Error('inbox-busy');throw err;}
   try{
-   const snapshot=JSON.stringify({version:1,rows:[...this.#rows.values()]});
-   assert(Buffer.byteLength(snapshot)<=this.#maxStoreBytes,'inbox-storage-capacity');
-   fd=openSync(tmp,'wx',0o600);writeFileSync(fd,snapshot);fsyncSync(fd);closeSync(fd);fd=undefined;
-   renameSync(tmp,this.#path);this.#snapshot=digest(Buffer.from(snapshot));
-   const d=openSync(dirname(this.#path),'r');try{fsyncSync(d);}finally{closeSync(d);}
-  }catch(err){if(fd!==undefined)closeSync(fd);try{unlinkSync(tmp);}catch{}throw err;}
+   // The read/check/write must happen UNDER the lock, not before acquiring it.
+   this.#assertFresh();
+   const tmp=this.#path+'.'+randomUUID()+'.tmp';let fd,renamed=false;
+   try{
+    const snapshot=JSON.stringify({version:1,rows:[...this.#rows.values()]});
+    assert(Buffer.byteLength(snapshot)<=this.#maxStoreBytes,'inbox-storage-capacity');
+    fd=openSync(tmp,'wx',0o600);writeFileSync(fd,snapshot);fsyncSync(fd);closeSync(fd);fd=undefined;
+    renameSync(tmp,this.#path);renamed=true;this.#snapshot=digest(Buffer.from(snapshot));
+    this.#afterRename?.(); // instructor-only fault injection after replacement but before directory fsync
+    const d=openSync(dirname(this.#path),'r');try{fsyncSync(d);}finally{closeSync(d);}
+   }catch(err){if(fd!==undefined)closeSync(fd);try{unlinkSync(tmp);}catch{}
+    if(renamed){this.#faulted=true;throw Error('inbox-commit-uncertain');}
+    throw err;}
+  }finally{try{rmdirSync(lockDir);}catch{this.#faulted=true;throw Error('inbox-lock-release-failed');}}
  }
  accept({provider,tenantId,eventId,body,timestamp,signature,secret,now=this.#clock()}){
   assert(identifier(provider)&&identifier(tenantId)&&identifier(eventId)&&typeof secret==='string'&&secret.length>=16,'invalid-webhook');
@@ -60,6 +77,7 @@ export class DurableWebhookInbox {
   assert(Number.isSafeInteger(timestamp)&&Number.isSafeInteger(now)&&Math.abs(now-timestamp)<=300_000,'stale-webhook');
   const expected=signWebhook(secret,body,timestamp,provider,eventId);
   assert(digestEqual(signature,expected),'invalid-signature');
+  this.#assertFresh();
   const id=JSON.stringify([provider,tenantId,eventId]),hash=digest(body),old=this.#rows.get(id);
   if(old){assert(digestEqual(old.digest,hash),'delivery-conflict');return {status:'duplicate',id};}
   assert(this.#rows.size<this.#maxEvents,'inbox-capacity');
@@ -68,19 +86,21 @@ export class DurableWebhookInbox {
   return {status:'accepted',id};
  }
  claim(id){
+  this.#assertFresh();
   const row=this.#rows.get(id),now=this.#clock();
   if(!row||!['pending','processing'].includes(row.status)||row.status==='processing'&&row.leaseExpiresAt>now)return null;
-  if(row.attempts>=this.#maxAttempts){row.status='dead-letter';row.leaseToken=null;this.#persist();return null;}
+  if(row.attempts>=this.#maxAttempts){const previous={...row};row.status='dead-letter';row.leaseToken=null;row.leaseExpiresAt=0;try{this.#persist();}catch(err){this.#rows.set(id,previous);throw err;}return null;}
   const previous={...row};row.status='processing';row.attempts++;row.leaseExpiresAt=now+this.#leaseMs;row.leaseToken=randomUUID();
   try{this.#persist();}catch(err){this.#rows.set(id,previous);throw err;}
   return {...copyMeta(row),leaseToken:row.leaseToken,body:decrypt(this.#key,row)};
  }
  settle(id,ok,leaseToken){
+  this.#assertFresh();
   const row=this.#rows.get(id),now=this.#clock();
   assert(row?.status==='processing'&&typeof leaseToken==='string'&&leaseToken===row.leaseToken&&row.leaseExpiresAt>now,'stale-lease');
   const previous={...row};row.status=ok?'processed':row.attempts>=this.#maxAttempts?'dead-letter':'pending';row.leaseToken=null;row.leaseExpiresAt=0;
   try{this.#persist();}catch(err){this.#rows.set(id,previous);throw err;}
   return {status:row.status};
  }
- inspect(id){const row=this.#rows.get(id);return row?copyMeta(row):null;}
+ inspect(id){this.#assertFresh();const row=this.#rows.get(id);return row?copyMeta(row):null;}
 }
