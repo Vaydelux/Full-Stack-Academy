@@ -1,0 +1,19 @@
+{
+  "id": "13.04.03",
+  "title": "Supabase schemas and RLS boundaries",
+  "trackId": "13",
+  "moduleId": "13.04",
+  "labSlug": "exposed-schema-rls-separation",
+  "prerequisites": [
+    "13.04.02"
+  ],
+  "sourceStatus": "draft-unverified",
+  "readyToPublish": false,
+  "runtimeQualification": "not-run",
+  "reviewStatus": "unreviewed",
+  "estimatedMinutes": 70,
+  "officialReferences": [
+    "https://supabase.com/docs/guides/api/securing-your-api"
+  ],
+  "exerciseFormat": "sql"
+}

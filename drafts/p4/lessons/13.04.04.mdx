@@ -1,0 +1,95 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["PostgreSQL roles have independent grants and bypass capabilities. An ordinary application process should have only the privileges needed for its operations.","Design a restricted no-superuser role with scoped schema and table privileges, then provision a dedicated runtime login through an approved DBA process.","This snippet is illustrative and not a complete runtime-login provisioning script. PostgreSQL default privileges, sequence grants and table ownership must be separately reviewed."]} />
+
+## Integration defect
+
+**Service database roles.** PostgreSQL roles have independent grants and bypass capabilities. An ordinary application process should have only the privileges needed for its operations.
+
+**What fails in an actual application:** A superuser application login can bypass RLS and change unrelated schemas, turning a simple code flaw into a database-wide exposure.
+
+A full-stack application can use both a Supabase client and a direct Prisma ORM 7 PostgreSQL adapter. These access paths do not automatically share the same user authorization context. The browser may have a valid JWT while a server's database role can read far more than that JWT would authorize.
+
+## Model the trust boundary
+
+Complete **13.04.03**. PostgreSQL roles have independent grants and bypass capabilities. An ordinary application process should have only the privileges needed for its operations.
+
+Decide which component authenticates the caller, which verifies tenant or resource membership, which PostgreSQL role executes the query, and which schema is exposed via the Data API. Write a failure assertion before changing the code. The examples use synthetic actors and isolated databases only.
+
+This is an **unpublished, unverified draft**. Do not copy the intentionally broken starter into an application.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the unsafe integration" file="drafts/p4/labs/restricted-database-role/starter.sql" expected="Explain the exact scope, role, or migration boundary that fails.">
+
+```sql
+-- Unsafe for a normal application connection.
+CREATE ROLE academy_app LOGIN SUPERUSER PASSWORD 'bad-example-only';
+```
+
+**Defect:** A superuser application login can bypass RLS and change unrelated schemas, turning a simple code flaw into a database-wide exposure.
+
+Observe the failure in a disposable test environment. A SQL statement executing successfully does not prove it was authorized.
+
+</LessonStep>
+
+<LessonStep number={2} title="Enforce the correct boundary" file="drafts/p4/labs/restricted-database-role/solution.sql" expected="Tenant or environment decisions come from verified server context.">
+
+```sql
+-- Isolated DBA-controlled test instance only; use a real secret store.
+CREATE ROLE academy_app NOLOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE;
+GRANT USAGE ON SCHEMA app TO academy_app;
+GRANT SELECT, INSERT, UPDATE ON app.tasks TO academy_app;
+-- Configure runtime login/role inheritance separately and test denial.
+```
+
+**Repair:** Design a restricted no-superuser role with scoped schema and table privileges, then provision a dedicated runtime login through an approved DBA process.
+
+This is a teaching excerpt; configure generated types, verified request guards, safe error mapping, and actual database credentials separately.
+
+</LessonStep>
+
+<LessonStep number={3} title="Run cross-boundary allowed and denied tests" file="drafts/p4/labs/restricted-database-role/acceptance.md" expected="Record actual test identities, results and the denial evidence.">
+
+**Allowed scenario:** Prove SELECT/INSERT/UPDATE on the approved table under the actual runtime login, and confirm role flags are non-superuser/non-bypass.
+
+**Denied scenario:** Under the restricted role, try CREATE ROLE and SELECT from a private audit table. Both must be denied even though normal task reads work.
+
+**Unresolved risks:** This snippet is illustrative and not a complete runtime-login provisioning script. PostgreSQL default privileges, sequence grants and table ownership must be separately reviewed.
+
+A code-fence source match is not a PostgreSQL authorization evaluation, and a service-role query does not simulate an ordinary user.
+
+</LessonStep>
+
+## API, RLS and migration trade-offs
+
+PostgreSQL roles have independent grants and bypass capabilities. An ordinary application process should have only the privileges needed for its operations.
+
+Design a restricted no-superuser role with scoped schema and table privileges, then provision a dedicated runtime login through an approved DBA process.
+
+This snippet is illustrative and not a complete runtime-login provisioning script. PostgreSQL default privileges, sequence grants and table ownership must be separately reviewed.
+
+Explicitly choose how identity is propagated between Next.js, NestJS, Prisma, and Supabase. When a privileged server role bypasses RLS, the NestJS service must check permissions and the database role should still be restricted. Prefer verified membership from trusted server data over user-editable metadata or query parameters.
+
+## Bug Hunt
+
+1. Predict who can exploit this bug: A superuser application login can bypass RLS and change unrelated schemas, turning a simple code flaw into a database-wide exposure.
+2. Verify an allowed positive action.
+3. Attempt the denied action using a separate identity: Under the restricted role, try CREATE ROLE and SELECT from a private audit table. Both must be denied even though normal task reads work.
+4. Apply the repair and observe the resulting database state: Design a restricted no-superuser role with scoped schema and table privileges, then provision a dedicated runtime login through an approved DBA process.
+5. Identify a remaining operational risk: This snippet is illustrative and not a complete runtime-login provisioning script. PostgreSQL default privileges, sequence grants and table ownership must be separately reviewed.
+
+<Misconception claim={"A superuser application login can bypass RLS and change unrelated schemas, turning a simple code flaw into a database-wide exposure."} correction={"PostgreSQL roles have independent grants and bypass capabilities. An ordinary application process should have only the privileges needed for its operations."} />
+<KnowledgeCheck question={"What is the correct baseline for a Prisma runtime database role?"} choices={["SUPERUSER","Least-privileged role scoped to application tables","PostgreSQL cluster owner","Browser service_role key"]} correctIndex={1} explanation={"Design a restricted no-superuser role with scoped schema and table privileges, then provision a dedicated runtime login through an approved DBA process."} misconception={"This snippet is illustrative and not a complete runtime-login provisioning script. PostgreSQL default privileges, sequence grants and table ownership must be separately reviewed."} lessonId="13.04.04" />
+
+## Extend the ERP laboratory
+
+Create synthetic organizations alpha and beta with overlapping IDs, a membership table and private documents. Run requests through both Supabase's Data API and a Prisma-backed NestJS endpoint. Verify permitted rows, denied rows, mutation effects and clean database recreation from migrations. Record whether your test uses a JWT-backed user or a privileged SQL role; those results are not interchangeable.
+
+**Publication rule:** Source authorship never qualifies security-critical runtime behavior. Require real local Supabase Auth and Prisma integration, Node24 build, browser checks and human review first.
+
+## Official references
+
+- [Official guide — Service database roles](https://www.postgresql.org/docs/current/user-manag.html)
+- [Supabase Data API security](https://supabase.com/docs/guides/api/securing-your-api)

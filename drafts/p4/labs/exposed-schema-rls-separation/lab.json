@@ -1,0 +1,15 @@
+{
+  "id": "draft.p4.exposed-schema-rls-separation",
+  "lessonId": "13.04.03",
+  "moduleId": "13.04",
+  "sourceStatus": "draft-unverified",
+  "readyToPublish": false,
+  "runtimeQualification": "not-run",
+  "reviewStatus": "unreviewed",
+  "qualificationKind": "manual-prisma-supabase-integration",
+  "language": "sql",
+  "starter": "drafts/p4/labs/exposed-schema-rls-separation/starter.sql",
+  "solution": "drafts/p4/labs/exposed-schema-rls-separation/solution.sql",
+  "acceptanceDoc": "drafts/p4/labs/exposed-schema-rls-separation/acceptance.md",
+  "officialReference": "https://supabase.com/docs/guides/api/securing-your-api"
+}

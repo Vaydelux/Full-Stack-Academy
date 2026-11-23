@@ -1,0 +1,102 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["NestJS guards authenticate requests but domain authorization must also verify tenant membership and resource-specific permissions before Prisma executes privileged queries.","Obtain verified identity from the authentication guard and delegate object-level permission checks to a service. Do not pass raw tenant query values as authority.","A TypeScript request interface does not validate the JWT by itself. The guard must verify signature, issuer, expiry, audience/session and fresh permissions when required."]} />
+
+## Integration defect
+
+**Authorization in NestJS.** NestJS guards authenticate requests but domain authorization must also verify tenant membership and resource-specific permissions before Prisma executes privileged queries.
+
+**What fails in an actual application:** A user can replace the query parameter tenantId and ask a superuser-backed repository to return another tenant's records.
+
+A full-stack application can use both a Supabase client and a direct Prisma ORM 7 PostgreSQL adapter. These access paths do not automatically share the same user authorization context. The browser may have a valid JWT while a server's database role can read far more than that JWT would authorize.
+
+## Model the trust boundary
+
+Complete **13.04.04**. NestJS guards authenticate requests but domain authorization must also verify tenant membership and resource-specific permissions before Prisma executes privileged queries.
+
+Decide which component authenticates the caller, which verifies tenant or resource membership, which PostgreSQL role executes the query, and which schema is exposed via the Data API. Write a failure assertion before changing the code. The examples use synthetic actors and isolated databases only.
+
+This is an **unpublished, unverified draft**. Do not copy the intentionally broken starter into an application.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the unsafe integration" file="drafts/p4/labs/nestjs-trusted-actor-boundary/starter.ts" expected="Explain the exact scope, role, or migration boundary that fails.">
+
+```ts
+// Dangerous: a controller accepts tenantId supplied by the browser.
+@Get("tasks")
+list(@Query("tenantId") tenantId: string) {
+  return this.prisma.task.findMany({ where: { tenantId } });
+}
+```
+
+**Defect:** A user can replace the query parameter tenantId and ask a superuser-backed repository to return another tenant's records.
+
+Observe the failure in a disposable test environment. A SQL statement executing successfully does not prove it was authorized.
+
+</LessonStep>
+
+<LessonStep number={2} title="Enforce the correct boundary" file="drafts/p4/labs/nestjs-trusted-actor-boundary/solution.ts" expected="Tenant or environment decisions come from verified server context.">
+
+```ts
+@Get("tasks")
+@UseGuards(JwtAuthGuard)
+list(@Req() req: AuthenticatedRequest) {
+  const actor = req.authenticatedActor; // verified by guard
+  if (!actor?.tenantId || !actor?.userId)
+    throw new UnauthorizedException();
+  return this.tasksService.listForActor(actor);
+}
+// Service checks membership and projects only allowed task fields.
+```
+
+**Repair:** Obtain verified identity from the authentication guard and delegate object-level permission checks to a service. Do not pass raw tenant query values as authority.
+
+This is a teaching excerpt; configure generated types, verified request guards, safe error mapping, and actual database credentials separately.
+
+</LessonStep>
+
+<LessonStep number={3} title="Run cross-boundary allowed and denied tests" file="drafts/p4/labs/nestjs-trusted-actor-boundary/acceptance.md" expected="Record actual test identities, results and the denial evidence.">
+
+**Allowed scenario:** The same authenticated alpha user can list only permitted tasks using a verified membership table and least-privileged DTO response.
+
+**Denied scenario:** Log in as alpha, then set query tenantId=beta and enumerate a known beta task. The endpoint must deny or ignore the untrusted parameter.
+
+**Unresolved risks:** A TypeScript request interface does not validate the JWT by itself. The guard must verify signature, issuer, expiry, audience/session and fresh permissions when required.
+
+A code-fence source match is not a PostgreSQL authorization evaluation, and a service-role query does not simulate an ordinary user.
+
+</LessonStep>
+
+## API, RLS and migration trade-offs
+
+NestJS guards authenticate requests but domain authorization must also verify tenant membership and resource-specific permissions before Prisma executes privileged queries.
+
+Obtain verified identity from the authentication guard and delegate object-level permission checks to a service. Do not pass raw tenant query values as authority.
+
+A TypeScript request interface does not validate the JWT by itself. The guard must verify signature, issuer, expiry, audience/session and fresh permissions when required.
+
+Explicitly choose how identity is propagated between Next.js, NestJS, Prisma, and Supabase. When a privileged server role bypasses RLS, the NestJS service must check permissions and the database role should still be restricted. Prefer verified membership from trusted server data over user-editable metadata or query parameters.
+
+## Bug Hunt
+
+1. Predict who can exploit this bug: A user can replace the query parameter tenantId and ask a superuser-backed repository to return another tenant's records.
+2. Verify an allowed positive action.
+3. Attempt the denied action using a separate identity: Log in as alpha, then set query tenantId=beta and enumerate a known beta task. The endpoint must deny or ignore the untrusted parameter.
+4. Apply the repair and observe the resulting database state: Obtain verified identity from the authentication guard and delegate object-level permission checks to a service. Do not pass raw tenant query values as authority.
+5. Identify a remaining operational risk: A TypeScript request interface does not validate the JWT by itself. The guard must verify signature, issuer, expiry, audience/session and fresh permissions when required.
+
+<Misconception claim={"A user can replace the query parameter tenantId and ask a superuser-backed repository to return another tenant's records."} correction={"NestJS guards authenticate requests but domain authorization must also verify tenant membership and resource-specific permissions before Prisma executes privileged queries."} />
+<KnowledgeCheck question={"Who should supply an authoritative tenant identity to a NestJS handler?"} choices={["Any query string","A verified authentication/authorization context","A browser localStorage field","The public Supabase URL"]} correctIndex={1} explanation={"Obtain verified identity from the authentication guard and delegate object-level permission checks to a service. Do not pass raw tenant query values as authority."} misconception={"A TypeScript request interface does not validate the JWT by itself. The guard must verify signature, issuer, expiry, audience/session and fresh permissions when required."} lessonId="13.04.05" />
+
+## Extend the ERP laboratory
+
+Create synthetic organizations alpha and beta with overlapping IDs, a membership table and private documents. Run requests through both Supabase's Data API and a Prisma-backed NestJS endpoint. Verify permitted rows, denied rows, mutation effects and clean database recreation from migrations. Record whether your test uses a JWT-backed user or a privileged SQL role; those results are not interchangeable.
+
+**Publication rule:** Source authorship never qualifies security-critical runtime behavior. Require real local Supabase Auth and Prisma integration, Node24 build, browser checks and human review first.
+
+## Official references
+
+- [Official guide — Authorization in NestJS](https://docs.nestjs.com/security/authorization)
+- [Supabase Data API security](https://supabase.com/docs/guides/api/securing-your-api)

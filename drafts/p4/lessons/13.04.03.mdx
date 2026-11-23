@@ -1,0 +1,106 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["An exposed schema plus GRANT exposes an API operation; RLS filters rows for the PostgREST user role. Prisma's direct SQL role is a separate privilege path.","Enable RLS and an owner-scoped SELECT policy before granting the client role. Audit all other operations and avoid accidental view/function bypasses.","SELECT policies do not secure INSERT/UPDATE/DELETE. Verify WITH CHECK and authenticated identity. SECURITY DEFINER and service roles may bypass normal RLS."]} />
+
+## Integration defect
+
+**Supabase schemas and RLS boundaries.** An exposed schema plus GRANT exposes an API operation; RLS filters rows for the PostgREST user role. Prisma's direct SQL role is a separate privilege path.
+
+**What fails in an actual application:** A GRANT on an exposed public table without owner-scoped RLS can expose every tenant's records to a legitimate signed-in client.
+
+A full-stack application can use both a Supabase client and a direct Prisma ORM 7 PostgreSQL adapter. These access paths do not automatically share the same user authorization context. The browser may have a valid JWT while a server's database role can read far more than that JWT would authorize.
+
+## Model the trust boundary
+
+Complete **13.04.02**. An exposed schema plus GRANT exposes an API operation; RLS filters rows for the PostgREST user role. Prisma's direct SQL role is a separate privilege path.
+
+Decide which component authenticates the caller, which verifies tenant or resource membership, which PostgreSQL role executes the query, and which schema is exposed via the Data API. Write a failure assertion before changing the code. The examples use synthetic actors and isolated databases only.
+
+This is an **unpublished, unverified draft**. Do not copy the intentionally broken starter into an application.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the unsafe integration" file="drafts/p4/labs/exposed-schema-rls-separation/starter.sql" expected="Explain the exact scope, role, or migration boundary that fails.">
+
+```sql
+-- Exposed public table with no RLS protection.
+CREATE TABLE public.academy_project_notes (
+ id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+ tenant_id text NOT NULL,
+ body text NOT NULL
+);
+GRANT SELECT ON public.academy_project_notes TO authenticated;
+```
+
+**Defect:** A GRANT on an exposed public table without owner-scoped RLS can expose every tenant's records to a legitimate signed-in client.
+
+Observe the failure in a disposable test environment. A SQL statement executing successfully does not prove it was authorized.
+
+</LessonStep>
+
+<LessonStep number={2} title="Enforce the correct boundary" file="drafts/p4/labs/exposed-schema-rls-separation/solution.sql" expected="Tenant or environment decisions come from verified server context.">
+
+```sql
+CREATE TABLE public.academy_project_notes (
+ id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+ tenant_id text NOT NULL,
+ owner_id uuid NOT NULL,
+ body text NOT NULL
+);
+ALTER TABLE public.academy_project_notes ENABLE ROW LEVEL SECURITY;
+CREATE POLICY notes_own ON public.academy_project_notes
+ FOR SELECT TO authenticated
+ USING (owner_id = (SELECT auth.uid()));
+GRANT SELECT ON public.academy_project_notes TO authenticated;
+```
+
+**Repair:** Enable RLS and an owner-scoped SELECT policy before granting the client role. Audit all other operations and avoid accidental view/function bypasses.
+
+This is a teaching excerpt; configure generated types, verified request guards, safe error mapping, and actual database credentials separately.
+
+</LessonStep>
+
+<LessonStep number={3} title="Run cross-boundary allowed and denied tests" file="drafts/p4/labs/exposed-schema-rls-separation/acceptance.md" expected="Record actual test identities, results and the denial evidence.">
+
+**Allowed scenario:** With local Auth users alpha and beta, each sees only their own row through the same API and role configuration.
+
+**Denied scenario:** As alpha, read beta's notes by known ID via the Data API. Expect zero rows. As a direct privileged SQL role, demonstrate why a separate server authorization check is essential.
+
+**Unresolved risks:** SELECT policies do not secure INSERT/UPDATE/DELETE. Verify WITH CHECK and authenticated identity. SECURITY DEFINER and service roles may bypass normal RLS.
+
+A code-fence source match is not a PostgreSQL authorization evaluation, and a service-role query does not simulate an ordinary user.
+
+</LessonStep>
+
+## API, RLS and migration trade-offs
+
+An exposed schema plus GRANT exposes an API operation; RLS filters rows for the PostgREST user role. Prisma's direct SQL role is a separate privilege path.
+
+Enable RLS and an owner-scoped SELECT policy before granting the client role. Audit all other operations and avoid accidental view/function bypasses.
+
+SELECT policies do not secure INSERT/UPDATE/DELETE. Verify WITH CHECK and authenticated identity. SECURITY DEFINER and service roles may bypass normal RLS.
+
+Explicitly choose how identity is propagated between Next.js, NestJS, Prisma, and Supabase. When a privileged server role bypasses RLS, the NestJS service must check permissions and the database role should still be restricted. Prefer verified membership from trusted server data over user-editable metadata or query parameters.
+
+## Bug Hunt
+
+1. Predict who can exploit this bug: A GRANT on an exposed public table without owner-scoped RLS can expose every tenant's records to a legitimate signed-in client.
+2. Verify an allowed positive action.
+3. Attempt the denied action using a separate identity: As alpha, read beta's notes by known ID via the Data API. Expect zero rows. As a direct privileged SQL role, demonstrate why a separate server authorization check is essential.
+4. Apply the repair and observe the resulting database state: Enable RLS and an owner-scoped SELECT policy before granting the client role. Audit all other operations and avoid accidental view/function bypasses.
+5. Identify a remaining operational risk: SELECT policies do not secure INSERT/UPDATE/DELETE. Verify WITH CHECK and authenticated identity. SECURITY DEFINER and service roles may bypass normal RLS.
+
+<Misconception claim={"A GRANT on an exposed public table without owner-scoped RLS can expose every tenant's records to a legitimate signed-in client."} correction={"An exposed schema plus GRANT exposes an API operation; RLS filters rows for the PostgREST user role. Prisma's direct SQL role is a separate privilege path."} />
+<KnowledgeCheck question={"Does a Data API SELECT policy automatically protect a Prisma owner-role SQL connection?"} choices={["Yes","No; SQL role privilege and RLS bypass behavior must be tested separately","Only in CSS modules","Only for a different PostgreSQL engine"]} correctIndex={1} explanation={"Enable RLS and an owner-scoped SELECT policy before granting the client role. Audit all other operations and avoid accidental view/function bypasses."} misconception={"SELECT policies do not secure INSERT/UPDATE/DELETE. Verify WITH CHECK and authenticated identity. SECURITY DEFINER and service roles may bypass normal RLS."} lessonId="13.04.03" />
+
+## Extend the ERP laboratory
+
+Create synthetic organizations alpha and beta with overlapping IDs, a membership table and private documents. Run requests through both Supabase's Data API and a Prisma-backed NestJS endpoint. Verify permitted rows, denied rows, mutation effects and clean database recreation from migrations. Record whether your test uses a JWT-backed user or a privileged SQL role; those results are not interchangeable.
+
+**Publication rule:** Source authorship never qualifies security-critical runtime behavior. Require real local Supabase Auth and Prisma integration, Node24 build, browser checks and human review first.
+
+## Official references
+
+- [Official guide — Supabase schemas and RLS boundaries](https://supabase.com/docs/guides/api/securing-your-api)
+- [Supabase Data API security](https://supabase.com/docs/guides/api/securing-your-api)

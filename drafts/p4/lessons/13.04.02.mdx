@@ -1,0 +1,100 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Direct and pooled connections have different connection/session characteristics. Migrations, prepared statements and session-affine operations require explicit compatibility checks.","Separate the migration and runtime URL variables, choose tested endpoints deliberately, and record pooler mode and total connection budget.","Pooler modes and endpoint availability vary by project and plan. Verify current Supabase docs and live connection strings instead of hardcoding a provider host or port."]} />
+
+## Integration defect
+
+**Pooled vs direct connection.** Direct and pooled connections have different connection/session characteristics. Migrations, prepared statements and session-affine operations require explicit compatibility checks.
+
+**What fails in an actual application:** The starter silently routes schema changes through a possibly transaction-pooled session, where connection/session assumptions may break.
+
+A full-stack application can use both a Supabase client and a direct Prisma ORM 7 PostgreSQL adapter. These access paths do not automatically share the same user authorization context. The browser may have a valid JWT while a server's database role can read far more than that JWT would authorize.
+
+## Model the trust boundary
+
+Complete **13.04.01**. Direct and pooled connections have different connection/session characteristics. Migrations, prepared statements and session-affine operations require explicit compatibility checks.
+
+Decide which component authenticates the caller, which verifies tenant or resource membership, which PostgreSQL role executes the query, and which schema is exposed via the Data API. Write a failure assertion before changing the code. The examples use synthetic actors and isolated databases only.
+
+This is an **unpublished, unverified draft**. Do not copy the intentionally broken starter into an application.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the unsafe integration" file="drafts/p4/labs/supabase-pooler-direct-separation/starter.ts" expected="Explain the exact scope, role, or migration boundary that fails.">
+
+```ts
+// Wrong: one transaction-pooler endpoint for every operation.
+const urlForMigrations = process.env.DATABASE_URL;
+const urlForRuntime = process.env.DATABASE_URL;
+```
+
+**Defect:** The starter silently routes schema changes through a possibly transaction-pooled session, where connection/session assumptions may break.
+
+Observe the failure in a disposable test environment. A SQL statement executing successfully does not prove it was authorized.
+
+</LessonStep>
+
+<LessonStep number={2} title="Enforce the correct boundary" file="drafts/p4/labs/supabase-pooler-direct-separation/solution.ts" expected="Tenant or environment decisions come from verified server context.">
+
+```ts
+function required(name: "DATABASE_DIRECT_URL" | "DATABASE_POOL_URL") {
+  const value = process.env[name];
+  if (!value) throw new Error("Missing " + name);
+  return value;
+}
+export const dbEndpoints = {
+  migrations: required("DATABASE_DIRECT_URL"),
+  runtime: required("DATABASE_POOL_URL"),
+};
+```
+
+**Repair:** Separate the migration and runtime URL variables, choose tested endpoints deliberately, and record pooler mode and total connection budget.
+
+This is a teaching excerpt; configure generated types, verified request guards, safe error mapping, and actual database credentials separately.
+
+</LessonStep>
+
+<LessonStep number={3} title="Run cross-boundary allowed and denied tests" file="drafts/p4/labs/supabase-pooler-direct-separation/acceptance.md" expected="Record actual test identities, results and the denial evidence.">
+
+**Allowed scenario:** Run a read through the runtime pool and an approved migration on an isolated direct test endpoint. Record TLS, connection counts and prepared statement behavior.
+
+**Denied scenario:** Attempt a migration with an intentionally inappropriate test pooler configuration; confirm the qualification records the failure without trying production.
+
+**Unresolved risks:** Pooler modes and endpoint availability vary by project and plan. Verify current Supabase docs and live connection strings instead of hardcoding a provider host or port.
+
+A code-fence source match is not a PostgreSQL authorization evaluation, and a service-role query does not simulate an ordinary user.
+
+</LessonStep>
+
+## API, RLS and migration trade-offs
+
+Direct and pooled connections have different connection/session characteristics. Migrations, prepared statements and session-affine operations require explicit compatibility checks.
+
+Separate the migration and runtime URL variables, choose tested endpoints deliberately, and record pooler mode and total connection budget.
+
+Pooler modes and endpoint availability vary by project and plan. Verify current Supabase docs and live connection strings instead of hardcoding a provider host or port.
+
+Explicitly choose how identity is propagated between Next.js, NestJS, Prisma, and Supabase. When a privileged server role bypasses RLS, the NestJS service must check permissions and the database role should still be restricted. Prefer verified membership from trusted server data over user-editable metadata or query parameters.
+
+## Bug Hunt
+
+1. Predict who can exploit this bug: The starter silently routes schema changes through a possibly transaction-pooled session, where connection/session assumptions may break.
+2. Verify an allowed positive action.
+3. Attempt the denied action using a separate identity: Attempt a migration with an intentionally inappropriate test pooler configuration; confirm the qualification records the failure without trying production.
+4. Apply the repair and observe the resulting database state: Separate the migration and runtime URL variables, choose tested endpoints deliberately, and record pooler mode and total connection budget.
+5. Identify a remaining operational risk: Pooler modes and endpoint availability vary by project and plan. Verify current Supabase docs and live connection strings instead of hardcoding a provider host or port.
+
+<Misconception claim={"The starter silently routes schema changes through a possibly transaction-pooled session, where connection/session assumptions may break."} correction={"Direct and pooled connections have different connection/session characteristics. Migrations, prepared statements and session-affine operations require explicit compatibility checks."} />
+<KnowledgeCheck question={"Why distinguish direct and pooled URLs?"} choices={["To bypass authentication","Because session and migration requirements differ from pooled web traffic","To avoid PostgreSQL entirely","Because there are no connection limits"]} correctIndex={1} explanation={"Separate the migration and runtime URL variables, choose tested endpoints deliberately, and record pooler mode and total connection budget."} misconception={"Pooler modes and endpoint availability vary by project and plan. Verify current Supabase docs and live connection strings instead of hardcoding a provider host or port."} lessonId="13.04.02" />
+
+## Extend the ERP laboratory
+
+Create synthetic organizations alpha and beta with overlapping IDs, a membership table and private documents. Run requests through both Supabase's Data API and a Prisma-backed NestJS endpoint. Verify permitted rows, denied rows, mutation effects and clean database recreation from migrations. Record whether your test uses a JWT-backed user or a privileged SQL role; those results are not interchangeable.
+
+**Publication rule:** Source authorship never qualifies security-critical runtime behavior. Require real local Supabase Auth and Prisma integration, Node24 build, browser checks and human review first.
+
+## Official references
+
+- [Official guide — Pooled vs direct connection](https://supabase.com/docs/guides/database/connecting-to-postgres)
+- [Supabase Data API security](https://supabase.com/docs/guides/api/securing-your-api)

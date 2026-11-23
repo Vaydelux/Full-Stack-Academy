@@ -1,0 +1,106 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["A successful Supabase Auth login and a Prisma-backed server connection are different trust boundaries. A privileged database role can bypass end-user policies unless the server explicitly scopes queries.","Require verified actor identity, check membership from trusted server data and filter the document by tenant before selecting a safe public response.","The example implements tenant-level access only. Add per-document ACLs when tenancy alone is too broad and test revocation/session freshness. Never prove RLS by using service_role credentials."]} />
+
+## Integration defect
+
+**Lab cross-tenant security check.** A successful Supabase Auth login and a Prisma-backed server connection are different trust boundaries. A privileged database role can bypass end-user policies unless the server explicitly scopes queries.
+
+**What fails in an actual application:** The starter uses findUnique by record ID without any verified actor membership and returns another organization's document via the service route.
+
+A full-stack application can use both a Supabase client and a direct Prisma ORM 7 PostgreSQL adapter. These access paths do not automatically share the same user authorization context. The browser may have a valid JWT while a server's database role can read far more than that JWT would authorize.
+
+## Model the trust boundary
+
+Complete **13.04.07**. A successful Supabase Auth login and a Prisma-backed server connection are different trust boundaries. A privileged database role can bypass end-user policies unless the server explicitly scopes queries.
+
+Decide which component authenticates the caller, which verifies tenant or resource membership, which PostgreSQL role executes the query, and which schema is exposed via the Data API. Write a failure assertion before changing the code. The examples use synthetic actors and isolated databases only.
+
+This is an **unpublished, unverified draft**. Do not copy the intentionally broken starter into an application.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the unsafe integration" file="drafts/p4/labs/cross-tenant-prisma-bypass-capstone/starter.ts" expected="Explain the exact scope, role, or migration boundary that fails.">
+
+```ts
+// Prisma may connect with RLS-bypassing role. This query leaks data.
+async function getDocument(db: PrismaClient, id: number) {
+  return db.document.findUnique({ where: { id } });
+}
+```
+
+**Defect:** The starter uses findUnique by record ID without any verified actor membership and returns another organization's document via the service route.
+
+Observe the failure in a disposable test environment. A SQL statement executing successfully does not prove it was authorized.
+
+</LessonStep>
+
+<LessonStep number={2} title="Enforce the correct boundary" file="drafts/p4/labs/cross-tenant-prisma-bypass-capstone/solution.ts" expected="Tenant or environment decisions come from verified server context.">
+
+```ts
+async function getDocument(
+  db: PrismaClient, actor: VerifiedActor, id: number
+) {
+  if (!actor.userId || !actor.tenantId) throw new Error("Unauthenticated");
+  const allowed = await db.membership.findFirst({
+    where: { tenantId: actor.tenantId, userId: actor.userId },
+    select: { userId: true },
+  });
+  if (!allowed) throw new Error("Forbidden");
+  return db.document.findFirst({
+    where: { id, tenantId: actor.tenantId },
+    select: { id: true, title: true },
+  });
+}
+```
+
+**Repair:** Require verified actor identity, check membership from trusted server data and filter the document by tenant before selecting a safe public response.
+
+This is a teaching excerpt; configure generated types, verified request guards, safe error mapping, and actual database credentials separately.
+
+</LessonStep>
+
+<LessonStep number={3} title="Run cross-boundary allowed and denied tests" file="drafts/p4/labs/cross-tenant-prisma-bypass-capstone/acceptance.md" expected="Record actual test identities, results and the denial evidence.">
+
+**Allowed scenario:** Alpha retrieves its own document; database and API logs show only approved fields, and beta can retrieve beta's own document.
+
+**Denied scenario:** Call the route as alpha with beta's known document ID and fake tenant query/body values; ensure beta's document never leaves the API even when Prisma connects with a privileged test role.
+
+**Unresolved risks:** The example implements tenant-level access only. Add per-document ACLs when tenancy alone is too broad and test revocation/session freshness. Never prove RLS by using service_role credentials.
+
+A code-fence source match is not a PostgreSQL authorization evaluation, and a service-role query does not simulate an ordinary user.
+
+</LessonStep>
+
+## API, RLS and migration trade-offs
+
+A successful Supabase Auth login and a Prisma-backed server connection are different trust boundaries. A privileged database role can bypass end-user policies unless the server explicitly scopes queries.
+
+Require verified actor identity, check membership from trusted server data and filter the document by tenant before selecting a safe public response.
+
+The example implements tenant-level access only. Add per-document ACLs when tenancy alone is too broad and test revocation/session freshness. Never prove RLS by using service_role credentials.
+
+Explicitly choose how identity is propagated between Next.js, NestJS, Prisma, and Supabase. When a privileged server role bypasses RLS, the NestJS service must check permissions and the database role should still be restricted. Prefer verified membership from trusted server data over user-editable metadata or query parameters.
+
+## Bug Hunt
+
+1. Predict who can exploit this bug: The starter uses findUnique by record ID without any verified actor membership and returns another organization's document via the service route.
+2. Verify an allowed positive action.
+3. Attempt the denied action using a separate identity: Call the route as alpha with beta's known document ID and fake tenant query/body values; ensure beta's document never leaves the API even when Prisma connects with a privileged test role.
+4. Apply the repair and observe the resulting database state: Require verified actor identity, check membership from trusted server data and filter the document by tenant before selecting a safe public response.
+5. Identify a remaining operational risk: The example implements tenant-level access only. Add per-document ACLs when tenancy alone is too broad and test revocation/session freshness. Never prove RLS by using service_role credentials.
+
+<Misconception claim={"The starter uses findUnique by record ID without any verified actor membership and returns another organization's document via the service route."} correction={"A successful Supabase Auth login and a Prisma-backed server connection are different trust boundaries. A privileged database role can bypass end-user policies unless the server explicitly scopes queries."} />
+<KnowledgeCheck question={"What closes a BOLA gap in Prisma + Supabase integration?"} choices={["A valid public project key alone","Verified actor membership and object-scoped repository predicates","Trusting request.body.tenantId","Turning off database RLS"]} correctIndex={1} explanation={"Require verified actor identity, check membership from trusted server data and filter the document by tenant before selecting a safe public response."} misconception={"The example implements tenant-level access only. Add per-document ACLs when tenancy alone is too broad and test revocation/session freshness. Never prove RLS by using service_role credentials."} lessonId="13.04.08" />
+
+## Extend the ERP laboratory
+
+Create synthetic organizations alpha and beta with overlapping IDs, a membership table and private documents. Run requests through both Supabase's Data API and a Prisma-backed NestJS endpoint. Verify permitted rows, denied rows, mutation effects and clean database recreation from migrations. Record whether your test uses a JWT-backed user or a privileged SQL role; those results are not interchangeable.
+
+**Publication rule:** Source authorship never qualifies security-critical runtime behavior. Require real local Supabase Auth and Prisma integration, Node24 build, browser checks and human review first.
+
+## Official references
+
+- [Official guide — Lab cross-tenant security check](https://supabase.com/docs/guides/database/postgres/row-level-security)
+- [Supabase Data API security](https://supabase.com/docs/guides/api/securing-your-api)

@@ -1,0 +1,15 @@
+{
+  "id": "draft.p4.restricted-database-role",
+  "lessonId": "13.04.04",
+  "moduleId": "13.04",
+  "sourceStatus": "draft-unverified",
+  "readyToPublish": false,
+  "runtimeQualification": "not-run",
+  "reviewStatus": "unreviewed",
+  "qualificationKind": "manual-prisma-supabase-integration",
+  "language": "sql",
+  "starter": "drafts/p4/labs/restricted-database-role/starter.sql",
+  "solution": "drafts/p4/labs/restricted-database-role/solution.sql",
+  "acceptanceDoc": "drafts/p4/labs/restricted-database-role/acceptance.md",
+  "officialReference": "https://www.postgresql.org/docs/current/user-manag.html"
+}

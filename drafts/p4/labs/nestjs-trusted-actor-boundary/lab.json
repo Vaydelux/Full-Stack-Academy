@@ -1,0 +1,15 @@
+{
+  "id": "draft.p4.nestjs-trusted-actor-boundary",
+  "lessonId": "13.04.05",
+  "moduleId": "13.04",
+  "sourceStatus": "draft-unverified",
+  "readyToPublish": false,
+  "runtimeQualification": "not-run",
+  "reviewStatus": "unreviewed",
+  "qualificationKind": "manual-prisma-supabase-integration",
+  "language": "ts",
+  "starter": "drafts/p4/labs/nestjs-trusted-actor-boundary/starter.ts",
+  "solution": "drafts/p4/labs/nestjs-trusted-actor-boundary/solution.ts",
+  "acceptanceDoc": "drafts/p4/labs/nestjs-trusted-actor-boundary/acceptance.md",
+  "officialReference": "https://docs.nestjs.com/security/authorization"
+}
