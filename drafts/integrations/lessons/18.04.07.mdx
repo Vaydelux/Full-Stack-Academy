@@ -1,0 +1,70 @@
+---
+id: "18.04.07"
+title: "Integration test doubles"
+module: "18.04"
+status: "draft-unverified"
+readyToPublish: false
+---
+
+# Integration test doubles
+
+> Source-only instructor manuscript. Not published; no Node 24, cloud provider, production database, Next browser or human accessibility qualification is claimed by this page.
+
+## Learning outcomes
+
+Explain the trust boundary for this feature, design the secure state transition, and demonstrate both successful and adversarial behavior. Distinguish a teaching fixture from a qualified production integration.
+
+## Context
+
+A developer reproduces a provider outage without paying for live API traffic.
+
+**Architectural concern:** Keep authenticated identity and tenant scope under server control. Treat browser inputs, provider callbacks, file bytes and retry state as untrusted until validated.
+
+## Step 1 — Model the failure
+
+Mocks that always succeed conceal timeouts, duplicate callbacks and schema drift.
+
+Draw the caller → API boundary → persisted state → worker/provider → response chain. Identify which fields the browser or external service may alter and which identities only the server may authorize.
+
+## Step 2 — Design the correction
+
+Use a deterministic fake with scripted 429, timeout, duplicate event and malformed response cases.
+
+Identify an appropriate transactional or idempotency boundary and specify a stable identifier for retries. Record what must be denied, rather than assuming a happy-path demonstration is sufficient.
+
+## Step 3 — Practice and verify
+
+The local test double drives a bounded retry and successful deduplication state transition.
+
+**Negative acceptance target:** The fake is never presented as proof of actual provider availability or DNS configuration.
+
+From the root of the repository, execute the local P5 integrations teaching tests:
+
+```bash
+node --test examples/p5-integrations/labs.test.mjs
+```
+
+The corresponding module exercises **signWebhook and WebhookInbox: raw bytes, freshness, deduplication and retry-safe processing**. Inspect the lab implementation in `examples/p5-integrations/labs.mjs`, find the nearest positive and negative test, and write an additional case for your own scenario. Some topics require **separate external qualification** instead of pretending the local fixture implements the full provider or SQL feature.
+
+## Engineering review
+
+**Hardening boundary:** The teaching inbox verifies an illustrative HMAC envelope, not an actual provider-specific signature convention; durable inbox storage and real provider tests remain required.
+
+For a production implementation, document the secret-owner or principal, durability plan, error and recovery policy, rate/resource bounds, privacy guarantees, observability without sensitive payloads, and the credential/version-rotation procedure.
+
+## Knowledge check
+
+1. Which authenticated actor, external sender, or tenant owns the data in this scenario?
+2. How does the unsafe design fail, and what specific negative test proves it?
+3. Where must an idempotency key, version, signature or permission be checked?
+4. Which part of this lesson still requires a real provider, browser, database or human review before publishing?
+
+**Instructor assessment:** Require a concrete input, observable positive and negative output, and a written explanation of any untested external dependency. A conceptual answer alone is not runtime certification.
+
+## References
+
+- [Authoritative specification or security guide](https://docs.github.com/en/webhooks/using-webhooks/validating-webhook-deliveries)
+
+## Publication conditions
+
+Editorially review this manuscript and its exercise; run real Node 24, full Academy Next.js build, browser keyboard/screen-reader and 200% zoom checks. For provider/database topics, independently run real-service authentication, authorization, idempotency, failure and recovery tests. Publish only through the established sequential P1–P5 phase gates; never add this draft to live course registries from source-only evidence.

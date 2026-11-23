@@ -1,0 +1,290 @@
+{
+  "18.01.01": {
+    "context": "An authenticated profile uploader submits a PNG avatar for a private account.",
+    "failure": "Checking only client-side file extension and Content-Type allows renamed or oversized uploads.",
+    "correction": "Enforce size, extension, declared MIME and byte signature on the server before quarantine.",
+    "positive": "A well-formed PNG enters a quarantined state with an explicit size and type.",
+    "negative": "A forged PDF-as-PNG, executable extension or oversized object fails before persistence.",
+    "caveat": "These are byte-signature and state-machine teaching controls only: real image decoders, antivirus engines, durable object storage and provider URL signing require separate qualification.",
+    "reference": "https://cheatsheetseries.owasp.org/cheatsheets/File_Upload_Cheat_Sheet.html"
+  },
+  "18.01.02": {
+    "context": "A team uploads invoices where a valid filename can disguise arbitrary executable bytes.",
+    "failure": "Trusting the browser MIME header causes a renamed PDF or executable to pass image validation.",
+    "correction": "Inspect actual leading bytes against a fixed allowed-signature table and reject mismatches.",
+    "positive": "A PDF with matching signature and declared type passes the initial teaching gate.",
+    "negative": "A PNG filename containing PDF bytes is rejected even when the request advertises image/png.",
+    "caveat": "These are byte-signature and state-machine teaching controls only: real image decoders, antivirus engines, durable object storage and provider URL signing require separate qualification.",
+    "reference": "https://cheatsheetseries.owasp.org/cheatsheets/File_Upload_Cheat_Sheet.html"
+  },
+  "18.01.03": {
+    "context": "A browser requests one short-lived upload capability for its own tenant workspace.",
+    "failure": "An unscoped token remains valid for any user and may be replayed after its expiration.",
+    "correction": "Sign a tenant/user/filename/nonce/expiry claim and verify binding before accepting an upload intent.",
+    "positive": "The intended actor can validate a token during its short validity window.",
+    "negative": "Another tenant, another user, an altered token or an expired token is denied.",
+    "caveat": "These are byte-signature and state-machine teaching controls only: real image decoders, antivirus engines, durable object storage and provider URL signing require separate qualification.",
+    "reference": "https://cheatsheetseries.owasp.org/cheatsheets/File_Upload_Cheat_Sheet.html"
+  },
+  "18.01.04": {
+    "context": "An employee requests a previously scanned private HR document from object storage.",
+    "failure": "Listing an object key directly or treating an upload receipt as read authorization bypasses tenant checks.",
+    "correction": "Reauthorize every read using authenticated tenant, owner and clean-scan state.",
+    "positive": "The owner can read an asset only after it is explicitly marked clean.",
+    "negative": "A foreign tenant or owner and every quarantined or blocked asset are inaccessible.",
+    "caveat": "These are byte-signature and state-machine teaching controls only: real image decoders, antivirus engines, durable object storage and provider URL signing require separate qualification.",
+    "reference": "https://cheatsheetseries.owasp.org/cheatsheets/File_Upload_Cheat_Sheet.html"
+  },
+  "18.01.05": {
+    "context": "A product site accepts camera originals and needs responsive thumbnails.",
+    "failure": "Decoding an untrusted megapixel image without pixel limits risks decompression bombs and resource exhaustion.",
+    "correction": "Plan a sandboxed image worker with pixel ceilings, EXIF stripping and deterministic output dimensions.",
+    "positive": "An instructor can specify a worker contract with width, height, byte and metadata limits.",
+    "negative": "An image exceeding pixel ceilings or a decoder error must be quarantined without any public derivative.",
+    "caveat": "These are byte-signature and state-machine teaching controls only: real image decoders, antivirus engines, durable object storage and provider URL signing require separate qualification.",
+    "reference": "https://cheatsheetseries.owasp.org/cheatsheets/File_Upload_Cheat_Sheet.html"
+  },
+  "18.01.06": {
+    "context": "A document pipeline quarantines PDFs until an asynchronous scanner gives a verdict.",
+    "failure": "Treating a scanner timeout as clean leaks malicious files through a fail-open status.",
+    "correction": "Keep assets quarantined until an explicit clean verdict and block malicious or failed scans.",
+    "positive": "A clean scan transitions a quarantined asset to a readable state.",
+    "negative": "A failed scan or malicious verdict stays blocked and never gains read permissions.",
+    "caveat": "These are byte-signature and state-machine teaching controls only: real image decoders, antivirus engines, durable object storage and provider URL signing require separate qualification.",
+    "reference": "https://cheatsheetseries.owasp.org/cheatsheets/File_Upload_Cheat_Sheet.html"
+  },
+  "18.01.07": {
+    "context": "A media upload triggers metadata extraction, thumbnails and retention jobs.",
+    "failure": "Running costly processing synchronously on request threads causes duplicate work after retries.",
+    "correction": "Enqueue a deduplicated processing job and move assets through monotonic quarantine states.",
+    "positive": "A repeated upload intent is scoped and a clean processed asset becomes readable.",
+    "negative": "A retry cannot make a failed scan clean or leak an asset while processing is incomplete.",
+    "caveat": "These are byte-signature and state-machine teaching controls only: real image decoders, antivirus engines, durable object storage and provider URL signing require separate qualification.",
+    "reference": "https://cheatsheetseries.owasp.org/cheatsheets/File_Upload_Cheat_Sheet.html"
+  },
+  "18.01.08": {
+    "context": "A capstone marketplace stores user pictures and private PDF receipts in the same account.",
+    "failure": "A single public bucket and filename-only validation expose receipts and unsafe content.",
+    "correction": "Compose server validation, scoped intents, quarantined scanning and per-request read authorization.",
+    "positive": "The complete teaching pipeline accepts safe assets and checks owner access after scanning.",
+    "negative": "A cross-tenant request, MIME spoof or scanner failure never exposes a receipt.",
+    "caveat": "These are byte-signature and state-machine teaching controls only: real image decoders, antivirus engines, durable object storage and provider URL signing require separate qualification.",
+    "reference": "https://cheatsheetseries.owasp.org/cheatsheets/File_Upload_Cheat_Sheet.html"
+  },
+  "18.02.01": {
+    "context": "A billing app sends receipts and optional promotional campaigns to the same account.",
+    "failure": "Applying marketing consent rules to receipts or bypassing consent for offers confuses legal purposes.",
+    "correction": "Separate transactional and marketing message intents; require positive opt-in before marketing enqueue and claim.",
+    "positive": "An opted-in user gets a marketing job and every authorized purchase can create a receipt.",
+    "negative": "An opted-out user never gets a claimed marketing send even if consent is revoked after enqueue.",
+    "caveat": "The teaching outbox does not send an email, inspect DNS, run React Email, or connect to a delivery provider; these are independent live release gates.",
+    "reference": "https://www.rfc-editor.org/rfc/rfc5321"
+  },
+  "18.02.02": {
+    "context": "A team uses React Email to render branded password reset and receipt templates.",
+    "failure": "Interpolating raw user-provided HTML into email templates creates unsafe markup and broken links.",
+    "correction": "Use escaped React component props, allowlisted links and preview/snapshot review for every template.",
+    "positive": "An instructor reviews a static HTML template with escaped display names and stable links.",
+    "negative": "HTML injection, untrusted redirect URLs and accidental tracking in security mail fail the review.",
+    "caveat": "The teaching outbox does not send an email, inspect DNS, run React Email, or connect to a delivery provider; these are independent live release gates.",
+    "reference": "https://www.rfc-editor.org/rfc/rfc5321"
+  },
+  "18.02.03": {
+    "context": "A SaaS platform switches between two email delivery providers without changing domain code.",
+    "failure": "Directly importing one vendor SDK into every route prevents timeout policy and provider substitution.",
+    "correction": "Define a send adapter with deterministic idempotency keys, typed outcomes and redacted provider errors.",
+    "positive": "A fake adapter accepts a canonical job and returns a normalized acknowledged status.",
+    "negative": "A vendor outage cannot silently mutate a previously acknowledged job to failed.",
+    "caveat": "The teaching outbox does not send an email, inspect DNS, run React Email, or connect to a delivery provider; these are independent live release gates.",
+    "reference": "https://www.rfc-editor.org/rfc/rfc5321"
+  },
+  "18.02.04": {
+    "context": "An email provider posts bounce and complaint events for previously accepted messages.",
+    "failure": "Applying unverified provider webhooks lets strangers suppress users or forge delivery metrics.",
+    "correction": "Verify exact raw-body signatures, timestamp freshness and provider-scoped delivery IDs before recording status.",
+    "positive": "A signed delivery event enters the inbox once and can be processed independently.",
+    "negative": "A modified body or duplicated delivery event is rejected or deduplicated.",
+    "caveat": "The teaching outbox does not send an email, inspect DNS, run React Email, or connect to a delivery provider; these are independent live release gates.",
+    "reference": "https://www.rfc-editor.org/rfc/rfc5321"
+  },
+  "18.02.05": {
+    "context": "A production email domain must prove authorized sender identity and protect reputation.",
+    "failure": "Assuming an SMTP API key alone authenticates a From domain omits DNS and alignment controls.",
+    "correction": "Document SPF authorization, DKIM signatures and DMARC alignment with DNS verification evidence.",
+    "positive": "A real staging domain can demonstrate aligned SPF or DKIM and a monitored DMARC policy.",
+    "negative": "Missing alignment, a broad SPF record or a forged From domain fails release review.",
+    "caveat": "The teaching outbox does not send an email, inspect DNS, run React Email, or connect to a delivery provider; these are independent live release gates.",
+    "reference": "https://www.rfc-editor.org/rfc/rfc5321"
+  },
+  "18.02.06": {
+    "context": "A checkout handler retries when a provider send response is lost after commit.",
+    "failure": "Generating a fresh message ID on each retry duplicates receipts and password-reset notifications.",
+    "correction": "Persist a tenant/user-scoped logical send key and reconcile unknown outcomes before retry.",
+    "positive": "Repeated scheduling with the same key resolves to one outbox job.",
+    "negative": "Reusing the key for a different template is rejected rather than mutating the original message.",
+    "caveat": "The teaching outbox does not send an email, inspect DNS, run React Email, or connect to a delivery provider; these are independent live release gates.",
+    "reference": "https://www.rfc-editor.org/rfc/rfc5321"
+  },
+  "18.02.07": {
+    "context": "A mailing worker receives a 429 response while many campaigns compete for capacity.",
+    "failure": "Immediate retries without a budget amplify outages and exhaust provider quotas.",
+    "correction": "Apply bounded exponential backoff, attempt ceilings and an inspectable dead-letter status.",
+    "positive": "A temporary failure waits before the next send attempt and eventually succeeds.",
+    "negative": "A permanently failing message stops after the retry budget; it cannot loop forever.",
+    "caveat": "The teaching outbox does not send an email, inspect DNS, run React Email, or connect to a delivery provider; these are independent live release gates.",
+    "reference": "https://www.rfc-editor.org/rfc/rfc5321"
+  },
+  "18.02.08": {
+    "context": "A course registration sends a confirmation email and receives a provider delivery callback.",
+    "failure": "Directly calling a production mail API from a demo hides consent, duplicate and retry risks.",
+    "correction": "Demonstrate consent-aware local outbox enqueue, claim/settle and authenticated webhook inbox transitions.",
+    "positive": "The local fixture records one transactional confirmation and one verified delivery event.",
+    "negative": "Duplicate jobs, forged bounce webhooks and marketing messages without opt-in are denied.",
+    "caveat": "The teaching outbox does not send an email, inspect DNS, run React Email, or connect to a delivery provider; these are independent live release gates.",
+    "reference": "https://www.rfc-editor.org/rfc/rfc5321"
+  },
+  "18.03.01": {
+    "context": "A multi-tenant knowledge base needs searchable project titles and descriptions in PostgreSQL.",
+    "failure": "Using raw ILIKE expressions everywhere misses linguistic ranking and consistent query plans.",
+    "correction": "Design a PostgreSQL tsvector column, language config, GIN index and tenant-scoped tsquery filters.",
+    "positive": "A real PostgreSQL qualification will compare indexed FTS results and plans against expected tenant fixtures.",
+    "negative": "A query for tenant A must not return tenant B documents even when text matches.",
+    "caveat": "The in-memory scorer is not PostgreSQL FTS, pg_trgm, Meilisearch or Typesense. Benchmark indexing, relevance and real SQL RLS independently.",
+    "reference": "https://www.postgresql.org/docs/current/textsearch.html"
+  },
+  "18.03.02": {
+    "context": "A support search should match misspelled account names and partial terms.",
+    "failure": "Substring-only matching forces full scans and cannot score fuzzy candidate similarity.",
+    "correction": "Compare pg_trgm similarity, GIN/GiST indexes and sensible minimum thresholds on realistic data.",
+    "positive": "A dedicated PostgreSQL test can show a typo match and measure its query plan.",
+    "negative": "A loose similarity threshold must not expose hidden or another tenant's records.",
+    "caveat": "The in-memory scorer is not PostgreSQL FTS, pg_trgm, Meilisearch or Typesense. Benchmark indexing, relevance and real SQL RLS independently.",
+    "reference": "https://www.postgresql.org/docs/current/textsearch.html"
+  },
+  "18.03.03": {
+    "context": "A documentation portal ranks title matches above incidental paragraph matches.",
+    "failure": "Returning rows in insertion order makes relevance unpredictable across data changes.",
+    "correction": "Define deterministic title/body weights, stable tie breaks and a documented relevance test set.",
+    "positive": "The local tenant-search fixture ranks a title match above a body-only match.",
+    "negative": "A lower-value body match must not unpredictably outrank an exact title hit.",
+    "caveat": "The in-memory scorer is not PostgreSQL FTS, pg_trgm, Meilisearch or Typesense. Benchmark indexing, relevance and real SQL RLS independently.",
+    "reference": "https://www.postgresql.org/docs/current/textsearch.html"
+  },
+  "18.03.04": {
+    "context": "An account needs paginated and status-filtered search across thousands of notes.",
+    "failure": "A client-supplied offset without a tenant filter or stable index snapshot can leak or skip rows.",
+    "correction": "Bind tenant, filters, query and revision into pagination state and invalidate it after mutation.",
+    "positive": "Two pages return deterministic results for the same scoped query and index revision.",
+    "negative": "A cursor from another tenant or a stale index revision is rejected.",
+    "caveat": "The in-memory scorer is not PostgreSQL FTS, pg_trgm, Meilisearch or Typesense. Benchmark indexing, relevance and real SQL RLS independently.",
+    "reference": "https://www.postgresql.org/docs/current/textsearch.html"
+  },
+  "18.03.05": {
+    "context": "Search documents are updated by asynchronous webhooks and can arrive out of order.",
+    "failure": "An older indexing event overwrites a newer title or resurrects a deleted document.",
+    "correction": "Require monotonic document revisions and tombstones so stale events are no-ops.",
+    "positive": "A version-two update survives later arrival of version-one data.",
+    "negative": "A deleted record cannot be resurrected by replaying a stale indexing event.",
+    "caveat": "The in-memory scorer is not PostgreSQL FTS, pg_trgm, Meilisearch or Typesense. Benchmark indexing, relevance and real SQL RLS independently.",
+    "reference": "https://www.postgresql.org/docs/current/textsearch.html"
+  },
+  "18.03.06": {
+    "context": "A startup must choose between PostgreSQL FTS, Meilisearch and Typesense.",
+    "failure": "Choosing an external search cluster for every small app adds operational cost and consistency failure modes.",
+    "correction": "Compare query needs, typo support, tenant boundaries, operational burden and indexing latency before switching engines.",
+    "positive": "A decision record identifies when PostgreSQL FTS is enough and when a dedicated engine is justified.",
+    "negative": "No external engine is claimed production-ready without real tenancy and consistency tests.",
+    "caveat": "The in-memory scorer is not PostgreSQL FTS, pg_trgm, Meilisearch or Typesense. Benchmark indexing, relevance and real SQL RLS independently.",
+    "reference": "https://www.postgresql.org/docs/current/textsearch.html"
+  },
+  "18.03.07": {
+    "context": "A search dashboard logs popular queries and zero-result rate across organizations.",
+    "failure": "Logging full query strings and result bodies may expose passwords, health information and private records.",
+    "correction": "Aggregate per-tenant metrics with retention limits and scrubbed sensitive values.",
+    "positive": "An analytics design records counts and latency without raw personal query text.",
+    "negative": "A cross-tenant dashboard or raw-secret query log fails the privacy review.",
+    "caveat": "The in-memory scorer is not PostgreSQL FTS, pg_trgm, Meilisearch or Typesense. Benchmark indexing, relevance and real SQL RLS independently.",
+    "reference": "https://www.postgresql.org/docs/current/textsearch.html"
+  },
+  "18.03.08": {
+    "context": "A help-center search box must remain correct through index updates and paging.",
+    "failure": "A visually fast search can still show stale results or foreign tenant content.",
+    "correction": "Combine scoped indexing, deterministic ranking, bounded pages and invalidation on revision change.",
+    "positive": "The local lab returns ranked results and a valid second page for a stable index.",
+    "negative": "A stale cursor, hidden record or foreign tenant result is not returned.",
+    "caveat": "The in-memory scorer is not PostgreSQL FTS, pg_trgm, Meilisearch or Typesense. Benchmark indexing, relevance and real SQL RLS independently.",
+    "reference": "https://www.postgresql.org/docs/current/textsearch.html"
+  },
+  "18.04.01": {
+    "context": "A payments integration needs an API token for a third-party provider.",
+    "failure": "Sending the provider secret to a browser or logging headers gives every client global privileges.",
+    "correction": "Keep credentials server-only, bind outgoing requests to allowlisted hosts and redact operational logs.",
+    "positive": "A production adapter plan separates public request input from server-owned provider authentication.",
+    "negative": "A browser bundle containing private credentials or an arbitrary outbound URL blocks release.",
+    "caveat": "The teaching inbox verifies an illustrative HMAC envelope, not an actual provider-specific signature convention; durable inbox storage and real provider tests remain required.",
+    "reference": "https://docs.github.com/en/webhooks/using-webhooks/validating-webhook-deliveries"
+  },
+  "18.04.02": {
+    "context": "A billing provider sends signed event payloads with retryable delivery.",
+    "failure": "Parsing and reserializing webhook JSON before signature verification invalidates or weakens authenticity checks.",
+    "correction": "HMAC the exact received bytes plus provider timestamp and use constant-time digest comparison.",
+    "positive": "A correctly signed raw payload is accepted once within the freshness window.",
+    "negative": "Modified bytes, a stale timestamp or invalid signature cannot create a trusted event.",
+    "caveat": "The teaching inbox verifies an illustrative HMAC envelope, not an actual provider-specific signature convention; durable inbox storage and real provider tests remain required.",
+    "reference": "https://docs.github.com/en/webhooks/using-webhooks/validating-webhook-deliveries"
+  },
+  "18.04.03": {
+    "context": "An unreliable tax API slows checkout and returns intermittent 5xx responses.",
+    "failure": "Unlimited retries on synchronous requests worsen outages and can charge customers repeatedly.",
+    "correction": "Use timeout budgets, safe retry classifications, capped attempts and a circuit-breaker state model.",
+    "positive": "The training outbox shows backoff and a terminal dead-letter after a bounded number of attempts.",
+    "negative": "A retry never repeats non-idempotent side effects without a stable provider operation key.",
+    "caveat": "The teaching inbox verifies an illustrative HMAC envelope, not an actual provider-specific signature convention; durable inbox storage and real provider tests remain required.",
+    "reference": "https://docs.github.com/en/webhooks/using-webhooks/validating-webhook-deliveries"
+  },
+  "18.04.04": {
+    "context": "A marketplace has interchangeable shipping providers for domestic and international routes.",
+    "failure": "Leaking provider-specific response schemas into domain code makes outages difficult to isolate.",
+    "correction": "Normalize provider success, retryable failures and permanent errors behind typed adapters.",
+    "positive": "A test double returns the same domain result shape for two simulated providers.",
+    "negative": "A malformed or unknown provider payload cannot be treated as a successful shipment.",
+    "caveat": "The teaching inbox verifies an illustrative HMAC envelope, not an actual provider-specific signature convention; durable inbox storage and real provider tests remain required.",
+    "reference": "https://docs.github.com/en/webhooks/using-webhooks/validating-webhook-deliveries"
+  },
+  "18.04.05": {
+    "context": "An integration API key should access delivery events but not payments or customer exports.",
+    "failure": "One unrestricted administrator token for every workflow increases impact of a credential leak.",
+    "correction": "Design per-provider least-privilege scopes, rotation and environment separation.",
+    "positive": "A key inventory maps each credential to a small capability and an owner.",
+    "negative": "A webhook verifier key cannot also initiate payouts or export tenant data.",
+    "caveat": "The teaching inbox verifies an illustrative HMAC envelope, not an actual provider-specific signature convention; durable inbox storage and real provider tests remain required.",
+    "reference": "https://docs.github.com/en/webhooks/using-webhooks/validating-webhook-deliveries"
+  },
+  "18.04.06": {
+    "context": "An external partner changes its webhook schema between two API versions.",
+    "failure": "Assuming new provider fields are always present makes upgrades corrupt stored events.",
+    "correction": "Version request and response contracts and maintain backward-compatible adapter fixtures.",
+    "positive": "Both supported versions normalize to an explicit stable internal event.",
+    "negative": "An unknown incompatible version fails closed and is retained for review.",
+    "caveat": "The teaching inbox verifies an illustrative HMAC envelope, not an actual provider-specific signature convention; durable inbox storage and real provider tests remain required.",
+    "reference": "https://docs.github.com/en/webhooks/using-webhooks/validating-webhook-deliveries"
+  },
+  "18.04.07": {
+    "context": "A developer reproduces a provider outage without paying for live API traffic.",
+    "failure": "Mocks that always succeed conceal timeouts, duplicate callbacks and schema drift.",
+    "correction": "Use a deterministic fake with scripted 429, timeout, duplicate event and malformed response cases.",
+    "positive": "The local test double drives a bounded retry and successful deduplication state transition.",
+    "negative": "The fake is never presented as proof of actual provider availability or DNS configuration.",
+    "caveat": "The teaching inbox verifies an illustrative HMAC envelope, not an actual provider-specific signature convention; durable inbox storage and real provider tests remain required.",
+    "reference": "https://docs.github.com/en/webhooks/using-webhooks/validating-webhook-deliveries"
+  },
+  "18.04.08": {
+    "context": "A subscription service accepts a signed renewal webhook and records an inbox event.",
+    "failure": "Trusting the event's JSON tenant field without signature validation enables account takeover or billing spoofing.",
+    "correction": "Verify the raw signed payload, freshness and provider-specific delivery ID before any domain mutation.",
+    "positive": "A signed event is accepted once and retry processing can recover a pending record.",
+    "negative": "A forged signature, stale event or duplicated delivery never causes a second side effect.",
+    "caveat": "The teaching inbox verifies an illustrative HMAC envelope, not an actual provider-specific signature convention; durable inbox storage and real provider tests remain required.",
+    "reference": "https://docs.github.com/en/webhooks/using-webhooks/validating-webhook-deliveries"
+  }
+}

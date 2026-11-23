@@ -1,0 +1,22 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {auditIntegrationTrack} from './verify-track.mjs';
+const spec={context:'An authenticated tenant admin receives a new asset request and must validate the complete workflow.',failure:'The browser supplies a claimed MIME type that can be forged without reading bytes.',correction:'Compare an allowlisted extension, declared content type and leading file bytes before staging.',positive:'A valid PNG is accepted as a quarantined candidate and remains inaccessible to readers.',negative:'A renamed executable, cross-tenant actor or oversize payload is rejected before processing.',caveat:'Real malware scanning, decoder sandboxing and object storage are not simulated by the in-memory tests.',reference:'https://cheatsheetseries.owasp.org/cheatsheets/File_Upload_Cheat_Sheet.html'};
+const topics=Array.from({length:32},(_,i)=>{const id=`18.${String(Math.floor(i/8)+1).padStart(2,'0')}.${String(i%8+1).padStart(2,'0')}`;return {id,moduleId:id.slice(0,5),title:'Topic '+i};});
+const specs=Object.fromEntries(topics.map(x=>[x.id,{...spec,context:spec.context+x.id}]));
+function manuscript(topic,s){return `---\nid: "${topic.id}"\nmodule: "${topic.moduleId}"\ntitle: "${topic.title}"\nstatus: "draft-unverified"\nreadyToPublish: false\n---\n## Learning outcomes\n## Context\n${s.context}\n## Step 1\n${s.failure}\n## Step 2\n${s.correction}\n## Step 3\n${s.positive}\n${s.negative}\n${s.caveat}\n## Knowledge check\n## References\n${s.reference}\n## Publication conditions\nnode --test examples/p5-integrations/labs.test.mjs\n`}
+const articles=Object.fromEntries(topics.map(t=>[t.id,manuscript(t,specs[t.id])]));
+const run=(opts={})=>auditIntegrationTrack({catalog:{lessons:topics},specifications:specs,load:id=>articles[id],...opts});
+test('32 full canonical modules pass',()=>{const r=run();assert.equal(r.ok,true,r.errors.join('\n'));assert.equal(r.topics,32);assert.deepEqual(r.counts,{'18.01':8,'18.02':8,'18.03':8,'18.04':8});});
+test('missing source denied',()=>{const r=run({load:id=>{if(id===topics[0].id)throw Error('missing');return articles[id];}});assert.ok(r.errors.some(x=>x.includes('missing manuscript')));});
+test('incorrect frontmatter ID denied',()=>{const r=run({load:id=>articles[id].replace('id: "'+id+'"','id: "bad"')});assert.ok(r.errors.some(x=>x.includes('bad id')));});
+test('incorrect frontmatter title denied',()=>{const r=run({load:id=>articles[id].replace('title: "','title: "changed ')});assert.ok(r.errors.some(x=>x.includes('bad title')));});
+test('premature public flag denied',()=>{const r=run({load:id=>articles[id].replace('readyToPublish: false','readyToPublish: true')});assert.ok(r.errors.some(x=>x.includes('unsafe publication')));});
+test('missing guided step denied',()=>{const r=run({load:id=>articles[id].replace('## Step 2','## Deleted')});assert.ok(r.errors.some(x=>x.includes('missing step 2')));});
+test('missing official reference denied',()=>{const r=run({load:id=>articles[id].replace('https://cheatsheetseries.owasp.org/cheatsheets/File_Upload_Cheat_Sheet.html','https://example.org')});assert.ok(r.errors.some(x=>x.includes('missing official reference')));});
+test('missing lab command denied',()=>{const r=run({load:id=>articles[id].replace('node --test examples/p5-integrations/labs.test.mjs','no test')});assert.ok(r.errors.some(x=>x.includes('missing runnable lab')));});
+test('spec drift denied',()=>{const r=run({load:id=>articles[id].replace(spec.negative,'deleted acceptance case')});assert.ok(r.errors.some(x=>x.includes('spec drift negative')));});
+test('published topic denied',()=>{const r=run({publishedRegistry:'"18.02.02.mdx"'});assert.ok(r.errors.some(x=>x.includes('prematurely published 18.02.02')));});
+test('repeated scenario denied',()=>{const altered={...specs,[topics[1].id]:{...specs[topics[1].id],context:specs[topics[0].id].context}};const r=run({specifications:altered});assert.ok(r.errors.some(x=>x.includes('repeated scenario')));});
+test('orphan specification denied',()=>{const r=run({specifications:{...specs,'18.05.01':spec}});assert.ok(r.errors.some(x=>x.includes('orphan topic spec')));});
+test('less than 32 topics denied',()=>{const r=run({catalog:{lessons:topics.slice(1)}});assert.ok(r.errors.some(x=>x.includes('Expected 32')));});

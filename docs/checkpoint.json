@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-11-20",
+  "updatedAt": "2026-11-23",
   "baseline": {
     "branch": "main",
     "sha": "394e6d0f620f4740912b0d50cbcbbf5aecc83e8e",
@@ -9,9 +9,9 @@
     "productionUrl": "https://fullstack-academy-ecru.vercel.app/"
   },
   "development": {
-    "branch": "feat/p2-nestjs-32-authoring-20261120",
-    "state": "p2-nestjs-source-expansion-reconciled-against-main-no-runtime-qualification",
-    "note": "After source-only P1 PR #38 was merged to main with Vercel Git auto-deployment frozen, P2 PR #39 was reconciled by a real two-parent Git merge commit. All 32 NestJS 12 draft lessons (11.01-11.04), metadata, red and green TypeScript packs and the isolated Nest runtime scaffold were retained. Project source audits and offline/phase status now count 48 staged lessons (16 P1 plus 32 P2), 338 published, and 503 undrafted. No real Nest12 npm lock, build, HTTP/WebSocket/Postgres/browser or human accessibility approval has been established. P1 release gates and vercel.json freeze retained from main."
+    "branch": "feat/p5-track18-integrations-source-20261123",
+    "state": "p5-track18-integration-source-staged-not-published",
+    "note": "Source-staged 32 canonical Track 18 MDX teaching manuscripts plus a tested local file/mail/search/webhook suite and 13 mutation tests. 338 published remains unchanged; total staged drafts now 272, unstarted 279. Full Node24/Next/browser and real provider/DB qualification remain pending."
   },
   "snapshot": {
     "tracks": 28,
@@ -73,6 +73,6 @@
     "devHighFindings": 14,
     "exceptionExpires": "2026-12-02"
   },
-  "nextMilestone": "Qualify real Nest12 package resolution and tests, expand P2 11.02-11.04 semantic tests, and keep P2 unmerged until scoped runtime checks; separately publish RHF and Query only after their genuine gates.",
-  "status": "p1-rhf-eight-release-candidate-bundles-structurally-complete-not-published"
+  "nextMilestone": "Run actual full-checkout Node24 source/Next/browser tests, then qualify disposable real PostgreSQL search, signed object storage/scanning, email DNS/provider delivery and provider-specific webhook/durable inbox. Publish only after P1–P5 gates.",
+  "status": "p5-track18-32-of-32-source-only-staged-not-published"
 }
