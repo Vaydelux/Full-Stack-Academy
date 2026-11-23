@@ -9,9 +9,9 @@
     "productionUrl": "https://fullstack-academy-ecru.vercel.app/"
   },
   "development": {
-    "branch": "feat/p5-webhook-release-gate-hardening-20261123",
-    "state": "p5-http-webhook-header-authentication-fixed-offline-gate-coverage-staged",
-    "note": "P5 teaching webhook v2 binds provider/event ID/time/raw body; 81 real Node22 HTTP, 15 webhook, 20 PostgreSQL source guards and 12 offline-matrix mutation tests passed in a partial exact-blob checkout (128 total). Full Node24/Next/real PostgreSQL/provider/browser/manual accessibility gates NOT run. Published count unchanged 338, 272 unpublished drafts, 279 unauthored."
+    "branch": "feat/p5-encrypted-durable-webhook-inbox-20261123",
+    "state": "p5-encrypted-durable-inbox-source-verified-not-production-or-published",
+    "note": "Added optional encrypted file-backed, crash-recoverable synthetic webhook inbox for Track 18 with tenant-scoped signed deduplication, AES-256-GCM, fsync/rename, lease fencing, bounded attempts and stale-snapshot detection. 168/168 targeted Node22 tests passed on exact Git-blob matched code, including live loopback HTTP restart. No PostgreSQL server, Node24 full build or provider integration executed. 338 published unchanged."
   },
   "snapshot": {
     "tracks": 28,
@@ -73,6 +73,6 @@
     "devHighFindings": 14,
     "exceptionExpires": "2026-12-02"
   },
-  "nextMilestone": "Run clean Node24 npm ci, full verify:offline (now including P5), real PostgreSQL 17+ rollback-only SQL qualification, Nest/Prisma/Supabase runtime and browser/manual accessibility; do not promote unverified draft lessons or deploy.",
-  "status": "p5-source-release-matrix-hardened-not-published"
+  "nextMilestone": "Run clean full-checkout Node24 npm ci and verify:offline; real PostgreSQL 17 rollback SQL, provider-native webhook signature adapter, multi-process ACID backing store, key rotation tests and manual accessibility before publishing.",
+  "status": "p5-encrypted-durable-inbox-teaching-lab-not-production"
 }

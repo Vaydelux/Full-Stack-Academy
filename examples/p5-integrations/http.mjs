@@ -41,13 +41,14 @@ const readJson=async(req,limit=16_384)=>{
  return d;
 };
 
-export function createInstructorGateway({actors,secret,webhookBindings={},clock=()=>Date.now()}){
+export function createInstructorGateway({actors,secret,webhookBindings={},clock=()=>Date.now(),webhookInbox=null}){
  if(!Array.isArray(actors)||!actors.length||!actors.every(a=>idOk(a.tenantId)&&idOk(a.userId)&&['viewer','editor'].includes(a.role)))throw Error('invalid-fixture-actors');
  if(typeof secret!=='string'||secret.length<32)throw Error('weak-fixture-secret');
  const identities=new Map(actors.map(a=>[`${a.tenantId}\u0000${a.userId}`,{...a}]));
  if(identities.size!==actors.length)throw Error('duplicate-fixture-actor');
  const revocations=new Set(), intents=new Map(), assets=new Map(), deliveries=new Map();
- const search=new TenantSearch(), outbox=new MailOutbox(clock), inbox=new WebhookInbox();
+ const search=new TenantSearch(), outbox=new MailOutbox(clock), inbox=webhookInbox??new WebhookInbox();
+ if(!['accept','claim','settle'].every(name=>typeof inbox[name]==='function'))throw Error('invalid-instructor-webhook-inbox');
  let server,endpoint;
 
  const issueSession=({tenantId,userId,ttlMs=300_000})=>{
@@ -97,7 +98,13 @@ export function createInstructorGateway({actors,secret,webhookBindings={},clock=
     const digest=createHash('sha256').update(body).digest('hex');
     const old=deliveries.get(key);
     if(old&&old!==digest)throw FAIL(409,'delivery-conflict');
-    const receipt=inbox.accept({provider,tenantId:binding.tenantId,eventId,body,timestamp,signature,secret:binding.secret,now:clock()});
+    let receipt;
+    try{receipt=inbox.accept({provider,tenantId:binding.tenantId,eventId,body,timestamp,signature,secret:binding.secret,now:clock()});}
+    catch(error){
+     if(error?.message==='delivery-conflict')throw FAIL(409,'delivery-conflict');
+     if(error?.message==='inbox-capacity')throw FAIL(429,'inbox-capacity');
+     throw error;
+    }
     deliveries.set(key,digest);
     return reply(res,receipt.status==='accepted'?202:200,{status:receipt.status});
    }
@@ -186,5 +193,5 @@ export function createInstructorGateway({actors,secret,webhookBindings={},clock=
  const stop=()=>new Promise((resolve,reject)=>server.close(err=>err?reject(err):resolve()));
  const markScan=(id,outcome)=>{const a=assets.get(id);if(!a)throw Error('unknown-instructor-asset');assets.set(id,recordScan(a,outcome));};
  const setConsent=(tenantId,userId,enabled)=>{if(!identities.has(`${tenantId}\u0000${userId}`))throw Error('unknown-instructor-actor');outbox.setMarketingConsent(tenantId,userId,enabled);};
- return Object.freeze({start,stop,issueSession,markScan,setConsent,claimMail:id=>outbox.claim(id),settleMail:(id,result)=>outbox.settle(id,result),claimWebhook:id=>inbox.claim(id),settleWebhook:(id,ok)=>inbox.settle(id,ok)});
+ return Object.freeze({start,stop,issueSession,markScan,setConsent,claimMail:id=>outbox.claim(id),settleMail:(id,result)=>outbox.settle(id,result),claimWebhook:id=>inbox.claim(id),settleWebhook:(id,ok,leaseToken)=>inbox.settle(id,ok,leaseToken)});
 }

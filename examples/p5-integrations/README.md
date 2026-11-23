@@ -27,3 +27,29 @@ npm run test:release-gate-coverage
 ```
 
 The release gate's static matrix audit now rejects skipped P5 coverage. The gate itself still requires a full Node24 checkout and independently verified infrastructure, not just these local source tests.
+
+## Optional encrypted durable inbox teaching capstone (P5 continuation)
+
+The default HTTP teaching gateway remains ephemeral. For an **instructor-owned local disposable directory**, the new `DurableWebhookInbox` is an opt-in adapter for `createInstructorGateway({ webhookInbox })`. It persists verified webhook delivery IDs and encrypted payloads using AES-256-GCM, verifies bytes on re-open, prevents simple stale instance overwrites, and recovers abandoned claims after a bounded lease.
+
+```js
+import {mkdtempSync} from 'node:fs';
+import {tmpdir} from 'node:os';
+import {join} from 'node:path';
+import {randomBytes} from 'node:crypto';
+import {DurableWebhookInbox} from './durable-inbox.mjs';
+// This is disposable and not production storage or persistent key management.
+const folder=mkdtempSync(join(tmpdir(),'p5-inbox-'));
+const encryptionKey=randomBytes(32);
+const inbox=new DurableWebhookInbox({filePath:join(folder,'events.json'),encryptionKey});
+```
+
+Pass `webhookInbox: inbox` to `createInstructorGateway` alongside trusted synthetic actors and provider bindings. A claimed event returns an opaque `leaseToken`, required to settle the event. The same encryption key must be retained securely across restarts; a wrong key or corrupted ciphertext fails closed. The fixture stores **no real mail or cloud provider credentials**.
+
+```bash
+npm run test:p5-durable-inbox
+npm run test:p5-durable-http
+npm run test:release-gate-coverage
+```
+
+**Important limits:** Snapshot writes are single-process teaching primitives, not a distributed lock or PostgreSQL transaction. Multiple workers acting concurrently may still race; single-process stale detection is only a guard, not a complete concurrency solution. The encrypted file snapshot is bounded, no encryption-key rotation is implemented, and a real provider must have its own documented signature protocol. Use real PostgreSQL + transactional outbox/inbox and authentic vendor adapters before any production or curriculum-publication claim.
