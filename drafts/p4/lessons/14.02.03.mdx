@@ -1,0 +1,98 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["OAuth authenticates users through a configured provider; PKCE binds the authorization code flow to the initiating client. Callback destinations must be strictly allowlisted.","Derive the callback from an approved application origin and handle the returned code through a trusted auth callback that verifies flow state and exchanges the code for a session.","A correct redirect URL does not replace checking state, verifier association and identity/session freshness. Never place authorization codes or tokens in logs."]} />
+
+## Authentication problem
+
+**OAuth and PKCE.** OAuth authenticates users through a configured provider; PKCE binds the authorization code flow to the initiating client. Callback destinations must be strictly allowlisted.
+
+**Broken starting assumption:** The starter lets an untrusted redirect destination receive the OAuth callback flow, creating a redirect/session-handling risk.
+
+An application can show a signed-in UI and still lack a valid server-side session or permission to read a specific tenant's data. Authentication identifies the actor; authorization decides which resources that actor may use. This module trains both concepts without embedding production credentials in the examples.
+
+## Mental model and prerequisite
+
+Complete **14.02.02**. OAuth authenticates users through a configured provider; PKCE binds the authorization code flow to the initiating client. Callback destinations must be strictly allowlisted.
+
+The learner is expected to run these exercises against **a disposable local Supabase Auth project**, not a live customer tenant. Prisma ORM 7 and the Supabase Data API are separate access paths; each has its own session/role boundary. Changes to Auth libraries and Next.js cookie APIs must be checked against pinned runtime versions.
+
+**Predict:** The starter lets an untrusted redirect destination receive the OAuth callback flow, creating a redirect/session-handling risk. Explain how the starter could make a wrong access decision even though the code compiles.
+
+## Guided implementation
+
+<LessonStep number={1} title="Observe the invalid identity assumption" file="drafts/p4/labs/pkce-approved-redirects/starter.ts" expected="A clear unauthorized state or unsafe shortcut is identified.">
+
+```ts
+// An attacker may supply their own redirect URL.
+await supabase.auth.signInWithOAuth({
+  provider: "google", options: { redirectTo: suppliedRedirect },
+});
+```
+
+**Diagnosis:** The starter lets an untrusted redirect destination receive the OAuth callback flow, creating a redirect/session-handling risk.
+
+Identify where the caller controls input, how the session is refreshed, and whether the data used for an authorization decision was cryptographically verified or fetched from a trusted server-side membership table.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the authenticated flow" file="drafts/p4/labs/pkce-approved-redirects/solution.ts" expected="Use verified identity/session APIs and narrow resource access.">
+
+```ts
+const appOrigin = process.env.NEXT_PUBLIC_APP_ORIGIN;
+if (!appOrigin) throw new Error("Missing app origin");
+const redirectTo = new URL("/auth/callback", appOrigin).toString();
+const { error } = await supabase.auth.signInWithOAuth({
+  provider: "google", options: { redirectTo },
+});
+if (error) throw new Error("Unable to start sign-in");
+// Handle code exchange in the dedicated, trusted callback route.
+```
+
+**Repair reasoning:** Derive the callback from an approved application origin and handle the returned code through a trusted auth callback that verifies flow state and exchanges the code for a session.
+
+The code sample is a teaching excerpt; integrate it with the framework's generated types, secure cookie handling and a fail-closed route handler. Any example variable representing a role, application origin or tenant must be obtained from trusted configuration and server-side authorization.
+
+</LessonStep>
+
+<LessonStep number={3} title="Prove both allowed and rejected states" file="drafts/p4/labs/pkce-approved-redirects/acceptance.md" expected="One authenticated success and one negative session/authorization case are recorded.">
+
+**Allowed behavior:** In a local test identity provider flow, verify approved redirects, PKCE flow tracking, callback expiration and a single authenticated server session.
+
+**Denied behavior:** Inject an external redirectTo parameter and verify it is never passed to signInWithOAuth. Test an invalid or replayed callback code and expect failure.
+
+**Security limitations:** A correct redirect URL does not replace checking state, verifier association and identity/session freshness. Never place authorization codes or tokens in logs.
+
+A successful source integrity check cannot stand in for a real Auth token refresh, signed JWT verification, email delivery, OAuth callback or MFA challenge.
+
+</LessonStep>
+
+## Trust boundaries and operational choices
+
+OAuth authenticates users through a configured provider; PKCE binds the authorization code flow to the initiating client. Callback destinations must be strictly allowlisted.
+
+Derive the callback from an approved application origin and handle the returned code through a trusted auth callback that verifies flow state and exchanges the code for a session.
+
+A correct redirect URL does not replace checking state, verifier association and identity/session freshness. Never place authorization codes or tokens in logs.
+
+In production, model expired access tokens, refresh-token rotation, multiple concurrent tabs, CSRF/state handling where applicable, cookie attributes, MFA enrollment and logout propagation. Never rely on raw JWT decoding, a mutable cookie JSON field, an unverified redirect URL or a user-editable metadata claim to authorize administrative actions.
+
+## Bug Hunt
+
+1. State the attack or broken state: The starter lets an untrusted redirect destination receive the OAuth callback flow, creating a redirect/session-handling risk.
+2. Derive the expected authenticated behavior and the required forbidden behavior.
+3. Apply the identity/session fix: Derive the callback from an approved application origin and handle the returned code through a trusted auth callback that verifies flow state and exchanges the code for a session.
+4. Reproduce a real negative case: Inject an external redirectTo parameter and verify it is never passed to signInWithOAuth. Test an invalid or replayed callback code and expect failure.
+5. Explain which separate boundary still needs verification: A correct redirect URL does not replace checking state, verifier association and identity/session freshness. Never place authorization codes or tokens in logs.
+
+<Misconception claim={"The starter lets an untrusted redirect destination receive the OAuth callback flow, creating a redirect/session-handling risk."} correction={"OAuth authenticates users through a configured provider; PKCE binds the authorization code flow to the initiating client. Callback destinations must be strictly allowlisted."} />
+<KnowledgeCheck question={"What is the security role of PKCE in OAuth?"} choices={["Encrypting database tables","Binding the authorization code exchange to the initiating client flow","Granting all users the same identity","Replacing callback URL allowlists"]} correctIndex={1} explanation={"Derive the callback from an approved application origin and handle the returned code through a trusted auth callback that verifies flow state and exchanges the code for a session."} misconception={"A correct redirect URL does not replace checking state, verifier association and identity/session freshness. Never place authorization codes or tokens in logs."} lessonId="14.02.03" />
+
+## Further practice
+
+Implement a fully guarded Next.js server route for the exercise. Record the exact installed Supabase package versions, redirect configuration, pending/active session transitions and the response for an unauthorized second test identity. Run an integration test with Mailpit for email flows and a protected route that never trusts client-editable role data.
+
+## Official references
+
+- [Supabase Auth official guide — OAuth and PKCE](https://supabase.com/docs/guides/auth/sessions/pkce-flow)
+- [Supabase server-side Auth](https://supabase.com/docs/guides/auth/server-side)

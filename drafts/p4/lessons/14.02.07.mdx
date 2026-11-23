@@ -1,0 +1,94 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Supabase Auth sessions use access and refresh tokens with rotation and sign-out scopes. A logout action should invalidate the intended sessions and clear cached private UI state.","Call Supabase Auth signOut with deliberate scope, handle errors and clear private application caches; protect sensitive routes with fresh verification rather than a local UI flag.","Global sign-out revokes refresh tokens but may not make every already-issued JWT immediately fail RLS checks. Use session freshness validation for high-risk actions."]} />
+
+## Authentication problem
+
+**Secure sign-out and session refresh.** Supabase Auth sessions use access and refresh tokens with rotation and sign-out scopes. A logout action should invalidate the intended sessions and clear cached private UI state.
+
+**Broken starting assumption:** The starter only toggles browser UI state. It does not ask Supabase Auth to revoke refresh sessions or invalidate server-side access decisions.
+
+An application can show a signed-in UI and still lack a valid server-side session or permission to read a specific tenant's data. Authentication identifies the actor; authorization decides which resources that actor may use. This module trains both concepts without embedding production credentials in the examples.
+
+## Mental model and prerequisite
+
+Complete **14.02.06**. Supabase Auth sessions use access and refresh tokens with rotation and sign-out scopes. A logout action should invalidate the intended sessions and clear cached private UI state.
+
+The learner is expected to run these exercises against **a disposable local Supabase Auth project**, not a live customer tenant. Prisma ORM 7 and the Supabase Data API are separate access paths; each has its own session/role boundary. Changes to Auth libraries and Next.js cookie APIs must be checked against pinned runtime versions.
+
+**Predict:** The starter only toggles browser UI state. It does not ask Supabase Auth to revoke refresh sessions or invalidate server-side access decisions. Explain how the starter could make a wrong access decision even though the code compiles.
+
+## Guided implementation
+
+<LessonStep number={1} title="Observe the invalid identity assumption" file="drafts/p4/labs/session-signout-refresh/starter.ts" expected="A clear unauthorized state or unsafe shortcut is identified.">
+
+```ts
+// Clearing local UI state alone leaves refresh sessions elsewhere intact.
+localStorage.removeItem("isSignedIn");
+setIsSignedIn(false);
+```
+
+**Diagnosis:** The starter only toggles browser UI state. It does not ask Supabase Auth to revoke refresh sessions or invalidate server-side access decisions.
+
+Identify where the caller controls input, how the session is refreshed, and whether the data used for an authorization decision was cryptographically verified or fetched from a trusted server-side membership table.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the authenticated flow" file="drafts/p4/labs/session-signout-refresh/solution.ts" expected="Use verified identity/session APIs and narrow resource access.">
+
+```ts
+const { error } = await supabase.auth.signOut({ scope: "global" });
+if (error) throw new Error("Sign-out failed");
+// Clear application-only cached private state after successful sign-out.
+await queryClient.clear();
+// Server routes still validate fresh session and resource authorization.
+```
+
+**Repair reasoning:** Call Supabase Auth signOut with deliberate scope, handle errors and clear private application caches; protect sensitive routes with fresh verification rather than a local UI flag.
+
+The code sample is a teaching excerpt; integrate it with the framework's generated types, secure cookie handling and a fail-closed route handler. Any example variable representing a role, application origin or tenant must be obtained from trusted configuration and server-side authorization.
+
+</LessonStep>
+
+<LessonStep number={3} title="Prove both allowed and rejected states" file="drafts/p4/labs/session-signout-refresh/acceptance.md" expected="One authenticated success and one negative session/authorization case are recorded.">
+
+**Allowed behavior:** Test sign-out scopes, token refresh, multi-device behavior and session revocation timing using two local test clients.
+
+**Denied behavior:** Sign out in one browser and try refreshing the private page or using another session; verify the intended global/local session behavior. Note that previously issued JWTs may last until expiry.
+
+**Security limitations:** Global sign-out revokes refresh tokens but may not make every already-issued JWT immediately fail RLS checks. Use session freshness validation for high-risk actions.
+
+A successful source integrity check cannot stand in for a real Auth token refresh, signed JWT verification, email delivery, OAuth callback or MFA challenge.
+
+</LessonStep>
+
+## Trust boundaries and operational choices
+
+Supabase Auth sessions use access and refresh tokens with rotation and sign-out scopes. A logout action should invalidate the intended sessions and clear cached private UI state.
+
+Call Supabase Auth signOut with deliberate scope, handle errors and clear private application caches; protect sensitive routes with fresh verification rather than a local UI flag.
+
+Global sign-out revokes refresh tokens but may not make every already-issued JWT immediately fail RLS checks. Use session freshness validation for high-risk actions.
+
+In production, model expired access tokens, refresh-token rotation, multiple concurrent tabs, CSRF/state handling where applicable, cookie attributes, MFA enrollment and logout propagation. Never rely on raw JWT decoding, a mutable cookie JSON field, an unverified redirect URL or a user-editable metadata claim to authorize administrative actions.
+
+## Bug Hunt
+
+1. State the attack or broken state: The starter only toggles browser UI state. It does not ask Supabase Auth to revoke refresh sessions or invalidate server-side access decisions.
+2. Derive the expected authenticated behavior and the required forbidden behavior.
+3. Apply the identity/session fix: Call Supabase Auth signOut with deliberate scope, handle errors and clear private application caches; protect sensitive routes with fresh verification rather than a local UI flag.
+4. Reproduce a real negative case: Sign out in one browser and try refreshing the private page or using another session; verify the intended global/local session behavior. Note that previously issued JWTs may last until expiry.
+5. Explain which separate boundary still needs verification: Global sign-out revokes refresh tokens but may not make every already-issued JWT immediately fail RLS checks. Use session freshness validation for high-risk actions.
+
+<Misconception claim={"The starter only toggles browser UI state. It does not ask Supabase Auth to revoke refresh sessions or invalidate server-side access decisions."} correction={"Supabase Auth sessions use access and refresh tokens with rotation and sign-out scopes. A logout action should invalidate the intended sessions and clear cached private UI state."} />
+<KnowledgeCheck question={"What is wrong with simply setting isSignedIn to false during logout?"} choices={["It disables password hashing","It does not revoke Supabase refresh sessions or clear server authorization","It stops cookies from being saved permanently","It always logs out every device"]} correctIndex={1} explanation={"Call Supabase Auth signOut with deliberate scope, handle errors and clear private application caches; protect sensitive routes with fresh verification rather than a local UI flag."} misconception={"Global sign-out revokes refresh tokens but may not make every already-issued JWT immediately fail RLS checks. Use session freshness validation for high-risk actions."} lessonId="14.02.07" />
+
+## Further practice
+
+Implement a fully guarded Next.js server route for the exercise. Record the exact installed Supabase package versions, redirect configuration, pending/active session transitions and the response for an unauthorized second test identity. Run an integration test with Mailpit for email flows and a protected route that never trusts client-editable role data.
+
+## Official references
+
+- [Supabase Auth official guide — Secure sign-out and session refresh](https://supabase.com/docs/guides/auth/signout)
+- [Supabase server-side Auth](https://supabase.com/docs/guides/auth/server-side)

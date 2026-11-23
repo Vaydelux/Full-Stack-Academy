@@ -1,0 +1,20 @@
+{
+  "id": "14.02.05",
+  "title": "Email templates and redirect URLs",
+  "trackId": "14",
+  "moduleId": "14.02",
+  "prerequisites": [
+    "14.02.04"
+  ],
+  "labSlug": "safe-auth-email-redirects",
+  "sourceStatus": "draft-unverified",
+  "runtimeQualification": "not-run",
+  "reviewStatus": "unreviewed",
+  "readyToPublish": false,
+  "estimatedMinutes": 65,
+  "officialReferences": [
+    "https://supabase.com/docs/guides/auth/redirect-urls",
+    "https://supabase.com/docs/guides/auth/server-side"
+  ],
+  "exerciseFormat": "ts"
+}

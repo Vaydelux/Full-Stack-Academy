@@ -1,0 +1,20 @@
+{
+  "id": "14.02.08",
+  "title": "Lab safe login flow",
+  "trackId": "14",
+  "moduleId": "14.02",
+  "prerequisites": [
+    "14.02.07"
+  ],
+  "labSlug": "end-to-end-login-boundary",
+  "sourceStatus": "draft-unverified",
+  "runtimeQualification": "not-run",
+  "reviewStatus": "unreviewed",
+  "readyToPublish": false,
+  "estimatedMinutes": 100,
+  "officialReferences": [
+    "https://supabase.com/docs/guides/auth/server-side",
+    "https://supabase.com/docs/guides/auth/server-side"
+  ],
+  "exerciseFormat": "ts"
+}

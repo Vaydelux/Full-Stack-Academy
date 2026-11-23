@@ -1,0 +1,16 @@
+{
+  "id": "draft.p4.signup-verification-state",
+  "lessonId": "14.02.01",
+  "moduleId": "14.02",
+  "sourceStatus": "draft-unverified",
+  "readyToPublish": false,
+  "runtimeQualification": "not-run",
+  "reviewStatus": "unreviewed",
+  "qualificationKind": "manual-supabase-auth",
+  "language": "ts",
+  "starter": "drafts/p4/labs/signup-verification-state/starter.ts",
+  "solution": "drafts/p4/labs/signup-verification-state/solution.ts",
+  "acceptanceDoc": "drafts/p4/labs/signup-verification-state/acceptance.md",
+  "officialReference": "https://supabase.com/docs/guides/auth/passwords",
+  "requiresRealAuthFlow": true
+}

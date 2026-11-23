@@ -1,0 +1,74 @@
+{
+  "moduleId": "14.02",
+  "trackId": "14",
+  "title": "Auth & Identity",
+  "sourceStatus": "draft-unverified",
+  "runtimeQualification": "not-run",
+  "readyToPublish": false,
+  "lessons": [
+    {
+      "id": "14.02.01",
+      "title": "Sign up sign in and verification",
+      "slug": "signup-verification-state",
+      "extension": "ts",
+      "language": "ts",
+      "qualificationKind": "manual-supabase-auth"
+    },
+    {
+      "id": "14.02.02",
+      "title": "Next.js SSR cookies",
+      "slug": "nextjs-ssr-cookie-boundary",
+      "extension": "ts",
+      "language": "ts",
+      "qualificationKind": "manual-supabase-auth"
+    },
+    {
+      "id": "14.02.03",
+      "title": "OAuth and PKCE",
+      "slug": "pkce-approved-redirects",
+      "extension": "ts",
+      "language": "ts",
+      "qualificationKind": "manual-supabase-auth"
+    },
+    {
+      "id": "14.02.04",
+      "title": "MFA and recovery",
+      "slug": "mfa-enrollment-and-verify",
+      "extension": "ts",
+      "language": "ts",
+      "qualificationKind": "manual-supabase-auth"
+    },
+    {
+      "id": "14.02.05",
+      "title": "Email templates and redirect URLs",
+      "slug": "safe-auth-email-redirects",
+      "extension": "ts",
+      "language": "ts",
+      "qualificationKind": "manual-supabase-auth"
+    },
+    {
+      "id": "14.02.06",
+      "title": "JWT claims and JWKS",
+      "slug": "verified-jwt-claims",
+      "extension": "ts",
+      "language": "ts",
+      "qualificationKind": "manual-supabase-auth"
+    },
+    {
+      "id": "14.02.07",
+      "title": "Secure sign-out and session refresh",
+      "slug": "session-signout-refresh",
+      "extension": "ts",
+      "language": "ts",
+      "qualificationKind": "manual-supabase-auth"
+    },
+    {
+      "id": "14.02.08",
+      "title": "Lab safe login flow",
+      "slug": "end-to-end-login-boundary",
+      "extension": "ts",
+      "language": "ts",
+      "qualificationKind": "manual-supabase-auth"
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "id": "draft.p4.verified-jwt-claims",
+  "lessonId": "14.02.06",
+  "moduleId": "14.02",
+  "sourceStatus": "draft-unverified",
+  "readyToPublish": false,
+  "runtimeQualification": "not-run",
+  "reviewStatus": "unreviewed",
+  "qualificationKind": "manual-supabase-auth",
+  "language": "ts",
+  "starter": "drafts/p4/labs/verified-jwt-claims/starter.ts",
+  "solution": "drafts/p4/labs/verified-jwt-claims/solution.ts",
+  "acceptanceDoc": "drafts/p4/labs/verified-jwt-claims/acceptance.md",
+  "officialReference": "https://supabase.com/docs/guides/auth/signing-keys",
+  "requiresRealAuthFlow": true
+}

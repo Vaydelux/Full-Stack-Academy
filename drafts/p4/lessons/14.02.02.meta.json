@@ -1,0 +1,20 @@
+{
+  "id": "14.02.02",
+  "title": "Next.js SSR cookies",
+  "trackId": "14",
+  "moduleId": "14.02",
+  "prerequisites": [
+    "14.02.01"
+  ],
+  "labSlug": "nextjs-ssr-cookie-boundary",
+  "sourceStatus": "draft-unverified",
+  "runtimeQualification": "not-run",
+  "reviewStatus": "unreviewed",
+  "readyToPublish": false,
+  "estimatedMinutes": 65,
+  "officialReferences": [
+    "https://supabase.com/docs/guides/auth/server-side/creating-a-client",
+    "https://supabase.com/docs/guides/auth/server-side"
+  ],
+  "exerciseFormat": "ts"
+}

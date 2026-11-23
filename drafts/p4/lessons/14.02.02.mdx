@@ -1,0 +1,108 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Supabase SSR uses cookies to make an authenticated session available to Next.js server code. Token refresh must propagate Set-Cookie through a route or Proxy that can write cookies.","Use createServerClient with correct getAll/setAll cookie adapters and ensure the framework's refresh Proxy is configured. Guard sensitive server data with getClaims or getUser and resource-specific authorization.","Do not rely on getSession's user object as independent server authorization. Cookie adapters and token refresh behavior vary with framework version and must be verified against the installed @supabase/ssr."]} />
+
+## Authentication problem
+
+**Next.js SSR cookies.** Supabase SSR uses cookies to make an authenticated session available to Next.js server code. Token refresh must propagate Set-Cookie through a route or Proxy that can write cookies.
+
+**Broken starting assumption:** The starter treats attacker-controlled cookie JSON as an authority for administrator access, without verifying a token or its issuer.
+
+An application can show a signed-in UI and still lack a valid server-side session or permission to read a specific tenant's data. Authentication identifies the actor; authorization decides which resources that actor may use. This module trains both concepts without embedding production credentials in the examples.
+
+## Mental model and prerequisite
+
+Complete **14.02.01**. Supabase SSR uses cookies to make an authenticated session available to Next.js server code. Token refresh must propagate Set-Cookie through a route or Proxy that can write cookies.
+
+The learner is expected to run these exercises against **a disposable local Supabase Auth project**, not a live customer tenant. Prisma ORM 7 and the Supabase Data API are separate access paths; each has its own session/role boundary. Changes to Auth libraries and Next.js cookie APIs must be checked against pinned runtime versions.
+
+**Predict:** The starter treats attacker-controlled cookie JSON as an authority for administrator access, without verifying a token or its issuer. Explain how the starter could make a wrong access decision even though the code compiles.
+
+## Guided implementation
+
+<LessonStep number={1} title="Observe the invalid identity assumption" file="drafts/p4/labs/nextjs-ssr-cookie-boundary/starter.ts" expected="A clear unauthorized state or unsafe shortcut is identified.">
+
+```ts
+// Unsafe: a server component trusts a decoded cookie without checking Auth.
+const raw = request.cookies.get("user")?.value;
+return JSON.parse(raw ?? "{}").isAdmin;
+```
+
+**Diagnosis:** The starter treats attacker-controlled cookie JSON as an authority for administrator access, without verifying a token or its issuer.
+
+Identify where the caller controls input, how the session is refreshed, and whether the data used for an authorization decision was cryptographically verified or fetched from a trusted server-side membership table.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the authenticated flow" file="drafts/p4/labs/nextjs-ssr-cookie-boundary/solution.ts" expected="Use verified identity/session APIs and narrow resource access.">
+
+```ts
+import { cookies } from "next/headers";
+import { createServerClient } from "@supabase/ssr";
+
+export async function serverSupabase() {
+  const cookieStore = await cookies();
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!;
+  return createServerClient(url, key, {
+    cookies: {
+      getAll() { return cookieStore.getAll(); },
+      setAll(toSet) {
+        // Cookie writes belong in a Server Action, Route Handler or refresh Proxy.
+        try { toSet.forEach(({ name, value, options }) =>
+          cookieStore.set(name, value, options)); }
+        catch { /* Read-only Server Component: configured Proxy refreshes */ }
+      },
+    },
+  });
+}
+```
+
+**Repair reasoning:** Use createServerClient with correct getAll/setAll cookie adapters and ensure the framework's refresh Proxy is configured. Guard sensitive server data with getClaims or getUser and resource-specific authorization.
+
+The code sample is a teaching excerpt; integrate it with the framework's generated types, secure cookie handling and a fail-closed route handler. Any example variable representing a role, application origin or tenant must be obtained from trusted configuration and server-side authorization.
+
+</LessonStep>
+
+<LessonStep number={3} title="Prove both allowed and rejected states" file="drafts/p4/labs/nextjs-ssr-cookie-boundary/acceptance.md" expected="One authenticated success and one negative session/authorization case are recorded.">
+
+**Allowed behavior:** Use a local Next.js build plus Supabase Auth test user; test refresh, logout, reload and server-rendered unauthorized redirects. Verify cookie writes reach the response from a writable context.
+
+**Denied behavior:** Tamper with a browser cookie to claim isAdmin, or use an expired access token; server access must remain denied or refresh according to configured session rules.
+
+**Security limitations:** Do not rely on getSession's user object as independent server authorization. Cookie adapters and token refresh behavior vary with framework version and must be verified against the installed @supabase/ssr.
+
+A successful source integrity check cannot stand in for a real Auth token refresh, signed JWT verification, email delivery, OAuth callback or MFA challenge.
+
+</LessonStep>
+
+## Trust boundaries and operational choices
+
+Supabase SSR uses cookies to make an authenticated session available to Next.js server code. Token refresh must propagate Set-Cookie through a route or Proxy that can write cookies.
+
+Use createServerClient with correct getAll/setAll cookie adapters and ensure the framework's refresh Proxy is configured. Guard sensitive server data with getClaims or getUser and resource-specific authorization.
+
+Do not rely on getSession's user object as independent server authorization. Cookie adapters and token refresh behavior vary with framework version and must be verified against the installed @supabase/ssr.
+
+In production, model expired access tokens, refresh-token rotation, multiple concurrent tabs, CSRF/state handling where applicable, cookie attributes, MFA enrollment and logout propagation. Never rely on raw JWT decoding, a mutable cookie JSON field, an unverified redirect URL or a user-editable metadata claim to authorize administrative actions.
+
+## Bug Hunt
+
+1. State the attack or broken state: The starter treats attacker-controlled cookie JSON as an authority for administrator access, without verifying a token or its issuer.
+2. Derive the expected authenticated behavior and the required forbidden behavior.
+3. Apply the identity/session fix: Use createServerClient with correct getAll/setAll cookie adapters and ensure the framework's refresh Proxy is configured. Guard sensitive server data with getClaims or getUser and resource-specific authorization.
+4. Reproduce a real negative case: Tamper with a browser cookie to claim isAdmin, or use an expired access token; server access must remain denied or refresh according to configured session rules.
+5. Explain which separate boundary still needs verification: Do not rely on getSession's user object as independent server authorization. Cookie adapters and token refresh behavior vary with framework version and must be verified against the installed @supabase/ssr.
+
+<Misconception claim={"The starter treats attacker-controlled cookie JSON as an authority for administrator access, without verifying a token or its issuer."} correction={"Supabase SSR uses cookies to make an authenticated session available to Next.js server code. Token refresh must propagate Set-Cookie through a route or Proxy that can write cookies."} />
+<KnowledgeCheck question={"What is wrong with trusting a JSON cookie's isAdmin field on the server?"} choices={["Cookies are always secret","The cookie may be attacker-controlled and is not a verified claim","It makes queries too fast","Prisma requires it"]} correctIndex={1} explanation={"Use createServerClient with correct getAll/setAll cookie adapters and ensure the framework's refresh Proxy is configured. Guard sensitive server data with getClaims or getUser and resource-specific authorization."} misconception={"Do not rely on getSession's user object as independent server authorization. Cookie adapters and token refresh behavior vary with framework version and must be verified against the installed @supabase/ssr."} lessonId="14.02.02" />
+
+## Further practice
+
+Implement a fully guarded Next.js server route for the exercise. Record the exact installed Supabase package versions, redirect configuration, pending/active session transitions and the response for an unauthorized second test identity. Run an integration test with Mailpit for email flows and a protected route that never trusts client-editable role data.
+
+## Official references
+
+- [Supabase Auth official guide — Next.js SSR cookies](https://supabase.com/docs/guides/auth/server-side/creating-a-client)
+- [Supabase server-side Auth](https://supabase.com/docs/guides/auth/server-side)

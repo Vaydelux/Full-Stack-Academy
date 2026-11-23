@@ -1,0 +1,16 @@
+{
+  "id": "draft.p4.mfa-enrollment-and-verify",
+  "lessonId": "14.02.04",
+  "moduleId": "14.02",
+  "sourceStatus": "draft-unverified",
+  "readyToPublish": false,
+  "runtimeQualification": "not-run",
+  "reviewStatus": "unreviewed",
+  "qualificationKind": "manual-supabase-auth",
+  "language": "ts",
+  "starter": "drafts/p4/labs/mfa-enrollment-and-verify/starter.ts",
+  "solution": "drafts/p4/labs/mfa-enrollment-and-verify/solution.ts",
+  "acceptanceDoc": "drafts/p4/labs/mfa-enrollment-and-verify/acceptance.md",
+  "officialReference": "https://supabase.com/docs/guides/auth/auth-mfa/totp",
+  "requiresRealAuthFlow": true
+}

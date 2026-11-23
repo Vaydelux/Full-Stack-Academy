@@ -1,0 +1,100 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["JWT signing keys and JWKS enable cryptographic validation of access-token claims. getClaims validates token signature/expiry; getUser consults Auth for a fresher identity check when revocation matters.","Use the Supabase Auth verification APIs and resolve role/tenant permissions from server-controlled data. Never authorize based on raw_user_meta_data or an unverified decoded payload.","An unexpired JWT can remain signature-valid after a session is revoked. Select getUser/session checks for operations needing fresher session revocation guarantees."]} />
+
+## Authentication problem
+
+**JWT claims and JWKS.** JWT signing keys and JWKS enable cryptographic validation of access-token claims. getClaims validates token signature/expiry; getUser consults Auth for a fresher identity check when revocation matters.
+
+**Broken starting assumption:** Base64-decoding a JWT without verifying its signature or expiry lets an attacker forge claims such as an admin role.
+
+An application can show a signed-in UI and still lack a valid server-side session or permission to read a specific tenant's data. Authentication identifies the actor; authorization decides which resources that actor may use. This module trains both concepts without embedding production credentials in the examples.
+
+## Mental model and prerequisite
+
+Complete **14.02.05**. JWT signing keys and JWKS enable cryptographic validation of access-token claims. getClaims validates token signature/expiry; getUser consults Auth for a fresher identity check when revocation matters.
+
+The learner is expected to run these exercises against **a disposable local Supabase Auth project**, not a live customer tenant. Prisma ORM 7 and the Supabase Data API are separate access paths; each has its own session/role boundary. Changes to Auth libraries and Next.js cookie APIs must be checked against pinned runtime versions.
+
+**Predict:** Base64-decoding a JWT without verifying its signature or expiry lets an attacker forge claims such as an admin role. Explain how the starter could make a wrong access decision even though the code compiles.
+
+## Guided implementation
+
+<LessonStep number={1} title="Observe the invalid identity assumption" file="drafts/p4/labs/verified-jwt-claims/starter.ts" expected="A clear unauthorized state or unsafe shortcut is identified.">
+
+```ts
+const payload = JSON.parse(
+  atob(token.split(".")[1]),
+);
+// Wrong: decoding is not signature verification.
+if (payload.app_metadata?.role === "admin") allowAdmin();
+```
+
+**Diagnosis:** Base64-decoding a JWT without verifying its signature or expiry lets an attacker forge claims such as an admin role.
+
+Identify where the caller controls input, how the session is refreshed, and whether the data used for an authorization decision was cryptographically verified or fetched from a trusted server-side membership table.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the authenticated flow" file="drafts/p4/labs/verified-jwt-claims/solution.ts" expected="Use verified identity/session APIs and narrow resource access.">
+
+```ts
+const { data, error } = await supabase.auth.getClaims();
+if (error || !data?.claims?.sub)
+  throw new Error("Unauthenticated");
+const userId = data.claims.sub;
+// For sensitive revocation-dependent operations, fetch fresh user/session info.
+const fresh = await supabase.auth.getUser();
+if (fresh.error || fresh.data.user?.id !== userId)
+  throw new Error("Session invalid");
+// Authorization still requires trusted server membership/permission lookup.
+```
+
+**Repair reasoning:** Use the Supabase Auth verification APIs and resolve role/tenant permissions from server-controlled data. Never authorize based on raw_user_meta_data or an unverified decoded payload.
+
+The code sample is a teaching excerpt; integrate it with the framework's generated types, secure cookie handling and a fail-closed route handler. Any example variable representing a role, application origin or tenant must be obtained from trusted configuration and server-side authorization.
+
+</LessonStep>
+
+<LessonStep number={3} title="Prove both allowed and rejected states" file="drafts/p4/labs/verified-jwt-claims/acceptance.md" expected="One authenticated success and one negative session/authorization case are recorded.">
+
+**Allowed behavior:** Using local Auth test users and rotated/expired tokens, verify getClaims, getUser and role lookup behavior. Record access-token expiry semantics; don't overstate immediate revocation of JWTs.
+
+**Denied behavior:** Provide an altered JWT payload with isAdmin true and a stale/revoked session; the privileged route must reject the forgery and apply its revocation freshness requirements.
+
+**Security limitations:** An unexpired JWT can remain signature-valid after a session is revoked. Select getUser/session checks for operations needing fresher session revocation guarantees.
+
+A successful source integrity check cannot stand in for a real Auth token refresh, signed JWT verification, email delivery, OAuth callback or MFA challenge.
+
+</LessonStep>
+
+## Trust boundaries and operational choices
+
+JWT signing keys and JWKS enable cryptographic validation of access-token claims. getClaims validates token signature/expiry; getUser consults Auth for a fresher identity check when revocation matters.
+
+Use the Supabase Auth verification APIs and resolve role/tenant permissions from server-controlled data. Never authorize based on raw_user_meta_data or an unverified decoded payload.
+
+An unexpired JWT can remain signature-valid after a session is revoked. Select getUser/session checks for operations needing fresher session revocation guarantees.
+
+In production, model expired access tokens, refresh-token rotation, multiple concurrent tabs, CSRF/state handling where applicable, cookie attributes, MFA enrollment and logout propagation. Never rely on raw JWT decoding, a mutable cookie JSON field, an unverified redirect URL or a user-editable metadata claim to authorize administrative actions.
+
+## Bug Hunt
+
+1. State the attack or broken state: Base64-decoding a JWT without verifying its signature or expiry lets an attacker forge claims such as an admin role.
+2. Derive the expected authenticated behavior and the required forbidden behavior.
+3. Apply the identity/session fix: Use the Supabase Auth verification APIs and resolve role/tenant permissions from server-controlled data. Never authorize based on raw_user_meta_data or an unverified decoded payload.
+4. Reproduce a real negative case: Provide an altered JWT payload with isAdmin true and a stale/revoked session; the privileged route must reject the forgery and apply its revocation freshness requirements.
+5. Explain which separate boundary still needs verification: An unexpired JWT can remain signature-valid after a session is revoked. Select getUser/session checks for operations needing fresher session revocation guarantees.
+
+<Misconception claim={"Base64-decoding a JWT without verifying its signature or expiry lets an attacker forge claims such as an admin role."} correction={"JWT signing keys and JWKS enable cryptographic validation of access-token claims. getClaims validates token signature/expiry; getUser consults Auth for a fresher identity check when revocation matters."} />
+<KnowledgeCheck question={"Does decoding a JWT payload prove it came from Supabase Auth?"} choices={["Yes","No, validate signature, issuer, expiry and session context","Only when the payload contains email","Yes if stored in cookies"]} correctIndex={1} explanation={"Use the Supabase Auth verification APIs and resolve role/tenant permissions from server-controlled data. Never authorize based on raw_user_meta_data or an unverified decoded payload."} misconception={"An unexpired JWT can remain signature-valid after a session is revoked. Select getUser/session checks for operations needing fresher session revocation guarantees."} lessonId="14.02.06" />
+
+## Further practice
+
+Implement a fully guarded Next.js server route for the exercise. Record the exact installed Supabase package versions, redirect configuration, pending/active session transitions and the response for an unauthorized second test identity. Run an integration test with Mailpit for email flows and a protected route that never trusts client-editable role data.
+
+## Official references
+
+- [Supabase Auth official guide — JWT claims and JWKS](https://supabase.com/docs/guides/auth/signing-keys)
+- [Supabase server-side Auth](https://supabase.com/docs/guides/auth/server-side)

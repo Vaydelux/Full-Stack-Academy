@@ -1,0 +1,16 @@
+{
+  "id": "draft.p4.safe-auth-email-redirects",
+  "lessonId": "14.02.05",
+  "moduleId": "14.02",
+  "sourceStatus": "draft-unverified",
+  "readyToPublish": false,
+  "runtimeQualification": "not-run",
+  "reviewStatus": "unreviewed",
+  "qualificationKind": "manual-supabase-auth",
+  "language": "ts",
+  "starter": "drafts/p4/labs/safe-auth-email-redirects/starter.ts",
+  "solution": "drafts/p4/labs/safe-auth-email-redirects/solution.ts",
+  "acceptanceDoc": "drafts/p4/labs/safe-auth-email-redirects/acceptance.md",
+  "officialReference": "https://supabase.com/docs/guides/auth/redirect-urls",
+  "requiresRealAuthFlow": true
+}
