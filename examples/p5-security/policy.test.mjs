@@ -1,0 +1,16 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import {authorize,findAuthorized,auditFields,allowlistedHttpsUrl} from "./policy.mjs";
+const principal={active:true,memberships:[{tenantId:"alpha",role:"editor",active:true}]};
+const docs=[{id:"a",tenantId:"alpha"},{id:"b",tenantId:"beta"}];
+test("same tenant read and write",()=>{assert.equal(authorize({principal,resource:docs[0],action:"read"}),true);assert.equal(authorize({principal,resource:docs[0],action:"write"}),true)});
+test("cross tenant read and update denied",()=>{assert.equal(findAuthorized({principal,records:docs,id:"b"}),null);assert.equal(findAuthorized({principal,records:docs,id:"b",action:"write"}),null)});
+test("same tenant record resolves",()=>assert.equal(findAuthorized({principal,records:docs,id:"a"}),docs[0]));
+test("viewer cannot mutate",()=>assert.equal(authorize({principal:{active:true,memberships:[{tenantId:"alpha",role:"viewer",active:true}]},resource:docs[0],action:"write"}),false));
+test("unknown role is denied",()=>assert.equal(authorize({principal:{active:true,memberships:[{tenantId:"alpha",role:"admin",active:true}]},resource:docs[0],action:"read"}),false));
+test("revoked member cannot read",()=>assert.equal(authorize({principal:{active:true,memberships:[{tenantId:"alpha",role:"owner",active:false}]},resource:docs[0],action:"read"}),false));
+test("suspended principal cannot read",()=>assert.equal(authorize({principal:{...principal,active:false},resource:docs[0],action:"read"}),false));
+test("locked document denies write",()=>assert.equal(authorize({principal,resource:{...docs[0],locked:true},action:"write"}),false));
+test("deleted document denies read",()=>assert.equal(authorize({principal,resource:{...docs[0],deleted:true},action:"read"}),false));
+test("audit rejects extra fields and scrubs bearer values",()=>assert.deepEqual(auditFields({token:"secret",action:"Bearer secret",result:"denied",correlationId:"abc"}),{action:"Bearer [REDACTED]",result:"denied",correlationId:"abc"}));
+test("static HTTPS hostname allowlist",()=>{assert.equal(allowlistedHttpsUrl("https://api.example.com/v1",["api.example.com"]),true);for(const url of ["http://api.example.com","https://api.example.com.evil.net","https://127.0.0.1","https://u:p@api.example.com","https://api.example.com:8080"])assert.equal(allowlistedHttpsUrl(url,["api.example.com"]),false)});

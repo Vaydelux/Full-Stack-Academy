@@ -1,0 +1,61 @@
+---
+id: "15.02.01"
+title: "RBAC and permission matrices"
+module: "15.02"
+status: "draft-unverified"
+readyToPublish: false
+---
+
+# RBAC and permission matrices
+
+> Source-only teaching manuscript. Not yet available to learners or runtime qualified.
+
+## Learning outcomes
+
+Explain the security boundary, predict a failure, implement or describe a safe correction, and distinguish verified tests from an untested design.
+
+## Context
+
+A support agent reads tickets but must not export billing data.
+
+## Step 1 — Mental model
+
+Roles must be server-derived and permissions mapped to explicit actions.
+
+Record the actor, trusted identity, data flow, requested action, target object and decision boundary. Client-supplied values and authenticated identities are not interchangeable.
+
+## Step 2 — Debug the unsafe design
+
+Client-supplied owner role or wildcard permissions grant export.
+
+**Guided task:** In a synthetic local fixture, trace an adversarial request. Identify exactly what is controlled by the caller, what should happen, and which fact is mistakenly trusted. Do not use real third-party systems or personal data.
+
+## Step 3 — Correct and verify
+
+Deny unknown roles and use a reviewable action matrix.
+
+**Lab acceptance target:** Verify viewer/editor/owner and unknown-role grants and denials.
+
+Document both a permitted happy path and a rejected adversarial path. Integration claims require the actual HTTP, database, identity, or browser boundary rather than only mocks.
+
+## Misconception
+
+A passing UI check or source-only checklist cannot establish secure production behavior. An observed negative test and reviewed trust boundary are essential.
+
+## Knowledge check
+
+1. Which input is attacker-controlled?
+2. Where does the trusted authorization or validation decision occur?
+3. Which negative test would fail under the unsafe design?
+4. Which environment or evidence remains unverified after source review?
+
+**Instructor rubric:** Require actor, resource, action, violated boundary, specific mitigation, and reproducible positive/negative observations. Missing evidence is not a pass.
+
+## References
+
+- [Official or project reference](https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html)
+- [OWASP ASVS](https://owasp.org/www-project-application-security-verification-standard/)
+
+## Publication conditions
+
+Reviewer-approved lesson, isolated runnable exercise, current-source verification, real Node24 build/integration results, browser/a11y acceptance and sequential P1→P5 release approval. Do not add to live published registry.
