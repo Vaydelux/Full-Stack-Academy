@@ -1,0 +1,53 @@
+services:
+  postgres:
+    image: postgres:17-bookworm
+    environment:
+      POSTGRES_DB: p5_lab_security
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: p5_disposable_postgres_only
+    tmpfs:
+      - /var/lib/postgresql/data:rw,nosuid,size=512m
+    volumes:
+      - ./init-lab.sql:/docker-entrypoint-initdb.d/01-init-lab.sql:ro
+    networks: [academy-p5-internal]
+    healthcheck:
+      test: ["CMD-SHELL", "PGPASSWORD=$$POSTGRES_PASSWORD psql -h 127.0.0.1 -U postgres -d p5_lab_security -Atqc \"SELECT count(*) FROM pg_roles WHERE rolname='p5_qualifier'\" | grep -qx 1"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+  qualifier:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    user: node
+    read_only: true
+    tmpfs:
+      - /tmp:rw,nosuid,size=128m,mode=1777
+    volumes:
+      - ../../../:/academy:ro
+    working_dir: /academy
+    network_mode: service:postgres
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      P5_LAB_DATABASE_URL: postgresql://p5_qualifier:p5_disposable_local_only@127.0.0.1:5432/p5_lab_security
+      P5_LAB_CONFIRM: DISPOSABLE_ONLY
+      P5_HTTP_DB_CONFIRM: ISOLATED_CLUSTER
+      P5_LAB_RLS_CONFIRM: ALLOW_ROLES
+      NPM_CONFIG_CACHE: /tmp/npm-cache
+      NODE_ENV: test
+    command:
+      - sh
+      - -ec
+      - |
+        node --version
+        node -e "if (!process.version.startsWith('v24.')) process.exit(2)"
+        psql --version
+        npm run test:p5-bundle
+        npm run qualify:p5:postgresql
+        npm run qualify:p5:rls
+        npm run qualify:p5:http-db
+networks:
+  academy-p5-internal:
+    internal: true
