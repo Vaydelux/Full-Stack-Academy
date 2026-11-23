@@ -1,0 +1,15 @@
+{
+  "id": "draft.p4.detect-and-resolve-schema-drift",
+  "lessonId": "13.03.08",
+  "moduleId": "13.03",
+  "sourceStatus": "draft-unverified",
+  "readyToPublish": false,
+  "runtimeQualification": "not-run",
+  "reviewStatus": "unreviewed",
+  "qualificationKind": "manual-prisma-integration",
+  "language": "bash",
+  "starter": "drafts/p4/labs/detect-and-resolve-schema-drift/starter.sh",
+  "solution": "drafts/p4/labs/detect-and-resolve-schema-drift/solution.sh",
+  "acceptanceDoc": "drafts/p4/labs/detect-and-resolve-schema-drift/acceptance.md",
+  "officialReference": "https://www.prisma.io/docs/orm/v7/prisma-migrate/workflows/troubleshooting"
+}

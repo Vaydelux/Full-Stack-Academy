@@ -1,0 +1,15 @@
+{
+  "id": "draft.p4.safe-prisma-query-telemetry",
+  "lessonId": "13.03.06",
+  "moduleId": "13.03",
+  "sourceStatus": "draft-unverified",
+  "readyToPublish": false,
+  "runtimeQualification": "not-run",
+  "reviewStatus": "unreviewed",
+  "qualificationKind": "manual-prisma-integration",
+  "language": "ts",
+  "starter": "drafts/p4/labs/safe-prisma-query-telemetry/starter.ts",
+  "solution": "drafts/p4/labs/safe-prisma-query-telemetry/solution.ts",
+  "acceptanceDoc": "drafts/p4/labs/safe-prisma-query-telemetry/acceptance.md",
+  "officialReference": "https://www.prisma.io/docs/orm/v7/observability-and-logging/logging"
+}

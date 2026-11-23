@@ -1,0 +1,19 @@
+{
+  "id": "13.03.02",
+  "title": "Connection pooling",
+  "trackId": "13",
+  "moduleId": "13.03",
+  "labSlug": "bounded-adapter-pool",
+  "prerequisites": [
+    "13.03.01"
+  ],
+  "sourceStatus": "draft-unverified",
+  "readyToPublish": false,
+  "runtimeQualification": "not-run",
+  "reviewStatus": "unreviewed",
+  "estimatedMinutes": 70,
+  "officialReferences": [
+    "https://www.prisma.io/docs/orm/v7/prisma-client/setup-and-configuration/databases-connections/connection-pool"
+  ],
+  "exerciseFormat": "ts"
+}

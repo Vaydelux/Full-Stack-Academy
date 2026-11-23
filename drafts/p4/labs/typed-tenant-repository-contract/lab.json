@@ -1,0 +1,15 @@
+{
+  "id": "draft.p4.typed-tenant-repository-contract",
+  "lessonId": "13.03.07",
+  "moduleId": "13.03",
+  "sourceStatus": "draft-unverified",
+  "readyToPublish": false,
+  "runtimeQualification": "not-run",
+  "reviewStatus": "unreviewed",
+  "qualificationKind": "manual-prisma-integration",
+  "language": "ts",
+  "starter": "drafts/p4/labs/typed-tenant-repository-contract/starter.ts",
+  "solution": "drafts/p4/labs/typed-tenant-repository-contract/solution.ts",
+  "acceptanceDoc": "drafts/p4/labs/typed-tenant-repository-contract/acceptance.md",
+  "officialReference": "https://www.prisma.io/docs/orm/v7/prisma-client/queries/crud"
+}

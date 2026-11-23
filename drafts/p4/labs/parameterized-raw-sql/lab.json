@@ -1,0 +1,15 @@
+{
+  "id": "draft.p4.parameterized-raw-sql",
+  "lessonId": "13.03.01",
+  "moduleId": "13.03",
+  "sourceStatus": "draft-unverified",
+  "readyToPublish": false,
+  "runtimeQualification": "not-run",
+  "reviewStatus": "unreviewed",
+  "qualificationKind": "manual-prisma-integration",
+  "language": "ts",
+  "starter": "drafts/p4/labs/parameterized-raw-sql/starter.ts",
+  "solution": "drafts/p4/labs/parameterized-raw-sql/solution.ts",
+  "acceptanceDoc": "drafts/p4/labs/parameterized-raw-sql/acceptance.md",
+  "officialReference": "https://www.prisma.io/docs/orm/v7/prisma-client/using-raw-sql/raw-queries"
+}

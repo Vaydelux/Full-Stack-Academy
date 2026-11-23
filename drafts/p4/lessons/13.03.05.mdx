@@ -1,0 +1,110 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["PostgreSQL schemas separate namespaces and can support permission boundaries. Prisma multi-schema modeling uses datasource schemas and explicit @@schema assignments.","Declare intended schemas and map each model deliberately. Test actual GRANT/revoke privileges and confirm the private schema is not Data API-exposed.","A PostgreSQL schema name or Prisma @@schema does not itself provide access control. Misconfigured grants, SECURITY DEFINER functions and privileged Prisma roles can still leak data."]} />
+
+## Architectural challenge
+
+**Multi-schema considerations.** PostgreSQL schemas separate namespaces and can support permission boundaries. Prisma multi-schema modeling uses datasource schemas and explicit @@schema assignments.
+
+**Reproducible failure:** A service maps a private internal audit model into a default exposed application schema, confusing Data API exposure with server-only persistence.
+
+When a service evolves from a single-developer prototype into an API used by several organizations, an apparently valid query may introduce security gaps, schema drift, or operational load. Before looking at the corrected code, describe the invariant and the actor or environment whose behavior violates it.
+
+## Prerequisite and mental model
+
+Complete **13.03.04**. PostgreSQL schemas separate namespaces and can support permission boundaries. Prisma multi-schema modeling uses datasource schemas and explicit @@schema assignments.
+
+This is a **draft, not a published or framework-qualified lab**. The snippets illustrate one isolated boundary. In an actual application, Prisma Client must be generated using the selected version-pinned Prisma ORM v7 toolchain and PostgreSQL driver adapter. Connection handling and table ownership must match the application's database role.
+
+**Predict the defect:** A service maps a private internal audit model into a default exposed application schema, confusing Data API exposure with server-only persistence.
+
+## Three-stage laboratory
+
+<LessonStep number={1} title="Observe the broken persistence behavior" file="drafts/p4/labs/prisma-multi-schema-boundaries/starter.prisma" expected="Identify the specific database, authorization or deployment invariant that the starter violates.">
+
+```prisma
+datasource db {
+  provider = "postgresql"
+}
+model AuditEvent {
+  id Int @id @default(autoincrement())
+  action String
+}
+```
+
+**Why it fails:** A service maps a private internal audit model into a default exposed application schema, confusing Data API exposure with server-only persistence.
+
+Record the real failure on a disposable environment rather than asserting that code inspection constitutes a runtime test.
+
+</LessonStep>
+
+<LessonStep number={2} title="Apply the narrow corrected boundary" file="drafts/p4/labs/prisma-multi-schema-boundaries/solution.prisma" expected="The data and deployment invariant is explicitly enforced or observable.">
+
+```prisma
+datasource db {
+  provider = "postgresql"
+  schemas = ["app", "audit"]
+}
+model AuditEvent {
+  id Int @id @default(autoincrement())
+  action String
+  @@schema("audit")
+}
+model Task {
+  id Int @id @default(autoincrement())
+  title String
+  @@schema("app")
+}
+```
+
+**Why it is safer:** Declare intended schemas and map each model deliberately. Test actual GRANT/revoke privileges and confirm the private schema is not Data API-exposed.
+
+Do not assume a successful CLI or TypeScript compile proves that the caller was authorized. Generated types protect shapes, not per-request permissions. Similarly, a DB transaction cannot roll back independent external side effects.
+
+</LessonStep>
+
+<LessonStep number={3} title="Prove real positive and negative cases" file="drafts/p4/labs/prisma-multi-schema-boundaries/acceptance.md" expected="Record one allowed and one denied/error outcome with exact runtime and versions.">
+
+**Expected positive case:** Generate Prisma client and migrations, inspect physical schema names and server role grants against an isolated test DB.
+
+**Required negative case:** Connect as the public API role and attempt to read audit.AuditEvent. Expect a privilege/exposure denial while the dedicated audit service role can access it.
+
+**What remains unverified:** A PostgreSQL schema name or Prisma @@schema does not itself provide access control. Misconfigured grants, SECURITY DEFINER functions and privileged Prisma roles can still leak data.
+
+The acceptance checklist is deliberately not marked complete: it needs a real Prisma ORM v7 generated client, a disposable PostgreSQL database and independently observed results.
+
+</LessonStep>
+
+## Design trade-offs and real-world constraints
+
+PostgreSQL schemas separate namespaces and can support permission boundaries. Prisma multi-schema modeling uses datasource schemas and explicit @@schema assignments.
+
+Declare intended schemas and map each model deliberately. Test actual GRANT/revoke privileges and confirm the private schema is not Data API-exposed.
+
+A PostgreSQL schema name or Prisma @@schema does not itself provide access control. Misconfigured grants, SECURITY DEFINER functions and privileged Prisma roles can still leak data.
+
+In a multi-tenant API, input validation, role-aware database credentials, optimistic concurrency, migration review and response-shape controls must be considered together. Favor bounded queries and explicit domain operations over returning raw privileged ORM interfaces to HTTP handlers. Record the query plan or migration state instead of guessing.
+
+## Bug Hunt
+
+1. Make a concrete failure prediction: A service maps a private internal audit model into a default exposed application schema, confusing Data API exposure with server-only persistence.
+2. Write the regression assertion before implementing the fix.
+3. Apply the instructor change: Declare intended schemas and map each model deliberately. Test actual GRANT/revoke privileges and confirm the private schema is not Data API-exposed.
+4. Attempt the forbidden operation: Connect as the public API role and attempt to read audit.AuditEvent. Expect a privilege/exposure denial while the dedicated audit service role can access it.
+5. Explain the residual operational limitation: A PostgreSQL schema name or Prisma @@schema does not itself provide access control. Misconfigured grants, SECURITY DEFINER functions and privileged Prisma roles can still leak data.
+
+<Misconception claim={"A service maps a private internal audit model into a default exposed application schema, confusing Data API exposure with server-only persistence."} correction={"PostgreSQL schemas separate namespaces and can support permission boundaries. Prisma multi-schema modeling uses datasource schemas and explicit @@schema assignments."} />
+
+<KnowledgeCheck question={"What does @@schema do for a Prisma model?"} choices={["Sign JWTs","Map the model to a PostgreSQL schema namespace","Encrypt its columns","Authorize all tenant members"]} correctIndex={1} explanation={"Declare intended schemas and map each model deliberately. Test actual GRANT/revoke privileges and confirm the private schema is not Data API-exposed."} misconception={"A PostgreSQL schema name or Prisma @@schema does not itself provide access control. Misconfigured grants, SECURITY DEFINER functions and privileged Prisma roles can still leak data."} lessonId="13.03.05" />
+
+## Extended practice
+
+Apply the lesson to a hypothetical inventory ERP API. Include the verified tenant and allowed product scope in the service boundary, measure actual database behavior where relevant, and specify what belongs in the migration history versus the runtime repository. Add tests proving that attempts from a second tenant do not change or disclose data.
+
+All code here is **source-authored but not runtime-qualified**. A real database and human review remain mandatory before lesson publication.
+
+## Official references
+
+- [Official reference — Multi-schema considerations](https://www.prisma.io/docs/orm/v7/orm-schema/data-model/multi-schema)
+- [Prisma ORM v7 documentation](https://www.prisma.io/docs/orm/v7)

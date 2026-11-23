@@ -1,0 +1,7 @@
+datasource db {
+  provider = "postgresql"
+}
+model AuditEvent {
+  id Int @id @default(autoincrement())
+  action String
+}

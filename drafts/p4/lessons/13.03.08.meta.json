@@ -1,0 +1,19 @@
+{
+  "id": "13.03.08",
+  "title": "Bug Hunt migration drift",
+  "trackId": "13",
+  "moduleId": "13.03",
+  "labSlug": "detect-and-resolve-schema-drift",
+  "prerequisites": [
+    "13.03.07"
+  ],
+  "sourceStatus": "draft-unverified",
+  "readyToPublish": false,
+  "runtimeQualification": "not-run",
+  "reviewStatus": "unreviewed",
+  "estimatedMinutes": 95,
+  "officialReferences": [
+    "https://www.prisma.io/docs/orm/v7/prisma-migrate/workflows/troubleshooting"
+  ],
+  "exerciseFormat": "bash"
+}

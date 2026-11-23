@@ -1,0 +1,74 @@
+{
+  "moduleId": "13.03",
+  "title": "Advanced Persistence",
+  "trackId": "13",
+  "sourceStatus": "draft-unverified",
+  "readyToPublish": false,
+  "runtimeQualification": "not-run",
+  "lessons": [
+    {
+      "id": "13.03.01",
+      "title": "Raw SQL escape hatches",
+      "slug": "parameterized-raw-sql",
+      "language": "ts",
+      "extension": "ts",
+      "qualificationKind": "manual-prisma-integration"
+    },
+    {
+      "id": "13.03.02",
+      "title": "Connection pooling",
+      "slug": "bounded-adapter-pool",
+      "language": "ts",
+      "extension": "ts",
+      "qualificationKind": "manual-prisma-integration"
+    },
+    {
+      "id": "13.03.03",
+      "title": "Prisma migration histories",
+      "slug": "reviewed-migration-histories",
+      "language": "bash",
+      "extension": "sh",
+      "qualificationKind": "manual-prisma-integration"
+    },
+    {
+      "id": "13.03.04",
+      "title": "Expand-contract changes",
+      "slug": "expand-backfill-contract-prisma",
+      "language": "sql",
+      "extension": "sql",
+      "qualificationKind": "manual-prisma-integration"
+    },
+    {
+      "id": "13.03.05",
+      "title": "Multi-schema considerations",
+      "slug": "prisma-multi-schema-boundaries",
+      "language": "prisma",
+      "extension": "prisma",
+      "qualificationKind": "manual-prisma-integration"
+    },
+    {
+      "id": "13.03.06",
+      "title": "Query logging and tracing",
+      "slug": "safe-prisma-query-telemetry",
+      "language": "ts",
+      "extension": "ts",
+      "qualificationKind": "manual-prisma-integration"
+    },
+    {
+      "id": "13.03.07",
+      "title": "Typed repository interfaces",
+      "slug": "typed-tenant-repository-contract",
+      "language": "ts",
+      "extension": "ts",
+      "qualificationKind": "manual-prisma-integration"
+    },
+    {
+      "id": "13.03.08",
+      "title": "Bug Hunt migration drift",
+      "slug": "detect-and-resolve-schema-drift",
+      "language": "bash",
+      "extension": "sh",
+      "qualificationKind": "manual-prisma-integration"
+    }
+  ]
+}

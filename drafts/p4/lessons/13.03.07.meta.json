@@ -1,0 +1,19 @@
+{
+  "id": "13.03.07",
+  "title": "Typed repository interfaces",
+  "trackId": "13",
+  "moduleId": "13.03",
+  "labSlug": "typed-tenant-repository-contract",
+  "prerequisites": [
+    "13.03.06"
+  ],
+  "sourceStatus": "draft-unverified",
+  "readyToPublish": false,
+  "runtimeQualification": "not-run",
+  "reviewStatus": "unreviewed",
+  "estimatedMinutes": 70,
+  "officialReferences": [
+    "https://www.prisma.io/docs/orm/v7/prisma-client/queries/crud"
+  ],
+  "exerciseFormat": "ts"
+}
