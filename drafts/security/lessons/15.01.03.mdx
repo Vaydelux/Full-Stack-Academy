@@ -1,0 +1,62 @@
+---
+id: "15.01.03"
+title: "OWASP ASVS control mapping"
+status: "draft-unverified"
+module: "15.01"
+track: "15"
+publication: false
+---
+
+# OWASP ASVS control mapping
+
+> **Draft — not published or runtime-qualified.** This instructor manuscript uses an original multi-tenant workspace scenario. It does not claim that any production API was audited.
+
+## Learning outcomes
+
+After completing this lesson, you should be able to explain the underlying security boundary, identify a realistic failure, propose a testable mitigation, and write evidence that distinguishes a control from an aspiration.
+
+## The scenario
+
+A team announces that its app is 'ASVS compliant' because the login page works.
+
+## Step 1 — Build the mental model
+
+Pick an explicit ASVS version and verification level; map threats to relevant control identifiers and objective test evidence.
+
+Write down the trusted principal, requested operation, resource identifier, and where authorization or validation must happen. A browser payload is never authoritative merely because it passes schema validation.
+
+## Step 2 — Investigate the failure
+
+The team ticks 'complete' after seeing frontend validation and never checks that its API rejects bypass requests.
+
+**Prediction:** What information or action becomes available to an attacker? Write one request that should fail, identify the expected status/response without leaking another tenant's data, and specify what must *not* appear in logs.
+
+## Step 3 — Design and verify the fix
+
+Record a requirement, control identifier, implementation location, positive and negative test, reviewer, and result for each item.
+
+**Practice task:** Create a small traceability table for account recovery, object-level authorization, and secret handling; mark untested controls as unverified.
+
+Your acceptance criteria must include a positive authorized case and a negative adversarial case. Use the actual identity and persistence boundary where applicable; mocks alone do not prove isolation.
+
+## Misconception to challenge
+
+A checklist checkbox without reproducible acceptance evidence is not a verified security control.
+
+## Knowledge check
+
+1. Which input is controlled by the attacker in this scenario?
+2. Where does authority originate, and why must the check execute server-side?
+3. What negative test proves this specific failure is addressed?
+4. Which evidence remains missing after a static source review?
+
+**Instructor marking guide:** Answers must name the principal, resource, trust boundary, concrete forbidden action and a repeatable test result. General claims such as “we have authentication” do not earn verification credit.
+
+## Reference
+
+- [OWASP ASVS](https://owasp.org/www-project-application-security-verification-standard/)
+- [OWASP Application Security Verification Standard](https://owasp.org/www-project-application-security-verification-standard/)
+
+## Publication readiness
+
+Source authored only. Before publication: security/editorial reviewer, current-version reference audit, implementation-oriented runnable negative tests, browser reading and accessibility review, and all existing phase promotion gates. Do not register as completed or published.
