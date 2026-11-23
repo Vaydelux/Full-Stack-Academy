@@ -1,6 +1,7 @@
 // Single-machine release-candidate quality gate.
 // Runs only repository-owned local npm scripts. Does not contact Vercel or GitHub Actions.
 import { spawnSync } from 'node:child_process';
+import { requireReleaseNodeRuntime } from './release-runtime.mjs';
 
 const steps = [
   'test:js-syntax',
@@ -46,6 +47,7 @@ const steps = [
   'test:publication-phases',
   'test:course-roadmap',
   'test:p4-source',
+  'test:release-runtime',
   'test:postgresql-modeling-source',
   'test:postgresql-p3-source',
   'test:postgresql-drafts',
@@ -69,9 +71,13 @@ const steps = [
   'build',
 ];
 
-const major = Number.parseInt(process.versions.node.split('.')[0], 10);
-if (major !== 24) {
-  console.warn(`Recommended local toolchain is Node.js 24; detected ${process.version}. Verify compiler compatibility before release.`);
+// The release gate must not report a successful build on an unqualified Node version.
+// Individual source-only unit tests can still run on other Node versions.
+try {
+  requireReleaseNodeRuntime(process.version);
+} catch (error) {
+  console.error('OFFLINE QUALITY GATE BLOCKED:', error.message);
+  process.exit(1);
 }
 
 const isWindows = process.platform === 'win32';

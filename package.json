@@ -454,9 +454,10 @@
     "test:postgresql-p3-source": "node examples/postgresql-p3/scripts/verify-source.mjs --check && node --test examples/postgresql-p3/tests/source.test.mjs examples/postgresql-p3/tests/qualify-source.test.mjs",
     "status:postgresql-p3": "node examples/postgresql-p3/scripts/verify-source.mjs --json",
     "qualify:postgresql:p3": "node examples/postgresql-p3/scripts/qualify.mjs",
-    "test:p4-source": "node examples/p4-foundations/scripts/verify-source.mjs --check && node --test examples/p4-foundations/tests/source.test.mjs examples/p4-foundations/tests/upload-intent.test.mjs",
+    "test:p4-source": "node examples/p4-foundations/scripts/verify-source.mjs --check && node --test examples/p4-foundations/tests/source.test.mjs examples/p4-foundations/tests/upload-intent.test.mjs examples/p4-foundations/tests/reconcile-published.test.mjs",
     "status:p4": "node examples/p4-foundations/scripts/verify-source.mjs --json",
-    "test:p4-upload-intent": "node --test examples/p4-foundations/tests/upload-intent.test.mjs"
+    "test:p4-upload-intent": "node --test examples/p4-foundations/tests/upload-intent.test.mjs",
+    "test:release-runtime": "node --test tests/release-runtime.test.mjs"
   },
   "dependencies": {
     "clsx": "^2.1.1",
