@@ -1,0 +1,70 @@
+---
+id: "18.03.02"
+title: "Trigram search"
+module: "18.03"
+status: "draft-unverified"
+readyToPublish: false
+---
+
+# Trigram search
+
+> Source-only instructor manuscript. Not published; no Node 24, cloud provider, production database, Next browser or human accessibility qualification is claimed by this page.
+
+## Learning outcomes
+
+Explain the trust boundary for this feature, design the secure state transition, and demonstrate both successful and adversarial behavior. Distinguish a teaching fixture from a qualified production integration.
+
+## Context
+
+A support search should match misspelled account names and partial terms.
+
+**Architectural concern:** Keep authenticated identity and tenant scope under server control. Treat browser inputs, provider callbacks, file bytes and retry state as untrusted until validated.
+
+## Step 1 — Model the failure
+
+Substring-only matching forces full scans and cannot score fuzzy candidate similarity.
+
+Draw the caller → API boundary → persisted state → worker/provider → response chain. Identify which fields the browser or external service may alter and which identities only the server may authorize.
+
+## Step 2 — Design the correction
+
+Compare pg_trgm similarity, GIN/GiST indexes and sensible minimum thresholds on realistic data.
+
+Identify an appropriate transactional or idempotency boundary and specify a stable identifier for retries. Record what must be denied, rather than assuming a happy-path demonstration is sufficient.
+
+## Step 3 — Practice and verify
+
+A dedicated PostgreSQL test can show a typo match and measure its query plan.
+
+**Negative acceptance target:** A loose similarity threshold must not expose hidden or another tenant's records.
+
+From the root of the repository, execute the local P5 integrations teaching tests:
+
+```bash
+node --test examples/p5-integrations/labs.test.mjs
+```
+
+The corresponding module exercises **TenantSearch: tenant isolation, ranking, stale cursor rejection and tombstones**. Inspect the lab implementation in `examples/p5-integrations/labs.mjs`, find the nearest positive and negative test, and write an additional case for your own scenario. Some topics require **separate external qualification** instead of pretending the local fixture implements the full provider or SQL feature.
+
+## Engineering review
+
+**Hardening boundary:** The in-memory scorer is not PostgreSQL FTS, pg_trgm, Meilisearch or Typesense. Benchmark indexing, relevance and real SQL RLS independently.
+
+For a production implementation, document the secret-owner or principal, durability plan, error and recovery policy, rate/resource bounds, privacy guarantees, observability without sensitive payloads, and the credential/version-rotation procedure.
+
+## Knowledge check
+
+1. Which authenticated actor, external sender, or tenant owns the data in this scenario?
+2. How does the unsafe design fail, and what specific negative test proves it?
+3. Where must an idempotency key, version, signature or permission be checked?
+4. Which part of this lesson still requires a real provider, browser, database or human review before publishing?
+
+**Instructor assessment:** Require a concrete input, observable positive and negative output, and a written explanation of any untested external dependency. A conceptual answer alone is not runtime certification.
+
+## References
+
+- [Authoritative specification or security guide](https://www.postgresql.org/docs/current/textsearch.html)
+
+## Publication conditions
+
+Editorially review this manuscript and its exercise; run real Node 24, full Academy Next.js build, browser keyboard/screen-reader and 200% zoom checks. For provider/database topics, independently run real-service authentication, authorization, idempotency, failure and recovery tests. Publish only through the established sequential P1–P5 phase gates; never add this draft to live course registries from source-only evidence.

@@ -1,0 +1,70 @@
+---
+id: "18.02.06"
+title: "Idempotent sending"
+module: "18.02"
+status: "draft-unverified"
+readyToPublish: false
+---
+
+# Idempotent sending
+
+> Source-only instructor manuscript. Not published; no Node 24, cloud provider, production database, Next browser or human accessibility qualification is claimed by this page.
+
+## Learning outcomes
+
+Explain the trust boundary for this feature, design the secure state transition, and demonstrate both successful and adversarial behavior. Distinguish a teaching fixture from a qualified production integration.
+
+## Context
+
+A checkout handler retries when a provider send response is lost after commit.
+
+**Architectural concern:** Keep authenticated identity and tenant scope under server control. Treat browser inputs, provider callbacks, file bytes and retry state as untrusted until validated.
+
+## Step 1 — Model the failure
+
+Generating a fresh message ID on each retry duplicates receipts and password-reset notifications.
+
+Draw the caller → API boundary → persisted state → worker/provider → response chain. Identify which fields the browser or external service may alter and which identities only the server may authorize.
+
+## Step 2 — Design the correction
+
+Persist a tenant/user-scoped logical send key and reconcile unknown outcomes before retry.
+
+Identify an appropriate transactional or idempotency boundary and specify a stable identifier for retries. Record what must be denied, rather than assuming a happy-path demonstration is sufficient.
+
+## Step 3 — Practice and verify
+
+Repeated scheduling with the same key resolves to one outbox job.
+
+**Negative acceptance target:** Reusing the key for a different template is rejected rather than mutating the original message.
+
+From the root of the repository, execute the local P5 integrations teaching tests:
+
+```bash
+node --test examples/p5-integrations/labs.test.mjs
+```
+
+The corresponding module exercises **MailOutbox: consent, idempotency, bounded retry and dead letters**. Inspect the lab implementation in `examples/p5-integrations/labs.mjs`, find the nearest positive and negative test, and write an additional case for your own scenario. Some topics require **separate external qualification** instead of pretending the local fixture implements the full provider or SQL feature.
+
+## Engineering review
+
+**Hardening boundary:** The teaching outbox does not send an email, inspect DNS, run React Email, or connect to a delivery provider; these are independent live release gates.
+
+For a production implementation, document the secret-owner or principal, durability plan, error and recovery policy, rate/resource bounds, privacy guarantees, observability without sensitive payloads, and the credential/version-rotation procedure.
+
+## Knowledge check
+
+1. Which authenticated actor, external sender, or tenant owns the data in this scenario?
+2. How does the unsafe design fail, and what specific negative test proves it?
+3. Where must an idempotency key, version, signature or permission be checked?
+4. Which part of this lesson still requires a real provider, browser, database or human review before publishing?
+
+**Instructor assessment:** Require a concrete input, observable positive and negative output, and a written explanation of any untested external dependency. A conceptual answer alone is not runtime certification.
+
+## References
+
+- [Authoritative specification or security guide](https://www.rfc-editor.org/rfc/rfc5321)
+
+## Publication conditions
+
+Editorially review this manuscript and its exercise; run real Node 24, full Academy Next.js build, browser keyboard/screen-reader and 200% zoom checks. For provider/database topics, independently run real-service authentication, authorization, idempotency, failure and recovery tests. Publish only through the established sequential P1–P5 phase gates; never add this draft to live course registries from source-only evidence.
