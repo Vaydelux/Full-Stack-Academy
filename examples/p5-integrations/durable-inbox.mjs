@@ -13,21 +13,22 @@ const decrypt=(key,row)=>{try{const iv=Buffer.from(row.iv,'base64url'),c=createD
 const copyMeta=row=>({id:row.id,provider:row.provider,tenantId:row.tenantId,eventId:row.eventId,status:row.status,attempts:row.attempts,leaseExpiresAt:row.leaseExpiresAt});
 
 export class DurableWebhookInbox {
- #path;#key;#clock;#leaseMs;#maxEvents;#maxAttempts;#rows;#snapshot;
- constructor({filePath,encryptionKey,clock=()=>Date.now(),leaseMs=30_000,maxEvents=1000,maxAttempts=4}){
+ #path;#key;#clock;#leaseMs;#maxEvents;#maxAttempts;#maxStoreBytes;#rows;#snapshot;
+ constructor({filePath,encryptionKey,clock=()=>Date.now(),leaseMs=30_000,maxEvents=1000,maxAttempts=4,maxStoreBytes=16*1024*1024}){
   assert(typeof filePath==='string'&&isAbsolute(filePath),'invalid-store-path');
   assert(Buffer.isBuffer(encryptionKey)&&encryptionKey.length===32,'invalid-encryption-key');
   assert(Number.isSafeInteger(leaseMs)&&leaseMs>=100&&leaseMs<=300_000,'invalid-lease');
   assert(Number.isSafeInteger(maxEvents)&&maxEvents>=1&&maxEvents<=10_000,'invalid-capacity');
   assert(Number.isSafeInteger(maxAttempts)&&maxAttempts>=1&&maxAttempts<=20,'invalid-attempts');
+  assert(Number.isSafeInteger(maxStoreBytes)&&maxStoreBytes>=512&&maxStoreBytes<=16*1024*1024,'invalid-store-limit');
   const dir=dirname(filePath),info=lstatSync(dir);
   assert(info.isDirectory()&&!info.isSymbolicLink()&&(info.mode&0o077)===0,'insecure-store-directory');
   assert(realpathSync(dir)===dir,'noncanonical-store-directory');
   this.#path=resolve(filePath);this.#key=Buffer.from(encryptionKey);this.#clock=clock;
-  this.#leaseMs=leaseMs;this.#maxEvents=maxEvents;this.#maxAttempts=maxAttempts;
+  this.#leaseMs=leaseMs;this.#maxEvents=maxEvents;this.#maxAttempts=maxAttempts;this.#maxStoreBytes=maxStoreBytes;
   if(existsSync(filePath)){
    const st=lstatSync(filePath);
-   assert(st.isFile()&&!st.isSymbolicLink()&&(st.mode&0o077)===0&&st.size<=16*1024*1024,'insecure-store-file');
+   assert(st.isFile()&&!st.isSymbolicLink()&&(st.mode&0o077)===0&&st.size<=maxStoreBytes,'insecure-store-file');
    let state;try{const saved=readFileSync(filePath);this.#snapshot=digest(saved);state=JSON.parse(saved.toString('utf8'));}catch{throw Error('corrupt-inbox');}
    assert(state?.version===1&&Array.isArray(state.rows)&&state.rows.length<=maxEvents,'corrupt-inbox');
    const entries=new Map();
@@ -47,6 +48,7 @@ export class DurableWebhookInbox {
   const tmp=this.#path+'.'+randomUUID()+'.tmp';let fd;
   try{
    const snapshot=JSON.stringify({version:1,rows:[...this.#rows.values()]});
+   assert(Buffer.byteLength(snapshot)<=this.#maxStoreBytes,'inbox-storage-capacity');
    fd=openSync(tmp,'wx',0o600);writeFileSync(fd,snapshot);fsyncSync(fd);closeSync(fd);fd=undefined;
    renameSync(tmp,this.#path);this.#snapshot=digest(Buffer.from(snapshot));
    const d=openSync(dirname(this.#path),'r');try{fsyncSync(d);}finally{closeSync(d);}

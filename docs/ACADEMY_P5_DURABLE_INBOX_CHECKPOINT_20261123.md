@@ -51,3 +51,11 @@ Actual PostgreSQL SQL execution, PostgreSQL-backed durable inbox, provider-speci
 3. Add provider-native signature fixtures, key rotation/recovery exercises, manual browser keyboard/screen-reader/zoom verification and earlier P1–P4 gates before publishing new modules.
 
 **Academy inventory unchanged:** 889 canonical, 338 published, 272 unpublished draft manuscripts, 279 not authored. Git deployment remains disabled.
+
+## Post-merge recovery correctness follow-up (2026-11-23)
+
+The first encrypted inbox revision allowed `maxEvents=1000` with up to 64 KiB/event, potentially writing a snapshot **larger than its own 16 MiB startup-read ceiling**. This could make a previously accepted persisted inbox refuse to reopen. The new `maxStoreBytes` argument defaults to 16 MiB (validated 512 bytes–16 MiB); the serialized snapshot must fit **before any file write**. An over-capacity event fails with `inbox-storage-capacity`, is rolled back in memory, and the previous encrypted snapshot remains readable after restart. A wrong configured ceiling fails closed before opening the store.
+
+Two new actual negative/reopen tests were executed with the same exact GitHub blob source. The updated six-suite Node22 partial-checkout qualification passed **170/170** (81 network HTTP, 15 signature, **35** encrypted inbox, 5 durable HTTP recovery, 20 PostgreSQL *source guards only*, 14 offline-matrix tests). The new implementation SHA is `e83f9e9915de70e0e5aab3e527c9ec6e5a99b220` and its test SHA is `37c4741228b2eb90d37e0269cb7397448061b5b7`. These hashes replace the earlier values for the same two files; earlier values remain recorded above as historical evidence.
+
+No new publication or deployment gate has passed. Real Node24 complete checkout, PostgreSQL and provider qualification, concurrent multi-process safety and manual accessibility remain outstanding.
