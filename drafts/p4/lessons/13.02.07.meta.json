@@ -13,7 +13,7 @@
   "readyToPublish": false,
   "estimatedMinutes": 65,
   "officialReferences": [
-    "https://www.prisma.io/docs/orm/v7/prisma-client/queries/query-optimization-performance",
+    "https://www.prisma.io/docs/orm/v7/prisma-client/queries/advanced/query-optimization-performance",
     "https://www.prisma.io/docs/orm/v7"
   ],
   "exerciseFormat": "ts"

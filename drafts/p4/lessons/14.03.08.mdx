@@ -37,6 +37,11 @@ CREATE POLICY lab_cross_tenant_bug ON public.academy_lab_tasks
 <LessonStep number={2} title="Write the defensive policy or server boundary" file="drafts/p4/labs/cross-tenant-read-bug-hunt/solution.sql" expected="Constrain operations by caller identity and permitted resources.">
 
 ```sql
+ALTER TABLE public.academy_lab_memberships ENABLE ROW LEVEL SECURITY;
+CREATE POLICY lab_capstone_membership_select ON public.academy_lab_memberships
+ FOR SELECT TO authenticated
+ USING (user_id = (SELECT auth.uid()));
+
 ALTER TABLE public.academy_lab_tasks ENABLE ROW LEVEL SECURITY;
 CREATE POLICY lab_authorized_tenant_select ON public.academy_lab_tasks
  FOR SELECT TO authenticated

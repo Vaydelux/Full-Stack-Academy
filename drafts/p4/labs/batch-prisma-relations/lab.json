@@ -10,5 +10,5 @@
   "starter": "drafts/p4/labs/batch-prisma-relations/starter.ts",
   "solution": "drafts/p4/labs/batch-prisma-relations/solution.ts",
   "acceptanceDoc": "drafts/p4/labs/batch-prisma-relations/acceptance.md",
-  "officialReference": "https://www.prisma.io/docs/orm/v7/prisma-client/queries/query-optimization-performance"
+  "officialReference": "https://www.prisma.io/docs/orm/v7/prisma-client/queries/advanced/query-optimization-performance"
 }
