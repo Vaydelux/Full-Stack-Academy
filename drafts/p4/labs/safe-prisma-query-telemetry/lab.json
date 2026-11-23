@@ -11,5 +11,5 @@
   "starter": "drafts/p4/labs/safe-prisma-query-telemetry/starter.ts",
   "solution": "drafts/p4/labs/safe-prisma-query-telemetry/solution.ts",
   "acceptanceDoc": "drafts/p4/labs/safe-prisma-query-telemetry/acceptance.md",
-  "officialReference": "https://www.prisma.io/docs/orm/v7/observability-and-logging/logging"
+  "officialReference": "https://www.prisma.io/docs/orm/v7/prisma-client/observability-and-logging/logging"
 }

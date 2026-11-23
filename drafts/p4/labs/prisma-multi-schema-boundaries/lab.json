@@ -11,5 +11,5 @@
   "starter": "drafts/p4/labs/prisma-multi-schema-boundaries/starter.prisma",
   "solution": "drafts/p4/labs/prisma-multi-schema-boundaries/solution.prisma",
   "acceptanceDoc": "drafts/p4/labs/prisma-multi-schema-boundaries/acceptance.md",
-  "officialReference": "https://www.prisma.io/docs/orm/v7/orm-schema/data-model/multi-schema"
+  "officialReference": "https://www.prisma.io/docs/orm/v7/prisma-schema/data-model/multi-schema"
 }

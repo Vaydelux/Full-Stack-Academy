@@ -13,7 +13,7 @@
   "reviewStatus": "unreviewed",
   "estimatedMinutes": 70,
   "officialReferences": [
-    "https://www.prisma.io/docs/orm/v7/observability-and-logging/logging"
+    "https://www.prisma.io/docs/orm/v7/prisma-client/observability-and-logging/logging"
   ],
   "exerciseFormat": "ts"
 }
