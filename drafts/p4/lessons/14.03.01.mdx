@@ -13,7 +13,7 @@ An attacker may know an ID, send arbitrary query parameters, or hold a legitimat
 
 ## Mental model and prerequisites
 
-Complete **14.01.08**. PostgreSQL RLS filters records according to the caller's SQL role and policy predicates. When RLS is enabled, access is denied by default until a policy matches, except for privileged bypass roles and table owners unless FORCE RLS applies.
+Complete **14.02.08**. PostgreSQL RLS filters records according to the caller's SQL role and policy predicates. When RLS is enabled, access is denied by default until a policy matches, except for privileged bypass roles and table owners unless FORCE RLS applies.
 
 The exercises use **only** synthetic test data in a disposable local Supabase stack. `public.academy_lab_tasks` and `public.academy_lab_memberships` are educational fixture names, not production tables. Never run lab policies against a live customer schema. This source is a **draft**, not a verified permission test or evidence of a running database.
 
