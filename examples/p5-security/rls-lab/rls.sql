@@ -35,7 +35,8 @@ GRANT USAGE ON SCHEMA p5_academy TO p5_academy_alice,p5_academy_bob,p5_academy_v
 GRANT SELECT ON p5_academy.memberships TO p5_academy_alice,p5_academy_bob,p5_academy_viewer;
 GRANT SELECT,UPDATE(title),DELETE ON p5_academy.documents TO p5_academy_alice,p5_academy_bob,p5_academy_viewer;
 ALTER TABLE p5_academy.memberships ENABLE ROW LEVEL SECURITY;
-ALTER TABLE p5_academy.memberships FORCE ROW LEVEL SECURITY;
+-- Membership table owner must be able to revoke synthetic memberships;
+-- unprivileged roles still obey RLS, but the owner bypasses it in this fixture.
 ALTER TABLE p5_academy.documents ENABLE ROW LEVEL SECURITY;
 ALTER TABLE p5_academy.documents FORCE ROW LEVEL SECURITY;
 CREATE POLICY p5_membership_self ON p5_academy.memberships FOR SELECT
