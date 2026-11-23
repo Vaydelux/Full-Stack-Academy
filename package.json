@@ -458,7 +458,9 @@
     "status:p4": "node examples/p4-foundations/scripts/verify-source.mjs --json",
     "test:p4-upload-intent": "node --test examples/p4-foundations/tests/upload-intent.test.mjs",
     "test:release-runtime": "node --test tests/release-runtime.test.mjs",
-    "test:p5-security": "node --test examples/p5-security/policy.test.mjs examples/p5-security/http-lab/solution.test.mjs"
+    "test:p5-security": "node --test examples/p5-security/policy.test.mjs examples/p5-security/http-lab/solution.test.mjs",
+    "test:p5-postgresql-source": "node --test examples/p5-security/postgres-lab/guards.test.mjs",
+    "qualify:p5:postgresql": "node examples/p5-security/postgres-lab/qualify.mjs"
   },
   "dependencies": {
     "clsx": "^2.1.1",
