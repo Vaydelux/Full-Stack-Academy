@@ -1,0 +1,109 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Relations describe how keys connect rows; enum values constrain the application's representable states. In multi-tenant tables, a composite tenant/owner foreign key is a useful integrity defense in depth.","Add tenantId to both models, declare a composite unique referenced key and reference it from Task; index the child-side lookup.","Prisma's @relation is a data relationship, not an actor authorization decision. A valid same-tenant owner can still be unauthorized for a particular user."]} />
+
+## Why this lesson matters
+
+**Models relations and enums.** Relations describe how keys connect rows; enum values constrain the application's representable states. In multi-tenant tables, a composite tenant/owner foreign key is a useful integrity defense in depth.
+
+**Broken real-world assumption:** The starter's owner foreign key checks only a numeric ID, allowing an alpha task to reference a beta user when the relationship is extended to multi-tenant data.
+
+An ORM is not an access-control mechanism or a database deployment tool by itself. Treat the generated TypeScript types, database constraints, migration history and the authenticated request context as separate boundaries. The learner should be able to explain what each boundary guarantees and what it does not.
+
+## Mental model and prerequisite
+
+Relations describe how keys connect rows; enum values constrain the application's representable states. In multi-tenant tables, a composite tenant/owner foreign key is a useful integrity defense in depth.
+
+Complete **13.01.01** first. These examples target **Prisma ORM 7** with PostgreSQL and a source-staged, not-yet-published course. Version-7 configuration and generated-client behavior must be checked against the *version-pinned* installed CLI before real use; Prisma 8 has a different configuration contract.
+
+**Predict:** The starter's owner foreign key checks only a numeric ID, allowing an alpha task to reference a beta user when the relationship is extended to multi-tenant data. Name the unsafe row, build failure, schema drift or exposed secret that could appear. A passing source scan is not a valid replacement for compiling against Prisma 7 and running the real database integration.
+
+## Guided exercise
+
+<LessonStep number={1} title="Identify the broken persistence boundary" file="drafts/p4/labs/relations-and-enums/starter.prisma" expected="The source exhibits the specific relations-and-enums failure.">
+
+```prisma
+enum TaskState { TODO DONE }
+model User {
+  id Int @id
+  tasks Task[]
+}
+model Task {
+  id Int @id
+  ownerId Int
+  owner User @relation(fields: [ownerId], references: [id])
+  state TaskState @default(TODO)
+}
+```
+
+**Why it is wrong:** The starter's owner foreign key checks only a numeric ID, allowing an alpha task to reference a beta user when the relationship is extended to multi-tenant data. State which step would fail in real development and which security or data-integrity invariant is absent. Don't accept merely removing a TypeScript error as a complete repair.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the safe version" file="drafts/p4/labs/relations-and-enums/solution.prisma" expected="A version-7-compatible repair with explicit trust boundaries.">
+
+```prisma
+enum TaskState { TODO DONE }
+model User {
+  id Int @id
+  tenantId String
+  tasks Task[]
+  @@unique([tenantId, id])
+}
+model Task {
+  id Int @id
+  tenantId String
+  ownerId Int
+  owner User @relation(fields: [tenantId, ownerId], references: [tenantId, id])
+  state TaskState @default(TODO)
+  @@index([tenantId, ownerId])
+}
+```
+
+**How the repair works:** Add tenantId to both models, declare a composite unique referenced key and reference it from Task; index the child-side lookup.
+
+</LessonStep>
+
+<LessonStep number={3} title="Qualify using a disposable environment" file="drafts/p4/labs/relations-and-enums/acceptance.md" expected="Record positive and negative real-toolchain evidence before publication.">
+
+**Success criterion:** Generate and inspect the PostgreSQL migration; verify an actual composite FOREIGN KEY. Test both a same-tenant owner insert and a cross-tenant owner rejection in a disposable database.
+
+**Negative test:** Try inserting a task with tenant alpha and the ID of a beta owner. The database should reject the relationship, regardless of what a frontend form permits.
+
+**What remains unsafe if misunderstood:** Prisma's @relation is a data relationship, not an actor authorization decision. A valid same-tenant owner can still be unauthorized for a particular user.
+
+This lesson is an authored draft. The acceptance checklist is a test plan, not a previously executed build or proof that the database roles and dependencies are configured.
+
+</LessonStep>
+
+## Architecture, correctness and performance
+
+Relations describe how keys connect rows; enum values constrain the application's representable states. In multi-tenant tables, a composite tenant/owner foreign key is a useful integrity defense in depth.
+
+Add tenantId to both models, declare a composite unique referenced key and reference it from Task; index the child-side lookup.
+
+Prisma's @relation is a data relationship, not an actor authorization decision. A valid same-tenant owner can still be unauthorized for a particular user.
+
+A production-ready persistence boundary has to address error mapping, least-privileged database credentials, transaction/connection lifecycle, tenant authorization and request cancellation. Whenever schema changes are involved, review migration SQL and compatibility with the previous app version. Never expose database credentials in a `NEXT_PUBLIC_` variable or include them in a public web bundle.
+
+## Bug Hunt
+
+1. Observe the unsafe starter: The starter's owner foreign key checks only a numeric ID, allowing an alpha task to reference a beta user when the relationship is extended to multi-tenant data.
+2. Predict the concrete failure and its blast radius.
+3. Repair the code or schema: Add tenantId to both models, declare a composite unique referenced key and reference it from Task; index the child-side lookup.
+4. Write a test that would fail on the starter but pass on the corrected source: Try inserting a task with tenant alpha and the ID of a beta owner. The database should reject the relationship, regardless of what a frontend form permits.
+5. List an additional condition that this lesson cannot prove: Prisma's @relation is a data relationship, not an actor authorization decision. A valid same-tenant owner can still be unauthorized for a particular user.
+
+<Misconception claim={"The starter's owner foreign key checks only a numeric ID, allowing an alpha task to reference a beta user when the relationship is extended to multi-tenant data."} correction={"Relations describe how keys connect rows; enum values constrain the application's representable states. In multi-tenant tables, a composite tenant/owner foreign key is a useful integrity defense in depth."} />
+
+<KnowledgeCheck question={"What prevents a task's owner reference from pointing across tenants at the database level?"} choices={["A shared id column alone","A composite foreign key including tenantId","A TypeScript enum","A frontend label"]} correctIndex={1} explanation={"Add tenantId to both models, declare a composite unique referenced key and reference it from Task; index the child-side lookup."} misconception={"Prisma's @relation is a data relationship, not an actor authorization decision. A valid same-tenant owner can still be unauthorized for a particular user."} lessonId="13.01.02" />
+
+## Further practice
+
+Rebuild the exercise from an empty directory without copying generated artifacts. Pin every Prisma dependency in a real `package-lock.json`, run against a disposable PostgreSQL instance, compare instructor and starter behavior and record exact compiler and SQL errors. A class or object compiling successfully is not proof that a second user's data is inaccessible.
+
+## Official references
+
+- [Prisma ORM 7 — Models relations and enums](https://www.prisma.io/docs/orm/v7/prisma-schema/data-model/relations)
+- [Prisma ORM v7 introduction](https://www.prisma.io/docs/orm/v7)

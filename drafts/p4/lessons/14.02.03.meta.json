@@ -1,0 +1,20 @@
+{
+  "id": "14.02.03",
+  "title": "OAuth and PKCE",
+  "trackId": "14",
+  "moduleId": "14.02",
+  "prerequisites": [
+    "14.02.02"
+  ],
+  "labSlug": "pkce-approved-redirects",
+  "sourceStatus": "draft-unverified",
+  "runtimeQualification": "not-run",
+  "reviewStatus": "unreviewed",
+  "readyToPublish": false,
+  "estimatedMinutes": 65,
+  "officialReferences": [
+    "https://supabase.com/docs/guides/auth/sessions/pkce-flow",
+    "https://supabase.com/docs/guides/auth/server-side"
+  ],
+  "exerciseFormat": "ts"
+}

@@ -1,0 +1,16 @@
+{
+  "id": "draft.p4.end-to-end-login-boundary",
+  "lessonId": "14.02.08",
+  "moduleId": "14.02",
+  "sourceStatus": "draft-unverified",
+  "readyToPublish": false,
+  "runtimeQualification": "not-run",
+  "reviewStatus": "unreviewed",
+  "qualificationKind": "manual-supabase-auth",
+  "language": "ts",
+  "starter": "drafts/p4/labs/end-to-end-login-boundary/starter.ts",
+  "solution": "drafts/p4/labs/end-to-end-login-boundary/solution.ts",
+  "acceptanceDoc": "drafts/p4/labs/end-to-end-login-boundary/acceptance.md",
+  "officialReference": "https://supabase.com/docs/guides/auth/server-side",
+  "requiresRealAuthFlow": true
+}

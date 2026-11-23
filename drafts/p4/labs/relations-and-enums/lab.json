@@ -1,0 +1,14 @@
+{
+  "id": "draft.p4.relations-and-enums",
+  "lessonId": "13.01.02",
+  "moduleId": "13.01",
+  "sourceStatus": "draft-unverified",
+  "readyToPublish": false,
+  "runtimeQualification": "not-run",
+  "qualificationKind": "manual-toolchain",
+  "starter": "drafts/p4/labs/relations-and-enums/starter.prisma",
+  "solution": "drafts/p4/labs/relations-and-enums/solution.prisma",
+  "acceptanceDoc": "drafts/p4/labs/relations-and-enums/acceptance.md",
+  "language": "prisma",
+  "officialReference": "https://www.prisma.io/docs/orm/v7/prisma-schema/data-model/relations"
+}

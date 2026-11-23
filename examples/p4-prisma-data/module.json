@@ -1,0 +1,74 @@
+{
+  "moduleId": "13.02",
+  "trackId": "13",
+  "title": "Reading & Writing Data",
+  "sourceStatus": "draft-unverified",
+  "readyToPublish": false,
+  "runtimeQualification": "not-run",
+  "lessons": [
+    {
+      "id": "13.02.01",
+      "title": "findMany findUnique and filters",
+      "slug": "scoped-prisma-reads",
+      "language": "ts",
+      "extension": "ts",
+      "qualificationKind": "manual-prisma-integration"
+    },
+    {
+      "id": "13.02.02",
+      "title": "select include and relation loading",
+      "slug": "safe-prisma-projections",
+      "language": "ts",
+      "extension": "ts",
+      "qualificationKind": "manual-prisma-integration"
+    },
+    {
+      "id": "13.02.03",
+      "title": "Create update delete",
+      "slug": "scoped-prisma-writes",
+      "language": "ts",
+      "extension": "ts",
+      "qualificationKind": "manual-prisma-integration"
+    },
+    {
+      "id": "13.02.04",
+      "title": "Transactions and isolation",
+      "slug": "transactional-prisma-transfer",
+      "language": "ts",
+      "extension": "ts",
+      "qualificationKind": "manual-prisma-integration"
+    },
+    {
+      "id": "13.02.05",
+      "title": "Pagination and ordering",
+      "slug": "safe-prisma-cursor",
+      "language": "ts",
+      "extension": "ts",
+      "qualificationKind": "manual-prisma-integration"
+    },
+    {
+      "id": "13.02.06",
+      "title": "Error handling and constraint failures",
+      "slug": "map-prisma-constraint-errors",
+      "language": "ts",
+      "extension": "ts",
+      "qualificationKind": "manual-prisma-integration"
+    },
+    {
+      "id": "13.02.07",
+      "title": "Avoiding N plus one",
+      "slug": "batch-prisma-relations",
+      "language": "ts",
+      "extension": "ts",
+      "qualificationKind": "manual-prisma-integration"
+    },
+    {
+      "id": "13.02.08",
+      "title": "Lab repository API",
+      "slug": "tenant-scoped-repository-lab",
+      "language": "ts",
+      "extension": "ts",
+      "qualificationKind": "manual-prisma-integration"
+    }
+  ]
+}

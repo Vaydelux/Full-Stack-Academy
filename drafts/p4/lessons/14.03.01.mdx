@@ -1,0 +1,91 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["PostgreSQL RLS filters records according to the caller's SQL role and policy predicates. When RLS is enabled, access is denied by default until a policy matches, except for privileged bypass roles and table owners unless FORCE RLS applies.","Use a narrowly scoped SELECT policy with an authenticated role and an owner_id predicate tied to auth.uid(). Test two users and anon behavior.","Policy tests must use the actual caller role; a service-role key bypasses RLS and cannot demonstrate that an ordinary JWT is protected. Table owners may bypass unless configured otherwise."]} />
+
+## Security defect and threat model
+
+**RLS policy mechanics.** PostgreSQL RLS filters records according to the caller's SQL role and policy predicates. When RLS is enabled, access is denied by default until a policy matches, except for privileged bypass roles and table owners unless FORCE RLS applies.
+
+**The vulnerable starting point:** USING (true) grants every authenticated caller visibility into all task rows, including another user's private tasks.
+
+An attacker may know an ID, send arbitrary query parameters, or hold a legitimate authenticated account. An application is not secure merely because the login screen works. The database and the authenticated server must prevent one actor from accessing another actor's rows or private objects.
+
+## Mental model and prerequisites
+
+Complete **14.02.08**. PostgreSQL RLS filters records according to the caller's SQL role and policy predicates. When RLS is enabled, access is denied by default until a policy matches, except for privileged bypass roles and table owners unless FORCE RLS applies.
+
+The exercises use **only** synthetic test data in a disposable local Supabase stack. `public.academy_lab_tasks` and `public.academy_lab_memberships` are educational fixture names, not production tables. Never run lab policies against a live customer schema. This source is a **draft**, not a verified permission test or evidence of a running database.
+
+**Before coding:** USING (true) grants every authenticated caller visibility into all task rows, including another user's private tasks. Explain the relevant actor, SQL role, table privilege, policy predicate, sensitive row, and how an attacker could observe an unauthorized result.
+
+## Guided repair
+
+<LessonStep number={1} title="Reproduce the permissive or privileged access path" file="drafts/p4/labs/deny-by-default-rls/starter.sql" expected="Identify why an authenticated request may still cross its authorization boundary.">
+
+```sql
+ALTER TABLE public.academy_lab_tasks ENABLE ROW LEVEL SECURITY;
+CREATE POLICY lab_tasks_open_read ON public.academy_lab_tasks
+ FOR SELECT TO authenticated USING (true);
+```
+
+**Why this fails:** USING (true) grants every authenticated caller visibility into all task rows, including another user's private tasks. Do not accept a successful schema statement as proof of row privacy.
+
+</LessonStep>
+
+<LessonStep number={2} title="Write the defensive policy or server boundary" file="drafts/p4/labs/deny-by-default-rls/solution.sql" expected="Constrain operations by caller identity and permitted resources.">
+
+```sql
+ALTER TABLE public.academy_lab_tasks ENABLE ROW LEVEL SECURITY;
+CREATE POLICY lab_tasks_owner_read ON public.academy_lab_tasks
+ FOR SELECT TO authenticated
+ USING (owner_id = (SELECT auth.uid()));
+```
+
+**How the defense works:** Use a narrowly scoped SELECT policy with an authenticated role and an owner_id predicate tied to auth.uid(). Test two users and anon behavior.
+
+</LessonStep>
+
+<LessonStep number={3} title="Prove allow and deny with real Supabase identities" file="drafts/p4/labs/deny-by-default-rls/acceptance.md" expected="A real denied cross-actor operation and an authorized operation are independently observed.">
+
+**Required positive test:** Apply to an isolated local Supabase stack, seed two users and run authenticated API and pgTAP allow/deny tests. Check GRANT privileges separately from RLS.
+
+**Required negative test:** With alpha's authenticated token, request beta's task ID. The Data API must return no row; anon must also not retrieve private records.
+
+**Caveat:** Policy tests must use the actual caller role; a service-role key bypasses RLS and cannot demonstrate that an ordinary JWT is protected. Table owners may bypass unless configured otherwise.
+
+A static code-fence match or even a SQL statement compiling is not evidence that a privileged role, policy composition, JWT, Storage signed URL or application-level permission boundary is correct.
+
+</LessonStep>
+
+## Security review and implementation details
+
+PostgreSQL RLS filters records according to the caller's SQL role and policy predicates. When RLS is enabled, access is denied by default until a policy matches, except for privileged bypass roles and table owners unless FORCE RLS applies.
+
+Use a narrowly scoped SELECT policy with an authenticated role and an owner_id predicate tied to auth.uid(). Test two users and anon behavior.
+
+Policy tests must use the actual caller role; a service-role key bypasses RLS and cannot demonstrate that an ordinary JWT is protected. Table owners may bypass unless configured otherwise.
+
+RLS applies subject to PostgreSQL roles, table ownership, policy composition and operation type. In an exposed schema, verify grants and RLS together. For writes, review INSERT WITH CHECK and UPDATE USING/WITH CHECK, not just SELECT. In Supabase, do not use user-editable `user_metadata` as authority for privileged roles. A service-role client may bypass RLS; it must not be used to repair a client permission error.
+
+## Bug Hunt and regression matrix
+
+1. Predict the disclosure caused by the starter: USING (true) grants every authenticated caller visibility into all task rows, including another user's private tasks.
+2. Confirm one valid user can complete the intended action.
+3. Attempt the forbidden action with a different user: With alpha's authenticated token, request beta's task ID. The Data API must return no row; anon must also not retrieve private records.
+4. Apply the policy/server repair: Use a narrowly scoped SELECT policy with an authenticated role and an owner_id predicate tied to auth.uid(). Test two users and anon behavior.
+5. Retest with anon, two authenticated identities and any privileged path: Policy tests must use the actual caller role; a service-role key bypasses RLS and cannot demonstrate that an ordinary JWT is protected. Table owners may bypass unless configured otherwise.
+
+<Misconception claim={"USING (true) grants every authenticated caller visibility into all task rows, including another user's private tasks."} correction={"PostgreSQL RLS filters records according to the caller's SQL role and policy predicates. When RLS is enabled, access is denied by default until a policy matches, except for privileged bypass roles and table owners unless FORCE RLS applies."} />
+<KnowledgeCheck question={"Which RLS predicate is unsafe for private user data?"} choices={["owner_id = auth.uid()","USING (true) on private rows","A restrictive per-user predicate","An explicit deny for anon"]} correctIndex={1} explanation={"Use a narrowly scoped SELECT policy with an authenticated role and an owner_id predicate tied to auth.uid(). Test two users and anon behavior."} misconception={"Policy tests must use the actual caller role; a service-role key bypasses RLS and cannot demonstrate that an ordinary JWT is protected. Table owners may bypass unless configured otherwise."} lessonId="14.03.01" />
+
+## Security extension and release conditions
+
+Extend the access matrix to SELECT, INSERT, UPDATE and DELETE where applicable. Build a pgTAP or equivalent isolated integration test that fails on the deliberately permissive starter and passes on the narrow policy. Run requests through the same Supabase Data API and authenticated route as the real app; test with the least-privileged role first. Include a second database connection if RLS behavior depends on transaction state.
+
+Keep copies of all policy test results sanitized. Do not move this manuscript to the published registry before an explicit human security review and actual local RLS test runs.
+
+## Official references
+
+- [Supabase official reference — RLS policy mechanics](https://supabase.com/docs/guides/database/postgres/row-level-security)
+- [Supabase RLS testing](https://supabase.com/docs/guides/database/postgres/testing-row-level-security)

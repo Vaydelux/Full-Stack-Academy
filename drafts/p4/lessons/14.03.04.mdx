@@ -1,0 +1,98 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["A direct Prisma SQL connection uses its database role's privileges. If that role is the owner, superuser, or bypassrls role, the normal Data API RLS guarantees may not apply.","Authorize the caller in server code, scope the query by verified tenant and allowed projects, and use a minimal response projection; prefer appropriately restricted DB roles.","Filtering by tenant alone is not sufficient when membership is per project. Do not claim Prisma automatically forwards a Supabase browser JWT to the database connection."]} />
+
+## Security defect and threat model
+
+**Privileged Prisma access risks.** A direct Prisma SQL connection uses its database role's privileges. If that role is the owner, superuser, or bypassrls role, the normal Data API RLS guarantees may not apply.
+
+**The vulnerable starting point:** The starter queries all open tasks through a potentially privileged database connection without checking tenant or project access.
+
+An attacker may know an ID, send arbitrary query parameters, or hold a legitimate authenticated account. An application is not secure merely because the login screen works. The database and the authenticated server must prevent one actor from accessing another actor's rows or private objects.
+
+## Mental model and prerequisites
+
+Complete **14.03.03**. A direct Prisma SQL connection uses its database role's privileges. If that role is the owner, superuser, or bypassrls role, the normal Data API RLS guarantees may not apply.
+
+The exercises use **only** synthetic test data in a disposable local Supabase stack. `public.academy_lab_tasks` and `public.academy_lab_memberships` are educational fixture names, not production tables. Never run lab policies against a live customer schema. This source is a **draft**, not a verified permission test or evidence of a running database.
+
+**Before coding:** The starter queries all open tasks through a potentially privileged database connection without checking tenant or project access. Explain the relevant actor, SQL role, table privilege, policy predicate, sensitive row, and how an attacker could observe an unauthorized result.
+
+## Guided repair
+
+<LessonStep number={1} title="Reproduce the permissive or privileged access path" file="drafts/p4/labs/prisma-privileged-rls-risk/starter.ts" expected="Identify why an authenticated request may still cross its authorization boundary.">
+
+```ts
+// A server-side PostgreSQL connection may have BYPASSRLS privileges.
+return prisma.task.findMany({ where: { status: "open" } });
+```
+
+**Why this fails:** The starter queries all open tasks through a potentially privileged database connection without checking tenant or project access. Do not accept a successful schema statement as proof of row privacy.
+
+</LessonStep>
+
+<LessonStep number={2} title="Write the defensive policy or server boundary" file="drafts/p4/labs/prisma-privileged-rls-risk/solution.ts" expected="Constrain operations by caller identity and permitted resources.">
+
+```ts
+if (!verifiedActor.tenantId || !verifiedActor.userId)
+  throw new Error("Unauthenticated");
+const allowedProjects = await authorizeProjectsForActor(verifiedActor);
+return prisma.task.findMany({
+  where: {
+    tenantId: verifiedActor.tenantId,
+    projectId: { in: allowedProjects },
+    status: "open",
+  },
+  select: { id: true, title: true, projectId: true },
+  take: 50,
+});
+```
+
+**How the defense works:** Authorize the caller in server code, scope the query by verified tenant and allowed projects, and use a minimal response projection; prefer appropriately restricted DB roles.
+
+</LessonStep>
+
+<LessonStep number={3} title="Prove allow and deny with real Supabase identities" file="drafts/p4/labs/prisma-privileged-rls-risk/acceptance.md" expected="A real denied cross-actor operation and an authorized operation are independently observed.">
+
+**Required positive test:** Inspect the real Prisma connection role's BYPASSRLS/table owner properties; test the API with two authenticated users and deliberately forbidden projects.
+
+**Required negative test:** With a privileged test connection and two tenants, attempt a cross-tenant read through the API. Assert the server code rejects it even when the database role would otherwise see the row.
+
+**Caveat:** Filtering by tenant alone is not sufficient when membership is per project. Do not claim Prisma automatically forwards a Supabase browser JWT to the database connection.
+
+A static code-fence match or even a SQL statement compiling is not evidence that a privileged role, policy composition, JWT, Storage signed URL or application-level permission boundary is correct.
+
+</LessonStep>
+
+## Security review and implementation details
+
+A direct Prisma SQL connection uses its database role's privileges. If that role is the owner, superuser, or bypassrls role, the normal Data API RLS guarantees may not apply.
+
+Authorize the caller in server code, scope the query by verified tenant and allowed projects, and use a minimal response projection; prefer appropriately restricted DB roles.
+
+Filtering by tenant alone is not sufficient when membership is per project. Do not claim Prisma automatically forwards a Supabase browser JWT to the database connection.
+
+RLS applies subject to PostgreSQL roles, table ownership, policy composition and operation type. In an exposed schema, verify grants and RLS together. For writes, review INSERT WITH CHECK and UPDATE USING/WITH CHECK, not just SELECT. In Supabase, do not use user-editable `user_metadata` as authority for privileged roles. A service-role client may bypass RLS; it must not be used to repair a client permission error.
+
+## Bug Hunt and regression matrix
+
+1. Predict the disclosure caused by the starter: The starter queries all open tasks through a potentially privileged database connection without checking tenant or project access.
+2. Confirm one valid user can complete the intended action.
+3. Attempt the forbidden action with a different user: With a privileged test connection and two tenants, attempt a cross-tenant read through the API. Assert the server code rejects it even when the database role would otherwise see the row.
+4. Apply the policy/server repair: Authorize the caller in server code, scope the query by verified tenant and allowed projects, and use a minimal response projection; prefer appropriately restricted DB roles.
+5. Retest with anon, two authenticated identities and any privileged path: Filtering by tenant alone is not sufficient when membership is per project. Do not claim Prisma automatically forwards a Supabase browser JWT to the database connection.
+
+<Misconception claim={"The starter queries all open tasks through a potentially privileged database connection without checking tenant or project access."} correction={"A direct Prisma SQL connection uses its database role's privileges. If that role is the owner, superuser, or bypassrls role, the normal Data API RLS guarantees may not apply."} />
+<KnowledgeCheck question={"When can server-side Prisma queries bypass Supabase RLS?"} choices={["Never","When the connected database role has owner/bypass privileges","Only when using a type alias","Only inside React components"]} correctIndex={1} explanation={"Authorize the caller in server code, scope the query by verified tenant and allowed projects, and use a minimal response projection; prefer appropriately restricted DB roles."} misconception={"Filtering by tenant alone is not sufficient when membership is per project. Do not claim Prisma automatically forwards a Supabase browser JWT to the database connection."} lessonId="14.03.04" />
+
+## Security extension and release conditions
+
+Extend the access matrix to SELECT, INSERT, UPDATE and DELETE where applicable. Build a pgTAP or equivalent isolated integration test that fails on the deliberately permissive starter and passes on the narrow policy. Run requests through the same Supabase Data API and authenticated route as the real app; test with the least-privileged role first. Include a second database connection if RLS behavior depends on transaction state.
+
+Keep copies of all policy test results sanitized. Do not move this manuscript to the published registry before an explicit human security review and actual local RLS test runs.
+
+## Official references
+
+- [Supabase official reference — Privileged Prisma access risks](https://supabase.com/docs/guides/database/postgres/row-level-security)
+- [Supabase RLS testing](https://supabase.com/docs/guides/database/postgres/testing-row-level-security)

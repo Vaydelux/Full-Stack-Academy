@@ -1,0 +1,103 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Prisma known request errors include codes such as P2002 (unique constraint) and P2025 (missing required record). Map them to stable public errors without serializing internal exception details.","Handle known constraint cases with controlled status/body, log sanitized telemetry server-side, and return a generic message for unknown faults.","A unique conflict is not a reason to echo the conflicting record or reveal another tenant's existence. Error semantics must preserve object-level privacy."]} />
+
+## Real-world problem
+
+**Error handling and constraint failures.** Prisma known request errors include codes such as P2002 (unique constraint) and P2025 (missing required record). Map them to stable public errors without serializing internal exception details.
+
+**Defect in the first implementation:** The starter returns an internal database exception directly to the client, potentially disclosing table names, query parameters, constraint identifiers or credentials.
+
+The goal of this lesson is a testable database-access invariant, not a clever-looking call to Prisma. A server process may have broader database permissions than the user making the HTTP request. The ORM knows model types but does not necessarily know the caller's tenant membership or object-level permission.
+
+## Prerequisite and mental model
+
+Complete **13.02.05**. Prisma known request errors include codes such as P2002 (unique constraint) and P2025 (missing required record). Map them to stable public errors without serializing internal exception details.
+
+Before changing code, predict which unauthorized row, unexpected field, partial write, duplicate page entry or hidden failure the starter could cause. Prisma ORM v7 examples depend on a generated client, a PostgreSQL driver adapter and a disposable database setup from the previous module. The checked-in snippets are manuscript exercises, not compiled or executed runtime results.
+
+## Guided repair
+
+<LessonStep number={1} title="Observe the unsafe or inefficient query" file="drafts/p4/labs/map-prisma-constraint-errors/starter.ts" expected="Reproduce the concrete defect before attempting a repair.">
+
+```ts
+try {
+  await createTask();
+} catch (error) {
+  return { status: 500, error: String(error) };
+}
+```
+
+**Cause:** The starter returns an internal database exception directly to the client, potentially disclosing table names, query parameters, constraint identifiers or credentials.
+
+Identify whether the primary defect is authorization, returned-field scope, transaction atomicity, cursor stability, error disclosure or needless database round trips. Do not assume these share the same solution.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the constrained repository operation" file="drafts/p4/labs/map-prisma-constraint-errors/solution.ts" expected="Add an explicit correctness and trust boundary.">
+
+```ts
+function mapDatabaseError(error: unknown) {
+  if (typeof error === "object" && error !== null && "code" in error) {
+    const code = (error as { code?: unknown }).code;
+    if (code === "P2002") return { status: 409, error: "Conflict" };
+    if (code === "P2025") return { status: 404, error: "Not found" };
+  }
+  return { status: 500, error: "Request failed" };
+}
+try { await createTask(); }
+catch (error) {
+  console.error("Database request failed", { event: "task.create.failed" });
+  return mapDatabaseError(error);
+}
+```
+
+**Repair reasoning:** Handle known constraint cases with controlled status/body, log sanitized telemetry server-side, and return a generic message for unknown faults.
+
+Any identifier or tenant context in the code sample must be provided by an authenticated server handler. The snippet is an excerpt of a larger module: it should be integrated with the generated Prisma Client type, validated domain input and a database role appropriate for the application's trust boundary.
+
+</LessonStep>
+
+<LessonStep number={3} title="Qualify the real database and negative case" file="drafts/p4/labs/map-prisma-constraint-errors/acceptance.md" expected="A regression test fails on the starter and passes on the instructor solution.">
+
+**Positive case:** Test error mapping in isolation and trigger a duplicate unique insert in a disposable DB to verify the real driver's error code before relying on it.
+
+**Negative case:** Simulate P2002, P2025 and an unknown error containing a fake password. Assert the public response never contains internal fields or that password.
+
+**Production boundary:** A unique conflict is not a reason to echo the conflicting record or reveal another tenant's existence. Error semantics must preserve object-level privacy.
+
+The source-only checker verifies that the manuscript and SQL/TypeScript exercise files match. It does **not** instantiate Prisma, run a real Postgres transaction, verify a live authorization session or prove query performance.
+
+</LessonStep>
+
+## Architecture and implementation choices
+
+Prisma known request errors include codes such as P2002 (unique constraint) and P2025 (missing required record). Map them to stable public errors without serializing internal exception details.
+
+Handle known constraint cases with controlled status/body, log sanitized telemetry server-side, and return a generic message for unknown faults.
+
+A unique conflict is not a reason to echo the conflicting record or reveal another tenant's existence. Error semantics must preserve object-level privacy.
+
+A safe persistence layer should accept explicit request-scoped identities, use bounded queries, reject unsupported input, and keep internal query types from becoming public API DTOs. For permission-sensitive mutations, reason about database constraints and application authorization separately: a valid foreign key does not mean the calling actor may update that row.
+
+## Bug Hunt
+
+1. State the starter's observable defect: The starter returns an internal database exception directly to the client, potentially disclosing table names, query parameters, constraint identifiers or credentials.
+2. Produce a positive case that should succeed for an authorized caller.
+3. Produce a negative case that should be rejected: Simulate P2002, P2025 and an unknown error containing a fake password. Assert the public response never contains internal fields or that password.
+4. Apply the corrected operation and check the real database: Handle known constraint cases with controlled status/body, log sanitized telemetry server-side, and return a generic message for unknown faults.
+5. Document a failure mode that still requires independent qualification: A unique conflict is not a reason to echo the conflicting record or reveal another tenant's existence. Error semantics must preserve object-level privacy.
+
+<Misconception claim={"The starter returns an internal database exception directly to the client, potentially disclosing table names, query parameters, constraint identifiers or credentials."} correction={"Prisma known request errors include codes such as P2002 (unique constraint) and P2025 (missing required record). Map them to stable public errors without serializing internal exception details."} />
+
+<KnowledgeCheck question={"What should an API do with a Prisma P2002 constraint conflict?"} choices={["Return raw SQL detail","Map to a sanitized conflict response","Ignore the failed write","Give the browser database credentials"]} correctIndex={1} explanation={"Handle known constraint cases with controlled status/body, log sanitized telemetry server-side, and return a generic message for unknown faults."} misconception={"A unique conflict is not a reason to echo the conflicting record or reveal another tenant's existence. Error semantics must preserve object-level privacy."} lessonId="13.02.06" />
+
+## Extend the lab
+
+Design a NestJS route handler that receives a validated DTO and a trusted tenant identity, invokes the repository, and maps database errors without exposing internal state. Test against alpha/beta tenants on an isolated PostgreSQL database. For any claim involving performance or concurrency, use actual query logs or multiple connections rather than relying on a source scan.
+
+## Official references
+
+- [Prisma ORM v7 — Error handling and constraint failures](https://www.prisma.io/docs/orm/v7/reference/error-reference)
+- [Prisma ORM v7 documentation](https://www.prisma.io/docs/orm/v7)

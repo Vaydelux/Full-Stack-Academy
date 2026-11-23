@@ -1,0 +1,20 @@
+{
+  "id": "13.02.06",
+  "title": "Error handling and constraint failures",
+  "trackId": "13",
+  "moduleId": "13.02",
+  "prerequisites": [
+    "13.02.05"
+  ],
+  "labSlug": "map-prisma-constraint-errors",
+  "sourceStatus": "draft-unverified",
+  "reviewStatus": "unreviewed",
+  "runtimeQualification": "not-run",
+  "readyToPublish": false,
+  "estimatedMinutes": 65,
+  "officialReferences": [
+    "https://www.prisma.io/docs/orm/v7/reference/error-reference",
+    "https://www.prisma.io/docs/orm/v7"
+  ],
+  "exerciseFormat": "ts"
+}

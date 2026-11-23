@@ -1,0 +1,92 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Publishable keys identify the Supabase project and are designed for clients. Secret/service-role keys are privileged and must remain in server-only secret storage. The database still enforces row policies for normal clients.","Use a publishable key for the browser. Access secret keys only in separate server-only modules, behind explicit authorization and auditing.","Don't assume a key alone determines access. Database Grants and RLS are both required; a service role can bypass RLS and must never be reused to repair a client permission failure."]} />
+
+## Architecture problem
+
+**Client vs server keys.** Publishable keys identify the Supabase project and are designed for clients. Secret/service-role keys are privileged and must remain in server-only secret storage. The database still enforces row policies for normal clients.
+
+**Unsafe starting point:** The starter exposes a secret key in the browser bundle, allowing attackers to act with privileges that may bypass RLS.
+
+Supabase is not a single unrestricted database client. Different credentials and services have different trust boundaries. This source lesson makes the boundary explicit so a working demonstration does not accidentally teach learners to expose server credentials, ignore RLS, or apply migrations against the wrong project.
+
+## Mental model and prerequisites
+
+Complete **14.01.02**. Publishable keys identify the Supabase project and are designed for clients. Secret/service-role keys are privileged and must remain in server-only secret storage. The database still enforces row policies for normal clients.
+
+The source is **draft-unverified** and intended for a disposable Supabase local stack. Current Supabase API keys, CLI commands and configuration may change, so the runtime test must use the installed version and live official documentation. No private project, production database or user account is needed for the learning exercise.
+
+**Predict:** The starter exposes a secret key in the browser bundle, allowing attackers to act with privileges that may bypass RLS. What concrete failure or unauthorized access could happen? State how a negative test would demonstrate the problem before reviewing the corrected source.
+
+## Guided implementation
+
+<LessonStep number={1} title="Find the incorrect trust assumption" file="drafts/p4/labs/supabase-publishable-keys/starter.ts" expected="Explain the unsafe effect of the original client, project or schema operation.">
+
+```ts
+// CRITICAL: never ship a secret key in NEXT_PUBLIC variables.
+const client = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_SECRET_KEY!,
+);
+```
+
+**Why this is unsafe:** The starter exposes a secret key in the browser bundle, allowing attackers to act with privileges that may bypass RLS. Identify the code/runtime boundary before attempting the repair.
+
+</LessonStep>
+
+<LessonStep number={2} title="Use scoped configuration or explicit RLS" file="drafts/p4/labs/supabase-publishable-keys/solution.ts" expected="A clear, reviewable boundary appropriate to the operation.">
+
+```ts
+import { createBrowserClient } from "@supabase/ssr";
+const projectUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const publishable = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+if (!projectUrl || !publishable) throw new Error("Missing browser config");
+export const client = createBrowserClient(projectUrl, publishable);
+```
+
+**Repair:** Use a publishable key for the browser. Access secret keys only in separate server-only modules, behind explicit authorization and auditing.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify in an isolated local Supabase stack" file="drafts/p4/labs/supabase-publishable-keys/acceptance.md" expected="Positive behavior and an independently denied operation are recorded.">
+
+**Positive proof:** Run a Next.js build locally and inspect emitted client assets; verify anon/authenticated Data API behavior with an intentionally forbidden row.
+
+**Required negative proof:** Search the built frontend JS and source-controlled environment files for secret/service_role key material. Attempt unauthorized SELECT/UPDATE using a publishable key and expect RLS denial.
+
+**Remaining boundary:** Don't assume a key alone determines access. Database Grants and RLS are both required; a service role can bypass RLS and must never be reused to repair a client permission failure.
+
+The acceptance file is a manual/real-stack qualification plan. It is not an automatically successful integration test and does not qualify a production project.
+
+</LessonStep>
+
+## Operational and security review
+
+Publishable keys identify the Supabase project and are designed for clients. Secret/service-role keys are privileged and must remain in server-only secret storage. The database still enforces row policies for normal clients.
+
+Use a publishable key for the browser. Access secret keys only in separate server-only modules, behind explicit authorization and auditing.
+
+Don't assume a key alone determines access. Database Grants and RLS are both required; a service role can bypass RLS and must never be reused to repair a client permission failure.
+
+On an actual full-stack app, draw the flow from browser through the authenticated server endpoint to Supabase Auth or PostgreSQL. Annotate which requests use a publishable key, which need a user JWT, which require database grants, and which should never be allowed outside server infrastructure. Storage and Realtime must be authorized independently of ordinary table policies.
+
+## Bug Hunt
+
+1. Reproduce the unsafe setup: The starter exposes a secret key in the browser bundle, allowing attackers to act with privileges that may bypass RLS.
+2. Identify the affected tenant, key, connection or exposed schema.
+3. Apply the minimum safer design: Use a publishable key for the browser. Access secret keys only in separate server-only modules, behind explicit authorization and auditing.
+4. Test both an allowed call and the forbidden call: Search the built frontend JS and source-controlled environment files for secret/service_role key material. Attempt unauthorized SELECT/UPDATE using a publishable key and expect RLS denial.
+5. Record the operational limitation: Don't assume a key alone determines access. Database Grants and RLS are both required; a service role can bypass RLS and must never be reused to repair a client permission failure.
+
+<Misconception claim={"The starter exposes a secret key in the browser bundle, allowing attackers to act with privileges that may bypass RLS."} correction={"Publishable keys identify the Supabase project and are designed for clients. Secret/service-role keys are privileged and must remain in server-only secret storage. The database still enforces row policies for normal clients."} />
+<KnowledgeCheck question={"What is the consequence of putting a service-role secret in NEXT_PUBLIC_SUPABASE_SECRET_KEY?"} choices={["It remains private","It becomes available to browser clients","It automatically rotates","It enables MFA"]} correctIndex={1} explanation={"Use a publishable key for the browser. Access secret keys only in separate server-only modules, behind explicit authorization and auditing."} misconception={"Don't assume a key alone determines access. Database Grants and RLS are both required; a service role can bypass RLS and must never be reused to repair a client permission failure."} lessonId="14.01.03" />
+
+## Extend the design
+
+Translate this example into a Next.js + NestJS architecture drawing. Include environment separation, role boundaries, and a reproducible local migration process. Then explain why a successful source check is insufficient to establish data confidentiality. For production, obtain release approval only after authenticated API and RLS testing with two real test accounts.
+
+## Official references
+
+- [Supabase official guide — Client vs server keys](https://supabase.com/docs/guides/getting-started/api-keys)
+- [Supabase local development](https://supabase.com/docs/guides/local-development)

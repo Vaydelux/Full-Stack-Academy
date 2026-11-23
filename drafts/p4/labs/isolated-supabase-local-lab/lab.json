@@ -1,0 +1,15 @@
+{
+  "id": "draft.p4.isolated-supabase-local-lab",
+  "lessonId": "14.01.08",
+  "moduleId": "14.01",
+  "sourceStatus": "draft-unverified",
+  "runtimeQualification": "not-run",
+  "reviewStatus": "unreviewed",
+  "readyToPublish": false,
+  "qualificationKind": "manual-supabase-local",
+  "language": "bash",
+  "starter": "drafts/p4/labs/isolated-supabase-local-lab/starter.sh",
+  "solution": "drafts/p4/labs/isolated-supabase-local-lab/solution.sh",
+  "acceptanceDoc": "drafts/p4/labs/isolated-supabase-local-lab/acceptance.md",
+  "officialReference": "https://supabase.com/docs/guides/local-development"
+}

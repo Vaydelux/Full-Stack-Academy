@@ -1,0 +1,95 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Direct and pooled PostgreSQL URLs serve different connection lifecycles. Migration tooling may need session semantics, while short-lived server instances often benefit from a compatible pooler mode.","Separate migration/direct and runtime/pooled credentials, inspect pooler mode and adapter compatibility, and configure least-privilege roles.","Connection strings contain secrets. Never expose them to browser bundles or logs. Transaction pooling may invalidate session-affine assumptions."]} />
+
+## Architecture problem
+
+**Network and pooling.** Direct and pooled PostgreSQL URLs serve different connection lifecycles. Migration tooling may need session semantics, while short-lived server instances often benefit from a compatible pooler mode.
+
+**Unsafe starting point:** The starter assumes transaction-pooling semantics are safe for all migration and session-affine operations.
+
+Supabase is not a single unrestricted database client. Different credentials and services have different trust boundaries. This source lesson makes the boundary explicit so a working demonstration does not accidentally teach learners to expose server credentials, ignore RLS, or apply migrations against the wrong project.
+
+## Mental model and prerequisites
+
+Complete **14.01.05**. Direct and pooled PostgreSQL URLs serve different connection lifecycles. Migration tooling may need session semantics, while short-lived server instances often benefit from a compatible pooler mode.
+
+The source is **draft-unverified** and intended for a disposable Supabase local stack. Current Supabase API keys, CLI commands and configuration may change, so the runtime test must use the installed version and live official documentation. No private project, production database or user account is needed for the learning exercise.
+
+**Predict:** The starter assumes transaction-pooling semantics are safe for all migration and session-affine operations. What concrete failure or unauthorized access could happen? State how a negative test would demonstrate the problem before reviewing the corrected source.
+
+## Guided implementation
+
+<LessonStep number={1} title="Find the incorrect trust assumption" file="drafts/p4/labs/direct-vs-pooled-supabase/starter.ts" expected="Explain the unsafe effect of the original client, project or schema operation.">
+
+```ts
+// Wrong: use the same transaction-pooled URL for every operation.
+const migrationConnection = process.env.DATABASE_URL;
+const runtimeConnection = process.env.DATABASE_URL;
+```
+
+**Why this is unsafe:** The starter assumes transaction-pooling semantics are safe for all migration and session-affine operations. Identify the code/runtime boundary before attempting the repair.
+
+</LessonStep>
+
+<LessonStep number={2} title="Use scoped configuration or explicit RLS" file="drafts/p4/labs/direct-vs-pooled-supabase/solution.ts" expected="A clear, reviewable boundary appropriate to the operation.">
+
+```ts
+function required(name: "DATABASE_DIRECT_URL" | "DATABASE_POOL_URL") {
+  const value = process.env[name];
+  if (!value) throw new Error(name + " missing");
+  return value;
+}
+// Server-only configuration; never use NEXT_PUBLIC_ for these URLs.
+export const databaseConnections = {
+  migration: required("DATABASE_DIRECT_URL"),
+  runtime: required("DATABASE_POOL_URL"),
+};
+```
+
+**Repair:** Separate migration/direct and runtime/pooled credentials, inspect pooler mode and adapter compatibility, and configure least-privilege roles.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify in an isolated local Supabase stack" file="drafts/p4/labs/direct-vs-pooled-supabase/acceptance.md" expected="Positive behavior and an independently denied operation are recorded.">
+
+**Positive proof:** Record endpoint topology, pool mode, TLS behavior and maximum concurrent connections. Verify with actual Prisma 7 adapter and the selected Supabase pooler version.
+
+**Required negative proof:** Test migration commands with the direct URL on a disposable instance; separately test runtime under a pooler and confirm session-dependent features work or are deliberately avoided.
+
+**Remaining boundary:** Connection strings contain secrets. Never expose them to browser bundles or logs. Transaction pooling may invalidate session-affine assumptions.
+
+The acceptance file is a manual/real-stack qualification plan. It is not an automatically successful integration test and does not qualify a production project.
+
+</LessonStep>
+
+## Operational and security review
+
+Direct and pooled PostgreSQL URLs serve different connection lifecycles. Migration tooling may need session semantics, while short-lived server instances often benefit from a compatible pooler mode.
+
+Separate migration/direct and runtime/pooled credentials, inspect pooler mode and adapter compatibility, and configure least-privilege roles.
+
+Connection strings contain secrets. Never expose them to browser bundles or logs. Transaction pooling may invalidate session-affine assumptions.
+
+On an actual full-stack app, draw the flow from browser through the authenticated server endpoint to Supabase Auth or PostgreSQL. Annotate which requests use a publishable key, which need a user JWT, which require database grants, and which should never be allowed outside server infrastructure. Storage and Realtime must be authorized independently of ordinary table policies.
+
+## Bug Hunt
+
+1. Reproduce the unsafe setup: The starter assumes transaction-pooling semantics are safe for all migration and session-affine operations.
+2. Identify the affected tenant, key, connection or exposed schema.
+3. Apply the minimum safer design: Separate migration/direct and runtime/pooled credentials, inspect pooler mode and adapter compatibility, and configure least-privilege roles.
+4. Test both an allowed call and the forbidden call: Test migration commands with the direct URL on a disposable instance; separately test runtime under a pooler and confirm session-dependent features work or are deliberately avoided.
+5. Record the operational limitation: Connection strings contain secrets. Never expose them to browser bundles or logs. Transaction pooling may invalidate session-affine assumptions.
+
+<Misconception claim={"The starter assumes transaction-pooling semantics are safe for all migration and session-affine operations."} correction={"Direct and pooled PostgreSQL URLs serve different connection lifecycles. Migration tooling may need session semantics, while short-lived server instances often benefit from a compatible pooler mode."} />
+<KnowledgeCheck question={"Why might Prisma migration commands need a direct database connection?"} choices={["To bypass Git","For session/DDL behavior not always compatible with transaction pooling","To avoid SQL constraints","To replace authentication"]} correctIndex={1} explanation={"Separate migration/direct and runtime/pooled credentials, inspect pooler mode and adapter compatibility, and configure least-privilege roles."} misconception={"Connection strings contain secrets. Never expose them to browser bundles or logs. Transaction pooling may invalidate session-affine assumptions."} lessonId="14.01.06" />
+
+## Extend the design
+
+Translate this example into a Next.js + NestJS architecture drawing. Include environment separation, role boundaries, and a reproducible local migration process. Then explain why a successful source check is insufficient to establish data confidentiality. For production, obtain release approval only after authenticated API and RLS testing with two real test accounts.
+
+## Official references
+
+- [Supabase official guide — Network and pooling](https://supabase.com/docs/guides/database/connecting-to-postgres)
+- [Supabase local development](https://supabase.com/docs/guides/local-development)

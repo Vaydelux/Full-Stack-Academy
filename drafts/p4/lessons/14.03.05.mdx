@@ -1,0 +1,93 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Storage object metadata is protected by policies on storage.objects, and signed URLs are time-limited bearer capabilities. A private bucket is not automatically private if a policy grants every user read access.","Constrain object read policy to a per-user leading folder matching auth.uid(); issue short-lived signed URLs only after authorization.","A signed URL is a bearer capability for its lifetime; do not publish it. Storage upsert can require INSERT + SELECT + UPDATE. Server/service bypass keys must never appear in the browser."]} />
+
+## Security defect and threat model
+
+**Bucket RLS and signed URLs.** Storage object metadata is protected by policies on storage.objects, and signed URLs are time-limited bearer capabilities. A private bucket is not automatically private if a policy grants every user read access.
+
+**The vulnerable starting point:** The starter lets every authenticated user read every object in the private-documents bucket.
+
+An attacker may know an ID, send arbitrary query parameters, or hold a legitimate authenticated account. An application is not secure merely because the login screen works. The database and the authenticated server must prevent one actor from accessing another actor's rows or private objects.
+
+## Mental model and prerequisites
+
+Complete **14.03.04**. Storage object metadata is protected by policies on storage.objects, and signed URLs are time-limited bearer capabilities. A private bucket is not automatically private if a policy grants every user read access.
+
+The exercises use **only** synthetic test data in a disposable local Supabase stack. `public.academy_lab_tasks` and `public.academy_lab_memberships` are educational fixture names, not production tables. Never run lab policies against a live customer schema. This source is a **draft**, not a verified permission test or evidence of a running database.
+
+**Before coding:** The starter lets every authenticated user read every object in the private-documents bucket. Explain the relevant actor, SQL role, table privilege, policy predicate, sensitive row, and how an attacker could observe an unauthorized result.
+
+## Guided repair
+
+<LessonStep number={1} title="Reproduce the permissive or privileged access path" file="drafts/p4/labs/private-storage-owner-policies/starter.sql" expected="Identify why an authenticated request may still cross its authorization boundary.">
+
+```sql
+CREATE POLICY lab_private_objects_read ON storage.objects
+ FOR SELECT TO authenticated
+ USING (bucket_id = 'academy_private_docs');
+```
+
+**Why this fails:** The starter lets every authenticated user read every object in the private-documents bucket. Do not accept a successful schema statement as proof of row privacy.
+
+</LessonStep>
+
+<LessonStep number={2} title="Write the defensive policy or server boundary" file="drafts/p4/labs/private-storage-owner-policies/solution.sql" expected="Constrain operations by caller identity and permitted resources.">
+
+```sql
+CREATE POLICY lab_private_objects_owner_read ON storage.objects
+ FOR SELECT TO authenticated
+ USING (
+   bucket_id = 'academy_private_docs'
+   AND (storage.foldername(name))[1] = (SELECT auth.uid())::text
+ );
+```
+
+**How the defense works:** Constrain object read policy to a per-user leading folder matching auth.uid(); issue short-lived signed URLs only after authorization.
+
+</LessonStep>
+
+<LessonStep number={3} title="Prove allow and deny with real Supabase identities" file="drafts/p4/labs/private-storage-owner-policies/acceptance.md" expected="A real denied cross-actor operation and an authorized operation are independently observed.">
+
+**Required positive test:** On a dedicated Supabase local stack, create a private demo bucket, test SELECT/INSERT/UPDATE and signed URL behavior under two JWTs. Verify URL TTL and object paths.
+
+**Required negative test:** Upload under alpha's user folder, request a signed URL as beta and verify denial. Check that signed URLs eventually expire and cannot be logged publicly.
+
+**Caveat:** A signed URL is a bearer capability for its lifetime; do not publish it. Storage upsert can require INSERT + SELECT + UPDATE. Server/service bypass keys must never appear in the browser.
+
+A static code-fence match or even a SQL statement compiling is not evidence that a privileged role, policy composition, JWT, Storage signed URL or application-level permission boundary is correct.
+
+</LessonStep>
+
+## Security review and implementation details
+
+Storage object metadata is protected by policies on storage.objects, and signed URLs are time-limited bearer capabilities. A private bucket is not automatically private if a policy grants every user read access.
+
+Constrain object read policy to a per-user leading folder matching auth.uid(); issue short-lived signed URLs only after authorization.
+
+A signed URL is a bearer capability for its lifetime; do not publish it. Storage upsert can require INSERT + SELECT + UPDATE. Server/service bypass keys must never appear in the browser.
+
+RLS applies subject to PostgreSQL roles, table ownership, policy composition and operation type. In an exposed schema, verify grants and RLS together. For writes, review INSERT WITH CHECK and UPDATE USING/WITH CHECK, not just SELECT. In Supabase, do not use user-editable `user_metadata` as authority for privileged roles. A service-role client may bypass RLS; it must not be used to repair a client permission error.
+
+## Bug Hunt and regression matrix
+
+1. Predict the disclosure caused by the starter: The starter lets every authenticated user read every object in the private-documents bucket.
+2. Confirm one valid user can complete the intended action.
+3. Attempt the forbidden action with a different user: Upload under alpha's user folder, request a signed URL as beta and verify denial. Check that signed URLs eventually expire and cannot be logged publicly.
+4. Apply the policy/server repair: Constrain object read policy to a per-user leading folder matching auth.uid(); issue short-lived signed URLs only after authorization.
+5. Retest with anon, two authenticated identities and any privileged path: A signed URL is a bearer capability for its lifetime; do not publish it. Storage upsert can require INSERT + SELECT + UPDATE. Server/service bypass keys must never appear in the browser.
+
+<Misconception claim={"The starter lets every authenticated user read every object in the private-documents bucket."} correction={"Storage object metadata is protected by policies on storage.objects, and signed URLs are time-limited bearer capabilities. A private bucket is not automatically private if a policy grants every user read access."} />
+<KnowledgeCheck question={"What prevents beta from listing alpha's private folder?"} choices={["An authenticated role check alone","A storage.objects policy matching the path owner to auth.uid()","A public bucket","A browser-side filename filter"]} correctIndex={1} explanation={"Constrain object read policy to a per-user leading folder matching auth.uid(); issue short-lived signed URLs only after authorization."} misconception={"A signed URL is a bearer capability for its lifetime; do not publish it. Storage upsert can require INSERT + SELECT + UPDATE. Server/service bypass keys must never appear in the browser."} lessonId="14.03.05" />
+
+## Security extension and release conditions
+
+Extend the access matrix to SELECT, INSERT, UPDATE and DELETE where applicable. Build a pgTAP or equivalent isolated integration test that fails on the deliberately permissive starter and passes on the narrow policy. Run requests through the same Supabase Data API and authenticated route as the real app; test with the least-privileged role first. Include a second database connection if RLS behavior depends on transaction state.
+
+Keep copies of all policy test results sanitized. Do not move this manuscript to the published registry before an explicit human security review and actual local RLS test runs.
+
+## Official references
+
+- [Supabase official reference — Bucket RLS and signed URLs](https://supabase.com/docs/guides/storage/security/access-control)
+- [Supabase RLS testing](https://supabase.com/docs/guides/database/postgres/testing-row-level-security)

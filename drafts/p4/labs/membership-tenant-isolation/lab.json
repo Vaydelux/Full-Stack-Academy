@@ -1,0 +1,16 @@
+{
+  "id": "draft.p4.membership-tenant-isolation",
+  "lessonId": "14.03.07",
+  "moduleId": "14.03",
+  "sourceStatus": "draft-unverified",
+  "readyToPublish": false,
+  "runtimeQualification": "not-run",
+  "reviewStatus": "unreviewed",
+  "qualificationKind": "manual-rls-positive-negative",
+  "language": "sql",
+  "starter": "drafts/p4/labs/membership-tenant-isolation/starter.sql",
+  "solution": "drafts/p4/labs/membership-tenant-isolation/solution.sql",
+  "acceptanceDoc": "drafts/p4/labs/membership-tenant-isolation/acceptance.md",
+  "officialReference": "https://supabase.com/docs/guides/database/postgres/row-level-security",
+  "requiresTwoAuthenticatedUsers": true
+}

@@ -1,0 +1,103 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["A Prisma schema declares models, scalar types, relations, generators and datasources. In Prisma ORM 7, datasource connection URLs belong in the Prisma configuration file, while the generator needs an explicit output directory.","Add tenantId to the Task model and index the frequent tenant-scoped lookup. Keep database connection credentials outside schema.prisma.","No schema generator or @unique attribute grants a caller read permission. Never treat a Prisma model type as a replacement for Postgres RLS or server authorization."]} />
+
+## Why this lesson matters
+
+**Prisma schema language.** A Prisma schema declares models, scalar types, relations, generators and datasources. In Prisma ORM 7, datasource connection URLs belong in the Prisma configuration file, while the generator needs an explicit output directory.
+
+**Broken real-world assumption:** The starter stores tasks without a tenant key. A strongly typed client cannot reconstruct ownership that the physical schema never represented.
+
+An ORM is not an access-control mechanism or a database deployment tool by itself. Treat the generated TypeScript types, database constraints, migration history and the authenticated request context as separate boundaries. The learner should be able to explain what each boundary guarantees and what it does not.
+
+## Mental model and prerequisite
+
+A Prisma schema declares models, scalar types, relations, generators and datasources. In Prisma ORM 7, datasource connection URLs belong in the Prisma configuration file, while the generator needs an explicit output directory.
+
+Complete **12.05.08** first. These examples target **Prisma ORM 7** with PostgreSQL and a source-staged, not-yet-published course. Version-7 configuration and generated-client behavior must be checked against the *version-pinned* installed CLI before real use; Prisma 8 has a different configuration contract.
+
+**Predict:** The starter stores tasks without a tenant key. A strongly typed client cannot reconstruct ownership that the physical schema never represented. Name the unsafe row, build failure, schema drift or exposed secret that could appear. A passing source scan is not a valid replacement for compiling against Prisma 7 and running the real database integration.
+
+## Guided exercise
+
+<LessonStep number={1} title="Identify the broken persistence boundary" file="drafts/p4/labs/schema-and-generator/starter.prisma" expected="The source exhibits the specific schema-and-generator failure.">
+
+```prisma
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+datasource db { provider = "postgresql" }
+model Task {
+  id Int @id @default(autoincrement())
+  title String
+}
+```
+
+**Why it is wrong:** The starter stores tasks without a tenant key. A strongly typed client cannot reconstruct ownership that the physical schema never represented. State which step would fail in real development and which security or data-integrity invariant is absent. Don't accept merely removing a TypeScript error as a complete repair.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the safe version" file="drafts/p4/labs/schema-and-generator/solution.prisma" expected="A version-7-compatible repair with explicit trust boundaries.">
+
+```prisma
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+datasource db { provider = "postgresql" }
+model Task {
+  id       Int    @id @default(autoincrement())
+  tenantId String
+  title    String
+  @@index([tenantId, id])
+}
+```
+
+**How the repair works:** Add tenantId to the Task model and index the frequent tenant-scoped lookup. Keep database connection credentials outside schema.prisma.
+
+</LessonStep>
+
+<LessonStep number={3} title="Qualify using a disposable environment" file="drafts/p4/labs/schema-and-generator/acceptance.md" expected="Record positive and negative real-toolchain evidence before publication.">
+
+**Success criterion:** Inspect the Prisma schema and generated SQL migration in an isolated database; verify the tenant_id equivalent is NOT NULL and indexed. Test a tenant-filtered query against rows from both organizations. Running prisma validate alone is not an authorization test.
+
+**Negative test:** Attempt to represent two tenants each with task id 1. Explain that an autoincrement id is globally unique in this model, while authorization still requires a verified tenant predicate.
+
+**What remains unsafe if misunderstood:** No schema generator or @unique attribute grants a caller read permission. Never treat a Prisma model type as a replacement for Postgres RLS or server authorization.
+
+This lesson is an authored draft. The acceptance checklist is a test plan, not a previously executed build or proof that the database roles and dependencies are configured.
+
+</LessonStep>
+
+## Architecture, correctness and performance
+
+A Prisma schema declares models, scalar types, relations, generators and datasources. In Prisma ORM 7, datasource connection URLs belong in the Prisma configuration file, while the generator needs an explicit output directory.
+
+Add tenantId to the Task model and index the frequent tenant-scoped lookup. Keep database connection credentials outside schema.prisma.
+
+No schema generator or @unique attribute grants a caller read permission. Never treat a Prisma model type as a replacement for Postgres RLS or server authorization.
+
+A production-ready persistence boundary has to address error mapping, least-privileged database credentials, transaction/connection lifecycle, tenant authorization and request cancellation. Whenever schema changes are involved, review migration SQL and compatibility with the previous app version. Never expose database credentials in a `NEXT_PUBLIC_` variable or include them in a public web bundle.
+
+## Bug Hunt
+
+1. Observe the unsafe starter: The starter stores tasks without a tenant key. A strongly typed client cannot reconstruct ownership that the physical schema never represented.
+2. Predict the concrete failure and its blast radius.
+3. Repair the code or schema: Add tenantId to the Task model and index the frequent tenant-scoped lookup. Keep database connection credentials outside schema.prisma.
+4. Write a test that would fail on the starter but pass on the corrected source: Attempt to represent two tenants each with task id 1. Explain that an autoincrement id is globally unique in this model, while authorization still requires a verified tenant predicate.
+5. List an additional condition that this lesson cannot prove: No schema generator or @unique attribute grants a caller read permission. Never treat a Prisma model type as a replacement for Postgres RLS or server authorization.
+
+<Misconception claim={"The starter stores tasks without a tenant key. A strongly typed client cannot reconstruct ownership that the physical schema never represented."} correction={"A Prisma schema declares models, scalar types, relations, generators and datasources. In Prisma ORM 7, datasource connection URLs belong in the Prisma configuration file, while the generator needs an explicit output directory."} />
+
+<KnowledgeCheck question={"Where does the Prisma ORM v7 database URL belong?"} choices={["Inside every model","In the Prisma config file, not the schema datasource block","Inside NEXT_PUBLIC_DATABASE_URL","In a CSS environment token"]} correctIndex={1} explanation={"Add tenantId to the Task model and index the frequent tenant-scoped lookup. Keep database connection credentials outside schema.prisma."} misconception={"No schema generator or @unique attribute grants a caller read permission. Never treat a Prisma model type as a replacement for Postgres RLS or server authorization."} lessonId="13.01.01" />
+
+## Further practice
+
+Rebuild the exercise from an empty directory without copying generated artifacts. Pin every Prisma dependency in a real `package-lock.json`, run against a disposable PostgreSQL instance, compare instructor and starter behavior and record exact compiler and SQL errors. A class or object compiling successfully is not proof that a second user's data is inaccessible.
+
+## Official references
+
+- [Prisma ORM 7 — Prisma schema language](https://www.prisma.io/docs/orm/v7/reference/prisma-schema-reference)
+- [Prisma ORM v7 introduction](https://www.prisma.io/docs/orm/v7)

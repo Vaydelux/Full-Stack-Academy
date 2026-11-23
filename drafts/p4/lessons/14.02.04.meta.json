@@ -1,0 +1,20 @@
+{
+  "id": "14.02.04",
+  "title": "MFA and recovery",
+  "trackId": "14",
+  "moduleId": "14.02",
+  "prerequisites": [
+    "14.02.03"
+  ],
+  "labSlug": "mfa-enrollment-and-verify",
+  "sourceStatus": "draft-unverified",
+  "runtimeQualification": "not-run",
+  "reviewStatus": "unreviewed",
+  "readyToPublish": false,
+  "estimatedMinutes": 65,
+  "officialReferences": [
+    "https://supabase.com/docs/guides/auth/auth-mfa/totp",
+    "https://supabase.com/docs/guides/auth/server-side"
+  ],
+  "exerciseFormat": "ts"
+}

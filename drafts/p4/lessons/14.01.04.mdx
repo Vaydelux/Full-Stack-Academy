@@ -1,0 +1,93 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["A SQL editor is useful for exploration; migration files establish a reviewable, reproducible schema history. Only one migration owner should control a table's DDL when Prisma and Supabase coexist.","Create a migration through the Supabase CLI, review its SQL in Git, replay it on a disposable local stack, and require an explicit environment review before remote apply.","supabase db reset deletes local data not recreated by migrations/seed. Never run it on a valuable database. Mixing Prisma and Supabase migration writers can cause drift."]} />
+
+## Architecture problem
+
+**SQL editor vs migrations.** A SQL editor is useful for exploration; migration files establish a reviewable, reproducible schema history. Only one migration owner should control a table's DDL when Prisma and Supabase coexist.
+
+**Unsafe starting point:** The starter suggests pushing database changes without a checked-in, reviewed migration or verifying the project target.
+
+Supabase is not a single unrestricted database client. Different credentials and services have different trust boundaries. This source lesson makes the boundary explicit so a working demonstration does not accidentally teach learners to expose server credentials, ignore RLS, or apply migrations against the wrong project.
+
+## Mental model and prerequisites
+
+Complete **14.01.03**. A SQL editor is useful for exploration; migration files establish a reviewable, reproducible schema history. Only one migration owner should control a table's DDL when Prisma and Supabase coexist.
+
+The source is **draft-unverified** and intended for a disposable Supabase local stack. Current Supabase API keys, CLI commands and configuration may change, so the runtime test must use the installed version and live official documentation. No private project, production database or user account is needed for the learning exercise.
+
+**Predict:** The starter suggests pushing database changes without a checked-in, reviewed migration or verifying the project target. What concrete failure or unauthorized access could happen? State how a negative test would demonstrate the problem before reviewing the corrected source.
+
+## Guided implementation
+
+<LessonStep number={1} title="Find the incorrect trust assumption" file="drafts/p4/labs/supabase-migrations-ownership/starter.sh" expected="Explain the unsafe effect of the original client, project or schema operation.">
+
+```bash
+# Untracked manual SQL modifications are not reproducible.
+# Example mistake: directly change production with ad hoc SQL.
+supabase db push
+```
+
+**Why this is unsafe:** The starter suggests pushing database changes without a checked-in, reviewed migration or verifying the project target. Identify the code/runtime boundary before attempting the repair.
+
+</LessonStep>
+
+<LessonStep number={2} title="Use scoped configuration or explicit RLS" file="drafts/p4/labs/supabase-migrations-ownership/solution.sh" expected="A clear, reviewable boundary appropriate to the operation.">
+
+```bash
+# Run only in the isolated local project from an initialized repo.
+supabase --help
+supabase migration --help
+supabase migration new add_workspace_table
+# Review the generated timestamped SQL file before using a test DB.
+supabase start
+# Local database reset replays tracked migrations and sample seed data.
+supabase db reset
+```
+
+**Repair:** Create a migration through the Supabase CLI, review its SQL in Git, replay it on a disposable local stack, and require an explicit environment review before remote apply.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify in an isolated local Supabase stack" file="drafts/p4/labs/supabase-migrations-ownership/acceptance.md" expected="Positive behavior and an independently denied operation are recorded.">
+
+**Positive proof:** Inspect migration history and local replay in Docker-backed Supabase. Record target project, applied SQL hashes and rollback/forward-fix strategy.
+
+**Required negative proof:** Start a fresh local stack from only migrations and seed files; verify the schema is recreated. Ensure no production deployment command runs as part of this draft.
+
+**Remaining boundary:** supabase db reset deletes local data not recreated by migrations/seed. Never run it on a valuable database. Mixing Prisma and Supabase migration writers can cause drift.
+
+The acceptance file is a manual/real-stack qualification plan. It is not an automatically successful integration test and does not qualify a production project.
+
+</LessonStep>
+
+## Operational and security review
+
+A SQL editor is useful for exploration; migration files establish a reviewable, reproducible schema history. Only one migration owner should control a table's DDL when Prisma and Supabase coexist.
+
+Create a migration through the Supabase CLI, review its SQL in Git, replay it on a disposable local stack, and require an explicit environment review before remote apply.
+
+supabase db reset deletes local data not recreated by migrations/seed. Never run it on a valuable database. Mixing Prisma and Supabase migration writers can cause drift.
+
+On an actual full-stack app, draw the flow from browser through the authenticated server endpoint to Supabase Auth or PostgreSQL. Annotate which requests use a publishable key, which need a user JWT, which require database grants, and which should never be allowed outside server infrastructure. Storage and Realtime must be authorized independently of ordinary table policies.
+
+## Bug Hunt
+
+1. Reproduce the unsafe setup: The starter suggests pushing database changes without a checked-in, reviewed migration or verifying the project target.
+2. Identify the affected tenant, key, connection or exposed schema.
+3. Apply the minimum safer design: Create a migration through the Supabase CLI, review its SQL in Git, replay it on a disposable local stack, and require an explicit environment review before remote apply.
+4. Test both an allowed call and the forbidden call: Start a fresh local stack from only migrations and seed files; verify the schema is recreated. Ensure no production deployment command runs as part of this draft.
+5. Record the operational limitation: supabase db reset deletes local data not recreated by migrations/seed. Never run it on a valuable database. Mixing Prisma and Supabase migration writers can cause drift.
+
+<Misconception claim={"The starter suggests pushing database changes without a checked-in, reviewed migration or verifying the project target."} correction={"A SQL editor is useful for exploration; migration files establish a reviewable, reproducible schema history. Only one migration owner should control a table's DDL when Prisma and Supabase coexist."} />
+<KnowledgeCheck question={"Which artifact should describe reviewed, repeatable SQL schema changes?"} choices={["Only an editor history","Checked-in migration files","Frontend screenshots","An untracked .env file"]} correctIndex={1} explanation={"Create a migration through the Supabase CLI, review its SQL in Git, replay it on a disposable local stack, and require an explicit environment review before remote apply."} misconception={"supabase db reset deletes local data not recreated by migrations/seed. Never run it on a valuable database. Mixing Prisma and Supabase migration writers can cause drift."} lessonId="14.01.04" />
+
+## Extend the design
+
+Translate this example into a Next.js + NestJS architecture drawing. Include environment separation, role boundaries, and a reproducible local migration process. Then explain why a successful source check is insufficient to establish data confidentiality. For production, obtain release approval only after authenticated API and RLS testing with two real test accounts.
+
+## Official references
+
+- [Supabase official guide — SQL editor vs migrations](https://supabase.com/docs/guides/local-development/database-migrations)
+- [Supabase local development](https://supabase.com/docs/guides/local-development)

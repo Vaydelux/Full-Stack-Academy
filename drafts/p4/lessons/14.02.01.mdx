@@ -1,0 +1,94 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Email/password sign-up and sign-in may require a separate email verification step. UI state must distinguish a pending verification from an authenticated session.","Inspect error and returned session explicitly, show a neutral verification state when there is no session, and protect data access using actual verified server authentication.","Never treat a non-null user in a signUp response as permission to read private data. Rate-limit login endpoints and avoid detailed account-enumeration errors."]} />
+
+## Authentication problem
+
+**Sign up sign in and verification.** Email/password sign-up and sign-in may require a separate email verification step. UI state must distinguish a pending verification from an authenticated session.
+
+**Broken starting assumption:** A created user object does not necessarily mean the email is verified or an active session has been established.
+
+An application can show a signed-in UI and still lack a valid server-side session or permission to read a specific tenant's data. Authentication identifies the actor; authorization decides which resources that actor may use. This module trains both concepts without embedding production credentials in the examples.
+
+## Mental model and prerequisite
+
+Complete **14.01.08**. Email/password sign-up and sign-in may require a separate email verification step. UI state must distinguish a pending verification from an authenticated session.
+
+The learner is expected to run these exercises against **a disposable local Supabase Auth project**, not a live customer tenant. Prisma ORM 7 and the Supabase Data API are separate access paths; each has its own session/role boundary. Changes to Auth libraries and Next.js cookie APIs must be checked against pinned runtime versions.
+
+**Predict:** A created user object does not necessarily mean the email is verified or an active session has been established. Explain how the starter could make a wrong access decision even though the code compiles.
+
+## Guided implementation
+
+<LessonStep number={1} title="Observe the invalid identity assumption" file="drafts/p4/labs/signup-verification-state/starter.ts" expected="A clear unauthorized state or unsafe shortcut is identified.">
+
+```ts
+const { data } = await supabase.auth.signUp({ email, password });
+if (data.user) window.location.assign("/dashboard");
+```
+
+**Diagnosis:** A created user object does not necessarily mean the email is verified or an active session has been established.
+
+Identify where the caller controls input, how the session is refreshed, and whether the data used for an authorization decision was cryptographically verified or fetched from a trusted server-side membership table.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the authenticated flow" file="drafts/p4/labs/signup-verification-state/solution.ts" expected="Use verified identity/session APIs and narrow resource access.">
+
+```ts
+const { data, error } = await supabase.auth.signUp({ email, password });
+if (error) throw new Error("Sign-up failed");
+if (!data.session) {
+  return { state: "verify-email" as const };
+}
+return { state: "signed-in" as const, userId: data.session.user.id };
+```
+
+**Repair reasoning:** Inspect error and returned session explicitly, show a neutral verification state when there is no session, and protect data access using actual verified server authentication.
+
+The code sample is a teaching excerpt; integrate it with the framework's generated types, secure cookie handling and a fail-closed route handler. Any example variable representing a role, application origin or tenant must be obtained from trusted configuration and server-side authorization.
+
+</LessonStep>
+
+<LessonStep number={3} title="Prove both allowed and rejected states" file="drafts/p4/labs/signup-verification-state/acceptance.md" expected="One authenticated success and one negative session/authorization case are recorded.">
+
+**Allowed behavior:** Use Supabase local Mailpit to inspect confirmation email and test pending, confirmed, wrong-password and expired-link paths. Compare browser and server session state.
+
+**Denied behavior:** Create a new local test user with email confirmation enabled; verify they cannot access the protected dashboard without a session. Try a wrong password without revealing account existence.
+
+**Security limitations:** Never treat a non-null user in a signUp response as permission to read private data. Rate-limit login endpoints and avoid detailed account-enumeration errors.
+
+A successful source integrity check cannot stand in for a real Auth token refresh, signed JWT verification, email delivery, OAuth callback or MFA challenge.
+
+</LessonStep>
+
+## Trust boundaries and operational choices
+
+Email/password sign-up and sign-in may require a separate email verification step. UI state must distinguish a pending verification from an authenticated session.
+
+Inspect error and returned session explicitly, show a neutral verification state when there is no session, and protect data access using actual verified server authentication.
+
+Never treat a non-null user in a signUp response as permission to read private data. Rate-limit login endpoints and avoid detailed account-enumeration errors.
+
+In production, model expired access tokens, refresh-token rotation, multiple concurrent tabs, CSRF/state handling where applicable, cookie attributes, MFA enrollment and logout propagation. Never rely on raw JWT decoding, a mutable cookie JSON field, an unverified redirect URL or a user-editable metadata claim to authorize administrative actions.
+
+## Bug Hunt
+
+1. State the attack or broken state: A created user object does not necessarily mean the email is verified or an active session has been established.
+2. Derive the expected authenticated behavior and the required forbidden behavior.
+3. Apply the identity/session fix: Inspect error and returned session explicitly, show a neutral verification state when there is no session, and protect data access using actual verified server authentication.
+4. Reproduce a real negative case: Create a new local test user with email confirmation enabled; verify they cannot access the protected dashboard without a session. Try a wrong password without revealing account existence.
+5. Explain which separate boundary still needs verification: Never treat a non-null user in a signUp response as permission to read private data. Rate-limit login endpoints and avoid detailed account-enumeration errors.
+
+<Misconception claim={"A created user object does not necessarily mean the email is verified or an active session has been established."} correction={"Email/password sign-up and sign-in may require a separate email verification step. UI state must distinguish a pending verification from an authenticated session."} />
+<KnowledgeCheck question={"What does signUp returning a user without a session usually require?"} choices={["Immediate access to every private row","A separate verification/sign-in step before protected access","A database superuser key","Automatic admin privileges"]} correctIndex={1} explanation={"Inspect error and returned session explicitly, show a neutral verification state when there is no session, and protect data access using actual verified server authentication."} misconception={"Never treat a non-null user in a signUp response as permission to read private data. Rate-limit login endpoints and avoid detailed account-enumeration errors."} lessonId="14.02.01" />
+
+## Further practice
+
+Implement a fully guarded Next.js server route for the exercise. Record the exact installed Supabase package versions, redirect configuration, pending/active session transitions and the response for an unauthorized second test identity. Run an integration test with Mailpit for email flows and a protected route that never trusts client-editable role data.
+
+## Official references
+
+- [Supabase Auth official guide — Sign up sign in and verification](https://supabase.com/docs/guides/auth/passwords)
+- [Supabase server-side Auth](https://supabase.com/docs/guides/auth/server-side)

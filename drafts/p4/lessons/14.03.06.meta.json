@@ -1,0 +1,20 @@
+{
+  "id": "14.03.06",
+  "title": "Secure service-role operations",
+  "trackId": "14",
+  "moduleId": "14.03",
+  "prerequisites": [
+    "14.03.05"
+  ],
+  "labSlug": "narrow-service-role-operations",
+  "sourceStatus": "draft-unverified",
+  "runtimeQualification": "not-run",
+  "reviewStatus": "unreviewed",
+  "readyToPublish": false,
+  "estimatedMinutes": 70,
+  "officialReferences": [
+    "https://supabase.com/docs/guides/getting-started/api-keys",
+    "https://supabase.com/docs/guides/database/postgres/testing-row-level-security"
+  ],
+  "exerciseFormat": "ts"
+}

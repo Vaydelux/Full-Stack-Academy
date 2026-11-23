@@ -1,0 +1,106 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["A useful RLS test covers both expected access and expected denial for each SQL operation, with distinct actors and the anon/authenticated role matrix. A positive query result alone does not prove privacy.","Assert one allowed row and zero forbidden rows after setting the local authenticated test identity. Repeat the matrix with real client sessions and operations beyond SELECT.","Tests using a privileged SQL role can bypass RLS and produce misleading results. Use role impersonation and actual JWT-backed requests, and avoid modifying real auth.users records."]} />
+
+## Security defect and threat model
+
+**Policy tests.** A useful RLS test covers both expected access and expected denial for each SQL operation, with distinct actors and the anon/authenticated role matrix. A positive query result alone does not prove privacy.
+
+**The vulnerable starting point:** The starter counts rows but does not assert that another user's row is hidden, so a permissive USING (true) policy could pass unnoticed.
+
+An attacker may know an ID, send arbitrary query parameters, or hold a legitimate authenticated account. An application is not secure merely because the login screen works. The database and the authenticated server must prevent one actor from accessing another actor's rows or private objects.
+
+## Mental model and prerequisites
+
+Complete **14.03.02**. A useful RLS test covers both expected access and expected denial for each SQL operation, with distinct actors and the anon/authenticated role matrix. A positive query result alone does not prove privacy.
+
+The exercises use **only** synthetic test data in a disposable local Supabase stack. `public.academy_lab_tasks` and `public.academy_lab_memberships` are educational fixture names, not production tables. Never run lab policies against a live customer schema. This source is a **draft**, not a verified permission test or evidence of a running database.
+
+**Before coding:** The starter counts rows but does not assert that another user's row is hidden, so a permissive USING (true) policy could pass unnoticed. Explain the relevant actor, SQL role, table privilege, policy predicate, sensitive row, and how an attacker could observe an unauthorized result.
+
+## Guided repair
+
+<LessonStep number={1} title="Reproduce the permissive or privileged access path" file="drafts/p4/labs/rls-denial-tests/starter.sql" expected="Identify why an authenticated request may still cross its authorization boundary.">
+
+```sql
+-- In a local test transaction: one positive result is not a security test.
+BEGIN;
+SET LOCAL ROLE authenticated;
+SELECT set_config('request.jwt.claim.sub','11111111-1111-4111-8111-111111111111',true);
+SELECT count(*) FROM public.academy_lab_tasks;
+ROLLBACK;
+```
+
+**Why this fails:** The starter counts rows but does not assert that another user's row is hidden, so a permissive USING (true) policy could pass unnoticed. Do not accept a successful schema statement as proof of row privacy.
+
+</LessonStep>
+
+<LessonStep number={2} title="Write the defensive policy or server boundary" file="drafts/p4/labs/rls-denial-tests/solution.sql" expected="Constrain operations by caller identity and permitted resources.">
+
+```sql
+-- Isolated local Supabase test only; two synthetic owners are seeded.
+BEGIN;
+SET LOCAL ROLE authenticated;
+SELECT set_config('request.jwt.claim.sub','11111111-1111-4111-8111-111111111111',true);
+DO $test$
+DECLARE allowed_rows integer; denied_rows integer;
+BEGIN
+  SELECT count(*) INTO allowed_rows FROM public.academy_lab_tasks
+    WHERE owner_id = '11111111-1111-4111-8111-111111111111'::uuid;
+  SELECT count(*) INTO denied_rows FROM public.academy_lab_tasks
+    WHERE owner_id = '22222222-2222-4222-8222-222222222222'::uuid;
+  IF allowed_rows <> 1 OR denied_rows <> 0 THEN
+    RAISE EXCEPTION '14.03.03 RLS allow/deny matrix failed';
+  END IF;
+END $test$;
+ROLLBACK;
+```
+
+**How the defense works:** Assert one allowed row and zero forbidden rows after setting the local authenticated test identity. Repeat the matrix with real client sessions and operations beyond SELECT.
+
+</LessonStep>
+
+<LessonStep number={3} title="Prove allow and deny with real Supabase identities" file="drafts/p4/labs/rls-denial-tests/acceptance.md" expected="A real denied cross-actor operation and an authorized operation are independently observed.">
+
+**Required positive test:** Run Supabase's documented pgTAP RLS tests with anon, two authenticated users and server-side roles. Do not assume set_config alone reproduces every Auth session claim or token refresh behavior.
+
+**Required negative test:** Deliberately replace the owner-only policy with USING (true) in a disposable instance and verify the test fails, then restore the correct policy.
+
+**Caveat:** Tests using a privileged SQL role can bypass RLS and produce misleading results. Use role impersonation and actual JWT-backed requests, and avoid modifying real auth.users records.
+
+A static code-fence match or even a SQL statement compiling is not evidence that a privileged role, policy composition, JWT, Storage signed URL or application-level permission boundary is correct.
+
+</LessonStep>
+
+## Security review and implementation details
+
+A useful RLS test covers both expected access and expected denial for each SQL operation, with distinct actors and the anon/authenticated role matrix. A positive query result alone does not prove privacy.
+
+Assert one allowed row and zero forbidden rows after setting the local authenticated test identity. Repeat the matrix with real client sessions and operations beyond SELECT.
+
+Tests using a privileged SQL role can bypass RLS and produce misleading results. Use role impersonation and actual JWT-backed requests, and avoid modifying real auth.users records.
+
+RLS applies subject to PostgreSQL roles, table ownership, policy composition and operation type. In an exposed schema, verify grants and RLS together. For writes, review INSERT WITH CHECK and UPDATE USING/WITH CHECK, not just SELECT. In Supabase, do not use user-editable `user_metadata` as authority for privileged roles. A service-role client may bypass RLS; it must not be used to repair a client permission error.
+
+## Bug Hunt and regression matrix
+
+1. Predict the disclosure caused by the starter: The starter counts rows but does not assert that another user's row is hidden, so a permissive USING (true) policy could pass unnoticed.
+2. Confirm one valid user can complete the intended action.
+3. Attempt the forbidden action with a different user: Deliberately replace the owner-only policy with USING (true) in a disposable instance and verify the test fails, then restore the correct policy.
+4. Apply the policy/server repair: Assert one allowed row and zero forbidden rows after setting the local authenticated test identity. Repeat the matrix with real client sessions and operations beyond SELECT.
+5. Retest with anon, two authenticated identities and any privileged path: Tests using a privileged SQL role can bypass RLS and produce misleading results. Use role impersonation and actual JWT-backed requests, and avoid modifying real auth.users records.
+
+<Misconception claim={"The starter counts rows but does not assert that another user's row is hidden, so a permissive USING (true) policy could pass unnoticed."} correction={"A useful RLS test covers both expected access and expected denial for each SQL operation, with distinct actors and the anon/authenticated role matrix. A positive query result alone does not prove privacy."} />
+<KnowledgeCheck question={"Which test proves an owner-only SELECT policy protects private rows?"} choices={["A positive read as the owner only","A positive owner read AND negative other-user read under representative roles","A valid CREATE POLICY statement","A successful admin read"]} correctIndex={1} explanation={"Assert one allowed row and zero forbidden rows after setting the local authenticated test identity. Repeat the matrix with real client sessions and operations beyond SELECT."} misconception={"Tests using a privileged SQL role can bypass RLS and produce misleading results. Use role impersonation and actual JWT-backed requests, and avoid modifying real auth.users records."} lessonId="14.03.03" />
+
+## Security extension and release conditions
+
+Extend the access matrix to SELECT, INSERT, UPDATE and DELETE where applicable. Build a pgTAP or equivalent isolated integration test that fails on the deliberately permissive starter and passes on the narrow policy. Run requests through the same Supabase Data API and authenticated route as the real app; test with the least-privileged role first. Include a second database connection if RLS behavior depends on transaction state.
+
+Keep copies of all policy test results sanitized. Do not move this manuscript to the published registry before an explicit human security review and actual local RLS test runs.
+
+## Official references
+
+- [Supabase official reference — Policy tests](https://supabase.com/docs/guides/database/postgres/testing-row-level-security)
+- [Supabase RLS testing](https://supabase.com/docs/guides/database/postgres/testing-row-level-security)

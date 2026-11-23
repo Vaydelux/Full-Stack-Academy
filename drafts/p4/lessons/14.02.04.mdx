@@ -1,0 +1,101 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Multi-factor enrollment, challenge and verification are separate states. Sensitive actions should check the current session's assurance level instead of relying on a local boolean.","Enroll TOTP, challenge, verify a one-time code and confirm the current Auth assurance level before allowing an MFA-protected operation.","Do not log factor secrets, recovery codes or TOTP values. Implement recovery and anti-lockout policies that fit the product's risk model."]} />
+
+## Authentication problem
+
+**MFA and recovery.** Multi-factor enrollment, challenge and verification are separate states. Sensitive actions should check the current session's assurance level instead of relying on a local boolean.
+
+**Broken starting assumption:** The starter marks MFA as completed immediately after enrollment, even if the user never proves control of the TOTP factor.
+
+An application can show a signed-in UI and still lack a valid server-side session or permission to read a specific tenant's data. Authentication identifies the actor; authorization decides which resources that actor may use. This module trains both concepts without embedding production credentials in the examples.
+
+## Mental model and prerequisite
+
+Complete **14.02.03**. Multi-factor enrollment, challenge and verification are separate states. Sensitive actions should check the current session's assurance level instead of relying on a local boolean.
+
+The learner is expected to run these exercises against **a disposable local Supabase Auth project**, not a live customer tenant. Prisma ORM 7 and the Supabase Data API are separate access paths; each has its own session/role boundary. Changes to Auth libraries and Next.js cookie APIs must be checked against pinned runtime versions.
+
+**Predict:** The starter marks MFA as completed immediately after enrollment, even if the user never proves control of the TOTP factor. Explain how the starter could make a wrong access decision even though the code compiles.
+
+## Guided implementation
+
+<LessonStep number={1} title="Observe the invalid identity assumption" file="drafts/p4/labs/mfa-enrollment-and-verify/starter.ts" expected="A clear unauthorized state or unsafe shortcut is identified.">
+
+```ts
+// Wrong: initiating enrollment is not the same as verifying the factor.
+await supabase.auth.mfa.enroll({ factorType: "totp" });
+const mfaVerified = true;
+```
+
+**Diagnosis:** The starter marks MFA as completed immediately after enrollment, even if the user never proves control of the TOTP factor.
+
+Identify where the caller controls input, how the session is refreshed, and whether the data used for an authorization decision was cryptographically verified or fetched from a trusted server-side membership table.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the authenticated flow" file="drafts/p4/labs/mfa-enrollment-and-verify/solution.ts" expected="Use verified identity/session APIs and narrow resource access.">
+
+```ts
+const enrolled = await supabase.auth.mfa.enroll({ factorType: "totp" });
+if (enrolled.error) throw new Error("MFA enrollment failed");
+const factorId = enrolled.data.id;
+const challenged = await supabase.auth.mfa.challenge({ factorId });
+if (challenged.error) throw new Error("MFA challenge failed");
+const result = await supabase.auth.mfa.verify({
+  factorId, challengeId: challenged.data.id, code: submittedTotpCode,
+});
+if (result.error) throw new Error("MFA verification failed");
+const assurance = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+if (assurance.error || assurance.data?.currentLevel !== "aal2")
+  throw new Error("Strong session assurance required");
+```
+
+**Repair reasoning:** Enroll TOTP, challenge, verify a one-time code and confirm the current Auth assurance level before allowing an MFA-protected operation.
+
+The code sample is a teaching excerpt; integrate it with the framework's generated types, secure cookie handling and a fail-closed route handler. Any example variable representing a role, application origin or tenant must be obtained from trusted configuration and server-side authorization.
+
+</LessonStep>
+
+<LessonStep number={3} title="Prove both allowed and rejected states" file="drafts/p4/labs/mfa-enrollment-and-verify/acceptance.md" expected="One authenticated success and one negative session/authorization case are recorded.">
+
+**Allowed behavior:** Test correct/incorrect TOTP flows on a disposable local user, record the returned AAL and verify recovery and factor removal paths.
+
+**Denied behavior:** Enter an incorrect code, reuse a stale challenge, or close enrollment early; none should produce an authenticated aal2 gate success.
+
+**Security limitations:** Do not log factor secrets, recovery codes or TOTP values. Implement recovery and anti-lockout policies that fit the product's risk model.
+
+A successful source integrity check cannot stand in for a real Auth token refresh, signed JWT verification, email delivery, OAuth callback or MFA challenge.
+
+</LessonStep>
+
+## Trust boundaries and operational choices
+
+Multi-factor enrollment, challenge and verification are separate states. Sensitive actions should check the current session's assurance level instead of relying on a local boolean.
+
+Enroll TOTP, challenge, verify a one-time code and confirm the current Auth assurance level before allowing an MFA-protected operation.
+
+Do not log factor secrets, recovery codes or TOTP values. Implement recovery and anti-lockout policies that fit the product's risk model.
+
+In production, model expired access tokens, refresh-token rotation, multiple concurrent tabs, CSRF/state handling where applicable, cookie attributes, MFA enrollment and logout propagation. Never rely on raw JWT decoding, a mutable cookie JSON field, an unverified redirect URL or a user-editable metadata claim to authorize administrative actions.
+
+## Bug Hunt
+
+1. State the attack or broken state: The starter marks MFA as completed immediately after enrollment, even if the user never proves control of the TOTP factor.
+2. Derive the expected authenticated behavior and the required forbidden behavior.
+3. Apply the identity/session fix: Enroll TOTP, challenge, verify a one-time code and confirm the current Auth assurance level before allowing an MFA-protected operation.
+4. Reproduce a real negative case: Enter an incorrect code, reuse a stale challenge, or close enrollment early; none should produce an authenticated aal2 gate success.
+5. Explain which separate boundary still needs verification: Do not log factor secrets, recovery codes or TOTP values. Implement recovery and anti-lockout policies that fit the product's risk model.
+
+<Misconception claim={"The starter marks MFA as completed immediately after enrollment, even if the user never proves control of the TOTP factor."} correction={"Multi-factor enrollment, challenge and verification are separate states. Sensitive actions should check the current session's assurance level instead of relying on a local boolean."} />
+<KnowledgeCheck question={"At what point is the TOTP factor actually proved?"} choices={["Immediately after enroll","After a successful challenge verification with a valid code","After the signup form is shown","When a client flag is true"]} correctIndex={1} explanation={"Enroll TOTP, challenge, verify a one-time code and confirm the current Auth assurance level before allowing an MFA-protected operation."} misconception={"Do not log factor secrets, recovery codes or TOTP values. Implement recovery and anti-lockout policies that fit the product's risk model."} lessonId="14.02.04" />
+
+## Further practice
+
+Implement a fully guarded Next.js server route for the exercise. Record the exact installed Supabase package versions, redirect configuration, pending/active session transitions and the response for an unauthorized second test identity. Run an integration test with Mailpit for email flows and a protected route that never trusts client-editable role data.
+
+## Official references
+
+- [Supabase Auth official guide — MFA and recovery](https://supabase.com/docs/guides/auth/auth-mfa/totp)
+- [Supabase server-side Auth](https://supabase.com/docs/guides/auth/server-side)

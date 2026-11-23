@@ -1,0 +1,20 @@
+{
+  "id": "13.01.08",
+  "title": "Lab connect to Postgres",
+  "trackId": "13",
+  "moduleId": "13.01",
+  "prerequisites": [
+    "13.01.07"
+  ],
+  "labSlug": "test-postgresql-connection",
+  "sourceStatus": "draft-unverified",
+  "readyToPublish": false,
+  "runtimeQualification": "not-run",
+  "reviewStatus": "unreviewed",
+  "estimatedMinutes": 85,
+  "officialReferences": [
+    "https://www.prisma.io/docs/orm/v7/prisma-client/queries/crud",
+    "https://www.prisma.io/docs/orm/v7"
+  ],
+  "exerciseFormat": "ts"
+}

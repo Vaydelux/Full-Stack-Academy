@@ -1,0 +1,15 @@
+{
+  "id": "draft.p4.supabase-product-boundaries",
+  "lessonId": "14.01.01",
+  "moduleId": "14.01",
+  "sourceStatus": "draft-unverified",
+  "runtimeQualification": "not-run",
+  "reviewStatus": "unreviewed",
+  "readyToPublish": false,
+  "qualificationKind": "manual-supabase-local",
+  "language": "ts",
+  "starter": "drafts/p4/labs/supabase-product-boundaries/starter.ts",
+  "solution": "drafts/p4/labs/supabase-product-boundaries/solution.ts",
+  "acceptanceDoc": "drafts/p4/labs/supabase-product-boundaries/acceptance.md",
+  "officialReference": "https://supabase.com/docs/guides/getting-started/architecture"
+}

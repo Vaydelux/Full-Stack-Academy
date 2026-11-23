@@ -1,0 +1,98 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Exposed schemas can be accessed through the Supabase Data API when appropriate grants exist. Grants determine table privileges; RLS determines which rows a caller can see. Both are required.","Enable RLS on the exposed table and create a caller-specific owner policy before granting client-facing SELECT. Use explicit policies for every operation the app needs.","TO authenticated alone is not authorization. Security-definer views/functions and privileged service roles can bypass row policies, so review those separately."]} />
+
+## Architecture problem
+
+**Exposed schemas.** Exposed schemas can be accessed through the Supabase Data API when appropriate grants exist. Grants determine table privileges; RLS determines which rows a caller can see. Both are required.
+
+**Unsafe starting point:** The starter grants authenticated users SELECT on a newly created public table with no RLS policy, potentially exposing every owner's notes.
+
+Supabase is not a single unrestricted database client. Different credentials and services have different trust boundaries. This source lesson makes the boundary explicit so a working demonstration does not accidentally teach learners to expose server credentials, ignore RLS, or apply migrations against the wrong project.
+
+## Mental model and prerequisites
+
+Complete **14.01.04**. Exposed schemas can be accessed through the Supabase Data API when appropriate grants exist. Grants determine table privileges; RLS determines which rows a caller can see. Both are required.
+
+The source is **draft-unverified** and intended for a disposable Supabase local stack. Current Supabase API keys, CLI commands and configuration may change, so the runtime test must use the installed version and live official documentation. No private project, production database or user account is needed for the learning exercise.
+
+**Predict:** The starter grants authenticated users SELECT on a newly created public table with no RLS policy, potentially exposing every owner's notes. What concrete failure or unauthorized access could happen? State how a negative test would demonstrate the problem before reviewing the corrected source.
+
+## Guided implementation
+
+<LessonStep number={1} title="Find the incorrect trust assumption" file="drafts/p4/labs/exposed-schema-rls/starter.sql" expected="Explain the unsafe effect of the original client, project or schema operation.">
+
+```sql
+CREATE TABLE public.lesson_notes (
+ id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+ owner_id uuid NOT NULL,
+ body text NOT NULL
+);
+GRANT SELECT ON public.lesson_notes TO authenticated;
+```
+
+**Why this is unsafe:** The starter grants authenticated users SELECT on a newly created public table with no RLS policy, potentially exposing every owner's notes. Identify the code/runtime boundary before attempting the repair.
+
+</LessonStep>
+
+<LessonStep number={2} title="Use scoped configuration or explicit RLS" file="drafts/p4/labs/exposed-schema-rls/solution.sql" expected="A clear, reviewable boundary appropriate to the operation.">
+
+```sql
+CREATE TABLE public.lesson_notes (
+ id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+ owner_id uuid NOT NULL,
+ body text NOT NULL
+);
+ALTER TABLE public.lesson_notes ENABLE ROW LEVEL SECURITY;
+CREATE POLICY notes_owner_read ON public.lesson_notes
+ FOR SELECT TO authenticated
+ USING (owner_id = (SELECT auth.uid()));
+GRANT SELECT ON public.lesson_notes TO authenticated;
+```
+
+**Repair:** Enable RLS on the exposed table and create a caller-specific owner policy before granting client-facing SELECT. Use explicit policies for every operation the app needs.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify in an isolated local Supabase stack" file="drafts/p4/labs/exposed-schema-rls/acceptance.md" expected="Positive behavior and an independently denied operation are recorded.">
+
+**Positive proof:** Apply this SQL only to a disposable Supabase local stack with auth.uid available. Run SQL policy tests as authenticated and anon roles plus actual API requests; check Data API schema exposure settings.
+
+**Required negative proof:** With two authenticated test users, confirm each sees only their own notes and the other sees zero rows; anon must not read private data.
+
+**Remaining boundary:** TO authenticated alone is not authorization. Security-definer views/functions and privileged service roles can bypass row policies, so review those separately.
+
+The acceptance file is a manual/real-stack qualification plan. It is not an automatically successful integration test and does not qualify a production project.
+
+</LessonStep>
+
+## Operational and security review
+
+Exposed schemas can be accessed through the Supabase Data API when appropriate grants exist. Grants determine table privileges; RLS determines which rows a caller can see. Both are required.
+
+Enable RLS on the exposed table and create a caller-specific owner policy before granting client-facing SELECT. Use explicit policies for every operation the app needs.
+
+TO authenticated alone is not authorization. Security-definer views/functions and privileged service roles can bypass row policies, so review those separately.
+
+On an actual full-stack app, draw the flow from browser through the authenticated server endpoint to Supabase Auth or PostgreSQL. Annotate which requests use a publishable key, which need a user JWT, which require database grants, and which should never be allowed outside server infrastructure. Storage and Realtime must be authorized independently of ordinary table policies.
+
+## Bug Hunt
+
+1. Reproduce the unsafe setup: The starter grants authenticated users SELECT on a newly created public table with no RLS policy, potentially exposing every owner's notes.
+2. Identify the affected tenant, key, connection or exposed schema.
+3. Apply the minimum safer design: Enable RLS on the exposed table and create a caller-specific owner policy before granting client-facing SELECT. Use explicit policies for every operation the app needs.
+4. Test both an allowed call and the forbidden call: With two authenticated test users, confirm each sees only their own notes and the other sees zero rows; anon must not read private data.
+5. Record the operational limitation: TO authenticated alone is not authorization. Security-definer views/functions and privileged service roles can bypass row policies, so review those separately.
+
+<Misconception claim={"The starter grants authenticated users SELECT on a newly created public table with no RLS policy, potentially exposing every owner's notes."} correction={"Exposed schemas can be accessed through the Supabase Data API when appropriate grants exist. Grants determine table privileges; RLS determines which rows a caller can see. Both are required."} />
+<KnowledgeCheck question={"What is the difference between GRANT SELECT and row-level security?"} choices={["They are identical","GRANT allows operation; RLS filters allowed rows","RLS creates API keys","GRANT signs JWTs"]} correctIndex={1} explanation={"Enable RLS on the exposed table and create a caller-specific owner policy before granting client-facing SELECT. Use explicit policies for every operation the app needs."} misconception={"TO authenticated alone is not authorization. Security-definer views/functions and privileged service roles can bypass row policies, so review those separately."} lessonId="14.01.05" />
+
+## Extend the design
+
+Translate this example into a Next.js + NestJS architecture drawing. Include environment separation, role boundaries, and a reproducible local migration process. Then explain why a successful source check is insufficient to establish data confidentiality. For production, obtain release approval only after authenticated API and RLS testing with two real test accounts.
+
+## Official references
+
+- [Supabase official guide — Exposed schemas](https://supabase.com/docs/guides/api/securing-your-api)
+- [Supabase local development](https://supabase.com/docs/guides/local-development)

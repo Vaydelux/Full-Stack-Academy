@@ -1,0 +1,96 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Supabase email links rely on configured Site URL and redirect allowlists. Templates and application callbacks must use approved destinations and avoid leaking tokens to third parties.","Build the redirect from a controlled application origin and fixed path; configure that exact URL in Supabase Auth's allowed redirect list.","Avoid sensitive info in URLs, referrer headers and analytics. Ensure callback endpoints have no open-redirect forwarding and do not expose token hashes."]} />
+
+## Authentication problem
+
+**Email templates and redirect URLs.** Supabase email links rely on configured Site URL and redirect allowlists. Templates and application callbacks must use approved destinations and avoid leaking tokens to third parties.
+
+**Broken starting assumption:** An untrusted redirectTo parameter can be used to send password-reset flows to an attacker-controlled destination.
+
+An application can show a signed-in UI and still lack a valid server-side session or permission to read a specific tenant's data. Authentication identifies the actor; authorization decides which resources that actor may use. This module trains both concepts without embedding production credentials in the examples.
+
+## Mental model and prerequisite
+
+Complete **14.02.04**. Supabase email links rely on configured Site URL and redirect allowlists. Templates and application callbacks must use approved destinations and avoid leaking tokens to third parties.
+
+The learner is expected to run these exercises against **a disposable local Supabase Auth project**, not a live customer tenant. Prisma ORM 7 and the Supabase Data API are separate access paths; each has its own session/role boundary. Changes to Auth libraries and Next.js cookie APIs must be checked against pinned runtime versions.
+
+**Predict:** An untrusted redirectTo parameter can be used to send password-reset flows to an attacker-controlled destination. Explain how the starter could make a wrong access decision even though the code compiles.
+
+## Guided implementation
+
+<LessonStep number={1} title="Observe the invalid identity assumption" file="drafts/p4/labs/safe-auth-email-redirects/starter.ts" expected="A clear unauthorized state or unsafe shortcut is identified.">
+
+```ts
+await supabase.auth.resetPasswordForEmail(email, {
+  redirectTo: request.query.redirectTo as string,
+});
+```
+
+**Diagnosis:** An untrusted redirectTo parameter can be used to send password-reset flows to an attacker-controlled destination.
+
+Identify where the caller controls input, how the session is refreshed, and whether the data used for an authorization decision was cryptographically verified or fetched from a trusted server-side membership table.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the authenticated flow" file="drafts/p4/labs/safe-auth-email-redirects/solution.ts" expected="Use verified identity/session APIs and narrow resource access.">
+
+```ts
+const approvedOrigin = process.env.NEXT_PUBLIC_APP_ORIGIN;
+if (!approvedOrigin) throw new Error("Missing app origin");
+const redirectTo = new URL("/auth/update-password", approvedOrigin).toString();
+const { error } = await supabase.auth.resetPasswordForEmail(email, {
+  redirectTo,
+});
+if (error) throw new Error("Unable to request password reset");
+```
+
+**Repair reasoning:** Build the redirect from a controlled application origin and fixed path; configure that exact URL in Supabase Auth's allowed redirect list.
+
+The code sample is a teaching excerpt; integrate it with the framework's generated types, secure cookie handling and a fail-closed route handler. Any example variable representing a role, application origin or tenant must be obtained from trusted configuration and server-side authorization.
+
+</LessonStep>
+
+<LessonStep number={3} title="Prove both allowed and rejected states" file="drafts/p4/labs/safe-auth-email-redirects/acceptance.md" expected="One authenticated success and one negative session/authorization case are recorded.">
+
+**Allowed behavior:** In the local Auth stack, verify email templates, reset links, single-use behavior and redirect allowlisting via Mailpit with synthetic inboxes.
+
+**Denied behavior:** Supply an attacker domain via a query parameter, including encoded and protocol-relative variants. The reset request must still point to the approved callback.
+
+**Security limitations:** Avoid sensitive info in URLs, referrer headers and analytics. Ensure callback endpoints have no open-redirect forwarding and do not expose token hashes.
+
+A successful source integrity check cannot stand in for a real Auth token refresh, signed JWT verification, email delivery, OAuth callback or MFA challenge.
+
+</LessonStep>
+
+## Trust boundaries and operational choices
+
+Supabase email links rely on configured Site URL and redirect allowlists. Templates and application callbacks must use approved destinations and avoid leaking tokens to third parties.
+
+Build the redirect from a controlled application origin and fixed path; configure that exact URL in Supabase Auth's allowed redirect list.
+
+Avoid sensitive info in URLs, referrer headers and analytics. Ensure callback endpoints have no open-redirect forwarding and do not expose token hashes.
+
+In production, model expired access tokens, refresh-token rotation, multiple concurrent tabs, CSRF/state handling where applicable, cookie attributes, MFA enrollment and logout propagation. Never rely on raw JWT decoding, a mutable cookie JSON field, an unverified redirect URL or a user-editable metadata claim to authorize administrative actions.
+
+## Bug Hunt
+
+1. State the attack or broken state: An untrusted redirectTo parameter can be used to send password-reset flows to an attacker-controlled destination.
+2. Derive the expected authenticated behavior and the required forbidden behavior.
+3. Apply the identity/session fix: Build the redirect from a controlled application origin and fixed path; configure that exact URL in Supabase Auth's allowed redirect list.
+4. Reproduce a real negative case: Supply an attacker domain via a query parameter, including encoded and protocol-relative variants. The reset request must still point to the approved callback.
+5. Explain which separate boundary still needs verification: Avoid sensitive info in URLs, referrer headers and analytics. Ensure callback endpoints have no open-redirect forwarding and do not expose token hashes.
+
+<Misconception claim={"An untrusted redirectTo parameter can be used to send password-reset flows to an attacker-controlled destination."} correction={"Supabase email links rely on configured Site URL and redirect allowlists. Templates and application callbacks must use approved destinations and avoid leaking tokens to third parties."} />
+<KnowledgeCheck question={"What determines the target for a password-reset email callback?"} choices={["Any URL provided by a public request","A controlled URL that is allowlisted in Auth settings","The user's editable display name","A database migration ID"]} correctIndex={1} explanation={"Build the redirect from a controlled application origin and fixed path; configure that exact URL in Supabase Auth's allowed redirect list."} misconception={"Avoid sensitive info in URLs, referrer headers and analytics. Ensure callback endpoints have no open-redirect forwarding and do not expose token hashes."} lessonId="14.02.05" />
+
+## Further practice
+
+Implement a fully guarded Next.js server route for the exercise. Record the exact installed Supabase package versions, redirect configuration, pending/active session transitions and the response for an unauthorized second test identity. Run an integration test with Mailpit for email flows and a protected route that never trusts client-editable role data.
+
+## Official references
+
+- [Supabase Auth official guide — Email templates and redirect URLs](https://supabase.com/docs/guides/auth/redirect-urls)
+- [Supabase server-side Auth](https://supabase.com/docs/guides/auth/server-side)

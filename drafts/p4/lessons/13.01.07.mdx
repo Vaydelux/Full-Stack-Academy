@@ -1,0 +1,96 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["A good seed script is deterministic and repeatable on a disposable environment. Prisma ORM v7 requires an explicit prisma db seed command configured through migrations.seed.","Use a unique business key with upsert, isolate dev seed data, keep deterministic IDs and values, and configure migrations.seed to point at the script.","An idempotent upsert can still overwrite sensitive production data if the connection URL is wrong. Environment isolation is mandatory."]} />
+
+## Why this lesson matters
+
+**Seed strategies.** A good seed script is deterministic and repeatable on a disposable environment. Prisma ORM v7 requires an explicit prisma db seed command configured through migrations.seed.
+
+**Broken real-world assumption:** The starter is not idempotent: rerunning a seed may create duplicates or fail after a partial previous run.
+
+An ORM is not an access-control mechanism or a database deployment tool by itself. Treat the generated TypeScript types, database constraints, migration history and the authenticated request context as separate boundaries. The learner should be able to explain what each boundary guarantees and what it does not.
+
+## Mental model and prerequisite
+
+A good seed script is deterministic and repeatable on a disposable environment. Prisma ORM v7 requires an explicit prisma db seed command configured through migrations.seed.
+
+Complete **13.01.06** first. These examples target **Prisma ORM 7** with PostgreSQL and a source-staged, not-yet-published course. Version-7 configuration and generated-client behavior must be checked against the *version-pinned* installed CLI before real use; Prisma 8 has a different configuration contract.
+
+**Predict:** The starter is not idempotent: rerunning a seed may create duplicates or fail after a partial previous run. Name the unsafe row, build failure, schema drift or exposed secret that could appear. A passing source scan is not a valid replacement for compiling against Prisma 7 and running the real database integration.
+
+## Guided exercise
+
+<LessonStep number={1} title="Identify the broken persistence boundary" file="drafts/p4/labs/repeatable-seed-strategy/starter.ts" expected="The source exhibits the specific repeatable-seed-strategy failure.">
+
+```ts
+// Repeated execution creates duplicate rows or fails unique constraints.
+await prisma.user.create({
+  data: { tenantId: "demo", email: "learner@example.test" },
+});
+```
+
+**Why it is wrong:** The starter is not idempotent: rerunning a seed may create duplicates or fail after a partial previous run. State which step would fail in real development and which security or data-integrity invariant is absent. Don't accept merely removing a TypeScript error as a complete repair.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the safe version" file="drafts/p4/labs/repeatable-seed-strategy/solution.ts" expected="A version-7-compatible repair with explicit trust boundaries.">
+
+```ts
+// Requires @@unique([tenantId,email]) in User.
+// Use ONLY an explicitly designated local/dev demo database.
+await prisma.user.upsert({
+  where: { tenantId_email: {
+    tenantId: "demo", email: "learner@example.test",
+  }},
+  create: { tenantId: "demo", email: "learner@example.test" },
+  update: {},
+});
+```
+
+**How the repair works:** Use a unique business key with upsert, isolate dev seed data, keep deterministic IDs and values, and configure migrations.seed to point at the script.
+
+</LessonStep>
+
+<LessonStep number={3} title="Qualify using a disposable environment" file="drafts/p4/labs/repeatable-seed-strategy/acceptance.md" expected="Record positive and negative real-toolchain evidence before publication.">
+
+**Success criterion:** On an isolated database run prisma migrate dev, prisma generate and prisma db seed twice; assert the demo tenant row count and contents, with no extra user data.
+
+**Negative test:** Run the seed twice and verify the second execution does not grow the row count. Refuse to seed production unless a separate reviewed maintenance process authorizes it.
+
+**What remains unsafe if misunderstood:** An idempotent upsert can still overwrite sensitive production data if the connection URL is wrong. Environment isolation is mandatory.
+
+This lesson is an authored draft. The acceptance checklist is a test plan, not a previously executed build or proof that the database roles and dependencies are configured.
+
+</LessonStep>
+
+## Architecture, correctness and performance
+
+A good seed script is deterministic and repeatable on a disposable environment. Prisma ORM v7 requires an explicit prisma db seed command configured through migrations.seed.
+
+Use a unique business key with upsert, isolate dev seed data, keep deterministic IDs and values, and configure migrations.seed to point at the script.
+
+An idempotent upsert can still overwrite sensitive production data if the connection URL is wrong. Environment isolation is mandatory.
+
+A production-ready persistence boundary has to address error mapping, least-privileged database credentials, transaction/connection lifecycle, tenant authorization and request cancellation. Whenever schema changes are involved, review migration SQL and compatibility with the previous app version. Never expose database credentials in a `NEXT_PUBLIC_` variable or include them in a public web bundle.
+
+## Bug Hunt
+
+1. Observe the unsafe starter: The starter is not idempotent: rerunning a seed may create duplicates or fail after a partial previous run.
+2. Predict the concrete failure and its blast radius.
+3. Repair the code or schema: Use a unique business key with upsert, isolate dev seed data, keep deterministic IDs and values, and configure migrations.seed to point at the script.
+4. Write a test that would fail on the starter but pass on the corrected source: Run the seed twice and verify the second execution does not grow the row count. Refuse to seed production unless a separate reviewed maintenance process authorizes it.
+5. List an additional condition that this lesson cannot prove: An idempotent upsert can still overwrite sensitive production data if the connection URL is wrong. Environment isolation is mandatory.
+
+<Misconception claim={"The starter is not idempotent: rerunning a seed may create duplicates or fail after a partial previous run."} correction={"A good seed script is deterministic and repeatable on a disposable environment. Prisma ORM v7 requires an explicit prisma db seed command configured through migrations.seed."} />
+
+<KnowledgeCheck question={"Which operation supports a repeatable seed keyed by a unique tenant/email pair?"} choices={["create in every run","upsert on the unique business key","DELETE every database","INSERT without a constraint"]} correctIndex={1} explanation={"Use a unique business key with upsert, isolate dev seed data, keep deterministic IDs and values, and configure migrations.seed to point at the script."} misconception={"An idempotent upsert can still overwrite sensitive production data if the connection URL is wrong. Environment isolation is mandatory."} lessonId="13.01.07" />
+
+## Further practice
+
+Rebuild the exercise from an empty directory without copying generated artifacts. Pin every Prisma dependency in a real `package-lock.json`, run against a disposable PostgreSQL instance, compare instructor and starter behavior and record exact compiler and SQL errors. A class or object compiling successfully is not proof that a second user's data is inaccessible.
+
+## Official references
+
+- [Prisma ORM 7 — Seed strategies](https://www.prisma.io/docs/orm/v7/prisma-migrate/workflows/seeding)
+- [Prisma ORM v7 introduction](https://www.prisma.io/docs/orm/v7)

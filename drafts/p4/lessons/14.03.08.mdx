@@ -1,0 +1,104 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["An IDOR/BOLA bug can survive an authenticated route if its database read policy only checks that a tenant exists, not that the actor owns or belongs to that tenant's resource.","Require both ownership and membership in the row's tenant before allowing the read; test with users from two tenants.","This SELECT example does not automatically secure writes. INSERT needs WITH CHECK; UPDATE requires SELECT visibility and BOTH USING and WITH CHECK. A server-side privileged connection needs its own explicit authorization."]} />
+
+## Security defect and threat model
+
+**Bug Hunt cross-tenant read.** An IDOR/BOLA bug can survive an authenticated route if its database read policy only checks that a tenant exists, not that the actor owns or belongs to that tenant's resource.
+
+**The vulnerable starting point:** The starter's policy returns tasks for any authenticated user because every task has a non-null tenantId.
+
+An attacker may know an ID, send arbitrary query parameters, or hold a legitimate authenticated account. An application is not secure merely because the login screen works. The database and the authenticated server must prevent one actor from accessing another actor's rows or private objects.
+
+## Mental model and prerequisites
+
+Complete **14.03.07**. An IDOR/BOLA bug can survive an authenticated route if its database read policy only checks that a tenant exists, not that the actor owns or belongs to that tenant's resource.
+
+The exercises use **only** synthetic test data in a disposable local Supabase stack. `public.academy_lab_tasks` and `public.academy_lab_memberships` are educational fixture names, not production tables. Never run lab policies against a live customer schema. This source is a **draft**, not a verified permission test or evidence of a running database.
+
+**Before coding:** The starter's policy returns tasks for any authenticated user because every task has a non-null tenantId. Explain the relevant actor, SQL role, table privilege, policy predicate, sensitive row, and how an attacker could observe an unauthorized result.
+
+## Guided repair
+
+<LessonStep number={1} title="Reproduce the permissive or privileged access path" file="drafts/p4/labs/cross-tenant-read-bug-hunt/starter.sql" expected="Identify why an authenticated request may still cross its authorization boundary.">
+
+```sql
+ALTER TABLE public.academy_lab_tasks ENABLE ROW LEVEL SECURITY;
+CREATE POLICY lab_cross_tenant_bug ON public.academy_lab_tasks
+ FOR SELECT TO authenticated
+ USING (tenant_id IS NOT NULL);
+```
+
+**Why this fails:** The starter's policy returns tasks for any authenticated user because every task has a non-null tenantId. Do not accept a successful schema statement as proof of row privacy.
+
+</LessonStep>
+
+<LessonStep number={2} title="Write the defensive policy or server boundary" file="drafts/p4/labs/cross-tenant-read-bug-hunt/solution.sql" expected="Constrain operations by caller identity and permitted resources.">
+
+```sql
+ALTER TABLE public.academy_lab_memberships ENABLE ROW LEVEL SECURITY;
+CREATE POLICY lab_capstone_membership_select ON public.academy_lab_memberships
+ FOR SELECT TO authenticated
+ USING (user_id = (SELECT auth.uid()));
+
+ALTER TABLE public.academy_lab_tasks ENABLE ROW LEVEL SECURITY;
+CREATE POLICY lab_authorized_tenant_select ON public.academy_lab_tasks
+ FOR SELECT TO authenticated
+ USING (
+   owner_id = (SELECT auth.uid())
+   AND EXISTS (
+     SELECT 1 FROM public.academy_lab_memberships m
+     WHERE m.tenant_id = academy_lab_tasks.tenant_id
+       AND m.user_id = (SELECT auth.uid())
+   )
+ );
+```
+
+**How the defense works:** Require both ownership and membership in the row's tenant before allowing the read; test with users from two tenants.
+
+</LessonStep>
+
+<LessonStep number={3} title="Prove allow and deny with real Supabase identities" file="drafts/p4/labs/cross-tenant-read-bug-hunt/acceptance.md" expected="A real denied cross-actor operation and an authorized operation are independently observed.">
+
+**Required positive test:** In a dedicated local Supabase project, create alpha/beta rows; run policies under both JWTs and anon, verify positive/negative SELECT, INSERT and UPDATE with appropriate USING/WITH CHECK rules.
+
+**Required negative test:** Attack with a known beta task ID using alpha's JWT. Confirm that beta rows remain invisible, including nested relation loads and any caching layer.
+
+**Caveat:** This SELECT example does not automatically secure writes. INSERT needs WITH CHECK; UPDATE requires SELECT visibility and BOTH USING and WITH CHECK. A server-side privileged connection needs its own explicit authorization.
+
+A static code-fence match or even a SQL statement compiling is not evidence that a privileged role, policy composition, JWT, Storage signed URL or application-level permission boundary is correct.
+
+</LessonStep>
+
+## Security review and implementation details
+
+An IDOR/BOLA bug can survive an authenticated route if its database read policy only checks that a tenant exists, not that the actor owns or belongs to that tenant's resource.
+
+Require both ownership and membership in the row's tenant before allowing the read; test with users from two tenants.
+
+This SELECT example does not automatically secure writes. INSERT needs WITH CHECK; UPDATE requires SELECT visibility and BOTH USING and WITH CHECK. A server-side privileged connection needs its own explicit authorization.
+
+RLS applies subject to PostgreSQL roles, table ownership, policy composition and operation type. In an exposed schema, verify grants and RLS together. For writes, review INSERT WITH CHECK and UPDATE USING/WITH CHECK, not just SELECT. In Supabase, do not use user-editable `user_metadata` as authority for privileged roles. A service-role client may bypass RLS; it must not be used to repair a client permission error.
+
+## Bug Hunt and regression matrix
+
+1. Predict the disclosure caused by the starter: The starter's policy returns tasks for any authenticated user because every task has a non-null tenantId.
+2. Confirm one valid user can complete the intended action.
+3. Attempt the forbidden action with a different user: Attack with a known beta task ID using alpha's JWT. Confirm that beta rows remain invisible, including nested relation loads and any caching layer.
+4. Apply the policy/server repair: Require both ownership and membership in the row's tenant before allowing the read; test with users from two tenants.
+5. Retest with anon, two authenticated identities and any privileged path: This SELECT example does not automatically secure writes. INSERT needs WITH CHECK; UPDATE requires SELECT visibility and BOTH USING and WITH CHECK. A server-side privileged connection needs its own explicit authorization.
+
+<Misconception claim={"The starter's policy returns tasks for any authenticated user because every task has a non-null tenantId."} correction={"An IDOR/BOLA bug can survive an authenticated route if its database read policy only checks that a tenant exists, not that the actor owns or belongs to that tenant's resource."} />
+<KnowledgeCheck question={"Which negative case closes the cross-tenant read bug?"} choices={["A successful alpha read only","Alpha JWT cannot read beta's known resource ID","A valid CREATE POLICY command","A service-role admin read"]} correctIndex={1} explanation={"Require both ownership and membership in the row's tenant before allowing the read; test with users from two tenants."} misconception={"This SELECT example does not automatically secure writes. INSERT needs WITH CHECK; UPDATE requires SELECT visibility and BOTH USING and WITH CHECK. A server-side privileged connection needs its own explicit authorization."} lessonId="14.03.08" />
+
+## Security extension and release conditions
+
+Extend the access matrix to SELECT, INSERT, UPDATE and DELETE where applicable. Build a pgTAP or equivalent isolated integration test that fails on the deliberately permissive starter and passes on the narrow policy. Run requests through the same Supabase Data API and authenticated route as the real app; test with the least-privileged role first. Include a second database connection if RLS behavior depends on transaction state.
+
+Keep copies of all policy test results sanitized. Do not move this manuscript to the published registry before an explicit human security review and actual local RLS test runs.
+
+## Official references
+
+- [Supabase official reference — Bug Hunt cross-tenant read](https://supabase.com/docs/guides/database/postgres/row-level-security)
+- [Supabase RLS testing](https://supabase.com/docs/guides/database/postgres/testing-row-level-security)

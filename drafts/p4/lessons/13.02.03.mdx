@@ -1,0 +1,100 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Create, update and delete operations are authorization-sensitive mutations. updateMany with a tenant and ID predicate returns an affected-row count that lets the service detect no matching authorized record.","Require verified tenant identity, validate title length, scope updateMany to the tenant, and handle zero affected rows. For create/delete, adopt the same identity and conflict checks.","Even a tenant-matched update may violate finer-grained project membership rules. The complete policy belongs in domain authorization, not merely a tenant filter."]} />
+
+## Real-world problem
+
+**Create update delete.** Create, update and delete operations are authorization-sensitive mutations. updateMany with a tenant and ID predicate returns an affected-row count that lets the service detect no matching authorized record.
+
+**Defect in the first implementation:** The starter changes any row with the supplied ID and exposes the full database result without checking tenant ownership.
+
+The goal of this lesson is a testable database-access invariant, not a clever-looking call to Prisma. A server process may have broader database permissions than the user making the HTTP request. The ORM knows model types but does not necessarily know the caller's tenant membership or object-level permission.
+
+## Prerequisite and mental model
+
+Complete **13.02.02**. Create, update and delete operations are authorization-sensitive mutations. updateMany with a tenant and ID predicate returns an affected-row count that lets the service detect no matching authorized record.
+
+Before changing code, predict which unauthorized row, unexpected field, partial write, duplicate page entry or hidden failure the starter could cause. Prisma ORM v7 examples depend on a generated client, a PostgreSQL driver adapter and a disposable database setup from the previous module. The checked-in snippets are manuscript exercises, not compiled or executed runtime results.
+
+## Guided repair
+
+<LessonStep number={1} title="Observe the unsafe or inefficient query" file="drafts/p4/labs/scoped-prisma-writes/starter.ts" expected="Reproduce the concrete defect before attempting a repair.">
+
+```ts
+async function renameTask(db: PrismaClient, taskId: number, title: string) {
+  return db.task.update({ where: { id: taskId }, data: { title } });
+}
+```
+
+**Cause:** The starter changes any row with the supplied ID and exposes the full database result without checking tenant ownership.
+
+Identify whether the primary defect is authorization, returned-field scope, transaction atomicity, cursor stability, error disclosure or needless database round trips. Do not assume these share the same solution.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the constrained repository operation" file="drafts/p4/labs/scoped-prisma-writes/solution.ts" expected="Add an explicit correctness and trust boundary.">
+
+```ts
+async function renameTask(
+  db: PrismaClient, tenantId: string, taskId: number, title: string,
+) {
+  if (!tenantId || title.trim().length < 3 || title.length > 100)
+    throw new Error("Invalid input");
+  const result = await db.task.updateMany({
+    where: { id: taskId, tenantId },
+    data: { title: title.trim() },
+  });
+  if (result.count !== 1) throw new Error("Task not found");
+  return { updated: true };
+}
+```
+
+**Repair reasoning:** Require verified tenant identity, validate title length, scope updateMany to the tenant, and handle zero affected rows. For create/delete, adopt the same identity and conflict checks.
+
+Any identifier or tenant context in the code sample must be provided by an authenticated server handler. The snippet is an excerpt of a larger module: it should be integrated with the generated Prisma Client type, validated domain input and a database role appropriate for the application's trust boundary.
+
+</LessonStep>
+
+<LessonStep number={3} title="Qualify the real database and negative case" file="drafts/p4/labs/scoped-prisma-writes/acceptance.md" expected="A regression test fails on the starter and passes on the instructor solution.">
+
+**Positive case:** Use a disposable two-tenant database to verify allowed, forbidden and no-op writes; test resulting database rows, not only HTTP 200/404 codes.
+
+**Negative case:** Try to rename beta's task while authenticated as alpha. Assert count zero and unchanged title. Also test too-short titles and a nonexistent ID.
+
+**Production boundary:** Even a tenant-matched update may violate finer-grained project membership rules. The complete policy belongs in domain authorization, not merely a tenant filter.
+
+The source-only checker verifies that the manuscript and SQL/TypeScript exercise files match. It does **not** instantiate Prisma, run a real Postgres transaction, verify a live authorization session or prove query performance.
+
+</LessonStep>
+
+## Architecture and implementation choices
+
+Create, update and delete operations are authorization-sensitive mutations. updateMany with a tenant and ID predicate returns an affected-row count that lets the service detect no matching authorized record.
+
+Require verified tenant identity, validate title length, scope updateMany to the tenant, and handle zero affected rows. For create/delete, adopt the same identity and conflict checks.
+
+Even a tenant-matched update may violate finer-grained project membership rules. The complete policy belongs in domain authorization, not merely a tenant filter.
+
+A safe persistence layer should accept explicit request-scoped identities, use bounded queries, reject unsupported input, and keep internal query types from becoming public API DTOs. For permission-sensitive mutations, reason about database constraints and application authorization separately: a valid foreign key does not mean the calling actor may update that row.
+
+## Bug Hunt
+
+1. State the starter's observable defect: The starter changes any row with the supplied ID and exposes the full database result without checking tenant ownership.
+2. Produce a positive case that should succeed for an authorized caller.
+3. Produce a negative case that should be rejected: Try to rename beta's task while authenticated as alpha. Assert count zero and unchanged title. Also test too-short titles and a nonexistent ID.
+4. Apply the corrected operation and check the real database: Require verified tenant identity, validate title length, scope updateMany to the tenant, and handle zero affected rows. For create/delete, adopt the same identity and conflict checks.
+5. Document a failure mode that still requires independent qualification: Even a tenant-matched update may violate finer-grained project membership rules. The complete policy belongs in domain authorization, not merely a tenant filter.
+
+<Misconception claim={"The starter changes any row with the supplied ID and exposes the full database result without checking tenant ownership."} correction={"Create, update and delete operations are authorization-sensitive mutations. updateMany with a tenant and ID predicate returns an affected-row count that lets the service detect no matching authorized record."} />
+
+<KnowledgeCheck question={"What makes updateMany useful for a tenant-scoped mutation?"} choices={["It disables constraints","It supports a compound predicate and exposes the affected-row count","It creates a row automatically","It bypasses RLS"]} correctIndex={1} explanation={"Require verified tenant identity, validate title length, scope updateMany to the tenant, and handle zero affected rows. For create/delete, adopt the same identity and conflict checks."} misconception={"Even a tenant-matched update may violate finer-grained project membership rules. The complete policy belongs in domain authorization, not merely a tenant filter."} lessonId="13.02.03" />
+
+## Extend the lab
+
+Design a NestJS route handler that receives a validated DTO and a trusted tenant identity, invokes the repository, and maps database errors without exposing internal state. Test against alpha/beta tenants on an isolated PostgreSQL database. For any claim involving performance or concurrency, use actual query logs or multiple connections rather than relying on a source scan.
+
+## Official references
+
+- [Prisma ORM v7 — Create update delete](https://www.prisma.io/docs/orm/v7/prisma-client/queries/crud)
+- [Prisma ORM v7 documentation](https://www.prisma.io/docs/orm/v7)

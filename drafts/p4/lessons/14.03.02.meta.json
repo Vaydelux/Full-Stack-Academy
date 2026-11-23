@@ -1,0 +1,20 @@
+{
+  "id": "14.03.02",
+  "title": "auth.uid and roles",
+  "trackId": "14",
+  "moduleId": "14.03",
+  "prerequisites": [
+    "14.03.01"
+  ],
+  "labSlug": "auth-uid-and-role-scope",
+  "sourceStatus": "draft-unverified",
+  "runtimeQualification": "not-run",
+  "reviewStatus": "unreviewed",
+  "readyToPublish": false,
+  "estimatedMinutes": 70,
+  "officialReferences": [
+    "https://supabase.com/docs/guides/database/postgres/row-level-security",
+    "https://supabase.com/docs/guides/database/postgres/testing-row-level-security"
+  ],
+  "exerciseFormat": "sql"
+}

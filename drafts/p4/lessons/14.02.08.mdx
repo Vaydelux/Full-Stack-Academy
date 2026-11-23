@@ -1,0 +1,101 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["A secure login flow is more than successful credential entry: server-side verified identity, membership authorization, RLS-backed reads, session refresh and logout must work together.","Use a fresh getUser identity, look up resource-scoped membership from a protected table and deny missing memberships. Never use client-editable metadata as an authorization source.","The membership lookup requires its own RLS policy and Grants. This sample does not automatically secure update/delete endpoints or privileged Prisma access."]} />
+
+## Authentication problem
+
+**Lab safe login flow.** A secure login flow is more than successful credential entry: server-side verified identity, membership authorization, RLS-backed reads, session refresh and logout must work together.
+
+**Broken starting assumption:** The starter trusts user-editable user_metadata and getSession as a server-side role decision, allowing an attacker to claim isAdmin.
+
+An application can show a signed-in UI and still lack a valid server-side session or permission to read a specific tenant's data. Authentication identifies the actor; authorization decides which resources that actor may use. This module trains both concepts without embedding production credentials in the examples.
+
+## Mental model and prerequisite
+
+Complete **14.02.07**. A secure login flow is more than successful credential entry: server-side verified identity, membership authorization, RLS-backed reads, session refresh and logout must work together.
+
+The learner is expected to run these exercises against **a disposable local Supabase Auth project**, not a live customer tenant. Prisma ORM 7 and the Supabase Data API are separate access paths; each has its own session/role boundary. Changes to Auth libraries and Next.js cookie APIs must be checked against pinned runtime versions.
+
+**Predict:** The starter trusts user-editable user_metadata and getSession as a server-side role decision, allowing an attacker to claim isAdmin. Explain how the starter could make a wrong access decision even though the code compiles.
+
+## Guided implementation
+
+<LessonStep number={1} title="Observe the invalid identity assumption" file="drafts/p4/labs/end-to-end-login-boundary/starter.ts" expected="A clear unauthorized state or unsafe shortcut is identified.">
+
+```ts
+const session = await supabase.auth.getSession();
+const isAdmin = session.data.session?.user.user_metadata?.isAdmin;
+if (isAdmin) return listAllTenants();
+```
+
+**Diagnosis:** The starter trusts user-editable user_metadata and getSession as a server-side role decision, allowing an attacker to claim isAdmin.
+
+Identify where the caller controls input, how the session is refreshed, and whether the data used for an authorization decision was cryptographically verified or fetched from a trusted server-side membership table.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the authenticated flow" file="drafts/p4/labs/end-to-end-login-boundary/solution.ts" expected="Use verified identity/session APIs and narrow resource access.">
+
+```ts
+const { data: identity, error } = await supabase.auth.getUser();
+if (error || !identity.user) throw new Error("Unauthenticated");
+const { data: membership, error: membershipError } = await supabase
+  .from("memberships")
+  .select("tenant_id, role")
+  .eq("user_id", identity.user.id)
+  .eq("tenant_id", verifiedTenantId)
+  .maybeSingle();
+if (membershipError || !membership) throw new Error("Forbidden");
+// Memberships table itself must have an RLS ownership policy.
+return { userId: identity.user.id, tenantId: membership.tenant_id,
+  role: membership.role };
+```
+
+**Repair reasoning:** Use a fresh getUser identity, look up resource-scoped membership from a protected table and deny missing memberships. Never use client-editable metadata as an authorization source.
+
+The code sample is a teaching excerpt; integrate it with the framework's generated types, secure cookie handling and a fail-closed route handler. Any example variable representing a role, application origin or tenant must be obtained from trusted configuration and server-side authorization.
+
+</LessonStep>
+
+<LessonStep number={3} title="Prove both allowed and rejected states" file="drafts/p4/labs/end-to-end-login-boundary/acceptance.md" expected="One authenticated success and one negative session/authorization case are recorded.">
+
+**Allowed behavior:** Implement a local Next.js SSR + Supabase login route and use two isolated users. Verify sign-up/confirmation, login, protected data, cross-tenant denial, logout and refresh.
+
+**Denied behavior:** Edit user_metadata.isAdmin as a normal user, request another tenant and replay an expired session; all must fail. Confirm only authorized membership produces a valid response.
+
+**Security limitations:** The membership lookup requires its own RLS policy and Grants. This sample does not automatically secure update/delete endpoints or privileged Prisma access.
+
+A successful source integrity check cannot stand in for a real Auth token refresh, signed JWT verification, email delivery, OAuth callback or MFA challenge.
+
+</LessonStep>
+
+## Trust boundaries and operational choices
+
+A secure login flow is more than successful credential entry: server-side verified identity, membership authorization, RLS-backed reads, session refresh and logout must work together.
+
+Use a fresh getUser identity, look up resource-scoped membership from a protected table and deny missing memberships. Never use client-editable metadata as an authorization source.
+
+The membership lookup requires its own RLS policy and Grants. This sample does not automatically secure update/delete endpoints or privileged Prisma access.
+
+In production, model expired access tokens, refresh-token rotation, multiple concurrent tabs, CSRF/state handling where applicable, cookie attributes, MFA enrollment and logout propagation. Never rely on raw JWT decoding, a mutable cookie JSON field, an unverified redirect URL or a user-editable metadata claim to authorize administrative actions.
+
+## Bug Hunt
+
+1. State the attack or broken state: The starter trusts user-editable user_metadata and getSession as a server-side role decision, allowing an attacker to claim isAdmin.
+2. Derive the expected authenticated behavior and the required forbidden behavior.
+3. Apply the identity/session fix: Use a fresh getUser identity, look up resource-scoped membership from a protected table and deny missing memberships. Never use client-editable metadata as an authorization source.
+4. Reproduce a real negative case: Edit user_metadata.isAdmin as a normal user, request another tenant and replay an expired session; all must fail. Confirm only authorized membership produces a valid response.
+5. Explain which separate boundary still needs verification: The membership lookup requires its own RLS policy and Grants. This sample does not automatically secure update/delete endpoints or privileged Prisma access.
+
+<Misconception claim={"The starter trusts user-editable user_metadata and getSession as a server-side role decision, allowing an attacker to claim isAdmin."} correction={"A secure login flow is more than successful credential entry: server-side verified identity, membership authorization, RLS-backed reads, session refresh and logout must work together."} />
+<KnowledgeCheck question={"What establishes authorization after a successful Supabase sign-in?"} choices={["The browser's isAdmin flag","A verified identity plus server-trusted resource membership","Any valid email string","A service-role client in the browser"]} correctIndex={1} explanation={"Use a fresh getUser identity, look up resource-scoped membership from a protected table and deny missing memberships. Never use client-editable metadata as an authorization source."} misconception={"The membership lookup requires its own RLS policy and Grants. This sample does not automatically secure update/delete endpoints or privileged Prisma access."} lessonId="14.02.08" />
+
+## Further practice
+
+Implement a fully guarded Next.js server route for the exercise. Record the exact installed Supabase package versions, redirect configuration, pending/active session transitions and the response for an unauthorized second test identity. Run an integration test with Mailpit for email flows and a protected route that never trusts client-editable role data.
+
+## Official references
+
+- [Supabase Auth official guide — Lab safe login flow](https://supabase.com/docs/guides/auth/server-side)
+- [Supabase server-side Auth](https://supabase.com/docs/guides/auth/server-side)

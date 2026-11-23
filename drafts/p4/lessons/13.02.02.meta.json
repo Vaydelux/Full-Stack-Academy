@@ -1,0 +1,20 @@
+{
+  "id": "13.02.02",
+  "title": "select include and relation loading",
+  "trackId": "13",
+  "moduleId": "13.02",
+  "prerequisites": [
+    "13.02.01"
+  ],
+  "labSlug": "safe-prisma-projections",
+  "sourceStatus": "draft-unverified",
+  "reviewStatus": "unreviewed",
+  "runtimeQualification": "not-run",
+  "readyToPublish": false,
+  "estimatedMinutes": 65,
+  "officialReferences": [
+    "https://www.prisma.io/docs/orm/v7/prisma-client/queries/relation-queries",
+    "https://www.prisma.io/docs/orm/v7"
+  ],
+  "exerciseFormat": "ts"
+}

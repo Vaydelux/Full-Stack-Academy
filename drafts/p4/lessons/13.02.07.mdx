@@ -1,0 +1,103 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Batching or an appropriately scoped Prisma relation load reduces repetitive database queries. Group the results into their parent records in memory only after filtering at the database boundary.","Fetch a bounded list of tenant projects, query all corresponding tasks in one tenant-scoped IN query and group them by project ID.","One large batch is not always optimal. Very large IN lists and relations may require chunking, filtering and a measured plan; do not claim a speedup without profiling."]} />
+
+## Real-world problem
+
+**Avoiding N plus one.** Batching or an appropriately scoped Prisma relation load reduces repetitive database queries. Group the results into their parent records in memory only after filtering at the database boundary.
+
+**Defect in the first implementation:** The starter issues one task query per project and does not filter child tasks by tenant, causing N+1 round trips and possible cross-tenant results.
+
+The goal of this lesson is a testable database-access invariant, not a clever-looking call to Prisma. A server process may have broader database permissions than the user making the HTTP request. The ORM knows model types but does not necessarily know the caller's tenant membership or object-level permission.
+
+## Prerequisite and mental model
+
+Complete **13.02.06**. Batching or an appropriately scoped Prisma relation load reduces repetitive database queries. Group the results into their parent records in memory only after filtering at the database boundary.
+
+Before changing code, predict which unauthorized row, unexpected field, partial write, duplicate page entry or hidden failure the starter could cause. Prisma ORM v7 examples depend on a generated client, a PostgreSQL driver adapter and a disposable database setup from the previous module. The checked-in snippets are manuscript exercises, not compiled or executed runtime results.
+
+## Guided repair
+
+<LessonStep number={1} title="Observe the unsafe or inefficient query" file="drafts/p4/labs/batch-prisma-relations/starter.ts" expected="Reproduce the concrete defect before attempting a repair.">
+
+```ts
+const projects = await db.project.findMany({ where: { tenantId } });
+for (const project of projects) {
+  project.tasks = await db.task.findMany({
+    where: { projectId: project.id },
+  });
+}
+```
+
+**Cause:** The starter issues one task query per project and does not filter child tasks by tenant, causing N+1 round trips and possible cross-tenant results.
+
+Identify whether the primary defect is authorization, returned-field scope, transaction atomicity, cursor stability, error disclosure or needless database round trips. Do not assume these share the same solution.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the constrained repository operation" file="drafts/p4/labs/batch-prisma-relations/solution.ts" expected="Add an explicit correctness and trust boundary.">
+
+```ts
+const projects = await db.project.findMany({
+  where: { tenantId }, select: { id: true, name: true },
+  take: 50, orderBy: { id: "asc" },
+});
+const ids = projects.map(p => p.id);
+const tasks = await db.task.findMany({
+  where: { tenantId, projectId: { in: ids } },
+  select: { id: true, title: true, projectId: true },
+});
+const byProject = new Map(ids.map(id => [id, [] as typeof tasks]));
+for (const task of tasks) byProject.get(task.projectId)?.push(task);
+return projects.map(p => ({ ...p, tasks: byProject.get(p.id) ?? [] }));
+```
+
+**Repair reasoning:** Fetch a bounded list of tenant projects, query all corresponding tasks in one tenant-scoped IN query and group them by project ID.
+
+Any identifier or tenant context in the code sample must be provided by an authenticated server handler. The snippet is an excerpt of a larger module: it should be integrated with the generated Prisma Client type, validated domain input and a database role appropriate for the application's trust boundary.
+
+</LessonStep>
+
+<LessonStep number={3} title="Qualify the real database and negative case" file="drafts/p4/labs/batch-prisma-relations/acceptance.md" expected="A regression test fails on the starter and passes on the instructor solution.">
+
+**Positive case:** Instrument actual Prisma query events or DB statistics on a disposable dataset with 1, 10 and 50 projects; inspect number of database round trips, result bytes and latency.
+
+**Negative case:** Test projects with zero tasks and cross-tenant tasks sharing project IDs. Assert no tenant leak and query counts remain approximately constant as projects increase.
+
+**Production boundary:** One large batch is not always optimal. Very large IN lists and relations may require chunking, filtering and a measured plan; do not claim a speedup without profiling.
+
+The source-only checker verifies that the manuscript and SQL/TypeScript exercise files match. It does **not** instantiate Prisma, run a real Postgres transaction, verify a live authorization session or prove query performance.
+
+</LessonStep>
+
+## Architecture and implementation choices
+
+Batching or an appropriately scoped Prisma relation load reduces repetitive database queries. Group the results into their parent records in memory only after filtering at the database boundary.
+
+Fetch a bounded list of tenant projects, query all corresponding tasks in one tenant-scoped IN query and group them by project ID.
+
+One large batch is not always optimal. Very large IN lists and relations may require chunking, filtering and a measured plan; do not claim a speedup without profiling.
+
+A safe persistence layer should accept explicit request-scoped identities, use bounded queries, reject unsupported input, and keep internal query types from becoming public API DTOs. For permission-sensitive mutations, reason about database constraints and application authorization separately: a valid foreign key does not mean the calling actor may update that row.
+
+## Bug Hunt
+
+1. State the starter's observable defect: The starter issues one task query per project and does not filter child tasks by tenant, causing N+1 round trips and possible cross-tenant results.
+2. Produce a positive case that should succeed for an authorized caller.
+3. Produce a negative case that should be rejected: Test projects with zero tasks and cross-tenant tasks sharing project IDs. Assert no tenant leak and query counts remain approximately constant as projects increase.
+4. Apply the corrected operation and check the real database: Fetch a bounded list of tenant projects, query all corresponding tasks in one tenant-scoped IN query and group them by project ID.
+5. Document a failure mode that still requires independent qualification: One large batch is not always optimal. Very large IN lists and relations may require chunking, filtering and a measured plan; do not claim a speedup without profiling.
+
+<Misconception claim={"The starter issues one task query per project and does not filter child tasks by tenant, causing N+1 round trips and possible cross-tenant results."} correction={"Batching or an appropriately scoped Prisma relation load reduces repetitive database queries. Group the results into their parent records in memory only after filtering at the database boundary."} />
+
+<KnowledgeCheck question={"What is the defining characteristic of the N+1 problem?"} choices={["One query per project after the list query","An index on multiple columns","Using one transaction","Not writing JSX"]} correctIndex={0} explanation={"Fetch a bounded list of tenant projects, query all corresponding tasks in one tenant-scoped IN query and group them by project ID."} misconception={"One large batch is not always optimal. Very large IN lists and relations may require chunking, filtering and a measured plan; do not claim a speedup without profiling."} lessonId="13.02.07" />
+
+## Extend the lab
+
+Design a NestJS route handler that receives a validated DTO and a trusted tenant identity, invokes the repository, and maps database errors without exposing internal state. Test against alpha/beta tenants on an isolated PostgreSQL database. For any claim involving performance or concurrency, use actual query logs or multiple connections rather than relying on a source scan.
+
+## Official references
+
+- [Prisma ORM v7 — Avoiding N plus one](https://www.prisma.io/docs/orm/v7/prisma-client/queries/advanced/query-optimization-performance)
+- [Prisma ORM v7 documentation](https://www.prisma.io/docs/orm/v7)

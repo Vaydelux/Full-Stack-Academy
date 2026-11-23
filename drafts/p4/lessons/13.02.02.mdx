@@ -1,0 +1,102 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["select defines an allowlisted response projection. include eagerly includes relations, which can be convenient but must not become an automatic public-response serializer.","Select only the task and owner fields the route is authorized to return; bound the result and define an order.","A safe projection avoids oversharing but does not grant access to the selected row; combine projection with RLS or server-side object authorization."]} />
+
+## Real-world problem
+
+**select include and relation loading.** select defines an allowlisted response projection. include eagerly includes relations, which can be convenient but must not become an automatic public-response serializer.
+
+**Defect in the first implementation:** The starter includes every owner column: internalRole, passwordHash and private email fields can leak into serialized responses if the model changes.
+
+The goal of this lesson is a testable database-access invariant, not a clever-looking call to Prisma. A server process may have broader database permissions than the user making the HTTP request. The ORM knows model types but does not necessarily know the caller's tenant membership or object-level permission.
+
+## Prerequisite and mental model
+
+Complete **13.02.01**. select defines an allowlisted response projection. include eagerly includes relations, which can be convenient but must not become an automatic public-response serializer.
+
+Before changing code, predict which unauthorized row, unexpected field, partial write, duplicate page entry or hidden failure the starter could cause. Prisma ORM v7 examples depend on a generated client, a PostgreSQL driver adapter and a disposable database setup from the previous module. The checked-in snippets are manuscript exercises, not compiled or executed runtime results.
+
+## Guided repair
+
+<LessonStep number={1} title="Observe the unsafe or inefficient query" file="drafts/p4/labs/safe-prisma-projections/starter.ts" expected="Reproduce the concrete defect before attempting a repair.">
+
+```ts
+async function listTasks(db: PrismaClient, tenantId: string) {
+  return db.task.findMany({
+    where: { tenantId },
+    include: { owner: true },
+  });
+}
+```
+
+**Cause:** The starter includes every owner column: internalRole, passwordHash and private email fields can leak into serialized responses if the model changes.
+
+Identify whether the primary defect is authorization, returned-field scope, transaction atomicity, cursor stability, error disclosure or needless database round trips. Do not assume these share the same solution.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the constrained repository operation" file="drafts/p4/labs/safe-prisma-projections/solution.ts" expected="Add an explicit correctness and trust boundary.">
+
+```ts
+async function listTasks(db: PrismaClient, tenantId: string) {
+  return db.task.findMany({
+    where: { tenantId },
+    select: {
+      id: true, title: true,
+      owner: { select: { id: true, displayName: true } },
+    },
+    take: 20,
+    orderBy: { id: "asc" },
+  });
+}
+```
+
+**Repair reasoning:** Select only the task and owner fields the route is authorized to return; bound the result and define an order.
+
+Any identifier or tenant context in the code sample must be provided by an authenticated server handler. The snippet is an excerpt of a larger module: it should be integrated with the generated Prisma Client type, validated domain input and a database role appropriate for the application's trust boundary.
+
+</LessonStep>
+
+<LessonStep number={3} title="Qualify the real database and negative case" file="drafts/p4/labs/safe-prisma-projections/acceptance.md" expected="A regression test fails on the starter and passes on the instructor solution.">
+
+**Positive case:** Execute the query with real relations and inspect JSON output. Add a regression test that fails when an internal owner field appears after a schema migration.
+
+**Negative case:** Insert a synthetic owner with a passwordHash and an internalRole. Assert both keys are absent from the serialized response for every task.
+
+**Production boundary:** A safe projection avoids oversharing but does not grant access to the selected row; combine projection with RLS or server-side object authorization.
+
+The source-only checker verifies that the manuscript and SQL/TypeScript exercise files match. It does **not** instantiate Prisma, run a real Postgres transaction, verify a live authorization session or prove query performance.
+
+</LessonStep>
+
+## Architecture and implementation choices
+
+select defines an allowlisted response projection. include eagerly includes relations, which can be convenient but must not become an automatic public-response serializer.
+
+Select only the task and owner fields the route is authorized to return; bound the result and define an order.
+
+A safe projection avoids oversharing but does not grant access to the selected row; combine projection with RLS or server-side object authorization.
+
+A safe persistence layer should accept explicit request-scoped identities, use bounded queries, reject unsupported input, and keep internal query types from becoming public API DTOs. For permission-sensitive mutations, reason about database constraints and application authorization separately: a valid foreign key does not mean the calling actor may update that row.
+
+## Bug Hunt
+
+1. State the starter's observable defect: The starter includes every owner column: internalRole, passwordHash and private email fields can leak into serialized responses if the model changes.
+2. Produce a positive case that should succeed for an authorized caller.
+3. Produce a negative case that should be rejected: Insert a synthetic owner with a passwordHash and an internalRole. Assert both keys are absent from the serialized response for every task.
+4. Apply the corrected operation and check the real database: Select only the task and owner fields the route is authorized to return; bound the result and define an order.
+5. Document a failure mode that still requires independent qualification: A safe projection avoids oversharing but does not grant access to the selected row; combine projection with RLS or server-side object authorization.
+
+<Misconception claim={"The starter includes every owner column: internalRole, passwordHash and private email fields can leak into serialized responses if the model changes."} correction={"select defines an allowlisted response projection. include eagerly includes relations, which can be convenient but must not become an automatic public-response serializer."} />
+
+<KnowledgeCheck question={"Which Prisma construct helps define a safe public response shape?"} choices={["include: { owner: true } everywhere","select with explicit nested allowed fields","JSON.stringify(prisma)","An empty where clause"]} correctIndex={1} explanation={"Select only the task and owner fields the route is authorized to return; bound the result and define an order."} misconception={"A safe projection avoids oversharing but does not grant access to the selected row; combine projection with RLS or server-side object authorization."} lessonId="13.02.02" />
+
+## Extend the lab
+
+Design a NestJS route handler that receives a validated DTO and a trusted tenant identity, invokes the repository, and maps database errors without exposing internal state. Test against alpha/beta tenants on an isolated PostgreSQL database. For any claim involving performance or concurrency, use actual query logs or multiple connections rather than relying on a source scan.
+
+## Official references
+
+- [Prisma ORM v7 — select include and relation loading](https://www.prisma.io/docs/orm/v7/prisma-client/queries/relation-queries)
+- [Prisma ORM v7 documentation](https://www.prisma.io/docs/orm/v7)
