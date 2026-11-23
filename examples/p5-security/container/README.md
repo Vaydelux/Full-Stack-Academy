@@ -58,3 +58,40 @@ This capability was authored and its Node guard tests were executed on Node 22; 
 The source test uses paths relative to `container/run-container.test.mjs`, which must resolve to `../http-db/cleanup.sql` and `../http-db/qualify.mjs`. The previous test source accidentally used `../cleanup.sql` and `../qualify.mjs`, paths that existed only in a rearranged local fixture. It failed when checked against the actual repository structure. This path defect was reproduced and corrected; execute the tests from the repository root to avoid false passes.
 
 The HTTP-to-PostgreSQL qualifier now also creates a temporary, non-login runtime role; its real PostgreSQL privilege checks remain **unverified** until Docker runs against an isolated PostgreSQL 17+ instance.
+
+## Commit-bound qualification evidence (2026-11-23)
+
+The Compose qualifier now invokes `evidence.mjs` after checking the Node 24 environment. Rather than trusting an isolated `PASS` message, it requires:
+
+- An actual clean tracked Git checkout and its exact 40-character commit SHA.
+- Node 24 running **inside** the qualifier.
+- An actual PostgreSQL server reporting version 17 or newer, reached through loopback with the disposable confirmation flags.
+- Four ordered commands exiting with status zero: the P5 source bundle, SQL authorization checks, role-based RLS checks and HTTP-to-PostgreSQL acceptance. Each DB command must emit its **distinct real success marker**.
+- A SHA-256 of each stage's captured process output, plus the check result and completion timestamp. The report stores **no passwords, connection URLs or raw command logs**.
+
+On successful or failed execution, the qualifier prints one base64url record prefixed `P5_QUALIFICATION_EVIDENCE=`. The validator rejects a failed, missing, duplicated, stale (over 24 hours), wrong-commit, wrong-Node, wrong-PostgreSQL, incomplete or marker-less record.
+
+To capture real evidence on macOS/Linux in the exact checkout:
+
+```bash
+npm run qualify:p5:container > p5-qualification.log 2>&1
+node examples/p5-security/container/verify-evidence.mjs p5-qualification.log "$(git rev-parse HEAD)"
+```
+
+On Windows PowerShell:
+
+```powershell
+npm run qualify:p5:container *> p5-qualification.log
+$sha = git rev-parse HEAD
+node examples/p5-security/container/verify-evidence.mjs p5-qualification.log $sha
+```
+
+**Important:** Docker may emit diagnostic content in its full captured log. Inspect and redact any unexpected sensitive lines before sharing that log. The structured evidence record does not include raw stdout/stderr. The log hashes are integrity identifiers, **not cryptographic attestations**; a fabricated or edited local log is not independently trusted release evidence.
+
+Run the new source tests without Docker:
+
+```bash
+npm run test:p5-evidence-source
+```
+
+The source-only tests use an injected mock subprocess executor to exercise fail-closed behavior. They do **not** provide real Node24/PostgreSQL runtime evidence. Keep published lessons and production deployment frozen pending the actual database run, full Next.js build, identity/storage qualification and browser/human accessibility review.

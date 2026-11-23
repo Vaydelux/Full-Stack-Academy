@@ -9,10 +9,10 @@ const project='academy-p5-aabbccdd';
 test('configuration pins Node 24 and PostgreSQL 17 majors',()=>{
  assert.match(dockerfile,/FROM node:24-bookworm-slim/);
  assert.match(yaml,/image: postgres:17-bookworm/);
- assert.match(yaml,/npm run test:p5-bundle/);
+ assert.match(yaml,/node examples\/p5-security\/container\/evidence\.mjs/);
  assert.match(yaml,/process.version.startsWith/);
- assert.match(yaml,/npm run qualify:p5:http-db/);
- assert.match(yaml,/npm run qualify:p5:rls/);
+ assert.match(readFileSync(new URL('./evidence.mjs',import.meta.url),'utf8'),/qualify:p5:http-db/);
+ assert.match(readFileSync(new URL('./evidence.mjs',import.meta.url),'utf8'),/qualify:p5:rls/);
 });
 test('container uses private ephemeral database without published ports',()=>{
  assert.doesNotMatch(yaml,/^\s*ports:/m);
