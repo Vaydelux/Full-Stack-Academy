@@ -1,0 +1,61 @@
+---
+id: "15.04.02"
+title: "Incident response"
+module: "15.04"
+status: "draft-unverified"
+readyToPublish: false
+---
+
+# Incident response
+
+> Source-only teaching manuscript. Not yet available to learners or runtime qualified.
+
+## Learning outcomes
+
+Explain the security boundary, predict a failure, implement or describe a safe correction, and distinguish verified tests from an untested design.
+
+## Context
+
+A workspace reports suspicious downloads.
+
+## Step 1 — Mental model
+
+Prepare detection, containment, evidence, recovery and postmortem.
+
+Record the actor, trusted identity, data flow, requested action, target object and decision boundary. Client-supplied values and authenticated identities are not interchangeable.
+
+## Step 2 — Debug the unsafe design
+
+Operator deletes logs and restores service without revoking credentials.
+
+**Guided task:** In a synthetic local fixture, trace an adversarial request. Identify exactly what is controlled by the caller, what should happen, and which fact is mistakenly trusted. Do not use real third-party systems or personal data.
+
+## Step 3 — Correct and verify
+
+Preserve evidence and use written containment and communication protocol.
+
+**Lab acceptance target:** Tabletop a synthetic data exposure with timeline and roles.
+
+Document both a permitted happy path and a rejected adversarial path. Integration claims require the actual HTTP, database, identity, or browser boundary rather than only mocks.
+
+## Misconception
+
+A passing UI check or source-only checklist cannot establish secure production behavior. An observed negative test and reviewed trust boundary are essential.
+
+## Knowledge check
+
+1. Which input is attacker-controlled?
+2. Where does the trusted authorization or validation decision occur?
+3. Which negative test would fail under the unsafe design?
+4. Which environment or evidence remains unverified after source review?
+
+**Instructor rubric:** Require actor, resource, action, violated boundary, specific mitigation, and reproducible positive/negative observations. Missing evidence is not a pass.
+
+## References
+
+- [Official or project reference](https://csrc.nist.gov/pubs/sp/800/61/r3/final)
+- [OWASP ASVS](https://owasp.org/www-project-application-security-verification-standard/)
+
+## Publication conditions
+
+Reviewer-approved lesson, isolated runnable exercise, current-source verification, real Node24 build/integration results, browser/a11y acceptance and sequential P1→P5 release approval. Do not add to live published registry.
