@@ -9,9 +9,9 @@
     "productionUrl": "https://fullstack-academy-ecru.vercel.app/"
   },
   "development": {
-    "branch": "feat/p5-multiprocess-inbox-writer-lock-20261124",
-    "state": "p5-multiprocess-local-inbox-writer-lock-staged-unpublished",
-    "note": "Atomic local-filesystem directory lock + checksum comparison under lock, stale read fencing, dead-letter mutation rollback, post-rename uncertain-commit poison/reopen. Local Node22 isolated suite: 35 original encrypted inbox + 8 multiprocess/concurrency/fault cases + 15 release-gate mutation = 58/58 passed. Used test-only HMAC helper matching repository protocol. Full Node24 Next, real PostgreSQL, vendor integration and manual accessibility NOT run. 338 published, 272 unpublished drafts, 279 unauthored."
+    "branch": "feat/p5-postgresql-transactional-inbox-20261124",
+    "state": "p5-transactional-postgres-inbox-source-and-guarded-qualifiers-unpublished",
+    "note": "Added a separate opt-in PostgreSQL 17+ inbox adapter with HMAC-v2 auth, tenant-bound pooled transactions, AES-GCM payloads, idempotent insert, SKIP LOCKED lease claims, dead-letter state and fail-closed connection discard on uncertain COMMIT/ROLLBACK. 70/70 local Node22 adapter/mock/SQL-guard/live-option tests passed. Both real PostgreSQL qualifiers and full Node24/Next/browser/vendor qualification NOT run. 20 P5 source-test groups. Published 338, unpublished authored 272, unauthored 279."
   },
   "snapshot": {
     "tracks": 28,
@@ -73,6 +73,6 @@
     "devHighFindings": 14,
     "exceptionExpires": "2026-12-02"
   },
-  "nextMilestone": "Full clean Node24 npm ci & verify:offline; real PostgreSQL SQL, transactional durable inbox with concurrent workers, provider-native signatures and key-rotation tests; browser accessibility review, then sequential publication.",
-  "status": "p5-durable-inbox-capacity-guard-source-qualified-not-published"
+  "nextMilestone": "Clean Node24 checkout npm ci + full verify:offline; run 16 real SQL assertions via rollback-only psql and separate 11-check real pg concurrent-worker smoke in confirmed disposable PostgreSQL17+ DB; review RLS/role, KMS, vendor signatures and accessibility before promotion.",
+  "status": "p5-postgresql-transactional-inbox-source-staged-not-qualified"
 }

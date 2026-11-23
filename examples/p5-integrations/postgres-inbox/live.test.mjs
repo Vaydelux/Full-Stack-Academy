@@ -1,0 +1,13 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {validateLiveOptions,qualifyLive} from './live.mjs';
+const valid={db:'p5_lab_inbox_training',host:'127.0.0.1',port:'5432',user:'p5_student',confirm:'I_UNDERSTAND_DISPOSABLE_DB',confirmDb:'p5_lab_inbox_training',run:'--run-live',liveConfirm:'ALLOW_TEMPORARY_SCHEMA'};
+const denied=(values,part)=>assert.ok(validateLiveOptions({...valid,...values}).some(e=>e.includes(part)));
+test('real qualification requires triple affirmative safety gate',()=>assert.deepEqual(validateLiveOptions(valid),[]));
+test('default mode never runs real DB',()=>denied({run:undefined},'--run-live'));
+test('requires third confirmation for CREATE and DROP',()=>denied({liveConfirm:''},'Third confirmation'));
+test('refuses production database',()=>denied({db:'production'},'Disposable'));
+test('refuses remote db',()=>denied({host:'db.example.net'},'loopback'));
+test('refuses mismatched database confirmation',()=>denied({confirmDb:'p5_lab_inbox_other'},'Second confirmation'));
+test('refuses untrusted identifier for role',()=>denied({user:'postgres; drop'},'role'));
+test('unsafe config refuses before optional import or external connection',async()=>await assert.rejects(qualifyLive({...valid,liveConfirm:''}),/Third confirmation/));

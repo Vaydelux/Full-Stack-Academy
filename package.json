@@ -464,7 +464,7 @@
     "test:p5-rls-source": "node --test examples/p5-security/rls-lab/guards.test.mjs",
     "qualify:p5:rls": "node examples/p5-security/rls-lab/qualify-rls.mjs",
     "test:p5-curriculum-source": "node examples/p5-security/source/audit.mjs && node --test examples/p5-security/source/audit.test.mjs",
-    "test:p5-bundle": "npm run test:p5-security && npm run test:p5-postgresql-source && npm run test:p5-rls-source && npm run test:p5-curriculum-source && npm run test:p5-httpdb-source && npm run test:p5-container-source && npm run test:p5-evidence-source && npm run test:p5-cache-jobs && npm run test:p5-redis-source && npm run test:p5-realtime-labs && npm run test:p5-realtime-source && npm run test:p5-integrations-labs && npm run test:p5-integrations-source && npm run test:p5-integrations-http && npm run test:p5-postgres-search-source && npm run test:p5-webhook-integrity && npm run test:p5-durable-inbox && npm run test:p5-durable-http && npm run test:p5-multiprocess-inbox",
+    "test:p5-bundle": "npm run test:p5-security && npm run test:p5-postgresql-source && npm run test:p5-rls-source && npm run test:p5-curriculum-source && npm run test:p5-httpdb-source && npm run test:p5-container-source && npm run test:p5-evidence-source && npm run test:p5-cache-jobs && npm run test:p5-redis-source && npm run test:p5-realtime-labs && npm run test:p5-realtime-source && npm run test:p5-integrations-labs && npm run test:p5-integrations-source && npm run test:p5-integrations-http && npm run test:p5-postgres-search-source && npm run test:p5-webhook-integrity && npm run test:p5-durable-inbox && npm run test:p5-durable-http && npm run test:p5-multiprocess-inbox && npm run test:p5-postgres-inbox-source",
     "test:p5-httpdb-source": "node --test examples/p5-security/http-db/source.test.mjs examples/p5-security/http-db/hardening.test.mjs examples/p5-security/http-db/least-privilege.test.mjs examples/p5-security/http-db/privacy.test.mjs",
     "qualify:p5:http-db": "node examples/p5-security/http-db/qualify.mjs",
     "test:p5-container-source": "node --test examples/p5-security/container/run-container.test.mjs",
@@ -482,6 +482,9 @@
     "test:p5-durable-inbox": "node --test examples/p5-integrations/durable-inbox.test.mjs",
     "test:p5-durable-http": "node --test examples/p5-integrations/durable-http.test.mjs",
     "test:p5-multiprocess-inbox": "node --test examples/p5-integrations/multi-process-inbox.test.mjs",
+    "test:p5-postgres-inbox-source": "node --test examples/p5-integrations/postgres-inbox/adapter.test.mjs examples/p5-integrations/postgres-inbox/qualify.test.mjs examples/p5-integrations/postgres-inbox/live.test.mjs",
+    "qualify:p5:inbox-sql": "node examples/p5-integrations/postgres-inbox/qualify.mjs --run",
+    "qualify:p5:inbox-live": "node examples/p5-integrations/postgres-inbox/live.mjs --run-live",
     "test:release-gate-coverage": "node scripts/offline-contract.mjs && node --test tests/offline-contract.test.mjs",
     "qualify:p5:postgres-search": "node examples/p5-integrations/postgres-search/qualify.mjs --run"
   },
