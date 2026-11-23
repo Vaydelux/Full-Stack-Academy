@@ -1,0 +1,51 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {mkdtempSync,writeFileSync,rmSync,chmodSync,readFileSync} from 'node:fs';
+import {tmpdir} from 'node:os';
+import {join,resolve,dirname} from 'node:path';
+import {fileURLToPath} from 'node:url';
+import {qualifyInboxDb,validateInboxDb} from './qualify.mjs';
+const root=dirname(fileURLToPath(import.meta.url));
+const sql=readFileSync(join(root,'qualification.sql'),'utf8');
+const schema=readFileSync(join(root,'schema.sql'),'utf8');
+const base={db:'p5_lab_inbox_training',host:'127.0.0.1',port:'5432',user:'p5_student',confirm:'I_UNDERSTAND_DISPOSABLE_DB',confirmDb:'p5_lab_inbox_training',run:'--run'};
+const errors=(changes,term)=>assert.ok(validateInboxDb({...base,...changes}).some(x=>x.includes(term)));
+
+test('explicit disposable local configuration permitted',()=>assert.deepEqual(validateInboxDb(base),[]));
+test('requires exact run flag',()=>errors({run:''},'--run'));
+test('rejects production database',()=>errors({db:'production'},'Disposable'));
+test('rejects SQL-like database name',()=>errors({db:'p5_lab_inbox_x;DROP TABLE y'},'Disposable'));
+test('rejects database name without suffix',()=>errors({db:'p5_lab_inbox_'},'Disposable'));
+test('rejects hostname localhost',()=>errors({host:'localhost'},'loopback'));
+test('rejects external server host',()=>errors({host:'db.example.com'},'loopback'));
+test('rejects IPv6 loopback until qualified',()=>errors({host:'::1'},'loopback'));
+test('rejects zero port',()=>errors({port:'0'},'port'));
+test('rejects out of range port',()=>errors({port:'65536'},'port'));
+test('rejects port injection',()=>errors({port:'5432; touch a'},'port'));
+test('rejects malformed runtime role',()=>errors({user:'student; DROP'},'role'));
+test('requires first confirmation',()=>errors({confirm:''},'First confirmation'));
+test('requires exact DB confirmation',()=>errors({confirmDb:'p5_lab_inbox_other'},'Second confirmation'));
+test('no psql executable cannot yield success',()=>assert.throws(()=>qualifyInboxDb({...base,psql:'/definitely/not/installed/psql'}),/preflight refused/));
+test('SQL qualification is rollback-only without COMMIT',()=>{assert.match(sql,/\bBEGIN;[\s\S]*ROLLBACK;\s*$/);assert.doesNotMatch(sql,/\bCOMMIT\s*;/);});
+test('all sixteen numbered SQL acceptance checks present',()=>{for(let i=1;i<=16;i++)assert.match(sql,new RegExp('^-- '+String(i).padStart(2,'0')+':','m'));});
+test('schema has FORCE ROW LEVEL SECURITY',()=>{assert.match(schema,/ENABLE ROW LEVEL SECURITY;/);assert.match(schema,/FORCE ROW LEVEL SECURITY;/);});
+test('schema denies public access and limits tenant rows',()=>{assert.match(schema,/REVOKE ALL ON SCHEMA p5_inbox_lab FROM PUBLIC/);assert.match(schema,/current_setting\('p5\.tenant_id', true\)/);});
+test('schema requires valid lease state and request identity',()=>{assert.match(schema,/processing_has_lease/);assert.match(schema,/PRIMARY KEY \(tenant_id, provider, event_id\)/);});
+test('schema exposes pending and lease indexes',()=>{assert.match(schema,/deliveries_ready_idx/);assert.match(schema,/deliveries_lease_idx/);});
+test('qualification includes fixed relative schema, not arbitrary psql input',()=>assert.match(sql,/\\ir schema\.sql/));
+test('SQL fixture tests denied tenant writes and stale leases',()=>{assert.match(sql,/cross tenant insert accepted/);assert.match(sql,/stale lease settled/);});
+test('fake preflight DENIED refuses qualification',t=>{
+ const d=mkdtempSync(join(tmpdir(),'pg-inbox-pre-'));t.after(()=>rmSync(d,{force:true,recursive:true}));const p=join(d,'psql');
+ writeFileSync(p,'#!/bin/sh\nprintf "DENIED\\n"\n');chmodSync(p,0o700);
+ assert.throws(()=>qualifyInboxDb({...base,psql:p}),/preflight refused/);
+});
+test('fake psql successful preflight but no SQL marker cannot pass',t=>{
+ const d=mkdtempSync(join(tmpdir(),'pg-inbox-mark-'));t.after(()=>rmSync(d,{force:true,recursive:true}));const p=join(d,'psql');
+ writeFileSync(p,'#!/bin/sh\ncase " $* " in *--tuples-only*) printf "P5_INBOX_SAFE_ROLE\\n" ;; *) printf "No accepted SQL result\\n" ;; esac\n');chmodSync(p,0o700);
+ assert.throws(()=>qualifyInboxDb({...base,psql:p}),/no SQL acceptance evidence/);
+});
+test('fake preflight and success marker only prove runner processing, not database',t=>{
+ const d=mkdtempSync(join(tmpdir(),'pg-inbox-fake-'));t.after(()=>rmSync(d,{force:true,recursive:true}));const p=join(d,'psql');
+ writeFileSync(p,'#!/bin/sh\ncase " $* " in *--tuples-only*) printf "P5_INBOX_SAFE_ROLE\\n" ;; *) printf "P5_INBOX_SQL_16_ASSERTIONS_PASSED\\n" ;; esac\n');chmodSync(p,0o700);
+ const r=qualifyInboxDb({...base,psql:p});assert.equal(r.assertions,16);assert.equal(r.mode,'rollback-only');
+});
