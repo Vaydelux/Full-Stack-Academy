@@ -151,6 +151,6 @@ if(process.argv[1]&&fileURLToPath(import.meta.url)===path.resolve(process.argv[1
  if(args.some(a=>!['--check','--json'].includes(a)))throw Error('Usage: --check or --json');
  const result=inspectP4Manuscripts();
  if(args.includes('--json'))console.log(JSON.stringify(result,null,2));
- else console.log('P4: '+result.sourceAuthored+'/40 source-authored drafts; '+result.issues.length+' issues; real integration NOT run');
+ else console.log('P4: '+result.sourceAuthored+'/64 source-authored drafts; '+result.issues.length+' issues; real integration NOT run');
  if(result.issues.length){console.error(JSON.stringify(result.issues,null,2));process.exitCode=1;}
 }
