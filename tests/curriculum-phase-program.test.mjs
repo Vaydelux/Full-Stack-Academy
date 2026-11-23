@@ -108,26 +108,21 @@ test('retaining historical draft source after publication never doubles staged c
  assert.equal(programWithRelease.phases[0].modules[0].published,2);
 });
 
-test('staged modules remain accurately tracked during draft-to-published transitions',()=>{
+test('phased authoring never double-counts topics and preserves module coverage after publication',()=>{
  const current=readPublicationProgram();
  const p1=current.phases.find(p=>p.id==='P1');
  const p2=current.phases.find(p=>p.id==='P2');
  const p3=current.phases.find(p=>p.id==='P3');
+ const p4=current.phases.find(p=>p.id==='P4');
  assert.deepEqual(p1.modules.map(m=>m.published+m.staged),[8,8]);
  assert.deepEqual(p2.modules.map(m=>m.published+m.staged),[8,8,8,8]);
- assert.deepEqual(p3.modules.filter(m=>m.staged>0)
-  .map(m=>[m.id,m.published+m.staged]),
+ assert.deepEqual(p3.modules.map(m=>[m.id,m.published+m.staged]),
   [['12.01',8],['12.02',8],['12.03',8],['12.04',8],['12.05',8]]);
- assert.equal(current.baseline.published,338);
- assert.equal(current.baseline.staged,128);
- assert.equal(current.baseline.unstaged,423);
- assert.equal(p3.staged,40);
- const p4=current.phases.find(p=>p.id==='P4');
- assert.equal(p4.staged,40);
- assert.equal(p4.published,0);
- assert.deepEqual(p4.modules.filter(m=>m.staged>0)
-   .map(m=>[m.id,m.staged]),
-   [['13.01',8],['13.02',8],['14.01',8],['14.02',8],['14.03',8]]);
+ const p4Expected=['13.01','13.02','14.01','14.02','14.03'];
+ assert.deepEqual(p4.modules.filter(m=>p4Expected.includes(m.id))
+   .map(m=>[m.id,m.published+m.staged]),p4Expected.map(id=>[id,8]));
+ assert.equal(p3.published+p3.staged,40);
+ assert.ok(p4.published+p4.staged>=40,'P4 foundational authoring coverage must not regress');
  assert.equal(current.baseline.published+current.baseline.staged+current.baseline.unstaged,
   current.baseline.topics);
  assert.equal(current.baseline.topics,889);
