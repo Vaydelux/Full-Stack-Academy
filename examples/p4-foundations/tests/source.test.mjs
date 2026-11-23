@@ -14,7 +14,8 @@ test('64 distinct P4 lesson drafts match all eight canonical modules',()=>{
 });
 test('P4 manuscripts are not runtime qualified or published',()=>{
  const result=inspectP4Manuscripts();
- assert.equal(result.publishedUnchanged,338);
+ assert.equal(result.publishedFromRegistry,result.checkpointPublished);
+ assert.equal(result.publishedUnchanged,result.publishedFromRegistry);
  assert.equal(result.readyToPublish,false);
  assert.equal(result.realIntegrationExecuted,false);
  assert.ok(result.records.every(x=>x.status==='draft-unverified'));

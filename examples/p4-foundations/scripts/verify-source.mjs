@@ -2,6 +2,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { reconcilePublishedInventory } from './reconcile-published.mjs';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../../..');
 const modules=[
@@ -37,6 +38,31 @@ export function inspectP4Manuscripts(){
   return {status:'source-invalid',issues:[{id:'catalog',issue:error.message}],
     sourceAuthored:0,readyToPublish:false,realIntegrationExecuted:false};
  }
+ // Published status comes from the actual authoring/MDX registries, not a
+ // hard-coded baseline. Earlier phases can legitimately publish later.
+ let publishedFromRegistry=null;
+ let publishedIds=new Set();
+ try{
+  const authored=read('src/lib/academy/authored-content.ts');
+  const section=authored.match(/export const AUTHORED_LESSON_IDS\s*=\s*\[([^\]]+)\]/);
+  if(!section)throw Error('Unable to parse published interactive lesson IDs');
+  const interactiveIds=[...section[1].matchAll(/'([^']+)'/g)].map(match=>match[1]);
+  const mdxDir=path.join(root,'src/content/lessons');
+  const mdxIds=fs.readdirSync(mdxDir)
+   .filter(name=>name.endsWith('.meta.json'))
+   .map(name=>{
+    const id=json('src/content/lessons/'+name).id;
+    if(id!==name.slice(0,-'.meta.json'.length))
+     throw Error('Published MDX metadata ID/file mismatch: '+name);
+    return id;
+   });
+  const inventory=reconcilePublishedInventory({
+   interactiveIds,mdxIds,checkpoint,
+   catalogIds:canonical.lessons.map(row=>row.id),
+  });
+  publishedFromRegistry=inventory.publishedCount;
+  publishedIds=new Set(inventory.publishedIds);
+ }catch(error){problem('published-registry',error.message);}
  const usedSlugs=new Set();
  for(const mod of modules){
   const manifest=json('examples/'+mod.folder+'/module.json');
@@ -101,6 +127,7 @@ export function inspectP4Manuscripts(){
      problem(id,'Missing explicit negative/manual runtime evidence gate');
     if(['14.03','14.04'].includes(mod.id)&&lab.requiresTwoAuthenticatedUsers!==true)
      problem(id,'RLS/Storage demo must require two authenticated test users');
+    if(publishedIds.has(id))problem(id,'Unverified P4 draft registered as published');
     if(/<LabGate\b|<script\b|dangerouslySetInnerHTML/i.test(article)||
        exists('src/content/lessons/'+id+'.mdx')||
        exists('src/content/lessons/'+id+'.meta.json'))
@@ -110,11 +137,12 @@ export function inspectP4Manuscripts(){
   }
  }
  if(records.length!==64||usedSlugs.size!==64)problem('all','Expected exactly 64 distinct P4 lesson manuscripts');
- if(checkpoint.publishedLessons!==338)problem('checkpoint','Live published count changed unexpectedly');
+ if(publishedFromRegistry===null)problem('checkpoint','Published registry could not be reconciled');
  const moduleCounts=modules.map(m=>({moduleId:m.id,drafted:records.filter(r=>r.moduleId===m.id).length}));
  return {status:issues.length?'source-invalid':'source-authored-unverified',
   sourceAuthored:records.length,unpublished:true,realIntegrationExecuted:false,
   readyToPublish:false,publishedUnchanged:checkpoint.publishedLessons,
+  publishedFromRegistry,checkpointPublished:checkpoint.publishedLessons,
   moduleCounts,modules:modules.map(x=>x.id),records,issues,
   caveat:'Source and exact snippet parity are not Prisma 7 compilation, RLS evaluation, JWT/SSR testing, or real Supabase integration.'};
 }
@@ -123,6 +151,6 @@ if(process.argv[1]&&fileURLToPath(import.meta.url)===path.resolve(process.argv[1
  if(args.some(a=>!['--check','--json'].includes(a)))throw Error('Usage: --check or --json');
  const result=inspectP4Manuscripts();
  if(args.includes('--json'))console.log(JSON.stringify(result,null,2));
- else console.log('P4: '+result.sourceAuthored+'/40 source-authored drafts; '+result.issues.length+' issues; real integration NOT run');
+ else console.log('P4: '+result.sourceAuthored+'/64 source-authored drafts; '+result.issues.length+' issues; real integration NOT run');
  if(result.issues.length){console.error(JSON.stringify(result.issues,null,2));process.exitCode=1;}
 }
