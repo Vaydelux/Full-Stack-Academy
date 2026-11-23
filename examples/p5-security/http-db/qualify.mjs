@@ -19,6 +19,10 @@ try{
  equal(privilegeEvidence.canCreateObjects,false);
  equal(privilegeEvidence.canReadDocuments,true);
  equal(privilegeEvidence.canUpdateDocuments,true);
+ for(const syntheticUser of ['alice','bob','viewer','suspended']){
+   const result=await repo.proveIdentityScope(syntheticUser);
+   equal(result.passed,true);
+ }
  const app=createHttpDbLab(repo);server=app.server;
  server.listen(0,'127.0.0.1');await once(server,'listening');
  const base='http://127.0.0.1:'+server.address().port;
