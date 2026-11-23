@@ -51,6 +51,7 @@ export function recordScan(asset,outcome) {
 
 export class MailOutbox {
  #jobs=new Map(); #consent=new Map(); #clock;
+ #copy(job){return {...job,payload:structuredClone(job.payload)};}
  constructor(clock=()=>Date.now()){this.#clock=clock;}
  setMarketingConsent(tenantId,userId,optIn){insist(nonempty(tenantId)&&nonempty(userId),'invalid-identity');this.#consent.set(`${tenantId}\0${userId}`,optIn===true);}
  enqueue({tenantId,userId,key,kind='transactional',template,payload={}}){
@@ -60,17 +61,17 @@ export class MailOutbox {
   if(kind==='marketing' && this.#consent.get(`${tenantId}\0${userId}`)!==true)return {status:'suppressed'};
   const id=JSON.stringify([tenantId,userId,key]);
   const existing=this.#jobs.get(id);
-  if(existing){insist(existing.template===template && existing.kind===kind,'idempotency-conflict');return {...existing};}
+  if(existing){insist(existing.template===template && existing.kind===kind && JSON.stringify(existing.payload)===JSON.stringify(payload),'idempotency-conflict');return this.#copy(existing);}
   const job={id,tenantId,userId,kind,template,payload:structuredClone(payload),status:'pending',attempts:0,nextAt:this.#clock()};
-  this.#jobs.set(id,job);return {...job};
+  this.#jobs.set(id,job);return this.#copy(job);
  }
  claim(id){const job=this.#jobs.get(id);if(!job||job.status!=='pending'||job.nextAt>this.#clock())return null;
   if(job.kind==='marketing' && this.#consent.get(`${job.tenantId}\0${job.userId}`)!==true){job.status='suppressed';return null;}
-  job.status='sending';job.attempts++;return {...job};}
+  job.status='sending';job.attempts++;return this.#copy(job);}
  settle(id,{success,retryable=false}){const job=this.#jobs.get(id);insist(job?.status==='sending','not-inflight');
   if(success)job.status='sent';else if(retryable && job.attempts<3){job.status='pending';job.nextAt=this.#clock()+1000*2**(job.attempts-1);}else job.status='dead-letter';
-  return {...job};}
- get(id,{tenantId,userId}){const job=this.#jobs.get(id);return job?.tenantId===tenantId&&job?.userId===userId?{...job}:null;}
+  return this.#copy(job);}
+ get(id,{tenantId,userId}){const job=this.#jobs.get(id);return job?.tenantId===tenantId&&job?.userId===userId?this.#copy(job):null;}
 }
 
 export class TenantSearch {

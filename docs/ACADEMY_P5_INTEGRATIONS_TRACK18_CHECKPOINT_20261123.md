@@ -11,7 +11,7 @@
 
 ## Executed evidence
 
-On an isolated Node.js 22.16.0 local reconstruction, `node --test examples/p5-integrations/labs.test.mjs` passed **39/39**, and `node --test examples/p5-integrations/verify-track.test.mjs` passed **13/13**. The four uploaded Git blobs for those tested files exactly match the local `git hash-object` IDs: `0490f02b553ea84c4066508c67dc63dd270414db`, `17ed947f6ef806114ba1789cf3a8453c404c6569`, `0dd69cb1c699a4fdace247b4436a1a51fcd91163`, `6b928d39da51a338e88f6fe07fdcad75406a6dd1`.
+On an isolated Node.js 22.16.0 local reconstruction, `node --test examples/p5-integrations/labs.test.mjs` passed **41/41**, and `node --test examples/p5-integrations/verify-track.test.mjs` passed **13/13**. The four uploaded Git blobs for those tested files exactly match the local `git hash-object` IDs: `7100b79b2b76333160944a980c0793126882420a`, `8460fd735d8e362163d7155fc975acdd7b70f3f7`, `0dd69cb1c699a4fdace247b4436a1a51fcd91163`, `6b928d39da51a338e88f6fe07fdcad75406a6dd1`.
 
 **Not executed here:** full repository Node 24 `npm ci`, source audit on the real 889-topic registry, `verify:offline`, Next.js compile/build, actual PostgreSQL search/RLS, Supabase object storage/scanning, mail provider DNS/delivery, external webhook protocols, durable concurrency, browser/manual accessibility, Vercel or GitHub Actions. They remain release blockers.
 

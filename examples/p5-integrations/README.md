@@ -1,6 +1,6 @@
 # P5 integration teaching laboratory
 
-Run `node --test examples/p5-integrations/labs.test.mjs` from the repository root. The **39 behavior tests** cover file signatures and tenant ownership, scoped upload HMACs, quarantine scanning state, opt-in marketing and idempotent outbox jobs, tenant-indexed relevance/pagination, and a raw-body HMAC webhook inbox.
+Run `node --test examples/p5-integrations/labs.test.mjs` from the repository root. The **41 behavior tests** cover file signatures and tenant ownership, scoped upload HMACs, quarantine scanning state, opt-in marketing and idempotent outbox jobs, tenant-indexed relevance/pagination, and a raw-body HMAC webhook inbox.
 
 Run `node --test examples/p5-integrations/verify-track.test.mjs` for **13 source-integrity mutation tests**. Run `node examples/p5-integrations/verify-track.mjs` only on the full Academy checkout to inspect canonical Track 18 MDX, specifications and publication isolation.
 
