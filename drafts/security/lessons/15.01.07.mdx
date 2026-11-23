@@ -1,0 +1,62 @@
+---
+id: "15.01.07"
+title: "Data classification"
+status: "draft-unverified"
+module: "15.01"
+track: "15"
+publication: false
+---
+
+# Data classification
+
+> **Draft — not published or runtime-qualified.** This instructor manuscript uses an original multi-tenant workspace scenario. It does not claim that any production API was audited.
+
+## Learning outcomes
+
+After completing this lesson, you should be able to explain the underlying security boundary, identify a realistic failure, propose a testable mitigation, and write evidence that distinguishes a control from an aspiration.
+
+## The scenario
+
+A collaboration app stores profile fields, attachments, access logs and reset tokens.
+
+## Step 1 — Build the mental model
+
+Classify data by confidentiality, retention need and access sensitivity; derive storage, logging and deletion policies.
+
+Write down the trusted principal, requested operation, resource identifier, and where authorization or validation must happen. A browser payload is never authoritative merely because it passes schema validation.
+
+## Step 2 — Investigate the failure
+
+A request logger prints raw Authorization headers and password-reset URLs into long-lived traces.
+
+**Prediction:** What information or action becomes available to an attacker? Write one request that should fail, identify the expected status/response without leaking another tenant's data, and specify what must *not* appear in logs.
+
+## Step 3 — Design and verify the fix
+
+Log a request correlation ID and non-sensitive event facts; redact credentials and minimize personal data before collection.
+
+**Practice task:** Create an asset register and specify allowed readers, retention period, backup treatment and erasure procedure.
+
+Your acceptance criteria must include a positive authorized case and a negative adversarial case. Use the actual identity and persistence boundary where applicable; mocks alone do not prove isolation.
+
+## Misconception to challenge
+
+Encryption at rest does not justify collecting or retaining unnecessary data.
+
+## Knowledge check
+
+1. Which input is controlled by the attacker in this scenario?
+2. Where does authority originate, and why must the check execute server-side?
+3. What negative test proves this specific failure is addressed?
+4. Which evidence remains missing after a static source review?
+
+**Instructor marking guide:** Answers must name the principal, resource, trust boundary, concrete forbidden action and a repeatable test result. General claims such as “we have authentication” do not earn verification credit.
+
+## Reference
+
+- [OWASP Logging Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html)
+- [OWASP Application Security Verification Standard](https://owasp.org/www-project-application-security-verification-standard/)
+
+## Publication readiness
+
+Source authored only. Before publication: security/editorial reviewer, current-version reference audit, implementation-oriented runnable negative tests, browser reading and accessibility review, and all existing phase promotion gates. Do not register as completed or published.

@@ -1,0 +1,62 @@
+---
+id: "15.01.08"
+title: "Lab threat model"
+status: "draft-unverified"
+module: "15.01"
+track: "15"
+publication: false
+---
+
+# Lab threat model
+
+> **Draft — not published or runtime-qualified.** This instructor manuscript uses an original multi-tenant workspace scenario. It does not claim that any production API was audited.
+
+## Learning outcomes
+
+After completing this lesson, you should be able to explain the underlying security boundary, identify a realistic failure, propose a testable mitigation, and write evidence that distinguishes a control from an aspiration.
+
+## The scenario
+
+A multi-tenant document API supports upload, list, read and share actions.
+
+## Step 1 — Build the mental model
+
+Produce a one-page system model, identify at least six threats, prioritize by risk and link each to a concrete negative test.
+
+Write down the trusted principal, requested operation, resource identifier, and where authorization or validation must happen. A browser payload is never authoritative merely because it passes schema validation.
+
+## Step 2 — Investigate the failure
+
+Use a provided API specification with tenant IDs controlled by clients and test whether a cross-tenant document can be read.
+
+**Prediction:** What information or action becomes available to an attacker? Write one request that should fail, identify the expected status/response without leaking another tenant's data, and specify what must *not* appear in logs.
+
+## Step 3 — Design and verify the fix
+
+Change the design so tenant membership is established on the server; add denied cross-tenant reads, writes and signed URL issuance tests.
+
+**Practice task:** Submit a diagram, threat register, top-three mitigations and a runnable test plan that another developer can execute.
+
+Your acceptance criteria must include a positive authorized case and a negative adversarial case. Use the actual identity and persistence boundary where applicable; mocks alone do not prove isolation.
+
+## Misconception to challenge
+
+A complete diagram or a passing unit mock is not equivalent to an integration-tested security boundary.
+
+## Knowledge check
+
+1. Which input is controlled by the attacker in this scenario?
+2. Where does authority originate, and why must the check execute server-side?
+3. What negative test proves this specific failure is addressed?
+4. Which evidence remains missing after a static source review?
+
+**Instructor marking guide:** Answers must name the principal, resource, trust boundary, concrete forbidden action and a repeatable test result. General claims such as “we have authentication” do not earn verification credit.
+
+## Reference
+
+- [OWASP Threat Modeling Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Threat_Modeling_Cheat_Sheet.html)
+- [OWASP Application Security Verification Standard](https://owasp.org/www-project-application-security-verification-standard/)
+
+## Publication readiness
+
+Source authored only. Before publication: security/editorial reviewer, current-version reference audit, implementation-oriented runnable negative tests, browser reading and accessibility review, and all existing phase promotion gates. Do not register as completed or published.

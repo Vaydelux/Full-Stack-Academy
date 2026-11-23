@@ -1,0 +1,62 @@
+---
+id: "15.01.02"
+title: "Authentication vs authorization"
+status: "draft-unverified"
+module: "15.01"
+track: "15"
+publication: false
+---
+
+# Authentication vs authorization
+
+> **Draft — not published or runtime-qualified.** This instructor manuscript uses an original multi-tenant workspace scenario. It does not claim that any production API was audited.
+
+## Learning outcomes
+
+After completing this lesson, you should be able to explain the underlying security boundary, identify a realistic failure, propose a testable mitigation, and write evidence that distinguishes a control from an aspiration.
+
+## The scenario
+
+A request carries a valid user session but asks for an invoice owned by a different organization.
+
+## Step 1 — Build the mental model
+
+Define authentication (who presents a credential) separately from authorization (which operation is permitted on which object).
+
+Write down the trusted principal, requested operation, resource identifier, and where authorization or validation must happen. A browser payload is never authoritative merely because it passes schema validation.
+
+## Step 2 — Investigate the failure
+
+A valid JWT authorizes access to `/api/invoices/other-tenant-invoice` without a tenant membership check.
+
+**Prediction:** What information or action becomes available to an attacker? Write one request that should fail, identify the expected status/response without leaking another tenant's data, and specify what must *not* appear in logs.
+
+## Step 3 — Design and verify the fix
+
+Resolve the invoice under a server-derived tenant authorization context; check active membership and action-level policy before returning fields.
+
+**Practice task:** Write tests for unauthenticated, authenticated same tenant, authenticated different tenant and revoked membership cases.
+
+Your acceptance criteria must include a positive authorized case and a negative adversarial case. Use the actual identity and persistence boundary where applicable; mocks alone do not prove isolation.
+
+## Misconception to challenge
+
+A successfully verified JWT alone does not establish permission to any resource.
+
+## Knowledge check
+
+1. Which input is controlled by the attacker in this scenario?
+2. Where does authority originate, and why must the check execute server-side?
+3. What negative test proves this specific failure is addressed?
+4. Which evidence remains missing after a static source review?
+
+**Instructor marking guide:** Answers must name the principal, resource, trust boundary, concrete forbidden action and a repeatable test result. General claims such as “we have authentication” do not earn verification credit.
+
+## Reference
+
+- [OWASP Authorization Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html)
+- [OWASP Application Security Verification Standard](https://owasp.org/www-project-application-security-verification-standard/)
+
+## Publication readiness
+
+Source authored only. Before publication: security/editorial reviewer, current-version reference audit, implementation-oriented runnable negative tests, browser reading and accessibility review, and all existing phase promotion gates. Do not register as completed or published.
