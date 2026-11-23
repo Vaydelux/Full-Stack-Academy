@@ -9,9 +9,9 @@
     "productionUrl": "https://fullstack-academy-ecru.vercel.app/"
   },
   "development": {
-    "branch": "feat/p5-track18-integrations-source-20261123",
-    "state": "p5-track18-integration-source-staged-not-published",
-    "note": "Source-staged 32 canonical Track 18 MDX teaching manuscripts plus a tested local file/mail/search/webhook suite and 13 mutation tests. 338 published remains unchanged; total staged drafts now 272, unstarted 279. Full Node24/Next/browser and real provider/DB qualification remain pending."
+    "branch": "feat/p5-real-http-postgres-qualification-20261123",
+    "state": "p5-track18-http-runtime-verified-postgres-source-guarded-no-publication",
+    "note": "Locally executed real Node22 loopback HTTP 78/78 and P5 PostgreSQL runner/source 20/20 tests; exact Git blob hashes match. PostgreSQL 17+ real SQL, full Node24/Next/browser and provider qualification remain pending. 338 published, 272 unpublished authored, 279 unauthored."
   },
   "snapshot": {
     "tracks": 28,
@@ -73,6 +73,6 @@
     "devHighFindings": 14,
     "exceptionExpires": "2026-12-02"
   },
-  "nextMilestone": "Run actual full-checkout Node24 source/Next/browser tests, then qualify disposable real PostgreSQL search, signed object storage/scanning, email DNS/provider delivery and provider-specific webhook/durable inbox. Publish only after P1–P5 gates.",
-  "status": "p5-track18-32-of-32-source-only-staged-not-published"
+  "nextMilestone": "On a genuine Node24 full repo checkout run npm ci, npm run test:p5-bundle and verify:offline/build. On a disposable loopback PostgreSQL17+ database with a non-privileged role, run qualify:p5:postgres-search, then real storage, email, webhooks and browser/human a11y before any lesson publication.",
+  "status": "p5-track18-http-qualified-real-postgres-unexecuted"
 }

@@ -464,7 +464,7 @@
     "test:p5-rls-source": "node --test examples/p5-security/rls-lab/guards.test.mjs",
     "qualify:p5:rls": "node examples/p5-security/rls-lab/qualify-rls.mjs",
     "test:p5-curriculum-source": "node examples/p5-security/source/audit.mjs && node --test examples/p5-security/source/audit.test.mjs",
-    "test:p5-bundle": "npm run test:p5-security && npm run test:p5-postgresql-source && npm run test:p5-rls-source && npm run test:p5-curriculum-source && npm run test:p5-httpdb-source && npm run test:p5-container-source && npm run test:p5-evidence-source && npm run test:p5-cache-jobs && npm run test:p5-redis-source && npm run test:p5-realtime-labs && npm run test:p5-realtime-source && npm run test:p5-integrations-labs && npm run test:p5-integrations-source",
+    "test:p5-bundle": "npm run test:p5-security && npm run test:p5-postgresql-source && npm run test:p5-rls-source && npm run test:p5-curriculum-source && npm run test:p5-httpdb-source && npm run test:p5-container-source && npm run test:p5-evidence-source && npm run test:p5-cache-jobs && npm run test:p5-redis-source && npm run test:p5-realtime-labs && npm run test:p5-realtime-source && npm run test:p5-integrations-labs && npm run test:p5-integrations-source && npm run test:p5-integrations-http && npm run test:p5-postgres-search-source",
     "test:p5-httpdb-source": "node --test examples/p5-security/http-db/source.test.mjs examples/p5-security/http-db/hardening.test.mjs examples/p5-security/http-db/least-privilege.test.mjs examples/p5-security/http-db/privacy.test.mjs",
     "qualify:p5:http-db": "node examples/p5-security/http-db/qualify.mjs",
     "test:p5-container-source": "node --test examples/p5-security/container/run-container.test.mjs",
@@ -475,7 +475,10 @@
     "test:p5-realtime-labs": "node --test examples/p5-realtime/feed.test.mjs examples/p5-realtime/notifications.test.mjs examples/p5-realtime/collaboration.test.mjs",
     "test:p5-realtime-source": "node examples/p5-realtime/verify-track.mjs && node --test examples/p5-realtime/verify-track.test.mjs",
     "test:p5-integrations-labs": "node --test examples/p5-integrations/labs.test.mjs",
-    "test:p5-integrations-source": "node examples/p5-integrations/verify-track.mjs && node --test examples/p5-integrations/verify-track.test.mjs"
+    "test:p5-integrations-source": "node examples/p5-integrations/verify-track.mjs && node --test examples/p5-integrations/verify-track.test.mjs",
+    "test:p5-integrations-http": "node --test examples/p5-integrations/http.test.mjs",
+    "test:p5-postgres-search-source": "node --test examples/p5-integrations/postgres-search/qualify.test.mjs",
+    "qualify:p5:postgres-search": "node examples/p5-integrations/postgres-search/qualify.mjs --run"
   },
   "dependencies": {
     "clsx": "^2.1.1",
