@@ -1,0 +1,19 @@
+{
+  "id": "14.04.08",
+  "title": "Lab safe document upload",
+  "trackId": "14",
+  "moduleId": "14.04",
+  "labSlug": "safe-document-upload-capstone",
+  "prerequisites": [
+    "14.04.07"
+  ],
+  "sourceStatus": "draft-unverified",
+  "readyToPublish": false,
+  "runtimeQualification": "not-run",
+  "reviewStatus": "unreviewed",
+  "estimatedMinutes": 110,
+  "officialReferences": [
+    "https://supabase.com/docs/guides/storage/security/access-control"
+  ],
+  "exerciseFormat": "ts"
+}

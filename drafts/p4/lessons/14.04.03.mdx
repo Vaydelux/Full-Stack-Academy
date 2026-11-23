@@ -1,0 +1,106 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Browser MIME and file.size checks improve UX but are attacker-controlled. Real upload security combines bucket-enforced limits, server-side content validation, quarantine and strict path ownership.","Validate type/size early, upload to a verified user-owned non-overwriting key, and independently inspect bytes and scan risky content on the server before making it consumable.","The snippet's browser-side checks cannot identify malicious bytes. Configure bucket allowed MIME/size, enforce quotas and add server-side malware scanning when risk justifies it."]} />
+
+## Secure Storage and Realtime problem
+
+**Content type and size validation.** Browser MIME and file.size checks improve UX but are attacker-controlled. Real upload security combines bucket-enforced limits, server-side content validation, quarantine and strict path ownership.
+
+**Unsafe starter behavior:** The starter trusts the browser's file.type and original filename. A renamed executable or oversize payload can bypass those checks.
+
+Storage objects and Realtime messages are not ordinary React local state. They cross network and authorization boundaries; a caller can inspect URLs, retry requests, join predictable channel topics or forge payloads. The lesson teaches a concrete positive outcome and an explicit forbidden outcome.
+
+## Before you implement
+
+Complete **14.04.02**. Browser MIME and file.size checks improve UX but are attacker-controlled. Real upload security combines bucket-enforced limits, server-side content validation, quarantine and strict path ownership.
+
+Draw the data flow from a Supabase Auth identity through Storage/RLS, database metadata and Realtime, marking where keys and private data may pass. Decide whether the action is revocable, how long a bearer URL remains valid and what happens if the network disconnects.
+
+The examples are **unpublished manuscript exercises** for an isolated local Supabase stack, not executed app code or production security guarantees.
+
+## Guided implementation
+
+<LessonStep number={1} title="Observe the broken access or reliability boundary" file="drafts/p4/labs/validate-storage-content-size/starter.ts" expected="Explain the precise cross-user access or inconsistent-state failure.">
+
+```ts
+// User-controlled headers do not prove file bytes or safety.
+if (file.type === "application/pdf") {
+  await supabase.storage.from("academy_private_docs")
+    .upload(file.name, file);
+}
+```
+
+**Why this is unsafe:** The starter trusts the browser's file.type and original filename. A renamed executable or oversize payload can bypass those checks.
+
+Do not rely on a UI visibility toggle or predictable path prefix for access control. Predict the result when a caller changes IDs, paths, file headers or channel topic names.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement authorized, bounded operations" file="drafts/p4/labs/validate-storage-content-size/solution.ts" expected="Constrain the actor, object and operation with explicit server/Storage or Realtime policy.">
+
+```ts
+const maxBytes = 5 * 1024 * 1024;
+const allowed = new Set(["application/pdf", "image/png"]);
+if (file.size <= 0 || file.size > maxBytes || !allowed.has(file.type))
+  throw new Error("Rejected upload");
+// On the server, independently sniff actual bytes, validate filename/path,
+// scan or quarantine untrusted content, and verify the active bucket limit.
+const safePath = verifiedUserId + "/" + crypto.randomUUID();
+const { error } = await supabase.storage
+  .from("academy_private_docs").upload(safePath, file, {
+    contentType: file.type,
+    upsert: false,
+  });
+if (error) throw new Error("Upload failed");
+```
+
+**Security rationale:** Validate type/size early, upload to a verified user-owned non-overwriting key, and independently inspect bytes and scan risky content on the server before making it consumable.
+
+Teaching excerpts may depend on separately verified Auth guards, bucket policies, or helper types. They must be integrated with the actual Supabase client version, service configuration and database schema before any runtime qualification.
+
+</LessonStep>
+
+<LessonStep number={3} title="Test allowed and forbidden flows end to end" file="drafts/p4/labs/validate-storage-content-size/acceptance.md" expected="Record authorized success and cross-tenant denial with actual service responses.">
+
+**Allowed outcome:** An approved 1MB PDF is stored at the verified user's private key and independently confirmed by the server.
+
+**Denied or failure outcome:** Rename an executable to .pdf, send fake MIME and an over-limit payload. No unscanned file may be published or served as trusted content.
+
+**Residual limitations:** The snippet's browser-side checks cannot identify malicious bytes. Configure bucket allowed MIME/size, enforce quotas and add server-side malware scanning when risk justifies it.
+
+A code-fence source audit cannot validate an actual signed URL, RLS predicate, Realtime channel join or webhook authentication. Those checks require a running local stack, two Auth users and controlled test objects.
+
+</LessonStep>
+
+## Architecture and lifecycle trade-offs
+
+Browser MIME and file.size checks improve UX but are attacker-controlled. Real upload security combines bucket-enforced limits, server-side content validation, quarantine and strict path ownership.
+
+Validate type/size early, upload to a verified user-owned non-overwriting key, and independently inspect bytes and scan risky content on the server before making it consumable.
+
+The snippet's browser-side checks cannot identify malicious bytes. Configure bucket allowed MIME/size, enforce quotas and add server-side malware scanning when risk justifies it.
+
+Private buckets need specific Storage policies, server-controlled paths and explicit expiration/cleanup rules. Realtime private channels require policies on realtime.messages for permitted operations; a client-specified filter alone is not authorization. Persistent business state remains in PostgreSQL, not in Presence or Broadcast payloads.
+
+## Bug Hunt
+
+1. Predict the attack or failure: The starter trusts the browser's file.type and original filename. A renamed executable or oversize payload can bypass those checks.
+2. Implement one valid allowed case.
+3. Attempt the denied case with a different user: Rename an executable to .pdf, send fake MIME and an over-limit payload. No unscanned file may be published or served as trusted content.
+4. Confirm the corrected behavior: Validate type/size early, upload to a verified user-owned non-overwriting key, and independently inspect bytes and scan risky content on the server before making it consumable.
+5. Evaluate retries, revocation, expiration and cleanup: The snippet's browser-side checks cannot identify malicious bytes. Configure bucket allowed MIME/size, enforce quotas and add server-side malware scanning when risk justifies it.
+
+<Misconception claim={"The starter trusts the browser's file.type and original filename. A renamed executable or oversize payload can bypass those checks."} correction={"Browser MIME and file.size checks improve UX but are attacker-controlled. Real upload security combines bucket-enforced limits, server-side content validation, quarantine and strict path ownership."} />
+<KnowledgeCheck question={"Can a browser File.type value establish an uploaded file's security?"} choices={["Yes, always","No; independently validate bytes and enforce bucket/server limits","Only if the extension is .pdf","Yes when Storage RLS is enabled"]} correctIndex={undefined} explanation={"Validate type/size early, upload to a verified user-owned non-overwriting key, and independently inspect bytes and scan risky content on the server before making it consumable."} misconception={"The snippet's browser-side checks cannot identify malicious bytes. Configure bucket allowed MIME/size, enforce quotas and add server-side malware scanning when risk justifies it."} lessonId="14.04.03" />
+
+## Capstone extension
+
+Implement a miniature two-tenant document workspace. Seed alpha and beta with separate test identities and private objects. Verify legitimate upload and retrieval, denied cross-tenant Storage access, private channel authorization, controlled event propagation and correct cleanup of abandoned operations. Record all test evidence without exposing signed tokens or personal data.
+
+**Publication gate:** Lesson source parity and static linting are not service-level proof. Run actual Storage, Auth, Realtime and browser tests, plus human accessibility review, before learners can complete this lesson.
+
+## Official references
+
+- [Supabase reference — Content type and size validation](https://supabase.com/docs/guides/storage/buckets/fundamentals)
+- [Supabase Realtime Authorization](https://supabase.com/docs/guides/realtime/authorization)

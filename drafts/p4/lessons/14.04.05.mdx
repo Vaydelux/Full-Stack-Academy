@@ -1,0 +1,101 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Postgres Changes can deliver row updates to connected clients, but publication configuration, table grants, RLS and the subscription filter each play different roles.","Filter by tenant as a performance optimization, keep RLS as authorization, invalidate safe query cache rather than blindly rendering full payloads, and clean up the subscription.","Filters are not security policies. Realtime publication and RLS visibility differ for DELETE events and replica identity. Check actual event semantics and scaling before production."]} />
+
+## Secure Storage and Realtime problem
+
+**Postgres change subscriptions.** Postgres Changes can deliver row updates to connected clients, but publication configuration, table grants, RLS and the subscription filter each play different roles.
+
+**Unsafe starter behavior:** The starter lacks tenant scoping and directly renders row contents, possibly disclosing unrelated columns or stale data.
+
+Storage objects and Realtime messages are not ordinary React local state. They cross network and authorization boundaries; a caller can inspect URLs, retry requests, join predictable channel topics or forge payloads. The lesson teaches a concrete positive outcome and an explicit forbidden outcome.
+
+## Before you implement
+
+Complete **14.04.04**. Postgres Changes can deliver row updates to connected clients, but publication configuration, table grants, RLS and the subscription filter each play different roles.
+
+Draw the data flow from a Supabase Auth identity through Storage/RLS, database metadata and Realtime, marking where keys and private data may pass. Decide whether the action is revocable, how long a bearer URL remains valid and what happens if the network disconnects.
+
+The examples are **unpublished manuscript exercises** for an isolated local Supabase stack, not executed app code or production security guarantees.
+
+## Guided implementation
+
+<LessonStep number={1} title="Observe the broken access or reliability boundary" file="drafts/p4/labs/postgres-change-tenant-subscriptions/starter.ts" expected="Explain the precise cross-user access or inconsistent-state failure.">
+
+```ts
+// Subscribes broadly to data changes without a tenant filter.
+const channel = supabase.channel("all-tasks")
+ .on("postgres_changes", { event: "*", schema: "public",
+   table: "tasks" }, payload => render(payload.new))
+ .subscribe();
+```
+
+**Why this is unsafe:** The starter lacks tenant scoping and directly renders row contents, possibly disclosing unrelated columns or stale data.
+
+Do not rely on a UI visibility toggle or predictable path prefix for access control. Predict the result when a caller changes IDs, paths, file headers or channel topic names.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement authorized, bounded operations" file="drafts/p4/labs/postgres-change-tenant-subscriptions/solution.ts" expected="Constrain the actor, object and operation with explicit server/Storage or Realtime policy.">
+
+```ts
+const verifiedTenantId = activeTenant.id; // obtained from trusted auth
+const channel = supabase.channel("tasks:" + verifiedTenantId)
+ .on("postgres_changes", {
+   event: "*", schema: "public", table: "tasks",
+   filter: "tenant_id=eq." + verifiedTenantId,
+ }, payload => invalidateTaskQueryCache(payload))
+ .subscribe();
+// Ensure tasks RLS enforces membership; removeChannel on unmount.
+```
+
+**Security rationale:** Filter by tenant as a performance optimization, keep RLS as authorization, invalidate safe query cache rather than blindly rendering full payloads, and clean up the subscription.
+
+Teaching excerpts may depend on separately verified Auth guards, bucket policies, or helper types. They must be integrated with the actual Supabase client version, service configuration and database schema before any runtime qualification.
+
+</LessonStep>
+
+<LessonStep number={3} title="Test allowed and forbidden flows end to end" file="drafts/p4/labs/postgres-change-tenant-subscriptions/acceptance.md" expected="Record authorized success and cross-tenant denial with actual service responses.">
+
+**Allowed outcome:** Alpha receives an authorized task-change notification and reloads only safe projected task data.
+
+**Denied or failure outcome:** As alpha subscribe to beta's known tenant ID; no beta private row contents should arrive. Reconnect after a membership revocation and confirm access changes.
+
+**Residual limitations:** Filters are not security policies. Realtime publication and RLS visibility differ for DELETE events and replica identity. Check actual event semantics and scaling before production.
+
+A code-fence source audit cannot validate an actual signed URL, RLS predicate, Realtime channel join or webhook authentication. Those checks require a running local stack, two Auth users and controlled test objects.
+
+</LessonStep>
+
+## Architecture and lifecycle trade-offs
+
+Postgres Changes can deliver row updates to connected clients, but publication configuration, table grants, RLS and the subscription filter each play different roles.
+
+Filter by tenant as a performance optimization, keep RLS as authorization, invalidate safe query cache rather than blindly rendering full payloads, and clean up the subscription.
+
+Filters are not security policies. Realtime publication and RLS visibility differ for DELETE events and replica identity. Check actual event semantics and scaling before production.
+
+Private buckets need specific Storage policies, server-controlled paths and explicit expiration/cleanup rules. Realtime private channels require policies on realtime.messages for permitted operations; a client-specified filter alone is not authorization. Persistent business state remains in PostgreSQL, not in Presence or Broadcast payloads.
+
+## Bug Hunt
+
+1. Predict the attack or failure: The starter lacks tenant scoping and directly renders row contents, possibly disclosing unrelated columns or stale data.
+2. Implement one valid allowed case.
+3. Attempt the denied case with a different user: As alpha subscribe to beta's known tenant ID; no beta private row contents should arrive. Reconnect after a membership revocation and confirm access changes.
+4. Confirm the corrected behavior: Filter by tenant as a performance optimization, keep RLS as authorization, invalidate safe query cache rather than blindly rendering full payloads, and clean up the subscription.
+5. Evaluate retries, revocation, expiration and cleanup: Filters are not security policies. Realtime publication and RLS visibility differ for DELETE events and replica identity. Check actual event semantics and scaling before production.
+
+<Misconception claim={"The starter lacks tenant scoping and directly renders row contents, possibly disclosing unrelated columns or stale data."} correction={"Postgres Changes can deliver row updates to connected clients, but publication configuration, table grants, RLS and the subscription filter each play different roles."} />
+<KnowledgeCheck question={"Can the Realtime filter tenant_id=eq.alpha replace Postgres RLS?"} choices={["Yes","No; the filter is not authorization","Only when using a public channel","Only in a development project"]} correctIndex={undefined} explanation={"Filter by tenant as a performance optimization, keep RLS as authorization, invalidate safe query cache rather than blindly rendering full payloads, and clean up the subscription."} misconception={"Filters are not security policies. Realtime publication and RLS visibility differ for DELETE events and replica identity. Check actual event semantics and scaling before production."} lessonId="14.04.05" />
+
+## Capstone extension
+
+Implement a miniature two-tenant document workspace. Seed alpha and beta with separate test identities and private objects. Verify legitimate upload and retrieval, denied cross-tenant Storage access, private channel authorization, controlled event propagation and correct cleanup of abandoned operations. Record all test evidence without exposing signed tokens or personal data.
+
+**Publication gate:** Lesson source parity and static linting are not service-level proof. Run actual Storage, Auth, Realtime and browser tests, plus human accessibility review, before learners can complete this lesson.
+
+## Official references
+
+- [Supabase reference — Postgres change subscriptions](https://supabase.com/docs/guides/realtime/postgres-changes)
+- [Supabase Realtime Authorization](https://supabase.com/docs/guides/realtime/authorization)

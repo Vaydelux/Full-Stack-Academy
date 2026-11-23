@@ -1,0 +1,16 @@
+{
+  "id": "draft.p4.safe-document-upload-capstone",
+  "lessonId": "14.04.08",
+  "moduleId": "14.04",
+  "sourceStatus": "draft-unverified",
+  "readyToPublish": false,
+  "runtimeQualification": "not-run",
+  "reviewStatus": "unreviewed",
+  "qualificationKind": "manual-storage-realtime-integration",
+  "language": "ts",
+  "starter": "drafts/p4/labs/safe-document-upload-capstone/starter.ts",
+  "solution": "drafts/p4/labs/safe-document-upload-capstone/solution.ts",
+  "acceptanceDoc": "drafts/p4/labs/safe-document-upload-capstone/acceptance.md",
+  "officialReference": "https://supabase.com/docs/guides/storage/security/access-control",
+  "requiresTwoAuthenticatedUsers": true
+}

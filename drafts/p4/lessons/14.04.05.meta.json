@@ -1,0 +1,19 @@
+{
+  "id": "14.04.05",
+  "title": "Postgres change subscriptions",
+  "trackId": "14",
+  "moduleId": "14.04",
+  "labSlug": "postgres-change-tenant-subscriptions",
+  "prerequisites": [
+    "14.04.04"
+  ],
+  "sourceStatus": "draft-unverified",
+  "readyToPublish": false,
+  "runtimeQualification": "not-run",
+  "reviewStatus": "unreviewed",
+  "estimatedMinutes": 70,
+  "officialReferences": [
+    "https://supabase.com/docs/guides/realtime/postgres-changes"
+  ],
+  "exerciseFormat": "ts"
+}

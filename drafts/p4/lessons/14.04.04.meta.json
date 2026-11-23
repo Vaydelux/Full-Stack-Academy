@@ -1,0 +1,19 @@
+{
+  "id": "14.04.04",
+  "title": "Realtime channel authorization",
+  "trackId": "14",
+  "moduleId": "14.04",
+  "labSlug": "tenant-realtime-private-channel",
+  "prerequisites": [
+    "14.04.03"
+  ],
+  "sourceStatus": "draft-unverified",
+  "readyToPublish": false,
+  "runtimeQualification": "not-run",
+  "reviewStatus": "unreviewed",
+  "estimatedMinutes": 70,
+  "officialReferences": [
+    "https://supabase.com/docs/guides/realtime/authorization"
+  ],
+  "exerciseFormat": "sql"
+}

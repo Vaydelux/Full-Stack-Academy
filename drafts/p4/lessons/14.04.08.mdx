@@ -1,0 +1,109 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["A secure document upload combines verified Auth, tenant membership, a server-chosen path, private Storage RLS, constrained signed upload, scanning and consistent metadata state.","Authenticate, authorize the tenant and document, create a durable PENDING intent at a server-controlled path, issue a private signed upload token, then verify and finalize or compensate after upload.","Storage and PostgreSQL are not one atomic transaction. Plan idempotency, token expiry, orphan cleanup, retries and safe failure states. Never report a signed upload token as proof the file was scanned."]} />
+
+## Secure Storage and Realtime problem
+
+**Lab safe document upload.** A secure document upload combines verified Auth, tenant membership, a server-chosen path, private Storage RLS, constrained signed upload, scanning and consistent metadata state.
+
+**Unsafe starter behavior:** The starter trusts client tenant/path, uploads to public storage and creates unscoped metadata; failure between upload and DB insert creates inconsistent or exposed files.
+
+Storage objects and Realtime messages are not ordinary React local state. They cross network and authorization boundaries; a caller can inspect URLs, retry requests, join predictable channel topics or forge payloads. The lesson teaches a concrete positive outcome and an explicit forbidden outcome.
+
+## Before you implement
+
+Complete **14.04.07**. A secure document upload combines verified Auth, tenant membership, a server-chosen path, private Storage RLS, constrained signed upload, scanning and consistent metadata state.
+
+Draw the data flow from a Supabase Auth identity through Storage/RLS, database metadata and Realtime, marking where keys and private data may pass. Decide whether the action is revocable, how long a bearer URL remains valid and what happens if the network disconnects.
+
+The examples are **unpublished manuscript exercises** for an isolated local Supabase stack, not executed app code or production security guarantees.
+
+## Guided implementation
+
+<LessonStep number={1} title="Observe the broken access or reliability boundary" file="drafts/p4/labs/safe-document-upload-capstone/starter.ts" expected="Explain the precise cross-user access or inconsistent-state failure.">
+
+```ts
+// Unsafe: arbitrary path and public bucket, immediate exposure.
+await supabase.storage.from("public-files").upload(body.path, body.file);
+await prisma.document.create({ data: {
+  tenantId: body.tenantId, path: body.path,
+}});
+```
+
+**Why this is unsafe:** The starter trusts client tenant/path, uploads to public storage and creates unscoped metadata; failure between upload and DB insert creates inconsistent or exposed files.
+
+Do not rely on a UI visibility toggle or predictable path prefix for access control. Predict the result when a caller changes IDs, paths, file headers or channel topic names.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement authorized, bounded operations" file="drafts/p4/labs/safe-document-upload-capstone/solution.ts" expected="Constrain the actor, object and operation with explicit server/Storage or Realtime policy.">
+
+```ts
+// Teaching excerpt: actor is verified by server Auth and membership.
+async function createUploadIntent(actor: VerifiedActor, documentId: string) {
+  if (!actor.canWrite || !actor.tenantId || !actor.userId)
+    throw new Error("Forbidden");
+  const objectPath = actor.userId + "/" + documentId + ".pdf";
+  // Durable PENDING row is tenant-scoped and unique by object path.
+  await prisma.document.create({ data: {
+    tenantId: actor.tenantId, ownerId: actor.userId,
+    objectPath, status: "PENDING",
+  }});
+  const { data, error } = await serverStorage.storage
+    .from("academy_private_docs").createSignedUploadUrl(objectPath);
+  if (error || !data) throw new Error("Unable to issue upload");
+  return { path: data.path, token: data.token };
+}
+// After upload: verify real bytes + scan and mark READY or clean up.
+```
+
+**Security rationale:** Authenticate, authorize the tenant and document, create a durable PENDING intent at a server-controlled path, issue a private signed upload token, then verify and finalize or compensate after upload.
+
+Teaching excerpts may depend on separately verified Auth guards, bucket policies, or helper types. They must be integrated with the actual Supabase client version, service configuration and database schema before any runtime qualification.
+
+</LessonStep>
+
+<LessonStep number={3} title="Test allowed and forbidden flows end to end" file="drafts/p4/labs/safe-document-upload-capstone/acceptance.md" expected="Record authorized success and cross-tenant denial with actual service responses.">
+
+**Allowed outcome:** A permitted alpha PDF moves from PENDING to READY only after server-side byte verification and remains unreadable by beta.
+
+**Denied or failure outcome:** Try forged tenant IDs, beta paths, oversized disguised content, duplicate document IDs and failed scans. All must deny exposure and avoid orphaned READY metadata.
+
+**Residual limitations:** Storage and PostgreSQL are not one atomic transaction. Plan idempotency, token expiry, orphan cleanup, retries and safe failure states. Never report a signed upload token as proof the file was scanned.
+
+A code-fence source audit cannot validate an actual signed URL, RLS predicate, Realtime channel join or webhook authentication. Those checks require a running local stack, two Auth users and controlled test objects.
+
+</LessonStep>
+
+## Architecture and lifecycle trade-offs
+
+A secure document upload combines verified Auth, tenant membership, a server-chosen path, private Storage RLS, constrained signed upload, scanning and consistent metadata state.
+
+Authenticate, authorize the tenant and document, create a durable PENDING intent at a server-controlled path, issue a private signed upload token, then verify and finalize or compensate after upload.
+
+Storage and PostgreSQL are not one atomic transaction. Plan idempotency, token expiry, orphan cleanup, retries and safe failure states. Never report a signed upload token as proof the file was scanned.
+
+Private buckets need specific Storage policies, server-controlled paths and explicit expiration/cleanup rules. Realtime private channels require policies on realtime.messages for permitted operations; a client-specified filter alone is not authorization. Persistent business state remains in PostgreSQL, not in Presence or Broadcast payloads.
+
+## Bug Hunt
+
+1. Predict the attack or failure: The starter trusts client tenant/path, uploads to public storage and creates unscoped metadata; failure between upload and DB insert creates inconsistent or exposed files.
+2. Implement one valid allowed case.
+3. Attempt the denied case with a different user: Try forged tenant IDs, beta paths, oversized disguised content, duplicate document IDs and failed scans. All must deny exposure and avoid orphaned READY metadata.
+4. Confirm the corrected behavior: Authenticate, authorize the tenant and document, create a durable PENDING intent at a server-controlled path, issue a private signed upload token, then verify and finalize or compensate after upload.
+5. Evaluate retries, revocation, expiration and cleanup: Storage and PostgreSQL are not one atomic transaction. Plan idempotency, token expiry, orphan cleanup, retries and safe failure states. Never report a signed upload token as proof the file was scanned.
+
+<Misconception claim={"The starter trusts client tenant/path, uploads to public storage and creates unscoped metadata; failure between upload and DB insert creates inconsistent or exposed files."} correction={"A secure document upload combines verified Auth, tenant membership, a server-chosen path, private Storage RLS, constrained signed upload, scanning and consistent metadata state."} />
+<KnowledgeCheck question={"Why use a PENDING metadata state during a private document upload?"} choices={["To make the file public","Because object Storage and PostgreSQL cannot commit as one local transaction","To skip user verification","Because signed URLs never expire"]} correctIndex={1} explanation={"Authenticate, authorize the tenant and document, create a durable PENDING intent at a server-controlled path, issue a private signed upload token, then verify and finalize or compensate after upload."} misconception={"Storage and PostgreSQL are not one atomic transaction. Plan idempotency, token expiry, orphan cleanup, retries and safe failure states. Never report a signed upload token as proof the file was scanned."} lessonId="14.04.08" />
+
+## Capstone extension
+
+Implement a miniature two-tenant document workspace. Seed alpha and beta with separate test identities and private objects. Verify legitimate upload and retrieval, denied cross-tenant Storage access, private channel authorization, controlled event propagation and correct cleanup of abandoned operations. Record all test evidence without exposing signed tokens or personal data.
+
+**Publication gate:** Lesson source parity and static linting are not service-level proof. Run actual Storage, Auth, Realtime and browser tests, plus human accessibility review, before learners can complete this lesson.
+
+## Official references
+
+- [Supabase reference — Lab safe document upload](https://supabase.com/docs/guides/storage/security/access-control)
+- [Supabase Realtime Authorization](https://supabase.com/docs/guides/realtime/authorization)

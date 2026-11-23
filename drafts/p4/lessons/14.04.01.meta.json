@@ -1,0 +1,19 @@
+{
+  "id": "14.04.01",
+  "title": "Buckets public vs private",
+  "trackId": "14",
+  "moduleId": "14.04",
+  "labSlug": "bucket-visibility-boundary",
+  "prerequisites": [
+    "14.03.08"
+  ],
+  "sourceStatus": "draft-unverified",
+  "readyToPublish": false,
+  "runtimeQualification": "not-run",
+  "reviewStatus": "unreviewed",
+  "estimatedMinutes": 70,
+  "officialReferences": [
+    "https://supabase.com/docs/guides/storage/buckets/fundamentals"
+  ],
+  "exerciseFormat": "ts"
+}

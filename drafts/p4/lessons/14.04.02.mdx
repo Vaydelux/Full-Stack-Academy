@@ -1,0 +1,109 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["A signed upload URL is a temporary bearer capability. Minting it must happen only after verifying that a caller may create the particular object at a server-chosen path.","Verify user membership and upload permission, generate a non-caller-controlled path, and issue only a narrowly scoped one-use upload capability. Upload with the SDK's uploadToSignedUrl using that token.","Upload tokens are bearer secrets valid for a limited window; they must not be logged, embedded in analytics, or mistaken for a permanent ACL. Backend must still validate content independently."]} />
+
+## Secure Storage and Realtime problem
+
+**Signed upload URLs.** A signed upload URL is a temporary bearer capability. Minting it must happen only after verifying that a caller may create the particular object at a server-chosen path.
+
+**Unsafe starter behavior:** The starter signs arbitrary client-selected paths. An attacker can request a token for another user's folder and upload into it even when ordinary client RLS would deny that operation.
+
+Storage objects and Realtime messages are not ordinary React local state. They cross network and authorization boundaries; a caller can inspect URLs, retry requests, join predictable channel topics or forge payloads. The lesson teaches a concrete positive outcome and an explicit forbidden outcome.
+
+## Before you implement
+
+Complete **14.04.01**. A signed upload URL is a temporary bearer capability. Minting it must happen only after verifying that a caller may create the particular object at a server-chosen path.
+
+Draw the data flow from a Supabase Auth identity through Storage/RLS, database metadata and Realtime, marking where keys and private data may pass. Decide whether the action is revocable, how long a bearer URL remains valid and what happens if the network disconnects.
+
+The examples are **unpublished manuscript exercises** for an isolated local Supabase stack, not executed app code or production security guarantees.
+
+## Guided implementation
+
+<LessonStep number={1} title="Observe the broken access or reliability boundary" file="drafts/p4/labs/safe-signed-upload-authorization/starter.ts" expected="Explain the precise cross-user access or inconsistent-state failure.">
+
+```ts
+// Unsafe: the caller controls any object path and receives a signing token.
+const { data } = await service.storage
+  .from("academy_private_docs")
+  .createSignedUploadUrl(request.body.path);
+return data;
+```
+
+**Why this is unsafe:** The starter signs arbitrary client-selected paths. An attacker can request a token for another user's folder and upload into it even when ordinary client RLS would deny that operation.
+
+Do not rely on a UI visibility toggle or predictable path prefix for access control. Predict the result when a caller changes IDs, paths, file headers or channel topic names.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement authorized, bounded operations" file="drafts/p4/labs/safe-signed-upload-authorization/solution.ts" expected="Constrain the actor, object and operation with explicit server/Storage or Realtime policy.">
+
+```ts
+// Server-side endpoint: actor is verified from Auth + membership DB.
+async function issueUpload(
+  actor: { userId: string; tenantId: string; canUpload: boolean },
+  documentId: string,
+) {
+  if (!actor.userId || !actor.tenantId || !actor.canUpload)
+    throw new Error("Forbidden");
+  if (!/^[a-f0-9-]{36}$/i.test(documentId))
+    throw new Error("Invalid ID");
+  // The server chooses the full key; never accept a client-supplied path.
+  const key = actor.userId + "/" + documentId + ".pdf";
+  const { data, error } = await service.storage
+    .from("academy_private_docs").createSignedUploadUrl(key);
+  if (error || !data) throw new Error("Upload authorization failed");
+  return { path: data.path, token: data.token };
+}
+```
+
+**Security rationale:** Verify user membership and upload permission, generate a non-caller-controlled path, and issue only a narrowly scoped one-use upload capability. Upload with the SDK's uploadToSignedUrl using that token.
+
+Teaching excerpts may depend on separately verified Auth guards, bucket policies, or helper types. They must be integrated with the actual Supabase client version, service configuration and database schema before any runtime qualification.
+
+</LessonStep>
+
+<LessonStep number={3} title="Test allowed and forbidden flows end to end" file="drafts/p4/labs/safe-signed-upload-authorization/acceptance.md" expected="Record authorized success and cross-tenant denial with actual service responses.">
+
+**Allowed outcome:** Alpha receives a token for alpha's deterministic path and uses uploadToSignedUrl on a disposable private bucket.
+
+**Denied or failure outcome:** As alpha, request a token for a beta folder, reused document key or unauthorized MIME type; no cross-owner token should be issued.
+
+**Residual limitations:** Upload tokens are bearer secrets valid for a limited window; they must not be logged, embedded in analytics, or mistaken for a permanent ACL. Backend must still validate content independently.
+
+A code-fence source audit cannot validate an actual signed URL, RLS predicate, Realtime channel join or webhook authentication. Those checks require a running local stack, two Auth users and controlled test objects.
+
+</LessonStep>
+
+## Architecture and lifecycle trade-offs
+
+A signed upload URL is a temporary bearer capability. Minting it must happen only after verifying that a caller may create the particular object at a server-chosen path.
+
+Verify user membership and upload permission, generate a non-caller-controlled path, and issue only a narrowly scoped one-use upload capability. Upload with the SDK's uploadToSignedUrl using that token.
+
+Upload tokens are bearer secrets valid for a limited window; they must not be logged, embedded in analytics, or mistaken for a permanent ACL. Backend must still validate content independently.
+
+Private buckets need specific Storage policies, server-controlled paths and explicit expiration/cleanup rules. Realtime private channels require policies on realtime.messages for permitted operations; a client-specified filter alone is not authorization. Persistent business state remains in PostgreSQL, not in Presence or Broadcast payloads.
+
+## Bug Hunt
+
+1. Predict the attack or failure: The starter signs arbitrary client-selected paths. An attacker can request a token for another user's folder and upload into it even when ordinary client RLS would deny that operation.
+2. Implement one valid allowed case.
+3. Attempt the denied case with a different user: As alpha, request a token for a beta folder, reused document key or unauthorized MIME type; no cross-owner token should be issued.
+4. Confirm the corrected behavior: Verify user membership and upload permission, generate a non-caller-controlled path, and issue only a narrowly scoped one-use upload capability. Upload with the SDK's uploadToSignedUrl using that token.
+5. Evaluate retries, revocation, expiration and cleanup: Upload tokens are bearer secrets valid for a limited window; they must not be logged, embedded in analytics, or mistaken for a permanent ACL. Backend must still validate content independently.
+
+<Misconception claim={"The starter signs arbitrary client-selected paths. An attacker can request a token for another user's folder and upload into it even when ordinary client RLS would deny that operation."} correction={"A signed upload URL is a temporary bearer capability. Minting it must happen only after verifying that a caller may create the particular object at a server-chosen path."} />
+<KnowledgeCheck question={"Who should choose the object path for a privileged signed upload?"} choices={["Any browser request parameter","A trusted server after checking ownership and scope","An unauthenticated user","The public bucket setting"]} correctIndex={undefined} explanation={"Verify user membership and upload permission, generate a non-caller-controlled path, and issue only a narrowly scoped one-use upload capability. Upload with the SDK's uploadToSignedUrl using that token."} misconception={"Upload tokens are bearer secrets valid for a limited window; they must not be logged, embedded in analytics, or mistaken for a permanent ACL. Backend must still validate content independently."} lessonId="14.04.02" />
+
+## Capstone extension
+
+Implement a miniature two-tenant document workspace. Seed alpha and beta with separate test identities and private objects. Verify legitimate upload and retrieval, denied cross-tenant Storage access, private channel authorization, controlled event propagation and correct cleanup of abandoned operations. Record all test evidence without exposing signed tokens or personal data.
+
+**Publication gate:** Lesson source parity and static linting are not service-level proof. Run actual Storage, Auth, Realtime and browser tests, plus human accessibility review, before learners can complete this lesson.
+
+## Official references
+
+- [Supabase reference — Signed upload URLs](https://supabase.com/docs/reference/javascript/storage-from-createsigneduploadurl)
+- [Supabase Realtime Authorization](https://supabase.com/docs/guides/realtime/authorization)

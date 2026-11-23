@@ -1,0 +1,74 @@
+{
+  "moduleId": "14.04",
+  "trackId": "14",
+  "title": "Storage & Realtime",
+  "sourceStatus": "draft-unverified",
+  "readyToPublish": false,
+  "runtimeQualification": "not-run",
+  "lessons": [
+    {
+      "id": "14.04.01",
+      "title": "Buckets public vs private",
+      "slug": "bucket-visibility-boundary",
+      "language": "ts",
+      "extension": "ts",
+      "qualificationKind": "manual-storage-realtime-integration"
+    },
+    {
+      "id": "14.04.02",
+      "title": "Signed upload URLs",
+      "slug": "safe-signed-upload-authorization",
+      "language": "ts",
+      "extension": "ts",
+      "qualificationKind": "manual-storage-realtime-integration"
+    },
+    {
+      "id": "14.04.03",
+      "title": "Content type and size validation",
+      "slug": "validate-storage-content-size",
+      "language": "ts",
+      "extension": "ts",
+      "qualificationKind": "manual-storage-realtime-integration"
+    },
+    {
+      "id": "14.04.04",
+      "title": "Realtime channel authorization",
+      "slug": "tenant-realtime-private-channel",
+      "language": "sql",
+      "extension": "sql",
+      "qualificationKind": "manual-storage-realtime-integration"
+    },
+    {
+      "id": "14.04.05",
+      "title": "Postgres change subscriptions",
+      "slug": "postgres-change-tenant-subscriptions",
+      "language": "ts",
+      "extension": "ts",
+      "qualificationKind": "manual-storage-realtime-integration"
+    },
+    {
+      "id": "14.04.06",
+      "title": "Presence and broadcast",
+      "slug": "presence-broadcast-auth",
+      "language": "ts",
+      "extension": "ts",
+      "qualificationKind": "manual-storage-realtime-integration"
+    },
+    {
+      "id": "14.04.07",
+      "title": "Webhook-triggered processing",
+      "slug": "authenticated-webhook-processing",
+      "language": "ts",
+      "extension": "ts",
+      "qualificationKind": "manual-storage-realtime-integration"
+    },
+    {
+      "id": "14.04.08",
+      "title": "Lab safe document upload",
+      "slug": "safe-document-upload-capstone",
+      "language": "ts",
+      "extension": "ts",
+      "qualificationKind": "manual-storage-realtime-integration"
+    }
+  ]
+}

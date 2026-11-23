@@ -1,0 +1,107 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Database webhooks may retry delivery. A consumer must authenticate the webhook origin using an explicitly configured signing mechanism and deduplicate effects by a stable event ID.","Verify a provider-configured HMAC over the raw request body in constant time, validate event shape, and process idempotently with a unique delivery ID in a database transaction.","The HMAC header/format shown is a teaching contract, not a claim that Supabase Database Webhooks automatically sign this way. Configure an authenticated webhook path or gateway explicitly and verify actual provider support."]} />
+
+## Secure Storage and Realtime problem
+
+**Webhook-triggered processing.** Database webhooks may retry delivery. A consumer must authenticate the webhook origin using an explicitly configured signing mechanism and deduplicate effects by a stable event ID.
+
+**Unsafe starter behavior:** The starter treats arbitrary JSON POST bodies as trusted instructions and reprocesses the same document on every retry.
+
+Storage objects and Realtime messages are not ordinary React local state. They cross network and authorization boundaries; a caller can inspect URLs, retry requests, join predictable channel topics or forge payloads. The lesson teaches a concrete positive outcome and an explicit forbidden outcome.
+
+## Before you implement
+
+Complete **14.04.06**. Database webhooks may retry delivery. A consumer must authenticate the webhook origin using an explicitly configured signing mechanism and deduplicate effects by a stable event ID.
+
+Draw the data flow from a Supabase Auth identity through Storage/RLS, database metadata and Realtime, marking where keys and private data may pass. Decide whether the action is revocable, how long a bearer URL remains valid and what happens if the network disconnects.
+
+The examples are **unpublished manuscript exercises** for an isolated local Supabase stack, not executed app code or production security guarantees.
+
+## Guided implementation
+
+<LessonStep number={1} title="Observe the broken access or reliability boundary" file="drafts/p4/labs/authenticated-webhook-processing/starter.ts" expected="Explain the precise cross-user access or inconsistent-state failure.">
+
+```ts
+// Vulnerable: unauthenticated body accepted and processed twice on retries.
+app.post("/hooks/document", async (req, res) => {
+  await processDocument(req.body.objectPath);
+  res.sendStatus(200);
+});
+```
+
+**Why this is unsafe:** The starter treats arbitrary JSON POST bodies as trusted instructions and reprocesses the same document on every retry.
+
+Do not rely on a UI visibility toggle or predictable path prefix for access control. Predict the result when a caller changes IDs, paths, file headers or channel topic names.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement authorized, bounded operations" file="drafts/p4/labs/authenticated-webhook-processing/solution.ts" expected="Constrain the actor, object and operation with explicit server/Storage or Realtime policy.">
+
+```ts
+// The delivery provider must be configured for a signed secret header.
+// Verify HMAC over RAW bytes; adapt header/signature format to provider.
+function verify(body: Buffer, suppliedHex: string, secret: string) {
+  const expected = createHmac("sha256", secret).update(body).digest();
+  const got = Buffer.from(suppliedHex, "hex");
+  return got.length === expected.length && timingSafeEqual(got, expected);
+}
+async function acceptWebhook(rawBody: Buffer, signature: string,
+                             event: VerifiedEvent) {
+  if (!verify(rawBody, signature, requiredSecret))
+    throw new Error("Unauthorized webhook");
+  if (!event.id || !event.tenantId) throw new Error("Invalid event");
+  await processOnceWithDatabaseUniqueEventId(event);
+}
+```
+
+**Security rationale:** Verify a provider-configured HMAC over the raw request body in constant time, validate event shape, and process idempotently with a unique delivery ID in a database transaction.
+
+Teaching excerpts may depend on separately verified Auth guards, bucket policies, or helper types. They must be integrated with the actual Supabase client version, service configuration and database schema before any runtime qualification.
+
+</LessonStep>
+
+<LessonStep number={3} title="Test allowed and forbidden flows end to end" file="drafts/p4/labs/authenticated-webhook-processing/acceptance.md" expected="Record authorized success and cross-tenant denial with actual service responses.">
+
+**Allowed outcome:** A signed synthetic event creates exactly one processing record, with authorized tenant context and sanitized logs.
+
+**Denied or failure outcome:** Try an unsigned payload, altered raw bytes, a replayed event ID and a forged tenant. All must be rejected or deduplicated without a second side effect.
+
+**Residual limitations:** The HMAC header/format shown is a teaching contract, not a claim that Supabase Database Webhooks automatically sign this way. Configure an authenticated webhook path or gateway explicitly and verify actual provider support.
+
+A code-fence source audit cannot validate an actual signed URL, RLS predicate, Realtime channel join or webhook authentication. Those checks require a running local stack, two Auth users and controlled test objects.
+
+</LessonStep>
+
+## Architecture and lifecycle trade-offs
+
+Database webhooks may retry delivery. A consumer must authenticate the webhook origin using an explicitly configured signing mechanism and deduplicate effects by a stable event ID.
+
+Verify a provider-configured HMAC over the raw request body in constant time, validate event shape, and process idempotently with a unique delivery ID in a database transaction.
+
+The HMAC header/format shown is a teaching contract, not a claim that Supabase Database Webhooks automatically sign this way. Configure an authenticated webhook path or gateway explicitly and verify actual provider support.
+
+Private buckets need specific Storage policies, server-controlled paths and explicit expiration/cleanup rules. Realtime private channels require policies on realtime.messages for permitted operations; a client-specified filter alone is not authorization. Persistent business state remains in PostgreSQL, not in Presence or Broadcast payloads.
+
+## Bug Hunt
+
+1. Predict the attack or failure: The starter treats arbitrary JSON POST bodies as trusted instructions and reprocesses the same document on every retry.
+2. Implement one valid allowed case.
+3. Attempt the denied case with a different user: Try an unsigned payload, altered raw bytes, a replayed event ID and a forged tenant. All must be rejected or deduplicated without a second side effect.
+4. Confirm the corrected behavior: Verify a provider-configured HMAC over the raw request body in constant time, validate event shape, and process idempotently with a unique delivery ID in a database transaction.
+5. Evaluate retries, revocation, expiration and cleanup: The HMAC header/format shown is a teaching contract, not a claim that Supabase Database Webhooks automatically sign this way. Configure an authenticated webhook path or gateway explicitly and verify actual provider support.
+
+<Misconception claim={"The starter treats arbitrary JSON POST bodies as trusted instructions and reprocesses the same document on every retry."} correction={"Database webhooks may retry delivery. A consumer must authenticate the webhook origin using an explicitly configured signing mechanism and deduplicate effects by a stable event ID."} />
+<KnowledgeCheck question={"What protects a webhook consumer from repeated malicious events?"} choices={["Accepting any JSON","Origin authentication, payload validation and idempotent processing","A hidden URL alone","One React state flag"]} correctIndex={1} explanation={"Verify a provider-configured HMAC over the raw request body in constant time, validate event shape, and process idempotently with a unique delivery ID in a database transaction."} misconception={"The HMAC header/format shown is a teaching contract, not a claim that Supabase Database Webhooks automatically sign this way. Configure an authenticated webhook path or gateway explicitly and verify actual provider support."} lessonId="14.04.07" />
+
+## Capstone extension
+
+Implement a miniature two-tenant document workspace. Seed alpha and beta with separate test identities and private objects. Verify legitimate upload and retrieval, denied cross-tenant Storage access, private channel authorization, controlled event propagation and correct cleanup of abandoned operations. Record all test evidence without exposing signed tokens or personal data.
+
+**Publication gate:** Lesson source parity and static linting are not service-level proof. Run actual Storage, Auth, Realtime and browser tests, plus human accessibility review, before learners can complete this lesson.
+
+## Official references
+
+- [Supabase reference — Webhook-triggered processing](https://supabase.com/docs/guides/database/webhooks)
+- [Supabase Realtime Authorization](https://supabase.com/docs/guides/realtime/authorization)
