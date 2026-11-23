@@ -96,7 +96,7 @@ export function readPublicationProgram(){
  const metaDir=path.join(root,'src/content/lessons');
  const mdxFiles=fs.readdirSync(metaDir).filter(name=>name.endsWith('.meta.json'));
  const mdx=mdxFiles.map(name=>json('src/content/lessons/'+name).id);
- const stagingDirs=['drafts/forms-query/lessons','drafts/nestjs/lessons','drafts/postgresql/lessons'];
+ const stagingDirs=['drafts/forms-query/lessons','drafts/nestjs/lessons','drafts/postgresql/lessons','drafts/p4/lessons'];
  const staged=stagingDirs.flatMap(dir=>{
   const folder=path.join(root,dir);
   return fs.existsSync(folder)

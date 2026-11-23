@@ -48,7 +48,7 @@ export default function CourseRoadmapPage() {
         <h2 id="phases-title" className="text-xl font-bold">Roadmap by phase</h2>
         <p className="text-sm leading-6 text-slate-500">Expand a phase to see individual modules. The figures are read from the repository and can change when lesson metadata is authored or published.</p>
         {progress.phases.map(phase=>(
-          <details key={phase.id} open={phase.id==='P1'||phase.id==='P3'} className="rounded-xl border border-slate-200 bg-white dark:border-white/10 dark:bg-white/[0.035]">
+          <details key={phase.id} open={phase.id==='P1'||phase.id==='P4'} className="rounded-xl border border-slate-200 bg-white dark:border-white/10 dark:bg-white/[0.035]">
             <summary className="cursor-pointer rounded-xl p-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-500">
               <span className="flex flex-wrap items-center justify-between gap-2">
                 <span className="text-sm font-bold">{phase.id} · {phase.title}</span>

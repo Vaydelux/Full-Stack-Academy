@@ -12,6 +12,7 @@ export function readCourseProgress() {
     'drafts/forms-query/lessons',
     'drafts/nestjs/lessons',
     'drafts/postgresql/lessons',
+    'drafts/p4/lessons',
   ];
   const published=new Set<string>(PUBLISHED_LESSON_IDS);
   const drafted:string[]=[];
