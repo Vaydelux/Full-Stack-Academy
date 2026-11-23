@@ -465,7 +465,7 @@
     "qualify:p5:rls": "node examples/p5-security/rls-lab/qualify-rls.mjs",
     "test:p5-curriculum-source": "node examples/p5-security/source/audit.mjs && node --test examples/p5-security/source/audit.test.mjs",
     "test:p5-bundle": "npm run test:p5-security && npm run test:p5-postgresql-source && npm run test:p5-rls-source && npm run test:p5-curriculum-source && npm run test:p5-httpdb-source && npm run test:p5-container-source",
-    "test:p5-httpdb-source": "node --test examples/p5-security/http-db/source.test.mjs examples/p5-security/http-db/hardening.test.mjs",
+    "test:p5-httpdb-source": "node --test examples/p5-security/http-db/source.test.mjs examples/p5-security/http-db/hardening.test.mjs examples/p5-security/http-db/least-privilege.test.mjs",
     "qualify:p5:http-db": "node examples/p5-security/http-db/qualify.mjs",
     "test:p5-container-source": "node --test examples/p5-security/container/run-container.test.mjs",
     "qualify:p5:container": "node examples/p5-security/container/run-container.mjs"
