@@ -1,0 +1,94 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Supabase bundles PostgreSQL, Auth, Storage and Realtime, but each has a distinct authorization boundary. The browser uses a publishable client; privileged operations must remain on the server and be individually authorized.","Create a browser client with only the public project URL and publishable key. Keep privileged operations behind authenticated server handlers and resource-specific authorization.","A publishable key is not a permission grant. RLS, Grants and Storage policies must deny unauthorized users. Service roles can bypass RLS."]} />
+
+## Architecture problem
+
+**PostgreSQL Auth Storage and Realtime.** Supabase bundles PostgreSQL, Auth, Storage and Realtime, but each has a distinct authorization boundary. The browser uses a publishable client; privileged operations must remain on the server and be individually authorized.
+
+**Unsafe starting point:** A single shared client constructed with a secret key can leak privileged access when imported by browser code or a shared component.
+
+Supabase is not a single unrestricted database client. Different credentials and services have different trust boundaries. This source lesson makes the boundary explicit so a working demonstration does not accidentally teach learners to expose server credentials, ignore RLS, or apply migrations against the wrong project.
+
+## Mental model and prerequisites
+
+Complete **13.02.08**. Supabase bundles PostgreSQL, Auth, Storage and Realtime, but each has a distinct authorization boundary. The browser uses a publishable client; privileged operations must remain on the server and be individually authorized.
+
+The source is **draft-unverified** and intended for a disposable Supabase local stack. Current Supabase API keys, CLI commands and configuration may change, so the runtime test must use the installed version and live official documentation. No private project, production database or user account is needed for the learning exercise.
+
+**Predict:** A single shared client constructed with a secret key can leak privileged access when imported by browser code or a shared component. What concrete failure or unauthorized access could happen? State how a negative test would demonstrate the problem before reviewing the corrected source.
+
+## Guided implementation
+
+<LessonStep number={1} title="Find the incorrect trust assumption" file="drafts/p4/labs/supabase-product-boundaries/starter.ts" expected="Explain the unsafe effect of the original client, project or schema operation.">
+
+```ts
+// Wrong: one privileged client is reused in every runtime.
+import { createClient } from "@supabase/supabase-js";
+export const sharedClient = createClient(url, secretKey);
+```
+
+**Why this is unsafe:** A single shared client constructed with a secret key can leak privileged access when imported by browser code or a shared component. Identify the code/runtime boundary before attempting the repair.
+
+</LessonStep>
+
+<LessonStep number={2} title="Use scoped configuration or explicit RLS" file="drafts/p4/labs/supabase-product-boundaries/solution.ts" expected="A clear, reviewable boundary appropriate to the operation.">
+
+```ts
+// Browser client: URL + publishable key only.
+import { createBrowserClient } from "@supabase/ssr";
+export function browserSupabase() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+  if (!url || !key) throw new Error("Public Supabase config missing");
+  return createBrowserClient(url, key);
+}
+// Service-only privileged clients belong in separate server modules.
+```
+
+**Repair:** Create a browser client with only the public project URL and publishable key. Keep privileged operations behind authenticated server handlers and resource-specific authorization.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify in an isolated local Supabase stack" file="drafts/p4/labs/supabase-product-boundaries/acceptance.md" expected="Positive behavior and an independently denied operation are recorded.">
+
+**Positive proof:** Use local Supabase with two test identities. Verify Auth sign-in, RLS-protected PostgreSQL data, private Storage policy, and an authorized Realtime channel separately.
+
+**Required negative proof:** Search browser bundles for secret/service_role values. Authenticate as alpha and attempt beta's data and private storage paths, expecting denial.
+
+**Remaining boundary:** A publishable key is not a permission grant. RLS, Grants and Storage policies must deny unauthorized users. Service roles can bypass RLS.
+
+The acceptance file is a manual/real-stack qualification plan. It is not an automatically successful integration test and does not qualify a production project.
+
+</LessonStep>
+
+## Operational and security review
+
+Supabase bundles PostgreSQL, Auth, Storage and Realtime, but each has a distinct authorization boundary. The browser uses a publishable client; privileged operations must remain on the server and be individually authorized.
+
+Create a browser client with only the public project URL and publishable key. Keep privileged operations behind authenticated server handlers and resource-specific authorization.
+
+A publishable key is not a permission grant. RLS, Grants and Storage policies must deny unauthorized users. Service roles can bypass RLS.
+
+On an actual full-stack app, draw the flow from browser through the authenticated server endpoint to Supabase Auth or PostgreSQL. Annotate which requests use a publishable key, which need a user JWT, which require database grants, and which should never be allowed outside server infrastructure. Storage and Realtime must be authorized independently of ordinary table policies.
+
+## Bug Hunt
+
+1. Reproduce the unsafe setup: A single shared client constructed with a secret key can leak privileged access when imported by browser code or a shared component.
+2. Identify the affected tenant, key, connection or exposed schema.
+3. Apply the minimum safer design: Create a browser client with only the public project URL and publishable key. Keep privileged operations behind authenticated server handlers and resource-specific authorization.
+4. Test both an allowed call and the forbidden call: Search browser bundles for secret/service_role values. Authenticate as alpha and attempt beta's data and private storage paths, expecting denial.
+5. Record the operational limitation: A publishable key is not a permission grant. RLS, Grants and Storage policies must deny unauthorized users. Service roles can bypass RLS.
+
+<Misconception claim={"A single shared client constructed with a secret key can leak privileged access when imported by browser code or a shared component."} correction={"Supabase bundles PostgreSQL, Auth, Storage and Realtime, but each has a distinct authorization boundary. The browser uses a publishable client; privileged operations must remain on the server and be individually authorized."} />
+<KnowledgeCheck question={"What should a browser Supabase client use?"} choices={["A service_role secret","A project URL and publishable key, backed by policies","The database password","A migration-admin connection"]} correctIndex={1} explanation={"Create a browser client with only the public project URL and publishable key. Keep privileged operations behind authenticated server handlers and resource-specific authorization."} misconception={"A publishable key is not a permission grant. RLS, Grants and Storage policies must deny unauthorized users. Service roles can bypass RLS."} lessonId="14.01.01" />
+
+## Extend the design
+
+Translate this example into a Next.js + NestJS architecture drawing. Include environment separation, role boundaries, and a reproducible local migration process. Then explain why a successful source check is insufficient to establish data confidentiality. For production, obtain release approval only after authenticated API and RLS testing with two real test accounts.
+
+## Official references
+
+- [Supabase official guide — PostgreSQL Auth Storage and Realtime](https://supabase.com/docs/guides/getting-started/architecture)
+- [Supabase local development](https://supabase.com/docs/guides/local-development)

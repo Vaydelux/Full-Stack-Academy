@@ -1,0 +1,20 @@
+{
+  "id": "14.01.05",
+  "title": "Exposed schemas",
+  "trackId": "14",
+  "moduleId": "14.01",
+  "prerequisites": [
+    "14.01.04"
+  ],
+  "labSlug": "exposed-schema-rls",
+  "sourceStatus": "draft-unverified",
+  "runtimeQualification": "not-run",
+  "reviewStatus": "unreviewed",
+  "readyToPublish": false,
+  "estimatedMinutes": 60,
+  "officialReferences": [
+    "https://supabase.com/docs/guides/api/securing-your-api",
+    "https://supabase.com/docs/guides/local-development"
+  ],
+  "exerciseFormat": "sql"
+}

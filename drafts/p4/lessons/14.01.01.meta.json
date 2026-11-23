@@ -1,0 +1,20 @@
+{
+  "id": "14.01.01",
+  "title": "PostgreSQL Auth Storage and Realtime",
+  "trackId": "14",
+  "moduleId": "14.01",
+  "prerequisites": [
+    "13.02.08"
+  ],
+  "labSlug": "supabase-product-boundaries",
+  "sourceStatus": "draft-unverified",
+  "runtimeQualification": "not-run",
+  "reviewStatus": "unreviewed",
+  "readyToPublish": false,
+  "estimatedMinutes": 60,
+  "officialReferences": [
+    "https://supabase.com/docs/guides/getting-started/architecture",
+    "https://supabase.com/docs/guides/local-development"
+  ],
+  "exerciseFormat": "ts"
+}

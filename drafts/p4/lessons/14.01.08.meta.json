@@ -1,0 +1,20 @@
+{
+  "id": "14.01.08",
+  "title": "Lab local development",
+  "trackId": "14",
+  "moduleId": "14.01",
+  "prerequisites": [
+    "14.01.07"
+  ],
+  "labSlug": "isolated-supabase-local-lab",
+  "sourceStatus": "draft-unverified",
+  "runtimeQualification": "not-run",
+  "reviewStatus": "unreviewed",
+  "readyToPublish": false,
+  "estimatedMinutes": 90,
+  "officialReferences": [
+    "https://supabase.com/docs/guides/local-development",
+    "https://supabase.com/docs/guides/local-development"
+  ],
+  "exerciseFormat": "bash"
+}

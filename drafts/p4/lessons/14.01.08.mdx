@@ -1,0 +1,91 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Local Supabase development runs a disposable service stack for migrations, Auth, Storage and API testing. It should not be silently linked to the production project during exercises.","Initialize the local stack, inspect CLI help and status, apply tracked migrations through a local reset, and verify role/RLS behavior with seeded test accounts.","supabase db reset is destructive to the local database. Never aim training operations at an existing production or shared testing project."]} />
+
+## Architecture problem
+
+**Lab local development.** Local Supabase development runs a disposable service stack for migrations, Auth, Storage and API testing. It should not be silently linked to the production project during exercises.
+
+**Unsafe starting point:** The starter jumps to a remote database push and skips local schema replay and environment validation.
+
+Supabase is not a single unrestricted database client. Different credentials and services have different trust boundaries. This source lesson makes the boundary explicit so a working demonstration does not accidentally teach learners to expose server credentials, ignore RLS, or apply migrations against the wrong project.
+
+## Mental model and prerequisites
+
+Complete **14.01.07**. Local Supabase development runs a disposable service stack for migrations, Auth, Storage and API testing. It should not be silently linked to the production project during exercises.
+
+The source is **draft-unverified** and intended for a disposable Supabase local stack. Current Supabase API keys, CLI commands and configuration may change, so the runtime test must use the installed version and live official documentation. No private project, production database or user account is needed for the learning exercise.
+
+**Predict:** The starter jumps to a remote database push and skips local schema replay and environment validation. What concrete failure or unauthorized access could happen? State how a negative test would demonstrate the problem before reviewing the corrected source.
+
+## Guided implementation
+
+<LessonStep number={1} title="Find the incorrect trust assumption" file="drafts/p4/labs/isolated-supabase-local-lab/starter.sh" expected="Explain the unsafe effect of the original client, project or schema operation.">
+
+```bash
+# WRONG: modify a remote project without a local migration review.
+supabase db push
+```
+
+**Why this is unsafe:** The starter jumps to a remote database push and skips local schema replay and environment validation. Identify the code/runtime boundary before attempting the repair.
+
+</LessonStep>
+
+<LessonStep number={2} title="Use scoped configuration or explicit RLS" file="drafts/p4/labs/isolated-supabase-local-lab/solution.sh" expected="A clear, reviewable boundary appropriate to the operation.">
+
+```bash
+# Dedicated, disposable local repository. Docker engine required.
+supabase --help
+supabase init
+supabase start
+supabase status
+# WARNING: only on disposable local data; this drops/recreates local DB.
+supabase db reset
+```
+
+**Repair:** Initialize the local stack, inspect CLI help and status, apply tracked migrations through a local reset, and verify role/RLS behavior with seeded test accounts.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify in an isolated local Supabase stack" file="drafts/p4/labs/isolated-supabase-local-lab/acceptance.md" expected="Positive behavior and an independently denied operation are recorded.">
+
+**Positive proof:** On a machine with Docker and the current CLI, run the local stack, seed two users, verify the Data API denies forbidden access, and tear down the disposable stack.
+
+**Required negative proof:** Remove required Docker service and confirm startup reports the dependency rather than switching to a remote project; refuse linked remote credentials in the lab.
+
+**Remaining boundary:** supabase db reset is destructive to the local database. Never aim training operations at an existing production or shared testing project.
+
+The acceptance file is a manual/real-stack qualification plan. It is not an automatically successful integration test and does not qualify a production project.
+
+</LessonStep>
+
+## Operational and security review
+
+Local Supabase development runs a disposable service stack for migrations, Auth, Storage and API testing. It should not be silently linked to the production project during exercises.
+
+Initialize the local stack, inspect CLI help and status, apply tracked migrations through a local reset, and verify role/RLS behavior with seeded test accounts.
+
+supabase db reset is destructive to the local database. Never aim training operations at an existing production or shared testing project.
+
+On an actual full-stack app, draw the flow from browser through the authenticated server endpoint to Supabase Auth or PostgreSQL. Annotate which requests use a publishable key, which need a user JWT, which require database grants, and which should never be allowed outside server infrastructure. Storage and Realtime must be authorized independently of ordinary table policies.
+
+## Bug Hunt
+
+1. Reproduce the unsafe setup: The starter jumps to a remote database push and skips local schema replay and environment validation.
+2. Identify the affected tenant, key, connection or exposed schema.
+3. Apply the minimum safer design: Initialize the local stack, inspect CLI help and status, apply tracked migrations through a local reset, and verify role/RLS behavior with seeded test accounts.
+4. Test both an allowed call and the forbidden call: Remove required Docker service and confirm startup reports the dependency rather than switching to a remote project; refuse linked remote credentials in the lab.
+5. Record the operational limitation: supabase db reset is destructive to the local database. Never aim training operations at an existing production or shared testing project.
+
+<Misconception claim={"The starter jumps to a remote database push and skips local schema replay and environment validation."} correction={"Local Supabase development runs a disposable service stack for migrations, Auth, Storage and API testing. It should not be silently linked to the production project during exercises."} />
+<KnowledgeCheck question={"What should precede a safe Supabase schema exercise?"} choices={["A production db push","Local stack initialization and disposable migration replay","A browser service-role key","A hardcoded production URL"]} correctIndex={1} explanation={"Initialize the local stack, inspect CLI help and status, apply tracked migrations through a local reset, and verify role/RLS behavior with seeded test accounts."} misconception={"supabase db reset is destructive to the local database. Never aim training operations at an existing production or shared testing project."} lessonId="14.01.08" />
+
+## Extend the design
+
+Translate this example into a Next.js + NestJS architecture drawing. Include environment separation, role boundaries, and a reproducible local migration process. Then explain why a successful source check is insufficient to establish data confidentiality. For production, obtain release approval only after authenticated API and RLS testing with two real test accounts.
+
+## Official references
+
+- [Supabase official guide — Lab local development](https://supabase.com/docs/guides/local-development)
+- [Supabase local development](https://supabase.com/docs/guides/local-development)

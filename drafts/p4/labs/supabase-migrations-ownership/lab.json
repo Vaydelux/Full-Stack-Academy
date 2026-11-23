@@ -1,0 +1,15 @@
+{
+  "id": "draft.p4.supabase-migrations-ownership",
+  "lessonId": "14.01.04",
+  "moduleId": "14.01",
+  "sourceStatus": "draft-unverified",
+  "runtimeQualification": "not-run",
+  "reviewStatus": "unreviewed",
+  "readyToPublish": false,
+  "qualificationKind": "manual-supabase-local",
+  "language": "bash",
+  "starter": "drafts/p4/labs/supabase-migrations-ownership/starter.sh",
+  "solution": "drafts/p4/labs/supabase-migrations-ownership/solution.sh",
+  "acceptanceDoc": "drafts/p4/labs/supabase-migrations-ownership/acceptance.md",
+  "officialReference": "https://supabase.com/docs/guides/local-development/database-migrations"
+}

@@ -1,0 +1,74 @@
+{
+  "moduleId": "14.01",
+  "trackId": "14",
+  "title": "Supabase Architecture",
+  "sourceStatus": "draft-unverified",
+  "runtimeQualification": "not-run",
+  "readyToPublish": false,
+  "lessons": [
+    {
+      "id": "14.01.01",
+      "title": "PostgreSQL Auth Storage and Realtime",
+      "slug": "supabase-product-boundaries",
+      "extension": "ts",
+      "language": "ts",
+      "qualificationKind": "manual-supabase-local"
+    },
+    {
+      "id": "14.01.02",
+      "title": "Project environments",
+      "slug": "isolate-supabase-environments",
+      "extension": "ts",
+      "language": "ts",
+      "qualificationKind": "manual-supabase-local"
+    },
+    {
+      "id": "14.01.03",
+      "title": "Client vs server keys",
+      "slug": "supabase-publishable-keys",
+      "extension": "ts",
+      "language": "ts",
+      "qualificationKind": "manual-supabase-local"
+    },
+    {
+      "id": "14.01.04",
+      "title": "SQL editor vs migrations",
+      "slug": "supabase-migrations-ownership",
+      "extension": "sh",
+      "language": "bash",
+      "qualificationKind": "manual-supabase-local"
+    },
+    {
+      "id": "14.01.05",
+      "title": "Exposed schemas",
+      "slug": "exposed-schema-rls",
+      "extension": "sql",
+      "language": "sql",
+      "qualificationKind": "manual-supabase-local"
+    },
+    {
+      "id": "14.01.06",
+      "title": "Network and pooling",
+      "slug": "direct-vs-pooled-supabase",
+      "extension": "ts",
+      "language": "ts",
+      "qualificationKind": "manual-supabase-local"
+    },
+    {
+      "id": "14.01.07",
+      "title": "Free tier vs production operations",
+      "slug": "free-tier-production-readiness",
+      "extension": "ts",
+      "language": "ts",
+      "qualificationKind": "manual-supabase-local"
+    },
+    {
+      "id": "14.01.08",
+      "title": "Lab local development",
+      "slug": "isolated-supabase-local-lab",
+      "extension": "sh",
+      "language": "bash",
+      "qualificationKind": "manual-supabase-local"
+    }
+  ]
+}

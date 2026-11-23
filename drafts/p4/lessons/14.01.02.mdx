@@ -1,0 +1,96 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Local, staging and production Supabase resources must use separate credentials and destructive-operation safeguards. An environment label alone does not stop a mistaken remote command.","Fail closed when test credentials are absent and require an explicit operator-approved test project before proceeding with integration experiments.","An approval flag is a guardrail, not a cryptographic guarantee of environment identity. Compare project IDs and role privileges before destructive operations."]} />
+
+## Architecture problem
+
+**Project environments.** Local, staging and production Supabase resources must use separate credentials and destructive-operation safeguards. An environment label alone does not stop a mistaken remote command.
+
+**Unsafe starting point:** The starter silently connects to production if the test URL is absent, allowing test scripts to modify real user data.
+
+Supabase is not a single unrestricted database client. Different credentials and services have different trust boundaries. This source lesson makes the boundary explicit so a working demonstration does not accidentally teach learners to expose server credentials, ignore RLS, or apply migrations against the wrong project.
+
+## Mental model and prerequisites
+
+Complete **14.01.01**. Local, staging and production Supabase resources must use separate credentials and destructive-operation safeguards. An environment label alone does not stop a mistaken remote command.
+
+The source is **draft-unverified** and intended for a disposable Supabase local stack. Current Supabase API keys, CLI commands and configuration may change, so the runtime test must use the installed version and live official documentation. No private project, production database or user account is needed for the learning exercise.
+
+**Predict:** The starter silently connects to production if the test URL is absent, allowing test scripts to modify real user data. What concrete failure or unauthorized access could happen? State how a negative test would demonstrate the problem before reviewing the corrected source.
+
+## Guided implementation
+
+<LessonStep number={1} title="Find the incorrect trust assumption" file="drafts/p4/labs/isolate-supabase-environments/starter.ts" expected="Explain the unsafe effect of the original client, project or schema operation.">
+
+```ts
+// Risky: silently falls back to the live project.
+export const supabaseUrl =
+  process.env.SUPABASE_TEST_URL ?? "https://production-project.supabase.co";
+```
+
+**Why this is unsafe:** The starter silently connects to production if the test URL is absent, allowing test scripts to modify real user data. Identify the code/runtime boundary before attempting the repair.
+
+</LessonStep>
+
+<LessonStep number={2} title="Use scoped configuration or explicit RLS" file="drafts/p4/labs/isolate-supabase-environments/solution.ts" expected="A clear, reviewable boundary appropriate to the operation.">
+
+```ts
+export function requireTestProjectUrl() {
+  const value = process.env.SUPABASE_TEST_URL;
+  if (!value) throw new Error("SUPABASE_TEST_URL is required");
+  const url = new URL(value);
+  if (url.protocol !== "http:" && url.protocol !== "https:")
+    throw new Error("Invalid project URL");
+  // Require an explicit test-only project reference approved by the operator.
+  if (process.env.ACADEMY_TEST_PROJECT_APPROVED !== "YES")
+    throw new Error("Test project approval required");
+  return url.toString();
+}
+```
+
+**Repair:** Fail closed when test credentials are absent and require an explicit operator-approved test project before proceeding with integration experiments.
+
+</LessonStep>
+
+<LessonStep number={3} title="Verify in an isolated local Supabase stack" file="drafts/p4/labs/isolate-supabase-environments/acceptance.md" expected="Positive behavior and an independently denied operation are recorded.">
+
+**Positive proof:** Inspect the active project reference, database host and test credentials before local migrations. Verify no published environment variables point at the live project.
+
+**Required negative proof:** Run the local test harness without SUPABASE_TEST_URL and with a missing approval flag; both should stop before any network request.
+
+**Remaining boundary:** An approval flag is a guardrail, not a cryptographic guarantee of environment identity. Compare project IDs and role privileges before destructive operations.
+
+The acceptance file is a manual/real-stack qualification plan. It is not an automatically successful integration test and does not qualify a production project.
+
+</LessonStep>
+
+## Operational and security review
+
+Local, staging and production Supabase resources must use separate credentials and destructive-operation safeguards. An environment label alone does not stop a mistaken remote command.
+
+Fail closed when test credentials are absent and require an explicit operator-approved test project before proceeding with integration experiments.
+
+An approval flag is a guardrail, not a cryptographic guarantee of environment identity. Compare project IDs and role privileges before destructive operations.
+
+On an actual full-stack app, draw the flow from browser through the authenticated server endpoint to Supabase Auth or PostgreSQL. Annotate which requests use a publishable key, which need a user JWT, which require database grants, and which should never be allowed outside server infrastructure. Storage and Realtime must be authorized independently of ordinary table policies.
+
+## Bug Hunt
+
+1. Reproduce the unsafe setup: The starter silently connects to production if the test URL is absent, allowing test scripts to modify real user data.
+2. Identify the affected tenant, key, connection or exposed schema.
+3. Apply the minimum safer design: Fail closed when test credentials are absent and require an explicit operator-approved test project before proceeding with integration experiments.
+4. Test both an allowed call and the forbidden call: Run the local test harness without SUPABASE_TEST_URL and with a missing approval flag; both should stop before any network request.
+5. Record the operational limitation: An approval flag is a guardrail, not a cryptographic guarantee of environment identity. Compare project IDs and role privileges before destructive operations.
+
+<Misconception claim={"The starter silently connects to production if the test URL is absent, allowing test scripts to modify real user data."} correction={"Local, staging and production Supabase resources must use separate credentials and destructive-operation safeguards. An environment label alone does not stop a mistaken remote command."} />
+<KnowledgeCheck question={"What is safest when a test project's URL is missing?"} choices={["Fall back to production","Stop the process before connecting","Invent a URL","Use a public service-role key"]} correctIndex={1} explanation={"Fail closed when test credentials are absent and require an explicit operator-approved test project before proceeding with integration experiments."} misconception={"An approval flag is a guardrail, not a cryptographic guarantee of environment identity. Compare project IDs and role privileges before destructive operations."} lessonId="14.01.02" />
+
+## Extend the design
+
+Translate this example into a Next.js + NestJS architecture drawing. Include environment separation, role boundaries, and a reproducible local migration process. Then explain why a successful source check is insufficient to establish data confidentiality. For production, obtain release approval only after authenticated API and RLS testing with two real test accounts.
+
+## Official references
+
+- [Supabase official guide — Project environments](https://supabase.com/docs/guides/deployment/managing-environments)
+- [Supabase local development](https://supabase.com/docs/guides/local-development)
