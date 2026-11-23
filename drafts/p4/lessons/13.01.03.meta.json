@@ -1,0 +1,20 @@
+{
+  "id": "13.01.03",
+  "title": "Prisma Client generation",
+  "trackId": "13",
+  "moduleId": "13.01",
+  "prerequisites": [
+    "13.01.02"
+  ],
+  "labSlug": "explicit-client-generation",
+  "sourceStatus": "draft-unverified",
+  "readyToPublish": false,
+  "runtimeQualification": "not-run",
+  "reviewStatus": "unreviewed",
+  "estimatedMinutes": 55,
+  "officialReferences": [
+    "https://www.prisma.io/docs/orm/v7/prisma-client/setup-and-configuration/generating-prisma-client",
+    "https://www.prisma.io/docs/orm/v7"
+  ],
+  "exerciseFormat": "ts"
+}

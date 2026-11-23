@@ -1,0 +1,20 @@
+{
+  "id": "13.01.05",
+  "title": "Environment configuration",
+  "trackId": "13",
+  "moduleId": "13.01",
+  "prerequisites": [
+    "13.01.04"
+  ],
+  "labSlug": "prisma-config-env",
+  "sourceStatus": "draft-unverified",
+  "readyToPublish": false,
+  "runtimeQualification": "not-run",
+  "reviewStatus": "unreviewed",
+  "estimatedMinutes": 55,
+  "officialReferences": [
+    "https://www.prisma.io/docs/orm/v7/reference/prisma-cli-reference",
+    "https://www.prisma.io/docs/orm/v7"
+  ],
+  "exerciseFormat": "ts"
+}

@@ -1,0 +1,90 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["migrate dev generates/applies migrations during development; migrate deploy only applies checked-in pending migrations. Prisma ORM v7 does not automatically run generate or db seed as a side effect of migrate dev.","Generate and review SQL in development, commit migration files, generate the client explicitly, and use migrate deploy in controlled release workflows.","A successful CLI exit does not prove zero downtime. Consider locks, concurrent app versions, backfills and irreversible migrations before applying SQL to production."]} />
+
+## Why this lesson matters
+
+**Migrate development vs deploy.** migrate dev generates/applies migrations during development; migrate deploy only applies checked-in pending migrations. Prisma ORM v7 does not automatically run generate or db seed as a side effect of migrate dev.
+
+**Broken real-world assumption:** The starter would attempt interactive development-time migration creation in a production workflow.
+
+An ORM is not an access-control mechanism or a database deployment tool by itself. Treat the generated TypeScript types, database constraints, migration history and the authenticated request context as separate boundaries. The learner should be able to explain what each boundary guarantees and what it does not.
+
+## Mental model and prerequisite
+
+migrate dev generates/applies migrations during development; migrate deploy only applies checked-in pending migrations. Prisma ORM v7 does not automatically run generate or db seed as a side effect of migrate dev.
+
+Complete **13.01.05** first. These examples target **Prisma ORM 7** with PostgreSQL and a source-staged, not-yet-published course. Version-7 configuration and generated-client behavior must be checked against the *version-pinned* installed CLI before real use; Prisma 8 has a different configuration contract.
+
+**Predict:** The starter would attempt interactive development-time migration creation in a production workflow. Name the unsafe row, build failure, schema drift or exposed secret that could appear. A passing source scan is not a valid replacement for compiling against Prisma 7 and running the real database integration.
+
+## Guided exercise
+
+<LessonStep number={1} title="Identify the broken persistence boundary" file="drafts/p4/labs/development-versus-deploy-migrations/starter.sh" expected="The source exhibits the specific development-versus-deploy-migrations failure.">
+
+```bash
+# Wrong: the development migration generator must not run against prod.
+npx prisma migrate dev --name production_hotfix
+```
+
+**Why it is wrong:** The starter would attempt interactive development-time migration creation in a production workflow. State which step would fail in real development and which security or data-integrity invariant is absent. Don't accept merely removing a TypeScript error as a complete repair.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the safe version" file="drafts/p4/labs/development-versus-deploy-migrations/solution.sh" expected="A version-7-compatible repair with explicit trust boundaries.">
+
+```bash
+# Local disposable dev database: author/review migrations first.
+npx prisma migrate dev --name add_task_tenant
+npx prisma generate
+# In a controlled deployment environment with reviewed SQL:
+npx prisma migrate deploy
+```
+
+**How the repair works:** Generate and review SQL in development, commit migration files, generate the client explicitly, and use migrate deploy in controlled release workflows.
+
+</LessonStep>
+
+<LessonStep number={3} title="Qualify using a disposable environment" file="drafts/p4/labs/development-versus-deploy-migrations/acceptance.md" expected="Record positive and negative real-toolchain evidence before publication.">
+
+**Success criterion:** With two disposable databases, generate in dev, inspect the migration SQL and use migrate deploy on test. Record schema, checksum, deployment order and rollback strategy.
+
+**Negative test:** A reviewer must reject any pipeline invoking migrate dev or db push against production credentials. Verify that no unreviewed schema mutation is admitted.
+
+**What remains unsafe if misunderstood:** A successful CLI exit does not prove zero downtime. Consider locks, concurrent app versions, backfills and irreversible migrations before applying SQL to production.
+
+This lesson is an authored draft. The acceptance checklist is a test plan, not a previously executed build or proof that the database roles and dependencies are configured.
+
+</LessonStep>
+
+## Architecture, correctness and performance
+
+migrate dev generates/applies migrations during development; migrate deploy only applies checked-in pending migrations. Prisma ORM v7 does not automatically run generate or db seed as a side effect of migrate dev.
+
+Generate and review SQL in development, commit migration files, generate the client explicitly, and use migrate deploy in controlled release workflows.
+
+A successful CLI exit does not prove zero downtime. Consider locks, concurrent app versions, backfills and irreversible migrations before applying SQL to production.
+
+A production-ready persistence boundary has to address error mapping, least-privileged database credentials, transaction/connection lifecycle, tenant authorization and request cancellation. Whenever schema changes are involved, review migration SQL and compatibility with the previous app version. Never expose database credentials in a `NEXT_PUBLIC_` variable or include them in a public web bundle.
+
+## Bug Hunt
+
+1. Observe the unsafe starter: The starter would attempt interactive development-time migration creation in a production workflow.
+2. Predict the concrete failure and its blast radius.
+3. Repair the code or schema: Generate and review SQL in development, commit migration files, generate the client explicitly, and use migrate deploy in controlled release workflows.
+4. Write a test that would fail on the starter but pass on the corrected source: A reviewer must reject any pipeline invoking migrate dev or db push against production credentials. Verify that no unreviewed schema mutation is admitted.
+5. List an additional condition that this lesson cannot prove: A successful CLI exit does not prove zero downtime. Consider locks, concurrent app versions, backfills and irreversible migrations before applying SQL to production.
+
+<Misconception claim={"The starter would attempt interactive development-time migration creation in a production workflow."} correction={"migrate dev generates/applies migrations during development; migrate deploy only applies checked-in pending migrations. Prisma ORM v7 does not automatically run generate or db seed as a side effect of migrate dev."} />
+
+<KnowledgeCheck question={"Which Prisma command is intended to apply checked-in migrations in release workflows?"} choices={["prisma migrate dev","prisma migrate deploy","prisma db push against prod","prisma migrate reset against prod"]} correctIndex={1} explanation={"Generate and review SQL in development, commit migration files, generate the client explicitly, and use migrate deploy in controlled release workflows."} misconception={"A successful CLI exit does not prove zero downtime. Consider locks, concurrent app versions, backfills and irreversible migrations before applying SQL to production."} lessonId="13.01.06" />
+
+## Further practice
+
+Rebuild the exercise from an empty directory without copying generated artifacts. Pin every Prisma dependency in a real `package-lock.json`, run against a disposable PostgreSQL instance, compare instructor and starter behavior and record exact compiler and SQL errors. A class or object compiling successfully is not proof that a second user's data is inaccessible.
+
+## Official references
+
+- [Prisma ORM 7 — Migrate development vs deploy](https://www.prisma.io/docs/orm/v7/prisma-migrate/workflows/development-and-production)
+- [Prisma ORM v7 introduction](https://www.prisma.io/docs/orm/v7)

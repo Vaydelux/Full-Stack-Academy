@@ -1,0 +1,93 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["A successful connection is only the beginning. A safe repository method couples a server-verified tenant identity with an explicit projection, bounded result size, and defined ordering.","Use where tenantId from trusted server context, select only safe public columns, bound take and order deterministically. Validate the generated query against two test tenants.","Prisma's server-side database user may bypass Supabase RLS. Enforce tenant/object authorization at the API boundary and prefer least-privileged database roles."]} />
+
+## Why this lesson matters
+
+**Lab connect to Postgres.** A successful connection is only the beginning. A safe repository method couples a server-verified tenant identity with an explicit projection, bounded result size, and defined ordering.
+
+**Broken real-world assumption:** The starter fetches every tenant's tasks and all selected model fields from a potentially privileged server connection.
+
+An ORM is not an access-control mechanism or a database deployment tool by itself. Treat the generated TypeScript types, database constraints, migration history and the authenticated request context as separate boundaries. The learner should be able to explain what each boundary guarantees and what it does not.
+
+## Mental model and prerequisite
+
+A successful connection is only the beginning. A safe repository method couples a server-verified tenant identity with an explicit projection, bounded result size, and defined ordering.
+
+Complete **13.01.07** first. These examples target **Prisma ORM 7** with PostgreSQL and a source-staged, not-yet-published course. Version-7 configuration and generated-client behavior must be checked against the *version-pinned* installed CLI before real use; Prisma 8 has a different configuration contract.
+
+**Predict:** The starter fetches every tenant's tasks and all selected model fields from a potentially privileged server connection. Name the unsafe row, build failure, schema drift or exposed secret that could appear. A passing source scan is not a valid replacement for compiling against Prisma 7 and running the real database integration.
+
+## Guided exercise
+
+<LessonStep number={1} title="Identify the broken persistence boundary" file="drafts/p4/labs/test-postgresql-connection/starter.ts" expected="The source exhibits the specific test-postgresql-connection failure.">
+
+```ts
+// Unsafe: global unscoped list and accidental oversharing.
+const rows = await prisma.task.findMany();
+```
+
+**Why it is wrong:** The starter fetches every tenant's tasks and all selected model fields from a potentially privileged server connection. State which step would fail in real development and which security or data-integrity invariant is absent. Don't accept merely removing a TypeScript error as a complete repair.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the safe version" file="drafts/p4/labs/test-postgresql-connection/solution.ts" expected="A version-7-compatible repair with explicit trust boundaries.">
+
+```ts
+const tenantId = verifiedTenantIdFromRequest; // must be server-verified
+if (!tenantId) throw new Error("Missing verified tenant");
+const rows = await prisma.task.findMany({
+  where: { tenantId },
+  select: { id: true, title: true },
+  orderBy: { id: "asc" },
+  take: 20,
+});
+```
+
+**How the repair works:** Use where tenantId from trusted server context, select only safe public columns, bound take and order deterministically. Validate the generated query against two test tenants.
+
+</LessonStep>
+
+<LessonStep number={3} title="Qualify using a disposable environment" file="drafts/p4/labs/test-postgresql-connection/acceptance.md" expected="Record positive and negative real-toolchain evidence before publication.">
+
+**Success criterion:** Generate the Prisma 7 client, create a disposable test schema with two tenant datasets, run the read, capture results and verify no service credentials reach the browser.
+
+**Negative test:** Request the same list for alpha and beta. Assert neither response contains the other's data. Try missing tenant context and assert it fails before querying.
+
+**What remains unsafe if misunderstood:** Prisma's server-side database user may bypass Supabase RLS. Enforce tenant/object authorization at the API boundary and prefer least-privileged database roles.
+
+This lesson is an authored draft. The acceptance checklist is a test plan, not a previously executed build or proof that the database roles and dependencies are configured.
+
+</LessonStep>
+
+## Architecture, correctness and performance
+
+A successful connection is only the beginning. A safe repository method couples a server-verified tenant identity with an explicit projection, bounded result size, and defined ordering.
+
+Use where tenantId from trusted server context, select only safe public columns, bound take and order deterministically. Validate the generated query against two test tenants.
+
+Prisma's server-side database user may bypass Supabase RLS. Enforce tenant/object authorization at the API boundary and prefer least-privileged database roles.
+
+A production-ready persistence boundary has to address error mapping, least-privileged database credentials, transaction/connection lifecycle, tenant authorization and request cancellation. Whenever schema changes are involved, review migration SQL and compatibility with the previous app version. Never expose database credentials in a `NEXT_PUBLIC_` variable or include them in a public web bundle.
+
+## Bug Hunt
+
+1. Observe the unsafe starter: The starter fetches every tenant's tasks and all selected model fields from a potentially privileged server connection.
+2. Predict the concrete failure and its blast radius.
+3. Repair the code or schema: Use where tenantId from trusted server context, select only safe public columns, bound take and order deterministically. Validate the generated query against two test tenants.
+4. Write a test that would fail on the starter but pass on the corrected source: Request the same list for alpha and beta. Assert neither response contains the other's data. Try missing tenant context and assert it fails before querying.
+5. List an additional condition that this lesson cannot prove: Prisma's server-side database user may bypass Supabase RLS. Enforce tenant/object authorization at the API boundary and prefer least-privileged database roles.
+
+<Misconception claim={"The starter fetches every tenant's tasks and all selected model fields from a potentially privileged server connection."} correction={"A successful connection is only the beginning. A safe repository method couples a server-verified tenant identity with an explicit projection, bounded result size, and defined ordering."} />
+
+<KnowledgeCheck question={"Which combination is a reasonable baseline for a multi-tenant task list?"} choices={["findMany() with no where or select","Verified tenant filter, safe projection, limit and stable order","Database superuser credentials in React","Trusting tenantId from arbitrary query parameters"]} correctIndex={1} explanation={"Use where tenantId from trusted server context, select only safe public columns, bound take and order deterministically. Validate the generated query against two test tenants."} misconception={"Prisma's server-side database user may bypass Supabase RLS. Enforce tenant/object authorization at the API boundary and prefer least-privileged database roles."} lessonId="13.01.08" />
+
+## Further practice
+
+Rebuild the exercise from an empty directory without copying generated artifacts. Pin every Prisma dependency in a real `package-lock.json`, run against a disposable PostgreSQL instance, compare instructor and starter behavior and record exact compiler and SQL errors. A class or object compiling successfully is not proof that a second user's data is inaccessible.
+
+## Official references
+
+- [Prisma ORM 7 — Lab connect to Postgres](https://www.prisma.io/docs/orm/v7/prisma-client/queries/crud)
+- [Prisma ORM v7 introduction](https://www.prisma.io/docs/orm/v7)

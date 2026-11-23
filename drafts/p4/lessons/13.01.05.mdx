@@ -1,0 +1,93 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["A config file tells Prisma's CLI where to find the schema, migration history and connection URL. Secrets belong in runtime/CI secret storage, never in files or variables bundled for the browser.","Use Prisma config with a server-only DATABASE_URL. Some Prisma 7.10+ initialization templates name this prisma7.config.ts; use the version-matched CLI file convention rather than assuming cross-major compatibility.","CLI config is not automatic authorization. A correct URL can still connect as a superuser; explicitly scope roles, environment and migration rights."]} />
+
+## Why this lesson matters
+
+**Environment configuration.** A config file tells Prisma's CLI where to find the schema, migration history and connection URL. Secrets belong in runtime/CI secret storage, never in files or variables bundled for the browser.
+
+**Broken real-world assumption:** The starter puts secrets into a NEXT_PUBLIC variable and suggests a pre-v7 datasource URL placement.
+
+An ORM is not an access-control mechanism or a database deployment tool by itself. Treat the generated TypeScript types, database constraints, migration history and the authenticated request context as separate boundaries. The learner should be able to explain what each boundary guarantees and what it does not.
+
+## Mental model and prerequisite
+
+A config file tells Prisma's CLI where to find the schema, migration history and connection URL. Secrets belong in runtime/CI secret storage, never in files or variables bundled for the browser.
+
+Complete **13.01.04** first. These examples target **Prisma ORM 7** with PostgreSQL and a source-staged, not-yet-published course. Version-7 configuration and generated-client behavior must be checked against the *version-pinned* installed CLI before real use; Prisma 8 has a different configuration contract.
+
+**Predict:** The starter puts secrets into a NEXT_PUBLIC variable and suggests a pre-v7 datasource URL placement. Name the unsafe row, build failure, schema drift or exposed secret that could appear. A passing source scan is not a valid replacement for compiling against Prisma 7 and running the real database integration.
+
+## Guided exercise
+
+<LessonStep number={1} title="Identify the broken persistence boundary" file="drafts/p4/labs/prisma-config-env/starter.ts" expected="The source exhibits the specific prisma-config-env failure.">
+
+```ts
+// Incorrect v7 configuration: DB URL embedded in the model schema.
+// datasource db { provider = "postgresql"; url = env("DATABASE_URL") }
+export const databaseUrl = process.env.NEXT_PUBLIC_DATABASE_URL;
+```
+
+**Why it is wrong:** The starter puts secrets into a NEXT_PUBLIC variable and suggests a pre-v7 datasource URL placement. State which step would fail in real development and which security or data-integrity invariant is absent. Don't accept merely removing a TypeScript error as a complete repair.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the safe version" file="drafts/p4/labs/prisma-config-env/solution.ts" expected="A version-7-compatible repair with explicit trust boundaries.">
+
+```ts
+import "dotenv/config";
+import { defineConfig, env } from "prisma/config";
+export default defineConfig({
+  schema: "prisma/schema.prisma",
+  migrations: { path: "prisma/migrations" },
+  datasource: { url: env("DATABASE_URL") },
+});
+```
+
+**How the repair works:** Use Prisma config with a server-only DATABASE_URL. Some Prisma 7.10+ initialization templates name this prisma7.config.ts; use the version-matched CLI file convention rather than assuming cross-major compatibility.
+
+</LessonStep>
+
+<LessonStep number={3} title="Qualify using a disposable environment" file="drafts/p4/labs/prisma-config-env/acceptance.md" expected="Record positive and negative real-toolchain evidence before publication.">
+
+**Success criterion:** Run the version-pinned Prisma CLI in an isolated checkout; confirm the config is discovered and that the migration URL points to the disposable database, not production.
+
+**Negative test:** Search the built client bundle and repo for NEXT_PUBLIC_DATABASE_URL and real secrets. Intentionally run the CLI without DATABASE_URL and ensure the error is local and does not expose the secret.
+
+**What remains unsafe if misunderstood:** CLI config is not automatic authorization. A correct URL can still connect as a superuser; explicitly scope roles, environment and migration rights.
+
+This lesson is an authored draft. The acceptance checklist is a test plan, not a previously executed build or proof that the database roles and dependencies are configured.
+
+</LessonStep>
+
+## Architecture, correctness and performance
+
+A config file tells Prisma's CLI where to find the schema, migration history and connection URL. Secrets belong in runtime/CI secret storage, never in files or variables bundled for the browser.
+
+Use Prisma config with a server-only DATABASE_URL. Some Prisma 7.10+ initialization templates name this prisma7.config.ts; use the version-matched CLI file convention rather than assuming cross-major compatibility.
+
+CLI config is not automatic authorization. A correct URL can still connect as a superuser; explicitly scope roles, environment and migration rights.
+
+A production-ready persistence boundary has to address error mapping, least-privileged database credentials, transaction/connection lifecycle, tenant authorization and request cancellation. Whenever schema changes are involved, review migration SQL and compatibility with the previous app version. Never expose database credentials in a `NEXT_PUBLIC_` variable or include them in a public web bundle.
+
+## Bug Hunt
+
+1. Observe the unsafe starter: The starter puts secrets into a NEXT_PUBLIC variable and suggests a pre-v7 datasource URL placement.
+2. Predict the concrete failure and its blast radius.
+3. Repair the code or schema: Use Prisma config with a server-only DATABASE_URL. Some Prisma 7.10+ initialization templates name this prisma7.config.ts; use the version-matched CLI file convention rather than assuming cross-major compatibility.
+4. Write a test that would fail on the starter but pass on the corrected source: Search the built client bundle and repo for NEXT_PUBLIC_DATABASE_URL and real secrets. Intentionally run the CLI without DATABASE_URL and ensure the error is local and does not expose the secret.
+5. List an additional condition that this lesson cannot prove: CLI config is not automatic authorization. A correct URL can still connect as a superuser; explicitly scope roles, environment and migration rights.
+
+<Misconception claim={"The starter puts secrets into a NEXT_PUBLIC variable and suggests a pre-v7 datasource URL placement."} correction={"A config file tells Prisma's CLI where to find the schema, migration history and connection URL. Secrets belong in runtime/CI secret storage, never in files or variables bundled for the browser."} />
+
+<KnowledgeCheck question={"Which environment prefix is unsafe for a private PostgreSQL connection string in Next.js?"} choices={["DATABASE_URL","NEXT_PUBLIC_","PG_TEST_URL in a secure server environment","An unexported server process variable"]} correctIndex={1} explanation={"Use Prisma config with a server-only DATABASE_URL. Some Prisma 7.10+ initialization templates name this prisma7.config.ts; use the version-matched CLI file convention rather than assuming cross-major compatibility."} misconception={"CLI config is not automatic authorization. A correct URL can still connect as a superuser; explicitly scope roles, environment and migration rights."} lessonId="13.01.05" />
+
+## Further practice
+
+Rebuild the exercise from an empty directory without copying generated artifacts. Pin every Prisma dependency in a real `package-lock.json`, run against a disposable PostgreSQL instance, compare instructor and starter behavior and record exact compiler and SQL errors. A class or object compiling successfully is not proof that a second user's data is inaccessible.
+
+## Official references
+
+- [Prisma ORM 7 — Environment configuration](https://www.prisma.io/docs/orm/v7/reference/prisma-cli-reference)
+- [Prisma ORM v7 introduction](https://www.prisma.io/docs/orm/v7)

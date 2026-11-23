@@ -1,0 +1,95 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["PrismaPg bridges the generated client to node-postgres. The adapter owns connection configuration, TLS requirements and pooling options; it must receive a PostgreSQL-compatible URL, not an Accelerate URL.","Build the adapter once in server-only code with an explicitly required URL. Import the generated client from the schema's chosen output directory and pass { adapter } to PrismaClient.","A Prisma adapter connection may use a privileged database role and bypass Supabase RLS. A server-side connection is not automatically authorized for every tenant."]} />
+
+## Why this lesson matters
+
+**Prisma 7 driver adapters.** PrismaPg bridges the generated client to node-postgres. The adapter owns connection configuration, TLS requirements and pooling options; it must receive a PostgreSQL-compatible URL, not an Accelerate URL.
+
+**Broken real-world assumption:** Constructing PrismaClient without the required driver adapter is not a valid Prisma ORM v7 PostgreSQL integration.
+
+An ORM is not an access-control mechanism or a database deployment tool by itself. Treat the generated TypeScript types, database constraints, migration history and the authenticated request context as separate boundaries. The learner should be able to explain what each boundary guarantees and what it does not.
+
+## Mental model and prerequisite
+
+PrismaPg bridges the generated client to node-postgres. The adapter owns connection configuration, TLS requirements and pooling options; it must receive a PostgreSQL-compatible URL, not an Accelerate URL.
+
+Complete **13.01.03** first. These examples target **Prisma ORM 7** with PostgreSQL and a source-staged, not-yet-published course. Version-7 configuration and generated-client behavior must be checked against the *version-pinned* installed CLI before real use; Prisma 8 has a different configuration contract.
+
+**Predict:** Constructing PrismaClient without the required driver adapter is not a valid Prisma ORM v7 PostgreSQL integration. Name the unsafe row, build failure, schema drift or exposed secret that could appear. A passing source scan is not a valid replacement for compiling against Prisma 7 and running the real database integration.
+
+## Guided exercise
+
+<LessonStep number={1} title="Identify the broken persistence boundary" file="drafts/p4/labs/postgres-driver-adapter/starter.ts" expected="The source exhibits the specific postgres-driver-adapter failure.">
+
+```ts
+import { PrismaClient } from "../generated/prisma/client";
+export const prisma = new PrismaClient();
+```
+
+**Why it is wrong:** Constructing PrismaClient without the required driver adapter is not a valid Prisma ORM v7 PostgreSQL integration. State which step would fail in real development and which security or data-integrity invariant is absent. Don't accept merely removing a TypeScript error as a complete repair.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the safe version" file="drafts/p4/labs/postgres-driver-adapter/solution.ts" expected="A version-7-compatible repair with explicit trust boundaries.">
+
+```ts
+import { PrismaClient } from "../generated/prisma/client";
+import { PrismaPg } from "@prisma/adapter-pg";
+
+function requiredUrl() {
+  const value = process.env.DATABASE_URL;
+  if (!value) throw new Error("DATABASE_URL is required");
+  return value;
+}
+const adapter = new PrismaPg({ connectionString: requiredUrl() });
+export const prisma = new PrismaClient({ adapter });
+```
+
+**How the repair works:** Build the adapter once in server-only code with an explicitly required URL. Import the generated client from the schema's chosen output directory and pass { adapter } to PrismaClient.
+
+</LessonStep>
+
+<LessonStep number={3} title="Qualify using a disposable environment" file="drafts/p4/labs/postgres-driver-adapter/acceptance.md" expected="Record positive and negative real-toolchain evidence before publication.">
+
+**Success criterion:** Install pinned prisma, @prisma/client and @prisma/adapter-pg versions; run generate and a read-only SELECT with a dedicated test role. Validate TLS/connection-pool behavior with the real adapter.
+
+**Negative test:** Unset DATABASE_URL in a local test to verify a clear startup error. Confirm no credentials are logged or serialized into browser bundles.
+
+**What remains unsafe if misunderstood:** A Prisma adapter connection may use a privileged database role and bypass Supabase RLS. A server-side connection is not automatically authorized for every tenant.
+
+This lesson is an authored draft. The acceptance checklist is a test plan, not a previously executed build or proof that the database roles and dependencies are configured.
+
+</LessonStep>
+
+## Architecture, correctness and performance
+
+PrismaPg bridges the generated client to node-postgres. The adapter owns connection configuration, TLS requirements and pooling options; it must receive a PostgreSQL-compatible URL, not an Accelerate URL.
+
+Build the adapter once in server-only code with an explicitly required URL. Import the generated client from the schema's chosen output directory and pass { adapter } to PrismaClient.
+
+A Prisma adapter connection may use a privileged database role and bypass Supabase RLS. A server-side connection is not automatically authorized for every tenant.
+
+A production-ready persistence boundary has to address error mapping, least-privileged database credentials, transaction/connection lifecycle, tenant authorization and request cancellation. Whenever schema changes are involved, review migration SQL and compatibility with the previous app version. Never expose database credentials in a `NEXT_PUBLIC_` variable or include them in a public web bundle.
+
+## Bug Hunt
+
+1. Observe the unsafe starter: Constructing PrismaClient without the required driver adapter is not a valid Prisma ORM v7 PostgreSQL integration.
+2. Predict the concrete failure and its blast radius.
+3. Repair the code or schema: Build the adapter once in server-only code with an explicitly required URL. Import the generated client from the schema's chosen output directory and pass { adapter } to PrismaClient.
+4. Write a test that would fail on the starter but pass on the corrected source: Unset DATABASE_URL in a local test to verify a clear startup error. Confirm no credentials are logged or serialized into browser bundles.
+5. List an additional condition that this lesson cannot prove: A Prisma adapter connection may use a privileged database role and bypass Supabase RLS. A server-side connection is not automatically authorized for every tenant.
+
+<Misconception claim={"Constructing PrismaClient without the required driver adapter is not a valid Prisma ORM v7 PostgreSQL integration."} correction={"PrismaPg bridges the generated client to node-postgres. The adapter owns connection configuration, TLS requirements and pooling options; it must receive a PostgreSQL-compatible URL, not an Accelerate URL."} />
+
+<KnowledgeCheck question={"What is mandatory for a Prisma ORM v7 PostgreSQL client instance?"} choices={["new PrismaClient() with no options","A supported PostgreSQL driver adapter such as PrismaPg","A NEXT_PUBLIC_DATABASE_URL variable","A browser service-role client"]} correctIndex={1} explanation={"Build the adapter once in server-only code with an explicitly required URL. Import the generated client from the schema's chosen output directory and pass { adapter } to PrismaClient."} misconception={"A Prisma adapter connection may use a privileged database role and bypass Supabase RLS. A server-side connection is not automatically authorized for every tenant."} lessonId="13.01.04" />
+
+## Further practice
+
+Rebuild the exercise from an empty directory without copying generated artifacts. Pin every Prisma dependency in a real `package-lock.json`, run against a disposable PostgreSQL instance, compare instructor and starter behavior and record exact compiler and SQL errors. A class or object compiling successfully is not proof that a second user's data is inaccessible.
+
+## Official references
+
+- [Prisma ORM 7 — Prisma 7 driver adapters](https://www.prisma.io/docs/orm/v7/core-concepts/supported-databases/database-drivers)
+- [Prisma ORM v7 introduction](https://www.prisma.io/docs/orm/v7)

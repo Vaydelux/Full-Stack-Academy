@@ -1,0 +1,14 @@
+{
+  "id": "draft.p4.postgres-driver-adapter",
+  "lessonId": "13.01.04",
+  "moduleId": "13.01",
+  "sourceStatus": "draft-unverified",
+  "readyToPublish": false,
+  "runtimeQualification": "not-run",
+  "qualificationKind": "manual-toolchain",
+  "starter": "drafts/p4/labs/postgres-driver-adapter/starter.ts",
+  "solution": "drafts/p4/labs/postgres-driver-adapter/solution.ts",
+  "acceptanceDoc": "drafts/p4/labs/postgres-driver-adapter/acceptance.md",
+  "language": "ts",
+  "officialReference": "https://www.prisma.io/docs/orm/v7/core-concepts/supported-databases/database-drivers"
+}

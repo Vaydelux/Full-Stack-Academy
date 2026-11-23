@@ -1,0 +1,90 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Prisma ORM v7's prisma-client generator writes TypeScript output to a custom directory. The import path is determined by generator.output; runtime construction for PostgreSQL also needs an adapter.","Generate explicitly with npx prisma generate and import PrismaClient from the configured generated location. Instantiate it with PrismaPg in the composition root, not in each service.","Do not commit generated clients from a developer's machine as a substitute for reproducible builds; pin versions and commit an authentic lockfile."]} />
+
+## Why this lesson matters
+
+**Prisma Client generation.** Prisma ORM v7's prisma-client generator writes TypeScript output to a custom directory. The import path is determined by generator.output; runtime construction for PostgreSQL also needs an adapter.
+
+**Broken real-world assumption:** The starter assumes the old package import and instantiates Prisma without the ORM v7 PostgreSQL driver adapter.
+
+An ORM is not an access-control mechanism or a database deployment tool by itself. Treat the generated TypeScript types, database constraints, migration history and the authenticated request context as separate boundaries. The learner should be able to explain what each boundary guarantees and what it does not.
+
+## Mental model and prerequisite
+
+Prisma ORM v7's prisma-client generator writes TypeScript output to a custom directory. The import path is determined by generator.output; runtime construction for PostgreSQL also needs an adapter.
+
+Complete **13.01.02** first. These examples target **Prisma ORM 7** with PostgreSQL and a source-staged, not-yet-published course. Version-7 configuration and generated-client behavior must be checked against the *version-pinned* installed CLI before real use; Prisma 8 has a different configuration contract.
+
+**Predict:** The starter assumes the old package import and instantiates Prisma without the ORM v7 PostgreSQL driver adapter. Name the unsafe row, build failure, schema drift or exposed secret that could appear. A passing source scan is not a valid replacement for compiling against Prisma 7 and running the real database integration.
+
+## Guided exercise
+
+<LessonStep number={1} title="Identify the broken persistence boundary" file="drafts/p4/labs/explicit-client-generation/starter.ts" expected="The source exhibits the specific explicit-client-generation failure.">
+
+```ts
+// Source-only illustration of an old package-location assumption.
+import { PrismaClient } from "@prisma/client";
+export const db = new PrismaClient();
+```
+
+**Why it is wrong:** The starter assumes the old package import and instantiates Prisma without the ORM v7 PostgreSQL driver adapter. State which step would fail in real development and which security or data-integrity invariant is absent. Don't accept merely removing a TypeScript error as a complete repair.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the safe version" file="drafts/p4/labs/explicit-client-generation/solution.ts" expected="A version-7-compatible repair with explicit trust boundaries.">
+
+```ts
+// Generated output path must match schema.prisma generator.output.
+// Execute: npx prisma generate before compiling this module.
+import { PrismaClient } from "../generated/prisma/client";
+export type DatabaseClient = PrismaClient;
+```
+
+**How the repair works:** Generate explicitly with npx prisma generate and import PrismaClient from the configured generated location. Instantiate it with PrismaPg in the composition root, not in each service.
+
+</LessonStep>
+
+<LessonStep number={3} title="Qualify using a disposable environment" file="drafts/p4/labs/explicit-client-generation/acceptance.md" expected="Record positive and negative real-toolchain evidence before publication.">
+
+**Success criterion:** On a clean Node-supported checkout with a pinned Prisma 7 toolchain, run prisma validate, prisma generate, and TypeScript typecheck. Do not claim a valid client based on source text alone.
+
+**Negative test:** Delete the generated output on a disposable checkout and run typecheck without generating. The import should fail; then generate and confirm the correct client path is available.
+
+**What remains unsafe if misunderstood:** Do not commit generated clients from a developer's machine as a substitute for reproducible builds; pin versions and commit an authentic lockfile.
+
+This lesson is an authored draft. The acceptance checklist is a test plan, not a previously executed build or proof that the database roles and dependencies are configured.
+
+</LessonStep>
+
+## Architecture, correctness and performance
+
+Prisma ORM v7's prisma-client generator writes TypeScript output to a custom directory. The import path is determined by generator.output; runtime construction for PostgreSQL also needs an adapter.
+
+Generate explicitly with npx prisma generate and import PrismaClient from the configured generated location. Instantiate it with PrismaPg in the composition root, not in each service.
+
+Do not commit generated clients from a developer's machine as a substitute for reproducible builds; pin versions and commit an authentic lockfile.
+
+A production-ready persistence boundary has to address error mapping, least-privileged database credentials, transaction/connection lifecycle, tenant authorization and request cancellation. Whenever schema changes are involved, review migration SQL and compatibility with the previous app version. Never expose database credentials in a `NEXT_PUBLIC_` variable or include them in a public web bundle.
+
+## Bug Hunt
+
+1. Observe the unsafe starter: The starter assumes the old package import and instantiates Prisma without the ORM v7 PostgreSQL driver adapter.
+2. Predict the concrete failure and its blast radius.
+3. Repair the code or schema: Generate explicitly with npx prisma generate and import PrismaClient from the configured generated location. Instantiate it with PrismaPg in the composition root, not in each service.
+4. Write a test that would fail on the starter but pass on the corrected source: Delete the generated output on a disposable checkout and run typecheck without generating. The import should fail; then generate and confirm the correct client path is available.
+5. List an additional condition that this lesson cannot prove: Do not commit generated clients from a developer's machine as a substitute for reproducible builds; pin versions and commit an authentic lockfile.
+
+<Misconception claim={"The starter assumes the old package import and instantiates Prisma without the ORM v7 PostgreSQL driver adapter."} correction={"Prisma ORM v7's prisma-client generator writes TypeScript output to a custom directory. The import path is determined by generator.output; runtime construction for PostgreSQL also needs an adapter."} />
+
+<KnowledgeCheck question={"What controls the generated Prisma Client import location?"} choices={["The browser URL","generator.output in schema.prisma","The Postgres username","The route filename"]} correctIndex={1} explanation={"Generate explicitly with npx prisma generate and import PrismaClient from the configured generated location. Instantiate it with PrismaPg in the composition root, not in each service."} misconception={"Do not commit generated clients from a developer's machine as a substitute for reproducible builds; pin versions and commit an authentic lockfile."} lessonId="13.01.03" />
+
+## Further practice
+
+Rebuild the exercise from an empty directory without copying generated artifacts. Pin every Prisma dependency in a real `package-lock.json`, run against a disposable PostgreSQL instance, compare instructor and starter behavior and record exact compiler and SQL errors. A class or object compiling successfully is not proof that a second user's data is inaccessible.
+
+## Official references
+
+- [Prisma ORM 7 — Prisma Client generation](https://www.prisma.io/docs/orm/v7/prisma-client/setup-and-configuration/generating-prisma-client)
+- [Prisma ORM v7 introduction](https://www.prisma.io/docs/orm/v7)

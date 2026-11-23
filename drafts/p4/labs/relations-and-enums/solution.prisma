@@ -1,0 +1,15 @@
+enum TaskState { TODO DONE }
+model User {
+  id Int @id
+  tenantId String
+  tasks Task[]
+  @@unique([tenantId, id])
+}
+model Task {
+  id Int @id
+  tenantId String
+  ownerId Int
+  owner User @relation(fields: [tenantId, ownerId], references: [tenantId, id])
+  state TaskState @default(TODO)
+  @@index([tenantId, ownerId])
+}
