@@ -1,0 +1,20 @@
+{
+  "id": "13.02.03",
+  "title": "Create update delete",
+  "trackId": "13",
+  "moduleId": "13.02",
+  "prerequisites": [
+    "13.02.02"
+  ],
+  "labSlug": "scoped-prisma-writes",
+  "sourceStatus": "draft-unverified",
+  "reviewStatus": "unreviewed",
+  "runtimeQualification": "not-run",
+  "readyToPublish": false,
+  "estimatedMinutes": 65,
+  "officialReferences": [
+    "https://www.prisma.io/docs/orm/v7/prisma-client/queries/crud",
+    "https://www.prisma.io/docs/orm/v7"
+  ],
+  "exerciseFormat": "ts"
+}

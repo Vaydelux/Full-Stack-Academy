@@ -1,0 +1,105 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Cursor pagination seeks after a stable unique key. The page size is bounded and the cursor must belong to the same authorized tenant, not an arbitrary external ID.","Validate cursor ownership in trusted server context, order by a unique key, skip the cursor row, cap page size and project only public fields.","Keyset pagination is not a snapshot: deletions, mutable sort keys and authorization changes can still change what later pages return. Define cursor semantics."]} />
+
+## Real-world problem
+
+**Pagination and ordering.** Cursor pagination seeks after a stable unique key. The page size is bounded and the cursor must belong to the same authorized tenant, not an arbitrary external ID.
+
+**Defect in the first implementation:** Deep offset pages grow expensive and can shift when new rows arrive. createdAt alone is not unique, so ties may reorder results.
+
+The goal of this lesson is a testable database-access invariant, not a clever-looking call to Prisma. A server process may have broader database permissions than the user making the HTTP request. The ORM knows model types but does not necessarily know the caller's tenant membership or object-level permission.
+
+## Prerequisite and mental model
+
+Complete **13.02.04**. Cursor pagination seeks after a stable unique key. The page size is bounded and the cursor must belong to the same authorized tenant, not an arbitrary external ID.
+
+Before changing code, predict which unauthorized row, unexpected field, partial write, duplicate page entry or hidden failure the starter could cause. Prisma ORM v7 examples depend on a generated client, a PostgreSQL driver adapter and a disposable database setup from the previous module. The checked-in snippets are manuscript exercises, not compiled or executed runtime results.
+
+## Guided repair
+
+<LessonStep number={1} title="Observe the unsafe or inefficient query" file="drafts/p4/labs/safe-prisma-cursor/starter.ts" expected="Reproduce the concrete defect before attempting a repair.">
+
+```ts
+return db.task.findMany({
+  where: { tenantId }, take: 20, skip: page * 20,
+  orderBy: { createdAt: "desc" },
+});
+```
+
+**Cause:** Deep offset pages grow expensive and can shift when new rows arrive. createdAt alone is not unique, so ties may reorder results.
+
+Identify whether the primary defect is authorization, returned-field scope, transaction atomicity, cursor stability, error disclosure or needless database round trips. Do not assume these share the same solution.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the constrained repository operation" file="drafts/p4/labs/safe-prisma-cursor/solution.ts" expected="Add an explicit correctness and trust boundary.">
+
+```ts
+const limit = Math.min(Math.max(Number(pageSize) || 20, 1), 50);
+if (afterId != null) {
+  const cursorOwner = await db.task.findFirst({
+    where: { id: afterId, tenantId },
+    select: { id: true },
+  });
+  if (!cursorOwner) throw new Error("Invalid cursor");
+}
+return db.task.findMany({
+  where: { tenantId },
+  orderBy: { id: "asc" },
+  cursor: afterId == null ? undefined : { id: afterId },
+  skip: afterId == null ? 0 : 1,
+  take: limit,
+  select: { id: true, title: true },
+});
+```
+
+**Repair reasoning:** Validate cursor ownership in trusted server context, order by a unique key, skip the cursor row, cap page size and project only public fields.
+
+Any identifier or tenant context in the code sample must be provided by an authenticated server handler. The snippet is an excerpt of a larger module: it should be integrated with the generated Prisma Client type, validated domain input and a database role appropriate for the application's trust boundary.
+
+</LessonStep>
+
+<LessonStep number={3} title="Qualify the real database and negative case" file="drafts/p4/labs/safe-prisma-cursor/acceptance.md" expected="A regression test fails on the starter and passes on the instructor solution.">
+
+**Positive case:** Seed at least two tenants with identical timestamps. Test empty, first, middle, final and invalid cursor pages, with no duplicate or skipped IDs for an unchanged dataset.
+
+**Negative case:** Pass a cursor from beta while requesting alpha: reject it rather than disclosing a cross-tenant position. Reuse a cursor after adding new rows and inspect stability.
+
+**Production boundary:** Keyset pagination is not a snapshot: deletions, mutable sort keys and authorization changes can still change what later pages return. Define cursor semantics.
+
+The source-only checker verifies that the manuscript and SQL/TypeScript exercise files match. It does **not** instantiate Prisma, run a real Postgres transaction, verify a live authorization session or prove query performance.
+
+</LessonStep>
+
+## Architecture and implementation choices
+
+Cursor pagination seeks after a stable unique key. The page size is bounded and the cursor must belong to the same authorized tenant, not an arbitrary external ID.
+
+Validate cursor ownership in trusted server context, order by a unique key, skip the cursor row, cap page size and project only public fields.
+
+Keyset pagination is not a snapshot: deletions, mutable sort keys and authorization changes can still change what later pages return. Define cursor semantics.
+
+A safe persistence layer should accept explicit request-scoped identities, use bounded queries, reject unsupported input, and keep internal query types from becoming public API DTOs. For permission-sensitive mutations, reason about database constraints and application authorization separately: a valid foreign key does not mean the calling actor may update that row.
+
+## Bug Hunt
+
+1. State the starter's observable defect: Deep offset pages grow expensive and can shift when new rows arrive. createdAt alone is not unique, so ties may reorder results.
+2. Produce a positive case that should succeed for an authorized caller.
+3. Produce a negative case that should be rejected: Pass a cursor from beta while requesting alpha: reject it rather than disclosing a cross-tenant position. Reuse a cursor after adding new rows and inspect stability.
+4. Apply the corrected operation and check the real database: Validate cursor ownership in trusted server context, order by a unique key, skip the cursor row, cap page size and project only public fields.
+5. Document a failure mode that still requires independent qualification: Keyset pagination is not a snapshot: deletions, mutable sort keys and authorization changes can still change what later pages return. Define cursor semantics.
+
+<Misconception claim={"Deep offset pages grow expensive and can shift when new rows arrive. createdAt alone is not unique, so ties may reorder results."} correction={"Cursor pagination seeks after a stable unique key. The page size is bounded and the cursor must belong to the same authorized tenant, not an arbitrary external ID."} />
+
+<KnowledgeCheck question={"Why use an ID tie-breaker for paginated ordering?"} choices={["It makes dates private","It creates deterministic total ordering","It makes the client a superuser","It always disables indexes"]} correctIndex={1} explanation={"Validate cursor ownership in trusted server context, order by a unique key, skip the cursor row, cap page size and project only public fields."} misconception={"Keyset pagination is not a snapshot: deletions, mutable sort keys and authorization changes can still change what later pages return. Define cursor semantics."} lessonId="13.02.05" />
+
+## Extend the lab
+
+Design a NestJS route handler that receives a validated DTO and a trusted tenant identity, invokes the repository, and maps database errors without exposing internal state. Test against alpha/beta tenants on an isolated PostgreSQL database. For any claim involving performance or concurrency, use actual query logs or multiple connections rather than relying on a source scan.
+
+## Official references
+
+- [Prisma ORM v7 — Pagination and ordering](https://www.prisma.io/docs/orm/v7/prisma-client/queries/pagination)
+- [Prisma ORM v7 documentation](https://www.prisma.io/docs/orm/v7)

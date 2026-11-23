@@ -1,0 +1,105 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["The interactive $transaction callback runs dependent writes as one database transaction. An error aborts the unit; a conditional decrement protects against a negative balance.","Validate amount, use one transaction callback and tenant filters for both wallets, check affected rows and throw on any missing row so the entire unit rolls back.","A database transaction cannot atomically commit an external message broker or payment provider. Use an outbox and idempotency policy for cross-system work."]} />
+
+## Real-world problem
+
+**Transactions and isolation.** The interactive $transaction callback runs dependent writes as one database transaction. An error aborts the unit; a conditional decrement protects against a negative balance.
+
+**Defect in the first implementation:** A failure after the debit but before the credit leaves the first wallet reduced. It also omits tenant predicates and an insufficient-balance check.
+
+The goal of this lesson is a testable database-access invariant, not a clever-looking call to Prisma. A server process may have broader database permissions than the user making the HTTP request. The ORM knows model types but does not necessarily know the caller's tenant membership or object-level permission.
+
+## Prerequisite and mental model
+
+Complete **13.02.03**. The interactive $transaction callback runs dependent writes as one database transaction. An error aborts the unit; a conditional decrement protects against a negative balance.
+
+Before changing code, predict which unauthorized row, unexpected field, partial write, duplicate page entry or hidden failure the starter could cause. Prisma ORM v7 examples depend on a generated client, a PostgreSQL driver adapter and a disposable database setup from the previous module. The checked-in snippets are manuscript exercises, not compiled or executed runtime results.
+
+## Guided repair
+
+<LessonStep number={1} title="Observe the unsafe or inefficient query" file="drafts/p4/labs/transactional-prisma-transfer/starter.ts" expected="Reproduce the concrete defect before attempting a repair.">
+
+```ts
+await db.wallet.update({ where: { id: fromId }, data: {
+  balance: { decrement: amount },
+}});
+await db.wallet.update({ where: { id: toId }, data: {
+  balance: { increment: amount },
+}});
+```
+
+**Cause:** A failure after the debit but before the credit leaves the first wallet reduced. It also omits tenant predicates and an insufficient-balance check.
+
+Identify whether the primary defect is authorization, returned-field scope, transaction atomicity, cursor stability, error disclosure or needless database round trips. Do not assume these share the same solution.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the constrained repository operation" file="drafts/p4/labs/transactional-prisma-transfer/solution.ts" expected="Add an explicit correctness and trust boundary.">
+
+```ts
+if (!Number.isSafeInteger(amount) || amount <= 0 || fromId === toId)
+  throw new Error("Invalid transfer");
+await db.$transaction(async (tx) => {
+  const from = await tx.wallet.updateMany({
+    where: { id: fromId, tenantId, balance: { gte: amount } },
+    data: { balance: { decrement: amount } },
+  });
+  if (from.count !== 1) throw new Error("Insufficient or missing source");
+  const to = await tx.wallet.updateMany({
+    where: { id: toId, tenantId },
+    data: { balance: { increment: amount } },
+  });
+  if (to.count !== 1) throw new Error("Missing destination");
+});
+```
+
+**Repair reasoning:** Validate amount, use one transaction callback and tenant filters for both wallets, check affected rows and throw on any missing row so the entire unit rolls back.
+
+Any identifier or tenant context in the code sample must be provided by an authenticated server handler. The snippet is an excerpt of a larger module: it should be integrated with the generated Prisma Client type, validated domain input and a database role appropriate for the application's trust boundary.
+
+</LessonStep>
+
+<LessonStep number={3} title="Qualify the real database and negative case" file="drafts/p4/labs/transactional-prisma-transfer/acceptance.md" expected="A regression test fails on the starter and passes on the instructor solution.">
+
+**Positive case:** Run against a local Postgres test database. Verify rollback after failure and a two-client concurrent transfer test with actual transaction isolation settings.
+
+**Negative case:** Try a missing destination and insufficient source balance; assert no debit committed. Repeat overlapping transfers on separate connections before claiming concurrency safety.
+
+**Production boundary:** A database transaction cannot atomically commit an external message broker or payment provider. Use an outbox and idempotency policy for cross-system work.
+
+The source-only checker verifies that the manuscript and SQL/TypeScript exercise files match. It does **not** instantiate Prisma, run a real Postgres transaction, verify a live authorization session or prove query performance.
+
+</LessonStep>
+
+## Architecture and implementation choices
+
+The interactive $transaction callback runs dependent writes as one database transaction. An error aborts the unit; a conditional decrement protects against a negative balance.
+
+Validate amount, use one transaction callback and tenant filters for both wallets, check affected rows and throw on any missing row so the entire unit rolls back.
+
+A database transaction cannot atomically commit an external message broker or payment provider. Use an outbox and idempotency policy for cross-system work.
+
+A safe persistence layer should accept explicit request-scoped identities, use bounded queries, reject unsupported input, and keep internal query types from becoming public API DTOs. For permission-sensitive mutations, reason about database constraints and application authorization separately: a valid foreign key does not mean the calling actor may update that row.
+
+## Bug Hunt
+
+1. State the starter's observable defect: A failure after the debit but before the credit leaves the first wallet reduced. It also omits tenant predicates and an insufficient-balance check.
+2. Produce a positive case that should succeed for an authorized caller.
+3. Produce a negative case that should be rejected: Try a missing destination and insufficient source balance; assert no debit committed. Repeat overlapping transfers on separate connections before claiming concurrency safety.
+4. Apply the corrected operation and check the real database: Validate amount, use one transaction callback and tenant filters for both wallets, check affected rows and throw on any missing row so the entire unit rolls back.
+5. Document a failure mode that still requires independent qualification: A database transaction cannot atomically commit an external message broker or payment provider. Use an outbox and idempotency policy for cross-system work.
+
+<Misconception claim={"A failure after the debit but before the credit leaves the first wallet reduced. It also omits tenant predicates and an insufficient-balance check."} correction={"The interactive $transaction callback runs dependent writes as one database transaction. An error aborts the unit; a conditional decrement protects against a negative balance."} />
+
+<KnowledgeCheck question={"Why must both wallet writes share an interactive transaction?"} choices={["To hide the queries from logs","To roll back the debit when the credit fails","To bypass account authorization","To avoid declaring a schema"]} correctIndex={1} explanation={"Validate amount, use one transaction callback and tenant filters for both wallets, check affected rows and throw on any missing row so the entire unit rolls back."} misconception={"A database transaction cannot atomically commit an external message broker or payment provider. Use an outbox and idempotency policy for cross-system work."} lessonId="13.02.04" />
+
+## Extend the lab
+
+Design a NestJS route handler that receives a validated DTO and a trusted tenant identity, invokes the repository, and maps database errors without exposing internal state. Test against alpha/beta tenants on an isolated PostgreSQL database. For any claim involving performance or concurrency, use actual query logs or multiple connections rather than relying on a source scan.
+
+## Official references
+
+- [Prisma ORM v7 — Transactions and isolation](https://www.prisma.io/docs/orm/v7/prisma-client/queries/transactions)
+- [Prisma ORM v7 documentation](https://www.prisma.io/docs/orm/v7)

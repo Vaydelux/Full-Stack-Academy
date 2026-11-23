@@ -1,0 +1,104 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["A repository API should expose domain-safe methods, not arbitrary privileged query primitives. It accepts server-authenticated tenant context and returns allowlisted DTOs only.","Check the project exists inside the verified tenant, then query a bounded, tenant-scoped task list with public fields and stable ordering.","Tenant isolation is the baseline, not all authorization. Add user-to-project membership rules if not every tenant member may read every project."]} />
+
+## Real-world problem
+
+**Lab repository API.** A repository API should expose domain-safe methods, not arbitrary privileged query primitives. It accepts server-authenticated tenant context and returns allowlisted DTOs only.
+
+**Defect in the first implementation:** The starter lets callers enumerate tasks in any project ID, with unrestricted result fields and no tenant/project authorization boundary.
+
+The goal of this lesson is a testable database-access invariant, not a clever-looking call to Prisma. A server process may have broader database permissions than the user making the HTTP request. The ORM knows model types but does not necessarily know the caller's tenant membership or object-level permission.
+
+## Prerequisite and mental model
+
+Complete **13.02.07**. A repository API should expose domain-safe methods, not arbitrary privileged query primitives. It accepts server-authenticated tenant context and returns allowlisted DTOs only.
+
+Before changing code, predict which unauthorized row, unexpected field, partial write, duplicate page entry or hidden failure the starter could cause. Prisma ORM v7 examples depend on a generated client, a PostgreSQL driver adapter and a disposable database setup from the previous module. The checked-in snippets are manuscript exercises, not compiled or executed runtime results.
+
+## Guided repair
+
+<LessonStep number={1} title="Observe the unsafe or inefficient query" file="drafts/p4/labs/tenant-scoped-repository-lab/starter.ts" expected="Reproduce the concrete defect before attempting a repair.">
+
+```ts
+export async function listProjectTasks(db: PrismaClient, projectId: number) {
+  return db.task.findMany({ where: { projectId } });
+}
+```
+
+**Cause:** The starter lets callers enumerate tasks in any project ID, with unrestricted result fields and no tenant/project authorization boundary.
+
+Identify whether the primary defect is authorization, returned-field scope, transaction atomicity, cursor stability, error disclosure or needless database round trips. Do not assume these share the same solution.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement the constrained repository operation" file="drafts/p4/labs/tenant-scoped-repository-lab/solution.ts" expected="Add an explicit correctness and trust boundary.">
+
+```ts
+export async function listProjectTasks(
+  db: PrismaClient, trustedTenantId: string, projectId: number,
+) {
+  if (!trustedTenantId || !Number.isSafeInteger(projectId))
+    throw new Error("Invalid request context");
+  const project = await db.project.findFirst({
+    where: { id: projectId, tenantId: trustedTenantId },
+    select: { id: true },
+  });
+  if (!project) return [];
+  return db.task.findMany({
+    where: { projectId, tenantId: trustedTenantId },
+    select: { id: true, title: true, status: true },
+    orderBy: { id: "asc" }, take: 100,
+  });
+}
+```
+
+**Repair reasoning:** Check the project exists inside the verified tenant, then query a bounded, tenant-scoped task list with public fields and stable ordering.
+
+Any identifier or tenant context in the code sample must be provided by an authenticated server handler. The snippet is an excerpt of a larger module: it should be integrated with the generated Prisma Client type, validated domain input and a database role appropriate for the application's trust boundary.
+
+</LessonStep>
+
+<LessonStep number={3} title="Qualify the real database and negative case" file="drafts/p4/labs/tenant-scoped-repository-lab/acceptance.md" expected="A regression test fails on the starter and passes on the instructor solution.">
+
+**Positive case:** Run an HTTP-level integration test with authenticated identities, a disposable Prisma 7 + PostgreSQL schema, forbidden/allowed reads and a raw-result secret-leak assertion.
+
+**Negative case:** Use one task and project from each tenant. Ask alpha's service for beta's project and assert an empty or not-found response, without leaking the project title.
+
+**Production boundary:** Tenant isolation is the baseline, not all authorization. Add user-to-project membership rules if not every tenant member may read every project.
+
+The source-only checker verifies that the manuscript and SQL/TypeScript exercise files match. It does **not** instantiate Prisma, run a real Postgres transaction, verify a live authorization session or prove query performance.
+
+</LessonStep>
+
+## Architecture and implementation choices
+
+A repository API should expose domain-safe methods, not arbitrary privileged query primitives. It accepts server-authenticated tenant context and returns allowlisted DTOs only.
+
+Check the project exists inside the verified tenant, then query a bounded, tenant-scoped task list with public fields and stable ordering.
+
+Tenant isolation is the baseline, not all authorization. Add user-to-project membership rules if not every tenant member may read every project.
+
+A safe persistence layer should accept explicit request-scoped identities, use bounded queries, reject unsupported input, and keep internal query types from becoming public API DTOs. For permission-sensitive mutations, reason about database constraints and application authorization separately: a valid foreign key does not mean the calling actor may update that row.
+
+## Bug Hunt
+
+1. State the starter's observable defect: The starter lets callers enumerate tasks in any project ID, with unrestricted result fields and no tenant/project authorization boundary.
+2. Produce a positive case that should succeed for an authorized caller.
+3. Produce a negative case that should be rejected: Use one task and project from each tenant. Ask alpha's service for beta's project and assert an empty or not-found response, without leaking the project title.
+4. Apply the corrected operation and check the real database: Check the project exists inside the verified tenant, then query a bounded, tenant-scoped task list with public fields and stable ordering.
+5. Document a failure mode that still requires independent qualification: Tenant isolation is the baseline, not all authorization. Add user-to-project membership rules if not every tenant member may read every project.
+
+<Misconception claim={"The starter lets callers enumerate tasks in any project ID, with unrestricted result fields and no tenant/project authorization boundary."} correction={"A repository API should expose domain-safe methods, not arbitrary privileged query primitives. It accepts server-authenticated tenant context and returns allowlisted DTOs only."} />
+
+<KnowledgeCheck question={"Which input belongs in a tenant-scoped repository API?"} choices={["A raw client-supplied tenantId alone","A trusted tenant identity extracted from authenticated server context","A globally privileged client exposed to the browser","A public database password"]} correctIndex={1} explanation={"Check the project exists inside the verified tenant, then query a bounded, tenant-scoped task list with public fields and stable ordering."} misconception={"Tenant isolation is the baseline, not all authorization. Add user-to-project membership rules if not every tenant member may read every project."} lessonId="13.02.08" />
+
+## Extend the lab
+
+Design a NestJS route handler that receives a validated DTO and a trusted tenant identity, invokes the repository, and maps database errors without exposing internal state. Test against alpha/beta tenants on an isolated PostgreSQL database. For any claim involving performance or concurrency, use actual query logs or multiple connections rather than relying on a source scan.
+
+## Official references
+
+- [Prisma ORM v7 — Lab repository API](https://www.prisma.io/docs/orm/v7/prisma-client/queries/crud)
+- [Prisma ORM v7 documentation](https://www.prisma.io/docs/orm/v7)

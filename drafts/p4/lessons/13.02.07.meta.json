@@ -1,0 +1,20 @@
+{
+  "id": "13.02.07",
+  "title": "Avoiding N plus one",
+  "trackId": "13",
+  "moduleId": "13.02",
+  "prerequisites": [
+    "13.02.06"
+  ],
+  "labSlug": "batch-prisma-relations",
+  "sourceStatus": "draft-unverified",
+  "reviewStatus": "unreviewed",
+  "runtimeQualification": "not-run",
+  "readyToPublish": false,
+  "estimatedMinutes": 65,
+  "officialReferences": [
+    "https://www.prisma.io/docs/orm/v7/prisma-client/queries/query-optimization-performance",
+    "https://www.prisma.io/docs/orm/v7"
+  ],
+  "exerciseFormat": "ts"
+}

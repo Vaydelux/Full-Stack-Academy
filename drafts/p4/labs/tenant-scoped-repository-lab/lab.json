@@ -1,0 +1,14 @@
+{
+  "id": "draft.p4.tenant-scoped-repository-lab",
+  "lessonId": "13.02.08",
+  "moduleId": "13.02",
+  "sourceStatus": "draft-unverified",
+  "runtimeQualification": "not-run",
+  "readyToPublish": false,
+  "qualificationKind": "manual-prisma-integration",
+  "language": "ts",
+  "starter": "drafts/p4/labs/tenant-scoped-repository-lab/starter.ts",
+  "solution": "drafts/p4/labs/tenant-scoped-repository-lab/solution.ts",
+  "acceptanceDoc": "drafts/p4/labs/tenant-scoped-repository-lab/acceptance.md",
+  "officialReference": "https://www.prisma.io/docs/orm/v7/prisma-client/queries/crud"
+}
