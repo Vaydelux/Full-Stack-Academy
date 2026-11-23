@@ -1,0 +1,16 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {validateTarget,runRls} from './qualify-rls.mjs';
+const sql=readFileSync(new URL('./rls.sql',import.meta.url),'utf8');
+const env={P5_LAB_CONFIRM:'DISPOSABLE_ONLY',P5_LAB_RLS_CONFIRM:'ALLOW_ROLES',P5_LAB_DATABASE_URL:'postgresql://lab@127.0.0.1:5432/p5_lab_security'};
+test('requires two confirmations',()=>{assert.equal(validateTarget({}).ok,false);assert.equal(validateTarget({...env,P5_LAB_RLS_CONFIRM:''}).ok,false)});
+test('rejects a remote database',()=>assert.equal(validateTarget({...env,P5_LAB_DATABASE_URL:'postgresql://lab@db.example.org/p5_lab_security'}).ok,false));
+test('rejects an unsafe database name',()=>assert.equal(validateTarget({...env,P5_LAB_DATABASE_URL:'postgresql://lab@127.0.0.1/production'}).ok,false));
+test('rejects URL query and fragments',()=>{for(const url of [env.P5_LAB_DATABASE_URL+'?host=other',env.P5_LAB_DATABASE_URL+'#fragment'])assert.equal(validateTarget({...env,P5_LAB_DATABASE_URL:url}).ok,false)});
+test('rejects malformed URL and name encoding',()=>{for(const url of ['not-a-url','postgresql://lab@127.0.0.1/p5_lab_%zz'])assert.equal(validateTarget({...env,P5_LAB_DATABASE_URL:url}).ok,false)});
+test('accepts explicit loopback disposable target',()=>assert.equal(validateTarget(env).ok,true));
+test('does not claim DB passing without psql',()=>{assert.equal(runRls({...env,PATH:'/dev/null'}),2)});
+test('contains 14 numbered fail-closed RLS checks',()=>{const found=[...sql.matchAll(/RAISE EXCEPTION 'RLS_(\d\d) /g)].map(x=>x[1]);assert.deepEqual(found,Array.from({length:14},(_,i)=>String(i+1).padStart(2,'0')))});
+test('uses RLS enabled and forced with isolated roles',()=>{assert.equal((sql.match(/ENABLE ROW LEVEL SECURITY/g)||[]).length,2);assert.equal((sql.match(/FORCE ROW LEVEL SECURITY/g)||[]).length,2);assert.equal((sql.match(/NOLOGIN NOSUPERUSER NOBYPASSRLS/g)||[]).length,3);assert.match(sql,/current_user/)});
+test('SQL is transaction-scoped and does not commit',()=>{assert.match(sql,/\bBEGIN;/);assert.match(sql,/\bROLLBACK;/);assert.doesNotMatch(sql,/\bCOMMIT;/);assert.match(sql,/P5_RLS_14_ASSERTIONS_PASSED/)});

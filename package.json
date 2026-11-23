@@ -460,7 +460,11 @@
     "test:release-runtime": "node --test tests/release-runtime.test.mjs",
     "test:p5-security": "node --test examples/p5-security/policy.test.mjs examples/p5-security/http-lab/solution.test.mjs",
     "test:p5-postgresql-source": "node --test examples/p5-security/postgres-lab/guards.test.mjs",
-    "qualify:p5:postgresql": "node examples/p5-security/postgres-lab/qualify.mjs"
+    "qualify:p5:postgresql": "node examples/p5-security/postgres-lab/qualify.mjs",
+    "test:p5-rls-source": "node --test examples/p5-security/rls-lab/guards.test.mjs",
+    "qualify:p5:rls": "node examples/p5-security/rls-lab/qualify-rls.mjs",
+    "test:p5-curriculum-source": "node examples/p5-security/source/audit.mjs && node --test examples/p5-security/source/audit.test.mjs",
+    "test:p5-bundle": "npm run test:p5-security && npm run test:p5-postgresql-source && npm run test:p5-rls-source && npm run test:p5-curriculum-source"
   },
   "dependencies": {
     "clsx": "^2.1.1",
