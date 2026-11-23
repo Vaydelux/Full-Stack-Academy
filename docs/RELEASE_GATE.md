@@ -1,33 +1,34 @@
-# Full-Stack Academy — Release and QA gates (2026-11-18)
+# Full-Stack Academy — Local Release and Publication Qualification
 
-## Current publication truth
+**Current audit: 2026-11-23.** This document supersedes its previous 2026-11-18 baseline text. It is a release contract, not an attestation that the gate has completed.
 
-- **Curriculum plan:** 28 tracks, 111 modules, 889 topic IDs. Only **61** lessons are published, spanning **7 complete modules**. Catalog entries are not authored pages.
-- **Content:** 58 MDX files, four interactive models (one overlapping ID), 58 offline local lab fixtures.
-- **References:** 303 indexed subjects; four authored drafts. Do not confuse index coverage with completed articles.
-- **Runtime:** Next.js App Router, compile-time trusted MDX, sandboxed local JSX teaching environment. No authenticated synced progress or remote arbitrary-code grading.
-- **Progress:** browser-local and self-assessed, not a certificate or tamper-resistant assessment.
+## Verified source-of-truth inventory
 
-## Every candidate must pass
+- **28 tracks, 111 modules and 889 canonical topics.**
+- **338 published unique lesson IDs** (337 published MDX and one distinct interactive publication), **272 unpublished authored drafts**, **279 not yet authored**.
+- Source-only chapters, code labs, local HTTP fixtures and PostgreSQL SQL scripts **are not published lessons** until all of their publication gates pass.
+- `docs/checkpoint.json` records the last verified historical hosted application baseline separately from ongoing unreleased source work.
 
-1. Confirm `main`, open PRs, source-of-truth curriculum IDs and last verified app-release SHA.
-2. Author each canonical lesson with metadata, 3+ guided runnable steps, predictions, self-check and misconception, bug hunt, official HTTPS citations, real local lab starter+solution+tests, an honest rubric.
-3. Register `.mdx` and `.meta.json` in both publication registries; keep planned lessons `noindex`, excluded from sitemap and unavailable for completion claims.
-4. Run `npm ci`, `npm run lint`, `npm run typecheck`, `npm test`, `npm run validate`, `npm run verify:content`, `npm run checkpoint:check`, `npm run test:labs`, `npm run build`, and isolated Chromium smoke on the PR HEAD.
-5. Run `npm run audit:dependencies`: runtime critical/high must fail; scoped temporary dev advisory exception must be reviewed by its expiry date.
-6. Verify exact-head Vercel preview READY and check hosted published routes, robots metadata, sitemap and representative browser behavior. Do not treat a READY build alone as interactive usability certification.
-7. Review diff, security changes, unresolved threads and scoped exceptions; merge only after required gates pass. Confirm main CI, production deployment SHA and live route behavior after merge; update the handoff checkpoint.
+## Mandatory release qualification (offline and Node 24)
 
-## Known residual risks and nonclaims
+1. Checkout the exact candidate Git SHA on a clean local machine with an actual Node 24.x runtime, npm and compatible lockfiles; record the tested commit.
+2. `npm ci`, then `npm run test:release-gate-coverage` and `npm run verify:offline`. The offline runner includes all **16 required P5 source/HTTP/security subchecks** via `npm run test:p5-bundle`, plus prior-phase tests, lint, typecheck, and production build. Any missing script or failed command must stop the gate.
+3. Run real isolated PostgreSQL 17+ opt-in qualification for the SQL labs, and a genuine NestJS/Prisma/Supabase runtime with least-privilege, real authorization and denial cases. A mocked SQL test or an in-memory model does not count as database acceptance.
+4. Validate P1 RHF/TanStack Query and P2–P5 real dependency lock integrity, positive and negative starter behavior, and server-side rendering/hydration.
+5. Run browser smoke against the built app, keyboard navigation, mobile/TV or specified responsive viewports, 200% zoom, and **human screen-reader review**. Automated source assertions do not constitute accessibility signoff.
+6. Audit actual provider-specific webhook signatures, DNS/authenticated transactional email, storage scanning/quarantine, durable outbox/inbox and crash/restart behavior before promoting those topics.
+7. Publish only an entire validated eight-lesson module via an atomic reviewed promotion. Both lesson registries, labs, metadata, index/sitemap, checkpoint and deployed content must reconcile exactly. Separate publication from curriculum planning and learner progress.
 
-- The **14 dev-only Picomatch high findings** are not fixed. The controlled exception expires 2026-12-02 UTC (see `docs/DEPENDENCY_SECURITY_REVIEW.md`).
-- Chromium smoke is not a physical-device manual screen-reader audit nor formal WCAG 2.2 certification.
-- Do not compile untrusted user-submitted MDX or run arbitrary learner code on the trusted Next.js origin. Keep iframe opaque-origin isolation, bounded messages and explicit source/origin checks.
-- Do not claim client-only preview messages reflect persisted submissions or real backend acknowledgments.
-- Keep the reading-first navigation and keyboard behavior; do not replace the MDX reader or alter branding during curriculum milestones.
+## Freeze and security
 
-## Last verified application release
+- `vercel.json` deliberately keeps `git.deploymentEnabled=false`. Do not re-enable, deploy, run Actions or claim a hosted release from a source-only merge.
+- The track-18 webhook teaching protocol signs the exact body, timestamp, provider **and event ID** with an explicitly versioned HMAC envelope. It is **not** a compatible replacement for an external provider's own signature specification. A real adapter must use the vendor's documented algorithm.
+- A local HTTP server with synthetic sessions is not a production identity provider, and in-memory queues cannot guarantee durable delivery or exactly-once external side effects.
+- Review existing dependency-audit exceptions before their recorded expiration. The prior dev advisory exception expires **2026-12-02 UTC** and must not be silently renewed.
+- Do not run deliberately untrusted learner code on the trusted Next origin. Preserve isolated preview execution, private data boundaries, and local-first, free-tier-conscious fixtures.
 
-[PR #12](https://github.com/Vaydelux/Full-Stack-Academy/pull/12) merged Module `01.04`; application release commit `394e6d0f620f4740912b0d50cbcbbf5aecc83e8e`; post-merge [CI 44321173715](https://github.com/Vaydelux/Full-Stack-Academy/actions/runs/44321173715) successful; production deployment `dpl_5CsySTxdf8iRD2zQ1wpL4xcTBstX` READY; hosted published routes and planned noindex/sitemap boundaries verified.
+## Honest current evidence
 
-Read `docs/PROJECT_CHECKPOINT.md` and `docs/NEXT_TODO.md` before starting `02.01 — CSS Fundamentals`.
+The latest P5 webhook and release-matrix implementation passed **81 real Node 22 loopback HTTP tests, 15 focused webhook integrity cases, 20 PostgreSQL runner/source guards and 12 release-matrix mutation tests** (128 total) on an isolated partial checkout. It has **not** executed real PostgreSQL SQL, the complete 889-topic checkout under Node24, full Next build or manual accessibility testing.
+
+The default `verify:offline` command explicitly refuses Node 22; a passing isolated test suite **does not** turn that refusal into a full release pass.

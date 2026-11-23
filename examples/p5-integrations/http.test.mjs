@@ -32,7 +32,7 @@ const intent=async(s,filename='photo.png',contentType='image/png',who='alice')=>
 };
 const upload=async(s,token,body=PNG,who='alice')=>s.send('/uploads',{method:'PUT',who,body,headers:{'content-type':'application/octet-stream','x-lab-upload-token':token}});
 const sign=({provider='provider',eventId='event-1',body=Buffer.from('{"ok":true}'),ts=1_000_000,secret=P}={})=>({
- method:'POST',who:null,body,headers:{'content-type':'application/json','x-lab-provider':provider,'x-lab-event-id':eventId,'x-lab-timestamp':String(ts),'x-lab-signature':signWebhook(secret,body,ts)},originHeader:false
+ method:'POST',who:null,body,headers:{'content-type':'application/json','x-lab-provider':provider,'x-lab-event-id':eventId,'x-lab-timestamp':String(ts),'x-lab-signature':signWebhook(secret,body,ts,provider,eventId)},originHeader:false
 });
 const upsert=(id,title='Morning report',version=1,who='alice',status='visible',body='notes')=>({method:'POST',who,body:{id,title,body,status,version}});
 const email=(key,kind='transactional',template='receipt',payload={amount:5},who='alice')=>({method:'POST',who,body:{key,kind,template,payload}});
@@ -116,3 +116,19 @@ test('signed search cursor is user-scoped within the same tenant',async t=>{cons
 test('upload intent rejects traversal before signing',async t=>{const s=await setup(t);assert.equal((await s.send('/upload-intents',{method:'POST',body:{filename:'../photo.png',contentType:'image/png'}})).status,422);});
 test('upload intent rejects extension and declared MIME mismatch before signing',async t=>{const s=await setup(t);assert.equal((await s.send('/upload-intents',{method:'POST',body:{filename:'picture.pdf',contentType:'image/png'}})).status,422);});
 test('upload intent capacity is bounded on the local instructor fixture',async t=>{const s=await setup(t);for(let i=0;i<128;i++){const x=await s.send('/upload-intents',{method:'POST',body:{filename:'pic'+i+'.png',contentType:'image/png'}});assert.equal(x.status,201);}const refused=await s.send('/upload-intents',{method:'POST',body:{filename:'next.png',contentType:'image/png'}});assert.equal(refused.status,429);});
+
+// The provider and event ID headers are part of the authenticated envelope.
+test('webhook event ID substitution fails after signature',async t=>{
+ const s=await setup(t);const x=sign();x.headers['x-lab-event-id']='replayed-event-2';
+ assert.equal((await s.send('/webhooks',x)).status,401);
+});
+test('webhook provider substitution fails even when two bindings share the key',async t=>{
+ const s=await setup(t);const x=sign();x.headers['x-lab-provider']='another';
+ assert.equal((await s.send('/webhooks',x)).status,401);
+});
+test('webhook header substitution cannot create two receipts for same event',async t=>{
+ const s=await setup(t);assert.equal((await s.send('/webhooks',sign())).status,202);
+ const x=sign();x.headers['x-lab-event-id']='another-id';
+ assert.equal((await s.send('/webhooks',x)).status,401);
+ assert.equal((await s.send('/webhooks',sign())).body.status,'duplicate');
+});

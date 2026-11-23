@@ -13,3 +13,17 @@ For production, bring independent tests for decoding/antivirus, private storage 
 `node --test examples/p5-integrations/http.test.mjs` runs 78 real loopback HTTP cases. No network access outside 127.0.0.1 is needed, no production secrets are consumed, and no actual mail, object storage or scan integration occurs.
 
 `node --test examples/p5-integrations/postgres-search/qualify.test.mjs` runs 20 **offline guard/source** cases. A real PostgreSQL17+ SQL suite with 15 numbered assertions is available **only** through an explicitly confirmed disposable `p5_lab_search_*` loopback database and `npm run qualify:p5:postgres-search` (see docs checkpoint). Source tests are never real SQL proof.
+
+## Authenticated webhook envelope and offline release protection
+
+The synthetic lab's **v2** HMAC contract signs `['p5-webhook-v2', provider, eventId, timestamp, base64(rawBody)]`. Provider and event ID headers cannot be changed after the signature is created, even when two synthetic bindings share the same secret. A reused authenticated delivery ID with different bytes fails closed. Actual external providers use different signature formats: do not reuse this protocol in a production provider adapter.
+
+Run:
+
+```bash
+npm run test:p5-integrations-http
+npm run test:p5-webhook-integrity
+npm run test:release-gate-coverage
+```
+
+The release gate's static matrix audit now rejects skipped P5 coverage. The gate itself still requires a full Node24 checkout and independently verified infrastructure, not just these local source tests.
