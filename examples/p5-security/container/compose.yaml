@@ -44,10 +44,7 @@ services:
         node --version
         node -e "if (!process.version.startsWith('v24.')) process.exit(2)"
         psql --version
-        npm run test:p5-bundle
-        npm run qualify:p5:postgresql
-        npm run qualify:p5:rls
-        npm run qualify:p5:http-db
+        node examples/p5-security/container/evidence.mjs
 networks:
   academy-p5-internal:
     internal: true

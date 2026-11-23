@@ -1,0 +1,17 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {parseEvidenceLog,validateEvidence} from './verify-evidence.mjs';
+import {stages} from './evidence.mjs';
+const commit='f'.repeat(40),now=Date.parse('2026-11-23T10:00:00.000Z');
+const good=()=>({schemaVersion:1,passed:true,commit,nodeVersion:'v24.1.0',postgresServerVersion:170012,databaseType:'disposable-local-postgresql',completedAt:'2026-11-23T09:00:00.000Z',stages:stages.map(x=>({name:x.command,passed:true,exitCode:0,requiredMarker:x.marker,markerPresent:true,logSha256:'a'.repeat(64)}))});
+const encode=obj=>'qualifier-1 | P5_QUALIFICATION_EVIDENCE='+Buffer.from(JSON.stringify(obj)).toString('base64url')+'\n';
+test('decodes single structured record even with Docker Compose prefix',()=>assert.deepEqual(parseEvidenceLog(encode(good())),good()));
+test('accepts matching fresh exact-commit qualification',()=>assert.deepEqual(validateEvidence(good(),commit,{now}),[]));
+test('rejects wrong Git SHA',()=>assert.ok(validateEvidence(good(),'b'.repeat(40),{now}).some(x=>x.includes('SHA'))));
+test('rejects stale or future report',()=>{assert.ok(validateEvidence(good(),commit,{now:now+86400001}).length);const future=good();future.completedAt=new Date(now+120000).toISOString();assert.ok(validateEvidence(future,commit,{now}).length)});
+test('rejects unsupported versions and target',()=>{const bad={...good(),nodeVersion:'v22.16.0',postgresServerVersion:160000,databaseType:'production'};assert.ok(validateEvidence(bad,commit,{now}).length>=3)});
+test('rejects partial success and missing stages',()=>{const partial={...good(),stages:good().stages.slice(0,3)};assert.ok(validateEvidence(partial,commit,{now}).length);assert.ok(validateEvidence({...good(),passed:false},commit,{now}).length)});
+test('rejects absent marker, exit code error and invalid logs',()=>{for(const change of [{markerPresent:false},{exitCode:1},{logSha256:'bad'}]){const obj=good();Object.assign(obj.stages[1],change);assert.ok(validateEvidence(obj,commit,{now}).length)}});
+test('rejects swapped or duplicated stages',()=>{const obj=good();[obj.stages[0],obj.stages[1]]=[obj.stages[1],obj.stages[0]];assert.ok(validateEvidence(obj,commit,{now}).length)});
+test('rejects missing or duplicated evidence records',()=>{assert.throws(()=>parseEvidenceLog('no evidence'));assert.throws(()=>parseEvidenceLog(encode(good())+encode(good())))});
+test('rejects malformed base64 and invalid JSON',()=>assert.throws(()=>parseEvidenceLog('P5_QUALIFICATION_EVIDENCE=bm90LWpzb24')));
