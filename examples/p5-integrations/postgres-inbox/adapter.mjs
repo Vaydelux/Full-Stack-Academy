@@ -65,7 +65,7 @@ export const SQL=Object.freeze({
              WHEN attempts >= $6::integer OR NOT $7::boolean THEN 'dead-letter'
              ELSE 'pending' END,
       next_at=CASE WHEN $5::boolean THEN next_at ELSE
-        clock_timestamp()+(LEAST(60000,1000 * power(2,LEAST(attempts-1,6))) * interval '1 millisecond') END,
+        clock_timestamp()+(LEAST(60000,1000 * power(2,LEAST(attempts-1,6)))::double precision * interval '1 millisecond') END,
       lease_token=NULL,lease_expires_at=NULL,updated_at=clock_timestamp()
   WHERE tenant_id=$1 AND provider=$2 AND event_id=$3
    AND lease_token=$4::uuid AND state='processing'
