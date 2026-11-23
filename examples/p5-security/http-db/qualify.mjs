@@ -32,6 +32,10 @@ try{
  equal((await request('viewer','/documents/alpha-1',{method:'PATCH',body:{title:'Attack'}})).status,404);
  equal((await request('viewer','/documents/alpha-1',{method:'DELETE'})).status,404);
  equal((await request('alice','/documents/alpha-locked',{method:'PATCH',body:{title:'Attack'}})).status,404);
+ equal((await request('suspended','/documents/alpha-1')).status,404);
+ equal((await request('suspended','/upload-intents',{method:'POST',body:{documentId:'alpha-1',contentType:'application/pdf'}})).status,404);
+ equal((await request('alice','/documents/alpha-deleted')).status,404);
+ equal((await request('alice','/upload-intents',{method:'POST',body:{documentId:'alpha-deleted',contentType:'application/pdf'}})).status,404);
  equal((await request('alice','/documents/alpha-locked')).data.title,'Locked');
  equal((await request('alice','/documents/alpha-1',{method:'PATCH',body:{title:"quoted' value"}})).status,200);
  equal((await request('alice','/documents/alpha-1')).data.title,"quoted' value");
@@ -44,9 +48,13 @@ try{
  equal((await request('alice','/upload-intents',{method:'POST',body:{documentId:'../beta-1',contentType:'application/pdf'}})).status,400);
  const expired=app.issue('alice',-10);
  equal((await fetch(base+'/documents/alpha-1',{headers:{cookie:'academy_session='+expired}})).status,401);
+ const logoutToken=app.issue('bob');
+ equal((await fetch(base+'/sessions/logout',{method:'POST',headers:{cookie:'academy_session='+logoutToken,origin:app.origin}})).status,200);
+ equal((await fetch(base+'/documents/beta-1',{headers:{cookie:'academy_session='+logoutToken}})).status,401);
  const live=app.issue('alice');
  equal((await fetch(base+'/documents/alpha-1',{headers:{cookie:'academy_session='+live}})).status,200);
- await repo.action('revoke',{actor:'admin',docId:'alice'});
+ const revoked=await repo.revokeForQualification('alice');
+ equal(revoked.revoked,1);
  equal((await fetch(base+'/documents/alpha-1',{headers:{cookie:'academy_session='+live}})).status,404);
  equal((await request('bob','/documents/beta-1')).data.title,'Beta');
  equal((await request('alice','/documents/alpha-1',{method:'PATCH',body:{title:'Replay'}})).status,404);

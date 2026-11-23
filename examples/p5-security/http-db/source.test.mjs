@@ -14,7 +14,7 @@ test('connection fragment is denied',()=>assert.throws(()=>validateDatabaseTarge
 test('port and credentials are parsed',()=>assert.deepEqual(validateDatabaseTarget(baseEnv),{db:'p5_lab_security',user:'lab',password:'dummy',port:5432}));
 test('psql is invoked without shell and secrets are absent from args',async()=>{
  const calls=[];
- const repo=createRepository(baseEnv,{executor:async(binary,args,options)=>{calls.push({binary,args,options});return {stdout:'{"database":"p5_lab_security","super":false,"bypass":false}\n'};}});
+ const repo=createRepository(baseEnv,{executor:async(binary,args,options)=>{calls.push({binary,args,options});return {stdout:'{"database":"p5_lab_security","serverVersion":170000,"rowSecurity":"on","super":false,"bypass":false}\n'};}});
  assert.deepEqual(await repo.preflight(),{ok:true});
  assert.equal(calls[0].binary,'psql');
  assert.equal(calls[0].options.env.PGHOSTADDR,'127.0.0.1');
@@ -23,7 +23,7 @@ test('psql is invoked without shell and secrets are absent from args',async()=>{
  assert.equal(calls[0].args.some(x=>x.includes('sh -c')),false);
 });
 test('preflight rejects superuser bypass',async()=>{
- const repo=createRepository(baseEnv,{executor:async()=>({stdout:'{"database":"p5_lab_security","super":true,"bypass":false}'})});
+ const repo=createRepository(baseEnv,{executor:async()=>({stdout:'{"database":"p5_lab_security","serverVersion":170000,"rowSecurity":"on","super":true,"bypass":false}'})});
  await assert.rejects(repo.preflight(),/unsafe/);
 });
 test('SQL parameters use fixed -v arguments, not shell interpolation',async()=>{
@@ -48,8 +48,8 @@ test('source SQL forces RLS and scopes via transaction-local trusted actor',()=>
 function fakeRepository(){
  const members={alice:{tenant:'alpha',role:'owner',active:true},bob:{tenant:'beta',role:'owner',active:true},viewer:{tenant:'alpha',role:'viewer',active:true}};
  const docs=new Map([['alpha-1',{id:'alpha-1',tenant:'alpha',title:'Alpha'}],['beta-1',{id:'beta-1',tenant:'beta',title:'Beta'}]]);
- return {members,async action(action,{actor,docId,title}){
-  if(action==='revoke'){members[docId].active=false;return {revoked:true};}
+ return {members,async revokeForQualification(id){members[id].active=false;return {revoked:1};},async action(action,{actor,docId,title}){
+  if(action==='revoke')throw Error('Unknown action');
   const m=members[actor],doc=docs.get(docId);
   if(!m?.active||!doc||m.tenant!==doc.tenant)return null;
   if(action==='read')return {id:doc.id,title:doc.title};
@@ -77,7 +77,7 @@ test('API denies cross-tenant write/delete',()=>withApi(async({request})=>{asser
 test('viewer cannot update',()=>withApi(async({request})=>assert.equal((await request('viewer','/documents/alpha-1',{method:'PATCH',body:{title:'X'}})).status,404)));
 test('same-origin authorized mutation succeeds',()=>withApi(async({request})=>{assert.equal((await request('alice','/documents/alpha-1',{method:'PATCH',body:{title:'New'}})).status,200);assert.equal((await request('alice','/documents/alpha-1')).data.title,'New');}));
 test('cross-origin mutation is refused',()=>withApi(async({request})=>assert.equal((await request('alice','/documents/alpha-1',{method:'PATCH',body:{title:'X'},headers:{origin:'https://evil.example'}})).status,403)));
-test('revoked membership rejects an existing session',()=>withApi(async({repo,app,root})=>{const token=app.issue('alice');const get=()=>fetch(root+'/documents/alpha-1',{headers:{cookie:'academy_session='+token}});assert.equal((await get()).status,200);await repo.action('revoke',{actor:'admin',docId:'alice'});assert.equal((await get()).status,404);}));
+test('revoked membership rejects an existing session',()=>withApi(async({repo,app,root})=>{const token=app.issue('alice');const get=()=>fetch(root+'/documents/alpha-1',{headers:{cookie:'academy_session='+token}});assert.equal((await get()).status,200);await repo.revokeForQualification('alice');assert.equal((await get()).status,404);}));
 test('expired session is rejected',()=>withApi(async({app,root})=>{const token=app.issue('alice',-1);assert.equal((await fetch(root+'/documents/alpha-1',{headers:{cookie:'academy_session='+token}})).status,401);}));
 test('tampered session is rejected',()=>withApi(async({app,root})=>{const token=app.issue('alice');const [p,s]=token.split('.');const altered=p+'.'+(s[0]==='a'?'b':'a')+s.slice(1);assert.equal((await fetch(root+'/documents/alpha-1',{headers:{cookie:'academy_session='+altered}})).status,401);}));
 test('cross-tenant upload intent forbidden',()=>withApi(async({request})=>assert.equal((await request('alice','/upload-intents',{method:'POST',body:{documentId:'beta-1',contentType:'application/pdf'}})).status,404)));

@@ -5,7 +5,7 @@ import {fileURLToPath} from 'node:url';
 import {dirname,join} from 'node:path';
 const exec=promisify(execFile);
 const here=dirname(fileURLToPath(import.meta.url));
-const actions={read:'P5_READ',update:'P5_UPDATE',delete:'P5_DELETE',upload:'P5_UPLOAD',revoke:'P5_REVOKE'};
+const actions={read:'P5_READ',update:'P5_UPDATE',delete:'P5_DELETE',upload:'P5_UPLOAD'};
 const idPattern=/^[a-z0-9-]{1,40}$/;
 const schemaPattern=/^p5h_[a-f0-9]{16}$/;
 
@@ -27,7 +27,7 @@ export function createRepository(env=process.env,{executor=exec}={}) {
   const schema='p5h_'+randomBytes(8).toString('hex');
   const connectionEnv={PATH:env.PATH||'/usr/bin:/bin',PGHOST:'127.0.0.1',PGHOSTADDR:'127.0.0.1',PGPORT:String(target.port),PGDATABASE:target.db,PGUSER:target.user,PGPASSWORD:target.password,PGCONNECT_TIMEOUT:'5',PGSSLMODE:'disable'};
   async function run(file,params={}) {
-    if(!['preflight.sql','setup.sql','query.sql','cleanup.sql'].includes(file))throw Error('Unknown SQL file');
+    if(!['preflight.sql','setup.sql','query.sql','cleanup.sql','revoke.sql'].includes(file))throw Error('Unknown SQL file');
     if(!schemaPattern.test(schema))throw Error('Unsafe schema');
     const args=['-X','-w','-q','-A','-t','-v','ON_ERROR_STOP=1','-v','schema='+schema];
     for(const [key,value] of Object.entries(params)){
@@ -40,8 +40,7 @@ export function createRepository(env=process.env,{executor=exec}={}) {
   }
   async function action(name,{actor='admin',docId='',title=''}={}){
     if(!Object.hasOwn(actions,name)||!idPattern.test(actor))throw Error('Invalid action or actor');
-    if(name!=='revoke'&&!idPattern.test(docId))throw Error('Invalid document ID');
-    if(name==='revoke'&&!idPattern.test(docId))throw Error('Invalid user ID');
+    if(!idPattern.test(docId))throw Error('Invalid document ID');
     if(name==='update'&&(typeof title!=='string'||title.length<1||title.length>120))throw Error('Invalid title');
     const value=await run('query.sql',{actor,doc_id:docId,title,[actions[name]]:'1'});
     try{return JSON.parse(value)}catch{throw Error('Invalid SQL response')}
@@ -49,8 +48,14 @@ export function createRepository(env=process.env,{executor=exec}={}) {
   return {schema,
     async preflight(){
       const result=JSON.parse(await run('preflight.sql'));
-      if(result.database!==target.db||result.super||result.bypass)throw Error('Database identity or RLS-bypass role is unsafe');
+      if(result.database!==target.db||!Number.isInteger(result.serverVersion)||result.serverVersion<170000||result.rowSecurity!=='on'||result.super||result.bypass)throw Error('Database identity or RLS-bypass role is unsafe');
       return {ok:true};
     },
-    setup:()=>run('setup.sql'),cleanup:()=>run('cleanup.sql'),action};
+    setup:()=>run('setup.sql'),cleanup:()=>run('cleanup.sql'),action,
+    async revokeForQualification(userId){
+      // Never expose this fixture-admin method as an HTTP route.
+      if(!idPattern.test(userId))throw Error('Invalid user ID');
+      const value=await run('revoke.sql',{user_id:userId});
+      try{return JSON.parse(value)}catch{throw Error('Invalid revocation response')}
+    }};
 }
