@@ -1,0 +1,69 @@
+---
+id: "17.03.03"
+title: "Collaborative presence"
+module: "17.03"
+status: "draft-unverified"
+readyToPublish: false
+---
+
+# Collaborative presence
+
+> Unpublished instructor manuscript. This topic is not available in the public Academy reader and has not passed Node 24/production browser qualification.
+
+## Learning outcomes
+
+Trace the authenticated actor, tenant boundary, relevant state transition, and failure path. Implement or describe a minimal correction and reproduce a positive case plus a negative case with synthetic data.
+
+## Context
+
+Several collaborators open the same note.
+
+This scenario connects directly to a real full-stack engineering concern: security, consistency, user experience and the cost of retries must be considered together.
+
+## Step 1 — Explain the model
+
+Use scoped heartbeat presence as ephemeral UX metadata, separate from document authorization.
+
+**Design exercise:** Draw the actor → browser/client → API or transport → authoritative store → other clients path. Label which inputs are controlled by callers and which authorization and version decisions must be enforced server-side.
+
+## Step 2 — Find the failure
+
+The system treats an online-dot as permission to edit and never expires idle sessions.
+
+**Adversarial exercise:** Describe the smallest reproducible request or event sequence that exposes this failure. Record what data must remain private, what state must remain durable, and what a reconnecting client is allowed to replay.
+
+## Step 3 — Correct and test
+
+Use scoped heartbeat presence as ephemeral UX metadata, separate from document authorization.
+
+**Acceptance target:** Heartbeat two users, expire their TTL and verify the actual document version remains unchanged.
+
+Run the related dependency-free teaching exercise:
+
+```bash
+node --test examples/p5-realtime/collaboration.test.mjs
+```
+
+The tests exercise local Node state or loopback HTTP behavior. Document separately any real Supabase Realtime, push/email provider or Yjs integration that is still missing.
+
+## Misconception
+
+Presence state is not an access-control list, durable audit trail or proof of identity.
+
+## Knowledge check
+
+1. Which actor, resource, version or event cursor is authoritative in this scenario?
+2. Where must tenant membership or consent be checked rather than trusting the browser?
+3. Which deliberate failure or duplicate event proves the unsafe implementation is wrong?
+4. What would you need to test against a real service before promoting this lesson?
+
+**Instructor rubric:** Require a concrete sequence, the trust boundary, a positive and negative observation, and an explicit statement of which infrastructure has not yet been exercised.
+
+## References
+
+- [Yjs shared types](https://docs.yjs.dev/getting-started/working-with-shared-types)
+- [Yjs awareness](https://docs.yjs.dev/getting-started/adding-awareness)
+
+## Publication conditions
+
+Review this manuscript editorially, verify the example against its authoritative runtime, capture Node 24/full Next.js/browser/accessibility evidence, and respect the existing sequential P1→P5 release gates. Do not add this draft to the published registry.

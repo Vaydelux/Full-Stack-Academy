@@ -1,0 +1,69 @@
+---
+id: "17.02.07"
+title: "Reliable delivery records"
+module: "17.02"
+status: "draft-unverified"
+readyToPublish: false
+---
+
+# Reliable delivery records
+
+> Unpublished instructor manuscript. This topic is not available in the public Academy reader and has not passed Node 24/production browser qualification.
+
+## Learning outcomes
+
+Trace the authenticated actor, tenant boundary, relevant state transition, and failure path. Implement or describe a minimal correction and reproduce a positive case plus a negative case with synthetic data.
+
+## Context
+
+An email provider retries an acknowledged request.
+
+This scenario connects directly to a real full-stack engineering concern: security, consistency, user experience and the cost of retries must be considered together.
+
+## Step 1 — Explain the model
+
+Use a stable event ID per tenant-recipient and distinguish created, queued, attempted, delivered and dead states.
+
+**Design exercise:** Draw the actor → browser/client → API or transport → authoritative store → other clients path. Label which inputs are controlled by callers and which authorization and version decisions must be enforced server-side.
+
+## Step 2 — Find the failure
+
+The app sends the same notification twice because message identity is regenerated on each attempt.
+
+**Adversarial exercise:** Describe the smallest reproducible request or event sequence that exposes this failure. Record what data must remain private, what state must remain durable, and what a reconnecting client is allowed to replay.
+
+## Step 3 — Correct and test
+
+Use a stable event ID per tenant-recipient and distinguish created, queued, attempted, delivered and dead states.
+
+**Acceptance target:** Deliver one in-app event twice and confirm the second request is identified as a duplicate.
+
+Run the related dependency-free teaching exercise:
+
+```bash
+node --test examples/p5-realtime/notifications.test.mjs
+```
+
+The tests exercise local Node state or loopback HTTP behavior. Document separately any real Supabase Realtime, push/email provider or Yjs integration that is still missing.
+
+## Misconception
+
+Local deduplication cannot guarantee exactly-once external delivery after restarts.
+
+## Knowledge check
+
+1. Which actor, resource, version or event cursor is authoritative in this scenario?
+2. Where must tenant membership or consent be checked rather than trusting the browser?
+3. Which deliberate failure or duplicate event proves the unsafe implementation is wrong?
+4. What would you need to test against a real service before promoting this lesson?
+
+**Instructor rubric:** Require a concrete sequence, the trust boundary, a positive and negative observation, and an explicit statement of which infrastructure has not yet been exercised.
+
+## References
+
+- [Supabase Realtime Presence](https://supabase.com/docs/guides/realtime/presence)
+- [Supabase Realtime private channels](https://supabase.com/docs/guides/realtime/authorization)
+
+## Publication conditions
+
+Review this manuscript editorially, verify the example against its authoritative runtime, capture Node 24/full Next.js/browser/accessibility evidence, and respect the existing sequential P1→P5 release gates. Do not add this draft to the published registry.
