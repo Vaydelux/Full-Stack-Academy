@@ -1,0 +1,15 @@
+{
+  "id": "draft.p4.expand-backfill-contract-prisma",
+  "lessonId": "13.03.04",
+  "moduleId": "13.03",
+  "sourceStatus": "draft-unverified",
+  "readyToPublish": false,
+  "runtimeQualification": "not-run",
+  "reviewStatus": "unreviewed",
+  "qualificationKind": "manual-prisma-integration",
+  "language": "sql",
+  "starter": "drafts/p4/labs/expand-backfill-contract-prisma/starter.sql",
+  "solution": "drafts/p4/labs/expand-backfill-contract-prisma/solution.sql",
+  "acceptanceDoc": "drafts/p4/labs/expand-backfill-contract-prisma/acceptance.md",
+  "officialReference": "https://www.postgresql.org/docs/current/ddl-alter.html"
+}

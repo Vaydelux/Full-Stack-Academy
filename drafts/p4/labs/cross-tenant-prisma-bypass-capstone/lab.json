@@ -1,0 +1,15 @@
+{
+  "id": "draft.p4.cross-tenant-prisma-bypass-capstone",
+  "lessonId": "13.04.08",
+  "moduleId": "13.04",
+  "sourceStatus": "draft-unverified",
+  "readyToPublish": false,
+  "runtimeQualification": "not-run",
+  "reviewStatus": "unreviewed",
+  "qualificationKind": "manual-prisma-supabase-integration",
+  "language": "ts",
+  "starter": "drafts/p4/labs/cross-tenant-prisma-bypass-capstone/starter.ts",
+  "solution": "drafts/p4/labs/cross-tenant-prisma-bypass-capstone/solution.ts",
+  "acceptanceDoc": "drafts/p4/labs/cross-tenant-prisma-bypass-capstone/acceptance.md",
+  "officialReference": "https://supabase.com/docs/guides/database/postgres/row-level-security"
+}

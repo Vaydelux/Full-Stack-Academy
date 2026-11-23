@@ -1,31 +1,39 @@
-# P4 Prisma ORM 7 + Supabase — source-only lesson qualification
+# P4 Prisma ORM v7 + Supabase — complete source authoring
 
-This directory contains a **read-only** authoring audit for 40 newly drafted lessons in five canonical modules. It never connects to PostgreSQL, Supabase, Prisma Cloud, Vercel or GitHub Actions.
+**All 64 P4 lesson manuscripts are staged, none published.** They span the following eight canonical eight-topic modules: 13.01 Prisma Setup, 13.02 Reading & Writing Data, 13.03 Advanced Persistence, 13.04 Supabase Integration, 14.01 Supabase Architecture, 14.02 Auth & Identity, 14.03 RLS & Authorization, and 14.04 Storage & Realtime.
+
+Every lesson contains a red/broken starter file, matching green/instructor file, an `acceptance.md` specifying a positive and negative runtime test, JSON metadata, an official source reference, and a guided MDX tutorial. A missing, mismatched, prematurely published, or unqualified source must fail the read-only verifier.
+
+## Source and independent, executable tests
 
 ```sh
 npm run test:p4-source
+npm run test:p4-upload-intent
 npm run status:p4
+npm run test:publication-phases
+npm run test:course-roadmap
 ```
 
-The audit requires eight correct canonical IDs per module, exact MDX-to-starter/solution parity for TypeScript, Prisma schema language, SQL and shell blocks, correct prerequisites, official references, explicit manual acceptance criteria, and all draft-only statuses. It fails closed if a lesson is marked as published or its source diverges.
+The source test checks canonical IDs, titles, prerequisites, mixed-language fence/source parity, complete teaching blocks, manual evidence status and 64 total drafts. It does **not** execute ORM, Supabase or Next.
 
-## Why real integration is deliberately separate
+The independent upload-intent regression suite imports `examples/p4-foundations/tests/upload-intent.mjs` and runs eight actual Node tests. It deliberately rejects forged ownership/path fields, traversal, malformed UUIDs, unsupported MIME/size, unauthorized actors and cross-user path collisions. **The function accepts only an actor supplied by already verified server Auth and does not validate JWTs or uploaded bytes.** It cannot be presented as a real signed URL, bucket RLS or malware-scanning qualification.
 
-The `starter` files deliberately demonstrate mistakes (unscoped tenant reads, secret-key exposure, permissive RLS, unsafe redirects, missing migration guards). Do **not** run them on real customers’ accounts or schemas.
+## Real integration qualification — pending
 
-For Prisma 7:
-- Use an isolated workspace with **pinned** `prisma`, `@prisma/client`, `@prisma/adapter-pg` and the PostgreSQL driver, plus an authentic lockfile.
-- Confirm generated Client output and config names against the installed Prisma 7 CLI. Prisma 7.10+ project templates may use `prisma7.config.ts`; do not assume latest Prisma 8 commands are compatible.
-- Run validation/generation, review migrations, test CRUD and rollbacks using a dedicated PostgreSQL test database.
-- Enforce authorization in server code even when the connected database role bypasses RLS.
+### Prisma (13.01–13.04)
 
-For Supabase:
-- Use `supabase --help` and the current local-development docs before starting the Docker stack.
-- Never use a live project or `service_role`/secret key for client lesson execution.
-- Check Data API grants *and* RLS. Test actual Auth/JWT-backed sessions and two users. A successful administrator query does not qualify an RLS policy.
-- Auth flows require real token verification, email callbacks, SSR refresh and MFA error-path testing. RLS changes require pgTAP/SQL policy tests and actual Supabase Data API requests.
-- Do not deploy or promise a hosted interactive lab until the tests and accessibility review pass.
+Use a clean Node24 checkout and installed Prisma ORM v7 packages with a genuine lockfile, `PrismaPg` adapter and disposable PostgreSQL 17+ database. Execute schema validation/generation, inspect migration SQL, test actual transactions and connection-pool behavior, log redaction, query plans and tenant-restricted repository calls. Run negative BOLA tests under two test tenants and ensure migrations run with a separately reviewed direct connection. Never use production data or `NEXT_PUBLIC_DATABASE_URL`.
 
-**Release fact:** 40 P4 manuscripts are authored, but `readyToPublish=false`, `runtimeQualification=not-run`. The live academy count remains 338/889.
+### Supabase (14.01–14.04)
 
-Further detail: `docs/ACADEMY_P4_PROGRESS_CHECKPOINT_20261123.md`.
+Use an isolated local Supabase stack with Docker and two synthetic Auth users. Never run example red starters on customer resources. Run Data API grants **and** RLS allow/deny tests (SELECT and, where applicable, INSERT/UPDATE with `WITH CHECK`), verify service-role behavior separately, and test SSR cookie refresh, OAuth redirects, TOTP verification and logout. Test private Storage access, signed URL expiry, file type/size restrictions and independently verified bytes, Realtime join/send policies, Postgres Changes events, and idempotent webhook processing with an explicitly configured signature gateway.
+
+Cross-system DB/Storage workflows require durable PENDING/READY states, idempotency, retries and cleanup. Neither an SDK success response nor source parity establishes this end-to-end correctness.
+
+### Full academy release
+
+Run the full Node24 `npm ci` and Next production build, browser/mobile/keyboard smoke tests, 200% zoom, reduced-motion and a named human screen-reader review. Keep the P1→P2→P3→P4 qualification/promotion order. Lesson promotion must be explicit and atomic after the actual checks pass. **Never bump published progress just because manuscripts are merged.**
+
+## Status handoff
+
+The snapshot and detailed evidence are in `docs/ACADEMY_P4_COMPLETION_CHECKPOINT_20261123.md`. The source-derived roadmap at `/learn/roadmap` reads the 64 new staged IDs from `drafts/p4/lessons`; the personal `/learn/dashboard` remains untouched. `vercel.json` continues to disable Git deployments and GitHub workflows remain manual-only.

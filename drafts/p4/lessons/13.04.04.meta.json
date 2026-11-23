@@ -1,0 +1,19 @@
+{
+  "id": "13.04.04",
+  "title": "Service database roles",
+  "trackId": "13",
+  "moduleId": "13.04",
+  "labSlug": "restricted-database-role",
+  "prerequisites": [
+    "13.04.03"
+  ],
+  "sourceStatus": "draft-unverified",
+  "readyToPublish": false,
+  "runtimeQualification": "not-run",
+  "reviewStatus": "unreviewed",
+  "estimatedMinutes": 70,
+  "officialReferences": [
+    "https://www.postgresql.org/docs/current/user-manag.html"
+  ],
+  "exerciseFormat": "sql"
+}

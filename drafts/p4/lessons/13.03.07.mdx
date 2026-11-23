@@ -1,0 +1,110 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["A repository boundary narrows a large ORM API into domain-specific operations and makes trusted request context a required argument.","Export only allowlisted operations and public DTOs. Require trusted tenant context and enforce the query's tenant predicate inside the repository implementation.","TypeScript interfaces are erased at runtime. The HTTP handler must verify identity/permission and protect actual database credentials; a caller may still forge a structural object if the boundary is misplaced."]} />
+
+## Architectural challenge
+
+**Typed repository interfaces.** A repository boundary narrows a large ORM API into domain-specific operations and makes trusted request context a required argument.
+
+**Reproducible failure:** A general repository exports the privileged PrismaClient and lets controllers pass raw where filters, so tenant checks are easy to forget.
+
+When a service evolves from a single-developer prototype into an API used by several organizations, an apparently valid query may introduce security gaps, schema drift, or operational load. Before looking at the corrected code, describe the invariant and the actor or environment whose behavior violates it.
+
+## Prerequisite and mental model
+
+Complete **13.03.06**. A repository boundary narrows a large ORM API into domain-specific operations and makes trusted request context a required argument.
+
+This is a **draft, not a published or framework-qualified lab**. The snippets illustrate one isolated boundary. In an actual application, Prisma Client must be generated using the selected version-pinned Prisma ORM v7 toolchain and PostgreSQL driver adapter. Connection handling and table ownership must match the application's database role.
+
+**Predict the defect:** A general repository exports the privileged PrismaClient and lets controllers pass raw where filters, so tenant checks are easy to forget.
+
+## Three-stage laboratory
+
+<LessonStep number={1} title="Observe the broken persistence behavior" file="drafts/p4/labs/typed-tenant-repository-contract/starter.ts" expected="Identify the specific database, authorization or deployment invariant that the starter violates.">
+
+```ts
+// Any controller can perform unscoped reads.
+export function tasksRepo(db: PrismaClient) {
+  return db.task;
+}
+```
+
+**Why it fails:** A general repository exports the privileged PrismaClient and lets controllers pass raw where filters, so tenant checks are easy to forget.
+
+Record the real failure on a disposable environment rather than asserting that code inspection constitutes a runtime test.
+
+</LessonStep>
+
+<LessonStep number={2} title="Apply the narrow corrected boundary" file="drafts/p4/labs/typed-tenant-repository-contract/solution.ts" expected="The data and deployment invariant is explicitly enforced or observable.">
+
+```ts
+type TenantContext = Readonly<{ verifiedTenantId: string }>;
+type TaskDTO = Readonly<{ id: number; title: string }>;
+interface TaskReader {
+  list(ctx: TenantContext): Promise<TaskDTO[]>;
+}
+function createTaskReader(db: PrismaClient): TaskReader {
+  return {
+    async list({ verifiedTenantId }) {
+      if (!verifiedTenantId) throw new Error("Unauthorized tenant");
+      return db.task.findMany({
+        where: { tenantId: verifiedTenantId },
+        select: { id: true, title: true }, take: 50,
+        orderBy: { id: "asc" },
+      });
+    },
+  };
+}
+```
+
+**Why it is safer:** Export only allowlisted operations and public DTOs. Require trusted tenant context and enforce the query's tenant predicate inside the repository implementation.
+
+Do not assume a successful CLI or TypeScript compile proves that the caller was authorized. Generated types protect shapes, not per-request permissions. Similarly, a DB transaction cannot roll back independent external side effects.
+
+</LessonStep>
+
+<LessonStep number={3} title="Prove real positive and negative cases" file="drafts/p4/labs/typed-tenant-repository-contract/acceptance.md" expected="Record one allowed and one denied/error outcome with exact runtime and versions.">
+
+**Expected positive case:** Typecheck against generated Prisma ORM 7 client, unit-test context validation and run a two-tenant Postgres integration test through the service.
+
+**Required negative case:** Attempt to call a read without tenant context and inspect that the service fails closed; seed beta data and prove alpha's repository cannot return it.
+
+**What remains unverified:** TypeScript interfaces are erased at runtime. The HTTP handler must verify identity/permission and protect actual database credentials; a caller may still forge a structural object if the boundary is misplaced.
+
+The acceptance checklist is deliberately not marked complete: it needs a real Prisma ORM v7 generated client, a disposable PostgreSQL database and independently observed results.
+
+</LessonStep>
+
+## Design trade-offs and real-world constraints
+
+A repository boundary narrows a large ORM API into domain-specific operations and makes trusted request context a required argument.
+
+Export only allowlisted operations and public DTOs. Require trusted tenant context and enforce the query's tenant predicate inside the repository implementation.
+
+TypeScript interfaces are erased at runtime. The HTTP handler must verify identity/permission and protect actual database credentials; a caller may still forge a structural object if the boundary is misplaced.
+
+In a multi-tenant API, input validation, role-aware database credentials, optimistic concurrency, migration review and response-shape controls must be considered together. Favor bounded queries and explicit domain operations over returning raw privileged ORM interfaces to HTTP handlers. Record the query plan or migration state instead of guessing.
+
+## Bug Hunt
+
+1. Make a concrete failure prediction: A general repository exports the privileged PrismaClient and lets controllers pass raw where filters, so tenant checks are easy to forget.
+2. Write the regression assertion before implementing the fix.
+3. Apply the instructor change: Export only allowlisted operations and public DTOs. Require trusted tenant context and enforce the query's tenant predicate inside the repository implementation.
+4. Attempt the forbidden operation: Attempt to call a read without tenant context and inspect that the service fails closed; seed beta data and prove alpha's repository cannot return it.
+5. Explain the residual operational limitation: TypeScript interfaces are erased at runtime. The HTTP handler must verify identity/permission and protect actual database credentials; a caller may still forge a structural object if the boundary is misplaced.
+
+<Misconception claim={"A general repository exports the privileged PrismaClient and lets controllers pass raw where filters, so tenant checks are easy to forget."} correction={"A repository boundary narrows a large ORM API into domain-specific operations and makes trusted request context a required argument."} />
+
+<KnowledgeCheck question={"What is the primary advantage of a narrow repository interface?"} choices={["It removes the need for Auth","It prevents exposing arbitrary privileged query operations to controllers","It automatically configures RLS","It builds SQL migrations"]} correctIndex={1} explanation={"Export only allowlisted operations and public DTOs. Require trusted tenant context and enforce the query's tenant predicate inside the repository implementation."} misconception={"TypeScript interfaces are erased at runtime. The HTTP handler must verify identity/permission and protect actual database credentials; a caller may still forge a structural object if the boundary is misplaced."} lessonId="13.03.07" />
+
+## Extended practice
+
+Apply the lesson to a hypothetical inventory ERP API. Include the verified tenant and allowed product scope in the service boundary, measure actual database behavior where relevant, and specify what belongs in the migration history versus the runtime repository. Add tests proving that attempts from a second tenant do not change or disclose data.
+
+All code here is **source-authored but not runtime-qualified**. A real database and human review remain mandatory before lesson publication.
+
+## Official references
+
+- [Official reference — Typed repository interfaces](https://www.prisma.io/docs/orm/v7/prisma-client/queries/crud)
+- [Prisma ORM v7 documentation](https://www.prisma.io/docs/orm/v7)

@@ -1,0 +1,19 @@
+{
+  "id": "13.03.03",
+  "title": "Prisma migration histories",
+  "trackId": "13",
+  "moduleId": "13.03",
+  "labSlug": "reviewed-migration-histories",
+  "prerequisites": [
+    "13.03.02"
+  ],
+  "sourceStatus": "draft-unverified",
+  "readyToPublish": false,
+  "runtimeQualification": "not-run",
+  "reviewStatus": "unreviewed",
+  "estimatedMinutes": 70,
+  "officialReferences": [
+    "https://www.prisma.io/docs/orm/v7/prisma-migrate/workflows/development-and-production"
+  ],
+  "exerciseFormat": "bash"
+}

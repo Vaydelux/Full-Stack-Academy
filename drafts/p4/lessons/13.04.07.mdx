@@ -1,0 +1,98 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["A comprehensive isolation test asserts authorized reads and explicit denials across the Supabase Data API, the NestJS/Prisma service path and storage/realtime where used.","Use two independently authenticated synthetic users, known cross-tenant IDs, forbidden mutations and a privileged-server route test. Compare database state after each request.","A mocked JWT is not equivalent to Supabase Auth. Run the final matrix against a disposable local Supabase stack and a real Prisma adapter in the actual application stack."]} />
+
+## Integration defect
+
+**Testing isolation.** A comprehensive isolation test asserts authorized reads and explicit denials across the Supabase Data API, the NestJS/Prisma service path and storage/realtime where used.
+
+**What fails in an actual application:** A positive-only test passes even when alpha can enumerate beta's records, because it never probes forbidden operations.
+
+A full-stack application can use both a Supabase client and a direct Prisma ORM 7 PostgreSQL adapter. These access paths do not automatically share the same user authorization context. The browser may have a valid JWT while a server's database role can read far more than that JWT would authorize.
+
+## Model the trust boundary
+
+Complete **13.04.06**. A comprehensive isolation test asserts authorized reads and explicit denials across the Supabase Data API, the NestJS/Prisma service path and storage/realtime where used.
+
+Decide which component authenticates the caller, which verifies tenant or resource membership, which PostgreSQL role executes the query, and which schema is exposed via the Data API. Write a failure assertion before changing the code. The examples use synthetic actors and isolated databases only.
+
+This is an **unpublished, unverified draft**. Do not copy the intentionally broken starter into an application.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the unsafe integration" file="drafts/p4/labs/two-user-isolation-matrix/starter.ts" expected="Explain the exact scope, role, or migration boundary that fails.">
+
+```ts
+// One successful user is not sufficient evidence.
+const tasks = await apiAsAlpha.listTasks();
+expect(tasks.length).toBeGreaterThan(0);
+```
+
+**Defect:** A positive-only test passes even when alpha can enumerate beta's records, because it never probes forbidden operations.
+
+Observe the failure in a disposable test environment. A SQL statement executing successfully does not prove it was authorized.
+
+</LessonStep>
+
+<LessonStep number={2} title="Enforce the correct boundary" file="drafts/p4/labs/two-user-isolation-matrix/solution.ts" expected="Tenant or environment decisions come from verified server context.">
+
+```ts
+// Two real test users and a separate privileged code path.
+const own = await apiAsAlpha.listTasks();
+const other = await apiAsAlpha.getTask(betaTaskId);
+expect(own.every(t => t.tenantId === alphaTenantId)).toBe(true);
+expect(other.status).toBe(404);
+const serviceRead = await privilegedTestApi.getTaskAs(alphaActor, betaTaskId);
+expect(serviceRead.status).toBe(404);
+```
+
+**Repair:** Use two independently authenticated synthetic users, known cross-tenant IDs, forbidden mutations and a privileged-server route test. Compare database state after each request.
+
+This is a teaching excerpt; configure generated types, verified request guards, safe error mapping, and actual database credentials separately.
+
+</LessonStep>
+
+<LessonStep number={3} title="Run cross-boundary allowed and denied tests" file="drafts/p4/labs/two-user-isolation-matrix/acceptance.md" expected="Record actual test identities, results and the denial evidence.">
+
+**Allowed scenario:** Verify all permitted single-tenant CRUD requests still succeed and produce bounded safe response objects.
+
+**Denied scenario:** Attempt forbidden SELECT, INSERT tenant reassignment, UPDATE ownership change and DELETE; assert access denied and unchanged rows.
+
+**Unresolved risks:** A mocked JWT is not equivalent to Supabase Auth. Run the final matrix against a disposable local Supabase stack and a real Prisma adapter in the actual application stack.
+
+A code-fence source match is not a PostgreSQL authorization evaluation, and a service-role query does not simulate an ordinary user.
+
+</LessonStep>
+
+## API, RLS and migration trade-offs
+
+A comprehensive isolation test asserts authorized reads and explicit denials across the Supabase Data API, the NestJS/Prisma service path and storage/realtime where used.
+
+Use two independently authenticated synthetic users, known cross-tenant IDs, forbidden mutations and a privileged-server route test. Compare database state after each request.
+
+A mocked JWT is not equivalent to Supabase Auth. Run the final matrix against a disposable local Supabase stack and a real Prisma adapter in the actual application stack.
+
+Explicitly choose how identity is propagated between Next.js, NestJS, Prisma, and Supabase. When a privileged server role bypasses RLS, the NestJS service must check permissions and the database role should still be restricted. Prefer verified membership from trusted server data over user-editable metadata or query parameters.
+
+## Bug Hunt
+
+1. Predict who can exploit this bug: A positive-only test passes even when alpha can enumerate beta's records, because it never probes forbidden operations.
+2. Verify an allowed positive action.
+3. Attempt the denied action using a separate identity: Attempt forbidden SELECT, INSERT tenant reassignment, UPDATE ownership change and DELETE; assert access denied and unchanged rows.
+4. Apply the repair and observe the resulting database state: Use two independently authenticated synthetic users, known cross-tenant IDs, forbidden mutations and a privileged-server route test. Compare database state after each request.
+5. Identify a remaining operational risk: A mocked JWT is not equivalent to Supabase Auth. Run the final matrix against a disposable local Supabase stack and a real Prisma adapter in the actual application stack.
+
+<Misconception claim={"A positive-only test passes even when alpha can enumerate beta's records, because it never probes forbidden operations."} correction={"A comprehensive isolation test asserts authorized reads and explicit denials across the Supabase Data API, the NestJS/Prisma service path and storage/realtime where used."} />
+<KnowledgeCheck question={"Which test catches broken tenant isolation?"} choices={["Only a positive alpha query","A known beta ID denied to alpha across both Data API and Prisma routes","An HTML screenshot","A migration file with no test"]} correctIndex={1} explanation={"Use two independently authenticated synthetic users, known cross-tenant IDs, forbidden mutations and a privileged-server route test. Compare database state after each request."} misconception={"A mocked JWT is not equivalent to Supabase Auth. Run the final matrix against a disposable local Supabase stack and a real Prisma adapter in the actual application stack."} lessonId="13.04.07" />
+
+## Extend the ERP laboratory
+
+Create synthetic organizations alpha and beta with overlapping IDs, a membership table and private documents. Run requests through both Supabase's Data API and a Prisma-backed NestJS endpoint. Verify permitted rows, denied rows, mutation effects and clean database recreation from migrations. Record whether your test uses a JWT-backed user or a privileged SQL role; those results are not interchangeable.
+
+**Publication rule:** Source authorship never qualifies security-critical runtime behavior. Require real local Supabase Auth and Prisma integration, Node24 build, browser checks and human review first.
+
+## Official references
+
+- [Official guide — Testing isolation](https://supabase.com/docs/guides/database/postgres/row-level-security)
+- [Supabase Data API security](https://supabase.com/docs/guides/api/securing-your-api)

@@ -1,0 +1,16 @@
+{
+  "id": "draft.p4.bucket-visibility-boundary",
+  "lessonId": "14.04.01",
+  "moduleId": "14.04",
+  "sourceStatus": "draft-unverified",
+  "readyToPublish": false,
+  "runtimeQualification": "not-run",
+  "reviewStatus": "unreviewed",
+  "qualificationKind": "manual-storage-realtime-integration",
+  "language": "ts",
+  "starter": "drafts/p4/labs/bucket-visibility-boundary/starter.ts",
+  "solution": "drafts/p4/labs/bucket-visibility-boundary/solution.ts",
+  "acceptanceDoc": "drafts/p4/labs/bucket-visibility-boundary/acceptance.md",
+  "officialReference": "https://supabase.com/docs/guides/storage/buckets/fundamentals",
+  "requiresTwoAuthenticatedUsers": true
+}

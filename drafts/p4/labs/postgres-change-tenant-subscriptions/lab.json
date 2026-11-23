@@ -1,0 +1,16 @@
+{
+  "id": "draft.p4.postgres-change-tenant-subscriptions",
+  "lessonId": "14.04.05",
+  "moduleId": "14.04",
+  "sourceStatus": "draft-unverified",
+  "readyToPublish": false,
+  "runtimeQualification": "not-run",
+  "reviewStatus": "unreviewed",
+  "qualificationKind": "manual-storage-realtime-integration",
+  "language": "ts",
+  "starter": "drafts/p4/labs/postgres-change-tenant-subscriptions/starter.ts",
+  "solution": "drafts/p4/labs/postgres-change-tenant-subscriptions/solution.ts",
+  "acceptanceDoc": "drafts/p4/labs/postgres-change-tenant-subscriptions/acceptance.md",
+  "officialReference": "https://supabase.com/docs/guides/realtime/postgres-changes",
+  "requiresTwoAuthenticatedUsers": true
+}

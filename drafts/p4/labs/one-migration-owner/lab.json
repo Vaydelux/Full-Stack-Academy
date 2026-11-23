@@ -1,0 +1,15 @@
+{
+  "id": "draft.p4.one-migration-owner",
+  "lessonId": "13.04.06",
+  "moduleId": "13.04",
+  "sourceStatus": "draft-unverified",
+  "readyToPublish": false,
+  "runtimeQualification": "not-run",
+  "reviewStatus": "unreviewed",
+  "qualificationKind": "manual-prisma-supabase-integration",
+  "language": "bash",
+  "starter": "drafts/p4/labs/one-migration-owner/starter.sh",
+  "solution": "drafts/p4/labs/one-migration-owner/solution.sh",
+  "acceptanceDoc": "drafts/p4/labs/one-migration-owner/acceptance.md",
+  "officialReference": "https://supabase.com/docs/guides/local-development/database-migrations"
+}

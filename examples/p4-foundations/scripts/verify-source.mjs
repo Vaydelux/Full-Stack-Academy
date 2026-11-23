@@ -9,7 +9,10 @@ const modules=[
  {id:'13.02',folder:'p4-prisma-data',previous:'13.01.08',kind:'manual-prisma-integration'},
  {id:'14.01',folder:'p4-supabase-architecture',previous:'12.05.08',kind:'manual-supabase-local'},
  {id:'14.02',folder:'p4-supabase-auth',previous:'14.01.08',kind:'manual-supabase-auth'},
+ {id:'13.03',folder:'p4-prisma-advanced',previous:'13.02.08',kind:'manual-prisma-integration'},
+ {id:'13.04',folder:'p4-prisma-supabase-integration',previous:'13.03.08',kind:'manual-prisma-supabase-integration'},
  {id:'14.03',folder:'p4-supabase-rls',previous:'14.02.08',kind:'manual-rls-positive-negative'},
+ {id:'14.04',folder:'p4-supabase-storage-realtime',previous:'14.03.08',kind:'manual-storage-realtime-integration'},
 ];
 const read=p=>fs.readFileSync(path.join(root,p),'utf8').replaceAll('\r\n','\n');
 const json=p=>JSON.parse(read(p));
@@ -96,8 +99,8 @@ export function inspectP4Manuscripts(){
     if(acceptance.length<300||!/(not executed|not run|not-yet-executed)/i.test(acceptance)||
        !/(negative|denied|forbidden|unsafe)/i.test(acceptance))
      problem(id,'Missing explicit negative/manual runtime evidence gate');
-    if(mod.id==='14.03'&&lab.requiresTwoAuthenticatedUsers!==true)
-     problem(id,'RLS demo must require two authenticated test users');
+    if(['14.03','14.04'].includes(mod.id)&&lab.requiresTwoAuthenticatedUsers!==true)
+     problem(id,'RLS/Storage demo must require two authenticated test users');
     if(/<LabGate\b|<script\b|dangerouslySetInnerHTML/i.test(article)||
        exists('src/content/lessons/'+id+'.mdx')||
        exists('src/content/lessons/'+id+'.meta.json'))
@@ -106,7 +109,7 @@ export function inspectP4Manuscripts(){
    }catch(error){problem(id,error.message);}
   }
  }
- if(records.length!==40||usedSlugs.size!==40)problem('all','Expected exactly 40 distinct P4 lesson manuscripts');
+ if(records.length!==64||usedSlugs.size!==64)problem('all','Expected exactly 64 distinct P4 lesson manuscripts');
  if(checkpoint.publishedLessons!==338)problem('checkpoint','Live published count changed unexpectedly');
  const moduleCounts=modules.map(m=>({moduleId:m.id,drafted:records.filter(r=>r.moduleId===m.id).length}));
  return {status:issues.length?'source-invalid':'source-authored-unverified',

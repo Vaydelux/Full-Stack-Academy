@@ -1,0 +1,19 @@
+{
+  "id": "14.04.02",
+  "title": "Signed upload URLs",
+  "trackId": "14",
+  "moduleId": "14.04",
+  "labSlug": "safe-signed-upload-authorization",
+  "prerequisites": [
+    "14.04.01"
+  ],
+  "sourceStatus": "draft-unverified",
+  "readyToPublish": false,
+  "runtimeQualification": "not-run",
+  "reviewStatus": "unreviewed",
+  "estimatedMinutes": 70,
+  "officialReferences": [
+    "https://supabase.com/docs/reference/javascript/storage-from-createsigneduploadurl"
+  ],
+  "exerciseFormat": "ts"
+}

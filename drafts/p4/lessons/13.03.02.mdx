@@ -1,0 +1,104 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Prisma ORM v7 relies on the underlying database driver adapter for connection pooling. A pool should be constructed at a well-defined process lifecycle with limits derived from total replicas.","Move construction into a server-only composition root, set a bounded adapter pool and budget combined server-instance usage and reserved administration connections.","This pool max is illustrative, not a universally safe production value. PgBouncer transaction pooling can change session assumptions; verify prepared statements and TLS with the selected pooler."]} />
+
+## Architectural challenge
+
+**Connection pooling.** Prisma ORM v7 relies on the underlying database driver adapter for connection pooling. A pool should be constructed at a well-defined process lifecycle with limits derived from total replicas.
+
+**Reproducible failure:** A route handler creates a new PrismaPg pool and PrismaClient per request. With multiple server instances, those connections can exhaust the PostgreSQL limit.
+
+When a service evolves from a single-developer prototype into an API used by several organizations, an apparently valid query may introduce security gaps, schema drift, or operational load. Before looking at the corrected code, describe the invariant and the actor or environment whose behavior violates it.
+
+## Prerequisite and mental model
+
+Complete **13.03.01**. Prisma ORM v7 relies on the underlying database driver adapter for connection pooling. A pool should be constructed at a well-defined process lifecycle with limits derived from total replicas.
+
+This is a **draft, not a published or framework-qualified lab**. The snippets illustrate one isolated boundary. In an actual application, Prisma Client must be generated using the selected version-pinned Prisma ORM v7 toolchain and PostgreSQL driver adapter. Connection handling and table ownership must match the application's database role.
+
+**Predict the defect:** A route handler creates a new PrismaPg pool and PrismaClient per request. With multiple server instances, those connections can exhaust the PostgreSQL limit.
+
+## Three-stage laboratory
+
+<LessonStep number={1} title="Observe the broken persistence behavior" file="drafts/p4/labs/bounded-adapter-pool/starter.ts" expected="Identify the specific database, authorization or deployment invariant that the starter violates.">
+
+```ts
+// Wrong: repeated per-request client construction.
+export function getDb() {
+  const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! });
+  return new PrismaClient({ adapter });
+}
+```
+
+**Why it fails:** A route handler creates a new PrismaPg pool and PrismaClient per request. With multiple server instances, those connections can exhaust the PostgreSQL limit.
+
+Record the real failure on a disposable environment rather than asserting that code inspection constitutes a runtime test.
+
+</LessonStep>
+
+<LessonStep number={2} title="Apply the narrow corrected boundary" file="drafts/p4/labs/bounded-adapter-pool/solution.ts" expected="The data and deployment invariant is explicitly enforced or observable.">
+
+```ts
+// Composition root: initialize once per process, not per HTTP request.
+const connectionString = process.env.DATABASE_URL;
+if (!connectionString) throw new Error("Missing database URL");
+const adapter = new PrismaPg({
+  connectionString,
+  max: 5,
+  connectionTimeoutMillis: 3000,
+});
+export const prisma = new PrismaClient({ adapter });
+// Deployment config must budget max * server processes + reserves.
+```
+
+**Why it is safer:** Move construction into a server-only composition root, set a bounded adapter pool and budget combined server-instance usage and reserved administration connections.
+
+Do not assume a successful CLI or TypeScript compile proves that the caller was authorized. Generated types protect shapes, not per-request permissions. Similarly, a DB transaction cannot roll back independent external side effects.
+
+</LessonStep>
+
+<LessonStep number={3} title="Prove real positive and negative cases" file="drafts/p4/labs/bounded-adapter-pool/acceptance.md" expected="Record one allowed and one denied/error outcome with exact runtime and versions.">
+
+**Expected positive case:** Measure active connections, pool wait time, errors and disconnect behavior on a disposable PostgreSQL instance.
+
+**Required negative case:** Simulate 20 requests and confirm they reuse one process-level client rather than instantiate 20 pools. Evaluate 10 replicas × pool size against a real test server limit.
+
+**What remains unverified:** This pool max is illustrative, not a universally safe production value. PgBouncer transaction pooling can change session assumptions; verify prepared statements and TLS with the selected pooler.
+
+The acceptance checklist is deliberately not marked complete: it needs a real Prisma ORM v7 generated client, a disposable PostgreSQL database and independently observed results.
+
+</LessonStep>
+
+## Design trade-offs and real-world constraints
+
+Prisma ORM v7 relies on the underlying database driver adapter for connection pooling. A pool should be constructed at a well-defined process lifecycle with limits derived from total replicas.
+
+Move construction into a server-only composition root, set a bounded adapter pool and budget combined server-instance usage and reserved administration connections.
+
+This pool max is illustrative, not a universally safe production value. PgBouncer transaction pooling can change session assumptions; verify prepared statements and TLS with the selected pooler.
+
+In a multi-tenant API, input validation, role-aware database credentials, optimistic concurrency, migration review and response-shape controls must be considered together. Favor bounded queries and explicit domain operations over returning raw privileged ORM interfaces to HTTP handlers. Record the query plan or migration state instead of guessing.
+
+## Bug Hunt
+
+1. Make a concrete failure prediction: A route handler creates a new PrismaPg pool and PrismaClient per request. With multiple server instances, those connections can exhaust the PostgreSQL limit.
+2. Write the regression assertion before implementing the fix.
+3. Apply the instructor change: Move construction into a server-only composition root, set a bounded adapter pool and budget combined server-instance usage and reserved administration connections.
+4. Attempt the forbidden operation: Simulate 20 requests and confirm they reuse one process-level client rather than instantiate 20 pools. Evaluate 10 replicas × pool size against a real test server limit.
+5. Explain the residual operational limitation: This pool max is illustrative, not a universally safe production value. PgBouncer transaction pooling can change session assumptions; verify prepared statements and TLS with the selected pooler.
+
+<Misconception claim={"A route handler creates a new PrismaPg pool and PrismaClient per request. With multiple server instances, those connections can exhaust the PostgreSQL limit."} correction={"Prisma ORM v7 relies on the underlying database driver adapter for connection pooling. A pool should be constructed at a well-defined process lifecycle with limits derived from total replicas."} />
+
+<KnowledgeCheck question={"Who owns pooling with Prisma 7 PostgreSQL driver adapters?"} choices={["The browser localStorage","The underlying driver/adapter configuration","The Prisma model enum","The GitHub branch"]} correctIndex={1} explanation={"Move construction into a server-only composition root, set a bounded adapter pool and budget combined server-instance usage and reserved administration connections."} misconception={"This pool max is illustrative, not a universally safe production value. PgBouncer transaction pooling can change session assumptions; verify prepared statements and TLS with the selected pooler."} lessonId="13.03.02" />
+
+## Extended practice
+
+Apply the lesson to a hypothetical inventory ERP API. Include the verified tenant and allowed product scope in the service boundary, measure actual database behavior where relevant, and specify what belongs in the migration history versus the runtime repository. Add tests proving that attempts from a second tenant do not change or disclose data.
+
+All code here is **source-authored but not runtime-qualified**. A real database and human review remain mandatory before lesson publication.
+
+## Official references
+
+- [Official reference — Connection pooling](https://www.prisma.io/docs/orm/v7/prisma-client/setup-and-configuration/databases-connections/connection-pool)
+- [Prisma ORM v7 documentation](https://www.prisma.io/docs/orm/v7)

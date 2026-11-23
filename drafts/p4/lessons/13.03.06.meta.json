@@ -1,0 +1,19 @@
+{
+  "id": "13.03.06",
+  "title": "Query logging and tracing",
+  "trackId": "13",
+  "moduleId": "13.03",
+  "labSlug": "safe-prisma-query-telemetry",
+  "prerequisites": [
+    "13.03.05"
+  ],
+  "sourceStatus": "draft-unverified",
+  "readyToPublish": false,
+  "runtimeQualification": "not-run",
+  "reviewStatus": "unreviewed",
+  "estimatedMinutes": 70,
+  "officialReferences": [
+    "https://www.prisma.io/docs/orm/v7/prisma-client/observability-and-logging/logging"
+  ],
+  "exerciseFormat": "ts"
+}

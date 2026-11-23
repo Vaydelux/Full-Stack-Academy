@@ -1,0 +1,103 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Supabase Storage separates bucket visibility from authenticated object operations. A public bucket grants link-based downloads; a private bucket requires authorized reads or short-lived signed URLs.","Create a private bucket with appropriate type/size limits, add path-scoped Storage RLS policies, and authorize signed download requests on the server.","A private flag alone does not prevent overbroad authenticated Storage policies. Public URLs, CDN/browser cache and signed URLs require their own revocation and expiry review."]} />
+
+## Secure Storage and Realtime problem
+
+**Buckets public vs private.** Supabase Storage separates bucket visibility from authenticated object operations. A public bucket grants link-based downloads; a private bucket requires authorized reads or short-lived signed URLs.
+
+**Unsafe starter behavior:** The starter marks sensitive business documents as public, making them readable without an authorized user session.
+
+Storage objects and Realtime messages are not ordinary React local state. They cross network and authorization boundaries; a caller can inspect URLs, retry requests, join predictable channel topics or forge payloads. The lesson teaches a concrete positive outcome and an explicit forbidden outcome.
+
+## Before you implement
+
+Complete **14.03.08**. Supabase Storage separates bucket visibility from authenticated object operations. A public bucket grants link-based downloads; a private bucket requires authorized reads or short-lived signed URLs.
+
+Draw the data flow from a Supabase Auth identity through Storage/RLS, database metadata and Realtime, marking where keys and private data may pass. Decide whether the action is revocable, how long a bearer URL remains valid and what happens if the network disconnects.
+
+The examples are **unpublished manuscript exercises** for an isolated local Supabase stack, not executed app code or production security guarantees.
+
+## Guided implementation
+
+<LessonStep number={1} title="Observe the broken access or reliability boundary" file="drafts/p4/labs/bucket-visibility-boundary/starter.ts" expected="Explain the precise cross-user access or inconsistent-state failure.">
+
+```ts
+// Wrong for private documents: a public bucket exposes object URLs.
+await supabase.storage.createBucket("academy_private_docs", {
+  public: true,
+});
+```
+
+**Why this is unsafe:** The starter marks sensitive business documents as public, making them readable without an authorized user session.
+
+Do not rely on a UI visibility toggle or predictable path prefix for access control. Predict the result when a caller changes IDs, paths, file headers or channel topic names.
+
+</LessonStep>
+
+<LessonStep number={2} title="Implement authorized, bounded operations" file="drafts/p4/labs/bucket-visibility-boundary/solution.ts" expected="Constrain the actor, object and operation with explicit server/Storage or Realtime policy.">
+
+```ts
+// Approved local admin setup for a PRIVATE bucket.
+const { data, error } = await admin.storage.createBucket(
+  "academy_private_docs",
+  {
+    public: false,
+    allowedMimeTypes: ["application/pdf", "image/png"],
+    fileSizeLimit: "5MB",
+  },
+);
+if (error) throw new Error("Private bucket setup failed");
+// Separately define storage.objects RLS policies before client access.
+```
+
+**Security rationale:** Create a private bucket with appropriate type/size limits, add path-scoped Storage RLS policies, and authorize signed download requests on the server.
+
+Teaching excerpts may depend on separately verified Auth guards, bucket policies, or helper types. They must be integrated with the actual Supabase client version, service configuration and database schema before any runtime qualification.
+
+</LessonStep>
+
+<LessonStep number={3} title="Test allowed and forbidden flows end to end" file="drafts/p4/labs/bucket-visibility-boundary/acceptance.md" expected="Record authorized success and cross-tenant denial with actual service responses.">
+
+**Allowed outcome:** Authenticated alpha may download the same private object using permitted access; bucket config remains private.
+
+**Denied or failure outcome:** Upload an alpha document; request its regular public URL with no token and attempt to read it as beta. Both must fail.
+
+**Residual limitations:** A private flag alone does not prevent overbroad authenticated Storage policies. Public URLs, CDN/browser cache and signed URLs require their own revocation and expiry review.
+
+A code-fence source audit cannot validate an actual signed URL, RLS predicate, Realtime channel join or webhook authentication. Those checks require a running local stack, two Auth users and controlled test objects.
+
+</LessonStep>
+
+## Architecture and lifecycle trade-offs
+
+Supabase Storage separates bucket visibility from authenticated object operations. A public bucket grants link-based downloads; a private bucket requires authorized reads or short-lived signed URLs.
+
+Create a private bucket with appropriate type/size limits, add path-scoped Storage RLS policies, and authorize signed download requests on the server.
+
+A private flag alone does not prevent overbroad authenticated Storage policies. Public URLs, CDN/browser cache and signed URLs require their own revocation and expiry review.
+
+Private buckets need specific Storage policies, server-controlled paths and explicit expiration/cleanup rules. Realtime private channels require policies on realtime.messages for permitted operations; a client-specified filter alone is not authorization. Persistent business state remains in PostgreSQL, not in Presence or Broadcast payloads.
+
+## Bug Hunt
+
+1. Predict the attack or failure: The starter marks sensitive business documents as public, making them readable without an authorized user session.
+2. Implement one valid allowed case.
+3. Attempt the denied case with a different user: Upload an alpha document; request its regular public URL with no token and attempt to read it as beta. Both must fail.
+4. Confirm the corrected behavior: Create a private bucket with appropriate type/size limits, add path-scoped Storage RLS policies, and authorize signed download requests on the server.
+5. Evaluate retries, revocation, expiration and cleanup: A private flag alone does not prevent overbroad authenticated Storage policies. Public URLs, CDN/browser cache and signed URLs require their own revocation and expiry review.
+
+<Misconception claim={"The starter marks sensitive business documents as public, making them readable without an authorized user session."} correction={"Supabase Storage separates bucket visibility from authenticated object operations. A public bucket grants link-based downloads; a private bucket requires authorized reads or short-lived signed URLs."} />
+<KnowledgeCheck question={"Which bucket type is appropriate for confidential customer documents?"} choices={["Public bucket","Private bucket with owner/tenant Storage authorization","Any bucket with a random filename","A frontend-hidden public bucket"]} correctIndex={undefined} explanation={"Create a private bucket with appropriate type/size limits, add path-scoped Storage RLS policies, and authorize signed download requests on the server."} misconception={"A private flag alone does not prevent overbroad authenticated Storage policies. Public URLs, CDN/browser cache and signed URLs require their own revocation and expiry review."} lessonId="14.04.01" />
+
+## Capstone extension
+
+Implement a miniature two-tenant document workspace. Seed alpha and beta with separate test identities and private objects. Verify legitimate upload and retrieval, denied cross-tenant Storage access, private channel authorization, controlled event propagation and correct cleanup of abandoned operations. Record all test evidence without exposing signed tokens or personal data.
+
+**Publication gate:** Lesson source parity and static linting are not service-level proof. Run actual Storage, Auth, Realtime and browser tests, plus human accessibility review, before learners can complete this lesson.
+
+## Official references
+
+- [Supabase reference — Buckets public vs private](https://supabase.com/docs/guides/storage/buckets/fundamentals)
+- [Supabase Realtime Authorization](https://supabase.com/docs/guides/realtime/authorization)

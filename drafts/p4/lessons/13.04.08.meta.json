@@ -1,0 +1,19 @@
+{
+  "id": "13.04.08",
+  "title": "Lab cross-tenant security check",
+  "trackId": "13",
+  "moduleId": "13.04",
+  "labSlug": "cross-tenant-prisma-bypass-capstone",
+  "prerequisites": [
+    "13.04.07"
+  ],
+  "sourceStatus": "draft-unverified",
+  "readyToPublish": false,
+  "runtimeQualification": "not-run",
+  "reviewStatus": "unreviewed",
+  "estimatedMinutes": 100,
+  "officialReferences": [
+    "https://supabase.com/docs/guides/database/postgres/row-level-security"
+  ],
+  "exerciseFormat": "ts"
+}

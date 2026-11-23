@@ -4,13 +4,13 @@ import {extractFences,matchesExerciseFiles,inspectP4Manuscripts} from '../script
 const fence=String.fromCharCode(96).repeat(3);
 const article=(lang,a,b)=>fence+lang+'\n'+a+'\n'+fence+'\n'+fence+lang+'\n'+b+'\n'+fence;
 
-test('40 distinct P4 lesson drafts match the five canonical modules',()=>{
+test('64 distinct P4 lesson drafts match all eight canonical modules',()=>{
  const result=inspectP4Manuscripts();
  assert.deepEqual(result.issues,[]);
- assert.equal(result.sourceAuthored,40);
- assert.deepEqual(result.moduleCounts.map(x=>x.drafted),[8,8,8,8,8]);
- assert.equal(new Set(result.records.map(x=>x.id)).size,40);
- assert.equal(new Set(result.records.map(x=>x.slug)).size,40);
+ assert.equal(result.sourceAuthored,64);
+ assert.deepEqual(result.moduleCounts.map(x=>x.drafted),[8,8,8,8,8,8,8,8]);
+ assert.equal(new Set(result.records.map(x=>x.id)).size,64);
+ assert.equal(new Set(result.records.map(x=>x.slug)).size,64);
 });
 test('P4 manuscripts are not runtime qualified or published',()=>{
  const result=inspectP4Manuscripts();

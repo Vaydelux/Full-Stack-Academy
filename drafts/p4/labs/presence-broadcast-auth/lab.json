@@ -1,0 +1,16 @@
+{
+  "id": "draft.p4.presence-broadcast-auth",
+  "lessonId": "14.04.06",
+  "moduleId": "14.04",
+  "sourceStatus": "draft-unverified",
+  "readyToPublish": false,
+  "runtimeQualification": "not-run",
+  "reviewStatus": "unreviewed",
+  "qualificationKind": "manual-storage-realtime-integration",
+  "language": "ts",
+  "starter": "drafts/p4/labs/presence-broadcast-auth/starter.ts",
+  "solution": "drafts/p4/labs/presence-broadcast-auth/solution.ts",
+  "acceptanceDoc": "drafts/p4/labs/presence-broadcast-auth/acceptance.md",
+  "officialReference": "https://supabase.com/docs/guides/realtime/authorization",
+  "requiresTwoAuthenticatedUsers": true
+}

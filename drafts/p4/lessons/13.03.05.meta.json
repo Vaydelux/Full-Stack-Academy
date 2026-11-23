@@ -1,0 +1,19 @@
+{
+  "id": "13.03.05",
+  "title": "Multi-schema considerations",
+  "trackId": "13",
+  "moduleId": "13.03",
+  "labSlug": "prisma-multi-schema-boundaries",
+  "prerequisites": [
+    "13.03.04"
+  ],
+  "sourceStatus": "draft-unverified",
+  "readyToPublish": false,
+  "runtimeQualification": "not-run",
+  "reviewStatus": "unreviewed",
+  "estimatedMinutes": 70,
+  "officialReferences": [
+    "https://www.prisma.io/docs/orm/v7/prisma-schema/data-model/multi-schema"
+  ],
+  "exerciseFormat": "prisma"
+}

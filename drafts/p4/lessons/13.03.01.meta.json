@@ -1,0 +1,19 @@
+{
+  "id": "13.03.01",
+  "title": "Raw SQL escape hatches",
+  "trackId": "13",
+  "moduleId": "13.03",
+  "labSlug": "parameterized-raw-sql",
+  "prerequisites": [
+    "13.02.08"
+  ],
+  "sourceStatus": "draft-unverified",
+  "readyToPublish": false,
+  "runtimeQualification": "not-run",
+  "reviewStatus": "unreviewed",
+  "estimatedMinutes": 70,
+  "officialReferences": [
+    "https://www.prisma.io/docs/orm/v7/prisma-client/using-raw-sql/raw-queries"
+  ],
+  "exerciseFormat": "ts"
+}

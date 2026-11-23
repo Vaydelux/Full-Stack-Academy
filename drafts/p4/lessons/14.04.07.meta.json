@@ -1,0 +1,19 @@
+{
+  "id": "14.04.07",
+  "title": "Webhook-triggered processing",
+  "trackId": "14",
+  "moduleId": "14.04",
+  "labSlug": "authenticated-webhook-processing",
+  "prerequisites": [
+    "14.04.06"
+  ],
+  "sourceStatus": "draft-unverified",
+  "readyToPublish": false,
+  "runtimeQualification": "not-run",
+  "reviewStatus": "unreviewed",
+  "estimatedMinutes": 70,
+  "officialReferences": [
+    "https://supabase.com/docs/guides/database/webhooks"
+  ],
+  "exerciseFormat": "ts"
+}

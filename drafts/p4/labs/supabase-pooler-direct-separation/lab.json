@@ -1,0 +1,15 @@
+{
+  "id": "draft.p4.supabase-pooler-direct-separation",
+  "lessonId": "13.04.02",
+  "moduleId": "13.04",
+  "sourceStatus": "draft-unverified",
+  "readyToPublish": false,
+  "runtimeQualification": "not-run",
+  "reviewStatus": "unreviewed",
+  "qualificationKind": "manual-prisma-supabase-integration",
+  "language": "ts",
+  "starter": "drafts/p4/labs/supabase-pooler-direct-separation/starter.ts",
+  "solution": "drafts/p4/labs/supabase-pooler-direct-separation/solution.ts",
+  "acceptanceDoc": "drafts/p4/labs/supabase-pooler-direct-separation/acceptance.md",
+  "officialReference": "https://supabase.com/docs/guides/database/connecting-to-postgres"
+}

@@ -1,0 +1,14 @@
+datasource db {
+  provider = "postgresql"
+  schemas = ["app", "audit"]
+}
+model AuditEvent {
+  id Int @id @default(autoincrement())
+  action String
+  @@schema("audit")
+}
+model Task {
+  id Int @id @default(autoincrement())
+  title String
+  @@schema("app")
+}

@@ -1,0 +1,74 @@
+{
+  "moduleId": "13.04",
+  "trackId": "13",
+  "title": "Supabase Integration",
+  "sourceStatus": "draft-unverified",
+  "readyToPublish": false,
+  "runtimeQualification": "not-run",
+  "lessons": [
+    {
+      "id": "13.04.01",
+      "title": "Project connection methods",
+      "slug": "supabase-prisma-connect-methods",
+      "language": "ts",
+      "extension": "ts",
+      "qualificationKind": "manual-prisma-supabase-integration"
+    },
+    {
+      "id": "13.04.02",
+      "title": "Pooled vs direct connection",
+      "slug": "supabase-pooler-direct-separation",
+      "language": "ts",
+      "extension": "ts",
+      "qualificationKind": "manual-prisma-supabase-integration"
+    },
+    {
+      "id": "13.04.03",
+      "title": "Supabase schemas and RLS boundaries",
+      "slug": "exposed-schema-rls-separation",
+      "language": "sql",
+      "extension": "sql",
+      "qualificationKind": "manual-prisma-supabase-integration"
+    },
+    {
+      "id": "13.04.04",
+      "title": "Service database roles",
+      "slug": "restricted-database-role",
+      "language": "sql",
+      "extension": "sql",
+      "qualificationKind": "manual-prisma-supabase-integration"
+    },
+    {
+      "id": "13.04.05",
+      "title": "Authorization in NestJS",
+      "slug": "nestjs-trusted-actor-boundary",
+      "language": "ts",
+      "extension": "ts",
+      "qualificationKind": "manual-prisma-supabase-integration"
+    },
+    {
+      "id": "13.04.06",
+      "title": "Migration ownership rules",
+      "slug": "one-migration-owner",
+      "language": "bash",
+      "extension": "sh",
+      "qualificationKind": "manual-prisma-supabase-integration"
+    },
+    {
+      "id": "13.04.07",
+      "title": "Testing isolation",
+      "slug": "two-user-isolation-matrix",
+      "language": "ts",
+      "extension": "ts",
+      "qualificationKind": "manual-prisma-supabase-integration"
+    },
+    {
+      "id": "13.04.08",
+      "title": "Lab cross-tenant security check",
+      "slug": "cross-tenant-prisma-bypass-capstone",
+      "language": "ts",
+      "extension": "ts",
+      "qualificationKind": "manual-prisma-supabase-integration"
+    }
+  ]
+}

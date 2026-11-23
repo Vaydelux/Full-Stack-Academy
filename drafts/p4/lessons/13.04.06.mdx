@@ -1,0 +1,99 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Prisma migrations and Supabase migrations both operate on the same PostgreSQL schema. Uncoordinated dual ownership can create drift, destructive changes and unreplayable environments.","Document table-by-table ownership: Prisma Migrate for selected application models, Supabase migrations for policy/platform SQL, with one reviewed pipeline applying each change in a controlled order.","Neither migrate deploy nor supabase db push is safe to call blindly against production. Current CLI versions, migration locks and rollback/forward-fix plans need independent review."]} />
+
+## Integration defect
+
+**Migration ownership rules.** Prisma migrations and Supabase migrations both operate on the same PostgreSQL schema. Uncoordinated dual ownership can create drift, destructive changes and unreplayable environments.
+
+**What fails in an actual application:** The starter lets two independent unreviewed schema operations modify the same table without an authoritative history.
+
+A full-stack application can use both a Supabase client and a direct Prisma ORM 7 PostgreSQL adapter. These access paths do not automatically share the same user authorization context. The browser may have a valid JWT while a server's database role can read far more than that JWT would authorize.
+
+## Model the trust boundary
+
+Complete **13.04.05**. Prisma migrations and Supabase migrations both operate on the same PostgreSQL schema. Uncoordinated dual ownership can create drift, destructive changes and unreplayable environments.
+
+Decide which component authenticates the caller, which verifies tenant or resource membership, which PostgreSQL role executes the query, and which schema is exposed via the Data API. Write a failure assertion before changing the code. The examples use synthetic actors and isolated databases only.
+
+This is an **unpublished, unverified draft**. Do not copy the intentionally broken starter into an application.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the unsafe integration" file="drafts/p4/labs/one-migration-owner/starter.sh" expected="Explain the exact scope, role, or migration boundary that fails.">
+
+```bash
+# Two schema owners independently modify the same table.
+npx prisma db push
+supabase db push
+```
+
+**Defect:** The starter lets two independent unreviewed schema operations modify the same table without an authoritative history.
+
+Observe the failure in a disposable test environment. A SQL statement executing successfully does not prove it was authorized.
+
+</LessonStep>
+
+<LessonStep number={2} title="Enforce the correct boundary" file="drafts/p4/labs/one-migration-owner/solution.sh" expected="Tenant or environment decisions come from verified server context.">
+
+```bash
+# Choose one reviewed DDL owner for each schema/table.
+# Option A: Prisma-owned app tables
+npx prisma migrate dev --name task_state
+# Review generated SQL, then in an approved release:
+npx prisma migrate deploy
+# Option B: Supabase-managed auth/storage/policies:
+supabase migration --help
+# Generate reviewed migrations using the installed CLI.
+```
+
+**Repair:** Document table-by-table ownership: Prisma Migrate for selected application models, Supabase migrations for policy/platform SQL, with one reviewed pipeline applying each change in a controlled order.
+
+This is a teaching excerpt; configure generated types, verified request guards, safe error mapping, and actual database credentials separately.
+
+</LessonStep>
+
+<LessonStep number={3} title="Run cross-boundary allowed and denied tests" file="drafts/p4/labs/one-migration-owner/acceptance.md" expected="Record actual test identities, results and the denial evidence.">
+
+**Allowed scenario:** On a disposable local project, replay the chosen migration histories and verify RLS, indexes, constraints and generated ORM client agree.
+
+**Denied scenario:** Rebuild a clean local stack solely from committed histories; fail if its schema differs from the expected test schema or an owner edits the other's table.
+
+**Unresolved risks:** Neither migrate deploy nor supabase db push is safe to call blindly against production. Current CLI versions, migration locks and rollback/forward-fix plans need independent review.
+
+A code-fence source match is not a PostgreSQL authorization evaluation, and a service-role query does not simulate an ordinary user.
+
+</LessonStep>
+
+## API, RLS and migration trade-offs
+
+Prisma migrations and Supabase migrations both operate on the same PostgreSQL schema. Uncoordinated dual ownership can create drift, destructive changes and unreplayable environments.
+
+Document table-by-table ownership: Prisma Migrate for selected application models, Supabase migrations for policy/platform SQL, with one reviewed pipeline applying each change in a controlled order.
+
+Neither migrate deploy nor supabase db push is safe to call blindly against production. Current CLI versions, migration locks and rollback/forward-fix plans need independent review.
+
+Explicitly choose how identity is propagated between Next.js, NestJS, Prisma, and Supabase. When a privileged server role bypasses RLS, the NestJS service must check permissions and the database role should still be restricted. Prefer verified membership from trusted server data over user-editable metadata or query parameters.
+
+## Bug Hunt
+
+1. Predict who can exploit this bug: The starter lets two independent unreviewed schema operations modify the same table without an authoritative history.
+2. Verify an allowed positive action.
+3. Attempt the denied action using a separate identity: Rebuild a clean local stack solely from committed histories; fail if its schema differs from the expected test schema or an owner edits the other's table.
+4. Apply the repair and observe the resulting database state: Document table-by-table ownership: Prisma Migrate for selected application models, Supabase migrations for policy/platform SQL, with one reviewed pipeline applying each change in a controlled order.
+5. Identify a remaining operational risk: Neither migrate deploy nor supabase db push is safe to call blindly against production. Current CLI versions, migration locks and rollback/forward-fix plans need independent review.
+
+<Misconception claim={"The starter lets two independent unreviewed schema operations modify the same table without an authoritative history."} correction={"Prisma migrations and Supabase migrations both operate on the same PostgreSQL schema. Uncoordinated dual ownership can create drift, destructive changes and unreplayable environments."} />
+<KnowledgeCheck question={"What avoids migration drift when using Prisma with Supabase?"} choices={["Untracked dashboard edits","Explicit schema/table ownership plus reviewed, reproducible migration history","Always using db push on prod","Disabling backups"]} correctIndex={1} explanation={"Document table-by-table ownership: Prisma Migrate for selected application models, Supabase migrations for policy/platform SQL, with one reviewed pipeline applying each change in a controlled order."} misconception={"Neither migrate deploy nor supabase db push is safe to call blindly against production. Current CLI versions, migration locks and rollback/forward-fix plans need independent review."} lessonId="13.04.06" />
+
+## Extend the ERP laboratory
+
+Create synthetic organizations alpha and beta with overlapping IDs, a membership table and private documents. Run requests through both Supabase's Data API and a Prisma-backed NestJS endpoint. Verify permitted rows, denied rows, mutation effects and clean database recreation from migrations. Record whether your test uses a JWT-backed user or a privileged SQL role; those results are not interchangeable.
+
+**Publication rule:** Source authorship never qualifies security-critical runtime behavior. Require real local Supabase Auth and Prisma integration, Node24 build, browser checks and human review first.
+
+## Official references
+
+- [Official guide — Migration ownership rules](https://supabase.com/docs/guides/local-development/database-migrations)
+- [Supabase Data API security](https://supabase.com/docs/guides/api/securing-your-api)

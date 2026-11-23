@@ -1,0 +1,15 @@
+{
+  "id": "draft.p4.bounded-adapter-pool",
+  "lessonId": "13.03.02",
+  "moduleId": "13.03",
+  "sourceStatus": "draft-unverified",
+  "readyToPublish": false,
+  "runtimeQualification": "not-run",
+  "reviewStatus": "unreviewed",
+  "qualificationKind": "manual-prisma-integration",
+  "language": "ts",
+  "starter": "drafts/p4/labs/bounded-adapter-pool/starter.ts",
+  "solution": "drafts/p4/labs/bounded-adapter-pool/solution.ts",
+  "acceptanceDoc": "drafts/p4/labs/bounded-adapter-pool/acceptance.md",
+  "officialReference": "https://www.prisma.io/docs/orm/v7/prisma-client/setup-and-configuration/databases-connections/connection-pool"
+}

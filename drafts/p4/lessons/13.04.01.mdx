@@ -1,0 +1,98 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Prisma connects to Supabase PostgreSQL through a SQL connection string. Supabase browser clients normally use the HTTPS Data API with a user JWT; the connection/authentication and authorization models are different.","Use a server-only PostgreSQL adapter with a secret URL and a least-privileged database role. Select the connection endpoint based on the actual environment.","A successful SQL connection does not inherit per-user Supabase JWT/RLS context. Server request handlers must still validate actor and object permissions."]} />
+
+## Integration defect
+
+**Project connection methods.** Prisma connects to Supabase PostgreSQL through a SQL connection string. Supabase browser clients normally use the HTTPS Data API with a user JWT; the connection/authentication and authorization models are different.
+
+**What fails in an actual application:** An SQL database URL placed under NEXT_PUBLIC exposes database credentials in the web bundle and allows direct connections outside the intended server perimeter.
+
+A full-stack application can use both a Supabase client and a direct Prisma ORM 7 PostgreSQL adapter. These access paths do not automatically share the same user authorization context. The browser may have a valid JWT while a server's database role can read far more than that JWT would authorize.
+
+## Model the trust boundary
+
+Complete **13.03.08**. Prisma connects to Supabase PostgreSQL through a SQL connection string. Supabase browser clients normally use the HTTPS Data API with a user JWT; the connection/authentication and authorization models are different.
+
+Decide which component authenticates the caller, which verifies tenant or resource membership, which PostgreSQL role executes the query, and which schema is exposed via the Data API. Write a failure assertion before changing the code. The examples use synthetic actors and isolated databases only.
+
+This is an **unpublished, unverified draft**. Do not copy the intentionally broken starter into an application.
+
+## Guided implementation
+
+<LessonStep number={1} title="Reproduce the unsafe integration" file="drafts/p4/labs/supabase-prisma-connect-methods/starter.ts" expected="Explain the exact scope, role, or migration boundary that fails.">
+
+```ts
+// Unsafe assumption: a Prisma database URL is browser-safe.
+const clientUrl = process.env.NEXT_PUBLIC_DATABASE_URL;
+const connection = new PrismaPg({ connectionString: clientUrl! });
+```
+
+**Defect:** An SQL database URL placed under NEXT_PUBLIC exposes database credentials in the web bundle and allows direct connections outside the intended server perimeter.
+
+Observe the failure in a disposable test environment. A SQL statement executing successfully does not prove it was authorized.
+
+</LessonStep>
+
+<LessonStep number={2} title="Enforce the correct boundary" file="drafts/p4/labs/supabase-prisma-connect-methods/solution.ts" expected="Tenant or environment decisions come from verified server context.">
+
+```ts
+// Server-only Prisma composition root for an approved test/production role.
+import "server-only";
+import { PrismaPg } from "@prisma/adapter-pg";
+const directOrPooled = process.env.DATABASE_POOL_URL;
+if (!directOrPooled) throw new Error("Missing server DB URL");
+const adapter = new PrismaPg({ connectionString: directOrPooled, max: 5 });
+// Pass adapter to the version-pinned generated PrismaClient.
+```
+
+**Repair:** Use a server-only PostgreSQL adapter with a secret URL and a least-privileged database role. Select the connection endpoint based on the actual environment.
+
+This is a teaching excerpt; configure generated types, verified request guards, safe error mapping, and actual database credentials separately.
+
+</LessonStep>
+
+<LessonStep number={3} title="Run cross-boundary allowed and denied tests" file="drafts/p4/labs/supabase-prisma-connect-methods/acceptance.md" expected="Record actual test identities, results and the denial evidence.">
+
+**Allowed scenario:** Use a dedicated test database role to connect from Prisma 7 and fetch one synthetic tenant row without exposing any DB URL or secret to the browser.
+
+**Denied scenario:** Build a Next.js client bundle with a fake database password and ensure it is absent. Attempt to import the server module in a client component; the build must reject it.
+
+**Unresolved risks:** A successful SQL connection does not inherit per-user Supabase JWT/RLS context. Server request handlers must still validate actor and object permissions.
+
+A code-fence source match is not a PostgreSQL authorization evaluation, and a service-role query does not simulate an ordinary user.
+
+</LessonStep>
+
+## API, RLS and migration trade-offs
+
+Prisma connects to Supabase PostgreSQL through a SQL connection string. Supabase browser clients normally use the HTTPS Data API with a user JWT; the connection/authentication and authorization models are different.
+
+Use a server-only PostgreSQL adapter with a secret URL and a least-privileged database role. Select the connection endpoint based on the actual environment.
+
+A successful SQL connection does not inherit per-user Supabase JWT/RLS context. Server request handlers must still validate actor and object permissions.
+
+Explicitly choose how identity is propagated between Next.js, NestJS, Prisma, and Supabase. When a privileged server role bypasses RLS, the NestJS service must check permissions and the database role should still be restricted. Prefer verified membership from trusted server data over user-editable metadata or query parameters.
+
+## Bug Hunt
+
+1. Predict who can exploit this bug: An SQL database URL placed under NEXT_PUBLIC exposes database credentials in the web bundle and allows direct connections outside the intended server perimeter.
+2. Verify an allowed positive action.
+3. Attempt the denied action using a separate identity: Build a Next.js client bundle with a fake database password and ensure it is absent. Attempt to import the server module in a client component; the build must reject it.
+4. Apply the repair and observe the resulting database state: Use a server-only PostgreSQL adapter with a secret URL and a least-privileged database role. Select the connection endpoint based on the actual environment.
+5. Identify a remaining operational risk: A successful SQL connection does not inherit per-user Supabase JWT/RLS context. Server request handlers must still validate actor and object permissions.
+
+<Misconception claim={"An SQL database URL placed under NEXT_PUBLIC exposes database credentials in the web bundle and allows direct connections outside the intended server perimeter."} correction={"Prisma connects to Supabase PostgreSQL through a SQL connection string. Supabase browser clients normally use the HTTPS Data API with a user JWT; the connection/authentication and authorization models are different."} />
+<KnowledgeCheck question={"What is the correct place for a Supabase PostgreSQL SQL URL used by Prisma?"} choices={["NEXT_PUBLIC_DATABASE_URL","Server-only configuration with least-privileged credentials","A browser cookie","A React local state variable"]} correctIndex={1} explanation={"Use a server-only PostgreSQL adapter with a secret URL and a least-privileged database role. Select the connection endpoint based on the actual environment."} misconception={"A successful SQL connection does not inherit per-user Supabase JWT/RLS context. Server request handlers must still validate actor and object permissions."} lessonId="13.04.01" />
+
+## Extend the ERP laboratory
+
+Create synthetic organizations alpha and beta with overlapping IDs, a membership table and private documents. Run requests through both Supabase's Data API and a Prisma-backed NestJS endpoint. Verify permitted rows, denied rows, mutation effects and clean database recreation from migrations. Record whether your test uses a JWT-backed user or a privileged SQL role; those results are not interchangeable.
+
+**Publication rule:** Source authorship never qualifies security-critical runtime behavior. Require real local Supabase Auth and Prisma integration, Node24 build, browser checks and human review first.
+
+## Official references
+
+- [Official guide — Project connection methods](https://supabase.com/docs/guides/database/connecting-to-postgres)
+- [Supabase Data API security](https://supabase.com/docs/guides/api/securing-your-api)

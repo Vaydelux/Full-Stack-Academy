@@ -1,0 +1,16 @@
+{
+  "id": "draft.p4.safe-signed-upload-authorization",
+  "lessonId": "14.04.02",
+  "moduleId": "14.04",
+  "sourceStatus": "draft-unverified",
+  "readyToPublish": false,
+  "runtimeQualification": "not-run",
+  "reviewStatus": "unreviewed",
+  "qualificationKind": "manual-storage-realtime-integration",
+  "language": "ts",
+  "starter": "drafts/p4/labs/safe-signed-upload-authorization/starter.ts",
+  "solution": "drafts/p4/labs/safe-signed-upload-authorization/solution.ts",
+  "acceptanceDoc": "drafts/p4/labs/safe-signed-upload-authorization/acceptance.md",
+  "officialReference": "https://supabase.com/docs/reference/javascript/storage-from-createsigneduploadurl",
+  "requiresTwoAuthenticatedUsers": true
+}

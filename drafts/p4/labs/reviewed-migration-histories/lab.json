@@ -1,0 +1,15 @@
+{
+  "id": "draft.p4.reviewed-migration-histories",
+  "lessonId": "13.03.03",
+  "moduleId": "13.03",
+  "sourceStatus": "draft-unverified",
+  "readyToPublish": false,
+  "runtimeQualification": "not-run",
+  "reviewStatus": "unreviewed",
+  "qualificationKind": "manual-prisma-integration",
+  "language": "bash",
+  "starter": "drafts/p4/labs/reviewed-migration-histories/starter.sh",
+  "solution": "drafts/p4/labs/reviewed-migration-histories/solution.sh",
+  "acceptanceDoc": "drafts/p4/labs/reviewed-migration-histories/acceptance.md",
+  "officialReference": "https://www.prisma.io/docs/orm/v7/prisma-migrate/workflows/development-and-production"
+}

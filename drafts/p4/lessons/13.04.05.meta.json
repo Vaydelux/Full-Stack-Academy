@@ -1,0 +1,19 @@
+{
+  "id": "13.04.05",
+  "title": "Authorization in NestJS",
+  "trackId": "13",
+  "moduleId": "13.04",
+  "labSlug": "nestjs-trusted-actor-boundary",
+  "prerequisites": [
+    "13.04.04"
+  ],
+  "sourceStatus": "draft-unverified",
+  "readyToPublish": false,
+  "runtimeQualification": "not-run",
+  "reviewStatus": "unreviewed",
+  "estimatedMinutes": 70,
+  "officialReferences": [
+    "https://docs.nestjs.com/security/authorization"
+  ],
+  "exerciseFormat": "ts"
+}

@@ -1,0 +1,19 @@
+{
+  "id": "13.04.07",
+  "title": "Testing isolation",
+  "trackId": "13",
+  "moduleId": "13.04",
+  "labSlug": "two-user-isolation-matrix",
+  "prerequisites": [
+    "13.04.06"
+  ],
+  "sourceStatus": "draft-unverified",
+  "readyToPublish": false,
+  "runtimeQualification": "not-run",
+  "reviewStatus": "unreviewed",
+  "estimatedMinutes": 70,
+  "officialReferences": [
+    "https://supabase.com/docs/guides/database/postgres/row-level-security"
+  ],
+  "exerciseFormat": "ts"
+}

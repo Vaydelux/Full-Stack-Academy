@@ -1,0 +1,99 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["Migration drift is a disagreement between the physical database and the checked-in migration history. Regenerating a client doesn't reconcile schema history.","Inspect migration status, compare physical schema with expected history in disposable environments, prepare a reviewed forward repair and avoid blind reset of live data.","Never use migrate reset on production. A schema diff can suggest destructive SQL; always review data impact and migration ownership before applying."]} />
+
+## Architectural challenge
+
+**Bug Hunt migration drift.** Migration drift is a disagreement between the physical database and the checked-in migration history. Regenerating a client doesn't reconcile schema history.
+
+**Reproducible failure:** A hotfix changes the database directly, but the migration history remains unchanged. The next release succeeds locally yet fails or loses the hotfix in a clean environment.
+
+When a service evolves from a single-developer prototype into an API used by several organizations, an apparently valid query may introduce security gaps, schema drift, or operational load. Before looking at the corrected code, describe the invariant and the actor or environment whose behavior violates it.
+
+## Prerequisite and mental model
+
+Complete **13.03.07**. Migration drift is a disagreement between the physical database and the checked-in migration history. Regenerating a client doesn't reconcile schema history.
+
+This is a **draft, not a published or framework-qualified lab**. The snippets illustrate one isolated boundary. In an actual application, Prisma Client must be generated using the selected version-pinned Prisma ORM v7 toolchain and PostgreSQL driver adapter. Connection handling and table ownership must match the application's database role.
+
+**Predict the defect:** A hotfix changes the database directly, but the migration history remains unchanged. The next release succeeds locally yet fails or loses the hotfix in a clean environment.
+
+## Three-stage laboratory
+
+<LessonStep number={1} title="Observe the broken persistence behavior" file="drafts/p4/labs/detect-and-resolve-schema-drift/starter.sh" expected="Identify the specific database, authorization or deployment invariant that the starter violates.">
+
+```bash
+# Misleading: running generate doesn't check deployed schema drift.
+npx prisma generate
+echo "Deployment verified"
+```
+
+**Why it fails:** A hotfix changes the database directly, but the migration history remains unchanged. The next release succeeds locally yet fails or loses the hotfix in a clean environment.
+
+Record the real failure on a disposable environment rather than asserting that code inspection constitutes a runtime test.
+
+</LessonStep>
+
+<LessonStep number={2} title="Apply the narrow corrected boundary" file="drafts/p4/labs/detect-and-resolve-schema-drift/solution.sh" expected="The data and deployment invariant is explicitly enforced or observable.">
+
+```bash
+# Never mutate prod while investigating.
+npx prisma migrate status
+# On disposable local dev: inspect drift and generate a reviewed repair.
+npx prisma migrate dev --create-only --name reconcile_schema
+# Review SQL and match the intended checked-in schema.
+npx prisma generate
+# Test the reviewed migration against a fresh disposable database.
+```
+
+**Why it is safer:** Inspect migration status, compare physical schema with expected history in disposable environments, prepare a reviewed forward repair and avoid blind reset of live data.
+
+Do not assume a successful CLI or TypeScript compile proves that the caller was authorized. Generated types protect shapes, not per-request permissions. Similarly, a DB transaction cannot roll back independent external side effects.
+
+</LessonStep>
+
+<LessonStep number={3} title="Prove real positive and negative cases" file="drafts/p4/labs/detect-and-resolve-schema-drift/acceptance.md" expected="Record one allowed and one denied/error outcome with exact runtime and versions.">
+
+**Expected positive case:** Verify a fresh replay produces the intended schema and the migration file is checked in with known checksum and release notes.
+
+**Required negative case:** Manually alter a disposable test table, then compare it to a database recreated only from migration files. Confirm the mismatch is detected and the repair is reviewed.
+
+**What remains unverified:** Never use migrate reset on production. A schema diff can suggest destructive SQL; always review data impact and migration ownership before applying.
+
+The acceptance checklist is deliberately not marked complete: it needs a real Prisma ORM v7 generated client, a disposable PostgreSQL database and independently observed results.
+
+</LessonStep>
+
+## Design trade-offs and real-world constraints
+
+Migration drift is a disagreement between the physical database and the checked-in migration history. Regenerating a client doesn't reconcile schema history.
+
+Inspect migration status, compare physical schema with expected history in disposable environments, prepare a reviewed forward repair and avoid blind reset of live data.
+
+Never use migrate reset on production. A schema diff can suggest destructive SQL; always review data impact and migration ownership before applying.
+
+In a multi-tenant API, input validation, role-aware database credentials, optimistic concurrency, migration review and response-shape controls must be considered together. Favor bounded queries and explicit domain operations over returning raw privileged ORM interfaces to HTTP handlers. Record the query plan or migration state instead of guessing.
+
+## Bug Hunt
+
+1. Make a concrete failure prediction: A hotfix changes the database directly, but the migration history remains unchanged. The next release succeeds locally yet fails or loses the hotfix in a clean environment.
+2. Write the regression assertion before implementing the fix.
+3. Apply the instructor change: Inspect migration status, compare physical schema with expected history in disposable environments, prepare a reviewed forward repair and avoid blind reset of live data.
+4. Attempt the forbidden operation: Manually alter a disposable test table, then compare it to a database recreated only from migration files. Confirm the mismatch is detected and the repair is reviewed.
+5. Explain the residual operational limitation: Never use migrate reset on production. A schema diff can suggest destructive SQL; always review data impact and migration ownership before applying.
+
+<Misconception claim={"A hotfix changes the database directly, but the migration history remains unchanged. The next release succeeds locally yet fails or loses the hotfix in a clean environment."} correction={"Migration drift is a disagreement between the physical database and the checked-in migration history. Regenerating a client doesn't reconcile schema history."} />
+
+<KnowledgeCheck question={"Does running prisma generate repair PostgreSQL schema drift?"} choices={["Yes, automatically","No, it generates client code but does not reconcile DB migration history","Yes, even without DB access","Only when deployed on Vercel"]} correctIndex={1} explanation={"Inspect migration status, compare physical schema with expected history in disposable environments, prepare a reviewed forward repair and avoid blind reset of live data."} misconception={"Never use migrate reset on production. A schema diff can suggest destructive SQL; always review data impact and migration ownership before applying."} lessonId="13.03.08" />
+
+## Extended practice
+
+Apply the lesson to a hypothetical inventory ERP API. Include the verified tenant and allowed product scope in the service boundary, measure actual database behavior where relevant, and specify what belongs in the migration history versus the runtime repository. Add tests proving that attempts from a second tenant do not change or disclose data.
+
+All code here is **source-authored but not runtime-qualified**. A real database and human review remain mandatory before lesson publication.
+
+## Official references
+
+- [Official reference — Bug Hunt migration drift](https://www.prisma.io/docs/orm/v7/prisma-migrate/workflows/troubleshooting)
+- [Prisma ORM v7 documentation](https://www.prisma.io/docs/orm/v7)

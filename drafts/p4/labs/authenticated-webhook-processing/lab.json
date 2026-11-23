@@ -1,0 +1,16 @@
+{
+  "id": "draft.p4.authenticated-webhook-processing",
+  "lessonId": "14.04.07",
+  "moduleId": "14.04",
+  "sourceStatus": "draft-unverified",
+  "readyToPublish": false,
+  "runtimeQualification": "not-run",
+  "reviewStatus": "unreviewed",
+  "qualificationKind": "manual-storage-realtime-integration",
+  "language": "ts",
+  "starter": "drafts/p4/labs/authenticated-webhook-processing/starter.ts",
+  "solution": "drafts/p4/labs/authenticated-webhook-processing/solution.ts",
+  "acceptanceDoc": "drafts/p4/labs/authenticated-webhook-processing/acceptance.md",
+  "officialReference": "https://supabase.com/docs/guides/database/webhooks",
+  "requiresTwoAuthenticatedUsers": true
+}
