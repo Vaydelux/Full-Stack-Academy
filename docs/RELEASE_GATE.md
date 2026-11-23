@@ -12,7 +12,7 @@
 ## Mandatory release qualification (offline and Node 24)
 
 1. Checkout the exact candidate Git SHA on a clean local machine with an actual Node 24.x runtime, npm and compatible lockfiles; record the tested commit.
-2. `npm ci`, then `npm run test:release-gate-coverage` and `npm run verify:offline`. The offline runner includes all **16 required P5 source/HTTP/security subchecks** via `npm run test:p5-bundle`, plus prior-phase tests, lint, typecheck, and production build. Any missing script or failed command must stop the gate.
+2. `npm ci`, then `npm run test:release-gate-coverage` and `npm run verify:offline`. The offline runner includes all **18 required P5 source/HTTP/security/durability subchecks** via `npm run test:p5-bundle`, plus prior-phase tests, lint, typecheck, and production build. Any missing script or failed command must stop the gate.
 3. Run real isolated PostgreSQL 17+ opt-in qualification for the SQL labs, and a genuine NestJS/Prisma/Supabase runtime with least-privilege, real authorization and denial cases. A mocked SQL test or an in-memory model does not count as database acceptance.
 4. Validate P1 RHF/TanStack Query and P2–P5 real dependency lock integrity, positive and negative starter behavior, and server-side rendering/hydration.
 5. Run browser smoke against the built app, keyboard navigation, mobile/TV or specified responsive viewports, 200% zoom, and **human screen-reader review**. Automated source assertions do not constitute accessibility signoff.

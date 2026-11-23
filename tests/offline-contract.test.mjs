@@ -2,13 +2,13 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {auditOfflineMatrix} from '../scripts/offline-contract.mjs';
 const phase=['test:release-gate-coverage','test:curriculum-readiness','test:publication-phases','test:p4-source','test:p5-bundle','lint','typecheck','test','build'];
-const p5=['test:p5-security','test:p5-postgresql-source','test:p5-rls-source','test:p5-curriculum-source','test:p5-httpdb-source','test:p5-container-source','test:p5-evidence-source','test:p5-cache-jobs','test:p5-redis-source','test:p5-realtime-labs','test:p5-realtime-source','test:p5-integrations-labs','test:p5-integrations-source','test:p5-integrations-http','test:p5-postgres-search-source','test:p5-webhook-integrity'];
+const p5=['test:p5-security','test:p5-postgresql-source','test:p5-rls-source','test:p5-curriculum-source','test:p5-httpdb-source','test:p5-container-source','test:p5-evidence-source','test:p5-cache-jobs','test:p5-redis-source','test:p5-realtime-labs','test:p5-realtime-source','test:p5-integrations-labs','test:p5-integrations-source','test:p5-integrations-http','test:p5-postgres-search-source','test:p5-webhook-integrity','test:p5-durable-inbox','test:p5-durable-http'];
 const scripts=Object.fromEntries([...phase,...p5].map(name=>[name,'node --test source.test.mjs']));
 scripts['test:p5-bundle']=p5.map(name=>'npm run '+name).join(' && ');
 const source=(steps=phase)=>`import {requireReleaseNodeRuntime} from './release-runtime.mjs';\nconst steps = [\n${steps.map(x=>`  '${x}',`).join('\n')}\n];\nrequireReleaseNodeRuntime(process.version);`;
 const run=(changes={})=>auditOfflineMatrix({offlineSource:source(),scripts,...changes});
 const expect=(report,text)=>assert.ok(report.errors.some(x=>x.includes(text)),JSON.stringify(report.errors));
-test('valid source-only coverage matrix',()=>{const r=run();assert.equal(r.ok,true,JSON.stringify(r.errors));assert.equal(r.requiredP5Count,16);});
+test('valid source-only coverage matrix',()=>{const r=run();assert.equal(r.ok,true,JSON.stringify(r.errors));assert.equal(r.requiredP5Count,18);});
 test('no P5 bundle in full gate is rejected',()=>expect(run({offlineSource:source(phase.filter(x=>x!=='test:p5-bundle'))}),'missing-required-release-step:test:p5-bundle'));
 test('no P5 HTTP test in bundle is rejected',()=>expect(run({scripts:{...scripts,'test:p5-bundle':scripts['test:p5-bundle'].replace('npm run test:p5-integrations-http','npm run test:p5-security')}}),'missing-p5-substep:npm run test:p5-integrations-http'));
 test('no webhook integrity gate in bundle is rejected',()=>expect(run({scripts:{...scripts,'test:p5-bundle':scripts['test:p5-bundle'].replace(' && npm run test:p5-webhook-integrity','')}}),'missing-p5-substep:npm run test:p5-webhook-integrity'));
@@ -20,3 +20,6 @@ test('missing static steps list rejected',()=>expect(run({offlineSource:'export 
 test('P5 injected chained shell command rejected',()=>expect(run({scripts:{...scripts,'test:p5-bundle':scripts['test:p5-bundle']+' && echo dangerous'}}),'unsafe-p5-bundle-command'));
 test('P5 duplicate script rejected',()=>expect(run({scripts:{...scripts,'test:p5-bundle':scripts['test:p5-bundle']+' && npm run test:p5-security'}}),'duplicate-p5-substep'));
 test('no published registry write implied by source audit',()=>assert.equal(phase.includes('promote:forms-query:rhf'),false));
+
+test('missing encrypted inbox source tests blocks release',()=>expect(run({scripts:{...scripts,'test:p5-bundle':scripts['test:p5-bundle'].replace(' && npm run test:p5-durable-inbox','')}}),'missing-p5-substep:npm run test:p5-durable-inbox'));
+test('missing durable HTTP restart tests blocks release',()=>expect(run({scripts:{...scripts,'test:p5-bundle':scripts['test:p5-bundle'].replace(' && npm run test:p5-durable-http','')}}),'missing-p5-substep:npm run test:p5-durable-http'));
