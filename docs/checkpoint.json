@@ -9,9 +9,9 @@
     "productionUrl": "https://fullstack-academy-ecru.vercel.app/"
   },
   "development": {
-    "branch": "feat/p5-real-http-postgres-qualification-20261123",
-    "state": "p5-track18-http-runtime-verified-postgres-source-guarded-no-publication",
-    "note": "Locally executed real Node22 loopback HTTP 78/78 and P5 PostgreSQL runner/source 20/20 tests; exact Git blob hashes match. PostgreSQL 17+ real SQL, full Node24/Next/browser and provider qualification remain pending. 338 published, 272 unpublished authored, 279 unauthored."
+    "branch": "feat/p5-webhook-release-gate-hardening-20261123",
+    "state": "p5-http-webhook-header-authentication-fixed-offline-gate-coverage-staged",
+    "note": "P5 teaching webhook v2 binds provider/event ID/time/raw body; 81 real Node22 HTTP, 15 webhook, 20 PostgreSQL source guards and 12 offline-matrix mutation tests passed in a partial exact-blob checkout (128 total). Full Node24/Next/real PostgreSQL/provider/browser/manual accessibility gates NOT run. Published count unchanged 338, 272 unpublished drafts, 279 unauthored."
   },
   "snapshot": {
     "tracks": 28,
@@ -73,6 +73,6 @@
     "devHighFindings": 14,
     "exceptionExpires": "2026-12-02"
   },
-  "nextMilestone": "On a genuine Node24 full repo checkout run npm ci, npm run test:p5-bundle and verify:offline/build. On a disposable loopback PostgreSQL17+ database with a non-privileged role, run qualify:p5:postgres-search, then real storage, email, webhooks and browser/human a11y before any lesson publication.",
-  "status": "p5-track18-http-qualified-real-postgres-unexecuted"
+  "nextMilestone": "Run clean Node24 npm ci, full verify:offline (now including P5), real PostgreSQL 17+ rollback-only SQL qualification, Nest/Prisma/Supabase runtime and browser/manual accessibility; do not promote unverified draft lessons or deploy.",
+  "status": "p5-source-release-matrix-hardened-not-published"
 }

@@ -92,7 +92,7 @@ export function createInstructorGateway({actors,secret,webhookBindings={},clock=
     if(!Number.isSafeInteger(timestamp)||Math.abs(clock()-timestamp)>300_000)throw FAIL(401,'unauthorized');
     const body=await readBounded(req,64*1024);
     const signature=req.headers['x-lab-signature'];
-    if(!body.length||!equalMac(signature,signWebhook(binding.secret,body,timestamp)))throw FAIL(401,'unauthorized');
+    if(!body.length||!equalMac(signature,signWebhook(binding.secret,body,timestamp,provider,eventId)))throw FAIL(401,'unauthorized');
     const key=JSON.stringify([provider,binding.tenantId,eventId]);
     const digest=createHash('sha256').update(body).digest('hex');
     const old=deliveries.get(key);

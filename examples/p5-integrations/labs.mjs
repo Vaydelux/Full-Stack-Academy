@@ -107,16 +107,22 @@ export class TenantSearch {
  }
 }
 
-export function signWebhook(secret,body,timestamp){insist(nonempty(secret)&&Number.isSafeInteger(timestamp),'invalid-webhook');return mac(secret,`${timestamp}.`+raw(body).toString('base64'));}
+/** Illustrative protocol v2: bind provider + delivery ID + time + exact raw bytes.
+ * Real providers use their own documented signature algorithms. */
+export function signWebhook(secret,body,timestamp,provider,eventId){
+ insist([secret,provider,eventId].every(nonempty)&&Number.isSafeInteger(timestamp),'invalid-webhook');
+ return mac(secret,JSON.stringify(['p5-webhook-v2',provider,eventId,timestamp,raw(body).toString('base64')]));
+}
 export class WebhookInbox {
  #events=new Map();
  accept({provider,tenantId,eventId,body,timestamp,signature,secret,now=Date.now()}){
   insist([provider,tenantId,eventId,secret].every(nonempty),'invalid-webhook');
   insist(Buffer.isBuffer(body) && body.length>0 && body.length<=64*1024,'invalid-body');
   insist(Number.isSafeInteger(now)&&Number.isSafeInteger(timestamp)&&Math.abs(now-timestamp)<=300_000,'stale-webhook');
-  insist(typeof signature==='string' && sameHex(signature,signWebhook(secret,body,timestamp)),'invalid-signature');
+  insist(typeof signature==='string' && sameHex(signature,signWebhook(secret,body,timestamp,provider,eventId)),'invalid-signature');
   const id=JSON.stringify([provider,tenantId,eventId]);
-  if(this.#events.has(id))return {status:'duplicate',id};
+  const existing=this.#events.get(id);
+  if(existing){insist(existing.body.equals(body),'delivery-conflict');return {status:'duplicate',id};}
   const record={id,provider,tenantId,eventId,status:'pending',body:Buffer.from(body)};
   this.#events.set(id,record);return {status:'accepted',id};
  }

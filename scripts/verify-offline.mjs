@@ -5,6 +5,7 @@ import { requireReleaseNodeRuntime } from './release-runtime.mjs';
 
 const steps = [
   'test:js-syntax',
+  'test:release-gate-coverage',
   'test:vercel-freeze',
   'lint',
   'typecheck',
@@ -47,6 +48,7 @@ const steps = [
   'test:publication-phases',
   'test:course-roadmap',
   'test:p4-source',
+  'test:p5-bundle',
   'test:release-runtime',
   'test:postgresql-modeling-source',
   'test:postgresql-p3-source',
