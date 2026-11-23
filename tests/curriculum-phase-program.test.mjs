@@ -118,11 +118,11 @@ test('phased authoring never double-counts topics and preserves module coverage 
  assert.deepEqual(p2.modules.map(m=>m.published+m.staged),[8,8,8,8]);
  assert.deepEqual(p3.modules.map(m=>[m.id,m.published+m.staged]),
   [['12.01',8],['12.02',8],['12.03',8],['12.04',8],['12.05',8]]);
- const p4Expected=['13.01','13.02','14.01','14.02','14.03'];
+ const p4Expected=['13.01','13.02','13.03','13.04','14.01','14.02','14.03','14.04'];
  assert.deepEqual(p4.modules.filter(m=>p4Expected.includes(m.id))
    .map(m=>[m.id,m.published+m.staged]),p4Expected.map(id=>[id,8]));
  assert.equal(p3.published+p3.staged,40);
- assert.ok(p4.published+p4.staged>=40,'P4 foundational authoring coverage must not regress');
+ assert.equal(p4.published+p4.staged,64,'Complete 64-topic P4 authoring coverage must be retained');
  assert.equal(current.baseline.published+current.baseline.staged+current.baseline.unstaged,
   current.baseline.topics);
  assert.equal(current.baseline.topics,889);
