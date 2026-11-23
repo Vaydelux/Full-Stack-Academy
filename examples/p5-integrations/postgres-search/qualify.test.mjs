@@ -1,0 +1,38 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {mkdtempSync,writeFileSync,readFileSync,rmSync,chmodSync} from 'node:fs';
+import {tmpdir} from 'node:os';
+import {resolve,join,dirname} from 'node:path';
+import {fileURLToPath} from 'node:url';
+import {qualify,validateOptions} from './qualify.mjs';
+const base={db:'p5_lab_search_qualification',host:'127.0.0.1',port:'5432',user:'p5_student',confirm:'I_UNDERSTAND_DISPOSABLE_DB',confirmDb:'p5_lab_search_qualification',run:'--run'};
+const sql=readFileSync(resolve(dirname(fileURLToPath(import.meta.url)),'qualification.sql'),'utf8');
+const error=(changes,part)=>assert.ok(validateOptions({...base,...changes}).some(s=>s.includes(part)));
+test('valid explicit disposable loopback options',()=>assert.deepEqual(validateOptions(base),[]));
+test('wrong database prefix refused',()=>error({db:'production'},'Disposable'));
+test('database SQL injection refused',()=>error({db:"p5_lab_search_a;DROP TABLE x"},'Disposable'));
+test('hostname refused',()=>error({host:'localhost'},'loopback'));
+test('remote database refused',()=>error({host:'db.example.com'},'loopback'));
+test('invalid low port refused',()=>error({port:'0'},'port'));
+test('invalid high port refused',()=>error({port:'70000'},'port'));
+test('non-numeric port refused',()=>error({port:'5432;echo x'},'port'));
+test('username SQL injection refused',()=>error({user:'postgres;drop'},'role'));
+test('missing run flag refused',()=>error({run:null},'--run'));
+test('first confirmation required',()=>error({confirm:''},'First confirmation'));
+test('second confirmation must equal DB',()=>error({confirmDb:'p5_lab_search_other'},'Second confirmation'));
+test('safe guard failure refuses to invoke fake binary',()=>assert.throws(()=>qualify({...base,host:'remote.invalid',psql:'/should-not-exist'}),/loopback/));
+test('all 15 SQL checks are present and numbered',()=>{for(let i=1;i<=15;i++)assert.match(sql,new RegExp('^-- '+String(i).padStart(2,'0')+':','m'));});
+test('SQL fixture encloses all work in one rollback transaction',()=>{assert.match(sql,/\bBEGIN;[\s\S]*ROLLBACK;\s*$/);assert.doesNotMatch(sql,/\bCOMMIT\b/i);});
+test('SQL uses FORCE RLS and tenant plus owner policies',()=>{assert.match(sql,/FORCE ROW LEVEL SECURITY/);assert.match(sql,/current_setting\('app\.tenant_id', true\)/);assert.match(sql,/current_setting\('app\.actor_id', true\)/);});
+test('SQL includes index, trigram and stale revision coverage',()=>{for(const s of ['pg_trgm','GIN','tsvector','ts_rank','similarity','version < 3','P5_SEARCH_SQL_15_ASSERTIONS_PASSED'])assert.ok(sql.includes(s));});
+test('nonexistent psql cannot be reported as a success',()=>assert.throws(()=>qualify({...base,psql:'/definitely/does/not/exist'}),/preflight failed/));
+test('missing SQL success marker is never accepted',t=>{
+ const tmp=mkdtempSync(join(tmpdir(),'p5-psql-guard-'));t.after(()=>rmSync(tmp,{recursive:true,force:true}));
+ const stub=join(tmp,'psql');writeFileSync(stub,`#!/bin/sh\ncase " $* " in *'--tuples-only'*) printf 'P5_SEARCH_SAFE_ROLE\\n' ;; *) printf 'SQL without success marker\\n' ;; esac\n`);chmodSync(stub,0o700);
+ assert.throws(()=>qualify({...base,psql:stub}),/SQL qualification failed/);
+});
+test('fake psql preflight DENIED is rejected before SQL run',t=>{
+ const tmp=mkdtempSync(join(tmpdir(),'p5-preflight-'));t.after(()=>rmSync(tmp,{recursive:true,force:true}));const stub=join(tmp,'psql');
+ writeFileSync(stub,'#!/bin/sh\nprintf "DENIED\\n"\n');chmodSync(stub,0o700);
+ assert.throws(()=>qualify({...base,psql:stub}),/preflight failed/);
+});
