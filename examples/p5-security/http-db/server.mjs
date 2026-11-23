@@ -13,7 +13,7 @@ async function parseBody(req){
 export function createHttpDbLab(repository,{now=()=>Date.now(),key=randomBytes(32)}={}){
  const sessions=new Map();
  function issue(userId,expiresIn=120000){
-  if(!['alice','bob','viewer'].includes(userId))throw Error('unknown synthetic identity');
+  if(!['alice','bob','viewer','suspended'].includes(userId))throw Error('unknown synthetic identity');
   const sid=randomBytes(16).toString('hex');sessions.set(sid,userId);
   const payload=Buffer.from(JSON.stringify({sid,exp:now()+expiresIn})).toString('base64url');
   return payload+'.'+sign(payload,key);
@@ -32,6 +32,12 @@ export function createHttpDbLab(repository,{now=()=>Date.now(),key=randomBytes(3
    const actor=principal(req.headers.cookie);
    if(!actor)return respond(res,401,{error:'unauthenticated'});
    if(req.method!=='GET'&&req.headers.origin!==origin)return respond(res,403,{error:'invalid_origin'});
+   if(req.method==='POST'&&path==='/sessions/logout'){
+    const raw=cookieValue(req.headers.cookie);
+    const payload=JSON.parse(Buffer.from(raw.split('.')[0],'base64url').toString('utf8'));
+    sessions.delete(payload.sid);
+    return respond(res,200,{loggedOut:true});
+   }
    const match=/^\/documents\/([a-z0-9-]{1,40})$/.exec(path);
    if(match&&['GET','PATCH','DELETE'].includes(req.method)){
     let action=req.method==='GET'?'read':req.method==='PATCH'?'update':'delete';

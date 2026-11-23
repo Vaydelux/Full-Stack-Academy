@@ -43,3 +43,28 @@ The integration program **does not run on install, push, build or publication**.
 This lab uses custom HMAC **test-only sessions**, not genuine JWT, OIDC, MFA, browser cookie issuance or Supabase Auth. The database role derives its transaction-local `p5.actor` value from an authenticated **synthetic** server principal. Direct database clients with the ability to set that value could impersonate users; never expose this role to them. `psql` is launched per request for pedagogical clarity, **not production throughput**; production requires a maintained pooled client with a genuine lockfile and independently tested privilege boundaries.
 
 The upload-intent endpoint constructs a private-looking path but does not issue a real signed URL or accept/scan bytes. Strict origin checks alone do not implement full CSRF defenses. Security claims are limited to the synthetic fixture. **No actual PostgreSQL execution was possible in the authoring environment**, and no P5 lesson is ready for publication. Earlier P1–P4 releases, Node24, real provider authentication, storage integration and browser accessibility remain separate gates.
+
+## Additional P5 hardening exercises (2026-11-23)
+
+The source hardening exercise now includes:
+
+- A synthetic server-side logout route (`POST /sessions/logout`) that invalidates the existing signed test session. It requires the lab's expected `Origin`, and neither the cookie nor the account name is accepted as the source of tenant authority.
+- A separate **fixture-administrator-only** `revokeForQualification(userId)` method and `revoke.sql`, replacing the earlier generic `action('revoke')` pathway. No HTTP route exposes this method.
+- Suspended and deleted-record fixtures; the upload query now independently checks the principal's active account, active membership, eligible role, and non-deleted/unlocked document.
+- A stricter preflight that requires PostgreSQL 17+, the expected database, `row_security=on`, and a connection role that is neither superuser nor `BYPASSRLS`.
+- 16 additional negative/administrative tests in `hardening.test.mjs`, plus updates to the original 23-test source suite.
+- A larger, still unexecuted real PostgreSQL acceptance program that verifies logout, suspension, deleted documents, and fixture revocation alongside tenant isolation.
+
+Run the **source and synthetic HTTP** qualification on Node 22+:
+
+```bash
+node --test examples/p5-security/http-db/source.test.mjs examples/p5-security/http-db/hardening.test.mjs
+```
+
+Run the genuine **disposable local PostgreSQL** acceptance only after verifying the instance and setting the two opt-in environment variables documented above:
+
+```bash
+npm run qualify:p5:http-db
+```
+
+**Scope warning:** these are intentionally synthetic sessions and a teaching-only per-request `psql` adapter. Session cookies are not issued by a real IdP, uploads are only intent metadata (no file bytes or malware scanning), and a database actor GUC is trusted only because the pedagogical HTTP server sets it from a verified synthetic principal. This is not a reusable production security architecture. Do not enable the Academy's publication or deployment based on source tests.

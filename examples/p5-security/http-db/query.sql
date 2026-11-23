@@ -14,11 +14,7 @@ SELECT COALESCE((SELECT row_to_json(deleted)::text FROM deleted),'null');
 \endif
 \if :{?P5_UPLOAD}
 SELECT COALESCE((SELECT json_build_object('tenantId',d.tenant_id,'documentId',d.id)::text FROM :"schema".documents d
- WHERE d.id=:'doc_id' AND NOT d.locked AND EXISTS (SELECT 1 FROM :"schema".memberships m
- WHERE m.user_id=:'actor' AND m.tenant_id=d.tenant_id AND m.active AND m.role IN ('owner','editor'))), 'null');
-\endif
-\if :{?P5_REVOKE}
-UPDATE :"schema".memberships SET active=false WHERE user_id=:'doc_id';
-SELECT '{"revoked":true}';
+ WHERE d.id=:'doc_id' AND NOT d.locked AND NOT d.deleted AND EXISTS (SELECT 1 FROM :"schema".memberships m JOIN :"schema".users u ON u.id=m.user_id
+ WHERE m.user_id=:'actor' AND m.tenant_id=d.tenant_id AND m.active AND u.active AND m.role IN ('owner','editor'))), 'null');
 \endif
 COMMIT;

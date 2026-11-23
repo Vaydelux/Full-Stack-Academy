@@ -5,8 +5,10 @@ CREATE TABLE :"schema".users (id text PRIMARY KEY, active boolean NOT NULL DEFAU
 CREATE TABLE :"schema".memberships (user_id text NOT NULL REFERENCES :"schema".users(id),tenant_id text NOT NULL,role text NOT NULL CHECK (role IN ('owner','editor','viewer')),active boolean NOT NULL DEFAULT true,PRIMARY KEY(user_id,tenant_id));
 CREATE TABLE :"schema".documents (id text PRIMARY KEY,tenant_id text NOT NULL,title text NOT NULL,locked boolean NOT NULL DEFAULT false,deleted boolean NOT NULL DEFAULT false);
 INSERT INTO :"schema".users (id) VALUES ('alice'),('bob'),('viewer');
-INSERT INTO :"schema".memberships(user_id,tenant_id,role) VALUES ('alice','alpha','owner'),('bob','beta','owner'),('viewer','alpha','viewer');
+INSERT INTO :"schema".users(id,active) VALUES ('suspended',false);
+INSERT INTO :"schema".memberships(user_id,tenant_id,role) VALUES ('alice','alpha','owner'),('bob','beta','owner'),('viewer','alpha','viewer'),('suspended','alpha','owner');
 INSERT INTO :"schema".documents(id,tenant_id,title,locked) VALUES ('alpha-1','alpha','Alpha',false),('beta-1','beta','Beta',false),('alpha-locked','alpha','Locked',true);
+INSERT INTO :"schema".documents(id,tenant_id,title,deleted) VALUES ('alpha-deleted','alpha','Deleted',true);
 ALTER TABLE :"schema".documents ENABLE ROW LEVEL SECURITY;
 ALTER TABLE :"schema".documents FORCE ROW LEVEL SECURITY;
 CREATE POLICY p5_select ON :"schema".documents FOR SELECT USING (
