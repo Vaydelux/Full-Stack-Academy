@@ -53,3 +53,7 @@ npm run test:release-gate-coverage
 ```
 
 **Important limits:** Snapshot writes are single-process teaching primitives, not a distributed lock or PostgreSQL transaction. Multiple workers acting concurrently may still race; single-process stale detection is only a guard, not a complete concurrency solution. The encrypted file snapshot is bounded, no encryption-key rotation is implemented, and a real provider must have its own documented signature protocol. Use real PostgreSQL + transactional outbox/inbox and authentic vendor adapters before any production or curriculum-publication claim.
+
+## Snapshot size safety (post-merge hardening)
+
+Snapshot capacity is bounded at write time by `maxStoreBytes` (default 16 MiB), the same ceiling enforced when reopening the file. Oversize writes return `inbox-storage-capacity` without modifying the last valid committed snapshot. This limit is independent of the event-count and per-event byte limits. A tested safe restart is not a claim of multi-process safety, actual cloud storage durability or real provider delivery.

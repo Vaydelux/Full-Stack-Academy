@@ -9,9 +9,9 @@
     "productionUrl": "https://fullstack-academy-ecru.vercel.app/"
   },
   "development": {
-    "branch": "feat/p5-encrypted-durable-webhook-inbox-20261123",
-    "state": "p5-encrypted-durable-inbox-source-verified-not-production-or-published",
-    "note": "Added optional encrypted file-backed, crash-recoverable synthetic webhook inbox for Track 18 with tenant-scoped signed deduplication, AES-256-GCM, fsync/rename, lease fencing, bounded attempts and stale-snapshot detection. 168/168 targeted Node22 tests passed on exact Git-blob matched code, including live loopback HTTP restart. No PostgreSQL server, Node24 full build or provider integration executed. 338 published unchanged."
+    "branch": "fix/p5-inbox-snapshot-size-guard-20261123",
+    "state": "p5-encrypted-durable-inbox-restart-capacity-repaired-unpublished",
+    "note": "Repaired a 16MiB restart ceiling inconsistency: new persisted snapshots are bounded at write time; no accepted event can push the file beyond the configured valid reopen limit. Two new negative/reopen tests; six targeted Node22 suites 170/170 passed against Git blob identical sources. Node24/real Postgres/browser/provider release gates not run. 338 published unchanged."
   },
   "snapshot": {
     "tracks": 28,
@@ -73,6 +73,6 @@
     "devHighFindings": 14,
     "exceptionExpires": "2026-12-02"
   },
-  "nextMilestone": "Run clean full-checkout Node24 npm ci and verify:offline; real PostgreSQL 17 rollback SQL, provider-native webhook signature adapter, multi-process ACID backing store, key rotation tests and manual accessibility before publishing.",
-  "status": "p5-encrypted-durable-inbox-teaching-lab-not-production"
+  "nextMilestone": "Full clean Node24 npm ci & verify:offline; real PostgreSQL SQL, transactional durable inbox with concurrent workers, provider-native signatures and key-rotation tests; browser accessibility review, then sequential publication.",
+  "status": "p5-durable-inbox-capacity-guard-source-qualified-not-published"
 }

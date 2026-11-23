@@ -59,3 +59,14 @@ test('stale claim cannot silently overwrite a newer completion',t=>{
  fails(()=>stale.claim(event.id),'stale-inbox-snapshot');
  assert.equal(s.open().inspect(event.id).status,'processed');
 });
+
+test('snapshot byte limit blocks writes before exceeding restart validation ceiling',t=>{
+ const s=setup(t,{maxStoreBytes:1024}),a=s.open();
+ const first=a.accept(s.input());
+ fails(()=>a.accept(s.input({eventId:'delivery-2',body:Buffer.alloc(500,65)})),'inbox-storage-capacity');
+ assert.equal(s.open().inspect(first.id).status,'pending');
+ assert.equal(s.open().inspect(JSON.stringify(['sender','north','delivery-2'])),null);
+});
+test('unsafe snapshot size configuration rejected before writing',t=>{
+ const s=setup(t);fails(()=>s.open({maxStoreBytes:10}),'invalid-store-limit');
+});
