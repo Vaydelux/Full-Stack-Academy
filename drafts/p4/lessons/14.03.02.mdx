@@ -1,0 +1,91 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["auth.uid() identifies the caller for requests bearing an authenticated Supabase JWT. The Postgres authenticated role is a broad capability class, not evidence that the caller owns a particular row.","Pair TO authenticated with an auth.uid()-based owner predicate and an explicit non-null requirement; avoid user-editable user_metadata for permissions.","Supabase Auth anonymous sign-ins can use the authenticated Postgres role; TO authenticated does not necessarily mean a permanent nonanonymous identity. Enforce app-specific eligibility separately."]} />
+
+## Security defect and threat model
+
+**auth.uid and roles.** auth.uid() identifies the caller for requests bearing an authenticated Supabase JWT. The Postgres authenticated role is a broad capability class, not evidence that the caller owns a particular row.
+
+**The vulnerable starting point:** The starter gives any caller in the authenticated Postgres role access to all tasks and ignores row ownership.
+
+An attacker may know an ID, send arbitrary query parameters, or hold a legitimate authenticated account. An application is not secure merely because the login screen works. The database and the authenticated server must prevent one actor from accessing another actor's rows or private objects.
+
+## Mental model and prerequisites
+
+Complete **14.03.01**. auth.uid() identifies the caller for requests bearing an authenticated Supabase JWT. The Postgres authenticated role is a broad capability class, not evidence that the caller owns a particular row.
+
+The exercises use **only** synthetic test data in a disposable local Supabase stack. `public.academy_lab_tasks` and `public.academy_lab_memberships` are educational fixture names, not production tables. Never run lab policies against a live customer schema. This source is a **draft**, not a verified permission test or evidence of a running database.
+
+**Before coding:** The starter gives any caller in the authenticated Postgres role access to all tasks and ignores row ownership. Explain the relevant actor, SQL role, table privilege, policy predicate, sensitive row, and how an attacker could observe an unauthorized result.
+
+## Guided repair
+
+<LessonStep number={1} title="Reproduce the permissive or privileged access path" file="drafts/p4/labs/auth-uid-and-role-scope/starter.sql" expected="Identify why an authenticated request may still cross its authorization boundary.">
+
+```sql
+CREATE POLICY lab_tasks_authenticated_read ON public.academy_lab_tasks
+ FOR SELECT TO authenticated USING (true);
+```
+
+**Why this fails:** The starter gives any caller in the authenticated Postgres role access to all tasks and ignores row ownership. Do not accept a successful schema statement as proof of row privacy.
+
+</LessonStep>
+
+<LessonStep number={2} title="Write the defensive policy or server boundary" file="drafts/p4/labs/auth-uid-and-role-scope/solution.sql" expected="Constrain operations by caller identity and permitted resources.">
+
+```sql
+ALTER TABLE public.academy_lab_tasks ENABLE ROW LEVEL SECURITY;
+CREATE POLICY lab_tasks_authenticated_owner ON public.academy_lab_tasks
+ FOR SELECT TO authenticated
+ USING ((SELECT auth.uid()) IS NOT NULL
+   AND owner_id = (SELECT auth.uid()));
+```
+
+**How the defense works:** Pair TO authenticated with an auth.uid()-based owner predicate and an explicit non-null requirement; avoid user-editable user_metadata for permissions.
+
+</LessonStep>
+
+<LessonStep number={3} title="Prove allow and deny with real Supabase identities" file="drafts/p4/labs/auth-uid-and-role-scope/acceptance.md" expected="A real denied cross-actor operation and an authorized operation are independently observed.">
+
+**Required positive test:** Use the real Supabase Auth local stack and actual client JWTs. Log expected allowed/denied rows while withholding token contents from Git.
+
+**Required negative test:** Try a second user, no JWT and an anonymous sign-in user. Confirm policy decisions use ownership and verified identity rather than role name alone.
+
+**Caveat:** Supabase Auth anonymous sign-ins can use the authenticated Postgres role; TO authenticated does not necessarily mean a permanent nonanonymous identity. Enforce app-specific eligibility separately.
+
+A static code-fence match or even a SQL statement compiling is not evidence that a privileged role, policy composition, JWT, Storage signed URL or application-level permission boundary is correct.
+
+</LessonStep>
+
+## Security review and implementation details
+
+auth.uid() identifies the caller for requests bearing an authenticated Supabase JWT. The Postgres authenticated role is a broad capability class, not evidence that the caller owns a particular row.
+
+Pair TO authenticated with an auth.uid()-based owner predicate and an explicit non-null requirement; avoid user-editable user_metadata for permissions.
+
+Supabase Auth anonymous sign-ins can use the authenticated Postgres role; TO authenticated does not necessarily mean a permanent nonanonymous identity. Enforce app-specific eligibility separately.
+
+RLS applies subject to PostgreSQL roles, table ownership, policy composition and operation type. In an exposed schema, verify grants and RLS together. For writes, review INSERT WITH CHECK and UPDATE USING/WITH CHECK, not just SELECT. In Supabase, do not use user-editable `user_metadata` as authority for privileged roles. A service-role client may bypass RLS; it must not be used to repair a client permission error.
+
+## Bug Hunt and regression matrix
+
+1. Predict the disclosure caused by the starter: The starter gives any caller in the authenticated Postgres role access to all tasks and ignores row ownership.
+2. Confirm one valid user can complete the intended action.
+3. Attempt the forbidden action with a different user: Try a second user, no JWT and an anonymous sign-in user. Confirm policy decisions use ownership and verified identity rather than role name alone.
+4. Apply the policy/server repair: Pair TO authenticated with an auth.uid()-based owner predicate and an explicit non-null requirement; avoid user-editable user_metadata for permissions.
+5. Retest with anon, two authenticated identities and any privileged path: Supabase Auth anonymous sign-ins can use the authenticated Postgres role; TO authenticated does not necessarily mean a permanent nonanonymous identity. Enforce app-specific eligibility separately.
+
+<Misconception claim={"The starter gives any caller in the authenticated Postgres role access to all tasks and ignores row ownership."} correction={"auth.uid() identifies the caller for requests bearing an authenticated Supabase JWT. The Postgres authenticated role is a broad capability class, not evidence that the caller owns a particular row."} />
+<KnowledgeCheck question={"Why is TO authenticated alone insufficient?"} choices={["It disables SQL indexes","It identifies a role class but does not restrict rows to the caller","It always returns null","It authenticates as the table owner"]} correctIndex={1} explanation={"Pair TO authenticated with an auth.uid()-based owner predicate and an explicit non-null requirement; avoid user-editable user_metadata for permissions."} misconception={"Supabase Auth anonymous sign-ins can use the authenticated Postgres role; TO authenticated does not necessarily mean a permanent nonanonymous identity. Enforce app-specific eligibility separately."} lessonId="14.03.02" />
+
+## Security extension and release conditions
+
+Extend the access matrix to SELECT, INSERT, UPDATE and DELETE where applicable. Build a pgTAP or equivalent isolated integration test that fails on the deliberately permissive starter and passes on the narrow policy. Run requests through the same Supabase Data API and authenticated route as the real app; test with the least-privileged role first. Include a second database connection if RLS behavior depends on transaction state.
+
+Keep copies of all policy test results sanitized. Do not move this manuscript to the published registry before an explicit human security review and actual local RLS test runs.
+
+## Official references
+
+- [Supabase official reference — auth.uid and roles](https://supabase.com/docs/guides/database/postgres/row-level-security)
+- [Supabase RLS testing](https://supabase.com/docs/guides/database/postgres/testing-row-level-security)

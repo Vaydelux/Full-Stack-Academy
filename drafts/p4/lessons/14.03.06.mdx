@@ -1,0 +1,108 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["A service-role secret can bypass RLS, so privileged operations require their own trusted server authorization and narrow query conditions. It is never a workaround for a missing client policy.","Move the client into a server-only module, resolve the actor from verified server Auth and membership state, check moderation permission and tenant, and return sanitized errors.","A caller-controlled actor object cannot be trusted even if typed in TypeScript. Enforce privilege checks with fresh trusted data; short-lived JWTs and session revocation matter for sensitive operations."]} />
+
+## Security defect and threat model
+
+**Secure service-role operations.** A service-role secret can bypass RLS, so privileged operations require their own trusted server authorization and narrow query conditions. It is never a workaround for a missing client policy.
+
+**The vulnerable starting point:** The starter exposes a secret key to browser code and applies an unrestricted privileged update without validating the actor's tenant or permissions.
+
+An attacker may know an ID, send arbitrary query parameters, or hold a legitimate authenticated account. An application is not secure merely because the login screen works. The database and the authenticated server must prevent one actor from accessing another actor's rows or private objects.
+
+## Mental model and prerequisites
+
+Complete **14.03.05**. A service-role secret can bypass RLS, so privileged operations require their own trusted server authorization and narrow query conditions. It is never a workaround for a missing client policy.
+
+The exercises use **only** synthetic test data in a disposable local Supabase stack. `public.academy_lab_tasks` and `public.academy_lab_memberships` are educational fixture names, not production tables. Never run lab policies against a live customer schema. This source is a **draft**, not a verified permission test or evidence of a running database.
+
+**Before coding:** The starter exposes a secret key to browser code and applies an unrestricted privileged update without validating the actor's tenant or permissions. Explain the relevant actor, SQL role, table privilege, policy predicate, sensitive row, and how an attacker could observe an unauthorized result.
+
+## Guided repair
+
+<LessonStep number={1} title="Reproduce the permissive or privileged access path" file="drafts/p4/labs/narrow-service-role-operations/starter.ts" expected="Identify why an authenticated request may still cross its authorization boundary.">
+
+```ts
+// Unsafe: browser code must never construct a privileged service client.
+const admin = createClient(publicUrl, process.env.NEXT_PUBLIC_SUPABASE_SECRET_KEY!);
+await admin.from("documents").update({ active: false }).eq("id", documentId);
+```
+
+**Why this fails:** The starter exposes a secret key to browser code and applies an unrestricted privileged update without validating the actor's tenant or permissions. Do not accept a successful schema statement as proof of row privacy.
+
+</LessonStep>
+
+<LessonStep number={2} title="Write the defensive policy or server boundary" file="drafts/p4/labs/narrow-service-role-operations/solution.ts" expected="Constrain operations by caller identity and permitted resources.">
+
+```ts
+import "server-only";
+import { createClient } from "@supabase/supabase-js";
+// actor must have been resolved from verified Auth + trusted server DB membership.
+async function moderateDocument(
+  actor: { id: string; tenantId: string; canModerate: boolean },
+  documentId: string,
+) {
+  if (!actor.id || !actor.tenantId || !actor.canModerate || !documentId)
+    throw new Error("Forbidden");
+  const url = process.env.SUPABASE_URL;
+  const key = process.env.SUPABASE_SECRET_KEY;
+  if (!url || !key) throw new Error("Missing server credentials");
+  const admin = createClient(url, key, {
+    auth: { autoRefreshToken: false, persistSession: false },
+  });
+  const { error } = await admin.from("documents")
+    .update({ active: false })
+    .eq("id", documentId)
+    .eq("tenant_id", actor.tenantId);
+  if (error) throw new Error("Moderation failed");
+}
+```
+
+**How the defense works:** Move the client into a server-only module, resolve the actor from verified server Auth and membership state, check moderation permission and tenant, and return sanitized errors.
+
+</LessonStep>
+
+<LessonStep number={3} title="Prove allow and deny with real Supabase identities" file="drafts/p4/labs/narrow-service-role-operations/acceptance.md" expected="A real denied cross-actor operation and an authorized operation are independently observed.">
+
+**Required positive test:** Use a disposable project to test service role access with two tenants, a legitimate moderator and a nonmoderator. Inspect secrets in browser builds and verify audit logging.
+
+**Required negative test:** Try a malicious caller-supplied canModerate flag and an ID from another tenant. The server must derive permissions independently and keep the forbidden record unchanged.
+
+**Caveat:** A caller-controlled actor object cannot be trusted even if typed in TypeScript. Enforce privilege checks with fresh trusted data; short-lived JWTs and session revocation matter for sensitive operations.
+
+A static code-fence match or even a SQL statement compiling is not evidence that a privileged role, policy composition, JWT, Storage signed URL or application-level permission boundary is correct.
+
+</LessonStep>
+
+## Security review and implementation details
+
+A service-role secret can bypass RLS, so privileged operations require their own trusted server authorization and narrow query conditions. It is never a workaround for a missing client policy.
+
+Move the client into a server-only module, resolve the actor from verified server Auth and membership state, check moderation permission and tenant, and return sanitized errors.
+
+A caller-controlled actor object cannot be trusted even if typed in TypeScript. Enforce privilege checks with fresh trusted data; short-lived JWTs and session revocation matter for sensitive operations.
+
+RLS applies subject to PostgreSQL roles, table ownership, policy composition and operation type. In an exposed schema, verify grants and RLS together. For writes, review INSERT WITH CHECK and UPDATE USING/WITH CHECK, not just SELECT. In Supabase, do not use user-editable `user_metadata` as authority for privileged roles. A service-role client may bypass RLS; it must not be used to repair a client permission error.
+
+## Bug Hunt and regression matrix
+
+1. Predict the disclosure caused by the starter: The starter exposes a secret key to browser code and applies an unrestricted privileged update without validating the actor's tenant or permissions.
+2. Confirm one valid user can complete the intended action.
+3. Attempt the forbidden action with a different user: Try a malicious caller-supplied canModerate flag and an ID from another tenant. The server must derive permissions independently and keep the forbidden record unchanged.
+4. Apply the policy/server repair: Move the client into a server-only module, resolve the actor from verified server Auth and membership state, check moderation permission and tenant, and return sanitized errors.
+5. Retest with anon, two authenticated identities and any privileged path: A caller-controlled actor object cannot be trusted even if typed in TypeScript. Enforce privilege checks with fresh trusted data; short-lived JWTs and session revocation matter for sensitive operations.
+
+<Misconception claim={"The starter exposes a secret key to browser code and applies an unrestricted privileged update without validating the actor's tenant or permissions."} correction={"A service-role secret can bypass RLS, so privileged operations require their own trusted server authorization and narrow query conditions. It is never a workaround for a missing client policy."} />
+<KnowledgeCheck question={"What must be checked before using a Supabase service-role key to change a document?"} choices={["Only that documentId is nonempty","Server-verified actor privileges and resource/tenant scope","Only the NEXT_PUBLIC key","That the UI is dark mode"]} correctIndex={1} explanation={"Move the client into a server-only module, resolve the actor from verified server Auth and membership state, check moderation permission and tenant, and return sanitized errors."} misconception={"A caller-controlled actor object cannot be trusted even if typed in TypeScript. Enforce privilege checks with fresh trusted data; short-lived JWTs and session revocation matter for sensitive operations."} lessonId="14.03.06" />
+
+## Security extension and release conditions
+
+Extend the access matrix to SELECT, INSERT, UPDATE and DELETE where applicable. Build a pgTAP or equivalent isolated integration test that fails on the deliberately permissive starter and passes on the narrow policy. Run requests through the same Supabase Data API and authenticated route as the real app; test with the least-privileged role first. Include a second database connection if RLS behavior depends on transaction state.
+
+Keep copies of all policy test results sanitized. Do not move this manuscript to the published registry before an explicit human security review and actual local RLS test runs.
+
+## Official references
+
+- [Supabase official reference — Secure service-role operations](https://supabase.com/docs/guides/getting-started/api-keys)
+- [Supabase RLS testing](https://supabase.com/docs/guides/database/postgres/testing-row-level-security)

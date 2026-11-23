@@ -1,0 +1,20 @@
+{
+  "id": "14.03.01",
+  "title": "RLS policy mechanics",
+  "trackId": "14",
+  "moduleId": "14.03",
+  "prerequisites": [
+    "14.01.08"
+  ],
+  "labSlug": "deny-by-default-rls",
+  "sourceStatus": "draft-unverified",
+  "runtimeQualification": "not-run",
+  "reviewStatus": "unreviewed",
+  "readyToPublish": false,
+  "estimatedMinutes": 70,
+  "officialReferences": [
+    "https://supabase.com/docs/guides/database/postgres/row-level-security",
+    "https://supabase.com/docs/guides/database/postgres/testing-row-level-security"
+  ],
+  "exerciseFormat": "sql"
+}

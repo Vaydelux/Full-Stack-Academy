@@ -1,0 +1,20 @@
+{
+  "id": "14.03.03",
+  "title": "Policy tests",
+  "trackId": "14",
+  "moduleId": "14.03",
+  "prerequisites": [
+    "14.03.02"
+  ],
+  "labSlug": "rls-denial-tests",
+  "sourceStatus": "draft-unverified",
+  "runtimeQualification": "not-run",
+  "reviewStatus": "unreviewed",
+  "readyToPublish": false,
+  "estimatedMinutes": 70,
+  "officialReferences": [
+    "https://supabase.com/docs/guides/database/postgres/testing-row-level-security",
+    "https://supabase.com/docs/guides/database/postgres/testing-row-level-security"
+  ],
+  "exerciseFormat": "sql"
+}

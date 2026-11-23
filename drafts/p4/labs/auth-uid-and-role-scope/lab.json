@@ -1,0 +1,16 @@
+{
+  "id": "draft.p4.auth-uid-and-role-scope",
+  "lessonId": "14.03.02",
+  "moduleId": "14.03",
+  "sourceStatus": "draft-unverified",
+  "readyToPublish": false,
+  "runtimeQualification": "not-run",
+  "reviewStatus": "unreviewed",
+  "qualificationKind": "manual-rls-positive-negative",
+  "language": "sql",
+  "starter": "drafts/p4/labs/auth-uid-and-role-scope/starter.sql",
+  "solution": "drafts/p4/labs/auth-uid-and-role-scope/solution.sql",
+  "acceptanceDoc": "drafts/p4/labs/auth-uid-and-role-scope/acceptance.md",
+  "officialReference": "https://supabase.com/docs/guides/database/postgres/row-level-security",
+  "requiresTwoAuthenticatedUsers": true
+}

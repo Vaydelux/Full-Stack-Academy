@@ -1,0 +1,101 @@
+import { LearningGoals, LessonStep, Misconception } from '@/components/course/LessonBlocks';
+import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
+
+<LearningGoals items={["A tenant ID is not authorization by itself. Membership rows must be protected and an RLS predicate must connect the caller's verified Auth identity to a tenant the caller actually belongs to.","Protect the membership table and use a membership EXISTS predicate to restrict task SELECT to tenants the caller belongs to.","Membership table RLS and query indexes are part of the security/performance boundary. An application-side tenant parameter must never override the membership policy."]} />
+
+## Security defect and threat model
+
+**Tenant isolation.** A tenant ID is not authorization by itself. Membership rows must be protected and an RLS predicate must connect the caller's verified Auth identity to a tenant the caller actually belongs to.
+
+**The vulnerable starting point:** The starter allows any authenticated caller to read any task with a non-null tenant ID.
+
+An attacker may know an ID, send arbitrary query parameters, or hold a legitimate authenticated account. An application is not secure merely because the login screen works. The database and the authenticated server must prevent one actor from accessing another actor's rows or private objects.
+
+## Mental model and prerequisites
+
+Complete **14.03.06**. A tenant ID is not authorization by itself. Membership rows must be protected and an RLS predicate must connect the caller's verified Auth identity to a tenant the caller actually belongs to.
+
+The exercises use **only** synthetic test data in a disposable local Supabase stack. `public.academy_lab_tasks` and `public.academy_lab_memberships` are educational fixture names, not production tables. Never run lab policies against a live customer schema. This source is a **draft**, not a verified permission test or evidence of a running database.
+
+**Before coding:** The starter allows any authenticated caller to read any task with a non-null tenant ID. Explain the relevant actor, SQL role, table privilege, policy predicate, sensitive row, and how an attacker could observe an unauthorized result.
+
+## Guided repair
+
+<LessonStep number={1} title="Reproduce the permissive or privileged access path" file="drafts/p4/labs/membership-tenant-isolation/starter.sql" expected="Identify why an authenticated request may still cross its authorization boundary.">
+
+```sql
+ALTER TABLE public.academy_lab_tasks ENABLE ROW LEVEL SECURITY;
+CREATE POLICY lab_any_tenant_read ON public.academy_lab_tasks
+ FOR SELECT TO authenticated
+ USING (tenant_id IS NOT NULL);
+```
+
+**Why this fails:** The starter allows any authenticated caller to read any task with a non-null tenant ID. Do not accept a successful schema statement as proof of row privacy.
+
+</LessonStep>
+
+<LessonStep number={2} title="Write the defensive policy or server boundary" file="drafts/p4/labs/membership-tenant-isolation/solution.sql" expected="Constrain operations by caller identity and permitted resources.">
+
+```sql
+ALTER TABLE public.academy_lab_memberships ENABLE ROW LEVEL SECURITY;
+CREATE POLICY lab_own_memberships ON public.academy_lab_memberships
+ FOR SELECT TO authenticated
+ USING (user_id = (SELECT auth.uid()));
+
+ALTER TABLE public.academy_lab_tasks ENABLE ROW LEVEL SECURITY;
+CREATE POLICY lab_member_tenant_read ON public.academy_lab_tasks
+ FOR SELECT TO authenticated
+ USING (EXISTS (
+   SELECT 1 FROM public.academy_lab_memberships m
+   WHERE m.tenant_id = academy_lab_tasks.tenant_id
+     AND m.user_id = (SELECT auth.uid())
+  ));
+```
+
+**How the defense works:** Protect the membership table and use a membership EXISTS predicate to restrict task SELECT to tenants the caller belongs to.
+
+</LessonStep>
+
+<LessonStep number={3} title="Prove allow and deny with real Supabase identities" file="drafts/p4/labs/membership-tenant-isolation/acceptance.md" expected="A real denied cross-actor operation and an authorized operation are independently observed.">
+
+**Required positive test:** Test with two local JWT accounts, including role-specific GRANT checks. Verify membership read policy denies unrelated rows and task policy respects the membership change.
+
+**Required negative test:** Seed alpha and beta tasks plus a user with membership only in alpha. Ask for beta tasks; expect no results. Remove their alpha membership and confirm access disappears.
+
+**Caveat:** Membership table RLS and query indexes are part of the security/performance boundary. An application-side tenant parameter must never override the membership policy.
+
+A static code-fence match or even a SQL statement compiling is not evidence that a privileged role, policy composition, JWT, Storage signed URL or application-level permission boundary is correct.
+
+</LessonStep>
+
+## Security review and implementation details
+
+A tenant ID is not authorization by itself. Membership rows must be protected and an RLS predicate must connect the caller's verified Auth identity to a tenant the caller actually belongs to.
+
+Protect the membership table and use a membership EXISTS predicate to restrict task SELECT to tenants the caller belongs to.
+
+Membership table RLS and query indexes are part of the security/performance boundary. An application-side tenant parameter must never override the membership policy.
+
+RLS applies subject to PostgreSQL roles, table ownership, policy composition and operation type. In an exposed schema, verify grants and RLS together. For writes, review INSERT WITH CHECK and UPDATE USING/WITH CHECK, not just SELECT. In Supabase, do not use user-editable `user_metadata` as authority for privileged roles. A service-role client may bypass RLS; it must not be used to repair a client permission error.
+
+## Bug Hunt and regression matrix
+
+1. Predict the disclosure caused by the starter: The starter allows any authenticated caller to read any task with a non-null tenant ID.
+2. Confirm one valid user can complete the intended action.
+3. Attempt the forbidden action with a different user: Seed alpha and beta tasks plus a user with membership only in alpha. Ask for beta tasks; expect no results. Remove their alpha membership and confirm access disappears.
+4. Apply the policy/server repair: Protect the membership table and use a membership EXISTS predicate to restrict task SELECT to tenants the caller belongs to.
+5. Retest with anon, two authenticated identities and any privileged path: Membership table RLS and query indexes are part of the security/performance boundary. An application-side tenant parameter must never override the membership policy.
+
+<Misconception claim={"The starter allows any authenticated caller to read any task with a non-null tenant ID."} correction={"A tenant ID is not authorization by itself. Membership rows must be protected and an RLS predicate must connect the caller's verified Auth identity to a tenant the caller actually belongs to."} />
+<KnowledgeCheck question={"What does a robust multi-tenant SELECT policy usually verify?"} choices={["Only that tenant_id is non-null","That the caller is a member of the row's tenant","That a browser parameter matches the row","That every user has any account"]} correctIndex={1} explanation={"Protect the membership table and use a membership EXISTS predicate to restrict task SELECT to tenants the caller belongs to."} misconception={"Membership table RLS and query indexes are part of the security/performance boundary. An application-side tenant parameter must never override the membership policy."} lessonId="14.03.07" />
+
+## Security extension and release conditions
+
+Extend the access matrix to SELECT, INSERT, UPDATE and DELETE where applicable. Build a pgTAP or equivalent isolated integration test that fails on the deliberately permissive starter and passes on the narrow policy. Run requests through the same Supabase Data API and authenticated route as the real app; test with the least-privileged role first. Include a second database connection if RLS behavior depends on transaction state.
+
+Keep copies of all policy test results sanitized. Do not move this manuscript to the published registry before an explicit human security review and actual local RLS test runs.
+
+## Official references
+
+- [Supabase official reference — Tenant isolation](https://supabase.com/docs/guides/database/postgres/row-level-security)
+- [Supabase RLS testing](https://supabase.com/docs/guides/database/postgres/testing-row-level-security)

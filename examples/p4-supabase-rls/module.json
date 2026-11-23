@@ -1,0 +1,74 @@
+{
+  "moduleId": "14.03",
+  "trackId": "14",
+  "title": "RLS & Authorization",
+  "sourceStatus": "draft-unverified",
+  "runtimeQualification": "not-run",
+  "readyToPublish": false,
+  "lessons": [
+    {
+      "id": "14.03.01",
+      "title": "RLS policy mechanics",
+      "slug": "deny-by-default-rls",
+      "extension": "sql",
+      "language": "sql",
+      "qualificationKind": "manual-rls-positive-negative"
+    },
+    {
+      "id": "14.03.02",
+      "title": "auth.uid and roles",
+      "slug": "auth-uid-and-role-scope",
+      "extension": "sql",
+      "language": "sql",
+      "qualificationKind": "manual-rls-positive-negative"
+    },
+    {
+      "id": "14.03.03",
+      "title": "Policy tests",
+      "slug": "rls-denial-tests",
+      "extension": "sql",
+      "language": "sql",
+      "qualificationKind": "manual-rls-positive-negative"
+    },
+    {
+      "id": "14.03.04",
+      "title": "Privileged Prisma access risks",
+      "slug": "prisma-privileged-rls-risk",
+      "extension": "ts",
+      "language": "ts",
+      "qualificationKind": "manual-rls-positive-negative"
+    },
+    {
+      "id": "14.03.05",
+      "title": "Bucket RLS and signed URLs",
+      "slug": "private-storage-owner-policies",
+      "extension": "sql",
+      "language": "sql",
+      "qualificationKind": "manual-rls-positive-negative"
+    },
+    {
+      "id": "14.03.06",
+      "title": "Secure service-role operations",
+      "slug": "narrow-service-role-operations",
+      "extension": "ts",
+      "language": "ts",
+      "qualificationKind": "manual-rls-positive-negative"
+    },
+    {
+      "id": "14.03.07",
+      "title": "Tenant isolation",
+      "slug": "membership-tenant-isolation",
+      "extension": "sql",
+      "language": "sql",
+      "qualificationKind": "manual-rls-positive-negative"
+    },
+    {
+      "id": "14.03.08",
+      "title": "Bug Hunt cross-tenant read",
+      "slug": "cross-tenant-read-bug-hunt",
+      "extension": "sql",
+      "language": "sql",
+      "qualificationKind": "manual-rls-positive-negative"
+    }
+  ]
+}
