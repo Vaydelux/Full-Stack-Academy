@@ -73,7 +73,21 @@ If the UI shows a generic error, classify the failure at the nearest authoritati
 
 <Misconception claim="One request overwrites another request's correlation ID under concurrency." correction="A request-context value belongs in a per-request async execution scope, not a mutable process global." />
 
-<KnowledgeCheck question="Which verification proves request context?" choices={["A decorator's name exists in source.","A real Nest request reaches the correct stage and demonstrates the specified positive and negative outcomes.","An interface type was exported.","The UI hides the endpoint, so it must be protected."]} correctIndex={1} explanation="A request-context value belongs in a per-request async execution scope, not a mutable process global." misconception="One request overwrites another request's correlation ID under concurrency." lessonId="11.02.07" />
+<KnowledgeCheck question="Request A awaits a promise while request B begins. How can each retain its own correlation ID?" choices={["Use a distinct AsyncLocalStorage.run store for each request.","Keep the most recent ID in one global variable.","Assign every request the same constant ID.","Read the request ID only after all requests finish."]} correctIndex={0} explanation="Async-local stores follow their own asynchronous execution chains." misconception="One request overwrites another request's correlation ID under concurrency." lessonId="11.02.07" />
+
+## Applied engineering walkthrough
+
+AsyncLocalStorage associates data with an asynchronous execution chain. The solution calls run with a distinct store for each request; asynchronous work within that callback sees its own store. Outside the scope, getStore can be undefined. It is not a durable distributed context, and a correlation ID must not be treated as a verified principal. Avoid storing secrets or mutable shared request objects in the context.
+
+### Diagnose the concrete failure
+
+Start request A and hold it at a promise barrier. While A is pending, start B and read B's ID. Release A and read A's ID; both must match their own scope. After completion, no store should be visible in the outer scope. The original global-value design fails when B overwrites A during the await.
+
+### Independent exercise and evidence
+
+Extend the pure context test with a nested scope and an exception. Predict which ID is visible before, inside and after the nested call and after rejection. Record the sequence rather than relying on arbitrary sleep delays. In an integrated HTTP app, start the scope in middleware and verify two concurrent requests.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. The existing request-pipeline checks include direct class and pure-function tests; real HTTP and adapter acceptance remain distinct release requirements. Do not award course credit from source review alone.
 
 ## Bug Hunt: reproduce, diagnose and repair
 
