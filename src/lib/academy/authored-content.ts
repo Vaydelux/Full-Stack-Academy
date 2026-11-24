@@ -908,6 +908,367 @@ export const AUTHORED_LESSON_IDS = ['06.01.01', '07.02.01', '09.01.02', '15.02.0
 /* ------------------------------------------------------------------ */
 
 export const AUTHORED_REFERENCES: AuthoredReference[] = [
+{
+  "id": "nestjs-module",
+  "matchCategories": [
+    "NestJS"
+  ],
+  "matchTitles": [
+    "@Module"
+  ],
+  "heading": "NestJS: @Module",
+  "category": "NestJS",
+  "majorVersion": "NestJS 11",
+  "status": "Authored reference draft",
+  "summary": "Groups providers and controllers; exports expose selected providers to importing modules.",
+  "syntax": "@Module({ providers: [TaskService], exports: [TaskService] })",
+  "lang": "ts",
+  "parameters": "Framework-managed classes and request context; snippets assume relevant imports.",
+  "returns": "Groups providers and controllers; exports expose selected providers to importing modules.",
+  "minimalExample": "@Module({ providers: [TaskService], exports: [TaskService] })",
+  "productionExample": "@Module({ providers: [TaskService], exports: [TaskService] })",
+  "commonMistakes": [
+    "Import the module that exports the dependency, not a duplicate provider."
+  ],
+  "securityPerformanceNotes": [
+    "Validate untrusted input and enforce authorization separately."
+  ],
+  "relatedLessonIds": [
+    "11.01.01"
+  ],
+  "canonicalUrl": "https://docs.nestjs.com/modules"
+},
+{
+  "id": "nestjs-injectable",
+  "matchCategories": [
+    "NestJS"
+  ],
+  "matchTitles": [
+    "@Injectable"
+  ],
+  "heading": "NestJS: @Injectable",
+  "category": "NestJS",
+  "majorVersion": "NestJS 11",
+  "status": "Authored reference draft",
+  "summary": "Marks a class for dependency injection; registration in a module is still required.",
+  "syntax": "@Injectable()\nclass TaskService {}",
+  "lang": "ts",
+  "parameters": "Framework-managed classes and request context; snippets assume relevant imports.",
+  "returns": "Marks a class for dependency injection; registration in a module is still required.",
+  "minimalExample": "@Injectable()\nclass TaskService {}",
+  "productionExample": "@Injectable()\nclass TaskService {}",
+  "commonMistakes": [
+    "Do not instantiate injected services manually in controllers."
+  ],
+  "securityPerformanceNotes": [
+    "Validate untrusted input and enforce authorization separately."
+  ],
+  "relatedLessonIds": [
+    "11.01.01"
+  ],
+  "canonicalUrl": "https://docs.nestjs.com/providers"
+},
+{
+  "id": "nestjs-canactivate",
+  "matchCategories": [
+    "NestJS"
+  ],
+  "matchTitles": [
+    "CanActivate"
+  ],
+  "heading": "NestJS: CanActivate",
+  "category": "NestJS",
+  "majorVersion": "NestJS 11",
+  "status": "Authored reference draft",
+  "summary": "A guard decides whether execution may proceed before pipes run.",
+  "syntax": "canActivate(context: ExecutionContext): boolean { return false; }",
+  "lang": "ts",
+  "parameters": "Framework-managed classes and request context; snippets assume relevant imports.",
+  "returns": "A guard decides whether execution may proceed before pipes run.",
+  "minimalExample": "canActivate(context: ExecutionContext): boolean { return false; }",
+  "productionExample": "canActivate(context: ExecutionContext): boolean { return false; }",
+  "commonMistakes": [
+    "Deny by default; verify resource ownership in the service too."
+  ],
+  "securityPerformanceNotes": [
+    "Validate untrusted input and enforce authorization separately."
+  ],
+  "relatedLessonIds": [
+    "11.02.03"
+  ],
+  "canonicalUrl": "https://docs.nestjs.com/guards"
+},
+{
+  "id": "nestjs-pipetransform",
+  "matchCategories": [
+    "NestJS"
+  ],
+  "matchTitles": [
+    "PipeTransform"
+  ],
+  "heading": "NestJS: PipeTransform",
+  "category": "NestJS",
+  "majorVersion": "NestJS 11",
+  "status": "Authored reference draft",
+  "summary": "Transforms or validates an argument before the handler.",
+  "syntax": "transform(value: unknown) { return schema.parse(value); }",
+  "lang": "ts",
+  "parameters": "Framework-managed classes and request context; snippets assume relevant imports.",
+  "returns": "Transforms or validates an argument before the handler.",
+  "minimalExample": "transform(value: unknown) { return schema.parse(value); }",
+  "productionExample": "transform(value: unknown) { return schema.parse(value); }",
+  "commonMistakes": [
+    "Map validation failures to BadRequestException rather than leaking schema internals."
+  ],
+  "securityPerformanceNotes": [
+    "Validate untrusted input and enforce authorization separately."
+  ],
+  "relatedLessonIds": [
+    "11.02.02"
+  ],
+  "canonicalUrl": "https://docs.nestjs.com/pipes"
+},
+{
+  "id": "nestjs-nestinterceptor",
+  "matchCategories": [
+    "NestJS"
+  ],
+  "matchTitles": [
+    "NestInterceptor"
+  ],
+  "heading": "NestJS: NestInterceptor",
+  "category": "NestJS",
+  "majorVersion": "NestJS 11",
+  "status": "Authored reference draft",
+  "summary": "Wraps handler execution with an observable.",
+  "syntax": "intercept(context: ExecutionContext, next: CallHandler) { return next.handle(); }",
+  "lang": "ts",
+  "parameters": "Framework-managed classes and request context; snippets assume relevant imports.",
+  "returns": "Wraps handler execution with an observable.",
+  "minimalExample": "intercept(context: ExecutionContext, next: CallHandler) { return next.handle(); }",
+  "productionExample": "intercept(context: ExecutionContext, next: CallHandler) { return next.handle(); }",
+  "commonMistakes": [
+    "Do not subscribe manually or swallow errors."
+  ],
+  "securityPerformanceNotes": [
+    "Validate untrusted input and enforce authorization separately."
+  ],
+  "relatedLessonIds": [
+    "11.02.04"
+  ],
+  "canonicalUrl": "https://docs.nestjs.com/interceptors"
+},
+{
+  "id": "nestjs-exceptionfilter",
+  "matchCategories": [
+    "NestJS"
+  ],
+  "matchTitles": [
+    "ExceptionFilter"
+  ],
+  "heading": "NestJS: ExceptionFilter",
+  "category": "NestJS",
+  "majorVersion": "NestJS 11",
+  "status": "Authored reference draft",
+  "summary": "Handles matching uncaught exceptions at a transport boundary.",
+  "syntax": "@Catch(HttpException)\nclass Filter implements ExceptionFilter { catch(e: HttpException, host: ArgumentsHost) { host.switchToHttp().getResponse().status(e.getStatus()).json({statusCode:e.getStatus()}); } }",
+  "lang": "ts",
+  "parameters": "Framework-managed classes and request context; snippets assume relevant imports.",
+  "returns": "Handles matching uncaught exceptions at a transport boundary.",
+  "minimalExample": "@Catch(HttpException)\nclass Filter implements ExceptionFilter { catch(e: HttpException, host: ArgumentsHost) { host.switchToHttp().getResponse().status(e.getStatus()).json({statusCode:e.getStatus()}); } }",
+  "productionExample": "@Catch(HttpException)\nclass Filter implements ExceptionFilter { catch(e: HttpException, host: ArgumentsHost) { host.switchToHttp().getResponse().status(e.getStatus()).json({statusCode:e.getStatus()}); } }",
+  "commonMistakes": [
+    "Never expose stack traces or database error details."
+  ],
+  "securityPerformanceNotes": [
+    "Validate untrusted input and enforce authorization separately."
+  ],
+  "relatedLessonIds": [
+    "11.02.05"
+  ],
+  "canonicalUrl": "https://docs.nestjs.com/exception-filters"
+},
+{
+  "id": "postgresql-on-conflict",
+  "matchCategories": [
+    "PostgreSQL"
+  ],
+  "matchTitles": [
+    "ON CONFLICT"
+  ],
+  "heading": "PostgreSQL: ON CONFLICT",
+  "category": "PostgreSQL",
+  "majorVersion": "PostgreSQL 17+",
+  "status": "Authored reference draft",
+  "summary": "Handles unique constraint conflicts atomically.",
+  "syntax": "INSERT INTO requests(id) VALUES ($1) ON CONFLICT (id) DO NOTHING RETURNING id;",
+  "lang": "sql",
+  "parameters": "SQL identifiers and bound values; examples assume the named tables exist.",
+  "returns": "Handles unique constraint conflicts atomically.",
+  "minimalExample": "INSERT INTO requests(id) VALUES ($1) ON CONFLICT (id) DO NOTHING RETURNING id;",
+  "productionExample": "INSERT INTO requests(id) VALUES ($1) ON CONFLICT (id) DO NOTHING RETURNING id;",
+  "commonMistakes": [
+    "A duplicate key alone does not establish identical request payloads."
+  ],
+  "securityPerformanceNotes": [
+    "Use parameterized queries and a least-privilege database role."
+  ],
+  "relatedLessonIds": [
+    "12.03.06"
+  ],
+  "canonicalUrl": "https://www.postgresql.org/docs/current/sql-insert.html"
+},
+{
+  "id": "postgresql-transaction-isolation",
+  "matchCategories": [
+    "PostgreSQL"
+  ],
+  "matchTitles": [
+    "transaction isolation"
+  ],
+  "heading": "PostgreSQL: transaction isolation",
+  "category": "PostgreSQL",
+  "majorVersion": "PostgreSQL 17+",
+  "status": "Authored reference draft",
+  "summary": "Controls which concurrent changes a transaction can observe.",
+  "syntax": "BEGIN ISOLATION LEVEL SERIALIZABLE;\n-- perform related reads and writes\nCOMMIT;",
+  "lang": "sql",
+  "parameters": "SQL identifiers and bound values; examples assume the named tables exist.",
+  "returns": "Controls which concurrent changes a transaction can observe.",
+  "minimalExample": "BEGIN ISOLATION LEVEL SERIALIZABLE;\n-- perform related reads and writes\nCOMMIT;",
+  "productionExample": "BEGIN ISOLATION LEVEL SERIALIZABLE;\n-- perform related reads and writes\nCOMMIT;",
+  "commonMistakes": [
+    "Retry the whole transaction on SQLSTATE 40001, not just the last statement."
+  ],
+  "securityPerformanceNotes": [
+    "Use parameterized queries and a least-privilege database role."
+  ],
+  "relatedLessonIds": [
+    "12.03.01"
+  ],
+  "canonicalUrl": "https://www.postgresql.org/docs/current/transaction-iso.html"
+},
+{
+  "id": "postgresql-mvcc",
+  "matchCategories": [
+    "PostgreSQL"
+  ],
+  "matchTitles": [
+    "MVCC"
+  ],
+  "heading": "PostgreSQL: MVCC",
+  "category": "PostgreSQL",
+  "majorVersion": "PostgreSQL 17+",
+  "status": "Authored reference draft",
+  "summary": "Uses row versions and snapshots to support concurrent access.",
+  "syntax": "BEGIN ISOLATION LEVEL REPEATABLE READ;\nSELECT * FROM tasks;\nCOMMIT;",
+  "lang": "sql",
+  "parameters": "SQL identifiers and bound values; examples assume the named tables exist.",
+  "returns": "Uses row versions and snapshots to support concurrent access.",
+  "minimalExample": "BEGIN ISOLATION LEVEL REPEATABLE READ;\nSELECT * FROM tasks;\nCOMMIT;",
+  "productionExample": "BEGIN ISOLATION LEVEL REPEATABLE READ;\nSELECT * FROM tasks;\nCOMMIT;",
+  "commonMistakes": [
+    "Long-lived transactions can delay cleanup of obsolete row versions."
+  ],
+  "securityPerformanceNotes": [
+    "Use parameterized queries and a least-privilege database role."
+  ],
+  "relatedLessonIds": [
+    "12.03.03"
+  ],
+  "canonicalUrl": "https://www.postgresql.org/docs/current/mvcc.html"
+},
+{
+  "id": "postgresql-unique",
+  "matchCategories": [
+    "PostgreSQL"
+  ],
+  "matchTitles": [
+    "UNIQUE"
+  ],
+  "heading": "PostgreSQL: UNIQUE",
+  "category": "PostgreSQL",
+  "majorVersion": "PostgreSQL 17+",
+  "status": "Authored reference draft",
+  "summary": "Enforces uniqueness under concurrent writes.",
+  "syntax": "ALTER TABLE requests ADD UNIQUE (tenant_id, request_id);",
+  "lang": "sql",
+  "parameters": "SQL identifiers and bound values; examples assume the named tables exist.",
+  "returns": "Enforces uniqueness under concurrent writes.",
+  "minimalExample": "ALTER TABLE requests ADD UNIQUE (tenant_id, request_id);",
+  "productionExample": "ALTER TABLE requests ADD UNIQUE (tenant_id, request_id);",
+  "commonMistakes": [
+    "A pre-insert SELECT is not a substitute for a unique constraint."
+  ],
+  "securityPerformanceNotes": [
+    "Use parameterized queries and a least-privilege database role."
+  ],
+  "relatedLessonIds": [
+    "12.03.06"
+  ],
+  "canonicalUrl": "https://www.postgresql.org/docs/current/ddl-constraints.html"
+},
+{
+  "id": "postgresql-check",
+  "matchCategories": [
+    "PostgreSQL"
+  ],
+  "matchTitles": [
+    "CHECK"
+  ],
+  "heading": "PostgreSQL: CHECK",
+  "category": "PostgreSQL",
+  "majorVersion": "PostgreSQL 17+",
+  "status": "Authored reference draft",
+  "summary": "Enforces a row-level predicate on inserted or updated values.",
+  "syntax": "ALTER TABLE accounts ADD CHECK (balance >= 0);",
+  "lang": "sql",
+  "parameters": "SQL identifiers and bound values; examples assume the named tables exist.",
+  "returns": "Enforces a row-level predicate on inserted or updated values.",
+  "minimalExample": "ALTER TABLE accounts ADD CHECK (balance >= 0);",
+  "productionExample": "ALTER TABLE accounts ADD CHECK (balance >= 0);",
+  "commonMistakes": [
+    "CHECK permits unknown results; use NOT NULL when absence is invalid."
+  ],
+  "securityPerformanceNotes": [
+    "Use parameterized queries and a least-privilege database role."
+  ],
+  "relatedLessonIds": [
+    "12.03.07"
+  ],
+  "canonicalUrl": "https://www.postgresql.org/docs/current/ddl-constraints.html"
+},
+{
+  "id": "postgresql-returning",
+  "matchCategories": [
+    "PostgreSQL"
+  ],
+  "matchTitles": [
+    "RETURNING"
+  ],
+  "heading": "PostgreSQL: RETURNING",
+  "category": "PostgreSQL",
+  "majorVersion": "PostgreSQL 17+",
+  "status": "Authored reference draft",
+  "summary": "Returns rows affected by a write without a separate read.",
+  "syntax": "UPDATE tasks SET revision=revision+1 WHERE id=$1 AND revision=$2 RETURNING revision;",
+  "lang": "sql",
+  "parameters": "SQL identifiers and bound values; examples assume the named tables exist.",
+  "returns": "Returns rows affected by a write without a separate read.",
+  "minimalExample": "UPDATE tasks SET revision=revision+1 WHERE id=$1 AND revision=$2 RETURNING revision;",
+  "productionExample": "UPDATE tasks SET revision=revision+1 WHERE id=$1 AND revision=$2 RETURNING revision;",
+  "commonMistakes": [
+    "Zero returned rows may indicate a stale revision or missing resource."
+  ],
+  "securityPerformanceNotes": [
+    "Use parameterized queries and a least-privilege database role."
+  ],
+  "relatedLessonIds": [
+    "12.03.04"
+  ],
+  "canonicalUrl": "https://www.postgresql.org/docs/current/dml-returning.html"
+},
+
   {
     id: 'zod-safeparse',
     matchCategories: ['Zod'],
