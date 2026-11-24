@@ -14,6 +14,9 @@ const base='release-candidates/forms-query/09.02';
 
 export function rhfReviewFingerprint({readSource=read}={}){
  const shared=[
+  'examples/forms-query-vertical/react-client/src/api.ts',
+  'examples/forms-query-vertical/react-client/src/policy.ts',
+  'tests/forms-query-response-contract.test.mjs',
   'src/content/forms-query-draft-registry.tsx',
   'src/app/learn/projects/forms-query/drafts/[lessonId]/page.tsx',
   'src/app/learn/projects/forms-query/page.tsx',
