@@ -10,8 +10,8 @@
   },
   "development": {
     "branch": "feat/p8-publication-evidence",
-    "state": "p9-targeted-release-qualification-publication-blocked",
-    "note": "83 isolated Node22 tests passed; 16 connector-based source parity checks passed across 32 MDX files. Browser runner deadline regression reproduced and repaired; Nest/PostgreSQL fixture isolated by disposable schema. Full Node24, dependencies, browser, database and manual accessibility qualification remain blocked."
+    "state": "p9-http-boundary-regressions-passed-publication-blocked",
+    "note": "92 isolated Node22 tests passed, including nine reproduced and repaired conditional-write HTTP boundary defects. Prior 16 connector-based lesson parity checks remain recorded. Full checkout, Node24, dependencies, actual Academy browser, database and manual accessibility qualification remain blocked."
   },
   "snapshot": {
     "tracks": 28,
@@ -73,6 +73,6 @@
     "devHighFindings": 14,
     "exceptionExpires": "2026-12-02"
   },
-  "nextMilestone": "Use a full clean Node24.9+ checkout and genuine locks; run mandatory P8 offline and Chromium gates plus the opt-in Nest/PostgreSQL integrity fixture, then review P1 modules atomically.",
+  "nextMilestone": "Obtain a complete clean checkout with Node24.9+ and genuine dependency locks; run the existing P1 qualification coordinator and disposable database gate. Freeze additional feature work until actual build and browser failures are known.",
   "status": "all-topics-authored-p9-qualification-publication-blocked"
 }
