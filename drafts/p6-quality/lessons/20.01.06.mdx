@@ -1,0 +1,61 @@
+---
+id: "20.01.06"
+title: "Non-root containers"
+module: "20.01"
+status: "draft-unverified"
+readyToPublish: false
+---
+
+# Non-root containers
+
+> Unpublished instructor manuscript. A green model test is not real runtime acceptance.
+
+## Learning outcomes
+
+Explain the design rule, reproduce or specify an observable positive and negative experiment, and distinguish the model from external evidence.
+
+## Context
+
+A container runs as root with broad write access.
+
+## Step 1 — Mental model
+
+Prefer a non-root UID and restricted filesystem; deliberately provide needed writable paths.
+
+## Step 2 — Guided practice
+
+Run containerPolicy with UID 1000 then UID 0; in Docker inspect identity and test writes.
+
+Predict the outcome before running the experiment. Use only synthetic data and disposable fixtures.
+
+## Step 3 — Acceptance
+
+**Positive:** Restricted configuration passes the model.
+
+**Negative:** UID 0 or writable root is flagged.
+
+Run the complementary local module model and inspect `containerPolicy` in `examples/p6-quality/labs.mjs`. Add an assertion for the relevant boundary. This command does not execute the external tools described above.
+
+```bash
+node --test --test-name-pattern="20[.]01" examples/p6-quality/labs.test.mjs
+```
+
+## Qualification boundary
+
+Declarative policy model; no Docker engine, image build, scan or real network isolation executed.
+
+## Knowledge check
+
+1. Which public behavior or invariant is being protected?
+2. Which negative case falsifies the unsafe implementation?
+3. Which real runtime or manual check is still required?
+
+**Assessment:** Submit the exact synthetic input, expected and observed outputs, a negative result, and the untested boundaries. Mark unavailable external checks not-run.
+
+## References
+
+- [Technical reference](https://docs.docker.com/)
+
+## Publication conditions
+
+Editorial review, meaningful red/green exercises, real applicable runtime tests, full Node 24 build, browser and manual accessibility gates. Do not register this draft in the public reader until its module is approved.

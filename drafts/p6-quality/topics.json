@@ -1,0 +1,642 @@
+{
+  "19.01.01": {
+    "context": "Checkout reserves three of five units.",
+    "concept": "Unit tests isolate a rule; integration tests cross real boundaries; E2E tests traverse the user workflow.",
+    "exercise": "Assert reserve(5,3) and outline a DB transaction test plus a browser checkout test. Label their boundaries.",
+    "positive": "Stock becomes two.",
+    "negative": "Overselling fails; passing the function test cannot prove concurrent DB safety.",
+    "reference": "https://nodejs.org/api/test.html",
+    "model": "reserve",
+    "boundary": "Pure inventory model; no real database or browser is tested."
+  },
+  "19.01.02": {
+    "context": "An inventory refactor changes its private implementation.",
+    "concept": "Assert observable behavior, not private method calls.",
+    "exercise": "Assert reserve(3,3) and reserve(3,4); refactor internal code without changing behavior.",
+    "positive": "Both public outcomes remain correct.",
+    "negative": "An incorrect decrement on rejection must fail.",
+    "reference": "https://nodejs.org/api/test.html",
+    "model": "reserve",
+    "boundary": "Pure inventory model; no real database or browser is tested."
+  },
+  "19.01.03": {
+    "context": "Two tests share a mutable cart object.",
+    "concept": "Factories produce fresh objects with explicit defaults and overrides.",
+    "exercise": "Create a factory returning stock 3 and quantity 1; mutate one instance and assert a second remains unchanged.",
+    "positive": "Independent fixtures have identical initial state.",
+    "negative": "Shared object mutation causes order-dependent tests.",
+    "reference": "https://nodejs.org/api/test.html",
+    "model": "reserve",
+    "boundary": "Pure inventory model; no real database or browser is tested."
+  },
+  "19.01.04": {
+    "context": "An order expires at a deadline.",
+    "concept": "Inject time rather than sleeping; define inclusive expiry semantics.",
+    "exercise": "Write isExpired(expiresAt, now); check expiry=1000 at now=999,1000,1001.",
+    "positive": "The order expires at 1000 and remains expired afterward.",
+    "negative": "Using strict greater-than misses the deadline.",
+    "reference": "https://nodejs.org/api/test.html",
+    "model": "reserve",
+    "boundary": "Pure inventory model; no real database or browser is tested."
+  },
+  "19.01.05": {
+    "context": "Inventory reservation invokes an email sender.",
+    "concept": "Stub the external effect boundary; exercise the real reservation decision.",
+    "exercise": "Inject a recorder as send function and invoke only after successful reserve.",
+    "positive": "Success records exactly one call.",
+    "negative": "Rejected reservation records no send; provider delivery remains untested.",
+    "reference": "https://nodejs.org/api/test.html",
+    "model": "reserve",
+    "boundary": "Pure inventory model; no real database or browser is tested."
+  },
+  "19.01.06": {
+    "context": "Warehouse stock must be conserved across many inputs.",
+    "concept": "Properties are invariants over inputs; a finite sweep is deterministic, not exhaustive over all possible values.",
+    "exercise": "Extend the lab finite property sweep to stock and quantity up to 50.",
+    "positive": "Remaining stock plus accepted quantity equals original stock.",
+    "negative": "Subtracting a rejected quantity breaks conservation.",
+    "reference": "https://nodejs.org/api/test.html",
+    "model": "reserve",
+    "boundary": "Pure inventory model; no real database or browser is tested."
+  },
+  "19.01.07": {
+    "context": "A dashboard reports 100% line coverage.",
+    "concept": "Coverage measures execution, not strength of assertions; mutation exposes weak checks.",
+    "exercise": "In a disposable lab copy replace the rejection result with a success. Run the negative test.",
+    "positive": "The mutation is caught by an assertion.",
+    "negative": "A suite that merely executes the denial branch misses it.",
+    "reference": "https://nodejs.org/api/test.html",
+    "model": "reserve",
+    "boundary": "Pure inventory model; no real database or browser is tested."
+  },
+  "19.01.08": {
+    "context": "A developer builds a reservation feature test-first.",
+    "concept": "Red-green-refactor starts with meaningful failing behavior, then minimum correction and refactoring.",
+    "exercise": "In a disposable copy make reserve return unchanged stock; run tests, repair it, add zero-stock coverage.",
+    "positive": "Intended behavior assertions fail then pass.",
+    "negative": "A syntax error is not a meaningful red test.",
+    "reference": "https://nodejs.org/api/test.html",
+    "model": "reserve",
+    "boundary": "Pure inventory model; no real database or browser is tested."
+  },
+  "19.02.01": {
+    "context": "A settings form shows loading and saved status.",
+    "concept": "Vitest runs tests; Testing Library encourages testing from the user's perspective.",
+    "exercise": "Run latestRequest; in an installed React fixture click Save with user-event and await the visible saved message.",
+    "positive": "Loading changes to visible success.",
+    "negative": "Rejected requests show accessible errors, not only mock invocations.",
+    "reference": "https://testing-library.com/docs/guiding-principles/",
+    "model": "latestRequest",
+    "boundary": "Plain JavaScript UI state model; installed React/Vitest/Testing Library/MSW and real browsers require separate tests."
+  },
+  "19.02.02": {
+    "context": "An icon-only Save button has a hidden text label.",
+    "concept": "Accessible role and name describe control semantics rather than classes.",
+    "exercise": "In a real DOM fixture query `getByRole('button', {name: 'Save'})`; change its CSS class and rerun.",
+    "positive": "The query survives cosmetic change.",
+    "negative": "Removing the accessible name breaks the test.",
+    "reference": "https://testing-library.com/docs/queries/byrole/",
+    "model": "latestRequest",
+    "boundary": "Plain JavaScript UI state model; installed React/Vitest/Testing Library/MSW and real browsers require separate tests."
+  },
+  "19.02.03": {
+    "context": "Two search requests finish out of order.",
+    "concept": "The newest request owns the current UI state; earlier results must be ignored.",
+    "exercise": "Start A and B in latestRequest, resolve B then A; translate into a real React interaction test.",
+    "positive": "B remains displayed.",
+    "negative": "Stale A overwriting B fails.",
+    "reference": "https://testing-library.com/docs/guiding-principles/",
+    "model": "latestRequest",
+    "boundary": "Plain JavaScript UI state model; installed React/Vitest/Testing Library/MSW and real browsers require separate tests."
+  },
+  "19.02.04": {
+    "context": "A frontend test needs a server error without production access.",
+    "concept": "MSW intercepts at the network boundary so the app still uses its real client.",
+    "exercise": "In an installed MSW fixture supply synthetic 200 and 503 handlers, reject unhandled requests, reset handlers per test.",
+    "positive": "The normal client processes success.",
+    "negative": "503 produces the intended retry/error state; no external request.",
+    "reference": "https://mswjs.io/docs/",
+    "model": "latestRequest",
+    "boundary": "Plain JavaScript UI state model; installed React/Vitest/Testing Library/MSW and real browsers require separate tests."
+  },
+  "19.02.05": {
+    "context": "A registration form rejects an invalid email.",
+    "concept": "Client validation helps usability; the server remains authoritative.",
+    "exercise": "In a real form test enter invalid email, submit, inspect its associated error, correct it and submit again.",
+    "positive": "Valid input calls submit once.",
+    "negative": "Invalid input exposes the error and makes no submit call.",
+    "reference": "https://testing-library.com/docs/guiding-principles/",
+    "model": "latestRequest",
+    "boundary": "Plain JavaScript UI state model; installed React/Vitest/Testing Library/MSW and real browsers require separate tests."
+  },
+  "19.02.06": {
+    "context": "A responsive card clips its text after a layout change.",
+    "concept": "Visual baselines depend on viewport, fonts, data and browser; they require review.",
+    "exercise": "Capture a fixed browser fixture at narrow and wide widths; deliberately clip its title and inspect the screenshot diff.",
+    "positive": "Unchanged fixture matches the reviewed baseline.",
+    "negative": "Clipping changes the snapshot; do not blindly accept updates.",
+    "reference": "https://playwright.dev/docs/test-snapshots",
+    "model": "latestRequest",
+    "boundary": "Plain JavaScript UI state model; installed React/Vitest/Testing Library/MSW and real browsers require separate tests."
+  },
+  "19.02.07": {
+    "context": "A modal must work without a mouse.",
+    "concept": "Keyboard order, visible focus and restoration are behavioral requirements; manual assistive technology review remains necessary.",
+    "exercise": "Tab to the trigger, open with Enter, traverse controls, close with Escape, verify focus restoration in a real browser.",
+    "positive": "The keyboard user can operate and dismiss the dialog.",
+    "negative": "Trapped focus or a mouse-only close action fails.",
+    "reference": "https://www.w3.org/WAI/WCAG22/quickref/",
+    "model": "latestRequest",
+    "boundary": "Plain JavaScript UI state model; installed React/Vitest/Testing Library/MSW and real browsers require separate tests."
+  },
+  "19.02.08": {
+    "context": "A flaky test waits an arbitrary 500 ms.",
+    "concept": "Await observable behavior instead of a fixed sleep; control response order deterministically.",
+    "exercise": "Run latestRequest reversal case and replace a fixed browser wait with an awaited visible result.",
+    "positive": "The expected result is stable across completion orders.",
+    "negative": "Retries do not repair a stale-response defect.",
+    "reference": "https://playwright.dev/docs/best-practices",
+    "model": "latestRequest",
+    "boundary": "Plain JavaScript UI state model; installed React/Vitest/Testing Library/MSW and real browsers require separate tests."
+  },
+  "19.03.01": {
+    "context": "A Nest service depends on a repository provider.",
+    "concept": "Testing modules construct dependency graphs; overrides replace a specific provider boundary.",
+    "exercise": "In installed Nest build Test.createTestingModule with a feature module, override its repository, compile and resolve the service.",
+    "positive": "The intended repository is injected.",
+    "negative": "Omitting the provider produces a resolution error.",
+    "reference": "https://docs.nestjs.com/fundamentals/testing",
+    "model": "scopedRead",
+    "boundary": "Synthetic row/actor model; no Nest DI, network server, PostgreSQL or RLS execution."
+  },
+  "19.03.02": {
+    "context": "A task service returns a minimal owner DTO.",
+    "concept": "Assert authorization and public data shape rather than private persistence fields.",
+    "exercise": "Call scopedRead for the owner and add a private field to the input row; assert exact response keys.",
+    "positive": "Only id and title are returned.",
+    "negative": "Foreign owner or private field leakage fails.",
+    "reference": "https://docs.nestjs.com/fundamentals/testing",
+    "model": "scopedRead",
+    "boundary": "Synthetic row/actor model; no Nest DI, network server, PostgreSQL or RLS execution."
+  },
+  "19.03.03": {
+    "context": "A protected API route is invoked over HTTP.",
+    "concept": "Integration covers routing, middleware, serialization and auth, not just a function call.",
+    "exercise": "Use an installed local API on an ephemeral loopback port; send anonymous, owner and foreign-tenant requests.",
+    "positive": "Owner receives 200 and the documented DTO.",
+    "negative": "Anonymous receives 401; foreign tenant receives the specified 404.",
+    "reference": "https://docs.nestjs.com/fundamentals/testing",
+    "model": "scopedRead",
+    "boundary": "Synthetic row/actor model; no Nest DI, network server, PostgreSQL or RLS execution."
+  },
+  "19.03.04": {
+    "context": "A DB test modifies rows before failing.",
+    "concept": "Rollback isolates changes only on the same transaction and connection.",
+    "exercise": "In a disposable PostgreSQL DB seed data, BEGIN, update then force failure, ROLLBACK and query via a fresh connection.",
+    "positive": "Baseline rows remain unchanged.",
+    "negative": "Separately committed updates escape rollback and must be detected.",
+    "reference": "https://www.postgresql.org/docs/current/tutorial-transactions.html",
+    "model": "scopedRead",
+    "boundary": "Synthetic row/actor model; no Nest DI, network server, PostgreSQL or RLS execution."
+  },
+  "19.03.05": {
+    "context": "A migration adds a non-null field to existing rows.",
+    "concept": "Migrations need representative old data, compatibility and explicit backfill.",
+    "exercise": "Apply the previous schema in a disposable DB, seed a legacy row, apply expansion and backfill, then validate constraints.",
+    "positive": "Legacy rows survive and new writes satisfy the schema.",
+    "negative": "Unresolved nulls prevent enforcement; never test on production.",
+    "reference": "https://www.postgresql.org/docs/current/ddl-alter.html",
+    "model": "scopedRead",
+    "boundary": "Synthetic row/actor model; no Nest DI, network server, PostgreSQL or RLS execution."
+  },
+  "19.03.06": {
+    "context": "A multi-tenant service depends on database RLS.",
+    "concept": "RLS must be tested with restricted non-owner/non-BYPASSRLS roles, not merely UI filters.",
+    "exercise": "Use scopedRead as a contract, then run a P5 RLS qualification with real restricted role and transaction-local claims.",
+    "positive": "Owner sees the intended record.",
+    "negative": "Missing and foreign context cannot expose data.",
+    "reference": "https://www.postgresql.org/docs/current/ddl-rowsecurity.html",
+    "model": "scopedRead",
+    "boundary": "Synthetic row/actor model; no Nest DI, network server, PostgreSQL or RLS execution."
+  },
+  "19.03.07": {
+    "context": "A client depends on a stable task response.",
+    "concept": "Contracts assert semantics; snapshots require review and should not accept private fields.",
+    "exercise": "Assert exact scopedRead DTO; compare a real HTTP payload against a reviewed schema or snapshot.",
+    "positive": "Required keys and types match.",
+    "negative": "Removed keys or added secret fields fail.",
+    "reference": "https://docs.nestjs.com/fundamentals/testing",
+    "model": "scopedRead",
+    "boundary": "Synthetic row/actor model; no Nest DI, network server, PostgreSQL or RLS execution."
+  },
+  "19.03.08": {
+    "context": "A request must authenticate, authorize, query and serialize.",
+    "concept": "Layered unit checks and real request tests verify different risks.",
+    "exercise": "Use scopedRead acceptance targets to implement a Nest route against disposable DB; exercise real owner/anonymous/foreign requests.",
+    "positive": "Authorized HTTP request returns the expected minimal DTO.",
+    "negative": "Denied requests cannot reveal or modify rows.",
+    "reference": "https://docs.nestjs.com/fundamentals/testing",
+    "model": "scopedRead",
+    "boundary": "Synthetic row/actor model; no Nest DI, network server, PostgreSQL or RLS execution."
+  },
+  "19.04.01": {
+    "context": "An API must sustain a bounded workload.",
+    "concept": "Scenarios specify executors and workload shape; predefine thresholds.",
+    "exercise": "Design a small k6 constant-arrival-rate scenario against a disposable loopback service; compare samples with latencyReport.",
+    "positive": "Latency and error thresholds are evaluated.",
+    "negative": "Threshold violation fails; never target production.",
+    "reference": "https://grafana.com/docs/k6/latest/using-k6/scenarios/",
+    "model": "latencyReport",
+    "boundary": "Metrics model uses supplied samples; no real load generation, chaos or database benchmark."
+  },
+  "19.04.02": {
+    "context": "Most requests are fast, but the tail is slow.",
+    "concept": "Nearest-rank p95 is the sorted sample at ceil(.95*n)-1; averages can hide outliers.",
+    "exercise": "Use 18 samples at 10ms and two at 1000ms; compare mean with p95.",
+    "positive": "p95 is 1000ms and exceeds 100ms.",
+    "negative": "A mean-only gate can conceal a bad tail.",
+    "reference": "https://grafana.com/docs/k6/latest/",
+    "model": "latencyReport",
+    "boundary": "Metrics model uses supplied samples; no real load generation, chaos or database benchmark."
+  },
+  "19.04.03": {
+    "context": "A query slows when a connection pool saturates.",
+    "concept": "Distinguish pool waiting, query execution, locks and resource pressure.",
+    "exercise": "In disposable DB benchmark a fixed query at two bounded concurrency levels; record p95 and errors, inspect EXPLAIN.",
+    "positive": "Comparison separates waiting from execution.",
+    "negative": "Dropping failures or exhausting shared DB capacity invalidates the run.",
+    "reference": "https://www.postgresql.org/docs/current/using-explain.html",
+    "model": "latencyReport",
+    "boundary": "Metrics model uses supplied samples; no real load generation, chaos or database benchmark."
+  },
+  "19.04.04": {
+    "context": "Independent workers compete to claim one task.",
+    "concept": "Concurrency tests need real overlapping attempts and invariant checks.",
+    "exercise": "Review and run existing P5 multiprocess inbox tests; plan a separate real PostgreSQL SKIP LOCKED test.",
+    "positive": "Local model grants at most one competing claim.",
+    "negative": "Double-claim fails; file lock evidence is not database proof.",
+    "reference": "https://grafana.com/docs/k6/latest/",
+    "model": "latencyReport",
+    "boundary": "Metrics model uses supplied samples; no real load generation, chaos or database benchmark."
+  },
+  "19.04.05": {
+    "context": "A local dependency becomes unavailable temporarily.",
+    "concept": "Chaos needs an isolated target, bounded fault, hypothesis and recovery criterion.",
+    "exercise": "Inject a deterministic failure into a disposable handler; measure with latencyReport and restore the handler.",
+    "positive": "Error rate returns to the target after recovery.",
+    "negative": "Unbounded retries or zero samples fail the experiment.",
+    "reference": "https://grafana.com/docs/k6/latest/",
+    "model": "latencyReport",
+    "boundary": "Metrics model uses supplied samples; no real load generation, chaos or database benchmark."
+  },
+  "19.04.06": {
+    "context": "A protected route accidentally exposes a secret field.",
+    "concept": "Security regressions specify an abuse case and observable denial.",
+    "exercise": "Extend scopedRead with a foreign tenant and private field; separately test the real HTTP boundary and dependency audit.",
+    "positive": "Allowed responses omit secrets.",
+    "negative": "Leaked fields or unauthorized records fail.",
+    "reference": "https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html",
+    "model": "latencyReport",
+    "boundary": "Metrics model uses supplied samples; no real load generation, chaos or database benchmark."
+  },
+  "19.04.07": {
+    "context": "A test suite is divided into several shards.",
+    "concept": "Aggregation verifies distinct expected shard identities and exact commit.",
+    "exercise": "Use matrixGate for shard-1, shard-2, shard-3; omit a result.",
+    "positive": "All expected shards must pass on one commit.",
+    "negative": "Missing, duplicated or stale results fail.",
+    "reference": "https://grafana.com/docs/k6/latest/",
+    "model": "latencyReport",
+    "boundary": "Metrics model uses supplied samples; no real load generation, chaos or database benchmark."
+  },
+  "19.04.08": {
+    "context": "A team defines a measurable API SLO.",
+    "concept": "Specify the population, window, measurement method and targets before sampling.",
+    "exercise": "Make 100 synthetic samples, one failure and p95 below 100ms; add two failures and re-evaluate.",
+    "positive": "First set meets p95 100ms and error rate 1%.",
+    "negative": "Changed set fails; this is not real production SLA proof.",
+    "reference": "https://grafana.com/docs/k6/latest/",
+    "model": "latencyReport",
+    "boundary": "Metrics model uses supplied samples; no real load generation, chaos or database benchmark."
+  },
+  "20.01.01": {
+    "context": "A mutable image tag differs across machines.",
+    "concept": "Images have immutable digest identity; containers are runtime instances with writable state.",
+    "exercise": "Compare a synthetic digest and tag-only input to containerPolicy; inspect a real Docker image digest separately.",
+    "positive": "Digest form meets the pinning policy.",
+    "negative": "A mutable tag alone fails the model.",
+    "reference": "https://docs.docker.com/",
+    "model": "containerPolicy",
+    "boundary": "Declarative policy model; no Docker engine, image build, scan or real network isolation executed."
+  },
+  "20.01.02": {
+    "context": "A final runtime image includes unnecessary compilers.",
+    "concept": "Multi-stage builds separate build tooling from runtime; copy only required outputs.",
+    "exercise": "Sketch builder and runtime stages; in disposable Docker build and inspect final layers and size.",
+    "positive": "Runtime contains only required artifacts and dependencies.",
+    "negative": "Copied credentials or unnecessary tooling fail review.",
+    "reference": "https://docs.docker.com/build/building/multi-stage/",
+    "model": "containerPolicy",
+    "boundary": "Declarative policy model; no Docker engine, image build, scan or real network isolation executed."
+  },
+  "20.01.03": {
+    "context": "An API boots before the database is ready.",
+    "concept": "Startup order is not readiness; health checks and bounded retries are separate.",
+    "exercise": "Require a healthcheck in containerPolicy; in real Compose test a service_healthy dependency with a failed DB.",
+    "positive": "API becomes usable only after DB is healthy.",
+    "negative": "An unhealthy dependency cannot be treated as ready.",
+    "reference": "https://docs.docker.com/compose/how-tos/startup-order/",
+    "model": "containerPolicy",
+    "boundary": "Declarative policy model; no Docker engine, image build, scan or real network isolation executed."
+  },
+  "20.01.04": {
+    "context": "A DB container is recreated during development.",
+    "concept": "Named volumes persist independently; bind mounts map host paths and permissions.",
+    "exercise": "In disposable Docker seed a named volume, recreate without removing it and test a read-only config mount.",
+    "positive": "Synthetic data survives recreation.",
+    "negative": "Writes to read-only config fail; do not remove valuable volumes.",
+    "reference": "https://docs.docker.com/engine/storage/",
+    "model": "containerPolicy",
+    "boundary": "Declarative policy model; no Docker engine, image build, scan or real network isolation executed."
+  },
+  "20.01.05": {
+    "context": "A DB port is accidentally exposed to the host.",
+    "concept": "Network membership and published ports are distinct; expose only intended ingress.",
+    "exercise": "Evaluate topologyPolicy; inspect real disposable Compose ports/network and test service-to-service connectivity.",
+    "positive": "App connects through private network.",
+    "negative": "Public database port violates the design.",
+    "reference": "https://docs.docker.com/engine/network/",
+    "model": "containerPolicy",
+    "boundary": "Declarative policy model; no Docker engine, image build, scan or real network isolation executed."
+  },
+  "20.01.06": {
+    "context": "A container runs as root with broad write access.",
+    "concept": "Prefer a non-root UID and restricted filesystem; deliberately provide needed writable paths.",
+    "exercise": "Run containerPolicy with UID 1000 then UID 0; in Docker inspect identity and test writes.",
+    "positive": "Restricted configuration passes the model.",
+    "negative": "UID 0 or writable root is flagged.",
+    "reference": "https://docs.docker.com/",
+    "model": "containerPolicy",
+    "boundary": "Declarative policy model; no Docker engine, image build, scan or real network isolation executed."
+  },
+  "20.01.07": {
+    "context": "A pinned base image has vulnerable packages.",
+    "concept": "Pinning is reproducibility, not scanning. Review SBOM, advisory findings and provenance.",
+    "exercise": "Run the pinning check; scan an actual local image separately and document digest and dispositions.",
+    "positive": "Real findings have explicit review and blocking policy.",
+    "negative": "Scanner outage or unknown digest cannot count as clean.",
+    "reference": "https://docs.docker.com/scout/",
+    "model": "containerPolicy",
+    "boundary": "Declarative policy model; no Docker engine, image build, scan or real network isolation executed."
+  },
+  "20.01.08": {
+    "context": "A developer needs an isolated API/database stack.",
+    "concept": "A safe local stack combines reviewed images, non-root identity, health checks and network isolation.",
+    "exercise": "Evaluate containerPolicy and topologyPolicy; create a disposable Compose exercise with synthetic data.",
+    "positive": "Models pass and real health/isolation checks remain required.",
+    "negative": "Privileged execution, exposed DB or Docker socket fails the policy.",
+    "reference": "https://docs.docker.com/",
+    "model": "containerPolicy",
+    "boundary": "Declarative policy model; no Docker engine, image build, scan or real network isolation executed."
+  },
+  "20.02.01": {
+    "context": "A project checks two operating systems.",
+    "concept": "Matrix jobs have distinct identities; aggregate all expected combinations.",
+    "exercise": "Use matrixGate with linux-node24 and windows-node24; remove one result.",
+    "positive": "Both platform results match the candidate commit.",
+    "negative": "Missing platform fails.",
+    "reference": "https://docs.github.com/en/actions",
+    "model": "matrixGate",
+    "boundary": "Synthetic CI evidence only; no hosted workflow, branch protection change or cryptographic provenance."
+  },
+  "20.02.02": {
+    "context": "Typecheck was skipped although build succeeded.",
+    "concept": "Lint, typecheck, tests and build guard different failure domains.",
+    "exercise": "Evaluate four required job identities with typecheck skipped.",
+    "positive": "All four must be successful for one commit.",
+    "negative": "Skipped or failed job blocks aggregation.",
+    "reference": "https://docs.github.com/en/actions",
+    "model": "matrixGate",
+    "boundary": "Synthetic CI evidence only; no hosted workflow, branch protection change or cryptographic provenance."
+  },
+  "20.02.03": {
+    "context": "Cached dependencies come from a different lockfile.",
+    "concept": "Cache keys include platform/runtime/lock digest; cache is not verification.",
+    "exercise": "Compute SHA-256 for two lockfile fixtures; compare intended cache keys and require npm ci and tests on a hit.",
+    "positive": "Different locks choose different keys.",
+    "negative": "A cache hit cannot substitute acceptance.",
+    "reference": "https://docs.github.com/en/actions/using-workflows/caching-dependencies-to-speed-up-workflows",
+    "model": "matrixGate",
+    "boundary": "Synthetic CI evidence only; no hosted workflow, branch protection change or cryptographic provenance."
+  },
+  "20.02.04": {
+    "context": "A build log accidentally exposes a credential.",
+    "concept": "Secrets require least-privilege access and isolation from untrusted code; masking alone is insufficient.",
+    "exercise": "Design a fake secret and sanitized log fixture; review hypothetical PR job permissions without enabling Actions.",
+    "positive": "Fake marker never reaches output.",
+    "negative": "Giving untrusted code a deployment secret fails.",
+    "reference": "https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions",
+    "model": "matrixGate",
+    "boundary": "Synthetic CI evidence only; no hosted workflow, branch protection change or cryptographic provenance."
+  },
+  "20.02.05": {
+    "context": "A dependency update introduces a critical advisory.",
+    "concept": "Scan genuine locks using current advisory data; exceptions need bounded review.",
+    "exercise": "Inspect audit:dependencies; reason about a synthetic critical result and expired exception.",
+    "positive": "Only reviewed permitted results pass.",
+    "negative": "Critical, expired or unavailable advisory evidence blocks qualification.",
+    "reference": "https://docs.github.com/en/actions",
+    "model": "matrixGate",
+    "boundary": "Synthetic CI evidence only; no hosted workflow, branch protection change or cryptographic provenance."
+  },
+  "20.02.06": {
+    "context": "An artifact does not correspond to the tested commit.",
+    "concept": "Bind an immutable digest and provenance to the tested commit; names alone prove nothing.",
+    "exercise": "Use matrixGate with a stale commit; hash a local synthetic artifact and change one byte.",
+    "positive": "Wrong commit fails and altered artifact hash changes.",
+    "negative": "Edited artifact cannot inherit earlier evidence.",
+    "reference": "https://docs.github.com/en/actions/security-guides/using-artifact-attestations-to-establish-provenance-for-builds",
+    "model": "matrixGate",
+    "boundary": "Synthetic CI evidence only; no hosted workflow, branch protection change or cryptographic provenance."
+  },
+  "20.02.07": {
+    "context": "A branch accepts merges despite a missing check.",
+    "concept": "Server-side branch protection enforces stable required check identities; local code is not server proof.",
+    "exercise": "Model a missing required result; review hypothetical branch rules without changing the repo.",
+    "positive": "Complete commit-bound result set meets the model.",
+    "negative": "Missing evidence cannot authorize a merge.",
+    "reference": "https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches",
+    "model": "matrixGate",
+    "boundary": "Synthetic CI evidence only; no hosted workflow, branch protection change or cryptographic provenance."
+  },
+  "20.02.08": {
+    "context": "A developer wants a local CI pipeline.",
+    "concept": "Local commands and receipts support evidence without enabling cloud workflows.",
+    "exercise": "Run matrixGate and inspect npm run qualify:academy:local -- --plan; design expected jobs.",
+    "positive": "Each modeled result is tied to one commit.",
+    "negative": "Missing or recursive jobs fail the relevant audit; no Actions run.",
+    "reference": "https://docs.github.com/en/actions",
+    "model": "matrixGate",
+    "boundary": "Synthetic CI evidence only; no hosted workflow, branch protection change or cryptographic provenance."
+  },
+  "20.03.01": {
+    "context": "A build has no environment approval.",
+    "concept": "Authorization is independent of successful code checks.",
+    "exercise": "Call releaseDecision with approved=false then true, holding other evidence valid.",
+    "positive": "All true conditions promote the candidate.",
+    "negative": "Missing approval holds previous version.",
+    "reference": "https://docs.github.com/en/actions/deployment",
+    "model": "releaseDecision",
+    "boundary": "Boolean release decision model, not deployment, migration, traffic switching or verified rollback."
+  },
+  "20.03.02": {
+    "context": "A migration renames a field used by old app instances.",
+    "concept": "Expand-contract adds compatible structure, backfills and transitions readers before destructive cleanup.",
+    "exercise": "Set compatible=false; in a disposable DB test old and new queries against expanded schema.",
+    "positive": "Both versions work against expansion.",
+    "negative": "Incompatibility holds release; destructive rollback may lose data.",
+    "reference": "https://www.postgresql.org/docs/current/ddl-alter.html",
+    "model": "releaseDecision",
+    "boundary": "Boolean release decision model, not deployment, migration, traffic switching or verified rollback."
+  },
+  "20.03.03": {
+    "context": "A rolling deployment has old and new app instances.",
+    "concept": "Versions need shared schema/API compatibility; readiness and draining control traffic.",
+    "exercise": "Draw two-instance replacement sequence and model a healthy then unhealthy candidate.",
+    "positive": "Compatible ready version advances.",
+    "negative": "Unready candidate should not receive traffic; real balancing still untested.",
+    "reference": "https://docs.github.com/en/actions/deployment",
+    "model": "releaseDecision",
+    "boundary": "Boolean release decision model, not deployment, migration, traffic switching or verified rollback."
+  },
+  "20.03.04": {
+    "context": "A process listens but cannot reach its DB.",
+    "concept": "Liveness, readiness and functional smoke answer different questions.",
+    "exercise": "Set health=true and smoke=false; in a real local service test readiness plus synthetic user operation.",
+    "positive": "Both readiness and functional smoke succeed before promotion.",
+    "negative": "Listening-only evidence cannot authorize release.",
+    "reference": "https://docs.github.com/en/actions/deployment",
+    "model": "releaseDecision",
+    "boundary": "Boolean release decision model, not deployment, migration, traffic switching or verified rollback."
+  },
+  "20.03.05": {
+    "context": "A new version breaks checkout after release.",
+    "concept": "Rollback selects a known compatible artifact, not a new arbitrary build.",
+    "exercise": "Model v2 and previous v1 with failed smoke; write a rollback receipt naming the previous digest.",
+    "positive": "Failed smoke returns v1.",
+    "negative": "Incompatible schema holds rollout; rollback safety still requires real verification.",
+    "reference": "https://docs.github.com/en/actions/deployment",
+    "model": "releaseDecision",
+    "boundary": "Boolean release decision model, not deployment, migration, traffic switching or verified rollback."
+  },
+  "20.03.06": {
+    "context": "A feature is exposed to a small cohort.",
+    "concept": "Feature flags separate deployment from exposure; defaults and stable cohort identity matter.",
+    "exercise": "Design deterministic assignment and default-off behavior; model incompatible flag contract as held.",
+    "positive": "Same subject stays in the same cohort.",
+    "negative": "Flag-service failure must not unexpectedly enable exposure.",
+    "reference": "https://docs.github.com/en/actions/deployment",
+    "model": "releaseDecision",
+    "boundary": "Boolean release decision model, not deployment, migration, traffic switching or verified rollback."
+  },
+  "20.03.07": {
+    "context": "A release elevates error rates off-hours.",
+    "concept": "Incident-ready delivery defines ownership, abort threshold, evidence and recovery path.",
+    "exercise": "Write a synthetic receipt containing artifact ID, threshold, reviewer, action; model failed health.",
+    "positive": "Decision maps to a predefined abort condition.",
+    "negative": "Missing owner or health evidence does not qualify release.",
+    "reference": "https://docs.github.com/en/actions/deployment",
+    "model": "releaseDecision",
+    "boundary": "Boolean release decision model, not deployment, migration, traffic switching or verified rollback."
+  },
+  "20.03.08": {
+    "context": "A learner rehearses deploy and rollback locally.",
+    "concept": "Exercise hold, promotion and rollback without contacting live hosts.",
+    "exercise": "Run 20.03 tests; simulate healthy candidate, failed smoke and missing approval.",
+    "positive": "Model promotes, rolls back or holds as intended.",
+    "negative": "Unapproved/incompatible candidate stays held; no real deployment.",
+    "reference": "https://docs.github.com/en/actions/deployment",
+    "model": "releaseDecision",
+    "boundary": "Boolean release decision model, not deployment, migration, traffic switching or verified rollback."
+  },
+  "20.04.01": {
+    "context": "A Linux service stores a secret and writable data.",
+    "concept": "Ownership and permissions grant only necessary access; avoid broad chmod fixes.",
+    "exercise": "In a disposable directory create a fake secret; compare owner-only with world-readable permissions.",
+    "positive": "Only intended local account reads the file.",
+    "negative": "World-readable secret fails.",
+    "reference": "https://www.gnu.org/software/coreutils/manual/html_node/File-permissions.html",
+    "model": "topologyPolicy",
+    "boundary": "Synthetic topology policy; no OS/firewall/TLS/DNS/IaC or restore enforcement tested."
+  },
+  "20.04.02": {
+    "context": "Public ingress forwards to a private app.",
+    "concept": "Reverse proxy routes traffic and handles TLS; forwarded headers need a trusted boundary.",
+    "exercise": "Use public TLS edge/private app model; in local Caddy route synthetic requests and inspect headers.",
+    "positive": "Only proxy is publicly modeled.",
+    "negative": "Direct public app or missing TLS fails.",
+    "reference": "https://caddyserver.com/docs/",
+    "model": "topologyPolicy",
+    "boundary": "Synthetic topology policy; no OS/firewall/TLS/DNS/IaC or restore enforcement tested."
+  },
+  "20.04.03": {
+    "context": "A certificate approaches expiration.",
+    "concept": "Validity period, chain, hostname and renewal are separate from a configured TLS flag.",
+    "exercise": "Inspect a local test certificate and plan renewal monitoring; model tls=false.",
+    "positive": "Real client verifies a valid chain/name and the model requires TLS.",
+    "negative": "Expired or wrong-host certificate fails real verification.",
+    "reference": "https://letsencrypt.org/docs/",
+    "model": "topologyPolicy",
+    "boundary": "Synthetic topology policy; no OS/firewall/TLS/DNS/IaC or restore enforcement tested."
+  },
+  "20.04.04": {
+    "context": "DNS points to an old origin after migration.",
+    "concept": "TTL governs cache lifetime; origin routing and CDN caches are separate.",
+    "exercise": "Draw two resolver caches with 300-second TTL and a record change; plan compatible origins during transition.",
+    "positive": "The plan handles stale and fresh addresses.",
+    "negative": "Assuming instant propagation invalidates the plan.",
+    "reference": "https://www.cloudflare.com/learning/dns/what-is-dns/",
+    "model": "topologyPolicy",
+    "boundary": "Synthetic topology policy; no OS/firewall/TLS/DNS/IaC or restore enforcement tested."
+  },
+  "20.04.05": {
+    "context": "A small VPS hosts a proxy, app and DB.",
+    "concept": "Minimize open services, use patched software, service accounts, backups and tested firewall.",
+    "exercise": "Evaluate topologyPolicy and sketch a disposable VM; list intended ports and verify from authorized local network.",
+    "positive": "Public edge separated from private data services.",
+    "negative": "Public DB or unverified restore fails; no live host changes.",
+    "reference": "https://docs.docker.com/",
+    "model": "topologyPolicy",
+    "boundary": "Synthetic topology policy; no OS/firewall/TLS/DNS/IaC or restore enforcement tested."
+  },
+  "20.04.06": {
+    "context": "Infrastructure changes should be reviewable.",
+    "concept": "OpenTofu plan describes intended changes; review plan and providers before apply.",
+    "exercise": "Use a local-only synthetic configuration with reviewed providers; run fmt, validate and plan in disposable workspace, not apply.",
+    "positive": "Plan contains only intended local changes.",
+    "negative": "Unexpected resource or validation failure blocks exercise.",
+    "reference": "https://opentofu.org/docs/",
+    "model": "topologyPolicy",
+    "boundary": "Synthetic topology policy; no OS/firewall/TLS/DNS/IaC or restore enforcement tested."
+  },
+  "20.04.07": {
+    "context": "Terraform state may retain a credential.",
+    "concept": "State maps configuration to resources and may hold sensitive values even when marked sensitive.",
+    "exercise": "Create synthetic state-like JSON with a fake marker; check Git exclusion and restricted local access.",
+    "positive": "Marker not committed; state access policy documented.",
+    "negative": "Tracked state or leaked fake secret fails.",
+    "reference": "https://developer.hashicorp.com/terraform/language/state/sensitive-data",
+    "model": "topologyPolicy",
+    "boundary": "Synthetic topology policy; no OS/firewall/TLS/DNS/IaC or restore enforcement tested."
+  },
+  "20.04.08": {
+    "context": "A learner designs a small-service production topology.",
+    "concept": "Explicitly define edge, private services, secrets, persistence and recovery before spending money.",
+    "exercise": "Run topologyPolicy; add private app and worker, then exercise public DB and missing restore evidence.",
+    "positive": "Only TLS edge is public; data recovery is accounted for.",
+    "negative": "Public data services, missing TLS and restore gaps block the model.",
+    "reference": "https://docs.docker.com/",
+    "model": "topologyPolicy",
+    "boundary": "Synthetic topology policy; no OS/firewall/TLS/DNS/IaC or restore enforcement tested."
+  }
+}

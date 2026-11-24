@@ -1,0 +1,61 @@
+---
+id: "19.04.08"
+title: "Lab measurable API SLO"
+module: "19.04"
+status: "draft-unverified"
+readyToPublish: false
+---
+
+# Lab measurable API SLO
+
+> Unpublished instructor manuscript. A green model test is not real runtime acceptance.
+
+## Learning outcomes
+
+Explain the design rule, reproduce or specify an observable positive and negative experiment, and distinguish the model from external evidence.
+
+## Context
+
+A team defines a measurable API SLO.
+
+## Step 1 — Mental model
+
+Specify the population, window, measurement method and targets before sampling.
+
+## Step 2 — Guided practice
+
+Make 100 synthetic samples, one failure and p95 below 100ms; add two failures and re-evaluate.
+
+Predict the outcome before running the experiment. Use only synthetic data and disposable fixtures.
+
+## Step 3 — Acceptance
+
+**Positive:** First set meets p95 100ms and error rate 1%.
+
+**Negative:** Changed set fails; this is not real production SLA proof.
+
+Run the complementary local module model and inspect `latencyReport` in `examples/p6-quality/labs.mjs`. Add an assertion for the relevant boundary. This command does not execute the external tools described above.
+
+```bash
+node --test --test-name-pattern="19[.]04" examples/p6-quality/labs.test.mjs
+```
+
+## Qualification boundary
+
+Metrics model uses supplied samples; no real load generation, chaos or database benchmark.
+
+## Knowledge check
+
+1. Which public behavior or invariant is being protected?
+2. Which negative case falsifies the unsafe implementation?
+3. Which real runtime or manual check is still required?
+
+**Assessment:** Submit the exact synthetic input, expected and observed outputs, a negative result, and the untested boundaries. Mark unavailable external checks not-run.
+
+## References
+
+- [Technical reference](https://grafana.com/docs/k6/latest/)
+
+## Publication conditions
+
+Editorial review, meaningful red/green exercises, real applicable runtime tests, full Node 24 build, browser and manual accessibility gates. Do not register this draft in the public reader until its module is approved.

@@ -5,7 +5,7 @@
 ## Verified source-of-truth inventory
 
 - **28 tracks, 111 modules and 889 canonical topics.**
-- **338 published unique lesson IDs** (337 published MDX and one distinct interactive publication), **272 unpublished authored drafts**, **279 not yet authored**.
+- **338 published unique lesson IDs** (337 published MDX and one distinct interactive publication), **335 unpublished authored drafts**, **216 not yet authored**.
 - Source-only chapters, code labs, local HTTP fixtures and PostgreSQL SQL scripts **are not published lessons** until all of their publication gates pass.
 - `docs/checkpoint.json` records the last verified historical hosted application baseline separately from ongoing unreleased source work.
 
@@ -46,3 +46,9 @@ The P5 offline matrix now mandates a **20th source-only group**, `npm run test:p
 The coordinator runs existing repository-owned commands in a fixed order, checks the commit and selected lockfile hashes before and after each gate, and updates a JSON receipt in a temporary directory outside the checkout. On command failure or checkout change it stops; later gates remain not-run. The P1 profile includes the full Academy local gate, dependency audit and specific RHF/Query browser gates, but skips the dependency-installed NestJS architecture gate. That skipped gate remains explicitly not-run.
 
 A receipt is local diagnostic evidence, **not signed or tamper-proof attestation**. It cannot approve publication and does not replace actual DB/provider tests or manual reviews. The npm dependency audit and npm ci need legitimate registry access; the tool is local execution, not an air-gapped guarantee. Keep an isolated worktree and prevent concurrent edits; Git clean checks do not prove absence of malicious local modification or ephemeral changes. Command timeout may leave descendant processes; inspect and stop those before rerunning. See the checkpoint for setup, scope and limitations.
+
+## P6 Testing and Delivery source coverage (2026-11-24)
+
+`npm run test:p6-quality-source` verifies canonical Track 19/20 source manuscripts and executes local model and auditor tests. It is included in `verify:offline`. The shared draft inventory reads both older metadata-paired manuscripts and newer frontmatter-only manuscripts rather than relying on a hardcoded folder list. Historical source manuscripts retained after publication do not count as unpublished.
+
+The 64 new topics remain **draft-unverified**, including their model exercises. Real React/Vitest/Testing Library/MSW/browser behavior, NestJS/database integration, k6 traffic and thresholds, Docker/Compose isolation, actual CI/artifact provenance, deployment/rollback, Linux/TLS/DNS and IaC require independent evidence. The local model cannot certify those tools. No Actions workflow or deployment configuration is added or enabled.

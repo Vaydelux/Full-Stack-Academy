@@ -1,0 +1,61 @@
+---
+id: "20.04.02"
+title: "Caddy or reverse proxy"
+module: "20.04"
+status: "draft-unverified"
+readyToPublish: false
+---
+
+# Caddy or reverse proxy
+
+> Unpublished instructor manuscript. A green model test is not real runtime acceptance.
+
+## Learning outcomes
+
+Explain the design rule, reproduce or specify an observable positive and negative experiment, and distinguish the model from external evidence.
+
+## Context
+
+Public ingress forwards to a private app.
+
+## Step 1 — Mental model
+
+Reverse proxy routes traffic and handles TLS; forwarded headers need a trusted boundary.
+
+## Step 2 — Guided practice
+
+Use public TLS edge/private app model; in local Caddy route synthetic requests and inspect headers.
+
+Predict the outcome before running the experiment. Use only synthetic data and disposable fixtures.
+
+## Step 3 — Acceptance
+
+**Positive:** Only proxy is publicly modeled.
+
+**Negative:** Direct public app or missing TLS fails.
+
+Run the complementary local module model and inspect `topologyPolicy` in `examples/p6-quality/labs.mjs`. Add an assertion for the relevant boundary. This command does not execute the external tools described above.
+
+```bash
+node --test --test-name-pattern="20[.]04" examples/p6-quality/labs.test.mjs
+```
+
+## Qualification boundary
+
+Synthetic topology policy; no OS/firewall/TLS/DNS/IaC or restore enforcement tested.
+
+## Knowledge check
+
+1. Which public behavior or invariant is being protected?
+2. Which negative case falsifies the unsafe implementation?
+3. Which real runtime or manual check is still required?
+
+**Assessment:** Submit the exact synthetic input, expected and observed outputs, a negative result, and the untested boundaries. Mark unavailable external checks not-run.
+
+## References
+
+- [Technical reference](https://caddyserver.com/docs/)
+
+## Publication conditions
+
+Editorial review, meaningful red/green exercises, real applicable runtime tests, full Node 24 build, browser and manual accessibility gates. Do not register this draft in the public reader until its module is approved.

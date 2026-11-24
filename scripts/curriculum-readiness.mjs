@@ -3,6 +3,7 @@
  * Compute against source truth; never infer publication from plan docs.
  */
 import fs from 'node:fs';
+import { collectStagedIds } from './staged-inventory.mjs';
 import path from 'node:path';
 import assert from 'node:assert/strict';
 import { fileURLToPath } from 'node:url';
@@ -17,13 +18,7 @@ const interactive=[...idsSection[1].matchAll(/'([^']+)'/g)].map(x=>x[1]);
 const mdxFiles=fs.readdirSync(path.join(root,'src/content/lessons')).filter(name=>name.endsWith('.meta.json'));
 const mdx=mdxFiles.map(name=>JSON.parse(read('src/content/lessons/'+name)).id);
 const published=new Set([...interactive,...mdx]);
-const stagingDirs=['drafts/forms-query/lessons','drafts/nestjs/lessons'];
-const staged=new Set(stagingDirs.flatMap(dir=>{
- const folder=path.join(root,dir);
- return fs.existsSync(folder)
-  ?fs.readdirSync(folder).filter(name=>name.endsWith('.meta.json')).map(name=>JSON.parse(read(dir+'/'+name)).id)
-  :[];
-}));
+const staged=new Set(collectStagedIds(root,curriculum));
 // Draft source files can remain for red/green lab qualification after publication.
 const stagedUnpublished=new Set([...staged].filter(id=>!published.has(id)));
 const modules=curriculum.modules.map(module=>{

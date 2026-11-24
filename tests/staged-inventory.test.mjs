@@ -1,0 +1,21 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {mkdtempSync,mkdirSync,writeFileSync,rmSync} from 'node:fs';
+import {tmpdir} from 'node:os';
+import {join,dirname} from 'node:path';
+import {collectStagedIds} from '../scripts/staged-inventory.mjs';
+const catalog={lessons:[{id:'09.02.01',moduleId:'09.02'},{id:'18.01.01',moduleId:'18.01'},{id:'19.01.01',moduleId:'19.01'}]};
+const front=(id='19.01.01',module='19.01')=>`---\nid: "${id}"\nmodule: "${module}"\nstatus: "draft-unverified"\nreadyToPublish: false\n---\n\n# Draft\n`;
+function fixture(t){const root=mkdtempSync(join(tmpdir(),'academy-staged-'));t.after(()=>rmSync(root,{recursive:true,force:true}));const put=(path,content)=>{const full=join(root,path);mkdirSync(dirname(full),{recursive:true});writeFileSync(full,content);};return {root,put};}
+const manuscript=(group,id)=>`drafts/${group}/lessons/${id}.mdx`;
+test('empty draft root returns no staged topics',t=>{const {root}=fixture(t);assert.deepEqual(collectStagedIds(root,catalog),[]);});
+test('collects both metadata-paired and frontmatter-only drafts',t=>{const {root,put}=fixture(t);put(manuscript('forms-query','09.02.01'),'# MDX');put('drafts/forms-query/lessons/09.02.01.meta.json','{"id":"09.02.01"}');put(manuscript('integrations','18.01.01'),front('18.01.01','18.01'));put(manuscript('p6-quality','19.01.01'),front());assert.deepEqual(collectStagedIds(root,catalog),['09.02.01','18.01.01','19.01.01']);});
+test('historical manuscripts are counted once; caller filters published IDs',t=>{const {root,put}=fixture(t);put(manuscript('p6-quality','19.01.01'),front());const published=new Set(['19.01.01']);assert.equal(collectStagedIds(root,catalog).filter(id=>!published.has(id)).length,0);});
+test('duplicate ID in two directories fails closed',t=>{const {root,put}=fixture(t);for(const g of ['a','b'])put(manuscript(g,'19.01.01'),front());assert.throws(()=>collectStagedIds(root,catalog),/Duplicate draft ID/);});
+test('unknown canonical ID rejected',t=>{const {root,put}=fixture(t);put(manuscript('p6-quality','99.01.01'),front('99.01.01','99.01'));assert.throws(()=>collectStagedIds(root,catalog),/Unknown draft ID/);});
+test('orphan metadata rejected',t=>{const {root,put}=fixture(t);put('drafts/p6-quality/lessons/19.01.01.meta.json','{"id":"19.01.01"}');assert.throws(()=>collectStagedIds(root,catalog),/Metadata without manuscript/);});
+test('mismatched paired metadata rejected',t=>{const {root,put}=fixture(t);put(manuscript('p6-quality','19.01.01'),'# MDX');put('drafts/p6-quality/lessons/19.01.01.meta.json','{"id":"18.01.01"}');assert.throws(()=>collectStagedIds(root,catalog),/metadata ID mismatch/);});
+test('frontmatter ID and module must agree with canonical inventory',t=>{const {root,put}=fixture(t);put(manuscript('p6-quality','19.01.01'),front('18.01.01','18.01'));assert.throws(()=>collectStagedIds(root,catalog),/Invalid manuscript frontmatter/);put(manuscript('p6-quality','19.01.01'),front('19.01.01','20.01'));assert.throws(()=>collectStagedIds(root,catalog),/Invalid manuscript frontmatter/);});
+test('source-only readiness flag cannot be promoted',t=>{const {root,put}=fixture(t);put(manuscript('p6-quality','19.01.01'),front().replace('readyToPublish: false','readyToPublish: true'));assert.throws(()=>collectStagedIds(root,catalog),/Invalid manuscript frontmatter/);});
+test('unpaired arbitrary MDX is not a verified staged manuscript',t=>{const {root,put}=fixture(t);put(manuscript('p6-quality','19.01.01'),'# no metadata');assert.throws(()=>collectStagedIds(root,catalog),/Invalid manuscript frontmatter/);});
+test('CRLF frontmatter works on Windows',t=>{const {root,put}=fixture(t);put(manuscript('p6-quality','19.01.01'),front().replaceAll('\n','\r\n'));assert.deepEqual(collectStagedIds(root,catalog),['19.01.01']);});

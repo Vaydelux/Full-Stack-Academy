@@ -1,0 +1,61 @@
+---
+id: "19.02.04"
+title: "Mock Service Worker"
+module: "19.02"
+status: "draft-unverified"
+readyToPublish: false
+---
+
+# Mock Service Worker
+
+> Unpublished instructor manuscript. A green model test is not real runtime acceptance.
+
+## Learning outcomes
+
+Explain the design rule, reproduce or specify an observable positive and negative experiment, and distinguish the model from external evidence.
+
+## Context
+
+A frontend test needs a server error without production access.
+
+## Step 1 — Mental model
+
+MSW intercepts at the network boundary so the app still uses its real client.
+
+## Step 2 — Guided practice
+
+In an installed MSW fixture supply synthetic 200 and 503 handlers, reject unhandled requests, reset handlers per test.
+
+Predict the outcome before running the experiment. Use only synthetic data and disposable fixtures.
+
+## Step 3 — Acceptance
+
+**Positive:** The normal client processes success.
+
+**Negative:** 503 produces the intended retry/error state; no external request.
+
+Run the complementary local module model and inspect `latestRequest` in `examples/p6-quality/labs.mjs`. Add an assertion for the relevant boundary. This command does not execute the external tools described above.
+
+```bash
+node --test --test-name-pattern="19[.]02" examples/p6-quality/labs.test.mjs
+```
+
+## Qualification boundary
+
+Plain JavaScript UI state model; installed React/Vitest/Testing Library/MSW and real browsers require separate tests.
+
+## Knowledge check
+
+1. Which public behavior or invariant is being protected?
+2. Which negative case falsifies the unsafe implementation?
+3. Which real runtime or manual check is still required?
+
+**Assessment:** Submit the exact synthetic input, expected and observed outputs, a negative result, and the untested boundaries. Mark unavailable external checks not-run.
+
+## References
+
+- [Technical reference](https://mswjs.io/docs/)
+
+## Publication conditions
+
+Editorial review, meaningful red/green exercises, real applicable runtime tests, full Node 24 build, browser and manual accessibility gates. Do not register this draft in the public reader until its module is approved.

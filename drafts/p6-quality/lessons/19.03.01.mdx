@@ -1,0 +1,61 @@
+---
+id: "19.03.01"
+title: "Nest test modules"
+module: "19.03"
+status: "draft-unverified"
+readyToPublish: false
+---
+
+# Nest test modules
+
+> Unpublished instructor manuscript. A green model test is not real runtime acceptance.
+
+## Learning outcomes
+
+Explain the design rule, reproduce or specify an observable positive and negative experiment, and distinguish the model from external evidence.
+
+## Context
+
+A Nest service depends on a repository provider.
+
+## Step 1 — Mental model
+
+Testing modules construct dependency graphs; overrides replace a specific provider boundary.
+
+## Step 2 — Guided practice
+
+In installed Nest build Test.createTestingModule with a feature module, override its repository, compile and resolve the service.
+
+Predict the outcome before running the experiment. Use only synthetic data and disposable fixtures.
+
+## Step 3 — Acceptance
+
+**Positive:** The intended repository is injected.
+
+**Negative:** Omitting the provider produces a resolution error.
+
+Run the complementary local module model and inspect `scopedRead` in `examples/p6-quality/labs.mjs`. Add an assertion for the relevant boundary. This command does not execute the external tools described above.
+
+```bash
+node --test --test-name-pattern="19[.]03" examples/p6-quality/labs.test.mjs
+```
+
+## Qualification boundary
+
+Synthetic row/actor model; no Nest DI, network server, PostgreSQL or RLS execution.
+
+## Knowledge check
+
+1. Which public behavior or invariant is being protected?
+2. Which negative case falsifies the unsafe implementation?
+3. Which real runtime or manual check is still required?
+
+**Assessment:** Submit the exact synthetic input, expected and observed outputs, a negative result, and the untested boundaries. Mark unavailable external checks not-run.
+
+## References
+
+- [Technical reference](https://docs.nestjs.com/fundamentals/testing)
+
+## Publication conditions
+
+Editorial review, meaningful red/green exercises, real applicable runtime tests, full Node 24 build, browser and manual accessibility gates. Do not register this draft in the public reader until its module is approved.
