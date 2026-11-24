@@ -80,7 +80,7 @@ export default function SettingsForm(){
 
 <Misconception claim="The starter resets before the HTTP response is confirmed, destroying user input on failure." correction="Reset defines a new baseline and changes dirty state. Only reset after a confirmed successful mutation; preserve draft values after errors." />
 
-<KnowledgeCheck question="Which repair best addresses reset and dirty state?" choices={["Always trust the browser to enforce security.","Use one authoritative form state and verify the tested behavior.","Ignore non-200 HTTP responses if fetch resolved.","Treat TypeScript types as runtime authorization."]} correctIndex={1} explanation="Reset defines a new baseline and changes dirty state. Only reset after a confirmed successful mutation; preserve draft values after errors." misconception="The starter resets before the HTTP response is confirmed, destroying user input on failure." lessonId="09.02.06" />
+<KnowledgeCheck question="A background fetch returns while the user is editing. Which action prevents silent loss?" choices={["Reset on every response.","Explicitly decide whether to keep dirty values, merge or ask to discard.","Replace the form with the last fetched object regardless of edits.","Mark every field dirty forever."]} correctIndex={1} explanation="Reset defines the baseline; background refresh must follow an explicit dirty-state policy." misconception="The starter resets before the HTTP response is confirmed, destroying user input on failure." lessonId="09.02.06" />
 
 ## Bug Hunt: reproduce, diagnose and repair
 
@@ -104,6 +104,12 @@ export default function SettingsForm(){
 **Independent exercise:** Save a valid title with a forced 503, inspect `isDirty` and confirm the text remains editable. Repeat with a 201 and confirm the reset. Explain why a loading spinner is not a saved acknowledgement.
 
 **Advanced boundary:** If the server normalizes the saved record, an edit form should reset against the *confirmed server value* rather than an arbitrary initial value. New remote data arriving during a dirty edit needs an explicit conflict policy. Do not send private draft content into analytics or error telemetry by default.
+
+## Applied debugging clinic
+
+Load Alpha, edit to Beta, receive Gamma from a background refresh and compare three policies: preserve Beta, explicitly discard to Gamma, or reconcile field by field. Test a reset after successful save using the server-confirmed result, not the original defaults.
+
+**Evidence to record:** the initial state, action, observed result, expected result and smallest repair. Explain whether the defect belongs to the form, rendered widget, or HTTP boundary. Re-run the original failing interaction after the repair.
 
 ## Guided local lab
 
