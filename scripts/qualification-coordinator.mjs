@@ -17,6 +17,7 @@ export const STEPS = Object.freeze([
 ]);
 export const EXTERNAL_GATES = Object.freeze([
  'P2 actual PostgreSQL and socket integration',
+ 'P8 isolated Nest/PostgreSQL HTTP integrity (qualify:p8:nest-integrity, disposable database required)',
  'P3 PostgreSQL 17+ real SQL and recovery qualification',
  'P4 real Prisma/Supabase migration, Auth, RLS and storage',
  'P5 real PostgreSQL inbox/search/RLS, Redis and provider-native integrations',
