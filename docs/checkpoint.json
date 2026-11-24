@@ -10,8 +10,8 @@
   },
   "development": {
     "branch": "feat/p8-publication-evidence",
-    "state": "p9-http-boundary-regressions-passed-publication-blocked",
-    "note": "92 isolated Node22 tests passed, including nine reproduced and repaired conditional-write HTTP boundary defects. Prior 16 connector-based lesson parity checks remain recorded. Full checkout, Node24, dependencies, actual Academy browser, database and manual accessibility qualification remain blocked."
+    "state": "p9-primary-client-contract-qualification-publication-blocked",
+    "note": "146 isolated Node22 tests passed: 92 previous regressions rerun, 17 new response-contract tests, 20 existing real primary API/client integration tests, 17 retry/cancellation tests. Reproduced 13 response-contract failures and one separate HTTP 408 policy failure. Strict isolated TypeScript 5.8.3 check passed using a type-only schema stand-in. Prior 16 connector-based lesson checks remain separate. Complete checkout, Node24, actual Academy browser, database and manual accessibility qualification remain blocked."
   },
   "snapshot": {
     "tracks": 28,
