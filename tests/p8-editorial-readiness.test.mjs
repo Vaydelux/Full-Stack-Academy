@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {evaluateModule,REQUIRED} from '../scripts/p8-editorial-readiness.mjs';
+const commit='a'.repeat(40);
+const valid=()=>({commit,contentSha256:'b'.repeat(64),checks:Object.fromEntries(REQUIRED.map(k=>[k,true])),labPassed:true,negativePassed:true});
+test('complete module is reviewable but not approved',()=>{const r=evaluateModule(['a','b'],{a:valid(),b:valid()},commit);assert.equal(r.readyForReview,true);assert.equal(r.publicationApproved,false);});
+test('missing topic blocks entire module',()=>assert.equal(evaluateModule(['a','b'],{a:valid()},commit).readyForReview,false));
+for(const key of REQUIRED)test('missing '+key+' blocks review',()=>{const a=valid();delete a.checks[key];assert.equal(evaluateModule(['a'],{a},commit).readyForReview,false);});
+for(const key of ['commit','contentSha256','labPassed','negativePassed'])test('invalid '+key+' blocks review',()=>{const a=valid();delete a[key];assert.equal(evaluateModule(['a'],{a},commit).readyForReview,false);});
+test('invalid inventory rejected',()=>{assert.throws(()=>evaluateModule([],{},commit));assert.throws(()=>evaluateModule(['a','a'],{},commit));assert.throws(()=>evaluateModule(['a'],{},'bad'));});
