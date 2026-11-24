@@ -21,3 +21,7 @@ Run npm run test:p8-learning after a full checkout. The aggregate command is aut
 ## P8 backend integrity continuation
 
 Added a PostgreSQL transfer schema, executable SQL assertions and two-session lab instructions under examples/p8-backend-integrity. Added source-only Nest request pipeline and PostgreSQL concurrency reference pages under docs/p8-reference, aligned to canonical modules 11.02 and 12.03. No live registry or publication counts changed. PostgreSQL/psql are absent in the execution environment; SQL assertions and concurrency scenarios are authored but unexecuted. Nest reference is not an executable Nest application. Next: qualify SQL against a disposable PostgreSQL instance, implement a real Nest HTTP integration fixture, connect reference pages to the site after review, then expand remaining modules. Prior P1 qualification blockers remain.
+
+## Reference integration continuation
+
+Added twelve canonical authored reference drafts (six NestJS, six PostgreSQL) to the existing authored reference registry. Improved existing ReferenceExplorer token search; no parallel route or catalog. Snippets are illustrative, not independently executable or reviewed; minimal and production examples currently share syntax. Full build, reference audits and browser verification remain outstanding. The preceding Nest HTTP fixture under examples/p8-nest-integrity also requires genuine dependency lock and disposable PostgreSQL qualification. Next: verify reference IDs and related lessons, expand examples, execute full browser and database gates before publication.
