@@ -1407,7 +1407,7 @@ export const AUTHORED_REFERENCES: AuthoredReference[] = [
   "parameters": "Framework-managed classes and request context; snippets assume relevant imports.",
   "returns": "Groups providers and controllers; exports expose selected providers to importing modules.",
   "minimalExample": "@Module({ providers: [TaskService], exports: [TaskService] })",
-  "productionExample": "@Module({ providers: [TaskService], exports: [TaskService] })",
+  "productionExample": "@Module({ providers: [TaskService], exports: [TaskService] })\nclass TasksModule {}\n@Module({ imports: [TasksModule], controllers: [ReportsController] })\nclass ReportsModule {}",
   "commonMistakes": [
     "Import the module that exports the dependency, not a duplicate provider."
   ],
@@ -1437,7 +1437,7 @@ export const AUTHORED_REFERENCES: AuthoredReference[] = [
   "parameters": "Framework-managed classes and request context; snippets assume relevant imports.",
   "returns": "Marks a class for dependency injection; registration in a module is still required.",
   "minimalExample": "@Injectable()\nclass TaskService {}",
-  "productionExample": "@Injectable()\nclass TaskService {}",
+  "productionExample": "@Injectable()\nclass TaskService { constructor(@Inject(TASK_REPOSITORY) private readonly repo: TaskRepository) {} }",
   "commonMistakes": [
     "Do not instantiate injected services manually in controllers."
   ],
@@ -1467,7 +1467,7 @@ export const AUTHORED_REFERENCES: AuthoredReference[] = [
   "parameters": "Framework-managed classes and request context; snippets assume relevant imports.",
   "returns": "A guard decides whether execution may proceed before pipes run.",
   "minimalExample": "canActivate(context: ExecutionContext): boolean { return false; }",
-  "productionExample": "canActivate(context: ExecutionContext): boolean { return false; }",
+  "productionExample": "@Injectable()\nclass MembershipGuard implements CanActivate {\n constructor(private readonly policy: MembershipPolicy) {}\n async canActivate(ctx: ExecutionContext) { const request = ctx.switchToHttp().getRequest(); if (!request.user) return false; return this.policy.canRead(request.user, request.params.workspaceId); }\n}",
   "commonMistakes": [
     "Deny by default; verify resource ownership in the service too."
   ],
@@ -1497,7 +1497,7 @@ export const AUTHORED_REFERENCES: AuthoredReference[] = [
   "parameters": "Framework-managed classes and request context; snippets assume relevant imports.",
   "returns": "Transforms or validates an argument before the handler.",
   "minimalExample": "transform(value: unknown) { return schema.parse(value); }",
-  "productionExample": "transform(value: unknown) { return schema.parse(value); }",
+  "productionExample": "@Injectable()\nclass TaskPipe implements PipeTransform {\n transform(value: unknown) { const parsed = taskSchema.safeParse(value); if (!parsed.success) throw new BadRequestException('Invalid task'); return parsed.data; }\n}",
   "commonMistakes": [
     "Map validation failures to BadRequestException rather than leaking schema internals."
   ],
@@ -1527,7 +1527,7 @@ export const AUTHORED_REFERENCES: AuthoredReference[] = [
   "parameters": "Framework-managed classes and request context; snippets assume relevant imports.",
   "returns": "Wraps handler execution with an observable.",
   "minimalExample": "intercept(context: ExecutionContext, next: CallHandler) { return next.handle(); }",
-  "productionExample": "intercept(context: ExecutionContext, next: CallHandler) { return next.handle(); }",
+  "productionExample": "intercept(_context: ExecutionContext, next: CallHandler) { const started = performance.now(); return next.handle().pipe(finalize(() => metrics.observe(performance.now() - started))); }",
   "commonMistakes": [
     "Do not subscribe manually or swallow errors."
   ],
@@ -1557,7 +1557,7 @@ export const AUTHORED_REFERENCES: AuthoredReference[] = [
   "parameters": "Framework-managed classes and request context; snippets assume relevant imports.",
   "returns": "Handles matching uncaught exceptions at a transport boundary.",
   "minimalExample": "@Catch(HttpException)\nclass Filter implements ExceptionFilter { catch(e: HttpException, host: ArgumentsHost) { host.switchToHttp().getResponse().status(e.getStatus()).json({statusCode:e.getStatus()}); } }",
-  "productionExample": "@Catch(HttpException)\nclass Filter implements ExceptionFilter { catch(e: HttpException, host: ArgumentsHost) { host.switchToHttp().getResponse().status(e.getStatus()).json({statusCode:e.getStatus()}); } }",
+  "productionExample": "@Catch(HttpException)\nclass SafeHttpFilter implements ExceptionFilter { catch(error: HttpException, host: ArgumentsHost) { const status = error.getStatus(); host.switchToHttp().getResponse().status(status).json({ statusCode: status, message: status >= 500 ? 'Internal error' : 'Request rejected' }); } }",
   "commonMistakes": [
     "Never expose stack traces or database error details."
   ],
@@ -1587,7 +1587,7 @@ export const AUTHORED_REFERENCES: AuthoredReference[] = [
   "parameters": "SQL identifiers and bound values; examples assume the named tables exist.",
   "returns": "Handles unique constraint conflicts atomically.",
   "minimalExample": "INSERT INTO requests(id) VALUES ($1) ON CONFLICT (id) DO NOTHING RETURNING id;",
-  "productionExample": "INSERT INTO requests(id) VALUES ($1) ON CONFLICT (id) DO NOTHING RETURNING id;",
+  "productionExample": "INSERT INTO requests(tenant_id, request_id, payload_hash) VALUES ($1, $2, $3) ON CONFLICT (tenant_id, request_id) DO NOTHING RETURNING request_id;\n-- If no row returns, compare the persisted payload hash before replay.",
   "commonMistakes": [
     "A duplicate key alone does not establish identical request payloads."
   ],
@@ -1617,7 +1617,7 @@ export const AUTHORED_REFERENCES: AuthoredReference[] = [
   "parameters": "SQL identifiers and bound values; examples assume the named tables exist.",
   "returns": "Controls which concurrent changes a transaction can observe.",
   "minimalExample": "BEGIN ISOLATION LEVEL SERIALIZABLE;\n-- perform related reads and writes\nCOMMIT;",
-  "productionExample": "BEGIN ISOLATION LEVEL SERIALIZABLE;\n-- perform related reads and writes\nCOMMIT;",
+  "productionExample": "BEGIN ISOLATION LEVEL SERIALIZABLE;\nUPDATE inventory SET available = available - 1 WHERE id = 1 AND available >= 1 RETURNING available;\n-- Inspect the returned row; retry the whole transaction on 40001.\nCOMMIT;",
   "commonMistakes": [
     "Retry the whole transaction on SQLSTATE 40001, not just the last statement."
   ],
@@ -1647,7 +1647,7 @@ export const AUTHORED_REFERENCES: AuthoredReference[] = [
   "parameters": "SQL identifiers and bound values; examples assume the named tables exist.",
   "returns": "Uses row versions and snapshots to support concurrent access.",
   "minimalExample": "BEGIN ISOLATION LEVEL REPEATABLE READ;\nSELECT * FROM tasks;\nCOMMIT;",
-  "productionExample": "BEGIN ISOLATION LEVEL REPEATABLE READ;\nSELECT * FROM tasks;\nCOMMIT;",
+  "productionExample": "BEGIN ISOLATION LEVEL REPEATABLE READ;\nSELECT count(*) FROM tasks WHERE workspace_id = 1;\n-- Another session commits a new task here.\nSELECT count(*) FROM tasks WHERE workspace_id = 1;\nCOMMIT;",
   "commonMistakes": [
     "Long-lived transactions can delay cleanup of obsolete row versions."
   ],
@@ -1677,7 +1677,7 @@ export const AUTHORED_REFERENCES: AuthoredReference[] = [
   "parameters": "SQL identifiers and bound values; examples assume the named tables exist.",
   "returns": "Enforces uniqueness under concurrent writes.",
   "minimalExample": "ALTER TABLE requests ADD UNIQUE (tenant_id, request_id);",
-  "productionExample": "ALTER TABLE requests ADD UNIQUE (tenant_id, request_id);",
+  "productionExample": "CREATE TABLE request_keys (tenant_id bigint NOT NULL, request_id uuid NOT NULL, UNIQUE (tenant_id, request_id));",
   "commonMistakes": [
     "A pre-insert SELECT is not a substitute for a unique constraint."
   ],
@@ -1707,7 +1707,7 @@ export const AUTHORED_REFERENCES: AuthoredReference[] = [
   "parameters": "SQL identifiers and bound values; examples assume the named tables exist.",
   "returns": "Enforces a row-level predicate on inserted or updated values.",
   "minimalExample": "ALTER TABLE accounts ADD CHECK (balance >= 0);",
-  "productionExample": "ALTER TABLE accounts ADD CHECK (balance >= 0);",
+  "productionExample": "CREATE TABLE inventory (id bigint PRIMARY KEY, available integer NOT NULL CHECK (available >= 0));",
   "commonMistakes": [
     "CHECK permits unknown results; use NOT NULL when absence is invalid."
   ],
@@ -1737,7 +1737,7 @@ export const AUTHORED_REFERENCES: AuthoredReference[] = [
   "parameters": "SQL identifiers and bound values; examples assume the named tables exist.",
   "returns": "Returns rows affected by a write without a separate read.",
   "minimalExample": "UPDATE tasks SET revision=revision+1 WHERE id=$1 AND revision=$2 RETURNING revision;",
-  "productionExample": "UPDATE tasks SET revision=revision+1 WHERE id=$1 AND revision=$2 RETURNING revision;",
+  "productionExample": "UPDATE tasks SET done = true, revision = revision + 1 WHERE workspace_id = $1 AND id = $2 AND revision = $3 RETURNING id, revision;",
   "commonMistakes": [
     "Zero returned rows may indicate a stale revision or missing resource."
   ],
