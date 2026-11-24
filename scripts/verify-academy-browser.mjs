@@ -12,7 +12,7 @@ process.env.NODE_ENV = 'production';
 process.env.NEXT_TELEMETRY_DISABLED = '1';
 
 const draftOnly = process.argv.length === 3 && process.argv[2] === '--draft-preview';
-  if (process.argv.length > (draftOnly ? 3 : 2)) throw new Error('Usage: node scripts/verify-academy-browser.mjs [--draft-preview]');
+if (process.argv.length > (draftOnly ? 3 : 2)) throw new Error('Usage: node scripts/verify-academy-browser.mjs [--draft-preview]');
 
 try {
   await new Promise((resolve, reject) => {
