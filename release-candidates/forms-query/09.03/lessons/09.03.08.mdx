@@ -204,7 +204,7 @@ export default function RemoteTaskCapstone(){
 
 <Misconception claim="The starter submits unvalidated data to the wrong endpoint and never invalidates remote list state." correction="Use RHF for local input, Query for remote server state, and the API's If-Match revision for conflicting writes. Distinguish source-authored code from production authorization." />
 
-<KnowledgeCheck question="What is the reliable approach to lab remote task list?" choices={["Assume cached browser state equals server truth forever.","Use TanStack Query resource identity and the server's HTTP contract.","Ignore failure responses to keep the UI fast.","Disable all validation once the code typechecks."]} correctIndex={1} explanation="Use RHF for local input, Query for remote server state, and the API's If-Match revision for conflicting writes. Distinguish source-authored code from production authorization." misconception="The starter submits unvalidated data to the wrong endpoint and never invalidates remote list state." lessonId="09.03.08" />
+<KnowledgeCheck question="A status PATCH returns 412 after a teammate updates the same record. What is the correct next step?" choices={["Show success and overwrite the server.","Refresh the authoritative revision and let the user reconcile the intended change.","Retry endlessly with the same stale revision.","Clear every query cache and discard the form."]} correctIndex={1} explanation="A conditional-write conflict is not a transient network failure. Recover using the server's current revision and an explicit user decision." misconception="The starter submits unvalidated data to the wrong endpoint and never invalidates remote list state." lessonId="09.03.08" />
 
 ## Bug Hunt: reproduce, diagnose and repair
 
@@ -229,6 +229,12 @@ The capstone combines three separate owners: React Hook Form validates the curre
 **Independent exercise:** Run the loopback API, create a valid task, change its status and force a version conflict from another request. Then simulate a lost POST response and a failed optimistic delete. For each step, distinguish the browser preview, cached query records and server-accepted state.
 
 **Deployment boundary:** This practice service binds locally, stores records in memory and has no authentication. It must never be described as a production multi-user API. Client-side schemas and query keys do not grant access; production systems need server-side identity, authorization and durable idempotency.
+
+## Applied debugging clinic
+
+Trace the create, read, conditional status update and failed deletion journeys. Record draft values, cached rows, server response and revision for each. Force a 412, confirm no success message, refetch the current record and decide whether to reapply the change. Test a lost create response separately using the actual idempotency contract where supported.
+
+**Evidence to record:** query identity, request outcome, cache state before and after the action, and the recovery decision. Separate observed network behavior from what the UI displays. Re-run the original failing interaction after the repair.
 
 ## Guided local lab
 
