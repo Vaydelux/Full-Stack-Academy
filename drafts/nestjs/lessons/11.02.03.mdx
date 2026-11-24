@@ -74,7 +74,21 @@ If the UI shows a generic error, classify the failure at the nearest authoritati
 
 <Misconception claim="A guard always returns true and the route accepts unauthenticated requests." correction="Nest guards make an access decision before protected route handling." />
 
-<KnowledgeCheck question="Which verification proves guards and authorization?" choices={["A decorator's name exists in source.","A real Nest request reaches the correct stage and demonstrates the specified positive and negative outcomes.","An interface type was exported.","The UI hides the endpoint, so it must be protected."]} correctIndex={1} explanation="Nest guards make an access decision before protected route handling." misconception="A guard always returns true and the route accepts unauthenticated requests." lessonId="11.02.03" />
+<KnowledgeCheck question="A user presents a valid credential but requests another tenant's private task. What is still necessary?" choices={["Check resource authorization or tenant membership before returning the task.","Trust the task ID because the user logged in.","Use a pipe to convert the ID to a number and allow access.","Hide the task button in the UI."]} correctIndex={0} explanation="Authentication alone does not establish object-level permission." misconception="A guard always returns true and the route accepts unauthenticated requests." lessonId="11.02.03" />
+
+## Applied engineering walkthrough
+
+Authentication establishes who the principal is; authorization decides which action and resource that principal can access. A guard can deny a request before controller execution. The teaching-only bearer string is deliberately not a production credential or JWT verifier. A real service must verify the credential, then check resource membership and tenant ownership; returning false normally yields 403, while an authentication guard may throw 401 explicitly.
+
+### Diagnose the concrete failure
+
+Use the existing guard fixture with absent authorization, an invalid bearer value and its exact teaching value. Expect false, false and true. Then design a real HTTP test that proves a denied request never reaches a protected handler. For a tenant-aware service, also test a valid identity requesting another tenant's object.
+
+### Independent exercise and evidence
+
+Sketch a verified-principal guard followed by a membership policy. State what should happen for no credential, an authenticated non-member and an authorized member. Record the decision and whether the controller/repository executes; never use actual credentials in recorded evidence.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. The existing request-pipeline checks include direct class and pure-function tests; real HTTP and adapter acceptance remain distinct release requirements. Do not award course credit from source review alone.
 
 ## Bug Hunt: reproduce, diagnose and repair
 
