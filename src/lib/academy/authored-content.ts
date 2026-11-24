@@ -986,17 +986,21 @@ export const AUTHORED_REFERENCES: AuthoredReference[] = [
   "parameters": "See syntax and official reference; production-oriented snippets assume configured clients, schemas and authorized context.",
   "returns": "Returns the callback result or array of operation results; failure rolls back.",
   "minimalExample": "await prisma.$transaction([queryA, queryB])",
-  "productionExample": "await prisma.$transaction(async tx => { const task = await tx.task.create({ data: authorizedTaskData }); await tx.auditEvent.create({ data: { taskId: task.id, action: 'created' } }); return task; })",
+  "productionExample": "await prisma.$transaction(async tx => {\n  const project = await tx.project.findFirstOrThrow({ where: { id: projectId, organizationId: authorizedOrganizationId } });\n  await tx.task.create({ data: { projectId: project.id, title } });\n  await tx.outboxEvent.create({ data: { topic: 'task.created', payload: { projectId: project.id } } });\n});",
   "commonMistakes": [
-    "Calling the outer client inside a callback escapes its transaction."
+    "Calling the outer client inside a callback escapes its transaction.",
+    "External network calls inside the transaction increase lock duration and cannot be rolled back by PostgreSQL."
   ],
   "securityPerformanceNotes": [
-    "Keep the transaction short and avoid external network calls."
+    "Keep the transaction short and avoid external network calls.",
+    "Use bounded whole-transaction retries for serialization conflicts, and a transactional outbox for side effects."
   ],
   "relatedLessonIds": [
-    "13.02.04"
+    "13.02.04",
+    "15.02.04",
+    "16.04.01"
   ],
-  "canonicalUrl": "https://www.prisma.io/docs/orm/v7/prisma-client/queries/transactions"
+  "canonicalUrl": "https://www.prisma.io/docs/orm/prisma-client/queries/transactions"
 },
 {
   "id": "prisma-queryraw",
@@ -1388,7 +1392,6 @@ export const AUTHORED_REFERENCES: AuthoredReference[] = [
   ],
   "canonicalUrl": "https://docs.docker.com/reference/dockerfile/"
 },
-
 {
   "id": "nestjs-module",
   "matchCategories": [
@@ -1399,7 +1402,7 @@ export const AUTHORED_REFERENCES: AuthoredReference[] = [
   ],
   "heading": "NestJS: @Module",
   "category": "NestJS",
-  "majorVersion": "NestJS 11",
+  "majorVersion": "NestJS 12 (curriculum target)",
   "status": "Authored reference draft",
   "summary": "Groups providers and controllers; exports expose selected providers to importing modules.",
   "syntax": "@Module({ providers: [TaskService], exports: [TaskService] })",
@@ -1429,7 +1432,7 @@ export const AUTHORED_REFERENCES: AuthoredReference[] = [
   ],
   "heading": "NestJS: @Injectable",
   "category": "NestJS",
-  "majorVersion": "NestJS 11",
+  "majorVersion": "NestJS 12 (curriculum target)",
   "status": "Authored reference draft",
   "summary": "Marks a class for dependency injection; registration in a module is still required.",
   "syntax": "@Injectable()\nclass TaskService {}",
@@ -1459,23 +1462,26 @@ export const AUTHORED_REFERENCES: AuthoredReference[] = [
   ],
   "heading": "NestJS: CanActivate",
   "category": "NestJS",
-  "majorVersion": "NestJS 11",
+  "majorVersion": "NestJS 12 (curriculum target)",
   "status": "Authored reference draft",
-  "summary": "A guard decides whether execution may proceed before pipes run.",
+  "summary": "A guard decides whether a route may proceed before pipes run. An authenticated principal still needs object-level authorization.",
   "syntax": "canActivate(context: ExecutionContext): boolean { return false; }",
   "lang": "ts",
-  "parameters": "Framework-managed classes and request context; snippets assume relevant imports.",
-  "returns": "A guard decides whether execution may proceed before pipes run.",
+  "parameters": "ExecutionContext exposes request and handler metadata. Guards may return boolean, Promise<boolean> or Observable<boolean>.",
+  "returns": "True permits execution; false normally produces HTTP 403. An authentication guard may throw HTTP 401.",
   "minimalExample": "canActivate(context: ExecutionContext): boolean { return false; }",
   "productionExample": "@Injectable()\nclass MembershipGuard implements CanActivate {\n constructor(private readonly policy: MembershipPolicy) {}\n async canActivate(ctx: ExecutionContext) { const request = ctx.switchToHttp().getRequest(); if (!request.user) return false; return this.policy.canRead(request.user, request.params.workspaceId); }\n}",
   "commonMistakes": [
-    "Deny by default; verify resource ownership in the service too."
+    "Deny by default; verify resource ownership in the service too.",
+    "Do not authorize using an unverified route ID or assume pipes have already validated it."
   ],
   "securityPerformanceNotes": [
-    "Validate untrusted input and enforce authorization separately."
+    "Validate untrusted input and enforce authorization separately.",
+    "Verify identity before membership checks; repeat object-level authorization in tenant-scoped service queries."
   ],
   "relatedLessonIds": [
-    "11.02.03"
+    "11.02.03",
+    "15.02.04"
   ],
   "canonicalUrl": "https://docs.nestjs.com/guards"
 },
@@ -1489,7 +1495,7 @@ export const AUTHORED_REFERENCES: AuthoredReference[] = [
   ],
   "heading": "NestJS: PipeTransform",
   "category": "NestJS",
-  "majorVersion": "NestJS 11",
+  "majorVersion": "NestJS 12 (curriculum target)",
   "status": "Authored reference draft",
   "summary": "Transforms or validates an argument before the handler.",
   "syntax": "transform(value: unknown) { return schema.parse(value); }",
@@ -1519,7 +1525,7 @@ export const AUTHORED_REFERENCES: AuthoredReference[] = [
   ],
   "heading": "NestJS: NestInterceptor",
   "category": "NestJS",
-  "majorVersion": "NestJS 11",
+  "majorVersion": "NestJS 12 (curriculum target)",
   "status": "Authored reference draft",
   "summary": "Wraps handler execution with an observable.",
   "syntax": "intercept(context: ExecutionContext, next: CallHandler) { return next.handle(); }",
@@ -1549,7 +1555,7 @@ export const AUTHORED_REFERENCES: AuthoredReference[] = [
   ],
   "heading": "NestJS: ExceptionFilter",
   "category": "NestJS",
-  "majorVersion": "NestJS 11",
+  "majorVersion": "NestJS 12 (curriculum target)",
   "status": "Authored reference draft",
   "summary": "Handles matching uncaught exceptions at a transport boundary.",
   "syntax": "@Catch(HttpException)\nclass Filter implements ExceptionFilter { catch(e: HttpException, host: ArgumentsHost) { host.switchToHttp().getResponse().status(e.getStatus()).json({statusCode:e.getStatus()}); } }",
@@ -1749,6 +1755,70 @@ export const AUTHORED_REFERENCES: AuthoredReference[] = [
   ],
   "canonicalUrl": "https://www.postgresql.org/docs/current/dml-returning.html"
 },
+{
+  "id": "nestjs-useguards",
+  "matchCategories": [
+    "NestJS"
+  ],
+  "matchTitles": [
+    "@UseGuards"
+  ],
+  "heading": "NestJS: @UseGuards",
+  "category": "NestJS · Authorization",
+  "majorVersion": "NestJS 12 (curriculum target)",
+  "status": "Authored reference draft",
+  "summary": "Bind guards to a controller or handler. Authentication and resource authorization are separate decisions.",
+  "syntax": "@UseGuards(AuthGuard, MembershipGuard)",
+  "lang": "ts",
+  "parameters": "Guard classes or instances; class-based registration enables dependency injection.",
+  "returns": "A decorator that attaches guard metadata.",
+  "minimalExample": "@UseGuards(AuthGuard)\n@Get('profile')\nprofile() { return { ok: true }; }",
+  "productionExample": "@UseGuards(JwtAuthGuard, OrgMembershipGuard)\n@Get(':id')\nfindProject(@Param('id') id: string, @CurrentPrincipal() principal: VerifiedPrincipal) {\n  return this.projectsService.findAuthorized(principal, id);\n}",
+  "commonMistakes": [
+    "Assuming a valid JWT authorizes access to every object ID.",
+    "Assuming pipes have validated route parameters before a guard runs."
+  ],
+  "securityPerformanceNotes": [
+    "Validate raw identifiers used by guards and enforce tenant scope in database queries."
+  ],
+  "relatedLessonIds": [
+    "11.02.03",
+    "15.02.03"
+  ],
+  "canonicalUrl": "https://docs.nestjs.com/guards"
+},
+{
+  "id": "nestjs-app-guard",
+  "matchCategories": [
+    "NestJS"
+  ],
+  "matchTitles": [
+    "APP_GUARD"
+  ],
+  "heading": "NestJS: APP_GUARD",
+  "category": "NestJS · Authorization",
+  "majorVersion": "NestJS 12 (curriculum target)",
+  "status": "Authored reference draft",
+  "summary": "Register a global guard through the provider system so dependency injection remains available.",
+  "syntax": "{ provide: APP_GUARD, useClass: AuthGuard }",
+  "lang": "ts",
+  "parameters": "APP_GUARD injection token from @nestjs/core and a registered guard class.",
+  "returns": "A provider registration applying the guard globally.",
+  "minimalExample": "@Module({ providers: [{ provide: APP_GUARD, useClass: AuthGuard }] })\nclass AppModule {}",
+  "productionExample": "@Module({ imports: [IdentityModule], providers: [{ provide: APP_GUARD, useClass: JwtAuthGuard }] })\nclass ApiModule {}\n// Explicitly declare public routes and test that protected routes deny unauthenticated requests.",
+  "commonMistakes": [
+    "Using global authentication as a replacement for object-level authorization.",
+    "Allowing routes by default when public-route metadata is absent."
+  ],
+  "securityPerformanceNotes": [
+    "Keep public-route exceptions narrow and verify denied requests in integration tests."
+  ],
+  "relatedLessonIds": [
+    "11.02.03",
+    "11.02.08"
+  ],
+  "canonicalUrl": "https://docs.nestjs.com/guards"
+},
 
   {
     id: 'zod-safeparse',
@@ -1793,97 +1863,12 @@ return { ok: true as const, value: result.data };`,
     relatedLessonIds: ['09.01.02'],
     canonicalUrl: 'https://zod.dev/basics',
   },
-  {
-    id: 'prisma-transaction',
-    matchCategories: ['Prisma'],
-    matchTitles: ['$transaction'],
-    heading: 'Prisma 7: prisma.$transaction()',
-    category: 'Prisma · Database transactions',
-    majorVersion: 'Prisma 7',
-    status: 'Authored reference draft',
-    summary:
-      'Group dependent database reads and writes into a single atomic unit that commits together or rolls back completely on failure.',
-    syntax: `await prisma.$transaction(async (tx) => {
-  await tx.account.update({ /* ... */ });
-  await tx.ledgerEntry.create({ /* ... */ });
-});`,
-    lang: 'ts',
-    parameters: 'Interactive callback `(tx) => Promise<T>` or sequential array `[op1, op2]` plus optional `{ isolationLevel, timeout, maxWait }`.',
-    returns: 'Promise resolving with the callback result or tuple of sequential query outputs; rolls back on thrown error.',
-    minimalExample: `await prisma.$transaction([
-  prisma.user.update({ where: { id }, data: { active: true } }),
-  prisma.auditLog.create({ data: { actorId: id, action: 'activate' } }),
-]);`,
-    productionExample: `await prisma.$transaction(async (tx) => {
-  const project = await tx.project.findFirstOrThrow({
-    where: { id: projectId, organizationId },
-  });
-  await tx.task.create({ data: { projectId: project.id, title } });
-  await tx.outboxEvent.create({
-    data: { topic: 'task.created', payload: { projectId: project.id } },
-  });
-});`,
-    commonMistakes: [
-      'Performing external HTTP requests or sending emails while database locks are held inside a transaction.',
-      'Assuming a database transaction enforces object-level authorization automatically without tenant scoping.',
-      'Forgetting bounded retries when running under strict isolation levels like Serializable.',
-    ],
-    securityPerformanceNotes: [
-      'Keep transactions as short as possible to avoid connection-pool exhaustion and lock contention.',
-      'Use a transactional outbox table for async side effects (emails, webhooks) instead of calling external providers mid-transaction.',
-    ],
-    relatedLessonIds: ['15.02.04'],
-    canonicalUrl: 'https://www.prisma.io/docs/orm/prisma-client/queries/transactions',
-  },
-  {
-    id: 'nestjs-canactivate',
-    matchCategories: ['NestJS'],
-    matchTitles: ['CanActivate', '@UseGuards', 'APP_GUARD'],
-    heading: 'NestJS: CanActivate & @UseGuards()',
-    category: 'NestJS · Backend authorization',
-    majorVersion: 'NestJS 12',
-    status: 'Authored reference draft',
-    summary:
-      'Guards inspect trusted execution context to decide whether an incoming request may proceed to a controller route handler.',
-    syntax: `@UseGuards(AuthGuard)
-@Get(':id')
-findOne() { /* ... */ }`,
-    lang: 'ts',
-    parameters: 'context: ExecutionContext — grants access to HTTP/WebSocket/RPC request metadata and handler decorators.',
-    returns: 'boolean | Promise<boolean> | Observable<boolean> — returning false denies access (403 Forbidden unless customized).',
-    minimalExample: `import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 
-@Injectable()
-export class DemoGuard implements CanActivate {
-  canActivate(context: ExecutionContext): boolean {
-    return Boolean(context.switchToHttp().getRequest().user);
-  }
-}`,
-    productionExample: `@UseGuards(JwtAuthGuard, OrgMembershipGuard)
-@Get(':id')
-async findProject(
-  @Param('id') id: string,
-  @CurrentPrincipal() principal: VerifiedPrincipal,
-) {
-  return this.projectsService.findAuthorized(principal, id);
-}`,
-    commonMistakes: [
-      'Treating any valid authenticated user as authorized to read any record ID (BOLA/IDOR vulnerability).',
-      'Trusting unverified user or organization IDs supplied in route params or JSON bodies.',
-      'Registering guards globally via `new Guard()` instead of `APP_GUARD` when dependency injection is required.',
-      'Forgetting equivalent authorization checks on WebSocket gateways and background job triggers.',
-    ],
-    securityPerformanceNotes: [
-      'Verify JWT signature, issuer, audience, and expiry before trusting principal claims.',
-      'Pair route guards with tenant-scoped service queries and negative cross-tenant integration tests.',
-    ],
-    relatedLessonIds: ['15.02.04'],
-    canonicalUrl: 'https://docs.nestjs.com/guards',
-  },
+
   {
     id: 'redis-set',
     matchCategories: ['Redis & BullMQ'],
-    matchTitles: ['SET', 'SET EX'],
+    matchTitles: ['SET'],
     heading: 'Redis: SET with Expiry (EX)',
     category: 'Redis & BullMQ · Cache',
     majorVersion: 'Redis 7+',
@@ -1908,7 +1893,7 @@ await redisCache.set(cacheKey, JSON.stringify(safeDto), 'EX', 60);`,
       'Never share one Redis instance with `allkeys-lru` eviction for both cache and BullMQ queues.',
       'Always define bounded TTLs and explicit invalidation rules on mutations.',
     ],
-    relatedLessonIds: [],
+    relatedLessonIds: ['16.01.02', '16.01.03'],
     canonicalUrl: 'https://redis.io/docs/latest/commands/set/',
   },
 {
