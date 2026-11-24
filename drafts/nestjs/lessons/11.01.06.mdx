@@ -75,7 +75,21 @@ A quick workaround would hide the immediate symptom, but it would leave the orig
 
 <Misconception claim="The app uses Nest's default HTTP platform even though tests expect Fastify." correction="Nest's Fastify adapter must be provided explicitly when the teaching app promises Fastify behavior." />
 
-<KnowledgeCheck question="What should the reviewer verify for fastify adapter?" choices={["The source contains a decorator, so the runtime must work.","The real Nest application exhibits the specified behavior and rejects the broken case.","TypeScript types alone authorize incoming requests.","A mocked substring search proves the HTTP contract."]} correctIndex={1} explanation="Nest's Fastify adapter must be provided explicitly when the teaching app promises Fastify behavior." misconception="The app uses Nest's default HTTP platform even though tests expect Fastify." lessonId="11.01.06" />
+<KnowledgeCheck question="NestFactory.create has a NestFastifyApplication generic but no FastifyAdapter argument. What is missing?" choices={["A global database provider.","A new controller decorator.","The runtime Fastify adapter instance.","A different TypeScript return annotation."]} correctIndex={2} explanation="The generic is erased; the adapter argument determines the real runtime platform." misconception="The app uses Nest's default HTTP platform even though tests expect Fastify." lessonId="11.01.06" />
+
+## Applied engineering walkthrough
+
+Nest controllers are portable only while they use framework-level abstractions. Fastify and Express differ in request/reply objects, plugins and middleware integrations. A TypeScript generic changes the declared application type, not the actual HTTP adapter. Supply FastifyAdapter explicitly and check the real adapter. Use adapter-native features only behind a clearly documented boundary.
+
+### Diagnose the concrete failure
+
+Inspect createApp in each variant and compare the runtime adapter type. In an initialized application, use the existing architecture acceptance test and close the application afterward. When extending with a route, verify status, body and headers through the chosen adapter rather than relying on a typed declaration.
+
+### Independent exercise and evidence
+
+Pick one Express-specific middleware or response method and describe how you would replace it using a Nest abstraction or Fastify-compatible plugin. Record adapter type and the behavior a regression test must preserve. Do not claim benchmark improvements without measurement.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Run the existing Nest architecture suite with real dependencies; retain the starter and solution source unchanged. Do not award course credit from source review alone.
 
 ## Bug Hunt: reproduce, diagnose and repair
 
