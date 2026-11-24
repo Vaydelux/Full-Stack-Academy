@@ -76,7 +76,7 @@ export default function PreviewForm(){
 
 <Misconception claim="Separate useState preview and RHF input values drift after reset or programmatic update." correction="React Hook Form owns registered values. useWatch observes form state without introducing another writable duplicate source." />
 
-<KnowledgeCheck question="Which repair best addresses bug hunt mismatched form state?" choices={["Always trust the browser to enforce security.","Use one authoritative form state and verify the tested behavior.","Ignore non-200 HTTP responses if fetch resolved.","Treat TypeScript types as runtime authorization."]} correctIndex={1} explanation="React Hook Form owns registered values. useWatch observes form state without introducing another writable duplicate source." misconception="Separate useState preview and RHF input values drift after reset or programmatic update." lessonId="09.02.08" />
+<KnowledgeCheck question="Typing, applying a suggestion and resetting update different previews. What is the root cause?" choices={["The list needs pagination.","The preview requires server rendering.","Multiple writable copies of the same form value.","The title needs a higher retry count."]} correctIndex={2} explanation="Derive the preview from the registered field via useWatch rather than maintaining a shadow copy." misconception="Separate useState preview and RHF input values drift after reset or programmatic update." lessonId="09.02.08" />
 
 ## Bug Hunt: reproduce, diagnose and repair
 
@@ -100,6 +100,12 @@ A preview is a view of the current title, not an independent source of editable 
 **Independent exercise:** Type a title, activate the suggested title, submit, then reset. After each action, record expected input and preview values. Explicitly distinguish the current draft from the last submitted result; these values can legitimately have different lifetimes.
 
 **Security boundary:** User-provided preview text belongs in React text interpolation, not HTML injection. Unified state fixes consistency bugs; it does not establish that a server accepted a record. Revalidate submitted values at the HTTP boundary.
+
+## Applied debugging clinic
+
+Build a state trace for input, preview and last submitted value after typing, suggestion, submit and reset. Input and preview should agree; the last submitted result may legitimately differ after a new edit. Do not copy the submitted result back into the current draft unless the workflow explicitly requires it.
+
+**Evidence to record:** the initial state, action, observed result, expected result and smallest repair. Explain whether the defect belongs to the form, rendered widget, or HTTP boundary. Re-run the original failing interaction after the repair.
 
 ## Guided local lab
 
