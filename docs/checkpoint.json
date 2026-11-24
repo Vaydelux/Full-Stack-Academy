@@ -9,9 +9,9 @@
     "productionUrl": "https://fullstack-academy-ecru.vercel.app/"
   },
   "development": {
-    "branch": "feat/p7-platforms-enterprise-capstones-20261124",
-    "state": "all-canonical-topic-manuscripts-authored-publication-blocked",
-    "note": "136 P7 draft manuscripts in 17 modules, 17 small teaching models, capstone project specification, and P7 source auditor. 53/53 local Node22 tests actually executed (42 models, 11 synthetic auditor fixtures); full checkout/real runtimes not run. Catalog source coverage 889/889: 338 published, 551 unpublished, 0 unauthored."
+    "branch": "feat/p1-http-resilience-and-workbook-20261124",
+    "state": "p1-real-http-resilience-source-merged-publication-blocked",
+    "note": "25/25 targeted Node22 tests actually passed, 12 original failures reproduced (10 HTTP, 2 policy); exact source and test blobs checked. Added bounded receipt ledger, replay Location, malformed body/cursor handling, intentional read cancellation, 16-topic companion workbook and mandatory offline gate. Full Node24/Next, browser and manual reviews not executed. Catalog 889/889 authored; 338 published, 551 unpublished."
   },
   "snapshot": {
     "tracks": 28,
@@ -73,6 +73,6 @@
     "devHighFindings": 14,
     "exceptionExpires": "2026-12-02"
   },
-  "nextMilestone": "Stop bulk manuscript expansion. Run P1 independent qualification on a clean stable Node 24.9+ checkout, fix failures and obtain editorial, browser and manual accessibility approval; promote 09.02 then 09.03 only when their release gates pass. Resolve the genuine NestJS lockfile and qualify P2 onward. Improve remaining manuscript depth and actual red/green labs before each module promotion.",
-  "status": "all-889-canonical-topics-source-authored-not-release-qualified"
+  "nextMilestone": "Qualify P1 09.02 and 09.03 real installed React/Next browser and manual accessibility using stable Node24.9+; execute full checkout gates including new resilience tests; correct real failures, review and promote module atomically. No new bulk manuscript work.",
+  "status": "all-topics-authored-p1-real-http-regressions-passed-publication-blocked"
 }

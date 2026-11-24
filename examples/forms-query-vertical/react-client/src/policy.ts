@@ -27,7 +27,8 @@ export function shouldRetainCreateAttempt(error: unknown): boolean {
   return !(error instanceof TaskRequestError) || error.status === 429 || error.status >= 500;
 }
 
-/** Never retry 4xx contract errors or indefinitely repeat a transient fault. */
+/** Intentional read cancellation is not a transport fault. Never retry terminal errors. */
 export function shouldRetryRead(count: number, error: unknown): boolean {
+  if (error !== null && typeof error === 'object' && 'name' in error && error.name === 'AbortError') return false;
   return Number.isInteger(count) && count >= 0 && count < 1 && shouldRetainCreateAttempt(error);
 }

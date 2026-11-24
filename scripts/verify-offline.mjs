@@ -15,6 +15,7 @@ const steps = [
   'test:lesson-discovery',
   'test:learning-workflow',
   'test:forms-query-http',
+  'test:forms-query-resilience',
   'test:forms-query-workflow',
   'test:forms-query-contract',
   'test:forms-query-project-route',

@@ -15,6 +15,7 @@
     "test:lesson-discovery": "node --experimental-strip-types --test tests/lesson-discovery.test.mjs",
     "test:learning-workflow": "node --test tests/learning-workflow-integrity.test.mjs",
     "test:forms-query-http": "node --test tests/forms-query-http.test.mjs",
+    "test:forms-query-resilience": "node --experimental-strip-types --test tests/forms-query-resilience.test.mjs tests/forms-query-cancellation.test.mjs",
     "test:forms-query-workflow": "node --test tests/forms-query-workflow.test.mjs",
     "test:forms-query-contract": "node --test tests/forms-query-contract.test.mjs",
     "test:forms-query-project-route": "node --test tests/forms-query-project-route.test.mjs",
