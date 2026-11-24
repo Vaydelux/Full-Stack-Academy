@@ -79,7 +79,7 @@ export default function TaskForm(){
 
 <Misconception claim="The form has no resolver, so a whitespace title reaches the submit handler." correction="Zod 4 parses and transforms runtime input. React Hook Form supports the schema input type and a distinct handleSubmit output type as its third generic." />
 
-<KnowledgeCheck question="Which repair best addresses zod resolvers?" choices={["Always trust the browser to enforce security.","Use one authoritative form state and verify the tested behavior.","Ignore non-200 HTTP responses if fetch resolved.","Treat TypeScript types as runtime authorization."]} correctIndex={1} explanation="Zod 4 parses and transforms runtime input. React Hook Form supports the schema input type and a distinct handleSubmit output type as its third generic." misconception="The form has no resolver, so a whitespace title reaches the submit handler." lessonId="09.02.03" />
+<KnowledgeCheck question="A resolver accepts a transformed number but the API receives an invalid payload. What boundary is missing?" choices={["A larger client cache.","A second browser-only schema.","Independent server runtime validation of untrusted data.","A TypeScript assertion on the server."]} correctIndex={2} explanation="Resolver output is a client convenience, not proof of authenticity. The server validates its own request." misconception="The form has no resolver, so a whitespace title reaches the submit handler." lessonId="09.02.03" />
 
 ## Bug Hunt: reproduce, diagnose and repair
 
@@ -103,6 +103,12 @@ A transforming Zod schema distinguishes the entered value from the parsed result
 **Independent exercise:** Trace the raw textbox value, the resolver output and the API payload for `"  done "`. Repeat with `"   "`. Show that the invalid case never calls the successful submission callback.
 
 **Boundary rule:** A shared schema reduces duplication, not trust boundaries. The backend must validate its own request data. Render known field errors as text, preserve user input on a 422 and avoid treating a correct TypeScript type as authorization.
+
+## Applied debugging clinic
+
+Compare raw input such as whitespace and numeric strings with parsed output. Record the raw value, parsed value and request body separately. Try an empty numeric field and malformed direct API request. A failed client parse should prevent a normal POST, while a direct bad request must still be rejected.
+
+**Evidence to record:** the initial state, action, observed result, expected result and smallest repair. Explain whether the defect belongs to the form, rendered widget, or HTTP boundary. Re-run the original failing interaction after the repair.
 
 ## Guided local lab
 
