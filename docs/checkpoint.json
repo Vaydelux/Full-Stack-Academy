@@ -10,8 +10,8 @@
   },
   "development": {
     "branch": "feat/p8-publication-evidence",
-    "state": "p9-primary-client-contract-qualification-publication-blocked",
-    "note": "146 isolated Node22 tests passed: 92 previous regressions rerun, 17 new response-contract tests, 20 existing real primary API/client integration tests, 17 retry/cancellation tests. Reproduced 13 response-contract failures and one separate HTTP 408 policy failure. Strict isolated TypeScript 5.8.3 check passed using a type-only schema stand-in. Prior 16 connector-based lesson checks remain separate. Complete checkout, Node24, actual Academy browser, database and manual accessibility qualification remain blocked."
+    "state": "p10-nest-architecture-pipeline-editorial-expansion",
+    "note": "P9 regression rerun 146/146; P10 revised 16 NestJS Architecture/Request Pipeline drafts with distinct applied assessments and unchanged code fences. Four new dependency-free DTO/context practice tests passed, combined 150/150 on Node22. Source review only for 16 MDX; no Nest or full build qualification."
   },
   "snapshot": {
     "tracks": 28,
@@ -73,6 +73,6 @@
     "devHighFindings": 14,
     "exceptionExpires": "2026-12-02"
   },
-  "nextMilestone": "Obtain a complete clean checkout with Node24.9+ and genuine dependency locks; run the existing P1 qualification coordinator and disposable database gate. Freeze additional feature work until actual build and browser failures are known.",
-  "status": "all-topics-authored-p9-qualification-publication-blocked"
+  "nextMilestone": "Continue P10 editorial preparation of 11.03 and 11.04, then P3 PostgreSQL modules. In parallel, unblock full P9 Node24.9+ P1 qualification and publish only reviewed complete modules in existing P1–P7 sequence.",
+  "status": "all-topics-authored-p10-editorial-expansion-publication-blocked"
 }
