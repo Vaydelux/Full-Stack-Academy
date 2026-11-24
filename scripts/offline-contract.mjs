@@ -51,7 +51,13 @@ export function auditOfflineMatrix({offlineSource,scripts}) {
   const expected=P5_REQUIRED.map(x=>'npm run '+x);
   if(!unique(calls))errors.push('duplicate-p5-substep');
   for(const need of expected)if(!calls.includes(need))errors.push('missing-p5-substep:'+need);
-  for(const call of calls)if(!/^npm run test:p5-[a-z0-9-]+$/.test(call))errors.push('unsafe-p5-bundle-command:'+call);
+  for(const call of calls){
+   const match=/^npm run (test:p5-[a-z0-9-]+)$/.exec(call);
+   if(!match){errors.push('unsafe-p5-bundle-command:'+call);continue;}
+   const name=match[1];
+   if(name==='test:p5-bundle')errors.push('recursive-p5-bundle');
+   if(!Object.hasOwn(scripts,name)||typeof scripts[name]!=='string'||!scripts[name].trim())errors.push('missing-p5-script:'+name);
+  }
  }
  return {ok:errors.length===0,errors,requiredReleaseCount:REQUIRED.length,requiredP5Count:P5_REQUIRED.length,offlineStepCount:steps.length};
 }
