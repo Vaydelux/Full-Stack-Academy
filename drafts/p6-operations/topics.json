@@ -1,0 +1,802 @@
+{
+  "21.01.01": {
+    "context": "An API logs an order lookup that includes a private request body.",
+    "concept": "Structured records should use stable fields and explicit allowlists; redaction is a second defense, not permission to log secrets.",
+    "exercise": "Run safeLog with a synthetic password field; configure a real Pino logger to emit selected fields only and inspect its output.",
+    "positive": "Output has request ID, route template, status and duration; no password.",
+    "negative": "A raw body or authorization value in logs fails review.",
+    "reference": "https://getpino.io/",
+    "model": "safeLog",
+    "boundary": "Local field-allowlist model only; Pino, exporters, collectors and Sentry require installed tools and actual trace propagation."
+  },
+  "21.01.02": {
+    "context": "Two services handle the same request through a proxy.",
+    "concept": "Correlation IDs connect records, but untrusted header values need validation; trace context is not authentication.",
+    "exercise": "Propagate a bounded generated ID through two local handlers, and submit malformed and overlong IDs.",
+    "positive": "Both handlers log the same valid correlation ID.",
+    "negative": "Invalid input is rejected or replaced; no permission is granted by an ID.",
+    "reference": "https://opentelemetry.io/docs/",
+    "model": "safeLog",
+    "boundary": "Local field-allowlist model only; Pino, exporters, collectors and Sentry require installed tools and actual trace propagation."
+  },
+  "21.01.03": {
+    "context": "An operator needs counts, queue depth and latency distributions.",
+    "concept": "Counters accumulate events, gauges report current state, histograms group observations into buckets; units and labels must be stable.",
+    "exercise": "Design request_total, queue_depth and request_duration_seconds metrics; record three requests and a queue drain.",
+    "positive": "Counter grows, gauge falls, histogram observes three durations.",
+    "negative": "A request ID as metric label or a decrementing request counter fails.",
+    "reference": "https://opentelemetry.io/docs/",
+    "model": "safeLog",
+    "boundary": "Local field-allowlist model only; Pino, exporters, collectors and Sentry require installed tools and actual trace propagation."
+  },
+  "21.01.04": {
+    "context": "A checkout calls inventory then payment.",
+    "concept": "A trace links causally related spans with parent relationships, durations and statuses; context propagation crosses process boundaries.",
+    "exercise": "Sketch a root checkout span and two child spans. In an installed tracing fixture cause payment failure and inspect parent IDs.",
+    "positive": "Both children belong to the checkout trace and payment reports failure.",
+    "negative": "Orphan spans or a swallowed dependency error obscure the cause.",
+    "reference": "https://opentelemetry.io/docs/",
+    "model": "safeLog",
+    "boundary": "Local field-allowlist model only; Pino, exporters, collectors and Sentry require installed tools and actual trace propagation."
+  },
+  "21.01.05": {
+    "context": "An HTTP server needs repeatable tracing before application startup.",
+    "concept": "Instrument supported libraries before loading them, configure resource identity and export via a controlled collector.",
+    "exercise": "Build a disposable Node service with the OpenTelemetry SDK, start instrumentation first, send one loopback request and inspect the exported trace.",
+    "positive": "Exporter contains a service name and request span.",
+    "negative": "Missing instrumentation or exporter failure is not a passing trace test.",
+    "reference": "https://opentelemetry.io/docs/languages/js/",
+    "model": "safeLog",
+    "boundary": "Local field-allowlist model only; Pino, exporters, collectors and Sentry require installed tools and actual trace propagation."
+  },
+  "21.01.06": {
+    "context": "An exception report contains a synthetic access token.",
+    "concept": "Error tracking groups crashes and captures context; scrub secrets before sending, and restrict access/retention.",
+    "exercise": "In an isolated Sentry test transport, trigger an exception with fake sensitive context and inspect the event before transmission.",
+    "positive": "Exception is actionable without secret context.",
+    "negative": "Fake token appearing in a report fails the privacy gate.",
+    "reference": "https://docs.sentry.io/",
+    "model": "safeLog",
+    "boundary": "Local field-allowlist model only; Pino, exporters, collectors and Sentry require installed tools and actual trace propagation."
+  },
+  "21.01.07": {
+    "context": "A metric uses user IDs as labels.",
+    "concept": "High cardinality increases series count; sampling controls trace volume but can bias observed data.",
+    "exercise": "Compare unique label counts for 100 users versus 3 route templates; specify a sampling policy and document errors that might be missed.",
+    "positive": "Bounded templates yield a small number of series.",
+    "negative": "Per-user labels explode series count; sampled data cannot prove every request traced.",
+    "reference": "https://opentelemetry.io/docs/",
+    "model": "safeLog",
+    "boundary": "Local field-allowlist model only; Pino, exporters, collectors and Sentry require installed tools and actual trace propagation."
+  },
+  "21.01.08": {
+    "context": "A learner investigates a failing API call.",
+    "concept": "Combine correlation ID, span timing, logs and aggregate metrics without exposing payloads.",
+    "exercise": "Run safeLog tests; in a local instrumented API provoke a synthetic downstream error, connect its span and log, record the evidence.",
+    "positive": "One trace identifies the failing dependency and matching safe log.",
+    "negative": "Missing parent context, leaking credentials, or unobserved error fails.",
+    "reference": "https://opentelemetry.io/docs/",
+    "model": "safeLog",
+    "boundary": "Local field-allowlist model only; Pino, exporters, collectors and Sentry require installed tools and actual trace propagation."
+  },
+  "21.02.01": {
+    "context": "An API has a 99% successful-request objective.",
+    "concept": "SLI measures a defined population, SLO sets its target, and error budget is the permitted failure fraction over a window.",
+    "exercise": "Run errorBudget(1000,10,.99) and then 11 failures; define which requests count.",
+    "positive": "Ten failures exhaust but do not exceed the budget.",
+    "negative": "Eleven failures breach; zero traffic does not establish reliability.",
+    "reference": "https://sre.google/books/",
+    "model": "errorBudget",
+    "boundary": "Synthetic error-budget arithmetic only; real probes, alerts, concurrency and fault recovery require actual isolated services."
+  },
+  "21.02.02": {
+    "context": "An on-call engineer receives one page per transient failure.",
+    "concept": "Page on actionable user-impact symptoms and sustained burn; deduplicate alerts and assign an owner.",
+    "exercise": "Draw a timeline with one transient error and sustained failures; define fast and slow burn thresholds plus escalation.",
+    "positive": "Sustained budget burn produces one actionable page.",
+    "negative": "A noisy non-actionable page or silence during sustained impact fails.",
+    "reference": "https://sre.google/books/",
+    "model": "errorBudget",
+    "boundary": "Synthetic error-budget arithmetic only; real probes, alerts, concurrency and fault recovery require actual isolated services."
+  },
+  "21.02.03": {
+    "context": "An app is alive but cannot serve traffic.",
+    "concept": "Liveness indicates whether restart may help; readiness indicates traffic eligibility. Avoid using dependent DB outages as unconditional restart triggers.",
+    "exercise": "Design separate loopback endpoints; stop a disposable dependency and query both.",
+    "positive": "Readiness fails while process liveness remains healthy.",
+    "negative": "Routing to an unready service or restart loops fail.",
+    "reference": "https://kubernetes.io/docs/concepts/configuration/liveness-readiness-startup-probes/",
+    "model": "errorBudget",
+    "boundary": "Synthetic error-budget arithmetic only; real probes, alerts, concurrency and fault recovery require actual isolated services."
+  },
+  "21.02.04": {
+    "context": "A remote dependency repeatedly times out.",
+    "concept": "A circuit breaker opens after a failure rule, rejects calls during cooldown and probes recovery in half-open state.",
+    "exercise": "Design a fake-clock breaker with three failures and one half-open probe; record transitions.",
+    "positive": "Open state short-circuits calls; successful probe closes.",
+    "negative": "Unbounded probes or immediate retry storms fail.",
+    "reference": "https://sre.google/books/",
+    "model": "errorBudget",
+    "boundary": "Synthetic error-budget arithmetic only; real probes, alerts, concurrency and fault recovery require actual isolated services."
+  },
+  "21.02.05": {
+    "context": "A checkout retries a slow payment request.",
+    "concept": "Use a total deadline, bounded attempts, jitter and idempotency; retry transient failures only.",
+    "exercise": "Evaluate retryDecision from 23.04 for transient and permanent errors, with deadline exhausted.",
+    "positive": "A safe transient retry fits remaining deadline.",
+    "negative": "Non-idempotent or expired request must stop.",
+    "reference": "https://sre.google/books/",
+    "model": "errorBudget",
+    "boundary": "Synthetic error-budget arithmetic only; real probes, alerts, concurrency and fault recovery require actual isolated services."
+  },
+  "21.02.06": {
+    "context": "One slow endpoint occupies every worker.",
+    "concept": "Bulkheads isolate resource pools; backpressure bounds work rather than allowing unbounded queues.",
+    "exercise": "Construct a disposable pool with two workers and a maximum queue of three; fill it with synthetic tasks.",
+    "positive": "Other isolated work still runs; saturation rejects or delays explicitly.",
+    "negative": "Unbounded queue growth and starvation fail.",
+    "reference": "https://sre.google/books/",
+    "model": "errorBudget",
+    "boundary": "Synthetic error-budget arithmetic only; real probes, alerts, concurrency and fault recovery require actual isolated services."
+  },
+  "21.02.07": {
+    "context": "A recommendation service becomes unavailable.",
+    "concept": "Graceful degradation preserves the critical user journey while labeling unavailable optional data; avoid serving unauthorized cached data.",
+    "exercise": "Design checkout with optional recommendations, simulate timeout and show an explicit fallback.",
+    "positive": "Checkout remains available with a fallback.",
+    "negative": "A stale private response or misleading success fails.",
+    "reference": "https://sre.google/books/",
+    "model": "errorBudget",
+    "boundary": "Synthetic error-budget arithmetic only; real probes, alerts, concurrency and fault recovery require actual isolated services."
+  },
+  "21.02.08": {
+    "context": "A team rehearses a dependency failure.",
+    "concept": "Fault injection begins with a hypothesis, bounded blast radius, abort condition and recovery measurement.",
+    "exercise": "Inject deterministic failures into an isolated handler; calculate budget, remove fault, and compare recovery samples.",
+    "positive": "Measured failure and recovery match the defined target.",
+    "negative": "Unbounded fault injection or missing recovery evidence fails.",
+    "reference": "https://sre.google/books/",
+    "model": "errorBudget",
+    "boundary": "Synthetic error-budget arithmetic only; real probes, alerts, concurrency and fault recovery require actual isolated services."
+  },
+  "21.03.01": {
+    "context": "Checkout is unavailable and no owner has been assigned.",
+    "concept": "Severity follows user impact; name an incident commander, technical lead and communications owner.",
+    "exercise": "Run incidentDecision with unavailable and no owner; draft role assignment for the exercise.",
+    "positive": "High impact receives SEV1 and escalation in this local rubric.",
+    "negative": "Unowned high-impact incident cannot be marked handled.",
+    "reference": "https://sre.google/books/",
+    "model": "incidentDecision",
+    "boundary": "Synthetic incident decisions only; no real emergency response, restored backups, alerting or production capacity measurements."
+  },
+  "21.03.02": {
+    "context": "An alert says latency is high without a next action.",
+    "concept": "A runbook links symptoms to dashboards, safe diagnostics, mitigation, escalation and rollback; record last validation.",
+    "exercise": "Write a one-page runbook for rising p95 and rehearse with synthetic samples.",
+    "positive": "Operator can identify queue versus work time and mitigation.",
+    "negative": "A destructive step without guardrails or missing owner fails.",
+    "reference": "https://sre.google/books/",
+    "model": "incidentDecision",
+    "boundary": "Synthetic incident decisions only; no real emergency response, restored backups, alerting or production capacity measurements."
+  },
+  "21.03.03": {
+    "context": "Logs persist user data longer than necessary.",
+    "concept": "Retention follows legitimate purpose, access control and deletion policy; avoid logging unnecessary personal data.",
+    "exercise": "Create synthetic log files with two retention classes, define expiry and verify a dry-run deletion list.",
+    "positive": "Only expired eligible records are selected.",
+    "negative": "Private payloads or unbounded retention fail policy.",
+    "reference": "https://sre.google/books/",
+    "model": "incidentDecision",
+    "boundary": "Synthetic incident decisions only; no real emergency response, restored backups, alerting or production capacity measurements."
+  },
+  "21.03.04": {
+    "context": "A database backup job reports success every night.",
+    "concept": "A backup is not recoverability evidence until restored and validated with integrity and application checks.",
+    "exercise": "On a disposable DB restore synthetic backup into a different database, check counts and application behavior.",
+    "positive": "Restore works and measured duration is recorded.",
+    "negative": "Corrupted backup or missing restore test is not recovery proof.",
+    "reference": "https://www.postgresql.org/docs/current/backup.html",
+    "model": "incidentDecision",
+    "boundary": "Synthetic incident decisions only; no real emergency response, restored backups, alerting or production capacity measurements."
+  },
+  "21.03.05": {
+    "context": "A service can tolerate limited data loss and downtime.",
+    "concept": "RPO bounds recoverable data loss; RTO bounds restoration time. Set them from business needs and test against real drills.",
+    "exercise": "Model last recoverable snapshot and restore duration; compare against chosen RPO/RTO.",
+    "positive": "Both measured objectives are met.",
+    "negative": "A recent backup with restore exceeding RTO still fails.",
+    "reference": "https://sre.google/books/",
+    "model": "incidentDecision",
+    "boundary": "Synthetic incident decisions only; no real emergency response, restored backups, alerting or production capacity measurements."
+  },
+  "21.03.06": {
+    "context": "An outage recurs after a blame-focused report.",
+    "concept": "A blameless postmortem records timeline, impact, contributing causes, mitigations and owned corrective actions.",
+    "exercise": "Write a synthetic incident timeline and one action with owner, due date and verification criterion.",
+    "positive": "Actions address system conditions and can be tested.",
+    "negative": "Blaming an individual without corrective evidence fails.",
+    "reference": "https://sre.google/books/",
+    "model": "incidentDecision",
+    "boundary": "Synthetic incident decisions only; no real emergency response, restored backups, alerting or production capacity measurements."
+  },
+  "21.03.07": {
+    "context": "Traffic rises before a planned sales campaign.",
+    "concept": "Capacity planning combines measured throughput, saturation, headroom, cost and demand uncertainty.",
+    "exercise": "Use capacity from 22.03 for a demand range and record assumptions about a database limit.",
+    "positive": "Plan includes headroom and bottlenecks.",
+    "negative": "Forecasting only CPU while DB connections saturate fails.",
+    "reference": "https://sre.google/books/",
+    "model": "incidentDecision",
+    "boundary": "Synthetic incident decisions only; no real emergency response, restored backups, alerting or production capacity measurements."
+  },
+  "21.03.08": {
+    "context": "An API outage requires coordination and recovery.",
+    "concept": "Incident drills exercise detection, assignment, mitigation, communications and validation without touching live services.",
+    "exercise": "Run incidentDecision; simulate unavailable dependency, assign roles, restore disposable fixture, record timestamps.",
+    "positive": "Recovery evidence and owner are recorded independently.",
+    "negative": "Declaring recovery without functional verification fails.",
+    "reference": "https://sre.google/books/",
+    "model": "incidentDecision",
+    "boundary": "Synthetic incident decisions only; no real emergency response, restored backups, alerting or production capacity measurements."
+  },
+  "22.01.01": {
+    "context": "A page loads slowly, responds late and shifts layout.",
+    "concept": "LCP measures largest content render timing, INP interaction responsiveness, CLS unexpected layout movement; assess field distributions separately from lab runs.",
+    "exercise": "Use webBudget with example 2500ms LCP, 200ms INP, .1 CLS; then collect a real browser trace and record its conditions.",
+    "positive": "Independent budgets are evaluated, not averaged.",
+    "negative": "Missing INP or unstable layout cannot pass by fast LCP alone.",
+    "reference": "https://web.dev/articles/vitals",
+    "model": "webBudget",
+    "boundary": "Synthetic measured-value budget only; actual Core Web Vitals, browser profiles and real-user metrics are unexecuted."
+  },
+  "22.01.02": {
+    "context": "A small page ships an oversized client bundle.",
+    "concept": "Inspect dependency composition, transfer size and parse/execute cost; split or remove work based on evidence.",
+    "exercise": "In a built disposable Next app inspect bundle output before and after removing an unused heavy dependency.",
+    "positive": "Relevant client chunk shrinks with unchanged behavior.",
+    "negative": "Only changing source file size without measuring output is insufficient.",
+    "reference": "https://web.dev/learn/performance",
+    "model": "webBudget",
+    "boundary": "Synthetic measured-value budget only; actual Core Web Vitals, browser profiles and real-user metrics are unexecuted."
+  },
+  "22.01.03": {
+    "context": "A server-rendered page waits on a slow secondary panel.",
+    "concept": "Streaming can deliver ready content early with Suspense boundaries; hydration and errors still require testing.",
+    "exercise": "Build an isolated route with delayed secondary data and record first bytes, visible content and final panel.",
+    "positive": "Primary UI appears before slow panel; loading state is accessible.",
+    "negative": "Blank shell or leaked unauthorized content fails.",
+    "reference": "https://web.dev/learn/performance",
+    "model": "webBudget",
+    "boundary": "Synthetic measured-value budget only; actual Core Web Vitals, browser profiles and real-user metrics are unexecuted."
+  },
+  "22.01.04": {
+    "context": "A hero image and web font delay meaningful content.",
+    "concept": "Choose responsive image sizes, reserved dimensions, suitable formats and limited critical font loading.",
+    "exercise": "Measure a disposable page before/after responsive assets and explicit dimensions under fixed browser settings.",
+    "positive": "Lower transfer and stable layout with acceptable visual quality.",
+    "negative": "Preloading every asset or dimensionless image regressions fail.",
+    "reference": "https://web.dev/learn/performance",
+    "model": "webBudget",
+    "boundary": "Synthetic measured-value budget only; actual Core Web Vitals, browser profiles and real-user metrics are unexecuted."
+  },
+  "22.01.05": {
+    "context": "A page eagerly prefetches every link.",
+    "concept": "Hints consume bandwidth and connections; prioritize only probable navigations and critical assets.",
+    "exercise": "Record network requests with and without targeted prefetch under throttling; compare navigation and current page metrics.",
+    "positive": "Useful prefetch improves next navigation without starving critical resources.",
+    "negative": "Extra traffic worsening first-page budget fails.",
+    "reference": "https://web.dev/learn/performance",
+    "model": "webBudget",
+    "boundary": "Synthetic measured-value budget only; actual Core Web Vitals, browser profiles and real-user metrics are unexecuted."
+  },
+  "22.01.06": {
+    "context": "A page waits for sequential dependent requests.",
+    "concept": "Waterfall analysis identifies dependency chains, connection delays and render-blocking resources.",
+    "exercise": "In DevTools inspect a local page with sequential requests; parallelize independent requests and compare traces.",
+    "positive": "Critical path shortens while dependent data ordering stays valid.",
+    "negative": "Parallelizing dependent or unauthorized requests fails.",
+    "reference": "https://web.dev/learn/performance",
+    "model": "webBudget",
+    "boundary": "Synthetic measured-value budget only; actual Core Web Vitals, browser profiles and real-user metrics are unexecuted."
+  },
+  "22.01.07": {
+    "context": "A list renders ten thousand rows at once.",
+    "concept": "Virtualization bounds DOM work by visible range and overscan; preserve semantics, focus and scroll position.",
+    "exercise": "Render a synthetic long list with and without virtualization; measure DOM nodes and keyboard behavior.",
+    "positive": "DOM count remains bounded; focus remains usable.",
+    "negative": "Missing reachable rows or lost keyboard focus fails.",
+    "reference": "https://web.dev/learn/performance",
+    "model": "webBudget",
+    "boundary": "Synthetic measured-value budget only; actual Core Web Vitals, browser profiles and real-user metrics are unexecuted."
+  },
+  "22.01.08": {
+    "context": "A team needs a repeatable frontend performance gate.",
+    "concept": "Set explicit metric and transfer budgets with controlled conditions; distinguish lab and field evidence.",
+    "exercise": "Run webBudget, add a one-byte regression and one missing metric; then plan browser runs on fixed fixtures.",
+    "positive": "All required metrics within budget passes the model.",
+    "negative": "Missing or exceeded metrics fail; synthetic values are not browser proof.",
+    "reference": "https://web.dev/learn/performance",
+    "model": "webBudget",
+    "boundary": "Synthetic measured-value budget only; actual Core Web Vitals, browser profiles and real-user metrics are unexecuted."
+  },
+  "22.02.01": {
+    "context": "A Node server becomes CPU-bound under workload.",
+    "concept": "CPU profiling identifies hot stacks; heap snapshots describe retained objects and may contain secrets or pause the process.",
+    "exercise": "Profile a disposable CPU-heavy loop and compare before/after change under fixed workload; inspect sanitized heap data separately.",
+    "positive": "Hot function is measurable and improvement is repeatable.",
+    "negative": "A single unrepresentative timing or real private heap dump fails review.",
+    "reference": "https://nodejs.org/en/learn/diagnostics",
+    "model": "requestProfile",
+    "boundary": "Synthetic latency sample analysis only; actual CPU/heap profiles, Fastify comparison, query plans and HTTP behavior need real runtimes."
+  },
+  "22.02.02": {
+    "context": "A team assumes switching frameworks fixes p95.",
+    "concept": "Compare identical workload, validation, payload, concurrency, runtime and hardware; framework benchmarks do not establish app gains.",
+    "exercise": "Run isolated equivalent Fastify and alternative endpoints with warmup and repeated trials; compare error rate and latency.",
+    "positive": "Comparison has matched conditions and documented variance.",
+    "negative": "Different business logic or omitted errors invalidates result.",
+    "reference": "https://fastify.dev/",
+    "model": "requestProfile",
+    "boundary": "Synthetic latency sample analysis only; actual CPU/heap profiles, Fastify comparison, query plans and HTTP behavior need real runtimes."
+  },
+  "22.02.03": {
+    "context": "Requests wait for database connections.",
+    "concept": "Pool sizing depends on DB capacity, service instances, query time and queue limits, not only app CPU.",
+    "exercise": "Use requestProfile on synthetic queue/work samples; in a disposable DB compare two bounded pool settings.",
+    "positive": "Queue and execution measurements are separate.",
+    "negative": "Larger pool causing DB saturation or errors is not an improvement.",
+    "reference": "https://nodejs.org/en/learn/diagnostics",
+    "model": "requestProfile",
+    "boundary": "Synthetic latency sample analysis only; actual CPU/heap profiles, Fastify comparison, query plans and HTTP behavior need real runtimes."
+  },
+  "22.02.04": {
+    "context": "An endpoint queries child rows once per parent.",
+    "concept": "N+1 increases round trips; inspect plans and query count before choosing joins, batching or indexes.",
+    "exercise": "Seed a disposable DB with 20 parents; count queries and inspect EXPLAIN, then compare a bounded batch.",
+    "positive": "Query count decreases while result and authorization remain correct.",
+    "negative": "An unbounded join or missing tenant filter fails.",
+    "reference": "https://www.postgresql.org/docs/current/using-explain.html",
+    "model": "requestProfile",
+    "boundary": "Synthetic latency sample analysis only; actual CPU/heap profiles, Fastify comparison, query plans and HTTP behavior need real runtimes."
+  },
+  "22.02.05": {
+    "context": "Clients repeatedly fetch an unchanged resource.",
+    "concept": "ETag validators allow conditional requests; cache identity includes representation and auth policy.",
+    "exercise": "Use a local HTTP fixture with an ETag; send If-None-Match and then mutate resource.",
+    "positive": "Unchanged response returns 304 and changed representation returns 200.",
+    "negative": "A private response cached across users or stale validator fails.",
+    "reference": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/ETag",
+    "model": "requestProfile",
+    "boundary": "Synthetic latency sample analysis only; actual CPU/heap profiles, Fastify comparison, query plans and HTTP behavior need real runtimes."
+  },
+  "22.02.06": {
+    "context": "A large JSON response consumes bandwidth.",
+    "concept": "Compression trades CPU for transfer size; respect content negotiation and avoid unsafe secret-bearing compression patterns.",
+    "exercise": "Benchmark local synthetic public JSON with and without compression; record size, CPU and p95.",
+    "positive": "Transfer size improves within CPU/error budget.",
+    "negative": "Unacceptable CPU increase or incorrect Content-Encoding fails.",
+    "reference": "https://nodejs.org/en/learn/diagnostics",
+    "model": "requestProfile",
+    "boundary": "Synthetic latency sample analysis only; actual CPU/heap profiles, Fastify comparison, query plans and HTTP behavior need real runtimes."
+  },
+  "22.02.07": {
+    "context": "An API combines many small reads.",
+    "concept": "Batching reduces overhead but increases wait time and per-batch failure scope; bound size and preserve per-item auth.",
+    "exercise": "Design a batch of ten authorized requests plus one foreign tenant item; compare latency and outcomes.",
+    "positive": "Authorized items return correctly; unauthorized item denied.",
+    "negative": "A batch that bypasses individual authorization fails.",
+    "reference": "https://nodejs.org/en/learn/diagnostics",
+    "model": "requestProfile",
+    "boundary": "Synthetic latency sample analysis only; actual CPU/heap profiles, Fastify comparison, query plans and HTTP behavior need real runtimes."
+  },
+  "22.02.08": {
+    "context": "A service must reduce p95 without hiding errors.",
+    "concept": "Measure queue time, execution and total per request; percentiles are not additive across distributions.",
+    "exercise": "Run requestProfile on matched synthetic pairs; then benchmark a real disposable API before and after one change.",
+    "positive": "Total p95 computed from per-request sums; errors reported separately.",
+    "negative": "Adding queue p95 and work p95 or dropping failures is invalid.",
+    "reference": "https://nodejs.org/en/learn/diagnostics",
+    "model": "requestProfile",
+    "boundary": "Synthetic latency sample analysis only; actual CPU/heap profiles, Fastify comparison, query plans and HTTP behavior need real runtimes."
+  },
+  "22.03.01": {
+    "context": "An edge cache serves an outdated product page.",
+    "concept": "CDN cache keys, TTL, invalidation and versioned assets define freshness; private content needs explicit isolation.",
+    "exercise": "Design public catalog and authenticated cart cache policies; in a local proxy test update and invalidation.",
+    "positive": "Catalog converges and cart remains private.",
+    "negative": "Cross-user cache leakage or stale version after purge fails.",
+    "reference": "https://web.dev/learn/performance",
+    "model": "capacity",
+    "boundary": "Capacity arithmetic only; no actual CDN, cache cluster, balancing, cost quotes or scaling benchmark."
+  },
+  "22.03.02": {
+    "context": "An app has browser, CDN, process and Redis caches.",
+    "concept": "Each cache tier has distinct ownership, scope, TTL and failure mode; name authoritative state.",
+    "exercise": "Map keys and TTL per tier; simulate origin update and process-cache miss.",
+    "positive": "Authoritative read remains correct despite tier misses.",
+    "negative": "A private value in shared public cache fails.",
+    "reference": "https://web.dev/learn/performance",
+    "model": "capacity",
+    "boundary": "Capacity arithmetic only; no actual CDN, cache cluster, balancing, cost quotes or scaling benchmark."
+  },
+  "22.03.03": {
+    "context": "An order update races with cache invalidation.",
+    "concept": "Cache-aside can expose stale data; version checks and invalidation after commit reduce races, not eliminate every stale read.",
+    "exercise": "Design versioned cached row with versions 2 and 3; simulate delayed invalidation and stale refill.",
+    "positive": "Version 2 cannot replace known version 3.",
+    "negative": "Late stale write restoring outdated state fails.",
+    "reference": "https://web.dev/learn/performance",
+    "model": "capacity",
+    "boundary": "Capacity arithmetic only; no actual CDN, cache cluster, balancing, cost quotes or scaling benchmark."
+  },
+  "22.03.04": {
+    "context": "An API has two load-balanced instances.",
+    "concept": "Stateless application requests can be served by any healthy instance; session/state must be external or explicitly routed.",
+    "exercise": "Rehearse a local two-instance fixture with one stopped instance and repeated requests.",
+    "positive": "Healthy remaining instance serves authorized requests.",
+    "negative": "In-process session loss or routing to unhealthy instance fails.",
+    "reference": "https://web.dev/learn/performance",
+    "model": "capacity",
+    "boundary": "Capacity arithmetic only; no actual CDN, cache cluster, balancing, cost quotes or scaling benchmark."
+  },
+  "22.03.05": {
+    "context": "Demand doubles under an instance limit.",
+    "concept": "Horizontal scaling needs measured per-instance capacity and headroom, with downstream constraints.",
+    "exercise": "Use capacity for 160 rps, 100 per instance, 20% headroom and cap two; change demand to 161.",
+    "positive": "Two instances meet first scenario; next needs three.",
+    "negative": "Demand above cap cannot be reported feasible.",
+    "reference": "https://web.dev/learn/performance",
+    "model": "capacity",
+    "boundary": "Capacity arithmetic only; no actual CDN, cache cluster, balancing, cost quotes or scaling benchmark."
+  },
+  "22.03.06": {
+    "context": "A small team must scale under a strict budget.",
+    "concept": "Use measured workload and marginal cost, caps and service limits; avoid autoscaling without spend controls.",
+    "exercise": "Compare two synthetic scenarios by required instances and assumed per-instance cost; record assumptions.",
+    "positive": "Plan meets budget and explicitly names unresolved bottlenecks.",
+    "negative": "Ignoring fixed DB or egress cost invalidates comparison.",
+    "reference": "https://web.dev/learn/performance",
+    "model": "capacity",
+    "boundary": "Capacity arithmetic only; no actual CDN, cache cluster, balancing, cost quotes or scaling benchmark."
+  },
+  "22.03.07": {
+    "context": "A performance improvement may regress next release.",
+    "concept": "Baseline captures version, workload, conditions and distributions; repeat trials and use defined thresholds.",
+    "exercise": "Store synthetic baseline and changed result, then plan matched real benchmark runs.",
+    "positive": "Regression gate catches meaningful increase under equivalent conditions.",
+    "negative": "Comparing different hardware/workload or ignoring variance fails.",
+    "reference": "https://web.dev/learn/performance",
+    "model": "capacity",
+    "boundary": "Capacity arithmetic only; no actual CDN, cache cluster, balancing, cost quotes or scaling benchmark."
+  },
+  "22.03.08": {
+    "context": "A learner forecasts peak capacity for a small SaaS.",
+    "concept": "A forecast is a scenario with uncertainty, not a guarantee; combine throughput, headroom and hard dependency limits.",
+    "exercise": "Run capacity for low, expected and high demand; document DB connection and budget constraints.",
+    "positive": "Forecast gives required instances and feasibility for each scenario.",
+    "negative": "Impossible resource cap or missing measurement cannot qualify capacity.",
+    "reference": "https://web.dev/learn/performance",
+    "model": "capacity",
+    "boundary": "Capacity arithmetic only; no actual CDN, cache cluster, balancing, cost quotes or scaling benchmark."
+  },
+  "23.01.01": {
+    "context": "A service class handles orders, email, billing and formatting.",
+    "concept": "High cohesion groups related decisions; coupling measures dependency and change impact. SOLID guides design, not class count.",
+    "exercise": "Draw responsibilities and dependency edges; separate order rules from email delivery using a port.",
+    "positive": "Order policy can change without modifying the sender.",
+    "negative": "New cyclic dependencies or abstractions without a reason fail.",
+    "reference": "https://martinfowler.com/architecture/",
+    "model": "boundaryViolations",
+    "boundary": "Directed dependency model only; no actual codebase static graph, framework migration or architecture certification."
+  },
+  "23.01.02": {
+    "context": "Domain logic imports a concrete ORM client.",
+    "concept": "Dependency inversion makes higher-level policy depend on an abstraction it owns; infrastructure implements it.",
+    "exercise": "Use boundaryViolations to forbid domain-to-ORM and allow usecase-to-port; implement a fake port.",
+    "positive": "Policy tests run without ORM connection.",
+    "negative": "Concrete ORM dependency in domain fails.",
+    "reference": "https://martinfowler.com/architecture/",
+    "model": "boundaryViolations",
+    "boundary": "Directed dependency model only; no actual codebase static graph, framework migration or architecture certification."
+  },
+  "23.01.03": {
+    "context": "A use case must support HTTP and CLI entry points.",
+    "concept": "Ports define required/provided capabilities; adapters translate outside protocols into use-case inputs.",
+    "exercise": "Design submit-order port and two adapters; exercise same invariant through both.",
+    "positive": "Both adapters use the same application contract.",
+    "negative": "Duplicated business rule or adapter bypass fails.",
+    "reference": "https://martinfowler.com/architecture/",
+    "model": "boundaryViolations",
+    "boundary": "Directed dependency model only; no actual codebase static graph, framework migration or architecture certification."
+  },
+  "23.01.04": {
+    "context": "A business service calls an external payment API.",
+    "concept": "Hexagonal architecture separates core behavior from outside input/output technology.",
+    "exercise": "Draw inbound order adapter, domain/usecase and outbound payment port; test fake payment response.",
+    "positive": "Core changes independently of the adapter.",
+    "negative": "Framework types or HTTP errors leaking into domain fail.",
+    "reference": "https://martinfowler.com/architecture/",
+    "model": "boundaryViolations",
+    "boundary": "Directed dependency model only; no actual codebase static graph, framework migration or architecture certification."
+  },
+  "23.01.05": {
+    "context": "A simple CRUD app grows multiple layers of mapping.",
+    "concept": "Clean architecture prioritizes dependency direction and replaceable boundaries; extra layers have maintenance cost.",
+    "exercise": "Compare direct CRUD module versus domain-rich module and justify each boundary using change scenarios.",
+    "positive": "Chosen design solves actual coupling and test needs.",
+    "negative": "Adding abstractions with no change or testing benefit is unjustified.",
+    "reference": "https://martinfowler.com/architecture/",
+    "model": "boundaryViolations",
+    "boundary": "Directed dependency model only; no actual codebase static graph, framework migration or architecture certification."
+  },
+  "23.01.06": {
+    "context": "A domain money value is stored in database columns.",
+    "concept": "Domain models represent invariants; persistence models represent storage and mapping. They may coincide for simple CRUD.",
+    "exercise": "Define a money invariant and map synthetic storage rows to domain values; reject invalid row.",
+    "positive": "Valid storage yields a valid domain value.",
+    "negative": "Negative or malformed amount cannot bypass invariant.",
+    "reference": "https://martinfowler.com/architecture/",
+    "model": "boundaryViolations",
+    "boundary": "Directed dependency model only; no actual codebase static graph, framework migration or architecture certification."
+  },
+  "23.01.07": {
+    "context": "A team must choose monolith or service extraction.",
+    "concept": "An ADR records context, decision, alternatives, consequences and reconsideration triggers.",
+    "exercise": "Write a short ADR for keeping a module in-process, with measured trigger for extraction.",
+    "positive": "Decision and tradeoffs are reviewable.",
+    "negative": "An ADR with only a preferred tool and no consequences fails.",
+    "reference": "https://martinfowler.com/architecture/",
+    "model": "boundaryViolations",
+    "boundary": "Directed dependency model only; no actual codebase static graph, framework migration or architecture certification."
+  },
+  "23.01.08": {
+    "context": "A learner diagrams application boundaries.",
+    "concept": "Architecture diagrams should show directed dependencies, ownership and trust boundaries rather than only boxes.",
+    "exercise": "Define allowed edges and use boundaryViolations to test one forbidden domain-to-infrastructure dependency.",
+    "positive": "Allowed graph has no violations.",
+    "negative": "Reversed or forbidden dependency is flagged.",
+    "reference": "https://martinfowler.com/architecture/",
+    "model": "boundaryViolations",
+    "boundary": "Directed dependency model only; no actual codebase static graph, framework migration or architecture certification."
+  },
+  "23.02.01": {
+    "context": "Orders and inventory share one application but different data rules.",
+    "concept": "Domain modules own behavior and persistence boundaries; a monolith can have independent internal contracts.",
+    "exercise": "Draw order/inventory ownership and explicit allowed dependencies; remove direct cross-module writes.",
+    "positive": "Each module controls its own data mutations.",
+    "negative": "A module editing another module's private table without contract fails.",
+    "reference": "https://martinfowler.com/bliki/BoundedContext.html",
+    "model": "dependencyCycle",
+    "boundary": "Small synthetic dependency graph only; real module enforcement, transactions and feature flag runtime not executed."
+  },
+  "23.02.02": {
+    "context": "Billing calls order module internals directly.",
+    "concept": "Public module interfaces define stable behavior; internals remain private and versioned as needed.",
+    "exercise": "Design getOrderSummary interface returning minimal DTO; replace internal representation and test contract.",
+    "positive": "Consumer behavior stays stable after internal refactor.",
+    "negative": "Importing private entity or exposing secrets fails.",
+    "reference": "https://martinfowler.com/bliki/BoundedContext.html",
+    "model": "dependencyCycle",
+    "boundary": "Small synthetic dependency graph only; real module enforcement, transactions and feature flag runtime not executed."
+  },
+  "23.02.03": {
+    "context": "Order placement needs inventory and payment invariants.",
+    "concept": "A local transaction can enforce same-database invariants; outside side effects need separate coordination and compensation.",
+    "exercise": "In disposable DB reserve stock and create order in one transaction; force failure and roll back.",
+    "positive": "Both writes commit or neither does.",
+    "negative": "Partial committed state or external call inside blind retry fails.",
+    "reference": "https://martinfowler.com/bliki/BoundedContext.html",
+    "model": "dependencyCycle",
+    "boundary": "Small synthetic dependency graph only; real module enforcement, transactions and feature flag runtime not executed."
+  },
+  "23.02.04": {
+    "context": "Orders notify analytics after placement.",
+    "concept": "Domain events describe meaningful past facts; publication should follow committed changes, with durability when needed.",
+    "exercise": "Define OrderPlaced event and local handler; distinguish precommit in-process signal from durable outbox event.",
+    "positive": "Committed order produces expected event contract.",
+    "negative": "Rollback publishing a misleading committed event fails.",
+    "reference": "https://martinfowler.com/bliki/BoundedContext.html",
+    "model": "dependencyCycle",
+    "boundary": "Small synthetic dependency graph only; real module enforcement, transactions and feature flag runtime not executed."
+  },
+  "23.02.05": {
+    "context": "Use-case tests need to replace a database repository.",
+    "concept": "Repositories express domain persistence needs rather than exposing arbitrary query builders.",
+    "exercise": "Define reserve and lookup port; test in-memory fake and separately test DB adapter contract.",
+    "positive": "Fake exercises use case; real adapter meets same behavior.",
+    "negative": "Repository exposing unrestricted foreign-tenant reads fails.",
+    "reference": "https://martinfowler.com/bliki/BoundedContext.html",
+    "model": "dependencyCycle",
+    "boundary": "Small synthetic dependency graph only; real module enforcement, transactions and feature flag runtime not executed."
+  },
+  "23.02.06": {
+    "context": "A module feature needs gradual enablement.",
+    "concept": "Feature toggles have default, scope, ownership and expiry; flags are not authorization.",
+    "exercise": "Design stable subject assignment with default-off; check authorized and unauthorized users.",
+    "positive": "Flag changes exposure for authorized cohort only.",
+    "negative": "Flag overriding permission or missing default fails.",
+    "reference": "https://martinfowler.com/bliki/BoundedContext.html",
+    "model": "dependencyCycle",
+    "boundary": "Small synthetic dependency graph only; real module enforcement, transactions and feature flag runtime not executed."
+  },
+  "23.02.07": {
+    "context": "Three modules want a shared utility library.",
+    "concept": "Shared kernel should be small and stable; domain-specific rules belong to their owner.",
+    "exercise": "Classify date parsing versus order discount rule; draw dependencies before moving code.",
+    "positive": "Shared utility has no dependency on domain modules.",
+    "negative": "Shared kernel becoming a dependency hub for business rules fails.",
+    "reference": "https://martinfowler.com/bliki/BoundedContext.html",
+    "model": "dependencyCycle",
+    "boundary": "Small synthetic dependency graph only; real module enforcement, transactions and feature flag runtime not executed."
+  },
+  "23.02.08": {
+    "context": "Orders imports billing, billing imports inventory, inventory imports orders.",
+    "concept": "Dependency cycles make initialization and ownership unclear; introduce a contract or orchestrator with a directed graph.",
+    "exercise": "Run dependencyCycle with indirect cycle then extract one shared port or coordinating use case.",
+    "positive": "Acyclic graph passes after correction.",
+    "negative": "Self or indirect cycle remains detectable.",
+    "reference": "https://martinfowler.com/bliki/BoundedContext.html",
+    "model": "dependencyCycle",
+    "boundary": "Small synthetic dependency graph only; real module enforcement, transactions and feature flag runtime not executed."
+  },
+  "23.03.01": {
+    "context": "An order service receives a request and announces the result.",
+    "concept": "Commands express intent and may be rejected; events record facts and are named in past tense.",
+    "exercise": "Design ReserveStock command and StockReserved event; handle invalid quantity before emitting event.",
+    "positive": "Valid command produces a fact.",
+    "negative": "Rejected command cannot emit a success event.",
+    "reference": "https://microservices.io/patterns/data/transactional-outbox.html",
+    "model": "idempotentConsumer",
+    "boundary": "In-memory synthetic idempotency model; no broker, durable store, transactional outbox or exactly-once side-effect evidence."
+  },
+  "23.03.02": {
+    "context": "A read model updates asynchronously after an order commits.",
+    "concept": "Eventual consistency permits temporary staleness; communicate lag and provide safe authoritative paths where needed.",
+    "exercise": "Simulate delayed read projection after order placement; expose pending status and later convergence.",
+    "positive": "Projection reaches committed state.",
+    "negative": "UI falsely declaring missing order permanent or authorization from stale data fails.",
+    "reference": "https://microservices.io/patterns/data/transactional-outbox.html",
+    "model": "idempotentConsumer",
+    "boundary": "In-memory synthetic idempotency model; no broker, durable store, transactional outbox or exactly-once side-effect evidence."
+  },
+  "23.03.03": {
+    "context": "An app commits an order but crashes before broker publish.",
+    "concept": "Transactional outbox stores the event in the same database transaction, then a relay publishes with retry.",
+    "exercise": "In disposable DB design order/outbox atomic write; force relay crash after publish and inspect retry path.",
+    "positive": "Order and outbox survive together.",
+    "negative": "Order without outbox or unhandled duplicate relay delivery fails.",
+    "reference": "https://microservices.io/patterns/data/transactional-outbox.html",
+    "model": "idempotentConsumer",
+    "boundary": "In-memory synthetic idempotency model; no broker, durable store, transactional outbox or exactly-once side-effect evidence."
+  },
+  "23.03.04": {
+    "context": "A broker delivers the same event twice.",
+    "concept": "Consumers need durable idempotency and conflict handling; in-memory dedupe only models the invariant.",
+    "exercise": "Run idempotentConsumer with event e amount 5 twice, then e amount 6; plan DB uniqueness transaction.",
+    "positive": "Total remains 5; exact duplicate is ignored.",
+    "negative": "Same ID with different content conflicts; process restart is unqualified.",
+    "reference": "https://microservices.io/patterns/data/transactional-outbox.html",
+    "model": "idempotentConsumer",
+    "boundary": "In-memory synthetic idempotency model; no broker, durable store, transactional outbox or exactly-once side-effect evidence."
+  },
+  "23.03.05": {
+    "context": "Checkout coordinates payment and shipment across services.",
+    "concept": "A saga sequences local transactions and compensations; compensation is a business action, not distributed rollback.",
+    "exercise": "Design reserve, charge, ship steps and payment failure compensation; record idempotency keys.",
+    "positive": "Failed charge releases reservation via a retriable compensation.",
+    "negative": "Compensation failure without recovery state or double charge fails.",
+    "reference": "https://microservices.io/patterns/data/transactional-outbox.html",
+    "model": "idempotentConsumer",
+    "boundary": "In-memory synthetic idempotency model; no broker, durable store, transactional outbox or exactly-once side-effect evidence."
+  },
+  "23.03.06": {
+    "context": "A new event field reaches old consumers.",
+    "concept": "Schema evolution requires explicit versioning and compatible defaults or separate message versions.",
+    "exercise": "Create v1 and v2 synthetic messages with optional field; test old/new consumers and unknown version denial.",
+    "positive": "Compatible addition preserves old behavior.",
+    "negative": "Incompatible field removal or unknown version silently processed fails.",
+    "reference": "https://microservices.io/patterns/data/transactional-outbox.html",
+    "model": "idempotentConsumer",
+    "boundary": "In-memory synthetic idempotency model; no broker, durable store, transactional outbox or exactly-once side-effect evidence."
+  },
+  "23.03.07": {
+    "context": "A broker redelivers messages after lost acknowledgement.",
+    "concept": "At-least-once can duplicate, at-most-once can lose; exactly-once claims have a specific system boundary.",
+    "exercise": "Simulate ack loss and duplicate delivery using idempotentConsumer; distinguish consumer state from external email side effect.",
+    "positive": "Duplicate does not increment local total.",
+    "negative": "Claiming exactly-once external delivery without evidence fails.",
+    "reference": "https://microservices.io/patterns/data/transactional-outbox.html",
+    "model": "idempotentConsumer",
+    "boundary": "In-memory synthetic idempotency model; no broker, durable store, transactional outbox or exactly-once side-effect evidence."
+  },
+  "23.03.08": {
+    "context": "A learner builds a reliable order-event flow.",
+    "concept": "Reliable integration combines transactional outbox, retry, durable inbox, explicit errors and idempotent effects.",
+    "exercise": "Run local consumer tests; on disposable PostgreSQL rehearse outbox and P5 inbox with independent workers and recovery.",
+    "positive": "Model handles duplicate; real DB integration must prove restart and atomicity.",
+    "negative": "Duplicate effects or untracked uncertain commit block qualification.",
+    "reference": "https://microservices.io/patterns/data/transactional-outbox.html",
+    "model": "idempotentConsumer",
+    "boundary": "In-memory synthetic idempotency model; no broker, durable store, transactional outbox or exactly-once side-effect evidence."
+  },
+  "23.04.01": {
+    "context": "Two replicas cannot communicate during a write.",
+    "concept": "CAP describes consistency and availability during partitions, not a fixed pick-two menu under normal operation.",
+    "exercise": "Sketch a partition between replicas; choose reject versus accept conflicting writes for inventory and explain business impact.",
+    "positive": "Choice preserves the explicitly selected invariant under partition.",
+    "negative": "Claiming both linearizable writes and unconditional availability under partition fails.",
+    "reference": "https://martinfowler.com/articles/microservices.html",
+    "model": "retryDecision",
+    "boundary": "Retry decision teaching model only; no network partition, broker, service discovery, replication or multi-region benchmark."
+  },
+  "23.04.02": {
+    "context": "A service instance is replaced with a new address.",
+    "concept": "Discovery maps logical service identity to healthy endpoints; stale entries and health delays require bounded retries.",
+    "exercise": "In disposable local fixture change endpoint registration and observe discovery refresh with one unhealthy instance.",
+    "positive": "Healthy endpoint selected after bounded refresh.",
+    "negative": "Infinite retries to stale address or unauthenticated discovery fails.",
+    "reference": "https://martinfowler.com/articles/microservices.html",
+    "model": "retryDecision",
+    "boundary": "Retry decision teaching model only; no network partition, broker, service discovery, replication or multi-region benchmark."
+  },
+  "23.04.03": {
+    "context": "A chain of services retries at every hop.",
+    "concept": "Deadlines and retry budgets limit amplification; idempotency and transient-failure classification protect effects.",
+    "exercise": "Run retryDecision with remainingMs zero, maxAttempts reached and idempotent false; model one retry layer.",
+    "positive": "Retries stop at deadline, budget or unsafe operation.",
+    "negative": "Retrying permanent failures or ambiguous non-idempotent writes fails.",
+    "reference": "https://martinfowler.com/articles/microservices.html",
+    "model": "retryDecision",
+    "boundary": "Retry decision teaching model only; no network partition, broker, service discovery, replication or multi-region benchmark."
+  },
+  "23.04.04": {
+    "context": "A team chooses NATS or Kafka for event transport.",
+    "concept": "Brokers differ in durability, retention, ordering scope and consumption models; compare configured guarantees, not brands.",
+    "exercise": "Define workload retention, replay, ordering and failure recovery requirements; test on isolated real broker if available.",
+    "positive": "Chosen configuration meets the stated guarantees with evidence.",
+    "negative": "Assuming core pub/sub provides durable replay without configuration fails.",
+    "reference": "https://docs.nats.io/",
+    "model": "retryDecision",
+    "boundary": "Retry decision teaching model only; no network partition, broker, service discovery, replication or multi-region benchmark."
+  },
+  "23.04.05": {
+    "context": "A large dataset is split across partitions.",
+    "concept": "Partition key affects balance, query locality and ordering; hot keys and cross-partition invariants need attention.",
+    "exercise": "Assign synthetic tenant workloads to partitions; introduce a hot tenant and compare load distribution.",
+    "positive": "Skew is visible and mitigation justified.",
+    "negative": "Hashing without checking hot keys or cross-partition queries fails.",
+    "reference": "https://martinfowler.com/articles/microservices.html",
+    "model": "retryDecision",
+    "boundary": "Retry decision teaching model only; no network partition, broker, service discovery, replication or multi-region benchmark."
+  },
+  "23.04.06": {
+    "context": "Users in two regions access shared data.",
+    "concept": "Replication and request routing trade latency against consistency and recovery; define write authority.",
+    "exercise": "Draw region A/B paths and simulate network delay, stale read and failover.",
+    "positive": "Plan states write authority, consistency and failover behavior.",
+    "negative": "Unmeasured latency or conflicting leaders cannot qualify design.",
+    "reference": "https://martinfowler.com/articles/microservices.html",
+    "model": "retryDecision",
+    "boundary": "Retry decision teaching model only; no network partition, broker, service discovery, replication or multi-region benchmark."
+  },
+  "23.04.07": {
+    "context": "A modular monolith has one expensive workload.",
+    "concept": "Extract a service only when independent scaling, failure isolation or ownership outweighs network/operational cost.",
+    "exercise": "Write an ADR comparing module optimization, worker extraction and service extraction using observed bottlenecks.",
+    "positive": "Decision names measurable trigger and migration risks.",
+    "negative": "Splitting solely because microservices are fashionable fails.",
+    "reference": "https://martinfowler.com/articles/microservices.html",
+    "model": "retryDecision",
+    "boundary": "Retry decision teaching model only; no network partition, broker, service discovery, replication or multi-region benchmark."
+  },
+  "23.04.08": {
+    "context": "A learner reviews a distributed order design.",
+    "concept": "Review invariants, deadlines, partition behavior, observability, ownership and recovery before committing to complexity.",
+    "exercise": "Run retryDecision and earlier boundary/consumer models; write failure matrix for timeout, duplicate, partition and unavailable dependency.",
+    "positive": "Every failure has expected behavior, evidence and owner.",
+    "negative": "Missing recovery for uncertain side effects or invented guarantees blocks acceptance.",
+    "reference": "https://martinfowler.com/articles/microservices.html",
+    "model": "retryDecision",
+    "boundary": "Retry decision teaching model only; no network partition, broker, service discovery, replication or multi-region benchmark."
+  }
+}

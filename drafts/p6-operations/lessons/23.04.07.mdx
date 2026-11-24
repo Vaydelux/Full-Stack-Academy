@@ -1,0 +1,61 @@
+---
+id: "23.04.07"
+title: "Microservice extraction criteria"
+module: "23.04"
+status: "draft-unverified"
+readyToPublish: false
+---
+
+# Microservice extraction criteria
+
+> Unpublished instructor manuscript. Local model tests are supplemental, not external runtime qualification.
+
+## Learning outcomes
+
+Explain the relevant engineering tradeoff, define a measurable experiment and recognize the boundary of the available evidence.
+
+## Context
+
+A modular monolith has one expensive workload.
+
+## Step 1 — Mental model
+
+Extract a service only when independent scaling, failure isolation or ownership outweighs network/operational cost.
+
+## Step 2 — Guided practice
+
+Write an ADR comparing module optimization, worker extraction and service extraction using observed bottlenecks.
+
+Use synthetic data and a disposable authorized environment. Record the expected result before the experiment.
+
+## Step 3 — Acceptance
+
+**Positive:** Decision names measurable trigger and migration risks.
+
+**Negative:** Splitting solely because microservices are fashionable fails.
+
+Inspect the complementary `retryDecision` model in `examples/p6-operations/labs.mjs` and extend its assertions where relevant. The command below does not execute the external tools discussed in this topic.
+
+```bash
+node --test --test-name-pattern="23[.]04" examples/p6-operations/labs.test.mjs
+```
+
+## Qualification boundary
+
+Retry decision teaching model only; no network partition, broker, service discovery, replication or multi-region benchmark.
+
+## Knowledge check
+
+1. Which invariant or operational measurement determines success?
+2. What failure case disproves the unsafe design?
+3. Which evidence remains missing before this can be applied to a production service?
+
+**Assessment:** Submit input, expected/observed outcomes, a meaningful negative result and the unverified external boundaries. Mark unavailable tests not-run.
+
+## References
+
+- [Technical reference](https://martinfowler.com/articles/microservices.html)
+
+## Publication conditions
+
+Complete editorial review, meaningful red/green acceptance, applicable real tools, Node 24 build, browser and manual accessibility gates. Never publish from local model results alone.

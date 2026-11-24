@@ -1,0 +1,61 @@
+---
+id: "22.01.07"
+title: "Virtualization"
+module: "22.01"
+status: "draft-unverified"
+readyToPublish: false
+---
+
+# Virtualization
+
+> Unpublished instructor manuscript. Local model tests are supplemental, not external runtime qualification.
+
+## Learning outcomes
+
+Explain the relevant engineering tradeoff, define a measurable experiment and recognize the boundary of the available evidence.
+
+## Context
+
+A list renders ten thousand rows at once.
+
+## Step 1 — Mental model
+
+Virtualization bounds DOM work by visible range and overscan; preserve semantics, focus and scroll position.
+
+## Step 2 — Guided practice
+
+Render a synthetic long list with and without virtualization; measure DOM nodes and keyboard behavior.
+
+Use synthetic data and a disposable authorized environment. Record the expected result before the experiment.
+
+## Step 3 — Acceptance
+
+**Positive:** DOM count remains bounded; focus remains usable.
+
+**Negative:** Missing reachable rows or lost keyboard focus fails.
+
+Inspect the complementary `webBudget` model in `examples/p6-operations/labs.mjs` and extend its assertions where relevant. The command below does not execute the external tools discussed in this topic.
+
+```bash
+node --test --test-name-pattern="22[.]01" examples/p6-operations/labs.test.mjs
+```
+
+## Qualification boundary
+
+Synthetic measured-value budget only; actual Core Web Vitals, browser profiles and real-user metrics are unexecuted.
+
+## Knowledge check
+
+1. Which invariant or operational measurement determines success?
+2. What failure case disproves the unsafe design?
+3. Which evidence remains missing before this can be applied to a production service?
+
+**Assessment:** Submit input, expected/observed outcomes, a meaningful negative result and the unverified external boundaries. Mark unavailable tests not-run.
+
+## References
+
+- [Technical reference](https://web.dev/learn/performance)
+
+## Publication conditions
+
+Complete editorial review, meaningful red/green acceptance, applicable real tools, Node 24 build, browser and manual accessibility gates. Never publish from local model results alone.

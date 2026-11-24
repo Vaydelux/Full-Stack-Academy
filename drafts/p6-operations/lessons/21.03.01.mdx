@@ -1,0 +1,61 @@
+---
+id: "21.03.01"
+title: "Incident severity and ownership"
+module: "21.03"
+status: "draft-unverified"
+readyToPublish: false
+---
+
+# Incident severity and ownership
+
+> Unpublished instructor manuscript. Local model tests are supplemental, not external runtime qualification.
+
+## Learning outcomes
+
+Explain the relevant engineering tradeoff, define a measurable experiment and recognize the boundary of the available evidence.
+
+## Context
+
+Checkout is unavailable and no owner has been assigned.
+
+## Step 1 — Mental model
+
+Severity follows user impact; name an incident commander, technical lead and communications owner.
+
+## Step 2 — Guided practice
+
+Run incidentDecision with unavailable and no owner; draft role assignment for the exercise.
+
+Use synthetic data and a disposable authorized environment. Record the expected result before the experiment.
+
+## Step 3 — Acceptance
+
+**Positive:** High impact receives SEV1 and escalation in this local rubric.
+
+**Negative:** Unowned high-impact incident cannot be marked handled.
+
+Inspect the complementary `incidentDecision` model in `examples/p6-operations/labs.mjs` and extend its assertions where relevant. The command below does not execute the external tools discussed in this topic.
+
+```bash
+node --test --test-name-pattern="21[.]03" examples/p6-operations/labs.test.mjs
+```
+
+## Qualification boundary
+
+Synthetic incident decisions only; no real emergency response, restored backups, alerting or production capacity measurements.
+
+## Knowledge check
+
+1. Which invariant or operational measurement determines success?
+2. What failure case disproves the unsafe design?
+3. Which evidence remains missing before this can be applied to a production service?
+
+**Assessment:** Submit input, expected/observed outcomes, a meaningful negative result and the unverified external boundaries. Mark unavailable tests not-run.
+
+## References
+
+- [Technical reference](https://sre.google/books/)
+
+## Publication conditions
+
+Complete editorial review, meaningful red/green acceptance, applicable real tools, Node 24 build, browser and manual accessibility gates. Never publish from local model results alone.

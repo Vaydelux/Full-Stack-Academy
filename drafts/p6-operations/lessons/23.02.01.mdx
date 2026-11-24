@@ -1,0 +1,61 @@
+---
+id: "23.02.01"
+title: "Domain modules and ownership"
+module: "23.02"
+status: "draft-unverified"
+readyToPublish: false
+---
+
+# Domain modules and ownership
+
+> Unpublished instructor manuscript. Local model tests are supplemental, not external runtime qualification.
+
+## Learning outcomes
+
+Explain the relevant engineering tradeoff, define a measurable experiment and recognize the boundary of the available evidence.
+
+## Context
+
+Orders and inventory share one application but different data rules.
+
+## Step 1 — Mental model
+
+Domain modules own behavior and persistence boundaries; a monolith can have independent internal contracts.
+
+## Step 2 — Guided practice
+
+Draw order/inventory ownership and explicit allowed dependencies; remove direct cross-module writes.
+
+Use synthetic data and a disposable authorized environment. Record the expected result before the experiment.
+
+## Step 3 — Acceptance
+
+**Positive:** Each module controls its own data mutations.
+
+**Negative:** A module editing another module's private table without contract fails.
+
+Inspect the complementary `dependencyCycle` model in `examples/p6-operations/labs.mjs` and extend its assertions where relevant. The command below does not execute the external tools discussed in this topic.
+
+```bash
+node --test --test-name-pattern="23[.]02" examples/p6-operations/labs.test.mjs
+```
+
+## Qualification boundary
+
+Small synthetic dependency graph only; real module enforcement, transactions and feature flag runtime not executed.
+
+## Knowledge check
+
+1. Which invariant or operational measurement determines success?
+2. What failure case disproves the unsafe design?
+3. Which evidence remains missing before this can be applied to a production service?
+
+**Assessment:** Submit input, expected/observed outcomes, a meaningful negative result and the unverified external boundaries. Mark unavailable tests not-run.
+
+## References
+
+- [Technical reference](https://martinfowler.com/bliki/BoundedContext.html)
+
+## Publication conditions
+
+Complete editorial review, meaningful red/green acceptance, applicable real tools, Node 24 build, browser and manual accessibility gates. Never publish from local model results alone.

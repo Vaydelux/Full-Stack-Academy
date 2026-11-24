@@ -1,0 +1,61 @@
+---
+id: "21.01.08"
+title: "Lab trace an API call"
+module: "21.01"
+status: "draft-unverified"
+readyToPublish: false
+---
+
+# Lab trace an API call
+
+> Unpublished instructor manuscript. Local model tests are supplemental, not external runtime qualification.
+
+## Learning outcomes
+
+Explain the relevant engineering tradeoff, define a measurable experiment and recognize the boundary of the available evidence.
+
+## Context
+
+A learner investigates a failing API call.
+
+## Step 1 — Mental model
+
+Combine correlation ID, span timing, logs and aggregate metrics without exposing payloads.
+
+## Step 2 — Guided practice
+
+Run safeLog tests; in a local instrumented API provoke a synthetic downstream error, connect its span and log, record the evidence.
+
+Use synthetic data and a disposable authorized environment. Record the expected result before the experiment.
+
+## Step 3 — Acceptance
+
+**Positive:** One trace identifies the failing dependency and matching safe log.
+
+**Negative:** Missing parent context, leaking credentials, or unobserved error fails.
+
+Inspect the complementary `safeLog` model in `examples/p6-operations/labs.mjs` and extend its assertions where relevant. The command below does not execute the external tools discussed in this topic.
+
+```bash
+node --test --test-name-pattern="21[.]01" examples/p6-operations/labs.test.mjs
+```
+
+## Qualification boundary
+
+Local field-allowlist model only; Pino, exporters, collectors and Sentry require installed tools and actual trace propagation.
+
+## Knowledge check
+
+1. Which invariant or operational measurement determines success?
+2. What failure case disproves the unsafe design?
+3. Which evidence remains missing before this can be applied to a production service?
+
+**Assessment:** Submit input, expected/observed outcomes, a meaningful negative result and the unverified external boundaries. Mark unavailable tests not-run.
+
+## References
+
+- [Technical reference](https://opentelemetry.io/docs/)
+
+## Publication conditions
+
+Complete editorial review, meaningful red/green acceptance, applicable real tools, Node 24 build, browser and manual accessibility gates. Never publish from local model results alone.

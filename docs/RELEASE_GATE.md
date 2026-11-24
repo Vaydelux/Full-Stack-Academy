@@ -5,7 +5,7 @@
 ## Verified source-of-truth inventory
 
 - **28 tracks, 111 modules and 889 canonical topics.**
-- **338 published unique lesson IDs** (337 published MDX and one distinct interactive publication), **335 unpublished authored drafts**, **216 not yet authored**.
+- **338 published unique lesson IDs** (337 published MDX and one distinct interactive publication), **415 unpublished authored drafts**, **136 not yet authored**.
 - Source-only chapters, code labs, local HTTP fixtures and PostgreSQL SQL scripts **are not published lessons** until all of their publication gates pass.
 - `docs/checkpoint.json` records the last verified historical hosted application baseline separately from ongoing unreleased source work.
 
@@ -52,3 +52,7 @@ A receipt is local diagnostic evidence, **not signed or tamper-proof attestation
 `npm run test:p6-quality-source` verifies canonical Track 19/20 source manuscripts and executes local model and auditor tests. It is included in `verify:offline`. The shared draft inventory reads both older metadata-paired manuscripts and newer frontmatter-only manuscripts rather than relying on a hardcoded folder list. Historical source manuscripts retained after publication do not count as unpublished.
 
 The 64 new topics remain **draft-unverified**, including their model exercises. Real React/Vitest/Testing Library/MSW/browser behavior, NestJS/database integration, k6 traffic and thresholds, Docker/Compose isolation, actual CI/artifact provenance, deployment/rollback, Linux/TLS/DNS and IaC require independent evidence. The local model cannot certify those tools. No Actions workflow or deployment configuration is added or enabled.
+
+## P6 Operations and Architecture source coverage (2026-11-24)
+
+`npm run test:p6-operations-source` is included in `verify:offline`. It audits the 80 Track 21–23 manuscripts and executes ten teaching models and source-auditor fixtures. All 144 P6 topics now have source manuscripts; none is promoted by these checks. Actual OpenTelemetry/Pino/Sentry, SRE fault and restore drills, browser performance, database/HTTP benchmarking, cache and broker semantics, real code dependency analysis and distributed recovery require separate qualification. No model pass is evidence of actual runtime integration or production reliability.

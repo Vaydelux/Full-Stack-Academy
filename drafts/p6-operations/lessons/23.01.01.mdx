@@ -1,0 +1,61 @@
+---
+id: "23.01.01"
+title: "Cohesion coupling and SOLID"
+module: "23.01"
+status: "draft-unverified"
+readyToPublish: false
+---
+
+# Cohesion coupling and SOLID
+
+> Unpublished instructor manuscript. Local model tests are supplemental, not external runtime qualification.
+
+## Learning outcomes
+
+Explain the relevant engineering tradeoff, define a measurable experiment and recognize the boundary of the available evidence.
+
+## Context
+
+A service class handles orders, email, billing and formatting.
+
+## Step 1 — Mental model
+
+High cohesion groups related decisions; coupling measures dependency and change impact. SOLID guides design, not class count.
+
+## Step 2 — Guided practice
+
+Draw responsibilities and dependency edges; separate order rules from email delivery using a port.
+
+Use synthetic data and a disposable authorized environment. Record the expected result before the experiment.
+
+## Step 3 — Acceptance
+
+**Positive:** Order policy can change without modifying the sender.
+
+**Negative:** New cyclic dependencies or abstractions without a reason fail.
+
+Inspect the complementary `boundaryViolations` model in `examples/p6-operations/labs.mjs` and extend its assertions where relevant. The command below does not execute the external tools discussed in this topic.
+
+```bash
+node --test --test-name-pattern="23[.]01" examples/p6-operations/labs.test.mjs
+```
+
+## Qualification boundary
+
+Directed dependency model only; no actual codebase static graph, framework migration or architecture certification.
+
+## Knowledge check
+
+1. Which invariant or operational measurement determines success?
+2. What failure case disproves the unsafe design?
+3. Which evidence remains missing before this can be applied to a production service?
+
+**Assessment:** Submit input, expected/observed outcomes, a meaningful negative result and the unverified external boundaries. Mark unavailable tests not-run.
+
+## References
+
+- [Technical reference](https://martinfowler.com/architecture/)
+
+## Publication conditions
+
+Complete editorial review, meaningful red/green acceptance, applicable real tools, Node 24 build, browser and manual accessibility gates. Never publish from local model results alone.

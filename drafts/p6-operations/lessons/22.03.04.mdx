@@ -1,0 +1,61 @@
+---
+id: "22.03.04"
+title: "Load balancing and stateless APIs"
+module: "22.03"
+status: "draft-unverified"
+readyToPublish: false
+---
+
+# Load balancing and stateless APIs
+
+> Unpublished instructor manuscript. Local model tests are supplemental, not external runtime qualification.
+
+## Learning outcomes
+
+Explain the relevant engineering tradeoff, define a measurable experiment and recognize the boundary of the available evidence.
+
+## Context
+
+An API has two load-balanced instances.
+
+## Step 1 — Mental model
+
+Stateless application requests can be served by any healthy instance; session/state must be external or explicitly routed.
+
+## Step 2 — Guided practice
+
+Rehearse a local two-instance fixture with one stopped instance and repeated requests.
+
+Use synthetic data and a disposable authorized environment. Record the expected result before the experiment.
+
+## Step 3 — Acceptance
+
+**Positive:** Healthy remaining instance serves authorized requests.
+
+**Negative:** In-process session loss or routing to unhealthy instance fails.
+
+Inspect the complementary `capacity` model in `examples/p6-operations/labs.mjs` and extend its assertions where relevant. The command below does not execute the external tools discussed in this topic.
+
+```bash
+node --test --test-name-pattern="22[.]03" examples/p6-operations/labs.test.mjs
+```
+
+## Qualification boundary
+
+Capacity arithmetic only; no actual CDN, cache cluster, balancing, cost quotes or scaling benchmark.
+
+## Knowledge check
+
+1. Which invariant or operational measurement determines success?
+2. What failure case disproves the unsafe design?
+3. Which evidence remains missing before this can be applied to a production service?
+
+**Assessment:** Submit input, expected/observed outcomes, a meaningful negative result and the unverified external boundaries. Mark unavailable tests not-run.
+
+## References
+
+- [Technical reference](https://web.dev/learn/performance)
+
+## Publication conditions
+
+Complete editorial review, meaningful red/green acceptance, applicable real tools, Node 24 build, browser and manual accessibility gates. Never publish from local model results alone.

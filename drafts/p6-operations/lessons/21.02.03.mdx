@@ -1,0 +1,61 @@
+---
+id: "21.02.03"
+title: "Readiness and liveness"
+module: "21.02"
+status: "draft-unverified"
+readyToPublish: false
+---
+
+# Readiness and liveness
+
+> Unpublished instructor manuscript. Local model tests are supplemental, not external runtime qualification.
+
+## Learning outcomes
+
+Explain the relevant engineering tradeoff, define a measurable experiment and recognize the boundary of the available evidence.
+
+## Context
+
+An app is alive but cannot serve traffic.
+
+## Step 1 — Mental model
+
+Liveness indicates whether restart may help; readiness indicates traffic eligibility. Avoid using dependent DB outages as unconditional restart triggers.
+
+## Step 2 — Guided practice
+
+Design separate loopback endpoints; stop a disposable dependency and query both.
+
+Use synthetic data and a disposable authorized environment. Record the expected result before the experiment.
+
+## Step 3 — Acceptance
+
+**Positive:** Readiness fails while process liveness remains healthy.
+
+**Negative:** Routing to an unready service or restart loops fail.
+
+Inspect the complementary `errorBudget` model in `examples/p6-operations/labs.mjs` and extend its assertions where relevant. The command below does not execute the external tools discussed in this topic.
+
+```bash
+node --test --test-name-pattern="21[.]02" examples/p6-operations/labs.test.mjs
+```
+
+## Qualification boundary
+
+Synthetic error-budget arithmetic only; real probes, alerts, concurrency and fault recovery require actual isolated services.
+
+## Knowledge check
+
+1. Which invariant or operational measurement determines success?
+2. What failure case disproves the unsafe design?
+3. Which evidence remains missing before this can be applied to a production service?
+
+**Assessment:** Submit input, expected/observed outcomes, a meaningful negative result and the unverified external boundaries. Mark unavailable tests not-run.
+
+## References
+
+- [Technical reference](https://kubernetes.io/docs/concepts/configuration/liveness-readiness-startup-probes/)
+
+## Publication conditions
+
+Complete editorial review, meaningful red/green acceptance, applicable real tools, Node 24 build, browser and manual accessibility gates. Never publish from local model results alone.

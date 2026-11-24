@@ -1,0 +1,61 @@
+---
+id: "23.04.06"
+title: "Multi-region latency"
+module: "23.04"
+status: "draft-unverified"
+readyToPublish: false
+---
+
+# Multi-region latency
+
+> Unpublished instructor manuscript. Local model tests are supplemental, not external runtime qualification.
+
+## Learning outcomes
+
+Explain the relevant engineering tradeoff, define a measurable experiment and recognize the boundary of the available evidence.
+
+## Context
+
+Users in two regions access shared data.
+
+## Step 1 — Mental model
+
+Replication and request routing trade latency against consistency and recovery; define write authority.
+
+## Step 2 — Guided practice
+
+Draw region A/B paths and simulate network delay, stale read and failover.
+
+Use synthetic data and a disposable authorized environment. Record the expected result before the experiment.
+
+## Step 3 — Acceptance
+
+**Positive:** Plan states write authority, consistency and failover behavior.
+
+**Negative:** Unmeasured latency or conflicting leaders cannot qualify design.
+
+Inspect the complementary `retryDecision` model in `examples/p6-operations/labs.mjs` and extend its assertions where relevant. The command below does not execute the external tools discussed in this topic.
+
+```bash
+node --test --test-name-pattern="23[.]04" examples/p6-operations/labs.test.mjs
+```
+
+## Qualification boundary
+
+Retry decision teaching model only; no network partition, broker, service discovery, replication or multi-region benchmark.
+
+## Knowledge check
+
+1. Which invariant or operational measurement determines success?
+2. What failure case disproves the unsafe design?
+3. Which evidence remains missing before this can be applied to a production service?
+
+**Assessment:** Submit input, expected/observed outcomes, a meaningful negative result and the unverified external boundaries. Mark unavailable tests not-run.
+
+## References
+
+- [Technical reference](https://martinfowler.com/articles/microservices.html)
+
+## Publication conditions
+
+Complete editorial review, meaningful red/green acceptance, applicable real tools, Node 24 build, browser and manual accessibility gates. Never publish from local model results alone.

@@ -1,0 +1,61 @@
+---
+id: "22.02.08"
+title: "Lab reduce p95 latency"
+module: "22.02"
+status: "draft-unverified"
+readyToPublish: false
+---
+
+# Lab reduce p95 latency
+
+> Unpublished instructor manuscript. Local model tests are supplemental, not external runtime qualification.
+
+## Learning outcomes
+
+Explain the relevant engineering tradeoff, define a measurable experiment and recognize the boundary of the available evidence.
+
+## Context
+
+A service must reduce p95 without hiding errors.
+
+## Step 1 — Mental model
+
+Measure queue time, execution and total per request; percentiles are not additive across distributions.
+
+## Step 2 — Guided practice
+
+Run requestProfile on matched synthetic pairs; then benchmark a real disposable API before and after one change.
+
+Use synthetic data and a disposable authorized environment. Record the expected result before the experiment.
+
+## Step 3 — Acceptance
+
+**Positive:** Total p95 computed from per-request sums; errors reported separately.
+
+**Negative:** Adding queue p95 and work p95 or dropping failures is invalid.
+
+Inspect the complementary `requestProfile` model in `examples/p6-operations/labs.mjs` and extend its assertions where relevant. The command below does not execute the external tools discussed in this topic.
+
+```bash
+node --test --test-name-pattern="22[.]02" examples/p6-operations/labs.test.mjs
+```
+
+## Qualification boundary
+
+Synthetic latency sample analysis only; actual CPU/heap profiles, Fastify comparison, query plans and HTTP behavior need real runtimes.
+
+## Knowledge check
+
+1. Which invariant or operational measurement determines success?
+2. What failure case disproves the unsafe design?
+3. Which evidence remains missing before this can be applied to a production service?
+
+**Assessment:** Submit input, expected/observed outcomes, a meaningful negative result and the unverified external boundaries. Mark unavailable tests not-run.
+
+## References
+
+- [Technical reference](https://nodejs.org/en/learn/diagnostics)
+
+## Publication conditions
+
+Complete editorial review, meaningful red/green acceptance, applicable real tools, Node 24 build, browser and manual accessibility gates. Never publish from local model results alone.

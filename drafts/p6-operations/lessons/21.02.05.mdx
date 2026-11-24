@@ -1,0 +1,61 @@
+---
+id: "21.02.05"
+title: "Timeouts and retries"
+module: "21.02"
+status: "draft-unverified"
+readyToPublish: false
+---
+
+# Timeouts and retries
+
+> Unpublished instructor manuscript. Local model tests are supplemental, not external runtime qualification.
+
+## Learning outcomes
+
+Explain the relevant engineering tradeoff, define a measurable experiment and recognize the boundary of the available evidence.
+
+## Context
+
+A checkout retries a slow payment request.
+
+## Step 1 — Mental model
+
+Use a total deadline, bounded attempts, jitter and idempotency; retry transient failures only.
+
+## Step 2 — Guided practice
+
+Evaluate retryDecision from 23.04 for transient and permanent errors, with deadline exhausted.
+
+Use synthetic data and a disposable authorized environment. Record the expected result before the experiment.
+
+## Step 3 — Acceptance
+
+**Positive:** A safe transient retry fits remaining deadline.
+
+**Negative:** Non-idempotent or expired request must stop.
+
+Inspect the complementary `errorBudget` model in `examples/p6-operations/labs.mjs` and extend its assertions where relevant. The command below does not execute the external tools discussed in this topic.
+
+```bash
+node --test --test-name-pattern="21[.]02" examples/p6-operations/labs.test.mjs
+```
+
+## Qualification boundary
+
+Synthetic error-budget arithmetic only; real probes, alerts, concurrency and fault recovery require actual isolated services.
+
+## Knowledge check
+
+1. Which invariant or operational measurement determines success?
+2. What failure case disproves the unsafe design?
+3. Which evidence remains missing before this can be applied to a production service?
+
+**Assessment:** Submit input, expected/observed outcomes, a meaningful negative result and the unverified external boundaries. Mark unavailable tests not-run.
+
+## References
+
+- [Technical reference](https://sre.google/books/)
+
+## Publication conditions
+
+Complete editorial review, meaningful red/green acceptance, applicable real tools, Node 24 build, browser and manual accessibility gates. Never publish from local model results alone.
