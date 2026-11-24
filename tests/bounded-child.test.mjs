@@ -18,3 +18,6 @@ test('invalid timeout is rejected before starting a child', () => {
 test('signal termination is rejected', { skip: process.platform === 'win32' }, async () => {
   await assert.rejects(run("process.kill(process.pid, 'SIGTERM')"), /Child failed: SIGTERM/);
 });
+test('a child ignoring SIGTERM cannot report a late success', { timeout: 5000, skip: process.platform === 'win32' }, async () => {
+  await assert.rejects(run("process.on('SIGTERM',()=>{});setTimeout(()=>process.exit(0),600)", 200), /Child exceeded 200ms/);
+});
