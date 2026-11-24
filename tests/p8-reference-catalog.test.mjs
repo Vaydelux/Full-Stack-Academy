@@ -6,7 +6,7 @@ const json = path => JSON.parse(readFileSync(new URL('../'+path,import.meta.url)
 const index = json('data/reference-index.json').entries;
 const lessons = new Set(json('data/curriculum.json').lessons.map(l=>l.id));
 const ids = [
- 'nestjs-module','nestjs-injectable','nestjs-canactivate','nestjs-pipetransform','nestjs-nestinterceptor','nestjs-exceptionfilter',
+ 'nestjs-useguards','nestjs-app-guard','nestjs-module','nestjs-injectable','nestjs-canactivate','nestjs-pipetransform','nestjs-nestinterceptor','nestjs-exceptionfilter',
  'postgresql-on-conflict','postgresql-transaction-isolation','postgresql-mvcc','postgresql-unique','postgresql-check','postgresql-returning',
  'prisma-findmany','prisma-select','prisma-transaction','prisma-queryraw',
  'supabase-getclaims','supabase-rls-policy','supabase-auth-uid','supabase-service-role-key',
@@ -26,4 +26,14 @@ for (const id of ids) test(id+' has a unique canonical mapping and substantive e
  assert.ok(ref.commonMistakes.length&&ref.securityPerformanceNotes.length);
  assert.equal(new URL(ref.canonicalUrl).protocol,'https:');
  assert.equal(ref.status,'Authored reference draft');
+});
+
+test('entire registry has unique IDs and unambiguous canonical category/title mappings',()=>{
+ const ids=AUTHORED_REFERENCES.map(ref=>ref.id);
+ assert.equal(new Set(ids).size,ids.length);
+ for(const entry of index){
+  const matches=AUTHORED_REFERENCES.filter(ref=>ref.matchCategories.includes(entry.category)&&ref.matchTitles.includes(entry.title));
+  assert.ok(matches.length<=1,'Overlapping reference match: '+entry.id);
+  if(matches.length)assert.equal(matches[0].id,entry.id);
+ }
 });
