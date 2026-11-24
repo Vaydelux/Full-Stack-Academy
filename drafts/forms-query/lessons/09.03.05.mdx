@@ -85,7 +85,7 @@ export function Pager(){
 
 <Misconception claim="The starter guesses numeric offsets and never uses nextCursor or signal cancellation." correction="An infinite query stores a sequence of pages plus page parameters. Use the API's opaque nextCursor; never reconstruct it or mix pages from different filters or revisions." />
 
-<KnowledgeCheck question="What is the reliable approach to infinite queries?" choices={["Assume cached browser state equals server truth forever.","Use TanStack Query resource identity and the server's HTTP contract.","Ignore failure responses to keep the UI fast.","Disable all validation once the code typechecks."]} correctIndex={1} explanation="An infinite query stores a sequence of pages plus page parameters. Use the API's opaque nextCursor; never reconstruct it or mix pages from different filters or revisions." misconception="The starter guesses numeric offsets and never uses nextCursor or signal cancellation." lessonId="09.03.05" />
+<KnowledgeCheck question="A cursor belongs to an old filter and the user changes sorting. What should the client do?" choices={["Append the old page regardless.","Convert the cursor into a guessed page number.","Reuse the old cursor and ignore conflicts.","Start the new query identity with its own initial page parameter."]} correctIndex={3} explanation="Opaque cursors are scoped to the server view. A new filter or ordering needs a new pagination state." misconception="The starter guesses numeric offsets and never uses nextCursor or signal cancellation." lessonId="09.03.05" />
 
 ## Bug Hunt: reproduce, diagnose and repair
 
@@ -109,6 +109,12 @@ Cursor pagination preserves a server-defined continuation point; guessing numeri
 **Independent exercise:** Seed twenty-five tasks and verify pages of 10, 10 and 5 with no duplicate IDs. Insert a new task before fetching the next page, force a stale-cursor response and restart from the first page. Observe cancellation when leaving the view.
 
 **Design tradeoff:** A bounded cache improves memory use but may require rereading evicted pages during backscroll. Pick a page retention policy that matches device constraints, and never rely on the client-side cursor to enforce server authorization.
+
+## Applied debugging clinic
+
+Load two pages, switch filters and inspect the new query key and initial cursor. Force an invalid cursor response; recover by restarting the affected list rather than concatenating incompatible data. Inspect for duplicates and keep load-more controls usable by keyboard.
+
+**Evidence to record:** query identity, request outcome, cache state before and after the action, and the recovery decision. Separate observed network behavior from what the UI displays. Re-run the original failing interaction after the repair.
 
 ## Guided local lab
 
