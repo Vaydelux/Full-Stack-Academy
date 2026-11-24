@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {auditOfflineMatrix} from '../scripts/offline-contract.mjs';
-const phase=['test:release-gate-coverage','test:forms-query-resilience','test:curriculum-readiness','test:publication-phases','test:p4-source','test:p5-bundle','test:p6-quality-source','test:p6-operations-source','test:p7-source','lint','typecheck','test','build'];
+const phase=['test:release-gate-coverage','test:forms-query-resilience','test:curriculum-readiness','test:publication-phases','test:p4-source','test:p5-bundle','test:p6-quality-source','test:p6-operations-source','test:p7-source','test:p8-learning','test:p8-reference','test:p8-ui','lint','typecheck','test','build'];
 const p5=['test:p5-security','test:p5-postgresql-source','test:p5-rls-source','test:p5-curriculum-source','test:p5-httpdb-source','test:p5-container-source','test:p5-evidence-source','test:p5-cache-jobs','test:p5-redis-source','test:p5-realtime-labs','test:p5-realtime-source','test:p5-integrations-labs','test:p5-integrations-source','test:p5-integrations-http','test:p5-postgres-search-source','test:p5-webhook-integrity','test:p5-durable-inbox','test:p5-durable-http','test:p5-multiprocess-inbox','test:p5-postgres-inbox-source'];
 const scripts=Object.fromEntries([...phase,...p5].map(name=>[name,'node --test source.test.mjs']));
 scripts['test:p5-bundle']=p5.map(name=>'npm run '+name).join(' && ');
@@ -31,3 +31,5 @@ test('missing transactional PostgreSQL inbox tests blocks release',()=>expect(ru
 for(const step of ['test:p6-quality-source','test:p6-operations-source','test:p7-source'])test('missing '+step+' blocks release',()=>expect(run({offlineSource:source(phase.filter(x=>x!==step))}),'missing-required-release-step:'+step));
 
 test('missing P1 resilience regression group blocks release',()=>expect(run({offlineSource:source(phase.filter(x=>x!=='test:forms-query-resilience'))}),'missing-required-release-step:test:forms-query-resilience'));
+
+for(const step of ['test:p8-learning','test:p8-reference','test:p8-ui'])test('missing '+step+' blocks release',()=>expect(run({offlineSource:source(phase.filter(x=>x!==step))}),'missing-required-release-step:'+step));
