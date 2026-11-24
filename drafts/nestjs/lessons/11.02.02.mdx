@@ -85,7 +85,7 @@ A pipe converts untrusted input into a validated value or an explicit client err
 
 ### Diagnose the concrete failure
 
-Compare {title: '  task  '}, {title: 'x'} and {title: 42}. The first should return the normalized title; the others should raise BadRequestException. Also try an extra admin field: the current schema strips it. Attach the pipe to the HTTP argument and verify actual 400 responses before claiming end-to-end validation.
+Compare `{title: '  task  '}`, `{title: 'x'}` and `{title: 42}`. The first should return the normalized title; the others should raise BadRequestException. Also try an extra admin field: the current schema strips it. Attach the pipe to the HTTP argument and verify actual 400 responses before claiming end-to-end validation.
 
 ### Independent exercise and evidence
 
