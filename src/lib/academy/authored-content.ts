@@ -909,6 +909,487 @@ export const AUTHORED_LESSON_IDS = ['06.01.01', '07.02.01', '09.01.02', '15.02.0
 
 export const AUTHORED_REFERENCES: AuthoredReference[] = [
 {
+  "id": "prisma-findmany",
+  "matchCategories": [
+    "Prisma"
+  ],
+  "matchTitles": [
+    "findMany"
+  ],
+  "heading": "Prisma: findMany",
+  "category": "Prisma",
+  "majorVersion": "Prisma ORM 7",
+  "status": "Authored reference draft",
+  "summary": "Query a filtered collection.",
+  "syntax": "prisma.task.findMany({ take: 20 })",
+  "lang": "ts",
+  "parameters": "See syntax and official reference; production-oriented snippets assume configured clients, schemas and authorized context.",
+  "returns": "Returns an array of selected records.",
+  "minimalExample": "prisma.task.findMany({ take: 20 })",
+  "productionExample": "await prisma.task.findMany({ where: { workspaceId: authorizedWorkspaceId }, orderBy: [{ createdAt: 'desc' }, { id: 'desc' }], take: 20, select: { id: true, title: true } })",
+  "commonMistakes": [
+    "Never accept an arbitrary workspace ID as proof of access."
+  ],
+  "securityPerformanceNotes": [
+    "Bound result size and use deterministic ordering."
+  ],
+  "relatedLessonIds": [
+    "13.02.01"
+  ],
+  "canonicalUrl": "https://www.prisma.io/docs/orm/v7/reference/prisma-client-reference"
+},
+{
+  "id": "prisma-select",
+  "matchCategories": [
+    "Prisma"
+  ],
+  "matchTitles": [
+    "select"
+  ],
+  "heading": "Prisma: select",
+  "category": "Prisma",
+  "majorVersion": "Prisma ORM 7",
+  "status": "Authored reference draft",
+  "summary": "Choose only required response fields.",
+  "syntax": "prisma.user.findMany({ select: { id: true } })",
+  "lang": "ts",
+  "parameters": "See syntax and official reference; production-oriented snippets assume configured clients, schemas and authorized context.",
+  "returns": "Returns a projection of matching records.",
+  "minimalExample": "prisma.user.findMany({ select: { id: true } })",
+  "productionExample": "await prisma.user.findUnique({ where: { id: verifiedUserId }, select: { id: true, displayName: true } })",
+  "commonMistakes": [
+    "Do not combine select and include at the same query level."
+  ],
+  "securityPerformanceNotes": [
+    "Omit private fields explicitly; selection is not authorization."
+  ],
+  "relatedLessonIds": [
+    "13.02.02"
+  ],
+  "canonicalUrl": "https://www.prisma.io/docs/orm/v7/prisma-client/queries/select-fields"
+},
+{
+  "id": "prisma-transaction",
+  "matchCategories": [
+    "Prisma"
+  ],
+  "matchTitles": [
+    "$transaction"
+  ],
+  "heading": "Prisma: $transaction",
+  "category": "Prisma",
+  "majorVersion": "Prisma ORM 7",
+  "status": "Authored reference draft",
+  "summary": "Execute related changes atomically.",
+  "syntax": "await prisma.$transaction([queryA, queryB])",
+  "lang": "ts",
+  "parameters": "See syntax and official reference; production-oriented snippets assume configured clients, schemas and authorized context.",
+  "returns": "Returns the callback result or array of operation results; failure rolls back.",
+  "minimalExample": "await prisma.$transaction([queryA, queryB])",
+  "productionExample": "await prisma.$transaction(async tx => { const task = await tx.task.create({ data: authorizedTaskData }); await tx.auditEvent.create({ data: { taskId: task.id, action: 'created' } }); return task; })",
+  "commonMistakes": [
+    "Calling the outer client inside a callback escapes its transaction."
+  ],
+  "securityPerformanceNotes": [
+    "Keep the transaction short and avoid external network calls."
+  ],
+  "relatedLessonIds": [
+    "13.02.04"
+  ],
+  "canonicalUrl": "https://www.prisma.io/docs/orm/v7/prisma-client/queries/transactions"
+},
+{
+  "id": "prisma-queryraw",
+  "matchCategories": [
+    "Prisma"
+  ],
+  "matchTitles": [
+    "$queryRaw"
+  ],
+  "heading": "Prisma: $queryRaw",
+  "category": "Prisma",
+  "majorVersion": "Prisma ORM 7",
+  "status": "Authored reference draft",
+  "summary": "Execute parameterized raw SQL when ORM queries are insufficient.",
+  "syntax": "await prisma.$queryRaw`SELECT 1`",
+  "lang": "ts",
+  "parameters": "See syntax and official reference; production-oriented snippets assume configured clients, schemas and authorized context.",
+  "returns": "Returns query rows; runtime shape still requires validation.",
+  "minimalExample": "await prisma.$queryRaw`SELECT 1`",
+  "productionExample": "await prisma.$queryRaw`SELECT id, title FROM tasks WHERE workspace_id = ${authorizedWorkspaceId} LIMIT 20`",
+  "commonMistakes": [
+    "Do not concatenate untrusted text or use placeholders for SQL identifiers."
+  ],
+  "securityPerformanceNotes": [
+    "Enforce authorization and whitelist any dynamic identifiers."
+  ],
+  "relatedLessonIds": [
+    "13.03.01"
+  ],
+  "canonicalUrl": "https://www.prisma.io/docs/orm/v7/reference/prisma-client-reference"
+},
+{
+  "id": "supabase-getclaims",
+  "matchCategories": [
+    "Supabase"
+  ],
+  "matchTitles": [
+    "getClaims"
+  ],
+  "heading": "Supabase: getClaims",
+  "category": "Supabase",
+  "majorVersion": "supabase-js 2",
+  "status": "Authored reference draft",
+  "summary": "Verify the access token and obtain claims.",
+  "syntax": "const { data, error } = await supabase.auth.getClaims()",
+  "lang": "ts",
+  "parameters": "See syntax and official reference; production-oriented snippets assume configured clients, schemas and authorized context.",
+  "returns": "Verified claims or an error.",
+  "minimalExample": "const { data, error } = await supabase.auth.getClaims()",
+  "productionExample": "const result = await supabase.auth.getClaims(); if (result.error || !result.data?.claims.sub) throw new Error('Unauthorized'); const userId = result.data.claims.sub;",
+  "commonMistakes": [
+    "Do not trust editable user metadata for authorization."
+  ],
+  "securityPerformanceNotes": [
+    "Claims can be stale; check current resource membership for sensitive operations."
+  ],
+  "relatedLessonIds": [
+    "14.02.06"
+  ],
+  "canonicalUrl": "https://supabase.com/docs/reference/javascript/auth-getclaims"
+},
+{
+  "id": "supabase-rls-policy",
+  "matchCategories": [
+    "Supabase"
+  ],
+  "matchTitles": [
+    "RLS policy"
+  ],
+  "heading": "Supabase: RLS policy",
+  "category": "Supabase",
+  "majorVersion": "Supabase / PostgreSQL",
+  "status": "Authored reference draft",
+  "summary": "Restrict rows visible to API roles.",
+  "syntax": "ALTER TABLE public.tasks ENABLE ROW LEVEL SECURITY;",
+  "lang": "sql",
+  "parameters": "See syntax and official reference; production-oriented snippets assume configured clients, schemas and authorized context.",
+  "returns": "Controls which rows a role may read or modify.",
+  "minimalExample": "ALTER TABLE public.tasks ENABLE ROW LEVEL SECURITY;",
+  "productionExample": "CREATE POLICY own_tasks ON public.tasks FOR SELECT TO authenticated USING ((SELECT auth.uid()) = owner_id);",
+  "commonMistakes": [
+    "TO authenticated alone does not enforce ownership."
+  ],
+  "securityPerformanceNotes": [
+    "Grant only required table privileges and test with two distinct identities."
+  ],
+  "relatedLessonIds": [
+    "14.03.01"
+  ],
+  "canonicalUrl": "https://supabase.com/docs/guides/database/postgres/row-level-security"
+},
+{
+  "id": "supabase-auth-uid",
+  "matchCategories": [
+    "Supabase"
+  ],
+  "matchTitles": [
+    "auth.uid"
+  ],
+  "heading": "Supabase: auth.uid",
+  "category": "Supabase",
+  "majorVersion": "Supabase / PostgreSQL",
+  "status": "Authored reference draft",
+  "summary": "Resolve the requesting user ID inside SQL policies.",
+  "syntax": "SELECT auth.uid();",
+  "lang": "sql",
+  "parameters": "See syntax and official reference; production-oriented snippets assume configured clients, schemas and authorized context.",
+  "returns": "A user UUID or null when unauthenticated.",
+  "minimalExample": "SELECT auth.uid();",
+  "productionExample": "CREATE POLICY own_task_update ON public.tasks FOR UPDATE TO authenticated USING ((SELECT auth.uid()) = owner_id) WITH CHECK ((SELECT auth.uid()) = owner_id);",
+  "commonMistakes": [
+    "An UPDATE also requires an appropriate SELECT policy."
+  ],
+  "securityPerformanceNotes": [
+    "Test ownership changes and cross-user writes, not just successful updates."
+  ],
+  "relatedLessonIds": [
+    "14.03.02"
+  ],
+  "canonicalUrl": "https://supabase.com/docs/guides/database/postgres/row-level-security"
+},
+{
+  "id": "supabase-service-role-key",
+  "matchCategories": [
+    "Supabase"
+  ],
+  "matchTitles": [
+    "Service role key"
+  ],
+  "heading": "Supabase: Service role key",
+  "category": "Supabase",
+  "majorVersion": "supabase-js 2",
+  "status": "Authored reference draft",
+  "summary": "Use privileged API credentials only in trusted server code.",
+  "syntax": "const secret = process.env.SUPABASE_SECRET_KEY;",
+  "lang": "ts",
+  "parameters": "See syntax and official reference; production-oriented snippets assume configured clients, schemas and authorized context.",
+  "returns": "A privileged credential, not a user identity.",
+  "minimalExample": "const secret = process.env.SUPABASE_SECRET_KEY;",
+  "productionExample": "if (!process.env.SUPABASE_SECRET_KEY) throw new Error('Missing server credential'); // Create a separate server-only admin client; authorize the caller before every privileged operation.",
+  "commonMistakes": [
+    "Never put secret or legacy service_role keys in NEXT_PUBLIC variables."
+  ],
+  "securityPerformanceNotes": [
+    "Prefer scoped user clients where possible; redact secrets from logs."
+  ],
+  "relatedLessonIds": [
+    "14.03.06"
+  ],
+  "canonicalUrl": "https://supabase.com/docs/guides/getting-started/api-keys"
+},
+{
+  "id": "redis-get",
+  "matchCategories": [
+    "Redis & BullMQ"
+  ],
+  "matchTitles": [
+    "GET"
+  ],
+  "heading": "Redis & BullMQ: GET",
+  "category": "Redis & BullMQ",
+  "majorVersion": "Redis",
+  "status": "Authored reference draft",
+  "summary": "Read a cached string value.",
+  "syntax": "GET task:42",
+  "lang": "bash",
+  "parameters": "See syntax and official reference; production-oriented snippets assume configured clients, schemas and authorized context.",
+  "returns": "String value or nil for a missing key.",
+  "minimalExample": "GET task:42",
+  "productionExample": "GET workspace:demo:task:42:v1",
+  "commonMistakes": [
+    "A cache hit does not prove current user authorization."
+  ],
+  "securityPerformanceNotes": [
+    "Scope cache keys and authorize requests before returning cached data."
+  ],
+  "relatedLessonIds": [
+    "16.01.03"
+  ],
+  "canonicalUrl": "https://redis.io/docs/latest/commands/get/"
+},
+{
+  "id": "redis-set-ex",
+  "matchCategories": [
+    "Redis & BullMQ"
+  ],
+  "matchTitles": [
+    "SET EX"
+  ],
+  "heading": "Redis & BullMQ: SET EX",
+  "category": "Redis & BullMQ",
+  "majorVersion": "Redis",
+  "status": "Authored reference draft",
+  "summary": "Store a string with a bounded lifetime.",
+  "syntax": "SET demo value EX 60",
+  "lang": "bash",
+  "parameters": "See syntax and official reference; production-oriented snippets assume configured clients, schemas and authorized context.",
+  "returns": "OK on successful write.",
+  "minimalExample": "SET demo value EX 60",
+  "productionExample": "SET workspace:demo:summary:v1 '{\"count\":4}' EX 120",
+  "commonMistakes": [
+    "TTL is not an invalidation strategy by itself."
+  ],
+  "securityPerformanceNotes": [
+    "Do not store credentials in general-purpose caches; bound lifetime and memory."
+  ],
+  "relatedLessonIds": [
+    "16.01.02"
+  ],
+  "canonicalUrl": "https://redis.io/docs/latest/commands/set/"
+},
+{
+  "id": "redis-scan",
+  "matchCategories": [
+    "Redis & BullMQ"
+  ],
+  "matchTitles": [
+    "SCAN"
+  ],
+  "heading": "Redis & BullMQ: SCAN",
+  "category": "Redis & BullMQ",
+  "majorVersion": "Redis",
+  "status": "Authored reference draft",
+  "summary": "Incrementally iterate keys without using a blocking KEYS scan.",
+  "syntax": "SCAN 0",
+  "lang": "bash",
+  "parameters": "See syntax and official reference; production-oriented snippets assume configured clients, schemas and authorized context.",
+  "returns": "A next cursor and a batch of keys.",
+  "minimalExample": "SCAN 0",
+  "productionExample": "SCAN 0 MATCH workspace:demo:* COUNT 100",
+  "commonMistakes": [
+    "A nonzero cursor with an empty batch is not completion."
+  ],
+  "securityPerformanceNotes": [
+    "SCAN may return duplicates; COUNT is a hint and cluster scans need shard awareness."
+  ],
+  "relatedLessonIds": [
+    "16.02.07"
+  ],
+  "canonicalUrl": "https://redis.io/docs/latest/commands/scan/"
+},
+{
+  "id": "redis-attempts",
+  "matchCategories": [
+    "Redis & BullMQ"
+  ],
+  "matchTitles": [
+    "attempts"
+  ],
+  "heading": "Redis & BullMQ: attempts",
+  "category": "Redis & BullMQ",
+  "majorVersion": "BullMQ 5",
+  "status": "Authored reference draft",
+  "summary": "Bound retry attempts for failed jobs.",
+  "syntax": "await queue.add('notify', payload, { attempts: 3 })",
+  "lang": "ts",
+  "parameters": "See syntax and official reference; production-oriented snippets assume configured clients, schemas and authorized context.",
+  "returns": "A queued job with configured retry policy.",
+  "minimalExample": "await queue.add('notify', payload, { attempts: 3 })",
+  "productionExample": "await queue.add('notify', { eventId }, { attempts: 4, backoff: { type: 'exponential', delay: 1000 } })",
+  "commonMistakes": [
+    "A retried job can repeat a side effect after a worker crash."
+  ],
+  "securityPerformanceNotes": [
+    "Make the handler idempotent; do not retry permanent failures indefinitely."
+  ],
+  "relatedLessonIds": [
+    "16.03.04"
+  ],
+  "canonicalUrl": "https://docs.bullmq.io/guide/jobs/retrying-job"
+},
+{
+  "id": "testing-vitest-test",
+  "matchCategories": [
+    "Testing & Operations"
+  ],
+  "matchTitles": [
+    "Vitest test"
+  ],
+  "heading": "Testing & Operations: Vitest test",
+  "category": "Testing & Operations",
+  "majorVersion": "Vitest",
+  "status": "Authored reference draft",
+  "summary": "Describe an observable test case.",
+  "syntax": "test('adds', () => expect(1 + 2).toBe(3))",
+  "lang": "ts",
+  "parameters": "See syntax and official reference; production-oriented snippets assume configured clients, schemas and authorized context.",
+  "returns": "A registered test with pass/fail outcome.",
+  "minimalExample": "test('adds', () => expect(1 + 2).toBe(3))",
+  "productionExample": "test('rejects an overdraft', () => { expect(() => debit(10, 11)).toThrow(); })",
+  "commonMistakes": [
+    "Do not assert only that an implementation was called."
+  ],
+  "securityPerformanceNotes": [
+    "Test business invariants and negative cases without production credentials."
+  ],
+  "relatedLessonIds": [
+    "19.01.02"
+  ],
+  "canonicalUrl": "https://vitest.dev/api/"
+},
+{
+  "id": "testing-page-getbyrole",
+  "matchCategories": [
+    "Testing & Operations"
+  ],
+  "matchTitles": [
+    "page.getByRole"
+  ],
+  "heading": "Testing & Operations: page.getByRole",
+  "category": "Testing & Operations",
+  "majorVersion": "Playwright",
+  "status": "Authored reference draft",
+  "summary": "Locate a control by accessible role and name.",
+  "syntax": "page.getByRole('button', { name: 'Save' })",
+  "lang": "ts",
+  "parameters": "See syntax and official reference; production-oriented snippets assume configured clients, schemas and authorized context.",
+  "returns": "A locator that can be awaited or asserted.",
+  "minimalExample": "page.getByRole('button', { name: 'Save' })",
+  "productionExample": "await page.getByRole('button', { name: 'Save task' }).click(); await expect(page.getByRole('status')).toHaveText('Task saved');",
+  "commonMistakes": [
+    "Do not rely on arbitrary sleeps or CSS implementation details."
+  ],
+  "securityPerformanceNotes": [
+    "Role selectors improve semantic coverage but do not replace manual accessibility review."
+  ],
+  "relatedLessonIds": [
+    "19.02.02"
+  ],
+  "canonicalUrl": "https://playwright.dev/docs/locators"
+},
+{
+  "id": "testing-idempotency-key",
+  "matchCategories": [
+    "Testing & Operations"
+  ],
+  "matchTitles": [
+    "idempotency key"
+  ],
+  "heading": "Testing & Operations: idempotency key",
+  "category": "Testing & Operations",
+  "majorVersion": "HTTP application contract",
+  "status": "Authored reference draft",
+  "summary": "Identify one logical write across retries.",
+  "syntax": "Idempotency-Key: operation-uuid",
+  "lang": "ts",
+  "parameters": "See syntax and official reference; production-oriented snippets assume configured clients, schemas and authorized context.",
+  "returns": "Server-defined replay or conflict response.",
+  "minimalExample": "Idempotency-Key: operation-uuid",
+  "productionExample": "const key = crypto.randomUUID(); // Persist for this logical action.\nawait fetch('/api/tasks', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Idempotency-Key': key }, body: JSON.stringify(draft) });",
+  "commonMistakes": [
+    "A new key on each retry can duplicate a completed operation."
+  ],
+  "securityPerformanceNotes": [
+    "Bind the key to authenticated identity and payload; atomically persist outcome."
+  ],
+  "relatedLessonIds": [
+    "10.02.04"
+  ],
+  "canonicalUrl": "https://docs.stripe.com/api/idempotent_requests"
+},
+{
+  "id": "testing-dockerfile",
+  "matchCategories": [
+    "Testing & Operations"
+  ],
+  "matchTitles": [
+    "Dockerfile"
+  ],
+  "heading": "Testing & Operations: Dockerfile",
+  "category": "Testing & Operations",
+  "majorVersion": "Docker",
+  "status": "Authored reference draft",
+  "summary": "Define a reproducible image build.",
+  "syntax": "FROM node:24-bookworm-slim",
+  "lang": "bash",
+  "parameters": "See syntax and official reference; production-oriented snippets assume configured clients, schemas and authorized context.",
+  "returns": "An image built from instructions.",
+  "minimalExample": "FROM node:24-bookworm-slim",
+  "productionExample": "FROM node:24-bookworm-slim\nWORKDIR /app\nCOPY package*.json ./\nRUN npm ci --omit=dev\nCOPY --chown=node:node . .\nUSER node\nCMD [\"node\", \"server.js\"]",
+  "commonMistakes": [
+    "Never copy secrets or node_modules into the build context."
+  ],
+  "securityPerformanceNotes": [
+    "Use .dockerignore, verified digest pinning and non-root runtime; example assumes a JS server and real lockfile."
+  ],
+  "relatedLessonIds": [
+    "20.01.01"
+  ],
+  "canonicalUrl": "https://docs.docker.com/reference/dockerfile/"
+},
+
+{
   "id": "nestjs-module",
   "matchCategories": [
     "NestJS"
