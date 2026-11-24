@@ -1,0 +1,61 @@
+---
+id: "19.02.06"
+title: "Visual regression"
+module: "19.02"
+status: "draft-unverified"
+readyToPublish: false
+---
+
+# Visual regression
+
+> Unpublished instructor manuscript. A green model test is not real runtime acceptance.
+
+## Learning outcomes
+
+Explain the design rule, reproduce or specify an observable positive and negative experiment, and distinguish the model from external evidence.
+
+## Context
+
+A responsive card clips its text after a layout change.
+
+## Step 1 — Mental model
+
+Visual baselines depend on viewport, fonts, data and browser; they require review.
+
+## Step 2 — Guided practice
+
+Capture a fixed browser fixture at narrow and wide widths; deliberately clip its title and inspect the screenshot diff.
+
+Predict the outcome before running the experiment. Use only synthetic data and disposable fixtures.
+
+## Step 3 — Acceptance
+
+**Positive:** Unchanged fixture matches the reviewed baseline.
+
+**Negative:** Clipping changes the snapshot; do not blindly accept updates.
+
+Run the complementary local module model and inspect `latestRequest` in `examples/p6-quality/labs.mjs`. Add an assertion for the relevant boundary. This command does not execute the external tools described above.
+
+```bash
+node --test --test-name-pattern="19[.]02" examples/p6-quality/labs.test.mjs
+```
+
+## Qualification boundary
+
+Plain JavaScript UI state model; installed React/Vitest/Testing Library/MSW and real browsers require separate tests.
+
+## Knowledge check
+
+1. Which public behavior or invariant is being protected?
+2. Which negative case falsifies the unsafe implementation?
+3. Which real runtime or manual check is still required?
+
+**Assessment:** Submit the exact synthetic input, expected and observed outputs, a negative result, and the untested boundaries. Mark unavailable external checks not-run.
+
+## References
+
+- [Technical reference](https://playwright.dev/docs/test-snapshots)
+
+## Publication conditions
+
+Editorial review, meaningful red/green exercises, real applicable runtime tests, full Node 24 build, browser and manual accessibility gates. Do not register this draft in the public reader until its module is approved.

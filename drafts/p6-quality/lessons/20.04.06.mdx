@@ -1,0 +1,61 @@
+---
+id: "20.04.06"
+title: "IaC basics OpenTofu"
+module: "20.04"
+status: "draft-unverified"
+readyToPublish: false
+---
+
+# IaC basics OpenTofu
+
+> Unpublished instructor manuscript. A green model test is not real runtime acceptance.
+
+## Learning outcomes
+
+Explain the design rule, reproduce or specify an observable positive and negative experiment, and distinguish the model from external evidence.
+
+## Context
+
+Infrastructure changes should be reviewable.
+
+## Step 1 — Mental model
+
+OpenTofu plan describes intended changes; review plan and providers before apply.
+
+## Step 2 — Guided practice
+
+Use a local-only synthetic configuration with reviewed providers; run fmt, validate and plan in disposable workspace, not apply.
+
+Predict the outcome before running the experiment. Use only synthetic data and disposable fixtures.
+
+## Step 3 — Acceptance
+
+**Positive:** Plan contains only intended local changes.
+
+**Negative:** Unexpected resource or validation failure blocks exercise.
+
+Run the complementary local module model and inspect `topologyPolicy` in `examples/p6-quality/labs.mjs`. Add an assertion for the relevant boundary. This command does not execute the external tools described above.
+
+```bash
+node --test --test-name-pattern="20[.]04" examples/p6-quality/labs.test.mjs
+```
+
+## Qualification boundary
+
+Synthetic topology policy; no OS/firewall/TLS/DNS/IaC or restore enforcement tested.
+
+## Knowledge check
+
+1. Which public behavior or invariant is being protected?
+2. Which negative case falsifies the unsafe implementation?
+3. Which real runtime or manual check is still required?
+
+**Assessment:** Submit the exact synthetic input, expected and observed outputs, a negative result, and the untested boundaries. Mark unavailable external checks not-run.
+
+## References
+
+- [Technical reference](https://opentofu.org/docs/)
+
+## Publication conditions
+
+Editorial review, meaningful red/green exercises, real applicable runtime tests, full Node 24 build, browser and manual accessibility gates. Do not register this draft in the public reader until its module is approved.

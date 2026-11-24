@@ -1,0 +1,61 @@
+---
+id: "19.02.05"
+title: "Form validation tests"
+module: "19.02"
+status: "draft-unverified"
+readyToPublish: false
+---
+
+# Form validation tests
+
+> Unpublished instructor manuscript. A green model test is not real runtime acceptance.
+
+## Learning outcomes
+
+Explain the design rule, reproduce or specify an observable positive and negative experiment, and distinguish the model from external evidence.
+
+## Context
+
+A registration form rejects an invalid email.
+
+## Step 1 — Mental model
+
+Client validation helps usability; the server remains authoritative.
+
+## Step 2 — Guided practice
+
+In a real form test enter invalid email, submit, inspect its associated error, correct it and submit again.
+
+Predict the outcome before running the experiment. Use only synthetic data and disposable fixtures.
+
+## Step 3 — Acceptance
+
+**Positive:** Valid input calls submit once.
+
+**Negative:** Invalid input exposes the error and makes no submit call.
+
+Run the complementary local module model and inspect `latestRequest` in `examples/p6-quality/labs.mjs`. Add an assertion for the relevant boundary. This command does not execute the external tools described above.
+
+```bash
+node --test --test-name-pattern="19[.]02" examples/p6-quality/labs.test.mjs
+```
+
+## Qualification boundary
+
+Plain JavaScript UI state model; installed React/Vitest/Testing Library/MSW and real browsers require separate tests.
+
+## Knowledge check
+
+1. Which public behavior or invariant is being protected?
+2. Which negative case falsifies the unsafe implementation?
+3. Which real runtime or manual check is still required?
+
+**Assessment:** Submit the exact synthetic input, expected and observed outputs, a negative result, and the untested boundaries. Mark unavailable external checks not-run.
+
+## References
+
+- [Technical reference](https://testing-library.com/docs/guiding-principles/)
+
+## Publication conditions
+
+Editorial review, meaningful red/green exercises, real applicable runtime tests, full Node 24 build, browser and manual accessibility gates. Do not register this draft in the public reader until its module is approved.

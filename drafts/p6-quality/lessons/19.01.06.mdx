@@ -1,0 +1,61 @@
+---
+id: "19.01.06"
+title: "Property based testing"
+module: "19.01"
+status: "draft-unverified"
+readyToPublish: false
+---
+
+# Property based testing
+
+> Unpublished instructor manuscript. A green model test is not real runtime acceptance.
+
+## Learning outcomes
+
+Explain the design rule, reproduce or specify an observable positive and negative experiment, and distinguish the model from external evidence.
+
+## Context
+
+Warehouse stock must be conserved across many inputs.
+
+## Step 1 — Mental model
+
+Properties are invariants over inputs; a finite sweep is deterministic, not exhaustive over all possible values.
+
+## Step 2 — Guided practice
+
+Extend the lab finite property sweep to stock and quantity up to 50.
+
+Predict the outcome before running the experiment. Use only synthetic data and disposable fixtures.
+
+## Step 3 — Acceptance
+
+**Positive:** Remaining stock plus accepted quantity equals original stock.
+
+**Negative:** Subtracting a rejected quantity breaks conservation.
+
+Run the complementary local module model and inspect `reserve` in `examples/p6-quality/labs.mjs`. Add an assertion for the relevant boundary. This command does not execute the external tools described above.
+
+```bash
+node --test --test-name-pattern="19[.]01" examples/p6-quality/labs.test.mjs
+```
+
+## Qualification boundary
+
+Pure inventory model; no real database or browser is tested.
+
+## Knowledge check
+
+1. Which public behavior or invariant is being protected?
+2. Which negative case falsifies the unsafe implementation?
+3. Which real runtime or manual check is still required?
+
+**Assessment:** Submit the exact synthetic input, expected and observed outputs, a negative result, and the untested boundaries. Mark unavailable external checks not-run.
+
+## References
+
+- [Technical reference](https://nodejs.org/api/test.html)
+
+## Publication conditions
+
+Editorial review, meaningful red/green exercises, real applicable runtime tests, full Node 24 build, browser and manual accessibility gates. Do not register this draft in the public reader until its module is approved.

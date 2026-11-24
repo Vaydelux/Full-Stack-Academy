@@ -1,0 +1,61 @@
+---
+id: "20.01.01"
+title: "Images containers and layers"
+module: "20.01"
+status: "draft-unverified"
+readyToPublish: false
+---
+
+# Images containers and layers
+
+> Unpublished instructor manuscript. A green model test is not real runtime acceptance.
+
+## Learning outcomes
+
+Explain the design rule, reproduce or specify an observable positive and negative experiment, and distinguish the model from external evidence.
+
+## Context
+
+A mutable image tag differs across machines.
+
+## Step 1 — Mental model
+
+Images have immutable digest identity; containers are runtime instances with writable state.
+
+## Step 2 — Guided practice
+
+Compare a synthetic digest and tag-only input to containerPolicy; inspect a real Docker image digest separately.
+
+Predict the outcome before running the experiment. Use only synthetic data and disposable fixtures.
+
+## Step 3 — Acceptance
+
+**Positive:** Digest form meets the pinning policy.
+
+**Negative:** A mutable tag alone fails the model.
+
+Run the complementary local module model and inspect `containerPolicy` in `examples/p6-quality/labs.mjs`. Add an assertion for the relevant boundary. This command does not execute the external tools described above.
+
+```bash
+node --test --test-name-pattern="20[.]01" examples/p6-quality/labs.test.mjs
+```
+
+## Qualification boundary
+
+Declarative policy model; no Docker engine, image build, scan or real network isolation executed.
+
+## Knowledge check
+
+1. Which public behavior or invariant is being protected?
+2. Which negative case falsifies the unsafe implementation?
+3. Which real runtime or manual check is still required?
+
+**Assessment:** Submit the exact synthetic input, expected and observed outputs, a negative result, and the untested boundaries. Mark unavailable external checks not-run.
+
+## References
+
+- [Technical reference](https://docs.docker.com/)
+
+## Publication conditions
+
+Editorial review, meaningful red/green exercises, real applicable runtime tests, full Node 24 build, browser and manual accessibility gates. Do not register this draft in the public reader until its module is approved.

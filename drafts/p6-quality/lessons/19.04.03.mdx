@@ -1,0 +1,61 @@
+---
+id: "19.04.03"
+title: "Database load testing"
+module: "19.04"
+status: "draft-unverified"
+readyToPublish: false
+---
+
+# Database load testing
+
+> Unpublished instructor manuscript. A green model test is not real runtime acceptance.
+
+## Learning outcomes
+
+Explain the design rule, reproduce or specify an observable positive and negative experiment, and distinguish the model from external evidence.
+
+## Context
+
+A query slows when a connection pool saturates.
+
+## Step 1 — Mental model
+
+Distinguish pool waiting, query execution, locks and resource pressure.
+
+## Step 2 — Guided practice
+
+In disposable DB benchmark a fixed query at two bounded concurrency levels; record p95 and errors, inspect EXPLAIN.
+
+Predict the outcome before running the experiment. Use only synthetic data and disposable fixtures.
+
+## Step 3 — Acceptance
+
+**Positive:** Comparison separates waiting from execution.
+
+**Negative:** Dropping failures or exhausting shared DB capacity invalidates the run.
+
+Run the complementary local module model and inspect `latencyReport` in `examples/p6-quality/labs.mjs`. Add an assertion for the relevant boundary. This command does not execute the external tools described above.
+
+```bash
+node --test --test-name-pattern="19[.]04" examples/p6-quality/labs.test.mjs
+```
+
+## Qualification boundary
+
+Metrics model uses supplied samples; no real load generation, chaos or database benchmark.
+
+## Knowledge check
+
+1. Which public behavior or invariant is being protected?
+2. Which negative case falsifies the unsafe implementation?
+3. Which real runtime or manual check is still required?
+
+**Assessment:** Submit the exact synthetic input, expected and observed outputs, a negative result, and the untested boundaries. Mark unavailable external checks not-run.
+
+## References
+
+- [Technical reference](https://www.postgresql.org/docs/current/using-explain.html)
+
+## Publication conditions
+
+Editorial review, meaningful red/green exercises, real applicable runtime tests, full Node 24 build, browser and manual accessibility gates. Do not register this draft in the public reader until its module is approved.

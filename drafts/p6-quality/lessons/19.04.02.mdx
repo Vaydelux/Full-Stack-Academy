@@ -1,0 +1,61 @@
+---
+id: "19.04.02"
+title: "p95 and tail latency"
+module: "19.04"
+status: "draft-unverified"
+readyToPublish: false
+---
+
+# p95 and tail latency
+
+> Unpublished instructor manuscript. A green model test is not real runtime acceptance.
+
+## Learning outcomes
+
+Explain the design rule, reproduce or specify an observable positive and negative experiment, and distinguish the model from external evidence.
+
+## Context
+
+Most requests are fast, but the tail is slow.
+
+## Step 1 — Mental model
+
+Nearest-rank p95 is the sorted sample at ceil(.95*n)-1; averages can hide outliers.
+
+## Step 2 — Guided practice
+
+Use 18 samples at 10ms and two at 1000ms; compare mean with p95.
+
+Predict the outcome before running the experiment. Use only synthetic data and disposable fixtures.
+
+## Step 3 — Acceptance
+
+**Positive:** p95 is 1000ms and exceeds 100ms.
+
+**Negative:** A mean-only gate can conceal a bad tail.
+
+Run the complementary local module model and inspect `latencyReport` in `examples/p6-quality/labs.mjs`. Add an assertion for the relevant boundary. This command does not execute the external tools described above.
+
+```bash
+node --test --test-name-pattern="19[.]04" examples/p6-quality/labs.test.mjs
+```
+
+## Qualification boundary
+
+Metrics model uses supplied samples; no real load generation, chaos or database benchmark.
+
+## Knowledge check
+
+1. Which public behavior or invariant is being protected?
+2. Which negative case falsifies the unsafe implementation?
+3. Which real runtime or manual check is still required?
+
+**Assessment:** Submit the exact synthetic input, expected and observed outputs, a negative result, and the untested boundaries. Mark unavailable external checks not-run.
+
+## References
+
+- [Technical reference](https://grafana.com/docs/k6/latest/)
+
+## Publication conditions
+
+Editorial review, meaningful red/green exercises, real applicable runtime tests, full Node 24 build, browser and manual accessibility gates. Do not register this draft in the public reader until its module is approved.
