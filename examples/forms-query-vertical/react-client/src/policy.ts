@@ -24,7 +24,7 @@ export function nextTaskStatus(status: TaskStatus): TaskStatus {
  * Network failures and 5xx can be ambiguous and must retain the SAME key.
  */
 export function shouldRetainCreateAttempt(error: unknown): boolean {
-  return !(error instanceof TaskRequestError) || error.status === 429 || error.status >= 500;
+  return !(error instanceof TaskRequestError) || error.status === 408 || error.status === 429 || error.status >= 500;
 }
 
 /** Intentional read cancellation is not a transport fault. Never retry terminal errors. */
