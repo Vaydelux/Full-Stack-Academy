@@ -40,6 +40,6 @@ class LabModule {
  static withPool(pool:Pool):DynamicModule{return {module:LabModule,controllers:[TransferController],providers:[TransferPipe,TransferService,{provide:DB,useValue:pool}]};}
 }
 export async function startLab(pool:Pool){
- const app=await NestFactory.create(LabModule.withPool(pool),{logger:false});
+ const app=await NestFactory.create(LabModule.withPool(pool),{logger:false,abortOnError:false});
  try{await app.listen(0,'127.0.0.1');return app;}catch(error){await app.close();throw error;}
 }
