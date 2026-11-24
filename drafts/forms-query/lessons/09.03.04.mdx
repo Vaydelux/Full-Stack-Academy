@@ -84,7 +84,7 @@ export function DeleteButton({id}:{id:string}){
 
 <Misconception claim="The starter removes the row in cache but never saves or restores the previous snapshot after an HTTP error." correction="An optimistic update is speculative. cancelQueries protects the snapshot from in-flight reads, onMutate saves the previous value, onError restores it, and onSettled invalidates." />
 
-<KnowledgeCheck question="What is the reliable approach to optimistic updates and rollback?" choices={["Assume cached browser state equals server truth forever.","Use TanStack Query resource identity and the server's HTTP contract.","Ignore failure responses to keep the UI fast.","Disable all validation once the code typechecks."]} correctIndex={1} explanation="An optimistic update is speculative. cancelQueries protects the snapshot from in-flight reads, onMutate saves the previous value, onError restores it, and onSettled invalidates." misconception="The starter removes the row in cache but never saves or restores the previous snapshot after an HTTP error." lessonId="09.03.04" />
+<KnowledgeCheck question="Two optimistic operations overlap and the first fails. Why is restoring a full old snapshot risky?" choices={["Query does not permit updates.","An older snapshot may undo the second operation.","The server always merges snapshots.","Optimistic data is automatically durable."]} correctIndex={1} explanation="Rollback must account for concurrent mutations. Serialize conflicting operations or reconcile using operation-specific state and authoritative refetch." misconception="The starter removes the row in cache but never saves or restores the previous snapshot after an HTTP error." lessonId="09.03.04" />
 
 ## Bug Hunt: reproduce, diagnose and repair
 
@@ -108,6 +108,12 @@ An optimistic update makes the interface react before the server confirms an ope
 **Independent exercise:** Force a failing delete after the row disappears. Assert that its title, status and list position recover. Then make the delete succeed and verify a fresh server read. Repeat with two near-simultaneous operations and explain why the naive single-snapshot approach could restore stale data.
 
 **Security boundary:** Client cache rollback is a presentation safeguard. It cannot undo a committed server write, authorize a deletion or resolve multi-user conflicts without a backend revision/ETag or equivalent authoritative protocol.
+
+## Applied debugging clinic
+
+Start deletion A, then deletion B, before A returns. Force A to fail and B to succeed. Predict how restoring an entire snapshot can resurrect B. Compare targeted rollback or serialized conflicting writes, then invalidate to reconcile with the server. This is an extension exercise; the existing starter need not support concurrent writes.
+
+**Evidence to record:** query identity, request outcome, cache state before and after the action, and the recovery decision. Separate observed network behavior from what the UI displays. Re-run the original failing interaction after the repair.
 
 ## Guided local lab
 
