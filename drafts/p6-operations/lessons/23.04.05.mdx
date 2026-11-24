@@ -1,0 +1,61 @@
+---
+id: "23.04.05"
+title: "Data partitioning"
+module: "23.04"
+status: "draft-unverified"
+readyToPublish: false
+---
+
+# Data partitioning
+
+> Unpublished instructor manuscript. Local model tests are supplemental, not external runtime qualification.
+
+## Learning outcomes
+
+Explain the relevant engineering tradeoff, define a measurable experiment and recognize the boundary of the available evidence.
+
+## Context
+
+A large dataset is split across partitions.
+
+## Step 1 — Mental model
+
+Partition key affects balance, query locality and ordering; hot keys and cross-partition invariants need attention.
+
+## Step 2 — Guided practice
+
+Assign synthetic tenant workloads to partitions; introduce a hot tenant and compare load distribution.
+
+Use synthetic data and a disposable authorized environment. Record the expected result before the experiment.
+
+## Step 3 — Acceptance
+
+**Positive:** Skew is visible and mitigation justified.
+
+**Negative:** Hashing without checking hot keys or cross-partition queries fails.
+
+Inspect the complementary `retryDecision` model in `examples/p6-operations/labs.mjs` and extend its assertions where relevant. The command below does not execute the external tools discussed in this topic.
+
+```bash
+node --test --test-name-pattern="23[.]04" examples/p6-operations/labs.test.mjs
+```
+
+## Qualification boundary
+
+Retry decision teaching model only; no network partition, broker, service discovery, replication or multi-region benchmark.
+
+## Knowledge check
+
+1. Which invariant or operational measurement determines success?
+2. What failure case disproves the unsafe design?
+3. Which evidence remains missing before this can be applied to a production service?
+
+**Assessment:** Submit input, expected/observed outcomes, a meaningful negative result and the unverified external boundaries. Mark unavailable tests not-run.
+
+## References
+
+- [Technical reference](https://martinfowler.com/articles/microservices.html)
+
+## Publication conditions
+
+Complete editorial review, meaningful red/green acceptance, applicable real tools, Node 24 build, browser and manual accessibility gates. Never publish from local model results alone.

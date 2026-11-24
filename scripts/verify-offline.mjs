@@ -46,6 +46,7 @@ const steps = [
   'test:forms-query-review-fingerprint',
   'test:curriculum-readiness',
   'test:p6-quality-source',
+  'test:p6-operations-source',
   'test:publication-phases',
   'test:course-roadmap',
   'test:p4-source',

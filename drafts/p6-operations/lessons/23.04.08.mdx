@@ -1,0 +1,61 @@
+---
+id: "23.04.08"
+title: "Lab design review"
+module: "23.04"
+status: "draft-unverified"
+readyToPublish: false
+---
+
+# Lab design review
+
+> Unpublished instructor manuscript. Local model tests are supplemental, not external runtime qualification.
+
+## Learning outcomes
+
+Explain the relevant engineering tradeoff, define a measurable experiment and recognize the boundary of the available evidence.
+
+## Context
+
+A learner reviews a distributed order design.
+
+## Step 1 — Mental model
+
+Review invariants, deadlines, partition behavior, observability, ownership and recovery before committing to complexity.
+
+## Step 2 — Guided practice
+
+Run retryDecision and earlier boundary/consumer models; write failure matrix for timeout, duplicate, partition and unavailable dependency.
+
+Use synthetic data and a disposable authorized environment. Record the expected result before the experiment.
+
+## Step 3 — Acceptance
+
+**Positive:** Every failure has expected behavior, evidence and owner.
+
+**Negative:** Missing recovery for uncertain side effects or invented guarantees blocks acceptance.
+
+Inspect the complementary `retryDecision` model in `examples/p6-operations/labs.mjs` and extend its assertions where relevant. The command below does not execute the external tools discussed in this topic.
+
+```bash
+node --test --test-name-pattern="23[.]04" examples/p6-operations/labs.test.mjs
+```
+
+## Qualification boundary
+
+Retry decision teaching model only; no network partition, broker, service discovery, replication or multi-region benchmark.
+
+## Knowledge check
+
+1. Which invariant or operational measurement determines success?
+2. What failure case disproves the unsafe design?
+3. Which evidence remains missing before this can be applied to a production service?
+
+**Assessment:** Submit input, expected/observed outcomes, a meaningful negative result and the unverified external boundaries. Mark unavailable tests not-run.
+
+## References
+
+- [Technical reference](https://martinfowler.com/articles/microservices.html)
+
+## Publication conditions
+
+Complete editorial review, meaningful red/green acceptance, applicable real tools, Node 24 build, browser and manual accessibility gates. Never publish from local model results alone.

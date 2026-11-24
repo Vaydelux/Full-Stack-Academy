@@ -1,0 +1,61 @@
+---
+id: "23.01.07"
+title: "Architecture decision records"
+module: "23.01"
+status: "draft-unverified"
+readyToPublish: false
+---
+
+# Architecture decision records
+
+> Unpublished instructor manuscript. Local model tests are supplemental, not external runtime qualification.
+
+## Learning outcomes
+
+Explain the relevant engineering tradeoff, define a measurable experiment and recognize the boundary of the available evidence.
+
+## Context
+
+A team must choose monolith or service extraction.
+
+## Step 1 — Mental model
+
+An ADR records context, decision, alternatives, consequences and reconsideration triggers.
+
+## Step 2 — Guided practice
+
+Write a short ADR for keeping a module in-process, with measured trigger for extraction.
+
+Use synthetic data and a disposable authorized environment. Record the expected result before the experiment.
+
+## Step 3 — Acceptance
+
+**Positive:** Decision and tradeoffs are reviewable.
+
+**Negative:** An ADR with only a preferred tool and no consequences fails.
+
+Inspect the complementary `boundaryViolations` model in `examples/p6-operations/labs.mjs` and extend its assertions where relevant. The command below does not execute the external tools discussed in this topic.
+
+```bash
+node --test --test-name-pattern="23[.]01" examples/p6-operations/labs.test.mjs
+```
+
+## Qualification boundary
+
+Directed dependency model only; no actual codebase static graph, framework migration or architecture certification.
+
+## Knowledge check
+
+1. Which invariant or operational measurement determines success?
+2. What failure case disproves the unsafe design?
+3. Which evidence remains missing before this can be applied to a production service?
+
+**Assessment:** Submit input, expected/observed outcomes, a meaningful negative result and the unverified external boundaries. Mark unavailable tests not-run.
+
+## References
+
+- [Technical reference](https://martinfowler.com/architecture/)
+
+## Publication conditions
+
+Complete editorial review, meaningful red/green acceptance, applicable real tools, Node 24 build, browser and manual accessibility gates. Never publish from local model results alone.

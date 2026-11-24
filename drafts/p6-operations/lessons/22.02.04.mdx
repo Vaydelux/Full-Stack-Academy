@@ -1,0 +1,61 @@
+---
+id: "22.02.04"
+title: "Query plans and N plus one"
+module: "22.02"
+status: "draft-unverified"
+readyToPublish: false
+---
+
+# Query plans and N plus one
+
+> Unpublished instructor manuscript. Local model tests are supplemental, not external runtime qualification.
+
+## Learning outcomes
+
+Explain the relevant engineering tradeoff, define a measurable experiment and recognize the boundary of the available evidence.
+
+## Context
+
+An endpoint queries child rows once per parent.
+
+## Step 1 — Mental model
+
+N+1 increases round trips; inspect plans and query count before choosing joins, batching or indexes.
+
+## Step 2 — Guided practice
+
+Seed a disposable DB with 20 parents; count queries and inspect EXPLAIN, then compare a bounded batch.
+
+Use synthetic data and a disposable authorized environment. Record the expected result before the experiment.
+
+## Step 3 — Acceptance
+
+**Positive:** Query count decreases while result and authorization remain correct.
+
+**Negative:** An unbounded join or missing tenant filter fails.
+
+Inspect the complementary `requestProfile` model in `examples/p6-operations/labs.mjs` and extend its assertions where relevant. The command below does not execute the external tools discussed in this topic.
+
+```bash
+node --test --test-name-pattern="22[.]02" examples/p6-operations/labs.test.mjs
+```
+
+## Qualification boundary
+
+Synthetic latency sample analysis only; actual CPU/heap profiles, Fastify comparison, query plans and HTTP behavior need real runtimes.
+
+## Knowledge check
+
+1. Which invariant or operational measurement determines success?
+2. What failure case disproves the unsafe design?
+3. Which evidence remains missing before this can be applied to a production service?
+
+**Assessment:** Submit input, expected/observed outcomes, a meaningful negative result and the unverified external boundaries. Mark unavailable tests not-run.
+
+## References
+
+- [Technical reference](https://www.postgresql.org/docs/current/using-explain.html)
+
+## Publication conditions
+
+Complete editorial review, meaningful red/green acceptance, applicable real tools, Node 24 build, browser and manual accessibility gates. Never publish from local model results alone.

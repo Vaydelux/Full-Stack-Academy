@@ -1,0 +1,61 @@
+---
+id: "22.01.03"
+title: "Server streaming"
+module: "22.01"
+status: "draft-unverified"
+readyToPublish: false
+---
+
+# Server streaming
+
+> Unpublished instructor manuscript. Local model tests are supplemental, not external runtime qualification.
+
+## Learning outcomes
+
+Explain the relevant engineering tradeoff, define a measurable experiment and recognize the boundary of the available evidence.
+
+## Context
+
+A server-rendered page waits on a slow secondary panel.
+
+## Step 1 — Mental model
+
+Streaming can deliver ready content early with Suspense boundaries; hydration and errors still require testing.
+
+## Step 2 — Guided practice
+
+Build an isolated route with delayed secondary data and record first bytes, visible content and final panel.
+
+Use synthetic data and a disposable authorized environment. Record the expected result before the experiment.
+
+## Step 3 — Acceptance
+
+**Positive:** Primary UI appears before slow panel; loading state is accessible.
+
+**Negative:** Blank shell or leaked unauthorized content fails.
+
+Inspect the complementary `webBudget` model in `examples/p6-operations/labs.mjs` and extend its assertions where relevant. The command below does not execute the external tools discussed in this topic.
+
+```bash
+node --test --test-name-pattern="22[.]01" examples/p6-operations/labs.test.mjs
+```
+
+## Qualification boundary
+
+Synthetic measured-value budget only; actual Core Web Vitals, browser profiles and real-user metrics are unexecuted.
+
+## Knowledge check
+
+1. Which invariant or operational measurement determines success?
+2. What failure case disproves the unsafe design?
+3. Which evidence remains missing before this can be applied to a production service?
+
+**Assessment:** Submit input, expected/observed outcomes, a meaningful negative result and the unverified external boundaries. Mark unavailable tests not-run.
+
+## References
+
+- [Technical reference](https://web.dev/learn/performance)
+
+## Publication conditions
+
+Complete editorial review, meaningful red/green acceptance, applicable real tools, Node 24 build, browser and manual accessibility gates. Never publish from local model results alone.

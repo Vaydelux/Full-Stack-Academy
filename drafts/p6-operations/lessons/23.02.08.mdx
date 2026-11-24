@@ -1,0 +1,61 @@
+---
+id: "23.02.08"
+title: "Bug Hunt circular dependencies"
+module: "23.02"
+status: "draft-unverified"
+readyToPublish: false
+---
+
+# Bug Hunt circular dependencies
+
+> Unpublished instructor manuscript. Local model tests are supplemental, not external runtime qualification.
+
+## Learning outcomes
+
+Explain the relevant engineering tradeoff, define a measurable experiment and recognize the boundary of the available evidence.
+
+## Context
+
+Orders imports billing, billing imports inventory, inventory imports orders.
+
+## Step 1 — Mental model
+
+Dependency cycles make initialization and ownership unclear; introduce a contract or orchestrator with a directed graph.
+
+## Step 2 — Guided practice
+
+Run dependencyCycle with indirect cycle then extract one shared port or coordinating use case.
+
+Use synthetic data and a disposable authorized environment. Record the expected result before the experiment.
+
+## Step 3 — Acceptance
+
+**Positive:** Acyclic graph passes after correction.
+
+**Negative:** Self or indirect cycle remains detectable.
+
+Inspect the complementary `dependencyCycle` model in `examples/p6-operations/labs.mjs` and extend its assertions where relevant. The command below does not execute the external tools discussed in this topic.
+
+```bash
+node --test --test-name-pattern="23[.]02" examples/p6-operations/labs.test.mjs
+```
+
+## Qualification boundary
+
+Small synthetic dependency graph only; real module enforcement, transactions and feature flag runtime not executed.
+
+## Knowledge check
+
+1. Which invariant or operational measurement determines success?
+2. What failure case disproves the unsafe design?
+3. Which evidence remains missing before this can be applied to a production service?
+
+**Assessment:** Submit input, expected/observed outcomes, a meaningful negative result and the unverified external boundaries. Mark unavailable tests not-run.
+
+## References
+
+- [Technical reference](https://martinfowler.com/bliki/BoundedContext.html)
+
+## Publication conditions
+
+Complete editorial review, meaningful red/green acceptance, applicable real tools, Node 24 build, browser and manual accessibility gates. Never publish from local model results alone.

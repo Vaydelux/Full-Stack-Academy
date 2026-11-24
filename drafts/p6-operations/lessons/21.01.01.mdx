@@ -1,0 +1,61 @@
+---
+id: "21.01.01"
+title: "Structured logs with Pino"
+module: "21.01"
+status: "draft-unverified"
+readyToPublish: false
+---
+
+# Structured logs with Pino
+
+> Unpublished instructor manuscript. Local model tests are supplemental, not external runtime qualification.
+
+## Learning outcomes
+
+Explain the relevant engineering tradeoff, define a measurable experiment and recognize the boundary of the available evidence.
+
+## Context
+
+An API logs an order lookup that includes a private request body.
+
+## Step 1 — Mental model
+
+Structured records should use stable fields and explicit allowlists; redaction is a second defense, not permission to log secrets.
+
+## Step 2 — Guided practice
+
+Run safeLog with a synthetic password field; configure a real Pino logger to emit selected fields only and inspect its output.
+
+Use synthetic data and a disposable authorized environment. Record the expected result before the experiment.
+
+## Step 3 — Acceptance
+
+**Positive:** Output has request ID, route template, status and duration; no password.
+
+**Negative:** A raw body or authorization value in logs fails review.
+
+Inspect the complementary `safeLog` model in `examples/p6-operations/labs.mjs` and extend its assertions where relevant. The command below does not execute the external tools discussed in this topic.
+
+```bash
+node --test --test-name-pattern="21[.]01" examples/p6-operations/labs.test.mjs
+```
+
+## Qualification boundary
+
+Local field-allowlist model only; Pino, exporters, collectors and Sentry require installed tools and actual trace propagation.
+
+## Knowledge check
+
+1. Which invariant or operational measurement determines success?
+2. What failure case disproves the unsafe design?
+3. Which evidence remains missing before this can be applied to a production service?
+
+**Assessment:** Submit input, expected/observed outcomes, a meaningful negative result and the unverified external boundaries. Mark unavailable tests not-run.
+
+## References
+
+- [Technical reference](https://getpino.io/)
+
+## Publication conditions
+
+Complete editorial review, meaningful red/green acceptance, applicable real tools, Node 24 build, browser and manual accessibility gates. Never publish from local model results alone.

@@ -1,0 +1,61 @@
+---
+id: "21.02.07"
+title: "Graceful degradation"
+module: "21.02"
+status: "draft-unverified"
+readyToPublish: false
+---
+
+# Graceful degradation
+
+> Unpublished instructor manuscript. Local model tests are supplemental, not external runtime qualification.
+
+## Learning outcomes
+
+Explain the relevant engineering tradeoff, define a measurable experiment and recognize the boundary of the available evidence.
+
+## Context
+
+A recommendation service becomes unavailable.
+
+## Step 1 — Mental model
+
+Graceful degradation preserves the critical user journey while labeling unavailable optional data; avoid serving unauthorized cached data.
+
+## Step 2 — Guided practice
+
+Design checkout with optional recommendations, simulate timeout and show an explicit fallback.
+
+Use synthetic data and a disposable authorized environment. Record the expected result before the experiment.
+
+## Step 3 — Acceptance
+
+**Positive:** Checkout remains available with a fallback.
+
+**Negative:** A stale private response or misleading success fails.
+
+Inspect the complementary `errorBudget` model in `examples/p6-operations/labs.mjs` and extend its assertions where relevant. The command below does not execute the external tools discussed in this topic.
+
+```bash
+node --test --test-name-pattern="21[.]02" examples/p6-operations/labs.test.mjs
+```
+
+## Qualification boundary
+
+Synthetic error-budget arithmetic only; real probes, alerts, concurrency and fault recovery require actual isolated services.
+
+## Knowledge check
+
+1. Which invariant or operational measurement determines success?
+2. What failure case disproves the unsafe design?
+3. Which evidence remains missing before this can be applied to a production service?
+
+**Assessment:** Submit input, expected/observed outcomes, a meaningful negative result and the unverified external boundaries. Mark unavailable tests not-run.
+
+## References
+
+- [Technical reference](https://sre.google/books/)
+
+## Publication conditions
+
+Complete editorial review, meaningful red/green acceptance, applicable real tools, Node 24 build, browser and manual accessibility gates. Never publish from local model results alone.

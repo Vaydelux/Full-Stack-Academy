@@ -1,0 +1,61 @@
+---
+id: "22.02.01"
+title: "Profiling Node CPU and heap"
+module: "22.02"
+status: "draft-unverified"
+readyToPublish: false
+---
+
+# Profiling Node CPU and heap
+
+> Unpublished instructor manuscript. Local model tests are supplemental, not external runtime qualification.
+
+## Learning outcomes
+
+Explain the relevant engineering tradeoff, define a measurable experiment and recognize the boundary of the available evidence.
+
+## Context
+
+A Node server becomes CPU-bound under workload.
+
+## Step 1 — Mental model
+
+CPU profiling identifies hot stacks; heap snapshots describe retained objects and may contain secrets or pause the process.
+
+## Step 2 — Guided practice
+
+Profile a disposable CPU-heavy loop and compare before/after change under fixed workload; inspect sanitized heap data separately.
+
+Use synthetic data and a disposable authorized environment. Record the expected result before the experiment.
+
+## Step 3 — Acceptance
+
+**Positive:** Hot function is measurable and improvement is repeatable.
+
+**Negative:** A single unrepresentative timing or real private heap dump fails review.
+
+Inspect the complementary `requestProfile` model in `examples/p6-operations/labs.mjs` and extend its assertions where relevant. The command below does not execute the external tools discussed in this topic.
+
+```bash
+node --test --test-name-pattern="22[.]02" examples/p6-operations/labs.test.mjs
+```
+
+## Qualification boundary
+
+Synthetic latency sample analysis only; actual CPU/heap profiles, Fastify comparison, query plans and HTTP behavior need real runtimes.
+
+## Knowledge check
+
+1. Which invariant or operational measurement determines success?
+2. What failure case disproves the unsafe design?
+3. Which evidence remains missing before this can be applied to a production service?
+
+**Assessment:** Submit input, expected/observed outcomes, a meaningful negative result and the unverified external boundaries. Mark unavailable tests not-run.
+
+## References
+
+- [Technical reference](https://nodejs.org/en/learn/diagnostics)
+
+## Publication conditions
+
+Complete editorial review, meaningful red/green acceptance, applicable real tools, Node 24 build, browser and manual accessibility gates. Never publish from local model results alone.

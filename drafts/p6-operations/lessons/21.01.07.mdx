@@ -1,0 +1,61 @@
+---
+id: "21.01.07"
+title: "Sampling and cardinality"
+module: "21.01"
+status: "draft-unverified"
+readyToPublish: false
+---
+
+# Sampling and cardinality
+
+> Unpublished instructor manuscript. Local model tests are supplemental, not external runtime qualification.
+
+## Learning outcomes
+
+Explain the relevant engineering tradeoff, define a measurable experiment and recognize the boundary of the available evidence.
+
+## Context
+
+A metric uses user IDs as labels.
+
+## Step 1 — Mental model
+
+High cardinality increases series count; sampling controls trace volume but can bias observed data.
+
+## Step 2 — Guided practice
+
+Compare unique label counts for 100 users versus 3 route templates; specify a sampling policy and document errors that might be missed.
+
+Use synthetic data and a disposable authorized environment. Record the expected result before the experiment.
+
+## Step 3 — Acceptance
+
+**Positive:** Bounded templates yield a small number of series.
+
+**Negative:** Per-user labels explode series count; sampled data cannot prove every request traced.
+
+Inspect the complementary `safeLog` model in `examples/p6-operations/labs.mjs` and extend its assertions where relevant. The command below does not execute the external tools discussed in this topic.
+
+```bash
+node --test --test-name-pattern="21[.]01" examples/p6-operations/labs.test.mjs
+```
+
+## Qualification boundary
+
+Local field-allowlist model only; Pino, exporters, collectors and Sentry require installed tools and actual trace propagation.
+
+## Knowledge check
+
+1. Which invariant or operational measurement determines success?
+2. What failure case disproves the unsafe design?
+3. Which evidence remains missing before this can be applied to a production service?
+
+**Assessment:** Submit input, expected/observed outcomes, a meaningful negative result and the unverified external boundaries. Mark unavailable tests not-run.
+
+## References
+
+- [Technical reference](https://opentelemetry.io/docs/)
+
+## Publication conditions
+
+Complete editorial review, meaningful red/green acceptance, applicable real tools, Node 24 build, browser and manual accessibility gates. Never publish from local model results alone.

@@ -9,9 +9,9 @@
     "productionUrl": "https://fullstack-academy-ecru.vercel.app/"
   },
   "development": {
-    "branch": "feat/p6-testing-delivery-track19-20-20261124",
-    "state": "p6-track19-20-source-staged-inventory-reconciled-unpublished",
-    "note": "64 canonical Track 19–20 source manuscripts across eight modules, eight dependency-free model exercises, 41 lab tests and 22 source-audit/inventory tests passed on local Node22 partial checkout. Historical 272 manuscript files included already-published 15.02.04; actual unpublished draft count 271 before, 335 after. 338 published, 216 unauthored. No real browser/Nest/DB/k6/Docker/CI/IaC or Node24 build executed."
+    "branch": "feat/p6-operations-architecture-track21-23-20261124",
+    "state": "p6-all-144-manuscripts-staged-unpublished",
+    "note": "Added 80 Track 21–23 draft manuscripts, ten dependency-free teaching models, and source audit. 41/41 isolated Node22 tests passed (30 model, 11 auditor fixtures); full real tools and build not run. P6 144/144 manuscripts authored; 338 published, 415 unpublished drafts, 136 unauthored."
   },
   "snapshot": {
     "tracks": 28,
@@ -73,6 +73,6 @@
     "devHighFindings": 14,
     "exceptionExpires": "2026-12-02"
   },
-  "nextMilestone": "Author remaining P6 Tracks 21–23 (80 topics), build real-tool acceptance for Tracks 19–20, independently qualify P1 on Node24, and generate genuine NestJS lockfile before P2. No promotion until applicable gates pass.",
-  "status": "p6-quality-and-delivery-source-staged-publication-blocked"
+  "nextMilestone": "Author P7 Tracks 24–27 after verifying their canonical inventory; independently complete P1 real Node24 and browser gates and genuine NestJS lockfile; qualify actual P6 tools before promoting modules.",
+  "status": "p6-source-authoring-complete-publication-blocked"
 }

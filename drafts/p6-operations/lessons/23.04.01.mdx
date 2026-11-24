@@ -1,0 +1,61 @@
+---
+id: "23.04.01"
+title: "CAP tradeoffs and practical consistency"
+module: "23.04"
+status: "draft-unverified"
+readyToPublish: false
+---
+
+# CAP tradeoffs and practical consistency
+
+> Unpublished instructor manuscript. Local model tests are supplemental, not external runtime qualification.
+
+## Learning outcomes
+
+Explain the relevant engineering tradeoff, define a measurable experiment and recognize the boundary of the available evidence.
+
+## Context
+
+Two replicas cannot communicate during a write.
+
+## Step 1 — Mental model
+
+CAP describes consistency and availability during partitions, not a fixed pick-two menu under normal operation.
+
+## Step 2 — Guided practice
+
+Sketch a partition between replicas; choose reject versus accept conflicting writes for inventory and explain business impact.
+
+Use synthetic data and a disposable authorized environment. Record the expected result before the experiment.
+
+## Step 3 — Acceptance
+
+**Positive:** Choice preserves the explicitly selected invariant under partition.
+
+**Negative:** Claiming both linearizable writes and unconditional availability under partition fails.
+
+Inspect the complementary `retryDecision` model in `examples/p6-operations/labs.mjs` and extend its assertions where relevant. The command below does not execute the external tools discussed in this topic.
+
+```bash
+node --test --test-name-pattern="23[.]04" examples/p6-operations/labs.test.mjs
+```
+
+## Qualification boundary
+
+Retry decision teaching model only; no network partition, broker, service discovery, replication or multi-region benchmark.
+
+## Knowledge check
+
+1. Which invariant or operational measurement determines success?
+2. What failure case disproves the unsafe design?
+3. Which evidence remains missing before this can be applied to a production service?
+
+**Assessment:** Submit input, expected/observed outcomes, a meaningful negative result and the unverified external boundaries. Mark unavailable tests not-run.
+
+## References
+
+- [Technical reference](https://martinfowler.com/articles/microservices.html)
+
+## Publication conditions
+
+Complete editorial review, meaningful red/green acceptance, applicable real tools, Node 24 build, browser and manual accessibility gates. Never publish from local model results alone.

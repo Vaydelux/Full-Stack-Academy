@@ -1,0 +1,61 @@
+---
+id: "21.03.07"
+title: "Capacity planning"
+module: "21.03"
+status: "draft-unverified"
+readyToPublish: false
+---
+
+# Capacity planning
+
+> Unpublished instructor manuscript. Local model tests are supplemental, not external runtime qualification.
+
+## Learning outcomes
+
+Explain the relevant engineering tradeoff, define a measurable experiment and recognize the boundary of the available evidence.
+
+## Context
+
+Traffic rises before a planned sales campaign.
+
+## Step 1 — Mental model
+
+Capacity planning combines measured throughput, saturation, headroom, cost and demand uncertainty.
+
+## Step 2 — Guided practice
+
+Use capacity from 22.03 for a demand range and record assumptions about a database limit.
+
+Use synthetic data and a disposable authorized environment. Record the expected result before the experiment.
+
+## Step 3 — Acceptance
+
+**Positive:** Plan includes headroom and bottlenecks.
+
+**Negative:** Forecasting only CPU while DB connections saturate fails.
+
+Inspect the complementary `incidentDecision` model in `examples/p6-operations/labs.mjs` and extend its assertions where relevant. The command below does not execute the external tools discussed in this topic.
+
+```bash
+node --test --test-name-pattern="21[.]03" examples/p6-operations/labs.test.mjs
+```
+
+## Qualification boundary
+
+Synthetic incident decisions only; no real emergency response, restored backups, alerting or production capacity measurements.
+
+## Knowledge check
+
+1. Which invariant or operational measurement determines success?
+2. What failure case disproves the unsafe design?
+3. Which evidence remains missing before this can be applied to a production service?
+
+**Assessment:** Submit input, expected/observed outcomes, a meaningful negative result and the unverified external boundaries. Mark unavailable tests not-run.
+
+## References
+
+- [Technical reference](https://sre.google/books/)
+
+## Publication conditions
+
+Complete editorial review, meaningful red/green acceptance, applicable real tools, Node 24 build, browser and manual accessibility gates. Never publish from local model results alone.
