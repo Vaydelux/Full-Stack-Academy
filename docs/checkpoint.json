@@ -9,16 +9,16 @@
     "productionUrl": "https://fullstack-academy-ecru.vercel.app/"
   },
   "development": {
-    "branch": "feat/p1-http-resilience-and-workbook-20261124",
-    "state": "p1-real-http-resilience-source-merged-publication-blocked",
-    "note": "25/25 targeted Node22 tests actually passed, 12 original failures reproduced (10 HTTP, 2 policy); exact source and test blobs checked. Added bounded receipt ledger, replay Location, malformed body/cursor handling, intentional read cancellation, 16-topic companion workbook and mandatory offline gate. Full Node24/Next, browser and manual reviews not executed. Catalog 889/889 authored; 338 published, 551 unpublished."
+    "branch": "feat/p8-publication-evidence",
+    "state": "p8-source-stabilization-publication-blocked",
+    "note": "P8 branch contains 16 enhanced topics, 66 unique authored reference drafts, responsive documentation updates and new isolated HTTP/SQL/Nest labs. Local isolated Node22 regression suites 47/47 passed; full Node24, MDX, browser, PostgreSQL, Nest and manual accessibility qualification remain outstanding."
   },
   "snapshot": {
     "tracks": 28,
     "modules": 111,
     "catalogTopics": 889,
     "indexedReferences": 303,
-    "authoredReferenceDrafts": 38,
+    "authoredReferenceDrafts": 66,
     "authoredInteractiveModels": 4,
     "authoredMdxLessons": 337,
     "publishedLessons": 338,
@@ -73,6 +73,6 @@
     "devHighFindings": 14,
     "exceptionExpires": "2026-12-02"
   },
-  "nextMilestone": "Qualify P1 09.02 and 09.03 real installed React/Next browser and manual accessibility using stable Node24.9+; execute full checkout gates including new resilience tests; correct real failures, review and promote module atomically. No new bulk manuscript work.",
-  "status": "all-topics-authored-p1-real-http-regressions-passed-publication-blocked"
+  "nextMilestone": "Run P8 regression suites and existing full local release gate using Node24.9+ and Chromium; qualify real PostgreSQL/Nest runtime and manual accessibility before atomic publication of 09.02 and 09.03.",
+  "status": "all-topics-authored-p8-source-stabilization-publication-blocked"
 }
