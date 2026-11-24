@@ -2,8 +2,8 @@
   "openapi": "3.1.1",
   "info": {
     "title": "Academy Loopback Task Workflow API",
-    "version": "2.0.0",
-    "description": "Educational only, in-memory, unauthenticated, loopback-only. No deployment, tenant isolation or durable idempotency guarantees. Browser demos and React source are learning fixtures."
+    "version": "2.1.0",
+    "description": "Educational only, in-memory, unauthenticated, loopback-only. No deployment, tenant isolation or durable idempotency guarantees. Browser demos and React source are learning fixtures. Accepted create receipts are retained for the lifetime of this fixture instance, with a default ceiling of 200; a full ledger refuses new keys rather than evicting accepted receipts."
   },
   "servers": [
     {
@@ -77,7 +77,7 @@
             "name": "cursor",
             "in": "query",
             "required": false,
-            "description": "Opaque revision-and-filter-scoped cursor. A write makes it stale (409).",
+            "description": "Revision-and-filter-scoped cursor with safe-integer fields. A successful state-changing write makes it stale (409); rejected writes and exact create replays do not change the revision. This local cursor is not an authorization mechanism.",
             "schema": {
               "type": "string"
             }
@@ -144,7 +144,7 @@
             "name": "Idempotency-Key",
             "in": "header",
             "required": true,
-            "description": "8–96 ASCII letters/digits/underscore/dash, scoped to this in-memory process. Replayed requests return the original result.",
+            "description": "8–96 ASCII letters/digits/underscore/dash, scoped to this in-memory fixture instance. Exact normalized-payload replay returns the original historical 201 result and Location, even after update or deletion; it does not recreate a deleted task. Changed payload conflicts. New keys are denied when the receipt ledger is full.",
             "schema": {
               "type": "string",
               "minLength": 8,
@@ -165,7 +165,7 @@
         },
         "responses": {
           "201": {
-            "description": "Created task or replay of identical request",
+            "description": "Created task or original historical receipt for an identical normalized request. Replay does not establish that the resource still exists.",
             "content": {
               "application/json": {
                 "schema": {
@@ -175,7 +175,7 @@
             },
             "headers": {
               "Location": {
-                "description": "Relative URI of task",
+                "description": "Original relative URI of task, including on replay.",
                 "schema": {
                   "type": "string"
                 }
@@ -193,7 +193,7 @@
             }
           },
           "400": {
-            "description": "Malformed request, unknown query, invalid cursor or missing idempotency key",
+            "description": "Malformed JSON or UTF-8, or invalid request contract.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -213,7 +213,7 @@
             }
           },
           "409": {
-            "description": "Idempotency conflict, stale list cursor or capacity reached",
+            "description": "Idempotency payload conflict, current task capacity reached, or accepted-receipt ledger full. No new accepted key is consumed by these denials.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -223,7 +223,7 @@
             }
           },
           "413": {
-            "description": "Body too large",
+            "description": "Body exceeds 8192 bytes, including chunked bodies.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -233,7 +233,7 @@
             }
           },
           "415": {
-            "description": "Unsupported content type",
+            "description": "Unsupported content type or non-identity content encoding.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -375,7 +375,7 @@
             }
           },
           "400": {
-            "description": "Malformed request, unknown query, invalid cursor or missing idempotency key",
+            "description": "Malformed JSON or UTF-8, or invalid request contract.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -415,7 +415,7 @@
             }
           },
           "413": {
-            "description": "Body too large",
+            "description": "Body exceeds 8192 bytes, including chunked bodies.",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -425,7 +425,7 @@
             }
           },
           "415": {
-            "description": "Unsupported content type",
+            "description": "Unsupported content type or non-identity content encoding.",
             "content": {
               "application/problem+json": {
                 "schema": {

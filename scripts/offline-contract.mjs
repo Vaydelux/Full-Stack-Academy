@@ -5,6 +5,7 @@ import {fileURLToPath} from 'node:url';
 
 const REQUIRED = Object.freeze([
  'test:release-gate-coverage',
+ 'test:forms-query-resilience',
  'test:curriculum-readiness',
  'test:publication-phases',
  'test:p4-source',

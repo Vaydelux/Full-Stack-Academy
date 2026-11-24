@@ -11,6 +11,7 @@ const staticRoot = new URL('./', import.meta.url);
 
 const MAX_BODY_BYTES = 8 * 1024;
 const MAX_ITEMS = 100;
+const MAX_IDEMPOTENCY_KEYS = 200;
 const KEY_PATTERN = /^[a-zA-Z0-9_-]{8,96}$/;
 const TASK_STATES = new Set(['todo', 'doing', 'done']);
 const FILTER_STATES = new Set(['all', ...TASK_STATES]);
@@ -37,16 +38,19 @@ function validateTask(value) {
 }
 async function readJson(req) {
   if (!/^application\/json(?:\s*;|$)/i.test(req.headers['content-type'] ?? '')) throw new HttpProblem(415, 'Expected application/json');
+  const encoding = req.headers['content-encoding'];
+  if (encoding && encoding.toLowerCase() !== 'identity') throw new HttpProblem(415, 'Unsupported content encoding');
   const length = req.headers['content-length'];
   if (length && (!/^\d+$/.test(length) || Number(length) > MAX_BODY_BYTES)) throw new HttpProblem(413, 'Request body too large');
   const chunks = [];
   let size = 0;
-  for await (const chunk of req) {
+  // Do not destroy the socket on early iterator exit: the handler can send a bounded 413.
+  for await (const chunk of req.iterator({ destroyOnReturn: false })) {
     size += chunk.byteLength;
     if (size > MAX_BODY_BYTES) throw new HttpProblem(413, 'Request body too large');
     chunks.push(chunk);
   }
-  try { return JSON.parse(Buffer.concat(chunks).toString('utf8')); }
+  try { return JSON.parse(new TextDecoder('utf-8', { fatal: true, ignoreBOM: true }).decode(Buffer.concat(chunks))); }
   catch { throw new HttpProblem(400, 'Malformed JSON'); }
 }
 function validatePatch(value) {
@@ -60,15 +64,16 @@ function cursorDecode(value, version, filter) {
   if (!/^[A-Za-z0-9_-]{1,40}$/.test(value)) throw new HttpProblem(400, 'Invalid pagination cursor');
   const decoded = Buffer.from(value, 'base64url').toString('utf8');
   const match = /^(\d+):(all|todo|doing|done):(\d+)$/.exec(decoded);
-  if (!match || cursorEncode(Number(match[1]), match[2], Number(match[3])) !== value) throw new HttpProblem(400, 'Invalid pagination cursor');
+  if (!match || !Number.isSafeInteger(Number(match[1])) || !Number.isSafeInteger(Number(match[3])) || cursorEncode(Number(match[1]), match[2], Number(match[3])) !== value) throw new HttpProblem(400, 'Invalid pagination cursor');
   if (Number(match[1]) !== version) throw new HttpProblem(409, 'List changed; restart pagination');
   if (match[2] !== filter) throw new HttpProblem(400, 'Cursor belongs to another filter');
   return Number(match[3]);
 }
 
-export function createTaskApi({ host = '127.0.0.1', maxItems = MAX_ITEMS } = {}) {
+export function createTaskApi({ host = '127.0.0.1', maxItems = MAX_ITEMS, maxIdempotencyKeys = MAX_IDEMPOTENCY_KEYS } = {}) {
   if (host !== '127.0.0.1' && host !== '::1') throw new TypeError('Loopback binding required');
   if (!Number.isInteger(maxItems) || maxItems < 1 || maxItems > MAX_ITEMS) throw new TypeError('Invalid task limit');
+  if (!Number.isInteger(maxIdempotencyKeys) || maxIdempotencyKeys < 1 || maxIdempotencyKeys > MAX_IDEMPOTENCY_KEYS) throw new TypeError('Invalid idempotency limit');
   const tasks = new Map();
   const idem = new Map();
   let version = 1;
@@ -134,13 +139,15 @@ export function createTaskApi({ host = '127.0.0.1', maxItems = MAX_ITEMS } = {})
         const old = idem.get(key);
         if (old) {
           if (old.digest !== digest) throw new HttpProblem(409, 'Idempotency key reused for a different request');
-          send(res, 201, old.task, { 'idempotency-replayed': 'true' }); return;
+          send(res, 201, old.task, { 'idempotency-replayed': 'true', location: `/api/tasks/${old.task.id}` }); return;
         }
+        // Preserve accepted operation IDs for this fixture's lifetime. Never silently evict
+        // one and allow a delayed retry to recreate a deleted task.
+        if (idem.size >= maxIdempotencyKeys) throw new HttpProblem(409, 'Demo idempotency capacity reached; start a fresh fixture');
         if (tasks.size >= maxItems) throw new HttpProblem(409, 'Demo task capacity reached');
         const task = { id: randomUUID(), ...data, status: 'todo', revision: 1, createdAt: new Date().toISOString() };
         tasks.set(task.id, task);
         idem.set(key, { digest, task });
-        if (idem.size > 200) idem.delete(idem.keys().next().value);
         version++;
         send(res, 201, task, { 'idempotency-replayed': 'false', location: `/api/tasks/${task.id}` }); return;
       }
@@ -175,7 +182,9 @@ export function createTaskApi({ host = '127.0.0.1', maxItems = MAX_ITEMS } = {})
       }
       fail(res, 404, 'Not found');
     } catch (err) {
+      if (res.destroyed || res.writableEnded) return;
       const status = err instanceof HttpProblem ? err.status : 500;
+      if (status === 413 || status === 415) res.setHeader('connection', 'close');
       fail(res, status, err instanceof HttpProblem ? err.message : 'Internal server error');
     }
   });

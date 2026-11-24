@@ -1,3 +1,5 @@
+> **2026-11-24 P1 real HTTP resilience milestone:** 25/25 targeted tests actually passed on Node 22.16.0 after reproducing 12 failures against the original hash-matched server and retry policy. Bounded accepted-receipt ledger, replay Location, strict UTF-8/content encoding, chunked 413, safe cursor numbers and read cancellation are corrected. Full Node24/Next, real RHF/TanStack browser acceptance, full-checkout regressions and manual accessibility still not-run. Publication remains 338/889; all 889 topics authored. See `docs/ACADEMY_P1_RESILIENCE_CHECKPOINT_20261124.md`.
+
 > **2026-11-20 native recovery extension:** The browser demo now serializes create/status/delete and blocks a new POST while an earlier outcome is uncertain. Learners can retry using the same idempotency key, or explicitly discard the attempt with a duplicate-risk warning. Terminal 422 errors do not trigger ambiguous retries and a confirmed POST stays confirmed if its follow-up GET fails. See [native acceptance](../../docs/FORMS_QUERY_NATIVE_UI_ACCEPTANCE.md).
 
 > **2026-11-20 project extension:** The local Task API now demonstrates a three-state workflow (todo, doing, done), revision ETag and If-Match conditional PATCH, 412 concurrency rejection, 428 missing-precondition rejection, status-bound pagination cursors and a browser request journal. Try two edits with the same revision, then refresh and retry the loser. The React client source illustrates filtered Query keys and optimistic rollback but remains uninstalled/unqualified. The 16 listed canonical topics below remain workbook drafts, **not published MDX lesson packages**. See [OpenAPI contract](task-workflow.openapi.json) and [acceptance](../../docs/FORMS_QUERY_WORKFLOW_V3_ACCEPTANCE.md).
@@ -63,3 +65,7 @@
 The Node API and browser-native client are runnable and independently tested. The separate RHF/TanStack React client is source-authored but **not installed, typechecked, built or browser-qualified**. Lessons 09.02 and 09.03 must remain marked planned/noindex until actual packages, lockfiles, complete lesson fixtures and controlled React/browser integration tests pass.
 
 This workbook does **not** count as 16 published lessons, 16 complete lab manifests, a production API, or independent learner grading. The repo remains a local-first educational product.
+
+## P1 executable boundary companion
+
+Use [P1 resilience practice workbook](P1_RESILIENCE_WORKBOOK.md) for the 16 topic-specific exercises, red/green results, HTTP outcome matrix, retry policy and evidence requirements. Run `npm run test:forms-query-resilience` before any real browser qualification. An HTTP pass does not establish React hook, DOM, hydration or manual accessibility behavior.
