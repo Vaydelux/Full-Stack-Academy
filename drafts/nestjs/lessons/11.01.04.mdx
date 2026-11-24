@@ -74,7 +74,21 @@ A quick workaround would hide the immediate symptom, but it would leave the orig
 
 <Misconception claim="The service stores a previous request ID; concurrent users can observe another request's context." correction="Request-specific data must never be retained in a global singleton provider." />
 
-<KnowledgeCheck question="What should the reviewer verify for dependency injection scopes?" choices={["The source contains a decorator, so the runtime must work.","The real Nest application exhibits the specified behavior and rejects the broken case.","TypeScript types alone authorize incoming requests.","A mocked substring search proves the HTTP contract."]} correctIndex={1} explanation="Request-specific data must never be retained in a global singleton provider." misconception="The service stores a previous request ID; concurrent users can observe another request's context." lessonId="11.01.04" />
+<KnowledgeCheck question="Two overlapping requests see the same last-written ID stored on a singleton. Which change addresses the leak?" choices={["Increase the singleton cache lifetime.","Store the ID in a static field.","Disable concurrent requests.","Bind the request-specific value to a request context instead of shared mutable state."]} correctIndex={3} explanation="Per-request context prevents unrelated requests from overwriting each other's data." misconception="The service stores a previous request ID; concurrent users can observe another request's context." lessonId="11.01.04" />
+
+## Applied engineering walkthrough
+
+Singleton providers are shared by default; transient providers are created per consumer, while request-scoped providers are resolved for a request context. Request scope can propagate to dependent providers and increase allocation cost. Store shared stateless logic in singleton services, and keep identity/context request-bound. A correlation header identifies a trace only; it is not proof of a user's identity.
+
+### Diagnose the concrete failure
+
+Follow the REQUEST injection token in the solution. Exercise two separate request contexts with IDs A and B; intentionally interleave their work. Both must retain their own ID even after the other begins. The class-only result cannot establish how Nest creates contexts: use the existing container tests and later real overlapping HTTP calls.
+
+### Independent exercise and evidence
+
+Choose a scope for a stateless repository, an authenticated request principal and a per-consumer formatting helper. Justify each choice, including the effect of injecting a request-scoped dependency into another provider. Record which context produced each result.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Run the existing Nest architecture suite with real dependencies; retain the starter and solution source unchanged. Do not award course credit from source review alone.
 
 ## Bug Hunt: reproduce, diagnose and repair
 
