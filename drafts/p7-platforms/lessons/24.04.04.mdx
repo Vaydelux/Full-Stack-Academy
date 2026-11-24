@@ -1,0 +1,61 @@
+---
+id: "24.04.04"
+title: "Deep links"
+module: "24.04"
+status: "draft-unverified"
+readyToPublish: false
+---
+
+# Deep links
+
+> Instructor draft. Local models do not qualify native platforms, real providers or production deployments.
+
+## Learning outcomes
+
+Explain the engineering decision, reproduce or design the positive and negative experiment, and identify the remaining evidence.
+
+## Context
+
+A link opens an authenticated workspace screen.
+
+## Step 1 — Mental model
+
+Deep links need verified scheme/domain, validated parameters and authorization after routing.
+
+## Step 2 — Guided practice
+
+Test a known task link, unknown ID and foreign-tenant link in a disposable app.
+
+Use synthetic data, a disposable environment and authorized accounts only. Record expected behavior before execution.
+
+## Step 3 — Acceptance
+
+**Positive:** Authorized link opens intended screen.
+
+**Negative:** Link payload bypassing authentication or tenant checks fails.
+
+Inspect the complementary `resumeQueue` teaching model. Extend its assertions when relevant; it is not an implementation of the full external technology.
+
+```bash
+node --test --test-name-pattern="24[.]04" examples/p7-platforms/labs.test.mjs
+```
+
+## Qualification boundary
+
+Synthetic queue acknowledgement model only; physical touch, OS background behavior, push delivery and store acceptance require device tests.
+
+## Knowledge check
+
+1. What is the invariant and trust boundary?
+2. Which negative result falsifies an unsafe design?
+3. Which real tool or reviewer must supply missing evidence?
+
+**Assessment:** Record exact fixture input, expected and actual output, negative evidence and not-run checks. Do not substitute a design or model for a real acceptance result.
+
+## References
+
+- [Technical reference](https://developer.android.com/guide)
+
+## Publication conditions
+
+Complete editorial review, red/green exercises, applicable actual runtimes, the full Node 24 build, browser and human accessibility gates. Keep the draft unpublished until its module is approved.

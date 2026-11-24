@@ -1,0 +1,61 @@
+---
+id: "25.04.03"
+title: "FFmpeg pipeline isolation"
+module: "25.04"
+status: "draft-unverified"
+readyToPublish: false
+---
+
+# FFmpeg pipeline isolation
+
+> Instructor draft. Local models do not qualify native platforms, real providers or production deployments.
+
+## Learning outcomes
+
+Explain the engineering decision, reproduce or design the positive and negative experiment, and identify the remaining evidence.
+
+## Context
+
+An uploaded file triggers a thumbnail job.
+
+## Step 1 — Mental model
+
+FFmpeg processing untrusted inputs needs isolation, resource limits, timeouts and safe argument passing.
+
+## Step 2 — Guided practice
+
+Run mediaAllowed with exceeded pixel limit; then test a sandboxed worker on synthetic media.
+
+Use synthetic data, a disposable environment and authorized accounts only. Record expected behavior before execution.
+
+## Step 3 — Acceptance
+
+**Positive:** Oversized input rejected before work; valid sample produces bounded output.
+
+**Negative:** Arbitrary shell arguments or unbounded decoding fails.
+
+Inspect the complementary `mediaAllowed` teaching model. Extend its assertions when relevant; it is not an implementation of the full external technology.
+
+```bash
+node --test --test-name-pattern="25[.]04" examples/p7-platforms/labs.test.mjs
+```
+
+## Qualification boundary
+
+Synthetic resource-bound model; no actual FFmpeg sandbox, CDN, HLS, WebRTC or moderation service acceptance.
+
+## Knowledge check
+
+1. What is the invariant and trust boundary?
+2. Which negative result falsifies an unsafe design?
+3. Which real tool or reviewer must supply missing evidence?
+
+**Assessment:** Record exact fixture input, expected and actual output, negative evidence and not-run checks. Do not substitute a design or model for a real acceptance result.
+
+## References
+
+- [Technical reference](https://ffmpeg.org/documentation.html)
+
+## Publication conditions
+
+Complete editorial review, red/green exercises, applicable actual runtimes, the full Node 24 build, browser and human accessibility gates. Keep the draft unpublished until its module is approved.

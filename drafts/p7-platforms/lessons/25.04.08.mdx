@@ -1,0 +1,61 @@
+---
+id: "25.04.08"
+title: "Lab asynchronous thumbnail worker"
+module: "25.04"
+status: "draft-unverified"
+readyToPublish: false
+---
+
+# Lab asynchronous thumbnail worker
+
+> Instructor draft. Local models do not qualify native platforms, real providers or production deployments.
+
+## Learning outcomes
+
+Explain the engineering decision, reproduce or design the positive and negative experiment, and identify the remaining evidence.
+
+## Context
+
+A learner builds asynchronous thumbnail processing.
+
+## Step 1 — Mental model
+
+Durable job IDs, quarantine, bounded decoding, idempotent output and retry limits protect the worker.
+
+## Step 2 — Guided practice
+
+Run mediaAllowed; implement a local disposable worker using authorized sample file and record retry/duplicate behavior.
+
+Use synthetic data, a disposable environment and authorized accounts only. Record expected behavior before execution.
+
+## Step 3 — Acceptance
+
+**Positive:** One bounded thumbnail output per job; errors tracked.
+
+**Negative:** Oversized, timed-out or duplicate job cannot create uncontrolled work.
+
+Inspect the complementary `mediaAllowed` teaching model. Extend its assertions when relevant; it is not an implementation of the full external technology.
+
+```bash
+node --test --test-name-pattern="25[.]04" examples/p7-platforms/labs.test.mjs
+```
+
+## Qualification boundary
+
+Synthetic resource-bound model; no actual FFmpeg sandbox, CDN, HLS, WebRTC or moderation service acceptance.
+
+## Knowledge check
+
+1. What is the invariant and trust boundary?
+2. Which negative result falsifies an unsafe design?
+3. Which real tool or reviewer must supply missing evidence?
+
+**Assessment:** Record exact fixture input, expected and actual output, negative evidence and not-run checks. Do not substitute a design or model for a real acceptance result.
+
+## References
+
+- [Technical reference](https://ffmpeg.org/documentation.html)
+
+## Publication conditions
+
+Complete editorial review, red/green exercises, applicable actual runtimes, the full Node 24 build, browser and human accessibility gates. Keep the draft unpublished until its module is approved.

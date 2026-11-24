@@ -1,0 +1,61 @@
+---
+id: "25.01.06"
+title: "dbt transformations"
+module: "25.01"
+status: "draft-unverified"
+readyToPublish: false
+---
+
+# dbt transformations
+
+> Instructor draft. Local models do not qualify native platforms, real providers or production deployments.
+
+## Learning outcomes
+
+Explain the engineering decision, reproduce or design the positive and negative experiment, and identify the remaining evidence.
+
+## Context
+
+A reporting transformation changes a revenue definition.
+
+## Step 1 — Mental model
+
+dbt models version SQL transformations with dependency graphs and data tests; separate business definitions from source cleanup.
+
+## Step 2 — Guided practice
+
+Build a disposable dbt model with unique/not-null tests and a documented revenue definition.
+
+Use synthetic data, a disposable environment and authorized accounts only. Record expected behavior before execution.
+
+## Step 3 — Acceptance
+
+**Positive:** Compiled SQL and tests agree with expected fixtures.
+
+**Negative:** Changing definition silently or failing data tests blocks release.
+
+Inspect the complementary `aggregateEvents` teaching model. Extend its assertions when relevant; it is not an implementation of the full external technology.
+
+```bash
+node --test --test-name-pattern="25[.]01" examples/p7-platforms/labs.test.mjs
+```
+
+## Qualification boundary
+
+In-memory count/deduplication model; no warehouse, materialized-view freshness, ClickHouse or dbt runtime qualification.
+
+## Knowledge check
+
+1. What is the invariant and trust boundary?
+2. Which negative result falsifies an unsafe design?
+3. Which real tool or reviewer must supply missing evidence?
+
+**Assessment:** Record exact fixture input, expected and actual output, negative evidence and not-run checks. Do not substitute a design or model for a real acceptance result.
+
+## References
+
+- [Technical reference](https://docs.getdbt.com/)
+
+## Publication conditions
+
+Complete editorial review, red/green exercises, applicable actual runtimes, the full Node 24 build, browser and human accessibility gates. Keep the draft unpublished until its module is approved.

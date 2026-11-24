@@ -1,0 +1,61 @@
+---
+id: "25.02.05"
+title: "Retrieval and chunking"
+module: "25.02"
+status: "draft-unverified"
+readyToPublish: false
+---
+
+# Retrieval and chunking
+
+> Instructor draft. Local models do not qualify native platforms, real providers or production deployments.
+
+## Learning outcomes
+
+Explain the engineering decision, reproduce or design the positive and negative experiment, and identify the remaining evidence.
+
+## Context
+
+A large handbook must be retrieved in useful sections.
+
+## Step 1 — Mental model
+
+Chunking trades context coherence against search granularity; preserve source and offsets and measure retrieval recall.
+
+## Step 2 — Guided practice
+
+Split synthetic handbook by headings, compare chunks for fixed questions and track source IDs.
+
+Use synthetic data, a disposable environment and authorized accounts only. Record expected behavior before execution.
+
+## Step 3 — Acceptance
+
+**Positive:** Relevant sections are retrieved with traceable source.
+
+**Negative:** Chunks without provenance or missing relevant section fails.
+
+Inspect the complementary `citedAnswer` teaching model. Extend its assertions when relevant; it is not an implementation of the full external technology.
+
+```bash
+node --test --test-name-pattern="25[.]02" examples/p7-platforms/labs.test.mjs
+```
+
+## Qualification boundary
+
+Synthetic citation membership check; not evidence of factual grounding, model safety, embeddings or real provider behavior.
+
+## Knowledge check
+
+1. What is the invariant and trust boundary?
+2. Which negative result falsifies an unsafe design?
+3. Which real tool or reviewer must supply missing evidence?
+
+**Assessment:** Record exact fixture input, expected and actual output, negative evidence and not-run checks. Do not substitute a design or model for a real acceptance result.
+
+## References
+
+- [Technical reference](https://ai-sdk.dev/docs)
+
+## Publication conditions
+
+Complete editorial review, red/green exercises, applicable actual runtimes, the full Node 24 build, browser and human accessibility gates. Keep the draft unpublished until its module is approved.

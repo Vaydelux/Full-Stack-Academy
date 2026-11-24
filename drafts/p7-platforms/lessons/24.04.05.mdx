@@ -1,0 +1,61 @@
+---
+id: "24.04.05"
+title: "Battery memory and app size"
+module: "24.04"
+status: "draft-unverified"
+readyToPublish: false
+---
+
+# Battery memory and app size
+
+> Instructor draft. Local models do not qualify native platforms, real providers or production deployments.
+
+## Learning outcomes
+
+Explain the engineering decision, reproduce or design the positive and negative experiment, and identify the remaining evidence.
+
+## Context
+
+A mobile app drains battery after idle.
+
+## Step 1 — Mental model
+
+Measure wakeups, network activity, heap and binary size under controlled conditions rather than guessing.
+
+## Step 2 — Guided practice
+
+Record baseline on a test device, disable redundant polling, compare battery/network/size measurements.
+
+Use synthetic data, a disposable environment and authorized accounts only. Record expected behavior before execution.
+
+## Step 3 — Acceptance
+
+**Positive:** Work decreases without missed required updates.
+
+**Negative:** One unrepresentative measurement or broken sync fails.
+
+Inspect the complementary `resumeQueue` teaching model. Extend its assertions when relevant; it is not an implementation of the full external technology.
+
+```bash
+node --test --test-name-pattern="24[.]04" examples/p7-platforms/labs.test.mjs
+```
+
+## Qualification boundary
+
+Synthetic queue acknowledgement model only; physical touch, OS background behavior, push delivery and store acceptance require device tests.
+
+## Knowledge check
+
+1. What is the invariant and trust boundary?
+2. Which negative result falsifies an unsafe design?
+3. Which real tool or reviewer must supply missing evidence?
+
+**Assessment:** Record exact fixture input, expected and actual output, negative evidence and not-run checks. Do not substitute a design or model for a real acceptance result.
+
+## References
+
+- [Technical reference](https://developer.android.com/guide)
+
+## Publication conditions
+
+Complete editorial review, red/green exercises, applicable actual runtimes, the full Node 24 build, browser and human accessibility gates. Keep the draft unpublished until its module is approved.

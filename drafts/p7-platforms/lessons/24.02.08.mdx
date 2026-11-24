@@ -1,0 +1,61 @@
+---
+id: "24.02.08"
+title: "Lab offline task edits"
+module: "24.02"
+status: "draft-unverified"
+readyToPublish: false
+---
+
+# Lab offline task edits
+
+> Instructor draft. Local models do not qualify native platforms, real providers or production deployments.
+
+## Learning outcomes
+
+Explain the engineering decision, reproduce or design the positive and negative experiment, and identify the remaining evidence.
+
+## Context
+
+A learner edits and deletes tasks on two disconnected clients.
+
+## Step 1 — Mental model
+
+An offline sync lab needs durable local writes, conflict handling, tombstones and authenticated server reconciliation.
+
+## Step 2 — Guided practice
+
+Rehearse edit, replay, delete and stale resurrection using the model; then implement same cases with SQLite and a disposable API.
+
+Use synthetic data, a disposable environment and authorized accounts only. Record expected behavior before execution.
+
+## Step 3 — Acceptance
+
+**Positive:** Model invariants hold; actual restart test is recorded separately.
+
+**Negative:** Lost queue data or stale resurrection blocks real acceptance.
+
+Inspect the complementary `applyOperation` teaching model. Extend its assertions when relevant; it is not an implementation of the full external technology.
+
+```bash
+node --test --test-name-pattern="24[.]02" examples/p7-platforms/labs.test.mjs
+```
+
+## Qualification boundary
+
+In-memory sync model; actual SQLite persistence, durable queue, crash recovery and conflict reconciliation are not established.
+
+## Knowledge check
+
+1. What is the invariant and trust boundary?
+2. Which negative result falsifies an unsafe design?
+3. Which real tool or reviewer must supply missing evidence?
+
+**Assessment:** Record exact fixture input, expected and actual output, negative evidence and not-run checks. Do not substitute a design or model for a real acceptance result.
+
+## References
+
+- [Technical reference](https://www.sqlite.org/docs.html)
+
+## Publication conditions
+
+Complete editorial review, red/green exercises, applicable actual runtimes, the full Node 24 build, browser and human accessibility gates. Keep the draft unpublished until its module is approved.

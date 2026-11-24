@@ -1,0 +1,722 @@
+{
+  "26.01.01": {
+    "context": "A company wants employees to sign in through its identity provider.",
+    "concept": "SAML SSO exchanges signed assertions; validate issuer, audience, recipient, time and replay protection using a trusted library and metadata.",
+    "exercise": "Draw SP-initiated sign-in, then test a disposable IdP with valid and invalid audience assertions.",
+    "positive": "A valid assertion establishes the intended identity only.",
+    "negative": "Wrong issuer, expired or replayed assertion must be denied.",
+    "reference": "https://docs.oasis-open.org/security/saml/v2.0/",
+    "model": "enterpriseAccess",
+    "boundary": "Synthetic policy check on already-validated claims only; no actual SAML assertion, SCIM, MFA, token or identity-provider verification."
+  },
+  "26.01.02": {
+    "context": "An employee leaves the organization.",
+    "concept": "SCIM provisioning synchronizes identities and groups; disabling identity must also revoke applicable access, not merely hide it.",
+    "exercise": "Design a synthetic create/update/deactivate event sequence and test repeated delivery and deactivation.",
+    "positive": "Disabled user loses intended access; repeated provisioning is safe.",
+    "negative": "Deactivated employee retaining access fails.",
+    "reference": "https://www.rfc-editor.org/rfc/rfc7644",
+    "model": "enterpriseAccess",
+    "boundary": "Synthetic policy check on already-validated claims only; no actual SAML assertion, SCIM, MFA, token or identity-provider verification."
+  },
+  "26.01.03": {
+    "context": "An admin claims a company's email domain.",
+    "concept": "Domain ownership proof and organization membership are distinct; verify a scoped expiring challenge using the intended method.",
+    "exercise": "Design a synthetic DNS challenge with random token, expiration and tenant binding; test mismatched token.",
+    "positive": "Only the intended claimant completes verification.",
+    "negative": "Email suffix alone cannot grant admin rights.",
+    "reference": "https://cheatsheetseries.owasp.org/",
+    "model": "enterpriseAccess",
+    "boundary": "Synthetic policy check on already-validated claims only; no actual SAML assertion, SCIM, MFA, token or identity-provider verification."
+  },
+  "26.01.04": {
+    "context": "An organization loses an employee laptop.",
+    "concept": "Sessions and devices need revocation, expiry, refresh controls and server-side enforcement.",
+    "exercise": "Use synthetic sessions for two devices; revoke one and exercise subsequent protected requests.",
+    "positive": "Revoked session denied; unaffected session follows policy.",
+    "negative": "UI-only revocation that leaves tokens active fails.",
+    "reference": "https://cheatsheetseries.owasp.org/",
+    "model": "enterpriseAccess",
+    "boundary": "Synthetic policy check on already-validated claims only; no actual SAML assertion, SCIM, MFA, token or identity-provider verification."
+  },
+  "26.01.05": {
+    "context": "A user initiates a high-risk settings change.",
+    "concept": "Step-up authentication requires recent stronger evidence for sensitive actions; ordinary sign-in may be insufficient.",
+    "exercise": "Evaluate enterpriseAccess with required MFA and missing claim; design an actual challenge and freshness test.",
+    "positive": "Validated fresh second factor allows intended operation.",
+    "negative": "Missing, stale or spoofed factor evidence fails.",
+    "reference": "https://cheatsheetseries.owasp.org/",
+    "model": "enterpriseAccess",
+    "boundary": "Synthetic policy check on already-validated claims only; no actual SAML assertion, SCIM, MFA, token or identity-provider verification."
+  },
+  "26.01.06": {
+    "context": "A tenant admin edits organization login requirements.",
+    "concept": "Policy changes require authorization, scoped validation, safe rollout and recovery from lockout.",
+    "exercise": "Design versioned policy updates with actor and change reason; test foreign-tenant change and recovery account policy.",
+    "positive": "Authorized tenant change is recorded.",
+    "negative": "Cross-tenant update or irreversible lockout fails.",
+    "reference": "https://cheatsheetseries.owasp.org/",
+    "model": "enterpriseAccess",
+    "boundary": "Synthetic policy check on already-validated claims only; no actual SAML assertion, SCIM, MFA, token or identity-provider verification."
+  },
+  "26.01.07": {
+    "context": "An auditor investigates an administrative login.",
+    "concept": "Audit records capture actor, action, target, outcome, time and correlation; secrets and raw assertions stay out.",
+    "exercise": "Generate synthetic successful and rejected events; verify minimal fields and access restrictions.",
+    "positive": "Both outcomes can be reconstructed without credentials.",
+    "negative": "Missing denied event or sensitive token in audit fails.",
+    "reference": "https://cheatsheetseries.owasp.org/",
+    "model": "enterpriseAccess",
+    "boundary": "Synthetic policy check on already-validated claims only; no actual SAML assertion, SCIM, MFA, token or identity-provider verification."
+  },
+  "26.01.08": {
+    "context": "A learner reviews enterprise authentication threats.",
+    "concept": "Model IdP trust, provisioning, sessions, MFA, tenant identity and admin control as separate boundaries.",
+    "exercise": "Run enterpriseAccess tests; write an abuse-case matrix for assertion replay, deprovisioning and cross-tenant escalation.",
+    "positive": "Each threat has denial test, owner and recovery plan.",
+    "negative": "Trusting unvalidated claims or missing revocation evidence blocks acceptance.",
+    "reference": "https://cheatsheetseries.owasp.org/",
+    "model": "enterpriseAccess",
+    "boundary": "Synthetic policy check on already-validated claims only; no actual SAML assertion, SCIM, MFA, token or identity-provider verification."
+  },
+  "26.02.01": {
+    "context": "A subscription transitions through trial, active and unpaid states.",
+    "concept": "Use explicit allowed transitions; provider status and application entitlement are related but distinct.",
+    "exercise": "Create a synthetic state transition table and test active, canceled and expired dates in entitlement.",
+    "positive": "Access matches the documented policy and cutoff.",
+    "negative": "Unknown status or expired entitlement cannot grant access.",
+    "reference": "https://docs.stripe.com/billing",
+    "model": "entitlement",
+    "boundary": "Synthetic entitlement policy; no payment provider authenticity, tax, invoicing, real charges or durable billing integration verified."
+  },
+  "26.02.02": {
+    "context": "A callback claims that a payment succeeded.",
+    "concept": "Verify provider-specific signatures over required bytes and timestamp before trusting any billing event.",
+    "exercise": "Use a real sandbox provider's documented signing fixture; reject altered bytes and stale timestamps.",
+    "positive": "Valid signed event is accepted once.",
+    "negative": "Invalid signature or caller-supplied tenant routing fails.",
+    "reference": "https://docs.stripe.com/billing",
+    "model": "entitlement",
+    "boundary": "Synthetic entitlement policy; no payment provider authenticity, tax, invoicing, real charges or durable billing integration verified."
+  },
+  "26.02.03": {
+    "context": "The same invoice payment notification arrives twice.",
+    "concept": "Durable event IDs and transactional entitlement changes prevent duplicate grants.",
+    "exercise": "Use synthetic duplicate and conflicting events; compare the P5 transactional inbox contract.",
+    "positive": "One logical event changes entitlement once.",
+    "negative": "Duplicate credit or changed payload with same ID fails.",
+    "reference": "https://docs.stripe.com/billing",
+    "model": "entitlement",
+    "boundary": "Synthetic entitlement policy; no payment provider authenticity, tax, invoicing, real charges or durable billing integration verified."
+  },
+  "26.02.04": {
+    "context": "A customer's renewal fails temporarily.",
+    "concept": "Grace periods and dunning require explicit policy, paid-through date and customer communications.",
+    "exercise": "Run entitlement for past_due before and at paidUntil; define notification schedule.",
+    "positive": "Access follows documented grace cutoff.",
+    "negative": "Unbounded grace or immediate denial contrary to policy fails.",
+    "reference": "https://docs.stripe.com/billing",
+    "model": "entitlement",
+    "boundary": "Synthetic entitlement policy; no payment provider authenticity, tax, invoicing, real charges or durable billing integration verified."
+  },
+  "26.02.05": {
+    "context": "An API bills by consumed units.",
+    "concept": "Metering records immutable usage identity, unit, time, tenant and aggregation window; reconcile late or duplicate events.",
+    "exercise": "Create ten synthetic usage records including one duplicate; aggregate unique records and compare invoice line.",
+    "positive": "Billable units reconcile with source records.",
+    "negative": "Duplicate events or mixed tenant usage inflate the invoice.",
+    "reference": "https://docs.stripe.com/billing",
+    "model": "entitlement",
+    "boundary": "Synthetic entitlement policy; no payment provider authenticity, tax, invoicing, real charges or durable billing integration verified."
+  },
+  "26.02.06": {
+    "context": "A business may switch payment providers.",
+    "concept": "An adapter maps external statuses and events into internal contracts while retaining provider IDs and audit evidence.",
+    "exercise": "Define mock provider adapter for normalized subscription status and unsupported event.",
+    "positive": "Both supported providers can produce same internal state contract.",
+    "negative": "Unknown event silently activating subscription fails.",
+    "reference": "https://docs.stripe.com/billing",
+    "model": "entitlement",
+    "boundary": "Synthetic entitlement policy; no payment provider authenticity, tax, invoicing, real charges or durable billing integration verified."
+  },
+  "26.02.07": {
+    "context": "A billing feature needs a test without real charges.",
+    "concept": "Use sandbox credentials, synthetic accounts and isolated webhook routing; separate test from live data.",
+    "exercise": "Rehearse renewal, decline, duplicate delivery and cancellation in an authorized provider sandbox.",
+    "positive": "Test state changes match expectations with no live charge.",
+    "negative": "Live credential or missing callback evidence blocks qualification.",
+    "reference": "https://docs.stripe.com/billing",
+    "model": "entitlement",
+    "boundary": "Synthetic entitlement policy; no payment provider authenticity, tax, invoicing, real charges or durable billing integration verified."
+  },
+  "26.02.08": {
+    "context": "A learner builds a billing simulator.",
+    "concept": "Subscription state, webhook verification, idempotency, paid-through access and reconciliation are independent controls.",
+    "exercise": "Run entitlement tests, design a synthetic event ledger and replay out-of-order renewal and cancellation.",
+    "positive": "Entitlement follows reviewed state and paid-through date.",
+    "negative": "A stale event reviving canceled access or duplicate credit fails.",
+    "reference": "https://docs.stripe.com/billing",
+    "model": "entitlement",
+    "boundary": "Synthetic entitlement policy; no payment provider authenticity, tax, invoicing, real charges or durable billing integration verified."
+  },
+  "26.03.01": {
+    "context": "An organization cannot explain where personal data is stored.",
+    "concept": "A data inventory identifies data categories, purpose, systems, recipients, owners, retention and access paths.",
+    "exercise": "Map synthetic account, billing and log datasets; assign owner and legitimate purpose.",
+    "positive": "Each dataset has documented processing and access boundaries.",
+    "negative": "Unknown collection or unowned sensitive dataset fails review.",
+    "reference": "https://privacy.gov.ph/",
+    "model": "retentionDecision",
+    "boundary": "Synthetic retention review model only; not legal advice or proof of compliance. Verify current law and organization-specific obligations with qualified counsel."
+  },
+  "26.03.02": {
+    "context": "A service operates in the Philippines and serves EU users.",
+    "concept": "GDPR and the Philippine Data Privacy Act establish distinct privacy frameworks; applicability depends on facts and jurisdiction.",
+    "exercise": "Compare official texts and regulator guidance for a hypothetical service; document questions for counsel rather than assuming identical obligations.",
+    "positive": "Analysis distinguishes frameworks, scope and unresolved applicability.",
+    "negative": "A generic checklist presented as legal compliance fails.",
+    "reference": "https://eur-lex.europa.eu/eli/reg/2016/679/oj",
+    "model": "retentionDecision",
+    "boundary": "Synthetic retention review model only; not legal advice or proof of compliance. Verify current law and organization-specific obligations with qualified counsel."
+  },
+  "26.03.03": {
+    "context": "A user withdraws optional marketing consent.",
+    "concept": "Record purpose, lawful basis or consent where applicable, withdrawal and a reviewed retention policy; do not conflate consent with every processing basis.",
+    "exercise": "Design a synthetic preference history and retention table; test withdrawal without deleting unrelated required records.",
+    "positive": "Optional processing stops according to policy.",
+    "negative": "Continued optional processing or blanket deletion without review fails.",
+    "reference": "https://privacy.gov.ph/",
+    "model": "retentionDecision",
+    "boundary": "Synthetic retention review model only; not legal advice or proof of compliance. Verify current law and organization-specific obligations with qualified counsel."
+  },
+  "26.03.04": {
+    "context": "A person requests access to or deletion of account data.",
+    "concept": "Verify requester identity, scope, exemptions and legal holds; coordinate across systems and record disposition.",
+    "exercise": "Create a synthetic export request and deletion workflow with hold and backup handling.",
+    "positive": "Only authorized export is delivered; deletion eligibility reviewed.",
+    "negative": "Foreign-account export or ignoring a legal hold fails.",
+    "reference": "https://privacy.gov.ph/",
+    "model": "retentionDecision",
+    "boundary": "Synthetic retention review model only; not legal advice or proof of compliance. Verify current law and organization-specific obligations with qualified counsel."
+  },
+  "26.03.05": {
+    "context": "An encrypted database backup needs key rotation.",
+    "concept": "Key lifecycle includes generation, storage, access, versioning, rotation, recovery and destruction; encryption alone is insufficient.",
+    "exercise": "Design synthetic key versions and restore old ciphertext with approved key, then rotate new writes.",
+    "positive": "Authorized recovery works under documented versions.",
+    "negative": "Lost key, exposed key or untested rotation fails.",
+    "reference": "https://privacy.gov.ph/",
+    "model": "retentionDecision",
+    "boundary": "Synthetic retention review model only; not legal advice or proof of compliance. Verify current law and organization-specific obligations with qualified counsel."
+  },
+  "26.03.06": {
+    "context": "A vendor stores backups in a different region.",
+    "concept": "Data residency maps where processing and copies occur; cross-border transfer obligations require separate legal assessment.",
+    "exercise": "Draw data flow for app, backups, telemetry and support; identify unknown locations and contract questions.",
+    "positive": "Every processing location and owner is known or flagged.",
+    "negative": "Assuming a database region guarantees all processing stays there fails.",
+    "reference": "https://privacy.gov.ph/",
+    "model": "retentionDecision",
+    "boundary": "Synthetic retention review model only; not legal advice or proof of compliance. Verify current law and organization-specific obligations with qualified counsel."
+  },
+  "26.03.07": {
+    "context": "A security team needs evidence for an audit.",
+    "concept": "Controls define expected behavior; evidence must be scoped, dated, traceable and reviewed rather than self-certified.",
+    "exercise": "Build a synthetic control register with owner, evidence link, test date and exception expiry.",
+    "positive": "Each control maps to actual evidence or explicitly not-run.",
+    "negative": "Missing or expired evidence cannot count as compliant.",
+    "reference": "https://privacy.gov.ph/",
+    "model": "retentionDecision",
+    "boundary": "Synthetic retention review model only; not legal advice or proof of compliance. Verify current law and organization-specific obligations with qualified counsel."
+  },
+  "26.03.08": {
+    "context": "A learner designs a retention job.",
+    "concept": "Expiry identifies candidates for review; holds, applicable legal duties and safe execution remain separate.",
+    "exercise": "Run retentionDecision at exact cutoff with and without legal hold; produce dry-run candidate list and approval process.",
+    "positive": "Eligible items are reviewable; held records retained.",
+    "negative": "Automatic irreversible deletion on a boolean alone fails.",
+    "reference": "https://privacy.gov.ph/",
+    "model": "retentionDecision",
+    "boundary": "Synthetic retention review model only; not legal advice or proof of compliance. Verify current law and organization-specific obligations with qualified counsel."
+  },
+  "26.04.01": {
+    "context": "An auditor searches privileged activity.",
+    "concept": "Audit queries need tenant scope, bounded filters, pagination, redaction and export authorization.",
+    "exercise": "Design synthetic audit rows for two tenants and a scoped query/export contract.",
+    "positive": "Only permitted records and fields appear.",
+    "negative": "Foreign-tenant records or secrets in export fail.",
+    "reference": "https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html",
+    "model": "adminAllowed",
+    "boundary": "Synthetic tenant-admin authorization model only; actual RBAC, audit integrity, support workflows and migration safety require runtime acceptance."
+  },
+  "26.04.02": {
+    "context": "An operator wants to enable an experimental feature.",
+    "concept": "Flags require scope, safe default, owner, audit and expiry; not a replacement for permissions.",
+    "exercise": "Model a tenant-specific flag change with role and reason, test foreign target.",
+    "positive": "Authorized flag change is scoped and auditable.",
+    "negative": "A flag granting unauthorized access fails.",
+    "reference": "https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html",
+    "model": "adminAllowed",
+    "boundary": "Synthetic tenant-admin authorization model only; actual RBAC, audit integrity, support workflows and migration safety require runtime acceptance."
+  },
+  "26.04.03": {
+    "context": "A service changes its runtime configuration.",
+    "concept": "Configuration needs schema validation, version, secret separation, rollback and clear precedence.",
+    "exercise": "Design synthetic versioned configuration and reject invalid port or unknown setting.",
+    "positive": "Valid update preserves previous version for rollback.",
+    "negative": "Secret in public config or invalid update applied fails.",
+    "reference": "https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html",
+    "model": "adminAllowed",
+    "boundary": "Synthetic tenant-admin authorization model only; actual RBAC, audit integrity, support workflows and migration safety require runtime acceptance."
+  },
+  "26.04.04": {
+    "context": "A tenant admin invites a member.",
+    "concept": "Administrative authority is restricted to own tenant and permitted role transitions.",
+    "exercise": "Run adminAllowed with same and foreign tenant; design real invite and role-assignment tests.",
+    "positive": "Same-tenant admin can perform intended action.",
+    "negative": "Foreign tenant or ordinary member is denied.",
+    "reference": "https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html",
+    "model": "adminAllowed",
+    "boundary": "Synthetic tenant-admin authorization model only; actual RBAC, audit integrity, support workflows and migration safety require runtime acceptance."
+  },
+  "26.04.05": {
+    "context": "Support needs to investigate a customer issue.",
+    "concept": "Use least-privilege support access, time limits, purpose and audit; avoid silent unrestricted impersonation.",
+    "exercise": "Design a synthetic support ticket linked to read-only access approval and expiry.",
+    "positive": "Actions remain scoped to approved ticket and tenant.",
+    "negative": "Unlogged impersonation or broad write access fails.",
+    "reference": "https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html",
+    "model": "adminAllowed",
+    "boundary": "Synthetic tenant-admin authorization model only; actual RBAC, audit integrity, support workflows and migration safety require runtime acceptance."
+  },
+  "26.04.06": {
+    "context": "A platform encounters automated abuse.",
+    "concept": "Abuse management combines bounded rate controls, review, appeals, and scoped enforcement.",
+    "exercise": "Design synthetic abuse cases with temporary restriction, reviewer decision and false-positive appeal.",
+    "positive": "Restrictions have reason and expiry or review path.",
+    "negative": "Silent permanent ban or broad tenant-wide penalty without policy fails.",
+    "reference": "https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html",
+    "model": "adminAllowed",
+    "boundary": "Synthetic tenant-admin authorization model only; actual RBAC, audit integrity, support workflows and migration safety require runtime acceptance."
+  },
+  "26.04.07": {
+    "context": "A customer imports historical records from CSV.",
+    "concept": "Imports need staged validation, mapping, dry run, dedupe, transaction and restart plan.",
+    "exercise": "Create synthetic CSV with valid, duplicate and invalid rows; rehearse dry-run and rejected-row report.",
+    "positive": "Valid records map consistently; failures are traceable.",
+    "negative": "Partial silent import or cross-tenant mapping fails.",
+    "reference": "https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html",
+    "model": "adminAllowed",
+    "boundary": "Synthetic tenant-admin authorization model only; actual RBAC, audit integrity, support workflows and migration safety require runtime acceptance."
+  },
+  "26.04.08": {
+    "context": "A learner designs an administrative console.",
+    "concept": "Privileged UI must enforce server authorization for every operation, with reason, confirmation and audit for sensitive actions.",
+    "exercise": "Run adminAllowed; implement a disposable scoped settings action with denial and audit assertions.",
+    "positive": "Authorized action recorded, unauthorized action blocked.",
+    "negative": "Client-only permission check or missing audit evidence fails.",
+    "reference": "https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html",
+    "model": "adminAllowed",
+    "boundary": "Synthetic tenant-admin authorization model only; actual RBAC, audit integrity, support workflows and migration safety require runtime acceptance."
+  },
+  "27.01.01": {
+    "context": "A small team proposes a multi-tenant task workspace.",
+    "concept": "Requirements distinguish actors, core journeys, constraints, non-goals and measurable acceptance.",
+    "exercise": "Write scope for sign-in, task editing and organization separation; exclude optional billing and mobile from first release.",
+    "positive": "Each must-have has a testable outcome.",
+    "negative": "Unbounded feature list without acceptance fails.",
+    "reference": "https://nextjs.org/docs",
+    "model": "webAcceptance",
+    "boundary": "Capstone rubric checks supplied evidence flags only; no actual app build, SEO, browser or accessibility verification."
+  },
+  "27.01.02": {
+    "context": "A team must choose a frontend/backend stack.",
+    "concept": "An ADR records problem, alternatives, decision, consequences and conditions for reversal.",
+    "exercise": "Compare a Next-only service with Next plus Nest backend; record constraints and why one is selected.",
+    "positive": "Choice is tied to scope and tradeoffs.",
+    "negative": "Framework preference without reasons or migration cost fails.",
+    "reference": "https://nextjs.org/docs",
+    "model": "webAcceptance",
+    "boundary": "Capstone rubric checks supplied evidence flags only; no actual app build, SEO, browser or accessibility verification."
+  },
+  "27.01.03": {
+    "context": "A user needs to find tasks and account settings.",
+    "concept": "Information architecture maps pages, navigation, hierarchy, auth boundaries and empty/error states.",
+    "exercise": "Create route inventory and task-flow diagram for public and protected pages.",
+    "positive": "Core tasks can be completed with predictable navigation.",
+    "negative": "Protected page linked without authorization or dead-end error fails.",
+    "reference": "https://nextjs.org/docs",
+    "model": "webAcceptance",
+    "boundary": "Capstone rubric checks supplied evidence flags only; no actual app build, SEO, browser or accessibility verification."
+  },
+  "27.01.04": {
+    "context": "A workspace needs consistent controls.",
+    "concept": "A component library defines semantic primitives, tokens, variants and accessible interaction states.",
+    "exercise": "Build local button, input, dialog and table examples with keyboard and dark/light states.",
+    "positive": "Components retain readable labels and focus.",
+    "negative": "Visual consistency hiding inaccessible interactions fails.",
+    "reference": "https://nextjs.org/docs",
+    "model": "webAcceptance",
+    "boundary": "Capstone rubric checks supplied evidence flags only; no actual app build, SEO, browser or accessibility verification."
+  },
+  "27.01.05": {
+    "context": "A public product site must be discoverable.",
+    "concept": "SEO requires meaningful content, metadata, canonical URLs, crawl rules and performance; protected content stays private.",
+    "exercise": "Build a disposable public page and inspect rendered title, canonical, links and robots policy.",
+    "positive": "Public content discoverable and private content not indexed.",
+    "negative": "Private workspace included in public sitemap fails.",
+    "reference": "https://nextjs.org/docs",
+    "model": "webAcceptance",
+    "boundary": "Capstone rubric checks supplied evidence flags only; no actual app build, SEO, browser or accessibility verification."
+  },
+  "27.01.06": {
+    "context": "A signed-in user opens a workspace.",
+    "concept": "Server verifies identity and membership; client routes reflect authorization but are not the boundary.",
+    "exercise": "Implement local session fixture and authorized/anonymous/foreign workspace navigation tests.",
+    "positive": "Authorized actor sees own workspace.",
+    "negative": "Foreign data or protected route relying only on UI guard fails.",
+    "reference": "https://nextjs.org/docs",
+    "model": "webAcceptance",
+    "boundary": "Capstone rubric checks supplied evidence flags only; no actual app build, SEO, browser or accessibility verification."
+  },
+  "27.01.07": {
+    "context": "A keyboard-only user completes a task.",
+    "concept": "Accessibility acceptance requires keyboard, focus, label, contrast, zoom and assistive technology review.",
+    "exercise": "Complete a local task flow with keyboard and 200% zoom; record screen-reader observations.",
+    "positive": "User can complete and recover from errors.",
+    "negative": "Trapped focus, unreadable text or unlabeled control fails.",
+    "reference": "https://nextjs.org/docs",
+    "model": "webAcceptance",
+    "boundary": "Capstone rubric checks supplied evidence flags only; no actual app build, SEO, browser or accessibility verification."
+  },
+  "27.01.08": {
+    "context": "A learner reviews the web milestone.",
+    "concept": "Release acceptance binds scope, workspace behavior, SEO and accessibility evidence to an exact commit.",
+    "exercise": "Run webAcceptance rubric, attach actual build and browser evidence for each required item.",
+    "positive": "Every required artifact is reviewed separately.",
+    "negative": "Passing boolean fixture alone cannot release the app.",
+    "reference": "https://nextjs.org/docs",
+    "model": "webAcceptance",
+    "boundary": "Capstone rubric checks supplied evidence flags only; no actual app build, SEO, browser or accessibility verification."
+  },
+  "27.02.01": {
+    "context": "A frontend and API disagree about task payload.",
+    "concept": "OpenAPI describes the HTTP contract; runtime validation enforces trusted boundaries. Keep schemas and generated clients aligned.",
+    "exercise": "Define create-task request/response with Zod and OpenAPI; test invalid length and unknown fields.",
+    "positive": "Valid request matches documented response.",
+    "negative": "Invalid body or divergent schema fails.",
+    "reference": "https://docs.nestjs.com/",
+    "model": "apiAcceptance",
+    "boundary": "Capstone API status/DTO rubric only; no live NestJS, PostgreSQL, Prisma, Supabase or JWT validation established."
+  },
+  "27.02.02": {
+    "context": "A backend mixes auth, task rules and database access.",
+    "concept": "Nest modules separate ownership, controllers, use cases and injected infrastructure.",
+    "exercise": "Create disposable task module with repository port and auth guard; test dependency injection.",
+    "positive": "Use case has explicit dependencies and route contract.",
+    "negative": "Controller bypassing domain/authorization policy fails.",
+    "reference": "https://docs.nestjs.com/",
+    "model": "apiAcceptance",
+    "boundary": "Capstone API status/DTO rubric only; no live NestJS, PostgreSQL, Prisma, Supabase or JWT validation established."
+  },
+  "27.02.03": {
+    "context": "A task table must support many organizations.",
+    "concept": "Relational constraints and migrations enforce stable IDs, tenant relationships and invariants.",
+    "exercise": "Create disposable PostgreSQL migration for organizations, members and tasks; test foreign-key violation and rollback.",
+    "positive": "Valid rows persist; invalid relationships denied.",
+    "negative": "Cross-tenant relationship or unreviewed destructive migration fails.",
+    "reference": "https://docs.nestjs.com/",
+    "model": "apiAcceptance",
+    "boundary": "Capstone API status/DTO rubric only; no live NestJS, PostgreSQL, Prisma, Supabase or JWT validation established."
+  },
+  "27.02.04": {
+    "context": "A service uses Prisma for persistence.",
+    "concept": "Repository adapters map validated domain requests to scoped database queries; generated types are not authorization.",
+    "exercise": "Implement disposable Prisma task repository and test tenant filter, pagination and transaction behavior.",
+    "positive": "Own tenant queries return expected rows.",
+    "negative": "Unscoped find/update or query leakage fails.",
+    "reference": "https://docs.nestjs.com/",
+    "model": "apiAcceptance",
+    "boundary": "Capstone API status/DTO rubric only; no live NestJS, PostgreSQL, Prisma, Supabase or JWT validation established."
+  },
+  "27.02.05": {
+    "context": "An API receives a Supabase access token.",
+    "concept": "Validate trusted issuer, signature, audience, time and key rotation using supported verification; never trust merely decoded claims.",
+    "exercise": "Use authorized local/sandbox Supabase and documented JWT validation; test expired, tampered and wrong audience tokens.",
+    "positive": "Only verified valid token establishes identity.",
+    "negative": "Unsigned or decoded-only token accepted fails.",
+    "reference": "https://docs.nestjs.com/",
+    "model": "apiAcceptance",
+    "boundary": "Capstone API status/DTO rubric only; no live NestJS, PostgreSQL, Prisma, Supabase or JWT validation established."
+  },
+  "27.02.06": {
+    "context": "A user guesses another organization's task ID.",
+    "concept": "Tenant membership and permissions must be checked server-side and backed by appropriate database policies.",
+    "exercise": "Run apiAcceptance synthetic statuses; execute actual own/anonymous/foreign requests in disposable DB/API.",
+    "positive": "Owner 200, anonymous 401, foreign 404 by chosen contract.",
+    "negative": "Foreign record or private field exposed fails.",
+    "reference": "https://docs.nestjs.com/",
+    "model": "apiAcceptance",
+    "boundary": "Capstone API status/DTO rubric only; no live NestJS, PostgreSQL, Prisma, Supabase or JWT validation established."
+  },
+  "27.02.07": {
+    "context": "A backend release changes routing and persistence.",
+    "concept": "Integration tests cross actual server, database and auth boundaries with isolated fixtures.",
+    "exercise": "Boot API on loopback with disposable DB; run create/read/update/deny and rollback tests.",
+    "positive": "Expected data and response changes match.",
+    "negative": "Mock-only tests cannot establish actual DB behavior.",
+    "reference": "https://docs.nestjs.com/",
+    "model": "apiAcceptance",
+    "boundary": "Capstone API status/DTO rubric only; no live NestJS, PostgreSQL, Prisma, Supabase or JWT validation established."
+  },
+  "27.02.08": {
+    "context": "A learner defends secured API milestone.",
+    "concept": "Review contracts, migrations, auth verification, isolation, tests and recorded exact commit before accepting.",
+    "exercise": "Run apiAcceptance; gather actual request traces and DB role tests for all required cases.",
+    "positive": "Evidence establishes documented authorization and DTO policy.",
+    "negative": "Missing negative test, secret exposure or wrong commit blocks review.",
+    "reference": "https://docs.nestjs.com/",
+    "model": "apiAcceptance",
+    "boundary": "Capstone API status/DTO rubric only; no live NestJS, PostgreSQL, Prisma, Supabase or JWT validation established."
+  },
+  "27.03.01": {
+    "context": "A workspace lists thousands of tasks.",
+    "concept": "CRUD contracts include bounded pagination, stable ordering, validation and scoped writes.",
+    "exercise": "Build local paginated list with same-sort values and invalid cursor; test owner and foreign tenant.",
+    "positive": "Pages contain each intended row without duplicates.",
+    "negative": "Unbounded result or cross-tenant cursor accepted fails.",
+    "reference": "https://cheatsheetseries.owasp.org/",
+    "model": "workspaceAcceptance",
+    "boundary": "Synthetic integrated-feature rubric; actual upload, mail, Redis, websocket, search and audit behavior require live isolated tests."
+  },
+  "27.03.02": {
+    "context": "A user attaches a file to a task.",
+    "concept": "Validate bytes, size, type, ownership and scan/quarantine before authorized access.",
+    "exercise": "Use disposable upload fixture with valid file and mismatched content; verify denied access while pending.",
+    "positive": "Clean authorized file becomes accessible after review.",
+    "negative": "Mismatched or quarantined object exposed fails.",
+    "reference": "https://cheatsheetseries.owasp.org/",
+    "model": "workspaceAcceptance",
+    "boundary": "Synthetic integrated-feature rubric; actual upload, mail, Redis, websocket, search and audit behavior require live isolated tests."
+  },
+  "27.03.03": {
+    "context": "A task assignment sends a notification.",
+    "concept": "Durable queue and outbox separate transaction from external delivery; retries need stable identifiers.",
+    "exercise": "Implement a disposable assignment/outbox transaction and fake sender with duplicate and failed delivery.",
+    "positive": "One logical notification is tracked with retry outcome.",
+    "negative": "Email sent for rolled-back assignment or duplicate effect fails.",
+    "reference": "https://cheatsheetseries.owasp.org/",
+    "model": "workspaceAcceptance",
+    "boundary": "Synthetic integrated-feature rubric; actual upload, mail, Redis, websocket, search and audit behavior require live isolated tests."
+  },
+  "27.03.04": {
+    "context": "A task update makes cached list data stale.",
+    "concept": "Invalidate or version derived caches after committed writes; keys must include appropriate tenant scope.",
+    "exercise": "Use disposable Redis and synthetic tasks; warm cache, update, invalidate and test another tenant.",
+    "positive": "Updated own list converges; foreign cache isolated.",
+    "negative": "Stale data permanently retained or cross-tenant leakage fails.",
+    "reference": "https://cheatsheetseries.owasp.org/",
+    "model": "workspaceAcceptance",
+    "boundary": "Synthetic integrated-feature rubric; actual upload, mail, Redis, websocket, search and audit behavior require live isolated tests."
+  },
+  "27.03.05": {
+    "context": "A teammate receives task changes in real time.",
+    "concept": "Live updates need authorization, scoped subscriptions, versioning and reconnect reconciliation.",
+    "exercise": "Use local websocket/SSE fixture with two tenants; drop connection and replay missed updates.",
+    "positive": "Authorized updates arrive and reconnect converges.",
+    "negative": "Foreign event or stale state after reconnect fails.",
+    "reference": "https://cheatsheetseries.owasp.org/",
+    "model": "workspaceAcceptance",
+    "boundary": "Synthetic integrated-feature rubric; actual upload, mail, Redis, websocket, search and audit behavior require live isolated tests."
+  },
+  "27.03.06": {
+    "context": "A user searches many task descriptions.",
+    "concept": "Search applies tenant/ACL filters before ranking and returns bounded results; index updates need freshness contract.",
+    "exercise": "Seed disposable search with similar terms in two tenants; test query, pagination and stale update.",
+    "positive": "Relevant own records returned only.",
+    "negative": "Foreign result or unbounded search fails.",
+    "reference": "https://cheatsheetseries.owasp.org/",
+    "model": "workspaceAcceptance",
+    "boundary": "Synthetic integrated-feature rubric; actual upload, mail, Redis, websocket, search and audit behavior require live isolated tests."
+  },
+  "27.03.07": {
+    "context": "An admin needs to explain a task change.",
+    "concept": "Audit trail records actor, action, target, outcome and time; sensitive content excluded.",
+    "exercise": "Create, edit and deny synthetic actions; inspect scoped audit output and replay correlation.",
+    "positive": "Relevant events are traceable without secrets.",
+    "negative": "Missing denied action or editable unaudited history fails.",
+    "reference": "https://cheatsheetseries.owasp.org/",
+    "model": "workspaceAcceptance",
+    "boundary": "Synthetic integrated-feature rubric; actual upload, mail, Redis, websocket, search and audit behavior require live isolated tests."
+  },
+  "27.03.08": {
+    "context": "A learner integrates workspace features.",
+    "concept": "Cross-feature acceptance verifies behavior, security boundaries, error recovery and audit together.",
+    "exercise": "Run workspaceAcceptance; execute actual create/upload/notification/cache/live/search flow with negative cases.",
+    "positive": "Required journey works with isolation and audit evidence.",
+    "negative": "Passing isolated units but failing integrated journey blocks milestone.",
+    "reference": "https://cheatsheetseries.owasp.org/",
+    "model": "workspaceAcceptance",
+    "boundary": "Synthetic integrated-feature rubric; actual upload, mail, Redis, websocket, search and audit behavior require live isolated tests."
+  },
+  "27.04.01": {
+    "context": "A local app needs a reproducible multi-service environment.",
+    "concept": "Compose declares service dependencies, private networking, volumes, env boundaries and health checks.",
+    "exercise": "Create a disposable stack with app and DB; use synthetic secrets and inspect port exposure and readiness.",
+    "positive": "Stack starts reproducibly and DB is private.",
+    "negative": "Public DB or credentials in committed env fails.",
+    "reference": "https://docs.docker.com/",
+    "model": "productionAcceptance",
+    "boundary": "Capstone readiness rubric only; no container, deployment, scan, benchmark or restore is verified by supplied booleans."
+  },
+  "27.04.02": {
+    "context": "A candidate commit must pass repeatable checks.",
+    "concept": "CI specifies immutable inputs, required jobs and exact-commit evidence; local qualification can precede hosted automation.",
+    "exercise": "Use existing local coordinator and design required lint/type/test/build jobs without enabling Actions.",
+    "positive": "Required checks have actual matching results.",
+    "negative": "Skipped or stale job cannot pass.",
+    "reference": "https://docs.docker.com/",
+    "model": "productionAcceptance",
+    "boundary": "Capstone readiness rubric only; no container, deployment, scan, benchmark or restore is verified by supplied booleans."
+  },
+  "27.04.03": {
+    "context": "A new release must be reversible.",
+    "concept": "Deploy a reviewed immutable artifact, verify compatibility and health, define rollback and migration recovery.",
+    "exercise": "Rehearse a disposable release with failed smoke and rollback to prior known version.",
+    "positive": "Rollback restores intended service and preserves data.",
+    "negative": "Incompatible destructive change or unverified rollback fails.",
+    "reference": "https://docs.docker.com/",
+    "model": "productionAcceptance",
+    "boundary": "Capstone readiness rubric only; no container, deployment, scan, benchmark or restore is verified by supplied booleans."
+  },
+  "27.04.04": {
+    "context": "An API failure must be detectable.",
+    "concept": "Logs, metrics, traces and alerts should describe user impact without leaking data; ownership and runbooks matter.",
+    "exercise": "Instrument isolated API, trigger bounded failure and verify alert/runbook path.",
+    "positive": "Failure is correlated and actionable.",
+    "negative": "Secret logging or unowned noisy alerts fail.",
+    "reference": "https://docs.docker.com/",
+    "model": "productionAcceptance",
+    "boundary": "Capstone readiness rubric only; no container, deployment, scan, benchmark or restore is verified by supplied booleans."
+  },
+  "27.04.05": {
+    "context": "A release may introduce authorization and dependency regressions.",
+    "concept": "Security verification needs concrete abuse cases, dependency review and relevant trust boundaries.",
+    "exercise": "Run scoped auth tests, secret scan and current dependency audit on exact candidate; triage findings.",
+    "positive": "Blocking findings resolved or explicitly held.",
+    "negative": "Scanner outage or foreign tenant access fails.",
+    "reference": "https://docs.docker.com/",
+    "model": "productionAcceptance",
+    "boundary": "Capstone readiness rubric only; no container, deployment, scan, benchmark or restore is verified by supplied booleans."
+  },
+  "27.04.06": {
+    "context": "A service must meet a defined latency target.",
+    "concept": "Performance qualification uses matched workloads, thresholds, errors and repeatable conditions.",
+    "exercise": "Benchmark disposable API with bounded k6 or equivalent; record p95, errors and resource usage.",
+    "positive": "Measured workload meets predefined target.",
+    "negative": "Dropping failures or claiming synthetic samples as real benchmark fails.",
+    "reference": "https://docs.docker.com/",
+    "model": "productionAcceptance",
+    "boundary": "Capstone readiness rubric only; no container, deployment, scan, benchmark or restore is verified by supplied booleans."
+  },
+  "27.04.07": {
+    "context": "A backup exists but recovery has never been tested.",
+    "concept": "Restore drills verify data, application behavior, recovery time and loss objectives.",
+    "exercise": "Restore synthetic backup into separate disposable DB; compare counts and use-case results.",
+    "positive": "Restored data and elapsed recovery are recorded.",
+    "negative": "Backup-only evidence or failed validation blocks readiness.",
+    "reference": "https://docs.docker.com/",
+    "model": "productionAcceptance",
+    "boundary": "Capstone readiness rubric only; no container, deployment, scan, benchmark or restore is verified by supplied booleans."
+  },
+  "27.04.08": {
+    "context": "A learner reviews production readiness.",
+    "concept": "Acceptance includes build, security, observability, rollback and tested restore, plus manual review of remaining risks.",
+    "exercise": "Run productionAcceptance; attach actual candidate-specific evidence and signoff for each item.",
+    "positive": "All required real checks pass or remain explicitly blocked.",
+    "negative": "Missing restore, failed security or false evidence cannot authorize launch.",
+    "reference": "https://docs.docker.com/",
+    "model": "productionAcceptance",
+    "boundary": "Capstone readiness rubric only; no container, deployment, scan, benchmark or restore is verified by supplied booleans."
+  },
+  "27.05.01": {
+    "context": "A reviewer searches for weaknesses in a learner project.",
+    "concept": "Authorized security review has defined scope, synthetic accounts, impact limits and responsible reporting.",
+    "exercise": "Review disposable app for auth, input, secrets and recovery defects; record reproducible findings and fixes.",
+    "positive": "Findings have impact, reproduction and regression tests.",
+    "negative": "Testing unapproved external systems or unverifiable claims fails.",
+    "reference": "https://martinfowler.com/architecture/",
+    "model": "defenseAcceptance",
+    "boundary": "Final defense rubric only; actual human review, exploit verification, performance, costs and upgrade rehearsal remain separate."
+  },
+  "27.05.02": {
+    "context": "A dependency fails during a technical defense.",
+    "concept": "Bounded fault drills demonstrate behavior, fallback, recovery and observability in an isolated environment.",
+    "exercise": "Inject one synthetic dependency timeout and record impact, abort criteria and restoration.",
+    "positive": "System follows documented failure behavior and recovers.",
+    "negative": "Unbounded retries, missing recovery or live-service disruption fails.",
+    "reference": "https://martinfowler.com/architecture/",
+    "model": "defenseAcceptance",
+    "boundary": "Final defense rubric only; actual human review, exploit verification, performance, costs and upgrade rehearsal remain separate."
+  },
+  "27.05.03": {
+    "context": "A learner explains why the system is modular rather than distributed.",
+    "concept": "Architecture defense compares alternatives using constraints, measurements, failure domains and migration costs.",
+    "exercise": "Present ADR and diagram; explain when service extraction would become justified.",
+    "positive": "Decision includes tradeoffs and measurable trigger.",
+    "negative": "Tool names alone or unsupported scale claims fail.",
+    "reference": "https://martinfowler.com/architecture/",
+    "model": "defenseAcceptance",
+    "boundary": "Final defense rubric only; actual human review, exploit verification, performance, costs and upgrade rehearsal remain separate."
+  },
+  "27.05.04": {
+    "context": "A future maintainer needs to understand the app.",
+    "concept": "Source and API documentation should cover setup, contracts, architecture, operational limits and troubleshooting.",
+    "exercise": "Write a fresh-checkout guide and OpenAPI examples; ask another reviewer to follow them.",
+    "positive": "A reviewer can reproduce supported flow.",
+    "negative": "Missing prerequisites or invented test outcomes fail.",
+    "reference": "https://martinfowler.com/architecture/",
+    "model": "defenseAcceptance",
+    "boundary": "Final defense rubric only; actual human review, exploit verification, performance, costs and upgrade rehearsal remain separate."
+  },
+  "27.05.05": {
+    "context": "A SaaS prototype needs an operating-cost forecast.",
+    "concept": "Model workload, storage, transfer, compute, third-party usage and uncertainty; obtain current prices before real commitment.",
+    "exercise": "Build low/base/high hypothetical monthly demand and costs; document free-tier limits separately.",
+    "positive": "Assumptions and sensitivity are explicit.",
+    "negative": "Ignoring variable usage or presenting hypothetical costs as quotes fails.",
+    "reference": "https://martinfowler.com/architecture/",
+    "model": "defenseAcceptance",
+    "boundary": "Final defense rubric only; actual human review, exploit verification, performance, costs and upgrade rehearsal remain separate."
+  },
+  "27.05.06": {
+    "context": "A graduate wants to publish a portfolio case study.",
+    "concept": "A credible case study explains problem, design, implementation, verified outcomes and remaining limits.",
+    "exercise": "Draft one-page project case study with architecture, screenshots from actual app and test evidence.",
+    "positive": "Claims map to real artifacts and tradeoffs.",
+    "negative": "Invented production metrics or credentials in screenshots fail.",
+    "reference": "https://martinfowler.com/architecture/",
+    "model": "defenseAcceptance",
+    "boundary": "Final defense rubric only; actual human review, exploit verification, performance, costs and upgrade rehearsal remain separate."
+  },
+  "27.05.07": {
+    "context": "A dependency upgrade may break the system.",
+    "concept": "Upgrade plan inventories versions, advisories, compatibility, migrations and rollback; test incrementally.",
+    "exercise": "Create a reviewable upgrade branch for one dependency with lockfile and regression checks.",
+    "positive": "Actual upgrade diff and test results are recorded.",
+    "negative": "Fabricated lock or unexplained breaking change fails.",
+    "reference": "https://martinfowler.com/architecture/",
+    "model": "defenseAcceptance",
+    "boundary": "Final defense rubric only; actual human review, exploit verification, performance, costs and upgrade rehearsal remain separate."
+  },
+  "27.05.08": {
+    "context": "A learner completes the technical assessment.",
+    "concept": "A final defense evaluates implementation evidence, tradeoffs, recovery, cost and documentation, not memorized tool lists.",
+    "exercise": "Run defenseAcceptance; assemble commit-bound portfolio, demo, negative tests, runbook and independent review rubric.",
+    "positive": "Reviewer can reproduce core flow and challenge assumptions.",
+    "negative": "Pending or unverified evidence remains incomplete.",
+    "reference": "https://martinfowler.com/architecture/",
+    "model": "defenseAcceptance",
+    "boundary": "Final defense rubric only; actual human review, exploit verification, performance, costs and upgrade rehearsal remain separate."
+  }
+}

@@ -5,7 +5,7 @@
 ## Verified source-of-truth inventory
 
 - **28 tracks, 111 modules and 889 canonical topics.**
-- **338 published unique lesson IDs** (337 published MDX and one distinct interactive publication), **415 unpublished authored drafts**, **136 not yet authored**.
+- **338 published unique lesson IDs** (337 published MDX and one distinct interactive publication), **551 unpublished authored drafts**, **0 not yet authored**.
 - Source-only chapters, code labs, local HTTP fixtures and PostgreSQL SQL scripts **are not published lessons** until all of their publication gates pass.
 - `docs/checkpoint.json` records the last verified historical hosted application baseline separately from ongoing unreleased source work.
 
@@ -56,3 +56,7 @@ The 64 new topics remain **draft-unverified**, including their model exercises. 
 ## P6 Operations and Architecture source coverage (2026-11-24)
 
 `npm run test:p6-operations-source` is included in `verify:offline`. It audits the 80 Track 21–23 manuscripts and executes ten teaching models and source-auditor fixtures. All 144 P6 topics now have source manuscripts; none is promoted by these checks. Actual OpenTelemetry/Pino/Sentry, SRE fault and restore drills, browser performance, database/HTTP benchmarking, cache and broker semantics, real code dependency analysis and distributed recovery require separate qualification. No model pass is evidence of actual runtime integration or production reliability.
+
+## P7 final manuscript coverage (2026-11-24)
+
+`npm run test:p7-source` audits the 136 canonical P7 drafts and executes local model/fixture tests. All three P6/P7 source groups are required by the release-matrix auditor. Actual native platform builds, SQLite durability, real analytics/vector/spatial databases, media pipelines, identity and payment providers, independent privacy review and all capstone runtimes remain unqualified. The capstone assessment rubric does not certify graduation. Authoring inventory is complete; no publication, deployment, dependency lock or hosted workflow changes were made. The draft-overlap guard intentionally requires an explicit reviewed update during future module promotion. Reference URLs have not been independently checked for current availability or version applicability.

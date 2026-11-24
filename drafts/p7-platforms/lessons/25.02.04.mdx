@@ -1,0 +1,61 @@
+---
+id: "25.02.04"
+title: "Embeddings and pgvector"
+module: "25.02"
+status: "draft-unverified"
+readyToPublish: false
+---
+
+# Embeddings and pgvector
+
+> Instructor draft. Local models do not qualify native platforms, real providers or production deployments.
+
+## Learning outcomes
+
+Explain the engineering decision, reproduce or design the positive and negative experiment, and identify the remaining evidence.
+
+## Context
+
+An assistant searches semantic document vectors.
+
+## Step 1 — Mental model
+
+Embeddings represent text numerically; model/version/dimension and tenant metadata belong to the index contract.
+
+## Step 2 — Guided practice
+
+In disposable PostgreSQL with pgvector, store synthetic vectors and query with tenant filter; test wrong dimension.
+
+Use synthetic data, a disposable environment and authorized accounts only. Record expected behavior before execution.
+
+## Step 3 — Acceptance
+
+**Positive:** Authorized nearest candidates are returned.
+
+**Negative:** Cross-tenant retrieval or mismatched dimension fails.
+
+Inspect the complementary `citedAnswer` teaching model. Extend its assertions when relevant; it is not an implementation of the full external technology.
+
+```bash
+node --test --test-name-pattern="25[.]02" examples/p7-platforms/labs.test.mjs
+```
+
+## Qualification boundary
+
+Synthetic citation membership check; not evidence of factual grounding, model safety, embeddings or real provider behavior.
+
+## Knowledge check
+
+1. What is the invariant and trust boundary?
+2. Which negative result falsifies an unsafe design?
+3. Which real tool or reviewer must supply missing evidence?
+
+**Assessment:** Record exact fixture input, expected and actual output, negative evidence and not-run checks. Do not substitute a design or model for a real acceptance result.
+
+## References
+
+- [Technical reference](https://github.com/pgvector/pgvector)
+
+## Publication conditions
+
+Complete editorial review, red/green exercises, applicable actual runtimes, the full Node 24 build, browser and human accessibility gates. Keep the draft unpublished until its module is approved.

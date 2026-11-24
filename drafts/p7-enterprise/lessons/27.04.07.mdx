@@ -1,0 +1,61 @@
+---
+id: "27.04.07"
+title: "Backup restore drill"
+module: "27.04"
+status: "draft-unverified"
+readyToPublish: false
+---
+
+# Backup restore drill
+
+> Instructor draft. Local models do not qualify external identity, billing, privacy compliance or an actual capstone release.
+
+## Learning outcomes
+
+Explain the engineering decision, reproduce or design the positive and negative experiment, and identify the remaining evidence.
+
+## Context
+
+A backup exists but recovery has never been tested.
+
+## Step 1 — Mental model
+
+Restore drills verify data, application behavior, recovery time and loss objectives.
+
+## Step 2 — Guided practice
+
+Restore synthetic backup into separate disposable DB; compare counts and use-case results.
+
+Use synthetic data, a disposable environment and authorized accounts only. Record expected behavior before execution.
+
+## Step 3 — Acceptance
+
+**Positive:** Restored data and elapsed recovery are recorded.
+
+**Negative:** Backup-only evidence or failed validation blocks readiness.
+
+Inspect the complementary `productionAcceptance` teaching model. Extend its assertions when relevant; it is not an implementation of the full external technology.
+
+```bash
+node --test --test-name-pattern="27[.]04" examples/p7-platforms/labs.test.mjs
+```
+
+## Qualification boundary
+
+Capstone readiness rubric only; no container, deployment, scan, benchmark or restore is verified by supplied booleans.
+
+## Knowledge check
+
+1. What is the invariant and trust boundary?
+2. Which negative result falsifies an unsafe design?
+3. Which real tool or reviewer must supply missing evidence?
+
+**Assessment:** Record exact fixture input, expected and actual output, negative evidence and not-run checks. Do not substitute a design or model for a real acceptance result.
+
+## References
+
+- [Technical reference](https://docs.docker.com/)
+
+## Publication conditions
+
+Complete editorial review, red/green exercises, applicable actual runtimes, the full Node 24 build, browser and human accessibility gates. Keep the draft unpublished until its module is approved.
