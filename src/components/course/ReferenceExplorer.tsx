@@ -22,15 +22,16 @@ export function ReferenceExplorer({
   const authoredSet = useMemo(() => new Set(authoredIds), [authoredIds]);
 
   const results = useMemo(() => {
-    const term = query.trim().toLocaleLowerCase();
+    const normalize = (value: string) => value.toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+    const terms = normalize(query).split(/\s+/).filter(Boolean);
     return entries
       .filter((entry) => {
         const hasDraft = authoredSet.has(entry.id);
         if (category !== 'all' && entry.category !== category) return false;
         if (visibility === 'authored' && !hasDraft) return false;
         if (visibility === 'indexed' && hasDraft) return false;
-        if (!term) return true;
-        return `${entry.title} ${entry.category} ${entry.id}`.toLocaleLowerCase().includes(term);
+        const haystack = normalize(`${entry.title} ${entry.category} ${entry.id}`);
+        return terms.every((term) => haystack.includes(term));
       })
       .sort((left, right) => {
         const publicationRank = Number(authoredSet.has(right.id)) - Number(authoredSet.has(left.id));
