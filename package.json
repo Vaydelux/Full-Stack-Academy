@@ -397,7 +397,7 @@
     "test:red-backend-contract": "node --test tests/backend-contract-red-starters.test.mjs",
     "test:forms-query-rhf-editorial": "node --test tests/forms-query-rhf-editorial.test.mjs",
     "test:forms-query-draft-preview": "node --test tests/forms-query-draft-preview.test.mjs",
-    "test:p8-ui": "node --test tests/p8-lesson-neighbors.test.mjs",
+    "test:p8-ui": "node --test tests/p8-lesson-neighbors.test.mjs tests/bounded-child.test.mjs",
     "test:p8-reference": "node --experimental-strip-types --test tests/p8-reference-search.test.mjs tests/p8-reference-catalog.test.mjs",
     "test:p8-learning": "node --test tests/p8-editorial-readiness.test.mjs tests/p8-source-evidence.test.mjs tests/p8-p1-editorial-parity.test.mjs examples/p8-conditional-write/server.test.mjs",
     "test:forms-query-p1-content": "node --test tests/forms-query-p1-content.test.mjs",
