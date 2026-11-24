@@ -9,9 +9,9 @@
     "productionUrl": "https://fullstack-academy-ecru.vercel.app/"
   },
   "development": {
-    "branch": "feat/p5-postgresql-transactional-inbox-20261124",
-    "state": "p5-transactional-postgres-inbox-source-and-guarded-qualifiers-unpublished",
-    "note": "Added a separate opt-in PostgreSQL 17+ inbox adapter with HMAC-v2 auth, tenant-bound pooled transactions, AES-GCM payloads, idempotent insert, SKIP LOCKED lease claims, dead-letter state and fail-closed connection discard on uncertain COMMIT/ROLLBACK. 70/70 local Node22 adapter/mock/SQL-guard/live-option tests passed. Both real PostgreSQL qualifiers and full Node24/Next/browser/vendor qualification NOT run. 20 P5 source-test groups. Published 338, unpublished authored 272, unauthored 279."
+    "branch": "feat/local-qualification-coordinator-20261124",
+    "state": "commit-bound-local-qualification-coordinator-source-qualified",
+    "note": "Added read-only --plan/--plan-p1 and explicit --run/--run-p1 profiles, clean commit and lock SHA256 checks, per-gate fail-closed receipts, and P5 bundle script/recursion audit. 112/112 targeted Node22 tests: 36 coordinator, 6 matrix regressions, 70 exact-source PostgreSQL mock/guard/config. NestJS package-lock.json absent on main. Full Node24/Next, actual PostgreSQL, provider and manual accessibility gates remain NOT run; 338 published unchanged."
   },
   "snapshot": {
     "tracks": 28,
@@ -73,6 +73,6 @@
     "devHighFindings": 14,
     "exceptionExpires": "2026-12-02"
   },
-  "nextMilestone": "Clean Node24 checkout npm ci + full verify:offline; run 16 real SQL assertions via rollback-only psql and separate 11-check real pg concurrent-worker smoke in confirmed disposable PostgreSQL17+ DB; review RLS/role, KMS, vendor signatures and accessibility before promotion.",
-  "status": "p5-postgresql-transactional-inbox-source-staged-not-qualified"
+  "nextMilestone": "On clean Node24.9+ checkout with Playwright, execute P1 profile first; obtain actual P1 browser results and manual review, and generate/review genuine NestJS lock via npm before all-profile qualification. Then run real PostgreSQL/Prisma/Supabase/Redis/provider gates individually; only reviewed module-atomic publication.",
+  "status": "local-qualification-coordinator-source-tested-publication-blocked"
 }

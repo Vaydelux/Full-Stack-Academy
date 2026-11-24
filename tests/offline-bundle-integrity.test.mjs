@@ -1,0 +1,14 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {auditOfflineMatrix} from '../scripts/offline-contract.mjs';
+const steps=['test:release-gate-coverage','test:curriculum-readiness','test:publication-phases','test:p4-source','test:p5-bundle','lint','typecheck','test','build'];
+const p5=['test:p5-security','test:p5-postgresql-source','test:p5-rls-source','test:p5-curriculum-source','test:p5-httpdb-source','test:p5-container-source','test:p5-evidence-source','test:p5-cache-jobs','test:p5-redis-source','test:p5-realtime-labs','test:p5-realtime-source','test:p5-integrations-labs','test:p5-integrations-source','test:p5-integrations-http','test:p5-postgres-search-source','test:p5-webhook-integrity','test:p5-durable-inbox','test:p5-durable-http','test:p5-multiprocess-inbox','test:p5-postgres-inbox-source'];
+const source="const steps = [\n"+steps.map(x=>" '"+x+"',").join('\n')+"\n];\nrequireReleaseNodeRuntime(process.version);";
+const scripts=()=>({...Object.fromEntries([...steps,...p5].map(s=>[s,'node --test fixture.test.mjs'])),'test:p5-bundle':p5.map(x=>'npm run '+x).join(' && ')});
+const audit=s=>auditOfflineMatrix({offlineSource:source,scripts:s});
+test('complete declared bundle passes',()=>assert.equal(audit(scripts()).ok,true));
+test('required name without a package script cannot pass',()=>{const s=scripts();delete s[p5[0]];assert.ok(audit(s).errors.includes('missing-p5-script:'+p5[0]));});
+test('whitespace-only P5 script cannot pass',()=>{const s=scripts();s[p5[0]]=' ';assert.ok(audit(s).errors.includes('missing-p5-script:'+p5[0]));});
+test('recursive direct bundle invocation fails',()=>{const s=scripts();s['test:p5-bundle']+=' && npm run test:p5-bundle';assert.ok(audit(s).errors.includes('recursive-p5-bundle'));});
+test('undefined optional bundle step fails',()=>{const s=scripts();s['test:p5-bundle']+=' && npm run test:p5-unknown';assert.ok(audit(s).errors.includes('missing-p5-script:test:p5-unknown'));});
+test('new defined P5 step may extend the bundle',()=>{const s=scripts();s['test:p5-future']='node --test future.test.mjs';s['test:p5-bundle']+=' && npm run test:p5-future';assert.equal(audit(s).ok,true);});
