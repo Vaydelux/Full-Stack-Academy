@@ -78,7 +78,7 @@ export default async function Page(){
 
 <Misconception claim="The starter creates QueryClient but fails to prefetch and hydrate into the client component with a matching key." correction="The server creates a request-scoped QueryClient, prefetches a query, then passes only safe dehydrated state through HydrationBoundary. Client query keys and data shapes must match." />
 
-<KnowledgeCheck question="What is the reliable approach to suspense and ssr hydration?" choices={["Assume cached browser state equals server truth forever.","Use TanStack Query resource identity and the server's HTTP contract.","Ignore failure responses to keep the UI fast.","Disable all validation once the code typechecks."]} correctIndex={1} explanation="The server creates a request-scoped QueryClient, prefetches a query, then passes only safe dehydrated state through HydrationBoundary. Client query keys and data shapes must match." misconception="The starter creates QueryClient but fails to prefetch and hydrate into the client component with a matching key." lessonId="09.03.06" />
+<KnowledgeCheck question="Why is a global server QueryClient unsafe for user-specific SSR data?" choices={["Its cache can be reused across independent requests and expose data.","SSR never creates HTML.","HydrationBoundary encrypts cached records.","Query keys grant access to server data."]} correctIndex={0} explanation="Request-scoped server caches prevent accidental sharing. Serialized dehydrated data remains observable to its recipient." misconception="The starter creates QueryClient but fails to prefetch and hydrate into the client component with a matching key." lessonId="09.03.06" />
 
 ## Bug Hunt: reproduce, diagnose and repair
 
@@ -102,6 +102,12 @@ Server prefetch and client hydration work when both sides describe the *same que
 **Independent exercise:** Inspect the dehydrated payload, compare server/client keys byte for byte and confirm the page hydrates without an unnecessary duplicate query. Intentionally change the key and explain the extra fetch. Audit the serialized HTML for tokens or another user's tasks.
 
 **Trust boundary:** SSR HTML is observable to the recipient. Do not dehydrate service keys, session credentials or other users' private records. A successful hydration test proves cache wiring, not authentication, access control or authorization.
+
+## Applied debugging clinic
+
+Run the real Next fixture, inspect the dehydrated state and confirm matching query keys on server and client. Deliberately mismatch the key in a disposable branch and observe the extra client read. Distinguish initial hydration, stale refetch and Suspense fallback; they are not identical events.
+
+**Evidence to record:** query identity, request outcome, cache state before and after the action, and the recovery decision. Separate observed network behavior from what the UI displays. Re-run the original failing interaction after the repair.
 
 ## Guided local lab
 
