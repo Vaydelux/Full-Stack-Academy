@@ -9,9 +9,9 @@
     "productionUrl": "https://fullstack-academy-ecru.vercel.app/"
   },
   "development": {
-    "branch": "feat/p6-operations-architecture-track21-23-20261124",
-    "state": "p6-all-144-manuscripts-staged-unpublished",
-    "note": "Added 80 Track 21–23 draft manuscripts, ten dependency-free teaching models, and source audit. 41/41 isolated Node22 tests passed (30 model, 11 auditor fixtures); full real tools and build not run. P6 144/144 manuscripts authored; 338 published, 415 unpublished drafts, 136 unauthored."
+    "branch": "feat/p7-platforms-enterprise-capstones-20261124",
+    "state": "all-canonical-topic-manuscripts-authored-publication-blocked",
+    "note": "136 P7 draft manuscripts in 17 modules, 17 small teaching models, capstone project specification, and P7 source auditor. 53/53 local Node22 tests actually executed (42 models, 11 synthetic auditor fixtures); full checkout/real runtimes not run. Catalog source coverage 889/889: 338 published, 551 unpublished, 0 unauthored."
   },
   "snapshot": {
     "tracks": 28,
@@ -73,6 +73,6 @@
     "devHighFindings": 14,
     "exceptionExpires": "2026-12-02"
   },
-  "nextMilestone": "Author P7 Tracks 24–27 after verifying their canonical inventory; independently complete P1 real Node24 and browser gates and genuine NestJS lockfile; qualify actual P6 tools before promoting modules.",
-  "status": "p6-source-authoring-complete-publication-blocked"
+  "nextMilestone": "Stop bulk manuscript expansion. Run P1 independent qualification on a clean stable Node 24.9+ checkout, fix failures and obtain editorial, browser and manual accessibility approval; promote 09.02 then 09.03 only when their release gates pass. Resolve the genuine NestJS lockfile and qualify P2 onward. Improve remaining manuscript depth and actual red/green labs before each module promotion.",
+  "status": "all-889-canonical-topics-source-authored-not-release-qualified"
 }

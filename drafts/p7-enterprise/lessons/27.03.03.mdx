@@ -1,0 +1,61 @@
+---
+id: "27.03.03"
+title: "Notification queue"
+module: "27.03"
+status: "draft-unverified"
+readyToPublish: false
+---
+
+# Notification queue
+
+> Instructor draft. Local models do not qualify external identity, billing, privacy compliance or an actual capstone release.
+
+## Learning outcomes
+
+Explain the engineering decision, reproduce or design the positive and negative experiment, and identify the remaining evidence.
+
+## Context
+
+A task assignment sends a notification.
+
+## Step 1 — Mental model
+
+Durable queue and outbox separate transaction from external delivery; retries need stable identifiers.
+
+## Step 2 — Guided practice
+
+Implement a disposable assignment/outbox transaction and fake sender with duplicate and failed delivery.
+
+Use synthetic data, a disposable environment and authorized accounts only. Record expected behavior before execution.
+
+## Step 3 — Acceptance
+
+**Positive:** One logical notification is tracked with retry outcome.
+
+**Negative:** Email sent for rolled-back assignment or duplicate effect fails.
+
+Inspect the complementary `workspaceAcceptance` teaching model. Extend its assertions when relevant; it is not an implementation of the full external technology.
+
+```bash
+node --test --test-name-pattern="27[.]03" examples/p7-platforms/labs.test.mjs
+```
+
+## Qualification boundary
+
+Synthetic integrated-feature rubric; actual upload, mail, Redis, websocket, search and audit behavior require live isolated tests.
+
+## Knowledge check
+
+1. What is the invariant and trust boundary?
+2. Which negative result falsifies an unsafe design?
+3. Which real tool or reviewer must supply missing evidence?
+
+**Assessment:** Record exact fixture input, expected and actual output, negative evidence and not-run checks. Do not substitute a design or model for a real acceptance result.
+
+## References
+
+- [Technical reference](https://cheatsheetseries.owasp.org/)
+
+## Publication conditions
+
+Complete editorial review, red/green exercises, applicable actual runtimes, the full Node 24 build, browser and human accessibility gates. Keep the draft unpublished until its module is approved.

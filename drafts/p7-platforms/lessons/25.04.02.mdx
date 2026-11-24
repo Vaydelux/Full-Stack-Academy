@@ -1,0 +1,61 @@
+---
+id: "25.04.02"
+title: "Adaptive streaming concepts"
+module: "25.04"
+status: "draft-unverified"
+readyToPublish: false
+---
+
+# Adaptive streaming concepts
+
+> Instructor draft. Local models do not qualify native platforms, real providers or production deployments.
+
+## Learning outcomes
+
+Explain the engineering decision, reproduce or design the positive and negative experiment, and identify the remaining evidence.
+
+## Context
+
+A video player experiences changing bandwidth.
+
+## Step 1 — Mental model
+
+Adaptive streaming selects renditions from a manifest based on measured bandwidth and buffer; packaging and codecs matter.
+
+## Step 2 — Guided practice
+
+Generate synthetic local media renditions with an authorized sample; inspect manifest and test switching in a real player.
+
+Use synthetic data, a disposable environment and authorized accounts only. Record expected behavior before execution.
+
+## Step 3 — Acceptance
+
+**Positive:** Playback remains coherent when bandwidth changes.
+
+**Negative:** Invalid segments or unsupported codec fails.
+
+Inspect the complementary `mediaAllowed` teaching model. Extend its assertions when relevant; it is not an implementation of the full external technology.
+
+```bash
+node --test --test-name-pattern="25[.]04" examples/p7-platforms/labs.test.mjs
+```
+
+## Qualification boundary
+
+Synthetic resource-bound model; no actual FFmpeg sandbox, CDN, HLS, WebRTC or moderation service acceptance.
+
+## Knowledge check
+
+1. What is the invariant and trust boundary?
+2. Which negative result falsifies an unsafe design?
+3. Which real tool or reviewer must supply missing evidence?
+
+**Assessment:** Record exact fixture input, expected and actual output, negative evidence and not-run checks. Do not substitute a design or model for a real acceptance result.
+
+## References
+
+- [Technical reference](https://ffmpeg.org/documentation.html)
+
+## Publication conditions
+
+Complete editorial review, red/green exercises, applicable actual runtimes, the full Node 24 build, browser and human accessibility gates. Keep the draft unpublished until its module is approved.

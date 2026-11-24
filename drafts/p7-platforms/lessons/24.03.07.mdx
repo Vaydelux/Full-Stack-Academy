@@ -1,0 +1,61 @@
+---
+id: "24.03.07"
+title: "Native packaging"
+module: "24.03"
+status: "draft-unverified"
+readyToPublish: false
+---
+
+# Native packaging
+
+> Instructor draft. Local models do not qualify native platforms, real providers or production deployments.
+
+## Learning outcomes
+
+Explain the engineering decision, reproduce or design the positive and negative experiment, and identify the remaining evidence.
+
+## Context
+
+A Windows app needs an installer or portable build.
+
+## Step 1 — Mental model
+
+Packaging depends on target architecture, webview/runtime prerequisites and signing; build on supported toolchains.
+
+## Step 2 — Guided practice
+
+Produce a real development artifact and inspect version, target and dependency requirements.
+
+Use synthetic data, a disposable environment and authorized accounts only. Record expected behavior before execution.
+
+## Step 3 — Acceptance
+
+**Positive:** Artifact launches on a clean authorized test machine.
+
+**Negative:** Merely zipping source or inventing signing evidence fails.
+
+Inspect the complementary `desktopAllowed` teaching model. Extend its assertions when relevant; it is not an implementation of the full external technology.
+
+```bash
+node --test --test-name-pattern="24[.]03" examples/p7-platforms/labs.test.mjs
+```
+
+## Qualification boundary
+
+Synthetic command permission model; actual Rust commands, capability enforcement, installers and signatures require platform builds.
+
+## Knowledge check
+
+1. What is the invariant and trust boundary?
+2. Which negative result falsifies an unsafe design?
+3. Which real tool or reviewer must supply missing evidence?
+
+**Assessment:** Record exact fixture input, expected and actual output, negative evidence and not-run checks. Do not substitute a design or model for a real acceptance result.
+
+## References
+
+- [Technical reference](https://v2.tauri.app/)
+
+## Publication conditions
+
+Complete editorial review, red/green exercises, applicable actual runtimes, the full Node 24 build, browser and human accessibility gates. Keep the draft unpublished until its module is approved.

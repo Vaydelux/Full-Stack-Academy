@@ -1,0 +1,61 @@
+---
+id: "26.03.03"
+title: "Consent and retention"
+module: "26.03"
+status: "draft-unverified"
+readyToPublish: false
+---
+
+# Consent and retention
+
+> Instructor draft. Local models do not qualify external identity, billing, privacy compliance or an actual capstone release.
+
+## Learning outcomes
+
+Explain the engineering decision, reproduce or design the positive and negative experiment, and identify the remaining evidence.
+
+## Context
+
+A user withdraws optional marketing consent.
+
+## Step 1 — Mental model
+
+Record purpose, lawful basis or consent where applicable, withdrawal and a reviewed retention policy; do not conflate consent with every processing basis.
+
+## Step 2 — Guided practice
+
+Design a synthetic preference history and retention table; test withdrawal without deleting unrelated required records.
+
+Use synthetic data, a disposable environment and authorized accounts only. Record expected behavior before execution.
+
+## Step 3 — Acceptance
+
+**Positive:** Optional processing stops according to policy.
+
+**Negative:** Continued optional processing or blanket deletion without review fails.
+
+Inspect the complementary `retentionDecision` teaching model. Extend its assertions when relevant; it is not an implementation of the full external technology.
+
+```bash
+node --test --test-name-pattern="26[.]03" examples/p7-platforms/labs.test.mjs
+```
+
+## Qualification boundary
+
+Synthetic retention review model only; not legal advice or proof of compliance. Verify current law and organization-specific obligations with qualified counsel.
+
+## Knowledge check
+
+1. What is the invariant and trust boundary?
+2. Which negative result falsifies an unsafe design?
+3. Which real tool or reviewer must supply missing evidence?
+
+**Assessment:** Record exact fixture input, expected and actual output, negative evidence and not-run checks. Do not substitute a design or model for a real acceptance result.
+
+## References
+
+- [Technical reference](https://privacy.gov.ph/)
+
+## Publication conditions
+
+Complete editorial review, red/green exercises, applicable actual runtimes, the full Node 24 build, browser and human accessibility gates. Keep the draft unpublished until its module is approved.

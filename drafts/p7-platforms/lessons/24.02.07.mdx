@@ -1,0 +1,61 @@
+---
+id: "24.02.07"
+title: "Reconnect and retry"
+module: "24.02"
+status: "draft-unverified"
+readyToPublish: false
+---
+
+# Reconnect and retry
+
+> Instructor draft. Local models do not qualify native platforms, real providers or production deployments.
+
+## Learning outcomes
+
+Explain the engineering decision, reproduce or design the positive and negative experiment, and identify the remaining evidence.
+
+## Context
+
+A connection repeatedly drops during synchronization.
+
+## Step 1 — Mental model
+
+Bound retries, use backoff and stable IDs, and preserve acknowledgements across reconnects.
+
+## Step 2 — Guided practice
+
+Simulate request timeout after server accepts an operation; replay same ID and reconcile acknowledgement.
+
+Use synthetic data, a disposable environment and authorized accounts only. Record expected behavior before execution.
+
+## Step 3 — Acceptance
+
+**Positive:** One logical operation is applied.
+
+**Negative:** Creating a new ID on retry causes duplicate work.
+
+Inspect the complementary `applyOperation` teaching model. Extend its assertions when relevant; it is not an implementation of the full external technology.
+
+```bash
+node --test --test-name-pattern="24[.]02" examples/p7-platforms/labs.test.mjs
+```
+
+## Qualification boundary
+
+In-memory sync model; actual SQLite persistence, durable queue, crash recovery and conflict reconciliation are not established.
+
+## Knowledge check
+
+1. What is the invariant and trust boundary?
+2. Which negative result falsifies an unsafe design?
+3. Which real tool or reviewer must supply missing evidence?
+
+**Assessment:** Record exact fixture input, expected and actual output, negative evidence and not-run checks. Do not substitute a design or model for a real acceptance result.
+
+## References
+
+- [Technical reference](https://www.sqlite.org/docs.html)
+
+## Publication conditions
+
+Complete editorial review, red/green exercises, applicable actual runtimes, the full Node 24 build, browser and human accessibility gates. Keep the draft unpublished until its module is approved.

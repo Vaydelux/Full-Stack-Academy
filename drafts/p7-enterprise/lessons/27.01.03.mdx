@@ -1,0 +1,61 @@
+---
+id: "27.01.03"
+title: "Information architecture"
+module: "27.01"
+status: "draft-unverified"
+readyToPublish: false
+---
+
+# Information architecture
+
+> Instructor draft. Local models do not qualify external identity, billing, privacy compliance or an actual capstone release.
+
+## Learning outcomes
+
+Explain the engineering decision, reproduce or design the positive and negative experiment, and identify the remaining evidence.
+
+## Context
+
+A user needs to find tasks and account settings.
+
+## Step 1 — Mental model
+
+Information architecture maps pages, navigation, hierarchy, auth boundaries and empty/error states.
+
+## Step 2 — Guided practice
+
+Create route inventory and task-flow diagram for public and protected pages.
+
+Use synthetic data, a disposable environment and authorized accounts only. Record expected behavior before execution.
+
+## Step 3 — Acceptance
+
+**Positive:** Core tasks can be completed with predictable navigation.
+
+**Negative:** Protected page linked without authorization or dead-end error fails.
+
+Inspect the complementary `webAcceptance` teaching model. Extend its assertions when relevant; it is not an implementation of the full external technology.
+
+```bash
+node --test --test-name-pattern="27[.]01" examples/p7-platforms/labs.test.mjs
+```
+
+## Qualification boundary
+
+Capstone rubric checks supplied evidence flags only; no actual app build, SEO, browser or accessibility verification.
+
+## Knowledge check
+
+1. What is the invariant and trust boundary?
+2. Which negative result falsifies an unsafe design?
+3. Which real tool or reviewer must supply missing evidence?
+
+**Assessment:** Record exact fixture input, expected and actual output, negative evidence and not-run checks. Do not substitute a design or model for a real acceptance result.
+
+## References
+
+- [Technical reference](https://nextjs.org/docs)
+
+## Publication conditions
+
+Complete editorial review, red/green exercises, applicable actual runtimes, the full Node 24 build, browser and human accessibility gates. Keep the draft unpublished until its module is approved.

@@ -1,0 +1,61 @@
+---
+id: "24.01.08"
+title: "Lab first APK"
+module: "24.01"
+status: "draft-unverified"
+readyToPublish: false
+---
+
+# Lab first APK
+
+> Instructor draft. Local models do not qualify native platforms, real providers or production deployments.
+
+## Learning outcomes
+
+Explain the engineering decision, reproduce or design the positive and negative experiment, and identify the remaining evidence.
+
+## Context
+
+A learner packages a first Android application.
+
+## Step 1 — Mental model
+
+Native build requires a reproducible toolchain, app identity, permissions, and signed or debug artifact distinction.
+
+## Step 2 — Guided practice
+
+Build a disposable Capacitor APK with the actual Android toolchain, inspect manifest and install on an authorized test device.
+
+Use synthetic data, a disposable environment and authorized accounts only. Record expected behavior before execution.
+
+## Step 3 — Acceptance
+
+**Positive:** APK launches, reports correct version and handles permission denial.
+
+**Negative:** A web build alone is not APK acceptance.
+
+Inspect the complementary `bridgeAllowed` teaching model. Extend its assertions when relevant; it is not an implementation of the full external technology.
+
+```bash
+node --test --test-name-pattern="24[.]01" examples/p7-platforms/labs.test.mjs
+```
+
+## Qualification boundary
+
+Native builds, WebView isolation and plugin permissions require a real device.
+
+## Knowledge check
+
+1. What is the invariant and trust boundary?
+2. Which negative result falsifies an unsafe design?
+3. Which real tool or reviewer must supply missing evidence?
+
+**Assessment:** Record exact fixture input, expected and actual output, negative evidence and not-run checks. Do not substitute a design or model for a real acceptance result.
+
+## References
+
+- [Technical reference](https://capacitorjs.com/docs)
+
+## Publication conditions
+
+Complete editorial review, red/green exercises, applicable actual runtimes, the full Node 24 build, browser and human accessibility gates. Keep the draft unpublished until its module is approved.

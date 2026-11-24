@@ -1,0 +1,61 @@
+---
+id: "26.01.01"
+title: "SAML SSO architecture"
+module: "26.01"
+status: "draft-unverified"
+readyToPublish: false
+---
+
+# SAML SSO architecture
+
+> Instructor draft. Local models do not qualify external identity, billing, privacy compliance or an actual capstone release.
+
+## Learning outcomes
+
+Explain the engineering decision, reproduce or design the positive and negative experiment, and identify the remaining evidence.
+
+## Context
+
+A company wants employees to sign in through its identity provider.
+
+## Step 1 — Mental model
+
+SAML SSO exchanges signed assertions; validate issuer, audience, recipient, time and replay protection using a trusted library and metadata.
+
+## Step 2 — Guided practice
+
+Draw SP-initiated sign-in, then test a disposable IdP with valid and invalid audience assertions.
+
+Use synthetic data, a disposable environment and authorized accounts only. Record expected behavior before execution.
+
+## Step 3 — Acceptance
+
+**Positive:** A valid assertion establishes the intended identity only.
+
+**Negative:** Wrong issuer, expired or replayed assertion must be denied.
+
+Inspect the complementary `enterpriseAccess` teaching model. Extend its assertions when relevant; it is not an implementation of the full external technology.
+
+```bash
+node --test --test-name-pattern="26[.]01" examples/p7-platforms/labs.test.mjs
+```
+
+## Qualification boundary
+
+Synthetic policy check on already-validated claims only; no actual SAML assertion, SCIM, MFA, token or identity-provider verification.
+
+## Knowledge check
+
+1. What is the invariant and trust boundary?
+2. Which negative result falsifies an unsafe design?
+3. Which real tool or reviewer must supply missing evidence?
+
+**Assessment:** Record exact fixture input, expected and actual output, negative evidence and not-run checks. Do not substitute a design or model for a real acceptance result.
+
+## References
+
+- [Technical reference](https://docs.oasis-open.org/security/saml/v2.0/)
+
+## Publication conditions
+
+Complete editorial review, red/green exercises, applicable actual runtimes, the full Node 24 build, browser and human accessibility gates. Keep the draft unpublished until its module is approved.

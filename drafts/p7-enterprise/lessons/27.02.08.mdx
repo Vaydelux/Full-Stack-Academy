@@ -1,0 +1,61 @@
+---
+id: "27.02.08"
+title: "Milestone secured API"
+module: "27.02"
+status: "draft-unverified"
+readyToPublish: false
+---
+
+# Milestone secured API
+
+> Instructor draft. Local models do not qualify external identity, billing, privacy compliance or an actual capstone release.
+
+## Learning outcomes
+
+Explain the engineering decision, reproduce or design the positive and negative experiment, and identify the remaining evidence.
+
+## Context
+
+A learner defends secured API milestone.
+
+## Step 1 — Mental model
+
+Review contracts, migrations, auth verification, isolation, tests and recorded exact commit before accepting.
+
+## Step 2 — Guided practice
+
+Run apiAcceptance; gather actual request traces and DB role tests for all required cases.
+
+Use synthetic data, a disposable environment and authorized accounts only. Record expected behavior before execution.
+
+## Step 3 — Acceptance
+
+**Positive:** Evidence establishes documented authorization and DTO policy.
+
+**Negative:** Missing negative test, secret exposure or wrong commit blocks review.
+
+Inspect the complementary `apiAcceptance` teaching model. Extend its assertions when relevant; it is not an implementation of the full external technology.
+
+```bash
+node --test --test-name-pattern="27[.]02" examples/p7-platforms/labs.test.mjs
+```
+
+## Qualification boundary
+
+Capstone API status/DTO rubric only; no live NestJS, PostgreSQL, Prisma, Supabase or JWT validation established.
+
+## Knowledge check
+
+1. What is the invariant and trust boundary?
+2. Which negative result falsifies an unsafe design?
+3. Which real tool or reviewer must supply missing evidence?
+
+**Assessment:** Record exact fixture input, expected and actual output, negative evidence and not-run checks. Do not substitute a design or model for a real acceptance result.
+
+## References
+
+- [Technical reference](https://docs.nestjs.com/)
+
+## Publication conditions
+
+Complete editorial review, red/green exercises, applicable actual runtimes, the full Node 24 build, browser and human accessibility gates. Keep the draft unpublished until its module is approved.

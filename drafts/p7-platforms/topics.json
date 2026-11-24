@@ -1,0 +1,642 @@
+{
+  "24.01.01": {
+    "context": "A React workspace needs an Android companion.",
+    "concept": "Capacitor hosts web content in a native shell; React Native renders native components. Compare reuse, native UX and plugin dependencies.",
+    "exercise": "Draw the two runtime paths and identify the bridge boundary for a camera request.",
+    "positive": "A choice is justified by measured requirements.",
+    "negative": "Treating the native bridge as an ordinary unrestricted browser API fails.",
+    "reference": "https://capacitorjs.com/docs",
+    "model": "bridgeAllowed",
+    "boundary": "Native builds, WebView isolation and plugin permissions require a real device."
+  },
+  "24.01.02": {
+    "context": "A Vite SPA must load inside a mobile shell.",
+    "concept": "A mobile entrypoint bundles static assets; native webDir must match build output and remote API origins must be explicitly configured.",
+    "exercise": "Build a disposable Vite app, inspect output, configure the native shell and test offline startup.",
+    "positive": "The bundled UI opens without a development server.",
+    "negative": "A production build depending on localhost or exposing secrets fails.",
+    "reference": "https://capacitorjs.com/docs",
+    "model": "bridgeAllowed",
+    "boundary": "Native builds, WebView isolation and plugin permissions require a real device."
+  },
+  "24.01.03": {
+    "context": "A webview asks for a camera capability.",
+    "concept": "Native bridge calls extend privileges beyond browser JavaScript; constrain origin, commands and inputs.",
+    "exercise": "Run bridgeAllowed with trusted and foreign origins; on a real device exercise a denied plugin capability.",
+    "positive": "Only the expected origin and command pass the model.",
+    "negative": "A remote or unrecognized command receives no privilege.",
+    "reference": "https://capacitorjs.com/docs",
+    "model": "bridgeAllowed",
+    "boundary": "Native builds, WebView isolation and plugin permissions require a real device."
+  },
+  "24.01.04": {
+    "context": "An Android app is backgrounded during an edit.",
+    "concept": "Lifecycle transitions may interrupt asynchronous work; persist intent before relying on in-memory state.",
+    "exercise": "In a disposable app edit a task, background and terminate it; relaunch and reconcile the queue.",
+    "positive": "The persisted edit survives and resumes once.",
+    "negative": "Lost or duplicate work after process death fails.",
+    "reference": "https://capacitorjs.com/docs",
+    "model": "bridgeAllowed",
+    "boundary": "Native builds, WebView isolation and plugin permissions require a real device."
+  },
+  "24.01.05": {
+    "context": "An iOS app needs to be installed on a test device.",
+    "concept": "Signing ties an app identity to an authorized provisioning path; simulator success is not a signed-device result.",
+    "exercise": "List bundle ID, entitlement and provisioning requirements; use a permitted development account for device testing.",
+    "positive": "A signed development build is attributable to the correct identity.",
+    "negative": "Sharing signing private keys or claiming simulator success proves device signing fails.",
+    "reference": "https://capacitorjs.com/docs",
+    "model": "bridgeAllowed",
+    "boundary": "Native builds, WebView isolation and plugin permissions require a real device."
+  },
+  "24.01.06": {
+    "context": "A mobile app requests access to photos and network.",
+    "concept": "Permissions should be minimal, contextual, and degrade safely when denied.",
+    "exercise": "Request one scoped permission in a disposable app and test denial, revocation and retry.",
+    "positive": "Allowed operation succeeds and denial is recoverable.",
+    "negative": "Unnecessary broad storage permission or crash on denial fails.",
+    "reference": "https://capacitorjs.com/docs",
+    "model": "bridgeAllowed",
+    "boundary": "Native builds, WebView isolation and plugin permissions require a real device."
+  },
+  "24.01.07": {
+    "context": "An application stores an authentication token.",
+    "concept": "Keep sensitive credentials in platform-backed secure storage; protect refresh, logout and expiry behavior.",
+    "exercise": "Use synthetic tokens in a device secure-storage plugin; test logout and reinstall behavior with documented platform limits.",
+    "positive": "Token is inaccessible to unrelated app code and logout clears intended state.",
+    "negative": "Plain-text localStorage or logs holding a refresh token fails.",
+    "reference": "https://capacitorjs.com/docs",
+    "model": "bridgeAllowed",
+    "boundary": "Native builds, WebView isolation and plugin permissions require a real device."
+  },
+  "24.01.08": {
+    "context": "A learner packages a first Android application.",
+    "concept": "Native build requires a reproducible toolchain, app identity, permissions, and signed or debug artifact distinction.",
+    "exercise": "Build a disposable Capacitor APK with the actual Android toolchain, inspect manifest and install on an authorized test device.",
+    "positive": "APK launches, reports correct version and handles permission denial.",
+    "negative": "A web build alone is not APK acceptance.",
+    "reference": "https://capacitorjs.com/docs",
+    "model": "bridgeAllowed",
+    "boundary": "Native builds, WebView isolation and plugin permissions require a real device."
+  },
+  "24.02.01": {
+    "context": "A field worker edits tasks without internet.",
+    "concept": "Local SQLite schema needs stable IDs, version, deletion marker and pending operations; transactionally write changes and queue intent.",
+    "exercise": "Create a disposable SQLite schema and insert a synthetic task and queue row in one transaction.",
+    "positive": "Both local record and operation persist together.",
+    "negative": "Partial write after simulated failure violates the invariant.",
+    "reference": "https://www.sqlite.org/docs.html",
+    "model": "applyOperation",
+    "boundary": "In-memory sync model; actual SQLite persistence, durable queue, crash recovery and conflict reconciliation are not established."
+  },
+  "24.02.02": {
+    "context": "A reconnect replays an already accepted edit.",
+    "concept": "Stable operation IDs bind immutable operation content to deduplication; retry the same operation, not a new ID.",
+    "exercise": "Run applyOperation for an edit twice then reuse its ID with changed content.",
+    "positive": "Exact replay returns unchanged state.",
+    "negative": "Same ID with changed content conflicts.",
+    "reference": "https://www.sqlite.org/docs.html",
+    "model": "applyOperation",
+    "boundary": "In-memory sync model; actual SQLite persistence, durable queue, crash recovery and conflict reconciliation are not established."
+  },
+  "24.02.03": {
+    "context": "Two devices edit the same task version.",
+    "concept": "Conflict policy must be explicit: reject stale version, merge defined fields, or reconcile with user input. Last-writer-wins can lose data.",
+    "exercise": "Apply version 0 edit then another version 0 edit; specify UI reconciliation for rejection.",
+    "positive": "The accepted version advances and conflict is surfaced.",
+    "negative": "Silently overwriting the first edit fails.",
+    "reference": "https://www.sqlite.org/docs.html",
+    "model": "applyOperation",
+    "boundary": "In-memory sync model; actual SQLite persistence, durable queue, crash recovery and conflict reconciliation are not established."
+  },
+  "24.02.04": {
+    "context": "A device downloads a partial change feed.",
+    "concept": "Cursors must belong to a defined stable ordering and scope; checkpoint only after applying a complete page.",
+    "exercise": "Design an ordered synthetic feed with page size two and a crash before cursor commit.",
+    "positive": "Replay does not skip or duplicate applied changes.",
+    "negative": "Advancing cursor before data persistence loses records.",
+    "reference": "https://www.sqlite.org/docs.html",
+    "model": "applyOperation",
+    "boundary": "In-memory sync model; actual SQLite persistence, durable queue, crash recovery and conflict reconciliation are not established."
+  },
+  "24.02.05": {
+    "context": "A deleted task is present on an offline device.",
+    "concept": "Tombstones preserve deletion history until replicas have safely passed the relevant watermark.",
+    "exercise": "Run the tombstone test, then attempt a stale update from an earlier version.",
+    "positive": "The stale update is refused and deletion remains.",
+    "negative": "Resurrecting a deleted task fails.",
+    "reference": "https://www.sqlite.org/docs.html",
+    "model": "applyOperation",
+    "boundary": "In-memory sync model; actual SQLite persistence, durable queue, crash recovery and conflict reconciliation are not established."
+  },
+  "24.02.06": {
+    "context": "A device cache contains confidential workspace data.",
+    "concept": "Encrypt sensitive offline data where appropriate, scope it to the signed-in actor and define logout/remote-revocation limits.",
+    "exercise": "Create synthetic per-account cache partitions; switch users and inspect old account access.",
+    "positive": "New user cannot read the prior user's data.",
+    "negative": "Shared cache or plaintext secrets fail review.",
+    "reference": "https://www.sqlite.org/docs.html",
+    "model": "applyOperation",
+    "boundary": "In-memory sync model; actual SQLite persistence, durable queue, crash recovery and conflict reconciliation are not established."
+  },
+  "24.02.07": {
+    "context": "A connection repeatedly drops during synchronization.",
+    "concept": "Bound retries, use backoff and stable IDs, and preserve acknowledgements across reconnects.",
+    "exercise": "Simulate request timeout after server accepts an operation; replay same ID and reconcile acknowledgement.",
+    "positive": "One logical operation is applied.",
+    "negative": "Creating a new ID on retry causes duplicate work.",
+    "reference": "https://www.sqlite.org/docs.html",
+    "model": "applyOperation",
+    "boundary": "In-memory sync model; actual SQLite persistence, durable queue, crash recovery and conflict reconciliation are not established."
+  },
+  "24.02.08": {
+    "context": "A learner edits and deletes tasks on two disconnected clients.",
+    "concept": "An offline sync lab needs durable local writes, conflict handling, tombstones and authenticated server reconciliation.",
+    "exercise": "Rehearse edit, replay, delete and stale resurrection using the model; then implement same cases with SQLite and a disposable API.",
+    "positive": "Model invariants hold; actual restart test is recorded separately.",
+    "negative": "Lost queue data or stale resurrection blocks real acceptance.",
+    "reference": "https://www.sqlite.org/docs.html",
+    "model": "applyOperation",
+    "boundary": "In-memory sync model; actual SQLite persistence, durable queue, crash recovery and conflict reconciliation are not established."
+  },
+  "24.03.01": {
+    "context": "A desktop UI needs to read one local file.",
+    "concept": "Tauri separates webview UI from Rust/native commands; treat each invocation as a privileged API.",
+    "exercise": "Map read-document command from UI to Rust validation and returned DTO.",
+    "positive": "Only documented command and scoped data cross the boundary.",
+    "negative": "Arbitrary shell or path access from webview fails.",
+    "reference": "https://v2.tauri.app/",
+    "model": "desktopAllowed",
+    "boundary": "Synthetic command permission model; actual Rust commands, capability enforcement, installers and signatures require platform builds."
+  },
+  "24.03.02": {
+    "context": "A Rust command receives malformed JSON.",
+    "concept": "Rust types and Result errors are useful but do not replace input and authorization checks.",
+    "exercise": "Implement a small typed command in a disposable Tauri app; send valid and invalid payloads.",
+    "positive": "Valid payload returns a typed response; invalid input has a safe error.",
+    "negative": "Panic, secret leakage or unchecked path fails.",
+    "reference": "https://v2.tauri.app/",
+    "model": "desktopAllowed",
+    "boundary": "Synthetic command permission model; actual Rust commands, capability enforcement, installers and signatures require platform builds."
+  },
+  "24.03.03": {
+    "context": "A preview window tries to call a main-window command.",
+    "concept": "Capabilities should scope window identities, plugins and commands to minimum privileges.",
+    "exercise": "Use desktopAllowed for main/read then preview/read; inspect real capability configuration separately.",
+    "positive": "Main permission passes, preview denied.",
+    "negative": "Giving all windows the same unrestricted access fails.",
+    "reference": "https://v2.tauri.app/",
+    "model": "desktopAllowed",
+    "boundary": "Synthetic command permission model; actual Rust commands, capability enforcement, installers and signatures require platform builds."
+  },
+  "24.03.04": {
+    "context": "A desktop app imports a user-selected document.",
+    "concept": "Prefer a native file picker and bounded paths; validate type, size and symlinks at native boundary.",
+    "exercise": "Select a synthetic file and try an out-of-scope path in an isolated app.",
+    "positive": "Only intended file is readable.",
+    "negative": "Path traversal or arbitrary file overwrite fails.",
+    "reference": "https://v2.tauri.app/",
+    "model": "desktopAllowed",
+    "boundary": "Synthetic command permission model; actual Rust commands, capability enforcement, installers and signatures require platform builds."
+  },
+  "24.03.05": {
+    "context": "An update downloads a replacement executable.",
+    "concept": "Update trust requires signed artifacts and verified metadata; TLS alone does not establish artifact authenticity.",
+    "exercise": "Design test signing keys and rehearse valid versus tampered update on disposable platform build.",
+    "positive": "Tampered artifact is refused before install.",
+    "negative": "Disabling signature verification fails.",
+    "reference": "https://v2.tauri.app/",
+    "model": "desktopAllowed",
+    "boundary": "Synthetic command permission model; actual Rust commands, capability enforcement, installers and signatures require platform builds."
+  },
+  "24.03.06": {
+    "context": "A desktop workspace must survive restart.",
+    "concept": "SQLite supports local transactions; schema migration and storage location must be explicit per user.",
+    "exercise": "Create a temporary DB, write a task, restart and verify migration/reopen.",
+    "positive": "Record survives restart and schema remains compatible.",
+    "negative": "Writing into installer directory or losing data fails.",
+    "reference": "https://v2.tauri.app/",
+    "model": "desktopAllowed",
+    "boundary": "Synthetic command permission model; actual Rust commands, capability enforcement, installers and signatures require platform builds."
+  },
+  "24.03.07": {
+    "context": "A Windows app needs an installer or portable build.",
+    "concept": "Packaging depends on target architecture, webview/runtime prerequisites and signing; build on supported toolchains.",
+    "exercise": "Produce a real development artifact and inspect version, target and dependency requirements.",
+    "positive": "Artifact launches on a clean authorized test machine.",
+    "negative": "Merely zipping source or inventing signing evidence fails.",
+    "reference": "https://v2.tauri.app/",
+    "model": "desktopAllowed",
+    "boundary": "Synthetic command permission model; actual Rust commands, capability enforcement, installers and signatures require platform builds."
+  },
+  "24.03.08": {
+    "context": "A learner ships a small desktop task app.",
+    "concept": "End-to-end desktop acceptance covers native permissions, local persistence, packaging and uninstall behavior.",
+    "exercise": "Run desktopAllowed, then implement a scoped file read and SQLite task flow in a disposable Tauri project.",
+    "positive": "Allowed task flow works and forbidden window invocation fails.",
+    "negative": "Missing installer or native test remains not-run.",
+    "reference": "https://v2.tauri.app/",
+    "model": "desktopAllowed",
+    "boundary": "Synthetic command permission model; actual Rust commands, capability enforcement, installers and signatures require platform builds."
+  },
+  "24.04.01": {
+    "context": "A phone user struggles to tap tightly spaced controls.",
+    "concept": "Touch targets, safe areas, orientation and text scaling must be tested on representative devices.",
+    "exercise": "Build a synthetic form and test portrait, landscape, enlarged text and keyboard overlap.",
+    "positive": "Controls remain reachable and labels readable.",
+    "negative": "Clipping, tiny targets or obscured submit fails.",
+    "reference": "https://developer.android.com/guide",
+    "model": "resumeQueue",
+    "boundary": "Synthetic queue acknowledgement model only; physical touch, OS background behavior, push delivery and store acceptance require device tests."
+  },
+  "24.04.02": {
+    "context": "A mobile app sends task reminders.",
+    "concept": "Push tokens identify installations, not user authorization; consent, token refresh and notification privacy matter.",
+    "exercise": "Design synthetic push registration and revocation; use a permitted test provider to send one notification.",
+    "positive": "Intended authorized device receives a minimal message.",
+    "negative": "Cross-user delivery or confidential lockscreen content fails.",
+    "reference": "https://developer.android.com/guide",
+    "model": "resumeQueue",
+    "boundary": "Synthetic queue acknowledgement model only; physical touch, OS background behavior, push delivery and store acceptance require device tests."
+  },
+  "24.04.03": {
+    "context": "A sync process expects background work to run forever.",
+    "concept": "Mobile OS scheduling is constrained; persist work and tolerate delayed or killed execution.",
+    "exercise": "Queue two edits, acknowledge one, terminate app and call resumeQueue on persisted IDs.",
+    "positive": "Unacknowledged edit remains pending.",
+    "negative": "Assuming a background timer guarantees completion fails.",
+    "reference": "https://developer.android.com/guide",
+    "model": "resumeQueue",
+    "boundary": "Synthetic queue acknowledgement model only; physical touch, OS background behavior, push delivery and store acceptance require device tests."
+  },
+  "24.04.04": {
+    "context": "A link opens an authenticated workspace screen.",
+    "concept": "Deep links need verified scheme/domain, validated parameters and authorization after routing.",
+    "exercise": "Test a known task link, unknown ID and foreign-tenant link in a disposable app.",
+    "positive": "Authorized link opens intended screen.",
+    "negative": "Link payload bypassing authentication or tenant checks fails.",
+    "reference": "https://developer.android.com/guide",
+    "model": "resumeQueue",
+    "boundary": "Synthetic queue acknowledgement model only; physical touch, OS background behavior, push delivery and store acceptance require device tests."
+  },
+  "24.04.05": {
+    "context": "A mobile app drains battery after idle.",
+    "concept": "Measure wakeups, network activity, heap and binary size under controlled conditions rather than guessing.",
+    "exercise": "Record baseline on a test device, disable redundant polling, compare battery/network/size measurements.",
+    "positive": "Work decreases without missed required updates.",
+    "negative": "One unrepresentative measurement or broken sync fails.",
+    "reference": "https://developer.android.com/guide",
+    "model": "resumeQueue",
+    "boundary": "Synthetic queue acknowledgement model only; physical touch, OS background behavior, push delivery and store acceptance require device tests."
+  },
+  "24.04.06": {
+    "context": "A screen-reader user navigates a mobile form.",
+    "concept": "Accessible names, roles, focus, text scaling and gesture alternatives need real assistive technology review.",
+    "exercise": "Test a synthetic form with TalkBack or VoiceOver plus large text and keyboard where applicable.",
+    "positive": "All fields and errors are announced in logical order.",
+    "negative": "Unlabeled icon, focus trap or truncated error fails.",
+    "reference": "https://developer.android.com/guide",
+    "model": "resumeQueue",
+    "boundary": "Synthetic queue acknowledgement model only; physical touch, OS background behavior, push delivery and store acceptance require device tests."
+  },
+  "24.04.07": {
+    "context": "A learner prepares a store submission.",
+    "concept": "Store policies, signing and disclosures are platform-specific and change; verify actual current requirements at release.",
+    "exercise": "Create a release checklist for package identity, permissions, privacy, screenshots, target platform and testing.",
+    "positive": "Each item links to actual current platform evidence.",
+    "negative": "A debug APK is not proof of store approval.",
+    "reference": "https://developer.android.com/guide",
+    "model": "resumeQueue",
+    "boundary": "Synthetic queue acknowledgement model only; physical touch, OS background behavior, push delivery and store acceptance require device tests."
+  },
+  "24.04.08": {
+    "context": "A task disappears after airplane mode and relaunch.",
+    "concept": "Queue durability requires distinguishing sent, acknowledged and locally applied work.",
+    "exercise": "Use resumeQueue to replay only unacknowledged IDs; reproduce network loss and restart in actual app.",
+    "positive": "Pending operation is retained until confirmed.",
+    "negative": "Dropping work merely because a send was attempted fails.",
+    "reference": "https://developer.android.com/guide",
+    "model": "resumeQueue",
+    "boundary": "Synthetic queue acknowledgement model only; physical touch, OS background behavior, push delivery and store acceptance require device tests."
+  },
+  "25.01.01": {
+    "context": "A transactional app runs expensive monthly reports.",
+    "concept": "OLTP optimizes short operational transactions; OLAP scans and aggregates analytical data. Separate workloads when measurements justify it.",
+    "exercise": "Compare point lookup with a synthetic event aggregation and outline an isolated reporting path.",
+    "positive": "Operational queries stay bounded and analytics has defined freshness.",
+    "negative": "Heavy reporting starving production writes fails.",
+    "reference": "https://docs.getdbt.com/",
+    "model": "aggregateEvents",
+    "boundary": "In-memory count/deduplication model; no warehouse, materialized-view freshness, ClickHouse or dbt runtime qualification."
+  },
+  "25.01.02": {
+    "context": "A dashboard recomputes totals on every refresh.",
+    "concept": "Aggregations summarize a defined grain; materialized views persist results with a refresh/freshness contract.",
+    "exercise": "In disposable PostgreSQL aggregate event counts and refresh a materialized view after new events.",
+    "positive": "Reported totals match the stated refresh point.",
+    "negative": "Assuming materialized results are always current fails.",
+    "reference": "https://docs.getdbt.com/",
+    "model": "aggregateEvents",
+    "boundary": "In-memory count/deduplication model; no warehouse, materialized-view freshness, ClickHouse or dbt runtime qualification."
+  },
+  "25.01.03": {
+    "context": "An analytics SDK retries a page-view event.",
+    "concept": "Event IDs, version, timestamp and consent scope are part of the instrumentation contract.",
+    "exercise": "Run aggregateEvents with duplicate view ID and distinct purchase ID; document schema and consent.",
+    "positive": "Exact duplicate is counted once in the model.",
+    "negative": "Duplicate retry inflating totals fails.",
+    "reference": "https://docs.getdbt.com/",
+    "model": "aggregateEvents",
+    "boundary": "In-memory count/deduplication model; no warehouse, materialized-view freshness, ClickHouse or dbt runtime qualification."
+  },
+  "25.01.04": {
+    "context": "A company integrates several source systems into reporting.",
+    "concept": "Warehouse layers separate ingestion, cleaning and consumption; define grain, lineage and late arrivals.",
+    "exercise": "Sketch raw, staging and curated tables for synthetic orders; define unique source IDs.",
+    "positive": "One curated order has traceable source and timestamp.",
+    "negative": "Joining different grains and double-counting revenue fails.",
+    "reference": "https://docs.getdbt.com/",
+    "model": "aggregateEvents",
+    "boundary": "In-memory count/deduplication model; no warehouse, materialized-view freshness, ClickHouse or dbt runtime qualification."
+  },
+  "25.01.05": {
+    "context": "A large event table needs column-oriented queries.",
+    "concept": "ClickHouse is designed for analytical workloads; table engine, sorting key and ingestion shape influence performance.",
+    "exercise": "In an isolated ClickHouse instance create a synthetic event table and compare filtered aggregates under documented conditions.",
+    "positive": "Aggregate results match the known dataset.",
+    "negative": "A claimed performance gain without actual comparable run fails.",
+    "reference": "https://clickhouse.com/docs",
+    "model": "aggregateEvents",
+    "boundary": "In-memory count/deduplication model; no warehouse, materialized-view freshness, ClickHouse or dbt runtime qualification."
+  },
+  "25.01.06": {
+    "context": "A reporting transformation changes a revenue definition.",
+    "concept": "dbt models version SQL transformations with dependency graphs and data tests; separate business definitions from source cleanup.",
+    "exercise": "Build a disposable dbt model with unique/not-null tests and a documented revenue definition.",
+    "positive": "Compiled SQL and tests agree with expected fixtures.",
+    "negative": "Changing definition silently or failing data tests blocks release.",
+    "reference": "https://docs.getdbt.com/",
+    "model": "aggregateEvents",
+    "boundary": "In-memory count/deduplication model; no warehouse, materialized-view freshness, ClickHouse or dbt runtime qualification."
+  },
+  "25.01.07": {
+    "context": "A pipeline receives missing IDs and negative amounts.",
+    "concept": "Data quality assertions enforce uniqueness, nullability, accepted ranges and relationship contracts.",
+    "exercise": "Inject duplicate IDs, missing IDs and invalid amounts into synthetic staging; write explicit reject/quarantine rules.",
+    "positive": "Valid rows pass; bad rows have traceable disposition.",
+    "negative": "Silently dropping or accepting corrupt rows fails.",
+    "reference": "https://docs.getdbt.com/",
+    "model": "aggregateEvents",
+    "boundary": "In-memory count/deduplication model; no warehouse, materialized-view freshness, ClickHouse or dbt runtime qualification."
+  },
+  "25.01.08": {
+    "context": "A learner creates an event dashboard.",
+    "concept": "Metric grain, deduplication, freshness and privacy must be visible alongside charts.",
+    "exercise": "Use aggregateEvents on fixed synthetic events; build real query/dashboard only in disposable DB and reconcile totals.",
+    "positive": "Dashboard count matches known event population.",
+    "negative": "Inflated duplicates or hidden freshness delay fails.",
+    "reference": "https://docs.getdbt.com/",
+    "model": "aggregateEvents",
+    "boundary": "In-memory count/deduplication model; no warehouse, materialized-view freshness, ClickHouse or dbt runtime qualification."
+  },
+  "25.02.01": {
+    "context": "A workspace adds a text assistant.",
+    "concept": "Application primitives separate model calls, streaming, tools and structured outputs; validate outputs before acting.",
+    "exercise": "Design a typed read-only answer flow with source IDs and explicit error handling; use mock model response.",
+    "positive": "UI receives a bounded answer and citations.",
+    "negative": "Unvalidated tool call or secret in prompt fails.",
+    "reference": "https://ai-sdk.dev/docs",
+    "model": "citedAnswer",
+    "boundary": "Synthetic citation membership check; not evidence of factual grounding, model safety, embeddings or real provider behavior."
+  },
+  "25.02.02": {
+    "context": "A solo developer has a limited inference budget.",
+    "concept": "Model selection balances task accuracy, latency, context and cost; evaluate against a fixed corpus and caps.",
+    "exercise": "Define 20 synthetic evaluation questions, compare candidate models only with approved test budget and record actual usage.",
+    "positive": "Selected model meets evaluation threshold within budget.",
+    "negative": "Choosing solely by brand or unbounded retries fails.",
+    "reference": "https://ai-sdk.dev/docs",
+    "model": "citedAnswer",
+    "boundary": "Synthetic citation membership check; not evidence of factual grounding, model safety, embeddings or real provider behavior."
+  },
+  "25.02.03": {
+    "context": "A retrieved document instructs the model to reveal another tenant's records.",
+    "concept": "Retrieved text is untrusted data, not authority; enforce retrieval ACLs and tool authorization outside the model.",
+    "exercise": "Insert synthetic malicious instructions in a document; reject foreign citations with citedAnswer and verify tool denial separately.",
+    "positive": "Foreign data and unauthorized tool calls are denied.",
+    "negative": "Prompt instructions overriding access policy fails.",
+    "reference": "https://ai-sdk.dev/docs",
+    "model": "citedAnswer",
+    "boundary": "Synthetic citation membership check; not evidence of factual grounding, model safety, embeddings or real provider behavior."
+  },
+  "25.02.04": {
+    "context": "An assistant searches semantic document vectors.",
+    "concept": "Embeddings represent text numerically; model/version/dimension and tenant metadata belong to the index contract.",
+    "exercise": "In disposable PostgreSQL with pgvector, store synthetic vectors and query with tenant filter; test wrong dimension.",
+    "positive": "Authorized nearest candidates are returned.",
+    "negative": "Cross-tenant retrieval or mismatched dimension fails.",
+    "reference": "https://github.com/pgvector/pgvector",
+    "model": "citedAnswer",
+    "boundary": "Synthetic citation membership check; not evidence of factual grounding, model safety, embeddings or real provider behavior."
+  },
+  "25.02.05": {
+    "context": "A large handbook must be retrieved in useful sections.",
+    "concept": "Chunking trades context coherence against search granularity; preserve source and offsets and measure retrieval recall.",
+    "exercise": "Split synthetic handbook by headings, compare chunks for fixed questions and track source IDs.",
+    "positive": "Relevant sections are retrieved with traceable source.",
+    "negative": "Chunks without provenance or missing relevant section fails.",
+    "reference": "https://ai-sdk.dev/docs",
+    "model": "citedAnswer",
+    "boundary": "Synthetic citation membership check; not evidence of factual grounding, model safety, embeddings or real provider behavior."
+  },
+  "25.02.06": {
+    "context": "An AI answer appears fluent but is unsupported.",
+    "concept": "Evaluation datasets contain expected facts, source relevance, refusal cases and adversarial inputs; avoid using only happy paths.",
+    "exercise": "Create labeled synthetic questions including unknown and foreign-tenant cases; score retrieval and answer separately.",
+    "positive": "Failures are visible and reproducible.",
+    "negative": "A citation string alone cannot count as factual correctness.",
+    "reference": "https://ai-sdk.dev/docs",
+    "model": "citedAnswer",
+    "boundary": "Synthetic citation membership check; not evidence of factual grounding, model safety, embeddings or real provider behavior."
+  },
+  "25.02.07": {
+    "context": "A model endpoint times out.",
+    "concept": "Fallback routing must retain safety policy, output schema, deadline and budget across providers.",
+    "exercise": "Simulate timeout and one bounded fallback with mock models; verify citations and output schema.",
+    "positive": "Fallback preserves policy and records actual usage.",
+    "negative": "Retry loops, unsafe fallback or silent cost increase fails.",
+    "reference": "https://ai-sdk.dev/docs",
+    "model": "citedAnswer",
+    "boundary": "Synthetic citation membership check; not evidence of factual grounding, model safety, embeddings or real provider behavior."
+  },
+  "25.02.08": {
+    "context": "A learner builds a source-cited assistant.",
+    "concept": "Retrieval must be authorized before generation; sources must actually support claims and unknown answers should abstain.",
+    "exercise": "Run citedAnswer membership checks, then build disposable retrieval pipeline and manually compare answer claims with sources.",
+    "positive": "Allowed citations exist and real grounding is reviewed separately.",
+    "negative": "Cross-tenant or fabricated citations fail.",
+    "reference": "https://ai-sdk.dev/docs",
+    "model": "citedAnswer",
+    "boundary": "Synthetic citation membership check; not evidence of factual grounding, model safety, embeddings or real provider behavior."
+  },
+  "25.03.01": {
+    "context": "A search endpoint stores point locations.",
+    "concept": "Geometry uses a coordinate reference system; geography models geodetic distances. Document SRID and longitude/latitude order.",
+    "exercise": "Create disposable PostGIS points with SRID 4326; compare distance behavior for geometry/geography.",
+    "positive": "Coordinates and units match documented query.",
+    "negative": "Mixing degrees and meters without conversion fails.",
+    "reference": "https://postgis.net/docs/",
+    "model": "validPoint",
+    "boundary": "Coordinate validation model only; real PostGIS geometry, index, map rendering and location privacy require separate acceptance."
+  },
+  "25.03.02": {
+    "context": "A map query scans all locations.",
+    "concept": "Spatial indexes accelerate supported spatial predicates; verify with EXPLAIN and realistic data distribution.",
+    "exercise": "Create synthetic points and GiST index; compare query plan for bounded spatial predicate.",
+    "positive": "Plan and results are captured on same data.",
+    "negative": "Index existence alone is not performance proof.",
+    "reference": "https://postgis.net/docs/",
+    "model": "validPoint",
+    "boundary": "Coordinate validation model only; real PostGIS geometry, index, map rendering and location privacy require separate acceptance."
+  },
+  "25.03.03": {
+    "context": "A user searches within a radius.",
+    "concept": "Bounding boxes approximate candidate regions; exact distance predicate determines radius membership.",
+    "exercise": "Construct inside/outside/edge cases and compare ST_DWithin with a bounding-box filter.",
+    "positive": "Inside points included, outside excluded using correct units.",
+    "negative": "Treating box corners as exact circle matches fails.",
+    "reference": "https://postgis.net/docs/",
+    "model": "validPoint",
+    "boundary": "Coordinate validation model only; real PostGIS geometry, index, map rendering and location privacy require separate acceptance."
+  },
+  "25.03.04": {
+    "context": "A map client loads visible results.",
+    "concept": "Client should query bounded viewport, cluster or paginate results, and preserve accessible non-map alternatives.",
+    "exercise": "Use a synthetic point list and viewport filter in a local map client; test narrow screen and keyboard alternative.",
+    "positive": "Visible bounded points and accessible list agree.",
+    "negative": "Fetching all private coordinates or inaccessible map-only UI fails.",
+    "reference": "https://postgis.net/docs/",
+    "model": "validPoint",
+    "boundary": "Coordinate validation model only; real PostGIS geometry, index, map rendering and location privacy require separate acceptance."
+  },
+  "25.03.05": {
+    "context": "A client submits latitude 91.",
+    "concept": "Coordinates must be finite and within expected range; validate order, SRID and size server-side.",
+    "exercise": "Run validPoint with valid, swapped invalid, NaN and out-of-range values.",
+    "positive": "Valid coordinate accepted.",
+    "negative": "Out-of-range or nonfinite value rejected.",
+    "reference": "https://postgis.net/docs/",
+    "model": "validPoint",
+    "boundary": "Coordinate validation model only; real PostGIS geometry, index, map rendering and location privacy require separate acceptance."
+  },
+  "25.03.06": {
+    "context": "An app evaluates entry into a geographic zone.",
+    "concept": "Geofence semantics need boundary rules, accuracy uncertainty, coordinate system and authorization.",
+    "exercise": "In disposable PostGIS define a synthetic polygon, test inside/outside/boundary and accuracy tolerance.",
+    "positive": "Chosen boundary rule is explicit and repeatable.",
+    "negative": "Treating uncertain position as exact or bypassing permission fails.",
+    "reference": "https://postgis.net/docs/",
+    "model": "validPoint",
+    "boundary": "Coordinate validation model only; real PostGIS geometry, index, map rendering and location privacy require separate acceptance."
+  },
+  "25.03.07": {
+    "context": "A map exposes exact home locations unnecessarily.",
+    "concept": "Location data can be sensitive; minimize precision, retention and audience, and obtain appropriate consent.",
+    "exercise": "Use synthetic coordinates; compare coarse display with restricted exact record and deny foreign tenant access.",
+    "positive": "Public view contains only approved precision.",
+    "negative": "Precise private location leaks or persistent tracking fails.",
+    "reference": "https://postgis.net/docs/",
+    "model": "validPoint",
+    "boundary": "Coordinate validation model only; real PostGIS geometry, index, map rendering and location privacy require separate acceptance."
+  },
+  "25.03.08": {
+    "context": "A learner implements nearby search.",
+    "concept": "A geospatial search combines validated points, scoped query, correct distance and bounded result count.",
+    "exercise": "Run validPoint; build disposable PostGIS search with known distance fixtures and map/list UI.",
+    "positive": "Returned authorized points meet radius and ordering contract.",
+    "negative": "Foreign locations, invalid points or unbounded results fail.",
+    "reference": "https://postgis.net/docs/",
+    "model": "validPoint",
+    "boundary": "Coordinate validation model only; real PostGIS geometry, index, map rendering and location privacy require separate acceptance."
+  },
+  "25.04.01": {
+    "context": "A private video needs efficient object delivery.",
+    "concept": "Object storage owns bytes; CDN caches representations under defined authorization and freshness policies.",
+    "exercise": "Design private object and public thumbnail paths with scoped cache policy; test synthetic unauthorized access.",
+    "positive": "Private object is denied without authorized capability.",
+    "negative": "Shared cache exposing protected media fails.",
+    "reference": "https://ffmpeg.org/documentation.html",
+    "model": "mediaAllowed",
+    "boundary": "Synthetic resource-bound model; no actual FFmpeg sandbox, CDN, HLS, WebRTC or moderation service acceptance."
+  },
+  "25.04.02": {
+    "context": "A video player experiences changing bandwidth.",
+    "concept": "Adaptive streaming selects renditions from a manifest based on measured bandwidth and buffer; packaging and codecs matter.",
+    "exercise": "Generate synthetic local media renditions with an authorized sample; inspect manifest and test switching in a real player.",
+    "positive": "Playback remains coherent when bandwidth changes.",
+    "negative": "Invalid segments or unsupported codec fails.",
+    "reference": "https://ffmpeg.org/documentation.html",
+    "model": "mediaAllowed",
+    "boundary": "Synthetic resource-bound model; no actual FFmpeg sandbox, CDN, HLS, WebRTC or moderation service acceptance."
+  },
+  "25.04.03": {
+    "context": "An uploaded file triggers a thumbnail job.",
+    "concept": "FFmpeg processing untrusted inputs needs isolation, resource limits, timeouts and safe argument passing.",
+    "exercise": "Run mediaAllowed with exceeded pixel limit; then test a sandboxed worker on synthetic media.",
+    "positive": "Oversized input rejected before work; valid sample produces bounded output.",
+    "negative": "Arbitrary shell arguments or unbounded decoding fails.",
+    "reference": "https://ffmpeg.org/documentation.html",
+    "model": "mediaAllowed",
+    "boundary": "Synthetic resource-bound model; no actual FFmpeg sandbox, CDN, HLS, WebRTC or moderation service acceptance."
+  },
+  "25.04.04": {
+    "context": "Two browsers need a live voice connection.",
+    "concept": "WebRTC media transport depends on signaling, ICE/STUN/TURN, permissions and network conditions; SFU is a separate component.",
+    "exercise": "In isolated browser test two synthetic peers and authorized room tokens; exercise blocked permission and reconnect.",
+    "positive": "Authorized peers connect and denied participant cannot join.",
+    "negative": "Assuming direct connectivity always works or public room access fails.",
+    "reference": "https://docs.livekit.io/",
+    "model": "mediaAllowed",
+    "boundary": "Synthetic resource-bound model; no actual FFmpeg sandbox, CDN, HLS, WebRTC or moderation service acceptance."
+  },
+  "25.04.05": {
+    "context": "A private media URL is forwarded to another user.",
+    "concept": "Signed URLs are scoped bearer capabilities with short expiry; authorization must precede issuance and cache policy must respect it.",
+    "exercise": "Design synthetic object ID, expiry and audience policy; test expired and wrong-object capability in a real local signer.",
+    "positive": "Valid scoped capability retrieves intended object.",
+    "negative": "Expired or altered capability fails.",
+    "reference": "https://ffmpeg.org/documentation.html",
+    "model": "mediaAllowed",
+    "boundary": "Synthetic resource-bound model; no actual FFmpeg sandbox, CDN, HLS, WebRTC or moderation service acceptance."
+  },
+  "25.04.06": {
+    "context": "A media service receives abusive or unsafe uploads.",
+    "concept": "Quarantine, review policy, rate limits, appeals and audit trails are distinct from automated classification.",
+    "exercise": "Model synthetic moderation states pending, approved, blocked with explicit reviewer access and error handling.",
+    "positive": "Only approved allowed media is published.",
+    "negative": "Scanner failure treated as approval or unreviewed public upload fails.",
+    "reference": "https://ffmpeg.org/documentation.html",
+    "model": "mediaAllowed",
+    "boundary": "Synthetic resource-bound model; no actual FFmpeg sandbox, CDN, HLS, WebRTC or moderation service acceptance."
+  },
+  "25.04.07": {
+    "context": "A free-tier project must estimate video costs.",
+    "concept": "Estimate storage bytes, transfer, transcoding and concurrent streaming; validate current provider pricing separately.",
+    "exercise": "Use hypothetical media sizes and views, calculate scenario ranges and identify hard resource caps.",
+    "positive": "Costs include transfer and processing assumptions.",
+    "negative": "Ignoring egress or quoting assumed prices as current fails.",
+    "reference": "https://ffmpeg.org/documentation.html",
+    "model": "mediaAllowed",
+    "boundary": "Synthetic resource-bound model; no actual FFmpeg sandbox, CDN, HLS, WebRTC or moderation service acceptance."
+  },
+  "25.04.08": {
+    "context": "A learner builds asynchronous thumbnail processing.",
+    "concept": "Durable job IDs, quarantine, bounded decoding, idempotent output and retry limits protect the worker.",
+    "exercise": "Run mediaAllowed; implement a local disposable worker using authorized sample file and record retry/duplicate behavior.",
+    "positive": "One bounded thumbnail output per job; errors tracked.",
+    "negative": "Oversized, timed-out or duplicate job cannot create uncontrolled work.",
+    "reference": "https://ffmpeg.org/documentation.html",
+    "model": "mediaAllowed",
+    "boundary": "Synthetic resource-bound model; no actual FFmpeg sandbox, CDN, HLS, WebRTC or moderation service acceptance."
+  }
+}
