@@ -75,7 +75,21 @@ A quick workaround would hide the immediate symptom, but it would leave the orig
 
 <Misconception claim="A GET /tasks returns 404 even though TasksController exists in source." correction="The root module must import a feature module for its controllers to become routes." />
 
-<KnowledgeCheck question="What should the reviewer verify for bootstrap and module graph?" choices={["The source contains a decorator, so the runtime must work.","The real Nest application exhibits the specified behavior and rejects the broken case.","TypeScript types alone authorize incoming requests.","A mocked substring search proves the HTTP contract."]} correctIndex={1} explanation="The root module must import a feature module for its controllers to become routes." misconception="A GET /tasks returns 404 even though TasksController exists in source." lessonId="11.01.01" />
+<KnowledgeCheck question="The application starts but GET /tasks is 404. TasksController is declared in a feature module that the root never imports. What fixes the registration?" choices={["Add TasksModule to AppModule imports.","Export TasksController as an injectable service.","Instantiate TasksController using new.","Change the URL to match the source filename."]} correctIndex={0} explanation="Nest must discover the feature module through its root import graph." misconception="A GET /tasks returns 404 even though TasksController exists in source." lessonId="11.01.01" />
+
+## Applied engineering walkthrough
+
+A module graph is a dependency graph, not a file tree. Nest starts from the root module, follows imports, then registers each reachable module's controllers and providers. Importing a TypeScript file does not register the controller. Exports make selected providers available to importing modules; controllers are not exported as service dependencies. Prefer feature modules with explicit dependencies over a global catch-all module.
+
+### Diagnose the concrete failure
+
+Trace AppModule → TasksModule → TasksController on paper. Start the broken root and request GET /tasks; a 404 means the route is missing, not that the process failed to boot. Add the feature import and repeat the exact request; expect HTTP 200 and the array with t1. Then remove the import again to demonstrate that a successful bootstrap alone cannot establish route availability.
+
+### Independent exercise and evidence
+
+Sketch a ReportsModule that consumes an exported TasksService without redeclaring it. Identify which module owns the provider and which module imports it. Record the route status/body and module graph before and after the repair.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Run the existing Nest architecture suite with real dependencies; retain the starter and solution source unchanged. Do not award course credit from source review alone.
 
 ## Bug Hunt: reproduce, diagnose and repair
 
