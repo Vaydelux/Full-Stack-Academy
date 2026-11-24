@@ -10,8 +10,8 @@
   },
   "development": {
     "branch": "feat/p8-publication-evidence",
-    "state": "p8-source-stabilization-publication-blocked",
-    "note": "P8 branch contains 16 enhanced topics, 66 unique authored reference drafts, responsive documentation updates and new isolated HTTP/SQL/Nest labs. Local isolated Node22 regression suites 76/76 passed; full Node24, MDX, browser, PostgreSQL, Nest and manual accessibility qualification remain outstanding."
+    "state": "p9-targeted-release-qualification-publication-blocked",
+    "note": "83 isolated Node22 tests passed; 16 connector-based source parity checks passed across 32 MDX files. Browser runner deadline regression reproduced and repaired; Nest/PostgreSQL fixture isolated by disposable schema. Full Node24, dependencies, browser, database and manual accessibility qualification remain blocked."
   },
   "snapshot": {
     "tracks": 28,
@@ -73,6 +73,6 @@
     "devHighFindings": 14,
     "exceptionExpires": "2026-12-02"
   },
-  "nextMilestone": "Run P8 regression suites and existing full local release gate using Node24.9+ and Chromium; qualify real PostgreSQL/Nest runtime and manual accessibility before atomic publication of 09.02 and 09.03.",
-  "status": "all-topics-authored-p8-source-stabilization-publication-blocked"
+  "nextMilestone": "Use a full clean Node24.9+ checkout and genuine locks; run mandatory P8 offline and Chromium gates plus the opt-in Nest/PostgreSQL integrity fixture, then review P1 modules atomically.",
+  "status": "all-topics-authored-p9-qualification-publication-blocked"
 }
