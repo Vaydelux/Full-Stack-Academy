@@ -11,13 +11,15 @@ export function ReferenceExplorer({
   entries,
   categories,
   authoredIds,
+  initialCategory = 'all',
 }: {
   entries: ReferenceSubject[];
   categories: string[];
   authoredIds: string[];
+  initialCategory?: string;
 }) {
   const [query, setQuery] = useState('');
-  const [category, setCategory] = useState('all');
+  const [category, setCategory] = useState(initialCategory);
   const [visibility, setVisibility] = useState<Visibility>('all');
   const [limit, setLimit] = useState(36);
   const authoredSet = useMemo(() => new Set(authoredIds), [authoredIds]);
