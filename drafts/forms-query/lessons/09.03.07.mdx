@@ -76,7 +76,7 @@ export function TaskList(){
 
 <Misconception claim="The starter discards AbortSignal, ignores response.ok, and retries errors indiscriminately." correction="TanStack Query supplies signal to queryFn. Pass it to fetch, throw for non-2xx HTTP statuses, and retry transient failures only with explicit limits." />
 
-<KnowledgeCheck question="What is the reliable approach to retries and cancellation?" choices={["Assume cached browser state equals server truth forever.","Use TanStack Query resource identity and the server's HTTP contract.","Ignore failure responses to keep the UI fast.","Disable all validation once the code typechecks."]} correctIndex={1} explanation="TanStack Query supplies signal to queryFn. Pass it to fetch, throw for non-2xx HTTP statuses, and retry transient failures only with explicit limits." misconception="The starter discards AbortSignal, ignores response.ok, and retries errors indiscriminately." lessonId="09.03.07" />
+<KnowledgeCheck question="The server replies with HTTP 403 while another query is canceled. Which retry behavior is appropriate?" choices={["Retry both forever.","Treat cancellation as a successful empty list.","Avoid automatic 403 retries and propagate cancellation to the request.","Repeat every mutation using a fresh idempotency key."]} correctIndex={2} explanation="Retry policy depends on the operation and failure classification. Cancellation should not be misrepresented as a confirmed result." misconception="The starter discards AbortSignal, ignores response.ok, and retries errors indiscriminately." lessonId="09.03.07" />
 
 ## Bug Hunt: reproduce, diagnose and repair
 
@@ -101,6 +101,12 @@ An `AbortSignal` is the request lifecycle's cancellation boundary. The query fun
 **Independent exercise:** Capture a slow request, navigate away and verify the supplied signal is aborted. Simulate 422 then 503 and count attempts. A fixed retry count without status classification is incorrect: it wastes capacity and can make validation failures seem sluggish.
 
 **Operational boundary:** A retry storm multiplies backend load during an incident. Respect server rate limits, use jittered backoff for recoverable errors and avoid treating mutation retries as safe unless the server offers an idempotent command contract.
+
+## Applied debugging clinic
+
+Compare three traces: a temporary network failure on a GET, a 403 response, and an aborted request after changing filters. Record attempted requests and final user-facing state. Retry transient reads under a bounded policy, stop deterministic authorization failures, and distinguish cancellation from an empty result.
+
+**Evidence to record:** query identity, request outcome, cache state before and after the action, and the recovery decision. Separate observed network behavior from what the UI displays. Re-run the original failing interaction after the repair.
 
 ## Guided local lab
 
