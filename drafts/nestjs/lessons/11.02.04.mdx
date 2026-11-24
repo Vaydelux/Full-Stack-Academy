@@ -79,7 +79,21 @@ If the UI shows a generic error, classify the failure at the nearest authoritati
 
 <Misconception claim="The interceptor discards the route return value, so clients receive unrelated content." correction="An interceptor should preserve the route result while adding a bounded response envelope or trace metadata." />
 
-<KnowledgeCheck question="Which verification proves interceptors and tracing?" choices={["A decorator's name exists in source.","A real Nest request reaches the correct stage and demonstrates the specified positive and negative outcomes.","An interface type was exported.","The UI hides the endpoint, so it must be protected."]} correctIndex={1} explanation="An interceptor should preserve the route result while adding a bounded response envelope or trace metadata." misconception="The interceptor discards the route return value, so clients receive unrelated content." lessonId="11.02.04" />
+<KnowledgeCheck question="An interceptor must add trace metadata without losing the controller result. Which implementation is appropriate?" choices={["Return a constant object without calling next.handle.","Subscribe twice to the handler and return the first result.","Replace the handler result with only the trace ID.","Return next.handle().pipe(map(data => ({ data, traceId })))."]} correctIndex={3} explanation="Transform the downstream observable and preserve its emitted data." misconception="The interceptor discards the route return value, so clients receive unrelated content." lessonId="11.02.04" />
+
+## Applied engineering walkthrough
+
+An interceptor wraps downstream execution through next.handle, which returns an observable. RxJS map transforms successful emitted data; finalize is useful for cleanup or duration observation on success, error or cancellation. The example wraps a route result and generates a trace ID. It does not propagate an existing distributed trace or automatically catch all errors. Avoid manually subscribing, which may duplicate work or break the request lifecycle.
+
+### Diagnose the concrete failure
+
+Compare the starter's response to the route's original value. The solution must preserve the original data inside the envelope and return a bounded UUID trace ID. Count handler invocations; there should be one for the fixture. Test a downstream error separately: map should not turn an exception into a successful response.
+
+### Independent exercise and evidence
+
+Propose a duration interceptor that records safe metadata through finalize without changing the response schema. Define tests for success and thrown errors. Record handler call count, original data, returned envelope and how errors reach the filter.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. The existing request-pipeline checks include direct class and pure-function tests; real HTTP and adapter acceptance remain distinct release requirements. Do not award course credit from source review alone.
 
 ## Bug Hunt: reproduce, diagnose and repair
 
