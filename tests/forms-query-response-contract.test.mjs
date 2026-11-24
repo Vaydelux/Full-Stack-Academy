@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createServer } from 'node:http';
 import { once } from 'node:events';
+import { createTaskApi } from '../examples/forms-query-vertical/task-api.mjs';
 import { tasksApi, TaskRequestError } from '../examples/forms-query-vertical/react-client/src/api.ts';
 import { shouldRetainCreateAttempt, shouldRetryRead } from '../examples/forms-query-vertical/react-client/src/policy.ts';
 
@@ -69,4 +70,33 @@ test('ordinary terminal HTTP errors retain their status and retry semantics', as
 test('valid 201 create and 204 delete remain supported', async () => {
   await peer(json(task, 201), async () => assert.deepEqual(await tasksApi.create({ title: task.title, priority: task.priority }, 'attempt-0001'), task));
   await peer({ status: 204, type: 'application/json', body: '' }, async () => assert.equal(await tasksApi.remove(id), null));
+});
+
+test('extra unrecognized server fields do not enter task cache values', async () => peer(json({ ...task, internal: 'not part of DTO' }), async () => assert.deepEqual(await tasksApi.get(id), task)));
+test('corrupted create acknowledgement after real commit can be recovered with the same key', async () => {
+  const api = createTaskApi();
+  const base = await api.start();
+  const original = globalThis.fetch;
+  let corrupt = true;
+  globalThis.fetch = async (url, options) => {
+    const response = await original(new URL(url, base), options);
+    if (corrupt && options?.method === 'POST') {
+      corrupt = false;
+      assert.equal(response.status, 201);
+      await response.json();
+      return new Response('{"id":null}', { status: 201, headers: { 'content-type': 'application/json' } });
+    }
+    return response;
+  };
+  try {
+    const input = { title: 'Recover committed create', priority: 'normal' };
+    const key = 'recovery-0001';
+    await assert.rejects(tasksApi.create(input, key), error => contractError(error) && shouldRetainCreateAttempt(error));
+    const replay = await tasksApi.create(input, key);
+    assert.deepEqual((await tasksApi.list('all')).items, [replay]);
+  } finally {
+    globalThis.fetch = original;
+    api.server.closeAllConnections();
+    await api.close();
+  }
 });
