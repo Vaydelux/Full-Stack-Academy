@@ -100,3 +100,8 @@ test('corrupted create acknowledgement after real commit can be recovered with t
     await api.close();
   }
 });
+
+test('HTTP 408 retains the create key and permits only one read retry', async () => peer(json({ title: 'Request timeout' }, 408), async () => {
+  await assert.rejects(tasksApi.create({ title: task.title, priority: task.priority }, 'attempt-0001'), error =>
+    error instanceof TaskRequestError && error.status === 408 && shouldRetainCreateAttempt(error) && shouldRetryRead(0, error) && !shouldRetryRead(1, error));
+}));
