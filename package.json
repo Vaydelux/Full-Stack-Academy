@@ -449,7 +449,7 @@
     "qualify:nestjs:architecture": "npm run qualify --prefix examples/nestjs-vertical",
     "status:nestjs-test-coverage": "node examples/nestjs-vertical/scripts/verify-runtime-test-coverage.mjs --json",
     "test:nestjs-offline-transactions": "node --experimental-strip-types --test examples/nestjs-vertical/tests/transactions.offline.test.mjs",
-    "test:nestjs-offline-contracts": "node --experimental-transform-types --test examples/nestjs-vertical/tests/pure-contracts.offline.test.mjs",
+    "test:nestjs-offline-contracts": "node --experimental-transform-types --test examples/nestjs-vertical/tests/pure-contracts.offline.test.mjs tests/p10-nest-practice.test.mjs",
     "test:nestjs-offline-lock": "node --test examples/nestjs-vertical/tests/lock-integrity.offline.test.mjs",
     "test:nestjs-offline": "npm run test:nestjs-offline-transactions && npm run test:nestjs-offline-contracts && npm run test:nestjs-offline-lock",
     "test:postgresql-drafts": "node examples/postgresql-basics/scripts/verify-source.mjs --check && node --test examples/postgresql-basics/tests/source.test.mjs",
