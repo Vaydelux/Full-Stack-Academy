@@ -79,7 +79,7 @@ export default function ReviewForm(){
 
 <Misconception claim="The custom control never receives the form-owned value or onChange handler." correction="Use register when a native control provides ref/name/onChange. For a controlled third-party component, Controller bridges field.value and field.onChange." />
 
-<KnowledgeCheck question="Which repair best addresses register and controller?" choices={["Always trust the browser to enforce security.","Use one authoritative form state and verify the tested behavior.","Ignore non-200 HTTP responses if fetch resolved.","Treat TypeScript types as runtime authorization."]} correctIndex={1} explanation="Use register when a native control provides ref/name/onChange. For a controlled third-party component, Controller bridges field.value and field.onChange." misconception="The custom control never receives the form-owned value or onChange handler." lessonId="09.02.02" />
+<KnowledgeCheck question="A custom date picker calls onChange with a date value rather than a DOM event. How should it integrate?" choices={["Register the picker and ignore its callback.","Use Controller and map field value, onChange, onBlur and ref where supported.","Keep a hidden independent state and submit that.","Call reset on every selection."]} correctIndex={1} explanation="Controller adapts a controlled widget to the form contract; the widget and form must not have competing writable state." misconception="The custom control never receives the form-owned value or onChange handler." lessonId="09.02.02" />
 
 ## Bug Hunt: reproduce, diagnose and repair
 
@@ -103,6 +103,12 @@ export default function ReviewForm(){
 **Independent exercise:** Fill the registered title, keyboard-activate the rating twice, and predict the submitted title/rating pair. Then deliberately disconnect the widget's change handler and identify the first incorrect observable value.
 
 **Accessibility is a separate responsibility.** A `Controller` adapter does not automatically create a button role, label, visible focus or keyboard support. Prefer native controls where practical. Give controlled components complete defaults so dirty-state comparisons have a meaningful baseline.
+
+## Applied debugging clinic
+
+In a custom priority selector, choose high, tab away, then submit. Check the payload and touched state. If the visual selection is correct but the payload is wrong, inspect the callback mapping; if focusing an invalid field fails, inspect whether the widget exposes a focusable ref.
+
+**Evidence to record:** the initial state, action, observed result, expected result and smallest repair. Explain whether the defect belongs to the form, rendered widget, or HTTP boundary. Re-run the original failing interaction after the repair.
 
 ## Guided local lab
 
