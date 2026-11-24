@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import Link from 'next/link';
 import { BookOpenText, Code2, Layers3, LibraryBig } from 'lucide-react';
+import { DocNavigation } from './DocNavigation';
 import { CopyCodeButton } from './CopyCodeButton';
 import { AUTHORED_LESSONS } from '@/lib/academy/authored-content';
 
@@ -62,16 +63,7 @@ export function DocShell({ children, active, section = 'learn' }: { children: Re
         </nav>
       </header>
       <div className="mx-auto grid max-w-7xl gap-5 px-4 py-5 lg:gap-8 lg:py-8 sm:px-6 lg:grid-cols-[235px_minmax(0,1fr)]">
-        <aside aria-label={navigationTitle} className="min-w-0 self-start lg:sticky lg:top-24">
-          <details key={`${section}:${active ?? ''}`} className="rounded-xl border border-slate-200 bg-white p-3 lg:hidden dark:border-white/10 dark:bg-white/[0.03]">
-            <summary className="cursor-pointer py-2 text-sm font-bold">{navigationTitle}</summary>
-            <div className="mt-2 max-h-[45dvh] overflow-y-auto overscroll-contain">{navigation}</div>
-          </details>
-          <div className="hidden max-h-[calc(100dvh-8rem)] overflow-y-auto overscroll-contain rounded-xl border border-slate-200 bg-white p-4 lg:block dark:border-white/10 dark:bg-white/[0.03]">
-            <h2 className="mb-3 text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">{navigationTitle}</h2>
-            {navigation}
-          </div>
-        </aside>
+        <DocNavigation key={`${section}:${active ?? ''}`} title={navigationTitle}>{navigation}</DocNavigation>
         <main id="doc-main" tabIndex={-1} className="min-w-0 scroll-mt-32 break-words pb-20">
           {children}
         </main>
