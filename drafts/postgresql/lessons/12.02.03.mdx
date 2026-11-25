@@ -83,6 +83,20 @@ A many-to-many table can accumulate duplicate or unauthorized roles if the uniqu
 
 The right choice can change with workload size, tenant access patterns, migration risk and operational constraints. Optimize a schema only after correctness and measured query behavior. A trigger, index, or foreign key is not evidence of complete application authorization.
 
+## Applied SQL walkthrough
+
+An association table represents a many-to-many relationship as one fact per member/project pair. Including tenant in the key prevents duplicate associations and the composite foreign keys require both endpoints to belong to the same tenant. This models relationship integrity but does not establish the caller's permission to grant membership.
+
+### Predict and diagnose the result
+
+Use the fixture's overlapping identifiers to predict which tenant/member/project combinations exist. Attempt a duplicate association and a cross-tenant endpoint pair in the existing rollback-only harness. Verify failures by constraint category. Do not interpret an ID that exists in another tenant as a valid reference.
+
+### Independent exercise and evidence
+
+Extend the association design with a membership role constrained to an explicit set. Explain whether role is a property of the association or part of its identity. Record a valid association, duplicate attempt and forbidden tenant pairing; design an independent authorization test for role assignment.
+
+**Qualification boundary:** Predicted results are not executed PostgreSQL evidence. Use the existing disposable database acceptance gate and preserve the original starter and solution. No publication credit is granted by this walkthrough.
+
 ## Bug hunt and regression reasoning
 
 1. **Reproduce:** A collaborator can be on several projects. A membership table keyed only by tenant and member prevents joining a second project.
