@@ -95,7 +95,21 @@ In a multi-request system, repeat the test with two independent users and at lea
 
 <Misconception claim="A service performs two writes without a transaction; one succeeds when the other fails." correction="Multi-write invariants require a real database transaction with rollback on failure." />
 
-<KnowledgeCheck question="Which design is safest for application transactions?" choices={["Make the controller hold every stateful dependency permanently.","Keep business rules in an injectable service and verify the boundary with actual runtime behavior.","Expose persistent entities directly because TypeScript hides private fields.","Treat a mock array as proof of database transactions."]} correctIndex={1} explanation="Multi-write invariants require a real database transaction with rollback on failure." misconception="A service performs two writes without a transaction; one succeeds when the other fails." lessonId="11.03.06" />
+<KnowledgeCheck question="The debit succeeds but the destination update affects zero rows. What must the transaction do?" choices={["Commit only the debit.","Roll back the transaction and report failure.","Retry just the credit indefinitely.","Return success because one statement worked."]} correctIndex={1} explanation="The invariant spans both writes, so they must succeed or fail together." misconception="A service performs two writes without a transaction; one succeeds when the other fails." lessonId="11.03.06" />
+
+## Applied engineering walkthrough
+
+A transaction is a database boundary, not just two awaited statements. The sample uses a single checked-out client, BEGIN, conditional debit, credit and COMMIT; rowCount confirms that each update affected exactly one row. On failure it attempts rollback and preserves a rollback failure alongside the original error. It transfers one unit for teaching purposes, not a financial ledger. Opposite-direction transfers can deadlock; production needs consistent lock ordering or bounded whole-transaction retries.
+
+### Diagnose the concrete failure
+
+Exercise successful transfer, insufficient balance and missing destination using a recording client. Verify the expected sequence and rollback path, then repeat against a disposable real database. If COMMIT loses its acknowledgement, the client may not know whether the transfer committed; blindly retrying is unsafe without an idempotency protocol.
+
+### Independent exercise and evidence
+
+Design a two-session test for competing debits from the same wallet. Assert balance conservation and no negative balance in real PostgreSQL, rather than trusting call order alone. Describe a stable operation key and explain how a committed receipt would resolve uncertain outcomes.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Pure contract checks, framework wiring and real database qualification are separate evidence. Keep the existing starter and solution unchanged; do not award course credit from source review alone.
 
 ## Bug Hunt: reproduce, diagnose and repair
 
