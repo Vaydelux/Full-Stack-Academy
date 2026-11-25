@@ -44,6 +44,20 @@ node --test --test-name-pattern="19[.]02" examples/p6-quality/labs.test.mjs
 
 Plain JavaScript UI state model; installed React/Vitest/Testing Library/MSW and real browsers require separate tests.
 
+## Applied engineering walkthrough
+
+Keyboard accessibility involves logical focus order, operable controls and meaningful focus restoration. A modal should contain focus while open without creating an inescapable trap. Escape and focus restoration need actual browser checks; automated rule scans alone are insufficient.
+
+### Diagnose the concrete failure
+
+In a real browser fixture, reach the trigger with Tab, open it, traverse controls with Tab and Shift+Tab, then dismiss with Escape. Verify focus returns to the triggering control and background interaction follows the dialog contract.
+
+### Independent exercise and evidence
+
+Design a manual and automated acceptance checklist for a modal at normal and enlarged zoom. Record keyboard sequence, active elements and announcement behavior using appropriate assistive technology.
+
+**Evidence boundary:** These are practice instructions, not recorded test results. Preserve the existing model, specification and draft flag; external runtime qualification remains independent.
+
 ## Knowledge check
 
 1. Which public behavior or invariant is being protected?
