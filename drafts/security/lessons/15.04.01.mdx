@@ -42,6 +42,20 @@ Document both a permitted happy path and a rejected adversarial path. Integratio
 
 A passing UI check or source-only checklist cannot establish secure production behavior. An observed negative test and reviewed trust boundary are essential.
 
+## Applied engineering walkthrough
+
+An audit event should record an authenticated actor, action, target and outcome from trusted server state. Operational logs and audit records have different retention and access needs. Restrict normal update/delete privileges; database triggers alone cannot protect records against privileged administrators.
+
+### Diagnose the concrete failure
+
+Exercise an authorized and denied synthetic action. Verify actor identity cannot be overwritten by the request, and ensure raw tokens or reset links do not enter the event. Test an ordinary runtime role attempting an audit mutation in a disposable database.
+
+### Independent exercise and evidence
+
+Design an audit record with event ID, correlation ID, tenant, operation and safe result. Specify access, retention and independent integrity review. Record positive append and negative modification outcomes.
+
+**Qualification boundary:** These are practice instructions, not recorded audit results. Use synthetic data and authorized disposable infrastructure. Preserve existing laboratory contracts and publication status.
+
 ## Knowledge check
 
 1. Which input is attacker-controlled?
