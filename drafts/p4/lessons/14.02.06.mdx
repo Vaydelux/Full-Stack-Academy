@@ -79,6 +79,20 @@ An unexpired JWT can remain signature-valid after a session is revoked. Select g
 
 In production, model expired access tokens, refresh-token rotation, multiple concurrent tabs, CSRF/state handling where applicable, cookie attributes, MFA enrollment and logout propagation. Never rely on raw JWT decoding, a mutable cookie JSON field, an unverified redirect URL or a user-editable metadata claim to authorize administrative actions.
 
+## Applied persistence walkthrough
+
+A decoded JWT is not a verified JWT. Signature, issuer, audience where applicable and expiry must be checked through the supported verification path. getClaims verifies the token; getUser obtains current user information from the Auth service. An otherwise valid token can outlive changed permissions or a revoked session, so sensitive operations need an appropriate freshness check. User-editable metadata must not grant authority.
+
+### Diagnose the concrete failure
+
+Test a valid token, malformed token, expired token and a revoked or signed-out session with the real configured SDK. Check the behavior of getClaims versus the fresh Auth lookup without exposing JWT contents. Test a membership change separately from token validation, because identity verification does not authorize the requested record.
+
+### Independent exercise and evidence
+
+Design key-rotation and session-freshness acceptance cases. For a sensitive operation requiring strict revocation, define how the server verifies the active session and current membership. Record result classes and key identifiers only when safe.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Use isolated synthetic identities and the pinned SDK. Preserve the existing starter and solution; source inspection does not establish actual Auth or session security.
+
 ## Bug Hunt
 
 1. State the attack or broken state: Base64-decoding a JWT without verifying its signature or expiry lets an attacker forge claims such as an admin role.
