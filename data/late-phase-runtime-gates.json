@@ -1,0 +1,202 @@
+{
+  "15.01": [
+    "Threat model synthetic multi-tenant HTTP/data flows and demonstrate actual forbidden object access rejection",
+    "Review input, logging, and trust boundaries against a real authorized local test API"
+  ],
+  "15.02": [
+    "Exercise verified identities, expiry, role permissions and revoked tenant membership against an actual local identity/data boundary",
+    "Check two distinct users and negative access for protected objects; retain the historical published lesson separately"
+  ],
+  "15.03": [
+    "Use actual browser and local HTTP to verify CSRF, injection, XSS and cookie/security header controls",
+    "Reproduce forbidden requests, verify no sensitive data leakage, and inspect actual database authorization where applicable"
+  ],
+  "15.04": [
+    "Perform an actual dependency/secret scan and disposable container/API security release exercise",
+    "Review sanitized audit logs, exploit-negative tests, remediation and residual risk"
+  ],
+  "16.01": [
+    "Run a real Redis-backed read path with tenant isolation, TTL and invalidation",
+    "Measure cold/warm requests and backing-store failure behavior without treating a memory model as Redis evidence"
+  ],
+  "16.02": [
+    "Use disposable Redis to test eviction, expiry, connectivity and failure recovery",
+    "Inspect real memory, latency and configuration evidence without exposing credentials"
+  ],
+  "16.03": [
+    "Run genuine BullMQ worker and Redis jobs with retries, delayed work and duplicate delivery",
+    "Test worker shutdown/restart, poison jobs and bounded retry/dead-letter behavior"
+  ],
+  "16.04": [
+    "Exercise real transaction/outbox and Redis queue boundaries with competing workers",
+    "Inject crash, retry and replay failures; prove idempotent recovery without duplicate external effects"
+  ],
+  "17.01": [
+    "Run actual browser and authorized SSE/WebSocket transport with disconnect and replay",
+    "Test tenant denial, event ordering, cleanup, connection limits and actual proxy behavior in a disposable setup"
+  ],
+  "17.02": [
+    "Exercise actual notification delivery adapter and local/sandbox provider with consent and preferences",
+    "Test duplicate events, unsubscribe, retries, invalid destinations and delivery failure"
+  ],
+  "17.03": [
+    "Exercise actual collaborative client/runtime with two simultaneous clients and reconnect",
+    "Verify conflicts, convergence, unauthorized access and persistence rather than only simulated merges"
+  ],
+  "18.01": [
+    "Run real file decoding, byte validation and private object-storage adapter on synthetic files",
+    "Check spoofed MIME, oversize, unauthorized download, expiry and failed processing cleanup"
+  ],
+  "18.02": [
+    "Exercise a real sandbox email/messaging adapter with consent and delivery callbacks",
+    "Check signed callbacks, retry, opt-out, duplicates and sanitized logs"
+  ],
+  "18.03": [
+    "Run actual PostgreSQL search indexes and representative disposable corpus queries",
+    "Verify ranking, tenant filtering, pagination and measured performance; reject injection and wrong-tenant results"
+  ],
+  "18.04": [
+    "Exercise actual signed HTTP webhook, transactional inbox and worker with isolated PostgreSQL",
+    "Verify replay rejection, duplicate delivery, crash recovery, provider timeout and no duplicate side effects"
+  ],
+  "19.01": [
+    "Run real unit, database integration and browser E2E cases for a representative workflow",
+    "Demonstrate deliberately failing assertions and explain what each boundary proves"
+  ],
+  "19.02": [
+    "Run installed frontend test tooling and real browser interactions with accessible locators",
+    "Verify failure paths, keyboard behavior, asynchronous UI and no false-positive assertions"
+  ],
+  "19.03": [
+    "Run real HTTP and disposable database tests with rollback and test-data isolation",
+    "Demonstrate transaction and constraint failures plus independent competing requests"
+  ],
+  "19.04": [
+    "Run actual load/reliability tool on a disposable representative service",
+    "Record latency distribution, throughput, failure rate and recovery against explicit thresholds"
+  ],
+  "20.01": [
+    "Build actual container images and run a disposable container stack",
+    "Inspect health, non-root user, environment, persistence, networking and failure behavior"
+  ],
+  "20.02": [
+    "Execute an actual isolated CI-equivalent pipeline with authentic lockfiles and artifact checks",
+    "Demonstrate failed test blocking and sanitized logs; do not require hosted Actions"
+  ],
+  "20.03": [
+    "Rehearse real local artifact deployment, smoke, rollback and migration compatibility",
+    "Demonstrate a failing candidate is refused and the last good version restored"
+  ],
+  "20.04": [
+    "Validate infrastructure configuration and run a disposable topology with network and resource boundaries",
+    "Exercise restore, readiness, secrets handling and infrastructure failure scenarios"
+  ],
+  "21.01": [
+    "Install and exercise real logger, metrics/tracing SDK and local collector/exporter",
+    "Inspect actual correlation and redaction; demonstrate failure and no sensitive data leakage"
+  ],
+  "21.02": [
+    "Measure a real disposable service's SLI and error budget using actual collected metrics",
+    "Inject an outage and verify alert thresholds, burn-rate reasoning and recovery"
+  ],
+  "21.03": [
+    "Rehearse an incident with actual disposable service fault and recovery logs",
+    "Verify detection, mitigation, restore, timeline and independent postmortem review"
+  ],
+  "22.01": [
+    "Run actual browser profiling and reproducible performance measurements",
+    "Demonstrate a regression and compare accessibility, loading and interaction budgets"
+  ],
+  "22.02": [
+    "Profile real HTTP and PostgreSQL queries on representative synthetic data",
+    "Compare query plans and measured latency; verify correctness, connection limits and overload"
+  ],
+  "22.03": [
+    "Exercise real cache and load against disposable service capacity",
+    "Measure hit rate, saturation, fallback load and degradation under cache or worker failure"
+  ],
+  "23.01": [
+    "Implement and inspect actual modular code with dependency and boundary tests",
+    "Demonstrate forbidden dependency or regression caught by a real build/test"
+  ],
+  "23.02": [
+    "Run actual modular-monolith feature spanning API and persistence",
+    "Test module isolation, transaction ownership, dependency cycles and migration behavior"
+  ],
+  "23.03": [
+    "Exercise real durable messaging/outbox and consumers in isolated services",
+    "Inject duplicate and reordered events, crash and replay; verify idempotent recovery"
+  ],
+  "23.04": [
+    "Run actual multi-process/service communication with timeouts, retry and failure injection",
+    "Record partial failures, observability and design tradeoffs rather than claiming simulated resilience"
+  ],
+  "24.01": [
+    "Build and install actual Capacitor app on authorized Android/iOS device or emulator",
+    "Verify native bridge permissions, origin isolation and device-specific failure behavior"
+  ],
+  "24.02": [
+    "Run actual native/offline persistence and synchronization on device or emulator",
+    "Exercise network loss, conflict, replay, restart and cross-account isolation"
+  ],
+  "24.03": [
+    "Build and install actual Tauri desktop package in an authorized local environment",
+    "Verify IPC permissions, filesystem scope, update/packaging behavior and denied operations"
+  ],
+  "24.04": [
+    "Test actual mobile app on representative device sizes and orientations",
+    "Record startup, accessibility, permissions, background/resume and failure behavior"
+  ],
+  "25.01": [
+    "Run real analytics data pipeline with synthetic events and persistent storage",
+    "Test duplicates, late events, privacy boundaries and reconciliation against actual records"
+  ],
+  "25.02": [
+    "Run an authorized RAG/model adapter on synthetic documents with actual retrieval",
+    "Evaluate citation correctness, tenant isolation, prompt injection, failure and measured costs"
+  ],
+  "25.03": [
+    "Run real geospatial database/query and map rendering on synthetic coordinates",
+    "Verify coordinate order, spatial index/results, boundary queries and invalid inputs"
+  ],
+  "25.04": [
+    "Run actual media processing or RTC pipeline with synthetic media on local tools",
+    "Verify codecs, permissions, failure cleanup and measured processing/transport behavior"
+  ],
+  "26.01": [
+    "Exercise real disposable identity provider and application protocol validation",
+    "Reject wrong issuer/audience, expired/replayed claims and unauthorized provisioning"
+  ],
+  "26.02": [
+    "Run actual sandbox billing provider or approved emulator with persistent entitlement state",
+    "Exercise signature, duplicate and reordered events, failed payment and reconciliation"
+  ],
+  "26.03": [
+    "Execute actual synthetic-data export, deletion, retention and access-audit workflows",
+    "Review role boundaries and policy evidence with a qualified reviewer; do not claim legal certification"
+  ],
+  "26.04": [
+    "Run actual administration workflow with separate privileged and ordinary identities",
+    "Test escalation denial, sensitive operation approval, audit trail and revocation"
+  ],
+  "27.01": [
+    "Build and run actual web capstone with accessible browser workflow",
+    "Verify negative inputs, responsive behavior and repeatable feature acceptance"
+  ],
+  "27.02": [
+    "Run actual API/database capstone with migrations and real integration cases",
+    "Demonstrate cross-tenant denial, transaction rollback, recovery and API error contracts"
+  ],
+  "27.03": [
+    "Run actual integrated capstone feature adapters in authorized disposable environment",
+    "Verify auth, caching, jobs, integrations and failure/replay boundaries"
+  ],
+  "27.04": [
+    "Build and rehearse actual capstone production-like topology with monitoring and restore",
+    "Demonstrate failed release rollback, performance limits and documented operational recovery"
+  ],
+  "27.05": [
+    "Conduct independent actual capstone demonstration and reproducible evidence review",
+    "Challenge negative cases, measured performance, cost, recovery and unresolved claims without treating rubric score as proof"
+  ]
+}

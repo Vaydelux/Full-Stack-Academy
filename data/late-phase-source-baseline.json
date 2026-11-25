@@ -1,0 +1,2852 @@
+{
+  "baselineCommit": "677edb8bdedd55cfcc6add9e46f2b338d10bc24b",
+  "canonicalManuscripts": 400,
+  "additionalCandidates": 399,
+  "sharedSourceFiles": 110,
+  "records": [
+    {
+      "id": "15.01.01",
+      "path": "drafts/security/lessons/15.01.01.mdx",
+      "gitBlob": "c34a94294b0db7052cc314d50f82d47af6a26ac8",
+      "historical": false
+    },
+    {
+      "id": "15.01.02",
+      "path": "drafts/security/lessons/15.01.02.mdx",
+      "gitBlob": "3ec09ced499b53730ff1228b3c6a2ac8da2ee384",
+      "historical": false
+    },
+    {
+      "id": "15.01.03",
+      "path": "drafts/security/lessons/15.01.03.mdx",
+      "gitBlob": "c2c0b4d3f9fe8807390fcda6147385454b7d4d91",
+      "historical": false
+    },
+    {
+      "id": "15.01.04",
+      "path": "drafts/security/lessons/15.01.04.mdx",
+      "gitBlob": "40a3c56149c89c1cc53e5e1e4bcb277b2d203a05",
+      "historical": false
+    },
+    {
+      "id": "15.01.05",
+      "path": "drafts/security/lessons/15.01.05.mdx",
+      "gitBlob": "2426ed4900e687e06e44ada67c2e30f8c17315a8",
+      "historical": false
+    },
+    {
+      "id": "15.01.06",
+      "path": "drafts/security/lessons/15.01.06.mdx",
+      "gitBlob": "d2734cd788c15bf3b4d6f5dee9da148e956deb28",
+      "historical": false
+    },
+    {
+      "id": "15.01.07",
+      "path": "drafts/security/lessons/15.01.07.mdx",
+      "gitBlob": "441fcc693e8e4089ecccc10357b13ff334647fa6",
+      "historical": false
+    },
+    {
+      "id": "15.01.08",
+      "path": "drafts/security/lessons/15.01.08.mdx",
+      "gitBlob": "682d2e7b1abaabd165540a4801bce17124d43576",
+      "historical": false
+    },
+    {
+      "id": "15.02.01",
+      "path": "drafts/security/lessons/15.02.01.mdx",
+      "gitBlob": "cba25bc8273bacd6611f53eb4ff14d54935c94a2",
+      "historical": false
+    },
+    {
+      "id": "15.02.02",
+      "path": "drafts/security/lessons/15.02.02.mdx",
+      "gitBlob": "f9ae1977f9a42323a6246363621580673005fe4a",
+      "historical": false
+    },
+    {
+      "id": "15.02.03",
+      "path": "drafts/security/lessons/15.02.03.mdx",
+      "gitBlob": "81dd51279e70fa6e955608d5b5ea3f8cf453f3d2",
+      "historical": false
+    },
+    {
+      "id": "15.02.04",
+      "path": "drafts/security/lessons/15.02.04.mdx",
+      "gitBlob": "d964ebb27859d8c8b4f8fe6ee43ae04d93b83960",
+      "historical": true
+    },
+    {
+      "id": "15.02.05",
+      "path": "drafts/security/lessons/15.02.05.mdx",
+      "gitBlob": "d7503d72d39c3cb445ddafabc5496294f4dc35bc",
+      "historical": false
+    },
+    {
+      "id": "15.02.06",
+      "path": "drafts/security/lessons/15.02.06.mdx",
+      "gitBlob": "bcacb81b5c6c5d824bcc8cbdaab70fc96e00491a",
+      "historical": false
+    },
+    {
+      "id": "15.02.07",
+      "path": "drafts/security/lessons/15.02.07.mdx",
+      "gitBlob": "d38d4c564ea1d09f09eb3adcfb03e73a0f504e03",
+      "historical": false
+    },
+    {
+      "id": "15.02.08",
+      "path": "drafts/security/lessons/15.02.08.mdx",
+      "gitBlob": "78906b18711cc376522b09049898513112f2d417",
+      "historical": false
+    },
+    {
+      "id": "15.03.01",
+      "path": "drafts/security/lessons/15.03.01.mdx",
+      "gitBlob": "47230cdae68fa3dca10e734286c3c65be478063a",
+      "historical": false
+    },
+    {
+      "id": "15.03.02",
+      "path": "drafts/security/lessons/15.03.02.mdx",
+      "gitBlob": "f8769f0a38b3457dd2976c8ee39c3c47913cf767",
+      "historical": false
+    },
+    {
+      "id": "15.03.03",
+      "path": "drafts/security/lessons/15.03.03.mdx",
+      "gitBlob": "4bdfeb138927d306b7fa3ce3df70f682ac402f21",
+      "historical": false
+    },
+    {
+      "id": "15.03.04",
+      "path": "drafts/security/lessons/15.03.04.mdx",
+      "gitBlob": "3983ec0dde289f5b1915dabec6ced084beefb04c",
+      "historical": false
+    },
+    {
+      "id": "15.03.05",
+      "path": "drafts/security/lessons/15.03.05.mdx",
+      "gitBlob": "cdec7e62f2800651e0dea6eb1acd7db17e7e93a1",
+      "historical": false
+    },
+    {
+      "id": "15.03.06",
+      "path": "drafts/security/lessons/15.03.06.mdx",
+      "gitBlob": "36162927198780eb50ec16a9cbb7b364b554e53d",
+      "historical": false
+    },
+    {
+      "id": "15.03.07",
+      "path": "drafts/security/lessons/15.03.07.mdx",
+      "gitBlob": "9e23efd076313886bbe840de51567acb9104c9fe",
+      "historical": false
+    },
+    {
+      "id": "15.03.08",
+      "path": "drafts/security/lessons/15.03.08.mdx",
+      "gitBlob": "ee7052a1c48e8242274c976d42ba65fe24ee51ee",
+      "historical": false
+    },
+    {
+      "id": "15.04.01",
+      "path": "drafts/security/lessons/15.04.01.mdx",
+      "gitBlob": "bf4c2ec20b4b3b7365f3215b092449188ae411d3",
+      "historical": false
+    },
+    {
+      "id": "15.04.02",
+      "path": "drafts/security/lessons/15.04.02.mdx",
+      "gitBlob": "6a5b589dbedb0d481b3c8faf0e1d39f15c7687db",
+      "historical": false
+    },
+    {
+      "id": "15.04.03",
+      "path": "drafts/security/lessons/15.04.03.mdx",
+      "gitBlob": "727f0c76d53661e6a44c158e8124f640059edd1c",
+      "historical": false
+    },
+    {
+      "id": "15.04.04",
+      "path": "drafts/security/lessons/15.04.04.mdx",
+      "gitBlob": "7bb44793785bce0fb7e28a86ac0bb1c2eca6c0ec",
+      "historical": false
+    },
+    {
+      "id": "15.04.05",
+      "path": "drafts/security/lessons/15.04.05.mdx",
+      "gitBlob": "9609a0ca7460bf2b7e2ea5f168fc8d6fd7918211",
+      "historical": false
+    },
+    {
+      "id": "15.04.06",
+      "path": "drafts/security/lessons/15.04.06.mdx",
+      "gitBlob": "102ca3ef8604be74ec17c9a2b95e13fe0863b650",
+      "historical": false
+    },
+    {
+      "id": "15.04.07",
+      "path": "drafts/security/lessons/15.04.07.mdx",
+      "gitBlob": "6f291cde7f67aa6d340ffc835ad5bc463c9517be",
+      "historical": false
+    },
+    {
+      "id": "15.04.08",
+      "path": "drafts/security/lessons/15.04.08.mdx",
+      "gitBlob": "93b561b19afbbdf48e1dc8fd8b3b4230f336fda4",
+      "historical": false
+    },
+    {
+      "id": "16.01.01",
+      "path": "drafts/redis/lessons/16.01.01.mdx",
+      "gitBlob": "791de52d81769eee5d5a74bb534be6894fe2a987",
+      "historical": false
+    },
+    {
+      "id": "16.01.02",
+      "path": "drafts/redis/lessons/16.01.02.mdx",
+      "gitBlob": "6f5a8e7352485d1acf3e11084bba715d5b16ade6",
+      "historical": false
+    },
+    {
+      "id": "16.01.03",
+      "path": "drafts/redis/lessons/16.01.03.mdx",
+      "gitBlob": "ee6c82e93fdd5cbccfddf2d6d26969c7344cf92b",
+      "historical": false
+    },
+    {
+      "id": "16.01.04",
+      "path": "drafts/redis/lessons/16.01.04.mdx",
+      "gitBlob": "88a533d17f4cf7e771777d53b6d0618a991d19e6",
+      "historical": false
+    },
+    {
+      "id": "16.01.05",
+      "path": "drafts/redis/lessons/16.01.05.mdx",
+      "gitBlob": "5ba2a67c76e70b3c4b616f6f3dda34f65b8ca325",
+      "historical": false
+    },
+    {
+      "id": "16.01.06",
+      "path": "drafts/redis/lessons/16.01.06.mdx",
+      "gitBlob": "08ed470091befdb2f1441b1a5be09316baf1cdd2",
+      "historical": false
+    },
+    {
+      "id": "16.01.07",
+      "path": "drafts/redis/lessons/16.01.07.mdx",
+      "gitBlob": "d2a6e126d386b8f340b49939d803fb424e136ade",
+      "historical": false
+    },
+    {
+      "id": "16.01.08",
+      "path": "drafts/redis/lessons/16.01.08.mdx",
+      "gitBlob": "275e9fe3391aa60b1b5524e59db3243dd9c0cc83",
+      "historical": false
+    },
+    {
+      "id": "16.02.01",
+      "path": "drafts/redis/lessons/16.02.01.mdx",
+      "gitBlob": "5a087182a7aab2f0d7f11fdb574e57d89cc6ad0e",
+      "historical": false
+    },
+    {
+      "id": "16.02.02",
+      "path": "drafts/redis/lessons/16.02.02.mdx",
+      "gitBlob": "f5292564e74a0944cd33ae3c4f54273bdc2a83c9",
+      "historical": false
+    },
+    {
+      "id": "16.02.03",
+      "path": "drafts/redis/lessons/16.02.03.mdx",
+      "gitBlob": "4870dc1677af6f58cb13b213073981abb327a48a",
+      "historical": false
+    },
+    {
+      "id": "16.02.04",
+      "path": "drafts/redis/lessons/16.02.04.mdx",
+      "gitBlob": "d3c89f2cfe8b826d9dab969c298cb04acc23905a",
+      "historical": false
+    },
+    {
+      "id": "16.02.05",
+      "path": "drafts/redis/lessons/16.02.05.mdx",
+      "gitBlob": "8b01eaee227f9d776005929ecd803d5bb1ae909b",
+      "historical": false
+    },
+    {
+      "id": "16.02.06",
+      "path": "drafts/redis/lessons/16.02.06.mdx",
+      "gitBlob": "1c141e343765399cbce226d0440c458dc618bc29",
+      "historical": false
+    },
+    {
+      "id": "16.02.07",
+      "path": "drafts/redis/lessons/16.02.07.mdx",
+      "gitBlob": "69ba6fa6aa47c8b4f47c5a61e6a2b0b2546e0427",
+      "historical": false
+    },
+    {
+      "id": "16.02.08",
+      "path": "drafts/redis/lessons/16.02.08.mdx",
+      "gitBlob": "ca83aa318ce5e70d9ec32c43d950569ea438c4f7",
+      "historical": false
+    },
+    {
+      "id": "16.03.01",
+      "path": "drafts/redis/lessons/16.03.01.mdx",
+      "gitBlob": "786978913a74252942a8347e4612b72240ab046e",
+      "historical": false
+    },
+    {
+      "id": "16.03.02",
+      "path": "drafts/redis/lessons/16.03.02.mdx",
+      "gitBlob": "4564ac85f1a3efd46e7d5a4d882071a5d8edb71f",
+      "historical": false
+    },
+    {
+      "id": "16.03.03",
+      "path": "drafts/redis/lessons/16.03.03.mdx",
+      "gitBlob": "479065c9c7aa29e6ffdbe61d5fea54a5c5ec3ee2",
+      "historical": false
+    },
+    {
+      "id": "16.03.04",
+      "path": "drafts/redis/lessons/16.03.04.mdx",
+      "gitBlob": "7023316aed046e9ca605eeee7276d501ef14bf20",
+      "historical": false
+    },
+    {
+      "id": "16.03.05",
+      "path": "drafts/redis/lessons/16.03.05.mdx",
+      "gitBlob": "bbba07a499e812f4c1860747cb0512d178da15fd",
+      "historical": false
+    },
+    {
+      "id": "16.03.06",
+      "path": "drafts/redis/lessons/16.03.06.mdx",
+      "gitBlob": "c7c5238b33fd6e63d2b274de0f32dcac6c5c14c3",
+      "historical": false
+    },
+    {
+      "id": "16.03.07",
+      "path": "drafts/redis/lessons/16.03.07.mdx",
+      "gitBlob": "e3345b1ceb75ef066dfbf32a47d9cbf7ab4a66db",
+      "historical": false
+    },
+    {
+      "id": "16.03.08",
+      "path": "drafts/redis/lessons/16.03.08.mdx",
+      "gitBlob": "d82f3f4eea3b693b870af2f5ca63872abe203729",
+      "historical": false
+    },
+    {
+      "id": "16.04.01",
+      "path": "drafts/redis/lessons/16.04.01.mdx",
+      "gitBlob": "21c0e8cc63f476d16c8c8e96f4240e21578d9223",
+      "historical": false
+    },
+    {
+      "id": "16.04.02",
+      "path": "drafts/redis/lessons/16.04.02.mdx",
+      "gitBlob": "cf891b9076bc5e4c3cfdec24d0f2480f5ac9b804",
+      "historical": false
+    },
+    {
+      "id": "16.04.03",
+      "path": "drafts/redis/lessons/16.04.03.mdx",
+      "gitBlob": "4df971a9a98c85eade76dadb35f003ca24750305",
+      "historical": false
+    },
+    {
+      "id": "16.04.04",
+      "path": "drafts/redis/lessons/16.04.04.mdx",
+      "gitBlob": "38d37187708c83e6ced8df875fae2559a335b63d",
+      "historical": false
+    },
+    {
+      "id": "16.04.05",
+      "path": "drafts/redis/lessons/16.04.05.mdx",
+      "gitBlob": "1b9eea7df259c11ea2b178e1b25e733b397ff4e6",
+      "historical": false
+    },
+    {
+      "id": "16.04.06",
+      "path": "drafts/redis/lessons/16.04.06.mdx",
+      "gitBlob": "45cb073e5c438c8a6a49f3d5fa799a9ff5911445",
+      "historical": false
+    },
+    {
+      "id": "16.04.07",
+      "path": "drafts/redis/lessons/16.04.07.mdx",
+      "gitBlob": "ee4d7f0164442110266e1a9f66f71682552f4339",
+      "historical": false
+    },
+    {
+      "id": "16.04.08",
+      "path": "drafts/redis/lessons/16.04.08.mdx",
+      "gitBlob": "2b87ccf3ba98a5b268c45114f297a84f15315843",
+      "historical": false
+    },
+    {
+      "id": "17.01.01",
+      "path": "drafts/realtime/lessons/17.01.01.mdx",
+      "gitBlob": "dc2ebee1f293e3bb0ef016694f7db5fcc68ba7b5",
+      "historical": false
+    },
+    {
+      "id": "17.01.02",
+      "path": "drafts/realtime/lessons/17.01.02.mdx",
+      "gitBlob": "235ee58fa0966a180939a8c3efb6a7cea4fa849b",
+      "historical": false
+    },
+    {
+      "id": "17.01.03",
+      "path": "drafts/realtime/lessons/17.01.03.mdx",
+      "gitBlob": "da98467e85e745e4a5e53d982fc2cee406d25435",
+      "historical": false
+    },
+    {
+      "id": "17.01.04",
+      "path": "drafts/realtime/lessons/17.01.04.mdx",
+      "gitBlob": "71ed19221e7a913ac1b9259e0fc47774950e52d8",
+      "historical": false
+    },
+    {
+      "id": "17.01.05",
+      "path": "drafts/realtime/lessons/17.01.05.mdx",
+      "gitBlob": "ff8498a6c56d51b80720fca9929765f887216461",
+      "historical": false
+    },
+    {
+      "id": "17.01.06",
+      "path": "drafts/realtime/lessons/17.01.06.mdx",
+      "gitBlob": "9e68f0ad78638f5518c4eb24d7917a64f71cf6e3",
+      "historical": false
+    },
+    {
+      "id": "17.01.07",
+      "path": "drafts/realtime/lessons/17.01.07.mdx",
+      "gitBlob": "0c4ee2b75ae6500ffc2267ebb173d6ab17dcc880",
+      "historical": false
+    },
+    {
+      "id": "17.01.08",
+      "path": "drafts/realtime/lessons/17.01.08.mdx",
+      "gitBlob": "8cbfdd0309ab790c661d49c6a6fe3f5cef738ff1",
+      "historical": false
+    },
+    {
+      "id": "17.02.01",
+      "path": "drafts/realtime/lessons/17.02.01.mdx",
+      "gitBlob": "0201ecb39f08447a1cfb05a26d6966515f0ebb4a",
+      "historical": false
+    },
+    {
+      "id": "17.02.02",
+      "path": "drafts/realtime/lessons/17.02.02.mdx",
+      "gitBlob": "6cc199cffa7e1baa47a0d51c9a1aba54a0cbb37d",
+      "historical": false
+    },
+    {
+      "id": "17.02.03",
+      "path": "drafts/realtime/lessons/17.02.03.mdx",
+      "gitBlob": "e641158cd930b0e3faa3a90b2c24dd9d6637ea67",
+      "historical": false
+    },
+    {
+      "id": "17.02.04",
+      "path": "drafts/realtime/lessons/17.02.04.mdx",
+      "gitBlob": "b6454b938ead42780574840d0b4a94653ab37441",
+      "historical": false
+    },
+    {
+      "id": "17.02.05",
+      "path": "drafts/realtime/lessons/17.02.05.mdx",
+      "gitBlob": "bef126bcd3e9430aa2c57804dd4082d1126d0b03",
+      "historical": false
+    },
+    {
+      "id": "17.02.06",
+      "path": "drafts/realtime/lessons/17.02.06.mdx",
+      "gitBlob": "4fa8cf1185158ab38f155f1a81c00146e0672e3b",
+      "historical": false
+    },
+    {
+      "id": "17.02.07",
+      "path": "drafts/realtime/lessons/17.02.07.mdx",
+      "gitBlob": "f49367806ae6b728c98b70772043e9e495c92886",
+      "historical": false
+    },
+    {
+      "id": "17.02.08",
+      "path": "drafts/realtime/lessons/17.02.08.mdx",
+      "gitBlob": "7f8f324ea42fda1cb4c9c2587f3db6b481e44b90",
+      "historical": false
+    },
+    {
+      "id": "17.03.01",
+      "path": "drafts/realtime/lessons/17.03.01.mdx",
+      "gitBlob": "a744495d2c314a8614556f374a93c50a4ce83b25",
+      "historical": false
+    },
+    {
+      "id": "17.03.02",
+      "path": "drafts/realtime/lessons/17.03.02.mdx",
+      "gitBlob": "bd5bd3138aa2ce8d2acb44414f02251a4e90db3c",
+      "historical": false
+    },
+    {
+      "id": "17.03.03",
+      "path": "drafts/realtime/lessons/17.03.03.mdx",
+      "gitBlob": "43c05608a9c528e000184990cfc97dce8f0021f6",
+      "historical": false
+    },
+    {
+      "id": "17.03.04",
+      "path": "drafts/realtime/lessons/17.03.04.mdx",
+      "gitBlob": "a3fd5939d6e378a66089815ec24e650d51ae6d80",
+      "historical": false
+    },
+    {
+      "id": "17.03.05",
+      "path": "drafts/realtime/lessons/17.03.05.mdx",
+      "gitBlob": "dd803941c8fe61b41c348d333262bac78d94df0c",
+      "historical": false
+    },
+    {
+      "id": "17.03.06",
+      "path": "drafts/realtime/lessons/17.03.06.mdx",
+      "gitBlob": "979fd76d99b1cd669f03ab65cee8f689f82105c9",
+      "historical": false
+    },
+    {
+      "id": "17.03.07",
+      "path": "drafts/realtime/lessons/17.03.07.mdx",
+      "gitBlob": "bedc1f342cb8e28621c703a190e3dc37f2c8daee",
+      "historical": false
+    },
+    {
+      "id": "17.03.08",
+      "path": "drafts/realtime/lessons/17.03.08.mdx",
+      "gitBlob": "a12f29c7c0c60eeae7cb7c90cf5e09060e1a6f9b",
+      "historical": false
+    },
+    {
+      "id": "18.01.01",
+      "path": "drafts/integrations/lessons/18.01.01.mdx",
+      "gitBlob": "8db105bf623d9dba5fdc7f678037e5b13d802293",
+      "historical": false
+    },
+    {
+      "id": "18.01.02",
+      "path": "drafts/integrations/lessons/18.01.02.mdx",
+      "gitBlob": "5375bf5db2c1deca3c9e5bcc5a4d3f915a2ae3bc",
+      "historical": false
+    },
+    {
+      "id": "18.01.03",
+      "path": "drafts/integrations/lessons/18.01.03.mdx",
+      "gitBlob": "df109982134c4b435764d571c8fc63f9d344577a",
+      "historical": false
+    },
+    {
+      "id": "18.01.04",
+      "path": "drafts/integrations/lessons/18.01.04.mdx",
+      "gitBlob": "9cb9e505cf8e34a0040b9141322c04dab9fb80d9",
+      "historical": false
+    },
+    {
+      "id": "18.01.05",
+      "path": "drafts/integrations/lessons/18.01.05.mdx",
+      "gitBlob": "b806963e40c7ab955f11f1612660c1bb273518f7",
+      "historical": false
+    },
+    {
+      "id": "18.01.06",
+      "path": "drafts/integrations/lessons/18.01.06.mdx",
+      "gitBlob": "34b29da75379e4f9d1c32cda6055c413485a69ed",
+      "historical": false
+    },
+    {
+      "id": "18.01.07",
+      "path": "drafts/integrations/lessons/18.01.07.mdx",
+      "gitBlob": "f52cea882ca4d963631322321a4a30aeabe65c0f",
+      "historical": false
+    },
+    {
+      "id": "18.01.08",
+      "path": "drafts/integrations/lessons/18.01.08.mdx",
+      "gitBlob": "e38058f319e081b0b83a95cffd369618c8bd921b",
+      "historical": false
+    },
+    {
+      "id": "18.02.01",
+      "path": "drafts/integrations/lessons/18.02.01.mdx",
+      "gitBlob": "5ad0d02b7d990ed3ff7bd1a9a9dad6f6fef34cbb",
+      "historical": false
+    },
+    {
+      "id": "18.02.02",
+      "path": "drafts/integrations/lessons/18.02.02.mdx",
+      "gitBlob": "a978c5057e07f253bd20f96b568eb21d656d4c9f",
+      "historical": false
+    },
+    {
+      "id": "18.02.03",
+      "path": "drafts/integrations/lessons/18.02.03.mdx",
+      "gitBlob": "44c503f26b5d10bd94b52a0573fc5be960128837",
+      "historical": false
+    },
+    {
+      "id": "18.02.04",
+      "path": "drafts/integrations/lessons/18.02.04.mdx",
+      "gitBlob": "447d6480428a5fc92c43dc5e13ecddc4da05abd7",
+      "historical": false
+    },
+    {
+      "id": "18.02.05",
+      "path": "drafts/integrations/lessons/18.02.05.mdx",
+      "gitBlob": "4517e3890312174d3060233dff2c6f0d995cb512",
+      "historical": false
+    },
+    {
+      "id": "18.02.06",
+      "path": "drafts/integrations/lessons/18.02.06.mdx",
+      "gitBlob": "644d5aae5690178c05345f600793d95784cf17db",
+      "historical": false
+    },
+    {
+      "id": "18.02.07",
+      "path": "drafts/integrations/lessons/18.02.07.mdx",
+      "gitBlob": "2deb7c99db43c58aca0fcd22382e7ade1b2bec9d",
+      "historical": false
+    },
+    {
+      "id": "18.02.08",
+      "path": "drafts/integrations/lessons/18.02.08.mdx",
+      "gitBlob": "fdbe859533bb9b0910aeeba6663221c55de25bbb",
+      "historical": false
+    },
+    {
+      "id": "18.03.01",
+      "path": "drafts/integrations/lessons/18.03.01.mdx",
+      "gitBlob": "20efab8fd6a787b818bc7a9594a385f53de309a7",
+      "historical": false
+    },
+    {
+      "id": "18.03.02",
+      "path": "drafts/integrations/lessons/18.03.02.mdx",
+      "gitBlob": "dbb7e01249ca07a1a358d7d0c766621b9bd54964",
+      "historical": false
+    },
+    {
+      "id": "18.03.03",
+      "path": "drafts/integrations/lessons/18.03.03.mdx",
+      "gitBlob": "8808605d6927ecaceddf938c98e92f872c0d312d",
+      "historical": false
+    },
+    {
+      "id": "18.03.04",
+      "path": "drafts/integrations/lessons/18.03.04.mdx",
+      "gitBlob": "c7c8e61279557b5ca6fdade6795264fe31799ecb",
+      "historical": false
+    },
+    {
+      "id": "18.03.05",
+      "path": "drafts/integrations/lessons/18.03.05.mdx",
+      "gitBlob": "cac5bb20ecb4b49ab528532fd9d05a451b21c27a",
+      "historical": false
+    },
+    {
+      "id": "18.03.06",
+      "path": "drafts/integrations/lessons/18.03.06.mdx",
+      "gitBlob": "8431d3fb4e768328240ca26ba1e1d7a0a3ece3ab",
+      "historical": false
+    },
+    {
+      "id": "18.03.07",
+      "path": "drafts/integrations/lessons/18.03.07.mdx",
+      "gitBlob": "ff5a4687bb25e3804b563d37bb81d00439f49f61",
+      "historical": false
+    },
+    {
+      "id": "18.03.08",
+      "path": "drafts/integrations/lessons/18.03.08.mdx",
+      "gitBlob": "cde2436b36778c00c6b7424a8d0a375cdda895ac",
+      "historical": false
+    },
+    {
+      "id": "18.04.01",
+      "path": "drafts/integrations/lessons/18.04.01.mdx",
+      "gitBlob": "b8282139786f3cffc86975578fd74bae2eff4e86",
+      "historical": false
+    },
+    {
+      "id": "18.04.02",
+      "path": "drafts/integrations/lessons/18.04.02.mdx",
+      "gitBlob": "344760bbd897a2048980f57df0a720e0939ee226",
+      "historical": false
+    },
+    {
+      "id": "18.04.03",
+      "path": "drafts/integrations/lessons/18.04.03.mdx",
+      "gitBlob": "af038119cc8e9a25b76d46d39212895785ec7f0c",
+      "historical": false
+    },
+    {
+      "id": "18.04.04",
+      "path": "drafts/integrations/lessons/18.04.04.mdx",
+      "gitBlob": "b1e999265f49cdc172b10984a4e8e241436ce203",
+      "historical": false
+    },
+    {
+      "id": "18.04.05",
+      "path": "drafts/integrations/lessons/18.04.05.mdx",
+      "gitBlob": "115abaf5a8a39199c5d1c04393fb15ce20473320",
+      "historical": false
+    },
+    {
+      "id": "18.04.06",
+      "path": "drafts/integrations/lessons/18.04.06.mdx",
+      "gitBlob": "03525598edbb707b2f8123719efd1456c62e0306",
+      "historical": false
+    },
+    {
+      "id": "18.04.07",
+      "path": "drafts/integrations/lessons/18.04.07.mdx",
+      "gitBlob": "3f0e9366eb5a6770aea0c76dcddd4a6a7c44851d",
+      "historical": false
+    },
+    {
+      "id": "18.04.08",
+      "path": "drafts/integrations/lessons/18.04.08.mdx",
+      "gitBlob": "568f26d5868c0f0abb3506a0aabce3d5c4d41054",
+      "historical": false
+    },
+    {
+      "id": "19.01.01",
+      "path": "drafts/p6-quality/lessons/19.01.01.mdx",
+      "gitBlob": "8257f87af4efc6edfa7abe23c4257d30339a00c8",
+      "historical": false
+    },
+    {
+      "id": "19.01.02",
+      "path": "drafts/p6-quality/lessons/19.01.02.mdx",
+      "gitBlob": "2e8ed8c57e11c53f64fbee17b785d09e2567cb36",
+      "historical": false
+    },
+    {
+      "id": "19.01.03",
+      "path": "drafts/p6-quality/lessons/19.01.03.mdx",
+      "gitBlob": "52b5790b8b08cbde206d5d62db19a28c0e0d7f24",
+      "historical": false
+    },
+    {
+      "id": "19.01.04",
+      "path": "drafts/p6-quality/lessons/19.01.04.mdx",
+      "gitBlob": "954f592eb2050530b2c04dc89c1e5acabc63bac3",
+      "historical": false
+    },
+    {
+      "id": "19.01.05",
+      "path": "drafts/p6-quality/lessons/19.01.05.mdx",
+      "gitBlob": "b8657f6a91f1ac89338a2e4866b007468dd0f800",
+      "historical": false
+    },
+    {
+      "id": "19.01.06",
+      "path": "drafts/p6-quality/lessons/19.01.06.mdx",
+      "gitBlob": "54a7c00ebd1dfc4f0b38f14c25f81390e0968167",
+      "historical": false
+    },
+    {
+      "id": "19.01.07",
+      "path": "drafts/p6-quality/lessons/19.01.07.mdx",
+      "gitBlob": "16a64ab4acf7131897c1a7419d317d2cf9725830",
+      "historical": false
+    },
+    {
+      "id": "19.01.08",
+      "path": "drafts/p6-quality/lessons/19.01.08.mdx",
+      "gitBlob": "2e61122603a4db42a39b989bb2bd6182b5fa4ed3",
+      "historical": false
+    },
+    {
+      "id": "19.02.01",
+      "path": "drafts/p6-quality/lessons/19.02.01.mdx",
+      "gitBlob": "9fca8a4d3b738cbcacf79b61d291943741369e9a",
+      "historical": false
+    },
+    {
+      "id": "19.02.02",
+      "path": "drafts/p6-quality/lessons/19.02.02.mdx",
+      "gitBlob": "83c1593779c37e65eb73a53319e3cfd21836dbac",
+      "historical": false
+    },
+    {
+      "id": "19.02.03",
+      "path": "drafts/p6-quality/lessons/19.02.03.mdx",
+      "gitBlob": "d28d1ee2de8cea0d0ec4f9a701017da7ece44df4",
+      "historical": false
+    },
+    {
+      "id": "19.02.04",
+      "path": "drafts/p6-quality/lessons/19.02.04.mdx",
+      "gitBlob": "75561375a03db85950f6f5465169bb8a40186d6d",
+      "historical": false
+    },
+    {
+      "id": "19.02.05",
+      "path": "drafts/p6-quality/lessons/19.02.05.mdx",
+      "gitBlob": "bdd379339fbd84b33d0a679ca9d69584108ec951",
+      "historical": false
+    },
+    {
+      "id": "19.02.06",
+      "path": "drafts/p6-quality/lessons/19.02.06.mdx",
+      "gitBlob": "67c34d22c83dc19e8806b2ee210da57a2f94618d",
+      "historical": false
+    },
+    {
+      "id": "19.02.07",
+      "path": "drafts/p6-quality/lessons/19.02.07.mdx",
+      "gitBlob": "c7f26de7d30a3c452280c49db94d0d465be03135",
+      "historical": false
+    },
+    {
+      "id": "19.02.08",
+      "path": "drafts/p6-quality/lessons/19.02.08.mdx",
+      "gitBlob": "3f7cc2c5e5b59b143d8f6878fccc5b1d45fa0f4a",
+      "historical": false
+    },
+    {
+      "id": "19.03.01",
+      "path": "drafts/p6-quality/lessons/19.03.01.mdx",
+      "gitBlob": "77843ac85318b0fa43c67aa3ccf1407d1be8df1b",
+      "historical": false
+    },
+    {
+      "id": "19.03.02",
+      "path": "drafts/p6-quality/lessons/19.03.02.mdx",
+      "gitBlob": "fb6e8d382a2b378d0aabb4d6fdd1c0f94ec6148a",
+      "historical": false
+    },
+    {
+      "id": "19.03.03",
+      "path": "drafts/p6-quality/lessons/19.03.03.mdx",
+      "gitBlob": "b8a1b100540d1653141dee7e4211071d3dcfe02d",
+      "historical": false
+    },
+    {
+      "id": "19.03.04",
+      "path": "drafts/p6-quality/lessons/19.03.04.mdx",
+      "gitBlob": "5c91aee3e8e7af524375eee0d9f738efe54672d8",
+      "historical": false
+    },
+    {
+      "id": "19.03.05",
+      "path": "drafts/p6-quality/lessons/19.03.05.mdx",
+      "gitBlob": "d1541802edd4574a0d3bb0a8f011b10743b1bc58",
+      "historical": false
+    },
+    {
+      "id": "19.03.06",
+      "path": "drafts/p6-quality/lessons/19.03.06.mdx",
+      "gitBlob": "c09a68d55302547d0d224380fbc5c89a621c1908",
+      "historical": false
+    },
+    {
+      "id": "19.03.07",
+      "path": "drafts/p6-quality/lessons/19.03.07.mdx",
+      "gitBlob": "c890d6ae3e858d04a14e0ed7728f6f1cf4ecd35c",
+      "historical": false
+    },
+    {
+      "id": "19.03.08",
+      "path": "drafts/p6-quality/lessons/19.03.08.mdx",
+      "gitBlob": "e98f4016c67e284e3214c6e9d987f15a4d8b1fc1",
+      "historical": false
+    },
+    {
+      "id": "19.04.01",
+      "path": "drafts/p6-quality/lessons/19.04.01.mdx",
+      "gitBlob": "a60cf24848ced4e098267fc4ee2714fdd06d641b",
+      "historical": false
+    },
+    {
+      "id": "19.04.02",
+      "path": "drafts/p6-quality/lessons/19.04.02.mdx",
+      "gitBlob": "cf2dde5aef3a26045c648b5194de7436c39241bd",
+      "historical": false
+    },
+    {
+      "id": "19.04.03",
+      "path": "drafts/p6-quality/lessons/19.04.03.mdx",
+      "gitBlob": "4a0a410c0483563708e29cc49de42adab7217c2a",
+      "historical": false
+    },
+    {
+      "id": "19.04.04",
+      "path": "drafts/p6-quality/lessons/19.04.04.mdx",
+      "gitBlob": "381c625b97781092af82ec5ab9514b2a816522e4",
+      "historical": false
+    },
+    {
+      "id": "19.04.05",
+      "path": "drafts/p6-quality/lessons/19.04.05.mdx",
+      "gitBlob": "bb778fad625aa3365868504dd9a4d1c224a34ca5",
+      "historical": false
+    },
+    {
+      "id": "19.04.06",
+      "path": "drafts/p6-quality/lessons/19.04.06.mdx",
+      "gitBlob": "e767981e5883d5f8b8a8510dfdd372817e9c64dc",
+      "historical": false
+    },
+    {
+      "id": "19.04.07",
+      "path": "drafts/p6-quality/lessons/19.04.07.mdx",
+      "gitBlob": "cd3fe5fcdc9a57eb5c9be1425f04261532c15e5e",
+      "historical": false
+    },
+    {
+      "id": "19.04.08",
+      "path": "drafts/p6-quality/lessons/19.04.08.mdx",
+      "gitBlob": "b0dfe3bb6185466d212f24f7332062d4505114e0",
+      "historical": false
+    },
+    {
+      "id": "20.01.01",
+      "path": "drafts/p6-quality/lessons/20.01.01.mdx",
+      "gitBlob": "a77ba9b4fd513d317b3101c95e67da7d7759fb6a",
+      "historical": false
+    },
+    {
+      "id": "20.01.02",
+      "path": "drafts/p6-quality/lessons/20.01.02.mdx",
+      "gitBlob": "43e8113f0b29ea5addd539e87d6263b472ed9719",
+      "historical": false
+    },
+    {
+      "id": "20.01.03",
+      "path": "drafts/p6-quality/lessons/20.01.03.mdx",
+      "gitBlob": "52f2c29ffa042f574fca3d0b1ab48cc6a3aaca27",
+      "historical": false
+    },
+    {
+      "id": "20.01.04",
+      "path": "drafts/p6-quality/lessons/20.01.04.mdx",
+      "gitBlob": "182bb724905b683de59bd367b7e9b03c4d4f7fae",
+      "historical": false
+    },
+    {
+      "id": "20.01.05",
+      "path": "drafts/p6-quality/lessons/20.01.05.mdx",
+      "gitBlob": "3fe9a923462184a07f595ba85c61a49168d4fa3f",
+      "historical": false
+    },
+    {
+      "id": "20.01.06",
+      "path": "drafts/p6-quality/lessons/20.01.06.mdx",
+      "gitBlob": "f5ad0af87026dccdcdd4246c4b868a9647ad6a00",
+      "historical": false
+    },
+    {
+      "id": "20.01.07",
+      "path": "drafts/p6-quality/lessons/20.01.07.mdx",
+      "gitBlob": "a598d45f5a6f81c9e47501974514f4aa8b33d69e",
+      "historical": false
+    },
+    {
+      "id": "20.01.08",
+      "path": "drafts/p6-quality/lessons/20.01.08.mdx",
+      "gitBlob": "88bbd5559a27659896b2f05c4e81cda331cbbe15",
+      "historical": false
+    },
+    {
+      "id": "20.02.01",
+      "path": "drafts/p6-quality/lessons/20.02.01.mdx",
+      "gitBlob": "77916c3e1c3ffe6d129249cfa7569f85cd60687f",
+      "historical": false
+    },
+    {
+      "id": "20.02.02",
+      "path": "drafts/p6-quality/lessons/20.02.02.mdx",
+      "gitBlob": "56a824f108a11b9953108a5353625a8d8de1e106",
+      "historical": false
+    },
+    {
+      "id": "20.02.03",
+      "path": "drafts/p6-quality/lessons/20.02.03.mdx",
+      "gitBlob": "77996fec633c1cfe4f136d5682f15c4dd9dc8488",
+      "historical": false
+    },
+    {
+      "id": "20.02.04",
+      "path": "drafts/p6-quality/lessons/20.02.04.mdx",
+      "gitBlob": "942206e7b31ea37db6c5f6522185148a57eb1faa",
+      "historical": false
+    },
+    {
+      "id": "20.02.05",
+      "path": "drafts/p6-quality/lessons/20.02.05.mdx",
+      "gitBlob": "998aeee767af09403d0e55660cfeeead926fbe59",
+      "historical": false
+    },
+    {
+      "id": "20.02.06",
+      "path": "drafts/p6-quality/lessons/20.02.06.mdx",
+      "gitBlob": "f43f2cbffec87ae2dbf19313efca5db7b83a1571",
+      "historical": false
+    },
+    {
+      "id": "20.02.07",
+      "path": "drafts/p6-quality/lessons/20.02.07.mdx",
+      "gitBlob": "c16f64308376f8a7db35ee93c36a21ca2ae12530",
+      "historical": false
+    },
+    {
+      "id": "20.02.08",
+      "path": "drafts/p6-quality/lessons/20.02.08.mdx",
+      "gitBlob": "3875de317a0a04f17e4bf51359560c575b88fa26",
+      "historical": false
+    },
+    {
+      "id": "20.03.01",
+      "path": "drafts/p6-quality/lessons/20.03.01.mdx",
+      "gitBlob": "2c337291ca48b1a0c028ece34fd723b054a74899",
+      "historical": false
+    },
+    {
+      "id": "20.03.02",
+      "path": "drafts/p6-quality/lessons/20.03.02.mdx",
+      "gitBlob": "3578f36331905bad67153ed3cdb1addc14c2de21",
+      "historical": false
+    },
+    {
+      "id": "20.03.03",
+      "path": "drafts/p6-quality/lessons/20.03.03.mdx",
+      "gitBlob": "9871882553ba681664cbad66768ed74204cdc5b5",
+      "historical": false
+    },
+    {
+      "id": "20.03.04",
+      "path": "drafts/p6-quality/lessons/20.03.04.mdx",
+      "gitBlob": "9f804d91c03beca312d6e9086dbfe7276eba96d8",
+      "historical": false
+    },
+    {
+      "id": "20.03.05",
+      "path": "drafts/p6-quality/lessons/20.03.05.mdx",
+      "gitBlob": "0067a169ceac4e56da7db1dd8b9f78837f3c895f",
+      "historical": false
+    },
+    {
+      "id": "20.03.06",
+      "path": "drafts/p6-quality/lessons/20.03.06.mdx",
+      "gitBlob": "f1fe0ef849050930b97e5a069fc5f05b59f7db4f",
+      "historical": false
+    },
+    {
+      "id": "20.03.07",
+      "path": "drafts/p6-quality/lessons/20.03.07.mdx",
+      "gitBlob": "fefeb45bdefb1f8e738addf3252fe2b22abbec3a",
+      "historical": false
+    },
+    {
+      "id": "20.03.08",
+      "path": "drafts/p6-quality/lessons/20.03.08.mdx",
+      "gitBlob": "dbece80789c9ff51f898a4fce9b503f6ad650236",
+      "historical": false
+    },
+    {
+      "id": "20.04.01",
+      "path": "drafts/p6-quality/lessons/20.04.01.mdx",
+      "gitBlob": "b7d199f652fb816f77ab169a3d332ef08b39cdc3",
+      "historical": false
+    },
+    {
+      "id": "20.04.02",
+      "path": "drafts/p6-quality/lessons/20.04.02.mdx",
+      "gitBlob": "6d984472697f3acf5cbb0bcbcfd2c62acb9199ba",
+      "historical": false
+    },
+    {
+      "id": "20.04.03",
+      "path": "drafts/p6-quality/lessons/20.04.03.mdx",
+      "gitBlob": "6c18f1bfa8a5b7b855f16e29e0135da4a782bfed",
+      "historical": false
+    },
+    {
+      "id": "20.04.04",
+      "path": "drafts/p6-quality/lessons/20.04.04.mdx",
+      "gitBlob": "26aadff9a781922c084aefc7f767615fad7b25c8",
+      "historical": false
+    },
+    {
+      "id": "20.04.05",
+      "path": "drafts/p6-quality/lessons/20.04.05.mdx",
+      "gitBlob": "c58295ed8e1de909931138740ffe905961a1174a",
+      "historical": false
+    },
+    {
+      "id": "20.04.06",
+      "path": "drafts/p6-quality/lessons/20.04.06.mdx",
+      "gitBlob": "e6b9d09193481087b6375f3f5b195b8ded7996b5",
+      "historical": false
+    },
+    {
+      "id": "20.04.07",
+      "path": "drafts/p6-quality/lessons/20.04.07.mdx",
+      "gitBlob": "9854e53537a0f7ed18a902ab5eb82d06334d172a",
+      "historical": false
+    },
+    {
+      "id": "20.04.08",
+      "path": "drafts/p6-quality/lessons/20.04.08.mdx",
+      "gitBlob": "e5d4ca5f779c964f23e3a27025be0aec289e4a79",
+      "historical": false
+    },
+    {
+      "id": "21.01.01",
+      "path": "drafts/p6-operations/lessons/21.01.01.mdx",
+      "gitBlob": "bc7fa714e487e72ec70fceb9001b5320e28f699e",
+      "historical": false
+    },
+    {
+      "id": "21.01.02",
+      "path": "drafts/p6-operations/lessons/21.01.02.mdx",
+      "gitBlob": "9cf163eeab46bd7f57e8df85aa6951840cfe8cf1",
+      "historical": false
+    },
+    {
+      "id": "21.01.03",
+      "path": "drafts/p6-operations/lessons/21.01.03.mdx",
+      "gitBlob": "2f7b1bc634e6c968fc54fac88f9b8eb17fd8314a",
+      "historical": false
+    },
+    {
+      "id": "21.01.04",
+      "path": "drafts/p6-operations/lessons/21.01.04.mdx",
+      "gitBlob": "5e59981e6d72310d75f59c20303fb08c1e0c4f09",
+      "historical": false
+    },
+    {
+      "id": "21.01.05",
+      "path": "drafts/p6-operations/lessons/21.01.05.mdx",
+      "gitBlob": "e2a7838793f76056175a76a09dd1ea00016f2b92",
+      "historical": false
+    },
+    {
+      "id": "21.01.06",
+      "path": "drafts/p6-operations/lessons/21.01.06.mdx",
+      "gitBlob": "3611e362b21dfc12444683b4c5b6d89793fc24c5",
+      "historical": false
+    },
+    {
+      "id": "21.01.07",
+      "path": "drafts/p6-operations/lessons/21.01.07.mdx",
+      "gitBlob": "1550823b3029e29ff407d4b01401b479d06f61a8",
+      "historical": false
+    },
+    {
+      "id": "21.01.08",
+      "path": "drafts/p6-operations/lessons/21.01.08.mdx",
+      "gitBlob": "cf4dda732a6ea63ab3b849e4b0a73d72e685da27",
+      "historical": false
+    },
+    {
+      "id": "21.02.01",
+      "path": "drafts/p6-operations/lessons/21.02.01.mdx",
+      "gitBlob": "4812c4897c9788bbc13cf9219b2d717dc3c57c46",
+      "historical": false
+    },
+    {
+      "id": "21.02.02",
+      "path": "drafts/p6-operations/lessons/21.02.02.mdx",
+      "gitBlob": "f8adb584e48f1603037a12e877b9a13b53a18bcd",
+      "historical": false
+    },
+    {
+      "id": "21.02.03",
+      "path": "drafts/p6-operations/lessons/21.02.03.mdx",
+      "gitBlob": "de3a47b68cbd307886ebc6deddc08b20e55e7573",
+      "historical": false
+    },
+    {
+      "id": "21.02.04",
+      "path": "drafts/p6-operations/lessons/21.02.04.mdx",
+      "gitBlob": "8a4efe5ccc85a8fc618ea3deb023fccbee7481a5",
+      "historical": false
+    },
+    {
+      "id": "21.02.05",
+      "path": "drafts/p6-operations/lessons/21.02.05.mdx",
+      "gitBlob": "77ff5bcb9836e717a7e013b360a051ffdf177769",
+      "historical": false
+    },
+    {
+      "id": "21.02.06",
+      "path": "drafts/p6-operations/lessons/21.02.06.mdx",
+      "gitBlob": "162bf386a4d37b72331e012f7b8255911e9fa0d9",
+      "historical": false
+    },
+    {
+      "id": "21.02.07",
+      "path": "drafts/p6-operations/lessons/21.02.07.mdx",
+      "gitBlob": "2979d36f3384d3e0c87ea7527c4b2ac80f6f9ced",
+      "historical": false
+    },
+    {
+      "id": "21.02.08",
+      "path": "drafts/p6-operations/lessons/21.02.08.mdx",
+      "gitBlob": "d20e2156d9134214b4babebcdad1c01766e7798c",
+      "historical": false
+    },
+    {
+      "id": "21.03.01",
+      "path": "drafts/p6-operations/lessons/21.03.01.mdx",
+      "gitBlob": "d763272805ea686b38cd8ec07274c360b482d028",
+      "historical": false
+    },
+    {
+      "id": "21.03.02",
+      "path": "drafts/p6-operations/lessons/21.03.02.mdx",
+      "gitBlob": "4fb357f549808822308d03adc8782eed168cac93",
+      "historical": false
+    },
+    {
+      "id": "21.03.03",
+      "path": "drafts/p6-operations/lessons/21.03.03.mdx",
+      "gitBlob": "5b6ff7542d2265f8f66720d6454514f97fa81c3d",
+      "historical": false
+    },
+    {
+      "id": "21.03.04",
+      "path": "drafts/p6-operations/lessons/21.03.04.mdx",
+      "gitBlob": "1bf217c86c2343dfb1d6df120e9a9f56ae65ece4",
+      "historical": false
+    },
+    {
+      "id": "21.03.05",
+      "path": "drafts/p6-operations/lessons/21.03.05.mdx",
+      "gitBlob": "7ec04cefce793916664fca6b6811d96c4efe4d86",
+      "historical": false
+    },
+    {
+      "id": "21.03.06",
+      "path": "drafts/p6-operations/lessons/21.03.06.mdx",
+      "gitBlob": "94391a659a41b44361142e8e021ca7bbb463ff45",
+      "historical": false
+    },
+    {
+      "id": "21.03.07",
+      "path": "drafts/p6-operations/lessons/21.03.07.mdx",
+      "gitBlob": "11e42b08014b603ca933712c31a5a4e02401a3ec",
+      "historical": false
+    },
+    {
+      "id": "21.03.08",
+      "path": "drafts/p6-operations/lessons/21.03.08.mdx",
+      "gitBlob": "45c4f49c2b5571c926bd3fa07adb7282ac1f9ca6",
+      "historical": false
+    },
+    {
+      "id": "22.01.01",
+      "path": "drafts/p6-operations/lessons/22.01.01.mdx",
+      "gitBlob": "baebdb02590f76529fe07eac800d8decdf6b9725",
+      "historical": false
+    },
+    {
+      "id": "22.01.02",
+      "path": "drafts/p6-operations/lessons/22.01.02.mdx",
+      "gitBlob": "cb4276cf9e12a7637c1a333283acde0de667907c",
+      "historical": false
+    },
+    {
+      "id": "22.01.03",
+      "path": "drafts/p6-operations/lessons/22.01.03.mdx",
+      "gitBlob": "fdfe6d587ef12797802d95af29c826f860c680b5",
+      "historical": false
+    },
+    {
+      "id": "22.01.04",
+      "path": "drafts/p6-operations/lessons/22.01.04.mdx",
+      "gitBlob": "91e63708c254d013d7c195a8058a028087e95501",
+      "historical": false
+    },
+    {
+      "id": "22.01.05",
+      "path": "drafts/p6-operations/lessons/22.01.05.mdx",
+      "gitBlob": "acf595c12ac07892ffa110a917d302452f28bf26",
+      "historical": false
+    },
+    {
+      "id": "22.01.06",
+      "path": "drafts/p6-operations/lessons/22.01.06.mdx",
+      "gitBlob": "88931d67171da06a6817cf1664be6717fb20911c",
+      "historical": false
+    },
+    {
+      "id": "22.01.07",
+      "path": "drafts/p6-operations/lessons/22.01.07.mdx",
+      "gitBlob": "20b36e9df2ec64787cdd271382885d0e931f26e5",
+      "historical": false
+    },
+    {
+      "id": "22.01.08",
+      "path": "drafts/p6-operations/lessons/22.01.08.mdx",
+      "gitBlob": "7ab453ee7a89fb47e64087518e5773819d0cc84c",
+      "historical": false
+    },
+    {
+      "id": "22.02.01",
+      "path": "drafts/p6-operations/lessons/22.02.01.mdx",
+      "gitBlob": "6b2415c95d4800d5ed355a3226ab43c7f8ff834f",
+      "historical": false
+    },
+    {
+      "id": "22.02.02",
+      "path": "drafts/p6-operations/lessons/22.02.02.mdx",
+      "gitBlob": "4f5ad1235e9da01f1f0096730e395430d7607714",
+      "historical": false
+    },
+    {
+      "id": "22.02.03",
+      "path": "drafts/p6-operations/lessons/22.02.03.mdx",
+      "gitBlob": "69c627f994cd341e7a787e701337aae9df6e782f",
+      "historical": false
+    },
+    {
+      "id": "22.02.04",
+      "path": "drafts/p6-operations/lessons/22.02.04.mdx",
+      "gitBlob": "50b5144b91bc091bec38cdf944ac1340f8e740c8",
+      "historical": false
+    },
+    {
+      "id": "22.02.05",
+      "path": "drafts/p6-operations/lessons/22.02.05.mdx",
+      "gitBlob": "80723e738b000dbc7deda593dbc52d72b73e4f5a",
+      "historical": false
+    },
+    {
+      "id": "22.02.06",
+      "path": "drafts/p6-operations/lessons/22.02.06.mdx",
+      "gitBlob": "d385457a1e0bb26227925bdfb36771320585aea1",
+      "historical": false
+    },
+    {
+      "id": "22.02.07",
+      "path": "drafts/p6-operations/lessons/22.02.07.mdx",
+      "gitBlob": "a9f7c09052f298b123c09f53e97ca859bf462b8d",
+      "historical": false
+    },
+    {
+      "id": "22.02.08",
+      "path": "drafts/p6-operations/lessons/22.02.08.mdx",
+      "gitBlob": "45b867bf617b7953b6609c019bca18db4c6f92e2",
+      "historical": false
+    },
+    {
+      "id": "22.03.01",
+      "path": "drafts/p6-operations/lessons/22.03.01.mdx",
+      "gitBlob": "f02470d0ee774bdf607f4e302f1d75a7743b8622",
+      "historical": false
+    },
+    {
+      "id": "22.03.02",
+      "path": "drafts/p6-operations/lessons/22.03.02.mdx",
+      "gitBlob": "27b467df38afcae97940847bb4803e156e5df229",
+      "historical": false
+    },
+    {
+      "id": "22.03.03",
+      "path": "drafts/p6-operations/lessons/22.03.03.mdx",
+      "gitBlob": "ad74d4398ffd395c7b9dc5f59a06033f39151edd",
+      "historical": false
+    },
+    {
+      "id": "22.03.04",
+      "path": "drafts/p6-operations/lessons/22.03.04.mdx",
+      "gitBlob": "3edc27a9eeb9f498290351c7640c6fab2fe1f4f9",
+      "historical": false
+    },
+    {
+      "id": "22.03.05",
+      "path": "drafts/p6-operations/lessons/22.03.05.mdx",
+      "gitBlob": "a1ad8a8c235b6fce9989ff722ee37ff7b669e4a0",
+      "historical": false
+    },
+    {
+      "id": "22.03.06",
+      "path": "drafts/p6-operations/lessons/22.03.06.mdx",
+      "gitBlob": "35688af69765860ef8184b8ab2e78f570dbb0bc9",
+      "historical": false
+    },
+    {
+      "id": "22.03.07",
+      "path": "drafts/p6-operations/lessons/22.03.07.mdx",
+      "gitBlob": "98848550077a90188f3812f265f96836d71722df",
+      "historical": false
+    },
+    {
+      "id": "22.03.08",
+      "path": "drafts/p6-operations/lessons/22.03.08.mdx",
+      "gitBlob": "cebea6c8762c5af22efe07418b2b5471d7bfd806",
+      "historical": false
+    },
+    {
+      "id": "23.01.01",
+      "path": "drafts/p6-operations/lessons/23.01.01.mdx",
+      "gitBlob": "08a63d0b05911c09252720dbdb0c785b060179aa",
+      "historical": false
+    },
+    {
+      "id": "23.01.02",
+      "path": "drafts/p6-operations/lessons/23.01.02.mdx",
+      "gitBlob": "da1757b339c0e905266dc636276f97ac30d392fe",
+      "historical": false
+    },
+    {
+      "id": "23.01.03",
+      "path": "drafts/p6-operations/lessons/23.01.03.mdx",
+      "gitBlob": "6902c4dac996050e25977d1b0806cecf693b8bd1",
+      "historical": false
+    },
+    {
+      "id": "23.01.04",
+      "path": "drafts/p6-operations/lessons/23.01.04.mdx",
+      "gitBlob": "b4c3208cba0c91fe19292673465fc2595b17de82",
+      "historical": false
+    },
+    {
+      "id": "23.01.05",
+      "path": "drafts/p6-operations/lessons/23.01.05.mdx",
+      "gitBlob": "02ad80ec7b1cd34ff1facfbab00f5d498d5516a7",
+      "historical": false
+    },
+    {
+      "id": "23.01.06",
+      "path": "drafts/p6-operations/lessons/23.01.06.mdx",
+      "gitBlob": "59b7d861ad35c01a8d351119dc233cb1d8d66817",
+      "historical": false
+    },
+    {
+      "id": "23.01.07",
+      "path": "drafts/p6-operations/lessons/23.01.07.mdx",
+      "gitBlob": "299672ae3be7c3e408eb7ce08b907c202fc3ddf8",
+      "historical": false
+    },
+    {
+      "id": "23.01.08",
+      "path": "drafts/p6-operations/lessons/23.01.08.mdx",
+      "gitBlob": "189b1c92645c4c8752c776380c6254bb305cc66b",
+      "historical": false
+    },
+    {
+      "id": "23.02.01",
+      "path": "drafts/p6-operations/lessons/23.02.01.mdx",
+      "gitBlob": "18a7133526ae9f7a19486d36a027cbc27d147cd5",
+      "historical": false
+    },
+    {
+      "id": "23.02.02",
+      "path": "drafts/p6-operations/lessons/23.02.02.mdx",
+      "gitBlob": "366f2dd71911b5972aef28b3cd43d4c3f1b58e88",
+      "historical": false
+    },
+    {
+      "id": "23.02.03",
+      "path": "drafts/p6-operations/lessons/23.02.03.mdx",
+      "gitBlob": "383c4fc0118d9bd450786fab76470461bc36ad74",
+      "historical": false
+    },
+    {
+      "id": "23.02.04",
+      "path": "drafts/p6-operations/lessons/23.02.04.mdx",
+      "gitBlob": "d490654d4ce7570e606ecf754bd6b94de620f16a",
+      "historical": false
+    },
+    {
+      "id": "23.02.05",
+      "path": "drafts/p6-operations/lessons/23.02.05.mdx",
+      "gitBlob": "7b7b146cc6d3e3dacec1de25598caf44ca88f830",
+      "historical": false
+    },
+    {
+      "id": "23.02.06",
+      "path": "drafts/p6-operations/lessons/23.02.06.mdx",
+      "gitBlob": "d324cba30bf9ceb235d3af0563385ac27c822930",
+      "historical": false
+    },
+    {
+      "id": "23.02.07",
+      "path": "drafts/p6-operations/lessons/23.02.07.mdx",
+      "gitBlob": "3ebd350ef4b2b77912b776f6935f44a71ee6a7f3",
+      "historical": false
+    },
+    {
+      "id": "23.02.08",
+      "path": "drafts/p6-operations/lessons/23.02.08.mdx",
+      "gitBlob": "650d3c30e876a3758a8e5ec20fccce0de4cf67a9",
+      "historical": false
+    },
+    {
+      "id": "23.03.01",
+      "path": "drafts/p6-operations/lessons/23.03.01.mdx",
+      "gitBlob": "6ea31c330a68df0a39a3cfd6504214204bd5c9d2",
+      "historical": false
+    },
+    {
+      "id": "23.03.02",
+      "path": "drafts/p6-operations/lessons/23.03.02.mdx",
+      "gitBlob": "b7ac49532032193d8231046f072a1fc8b9243e97",
+      "historical": false
+    },
+    {
+      "id": "23.03.03",
+      "path": "drafts/p6-operations/lessons/23.03.03.mdx",
+      "gitBlob": "6bd70feacd50efb73dd101dc05084a3b67b6a0cd",
+      "historical": false
+    },
+    {
+      "id": "23.03.04",
+      "path": "drafts/p6-operations/lessons/23.03.04.mdx",
+      "gitBlob": "a0a67e35a471ac2a34e57e57de82be820d6e67dc",
+      "historical": false
+    },
+    {
+      "id": "23.03.05",
+      "path": "drafts/p6-operations/lessons/23.03.05.mdx",
+      "gitBlob": "978e45416de28057e5a429bccce7d2f52d02f023",
+      "historical": false
+    },
+    {
+      "id": "23.03.06",
+      "path": "drafts/p6-operations/lessons/23.03.06.mdx",
+      "gitBlob": "fd7c649cbb79603a31ef3998a27ac20acaf606f1",
+      "historical": false
+    },
+    {
+      "id": "23.03.07",
+      "path": "drafts/p6-operations/lessons/23.03.07.mdx",
+      "gitBlob": "f8c81d45cf790a02a6098b2b8fb8d49ec3651cd6",
+      "historical": false
+    },
+    {
+      "id": "23.03.08",
+      "path": "drafts/p6-operations/lessons/23.03.08.mdx",
+      "gitBlob": "63eeab4f9c5432bf88233110fec522b3a5a03526",
+      "historical": false
+    },
+    {
+      "id": "23.04.01",
+      "path": "drafts/p6-operations/lessons/23.04.01.mdx",
+      "gitBlob": "7d9ea23562b6148572075557552bec187cfafb46",
+      "historical": false
+    },
+    {
+      "id": "23.04.02",
+      "path": "drafts/p6-operations/lessons/23.04.02.mdx",
+      "gitBlob": "ca12acf82e370a4b17e43698d4941d2e04eae196",
+      "historical": false
+    },
+    {
+      "id": "23.04.03",
+      "path": "drafts/p6-operations/lessons/23.04.03.mdx",
+      "gitBlob": "1a8938c4f87650677b4040d315ca38d9d66dbbba",
+      "historical": false
+    },
+    {
+      "id": "23.04.04",
+      "path": "drafts/p6-operations/lessons/23.04.04.mdx",
+      "gitBlob": "7202f18f71cd32d5a5056cc36ae749ff2b9e747c",
+      "historical": false
+    },
+    {
+      "id": "23.04.05",
+      "path": "drafts/p6-operations/lessons/23.04.05.mdx",
+      "gitBlob": "b9d6e476fc40b2dec60f9239ccac3cf4609ee906",
+      "historical": false
+    },
+    {
+      "id": "23.04.06",
+      "path": "drafts/p6-operations/lessons/23.04.06.mdx",
+      "gitBlob": "380df2453e390678638abe2c5aa51287b45ff727",
+      "historical": false
+    },
+    {
+      "id": "23.04.07",
+      "path": "drafts/p6-operations/lessons/23.04.07.mdx",
+      "gitBlob": "fe01468506a4dd359f68b12a00fcdc395e950b79",
+      "historical": false
+    },
+    {
+      "id": "23.04.08",
+      "path": "drafts/p6-operations/lessons/23.04.08.mdx",
+      "gitBlob": "aa7fdbe9cc6fd1a6fcc03acfdfa744fde16030d9",
+      "historical": false
+    },
+    {
+      "id": "24.01.01",
+      "path": "drafts/p7-platforms/lessons/24.01.01.mdx",
+      "gitBlob": "af217980d6212480a7840984510a372a4fc4bc08",
+      "historical": false
+    },
+    {
+      "id": "24.01.02",
+      "path": "drafts/p7-platforms/lessons/24.01.02.mdx",
+      "gitBlob": "d7bca8461e04d92efd77ce2de9f7fe72a8267e76",
+      "historical": false
+    },
+    {
+      "id": "24.01.03",
+      "path": "drafts/p7-platforms/lessons/24.01.03.mdx",
+      "gitBlob": "a9f12727b79ada507ab346b747f45926da85275f",
+      "historical": false
+    },
+    {
+      "id": "24.01.04",
+      "path": "drafts/p7-platforms/lessons/24.01.04.mdx",
+      "gitBlob": "81c844fdfa6a87dec6e8cbe92902447bd9522cc4",
+      "historical": false
+    },
+    {
+      "id": "24.01.05",
+      "path": "drafts/p7-platforms/lessons/24.01.05.mdx",
+      "gitBlob": "95a731779a3468a91181817e618cf771574b1f82",
+      "historical": false
+    },
+    {
+      "id": "24.01.06",
+      "path": "drafts/p7-platforms/lessons/24.01.06.mdx",
+      "gitBlob": "62a2cabdca2856adf07ac67b74360f49145b4387",
+      "historical": false
+    },
+    {
+      "id": "24.01.07",
+      "path": "drafts/p7-platforms/lessons/24.01.07.mdx",
+      "gitBlob": "581ce65f661439c09c0f410d10a6e1338174d99f",
+      "historical": false
+    },
+    {
+      "id": "24.01.08",
+      "path": "drafts/p7-platforms/lessons/24.01.08.mdx",
+      "gitBlob": "9ddaee1b506099f3521fd98b476d2790433f5a59",
+      "historical": false
+    },
+    {
+      "id": "24.02.01",
+      "path": "drafts/p7-platforms/lessons/24.02.01.mdx",
+      "gitBlob": "907760986450b1ef062e0cf682ba74d92011c597",
+      "historical": false
+    },
+    {
+      "id": "24.02.02",
+      "path": "drafts/p7-platforms/lessons/24.02.02.mdx",
+      "gitBlob": "091d17c38afe9e2192eca956bc537b3370e83588",
+      "historical": false
+    },
+    {
+      "id": "24.02.03",
+      "path": "drafts/p7-platforms/lessons/24.02.03.mdx",
+      "gitBlob": "4391a88da18c473edeac2abe046746b50460b414",
+      "historical": false
+    },
+    {
+      "id": "24.02.04",
+      "path": "drafts/p7-platforms/lessons/24.02.04.mdx",
+      "gitBlob": "b52c8dd565ff08e65c9e3048eee6c419f8f3e08d",
+      "historical": false
+    },
+    {
+      "id": "24.02.05",
+      "path": "drafts/p7-platforms/lessons/24.02.05.mdx",
+      "gitBlob": "4a5a08ec62c6080fbab609fa712b3efdb66af501",
+      "historical": false
+    },
+    {
+      "id": "24.02.06",
+      "path": "drafts/p7-platforms/lessons/24.02.06.mdx",
+      "gitBlob": "4ad74043dd775692f0f88d32722db08c111ec199",
+      "historical": false
+    },
+    {
+      "id": "24.02.07",
+      "path": "drafts/p7-platforms/lessons/24.02.07.mdx",
+      "gitBlob": "b29439763a9197ab7281befabc5aab750eaeed52",
+      "historical": false
+    },
+    {
+      "id": "24.02.08",
+      "path": "drafts/p7-platforms/lessons/24.02.08.mdx",
+      "gitBlob": "7f25d42854dcb77d443bf6e511cbed4a3bce914a",
+      "historical": false
+    },
+    {
+      "id": "24.03.01",
+      "path": "drafts/p7-platforms/lessons/24.03.01.mdx",
+      "gitBlob": "69d570638594732453b015f7e1759a6d22d292a5",
+      "historical": false
+    },
+    {
+      "id": "24.03.02",
+      "path": "drafts/p7-platforms/lessons/24.03.02.mdx",
+      "gitBlob": "8b623ff7ecbe03837e14d0d1d2df3e21f62c2273",
+      "historical": false
+    },
+    {
+      "id": "24.03.03",
+      "path": "drafts/p7-platforms/lessons/24.03.03.mdx",
+      "gitBlob": "4c2b34357c8d16cdd0148d60ad79525bd94d4494",
+      "historical": false
+    },
+    {
+      "id": "24.03.04",
+      "path": "drafts/p7-platforms/lessons/24.03.04.mdx",
+      "gitBlob": "da86e7883b581c6baf7de456d2ee8542ee475eda",
+      "historical": false
+    },
+    {
+      "id": "24.03.05",
+      "path": "drafts/p7-platforms/lessons/24.03.05.mdx",
+      "gitBlob": "cf1978075141a0e0e0d033e7d84fa32c187e704d",
+      "historical": false
+    },
+    {
+      "id": "24.03.06",
+      "path": "drafts/p7-platforms/lessons/24.03.06.mdx",
+      "gitBlob": "a2c996cb57b54abb31359bf576a8f63cae675cf1",
+      "historical": false
+    },
+    {
+      "id": "24.03.07",
+      "path": "drafts/p7-platforms/lessons/24.03.07.mdx",
+      "gitBlob": "9c15d1fc22bfd142ecd0ac9598fa2bf4d7a466ad",
+      "historical": false
+    },
+    {
+      "id": "24.03.08",
+      "path": "drafts/p7-platforms/lessons/24.03.08.mdx",
+      "gitBlob": "117f39d12ec7a8ee71a929b724fdacae91365449",
+      "historical": false
+    },
+    {
+      "id": "24.04.01",
+      "path": "drafts/p7-platforms/lessons/24.04.01.mdx",
+      "gitBlob": "46b4cacb9328864c41a0b4ae985637bdc87a5ede",
+      "historical": false
+    },
+    {
+      "id": "24.04.02",
+      "path": "drafts/p7-platforms/lessons/24.04.02.mdx",
+      "gitBlob": "aa6a342deb42fd3641827ffbb78455495d12060e",
+      "historical": false
+    },
+    {
+      "id": "24.04.03",
+      "path": "drafts/p7-platforms/lessons/24.04.03.mdx",
+      "gitBlob": "64e194be3621a5a8f70416cc4cceb421bd369d22",
+      "historical": false
+    },
+    {
+      "id": "24.04.04",
+      "path": "drafts/p7-platforms/lessons/24.04.04.mdx",
+      "gitBlob": "808cc7b7e32e106465df14ca52e2570a99ac2999",
+      "historical": false
+    },
+    {
+      "id": "24.04.05",
+      "path": "drafts/p7-platforms/lessons/24.04.05.mdx",
+      "gitBlob": "0f7d6a539c35e0646c4a68e23be6f932669b3704",
+      "historical": false
+    },
+    {
+      "id": "24.04.06",
+      "path": "drafts/p7-platforms/lessons/24.04.06.mdx",
+      "gitBlob": "751a7081b1ba942211e17a705c37db8d61d69147",
+      "historical": false
+    },
+    {
+      "id": "24.04.07",
+      "path": "drafts/p7-platforms/lessons/24.04.07.mdx",
+      "gitBlob": "84330cd15db6f0440857a99105b6db1d96131f1a",
+      "historical": false
+    },
+    {
+      "id": "24.04.08",
+      "path": "drafts/p7-platforms/lessons/24.04.08.mdx",
+      "gitBlob": "20f5f622d2f52595d13295637891bd22ecca13dc",
+      "historical": false
+    },
+    {
+      "id": "25.01.01",
+      "path": "drafts/p7-platforms/lessons/25.01.01.mdx",
+      "gitBlob": "5a2b626f823c64b89ba3498072cc2fe597ab7726",
+      "historical": false
+    },
+    {
+      "id": "25.01.02",
+      "path": "drafts/p7-platforms/lessons/25.01.02.mdx",
+      "gitBlob": "344abeaf99a8bbd21ae8da0e36ad5b0e94c89b5b",
+      "historical": false
+    },
+    {
+      "id": "25.01.03",
+      "path": "drafts/p7-platforms/lessons/25.01.03.mdx",
+      "gitBlob": "46cec72c34dffdbca27fd5da44c7f064e357ed71",
+      "historical": false
+    },
+    {
+      "id": "25.01.04",
+      "path": "drafts/p7-platforms/lessons/25.01.04.mdx",
+      "gitBlob": "b228b81b1c4cd83512d38ee53bbb691261d1b11a",
+      "historical": false
+    },
+    {
+      "id": "25.01.05",
+      "path": "drafts/p7-platforms/lessons/25.01.05.mdx",
+      "gitBlob": "fc67ee0ff55d3cb5e6316b9d2979abe3f8f5cb8f",
+      "historical": false
+    },
+    {
+      "id": "25.01.06",
+      "path": "drafts/p7-platforms/lessons/25.01.06.mdx",
+      "gitBlob": "630aeb6a4819ccaac9cde367aa932479060be661",
+      "historical": false
+    },
+    {
+      "id": "25.01.07",
+      "path": "drafts/p7-platforms/lessons/25.01.07.mdx",
+      "gitBlob": "bfd4a13d01f6dc12d692d1771da0b37ae3d6496a",
+      "historical": false
+    },
+    {
+      "id": "25.01.08",
+      "path": "drafts/p7-platforms/lessons/25.01.08.mdx",
+      "gitBlob": "f919b3ffb78ae6814e3c7c3904e5c8364f756955",
+      "historical": false
+    },
+    {
+      "id": "25.02.01",
+      "path": "drafts/p7-platforms/lessons/25.02.01.mdx",
+      "gitBlob": "62d4e623e84f8a9ca5b7ca4f4cff061cf5d6a4a2",
+      "historical": false
+    },
+    {
+      "id": "25.02.02",
+      "path": "drafts/p7-platforms/lessons/25.02.02.mdx",
+      "gitBlob": "42c4ea8bc0bc51aad319a1713f86652ff1a8ee9a",
+      "historical": false
+    },
+    {
+      "id": "25.02.03",
+      "path": "drafts/p7-platforms/lessons/25.02.03.mdx",
+      "gitBlob": "8e8344621886a2f5c5b98044a08d868bac2dd6cd",
+      "historical": false
+    },
+    {
+      "id": "25.02.04",
+      "path": "drafts/p7-platforms/lessons/25.02.04.mdx",
+      "gitBlob": "7bde1bd3f3a03c93cf71f8e5413684838b7825ef",
+      "historical": false
+    },
+    {
+      "id": "25.02.05",
+      "path": "drafts/p7-platforms/lessons/25.02.05.mdx",
+      "gitBlob": "e2825ecfe4f9cea0aa1807bf42b27d2395e817cd",
+      "historical": false
+    },
+    {
+      "id": "25.02.06",
+      "path": "drafts/p7-platforms/lessons/25.02.06.mdx",
+      "gitBlob": "06b0ad345579bfe10ef5885bedb9c44482b2e9b1",
+      "historical": false
+    },
+    {
+      "id": "25.02.07",
+      "path": "drafts/p7-platforms/lessons/25.02.07.mdx",
+      "gitBlob": "54beda31da6b86d9698f29cef890e5bdae6c2935",
+      "historical": false
+    },
+    {
+      "id": "25.02.08",
+      "path": "drafts/p7-platforms/lessons/25.02.08.mdx",
+      "gitBlob": "6c5c8477395e87b655c1493dee7e296a6f2ea1ae",
+      "historical": false
+    },
+    {
+      "id": "25.03.01",
+      "path": "drafts/p7-platforms/lessons/25.03.01.mdx",
+      "gitBlob": "9646c455bda2fd7b2d6083cc894eba32722bacfd",
+      "historical": false
+    },
+    {
+      "id": "25.03.02",
+      "path": "drafts/p7-platforms/lessons/25.03.02.mdx",
+      "gitBlob": "bd3e9605776c02dbc5c0eb9dcd2be5657ac634c7",
+      "historical": false
+    },
+    {
+      "id": "25.03.03",
+      "path": "drafts/p7-platforms/lessons/25.03.03.mdx",
+      "gitBlob": "002d251815f696fd69da3d7bb45100a93a468522",
+      "historical": false
+    },
+    {
+      "id": "25.03.04",
+      "path": "drafts/p7-platforms/lessons/25.03.04.mdx",
+      "gitBlob": "404f9407e6ee345ac8d8d25789ad1f3b157c8314",
+      "historical": false
+    },
+    {
+      "id": "25.03.05",
+      "path": "drafts/p7-platforms/lessons/25.03.05.mdx",
+      "gitBlob": "72bc07a7be6a15cefcce55cbdbdffb36b01c0f01",
+      "historical": false
+    },
+    {
+      "id": "25.03.06",
+      "path": "drafts/p7-platforms/lessons/25.03.06.mdx",
+      "gitBlob": "dafc19e91b8e22415717b0f1f28e8dcaa7ab4636",
+      "historical": false
+    },
+    {
+      "id": "25.03.07",
+      "path": "drafts/p7-platforms/lessons/25.03.07.mdx",
+      "gitBlob": "edb3a930a2b39efee6f7d2068bdbf1fb67c92a78",
+      "historical": false
+    },
+    {
+      "id": "25.03.08",
+      "path": "drafts/p7-platforms/lessons/25.03.08.mdx",
+      "gitBlob": "c223090afdeaf60b8404fd9ca8b7da09bf6cae2d",
+      "historical": false
+    },
+    {
+      "id": "25.04.01",
+      "path": "drafts/p7-platforms/lessons/25.04.01.mdx",
+      "gitBlob": "9b4a51030fcf1100eaa66fc159da4b771d87958b",
+      "historical": false
+    },
+    {
+      "id": "25.04.02",
+      "path": "drafts/p7-platforms/lessons/25.04.02.mdx",
+      "gitBlob": "68f8cce2bc6012e4309477fc467ecddf5e93b939",
+      "historical": false
+    },
+    {
+      "id": "25.04.03",
+      "path": "drafts/p7-platforms/lessons/25.04.03.mdx",
+      "gitBlob": "0b04d0f6247aa6382b5bcee360d9dfb8a46ca626",
+      "historical": false
+    },
+    {
+      "id": "25.04.04",
+      "path": "drafts/p7-platforms/lessons/25.04.04.mdx",
+      "gitBlob": "f751b94b36749ca3b60897e6c0435a657d830e1a",
+      "historical": false
+    },
+    {
+      "id": "25.04.05",
+      "path": "drafts/p7-platforms/lessons/25.04.05.mdx",
+      "gitBlob": "ab67a7f61cc8f267bf4040e93528a17990b91330",
+      "historical": false
+    },
+    {
+      "id": "25.04.06",
+      "path": "drafts/p7-platforms/lessons/25.04.06.mdx",
+      "gitBlob": "aa10b05553a62c50962929865cf3b0270ad3d9f6",
+      "historical": false
+    },
+    {
+      "id": "25.04.07",
+      "path": "drafts/p7-platforms/lessons/25.04.07.mdx",
+      "gitBlob": "9cedba1ebd508f9dc5265e5b157cc0e9c77e0ead",
+      "historical": false
+    },
+    {
+      "id": "25.04.08",
+      "path": "drafts/p7-platforms/lessons/25.04.08.mdx",
+      "gitBlob": "83144c59857b1a6b3c5760482ffe829eca43adb5",
+      "historical": false
+    },
+    {
+      "id": "26.01.01",
+      "path": "drafts/p7-enterprise/lessons/26.01.01.mdx",
+      "gitBlob": "169773f5c37e11e29bebc5d49308c79a75b903ae",
+      "historical": false
+    },
+    {
+      "id": "26.01.02",
+      "path": "drafts/p7-enterprise/lessons/26.01.02.mdx",
+      "gitBlob": "08f708198f987b259dec5f831137986d64b5c920",
+      "historical": false
+    },
+    {
+      "id": "26.01.03",
+      "path": "drafts/p7-enterprise/lessons/26.01.03.mdx",
+      "gitBlob": "9e370429038bd140207bf32f6205799858f59d72",
+      "historical": false
+    },
+    {
+      "id": "26.01.04",
+      "path": "drafts/p7-enterprise/lessons/26.01.04.mdx",
+      "gitBlob": "632103641267504291be661e755222cb58bb2d49",
+      "historical": false
+    },
+    {
+      "id": "26.01.05",
+      "path": "drafts/p7-enterprise/lessons/26.01.05.mdx",
+      "gitBlob": "5bf8813e718ad79b787ff6742fa29fbd223a2c32",
+      "historical": false
+    },
+    {
+      "id": "26.01.06",
+      "path": "drafts/p7-enterprise/lessons/26.01.06.mdx",
+      "gitBlob": "e2cda30269c70119f37276ce6ef7279996d1d9a5",
+      "historical": false
+    },
+    {
+      "id": "26.01.07",
+      "path": "drafts/p7-enterprise/lessons/26.01.07.mdx",
+      "gitBlob": "0215f167ed6be7a5459848ddf0967d95459f7ec2",
+      "historical": false
+    },
+    {
+      "id": "26.01.08",
+      "path": "drafts/p7-enterprise/lessons/26.01.08.mdx",
+      "gitBlob": "07dc4a6effde937cfefd1b71803b39cb7d6163e0",
+      "historical": false
+    },
+    {
+      "id": "26.02.01",
+      "path": "drafts/p7-enterprise/lessons/26.02.01.mdx",
+      "gitBlob": "d4c91e1b3b051004c2045e111ffe54fd82cad4c8",
+      "historical": false
+    },
+    {
+      "id": "26.02.02",
+      "path": "drafts/p7-enterprise/lessons/26.02.02.mdx",
+      "gitBlob": "47559e18f78b5f13be14da34c4285724603b55df",
+      "historical": false
+    },
+    {
+      "id": "26.02.03",
+      "path": "drafts/p7-enterprise/lessons/26.02.03.mdx",
+      "gitBlob": "ca46f271413833c8e107a8dce6f2df299170c035",
+      "historical": false
+    },
+    {
+      "id": "26.02.04",
+      "path": "drafts/p7-enterprise/lessons/26.02.04.mdx",
+      "gitBlob": "d4e8992522ab74280de43430b18fc541c644be5f",
+      "historical": false
+    },
+    {
+      "id": "26.02.05",
+      "path": "drafts/p7-enterprise/lessons/26.02.05.mdx",
+      "gitBlob": "a0ed6b4fcaede38fb9c7eef0268391665b8e38af",
+      "historical": false
+    },
+    {
+      "id": "26.02.06",
+      "path": "drafts/p7-enterprise/lessons/26.02.06.mdx",
+      "gitBlob": "473b6a3cdc6af886b14887d10d09197048db3e67",
+      "historical": false
+    },
+    {
+      "id": "26.02.07",
+      "path": "drafts/p7-enterprise/lessons/26.02.07.mdx",
+      "gitBlob": "7ec47abd78b45e7f8521188f2ea960ca5958e308",
+      "historical": false
+    },
+    {
+      "id": "26.02.08",
+      "path": "drafts/p7-enterprise/lessons/26.02.08.mdx",
+      "gitBlob": "4b425a56ac409488060f0fa55f6a62e3cd73cf1b",
+      "historical": false
+    },
+    {
+      "id": "26.03.01",
+      "path": "drafts/p7-enterprise/lessons/26.03.01.mdx",
+      "gitBlob": "40ad4247048776300efc6904c2c6cf731f35bb2e",
+      "historical": false
+    },
+    {
+      "id": "26.03.02",
+      "path": "drafts/p7-enterprise/lessons/26.03.02.mdx",
+      "gitBlob": "6c51006c3528aa74c7cff0ea0f63b392a9b7dbf9",
+      "historical": false
+    },
+    {
+      "id": "26.03.03",
+      "path": "drafts/p7-enterprise/lessons/26.03.03.mdx",
+      "gitBlob": "fc4efe373d24a10b6ae1b559cf8f439ea056c0dc",
+      "historical": false
+    },
+    {
+      "id": "26.03.04",
+      "path": "drafts/p7-enterprise/lessons/26.03.04.mdx",
+      "gitBlob": "8ed55c5edb0594d0ed0c441e1c43a844482dd632",
+      "historical": false
+    },
+    {
+      "id": "26.03.05",
+      "path": "drafts/p7-enterprise/lessons/26.03.05.mdx",
+      "gitBlob": "e4ecb1451f12c7e2f1c4b6c0ccb274a8d9e12bc2",
+      "historical": false
+    },
+    {
+      "id": "26.03.06",
+      "path": "drafts/p7-enterprise/lessons/26.03.06.mdx",
+      "gitBlob": "5d721025402e2448a196133b0702ae2c94fb5423",
+      "historical": false
+    },
+    {
+      "id": "26.03.07",
+      "path": "drafts/p7-enterprise/lessons/26.03.07.mdx",
+      "gitBlob": "3075d3148d361554bab78666ba7b8ed8e196b1be",
+      "historical": false
+    },
+    {
+      "id": "26.03.08",
+      "path": "drafts/p7-enterprise/lessons/26.03.08.mdx",
+      "gitBlob": "499e19ed790b5f292ed5518ca9c7008162f8caae",
+      "historical": false
+    },
+    {
+      "id": "26.04.01",
+      "path": "drafts/p7-enterprise/lessons/26.04.01.mdx",
+      "gitBlob": "f23fe14c9e9c2883f7f092f1ab610b78ddf7cb84",
+      "historical": false
+    },
+    {
+      "id": "26.04.02",
+      "path": "drafts/p7-enterprise/lessons/26.04.02.mdx",
+      "gitBlob": "5275ef8c2e81134a0b2f9d4387bed3f86118a295",
+      "historical": false
+    },
+    {
+      "id": "26.04.03",
+      "path": "drafts/p7-enterprise/lessons/26.04.03.mdx",
+      "gitBlob": "ab0e8f8da89e53f05ad633debf0d1b68709f7eab",
+      "historical": false
+    },
+    {
+      "id": "26.04.04",
+      "path": "drafts/p7-enterprise/lessons/26.04.04.mdx",
+      "gitBlob": "d6766ee88236a404b464d4e8c391eb94f87b8258",
+      "historical": false
+    },
+    {
+      "id": "26.04.05",
+      "path": "drafts/p7-enterprise/lessons/26.04.05.mdx",
+      "gitBlob": "07c16b48083d0dde02329da863e6793a061dbb01",
+      "historical": false
+    },
+    {
+      "id": "26.04.06",
+      "path": "drafts/p7-enterprise/lessons/26.04.06.mdx",
+      "gitBlob": "4adf16d3ce717ff57f3837fc787594305ae880ae",
+      "historical": false
+    },
+    {
+      "id": "26.04.07",
+      "path": "drafts/p7-enterprise/lessons/26.04.07.mdx",
+      "gitBlob": "f3c6ea2ec1382e162b76440e0980affbb8d3b7cb",
+      "historical": false
+    },
+    {
+      "id": "26.04.08",
+      "path": "drafts/p7-enterprise/lessons/26.04.08.mdx",
+      "gitBlob": "dc26998b54f2de590005ea93bec5adee8efb67b5",
+      "historical": false
+    },
+    {
+      "id": "27.01.01",
+      "path": "drafts/p7-enterprise/lessons/27.01.01.mdx",
+      "gitBlob": "713bb2b1a1aec4c29ab00325ac9e7b7b5068cd1c",
+      "historical": false
+    },
+    {
+      "id": "27.01.02",
+      "path": "drafts/p7-enterprise/lessons/27.01.02.mdx",
+      "gitBlob": "95d275da3c6343445c2d8ed212903569fd7a94c4",
+      "historical": false
+    },
+    {
+      "id": "27.01.03",
+      "path": "drafts/p7-enterprise/lessons/27.01.03.mdx",
+      "gitBlob": "1d7d0eb47f12ba4200e685257424fc567b0e3228",
+      "historical": false
+    },
+    {
+      "id": "27.01.04",
+      "path": "drafts/p7-enterprise/lessons/27.01.04.mdx",
+      "gitBlob": "3144fe8f8e39c808571781c308d299edabd7cc6b",
+      "historical": false
+    },
+    {
+      "id": "27.01.05",
+      "path": "drafts/p7-enterprise/lessons/27.01.05.mdx",
+      "gitBlob": "c1fa2b59615a99db6c31492f51be292f13b51e60",
+      "historical": false
+    },
+    {
+      "id": "27.01.06",
+      "path": "drafts/p7-enterprise/lessons/27.01.06.mdx",
+      "gitBlob": "23143d7bd3d6ae99576135307aaa67aee2a7940c",
+      "historical": false
+    },
+    {
+      "id": "27.01.07",
+      "path": "drafts/p7-enterprise/lessons/27.01.07.mdx",
+      "gitBlob": "b7d12ce3485c35fe39e9af0153f5a8659cea7c2d",
+      "historical": false
+    },
+    {
+      "id": "27.01.08",
+      "path": "drafts/p7-enterprise/lessons/27.01.08.mdx",
+      "gitBlob": "519d28441b27df0bceb436a8189e02e0e8943bcc",
+      "historical": false
+    },
+    {
+      "id": "27.02.01",
+      "path": "drafts/p7-enterprise/lessons/27.02.01.mdx",
+      "gitBlob": "8cab456eefb41654c5e52aa449dac619488801cb",
+      "historical": false
+    },
+    {
+      "id": "27.02.02",
+      "path": "drafts/p7-enterprise/lessons/27.02.02.mdx",
+      "gitBlob": "b85bbf4e2516c885c9f1df880d76d58f6ef42da6",
+      "historical": false
+    },
+    {
+      "id": "27.02.03",
+      "path": "drafts/p7-enterprise/lessons/27.02.03.mdx",
+      "gitBlob": "45849a05c8effd376b1df0c1faabc55620aee51b",
+      "historical": false
+    },
+    {
+      "id": "27.02.04",
+      "path": "drafts/p7-enterprise/lessons/27.02.04.mdx",
+      "gitBlob": "c8cf96ea3ef570e9225a275e8fdb95bd9f2af8a0",
+      "historical": false
+    },
+    {
+      "id": "27.02.05",
+      "path": "drafts/p7-enterprise/lessons/27.02.05.mdx",
+      "gitBlob": "dc62c8d6fb0c4cc6871ee39e10bb29defc995f65",
+      "historical": false
+    },
+    {
+      "id": "27.02.06",
+      "path": "drafts/p7-enterprise/lessons/27.02.06.mdx",
+      "gitBlob": "1d2a81a7b98eb4612dbb8c2b5751cbcbf6a6550f",
+      "historical": false
+    },
+    {
+      "id": "27.02.07",
+      "path": "drafts/p7-enterprise/lessons/27.02.07.mdx",
+      "gitBlob": "9fbfa1fc524448a8c59ed00f585b8835c9326dc4",
+      "historical": false
+    },
+    {
+      "id": "27.02.08",
+      "path": "drafts/p7-enterprise/lessons/27.02.08.mdx",
+      "gitBlob": "71dcf446b2a3a749143ce322de02d4799e66f914",
+      "historical": false
+    },
+    {
+      "id": "27.03.01",
+      "path": "drafts/p7-enterprise/lessons/27.03.01.mdx",
+      "gitBlob": "bbaa64a193d5a71574053a55e24d9b82a02ecd14",
+      "historical": false
+    },
+    {
+      "id": "27.03.02",
+      "path": "drafts/p7-enterprise/lessons/27.03.02.mdx",
+      "gitBlob": "8fc9bebd98d64e14ab7416b328fb7d1e9c707a52",
+      "historical": false
+    },
+    {
+      "id": "27.03.03",
+      "path": "drafts/p7-enterprise/lessons/27.03.03.mdx",
+      "gitBlob": "5e2d9b2a64437c1ebd58dbb778d0c160d1e5acd1",
+      "historical": false
+    },
+    {
+      "id": "27.03.04",
+      "path": "drafts/p7-enterprise/lessons/27.03.04.mdx",
+      "gitBlob": "16ee47442e8c09949dc71aaba30e8808cc60067a",
+      "historical": false
+    },
+    {
+      "id": "27.03.05",
+      "path": "drafts/p7-enterprise/lessons/27.03.05.mdx",
+      "gitBlob": "1cbcb9bc917abdb98f3fb7fb556e70651713622a",
+      "historical": false
+    },
+    {
+      "id": "27.03.06",
+      "path": "drafts/p7-enterprise/lessons/27.03.06.mdx",
+      "gitBlob": "80beef04680ea1c93d892ced0d3c4b83486c19b6",
+      "historical": false
+    },
+    {
+      "id": "27.03.07",
+      "path": "drafts/p7-enterprise/lessons/27.03.07.mdx",
+      "gitBlob": "aff40575ccd793292912f11a0cc354b66a72f93f",
+      "historical": false
+    },
+    {
+      "id": "27.03.08",
+      "path": "drafts/p7-enterprise/lessons/27.03.08.mdx",
+      "gitBlob": "02815b35c541b0da444a2490b16a85355d6d710e",
+      "historical": false
+    },
+    {
+      "id": "27.04.01",
+      "path": "drafts/p7-enterprise/lessons/27.04.01.mdx",
+      "gitBlob": "3a20d814ea168300a716aa3ca38f5fe885a93c51",
+      "historical": false
+    },
+    {
+      "id": "27.04.02",
+      "path": "drafts/p7-enterprise/lessons/27.04.02.mdx",
+      "gitBlob": "df2506132f81816a37aaa440ec9cc6fe49f5207f",
+      "historical": false
+    },
+    {
+      "id": "27.04.03",
+      "path": "drafts/p7-enterprise/lessons/27.04.03.mdx",
+      "gitBlob": "58ea5a2810f6ebd0cb874b595efe6fa8fd6c18c4",
+      "historical": false
+    },
+    {
+      "id": "27.04.04",
+      "path": "drafts/p7-enterprise/lessons/27.04.04.mdx",
+      "gitBlob": "9df4902636e33d0a670f7ab556daebce5d6979b8",
+      "historical": false
+    },
+    {
+      "id": "27.04.05",
+      "path": "drafts/p7-enterprise/lessons/27.04.05.mdx",
+      "gitBlob": "4c0bf79f111f9135ba2f58ad26eaecfc2f281efa",
+      "historical": false
+    },
+    {
+      "id": "27.04.06",
+      "path": "drafts/p7-enterprise/lessons/27.04.06.mdx",
+      "gitBlob": "9b29f855ebc9c9f43cf7b72848b8fe2f87dddd81",
+      "historical": false
+    },
+    {
+      "id": "27.04.07",
+      "path": "drafts/p7-enterprise/lessons/27.04.07.mdx",
+      "gitBlob": "b8b0929d40bd11266a2b43e9980d2e98e0f8dcb5",
+      "historical": false
+    },
+    {
+      "id": "27.04.08",
+      "path": "drafts/p7-enterprise/lessons/27.04.08.mdx",
+      "gitBlob": "35e270886f1f2a757a1e136c973b6dbb677ff07f",
+      "historical": false
+    },
+    {
+      "id": "27.05.01",
+      "path": "drafts/p7-enterprise/lessons/27.05.01.mdx",
+      "gitBlob": "0f84242c66cbdb0cda72ec8fc1660078771de744",
+      "historical": false
+    },
+    {
+      "id": "27.05.02",
+      "path": "drafts/p7-enterprise/lessons/27.05.02.mdx",
+      "gitBlob": "77a4b9202559c875f24170d795a42e716add0b93",
+      "historical": false
+    },
+    {
+      "id": "27.05.03",
+      "path": "drafts/p7-enterprise/lessons/27.05.03.mdx",
+      "gitBlob": "c23915e7695f02e2ccb0846bf8e217e45aee07d8",
+      "historical": false
+    },
+    {
+      "id": "27.05.04",
+      "path": "drafts/p7-enterprise/lessons/27.05.04.mdx",
+      "gitBlob": "90a04e623a693b7b08d984ce05f6b869eae98943",
+      "historical": false
+    },
+    {
+      "id": "27.05.05",
+      "path": "drafts/p7-enterprise/lessons/27.05.05.mdx",
+      "gitBlob": "2f63ecac521277a004dd8be40d6cad97ab657bc6",
+      "historical": false
+    },
+    {
+      "id": "27.05.06",
+      "path": "drafts/p7-enterprise/lessons/27.05.06.mdx",
+      "gitBlob": "6a2900a499056a8928ebe52fc99e9f604221616e",
+      "historical": false
+    },
+    {
+      "id": "27.05.07",
+      "path": "drafts/p7-enterprise/lessons/27.05.07.mdx",
+      "gitBlob": "22e9595419d070b60f969582bd44c96a4b19d8bf",
+      "historical": false
+    },
+    {
+      "id": "27.05.08",
+      "path": "drafts/p7-enterprise/lessons/27.05.08.mdx",
+      "gitBlob": "e46eed077a15b8085c616f77f94e6921e0ebecf1",
+      "historical": false
+    }
+  ],
+  "shared": [
+    {
+      "path": "drafts/integrations/README.md",
+      "gitBlob": "454eeb451ea73931afc5528e0c08dbaa4bfba579"
+    },
+    {
+      "path": "drafts/integrations/topics.json",
+      "gitBlob": "6346b48da498cffcbb18600bd52ee6324ca5e2bd"
+    },
+    {
+      "path": "drafts/p6-operations/topics.json",
+      "gitBlob": "c75fbba375954a1f1f659bc70aedbc0cef8c2135"
+    },
+    {
+      "path": "drafts/p6-quality/topics.json",
+      "gitBlob": "80b54a2b5efce14f82b8c25acbdee4b8beb24e16"
+    },
+    {
+      "path": "drafts/p7-enterprise/topics.json",
+      "gitBlob": "9da41124ef2a4a8e18978898c683ca07b249d355"
+    },
+    {
+      "path": "drafts/p7-platforms/topics.json",
+      "gitBlob": "cc7c4e72c9f2c5ac49fdbdc1abb7e610144ad70d"
+    },
+    {
+      "path": "drafts/realtime/README.md",
+      "gitBlob": "7401bef8102438f4f33473cece90dd6324557e9d"
+    },
+    {
+      "path": "drafts/redis/README.md",
+      "gitBlob": "728cb6a66db4fb48c672cf2ab96438c4bb2c69f8"
+    },
+    {
+      "path": "drafts/security/README.md",
+      "gitBlob": "ff44ece40c34b706531ad63ecb7dea5811471c20"
+    },
+    {
+      "path": "examples/p5-cache-jobs/cache.mjs",
+      "gitBlob": "89af10b7fd9231fc4a4922fcadce178c189dd689"
+    },
+    {
+      "path": "examples/p5-cache-jobs/cache.test.mjs",
+      "gitBlob": "bdcf32866a43c619159c9e02024c49dd5679b7c1"
+    },
+    {
+      "path": "examples/p5-cache-jobs/outbox.mjs",
+      "gitBlob": "e2028eb201422c56709bcb62bf9079e91dab85b2"
+    },
+    {
+      "path": "examples/p5-cache-jobs/outbox.test.mjs",
+      "gitBlob": "273560770f14a05680ff0dde834e7e62d267ee0c"
+    },
+    {
+      "path": "examples/p5-cache-jobs/README.md",
+      "gitBlob": "5e3cca3f6532ceeb8dd680e0003c3167572bb814"
+    },
+    {
+      "path": "examples/p5-cache-jobs/verify-track.mjs",
+      "gitBlob": "91f9d47e7322169aa625bb85bbc5b0fd0347afa5"
+    },
+    {
+      "path": "examples/p5-cache-jobs/verify-track.test.mjs",
+      "gitBlob": "a648c21fc15181927a6f0617967f5bfe02b00e30"
+    },
+    {
+      "path": "examples/p5-integrations/durable-http.test.mjs",
+      "gitBlob": "38234c60bd28b901681b720eb3cc9f9fa165c90a"
+    },
+    {
+      "path": "examples/p5-integrations/durable-inbox.mjs",
+      "gitBlob": "c28a8e1d18559294fd5ea50821bfc820bbc8e615"
+    },
+    {
+      "path": "examples/p5-integrations/durable-inbox.test.mjs",
+      "gitBlob": "37c4741228b2eb90d37e0269cb7397448061b5b7"
+    },
+    {
+      "path": "examples/p5-integrations/http.mjs",
+      "gitBlob": "16a8e19f9401cd798a10f63e09c1663a84a631d7"
+    },
+    {
+      "path": "examples/p5-integrations/http.test.mjs",
+      "gitBlob": "6caaa70298e7ddeaa9ca19f36ad19dc40e0b3fdc"
+    },
+    {
+      "path": "examples/p5-integrations/inbox-race-worker.mjs",
+      "gitBlob": "09310548e860f29e6cca30d31800949574e272c4"
+    },
+    {
+      "path": "examples/p5-integrations/labs.mjs",
+      "gitBlob": "4408feb065a865063b7b3e2d020034b8bec78fbf"
+    },
+    {
+      "path": "examples/p5-integrations/labs.test.mjs",
+      "gitBlob": "38542ad2f022b5391b27160bb40fb99d49a1d522"
+    },
+    {
+      "path": "examples/p5-integrations/multi-process-inbox.test.mjs",
+      "gitBlob": "98e77b2a950e46db5ce4359ed5d6ffc5918236b9"
+    },
+    {
+      "path": "examples/p5-integrations/postgres-inbox/adapter.mjs",
+      "gitBlob": "2655c274ecd11004509b7b0c04f3abc3461ed2df"
+    },
+    {
+      "path": "examples/p5-integrations/postgres-inbox/adapter.test.mjs",
+      "gitBlob": "0fce398a98aa9c16e63a8742d3161e4957dc8f7d"
+    },
+    {
+      "path": "examples/p5-integrations/postgres-inbox/live.mjs",
+      "gitBlob": "e1f067b76ccfc75e79fc411304b454914d7ba53b"
+    },
+    {
+      "path": "examples/p5-integrations/postgres-inbox/live.test.mjs",
+      "gitBlob": "7a46e944eda2aa249843a3e552fa82243ed635cb"
+    },
+    {
+      "path": "examples/p5-integrations/postgres-inbox/qualification.sql",
+      "gitBlob": "d8cb01c073fc16eba39b7d8ae7c89b4437288026"
+    },
+    {
+      "path": "examples/p5-integrations/postgres-inbox/qualify.mjs",
+      "gitBlob": "04cf0df8e7346c2d37a0167a0d5c8ff01ebb513a"
+    },
+    {
+      "path": "examples/p5-integrations/postgres-inbox/qualify.test.mjs",
+      "gitBlob": "30218f0313396a70690155f1b0d699d630652be0"
+    },
+    {
+      "path": "examples/p5-integrations/postgres-inbox/README.md",
+      "gitBlob": "84608caffae62940289e3bfc6a3e2d4f1c05ed1b"
+    },
+    {
+      "path": "examples/p5-integrations/postgres-inbox/schema.sql",
+      "gitBlob": "4260dcec5a2016f839a0063b4715592af5df9cec"
+    },
+    {
+      "path": "examples/p5-integrations/postgres-search/qualification.sql",
+      "gitBlob": "21cc020550a7908f844dff89bf6561d98809c5f4"
+    },
+    {
+      "path": "examples/p5-integrations/postgres-search/qualify.mjs",
+      "gitBlob": "f7650834b160656302ebbaf44009e4c7ae3e60d0"
+    },
+    {
+      "path": "examples/p5-integrations/postgres-search/qualify.test.mjs",
+      "gitBlob": "5c6af68d6bb88ac7eccb15ab985022285c133785"
+    },
+    {
+      "path": "examples/p5-integrations/README.md",
+      "gitBlob": "86ae3cec39fe04a2510e5ee109ef9bb0dd98c1d4"
+    },
+    {
+      "path": "examples/p5-integrations/verify-track.mjs",
+      "gitBlob": "0dd69cb1c699a4fdace247b4436a1a51fcd91163"
+    },
+    {
+      "path": "examples/p5-integrations/verify-track.test.mjs",
+      "gitBlob": "6b928d39da51a338e88f6fe07fdcad75406a6dd1"
+    },
+    {
+      "path": "examples/p5-integrations/webhook-integrity.test.mjs",
+      "gitBlob": "5f4168a4b9d52153d79c5e5c49f09a8936bdf3ea"
+    },
+    {
+      "path": "examples/p5-realtime/collaboration.mjs",
+      "gitBlob": "f77cf847851e9b88102843fe65cc10524d3865d5"
+    },
+    {
+      "path": "examples/p5-realtime/collaboration.test.mjs",
+      "gitBlob": "fe381f2422aa39b016c5c38e58b2b10b7b83d7ed"
+    },
+    {
+      "path": "examples/p5-realtime/feed.mjs",
+      "gitBlob": "66851e8d706b0166f2ff1e2ab849ec9c27d529a4"
+    },
+    {
+      "path": "examples/p5-realtime/feed.test.mjs",
+      "gitBlob": "ffe6a66bf8a40d5d2a99c88e8f5b7a555d38c836"
+    },
+    {
+      "path": "examples/p5-realtime/notifications.mjs",
+      "gitBlob": "15844245b29fda1d00905699293f40bd49ac3c7f"
+    },
+    {
+      "path": "examples/p5-realtime/notifications.test.mjs",
+      "gitBlob": "03d04f097c30f07ba4302f913e12178abeb50167"
+    },
+    {
+      "path": "examples/p5-realtime/README.md",
+      "gitBlob": "aecabfcce5366a98686f61a955924cbe8d9c584e"
+    },
+    {
+      "path": "examples/p5-realtime/sse.mjs",
+      "gitBlob": "7f675b3e168f072aec059ca2587d2b6f54cbd451"
+    },
+    {
+      "path": "examples/p5-realtime/verify-track.mjs",
+      "gitBlob": "e19448e615ef1e3b049d772c0bc472843bc96a44"
+    },
+    {
+      "path": "examples/p5-realtime/verify-track.test.mjs",
+      "gitBlob": "4d71b9d71f9c793c89215115eb7649bd7823337a"
+    },
+    {
+      "path": "examples/p5-security/container/compose.yaml",
+      "gitBlob": "74bf7652883a9f042cdb3df2d67ef2903081b286"
+    },
+    {
+      "path": "examples/p5-security/container/Dockerfile",
+      "gitBlob": "a73c75212c7fa17369ea80dccec90c138ae21599"
+    },
+    {
+      "path": "examples/p5-security/container/evidence.mjs",
+      "gitBlob": "456cf770be6d15f73fb5676525ddbfcd46ca3724"
+    },
+    {
+      "path": "examples/p5-security/container/evidence.test.mjs",
+      "gitBlob": "4d925386c133af67034cf0ba0f0124dbb4aead7b"
+    },
+    {
+      "path": "examples/p5-security/container/init-lab.sql",
+      "gitBlob": "e7624f452db29b3cbdf82668e037bcf0e4c19a14"
+    },
+    {
+      "path": "examples/p5-security/container/README.md",
+      "gitBlob": "5cd13e0e5f6424d99ef1b4cb0bf4dc493a4c982b"
+    },
+    {
+      "path": "examples/p5-security/container/run-container.mjs",
+      "gitBlob": "4ce1746c68423a2c4c1864e83909a7db958e1e5c"
+    },
+    {
+      "path": "examples/p5-security/container/run-container.test.mjs",
+      "gitBlob": "b4b3cd5d67daa940a784731531df20c7af041f00"
+    },
+    {
+      "path": "examples/p5-security/container/verify-evidence.mjs",
+      "gitBlob": "fe8d72ac46499ac24335c23f78da42a9c439cdf4"
+    },
+    {
+      "path": "examples/p5-security/container/verify-evidence.test.mjs",
+      "gitBlob": "e9a5c437bd3f500b4c3424bec15b94fc9d8a96cd"
+    },
+    {
+      "path": "examples/p5-security/http-db/cleanup.sql",
+      "gitBlob": "7bba03fbe62fe34bd71f4e117642e614b6f14eda"
+    },
+    {
+      "path": "examples/p5-security/http-db/connection.mjs",
+      "gitBlob": "19a33f1264d4aa96ee4ae338f482649941666484"
+    },
+    {
+      "path": "examples/p5-security/http-db/hardening.test.mjs",
+      "gitBlob": "392acf37f184cb96ad26b9c35ce4246a2ce9fa07"
+    },
+    {
+      "path": "examples/p5-security/http-db/LEARNER_LAB.md",
+      "gitBlob": "829886e07d40bdd5ec211971866763a12e7d63c8"
+    },
+    {
+      "path": "examples/p5-security/http-db/least-privilege.test.mjs",
+      "gitBlob": "69a85b6801dfd4c5a56dab2f6dc574c2712c21f0"
+    },
+    {
+      "path": "examples/p5-security/http-db/preflight.sql",
+      "gitBlob": "85da59077808a657e907ef991203afae142ab7ff"
+    },
+    {
+      "path": "examples/p5-security/http-db/privacy.sql",
+      "gitBlob": "80f5e4026af7073d8c0b34222db5d31cb8f66e45"
+    },
+    {
+      "path": "examples/p5-security/http-db/privacy.test.mjs",
+      "gitBlob": "1afbe42a99e1ce558a941f4a967064f1fea583b5"
+    },
+    {
+      "path": "examples/p5-security/http-db/privileges.sql",
+      "gitBlob": "9b85271d4da685a2dec5f0164acf20fe8e6f9143"
+    },
+    {
+      "path": "examples/p5-security/http-db/qualify.mjs",
+      "gitBlob": "f73ba76a4c3a06cc9a8655029cc531775791c2e5"
+    },
+    {
+      "path": "examples/p5-security/http-db/query.sql",
+      "gitBlob": "2857ed9b39cc9b7f4640d9c4f0c8cf309ccd83bb"
+    },
+    {
+      "path": "examples/p5-security/http-db/README.md",
+      "gitBlob": "7b2f94699d155de8882e8eb5c0384a564a9f9201"
+    },
+    {
+      "path": "examples/p5-security/http-db/revoke.sql",
+      "gitBlob": "fcdcef922f7ad7ff584ca25ec228a98284345d43"
+    },
+    {
+      "path": "examples/p5-security/http-db/server.mjs",
+      "gitBlob": "bc1d5a8281ef8297b729751cf6e3b319e0fea441"
+    },
+    {
+      "path": "examples/p5-security/http-db/setup.sql",
+      "gitBlob": "a58dac6011e96e3fb32aa88ae4ed2844bcb3a510"
+    },
+    {
+      "path": "examples/p5-security/http-db/source.test.mjs",
+      "gitBlob": "bc285fc04c743c083b5e4bf9be9387bca465f7b0"
+    },
+    {
+      "path": "examples/p5-security/http-db/starter.mjs",
+      "gitBlob": "c63c6208fa066df4dc59e835def9507134dbba45"
+    },
+    {
+      "path": "examples/p5-security/http-lab/README.md",
+      "gitBlob": "52d85f240d6a9780b6d0fbdc20f010e88f455848"
+    },
+    {
+      "path": "examples/p5-security/http-lab/solution.mjs",
+      "gitBlob": "20a5132e8467ff0fe8532e27e6dd8c2e609691ca"
+    },
+    {
+      "path": "examples/p5-security/http-lab/solution.test.mjs",
+      "gitBlob": "5d27f809131585bbc7d5dbbe386c743902dfb302"
+    },
+    {
+      "path": "examples/p5-security/http-lab/starter.mjs",
+      "gitBlob": "897097d332b471bb23334adc315d85679fc0cf18"
+    },
+    {
+      "path": "examples/p5-security/policy.mjs",
+      "gitBlob": "dbdcafc2e240d6f4f03aaba809f181d4f25f9674"
+    },
+    {
+      "path": "examples/p5-security/policy.test.mjs",
+      "gitBlob": "384775d6021ee5069aa53fb4ee38697055aa1683"
+    },
+    {
+      "path": "examples/p5-security/postgres-lab/authorization.sql",
+      "gitBlob": "c1eb442a5cc0a2c87a07ed2f61c3ab3cb9242426"
+    },
+    {
+      "path": "examples/p5-security/postgres-lab/guards.test.mjs",
+      "gitBlob": "74ffbab276e386bd929d03034863c8bdce9f5f72"
+    },
+    {
+      "path": "examples/p5-security/postgres-lab/qualify.mjs",
+      "gitBlob": "2c8c8c1f4b7473c0fb2cefe2fe5b77ca9c5cf587"
+    },
+    {
+      "path": "examples/p5-security/postgres-lab/README.md",
+      "gitBlob": "2b21f2762edf0276b2cd76ff5c236f501eb26e60"
+    },
+    {
+      "path": "examples/p5-security/README.md",
+      "gitBlob": "dab21be343d7879c46fa890689ccd000e981bd38"
+    },
+    {
+      "path": "examples/p5-security/rls-lab/guards.test.mjs",
+      "gitBlob": "5e94d7e4cde33f1e0b66e802758bee07b9573ef7"
+    },
+    {
+      "path": "examples/p5-security/rls-lab/qualify-rls.mjs",
+      "gitBlob": "2fdd28f0f09e44fced313170c75390dbd5d38e60"
+    },
+    {
+      "path": "examples/p5-security/rls-lab/README.md",
+      "gitBlob": "d49328b7f4d740cbd72ded2c4ca519f6cd2e8289"
+    },
+    {
+      "path": "examples/p5-security/rls-lab/rls.sql",
+      "gitBlob": "15af11fb655159ea60f24b67406ed0ccb3433649"
+    },
+    {
+      "path": "examples/p5-security/source/audit.mjs",
+      "gitBlob": "f3c4e2c1535beb63e07d175c5298f6b12a1a096d"
+    },
+    {
+      "path": "examples/p5-security/source/audit.test.mjs",
+      "gitBlob": "88e65f65d164826faaf72bd10781d6e18f920d67"
+    },
+    {
+      "path": "examples/p6-operations/labs.mjs",
+      "gitBlob": "ac401446aa828f398932f94647830dbc928be090"
+    },
+    {
+      "path": "examples/p6-operations/labs.test.mjs",
+      "gitBlob": "55d1c66dba0101df132bb70ff688aa5ad888a114"
+    },
+    {
+      "path": "examples/p6-operations/README.md",
+      "gitBlob": "235892b0ee6d2da983bb2a64be1cc059f8fb717d"
+    },
+    {
+      "path": "examples/p6-operations/verify-track.mjs",
+      "gitBlob": "91651657ca3283800a0d467f03c9dda8fb05d8e5"
+    },
+    {
+      "path": "examples/p6-operations/verify-track.test.mjs",
+      "gitBlob": "7b4c27e0be4b7f9d26c89078151016b5d44fcb0e"
+    },
+    {
+      "path": "examples/p6-quality/labs.mjs",
+      "gitBlob": "63159c01eabf93833e00fd79d37d5691119cc865"
+    },
+    {
+      "path": "examples/p6-quality/labs.test.mjs",
+      "gitBlob": "e068ff0998cfcb8ecd9b22d08f8c54a94506bd78"
+    },
+    {
+      "path": "examples/p6-quality/README.md",
+      "gitBlob": "03be40432251ca5a3b99d3e0f2406314fed46c53"
+    },
+    {
+      "path": "examples/p6-quality/verify-track.mjs",
+      "gitBlob": "e398f43f829669ceb556952c4492969afab53e7d"
+    },
+    {
+      "path": "examples/p6-quality/verify-track.test.mjs",
+      "gitBlob": "2f7ec388b1b2202c597a448c2be11f091d058d34"
+    },
+    {
+      "path": "examples/p7-platforms/labs.mjs",
+      "gitBlob": "f71cee2b969a9fb1068fb8002b2c140fb81f4ca9"
+    },
+    {
+      "path": "examples/p7-platforms/labs.test.mjs",
+      "gitBlob": "191ed6f16c5e878f7561c570ed3f7efc6dab90f3"
+    },
+    {
+      "path": "examples/p7-platforms/README.md",
+      "gitBlob": "3a227a37042ddbd51a2d3beef581765edf31b7d3"
+    },
+    {
+      "path": "examples/p7-platforms/verify-track.mjs",
+      "gitBlob": "af4f7bccfe47731719fb40792da14ce3e7f40455"
+    },
+    {
+      "path": "examples/p7-platforms/verify-track.test.mjs",
+      "gitBlob": "921242ff2e23b58e61e6fb48f80a4ce48efd063f"
+    }
+  ],
+  "qualification": "not-run",
+  "publicationApproved": false
+}

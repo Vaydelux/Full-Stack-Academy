@@ -23,7 +23,9 @@ export function collectStagedIds(root,catalog){
     if(meta.id!==id)throw Error('Draft metadata ID mismatch: '+id);
    }else{
     const front=source.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n/);
-    if(!front||field(front[1],'id')!==id||field(front[1],'module')!==topic.moduleId||field(front[1],'status')!=='draft-unverified'||!/^readyToPublish:\s*false\s*$/m.test(front[1]))throw Error('Invalid manuscript frontmatter: '+id);
+    const flags=front?.[1].split(/\r?\n/).filter(line=>/^(readyToPublish|publication):/.test(line))??[];
+    const safeFlag=flags.length===1&&(flags[0]==='readyToPublish: false'||(group.name==='security'&&id.startsWith('15.')&&flags[0]==='publication: false'));
+    if(!front||field(front[1],'id')!==id||field(front[1],'module')!==topic.moduleId||field(front[1],'status')!=='draft-unverified'||!safeFlag)throw Error('Invalid manuscript frontmatter: '+id);
    }
    if(!source.trim())throw Error('Empty manuscript: '+id);
    seen.add(id);
