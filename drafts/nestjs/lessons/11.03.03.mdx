@@ -71,7 +71,21 @@ In a multi-request system, repeat the test with two independent users and at lea
 
 <Misconception claim="An API returns a stored account object including passwordHash and internalRole." correction="Persistent entities may hold sensitive fields that must not be serialized into public DTOs." />
 
-<KnowledgeCheck question="Which design is safest for domain entities vs dtos?" choices={["Make the controller hold every stateful dependency permanently.","Keep business rules in an injectable service and verify the boundary with actual runtime behavior.","Expose persistent entities directly because TypeScript hides private fields.","Treat a mock array as proof of database transactions."]} correctIndex={1} explanation="Persistent entities may hold sensitive fields that must not be serialized into public DTOs." misconception="An API returns a stored account object including passwordHash and internalRole." lessonId="11.03.03" />
+<KnowledgeCheck question="A new private column is added to the account table. Which response mapping prevents accidental exposure?" choices={["Return the entity as AccountDto.","Serialize all enumerable properties.","Explicitly select id and displayName.","Delete only the currently known passwordHash field."]} correctIndex={2} explanation="An allowlist does not expose newly introduced private properties." misconception="An API returns a stored account object including passwordHash and internalRole." lessonId="11.03.03" />
+
+## Applied engineering walkthrough
+
+Persistence entities describe stored state; a response DTO describes the public contract. They need not share every field. A return type cannot delete properties at runtime, so construct a new object with explicitly selected fields. Separate input DTOs from output DTOs: accepting a display name does not authorize updates to internal role. Database projections reduce the amount of private data loaded.
+
+### Diagnose the concrete failure
+
+Supply an account with a fake password hash and internal role. Serialize the result from accountDto and assert that its keys are exactly id and displayName. The starter exposes the original object. Include a future private property in the test so the allowlist still works when storage evolves.
+
+### Independent exercise and evidence
+
+Create a public project DTO and a separate administrator DTO. Identify the authorization check required before constructing the administrator view. Record exact output keys, and confirm the input entity remains unchanged. Use synthetic values rather than any real account data.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Pure contract checks, framework wiring and real database qualification are separate evidence. Keep the existing starter and solution unchanged; do not award course credit from source review alone.
 
 ## Bug Hunt: reproduce, diagnose and repair
 
