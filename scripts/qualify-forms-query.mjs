@@ -24,6 +24,7 @@ const checks=[
  {name:'Real HTTP and source contract test suites',program:'node',args:['--test',
   'tests/forms-query-http.test.mjs',
   'tests/forms-query-listener-lifecycle.test.mjs',
+  'tests/forms-query-shutdown.test.mjs',
   'tests/forms-query-resilience.test.mjs',
   'tests/forms-query-workflow.test.mjs',
   'tests/forms-query-contract.test.mjs',

@@ -188,10 +188,14 @@ export function createTaskApi({ host = '127.0.0.1', maxItems = MAX_ITEMS, maxIde
       fail(res, status, err instanceof HttpProblem ? err.message : 'Internal server error');
     }
   });
+  let starting = null;
+  let closing = null;
   return {
     server,
     async start(port = 0) {
-      await new Promise((resolve, reject) => {
+      if (closing) throw Object.assign(new Error('Fixture is closing'), { code: 'ERR_TASK_API_CLOSING' });
+      if (starting || server.listening) throw Object.assign(new Error('Server is already listening or starting'), { code: 'ERR_SERVER_ALREADY_LISTEN' });
+      starting = new Promise((resolve, reject) => {
         const cleanup = () => {
           server.off('error', onError);
           server.off('listening', onListening);
@@ -203,10 +207,27 @@ export function createTaskApi({ host = '127.0.0.1', maxItems = MAX_ITEMS, maxIde
         try { server.listen(port, host); }
         catch (error) { onError(error); }
       });
-      const address = server.address();
-      return `http://${host === '::1' ? '[::1]' : host}:${address.port}`;
+      try {
+        await starting;
+        const address = server.address();
+        return `http://${host === '::1' ? '[::1]' : host}:${address.port}`;
+      } finally { starting = null; }
     },
-    async close() { if (server.listening) await new Promise((resolve, reject) => server.close(err => err ? reject(err) : resolve())); },
+    async close() {
+      if (closing) return closing;
+      // Wait for an in-flight listen before shutting down. This fixture is
+      // disposable: terminate active HTTP connections rather than wait for
+      // a client that never completes its request body. This is not a
+      // production graceful-drain implementation.
+      closing = (async () => {
+        if (starting) { try { await starting; } catch { return; } }
+        if (server.listening) await new Promise((resolve, reject) => {
+          server.close(err => err ? reject(err) : resolve());
+          server.closeAllConnections();
+        });
+      })();
+      try { await closing; } finally { closing = null; }
+    },
   };
 }
 
