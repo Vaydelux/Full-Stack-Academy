@@ -70,6 +70,20 @@ EXPLAIN ANALYZE executes statements. Only use SELECT against disposable data her
 
 When query execution moves into a real Next.js/NestJS application, measure request concurrency and database calls as well as SQL time. Remember that schema changes alter future write costs, vacuum work and storage. An index may improve a selective read but slow bulk inserts; a pooled connection may conserve memory but alter transaction/session semantics.
 
+## Applied SQL walkthrough
+
+A query plan describes the access paths and operations PostgreSQL chooses. Estimated cost is a planner unit rather than milliseconds. ANALYZE records actual execution, including rows per loop and execution time; BUFFERS reports buffer activity, not necessarily physical disk reads. The JSON output makes it possible to compare fields programmatically while retaining the original plan.
+
+### Predict and diagnose the result
+
+Inspect estimated versus actual row counts at the scan and filter nodes. For nodes executed repeatedly, account for loops when interpreting rows and time. Compare the same SELECT on the same dataset with a cold-ish and warmed cache, labeling conditions rather than assuming they are identical. Do not force an index merely because a sequential scan appears.
+
+### Independent exercise and evidence
+
+Record PostgreSQL version, table row count, query parameters, plan and buffer statistics for repeated executions. Identify a hypothesis for a large estimate error, such as skew or outdated statistics, then design one controlled change. No latency improvement is established until measured.
+
+**Qualification boundary:** These are measurement instructions and hypotheses, not recorded benchmark results. Use disposable PostgreSQL data and preserve the existing starter and solution. A source check does not prove a faster query or safe production configuration.
+
 ## Bug Hunt
 
 1. Predict why the starter is incomplete: The starter only requests an estimated plan. It cannot demonstrate actual execution, rows, and buffer activity.
