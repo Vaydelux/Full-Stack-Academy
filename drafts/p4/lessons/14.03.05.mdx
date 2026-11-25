@@ -70,6 +70,20 @@ A signed URL is a bearer capability for its lifetime; do not publish it. Storage
 
 RLS applies subject to PostgreSQL roles, table ownership, policy composition and operation type. In an exposed schema, verify grants and RLS together. For writes, review INSERT WITH CHECK and UPDATE USING/WITH CHECK, not just SELECT. In Supabase, do not use user-editable `user_metadata` as authority for privileged roles. A service-role client may bypass RLS; it must not be used to repair a client permission error.
 
+## Applied persistence walkthrough
+
+A private bucket uses access rules over storage.objects for ordinary client operations. The shown SELECT policy restricts reads to a particular bucket and a first path segment matching the current user. It does not implement membership-based tenant sharing, upload permission or signed-link issuance. A signed URL is a bearer capability within its validity period, not a permanent authorization rule.
+
+### Diagnose the concrete failure
+
+Create synthetic files under two user prefixes in a private test bucket. Verify direct owner read and cross-prefix denial with actual user sessions. Test a public URL and an authorized signed URL separately, including expiry; do not log the signed URL itself. Check all applicable storage policies and bucket visibility.
+
+### Independent exercise and evidence
+
+Design separate policies for new upload, read and replacement, noting that upsert requires additional permissions. Record bucket, synthetic object identifiers, permitted operations and denied access. Consider whether tenant membership is required in addition to path ownership.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Use an isolated Supabase environment and real non-bypass caller roles. Preserve the existing starter and solution; source review cannot certify row policies or authorization.
+
 ## Bug Hunt and regression matrix
 
 1. Predict the disclosure caused by the starter: The starter lets every authenticated user read every object in the private-documents bucket.
