@@ -10,8 +10,8 @@
   },
   "development": {
     "branch": "feat/p8-publication-evidence",
-    "state": "p10-prisma-supabase-editorial-complete-runtime-blocked",
-    "note": "P10.6 expanded all 64 Prisma/Supabase drafts (8 modules); 64/64 committed-source checks passed; 15/15 exact-source dependency-free P4 tests executed on Node22. 152/551 unpublished drafts editorially enhanced across P8–P10. Live Prisma, Supabase, PostgreSQL, MDX, Node24 build and browser qualification outstanding."
+    "state": "p10-security-redis-jobs-editorial-complete-runtime-blocked",
+    "note": "P10.7 first batch: 64 Security and Redis/BullMQ drafts across 8 modules expanded; 64/64 committed-source editorial checks passed; 32/32 exact-source cache/outbox tests executed on Node22. 216/551 unpublished drafts expanded across P8–P10. Live security, Redis/BullMQ, Node24/MDX/browser qualification pending."
   },
   "snapshot": {
     "tracks": 28,
@@ -73,6 +73,6 @@
     "devHighFindings": 14,
     "exceptionExpires": "2026-12-02"
   },
-  "nextMilestone": "P10.7: enhance security and application services tracks 15–18, preserving canonical source/lab contracts. In parallel, unblock P9 complete checkout and live P1–P4 qualification before module-atomic publication.",
-  "status": "all-topics-authored-p10-p4-editorial-complete-publication-blocked"
+  "nextMilestone": "P10.7 continuation: 24 Realtime/collaboration and 32 application integration drafts (tracks 17–18); then P10.8. Continue P9 real qualification separately.",
+  "status": "all-topics-authored-p10-security-redis-editorial-complete-publication-blocked"
 }
