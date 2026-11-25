@@ -44,6 +44,20 @@ node --test --test-name-pattern="24[.]02" examples/p7-platforms/labs.test.mjs
 
 In-memory sync model; actual SQLite persistence, durable queue, crash recovery and conflict reconciliation are not established.
 
+## Applied engineering walkthrough
+
+An operation identifier represents immutable intent, not a network attempt. Bind the identifier to authenticated scope and payload identity. A matching retry may return the earlier acknowledgement, but changed content must never become a silent second write.
+
+### Diagnose the concrete failure
+
+Send the same edit twice, then reuse its identifier with a changed title. Check the revision and acknowledgement for all three requests.
+
+### Independent exercise and evidence
+
+Design durable receipt retention and a resnapshot path for operations older than that retention window. Record the replay response and distinguish an expired receipt from a new intent.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify real persistence, network, device and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

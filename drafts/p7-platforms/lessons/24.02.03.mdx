@@ -44,6 +44,20 @@ node --test --test-name-pattern="24[.]02" examples/p7-platforms/labs.test.mjs
 
 In-memory sync model; actual SQLite persistence, durable queue, crash recovery and conflict reconciliation are not established.
 
+## Applied engineering walkthrough
+
+Carry a base revision with every edit and compare it atomically with the update. Last-writer-wins may silently erase another user's work. Merge only fields with a documented domain rule, and display unresolved conflicts without mutating the server again.
+
+### Diagnose the concrete failure
+
+Have two clients edit revision zero. Commit one, then send the second. Verify that the earlier change remains visible and that the rejection contains a usable recovery path.
+
+### Independent exercise and evidence
+
+Build a field-level decision table for titles, completion state and deletion. Record a second conflict occurring during reconciliation and require a new revision check.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify real persistence, network, device and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?
