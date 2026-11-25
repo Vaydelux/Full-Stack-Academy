@@ -78,6 +78,20 @@ Even a tenant-matched update may violate finer-grained project membership rules.
 
 A safe persistence layer should accept explicit request-scoped identities, use bounded queries, reject unsupported input, and keep internal query types from becoming public API DTOs. For permission-sensitive mutations, reason about database constraints and application authorization separately: a valid foreign key does not mean the calling actor may update that row.
 
+## Applied persistence walkthrough
+
+Write authorization belongs in the mutation predicate, not only in a preliminary read. updateMany with both ID and tenantId allows the affected row count to distinguish success from a missing or forbidden record. The example trims the title and checks a length bound, but accepts a typed string argument; the HTTP layer must validate unknown data before invoking it.
+
+### Diagnose the concrete failure
+
+Try a valid rename, whitespace-only title, missing tenant and an ID owned by another tenant. Confirm one affected row for the permitted write and no change for the forbidden one. Inspect before and after data in both tenants. Do not reveal whether a forbidden ID exists in the public error.
+
+### Independent exercise and evidence
+
+Extend the contract with an expected revision and increment it atomically. Design a race between two edits and decide how to map zero affected rows to a safe not-found or stale response. Record final title, revision and denied mutation results.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Use the pinned Prisma 7 toolchain and disposable PostgreSQL database. Preserve the starter and solution; source review does not qualify generated code or authorization.
+
 ## Bug Hunt
 
 1. State the starter's observable defect: The starter changes any row with the supplied ID and exposes the full database result without checking tenant ownership.
