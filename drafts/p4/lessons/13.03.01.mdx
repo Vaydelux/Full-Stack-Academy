@@ -79,6 +79,20 @@ A tagged SQL value placeholder cannot safely parameterize a table or column iden
 
 In a multi-tenant API, input validation, role-aware database credentials, optimistic concurrency, migration review and response-shape controls must be considered together. Favor bounded queries and explicit domain operations over returning raw privileged ORM interfaces to HTTP handlers. Record the query plan or migration state instead of guessing.
 
+## Applied persistence walkthrough
+
+Tagged raw queries bind data values instead of concatenating them into SQL syntax. The example binds tenant and search pattern; percent and underscore remain pattern operators in ILIKE, not SQL injection. Identifiers and sort directions cannot be bound like values and require an allowlisted choice. The generic result type is a compile-time assertion, not runtime validation.
+
+### Diagnose the concrete failure
+
+Compare the emitted query and bound arguments for a search containing an apostrophe, percent and underscore. Verify the tenant predicate and fifty-row cap. If literal substring search is required, define escaping semantics for wildcard characters. Verify physical table and column names match the deployed mapping.
+
+### Independent exercise and evidence
+
+Design an allowlisted sorting API with a fixed SQL fragment for each accepted sort and bound filter values. Record permitted results and invalid-sort rejection, without including confidential parameters in logs.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Use the pinned Prisma 7 toolchain and disposable PostgreSQL database. Preserve the starter and solution; source review does not qualify generated code or authorization.
+
 ## Bug Hunt
 
 1. Make a concrete failure prediction: An admin report passes a search string directly into a raw SELECT. A malicious title becomes SQL syntax instead of a parameter, while an otherwise correct row filter fails to scope the tenant.
