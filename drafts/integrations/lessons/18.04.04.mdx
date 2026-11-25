@@ -52,6 +52,20 @@ The corresponding module exercises **signWebhook and WebhookInbox: raw bytes, fr
 
 For a production implementation, document the secret-owner or principal, durability plan, error and recovery policy, rate/resource bounds, privacy guarantees, observability without sensitive payloads, and the credential/version-rotation procedure.
 
+## Applied engineering walkthrough
+
+An adapter isolates vendor schemas from domain logic. It should validate unknown response data and translate only supported outcomes into a stable internal contract. Treat malformed successful responses as unconfirmed rather than casting them into trusted shipment or billing records.
+
+### Diagnose the concrete failure
+
+Run two fake providers against one expected domain response. Return an unexpected success payload from one provider and verify it is rejected or marked uncertain. Check retries do not automatically switch providers after an ambiguous external write.
+
+### Independent exercise and evidence
+
+Define a provider port with normalized result, safe error classes and external receipt identity. Record contract cases and actual integration prerequisites for each implementation.
+
+**Qualification boundary:** These are practice instructions, not recorded results. Preserve existing specifications and laboratory contracts. Qualify actual external services separately using authorized disposable infrastructure.
+
 ## Knowledge check
 
 1. Which authenticated actor, external sender, or tenant owns the data in this scenario?
