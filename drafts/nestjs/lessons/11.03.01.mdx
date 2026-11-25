@@ -94,7 +94,21 @@ In a multi-request system, repeat the test with two independent users and at lea
 
 <Misconception claim="The controller directly mutates records and allows blank task names." correction="Keep transport decorators in controllers and business invariants in injectable services." />
 
-<KnowledgeCheck question="Which design is safest for service responsibilities?" choices={["Make the controller hold every stateful dependency permanently.","Keep business rules in an injectable service and verify the boundary with actual runtime behavior.","Expose persistent entities directly because TypeScript hides private fields.","Treat a mock array as proof of database transactions."]} correctIndex={1} explanation="Keep transport decorators in controllers and business invariants in injectable services." misconception="The controller directly mutates records and allows blank task names." lessonId="11.03.01" />
+<KnowledgeCheck question="A background import bypasses the controller and creates a blank task. Where should the shared title invariant live?" choices={["In the service used by both entry points.","In a CSS validation style.","Only in the HTTP controller.","Only in the browser form."]} correctIndex={0} explanation="Business invariants must hold for every entry point." misconception="The controller directly mutates records and allows blank task names." lessonId="11.03.01" />
+
+## Applied engineering walkthrough
+
+Separate transport concerns from business decisions. A controller maps HTTP input into a service call; a service owns rules that must hold regardless of whether the caller is HTTP, a scheduled job, or another module. The sample service validates the title and stores it in memory. BadRequestException couples this teaching service to HTTP; a reusable domain layer could instead throw a domain error mapped by the transport layer. The array is not durable storage.
+
+### Diagnose the concrete failure
+
+Send blank, non-string, and whitespace-padded titles. Expect rejection for the first two and a trimmed result for a valid value. Call the service directly as well: the invariant should not depend on a controller decorator. A green direct call is not proof that body parsing and HTTP status mapping work.
+
+### Independent exercise and evidence
+
+Design a task rename operation that enforces the same title rule from both an HTTP controller and an import job. Record the input, normalized output, and unchanged state after rejection. Decide which layer owns persistence and which maps business errors to responses.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Pure contract checks, framework wiring and real database qualification are separate evidence. Keep the existing starter and solution unchanged; do not award course credit from source review alone.
 
 ## Bug Hunt: reproduce, diagnose and repair
 
