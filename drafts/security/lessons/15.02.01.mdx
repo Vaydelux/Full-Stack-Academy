@@ -42,6 +42,20 @@ Document both a permitted happy path and a rejected adversarial path. Integratio
 
 A passing UI check or source-only checklist cannot establish secure production behavior. An observed negative test and reviewed trust boundary are essential.
 
+## Applied engineering walkthrough
+
+RBAC assigns permissions to roles rather than accepting permission names from a caller. The policy should define explicit action/resource combinations and deny unknown roles. A role label alone does not establish membership in the requested organization. Use an authoritative membership record for each tenant context.
+
+### Diagnose the concrete failure
+
+Construct a synthetic matrix for viewer, editor and owner with read, edit and export. Verify a permitted read and edit, denied export for a viewer, and denial for an unrecognized role. Test the same user with different roles in two workspaces.
+
+### Independent exercise and evidence
+
+Extend the matrix with a billing-only role. Explain how role changes affect cached authorization and existing sessions. Record the actual permission outcome and the membership source; do not treat a hidden button as an access control.
+
+**Qualification boundary:** These are practice instructions, not recorded audit results. Use synthetic data and authorized disposable infrastructure. Preserve existing laboratory contracts and publication status.
+
 ## Knowledge check
 
 1. Which input is attacker-controlled?
