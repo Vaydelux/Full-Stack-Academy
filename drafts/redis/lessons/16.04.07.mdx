@@ -50,6 +50,20 @@ In the test notes, separate what the in-memory fixture genuinely observed from R
 
 A fallback that stores only in local process memory is not durable recovery.
 
+## Applied engineering walkthrough
+
+A queue outage should not erase accepted business work. Keep durable committed outbox records until safe publication, and use bounded reconnection with backoff. A cache outage may allow degraded reads, while job delivery requires an explicit recovery contract.
+
+### Diagnose the concrete failure
+
+Simulate unavailable publishing in the teaching fixture and verify the event remains pending or retryable. Restore the transport and verify eligible work resumes without creating duplicates. Record the difference between accepted business state and delivery state.
+
+### Independent exercise and evidence
+
+Design a recovery runbook with backlog measurement, bounded replay, alerting and provider capacity limits. Test a prolonged outage on disposable infrastructure before promising recovery objectives.
+
+**Qualification boundary:** These are practice instructions, not recorded results. Preserve the existing lab and publication status; in-memory tests do not qualify live Redis or BullMQ behavior.
+
 ## Knowledge check
 
 1. What is authoritative in this scenario, and what state is derived or replayable?
