@@ -73,6 +73,20 @@ Never treat a non-null user in a signUp response as permission to read private d
 
 In production, model expired access tokens, refresh-token rotation, multiple concurrent tabs, CSRF/state handling where applicable, cookie attributes, MFA enrollment and logout propagation. Never rely on raw JWT decoding, a mutable cookie JSON field, an unverified redirect URL or a user-editable metadata claim to authorize administrative actions.
 
+## Applied persistence walkthrough
+
+Sign-up and an authenticated session are distinct outcomes. When email confirmation is enabled, a successful sign-up may return no session, and the interface should present the verification step rather than granting access. Provider settings can alter the flow. A returned user ID is identity information, not permission to a tenant's records.
+
+### Diagnose the concrete failure
+
+In a disposable Auth environment register a synthetic email and inspect the returned session state without logging tokens. Confirm unverified users cannot use protected routes, complete verification using the local test mailbox, then sign in. Test invalid credentials and repeated registration without revealing account existence.
+
+### Independent exercise and evidence
+
+Sketch a state machine for signed-out, verification pending, signed-in and error states. Add rate limiting and neutral public messaging to the design. Record actual transition results, not passwords or confirmation links.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Use isolated synthetic identities and the pinned SDK. Preserve the existing starter and solution; source inspection does not establish actual Auth or session security.
+
 ## Bug Hunt
 
 1. State the attack or broken state: A created user object does not necessarily mean the email is verified or an active session has been established.
