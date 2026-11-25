@@ -10,8 +10,8 @@
   },
   "development": {
     "branch": "feat/p8-publication-evidence",
-    "state": "p10-nest-editorial-complete-runtime-blocked",
-    "note": "P10 revised all 32 NestJS drafts, with 16 Domain Modules/Advanced Nest lessons in the latest batch. Seven new dependency-free practice tests passed on Node22; 16 committed-source editorial checks passed. Prior 150/150 isolated suite is historical and was not rerun in this batch. Publication and real Nest/DB/MDX/browser qualification remain blocked."
+    "state": "p10-postgresql-basics-modeling-editorial-complete",
+    "note": "All 32 Nest drafts previously enhanced; this batch expanded 16 PostgreSQL SQL Essentials and Relational Modeling drafts, with 16/16 committed-source walkthrough checks. Existing SQL examples preserved. Prior isolated test runs remain historical; no new database or aggregate test execution claimed."
   },
   "snapshot": {
     "tracks": 28,
@@ -73,6 +73,6 @@
     "devHighFindings": 14,
     "exceptionExpires": "2026-12-02"
   },
-  "nextMilestone": "P10.5: enhance existing PostgreSQL track 12 drafts in module-atomic batches, starting SQL Essentials and Relational Modeling, then Transactions, Performance and Operations. Continue P9 full Node24.9+ P1 and Nest runtime qualification on a complete checkout.",
+  "nextMilestone": "P10.5 continuation: PostgreSQL 12.03 Transactions and Concurrency, 12.04 Query Performance, 12.05 Operations and Recovery. Continue P9 real runtime qualification separately.",
   "status": "all-topics-authored-p10-nest-editorial-complete-publication-blocked"
 }
