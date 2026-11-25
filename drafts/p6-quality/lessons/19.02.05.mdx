@@ -44,6 +44,20 @@ node --test --test-name-pattern="19[.]02" examples/p6-quality/labs.test.mjs
 
 Plain JavaScript UI state model; installed React/Vitest/Testing Library/MSW and real browsers require separate tests.
 
+## Applied engineering walkthrough
+
+Form tests should cover the validation message, focus or association of the invalid field, and absence of unintended submit effects. Client-side validation improves usability but cannot establish server-side validation. A corrected field should allow the intended action without duplicating submissions.
+
+### Diagnose the concrete failure
+
+Enter a malformed synthetic email, submit, and inspect the field's accessible error and absence of a submit call. Correct the input, submit once and await confirmation. Exercise a server rejection after client validation succeeds.
+
+### Independent exercise and evidence
+
+Design a matrix for empty, malformed, corrected and duplicate-submit input. Record visible errors, submit counts and server acceptance requirements separately.
+
+**Evidence boundary:** These are practice instructions, not recorded test results. Preserve the existing model, specification and draft flag; external runtime qualification remains independent.
+
 ## Knowledge check
 
 1. Which public behavior or invariant is being protected?
