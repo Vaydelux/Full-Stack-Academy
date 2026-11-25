@@ -44,6 +44,20 @@ node --test --test-name-pattern="24[.]04" examples/p7-platforms/labs.test.mjs
 
 Synthetic queue acknowledgement model only; physical touch, OS background behavior, push delivery and store acceptance require device tests.
 
+## Applied engineering walkthrough
+
+Store readiness is a release-specific checklist, not a permanent guarantee. App identity, signing, permissions, privacy disclosures and screenshots must match the actual artifact. Platform policies change, so verify official current submission requirements for the intended release.
+
+### Diagnose the concrete failure
+
+Compare a synthetic manifest and permission declarations with actual feature use. Identify an unused capability or mismatched data disclosure and correct the release record before packaging.
+
+### Independent exercise and evidence
+
+Create an artifact digest, version, target, tester and privacy checklist. Separate local build success from store approval; do not submit or create a paid account for this exercise.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify actual device, provider and human accessibility evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

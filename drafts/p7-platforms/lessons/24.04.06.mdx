@@ -44,6 +44,20 @@ node --test --test-name-pattern="24[.]04" examples/p7-platforms/labs.test.mjs
 
 Synthetic queue acknowledgement model only; physical touch, OS background behavior, push delivery and store acceptance require device tests.
 
+## Applied engineering walkthrough
+
+Native accessibility combines semantic labels, roles and platform focus order with text scaling and alternatives to complex gestures. Automated checks can reveal selected defects but cannot replace TalkBack or VoiceOver interaction. Validation errors and navigation must preserve understandable focus.
+
+### Diagnose the concrete failure
+
+Complete a synthetic form with a screen reader without relying on visual location. Trigger an error, inspect announcement and focus destination, then enlarge text and verify each action remains accessible.
+
+### Independent exercise and evidence
+
+Record OS and assistive technology versions, announcements, traversal order and defects. Test a non-gesture alternative to swipe-only actions; mark absent devices or reviewer checks not-run.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify actual device, provider and human accessibility evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

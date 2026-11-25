@@ -44,6 +44,20 @@ node --test --test-name-pattern="24[.]04" examples/p7-platforms/labs.test.mjs
 
 Synthetic queue acknowledgement model only; physical touch, OS background behavior, push delivery and store acceptance require device tests.
 
+## Applied engineering walkthrough
+
+A meaningful performance comparison requires matched workloads. Mobile energy consumption depends on radio activity, CPU, wakeups and device state; smaller JavaScript assets alone do not demonstrate battery improvement. Choose a scenario and measure separate resource indicators.
+
+### Diagnose the concrete failure
+
+Record a baseline for a task screen with repeated polling. Remove redundant requests without changing refresh correctness and compare request count, wakeups, memory and response latency.
+
+### Independent exercise and evidence
+
+Document model, OS, network conditions, duration and build variant. Repeat measurements to show variability and distinguish binary-size change from actual battery or runtime improvements.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify actual device, provider and human accessibility evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

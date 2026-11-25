@@ -6,7 +6,7 @@ const root=new URL('../',import.meta.url);
 const read=path=>readFileSync(new URL(path,root),'utf8').replaceAll('\r\n','\n');
 const scopes=[
  ['p6-operations',{'21':3,'22':3,'23':4}],
- ['p7-platforms',{'24':3}],
+ ['p7-platforms',{'24':4}],
 ];
 for(const [family,tracks] of scopes){
  const specifications=JSON.parse(read('drafts/'+family+'/topics.json'));

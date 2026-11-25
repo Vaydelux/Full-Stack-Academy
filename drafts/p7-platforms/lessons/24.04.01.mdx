@@ -44,6 +44,20 @@ node --test --test-name-pattern="24[.]04" examples/p7-platforms/labs.test.mjs
 
 Synthetic queue acknowledgement model only; physical touch, OS background behavior, push delivery and store acceptance require device tests.
 
+## Applied engineering walkthrough
+
+Responsive web layout does not guarantee usable native screens. Account for safe-area insets, system keyboards, touch interaction and OS text scaling. A layout must accommodate changing vertical space as well as width, rather than depending on one named phone breakpoint.
+
+### Diagnose the concrete failure
+
+Use a synthetic form, rotate the device, enlarge text and open the keyboard. Verify focus and the submit action remain reachable without clipping or overlapping system UI.
+
+### Independent exercise and evidence
+
+Record a device matrix with portrait, landscape, enlarged text and keyboard states. Include actual observations and test hardware navigation or assistive input where supported.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify actual device, provider and human accessibility evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?
