@@ -50,6 +50,20 @@ The tests exercise local Node state or loopback HTTP behavior. Document separate
 
 A notification row is not evidence that an email or push provider delivered it.
 
+## Applied engineering walkthrough
+
+A notification is a durable recipient-specific record, not merely a message string. Tenant, recipient, event identity, creation time and read state belong to its contract. The event can be shared across recipients while delivery records remain distinct.
+
+### Diagnose the concrete failure
+
+Create a synthetic export-completed notification and inspect its identity and unread state. Repeat the same event for the same recipient and verify the intended deduplication behavior. Query as another recipient and assert exclusion.
+
+### Independent exercise and evidence
+
+Design a notification schema with a recipient-scoped uniqueness rule, retention policy and stable pagination. Record expected item count and fields before testing actual persistence.
+
+**Qualification boundary:** These are practice instructions, not recorded results. Preserve the original laboratory and publication status. Local simulations do not qualify actual browser or distributed provider behavior.
+
 ## Knowledge check
 
 1. Which actor, resource, version or event cursor is authoritative in this scenario?
