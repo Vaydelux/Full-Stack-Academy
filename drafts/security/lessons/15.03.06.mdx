@@ -42,6 +42,20 @@ Document both a permitted happy path and a rejected adversarial path. Integratio
 
 A passing UI check or source-only checklist cannot establish secure production behavior. An observed negative test and reviewed trust boundary are essential.
 
+## Applied engineering walkthrough
+
+A rate limit depends on a trustworthy identity key and atomic accounting. Only trust forwarding headers from known proxies configured for the actual deployment. Combine account, tenant and appropriate network limits to reduce concentrated abuse while avoiding excessive blocking of shared networks.
+
+### Diagnose the concrete failure
+
+In an isolated fixture, send a bounded sequence of requests under a fixed identity. Verify the threshold and retry behavior, then vary a caller-supplied forwarding header and ensure the accounting identity does not change. Test trusted proxy configuration separately.
+
+### Independent exercise and evidence
+
+Choose a limit for a sensitive endpoint and define window, key, response and store failure behavior. Record allowed and denied counts, elapsed window and actual proxy configuration; do not run load tests on unrelated systems.
+
+**Qualification boundary:** These are practice instructions, not recorded audit results. Use synthetic data and authorized disposable infrastructure. Preserve existing laboratory contracts and publication status.
+
 ## Knowledge check
 
 1. Which input is attacker-controlled?
