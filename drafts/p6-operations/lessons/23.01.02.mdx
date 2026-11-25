@@ -44,6 +44,20 @@ node --test --test-name-pattern="23[.]01" examples/p6-operations/labs.test.mjs
 
 Directed dependency model only; no actual codebase static graph, framework migration or architecture certification.
 
+## Applied engineering walkthrough
+
+Dependency inversion makes high-level business policies independent of low-level implementation details. A port expresses a capability needed by the application, while the composition root supplies its implementation. A TypeScript interface alone does not enforce source dependency direction or correct runtime wiring.
+
+### Diagnose the concrete failure
+
+Run boundaryViolations with an allowed use-case-to-port edge and a prohibited domain-to-ORM import. Verify the reported violation, then replace the dependency with the intended port. Exercise the domain using a synthetic fake.
+
+### Independent exercise and evidence
+
+Design an inventory repository port with explicit failure behavior and a composition-root binding. Record dependency direction and fake versus real adapter evidence separately.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve the existing specification, model and unpublished status. Actual source dependency and runtime qualification remain independent.
+
 ## Knowledge check
 
 1. Which invariant or operational measurement determines success?

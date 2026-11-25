@@ -44,6 +44,20 @@ node --test --test-name-pattern="23[.]01" examples/p6-operations/labs.test.mjs
 
 Directed dependency model only; no actual codebase static graph, framework migration or architecture certification.
 
+## Applied engineering walkthrough
+
+An architecture decision record captures context, alternatives, decision and consequences. It is a historical decision with assumptions, not an immutable command to keep the same design forever. Define measurable triggers for reconsideration rather than selecting a technology solely by preference.
+
+### Diagnose the concrete failure
+
+Write a synthetic ADR comparing a modular monolith, extracted worker and separate service. Identify current coupling, operational burden and the evidence that would justify revisiting the choice. Include a rejected alternative and its reason.
+
+### Independent exercise and evidence
+
+Create a decision register with status, owner and review triggers. Record known facts separately from hypotheses and include a practical migration or reversal strategy.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve the existing specification, model and unpublished status. Actual source dependency and runtime qualification remain independent.
+
 ## Knowledge check
 
 1. Which invariant or operational measurement determines success?

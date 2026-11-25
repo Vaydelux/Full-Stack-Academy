@@ -44,6 +44,20 @@ node --test --test-name-pattern="23[.]01" examples/p6-operations/labs.test.mjs
 
 Directed dependency model only; no actual codebase static graph, framework migration or architecture certification.
 
+## Applied engineering walkthrough
+
+Hexagonal architecture emphasizes the application's inside/outside boundary rather than a particular directory layout. The core describes business behavior and required ports; adapters handle HTTP, persistence and external services. The composition root is responsible for assembling dependencies.
+
+### Diagnose the concrete failure
+
+Draw the checkout core, inbound request adapter and outbound payment adapter. Use a fake payment port returning an accepted or uncertain outcome and verify the application maps each correctly. Check that provider exceptions are not treated as domain types.
+
+### Independent exercise and evidence
+
+Design a small application module with two replaceable adapters and explicit dependency rules. Record its graph and port contract, and qualify actual provider behavior independently.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve the existing specification, model and unpublished status. Actual source dependency and runtime qualification remain independent.
+
 ## Knowledge check
 
 1. Which invariant or operational measurement determines success?

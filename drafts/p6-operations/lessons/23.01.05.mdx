@@ -44,6 +44,20 @@ node --test --test-name-pattern="23[.]01" examples/p6-operations/labs.test.mjs
 
 Directed dependency model only; no actual codebase static graph, framework migration or architecture certification.
 
+## Applied engineering walkthrough
+
+Clean architecture can improve change isolation, but additional layers introduce mapping, maintenance and debugging costs. A straightforward CRUD feature may need only a small module and explicit DTOs; complex domain behavior benefits more from isolated policies. Choose boundaries based on real coupling and test needs.
+
+### Diagnose the concrete failure
+
+Compare a synthetic settings CRUD feature with an order reservation feature requiring invariants and external effects. Identify changes that justify a separate domain model in the second case and why the first may not need the same layers.
+
+### Independent exercise and evidence
+
+Write a decision record comparing direct feature modules and layered architecture. Include failure modes, test costs and measurable triggers for adding abstraction.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve the existing specification, model and unpublished status. Actual source dependency and runtime qualification remain independent.
+
 ## Knowledge check
 
 1. Which invariant or operational measurement determines success?
