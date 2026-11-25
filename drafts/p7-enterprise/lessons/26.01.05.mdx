@@ -44,6 +44,20 @@ node --test --test-name-pattern="26[.]01" examples/p7-platforms/labs.test.mjs
 
 Synthetic policy check on already-validated claims only; no actual SAML assertion, SCIM, MFA, token or identity-provider verification.
 
+## Applied engineering walkthrough
+
+Step-up authentication requires stronger or fresher authentication evidence for a particular sensitive action. A client checkbox or decoded claim without trusted verification is insufficient. Define the required assurance, freshness and action scope, then enforce them on the server before the effect occurs.
+
+### Diagnose the concrete failure
+
+Use enterpriseAccess for a missing MFA claim and an allowed case. Extend the real test design with stale authentication evidence, canceled challenge and a changed target action. Verify denial leaves protected state untouched.
+
+### Independent exercise and evidence
+
+Design a challenge flow with bounded retries, recovery and audited completion. Record trusted evidence and the exact action gate; do not interpret the local policy model as an actual identity-provider integration.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify actual IdP, application authorization, database and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?
