@@ -44,6 +44,20 @@ node --test --test-name-pattern="20[.]03" examples/p6-quality/labs.test.mjs
 
 Boolean release decision model, not deployment, migration, traffic switching or verified rollback.
 
+## Applied engineering walkthrough
+
+Feature flags separate deployment from exposure. Stable cohort assignment avoids a user switching behavior arbitrarily. The default on a flag-service failure should be explicitly safe, and security authorization must never depend only on a client flag. Old flags need owners and removal dates.
+
+### Diagnose the concrete failure
+
+Design deterministic cohort assignment for synthetic subject IDs and check repeated evaluation returns the same result. Simulate unavailable flag configuration and verify the intended default. Use releaseDecision to examine an incompatible flag contract.
+
+### Independent exercise and evidence
+
+Prepare a flag lifecycle with exposure limits, monitoring, kill switch and cleanup. Record assignment outcomes and server-side authorization checks; do not modify live feature settings.
+
+**Evidence boundary:** These are practice instructions, not recorded test results. Preserve the existing model, specification and draft flag; external runtime qualification remains independent.
+
 ## Knowledge check
 
 1. Which public behavior or invariant is being protected?
