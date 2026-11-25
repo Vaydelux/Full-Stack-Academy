@@ -100,7 +100,21 @@ The lesson's instructor snippet demonstrates the mechanism but is not a deployab
 
 <Misconception claim="The gateway broadcasts one tenant's task update to every connected client." correction="Realtime events must target only an authorized room after establishing a verified socket identity." />
 
-<KnowledgeCheck question="What should a release reviewer demand for websocket gateways?" choices={["A passing source-text search is sufficient.","The actual Nest runtime shows the specified positive case and a meaningful denial or failure case.","A project compiles, so tenancy is proven.","A local demo endpoint may safely be exposed publicly without auth."]} correctIndex={1} explanation="Realtime events must target only an authorized room after establishing a verified socket identity." misconception="The gateway broadcasts one tenant's task update to every connected client." lessonId="11.04.03" />
+<KnowledgeCheck question="An authenticated socket sends a message containing a different tenant ID. What should determine the broadcast room?" choices={["The tenant string supplied in the message.","A global room for every connected user.","Verified socket identity and current authorization policy.","The last tenant that sent a message."]} correctIndex={2} explanation="Room selection must derive from trusted identity, not an unverified message field." misconception="The gateway broadcasts one tenant's task update to every connected client." lessonId="11.04.03" />
+
+## Applied engineering walkthrough
+
+A WebSocket connection is long-lived, so authorization cannot be reduced to a route prefix. The gateway assumes trusted handshake middleware has already populated socket data. It joins a tenant-specific room and emits only there. A client-supplied tenant field is not authoritative. Production also requires message-level permission checks, revocation handling, payload limits and distributed room support if several instances are used.
+
+### Diagnose the concrete failure
+
+Plan three real socket clients: two authenticated for tenant A and one for tenant B, plus an unauthenticated connection. Publish a valid title from A and verify only A receives the event. Try a malformed title and check the acknowledgement and absence of broadcast. Await room-join readiness where an asynchronous adapter is involved.
+
+### Independent exercise and evidence
+
+Extend the acceptance plan with an authenticated member who loses permission while connected. Decide how to reauthorize or disconnect the socket and prevent later broadcasts. Record connection status, room membership, acknowledgement and recipient counts without logging tokens.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Container, HTTP, socket and operational tests require the actual installed runtime. Keep the existing starter and solution unchanged; do not award course credit from source review alone.
 
 ## Bug Hunt: reproduce, diagnose and repair
 
