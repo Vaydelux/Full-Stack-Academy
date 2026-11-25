@@ -108,6 +108,20 @@ Soft delete is not a substitute for retention policy, access revocation, legal e
 
 The right choice can change with workload size, tenant access patterns, migration risk and operational constraints. Optimize a schema only after correctness and measured query behavior. A trigger, index, or foreign key is not evidence of complete application authorization.
 
+## Applied SQL walkthrough
+
+Soft deletion changes the lifecycle state of a row rather than physically removing it. The partial unique index protects only active labels, scoped by tenant and lowercased name. Archiving releases the active name for reuse. The trigger records one archive transition, not every edit; restoring an old label can conflict with a replacement. Timestamp and actor policies require separate design.
+
+### Predict and diagnose the result
+
+Predict a duplicate active label rejection, archive the first label, then create a replacement with the same normalized name. Inspect the history row created by the transition. Repeating an update on an already archived label should not create another archive event. A restore attempt must respect active uniqueness.
+
+### Independent exercise and evidence
+
+Plan restore and permanent-purge operations with explicit authorization and retention rules. Include a conflict when a replacement label already exists. Record active and archived rows and history counts; discuss why retaining soft-deleted data is not equivalent to fulfilling erasure obligations.
+
+**Qualification boundary:** Predicted results are not executed PostgreSQL evidence. Use the existing disposable database acceptance gate and preserve the original starter and solution. No publication credit is granted by this walkthrough.
+
 ## Bug hunt and regression reasoning
 
 1. **Reproduce:** A team archives the label 'Urgent' and creates a replacement. A global uniqueness constraint blocks the replacement, and no history record explains what happened.
