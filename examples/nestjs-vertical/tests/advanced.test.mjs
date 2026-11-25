@@ -1,15 +1,12 @@
 import 'reflect-metadata';
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import { verifyRedGreen } from '../scripts/red-green.mjs';
 import { firstValueFrom, of, throwError } from 'rxjs';
 import { Test } from '@nestjs/testing';
 
 const load = (slug, variant) => import('../dist/' + slug + '/' + variant + '.js');
-async function redGreen(slug, probe) {
-  await probe(await load(slug, 'solution'));
-  const starter = await load(slug, 'starter');
-  await assert.rejects(async () => probe(starter), 'Starter must fail a semantic assertion: ' + slug);
-}
+const redGreen = (slug, probe, expectedFailure) => verifyRedGreen(load, slug, probe, expectedFailure);
 const httpContext = req => ({ switchToHttp: () => ({ getRequest: () => req }) });
 
 test('11.04.01 custom provider resolves an overridden storage port', async () => {
@@ -54,6 +51,7 @@ test('11.04.03 gateway validates unknown payloads and strictly isolates rooms', 
     };
     const disconnected = [];
     const anonymous = { data: {}, disconnect: () => disconnected.push(true), join: () => { throw Error('anonymous joined'); } };
+    assert.equal(typeof gateway.handleConnection, 'function', 'Gateway must expose its connection guard');
     gateway.handleConnection(anonymous);
     assert.deepEqual(disconnected, [true]);
     const joined = [];
@@ -87,7 +85,9 @@ test('11.04.05 testing fixture injects a fake mailer, not live adapter', async (
     const container = await buildTestModule({ send: async address => { sent.push(address); } });
     try {
       assert.ok(container.get(Mailer));
-      await container.get(Notifications).notify('student@example.org');
+      const notifications = container.get(Notifications);
+      assert.equal(typeof notifications.notify, 'function', 'Notification service must expose the tested behavior');
+      await notifications.notify('student@example.org');
       assert.deepEqual(sent, ['student@example.org']);
     } finally { await container.close(); }
   });

@@ -10,8 +10,8 @@
   },
   "development": {
     "branch": "main",
-    "state": "f1-p1-publication-program-integrity-guard-runtime-blocked",
-    "note": "All seven phases and 69 pending modules reconciled against canonical IDs and Git tree at e9d7859e. Added source-derived publication queue and integrity gate; 11/11 isolated Node24.11.1 synthetic program tests passed. No full checkout, runtime, browser or manual qualification; no new publication. Current 338/889 published, 551 expanded unpublished."
+    "state": "f1-p2-parallel-module-qualification-preparation",
+    "note": "Prepared all four NestJS module runtime paths and hardened 31 starter/instructor checks to reject unrelated exceptions. 13 isolated Node24 tests passed (7 red/green helper, 6 module qualification planner); actual Nest framework/PG/socket tests not run. P1 remains blocked by network and browser policies, 338/889 published unchanged."
   },
   "snapshot": {
     "tracks": 28,
@@ -73,6 +73,6 @@
     "devHighFindings": 14,
     "exceptionExpires": "2026-12-02"
   },
-  "nextMilestone": "Run existing P1 qualification on approved networked clean checkout with genuine dependencies and Chromium; named reviews and atomic 09.02 then 09.03 promotion. Use status:curriculum -- --json to inspect complete P1-P7 queue; no new curriculum scope.",
+  "nextMilestone": "Run P1 on approved networked checkout, then use npm run qualify:nestjs:module -- --run 11.01 after genuine nested lock generation; module-specific PG/socket requirements preserved. No curriculum expansion.",
   "status": "editorial-merged-f1-partial-runtime-qualification-blocked"
 }

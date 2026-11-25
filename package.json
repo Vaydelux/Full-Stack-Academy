@@ -451,7 +451,7 @@
     "test:nestjs-offline-transactions": "node --experimental-strip-types --test examples/nestjs-vertical/tests/transactions.offline.test.mjs",
     "test:nestjs-offline-contracts": "node --experimental-transform-types --test examples/nestjs-vertical/tests/pure-contracts.offline.test.mjs tests/p10-nest-practice.test.mjs tests/p10-domain-practice.test.mjs",
     "test:nestjs-offline-lock": "node --test examples/nestjs-vertical/tests/lock-integrity.offline.test.mjs",
-    "test:nestjs-offline": "npm run test:nestjs-offline-transactions && npm run test:nestjs-offline-contracts && npm run test:nestjs-offline-lock",
+    "test:nestjs-offline": "npm run test:nestjs-offline-transactions && npm run test:nestjs-offline-contracts && npm run test:nestjs-offline-lock && npm run test:nestjs-offline-qualification",
     "test:postgresql-drafts": "node examples/postgresql-basics/scripts/verify-source.mjs --check && node --test examples/postgresql-basics/tests/source.test.mjs",
     "status:postgresql-drafts": "node examples/postgresql-basics/scripts/verify-source.mjs --json",
     "qualify:postgresql:12-01": "node examples/postgresql-basics/scripts/qualify.mjs",
@@ -495,7 +495,9 @@
     "qualify:p5:inbox-live": "node examples/p5-integrations/postgres-inbox/live.mjs --run-live",
     "test:release-gate-coverage": "node scripts/offline-contract.mjs && node --test tests/offline-contract.test.mjs tests/offline-bundle-integrity.test.mjs tests/qualification-coordinator.test.mjs",
     "qualify:academy:local": "node scripts/qualification-coordinator.mjs",
-    "qualify:p5:postgres-search": "node examples/p5-integrations/postgres-search/qualify.mjs --run"
+    "qualify:p5:postgres-search": "node examples/p5-integrations/postgres-search/qualify.mjs --run",
+    "qualify:nestjs:module": "npm run qualify:module --prefix examples/nestjs-vertical --",
+    "test:nestjs-offline-qualification": "node --test examples/nestjs-vertical/tests/red-green.offline.test.mjs examples/nestjs-vertical/tests/module-qualification.offline.test.mjs"
   },
   "dependencies": {
     "clsx": "^2.1.1",

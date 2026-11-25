@@ -1,18 +1,14 @@
 import 'reflect-metadata';
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import { verifyRedGreen } from '../scripts/red-green.mjs';
 import { NestFactory, ContextIdFactory } from '@nestjs/core';
 import { Test } from '@nestjs/testing';
 import { Module } from '@nestjs/common';
 import { FastifyAdapter } from '@nestjs/platform-fastify';
 
 const load = (slug,variant) => import('../dist/'+slug+'/'+variant+'.js');
-async function checkBoth(slug,probe) {
-  const solution=await load(slug,'solution');
-  await probe(solution);
-  const starter=await load(slug,'starter');
-  await assert.rejects(async()=>probe(starter),'The learner starter must fail a semantic assertion: '+slug);
-}
+const checkBoth = (slug, probe, expectedFailure) => verifyRedGreen(load, slug, probe, expectedFailure);
 async function appResponse(rootModule,endpoint) {
   const app=await NestFactory.create(rootModule,new FastifyAdapter(),{logger:false});
   try {

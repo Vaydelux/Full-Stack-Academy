@@ -75,3 +75,7 @@ The real Socket.IO integration test now proves both isolation directions and rep
 Run `npm run test:offline` from this nested workspace (or `npm run test:nestjs-offline` at the repository root) to execute **26 deterministic source behavioral tests** without Nest or a database. This includes 7 transactional contracts, 11 additional backend contracts and 8 in-memory npm-lock verification tests. The `test:source-coverage` and `qualify` commands include the offline gate. The pure lock validator reports manifest structure only; package authenticity is established later by actual `npm ci`.
 
 The Node22 test run used a temporary isolated reconstruction and passed 26/26. It **does not** establish full Nest/TypeScript/PostgreSQL/Socket.IO runtime readiness. See `docs/NESTJS_OFFLINE_QUALIFICATION_CHECKPOINT_20261121.md` for exact results and blockers.
+
+## Module-specific qualification
+
+From the Academy root, use `npm run qualify:nestjs:module -- --plan 11.01` to inspect the fixed steps, and `npm run qualify:nestjs:module -- --run 11.01` only with Node24.9+, genuine npm lock and approved registry access. Replace the ID with 11.02, 11.03 or 11.04. The domain module retains real disposable PostgreSQL tests; advanced retains real socket tests. `qualify:release` still runs all suites. Runtime success never grants publication or human review approval.

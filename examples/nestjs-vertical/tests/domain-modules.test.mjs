@@ -1,15 +1,12 @@
 import 'reflect-metadata';
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import { verifyRedGreen, missingTasksExport } from '../scripts/red-green.mjs';
 import { setImmediate as nextTurn } from 'node:timers/promises';
 import { Test } from '@nestjs/testing';
 
 const load = (slug, variant) => import('../dist/' + slug + '/' + variant + '.js');
-async function redGreen(slug, probe) {
-  await probe(await load(slug, 'solution'));
-  const starter = await load(slug, 'starter');
-  await assert.rejects(async () => probe(starter), 'Starter must fail a real behavioral assertion: ' + slug);
-}
+const redGreen = (slug, probe, expectedFailure) => verifyRedGreen(load, slug, probe, expectedFailure);
 
 test('11.03.01 service enforces invariants separate from request transport', async () => {
   await redGreen('service-responsibilities', async mod => {
@@ -66,7 +63,7 @@ test('11.03.05 module exports its service across the import boundary', async () 
     const container = await Test.createTestingModule({ imports: [mod.ReportsModule] }).compile();
     try { assert.equal(container.get(mod.ReportsService).count(), 1); }
     finally { await container.close(); }
-  });
+  }, missingTasksExport);
 });
 
 test('11.03.06 enforces atomic transfer and rejects missing/insufficient wallets (mock contract)', async () => {

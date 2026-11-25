@@ -1,17 +1,12 @@
 import 'reflect-metadata';
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import { verifyRedGreen } from '../scripts/red-green.mjs';
 import { BadRequestException, HttpException } from '@nestjs/common';
 import { firstValueFrom, of } from 'rxjs';
 
 const load = (slug, variant) => import('../dist/' + slug + '/' + variant + '.js');
-async function checkBoth(slug, verify) {
-  await verify(await load(slug, 'solution'));
-  await assert.rejects(
-    async () => verify(await load(slug, 'starter')),
-    'The intentionally broken student starter must fail: ' + slug,
-  );
-}
+const checkBoth = (slug, probe, expectedFailure) => verifyRedGreen(load, slug, probe, expectedFailure);
 
 function context(request) {
   return { switchToHttp: () => ({ getRequest: () => request }) };

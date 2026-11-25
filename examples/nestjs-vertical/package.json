@@ -23,7 +23,9 @@
     "test:offline:transactions": "node --experimental-strip-types --test tests/transactions.offline.test.mjs",
     "test:offline:contracts": "node --experimental-transform-types --test tests/pure-contracts.offline.test.mjs",
     "test:offline:lock": "node --test tests/lock-integrity.offline.test.mjs",
-    "test:offline": "npm run test:offline:transactions && npm run test:offline:contracts && npm run test:offline:lock"
+    "test:offline": "npm run test:offline:transactions && npm run test:offline:contracts && npm run test:offline:lock && npm run test:offline:qualification",
+    "qualify:module": "node scripts/module-qualification.mjs",
+    "test:offline:qualification": "node --test tests/red-green.offline.test.mjs tests/module-qualification.offline.test.mjs"
   },
   "dependencies": {
     "@nestjs/common": "^12.5.1",

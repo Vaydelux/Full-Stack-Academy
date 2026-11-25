@@ -31,7 +31,8 @@ test('the runtime harness uses real Nest packages and tests both starters and in
   assert.ok(pkg.dependencies[name]?.startsWith('^12.'),'Missing Nest12 runtime '+name);
  assert.match(smoke,/NestFactory\.create/);
  assert.match(smoke,/Test\.createTestingModule/);
- assert.match(smoke,/assert\.rejects/);
+ assert.match(smoke,/verifyRedGreen\(load/);
+ assert.match(read('examples/nestjs-vertical/scripts/red-green.mjs'),/assert\.rejects/);
  assert.equal((smoke.match(/test\('11\.01\./g)||[]).length,8);
 });
 test('a missing npm lock and manual qualification cannot be treated as green',()=>{
