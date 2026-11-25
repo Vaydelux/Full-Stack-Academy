@@ -52,6 +52,20 @@ The corresponding module exercises **signWebhook and WebhookInbox: raw bytes, fr
 
 For a production implementation, document the secret-owner or principal, durability plan, error and recovery policy, rate/resource bounds, privacy guarantees, observability without sensitive payloads, and the credential/version-rotation procedure.
 
+## Applied engineering walkthrough
+
+A test double is useful when it reproduces meaningful failure modes rather than merely returning success. Script deterministic provider outcomes such as temporary overload, timeout, duplicate callback and malformed response. Contract tests reduce drift, but do not prove a real service's availability or protocol compatibility.
+
+### Diagnose the concrete failure
+
+Run a scripted fake with a bounded failure sequence and verify retry count, logical operation identity and final state. Repeat a callback and check deduplication. Introduce invalid data and confirm the adapter does not report a successful result.
+
+### Independent exercise and evidence
+
+Create a shared adapter contract suite and distinguish unit, loopback HTTP and authorized sandbox evidence. Record exact responses and expected decisions; no paid provider traffic is required for local practice.
+
+**Qualification boundary:** These are practice instructions, not recorded results. Preserve existing specifications and laboratory contracts. Qualify actual external services separately using authorized disposable infrastructure.
+
 ## Knowledge check
 
 1. Which authenticated actor, external sender, or tenant owns the data in this scenario?
