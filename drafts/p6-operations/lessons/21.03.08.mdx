@@ -44,6 +44,20 @@ node --test --test-name-pattern="21[.]03" examples/p6-operations/labs.test.mjs
 
 Synthetic incident decisions only; no real emergency response, restored backups, alerting or production capacity measurements.
 
+## Applied engineering walkthrough
+
+Incident recovery requires more than seeing the error rate fall. Verify the affected business operation, ensure queued or uncertain work is reconciled and communicate remaining limitations. Incident decision models exercise a rubric, not real recovery infrastructure.
+
+### Diagnose the concrete failure
+
+Simulate an unavailable dependency in a disposable fixture, classify impact and assign an owner. Restore the dependency and verify a known operation succeeds. Record detection, mitigation and recovery observations independently.
+
+### Independent exercise and evidence
+
+Create a simulated incident handoff with timeline, impact, decisions, verification and follow-up actions. Mark real infrastructure recovery not-run when it is unavailable.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve the existing specification, model and unpublished status. Actual incident and recovery qualification remain independent.
+
 ## Knowledge check
 
 1. Which invariant or operational measurement determines success?

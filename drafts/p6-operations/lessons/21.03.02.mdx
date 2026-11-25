@@ -44,6 +44,20 @@ node --test --test-name-pattern="21[.]03" examples/p6-operations/labs.test.mjs
 
 Synthetic incident decisions only; no real emergency response, restored backups, alerting or production capacity measurements.
 
+## Applied engineering walkthrough
+
+A runbook converts an alert into bounded diagnostic and mitigation steps. Start by identifying affected user journeys, then compare queue wait, execution and dependency metrics. Dashboards should show sample count and timeframe; a single high percentile does not establish cause.
+
+### Diagnose the concrete failure
+
+Use synthetic p95 and queue samples to rehearse the diagnostic order. Compare a queue saturation case with a slow dependency case and choose different mitigations. Include stop conditions for potentially destructive actions.
+
+### Independent exercise and evidence
+
+Write a one-page runbook with entry criteria, queries, owner, reversible mitigations and recovery checks. Record decisions and missing telemetry.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve the existing specification, model and unpublished status. Actual incident and recovery qualification remain independent.
+
 ## Knowledge check
 
 1. Which invariant or operational measurement determines success?

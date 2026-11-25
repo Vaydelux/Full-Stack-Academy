@@ -44,6 +44,20 @@ node --test --test-name-pattern="21[.]03" examples/p6-operations/labs.test.mjs
 
 Synthetic incident decisions only; no real emergency response, restored backups, alerting or production capacity measurements.
 
+## Applied engineering walkthrough
+
+Log retention should reflect purpose, data sensitivity and applicable obligations. Diagnostic logs need not retain complete request bodies. A deletion process should respect documented holds and select only eligible expired objects. Backup retention is a separate lifecycle.
+
+### Diagnose the concrete failure
+
+Create two classes of synthetic log files and use an explicit clock to produce a dry-run expiry list. Verify active and held records remain excluded. Inspect a fake sensitive marker and ensure it is not collected in the intended logger output.
+
+### Independent exercise and evidence
+
+Design access, retention and deletion controls with a documented approval for exceptions. Record eligible identifiers and dry-run results without touching real records.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve the existing specification, model and unpublished status. Actual incident and recovery qualification remain independent.
+
 ## Knowledge check
 
 1. Which invariant or operational measurement determines success?
