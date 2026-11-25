@@ -44,6 +44,20 @@ node --test --test-name-pattern="19[.]02" examples/p6-quality/labs.test.mjs
 
 Plain JavaScript UI state model; installed React/Vitest/Testing Library/MSW and real browsers require separate tests.
 
+## Applied engineering walkthrough
+
+Vitest runs test code and assertions; Testing Library exposes DOM behavior through user-oriented queries. Neither a pure request model nor a DOM emulator automatically proves browser layout or networking. Match the test environment to the behavior and await asynchronous UI changes.
+
+### Diagnose the concrete failure
+
+In an installed React fixture, render the settings form, operate Save with user-event, and hold the request promise. Assert the visible pending state, resolve the request, then await the saved message. Repeat with a rejection and verify the error is presented.
+
+### Independent exercise and evidence
+
+Design separate component tests for loading, success and failure, plus a real browser smoke case. Record DOM assertions rather than only a mock's call count; preserve the existing latest-request model.
+
+**Evidence boundary:** These are practice instructions, not recorded test results. Preserve the existing model, specification and draft flag; external runtime qualification remains independent.
+
 ## Knowledge check
 
 1. Which public behavior or invariant is being protected?
