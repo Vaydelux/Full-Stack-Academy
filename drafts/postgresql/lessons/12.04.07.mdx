@@ -69,6 +69,20 @@ VACUUM cannot run inside a transaction block. This exercise must be run manually
 
 When query execution moves into a real Next.js/NestJS application, measure request concurrency and database calls as well as SQL time. Remember that schema changes alter future write costs, vacuum work and storage. An index may improve a selective read but slow bulk inserts; a pooled connection may conserve memory but alter transaction/session semantics.
 
+## Applied SQL walkthrough
+
+PostgreSQL updates and deletes leave old tuple versions that become reclaimable when no relevant snapshot needs them. VACUUM makes reusable space available and helps maintain visibility information; ANALYZE updates planner statistics. Ordinary vacuum does not generally shrink the relation file. Long-running transactions may delay cleanup, and autovacuum already performs maintenance.
+
+### Predict and diagnose the result
+
+Use the manual evidence runbook outside a transaction block because VACUUM cannot run inside one. On a separate disposable table, insert and commit data, update and delete a sample, then inspect table statistics before and after maintenance. Statistics can lag and autovacuum may intervene, so record timestamps and configuration context.
+
+### Independent exercise and evidence
+
+Design a maintenance investigation for a high-churn task table. Compare dead tuple estimates, transaction age, autovacuum activity and query estimates before recommending changes. State when VACUUM FULL would require a different operational plan because of locking and rewrite cost. No production maintenance is part of this lab.
+
+**Qualification boundary:** These are measurement instructions and hypotheses, not recorded benchmark results. Use disposable PostgreSQL data and preserve the existing starter and solution. A source check does not prove a faster query or safe production configuration.
+
 ## Bug Hunt
 
 1. Predict why the starter is incomplete: The starter updates statistics but does not perform vacuum maintenance. It cannot prove that dead tuples and visibility state were addressed.
