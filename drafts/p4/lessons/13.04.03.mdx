@@ -83,6 +83,20 @@ SELECT policies do not secure INSERT/UPDATE/DELETE. Verify WITH CHECK and authen
 
 Explicitly choose how identity is propagated between Next.js, NestJS, Prisma, and Supabase. When a privileged server role bypasses RLS, the NestJS service must check permissions and the database role should still be restricted. Prefer verified membership from trusted server data over user-editable metadata or query parameters.
 
+## Applied persistence walkthrough
+
+Data API exposure, object grants and row policies are distinct controls. The shown policy permits authenticated owners to select their notes; the grant allows that operation at the object level. It does not authorize insert, update or delete, nor does owner_id alone prove tenant membership. Existing project default grants may differ, so inspect them explicitly. A direct privileged role may bypass RLS.
+
+### Diagnose the concrete failure
+
+In an isolated Supabase environment, create two fake users with notes and invoke the Data API as each real authenticated user. Verify exact permitted IDs and absence of other users' notes. Attempt anonymous access and ungranted writes, inspecting effective grants instead of assuming defaults. Test the privileged server path separately.
+
+### Independent exercise and evidence
+
+Design a membership-based read policy for shared tenant notes, using verified membership rather than editable user metadata. Record the role, permitted rows and forbidden rows, and include a security-invoker view review if views are exposed.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Use pinned tooling and a disposable local or explicitly approved test environment. Preserve the starter and solution; source review does not qualify real database roles or authorization.
+
 ## Bug Hunt
 
 1. Predict who can exploit this bug: A GRANT on an exposed public table without owner-scoped RLS can expose every tenant's records to a legitimate signed-in client.
