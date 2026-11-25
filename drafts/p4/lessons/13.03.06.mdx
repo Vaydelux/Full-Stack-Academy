@@ -82,6 +82,20 @@ Event logging interfaces differ by Prisma version; validate the generated client
 
 In a multi-tenant API, input validation, role-aware database credentials, optimistic concurrency, migration review and response-shape controls must be considered together. Favor bounded queries and explicit domain operations over returning raw privileged ORM interfaces to HTTP handlers. Record the query plan or migration state instead of guessing.
 
+## Applied persistence walkthrough
+
+Logging and tracing should diagnose behavior without exposing credentials, query parameters or user records. The fixture emits warning/error counters rather than raw messages. A counter does not identify latency, call counts or correlation by itself. Add bounded operation-level timing and trace metadata where appropriate, avoiding high-cardinality identity labels.
+
+### Diagnose the concrete failure
+
+Trigger a synthetic failed database operation and confirm the intended metric increases without logging raw SQL parameters or connection strings. Check warning and error handling separately. Measure a representative request path to distinguish database execution from connection acquisition and application processing.
+
+### Independent exercise and evidence
+
+Design a safe diagnostic event containing an operation name, duration bucket and correlation ID. Define sampling, retention and access rules. Record a fake failure and inspect output for sensitive fields rather than enabling verbose query logging in production.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Use the pinned Prisma 7 toolchain and disposable PostgreSQL database. Preserve the starter and solution; source review does not qualify generated code or authorization.
+
 ## Bug Hunt
 
 1. Make a concrete failure prediction: A debugging middleware prints SQL parameters, access tokens and arbitrary exception details to a shared log destination.
