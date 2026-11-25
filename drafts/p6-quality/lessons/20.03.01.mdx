@@ -44,6 +44,20 @@ node --test --test-name-pattern="20[.]03" examples/p6-quality/labs.test.mjs
 
 Boolean release decision model, not deployment, migration, traffic switching or verified rollback.
 
+## Applied engineering walkthrough
+
+An environment approval is authorization for a specific candidate, target and risk context, not a generic yes. Deployment decisions should bind immutable artifact identity, reviewer and required evidence. Promotion to staging and production may have distinct requirements.
+
+### Diagnose the concrete failure
+
+Use releaseDecision with every required condition satisfied except approval. Verify the held decision, then supply approval and check the intended promotion. Test an incompatible candidate even when approved.
+
+### Independent exercise and evidence
+
+Design a release approval record with environment, artifact digest, evidence links and authorized reviewer. Record the synthetic decision outcomes without altering real environment settings.
+
+**Evidence boundary:** These are practice instructions, not recorded test results. Preserve the existing model, specification and draft flag; external runtime qualification remains independent.
+
 ## Knowledge check
 
 1. Which public behavior or invariant is being protected?
