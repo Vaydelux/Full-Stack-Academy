@@ -44,6 +44,20 @@ node --test --test-name-pattern="20[.]02" examples/p6-quality/labs.test.mjs
 
 Synthetic CI evidence only; no hosted workflow, branch protection change or cryptographic provenance.
 
+## Applied engineering walkthrough
+
+Artifact identity connects the exact tested source with the bytes proposed for release. A checksum detects accidental or unauthorized changes when compared to a trusted expected value; it does not identify a trusted builder by itself. Provenance records source, builder and build inputs under a defined trust model.
+
+### Diagnose the concrete failure
+
+Hash a small local synthetic artifact, change one byte and compare digests. Submit a stale candidate result to matrixGate and verify denial. Explain why an edited archive cannot inherit the prior build's acceptance.
+
+### Independent exercise and evidence
+
+Design an artifact manifest with commit, lockfile hash, toolchain, artifact digest and test result. Record actual hashes and define who verifies the signed or otherwise trusted provenance.
+
+**Evidence boundary:** These are practice instructions, not recorded test results. Preserve the existing model, specification and draft flag; external runtime qualification remains independent.
+
 ## Knowledge check
 
 1. Which public behavior or invariant is being protected?
