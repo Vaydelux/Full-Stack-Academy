@@ -44,6 +44,20 @@ node --test --test-name-pattern="23[.]03" examples/p6-operations/labs.test.mjs
 
 In-memory synthetic idempotency model; no broker, durable store, transactional outbox or exactly-once side-effect evidence.
 
+## Applied engineering walkthrough
+
+A reliable event flow combines committed business state, durable event intake or outbox, bounded processing and idempotent effects. The local consumer model tests one part of this design. Real recovery requires independent workers, durable records and a crash or restart experiment.
+
+### Diagnose the concrete failure
+
+Run the existing consumer tests and trace a synthetic duplicate and changed-payload event. Plan a disposable PostgreSQL order/outbox and inbox integration with competing workers. Force a failure after one committed step and inspect the intended recovery.
+
+### Independent exercise and evidence
+
+Prepare an acceptance matrix covering local effects, restart persistence, broker acknowledgement, duplicates, uncertain external writes and tenant authorization. Record actual evidence separately from the proposed distributed experiments.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve the existing specification, model and unpublished status. Actual persistence, broker and provider qualification remain independent.
+
 ## Knowledge check
 
 1. Which invariant or operational measurement determines success?

@@ -44,6 +44,20 @@ node --test --test-name-pattern="23[.]03" examples/p6-operations/labs.test.mjs
 
 In-memory synthetic idempotency model; no broker, durable store, transactional outbox or exactly-once side-effect evidence.
 
+## Applied engineering walkthrough
+
+Idempotent consumption protects the business effect against repeated logical events. A durable unique identity must be coordinated with the effect in the same transaction when both are local. Reusing the same identity for different content is a conflict, not an exact replay.
+
+### Diagnose the concrete failure
+
+Run idempotentConsumer with event e and amount five twice. Verify the total remains five, then submit the same identity with amount six and inspect rejection. Plan a fresh-process replay test with durable storage.
+
+### Independent exercise and evidence
+
+Design a consumer receipt containing event identity, payload fingerprint and processing result. Record duplicate and conflict outcomes; the in-memory model does not establish persistence after restart.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve the existing specification, model and unpublished status. Actual persistence, broker and provider qualification remain independent.
+
 ## Knowledge check
 
 1. Which invariant or operational measurement determines success?

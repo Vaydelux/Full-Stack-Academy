@@ -44,6 +44,20 @@ node --test --test-name-pattern="23[.]03" examples/p6-operations/labs.test.mjs
 
 In-memory synthetic idempotency model; no broker, durable store, transactional outbox or exactly-once side-effect evidence.
 
+## Applied engineering walkthrough
+
+A message schema is a compatibility boundary between independently deployed producers and consumers. Optional additions can be compatible if consumers tolerate unknown fields, but removing required fields or changing their meaning can break old versions. Unknown incompatible versions need a controlled rejection path.
+
+### Diagnose the concrete failure
+
+Create synthetic v1 and v2 messages with the same required fields and an optional addition. Exercise old and new consumer contracts, then remove a required field or use an unsupported version. Verify no invalid message causes a business effect.
+
+### Independent exercise and evidence
+
+Design a compatibility policy and producer/consumer fixture matrix with version retirement criteria. Record normalized values and denied variants separately from actual broker delivery.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve the existing specification, model and unpublished status. Actual persistence, broker and provider qualification remain independent.
+
 ## Knowledge check
 
 1. Which invariant or operational measurement determines success?

@@ -44,6 +44,20 @@ node --test --test-name-pattern="23[.]03" examples/p6-operations/labs.test.mjs
 
 In-memory synthetic idempotency model; no broker, durable store, transactional outbox or exactly-once side-effect evidence.
 
+## Applied engineering walkthrough
+
+A command expresses a requested action and may be rejected. An event describes a fact after the relevant business decision. Commands typically have an intended handler; events may have several consumers. Naming a message as an event does not make its contents authoritative.
+
+### Diagnose the concrete failure
+
+Define a ReserveStock command and StockReserved event using synthetic quantities. Submit valid and excessive requests to the proposed handler. Verify a rejected command never announces a successful reservation.
+
+### Independent exercise and evidence
+
+Design message envelopes with stable identity, tenant and schema version. Record the command decision and event emission separately from broker delivery evidence.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve the existing specification, model and unpublished status. Actual persistence, broker and provider qualification remain independent.
+
 ## Knowledge check
 
 1. Which invariant or operational measurement determines success?
