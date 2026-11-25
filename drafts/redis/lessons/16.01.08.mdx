@@ -50,6 +50,20 @@ In the test notes, separate what the in-memory fixture genuinely observed from R
 
 This lab simulates cache semantics; it does not connect to a real Redis server.
 
+## Applied engineering walkthrough
+
+A hot-read laboratory should bound memory, control expiry and handle concurrent loads. An unlimited Map is not a production cache, even if it is fast in a toy test. The existing tests establish local behavior, not Redis memory limits or cross-process coordination.
+
+### Diagnose the concrete failure
+
+Run the existing cache tests and trace a miss burst, expiry and stale-load race. Check the final cached version and actual loader count. Add a case with an intentionally rejected loader and verify no permanently pending entry remains.
+
+### Independent exercise and evidence
+
+Design a disposable two-instance load test with a real Redis server, representative keys and measured origin traffic. Record cache availability, stale responses and resource limits. Keep simulated and real evidence separate.
+
+**Qualification boundary:** These are practice instructions, not recorded results. Preserve the existing lab and publication status; in-memory tests do not qualify live Redis or BullMQ behavior.
+
 ## Knowledge check
 
 1. What is authoritative in this scenario, and what state is derived or replayable?
