@@ -72,6 +72,20 @@ This one-connection assertion only checks the claimed state, not actual competin
 
 A useful production verification matrix varies input identity, tenant, the number of concurrent writers, repeated request keys and observed SQLSTATE outcomes. When a conflict occurs, the correct application behavior is usually to report it or retry the *whole* safe operation from a new snapshot—not to silently overwrite the last writer's state.
 
+## Applied SQL walkthrough
+
+A row lock coordinates writers on an existing row. FOR UPDATE SKIP LOCKED allows a queue worker to choose an available row without waiting for another worker's lock. It trades a consistent ordered view for throughput and can skip a long-held row. The fixture updates a ready job to running inside the same transaction. Claiming work is not the same as guaranteeing completion or exactly-once processing.
+
+### Predict and diagnose the result
+
+Read the selected row and inspect the resulting running status. With two independent sessions and a shared disposable queue, hold the first claim open while the second claims another ready row. Compare IDs; neither worker should claim the same locked row. Roll back one claim and observe availability. Set a bounded lock timeout before intentionally testing contention.
+
+### Independent exercise and evidence
+
+Design a lease expiration and retry policy for a worker that crashes after claiming. Separately plan two sessions locking rows in opposite order to observe a deadlock SQLSTATE 40P01 and a consistent lock ordering that avoids it. Record transaction sequence, selected IDs and failure class; do not use unbounded waits.
+
+**Qualification boundary:** These are predictions and experiment instructions, not recorded database results. The existing single-session SQL gate cannot establish true concurrent behavior. Use isolated test infrastructure and preserve the existing starter and solution.
+
 ## Bug Hunt
 
 1. Predict the specific broken state: The starter only selects a ready job; the job stays ready and another worker could pick the same ID.
