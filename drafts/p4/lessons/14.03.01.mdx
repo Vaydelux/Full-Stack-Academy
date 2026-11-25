@@ -68,6 +68,20 @@ Policy tests must use the actual caller role; a service-role key bypasses RLS an
 
 RLS applies subject to PostgreSQL roles, table ownership, policy composition and operation type. In an exposed schema, verify grants and RLS together. For writes, review INSERT WITH CHECK and UPDATE USING/WITH CHECK, not just SELECT. In Supabase, do not use user-editable `user_metadata` as authority for privileged roles. A service-role client may bypass RLS; it must not be used to repair a client permission error.
 
+## Applied persistence walkthrough
+
+RLS evaluates row predicates for operations under the actual database role. Enabling it without an applicable policy denies access for ordinary roles subject to RLS, but owners and bypass roles require separate consideration. The fixture adds a SELECT owner policy, not a complete CRUD policy. Object grants and schema exposure must also allow the requested operation.
+
+### Diagnose the concrete failure
+
+In a disposable project test a known own row, known other-user row and anonymous request. Inspect effective grants and every applicable policy; permissive policies combine with OR, so an older broad policy can invalidate the intended restriction. Use actual user sessions in addition to SQL role simulation.
+
+### Independent exercise and evidence
+
+Design an UPDATE policy with existing-row and proposed-row checks, plus SELECT visibility. Test attempted owner reassignment and a legitimate edit. Record exact row IDs, role and operation outcome rather than a successful policy creation statement.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Use an isolated Supabase environment and real non-bypass caller roles. Preserve the existing starter and solution; source review cannot certify row policies or authorization.
+
 ## Bug Hunt and regression matrix
 
 1. Predict the disclosure caused by the starter: USING (true) grants every authenticated caller visibility into all task rows, including another user's private tasks.
