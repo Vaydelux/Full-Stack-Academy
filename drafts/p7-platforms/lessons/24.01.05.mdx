@@ -44,6 +44,20 @@ node --test --test-name-pattern="24[.]01" examples/p7-platforms/labs.test.mjs
 
 Native builds, WebView isolation and plugin permissions require a real device.
 
+## Applied engineering walkthrough
+
+An iOS bundle identifier, signing certificate and provisioning profile must agree with the intended build and capabilities. The simulator can help establish UI behavior but is not proof that a physical device accepts the signed artifact. Keep signing material in approved tooling rather than source files, application bundles or logs.
+
+### Diagnose the concrete failure
+
+Inspect the identity and entitlements of a disposable development target. Compare them against the intended profile and device authorization. A successful compile with an invalid profile may still fail at installation, so treat installation as a separate gate.
+
+### Independent exercise and evidence
+
+Prepare an identity and entitlement checklist, then build and install using an authorized account and device when available. Record sanitized build identity, installation outcome and a denied-capability case without exporting keys or sensitive profile data.
+
+**Evidence boundary:** These are practice instructions, not recorded results. The local model cannot qualify a native build, secure storage, permissions or real hardware. Preserve draft status until external gates pass.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

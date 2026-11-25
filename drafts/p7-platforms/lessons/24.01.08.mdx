@@ -44,6 +44,20 @@ node --test --test-name-pattern="24[.]01" examples/p7-platforms/labs.test.mjs
 
 Native builds, WebView isolation and plugin permissions require a real device.
 
+## Applied engineering walkthrough
+
+A web build is only one input to Android packaging. The Gradle toolchain, application identifier, manifest, native dependencies and signing configuration determine what the APK actually contains. Distinguish a debug artifact for testing from a release artifact suitable for distribution; a successful compile does not prove safe permissions or runtime behavior.
+
+### Diagnose the concrete failure
+
+Inspect the generated manifest and package identity, compare the embedded web asset version to the intended commit, then install on an authorized device. Test cold startup and one denied permission. A mismatched version or a development-server dependency blocks acceptance even if the APK installs.
+
+### Independent exercise and evidence
+
+Record the toolchain versions, artifact digest, build variant, device OS, install result and offline launch behavior. Keep signing keys out of the evidence packet and label the physical-device check not-run if hardware is unavailable.
+
+**Evidence boundary:** These are practice instructions, not recorded results. The local model cannot qualify a native build, secure storage, permissions or real hardware. Preserve draft status until external gates pass.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

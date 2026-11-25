@@ -44,6 +44,20 @@ node --test --test-name-pattern="24[.]01" examples/p7-platforms/labs.test.mjs
 
 Native builds, WebView isolation and plugin permissions require a real device.
 
+## Applied engineering walkthrough
+
+A Vite production build emits static files; the native shell must bundle the actual output rather than the development server. Inspect the configured output directory and Capacitor webDir together. Backend requests remain remote unless explicitly designed for offline use. Public client configuration may be embedded in the bundle, but server credentials must never be shipped in it.
+
+### Diagnose the concrete failure
+
+Build the sample, then stop its development server. Check whether the expected index file and hashed assets exist in the native asset directory after synchronization. An app that works only while localhost is reachable has not demonstrated a self-contained build.
+
+### Independent exercise and evidence
+
+Install a disposable debug build and start it with networking disabled. Record the app version, asset location, startup outcome and the explicit offline state for remote data. Check the bundle for synthetic secret markers.
+
+**Evidence boundary:** These are practice instructions, not recorded results. The local model cannot qualify a native build, secure storage, permissions or real hardware. Preserve draft status until external gates pass.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

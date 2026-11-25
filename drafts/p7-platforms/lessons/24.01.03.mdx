@@ -44,6 +44,20 @@ node --test --test-name-pattern="24[.]01" examples/p7-platforms/labs.test.mjs
 
 Native builds, WebView isolation and plugin permissions require a real device.
 
+## Applied engineering walkthrough
+
+Treat a native bridge as a privileged interface, not an ordinary web function. Authorization must cover the caller context, the requested capability and validated parameters. A trusted origin alone does not prove all scripts running there are trustworthy; injected script and navigation restrictions also matter. Keep the capability surface small and never expose arbitrary native command execution.
+
+### Diagnose the concrete failure
+
+Use the existing bridgeAllowed model to compare expected and foreign origins and known versus unknown commands. Then on an authorized test device attempt a benign denied request from an unexpected context. Verify the native side does not perform the operation.
+
+### Independent exercise and evidence
+
+Write a capability matrix for camera capture, file selection and sharing. Include denied, malformed and revoked cases, expected UI feedback and the native audit evidence required. Keep actual WebView isolation verification separate from the model.
+
+**Evidence boundary:** These are practice instructions, not recorded results. The local model cannot qualify a native build, secure storage, permissions or real hardware. Preserve draft status until external gates pass.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?
