@@ -71,6 +71,20 @@ Changing archive_mode or wal_level often requires a restart and is out of scope.
 
 Practice describing a failure in terms of its blast radius, detection signal and recovery path. What would happen if the database were unavailable during a migration, WAL archives were missing, a pooled connection lost session state, or an operator accidentally targeted production? Identify the prerequisite that would prevent or contain each failure.
 
+## Applied SQL walkthrough
+
+A logical dump exports database objects and data at a consistent snapshot; a physical base backup and continuous WAL archive can support point-in-time recovery. These are different recovery mechanisms. The displayed configuration settings indicate prerequisites but cannot establish that archives are complete, accessible or restorable. A recovery point objective defines tolerable data loss; a recovery time objective defines tolerable outage duration.
+
+### Predict and diagnose the result
+
+Inspect archive_mode and wal_level in the authorized disposable instance, and treat configuration output as readiness information only. Plan a base backup, archive continuity check and restore into a separate instance to a selected timestamp. Record backup identity, time zone and target. Redact archive_command and connection details if they expose secrets.
+
+### Independent exercise and evidence
+
+Draft a recovery plan for a hypothetical accidental deletion: specify the last acceptable recovery point, who approves the restore, the isolated target and the checks before any application cutover. Compare expected and observed recovery duration during a real drill; do not claim PITR from a successful configuration query.
+
+**Qualification boundary:** These are operational practice instructions, not a completed recovery or security audit. Use only explicitly authorized disposable infrastructure. Preserve the existing starter, solution and acceptance contract.
+
 ## Bug Hunt
 
 1. State the specific unsafe assumption: The starter looks at two settings and assumes a backup exists; it omits WAL archiving evidence, restore target, offsite retention and a completed test restore.
