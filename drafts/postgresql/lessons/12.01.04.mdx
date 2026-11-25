@@ -84,6 +84,20 @@ COUNT(*) returns one for the unmatched outer row, so it does not mean one task e
 
 For production systems, distinguish this basic query exercise from actual role privileges, row-level security, constraints across tenant boundaries, input validation, indexes, transaction isolation, and migration safety. Those topics appear in later canonical PostgreSQL and Supabase modules. The teaching fixture deliberately uses static tenant IDs and does not implement real authentication.
 
+## Applied SQL walkthrough
+
+An outer join preserves the parent even when no matching child exists. COUNT(t.id) counts non-NULL child keys, while COUNT(*) counts the outer row too. SUM ignores unknown estimates and returns NULL when no non-NULL values exist; COALESCE converts that result to zero for this reporting contract. The difference between unknown work and zero work may matter in real planning reports.
+
+### Predict and diagnose the result
+
+Compute the fixture results before execution: project 10 has three tasks totaling nine hours; project 11 has two tasks totaling two known hours; project 12 has zero tasks and zero planned hours. Check each group independently. Moving a task predicate into WHERE can remove empty projects; keep child filtering in the join or conditional aggregate when parents must remain.
+
+### Independent exercise and evidence
+
+Design a report with a separate count of tasks whose estimates are unknown. Predict one unknown estimate for project 11 and zero for project 12. Explain why COUNT(t.id) minus COUNT(t.estimate_hours) is useful. Record all group values and compare them with the acceptance results.
+
+**Qualification boundary:** Predicted results are not executed PostgreSQL evidence. Use the existing disposable database acceptance gate and preserve the original starter and solution. No publication credit is granted by this walkthrough.
+
 ## Bug Hunt
 
 1. **Reproduce:** The starter counts the joined row, losing the difference between an empty project and a project with one task.
