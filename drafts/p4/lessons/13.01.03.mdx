@@ -68,6 +68,20 @@ Do not commit generated clients from a developer's machine as a substitute for r
 
 A production-ready persistence boundary has to address error mapping, least-privileged database credentials, transaction/connection lifecycle, tenant authorization and request cancellation. Whenever schema changes are involved, review migration SQL and compatibility with the previous app version. Never expose database credentials in a `NEXT_PUBLIC_` variable or include them in a public web bundle.
 
+## Applied persistence walkthrough
+
+Prisma Client generation produces code specialized to the schema. In the displayed Prisma 7 generator, output is explicit and consumers import from that generated location. A schema change requires regenerating the client; stale generated types can compile against an obsolete shape. Generating a client does not itself apply migrations or prove connectivity.
+
+### Diagnose the concrete failure
+
+On a clean disposable checkout with the pinned toolchain, validate, generate and typecheck the intended import. Add a small model field in a disposable copy and confirm the type is available only after generation. Verify that the migration is a distinct step, and do not fabricate generated output or a lockfile.
+
+### Independent exercise and evidence
+
+Define a build pipeline with dependency installation from a reviewed lockfile, client generation and type checking before packaging. Record version, output directory, clean-build result and the expected failure from an incorrect import path.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Use the pinned Prisma 7 toolchain and disposable PostgreSQL database. Preserve the starter and solution; source review does not qualify generated code or authorization.
+
 ## Bug Hunt
 
 1. Observe the unsafe starter: The starter assumes the old package import and instantiates Prisma without the ORM v7 PostgreSQL driver adapter.
