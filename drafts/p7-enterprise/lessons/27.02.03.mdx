@@ -44,6 +44,20 @@ node --test --test-name-pattern="27[.]02" examples/p7-platforms/labs.test.mjs
 
 Capstone API status/DTO rubric only; no live NestJS, PostgreSQL, Prisma, Supabase or JWT validation established.
 
+## Applied engineering walkthrough
+
+A relational schema should prevent invalid states even when multiple callers access it. Define organization and member identities, task ownership, foreign keys and tenant-aware constraints. Use a versioned migration and consider rollback or forward recovery before running it against existing data.
+
+### Diagnose the concrete failure
+
+Create a disposable PostgreSQL schema and insert synthetic organizations, members and tasks. Attempt a foreign-key violation and an inconsistent tenant relationship; roll back a failed multi-statement write and inspect the stored rows.
+
+### Independent exercise and evidence
+
+Rehearse migration from a previous schema with existing data, verify constraints and document the recovery strategy. Record SQL, version, transaction outcomes and the actual database version.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify actual API, database, authentication and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

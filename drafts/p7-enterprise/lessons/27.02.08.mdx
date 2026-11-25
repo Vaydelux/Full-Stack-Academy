@@ -44,6 +44,20 @@ node --test --test-name-pattern="27[.]02" examples/p7-platforms/labs.test.mjs
 
 Capstone API status/DTO rubric only; no live NestJS, PostgreSQL, Prisma, Supabase or JWT validation established.
 
+## Applied engineering walkthrough
+
+Backend release review connects contract correctness, migration safety, trusted authentication, tenant authorization, persistence and integration evidence. A passing apiAcceptance rubric only evaluates supplied conditions; it cannot establish that a database role or HTTP request was actually exercised.
+
+### Diagnose the concrete failure
+
+Run the rubric with a missing isolation case and confirm rejection. Then inspect actual HTTP traces and database role tests for the candidate, including denied writes and rollback. Compare contract examples to observed responses.
+
+### Independent exercise and evidence
+
+Assemble a commit-bound API acceptance packet with versioned migrations, test output, scope matrix and unresolved risks. Do not promote the lesson module or treat the capstone service as production-ready from source evidence alone.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify actual API, database, authentication and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

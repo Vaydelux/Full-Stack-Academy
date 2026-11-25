@@ -44,6 +44,20 @@ node --test --test-name-pattern="27[.]02" examples/p7-platforms/labs.test.mjs
 
 Capstone API status/DTO rubric only; no live NestJS, PostgreSQL, Prisma, Supabase or JWT validation established.
 
+## Applied engineering walkthrough
+
+An integration test crosses actual component boundaries with isolated setup and teardown. A mocked repository can establish a use-case decision but cannot prove HTTP serialization, database constraints or transaction behavior. Use a disposable database with deterministic fixtures and an explicit test identity.
+
+### Diagnose the concrete failure
+
+Boot the real API on loopback, seed two tenants and run create, read, update and deny cases. Force a failure after the first step of a related write and verify rollback through a separate database query.
+
+### Independent exercise and evidence
+
+Record commands, server and database versions, fixture IDs, status codes and persisted results. Test cleanup and repeatability; report missing authentication or database integration as not-run rather than substituting mocks.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify actual API, database, authentication and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

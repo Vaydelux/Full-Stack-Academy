@@ -44,6 +44,20 @@ node --test --test-name-pattern="27[.]02" examples/p7-platforms/labs.test.mjs
 
 Capstone API status/DTO rubric only; no live NestJS, PostgreSQL, Prisma, Supabase or JWT validation established.
 
+## Applied engineering walkthrough
+
+Tenant isolation is a server invariant, not a filter the client can choose to enforce. Resolve the authenticated actor's membership and permitted action, then scope the database query and apply relevant policies using the intended caller role. Administrative and service credentials require separate tests.
+
+### Diagnose the concrete failure
+
+Use apiAcceptance to reason about own, anonymous and foreign requests. Reproduce them against a disposable API and database, including a suspended member and an attempted foreign-tenant mutation. Verify data remains unchanged after denial.
+
+### Independent exercise and evidence
+
+Build an authorization matrix linking HTTP operation, actor, tenant, object and database role. Record response status, affected rows and denied access evidence, including revocation between successive requests.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify actual API, database, authentication and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

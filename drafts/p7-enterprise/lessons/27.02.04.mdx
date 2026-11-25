@@ -44,6 +44,20 @@ node --test --test-name-pattern="27[.]02" examples/p7-platforms/labs.test.mjs
 
 Capstone API status/DTO rubric only; no live NestJS, PostgreSQL, Prisma, Supabase or JWT validation established.
 
+## Applied engineering walkthrough
+
+The repository adapter translates validated use-case inputs into scoped database operations. Prisma generated types improve query correctness but do not automatically enforce tenancy. Include tenant predicates in reads and writes, stable ordering in pagination and an explicit transaction boundary for related changes.
+
+### Diagnose the concrete failure
+
+Seed two synthetic organizations with tasks sharing a sort value. Query one tenant with a bounded cursor, attempt a foreign record update and provoke a failure in a multi-step transaction. Check affected rows and unchanged foreign data.
+
+### Independent exercise and evidence
+
+Record generated client and database versions, pagination semantics and transaction evidence. Compare results under the appropriate database role; never rely on a globally privileged test client as proof of row security.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify actual API, database, authentication and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?
