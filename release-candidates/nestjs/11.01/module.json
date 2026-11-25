@@ -1,0 +1,830 @@
+{
+  "schemaVersion": 1,
+  "moduleId": "11.01",
+  "sourceCommit": "4d8f5cc4467ccb56cf09cb8dd2383304f38781a5",
+  "publicationReady": false,
+  "commonSourceBindings": [
+    {
+      "path": "examples/nestjs-vertical/package.json",
+      "gitBlob": "b7bf07ea017c8ff637c0a00574463083cd298101"
+    },
+    {
+      "path": "examples/nestjs-vertical/tsconfig.json",
+      "gitBlob": "cb0841f58bf8ece41dd0c7df5f9c630cb09317ab"
+    },
+    {
+      "path": "examples/nestjs-vertical/scripts/red-green.mjs",
+      "gitBlob": "6ca45e494858f53d3e399489e1745604f456e5de"
+    },
+    {
+      "path": "examples/nestjs-vertical/scripts/module-qualification.mjs",
+      "gitBlob": "6101e84c50f92e6221c2fa128b8e50f679709d73"
+    },
+    {
+      "path": "examples/nestjs-vertical/scripts/require-lock.mjs",
+      "gitBlob": "5becab4f3cdcc0351f32d6d392d541eded915286"
+    },
+    {
+      "path": "examples/nestjs-vertical/scripts/lock-integrity.mjs",
+      "gitBlob": "c34b6caabfcf05fbded750418935062cde8c3626"
+    },
+    {
+      "path": "examples/nestjs-vertical/scripts/verify-runtime-test-coverage.mjs",
+      "gitBlob": "abf74d0c22b6abb1b9e21745ccb3a343848339e9"
+    }
+  ],
+  "candidates": [
+    {
+      "id": "11.01.01",
+      "moduleId": "11.01",
+      "title": "Bootstrap and module graph",
+      "slug": "bootstrap-module-graph",
+      "publicationReady": false,
+      "runtimeExecuted": false,
+      "reviewedAt": null,
+      "sourceBindings": [
+        {
+          "path": "drafts/nestjs/lessons/11.01.01.mdx",
+          "gitBlob": "a7158c5edf4e7c37307aa869c5fbf7818159f94c"
+        },
+        {
+          "path": "drafts/nestjs/lessons/11.01.01.meta.json",
+          "gitBlob": "98fe2d6f81e474623e08cc5d4bead9ead0a3142c"
+        },
+        {
+          "path": "drafts/nestjs/labs/bootstrap-module-graph/lab.json",
+          "gitBlob": "3b92529c9550bcd932a45f4f3b618f279f18b76d"
+        },
+        {
+          "path": "drafts/nestjs/labs/bootstrap-module-graph/starter.ts",
+          "gitBlob": "5fb8845a5b65b6603575e500c7957c07d10be215"
+        },
+        {
+          "path": "drafts/nestjs/labs/bootstrap-module-graph/solution.ts",
+          "gitBlob": "1d3a2ac50a1af8b4b21c67b52aadb6c407f73f17"
+        },
+        {
+          "path": "examples/nestjs-vertical/tests/architecture.test.mjs",
+          "gitBlob": "28e8db549ef1568dbc59827d400c569aef52f929"
+        }
+      ],
+      "targetPaths": [
+        "src/content/lessons/11.01.01.mdx",
+        "src/content/lessons/11.01.01.meta.json",
+        "labs/nestjs-bootstrap-module-graph/lab.json",
+        "labs/nestjs-bootstrap-module-graph/starter/solution.ts",
+        "labs/nestjs-bootstrap-module-graph/solution/solution.ts",
+        "labs/nestjs-bootstrap-module-graph/solution.test.mjs"
+      ],
+      "runtime": {
+        "suite": "examples/nestjs-vertical/tests/architecture.test.mjs",
+        "topic": "11.01.01",
+        "integration": null,
+        "negativeMode": "semantic-runtime"
+      },
+      "proposedMetadata": {
+        "id": "11.01.01",
+        "title": "Bootstrap and module graph",
+        "trackId": "11",
+        "moduleId": "11.01",
+        "level": "Intermediate",
+        "estimatedMinutes": 60,
+        "description": "The root module must import a feature module for its controllers to become routes. Boot the full Nest application and check that GET /tasks is registered.",
+        "labId": "lab.node.nestjs-bootstrap-module-graph",
+        "stack": {
+          "node": "24",
+          "nestjs": "12",
+          "typescriptNestjs": "6"
+        },
+        "prerequisites": [
+          "10.04.08"
+        ],
+        "objectives": [
+          "The root module must import a feature module for its controllers to become routes.",
+          "Boot the full Nest application and check that GET /tasks is registered.",
+          "Declare TasksModule and import it into AppModule; do not directly construct the feature controller."
+        ],
+        "rubric": [
+          "The root module must import a feature module for its controllers to become routes.",
+          "Boot the full Nest application and check that GET /tasks is registered.",
+          "Declare TasksModule and import it into AppModule; do not directly construct the feature controller."
+        ],
+        "sources": [
+          {
+            "label": "Primary official reference",
+            "url": "https://docs.nestjs.com/"
+          },
+          {
+            "label": "Supporting official reference",
+            "url": "https://docs.nestjs.com/modules"
+          }
+        ],
+        "reviewedAt": null
+      },
+      "proposedLab": {
+        "id": "lab.node.nestjs-bootstrap-module-graph",
+        "lessonId": "11.01.01",
+        "title": "NestJS practice: Bootstrap and module graph",
+        "runtime": "node-24-nestjs-12-typescript-6",
+        "starter": "labs/nestjs-bootstrap-module-graph/starter/solution.ts",
+        "solution": "labs/nestjs-bootstrap-module-graph/solution/solution.ts",
+        "tests": "labs/nestjs-bootstrap-module-graph/solution.test.mjs",
+        "expected": "Boot the full Nest application and check that GET /tasks is registered.",
+        "security": "Declare TasksModule and import it into AppModule; do not directly construct the feature controller."
+      }
+    },
+    {
+      "id": "11.01.02",
+      "moduleId": "11.01",
+      "title": "Controllers and routing",
+      "slug": "controllers-routing",
+      "publicationReady": false,
+      "runtimeExecuted": false,
+      "reviewedAt": null,
+      "sourceBindings": [
+        {
+          "path": "drafts/nestjs/lessons/11.01.02.mdx",
+          "gitBlob": "e5ed6168d7bea0e28cd1df0ead7a36e2c7b60ab4"
+        },
+        {
+          "path": "drafts/nestjs/lessons/11.01.02.meta.json",
+          "gitBlob": "b94cad3fddbd67517104072f823b3ca8e264a703"
+        },
+        {
+          "path": "drafts/nestjs/labs/controllers-routing/lab.json",
+          "gitBlob": "3779547c8843f9614cc9b1e9a14f735a9b6b2f2b"
+        },
+        {
+          "path": "drafts/nestjs/labs/controllers-routing/starter.ts",
+          "gitBlob": "22a1432695cff7a0c7f5d07062edc5bdac5fe4ee"
+        },
+        {
+          "path": "drafts/nestjs/labs/controllers-routing/solution.ts",
+          "gitBlob": "ce76faafaefbbab1fa2cce72eb96f290dc230e5a"
+        },
+        {
+          "path": "examples/nestjs-vertical/tests/architecture.test.mjs",
+          "gitBlob": "28e8db549ef1568dbc59827d400c569aef52f929"
+        }
+      ],
+      "targetPaths": [
+        "src/content/lessons/11.01.02.mdx",
+        "src/content/lessons/11.01.02.meta.json",
+        "labs/nestjs-controllers-routing/lab.json",
+        "labs/nestjs-controllers-routing/starter/solution.ts",
+        "labs/nestjs-controllers-routing/solution/solution.ts",
+        "labs/nestjs-controllers-routing/solution.test.mjs"
+      ],
+      "runtime": {
+        "suite": "examples/nestjs-vertical/tests/architecture.test.mjs",
+        "topic": "11.01.02",
+        "integration": null,
+        "negativeMode": "semantic-runtime"
+      },
+      "proposedMetadata": {
+        "id": "11.01.02",
+        "title": "Controllers and routing",
+        "trackId": "11",
+        "moduleId": "11.01",
+        "level": "Intermediate",
+        "estimatedMinutes": 60,
+        "description": "A decorator route segment and its @Param key must refer to the same named value. Request /tasks/t1 and confirm t1 is used; request an unknown ID and receive 404.",
+        "labId": "lab.node.nestjs-controllers-routing",
+        "stack": {
+          "node": "24",
+          "nestjs": "12",
+          "typescriptNestjs": "6"
+        },
+        "prerequisites": [
+          "11.01.01"
+        ],
+        "objectives": [
+          "A decorator route segment and its @Param key must refer to the same named value.",
+          "Request /tasks/t1 and confirm t1 is used; request an unknown ID and receive 404.",
+          "Keep URL paths stable, return a 404 for unknown records and avoid exposing errors through string interpolation."
+        ],
+        "rubric": [
+          "A decorator route segment and its @Param key must refer to the same named value.",
+          "Request /tasks/t1 and confirm t1 is used; request an unknown ID and receive 404.",
+          "Keep URL paths stable, return a 404 for unknown records and avoid exposing errors through string interpolation."
+        ],
+        "sources": [
+          {
+            "label": "Primary official reference",
+            "url": "https://docs.nestjs.com/"
+          },
+          {
+            "label": "Supporting official reference",
+            "url": "https://docs.nestjs.com/controllers"
+          }
+        ],
+        "reviewedAt": null
+      },
+      "proposedLab": {
+        "id": "lab.node.nestjs-controllers-routing",
+        "lessonId": "11.01.02",
+        "title": "NestJS practice: Controllers and routing",
+        "runtime": "node-24-nestjs-12-typescript-6",
+        "starter": "labs/nestjs-controllers-routing/starter/solution.ts",
+        "solution": "labs/nestjs-controllers-routing/solution/solution.ts",
+        "tests": "labs/nestjs-controllers-routing/solution.test.mjs",
+        "expected": "Request /tasks/t1 and confirm t1 is used; request an unknown ID and receive 404.",
+        "security": "Keep URL paths stable, return a 404 for unknown records and avoid exposing errors through string interpolation."
+      }
+    },
+    {
+      "id": "11.01.03",
+      "moduleId": "11.01",
+      "title": "Injectable providers",
+      "slug": "injectable-providers",
+      "publicationReady": false,
+      "runtimeExecuted": false,
+      "reviewedAt": null,
+      "sourceBindings": [
+        {
+          "path": "drafts/nestjs/lessons/11.01.03.mdx",
+          "gitBlob": "91866fc3470d666a8d54cdf482331b5ac1a9febb"
+        },
+        {
+          "path": "drafts/nestjs/lessons/11.01.03.meta.json",
+          "gitBlob": "557bda9bc19564d6d5f5cd96bedf53067196e81f"
+        },
+        {
+          "path": "drafts/nestjs/labs/injectable-providers/lab.json",
+          "gitBlob": "1d8ec7be0d727f95fc9793ea1dfa37d187b4516d"
+        },
+        {
+          "path": "drafts/nestjs/labs/injectable-providers/starter.ts",
+          "gitBlob": "cc7d4e6fdb2b768a6f9dbc57221c46904ba21086"
+        },
+        {
+          "path": "drafts/nestjs/labs/injectable-providers/solution.ts",
+          "gitBlob": "60a92781440b2ad995126dcf2a7c0eef31e103f5"
+        },
+        {
+          "path": "examples/nestjs-vertical/tests/architecture.test.mjs",
+          "gitBlob": "28e8db549ef1568dbc59827d400c569aef52f929"
+        }
+      ],
+      "targetPaths": [
+        "src/content/lessons/11.01.03.mdx",
+        "src/content/lessons/11.01.03.meta.json",
+        "labs/nestjs-injectable-providers/lab.json",
+        "labs/nestjs-injectable-providers/starter/solution.ts",
+        "labs/nestjs-injectable-providers/solution/solution.ts",
+        "labs/nestjs-injectable-providers/solution.test.mjs"
+      ],
+      "runtime": {
+        "suite": "examples/nestjs-vertical/tests/architecture.test.mjs",
+        "topic": "11.01.03",
+        "integration": null,
+        "negativeMode": "semantic-runtime"
+      },
+      "proposedMetadata": {
+        "id": "11.01.03",
+        "title": "Injectable providers",
+        "trackId": "11",
+        "moduleId": "11.01",
+        "level": "Intermediate",
+        "estimatedMinutes": 60,
+        "description": "Nest resolves registered providers through the container rather than manual new statements in controllers. Resolve the controller through Test.createTestingModule and override its service with a fake.",
+        "labId": "lab.node.nestjs-injectable-providers",
+        "stack": {
+          "node": "24",
+          "nestjs": "12",
+          "typescriptNestjs": "6"
+        },
+        "prerequisites": [
+          "11.01.02"
+        ],
+        "objectives": [
+          "Nest resolves registered providers through the container rather than manual new statements in controllers.",
+          "Resolve the controller through Test.createTestingModule and override its service with a fake.",
+          "Register the service in the owning module and inject through the constructor."
+        ],
+        "rubric": [
+          "Nest resolves registered providers through the container rather than manual new statements in controllers.",
+          "Resolve the controller through Test.createTestingModule and override its service with a fake.",
+          "Register the service in the owning module and inject through the constructor."
+        ],
+        "sources": [
+          {
+            "label": "Primary official reference",
+            "url": "https://docs.nestjs.com/"
+          },
+          {
+            "label": "Supporting official reference",
+            "url": "https://docs.nestjs.com/providers"
+          }
+        ],
+        "reviewedAt": null
+      },
+      "proposedLab": {
+        "id": "lab.node.nestjs-injectable-providers",
+        "lessonId": "11.01.03",
+        "title": "NestJS practice: Injectable providers",
+        "runtime": "node-24-nestjs-12-typescript-6",
+        "starter": "labs/nestjs-injectable-providers/starter/solution.ts",
+        "solution": "labs/nestjs-injectable-providers/solution/solution.ts",
+        "tests": "labs/nestjs-injectable-providers/solution.test.mjs",
+        "expected": "Resolve the controller through Test.createTestingModule and override its service with a fake.",
+        "security": "Register the service in the owning module and inject through the constructor."
+      }
+    },
+    {
+      "id": "11.01.04",
+      "moduleId": "11.01",
+      "title": "Dependency injection scopes",
+      "slug": "dependency-injection-scopes",
+      "publicationReady": false,
+      "runtimeExecuted": false,
+      "reviewedAt": null,
+      "sourceBindings": [
+        {
+          "path": "drafts/nestjs/lessons/11.01.04.mdx",
+          "gitBlob": "391896c708347688147477a039053424f09670c5"
+        },
+        {
+          "path": "drafts/nestjs/lessons/11.01.04.meta.json",
+          "gitBlob": "667fe410f48a0c36a0835ec346ec019aa24872f7"
+        },
+        {
+          "path": "drafts/nestjs/labs/dependency-injection-scopes/lab.json",
+          "gitBlob": "491a67444760d74a7f4c10f7e7e0431af3763152"
+        },
+        {
+          "path": "drafts/nestjs/labs/dependency-injection-scopes/starter.ts",
+          "gitBlob": "2f1394475af26258cb438751c2b7c4d37a2d533a"
+        },
+        {
+          "path": "drafts/nestjs/labs/dependency-injection-scopes/solution.ts",
+          "gitBlob": "5b5cd57abe0340aea892d6f65fefe6e9a7005c0a"
+        },
+        {
+          "path": "examples/nestjs-vertical/tests/architecture.test.mjs",
+          "gitBlob": "28e8db549ef1568dbc59827d400c569aef52f929"
+        }
+      ],
+      "targetPaths": [
+        "src/content/lessons/11.01.04.mdx",
+        "src/content/lessons/11.01.04.meta.json",
+        "labs/nestjs-dependency-injection-scopes/lab.json",
+        "labs/nestjs-dependency-injection-scopes/starter/solution.ts",
+        "labs/nestjs-dependency-injection-scopes/solution/solution.ts",
+        "labs/nestjs-dependency-injection-scopes/solution.test.mjs"
+      ],
+      "runtime": {
+        "suite": "examples/nestjs-vertical/tests/architecture.test.mjs",
+        "topic": "11.01.04",
+        "integration": null,
+        "negativeMode": "semantic-runtime"
+      },
+      "proposedMetadata": {
+        "id": "11.01.04",
+        "title": "Dependency injection scopes",
+        "trackId": "11",
+        "moduleId": "11.01",
+        "level": "Intermediate",
+        "estimatedMinutes": 60,
+        "description": "Request-specific data must never be retained in a global singleton provider. Create two independent request scopes and confirm the derived IDs are isolated.",
+        "labId": "lab.node.nestjs-dependency-injection-scopes",
+        "stack": {
+          "node": "24",
+          "nestjs": "12",
+          "typescriptNestjs": "6"
+        },
+        "prerequisites": [
+          "11.01.03"
+        ],
+        "objectives": [
+          "Request-specific data must never be retained in a global singleton provider.",
+          "Create two independent request scopes and confirm the derived IDs are isolated.",
+          "Use Scope.REQUEST only when required; request-scoped providers increase allocation cost."
+        ],
+        "rubric": [
+          "Request-specific data must never be retained in a global singleton provider.",
+          "Create two independent request scopes and confirm the derived IDs are isolated.",
+          "Use Scope.REQUEST only when required; request-scoped providers increase allocation cost."
+        ],
+        "sources": [
+          {
+            "label": "Primary official reference",
+            "url": "https://docs.nestjs.com/"
+          },
+          {
+            "label": "Supporting official reference",
+            "url": "https://docs.nestjs.com/fundamentals/injection-scopes"
+          }
+        ],
+        "reviewedAt": null
+      },
+      "proposedLab": {
+        "id": "lab.node.nestjs-dependency-injection-scopes",
+        "lessonId": "11.01.04",
+        "title": "NestJS practice: Dependency injection scopes",
+        "runtime": "node-24-nestjs-12-typescript-6",
+        "starter": "labs/nestjs-dependency-injection-scopes/starter/solution.ts",
+        "solution": "labs/nestjs-dependency-injection-scopes/solution/solution.ts",
+        "tests": "labs/nestjs-dependency-injection-scopes/solution.test.mjs",
+        "expected": "Create two independent request scopes and confirm the derived IDs are isolated.",
+        "security": "Use Scope.REQUEST only when required; request-scoped providers increase allocation cost."
+      }
+    },
+    {
+      "id": "11.01.05",
+      "moduleId": "11.01",
+      "title": "Config and env validation",
+      "slug": "config-env-validation",
+      "publicationReady": false,
+      "runtimeExecuted": false,
+      "reviewedAt": null,
+      "sourceBindings": [
+        {
+          "path": "drafts/nestjs/lessons/11.01.05.mdx",
+          "gitBlob": "9d0facd1136819ed984a95d8481451e401322b99"
+        },
+        {
+          "path": "drafts/nestjs/lessons/11.01.05.meta.json",
+          "gitBlob": "173658c3add357fdb3c7d5c77bf421011aa77cdd"
+        },
+        {
+          "path": "drafts/nestjs/labs/config-env-validation/lab.json",
+          "gitBlob": "b7e457ea03ad7f934048bdec29440f4d2040cfd6"
+        },
+        {
+          "path": "drafts/nestjs/labs/config-env-validation/starter.ts",
+          "gitBlob": "dcbfcd2ad45e5afed52c3c2778a9620f35edb57b"
+        },
+        {
+          "path": "drafts/nestjs/labs/config-env-validation/solution.ts",
+          "gitBlob": "304aa4e36b93d68eecce66a9654d8922e64da258"
+        },
+        {
+          "path": "examples/nestjs-vertical/tests/architecture.test.mjs",
+          "gitBlob": "28e8db549ef1568dbc59827d400c569aef52f929"
+        }
+      ],
+      "targetPaths": [
+        "src/content/lessons/11.01.05.mdx",
+        "src/content/lessons/11.01.05.meta.json",
+        "labs/nestjs-config-env-validation/lab.json",
+        "labs/nestjs-config-env-validation/starter/solution.ts",
+        "labs/nestjs-config-env-validation/solution/solution.ts",
+        "labs/nestjs-config-env-validation/solution.test.mjs"
+      ],
+      "runtime": {
+        "suite": "examples/nestjs-vertical/tests/architecture.test.mjs",
+        "topic": "11.01.05",
+        "integration": null,
+        "negativeMode": "semantic-runtime"
+      },
+      "proposedMetadata": {
+        "id": "11.01.05",
+        "title": "Config and env validation",
+        "trackId": "11",
+        "moduleId": "11.01",
+        "level": "Intermediate",
+        "estimatedMinutes": 60,
+        "description": "Parse environment settings once at the composition root before opening any network port. Exercise valid PORT=3337, absent PORT, and invalid PORT=abc independently.",
+        "labId": "lab.node.nestjs-config-env-validation",
+        "stack": {
+          "node": "24",
+          "nestjs": "12",
+          "typescriptNestjs": "6"
+        },
+        "prerequisites": [
+          "11.01.04"
+        ],
+        "objectives": [
+          "Parse environment settings once at the composition root before opening any network port.",
+          "Exercise valid PORT=3337, absent PORT, and invalid PORT=abc independently.",
+          "Do not log secrets or return raw environment values to clients."
+        ],
+        "rubric": [
+          "Parse environment settings once at the composition root before opening any network port.",
+          "Exercise valid PORT=3337, absent PORT, and invalid PORT=abc independently.",
+          "Do not log secrets or return raw environment values to clients."
+        ],
+        "sources": [
+          {
+            "label": "Primary official reference",
+            "url": "https://docs.nestjs.com/"
+          },
+          {
+            "label": "Supporting official reference",
+            "url": "https://docs.nestjs.com/techniques/configuration"
+          }
+        ],
+        "reviewedAt": null
+      },
+      "proposedLab": {
+        "id": "lab.node.nestjs-config-env-validation",
+        "lessonId": "11.01.05",
+        "title": "NestJS practice: Config and env validation",
+        "runtime": "node-24-nestjs-12-typescript-6",
+        "starter": "labs/nestjs-config-env-validation/starter/solution.ts",
+        "solution": "labs/nestjs-config-env-validation/solution/solution.ts",
+        "tests": "labs/nestjs-config-env-validation/solution.test.mjs",
+        "expected": "Exercise valid PORT=3337, absent PORT, and invalid PORT=abc independently.",
+        "security": "Do not log secrets or return raw environment values to clients."
+      }
+    },
+    {
+      "id": "11.01.06",
+      "moduleId": "11.01",
+      "title": "Fastify adapter",
+      "slug": "fastify-adapter",
+      "publicationReady": false,
+      "runtimeExecuted": false,
+      "reviewedAt": null,
+      "sourceBindings": [
+        {
+          "path": "drafts/nestjs/lessons/11.01.06.mdx",
+          "gitBlob": "8d2c4044d6723d11c17be1b59b5a466375a74ad4"
+        },
+        {
+          "path": "drafts/nestjs/lessons/11.01.06.meta.json",
+          "gitBlob": "a01b08e5dbaa4aaf2cd8f6a41ab03b1cfe1766c1"
+        },
+        {
+          "path": "drafts/nestjs/labs/fastify-adapter/lab.json",
+          "gitBlob": "e42bd2d088d0f603d84ef54652ce9b7e8260bcdc"
+        },
+        {
+          "path": "drafts/nestjs/labs/fastify-adapter/starter.ts",
+          "gitBlob": "7c5a3ead8a7c70c3eeb2986aaff7dec9ced30abe"
+        },
+        {
+          "path": "drafts/nestjs/labs/fastify-adapter/solution.ts",
+          "gitBlob": "cd7c9aed25533c8cf331d3f86d5ae7ea2a11be10"
+        },
+        {
+          "path": "examples/nestjs-vertical/tests/architecture.test.mjs",
+          "gitBlob": "28e8db549ef1568dbc59827d400c569aef52f929"
+        }
+      ],
+      "targetPaths": [
+        "src/content/lessons/11.01.06.mdx",
+        "src/content/lessons/11.01.06.meta.json",
+        "labs/nestjs-fastify-adapter/lab.json",
+        "labs/nestjs-fastify-adapter/starter/solution.ts",
+        "labs/nestjs-fastify-adapter/solution/solution.ts",
+        "labs/nestjs-fastify-adapter/solution.test.mjs"
+      ],
+      "runtime": {
+        "suite": "examples/nestjs-vertical/tests/architecture.test.mjs",
+        "topic": "11.01.06",
+        "integration": null,
+        "negativeMode": "semantic-runtime"
+      },
+      "proposedMetadata": {
+        "id": "11.01.06",
+        "title": "Fastify adapter",
+        "trackId": "11",
+        "moduleId": "11.01",
+        "level": "Intermediate",
+        "estimatedMinutes": 60,
+        "description": "Nest's Fastify adapter must be provided explicitly when the teaching app promises Fastify behavior. Start the real application, inspect its adapter type and issue a GET /health request.",
+        "labId": "lab.node.nestjs-fastify-adapter",
+        "stack": {
+          "node": "24",
+          "nestjs": "12",
+          "typescriptNestjs": "6"
+        },
+        "prerequisites": [
+          "11.01.05"
+        ],
+        "objectives": [
+          "Nest's Fastify adapter must be provided explicitly when the teaching app promises Fastify behavior.",
+          "Start the real application, inspect its adapter type and issue a GET /health request.",
+          "Keep the example loopback-only; do not expose its unauthenticated endpoints publicly."
+        ],
+        "rubric": [
+          "Nest's Fastify adapter must be provided explicitly when the teaching app promises Fastify behavior.",
+          "Start the real application, inspect its adapter type and issue a GET /health request.",
+          "Keep the example loopback-only; do not expose its unauthenticated endpoints publicly."
+        ],
+        "sources": [
+          {
+            "label": "Primary official reference",
+            "url": "https://docs.nestjs.com/"
+          },
+          {
+            "label": "Supporting official reference",
+            "url": "https://docs.nestjs.com/techniques/performance"
+          }
+        ],
+        "reviewedAt": null
+      },
+      "proposedLab": {
+        "id": "lab.node.nestjs-fastify-adapter",
+        "lessonId": "11.01.06",
+        "title": "NestJS practice: Fastify adapter",
+        "runtime": "node-24-nestjs-12-typescript-6",
+        "starter": "labs/nestjs-fastify-adapter/starter/solution.ts",
+        "solution": "labs/nestjs-fastify-adapter/solution/solution.ts",
+        "tests": "labs/nestjs-fastify-adapter/solution.test.mjs",
+        "expected": "Start the real application, inspect its adapter type and issue a GET /health request.",
+        "security": "Keep the example loopback-only; do not expose its unauthenticated endpoints publicly."
+      }
+    },
+    {
+      "id": "11.01.07",
+      "moduleId": "11.01",
+      "title": "Lifecycle hooks",
+      "slug": "lifecycle-hooks",
+      "publicationReady": false,
+      "runtimeExecuted": false,
+      "reviewedAt": null,
+      "sourceBindings": [
+        {
+          "path": "drafts/nestjs/lessons/11.01.07.mdx",
+          "gitBlob": "843fd7eb2436f47d19b4a6263a5fcfca551cccc0"
+        },
+        {
+          "path": "drafts/nestjs/lessons/11.01.07.meta.json",
+          "gitBlob": "668d797f88bec23639136bc47e559f0fd91b2f92"
+        },
+        {
+          "path": "drafts/nestjs/labs/lifecycle-hooks/lab.json",
+          "gitBlob": "af987e3263115a1b1fb177ccb7657dec88827da0"
+        },
+        {
+          "path": "drafts/nestjs/labs/lifecycle-hooks/starter.ts",
+          "gitBlob": "6c47b766b9c643a15b87e1be40df13225294e610"
+        },
+        {
+          "path": "drafts/nestjs/labs/lifecycle-hooks/solution.ts",
+          "gitBlob": "6054b3988bebc5246b4aa2f1c8e96fbef2a08c96"
+        },
+        {
+          "path": "examples/nestjs-vertical/tests/architecture.test.mjs",
+          "gitBlob": "28e8db549ef1568dbc59827d400c569aef52f929"
+        }
+      ],
+      "targetPaths": [
+        "src/content/lessons/11.01.07.mdx",
+        "src/content/lessons/11.01.07.meta.json",
+        "labs/nestjs-lifecycle-hooks/lab.json",
+        "labs/nestjs-lifecycle-hooks/starter/solution.ts",
+        "labs/nestjs-lifecycle-hooks/solution/solution.ts",
+        "labs/nestjs-lifecycle-hooks/solution.test.mjs"
+      ],
+      "runtime": {
+        "suite": "examples/nestjs-vertical/tests/architecture.test.mjs",
+        "topic": "11.01.07",
+        "integration": null,
+        "negativeMode": "semantic-runtime"
+      },
+      "proposedMetadata": {
+        "id": "11.01.07",
+        "title": "Lifecycle hooks",
+        "trackId": "11",
+        "moduleId": "11.01",
+        "level": "Intermediate",
+        "estimatedMinutes": 60,
+        "description": "Managed resources must be released when Nest shuts down. Call app.close and ensure the provider has released its interval.",
+        "labId": "lab.node.nestjs-lifecycle-hooks",
+        "stack": {
+          "node": "24",
+          "nestjs": "12",
+          "typescriptNestjs": "6"
+        },
+        "prerequisites": [
+          "11.01.06"
+        ],
+        "objectives": [
+          "Managed resources must be released when Nest shuts down.",
+          "Call app.close and ensure the provider has released its interval.",
+          "Avoid uncaught shutdown exceptions; make cleanup idempotent."
+        ],
+        "rubric": [
+          "Managed resources must be released when Nest shuts down.",
+          "Call app.close and ensure the provider has released its interval.",
+          "Avoid uncaught shutdown exceptions; make cleanup idempotent."
+        ],
+        "sources": [
+          {
+            "label": "Primary official reference",
+            "url": "https://docs.nestjs.com/"
+          },
+          {
+            "label": "Supporting official reference",
+            "url": "https://docs.nestjs.com/fundamentals/lifecycle-events"
+          }
+        ],
+        "reviewedAt": null
+      },
+      "proposedLab": {
+        "id": "lab.node.nestjs-lifecycle-hooks",
+        "lessonId": "11.01.07",
+        "title": "NestJS practice: Lifecycle hooks",
+        "runtime": "node-24-nestjs-12-typescript-6",
+        "starter": "labs/nestjs-lifecycle-hooks/starter/solution.ts",
+        "solution": "labs/nestjs-lifecycle-hooks/solution/solution.ts",
+        "tests": "labs/nestjs-lifecycle-hooks/solution.test.mjs",
+        "expected": "Call app.close and ensure the provider has released its interval.",
+        "security": "Avoid uncaught shutdown exceptions; make cleanup idempotent."
+      }
+    },
+    {
+      "id": "11.01.08",
+      "moduleId": "11.01",
+      "title": "Lab hello API",
+      "slug": "hello-api-capstone",
+      "publicationReady": false,
+      "runtimeExecuted": false,
+      "reviewedAt": null,
+      "sourceBindings": [
+        {
+          "path": "drafts/nestjs/lessons/11.01.08.mdx",
+          "gitBlob": "bf9c5fc1772bee6ebd160bb67ca4c1332c747a28"
+        },
+        {
+          "path": "drafts/nestjs/lessons/11.01.08.meta.json",
+          "gitBlob": "1fc56a7d279612038aed536853c09023246a54b9"
+        },
+        {
+          "path": "drafts/nestjs/labs/hello-api-capstone/lab.json",
+          "gitBlob": "2c12524d0455056485604a597dd0c90c55e2032a"
+        },
+        {
+          "path": "drafts/nestjs/labs/hello-api-capstone/starter.ts",
+          "gitBlob": "d1e893fe937a3d75e4b6ca3e1a64ec03095ef8e1"
+        },
+        {
+          "path": "drafts/nestjs/labs/hello-api-capstone/solution.ts",
+          "gitBlob": "4471eacd267d926112d9d12b44fe6bf3d51401df"
+        },
+        {
+          "path": "examples/nestjs-vertical/tests/architecture.test.mjs",
+          "gitBlob": "28e8db549ef1568dbc59827d400c569aef52f929"
+        }
+      ],
+      "targetPaths": [
+        "src/content/lessons/11.01.08.mdx",
+        "src/content/lessons/11.01.08.meta.json",
+        "labs/nestjs-hello-api-capstone/lab.json",
+        "labs/nestjs-hello-api-capstone/starter/solution.ts",
+        "labs/nestjs-hello-api-capstone/solution/solution.ts",
+        "labs/nestjs-hello-api-capstone/solution.test.mjs"
+      ],
+      "runtime": {
+        "suite": "examples/nestjs-vertical/tests/architecture.test.mjs",
+        "topic": "11.01.08",
+        "integration": null,
+        "negativeMode": "semantic-runtime"
+      },
+      "proposedMetadata": {
+        "id": "11.01.08",
+        "title": "Lab hello API",
+        "trackId": "11",
+        "moduleId": "11.01",
+        "level": "Intermediate",
+        "estimatedMinutes": 60,
+        "description": "A health endpoint must reflect actual service readiness instead of returning a constant green response. With readiness true return 200; with readiness false return 503; check both through real HTTP.",
+        "labId": "lab.node.nestjs-hello-api-capstone",
+        "stack": {
+          "node": "24",
+          "nestjs": "12",
+          "typescriptNestjs": "6"
+        },
+        "prerequisites": [
+          "11.01.07"
+        ],
+        "objectives": [
+          "A health endpoint must reflect actual service readiness instead of returning a constant green response.",
+          "With readiness true return 200; with readiness false return 503; check both through real HTTP.",
+          "Bind locally for practice; production readiness requires actual dependency probes and safe failure data."
+        ],
+        "rubric": [
+          "A health endpoint must reflect actual service readiness instead of returning a constant green response.",
+          "With readiness true return 200; with readiness false return 503; check both through real HTTP.",
+          "Bind locally for practice; production readiness requires actual dependency probes and safe failure data."
+        ],
+        "sources": [
+          {
+            "label": "Primary official reference",
+            "url": "https://docs.nestjs.com/"
+          },
+          {
+            "label": "Supporting official reference",
+            "url": "https://docs.nestjs.com/recipes/terminus"
+          }
+        ],
+        "reviewedAt": null
+      },
+      "proposedLab": {
+        "id": "lab.node.nestjs-hello-api-capstone",
+        "lessonId": "11.01.08",
+        "title": "NestJS practice: Lab hello API",
+        "runtime": "node-24-nestjs-12-typescript-6",
+        "starter": "labs/nestjs-hello-api-capstone/starter/solution.ts",
+        "solution": "labs/nestjs-hello-api-capstone/solution/solution.ts",
+        "tests": "labs/nestjs-hello-api-capstone/solution.test.mjs",
+        "expected": "With readiness true return 200; with readiness false return 503; check both through real HTTP.",
+        "security": "Bind locally for practice; production readiness requires actual dependency probes and safe failure data."
+      }
+    }
+  ]
+}
