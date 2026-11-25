@@ -44,6 +44,20 @@ node --test --test-name-pattern="20[.]02" examples/p6-quality/labs.test.mjs
 
 Synthetic CI evidence only; no hosted workflow, branch protection change or cryptographic provenance.
 
+## Applied engineering walkthrough
+
+Dependency caches reduce installation work but are not an authoritative dependency inventory. Key them using the relevant lockfile, runtime, platform and other compatibility inputs. A cached package store differs from a cached installed dependency tree; a reproducible install and tests remain necessary.
+
+### Diagnose the concrete failure
+
+Hash two synthetic lockfile contents and compare their cache identities. Simulate a cache hit and ensure the plan still requires the pinned installation and acceptance commands. Explain how restoring incompatible native binaries can cause misleading failures.
+
+### Independent exercise and evidence
+
+Design cache keys for Linux and Windows builds with a shared package store only when compatible. Record measured installation time and hit/miss status, not an unmeasured speedup.
+
+**Evidence boundary:** These are practice instructions, not recorded test results. Preserve the existing model, specification and draft flag; external runtime qualification remains independent.
+
 ## Knowledge check
 
 1. Which public behavior or invariant is being protected?
