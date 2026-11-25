@@ -78,6 +78,20 @@ Membership table RLS and query indexes are part of the security/performance boun
 
 RLS applies subject to PostgreSQL roles, table ownership, policy composition and operation type. In an exposed schema, verify grants and RLS together. For writes, review INSERT WITH CHECK and UPDATE USING/WITH CHECK, not just SELECT. In Supabase, do not use user-editable `user_metadata` as authority for privileged roles. A service-role client may bypass RLS; it must not be used to repair a client permission error.
 
+## Applied persistence walkthrough
+
+Tenant membership is a relationship between a user and an organization. The tasks policy uses an EXISTS lookup in memberships, and the membership policy restricts that lookup to the current user. Both objects need appropriate grants. The shown policy allows member access to tenant tasks; it is not an owner-only policy or proof of per-action role restrictions.
+
+### Diagnose the concrete failure
+
+Seed a user in alpha, another in beta and a user in both tenants. Verify exact visible task IDs for each. Remove one membership and test the result on a new request. Inspect all policies and use a non-bypass caller. Include a missing membership case rather than checking only a successful read.
+
+### Independent exercise and evidence
+
+Design separate read and write policies based on current membership role. Decide how to index tenant/user lookups and protect membership administration itself. Record actual role, policy set and the allowed/denied matrix.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Use an isolated Supabase environment and real non-bypass caller roles. Preserve the existing starter and solution; source review cannot certify row policies or authorization.
+
 ## Bug Hunt and regression matrix
 
 1. Predict the disclosure caused by the starter: The starter allows any authenticated caller to read any task with a non-null tenant ID.
