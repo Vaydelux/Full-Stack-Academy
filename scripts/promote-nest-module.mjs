@@ -5,6 +5,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawnSync, execFileSync } from 'node:child_process';
 import { createRequire } from 'node:module';
+import { assertVisibleIndex, validateLessonReviews } from './nest-review-preflight.mjs';
 import { projectNestModule } from './nest-release-projection.mjs';
 import { projectionFingerprint, verifyProjectionOnDisk } from './forms-query-projection-integrity.mjs';
 import { inspectNestJsDrafts } from './verify-nestjs-drafts.mjs';
@@ -12,7 +13,7 @@ import { NEST_MODULES, evidencePath, nestPromotionOrder, nestReviewFingerprint, 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const local=p=>path.join(root,p),read=p=>fs.readFileSync(local(p),'utf8'),json=p=>JSON.parse(read(p)),exists=p=>fs.existsSync(local(p));
 const git=args=>execFileSync('git',args,{cwd:root,encoding:'utf8',maxBuffer:32*1024*1024,timeout:30000});
-const clean=()=>assert.equal(git(['status','--porcelain=v1','--untracked-files=all']),'','Start with a clean tracked and untracked checkout');
+const clean=()=>{assertVisibleIndex(git(['ls-files','-v','-z']));assert.equal(git(['status','--porcelain=v1','--untracked-files=all']),'','Start with a clean tracked and untracked checkout');};
 const encode=o=>JSON.stringify(o,null,2)+'\n';
 const [mode,id,...extra]=process.argv.slice(2);
 assert.ok(!extra.length&&['--plan','--review','--apply'].includes(mode)&&NEST_MODULES.includes(id),'Usage: npm run promote:nestjs -- --plan|--review|--apply 11.01');
@@ -48,7 +49,12 @@ if(mode!=='--plan'){
   // Only a disposable detached linked worktree; never stage fixture review dates on main.
   assert.equal(git(['rev-parse','--abbrev-ref','HEAD']).trim(),'HEAD','Review requires a detached worktree');
   assert.ok(fs.statSync(local('.git')).isFile(),'Review requires a linked disposable worktree');
- }else review=validateNestReview(json(evidence),{id,fingerprint:sourceSha256,lessonIds,today:new Date().toISOString().slice(0,10)});
+ }else{
+  assertVisibleIndex(git(['ls-files','-v','-z']),evidence);
+  assert.ok(fs.lstatSync(local(evidence)).isFile(),'Review evidence must be a regular file');
+  review=validateNestReview(json(evidence),{id,fingerprint:sourceSha256,lessonIds,today:new Date().toISOString().slice(0,10)});
+  validateLessonReviews(review,lessonIds);
+ }
  run('ci');run('run','checkpoint:check');run('run','test:curriculum-readiness');
  run('run','qualify:nestjs:module','--','--run',id);
  clean();assert.equal(git(['rev-parse','HEAD']).trim(),head);assert.equal(fingerprint(),sourceSha256);

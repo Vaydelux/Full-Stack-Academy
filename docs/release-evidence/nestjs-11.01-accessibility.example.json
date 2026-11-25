@@ -20,5 +20,72 @@
     "11.01.07",
     "11.01.08"
   ],
-  "notes": "EXAMPLE ONLY. No actual review has been completed."
+  "notes": "EXAMPLE ONLY. No actual review has been completed.",
+  "contrastPassed": false,
+  "lessonReviews": [
+    {
+      "lessonId": "11.01.01",
+      "keyboard": false,
+      "zoom200": false,
+      "screenReaderPassed": false,
+      "contrastPassed": false,
+      "notes": ""
+    },
+    {
+      "lessonId": "11.01.02",
+      "keyboard": false,
+      "zoom200": false,
+      "screenReaderPassed": false,
+      "contrastPassed": false,
+      "notes": ""
+    },
+    {
+      "lessonId": "11.01.03",
+      "keyboard": false,
+      "zoom200": false,
+      "screenReaderPassed": false,
+      "contrastPassed": false,
+      "notes": ""
+    },
+    {
+      "lessonId": "11.01.04",
+      "keyboard": false,
+      "zoom200": false,
+      "screenReaderPassed": false,
+      "contrastPassed": false,
+      "notes": ""
+    },
+    {
+      "lessonId": "11.01.05",
+      "keyboard": false,
+      "zoom200": false,
+      "screenReaderPassed": false,
+      "contrastPassed": false,
+      "notes": ""
+    },
+    {
+      "lessonId": "11.01.06",
+      "keyboard": false,
+      "zoom200": false,
+      "screenReaderPassed": false,
+      "contrastPassed": false,
+      "notes": ""
+    },
+    {
+      "lessonId": "11.01.07",
+      "keyboard": false,
+      "zoom200": false,
+      "screenReaderPassed": false,
+      "contrastPassed": false,
+      "notes": ""
+    },
+    {
+      "lessonId": "11.01.08",
+      "keyboard": false,
+      "zoom200": false,
+      "screenReaderPassed": false,
+      "contrastPassed": false,
+      "notes": ""
+    }
+  ]
 }
