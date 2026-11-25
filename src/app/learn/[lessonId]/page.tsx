@@ -206,7 +206,7 @@ export default async function LessonPage({ params }: LessonPageProps) {
           </Link>}
         </nav>
       )}
-      {(authored || mdxMeta) && <CurriculumContinuation lesson={lesson} catalog={accessCatalog} />}
+      {(authored || mdxMeta) && <CurriculumContinuation lesson={lesson} catalog={accessCatalog} boundaryOnly />}
     </DocShell>
   );
 }

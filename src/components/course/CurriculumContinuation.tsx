@@ -20,8 +20,13 @@ export function CurriculumContext({ lesson, catalog }: { lesson: CurriculumLesso
   </details>;
 }
 
-export function CurriculumContinuation({ lesson, catalog }: { lesson: CurriculumLesson; catalog: readonly AccessTopic<CurriculumLesson>[] }) {
-  const { previous, next } = curriculumNeighbors(catalog, lesson.id);
+export function CurriculumContinuation({ lesson, catalog, boundaryOnly = false }: { lesson: CurriculumLesson; catalog: readonly AccessTopic<CurriculumLesson>[]; boundaryOnly?: boolean }) {
+  const adjacent = curriculumNeighbors(catalog, lesson.id);
+  // Published pages already have within-module published practice navigation.
+  // Do not duplicate those links; show reading transitions and new modules only.
+  const visible = (item: AccessTopic<CurriculumLesson> | null) =>
+    boundaryOnly && item?.access === 'published' && item.moduleId === lesson.moduleId ? null : item;
+  const previous = visible(adjacent.previous), next = visible(adjacent.next);
   if (!previous && !next) return null;
   return <nav aria-label="Continue curriculum" className="mt-10 grid min-w-0 gap-3 border-t border-slate-200 pt-6 sm:grid-cols-2 dark:border-white/10">
     {([['Previous topic', previous, 'prev'], ['Next topic', next, 'next']] as const).map(([label, item, direction]) => item && <Link key={direction} rel={direction} href={'/learn/' + item.id} className={'min-w-0 break-words rounded-xl border border-slate-200 p-4 text-sm hover:border-cyan-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600 dark:border-white/15 ' + (direction === 'next' ? 'sm:col-start-2' : '')}>
