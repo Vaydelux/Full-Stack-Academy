@@ -44,6 +44,20 @@ node --test --test-name-pattern="25[.]04" examples/p7-platforms/labs.test.mjs
 
 Synthetic resource-bound model; no actual FFmpeg sandbox, CDN, HLS, WebRTC or moderation service acceptance.
 
+## Applied engineering walkthrough
+
+Object storage is the source of bytes; a CDN serves cached representations under a defined freshness and access policy. Public thumbnails and private originals need different cache keys, origin permissions and delivery controls. Never assume an obscure object path is an authorization mechanism.
+
+### Diagnose the concrete failure
+
+Design a public thumbnail and private original for a synthetic upload. Request each as an authorized and unauthorized caller; test that a cached private response is not reused for an unrelated identity.
+
+### Independent exercise and evidence
+
+Document object ownership, cache key, expiry and invalidation rules. Record origin and edge responses and explain how revocation behaves while a previously issued capability remains valid.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify actual media tools, storage, playback, provider and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

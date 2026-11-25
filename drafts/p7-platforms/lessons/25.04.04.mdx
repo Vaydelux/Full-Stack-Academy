@@ -44,6 +44,20 @@ node --test --test-name-pattern="25[.]04" examples/p7-platforms/labs.test.mjs
 
 Synthetic resource-bound model; no actual FFmpeg sandbox, CDN, HLS, WebRTC or moderation service acceptance.
 
+## Applied engineering walkthrough
+
+WebRTC coordinates media transport using signaling and connectivity establishment; STUN helps discover connectivity and TURN can relay traffic when direct connectivity is unavailable. An SFU is a separate topology choice. Room authorization and device permission remain application responsibilities.
+
+### Diagnose the concrete failure
+
+Use two authorized local peers with synthetic media, then deny a device permission and interrupt connectivity. Inspect negotiation and recovery state; confirm unauthorized room entry is rejected independently of media negotiation.
+
+### Independent exercise and evidence
+
+Record connectivity path, setup latency, reconnect and device permission behavior. Test relay-dependent cases only with permitted infrastructure and document unavailable conditions rather than inferring Internet-wide reliability.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify actual media tools, storage, playback, provider and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

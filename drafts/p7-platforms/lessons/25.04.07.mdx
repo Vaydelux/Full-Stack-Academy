@@ -44,6 +44,20 @@ node --test --test-name-pattern="25[.]04" examples/p7-platforms/labs.test.mjs
 
 Synthetic resource-bound model; no actual FFmpeg sandbox, CDN, HLS, WebRTC or moderation service acceptance.
 
+## Applied engineering walkthrough
+
+Media cost depends on input and rendition storage, delivered bytes, encoding work and simultaneous playback demand. Estimate using explicit workload assumptions, not a single average file size. Separate theoretical transfer volume from billable transfer under the chosen provider contract.
+
+### Diagnose the concrete failure
+
+Build a hypothetical workload with small and large assets, several rendition sizes and different view counts. Compare estimated storage and delivered volume, then vary watch completion and cache-hit assumptions.
+
+### Independent exercise and evidence
+
+Record low, base and high scenarios, resource quotas and an admission limit. Use hypothetical prices until current approved provider terms are verified; explain which variable most changes the estimate.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify actual media tools, storage, playback, provider and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

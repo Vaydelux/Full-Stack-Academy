@@ -44,6 +44,20 @@ node --test --test-name-pattern="25[.]04" examples/p7-platforms/labs.test.mjs
 
 Synthetic resource-bound model; no actual FFmpeg sandbox, CDN, HLS, WebRTC or moderation service acceptance.
 
+## Applied engineering walkthrough
+
+Moderation is a lifecycle involving quarantine, eligibility rules, authorized review, appeals and audit, not merely a classifier output. An automated signal may be wrong or unavailable. Deny public access until the reviewed policy allows release and keep reviewer authority scoped.
+
+### Diagnose the concrete failure
+
+Model a synthetic upload moving from pending to approved or blocked. Try publishing a pending object, a forbidden reviewer transition and a failed automated check; ensure none silently grants access.
+
+### Independent exercise and evidence
+
+Design an appeal and correction path with explicit reason codes, reviewer role and retention. Record transitions and access decisions without collecting real harmful or private content for the exercise.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify actual media tools, storage, playback, provider and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

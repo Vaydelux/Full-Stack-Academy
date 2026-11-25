@@ -44,6 +44,20 @@ node --test --test-name-pattern="25[.]04" examples/p7-platforms/labs.test.mjs
 
 Synthetic resource-bound model; no actual FFmpeg sandbox, CDN, HLS, WebRTC or moderation service acceptance.
 
+## Applied engineering walkthrough
+
+A durable processing job needs a stable identifier, quarantine state, bounded decoding, an idempotent output strategy and a finite retry policy. Publish only after output validation and authorization, and distinguish a failed attempt from a permanently failed job. Temporary files need cleanup after interruption.
+
+### Diagnose the concrete failure
+
+Process a self-created clip, simulate interruption before output promotion and retry the same job identity. Verify partial output is not served and completed output is not duplicated. Exercise a rejected oversized input.
+
+### Independent exercise and evidence
+
+Record the job state machine, worker limits, output identity and cleanup results. Submit negative and positive evidence with actual FFmpeg execution and storage tests separately from mediaAllowed model checks.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify actual media tools, storage, playback, provider and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?
