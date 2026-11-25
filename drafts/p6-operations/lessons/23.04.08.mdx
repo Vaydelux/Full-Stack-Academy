@@ -44,6 +44,20 @@ node --test --test-name-pattern="23[.]04" examples/p6-operations/labs.test.mjs
 
 Retry decision teaching model only; no network partition, broker, service discovery, replication or multi-region benchmark.
 
+## Applied engineering walkthrough
+
+A distributed design review examines invariants, ownership, deadlines, duplicates, partitions and recovery, not only the happy-path diagram. Each external side effect needs a defined response to ambiguous acknowledgement. Models can test local policies but cannot certify end-to-end guarantees.
+
+### Diagnose the concrete failure
+
+Run the existing retry, dependency and consumer models. Construct a failure matrix for timeout, duplicate delivery, network partition and unavailable dependency. Inspect whether every row has a bounded decision and a recoverable outcome.
+
+### Independent exercise and evidence
+
+Prepare an architecture review packet with dependency graph, invariants, failure matrix, evidence owner and unresolved runtime gates. Explicitly mark unavailable broker, database and regional tests not-run.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve the existing specification, model and unpublished status. Actual distributed runtime qualification remains independent.
+
 ## Knowledge check
 
 1. Which invariant or operational measurement determines success?

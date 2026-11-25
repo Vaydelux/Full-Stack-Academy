@@ -44,6 +44,20 @@ node --test --test-name-pattern="23[.]04" examples/p6-operations/labs.test.mjs
 
 Retry decision teaching model only; no network partition, broker, service discovery, replication or multi-region benchmark.
 
+## Applied engineering walkthrough
+
+Service discovery maps a logical service to changing endpoints. Health checks and bounded refresh influence which endpoints receive requests, but discovery does not authenticate a service by itself. Stale endpoint caches and connection reuse need explicit recovery behavior.
+
+### Diagnose the concrete failure
+
+In a disposable local fixture replace an endpoint registration and mark the old instance unhealthy. Observe bounded discovery refresh and request routing to the ready instance. Verify an unavailable service produces a bounded failure rather than infinite retries.
+
+### Independent exercise and evidence
+
+Design a discovery contract with trusted registration, health state, cache expiry and transport identity. Record actual endpoint transitions and request outcomes only when the local infrastructure runs.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve the existing specification, model and unpublished status. Actual distributed runtime qualification remains independent.
+
 ## Knowledge check
 
 1. Which invariant or operational measurement determines success?

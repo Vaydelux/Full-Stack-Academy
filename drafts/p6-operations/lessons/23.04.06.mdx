@@ -44,6 +44,20 @@ node --test --test-name-pattern="23[.]04" examples/p6-operations/labs.test.mjs
 
 Retry decision teaching model only; no network partition, broker, service discovery, replication or multi-region benchmark.
 
+## Applied engineering walkthrough
+
+Multi-region deployment adds network latency and independent failure domains. Define write authority, replication lag and failover behavior explicitly. Two regions accepting writes without a coordination or conflict strategy can violate invariants. A local model cannot establish real regional latency.
+
+### Diagnose the concrete failure
+
+Draw two regional request paths and simulate a delayed replica, unavailable primary and promotion decision. Identify which reads may be stale and which operations must reach the authoritative writer. Do not assume automatic failover is safe.
+
+### Independent exercise and evidence
+
+Design a regional recovery record including consistency, write authority, traffic cutover and recovery objectives. Record actual latency and failover evidence only from an authorized deployment rehearsal.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve the existing specification, model and unpublished status. Actual distributed runtime qualification remains independent.
+
 ## Knowledge check
 
 1. Which invariant or operational measurement determines success?

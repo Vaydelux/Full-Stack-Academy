@@ -44,6 +44,20 @@ node --test --test-name-pattern="23[.]04" examples/p6-operations/labs.test.mjs
 
 Retry decision teaching model only; no network partition, broker, service discovery, replication or multi-region benchmark.
 
+## Applied engineering walkthrough
+
+CAP concerns consistency and availability during a network partition, under precise definitions of those guarantees. For inventory, rejecting a write that cannot reach the authoritative state may preserve an invariant at the cost of availability. Allowing conflicting writes requires a defined reconciliation contract, not a promise of linearizability.
+
+### Diagnose the concrete failure
+
+Draw two replicas separated by a synthetic partition and submit competing requests for the last item. Compare refusing an unavailable authoritative write with accepting both requests for later reconciliation. Identify which outcome preserves the selected business invariant.
+
+### Independent exercise and evidence
+
+Write a decision record for inventory writes and a less critical read projection. Record partition assumptions, permitted responses and recovery criteria; do not claim a simulated decision proves a distributed implementation.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve the existing specification, model and unpublished status. Actual distributed runtime qualification remains independent.
+
 ## Knowledge check
 
 1. Which invariant or operational measurement determines success?

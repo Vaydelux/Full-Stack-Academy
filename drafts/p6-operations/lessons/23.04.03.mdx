@@ -44,6 +44,20 @@ node --test --test-name-pattern="23[.]04" examples/p6-operations/labs.test.mjs
 
 Retry decision teaching model only; no network partition, broker, service discovery, replication or multi-region benchmark.
 
+## Applied engineering walkthrough
+
+Retries multiply across layers when each service independently retries a downstream failure. Propagate a total deadline and choose a bounded retry owner. A transient error is not enough to justify repeating an unsafe operation; unknown write outcomes need idempotency or reconciliation.
+
+### Diagnose the concrete failure
+
+Run retryDecision with a safe transient failure and then exhausted time, maximum attempts, permanent failure and non-idempotent input. Compare the resulting decisions. Sketch three layers each retrying and identify the potential multiplication of calls.
+
+### Independent exercise and evidence
+
+Design one retry policy with capped attempts, elapsed deadline and jitter. Record decisions and actual transport timings separately, including uncertain external write behavior.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve the existing specification, model and unpublished status. Actual distributed runtime qualification remains independent.
+
 ## Knowledge check
 
 1. Which invariant or operational measurement determines success?
