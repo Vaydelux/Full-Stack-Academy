@@ -42,6 +42,20 @@ Document both a permitted happy path and a rejected adversarial path. Integratio
 
 A passing UI check or source-only checklist cannot establish secure production behavior. An observed negative test and reviewed trust boundary are essential.
 
+## Applied engineering walkthrough
+
+Backups can contain more sensitive data than an individual API response. Restrict backup creation, retrieval and restoration to designated identities; encrypt and audit access according to the operational requirements. A restored test database must not become an unrestricted copy of production records.
+
+### Diagnose the concrete failure
+
+Use a synthetic backup artifact and separate test roles. Verify authorized retrieval and a denied download, then restore into an isolated environment. Inspect effective access after restore and confirm the artifact is not publicly served.
+
+### Independent exercise and evidence
+
+Design a backup access matrix, retention period, encryption-key ownership and restore approval procedure. Record actual denied access and restore checks when available; do not use real production data for this lesson.
+
+**Qualification boundary:** These are practice instructions, not recorded audit results. Use synthetic data and authorized disposable infrastructure. Preserve existing laboratory contracts and publication status.
+
 ## Knowledge check
 
 1. Which input is attacker-controlled?
