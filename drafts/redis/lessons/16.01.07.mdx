@@ -50,6 +50,20 @@ In the test notes, separate what the in-memory fixture genuinely observed from R
 
 A high hit ratio is not itself evidence of correct freshness or user isolation.
 
+## Applied engineering walkthrough
+
+Hit ratio is hits divided by eligible cache lookups; define which operations count before measuring. It is undefined with zero observations. High hit rate can coexist with stale values, large payloads or failed invalidations. Coalesced waiters and actual database loads are different metrics.
+
+### Diagnose the concrete failure
+
+Run a miss followed by a hit and inspect numerator and denominator. Compare a concurrent miss burst with coalescing and record loader invocations separately. Check the no-observation case. Do not report a fabricated percentage when the denominator is zero.
+
+### Independent exercise and evidence
+
+Design a dashboard including hit ratio, origin loads, evictions, load errors, freshness lag and latency percentiles. Segment by endpoint rather than averaging incompatible workloads. Record the measured period and workload.
+
+**Qualification boundary:** These are practice instructions, not recorded results. Preserve the existing lab and publication status; in-memory tests do not qualify live Redis or BullMQ behavior.
+
 ## Knowledge check
 
 1. What is authoritative in this scenario, and what state is derived or replayable?
