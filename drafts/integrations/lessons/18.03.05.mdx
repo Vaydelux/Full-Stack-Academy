@@ -52,6 +52,20 @@ The corresponding module exercises **TenantSearch: tenant isolation, ranking, st
 
 For a production implementation, document the secret-owner or principal, durability plan, error and recovery policy, rate/resource bounds, privacy guarantees, observability without sensitive payloads, and the credential/version-rotation procedure.
 
+## Applied engineering walkthrough
+
+A search index is derived state. Authoritative writes may be delivered out of order, so indexing should compare resource revisions and retain deletion markers long enough to prevent stale resurrection. Tombstones require a retention and reconciliation policy rather than unlimited accumulation.
+
+### Diagnose the concrete failure
+
+Apply version two of a synthetic document, then replay version one and verify the newer title remains. Delete at a later revision and replay a stale update; verify the document stays absent. Check another tenant's record is unchanged.
+
+### Independent exercise and evidence
+
+Design an outbox-driven indexing worker with retry, revision fencing and periodic reconciliation against the authoritative database. Record final versions, deletion state and observed indexing lag.
+
+**Qualification boundary:** These are practice instructions, not recorded results. Preserve existing specifications and laboratory contracts. Qualify actual external services separately using authorized disposable infrastructure.
+
 ## Knowledge check
 
 1. Which authenticated actor, external sender, or tenant owns the data in this scenario?
