@@ -44,6 +44,20 @@ node --test --test-name-pattern="20[.]01" examples/p6-quality/labs.test.mjs
 
 Declarative policy model; no Docker engine, image build, scan or real network isolation executed.
 
+## Applied engineering walkthrough
+
+Image pinning controls identity, while vulnerability scanning evaluates known findings against a specific artifact at a specific time. Review severity, reachability, available fixes and exceptions. Scanner unavailability is missing evidence, not a clean result.
+
+### Diagnose the concrete failure
+
+Inspect a real disposable image digest and run an approved scanner when available. Compare the findings with the package inventory and documented blocking policy. Test the policy's handling of tag-only input and unavailable evidence without claiming an actual scan occurred.
+
+### Independent exercise and evidence
+
+Design a recurring image update process with reviewed base digests, artifact scan, smoke tests and time-limited exceptions. Record scanner version, database date and disposition per finding.
+
+**Evidence boundary:** These are practice instructions, not recorded test results. Preserve the existing model, specification and draft flag; external runtime qualification remains independent.
+
 ## Knowledge check
 
 1. Which public behavior or invariant is being protected?
