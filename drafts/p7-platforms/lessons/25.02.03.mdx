@@ -44,6 +44,20 @@ node --test --test-name-pattern="25[.]02" examples/p7-platforms/labs.test.mjs
 
 Synthetic citation membership check; not evidence of factual grounding, model safety, embeddings or real provider behavior.
 
+## Applied engineering walkthrough
+
+Retrieved documents are untrusted content, even when they come from an authorized index. Instructions embedded in those documents must not override application policy. Enforce tenant and document access before retrieval and independently authorize every proposed tool action at execution.
+
+### Diagnose the concrete failure
+
+Insert a synthetic document asking the model to disclose a foreign record. Verify retrieval excludes unauthorized records, citation validation rejects unknown IDs and a separately guarded mock tool denies the proposed action.
+
+### Independent exercise and evidence
+
+Build a test matrix covering malicious retrieved text, invented citations and a valid citation attached to an unsupported claim. Document which checks are deterministic and which need human semantic evaluation.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status; independently verify actual model, database, retrieval, provider and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

@@ -44,6 +44,20 @@ node --test --test-name-pattern="25[.]02" examples/p7-platforms/labs.test.mjs
 
 Synthetic citation membership check; not evidence of factual grounding, model safety, embeddings or real provider behavior.
 
+## Applied engineering walkthrough
+
+A retrieval-augmented answer requires authorized retrieval before generation, traceable evidence and a clear abstention path. Citation membership only confirms that an identifier is allowed; it does not prove a passage supports a specific claim. Evaluate semantic support separately and prevent tools from bypassing access checks.
+
+### Diagnose the concrete failure
+
+Run citedAnswer against known and foreign source identifiers, then supply an allowed source that contradicts the proposed claim. Observe the model limitation and design a separate claim-level review rather than treating membership as proof.
+
+### Independent exercise and evidence
+
+Build a disposable pipeline with synthetic documents, tenant-scoped retrieval, bounded context and validated response output. Submit retrieval and answer evidence for known, unknown and adversarial questions, with any real provider checks clearly marked not-run.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status; independently verify actual model, database, retrieval, provider and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?
