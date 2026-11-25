@@ -10,8 +10,8 @@
   },
   "development": {
     "branch": "feat/p8-publication-evidence",
-    "state": "p10-tracks24-26-editorial-complete-capstone-remaining-runtime-blocked",
-    "note": "P10.9 complete: all 96 manuscripts across Tracks 24–26 have applied walkthroughs. Latest 56 additional manuscripts passed 56/56 precommit source checks and 56/56 committed-patch inspections, 7,791 added whitespace-delimited words. Unique unpublished editorial progress 511/551, 338/889 published unchanged. Full Node24, MDX/browser, real provider/database/device and human accessibility qualification not executed."
+    "state": "p10-editorial-complete-curriculum-frozen-runtime-qualification-pending",
+    "note": "P10.10: all 40 capstone manuscripts expanded; 40/40 precommit source checks and committed patch inspections passed. Source inventory 889 unique canonical topics, 338 published, 551 unpublished, 552 draft files including overlap 15.02.04. Editorial program 551/551 unique unpublished topics expanded by cumulative milestone records. Scope guard and 12 isolated Node22 regression tests added; whole-checkout gate not executed. No release approval."
   },
   "snapshot": {
     "tracks": 28,
@@ -73,6 +73,6 @@
     "devHighFindings": 14,
     "exceptionExpires": "2026-12-02"
   },
-  "nextMilestone": "P10.10: Track 27 final capstone, modules 27.01–27.05 (40 manuscripts). Then freeze editorial expansion, execute P9 local qualification and publish complete modules in P1–P7 order. Keep PR #71 draft until gates pass.",
-  "status": "all-topics-authored-p10-capstone-editorial-remaining-publication-blocked"
+  "nextMilestone": "F1/P9: clean Node24.9+ checkout, genuine locks, P1 coordinator --plan-p1 then --run-p1, human review and atomic 09.02/09.03 promotions; follow P2–P7 module qualification and publication. No new curriculum scope.",
+  "status": "curriculum-editorial-frozen-runtime-and-publication-blocked"
 }

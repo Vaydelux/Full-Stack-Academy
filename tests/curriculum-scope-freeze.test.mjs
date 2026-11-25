@@ -1,0 +1,18 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { projectScope, verifyFrozenScope } from '../scripts/curriculum-scope-freeze.mjs';
+const curriculum = {tracks:[{id:'00'},{id:'01'}],modules:[{id:'00.01',track:'00'},{id:'01.01',track:'01'}],lessons:[{id:'00.01.01',moduleId:'00.01',trackId:'00'},{id:'01.01.01',moduleId:'01.01',trackId:'01'}]};
+const frozen = projectScope(curriculum);
+const check = (c=curriculum,p=['00.01.01'],s=['00.01.01','01.01.01']) => verifyFrozenScope(c,frozen,p,s);
+test('overlapping published draft counted only once',()=>assert.deepEqual(check(),{topics:2,published:1,stagedUnpublished:1}));
+test('publication can advance without changing frozen scope',()=>assert.deepEqual(check(curriculum,['00.01.01','01.01.01'],[]),{topics:2,published:2,stagedUnpublished:0}));
+test('editorial corrections and reordering allowed',()=>{const c=structuredClone(curriculum);c.lessons.reverse();c.lessons[0].title='Corrected';assert.doesNotThrow(()=>check(c));});
+test('added topic rejected',()=>{const c=structuredClone(curriculum);c.lessons.push({id:'01.01.02',moduleId:'01.01',trackId:'01'});assert.throws(()=>check(c),/scope changed/);});
+test('removed topic rejected',()=>{const c=structuredClone(curriculum);c.lessons.pop();assert.throws(()=>check(c),/scope changed/);});
+test('reassigned topic rejected',()=>{const c=structuredClone(curriculum);c.lessons[0].moduleId='01.01';c.lessons[0].trackId='01';assert.throws(()=>check(c),/scope changed/);});
+test('duplicate canonical ID rejected',()=>{const c=structuredClone(curriculum);c.lessons.push(c.lessons[0]);assert.throws(()=>check(c),/Duplicate topic ID/);});
+test('unknown source ID rejected',()=>assert.throws(()=>check(curriculum,['00.01.01','99.99.99']),/Unknown source ID/));
+test('lost manuscript coverage rejected',()=>assert.throws(()=>check(curriculum,['00.01.01'],[]),/coverage lost/));
+test('invalid module track rejected',()=>{const c=structuredClone(curriculum);c.modules[0].track='99';assert.throws(()=>check(c),/Unknown module track/);});
+test('inconsistent topic track rejected',()=>{const c=structuredClone(curriculum);c.lessons[0].trackId='01';assert.throws(()=>check(c),/Topic track mismatch/);});
+test('duplicate source entries rejected',()=>assert.throws(()=>check(curriculum,['00.01.01','00.01.01']),/Duplicate published ID/));

@@ -4,6 +4,7 @@
  */
 import fs from 'node:fs';
 import { collectStagedIds } from './staged-inventory.mjs';
+import { verifyFrozenScope } from './curriculum-scope-freeze.mjs';
 import path from 'node:path';
 import assert from 'node:assert/strict';
 import { fileURLToPath } from 'node:url';
@@ -35,6 +36,8 @@ const totals={
  completeModules:modules.filter(m=>m.complete).length,incompleteModules:modules.filter(m=>!m.complete).length,
 };
 if(process.argv.includes('--check')){
+ const frozen=JSON.parse(read('data/curriculum-scope-freeze.json'));
+ verifyFrozenScope(curriculum,frozen,published,staged);
  assert.equal(totals.tracks,checkpoint.snapshot.tracks);
  assert.equal(totals.modules,checkpoint.snapshot.modules);
  assert.equal(totals.topics,checkpoint.snapshot.catalogTopics);
