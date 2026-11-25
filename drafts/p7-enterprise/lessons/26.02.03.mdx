@@ -44,6 +44,20 @@ node --test --test-name-pattern="26[.]02" examples/p7-platforms/labs.test.mjs
 
 Synthetic entitlement policy; no payment provider authenticity, tax, invoicing, real charges or durable billing integration verified.
 
+## Applied engineering walkthrough
+
+Deduplication needs a durable event identity and atomic application of the entitlement change. A check followed by a separate write can race under concurrent callbacks. Bind accepted identities to the appropriate provider and payload identity, and define reconciliation for conflicting events.
+
+### Diagnose the concrete failure
+
+Deliver a synthetic payment event twice, including concurrent delivery. Verify only one logical grant occurs. Reuse its identity with changed content and ensure the conflict is rejected rather than granting credit again.
+
+### Independent exercise and evidence
+
+Compare with the earlier transactional inbox contract and design a crash test around commit and acknowledgement. Record event ledger and entitlement state; an in-memory set alone does not prove durable behavior.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status; independently verify real sandbox signatures, database durability, billing and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

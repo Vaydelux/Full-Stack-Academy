@@ -44,6 +44,20 @@ node --test --test-name-pattern="26[.]02" examples/p7-platforms/labs.test.mjs
 
 Synthetic entitlement policy; no payment provider authenticity, tax, invoicing, real charges or durable billing integration verified.
 
+## Applied engineering walkthrough
+
+Metering requires stable usage-event identity, tenant, unit, occurrence time and aggregation window. Keep units consistent, handle duplicate and late events, and preserve enough lineage to reconcile a disputed invoice. Separate the raw usage record from the derived charge calculation.
+
+### Diagnose the concrete failure
+
+Create ten synthetic records with one duplicate and one foreign-tenant event. Aggregate only eligible unique units for the target window and compare to a manually calculated expected total.
+
+### Independent exercise and evidence
+
+Specify rounding, late arrivals and correction records. Test a conflicting duplicate and a record exactly at the window boundary. Record source IDs and aggregate units without exposing real billing information.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status; independently verify real sandbox signatures, database durability, billing and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

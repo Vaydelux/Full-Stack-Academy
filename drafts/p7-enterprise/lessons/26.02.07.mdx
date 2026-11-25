@@ -44,6 +44,20 @@ node --test --test-name-pattern="26[.]02" examples/p7-platforms/labs.test.mjs
 
 Synthetic entitlement policy; no payment provider authenticity, tax, invoicing, real charges or durable billing integration verified.
 
+## Applied engineering walkthrough
+
+Sandbox qualification must separate credentials, accounts, event endpoints and storage from production. A test event must not change live entitlements, and a successful simulator response is not evidence of real payment settlement. Refuse startup if environment identity cannot be established.
+
+### Diagnose the concrete failure
+
+Rehearse renewal, decline, duplicate callback and cancellation using approved sandbox fixtures. Verify live credentials are absent and every event is scoped to synthetic accounts. Inspect callback evidence rather than only dashboard status.
+
+### Independent exercise and evidence
+
+Prepare a sandbox-only configuration checklist and expected state timeline. Record provider mode, sanitized event identifiers and actual responses; do not create a real charge or paid resource for this exercise.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status; independently verify real sandbox signatures, database durability, billing and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

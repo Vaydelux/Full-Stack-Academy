@@ -44,6 +44,20 @@ node --test --test-name-pattern="26[.]02" examples/p7-platforms/labs.test.mjs
 
 Synthetic entitlement policy; no payment provider authenticity, tax, invoicing, real charges or durable billing integration verified.
 
+## Applied engineering walkthrough
+
+A billing adapter maps provider-specific responses into a narrow internal contract without erasing relevant provenance. Do not pretend different provider states are identical when they have different effective-time or cancellation semantics. Unknown events should be safely recorded or quarantined rather than granting access.
+
+### Diagnose the concrete failure
+
+Implement two mocked providers with equivalent supported states and one unsupported state. Verify normalized results, retained provider identifiers and a safe unknown-event outcome.
+
+### Independent exercise and evidence
+
+Write adapter contract tests for missing identifiers, duplicate event delivery and differing timestamps. Record mapping decisions and unresolved semantics; verify each real provider separately before enabling it.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status; independently verify real sandbox signatures, database durability, billing and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

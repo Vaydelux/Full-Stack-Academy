@@ -44,6 +44,20 @@ node --test --test-name-pattern="26[.]02" examples/p7-platforms/labs.test.mjs
 
 Synthetic entitlement policy; no payment provider authenticity, tax, invoicing, real charges or durable billing integration verified.
 
+## Applied engineering walkthrough
+
+Authenticate billing callbacks using the provider's documented signature algorithm, required original bytes and replay controls before interpreting the payload. A valid signature establishes message authenticity within that contract, not that a caller-provided tenant ID is trustworthy. Resolve ownership using verified provider identifiers.
+
+### Diagnose the concrete failure
+
+Use a permitted sandbox signing fixture, then change the body and test an expired timestamp. Verify invalid events produce no entitlement write. Try a valid event with an inconsistent internal mapping and quarantine it.
+
+### Independent exercise and evidence
+
+Record sanitized event ID, signature verification outcome and ownership lookup result. Include duplicate delivery and missing credentials; never publish secrets or actual payment details in test evidence.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status; independently verify real sandbox signatures, database durability, billing and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?
