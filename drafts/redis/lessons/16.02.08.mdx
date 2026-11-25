@@ -50,6 +50,20 @@ In the test notes, separate what the in-memory fixture genuinely observed from R
 
 TTL alone is not a coherent write consistency protocol.
 
+## Applied engineering walkthrough
+
+Invalidating before a database commit allows a concurrent reader to load the old value and refill the cache. Invalidation after commit reduces that window but a previously started loader may still finish later. Version fencing, bounded expiry and durable invalidation can address different parts of the race.
+
+### Diagnose the concrete failure
+
+Use a deterministic barrier to hold a synthetic old-value loader while a write commits and invalidates. Release the loader and verify the expected current value remains visible under the local contract. Repeat in a real multi-instance test before asserting distributed behavior.
+
+### Independent exercise and evidence
+
+Design a versioned cache update and a durable retry for failed invalidation. Record read/write order, database revision, cache revision and the maximum acceptable staleness. Do not claim atomic SQL/Redis commit.
+
+**Qualification boundary:** These are practice instructions, not recorded results. Preserve the existing lab and publication status; in-memory tests do not qualify live Redis or BullMQ behavior.
+
 ## Knowledge check
 
 1. What is authoritative in this scenario, and what state is derived or replayable?
