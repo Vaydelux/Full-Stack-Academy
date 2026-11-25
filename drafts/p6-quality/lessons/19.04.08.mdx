@@ -44,6 +44,20 @@ node --test --test-name-pattern="19[.]04" examples/p6-quality/labs.test.mjs
 
 Metrics model uses supplied samples; no real load generation, chaos or database benchmark.
 
+## Applied engineering walkthrough
+
+An API SLO combines a precisely defined population and measurable targets over a window. Synthetic latency and error samples teach gate arithmetic, not actual service availability. Define whether failures and timeouts enter the denominator and which latency samples qualify.
+
+### Diagnose the concrete failure
+
+Run the supplied hundred-sample model with one error and the stated p95 threshold, then introduce additional errors and verify the changed result fails. Exercise an empty observation set and ensure it cannot pass as healthy.
+
+### Independent exercise and evidence
+
+Design a disposable API workload with a latency target, success-rate target and minimum sample count. Record actual observations and distinguish test acceptance from a production SLO or contractual SLA.
+
+**Evidence boundary:** These are practice instructions, not recorded test results. Preserve the existing model, specification and draft flag; external runtime qualification remains independent.
+
 ## Knowledge check
 
 1. Which public behavior or invariant is being protected?
