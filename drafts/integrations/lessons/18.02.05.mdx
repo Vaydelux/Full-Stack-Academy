@@ -52,6 +52,20 @@ The corresponding module exercises **MailOutbox: consent, idempotency, bounded r
 
 For a production implementation, document the secret-owner or principal, durability plan, error and recovery policy, rate/resource bounds, privacy guarantees, observability without sensitive payloads, and the credential/version-rotation procedure.
 
+## Applied engineering walkthrough
+
+SPF identifies authorized envelope senders, DKIM signs selected message content and headers, and DMARC evaluates alignment with the visible From domain using SPF or DKIM. A valid API credential does not establish domain alignment. Policy deployment should follow verified sending inventory and monitoring.
+
+### Diagnose the concrete failure
+
+For an authorized staging domain, inspect current DNS records and a delivered synthetic test message's authentication results. Compare the aligned domains and identify missing or failed checks. Do not modify real DNS or send messages as part of the source-only exercise.
+
+### Independent exercise and evidence
+
+Draft a domain authentication rollout with reporting, authorized senders, key rotation and staged enforcement. Record DNS observations and recipient-side verification only after an approved live test.
+
+**Qualification boundary:** These are practice instructions, not recorded results. Preserve existing specifications and laboratory contracts. Qualify actual external services separately using authorized disposable infrastructure.
+
 ## Knowledge check
 
 1. Which authenticated actor, external sender, or tenant owns the data in this scenario?
