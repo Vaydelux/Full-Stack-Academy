@@ -44,6 +44,20 @@ node --test --test-name-pattern="22[.]02" examples/p6-operations/labs.test.mjs
 
 Synthetic latency sample analysis only; actual CPU/heap profiles, Fastify comparison, query plans and HTTP behavior need real runtimes.
 
+## Applied engineering walkthrough
+
+An ETag identifies a representation version under an explicit validator contract. For a matching conditional GET, a 304 response carries no representation body; changed data should produce a new validator. Cache-Control and Vary govern reuse, and private data must not become shared across users.
+
+### Diagnose the concrete failure
+
+Use an isolated HTTP fixture to read a resource and capture its ETag. Send If-None-Match, verify 304 and an empty body, mutate the resource and verify 200 with a new representation. Test private scope separately.
+
+### Independent exercise and evidence
+
+Design cache headers and validators for public catalog and authenticated task endpoints. Record status, validator changes and cache isolation; do not reuse a write precondition test as GET evidence.
+
+**Evidence boundary:** These are practice instructions, not recorded benchmark results. Preserve the existing specification, model and unpublished status. Actual API and database measurements remain independent.
+
 ## Knowledge check
 
 1. Which invariant or operational measurement determines success?
