@@ -44,6 +44,20 @@ node --test --test-name-pattern="20[.]02" examples/p6-quality/labs.test.mjs
 
 Synthetic CI evidence only; no hosted workflow, branch protection change or cryptographic provenance.
 
+## Applied engineering walkthrough
+
+Lint, type checking, tests and a production build each detect different failure classes. A successful build can coexist with skipped or incomplete checks depending on configuration. Release evidence requires explicit expected jobs and successful results, not a generic green status.
+
+### Diagnose the concrete failure
+
+Supply the four required job results to the local gate, then replace typecheck success with a skipped result. Verify that aggregation blocks the candidate. Test a failed job and an absent job independently.
+
+### Independent exercise and evidence
+
+Write a qualification manifest including required checks, commands, expected outputs and exact commit. Record missing prerequisites without silently removing the affected gate.
+
+**Evidence boundary:** These are practice instructions, not recorded test results. Preserve the existing model, specification and draft flag; external runtime qualification remains independent.
+
 ## Knowledge check
 
 1. Which public behavior or invariant is being protected?
