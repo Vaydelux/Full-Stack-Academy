@@ -52,6 +52,20 @@ The corresponding module exercises **inspectUpload, issueUploadToken, verifyUplo
 
 For a production implementation, document the secret-owner or principal, durability plan, error and recovery policy, rate/resource bounds, privacy guarantees, observability without sensitive payloads, and the credential/version-rotation procedure.
 
+## Applied engineering walkthrough
+
+An upload receipt confirms only a prior operation; it does not authorize subsequent downloads. Private read decisions depend on the current actor, tenant, resource permission and clean processing state. A signed download link is a bearer capability and may remain usable until expiry.
+
+### Diagnose the concrete failure
+
+Create synthetic assets for two owners and exercise quarantined, clean and blocked states. Verify only the intended owner can read the clean asset. Test membership revocation and outstanding links as separate provider-level cases.
+
+### Independent exercise and evidence
+
+Design a private read endpoint that authorizes the resource before issuing a short-lived capability. Record permitted and forbidden asset IDs, scan state and the defined revocation window.
+
+**Qualification boundary:** These are practice instructions, not recorded results. Preserve existing specifications and laboratory contracts. Qualify actual external services separately using authorized disposable infrastructure.
+
 ## Knowledge check
 
 1. Which authenticated actor, external sender, or tenant owns the data in this scenario?
