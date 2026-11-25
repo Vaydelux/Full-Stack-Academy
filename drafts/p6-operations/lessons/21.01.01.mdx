@@ -44,6 +44,20 @@ node --test --test-name-pattern="21[.]01" examples/p6-operations/labs.test.mjs
 
 Local field-allowlist model only; Pino, exporters, collectors and Sentry require installed tools and actual trace propagation.
 
+## Applied engineering walkthrough
+
+Structured logging records a bounded set of named fields instead of dumping the request. Prefer an allowlisted projection at the logging boundary; redaction is a second layer, not permission to collect secrets. Route templates provide useful grouping without recording arbitrary resource paths.
+
+### Diagnose the concrete failure
+
+Pass a synthetic password and authorization value to safeLog. Inspect the resulting keys and verify the request ID, route, status and duration remain present. In a disposable Pino fixture exercise an exception and nested context separately.
+
+### Independent exercise and evidence
+
+Design an event schema with field limits, severity, correlation and retention. Record emitted fields and rejected sensitive fields; a pure projection test does not establish the actual logger configuration.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve the existing specification, model and unpublished status. Actual instrumentation and runtime qualification remain independent.
+
 ## Knowledge check
 
 1. Which invariant or operational measurement determines success?

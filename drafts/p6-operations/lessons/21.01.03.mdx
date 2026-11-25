@@ -44,6 +44,20 @@ node --test --test-name-pattern="21[.]01" examples/p6-operations/labs.test.mjs
 
 Local field-allowlist model only; Pino, exporters, collectors and Sentry require installed tools and actual trace propagation.
 
+## Applied engineering walkthrough
+
+Counters describe cumulative events, gauges represent changing current state, and histograms record distributions in buckets. A counter can reset on process restart; rate calculations must handle resets. Labels should represent bounded dimensions, not every user or request.
+
+### Diagnose the concrete failure
+
+Record three synthetic requests and a queue that drains from three to zero. Predict counter increase, gauge decrease and histogram observation count. Test an invalid high-cardinality label in the proposed instrumentation policy.
+
+### Independent exercise and evidence
+
+Design a metric inventory with units, label allowlists and aggregation rules. Record observed values from actual instrumentation separately from the local model.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve the existing specification, model and unpublished status. Actual instrumentation and runtime qualification remain independent.
+
 ## Knowledge check
 
 1. Which invariant or operational measurement determines success?

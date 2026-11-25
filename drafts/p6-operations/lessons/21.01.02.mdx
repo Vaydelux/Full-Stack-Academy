@@ -44,6 +44,20 @@ node --test --test-name-pattern="21[.]01" examples/p6-operations/labs.test.mjs
 
 Local field-allowlist model only; Pino, exporters, collectors and Sentry require installed tools and actual trace propagation.
 
+## Applied engineering walkthrough
+
+A correlation identifier links records across a request path; it does not establish identity or authorization. Accept external identifiers only under an explicit length and character policy, or generate a fresh trusted one. Propagate it through asynchronous work without sharing mutable global state.
+
+### Diagnose the concrete failure
+
+Send a valid synthetic ID through two local handlers and check matching log fields. Test missing and overlong IDs and concurrent requests with distinct identifiers. Verify neither request receives the other request's context.
+
+### Independent exercise and evidence
+
+Design a propagation contract across proxy, API and job worker. Record bounded IDs and observed log correlation, and test concurrent context isolation independently.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve the existing specification, model and unpublished status. Actual instrumentation and runtime qualification remain independent.
+
 ## Knowledge check
 
 1. Which invariant or operational measurement determines success?

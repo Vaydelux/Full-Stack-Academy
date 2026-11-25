@@ -44,6 +44,20 @@ node --test --test-name-pattern="21[.]01" examples/p6-operations/labs.test.mjs
 
 Local field-allowlist model only; Pino, exporters, collectors and Sentry require installed tools and actual trace propagation.
 
+## Applied engineering walkthrough
+
+A trace represents a causal graph of spans. Child spans retain parent context and describe the work of a dependency. Span status should reflect the actual outcome; a caught error can still be important to record. Distributed context is not a trusted identity claim.
+
+### Diagnose the concrete failure
+
+Trace a synthetic checkout with inventory success and payment failure. In an installed local exporter inspect trace and parent identifiers, durations and safe error status. Verify unrelated simultaneous requests have separate trace IDs.
+
+### Independent exercise and evidence
+
+Design span names based on operation rather than user IDs. Record the actual span graph and missing-context behavior without retaining private payment data.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve the existing specification, model and unpublished status. Actual instrumentation and runtime qualification remain independent.
+
 ## Knowledge check
 
 1. Which invariant or operational measurement determines success?

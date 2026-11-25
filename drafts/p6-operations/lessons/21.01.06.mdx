@@ -44,6 +44,20 @@ node --test --test-name-pattern="21[.]01" examples/p6-operations/labs.test.mjs
 
 Local field-allowlist model only; Pino, exporters, collectors and Sentry require installed tools and actual trace propagation.
 
+## Applied engineering walkthrough
+
+Error reporting needs useful stack and operation context without bearer tokens, cookies or private payloads. Scrubbing must cover nested data, breadcrumbs and URLs, not just top-level fields. SDK configuration and actual transport output need separate inspection.
+
+### Diagnose the concrete failure
+
+Use an isolated test transport and throw an exception containing a synthetic secret marker. Inspect the serialized event before transmission and verify the marker is absent while useful error context remains. Test nested context and breadcrumbs.
+
+### Independent exercise and evidence
+
+Design an error-event allowlist, retention policy and release identifier. Record actual captured event fields and denied synthetic markers; never send real credentials to a test service.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve the existing specification, model and unpublished status. Actual instrumentation and runtime qualification remain independent.
+
 ## Knowledge check
 
 1. Which invariant or operational measurement determines success?

@@ -44,6 +44,20 @@ node --test --test-name-pattern="21[.]01" examples/p6-operations/labs.test.mjs
 
 Local field-allowlist model only; Pino, exporters, collectors and Sentry require installed tools and actual trace propagation.
 
+## Applied engineering walkthrough
+
+Useful incident evidence connects a safe request log with the trace of the failing dependency. Logs, metrics and traces complement one another; none alone proves root cause. Correlation must survive async boundaries and error handling without exposing secrets.
+
+### Diagnose the concrete failure
+
+Run the existing safeLog model tests and then plan a local instrumented API request with a synthetic downstream failure. Match the trace and log IDs, inspect failure status and verify the secret marker is absent.
+
+### Independent exercise and evidence
+
+Produce a diagnostic packet containing request outcome, trace graph, relevant metric and redacted log. Label actual observations and missing exporter or runtime evidence separately.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve the existing specification, model and unpublished status. Actual instrumentation and runtime qualification remain independent.
+
 ## Knowledge check
 
 1. Which invariant or operational measurement determines success?
