@@ -50,6 +50,20 @@ In the test notes, separate what the in-memory fixture genuinely observed from R
 
 A process-local singleflight guard does not coordinate workers on separate hosts.
 
+## Applied engineering walkthrough
+
+A stampede occurs when many misses trigger redundant loads for the same key. In-process single-flight coalesces requests inside one process only; distributed coordination needs a separate design. Locks need bounded lifetimes and ownership-safe release. A stale loader must not overwrite a newer version.
+
+### Diagnose the concrete failure
+
+Start twenty synthetic readers behind a controlled loader barrier. Verify they share one load and receive the intended value. Reject the loader once and check later requests can retry. Race a held loader with invalidation and assert the chosen freshness contract.
+
+### Independent exercise and evidence
+
+Design a multi-instance coordination experiment with bounded waiting, jittered expiry and safe fallback. Record loader count, latency and stale-result behavior; local coalescing is not a distributed lock test.
+
+**Qualification boundary:** These are practice instructions, not recorded results. Preserve the existing lab and publication status; in-memory tests do not qualify live Redis or BullMQ behavior.
+
 ## Knowledge check
 
 1. What is authoritative in this scenario, and what state is derived or replayable?
