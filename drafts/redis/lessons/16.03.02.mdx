@@ -50,6 +50,20 @@ In the test notes, separate what the in-memory fixture genuinely observed from R
 
 A queue payload is a persisted message and must be treated as potentially sensitive data.
 
+## Applied engineering walkthrough
+
+A queue name identifies a workflow, not an authorization boundary. A versioned payload needs a stable event identity, trusted tenant context and bounded fields. Avoid secrets or large private objects in messages; store references to authorized durable records instead.
+
+### Diagnose the concrete failure
+
+Feed the local validator a valid job and malformed payloads with missing identifiers, extra privileged fields or wrong tenant scope. Verify invalid jobs are rejected before side effects. Inspect stored payloads for synthetic secrets.
+
+### Independent exercise and evidence
+
+Design a versioned receipt-job schema and a migration plan for older pending jobs. Record accepted fields, denied cases and how workers resolve authoritative data safely.
+
+**Qualification boundary:** These are practice instructions, not recorded results. Preserve the existing lab and publication status; in-memory tests do not qualify live Redis or BullMQ behavior.
+
 ## Knowledge check
 
 1. What is authoritative in this scenario, and what state is derived or replayable?
