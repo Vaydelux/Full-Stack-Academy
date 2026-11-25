@@ -50,6 +50,20 @@ In the test notes, separate what the in-memory fixture genuinely observed from R
 
 A password does not excuse an internet-exposed cache or broad privileged access.
 
+## Applied engineering walkthrough
+
+Redis is infrastructure, not a public browser API. Restrict network reachability and use supported authentication, TLS and least-privilege ACLs where appropriate. A private network alone is not a complete permission boundary. Keep credentials out of client bundles and repository files.
+
+### Diagnose the concrete failure
+
+Inspect the disposable deployment's listener exposure and network rules without probing unrelated hosts. Verify a permitted client can connect and an unauthorized identity cannot execute a restricted command. Inspect logs and configuration for synthetic credential leakage.
+
+### Independent exercise and evidence
+
+Draft an access matrix for cache clients, workers and operators. Include key patterns, command permissions, credential rotation and connection encryption. Record actual isolated network and ACL tests separately.
+
+**Qualification boundary:** These are practice instructions, not recorded results. Preserve the existing lab and publication status; in-memory tests do not qualify live Redis or BullMQ behavior.
+
 ## Knowledge check
 
 1. What is authoritative in this scenario, and what state is derived or replayable?
