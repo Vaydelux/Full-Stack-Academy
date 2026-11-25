@@ -15,7 +15,7 @@ export function nextPublication(queue,checkpoint){
  if(next.phase==='P1'){const name=id==='09.02'?'rhf':'query';commands=['npm run qualify:academy:local -- --run-p1','npm run promote:forms-query:'+name+' -- --plan','npm run promote:forms-query:'+name+' -- --review'];blockers=['Actual browser/runtime and named accessibility review required'];}
  else if(next.phase==='P2'){commands=['npm run promote:nestjs -- --plan '+id,'npm run promote:nestjs -- --review '+id];blockers=['Genuine Nest lockfile, installed runtime, actual module and human review required'];}
  else if(sqlModules.includes(id)){commands=['npm run promote:postgresql -- --plan '+id,'npm run promote:postgresql -- --review '+id,'npm run promote:postgresql -- --apply '+id];blockers=['Actual PostgreSQL red/green, browser qualification and named accessibility evidence required'];}
- else if(['P3','P4'].includes(next.phase)){commands=['npm run pack:persistence -- --export '+id];blockers=['Module-specific runtime evidence and live projection required'];}
+ else if(['P3','P4'].includes(next.phase)){commands=['npm run publish:academy -- --project '+id,'npm run pack:persistence -- --export '+id];blockers=['Review-only projection; topic-specific runtime qualification and guarded promotion required'];}
  else {commands=['npm run plan:late-phase -- --export-review '+id];blockers=['Actual module runtime, reviewed evidence and live projection required'];}
  return {next:{id,phase:next.phase,lessons:next.remaining,before:checkpoint.publishedLessons,target:checkpoint.publishedLessons+next.remaining.length,commands,blockers},publicationApproved:false};
 }
