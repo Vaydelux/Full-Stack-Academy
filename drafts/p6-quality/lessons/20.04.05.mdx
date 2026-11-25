@@ -44,6 +44,20 @@ node --test --test-name-pattern="20[.]04" examples/p6-quality/labs.test.mjs
 
 Synthetic topology policy; no OS/firewall/TLS/DNS/IaC or restore enforcement tested.
 
+## Applied engineering walkthrough
+
+A small VPS still needs a defined trust boundary. Expose only required ingress, restrict administrative access, keep runtime identities least-privileged and maintain patching and recovery procedures. A host firewall is one layer, not proof of database authorization or safe application code.
+
+### Diagnose the concrete failure
+
+Evaluate topologyPolicy for an edge, private app and private data service. Model an accidentally public database and verify rejection. In an authorized disposable VM, inspect listening services and effective network rules rather than probing unrelated hosts.
+
+### Independent exercise and evidence
+
+Prepare a VPS release checklist with patch baseline, administrative access, service roles, network policy, backups and restore verification. Record model outcomes separately from actual host configuration.
+
+**Evidence boundary:** These are practice instructions, not recorded test results. Preserve the existing model, specification and draft flag; external runtime qualification remains independent.
+
 ## Knowledge check
 
 1. Which public behavior or invariant is being protected?
