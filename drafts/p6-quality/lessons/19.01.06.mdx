@@ -44,6 +44,20 @@ node --test --test-name-pattern="19[.]01" examples/p6-quality/labs.test.mjs
 
 Pure inventory model; no real database or browser is tested.
 
+## Applied engineering walkthrough
+
+Property tests express relationships over inputs rather than enumerating a few examples. Conservation holds for accepted reservations; rejected requests must leave stock unchanged. A finite exhaustive sweep over small integers is not randomized property-based coverage of every number or runtime behavior.
+
+### Diagnose the concrete failure
+
+Iterate valid stock and quantity pairs up to fifty using the existing contract. Check conservation and denial separately, including zero boundaries. Introduce a subtraction error in a disposable copy and identify a counterexample.
+
+### Independent exercise and evidence
+
+Design generators for invalid values and safe integer extremes, with reproducible seeds if a property-testing library is used. Record counterexamples and distinguish bounded exhaustive cases from sampled ones.
+
+**Evidence boundary:** These are practice instructions, not recorded test results. Preserve the existing model, specification and draft flag; external runtime qualification remains independent.
+
 ## Knowledge check
 
 1. Which public behavior or invariant is being protected?
