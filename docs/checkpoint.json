@@ -10,8 +10,8 @@
   },
   "development": {
     "branch": "feature/f11-3-reading-format",
-    "state": "f18-source-qualification-audit",
-    "note": "F18 source-triage audit and advisory manuscript prerequisites; 552 staged tree paths reconciled, 27 bodies and 16 P1 manifests inspected, eight connector model checks and four exact-source Node22 filesystem tests passed. Full checkout and P1 qualification pending."
+    "state": "f19-production-boundaries-source-implemented",
+    "note": "F19 search deployment tracing, storage recovery, strict origin/reference validation, bounded preview messages and mandatory F17/F18/F19 release tests. Qualification pending."
   },
   "snapshot": {
     "tracks": 28,
@@ -73,6 +73,6 @@
     "devHighFindings": 14,
     "exceptionExpires": "2026-12-02"
   },
-  "nextMilestone": "Run full audit and P1 Node24/browser qualification on a networked checkout; fix evidence blockers before promotion.",
-  "status": "f18-source-audit-implemented-publication-blocked"
+  "nextMilestone": "F20 release qualification on clean Node24 checkout, full build and browser smoke; no promotion without evidence.",
+  "status": "f19-production-hardening-qualification-pending"
 }

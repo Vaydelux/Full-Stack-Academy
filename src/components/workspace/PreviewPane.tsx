@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { AUTHORED_LESSONS } from '@/lib/academy/authored-content';
 import { useAcademy } from '@/lib/academy/store';
+import { previewDiagnostic } from '@/lib/academy/runtime-boundaries.mjs';
 
 /* ------------------------------------------------------------------ */
 /* Live Zod 4 Trust-Boundary Runner (Lesson 09.01.02)                  */
@@ -474,8 +475,8 @@ export default function PreviewPane() {
     const onMessage = (e: MessageEvent) => {
       // An opaque-origin sandbox sends origin "null". A marker alone is not authentication.
       if (e.source !== iframeRef.current?.contentWindow || e.origin !== 'null') return;
-      const d = e.data;
-      if (!d || typeof d !== 'object' || d.source !== 'academy-preview') return;
+      const d = previewDiagnostic(e.data);
+      if (!d) return;
       if (d.type === 'READY') {
         readyRef.current = true;
         iframeRef.current?.contentWindow?.postMessage(
@@ -484,11 +485,11 @@ export default function PreviewPane() {
       } else if (d.type === 'STATUS') {
         gotStatusRef.current = true;
         if (d.status === 'ok') setPreviewStatus('ready');
-        else setPreviewStatus('error', String(d.message || 'Unknown runtime error'));
+        else setPreviewStatus('error', d.message);
       } else if (d.type === 'CONSOLE') {
-        pushConsole({ level: d.level, text: String(d.text || '') });
+        pushConsole({ level: d.level, text: d.text });
       } else if (d.type === 'STATE') {
-        setRuntimeState(Array.isArray(d.hooks) ? d.hooks : [], Number(d.renders) || 0);
+        setRuntimeState(d.hooks, d.renders);
       }
     };
     window.addEventListener('message', onMessage);

@@ -34,6 +34,7 @@
     "qualify:forms-query:full": "node scripts/qualify-forms-query.mjs --full",
     "status:curriculum": "node scripts/curriculum-readiness.mjs",
     "audit:f18": "node scripts/f18-qualification-audit.mjs",
+    "test:f19": "node --test tests/f19-runtime-boundaries.test.mjs tests/f19-source-wiring.test.mjs",
     "test:f18": "node --test tests/f18-qualification.test.mjs tests/f18-inventory.test.mjs tests/staged-inventory.test.mjs",
     "test:curriculum-readiness": "node scripts/curriculum-readiness.mjs --check && node --test tests/staged-inventory.test.mjs && node --test tests/curriculum-scope-freeze.test.mjs tests/publication-queue.test.mjs",
     "test:p6-quality-source": "node examples/p6-quality/verify-track.mjs && node --test examples/p6-quality/labs.test.mjs examples/p6-quality/verify-track.test.mjs tests/p10-p6-editorial.test.mjs",

@@ -1,3 +1,5 @@
+> **F19 — Production hardening:** Search file tracing, origin/URL validation, storage recovery, bounded sandbox diagnostics and mandatory milestone regression gates. See `docs/F19_PRODUCTION_HARDENING.md`. Full release qualification remains pending.
+
 > **F18 — Qualification:** Read-only manuscript/lab triage, prerequisite graph reporting, advisory manuscript preparation links, and fail-closed draft metadata checks. 27 manuscript bodies and 16 P1 manifest bindings passed targeted connector checks; eight fixture model checks and four actual exact-source Node filesystem tests passed. Full checkout/runtime/human evidence still pending. See `docs/F18_CURRICULUM_QUALIFICATION.md`.
 
 > **F17 — Learning UX:** Contextual module navigation, unified server search, discovery-first landing, responsive reading and dashboard improvements. Seven final exact-source Node22 discovery tests passed; four source-wiring test bodies passed in connector runtime. Full build and browser pending; see `docs/F17_LEARNING_UX.md`.

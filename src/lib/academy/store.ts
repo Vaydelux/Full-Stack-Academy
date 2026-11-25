@@ -10,6 +10,7 @@ import {
 import { lessonMap, references } from './curriculum';
 import { PUBLISHED_LESSON_IDS, lessonRubric } from './published';
 import { normalizeBookmarks } from './lesson-discovery';
+import { backupWithinLimit, readStoredProgress } from './runtime-boundaries.mjs';
 import type {
   ConsoleEntry,
   PreviewStatus,
@@ -97,16 +98,15 @@ export function normalizeProgress(input: PersistedProgress): PersistedProgress {
     bookmarks: normalizeBookmarks(input.bookmarks, PUBLISHED_LESSON_IDS), theme: input.theme };
 }
 
-function loadPersisted(): PersistedProgress {
-  if (typeof window === 'undefined') return EMPTY_PROGRESS;
-  try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
-    if (!raw) return EMPTY_PROGRESS;
-    const parsed = BackupDataSchema.safeParse(JSON.parse(raw));
-    return parsed.success ? normalizeProgress(parsed.data) : EMPTY_PROGRESS;
-  } catch {
-    return EMPTY_PROGRESS;
-  }
+function loadPersisted() {
+  return readStoredProgress(
+    () => window.localStorage.getItem(STORAGE_KEY),
+    raw => {
+      const parsed = BackupDataSchema.safeParse(JSON.parse(raw));
+      return parsed.success ? normalizeProgress(parsed.data) : undefined;
+    },
+    EMPTY_PROGRESS
+  );
 }
 
 function savePersisted(data: PersistedProgress): boolean {
@@ -164,6 +164,7 @@ export interface AcademyState {
   /* learner persisted record */
   hydrated: boolean;
   storageError: boolean;
+  storageReadBlocked: boolean;
   progress: PersistedProgress;
 }
 
@@ -258,7 +259,7 @@ function updateAndSaveProgress(
   updater: (prev: PersistedProgress) => PersistedProgress
 ): Partial<AcademyState> {
   const next = updater(state.progress);
-  const storageError = !savePersisted(next);
+  const storageError = state.storageReadBlocked || !savePersisted(next);
   return { progress: next, storageError };
 }
 
@@ -306,11 +307,13 @@ export const useAcademy = create<AcademyStore>((set, get) => ({
 
   hydrated: false,
   storageError: false,
+  storageReadBlocked: false,
   progress: EMPTY_PROGRESS,
 
   hydrate: () => {
     const loaded = loadPersisted();
-    set({ progress: loaded, hydrated: true, storageError: false });
+    if (loaded.ok) set({ progress: loaded.data, hydrated: true, storageError: false, storageReadBlocked: false });
+    else set({ hydrated: true, storageError: true, storageReadBlocked: true });
   },
 
   setActiveView: (activeView) => set({ activeView, ...(activeView !== 'lesson' ? { isPlaying: false, mobileTab: 'docs' as const } : {}) }),
@@ -522,16 +525,16 @@ export const useAcademy = create<AcademyStore>((set, get) => ({
   setTheme: (theme) => set((s) => updateAndSaveProgress(s, (prev) => ({ ...prev, theme }))),
 
   markQuizPassed: (lessonId) =>
-    set((s) =>
-      updateAndSaveProgress(s, (prev) => ({
-        ...prev,
-        quizzes: { ...prev.quizzes, [lessonId]: true },
-      }))
-    ),
+    set((s) => PUBLISHED_LESSON_IDS.includes(lessonId) ? updateAndSaveProgress(s, (prev) => ({
+      ...prev,
+      quizzes: { ...prev.quizzes, [lessonId]: true },
+    })) : {}),
 
   toggleRubricItem: (lessonId, index) =>
-    set((s) =>
-      updateAndSaveProgress(s, (prev) => {
+    set((s) => {
+      const criteria = lessonRubric(lessonId);
+      if (!PUBLISHED_LESSON_IDS.includes(lessonId) || !criteria || !Number.isInteger(index) || index < 0 || index >= criteria.length) return {};
+      return updateAndSaveProgress(s, (prev) => {
         const current = new Set(prev.rubrics[lessonId] ?? []);
         if (current.has(index)) current.delete(index);
         else current.add(index);
@@ -540,8 +543,8 @@ export const useAcademy = create<AcademyStore>((set, get) => ({
           complete: { ...prev.complete, [lessonId]: Boolean(prev.complete[lessonId] && (lessonRubric(lessonId) ?? []).every((_,i)=>current.has(i))) },
           rubrics: { ...prev.rubrics, [lessonId]: [...current] },
         };
-      })
-    ),
+      });
+    }),
 
   setReflection: (lessonId, text) =>
     set((s) =>
@@ -573,7 +576,7 @@ export const useAcademy = create<AcademyStore>((set, get) => ({
   markLessonComplete: (lessonId) =>
     set((s) => {
       const criteria = lessonRubric(lessonId);
-      if (!criteria?.length) return {};
+      if (!PUBLISHED_LESSON_IDS.includes(lessonId) || !criteria?.length) return {};
       const quizOk = Boolean(s.progress.quizzes[lessonId]);
       const rubric = s.progress.rubrics[lessonId] ?? [];
       const rubricOk = criteria.every((_, idx) => rubric.includes(idx));
@@ -596,7 +599,7 @@ export const useAcademy = create<AcademyStore>((set, get) => ({
   },
 
   importBackupJson: (raw) => {
-    if (raw.length > 2_000_000) return { ok: false, error: 'Backup exceeds the 2 MB import limit.' };
+    if (!backupWithinLimit(raw)) return { ok: false, error: 'Backup exceeds the 2 MB import limit.' };
     try {
       const parsedJson: unknown = JSON.parse(raw);
       const result = BackupFileSchema.safeParse(parsedJson);
@@ -611,6 +614,7 @@ export const useAcademy = create<AcademyStore>((set, get) => ({
       set({
         progress: restored,
         storageError: false,
+        storageReadBlocked: false,
         toast: { id: ++toastId, msg: 'Progress backup restored locally', tone: 'success' },
       });
       return { ok: true };

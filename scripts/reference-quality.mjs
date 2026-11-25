@@ -1,4 +1,5 @@
 /** Source quality gate; does not execute examples or certify external URLs. */
+import { safeReference } from './reading-edition.mjs';
 export function validateReferenceDrafts(records, index, lessons) {
   const indexById = new Map(index.map(item => [item.id, item]));
   const lessonIds = new Set(lessons.map(item => item.id));
@@ -17,7 +18,7 @@ export function validateReferenceDrafts(records, index, lessons) {
     }
     if (!record.relatedLessonIds?.length || record.relatedLessonIds.some(id => !lessonIds.has(id))) throw Error('Unknown lesson: ' + record.id);
     if (record.status !== 'Authored reference draft') throw Error('Invalid draft status: ' + record.id);
-    if (typeof record.canonicalUrl !== 'string' || !/^https:\/\/[^/?#\s]+(?:[/?#]|$)/i.test(record.canonicalUrl) || /[\\\s]/.test(record.canonicalUrl) || record.canonicalUrl.split('/')[2].includes('@')) throw Error('Unsafe official URL: ' + record.id);
+    if (!safeReference(record.canonicalUrl)) throw Error('Unsafe official URL: ' + record.id);
   }
   return seen.size;
 }

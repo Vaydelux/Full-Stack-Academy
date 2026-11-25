@@ -19,6 +19,10 @@ const REQUIRED = Object.freeze([
  'test:p8-learning',
  'test:p8-reference',
  'test:p8-ui',
+ 'test:course-roadmap',
+ 'test:f17-discovery',
+ 'test:f18',
+ 'test:f19',
  'lint',
  'typecheck',
  'test',
@@ -50,7 +54,7 @@ export function auditOfflineMatrix({offlineSource,scripts}) {
   else steps.push(m[1]);
  }
  if(!unique(steps))errors.push('duplicate-release-step');
- for(const step of steps)if(typeof scripts[step]!=='string'||!scripts[step])errors.push('missing-script:'+step);
+ for(const step of steps)if(typeof scripts[step]!=='string'||!scripts[step].trim())errors.push('missing-script:'+step);
  for(const required of REQUIRED)if(!steps.includes(required))errors.push('missing-required-release-step:'+required);
  if(!/requireReleaseNodeRuntime\(process\.version\)/.test(offlineSource))errors.push('missing-node24-guard');
  if(/\b(?:github|vercel)\s+(?:deploy|workflow|run)\b/i.test(offlineSource))errors.push('unexpected-remote-release-command');
