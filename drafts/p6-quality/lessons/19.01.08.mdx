@@ -44,6 +44,20 @@ node --test --test-name-pattern="19[.]01" examples/p6-quality/labs.test.mjs
 
 Pure inventory model; no real database or browser is tested.
 
+## Applied engineering walkthrough
+
+Test-first development starts with an observable requirement, a failing test that detects missing behavior, and the smallest correct implementation. Refactoring follows a green baseline. A red test caused by a broken import does not establish that the intended feature is absent.
+
+### Diagnose the concrete failure
+
+Make a disposable reservation implementation return unchanged stock. Run the existing positive assertion and confirm it fails for the incorrect remainder. Restore the implementation, rerun and add a boundary case for zero stock.
+
+### Independent exercise and evidence
+
+Write a short red-green-refactor record containing requirement, test command, expected failure, correction and regression outcome. Keep unrelated production changes outside the experiment.
+
+**Evidence boundary:** These are practice instructions, not recorded test results. Preserve the existing model, specification and draft flag; external runtime qualification remains independent.
+
 ## Knowledge check
 
 1. Which public behavior or invariant is being protected?
