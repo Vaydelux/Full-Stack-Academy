@@ -42,6 +42,20 @@ Document both a permitted happy path and a rejected adversarial path. Integratio
 
 A passing UI check or source-only checklist cannot establish secure production behavior. An observed negative test and reviewed trust boundary are essential.
 
+## Applied engineering walkthrough
+
+Parameter binding separates values from SQL syntax. SQL identifiers and ordering keywords need fixed allowlisted choices, not value placeholders or arbitrary concatenation. A typed ORM still needs care at raw SQL boundaries. Least-privilege database roles contain the effects of unrelated defects.
+
+### Diagnose the concrete failure
+
+Use synthetic names containing punctuation and verify they are processed as ordinary values. Compare the query structure and bound parameters while avoiding sensitive logs. Test an unsupported sort option and confirm it is rejected before execution. Verify tenant scoping remains intact.
+
+### Independent exercise and evidence
+
+Design a search DTO with bounded text and an enumerated sort key. Record accepted result IDs and invalid-option errors. Run real database acceptance separately from a fake client that only captures SQL.
+
+**Qualification boundary:** These are practice instructions, not recorded audit results. Use synthetic data and authorized disposable infrastructure. Preserve existing laboratory contracts and publication status.
+
 ## Knowledge check
 
 1. Which input is attacker-controlled?
