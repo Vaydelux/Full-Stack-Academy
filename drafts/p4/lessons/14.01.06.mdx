@@ -74,6 +74,20 @@ Connection strings contain secrets. Never expose them to browser bundles or logs
 
 On an actual full-stack app, draw the flow from browser through the authenticated server endpoint to Supabase Auth or PostgreSQL. Annotate which requests use a publishable key, which need a user JWT, which require database grants, and which should never be allowed outside server infrastructure. Storage and Realtime must be authorized independently of ordinary table policies.
 
+## Applied persistence walkthrough
+
+A direct database endpoint and a pooler endpoint can have different network reachability, backend capacity and session behavior. The fixture separates migration and runtime URLs, but does not validate the destination or mode. Some deployment networks cannot reach a chosen direct endpoint; verify actual project instructions, TLS and driver compatibility rather than assuming all URLs are interchangeable.
+
+### Diagnose the concrete failure
+
+In a disposable environment compare the actual connected database and role for each endpoint. Test missing environment values without network access. Measure connections and acquisition failures under a bounded workload. Confirm migration tooling uses a compatible connection and never log complete URLs.
+
+### Independent exercise and evidence
+
+Design a connection budget for local development, long-running server and serverless replicas. Include pooler mode, migration access and operational reserve. Record actual connectivity and compatibility tests instead of guessing provider limits.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Use an isolated local Supabase environment or an explicitly approved disposable project. Preserve the starter and solution; do not treat source review as live platform or security qualification.
+
 ## Bug Hunt
 
 1. Reproduce the unsafe setup: The starter assumes transaction-pooling semantics are safe for all migration and session-affine operations.
