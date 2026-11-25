@@ -1,0 +1,834 @@
+{
+  "schemaVersion": 1,
+  "moduleId": "11.03",
+  "sourceCommit": "4d8f5cc4467ccb56cf09cb8dd2383304f38781a5",
+  "publicationReady": false,
+  "commonSourceBindings": [
+    {
+      "path": "examples/nestjs-vertical/package.json",
+      "gitBlob": "b7bf07ea017c8ff637c0a00574463083cd298101"
+    },
+    {
+      "path": "examples/nestjs-vertical/tsconfig.json",
+      "gitBlob": "cb0841f58bf8ece41dd0c7df5f9c630cb09317ab"
+    },
+    {
+      "path": "examples/nestjs-vertical/scripts/red-green.mjs",
+      "gitBlob": "6ca45e494858f53d3e399489e1745604f456e5de"
+    },
+    {
+      "path": "examples/nestjs-vertical/scripts/module-qualification.mjs",
+      "gitBlob": "6101e84c50f92e6221c2fa128b8e50f679709d73"
+    },
+    {
+      "path": "examples/nestjs-vertical/scripts/require-lock.mjs",
+      "gitBlob": "5becab4f3cdcc0351f32d6d392d541eded915286"
+    },
+    {
+      "path": "examples/nestjs-vertical/scripts/lock-integrity.mjs",
+      "gitBlob": "c34b6caabfcf05fbded750418935062cde8c3626"
+    },
+    {
+      "path": "examples/nestjs-vertical/scripts/verify-runtime-test-coverage.mjs",
+      "gitBlob": "abf74d0c22b6abb1b9e21745ccb3a343848339e9"
+    }
+  ],
+  "candidates": [
+    {
+      "id": "11.03.01",
+      "moduleId": "11.03",
+      "title": "Service responsibilities",
+      "slug": "service-responsibilities",
+      "publicationReady": false,
+      "runtimeExecuted": false,
+      "reviewedAt": null,
+      "sourceBindings": [
+        {
+          "path": "drafts/nestjs/lessons/11.03.01.mdx",
+          "gitBlob": "6578032acb28cfe954362a8830e9c0dde64d2138"
+        },
+        {
+          "path": "drafts/nestjs/lessons/11.03.01.meta.json",
+          "gitBlob": "0ed31682fa4d044a1226ca17a265aa218bbeb36d"
+        },
+        {
+          "path": "drafts/nestjs/labs/service-responsibilities/lab.json",
+          "gitBlob": "a65118539d99122b6f141ffc2908314984375b51"
+        },
+        {
+          "path": "drafts/nestjs/labs/service-responsibilities/starter.ts",
+          "gitBlob": "3b7f775376edb43f5813dfa7b2a96b907b275788"
+        },
+        {
+          "path": "drafts/nestjs/labs/service-responsibilities/solution.ts",
+          "gitBlob": "c22a5e1e83ca38764542b65db005547a0684f941"
+        },
+        {
+          "path": "examples/nestjs-vertical/tests/domain-modules.test.mjs",
+          "gitBlob": "001bbb553a7d0242d7284b81313cd80a3990c012"
+        }
+      ],
+      "targetPaths": [
+        "src/content/lessons/11.03.01.mdx",
+        "src/content/lessons/11.03.01.meta.json",
+        "labs/nestjs-service-responsibilities/lab.json",
+        "labs/nestjs-service-responsibilities/starter/solution.ts",
+        "labs/nestjs-service-responsibilities/solution/solution.ts",
+        "labs/nestjs-service-responsibilities/solution.test.mjs"
+      ],
+      "runtime": {
+        "suite": "examples/nestjs-vertical/tests/domain-modules.test.mjs",
+        "topic": "11.03.01",
+        "integration": null,
+        "negativeMode": "semantic-runtime"
+      },
+      "proposedMetadata": {
+        "id": "11.03.01",
+        "title": "Service responsibilities",
+        "trackId": "11",
+        "moduleId": "11.03",
+        "level": "Intermediate",
+        "estimatedMinutes": 60,
+        "description": "Keep transport decorators in controllers and business invariants in injectable services. A unit test invokes TasksService directly and rejects blank names; HTTP invokes the same service.",
+        "labId": "lab.node.nestjs-service-responsibilities",
+        "stack": {
+          "node": "24",
+          "nestjs": "12",
+          "typescriptNestjs": "6"
+        },
+        "prerequisites": [
+          "11.02.08"
+        ],
+        "objectives": [
+          "Keep transport decorators in controllers and business invariants in injectable services.",
+          "A unit test invokes TasksService directly and rejects blank names; HTTP invokes the same service.",
+          "Validation in a controller alone cannot protect calls from jobs, events and other modules."
+        ],
+        "rubric": [
+          "Keep transport decorators in controllers and business invariants in injectable services.",
+          "A unit test invokes TasksService directly and rejects blank names; HTTP invokes the same service.",
+          "Validation in a controller alone cannot protect calls from jobs, events and other modules."
+        ],
+        "sources": [
+          {
+            "label": "Primary official reference",
+            "url": "https://docs.nestjs.com/"
+          },
+          {
+            "label": "Supporting official reference",
+            "url": "https://docs.nestjs.com/providers"
+          }
+        ],
+        "reviewedAt": null
+      },
+      "proposedLab": {
+        "id": "lab.node.nestjs-service-responsibilities",
+        "lessonId": "11.03.01",
+        "title": "NestJS practice: Service responsibilities",
+        "runtime": "node-24-nestjs-12-typescript-6",
+        "starter": "labs/nestjs-service-responsibilities/starter/solution.ts",
+        "solution": "labs/nestjs-service-responsibilities/solution/solution.ts",
+        "tests": "labs/nestjs-service-responsibilities/solution.test.mjs",
+        "expected": "A unit test invokes TasksService directly and rejects blank names; HTTP invokes the same service.",
+        "security": "Validation in a controller alone cannot protect calls from jobs, events and other modules."
+      }
+    },
+    {
+      "id": "11.03.02",
+      "moduleId": "11.03",
+      "title": "Repository pattern",
+      "slug": "repository-pattern",
+      "publicationReady": false,
+      "runtimeExecuted": false,
+      "reviewedAt": null,
+      "sourceBindings": [
+        {
+          "path": "drafts/nestjs/lessons/11.03.02.mdx",
+          "gitBlob": "4c69c1f1e939dc9b03cc7320df2e53ee4043907a"
+        },
+        {
+          "path": "drafts/nestjs/lessons/11.03.02.meta.json",
+          "gitBlob": "eeb1b79d370d459863769e9a63fafd9b4fd95648"
+        },
+        {
+          "path": "drafts/nestjs/labs/repository-pattern/lab.json",
+          "gitBlob": "707b1abc20870e78c6d306ba740d3c08276eba17"
+        },
+        {
+          "path": "drafts/nestjs/labs/repository-pattern/starter.ts",
+          "gitBlob": "2e3234970e2dfa401a549fb10ba84cb624f620be"
+        },
+        {
+          "path": "drafts/nestjs/labs/repository-pattern/solution.ts",
+          "gitBlob": "1f0da98a0d27644417b9f616630eb2b6e62d0187"
+        },
+        {
+          "path": "examples/nestjs-vertical/tests/domain-modules.test.mjs",
+          "gitBlob": "001bbb553a7d0242d7284b81313cd80a3990c012"
+        }
+      ],
+      "targetPaths": [
+        "src/content/lessons/11.03.02.mdx",
+        "src/content/lessons/11.03.02.meta.json",
+        "labs/nestjs-repository-pattern/lab.json",
+        "labs/nestjs-repository-pattern/starter/solution.ts",
+        "labs/nestjs-repository-pattern/solution/solution.ts",
+        "labs/nestjs-repository-pattern/solution.test.mjs"
+      ],
+      "runtime": {
+        "suite": "examples/nestjs-vertical/tests/domain-modules.test.mjs",
+        "topic": "11.03.02",
+        "integration": null,
+        "negativeMode": "semantic-runtime"
+      },
+      "proposedMetadata": {
+        "id": "11.03.02",
+        "title": "Repository pattern",
+        "trackId": "11",
+        "moduleId": "11.03",
+        "level": "Intermediate",
+        "estimatedMinutes": 60,
+        "description": "Domain services should use an injectable repository contract instead of building SQL strings. A hostile quote-containing title is passed as a parameter rather than interpolated SQL.",
+        "labId": "lab.node.nestjs-repository-pattern",
+        "stack": {
+          "node": "24",
+          "nestjs": "12",
+          "typescriptNestjs": "6"
+        },
+        "prerequisites": [
+          "11.03.01"
+        ],
+        "objectives": [
+          "Domain services should use an injectable repository contract instead of building SQL strings.",
+          "A hostile quote-containing title is passed as a parameter rather than interpolated SQL.",
+          "Use parameterized queries and server-side tenant predicates in real database tests."
+        ],
+        "rubric": [
+          "Domain services should use an injectable repository contract instead of building SQL strings.",
+          "A hostile quote-containing title is passed as a parameter rather than interpolated SQL.",
+          "Use parameterized queries and server-side tenant predicates in real database tests."
+        ],
+        "sources": [
+          {
+            "label": "Primary official reference",
+            "url": "https://docs.nestjs.com/"
+          },
+          {
+            "label": "Supporting official reference",
+            "url": "https://docs.nestjs.com/fundamentals/custom-providers"
+          }
+        ],
+        "reviewedAt": null
+      },
+      "proposedLab": {
+        "id": "lab.node.nestjs-repository-pattern",
+        "lessonId": "11.03.02",
+        "title": "NestJS practice: Repository pattern",
+        "runtime": "node-24-nestjs-12-typescript-6",
+        "starter": "labs/nestjs-repository-pattern/starter/solution.ts",
+        "solution": "labs/nestjs-repository-pattern/solution/solution.ts",
+        "tests": "labs/nestjs-repository-pattern/solution.test.mjs",
+        "expected": "A hostile quote-containing title is passed as a parameter rather than interpolated SQL.",
+        "security": "Use parameterized queries and server-side tenant predicates in real database tests."
+      }
+    },
+    {
+      "id": "11.03.03",
+      "moduleId": "11.03",
+      "title": "Domain entities vs DTOs",
+      "slug": "domain-entities-dtos",
+      "publicationReady": false,
+      "runtimeExecuted": false,
+      "reviewedAt": null,
+      "sourceBindings": [
+        {
+          "path": "drafts/nestjs/lessons/11.03.03.mdx",
+          "gitBlob": "09ed72b0b14a6dcfd938609639d837c6550cb166"
+        },
+        {
+          "path": "drafts/nestjs/lessons/11.03.03.meta.json",
+          "gitBlob": "d870758fd1043d26622a6ba3ff07304decfbdf94"
+        },
+        {
+          "path": "drafts/nestjs/labs/domain-entities-dtos/lab.json",
+          "gitBlob": "d86fb8aab07f173bcc7d744f3a602da28a515d73"
+        },
+        {
+          "path": "drafts/nestjs/labs/domain-entities-dtos/starter.ts",
+          "gitBlob": "faeeb3aa85de679b3bcbf80d0316f9d25ecc0883"
+        },
+        {
+          "path": "drafts/nestjs/labs/domain-entities-dtos/solution.ts",
+          "gitBlob": "7e1b806d69bd616c98e7efed0da1eaca2d52eaec"
+        },
+        {
+          "path": "examples/nestjs-vertical/tests/domain-modules.test.mjs",
+          "gitBlob": "001bbb553a7d0242d7284b81313cd80a3990c012"
+        }
+      ],
+      "targetPaths": [
+        "src/content/lessons/11.03.03.mdx",
+        "src/content/lessons/11.03.03.meta.json",
+        "labs/nestjs-domain-entities-dtos/lab.json",
+        "labs/nestjs-domain-entities-dtos/starter/solution.ts",
+        "labs/nestjs-domain-entities-dtos/solution/solution.ts",
+        "labs/nestjs-domain-entities-dtos/solution.test.mjs"
+      ],
+      "runtime": {
+        "suite": "examples/nestjs-vertical/tests/domain-modules.test.mjs",
+        "topic": "11.03.03",
+        "integration": null,
+        "negativeMode": "semantic-runtime"
+      },
+      "proposedMetadata": {
+        "id": "11.03.03",
+        "title": "Domain entities vs DTOs",
+        "trackId": "11",
+        "moduleId": "11.03",
+        "level": "Intermediate",
+        "estimatedMinutes": 60,
+        "description": "Persistent entities may hold sensitive fields that must not be serialized into public DTOs. An account DTO response has only public id and displayName; hidden fields are absent.",
+        "labId": "lab.node.nestjs-domain-entities-dtos",
+        "stack": {
+          "node": "24",
+          "nestjs": "12",
+          "typescriptNestjs": "6"
+        },
+        "prerequisites": [
+          "11.03.02"
+        ],
+        "objectives": [
+          "Persistent entities may hold sensitive fields that must not be serialized into public DTOs.",
+          "An account DTO response has only public id and displayName; hidden fields are absent.",
+          "DTO shaping is not role authorization; enforce permissions before selecting records."
+        ],
+        "rubric": [
+          "Persistent entities may hold sensitive fields that must not be serialized into public DTOs.",
+          "An account DTO response has only public id and displayName; hidden fields are absent.",
+          "DTO shaping is not role authorization; enforce permissions before selecting records."
+        ],
+        "sources": [
+          {
+            "label": "Primary official reference",
+            "url": "https://docs.nestjs.com/"
+          },
+          {
+            "label": "Supporting official reference",
+            "url": "https://docs.nestjs.com/techniques/serialization"
+          }
+        ],
+        "reviewedAt": null
+      },
+      "proposedLab": {
+        "id": "lab.node.nestjs-domain-entities-dtos",
+        "lessonId": "11.03.03",
+        "title": "NestJS practice: Domain entities vs DTOs",
+        "runtime": "node-24-nestjs-12-typescript-6",
+        "starter": "labs/nestjs-domain-entities-dtos/starter/solution.ts",
+        "solution": "labs/nestjs-domain-entities-dtos/solution/solution.ts",
+        "tests": "labs/nestjs-domain-entities-dtos/solution.test.mjs",
+        "expected": "An account DTO response has only public id and displayName; hidden fields are absent.",
+        "security": "DTO shaping is not role authorization; enforce permissions before selecting records."
+      }
+    },
+    {
+      "id": "11.03.04",
+      "moduleId": "11.03",
+      "title": "Dependency inversion",
+      "slug": "dependency-inversion",
+      "publicationReady": false,
+      "runtimeExecuted": false,
+      "reviewedAt": null,
+      "sourceBindings": [
+        {
+          "path": "drafts/nestjs/lessons/11.03.04.mdx",
+          "gitBlob": "c61124d81ab1ed9e54dbe9c8f0862724748f22b9"
+        },
+        {
+          "path": "drafts/nestjs/lessons/11.03.04.meta.json",
+          "gitBlob": "1c36c64dd0ecdd962a496d67631c11379f2bf713"
+        },
+        {
+          "path": "drafts/nestjs/labs/dependency-inversion/lab.json",
+          "gitBlob": "4284d95c0b0f76ff1b6a23ec29a06509a320a91e"
+        },
+        {
+          "path": "drafts/nestjs/labs/dependency-inversion/starter.ts",
+          "gitBlob": "6b4c22046e93eb6ee35fe22acba7a0bbe4098972"
+        },
+        {
+          "path": "drafts/nestjs/labs/dependency-inversion/solution.ts",
+          "gitBlob": "b87c779acba38832eb02ba2f12f5a9c0f2eb7d29"
+        },
+        {
+          "path": "examples/nestjs-vertical/tests/domain-modules.test.mjs",
+          "gitBlob": "001bbb553a7d0242d7284b81313cd80a3990c012"
+        }
+      ],
+      "targetPaths": [
+        "src/content/lessons/11.03.04.mdx",
+        "src/content/lessons/11.03.04.meta.json",
+        "labs/nestjs-dependency-inversion/lab.json",
+        "labs/nestjs-dependency-inversion/starter/solution.ts",
+        "labs/nestjs-dependency-inversion/solution/solution.ts",
+        "labs/nestjs-dependency-inversion/solution.test.mjs"
+      ],
+      "runtime": {
+        "suite": "examples/nestjs-vertical/tests/domain-modules.test.mjs",
+        "topic": "11.03.04",
+        "integration": null,
+        "negativeMode": "semantic-runtime"
+      },
+      "proposedMetadata": {
+        "id": "11.03.04",
+        "title": "Dependency inversion",
+        "trackId": "11",
+        "moduleId": "11.03",
+        "level": "Intermediate",
+        "estimatedMinutes": 60,
+        "description": "Business code depends on an abstract port injected by a token, not a concrete database constructor. Override the TASK_STORE token with a fake and verify service behavior without network access.",
+        "labId": "lab.node.nestjs-dependency-inversion",
+        "stack": {
+          "node": "24",
+          "nestjs": "12",
+          "typescriptNestjs": "6"
+        },
+        "prerequisites": [
+          "11.03.03"
+        ],
+        "objectives": [
+          "Business code depends on an abstract port injected by a token, not a concrete database constructor.",
+          "Override the TASK_STORE token with a fake and verify service behavior without network access.",
+          "Concrete storage adapters still must enforce tenant filters and parameterized queries."
+        ],
+        "rubric": [
+          "Business code depends on an abstract port injected by a token, not a concrete database constructor.",
+          "Override the TASK_STORE token with a fake and verify service behavior without network access.",
+          "Concrete storage adapters still must enforce tenant filters and parameterized queries."
+        ],
+        "sources": [
+          {
+            "label": "Primary official reference",
+            "url": "https://docs.nestjs.com/"
+          },
+          {
+            "label": "Supporting official reference",
+            "url": "https://docs.nestjs.com/fundamentals/custom-providers"
+          }
+        ],
+        "reviewedAt": null
+      },
+      "proposedLab": {
+        "id": "lab.node.nestjs-dependency-inversion",
+        "lessonId": "11.03.04",
+        "title": "NestJS practice: Dependency inversion",
+        "runtime": "node-24-nestjs-12-typescript-6",
+        "starter": "labs/nestjs-dependency-inversion/starter/solution.ts",
+        "solution": "labs/nestjs-dependency-inversion/solution/solution.ts",
+        "tests": "labs/nestjs-dependency-inversion/solution.test.mjs",
+        "expected": "Override the TASK_STORE token with a fake and verify service behavior without network access.",
+        "security": "Concrete storage adapters still must enforce tenant filters and parameterized queries."
+      }
+    },
+    {
+      "id": "11.03.05",
+      "moduleId": "11.03",
+      "title": "Cross-module boundaries",
+      "slug": "cross-module-boundaries",
+      "publicationReady": false,
+      "runtimeExecuted": false,
+      "reviewedAt": null,
+      "sourceBindings": [
+        {
+          "path": "drafts/nestjs/lessons/11.03.05.mdx",
+          "gitBlob": "1f003ac34fe0512143a64fb0344155a3955e75b7"
+        },
+        {
+          "path": "drafts/nestjs/lessons/11.03.05.meta.json",
+          "gitBlob": "132c904e8219d1d7d71b19ad754ab648af4acb24"
+        },
+        {
+          "path": "drafts/nestjs/labs/cross-module-boundaries/lab.json",
+          "gitBlob": "9d1ef3413434994f58ee295a651200d3f4e9c4ae"
+        },
+        {
+          "path": "drafts/nestjs/labs/cross-module-boundaries/starter.ts",
+          "gitBlob": "6d15b2da5e1fb3c9fc0915a2bb50b149fcb8bb17"
+        },
+        {
+          "path": "drafts/nestjs/labs/cross-module-boundaries/solution.ts",
+          "gitBlob": "332f28318f534b949c98ba012ccbd477fb36495d"
+        },
+        {
+          "path": "examples/nestjs-vertical/tests/domain-modules.test.mjs",
+          "gitBlob": "001bbb553a7d0242d7284b81313cd80a3990c012"
+        }
+      ],
+      "targetPaths": [
+        "src/content/lessons/11.03.05.mdx",
+        "src/content/lessons/11.03.05.meta.json",
+        "labs/nestjs-cross-module-boundaries/lab.json",
+        "labs/nestjs-cross-module-boundaries/starter/solution.ts",
+        "labs/nestjs-cross-module-boundaries/solution/solution.ts",
+        "labs/nestjs-cross-module-boundaries/solution.test.mjs"
+      ],
+      "runtime": {
+        "suite": "examples/nestjs-vertical/tests/domain-modules.test.mjs",
+        "topic": "11.03.05",
+        "integration": null,
+        "negativeMode": "semantic-runtime"
+      },
+      "proposedMetadata": {
+        "id": "11.03.05",
+        "title": "Cross-module boundaries",
+        "trackId": "11",
+        "moduleId": "11.03",
+        "level": "Intermediate",
+        "estimatedMinutes": 60,
+        "description": "A provider must be exported by its owning module and imported through that module to be visible elsewhere. Compile a real Nest TestingModule and resolve ReportsService with a mocked TasksService provider.",
+        "labId": "lab.node.nestjs-cross-module-boundaries",
+        "stack": {
+          "node": "24",
+          "nestjs": "12",
+          "typescriptNestjs": "6"
+        },
+        "prerequisites": [
+          "11.03.04"
+        ],
+        "objectives": [
+          "A provider must be exported by its owning module and imported through that module to be visible elsewhere.",
+          "Compile a real Nest TestingModule and resolve ReportsService with a mocked TasksService provider.",
+          "Avoid broad global modules that expose private services across unrelated trust boundaries."
+        ],
+        "rubric": [
+          "A provider must be exported by its owning module and imported through that module to be visible elsewhere.",
+          "Compile a real Nest TestingModule and resolve ReportsService with a mocked TasksService provider.",
+          "Avoid broad global modules that expose private services across unrelated trust boundaries."
+        ],
+        "sources": [
+          {
+            "label": "Primary official reference",
+            "url": "https://docs.nestjs.com/"
+          },
+          {
+            "label": "Supporting official reference",
+            "url": "https://docs.nestjs.com/modules"
+          }
+        ],
+        "reviewedAt": null
+      },
+      "proposedLab": {
+        "id": "lab.node.nestjs-cross-module-boundaries",
+        "lessonId": "11.03.05",
+        "title": "NestJS practice: Cross-module boundaries",
+        "runtime": "node-24-nestjs-12-typescript-6",
+        "starter": "labs/nestjs-cross-module-boundaries/starter/solution.ts",
+        "solution": "labs/nestjs-cross-module-boundaries/solution/solution.ts",
+        "tests": "labs/nestjs-cross-module-boundaries/solution.test.mjs",
+        "expected": "Compile a real Nest TestingModule and resolve ReportsService with a mocked TasksService provider.",
+        "security": "Avoid broad global modules that expose private services across unrelated trust boundaries."
+      }
+    },
+    {
+      "id": "11.03.06",
+      "moduleId": "11.03",
+      "title": "Application transactions",
+      "slug": "application-transactions",
+      "publicationReady": false,
+      "runtimeExecuted": false,
+      "reviewedAt": null,
+      "sourceBindings": [
+        {
+          "path": "drafts/nestjs/lessons/11.03.06.mdx",
+          "gitBlob": "12ac767809973cd8754dbc54c73808fc97f84c7d"
+        },
+        {
+          "path": "drafts/nestjs/lessons/11.03.06.meta.json",
+          "gitBlob": "e149d7bd301c1da667fff9780b9187a48c704c1c"
+        },
+        {
+          "path": "drafts/nestjs/labs/application-transactions/lab.json",
+          "gitBlob": "bf15cf7ed33edf311ef6ef51d93cabd9b187f406"
+        },
+        {
+          "path": "drafts/nestjs/labs/application-transactions/starter.ts",
+          "gitBlob": "4982d5ade4e51a4cfa2fa59eb5b60b2a73bb3846"
+        },
+        {
+          "path": "drafts/nestjs/labs/application-transactions/solution.ts",
+          "gitBlob": "05b7c3f5708b69bf5fc65b2061611089f34a879d"
+        },
+        {
+          "path": "examples/nestjs-vertical/tests/domain-modules.test.mjs",
+          "gitBlob": "001bbb553a7d0242d7284b81313cd80a3990c012"
+        },
+        {
+          "path": "examples/nestjs-vertical/tests/postgres.integration.test.mjs",
+          "gitBlob": "3e9880aca8545a58c02dfa422008a013f8728fcd"
+        }
+      ],
+      "targetPaths": [
+        "src/content/lessons/11.03.06.mdx",
+        "src/content/lessons/11.03.06.meta.json",
+        "labs/nestjs-application-transactions/lab.json",
+        "labs/nestjs-application-transactions/starter/solution.ts",
+        "labs/nestjs-application-transactions/solution/solution.ts",
+        "labs/nestjs-application-transactions/solution.test.mjs"
+      ],
+      "runtime": {
+        "suite": "examples/nestjs-vertical/tests/domain-modules.test.mjs",
+        "topic": "11.03.06",
+        "integration": "examples/nestjs-vertical/tests/postgres.integration.test.mjs",
+        "negativeMode": "semantic-runtime"
+      },
+      "proposedMetadata": {
+        "id": "11.03.06",
+        "title": "Application transactions",
+        "trackId": "11",
+        "moduleId": "11.03",
+        "level": "Intermediate",
+        "estimatedMinutes": 60,
+        "description": "Multi-write invariants require a real database transaction with rollback on failure. Force a second-write error and verify the database has neither write after rollback.",
+        "labId": "lab.node.nestjs-application-transactions",
+        "stack": {
+          "node": "24",
+          "nestjs": "12",
+          "typescriptNestjs": "6"
+        },
+        "prerequisites": [
+          "11.03.05"
+        ],
+        "objectives": [
+          "Multi-write invariants require a real database transaction with rollback on failure.",
+          "Force a second-write error and verify the database has neither write after rollback.",
+          "A fake in-memory array cannot certify PostgreSQL transaction isolation or rollback."
+        ],
+        "rubric": [
+          "Multi-write invariants require a real database transaction with rollback on failure.",
+          "Force a second-write error and verify the database has neither write after rollback.",
+          "A fake in-memory array cannot certify PostgreSQL transaction isolation or rollback."
+        ],
+        "sources": [
+          {
+            "label": "Primary official reference",
+            "url": "https://docs.nestjs.com/"
+          },
+          {
+            "label": "Supporting official reference",
+            "url": "https://docs.nestjs.com/techniques/database"
+          }
+        ],
+        "reviewedAt": null
+      },
+      "proposedLab": {
+        "id": "lab.node.nestjs-application-transactions",
+        "lessonId": "11.03.06",
+        "title": "NestJS practice: Application transactions",
+        "runtime": "node-24-nestjs-12-typescript-6",
+        "starter": "labs/nestjs-application-transactions/starter/solution.ts",
+        "solution": "labs/nestjs-application-transactions/solution/solution.ts",
+        "tests": "labs/nestjs-application-transactions/solution.test.mjs",
+        "expected": "Force a second-write error and verify the database has neither write after rollback.",
+        "security": "A fake in-memory array cannot certify PostgreSQL transaction isolation or rollback."
+      }
+    },
+    {
+      "id": "11.03.07",
+      "moduleId": "11.03",
+      "title": "Domain events",
+      "slug": "domain-events",
+      "publicationReady": false,
+      "runtimeExecuted": false,
+      "reviewedAt": null,
+      "sourceBindings": [
+        {
+          "path": "drafts/nestjs/lessons/11.03.07.mdx",
+          "gitBlob": "475c3fc7388c0623905f9248db122ce748a7beb8"
+        },
+        {
+          "path": "drafts/nestjs/lessons/11.03.07.meta.json",
+          "gitBlob": "bb495fa60af3aa304d38c8a7bd735ba01159b4af"
+        },
+        {
+          "path": "drafts/nestjs/labs/domain-events/lab.json",
+          "gitBlob": "ca8d7cc1ae0df2733946b18b3a7180199bd7a8ab"
+        },
+        {
+          "path": "drafts/nestjs/labs/domain-events/starter.ts",
+          "gitBlob": "472bee2b4b65018d21fc9dbf7f982c4f880a8de8"
+        },
+        {
+          "path": "drafts/nestjs/labs/domain-events/solution.ts",
+          "gitBlob": "e5c58a80cc27a7cbce12ea746f57e9aef0f96bf6"
+        },
+        {
+          "path": "examples/nestjs-vertical/tests/domain-modules.test.mjs",
+          "gitBlob": "001bbb553a7d0242d7284b81313cd80a3990c012"
+        }
+      ],
+      "targetPaths": [
+        "src/content/lessons/11.03.07.mdx",
+        "src/content/lessons/11.03.07.meta.json",
+        "labs/nestjs-domain-events/lab.json",
+        "labs/nestjs-domain-events/starter/solution.ts",
+        "labs/nestjs-domain-events/solution/solution.ts",
+        "labs/nestjs-domain-events/solution.test.mjs"
+      ],
+      "runtime": {
+        "suite": "examples/nestjs-vertical/tests/domain-modules.test.mjs",
+        "topic": "11.03.07",
+        "integration": null,
+        "negativeMode": "semantic-runtime"
+      },
+      "proposedMetadata": {
+        "id": "11.03.07",
+        "title": "Domain events",
+        "trackId": "11",
+        "moduleId": "11.03",
+        "level": "Intermediate",
+        "estimatedMinutes": 60,
+        "description": "Events should be emitted after a committed operation, with durable delivery for critical side effects. On a failed save, no success event is emitted; on confirmation, one event is raised.",
+        "labId": "lab.node.nestjs-domain-events",
+        "stack": {
+          "node": "24",
+          "nestjs": "12",
+          "typescriptNestjs": "6"
+        },
+        "prerequisites": [
+          "11.03.06"
+        ],
+        "objectives": [
+          "Events should be emitted after a committed operation, with durable delivery for critical side effects.",
+          "On a failed save, no success event is emitted; on confirmation, one event is raised.",
+          "For durable notifications use an outbox or queue; process-local emitters can lose events."
+        ],
+        "rubric": [
+          "Events should be emitted after a committed operation, with durable delivery for critical side effects.",
+          "On a failed save, no success event is emitted; on confirmation, one event is raised.",
+          "For durable notifications use an outbox or queue; process-local emitters can lose events."
+        ],
+        "sources": [
+          {
+            "label": "Primary official reference",
+            "url": "https://docs.nestjs.com/"
+          },
+          {
+            "label": "Supporting official reference",
+            "url": "https://docs.nestjs.com/techniques/events"
+          }
+        ],
+        "reviewedAt": null
+      },
+      "proposedLab": {
+        "id": "lab.node.nestjs-domain-events",
+        "lessonId": "11.03.07",
+        "title": "NestJS practice: Domain events",
+        "runtime": "node-24-nestjs-12-typescript-6",
+        "starter": "labs/nestjs-domain-events/starter/solution.ts",
+        "solution": "labs/nestjs-domain-events/solution/solution.ts",
+        "tests": "labs/nestjs-domain-events/solution.test.mjs",
+        "expected": "On a failed save, no success event is emitted; on confirmation, one event is raised.",
+        "security": "For durable notifications use an outbox or queue; process-local emitters can lose events."
+      }
+    },
+    {
+      "id": "11.03.08",
+      "moduleId": "11.03",
+      "title": "Lab reusable project module",
+      "slug": "reusable-project-module",
+      "publicationReady": false,
+      "runtimeExecuted": false,
+      "reviewedAt": null,
+      "sourceBindings": [
+        {
+          "path": "drafts/nestjs/lessons/11.03.08.mdx",
+          "gitBlob": "fc773ce8d074ce5fdbc60711e29d1cdc08fcaba3"
+        },
+        {
+          "path": "drafts/nestjs/lessons/11.03.08.meta.json",
+          "gitBlob": "7096060fd65dccafcea540bc06b339ee2654365b"
+        },
+        {
+          "path": "drafts/nestjs/labs/reusable-project-module/lab.json",
+          "gitBlob": "775ad42c13f9239f68c27f6750e2e1ab2f926b78"
+        },
+        {
+          "path": "drafts/nestjs/labs/reusable-project-module/starter.ts",
+          "gitBlob": "e7bc1a3664cb194b950fde49ff7957670878f79c"
+        },
+        {
+          "path": "drafts/nestjs/labs/reusable-project-module/solution.ts",
+          "gitBlob": "3357cfad054e614731246bcfe5266b80b525a6f6"
+        },
+        {
+          "path": "examples/nestjs-vertical/tests/domain-modules.test.mjs",
+          "gitBlob": "001bbb553a7d0242d7284b81313cd80a3990c012"
+        }
+      ],
+      "targetPaths": [
+        "src/content/lessons/11.03.08.mdx",
+        "src/content/lessons/11.03.08.meta.json",
+        "labs/nestjs-reusable-project-module/lab.json",
+        "labs/nestjs-reusable-project-module/starter/solution.ts",
+        "labs/nestjs-reusable-project-module/solution/solution.ts",
+        "labs/nestjs-reusable-project-module/solution.test.mjs"
+      ],
+      "runtime": {
+        "suite": "examples/nestjs-vertical/tests/domain-modules.test.mjs",
+        "topic": "11.03.08",
+        "integration": null,
+        "negativeMode": "semantic-runtime"
+      },
+      "proposedMetadata": {
+        "id": "11.03.08",
+        "title": "Lab reusable project module",
+        "trackId": "11",
+        "moduleId": "11.03",
+        "level": "Intermediate",
+        "estimatedMinutes": 60,
+        "description": "A reusable projects feature should encapsulate service, controller and store token in an explicit Nest module. Resolve ProjectsController from a real Nest module and replace the store token for tests.",
+        "labId": "lab.node.nestjs-reusable-project-module",
+        "stack": {
+          "node": "24",
+          "nestjs": "12",
+          "typescriptNestjs": "6"
+        },
+        "prerequisites": [
+          "11.03.07"
+        ],
+        "objectives": [
+          "A reusable projects feature should encapsulate service, controller and store token in an explicit Nest module.",
+          "Resolve ProjectsController from a real Nest module and replace the store token for tests.",
+          "An in-memory demo repository is not production persistence or multi-tenant authorization."
+        ],
+        "rubric": [
+          "A reusable projects feature should encapsulate service, controller and store token in an explicit Nest module.",
+          "Resolve ProjectsController from a real Nest module and replace the store token for tests.",
+          "An in-memory demo repository is not production persistence or multi-tenant authorization."
+        ],
+        "sources": [
+          {
+            "label": "Primary official reference",
+            "url": "https://docs.nestjs.com/"
+          },
+          {
+            "label": "Supporting official reference",
+            "url": "https://docs.nestjs.com/modules"
+          }
+        ],
+        "reviewedAt": null
+      },
+      "proposedLab": {
+        "id": "lab.node.nestjs-reusable-project-module",
+        "lessonId": "11.03.08",
+        "title": "NestJS practice: Lab reusable project module",
+        "runtime": "node-24-nestjs-12-typescript-6",
+        "starter": "labs/nestjs-reusable-project-module/starter/solution.ts",
+        "solution": "labs/nestjs-reusable-project-module/solution/solution.ts",
+        "tests": "labs/nestjs-reusable-project-module/solution.test.mjs",
+        "expected": "Resolve ProjectsController from a real Nest module and replace the store token for tests.",
+        "security": "An in-memory demo repository is not production persistence or multi-tenant authorization."
+      }
+    }
+  ]
+}
