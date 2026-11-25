@@ -50,6 +50,20 @@ In the test notes, separate what the in-memory fixture genuinely observed from R
 
 More workers can increase failure pressure on shared databases or downstream APIs.
 
+## Applied engineering walkthrough
+
+Worker concurrency controls in-flight work, while replica count multiplies total capacity. CPU-heavy tasks and network-bound tasks need different budgets. A lease identifies a current claim but cannot guarantee an external side effect runs once if the worker crashes.
+
+### Diagnose the concrete failure
+
+Use a controlled fixture with several due jobs, bounded concurrent workers and one held lease. Verify a second claim cannot replace an active claim and that expired claims can be recovered. Record late completion behavior.
+
+### Independent exercise and evidence
+
+Design a capacity budget using peak memory, database connections and provider concurrency. Record claim identity and observed in-flight count, then qualify the real worker runtime separately.
+
+**Qualification boundary:** These are practice instructions, not recorded results. Preserve the existing lab and publication status; in-memory tests do not qualify live Redis or BullMQ behavior.
+
 ## Knowledge check
 
 1. What is authoritative in this scenario, and what state is derived or replayable?
