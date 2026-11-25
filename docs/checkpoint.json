@@ -10,8 +10,8 @@
   },
   "development": {
     "branch": "main",
-    "state": "f1-p1-http-lifecycle-repaired-partial-qualification",
-    "note": "P1 teaching API startup lifecycle repaired after reproduced listener leakage. Node24.11.1 actual isolated regression run: 56 passing (33 prior, 3 new real-socket lifecycle, 20 existing HTTP cases), two static-asset HTTP cases excluded; full checkout and browser remain blocked. 338/889 published unchanged; scope frozen."
+    "state": "f1-p1-typed-http-cancellation-repaired-partial-qualification",
+    "note": "Node24.11.1 isolated reconstructed P1 qualification: 57/57 typed-client tests passed (20 actual HTTP client, 17 response contracts, 12 retry policy, 5 cancellation, 3 new error-body cancellation). Combined reconstructed test run 113/113 passed, two prior static-asset cases filtered out. Fixed reproduced loss of AbortError after non-success HTTP response headers; red 2/3 failed then green 3/3. Full checkout/registry DNS, actual browser and human review remain blocked; 338/889 published unchanged."
   },
   "snapshot": {
     "tracks": 28,
@@ -73,6 +73,6 @@
     "devHighFindings": 14,
     "exceptionExpires": "2026-12-02"
   },
-  "nextMilestone": "P1 full clean-checkout qualification with npm registry and approved Chromium loopback, complete named accessibility reviews, then guarded promotions 09.02/09.03. No further broad authoring.",
+  "nextMilestone": "Complete actual full P1 checkout/install/React and Next browser qualification and named accessibility reviews, then guarded 09.02/09.03 module promotions. Keep scope frozen.",
   "status": "editorial-merged-f1-partial-runtime-qualification-blocked"
 }

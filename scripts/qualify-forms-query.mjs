@@ -30,7 +30,7 @@ const checks=[
   'tests/forms-query-project-route.test.mjs']},
  {name:'Typed React HTTP boundary + query policy (no RHF/Query package required)',
   program:'node',args:['--experimental-strip-types','--test',
-   'tests/forms-query-react-api.test.mjs','tests/forms-query-response-contract.test.mjs','tests/forms-query-policy.test.mjs','tests/forms-query-cancellation.test.mjs']},
+   'tests/forms-query-react-api.test.mjs','tests/forms-query-response-contract.test.mjs','tests/forms-query-policy.test.mjs','tests/forms-query-cancellation.test.mjs','tests/forms-query-error-body-cancellation.test.mjs']},
  {name:'React UI source contract (not browser DOM)',program:'node',args:['--test','tests/forms-query-react-wiring.test.mjs']},
  {name:'Native form event logic with real Node HTTP and lightweight simulated DOM',program:'node',args:['--test','tests/forms-query-native-ui.test.mjs']},
  {name:'Browser navigation diagnostics without Chromium',program:'node',args:['--test','tests/forms-query-browser-navigation.test.mjs']},

@@ -71,7 +71,14 @@ async function request<T>(path: string, expectedStatus: number, decode: (value: 
     headers: { accept: 'application/json', ...options.headers },
   });
   if (!response.ok) {
-    const problem: unknown = await response.json().catch(() => null);
+    let problem: unknown = null;
+    try { problem = await response.json(); }
+    catch (error) {
+      // An interrupted error body must not turn intentional read cancellation into a retry.
+      options.signal?.throwIfAborted();
+      if (error !== null && typeof error === 'object' && 'name' in error && error.name === 'AbortError') throw error;
+      // The received HTTP status remains useful when its optional problem body is malformed.
+    }
     const title = problem && typeof problem === 'object' && 'title' in problem && typeof problem.title === 'string'
       ? problem.title : `HTTP ${response.status}`;
     throw new TaskRequestError(response.status, title);
