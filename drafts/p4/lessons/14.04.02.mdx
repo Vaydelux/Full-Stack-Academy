@@ -86,6 +86,20 @@ Upload tokens are bearer secrets valid for a limited window; they must not be lo
 
 Private buckets need specific Storage policies, server-controlled paths and explicit expiration/cleanup rules. Realtime private channels require policies on realtime.messages for permitted operations; a client-specified filter alone is not authorization. Persistent business state remains in PostgreSQL, not in Presence or Broadcast payloads.
 
+## Applied persistence walkthrough
+
+A signed upload token delegates a bounded capability to upload at a chosen path. The server chooses the path after authorization instead of accepting arbitrary object keys. The example's loose identifier regex checks length and characters but does not validate UUID structure or ownership of the document. User prefix alone may not distinguish tenants when a user belongs to several.
+
+### Diagnose the concrete failure
+
+Test authorized issuance, missing membership, invalid document ID and attempted arbitrary path override. Verify the issued token cannot write a different path, and test validity limits according to the installed SDK. Check whether the document belongs to the intended tenant before issuing tokens. Never retain raw upload tokens in logs.
+
+### Independent exercise and evidence
+
+Design a durable upload intent linking tenant, user, document and generated object path. Include expiry, duplicate issuance and cleanup. Record issuance and denied cases; treat token creation and completed upload as separate states.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Use isolated test identities, storage and channels. Preserve the existing starter and solution; source review cannot qualify live upload, webhook or Realtime security.
+
 ## Bug Hunt
 
 1. Predict the attack or failure: The starter signs arbitrary client-selected paths. An attacker can request a token for another user's folder and upload into it even when ordinary client RLS would deny that operation.
