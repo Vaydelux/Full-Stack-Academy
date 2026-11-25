@@ -1,3 +1,5 @@
+> **F20 — Release candidate:** Source freeze and explicit nine-step local qualification profile, full manuscript audit, reading/responsive/boundary browser gates, dashboard storage warning and extended import/syntax checks. Release not approved; see `docs/F20_RELEASE_CANDIDATE.md`.
+
 > **F19 — Production hardening:** Search file tracing, origin/URL validation, storage recovery, bounded sandbox diagnostics and mandatory milestone regression gates. See `docs/F19_PRODUCTION_HARDENING.md`. Six exact-source Node22 boundary tests and 41 connector source/matrix test bodies passed. Full release qualification remains pending.
 
 > **F18 — Qualification:** Read-only manuscript/lab triage, prerequisite graph reporting, advisory manuscript preparation links, and fail-closed draft metadata checks. 27 manuscript bodies and 16 P1 manifest bindings passed targeted connector checks; eight fixture model checks and four actual exact-source Node filesystem tests passed. Full checkout/runtime/human evidence still pending. See `docs/F18_CURRICULUM_QUALIFICATION.md`.

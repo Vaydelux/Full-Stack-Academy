@@ -10,8 +10,8 @@
   },
   "development": {
     "branch": "feature/f11-3-reading-format",
-    "state": "f19-production-boundaries-source-implemented",
-    "note": "F19 hardening committed; six exact-source Node22 tests and 41 connector source/matrix checks passed. 80 local release steps inventoried; full Node24 build/browser/audit pending."
+    "state": "f20-release-candidate-qualification-blocked",
+    "note": "F20 release profile adds full manuscript audit and reading/responsive/boundary browser gates; fixed local browser harness and extended import/syntax checks. Actual release blocked on full checkout, Node24 and external/manual evidence."
   },
   "snapshot": {
     "tracks": 28,
@@ -73,6 +73,6 @@
     "devHighFindings": 14,
     "exceptionExpires": "2026-12-02"
   },
-  "nextMilestone": "F20 release qualification on clean Node24 checkout, full build and browser smoke; no promotion without evidence.",
-  "status": "f19-production-hardening-qualification-pending"
+  "nextMilestone": "Stop feature expansion; run release profile on a clean Node24 checkout, resolve observed failures, then review merge/deployment separately.",
+  "status": "release-candidate-not-qualified"
 }

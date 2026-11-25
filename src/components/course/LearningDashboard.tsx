@@ -31,6 +31,7 @@ const buttonStyle = 'rounded-lg border border-slate-300 px-3 py-2 text-sm font-s
 
 export function LearningDashboard() {
   const hydrated = useAcademy((s) => s.hydrated);
+  const storageError = useAcademy((s) => s.storageError);
   const hydrate = useAcademy((s) => s.hydrate);
   const progress = useAcademy((s) => s.progress);
   const exportBackupJson = useAcademy((s) => s.exportBackupJson);
@@ -209,6 +210,7 @@ export function LearningDashboard() {
 
       <section aria-labelledby="backup-heading" className="mt-10 rounded-2xl border border-slate-200 p-5 dark:border-white/10">
         <h2 id="backup-heading" className="text-xl font-bold">Keep your progress</h2>
+        {storageError && <p role="alert" className="mt-3 text-sm font-semibold text-rose-700 dark:text-rose-300">Browser storage could not load or save progress. Current session changes may not survive reload. Export a backup before leaving; restore only a trusted backup.</p>}
         <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">
           Your bookmarks, notes, reflections, theme and self-assessed progress are stored in local browser storage. They do not sync across devices. Export a private JSON backup before clearing browser data.
         </p>

@@ -15,6 +15,14 @@ export const STEPS = Object.freeze([
  Object.freeze({id:'p1-query-browser',script:'qualify:forms-query:query-browser',timeout:600_000}),
  Object.freeze({id:'p2-nestjs-runtime',script:'qualify:nestjs:architecture',timeout:1_800_000}),
 ]);
+// A website release candidate includes curriculum and all documentation browser gates.
+export const RELEASE_STEPS = Object.freeze([
+ Object.freeze({id:'curriculum-source-audit',script:'qualify:release:source',timeout:300_000}),
+ ...STEPS,
+ Object.freeze({id:'reading-edition-browser',script:'qualify:reading:browser',timeout:360_000}),
+ Object.freeze({id:'responsive-discovery-browser',script:'qualify:f17:browser',timeout:360_000}),
+ Object.freeze({id:'production-boundaries-browser',script:'qualify:f20:browser',timeout:360_000}),
+]);
 export const EXTERNAL_GATES = Object.freeze([
  'P2 actual PostgreSQL and socket integration',
  'P8 isolated Nest/PostgreSQL HTTP integrity (qualify:p8:nest-integrity, disposable database required)',
@@ -25,6 +33,7 @@ export const EXTERNAL_GATES = Object.freeze([
  'Module-specific editorial review and publication approval',
 ]);
 const profileFor=profile=>{
+ if(profile==='release')return {locks:LOCKS,steps:RELEASE_STEPS,external:[...EXTERNAL_GATES,'Deployment provenance, preview/production smoke and rollback approval']};
  if(profile==='all')return {locks:LOCKS,steps:STEPS,external:EXTERNAL_GATES};
  if(profile==='p1')return {locks:LOCKS.slice(0,2),steps:STEPS.slice(0,4),external:['P2 NestJS runtime qualification',...EXTERNAL_GATES]};
  throw Error('Invalid qualification profile');
@@ -89,9 +98,9 @@ function receiptWriter(root){
 }
 const self=fileURLToPath(import.meta.url);
 if(process.argv[1]&&resolve(process.argv[1])===self){
- const root=resolve(dirname(self),'..'),args=process.argv.slice(2),profile=args[0]?.endsWith('-p1')?'p1':'all';
- if(args.length!==1||!['--plan','--run','--plan-p1','--run-p1'].includes(args[0])){console.error('Usage: npm run qualify:academy:local -- --plan|--run|--plan-p1|--run-p1');process.exitCode=2;}
- else if(args[0]==='--plan'||args[0]==='--plan-p1'){const report=makeReport(inspectCheckout(root),profile);console.log(JSON.stringify(report,null,2));}
+ const root=resolve(dirname(self),'..'),args=process.argv.slice(2),profile=args[0]?.endsWith('-p1')?'p1':args[0]?.endsWith('-release')?'release':'all';
+ if(args.length!==1||!['--plan','--run','--plan-p1','--run-p1','--plan-release','--run-release'].includes(args[0])){console.error('Usage: npm run qualify:academy:local -- --plan|--run|--plan-p1|--run-p1|--plan-release|--run-release');process.exitCode=2;}
+ else if(args[0]==='--plan'||args[0]==='--plan-p1'||args[0]==='--plan-release'){const report=makeReport(inspectCheckout(root),profile);console.log(JSON.stringify(report,null,2));}
  else{
   try{
    const receipt=receiptWriter(root);

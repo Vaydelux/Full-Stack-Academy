@@ -12,10 +12,12 @@ process.env.NODE_ENV = 'production';
 process.env.NEXT_TELEMETRY_DISABLED = '1';
 
 const readingOnly = process.argv.length === 3 && process.argv[2] === '--reading';
+const responsiveOnly = process.argv.length === 3 && process.argv[2] === '--responsive';
+const releaseBoundaries = process.argv.length === 3 && process.argv[2] === '--release-boundaries';
 const draftOnly = process.argv.length === 3 && process.argv[2] === '--draft-preview';
 const nestModule = process.argv.length === 4 && process.argv[2] === '--nest-module' && /^11\.0[1-4]$/.test(process.argv[3]) ? process.argv[3] : null;
 const pgModule = process.argv.length === 4 && process.argv[2] === '--postgres-module' && /^12\.0[12]$/.test(process.argv[3]) ? process.argv[3] : null;
-if (process.argv.length > (nestModule || pgModule ? 4 : draftOnly || readingOnly ? 3 : 2)) throw new Error('Usage: node scripts/verify-academy-browser.mjs [--reading | --draft-preview | --nest-module 11.01 | --postgres-module 12.01]');
+if (process.argv.length > (nestModule || pgModule ? 4 : draftOnly || readingOnly || responsiveOnly || releaseBoundaries ? 3 : 2)) throw new Error('Usage: node scripts/verify-academy-browser.mjs [--reading | --responsive | --release-boundaries | --draft-preview | --nest-module 11.01 | --postgres-module 12.01]');
 
 try {
   await new Promise((resolve, reject) => {
@@ -26,7 +28,7 @@ try {
   app = require('next')({ dev: false, dir: root, hostname, port });
   await app.prepare();
   server.on('request', app.getRequestHandler());
-  const smokeScript = fileURLToPath(new URL(nestModule || pgModule ? './nest-browser-smoke.mjs' : draftOnly ? './forms-query-draft-preview-browser-runner.mjs' : readingOnly ? './reading-edition-browser-smoke.mjs' : './browser-smoke.mjs', import.meta.url));
+  const smokeScript = fileURLToPath(new URL(nestModule || pgModule ? './nest-browser-smoke.mjs' : draftOnly ? './forms-query-draft-preview-browser-runner.mjs' : readingOnly ? './reading-edition-browser-smoke.mjs' : responsiveOnly ? './f17-ux-browser-smoke.mjs' : releaseBoundaries ? './f20-release-browser-smoke.mjs' : './browser-smoke.mjs', import.meta.url));
   await runBoundedChild(process.execPath, [smokeScript], {
     cwd: root,
     env: { ...process.env, ACADEMY_BASE_URL: 'http://' + hostname + ':' + port, ...(nestModule || pgModule ? { ACADEMY_MODULE_REVIEW: nestModule || pgModule, ACADEMY_NEST_MODULE: nestModule ?? '' } : {}) },
