@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-11-25",
+  "updatedAt": "2026-11-26",
   "baseline": {
     "branch": "main",
     "sha": "394e6d0f620f4740912b0d50cbcbbf5aecc83e8e",
@@ -10,8 +10,8 @@
   },
   "development": {
     "branch": "main",
-    "state": "f1-p2-guarded-local-promotion-implemented-runtime-blocked",
-    "note": "All four Nest modules have guarded plan/review/apply, exact phase ordering, source/index fingerprint, named human evidence, local-only review fixture, transactional rollback, full postflight and dedicated browser acceptance. Nine new Node24.11.1 tests plus seven projection tests passed in isolated reconstruction. No full checkout, actual Nest/Chromium, review or promotion performed; 338/889 published unchanged."
+    "state": "f10-3-targeted-http-qualified-publication-blocked",
+    "note": "80 actual Node24.11.1 HTTP/socket and policy tests passed in the available source subset, including three new deadline/cancellation regressions. Complete checkout, React/SSR browser and human review remain blocked. Snapshot unchanged."
   },
   "snapshot": {
     "tracks": 28,
@@ -73,6 +73,6 @@
     "devHighFindings": 14,
     "exceptionExpires": "2026-12-02"
   },
-  "nextMilestone": "Resolve genuine networked checkout and browser access, qualify and publish P1 to 354; generate and commit genuine Nest lock, run guarded P2 module promotion after actual review, reaching 386. No scope expansion.",
-  "status": "editorial-merged-f1-partial-runtime-qualification-blocked"
+  "nextMilestone": "Run full P1 qualification on a networked workstation; evaluate separate editorial publication and executable lab certification as a release-policy decision. Do not report unpublished lessons as published or waive existing gates silently.",
+  "status": "targeted-http-qualified-full-publication-blocked"
 }

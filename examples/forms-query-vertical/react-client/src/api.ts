@@ -99,33 +99,49 @@ async function boundedJson(response: Response, maxBytes: number, signal?: AbortS
   }
 }
 async function request<T>(path: string, expectedStatus: number, decode: (value: unknown) => T, options: RequestInit = {}): Promise<T> {
-  const response = await fetch(path, {
-    ...options,
-    credentials: 'same-origin',
-    cache: 'no-store',
-    redirect: 'error',
-    headers: { accept: 'application/json', ...options.headers },
-  });
-  if (options.signal?.aborted) { discard(response); options.signal.throwIfAborted(); }
-  if (!response.ok) {
-    let problem: unknown = null;
-    try { problem = await boundedJson(response, MAX_ERROR_BYTES, options.signal); }
-    catch (error) {
-      // An interrupted error body must not turn intentional read cancellation into a retry.
-      options.signal?.throwIfAborted();
-      if (error !== null && typeof error === 'object' && 'name' in error && error.name === 'AbortError') throw error;
-      // The received HTTP status remains useful when its optional problem body is malformed.
+  const caller = options.signal;
+  const signal = caller ? AbortSignal.any([caller, AbortSignal.timeout(5000)]) : AbortSignal.timeout(5000);
+  try {
+    caller?.throwIfAborted();
+    const response = await fetch(path, {
+      ...options,
+      signal,
+      credentials: 'same-origin',
+      cache: 'no-store',
+      redirect: 'error',
+      headers: { accept: 'application/json', ...options.headers },
+    });
+    if (signal.aborted) { discard(response); signal.throwIfAborted(); }
+    if (!response.ok) {
+      let problem: unknown = null;
+      try { problem = await boundedJson(response, MAX_ERROR_BYTES, signal); }
+      catch (error) {
+        // An interrupted error body must not turn intentional read cancellation into a retry.
+        caller?.throwIfAborted();
+        // A deadline during the optional problem body retains the known HTTP status.
+        if (!signal.aborted && error !== null && typeof error === 'object' && 'name' in error && error.name === 'AbortError') throw error;
+        // The received HTTP status remains useful when its optional problem body is malformed.
+      }
+      const title = problem && typeof problem === 'object' && 'title' in problem && typeof problem.title === 'string' && problem.title.length <= 256
+        ? problem.title : `HTTP ${response.status}`;
+      throw new TaskRequestError(response.status, title);
     }
-    const title = problem && typeof problem === 'object' && 'title' in problem && typeof problem.title === 'string' && problem.title.length <= 256
-      ? problem.title : `HTTP ${response.status}`;
-    throw new TaskRequestError(response.status, title);
+    if (response.status !== expectedStatus) { discard(response); throw new TaskResponseError(); }
+    if (expectedStatus === 204) return decode(null);
+    if (!/^application\/json(?:\s*;|$)/i.test(response.headers.get('content-type') ?? '')) { discard(response); throw new TaskResponseError(); }
+    const value = await boundedJson(response, MAX_SUCCESS_BYTES, signal);
+    signal.throwIfAborted();
+    return decode(value);
+  } catch (error) {
+    if (caller?.aborted) {
+      const reason: unknown = caller.reason;
+      if (reason !== null && typeof reason === 'object' && 'name' in reason && (reason.name === 'AbortError' || reason.name === 'TimeoutError')) throw reason;
+      const cancelled = new Error('Task request cancelled', { cause: reason });
+      cancelled.name = 'AbortError';
+      throw cancelled;
+    }
+    throw error;
   }
-  if (response.status !== expectedStatus) { discard(response); throw new TaskResponseError(); }
-  if (expectedStatus === 204) return decode(null);
-  if (!/^application\/json(?:\s*;|$)/i.test(response.headers.get('content-type') ?? '')) { discard(response); throw new TaskResponseError(); }
-  const value = await boundedJson(response, MAX_SUCCESS_BYTES, options.signal);
-  options.signal?.throwIfAborted();
-  return decode(value);
 }
 
 export const tasksApi = {

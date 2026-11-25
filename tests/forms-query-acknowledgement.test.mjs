@@ -62,7 +62,7 @@ test('successful HTTP response aborted after headers preserves the caller reason
   await peer(json(task), async () => {
     const original = globalThis.fetch, controller = new AbortController(), reason = new Error('Stop reading');
     globalThis.fetch = async (url, options) => { const response = await original(url, options); controller.abort(reason); return response; };
-    try { await assert.rejects(tasksApi.get(id, controller.signal), e => e === reason); }
+    try { await assert.rejects(tasksApi.get(id, controller.signal), e => e.name === 'AbortError' && e.cause === reason && !shouldRetryRead(0, e)); }
     finally { globalThis.fetch = original; }
   });
 });

@@ -1,0 +1,12 @@
+# F10.3 — Request deadlines and publication status
+
+Baseline c3e888f651875399ca21f8fdc2a2086338e92c4c. No lesson registrations or publication count changed.
+
+## Actual runtime
+The original API and related test blobs matched GitHub. Three new cases failed before repair and passed after it. The available subset ran on Node 24.11.1: 80 passed, zero failed or skipped, including real loopback HTTP and TCP and existing policy tests. The new test uses a seven-second external watchdog only to bound the negative case; the repaired request's five-second deadline covers stalled headers, incomplete successful response bodies and incomplete error bodies. A known 409 remains terminal. Intentional custom cancellation becomes AbortError with the reason as cause; standard AbortError/TimeoutError is preserved unchanged. The acknowledgement test is explicitly updated for this contract. These deadlines apply per request, not to retries as a whole; they do not prove rollback of server mutations. Full TypeScript compilation and browser compatibility remain untested.
+
+## Why the publication counter has not advanced
+The snapshot is a union of live MDX metadata and interactive lesson IDs, not the draft manuscript count or number of commits. 338/889 lessons and 42/111 modules are published; 551 lessons remain staged. The first ordered gate is 09.02 (React Hook Form), followed by 09.03 (TanStack Query), then Nest and persistence. DNS prevented a full checkout in this environment; previous local Chromium navigation was blocked by administrator policy. No complete npm ci, production build, real RHF/Query browser and SSR or human review has occurred. No Vercel deployment requested.
+
+## Decision required
+Current policy combines editorial availability, executable runtime qualification and lab certification. These may reasonably be separate axes: a reviewed, build-validated article can be accessible while a lab is explicitly marked unverified and disabled; verified lab status must still require actual acceptance. A policy change would need corresponding schema, registry, progress, accessibility, source audit and release-gate changes, not merely editing the counter. No such change has been made here. Do not silently waive existing gates. First use a networked checkout to complete the earliest P1 qualification, or approve the separate editorial-publication policy before implementing it. Preserve production freeze until a real release build is qualified.
