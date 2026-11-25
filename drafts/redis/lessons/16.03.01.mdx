@@ -50,6 +50,20 @@ In the test notes, separate what the in-memory fixture genuinely observed from R
 
 Moving work to a queue does not automatically guarantee successful delivery.
 
+## Applied engineering walkthrough
+
+A producer records work for asynchronous execution; a consumer processes it independently. The checkout response should describe the committed payment, not imply receipt delivery. A queue publish after a database commit can fail; a durable outbox can bridge that gap.
+
+### Diagnose the concrete failure
+
+Simulate a successful order with receipt delivery pending. Verify the caller gets the correct order state and that a provider failure does not reverse the committed order. Record enqueue and delivery outcomes separately.
+
+### Independent exercise and evidence
+
+Design an event envelope for receipt dispatch with stable order identity and minimal data. Document recovery if publishing fails after commit, and require a durable record before claiming the job is accepted.
+
+**Qualification boundary:** These are practice instructions, not recorded results. Preserve the existing lab and publication status; in-memory tests do not qualify live Redis or BullMQ behavior.
+
 ## Knowledge check
 
 1. What is authoritative in this scenario, and what state is derived or replayable?
