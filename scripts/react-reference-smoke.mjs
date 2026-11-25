@@ -12,6 +12,15 @@ export async function verifyReactReferences({page,base,assert,wait}) {
  await link.click();
  await wait(page.getByRole('heading',{name:'React 19: useEffect()'}));
  assert.equal(await page.locator('meta[name="robots"][content*="noindex"]').count(),0,'Authored reference is indexable');
+ const related=page.getByRole('heading',{name:'Related lessons and official source'});
+ await wait(related);
+ const destination=page.locator('#related a[href^="/learn/"]').first();
+ await wait(destination);
+ const lessonHref=await destination.getAttribute('href');
+ await page.goto(base+lessonHref);
+ const context=page.getByText('Prerequisites and official documentation',{exact:true});
+ await context.click();
+ await wait(page.getByRole('link',{name:'useEffect',exact:true}));
  const indexOnly=await page.goto(base+'/reference/react-react-memo');
  assert.equal(indexOnly.status(),200);
  assert.equal(await page.locator('meta[name="robots"][content*="noindex"]').count(),1,'Unwritten reference stays noindex');

@@ -9,16 +9,16 @@
     "productionUrl": "https://fullstack-academy-ecru.vercel.app/"
   },
   "development": {
-    "branch": "main",
-    "state": "f11-2-reading-build-boundaries-repaired-full-build-pending",
-    "note": "Reproduced unresolved reading navigation relative import and root compiler scope leakage; isolated staged P4 lab snippets and independently configured P8 Nest workspace. 16 targeted Node24.11.1 tests passed in a reconstructed source/config fixture using TypeScript 5.8.3; 15 actual manuscripts structurally parsed from 12 groups. Full checkout/build/browser/deployment not performed. Published snapshot unchanged."
+    "branch": "feature/f11-3-reading-format",
+    "state": "f13-reference-graph-and-foundations-draft",
+    "note": "F13 explicit reference graph, eight new foundational reference drafts, richer search; full build and browser pending."
   },
   "snapshot": {
     "tracks": 28,
     "modules": 111,
     "catalogTopics": 889,
     "indexedReferences": 303,
-    "authoredReferenceDrafts": 66,
+    "authoredReferenceDrafts": 74,
     "authoredInteractiveModels": 4,
     "authoredMdxLessons": 337,
     "publishedLessons": 338,
@@ -73,6 +73,6 @@
     "devHighFindings": 14,
     "exceptionExpires": "2026-12-02"
   },
-  "nextMilestone": "Complete full checkout, install locked dependencies, run course-roadmap/verify:offline and reading browser qualification, then release reading editions; keep runtime certification separate.",
-  "status": "reading-build-boundaries-repaired-full-build-blocked"
+  "nextMilestone": "Qualify full checkout with locked dependencies, course-roadmap, reference tests, full production build and real browser smoke; keep certification separate.",
+  "status": "f13-reference-integration-full-build-pending"
 }

@@ -3017,6 +3017,246 @@ await redisCache.set(cacheKey, JSON.stringify(safeDto), 'EX', 60);`,
     "09.01.08"
   ],
   "canonicalUrl": "https://zod.dev/api"
+},
+{
+  "id": "web-main",
+  "matchCategories": [
+    "Web & HTML"
+  ],
+  "matchTitles": [
+    "main"
+  ],
+  "heading": "HTML: main landmark",
+  "category": "Web & HTML",
+  "majorVersion": "HTML Living Standard",
+  "status": "Authored reference draft",
+  "summary": "Represents the dominant content of a document, allowing assistive technology to locate the primary landmark.",
+  "syntax": "<main id=\"content\">…</main>",
+  "lang": "html",
+  "parameters": "Global HTML attributes; use an id for a skip-link target.",
+  "returns": "A semantic element, not an interactive control.",
+  "minimalExample": "<main><h1>Dashboard</h1></main>",
+  "productionExample": "<a href=\"#content\">Skip to main content</a>\n<header>Application navigation</header>\n<main id=\"content\"><h1>Account overview</h1></main>",
+  "commonMistakes": [
+    "Using several visible main landmarks or nesting main inside nav, article or aside."
+  ],
+  "securityPerformanceNotes": [
+    "Prefer native landmarks to redundant ARIA; ensure the skip target is keyboard reachable."
+  ],
+  "relatedLessonIds": [
+    "01.01.03"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/main"
+},
+{
+  "id": "web-label",
+  "matchCategories": [
+    "Web & HTML"
+  ],
+  "matchTitles": [
+    "label"
+  ],
+  "heading": "HTML: label",
+  "category": "Web & HTML",
+  "majorVersion": "HTML Living Standard",
+  "status": "Authored reference draft",
+  "summary": "Associates text with a labelable form control so users can identify and activate it.",
+  "syntax": "<label for=\"email\">Email</label>",
+  "lang": "html",
+  "parameters": "for matches the control's unique id; nesting the control is another supported association.",
+  "returns": "A label association, not validation or authorization.",
+  "minimalExample": "<label for=\"name\">Name</label><input id=\"name\" name=\"name\">",
+  "productionExample": "<label for=\"email\">Work email</label>\n<input id=\"email\" name=\"email\" type=\"email\" autocomplete=\"email\" required aria-describedby=\"email-help\">\n<p id=\"email-help\">Use your work address.</p>",
+  "commonMistakes": [
+    "Replacing a visible label with placeholder text or duplicating IDs."
+  ],
+  "securityPerformanceNotes": [
+    "Server-side validation remains necessary; test keyboard and accessible name behavior."
+  ],
+  "relatedLessonIds": [
+    "01.02.01"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/label"
+},
+{
+  "id": "web-fetch",
+  "matchCategories": [
+    "Web & HTML"
+  ],
+  "matchTitles": [
+    "fetch"
+  ],
+  "heading": "Fetch API: fetch()",
+  "category": "Web & HTML",
+  "majorVersion": "Web Fetch API",
+  "status": "Authored reference draft",
+  "summary": "Starts an HTTP request and resolves to a Response even for ordinary HTTP error statuses.",
+  "syntax": "fetch(input, init?)",
+  "lang": "js",
+  "parameters": "input is a URL or Request; init can specify method, headers, body and AbortSignal.",
+  "returns": "Promise<Response>; network and abort errors reject the promise.",
+  "minimalExample": "const response = await fetch('/api/tasks');\nif (!response.ok) throw new Error(`HTTP ${response.status}`);\nconst tasks = await response.json();",
+  "productionExample": "const response = await fetch('/api/tasks', { signal: AbortSignal.timeout(5000), headers: { Accept: 'application/json' } });\nif (!response.ok) throw new Error(`HTTP ${response.status}`);\nconst payload = await response.json();\n// Validate payload against the application contract before use.",
+  "commonMistakes": [
+    "Assuming 404 or 500 rejects fetch, or treating response.json() as schema validation."
+  ],
+  "securityPerformanceNotes": [
+    "Bound request duration and response size at the appropriate boundary; do not retry unsafe mutations blindly."
+  ],
+  "relatedLessonIds": [
+    "01.04.02"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/API/Window/fetch"
+},
+{
+  "id": "css-grid-template-columns",
+  "matchCategories": [
+    "CSS"
+  ],
+  "matchTitles": [
+    "grid-template-columns"
+  ],
+  "heading": "CSS: grid-template-columns",
+  "category": "CSS",
+  "majorVersion": "CSS Grid Layout",
+  "status": "Authored reference draft",
+  "summary": "Defines the column track sizing of a grid container.",
+  "syntax": "grid-template-columns: repeat(3, minmax(0, 1fr));",
+  "lang": "css",
+  "parameters": "Track sizes, named lines and repeat() expressions; applies to grid containers.",
+  "returns": "A CSS computed track list; actual layout depends on available space and intrinsic sizes.",
+  "minimalExample": ".grid { display: grid; grid-template-columns: 1fr 1fr; }",
+  "productionExample": ".cards { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr)); }\n.cards > * { min-width: 0; overflow-wrap: anywhere; }",
+  "commonMistakes": [
+    "Assuming 1fr alone always prevents overflow from long unbreakable content."
+  ],
+  "securityPerformanceNotes": [
+    "Test narrow viewports and zoom; preserve DOM order instead of using layout to reorder meaning."
+  ],
+  "relatedLessonIds": [
+    "02.02.02"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/CSS/grid-template-columns"
+},
+{
+  "id": "javascript-promise-all",
+  "matchCategories": [
+    "JavaScript"
+  ],
+  "matchTitles": [
+    "Promise.all"
+  ],
+  "heading": "JavaScript: Promise.all()",
+  "category": "JavaScript",
+  "majorVersion": "ECMAScript",
+  "status": "Authored reference draft",
+  "summary": "Combines concurrent work, fulfilling with input-ordered values or rejecting when an input rejects.",
+  "syntax": "Promise.all(iterable)",
+  "lang": "js",
+  "parameters": "An iterable of promises or values.",
+  "returns": "A promise that fulfills with an array or rejects with the first observed rejection reason.",
+  "minimalExample": "const values = await Promise.all([Promise.resolve(1), Promise.resolve(2)]);",
+  "productionExample": "const [profile, settings] = await Promise.all([loadProfile(), loadSettings()]);\n// Both results are required; handle failure at the caller boundary.",
+  "commonMistakes": [
+    "Assuming rejection cancels other in-flight work, or invoking an unbounded number of requests."
+  ],
+  "securityPerformanceNotes": [
+    "Use bounded concurrency for large collections; propagate cancellation explicitly where supported."
+  ],
+  "relatedLessonIds": [
+    "03.03.04"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/all"
+},
+{
+  "id": "javascript-promise-allsettled",
+  "matchCategories": [
+    "JavaScript"
+  ],
+  "matchTitles": [
+    "Promise.allSettled"
+  ],
+  "heading": "JavaScript: Promise.allSettled()",
+  "category": "JavaScript",
+  "majorVersion": "ECMAScript",
+  "status": "Authored reference draft",
+  "summary": "Waits for every input to settle and reports each fulfillment or rejection in input order.",
+  "syntax": "Promise.allSettled(iterable)",
+  "lang": "js",
+  "parameters": "An iterable of promises or values.",
+  "returns": "A promise fulfilled with status-tagged result objects for each input.",
+  "minimalExample": "const results = await Promise.allSettled([Promise.resolve(1), Promise.reject(new Error('failed'))]);",
+  "productionExample": "const results = await Promise.allSettled([refreshProfile(), refreshPreferences()]);\nfor (const [index, result] of results.entries()) {\n  if (result.status === 'rejected') reportFailure(index);\n  else renderSection(index, result.value);\n}",
+  "commonMistakes": [
+    "Treating every settled operation as a success or reading value before checking status."
+  ],
+  "securityPerformanceNotes": [
+    "Avoid logging sensitive rejection payloads; bound fan-out and request duration separately."
+  ],
+  "relatedLessonIds": [
+    "03.03.04"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/allSettled"
+},
+{
+  "id": "typescript-generics",
+  "matchCategories": [
+    "TypeScript"
+  ],
+  "matchTitles": [
+    "generics"
+  ],
+  "heading": "TypeScript: Generics",
+  "category": "TypeScript",
+  "majorVersion": "TypeScript",
+  "status": "Authored reference draft",
+  "summary": "Preserve relationships between input and output types without discarding type information.",
+  "syntax": "function identity<T>(value: T): T { return value; }",
+  "lang": "ts",
+  "parameters": "Type parameters may be inferred, explicit or constrained with extends.",
+  "returns": "A generic signature; the type parameter is erased at runtime.",
+  "minimalExample": "function first<T>(items: readonly T[]): T | undefined { return items[0]; }",
+  "productionExample": "function indexById<T extends { id: string }>(items: readonly T[]): Map<string, T> {\n  return new Map(items.map(item => [item.id, item]));\n}",
+  "commonMistakes": [
+    "Using any instead of a type parameter, or expecting a generic type to validate JSON at runtime."
+  ],
+  "securityPerformanceNotes": [
+    "Validate external data separately; express only necessary constraints."
+  ],
+  "relatedLessonIds": [
+    "04.02.01"
+  ],
+  "canonicalUrl": "https://www.typescriptlang.org/docs/handbook/2/generics.html"
+},
+{
+  "id": "typescript-discriminated-unions",
+  "matchCategories": [
+    "TypeScript"
+  ],
+  "matchTitles": [
+    "Discriminated unions"
+  ],
+  "heading": "TypeScript: Discriminated unions",
+  "category": "TypeScript",
+  "majorVersion": "TypeScript",
+  "status": "Authored reference draft",
+  "summary": "Model mutually exclusive states with a shared literal discriminant so control-flow analysis narrows the data.",
+  "syntax": "type Result = { ok: true; value: string } | { ok: false; error: string };",
+  "lang": "ts",
+  "parameters": "Each variant carries a literal tag and its own required fields.",
+  "returns": "A union type narrowed through equality checks or switch statements.",
+  "minimalExample": "function message(r: Result) { return r.ok ? r.value : r.error; }",
+  "productionExample": "type State = { kind: 'loading' } | { kind: 'ready'; count: number } | { kind: 'error'; message: string };\nfunction describe(state: State): string {\n  switch (state.kind) {\n    case 'loading': return 'Loading';\n    case 'ready': return String(state.count);\n    case 'error': return state.message;\n    default: { const exhaustive: never = state; return exhaustive; }\n  }\n}",
+  "commonMistakes": [
+    "Using optional fields on one object and allowing impossible combinations of state."
+  ],
+  "securityPerformanceNotes": [
+    "Treat network responses as unknown until validated; type narrowing is not authorization."
+  ],
+  "relatedLessonIds": [
+    "04.02.05"
+  ],
+  "canonicalUrl": "https://www.typescriptlang.org/docs/handbook/2/narrowing.html#discriminated-unions"
 }
 ];
 

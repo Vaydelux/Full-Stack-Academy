@@ -12,6 +12,8 @@ export const metadata: Metadata = {
 export default async function ReferenceIndex({ searchParams }: { searchParams: Promise<{ category?: string | string[] }> }) {
   const raw = (await searchParams).category;
   const initialCategory = typeof raw === 'string' && referenceCategories.includes(raw) ? raw : 'all';
+  const authoredById = new Map(AUTHORED_REFERENCES.map(entry => [entry.id, entry]));
+  const searchable = references.map(entry => { const draft = authoredById.get(entry.id); return { ...entry, summary: draft?.summary, version: draft?.majorVersion, heading: draft?.heading }; });
   return (
     <DocShell section="reference">
       <p className="text-xs font-bold uppercase tracking-[.2em] text-cyan-700 dark:text-[#7DEBFF]">Modern reference encyclopedia</p>
@@ -24,7 +26,7 @@ export default async function ReferenceIndex({ searchParams }: { searchParams: P
       <ReferenceExplorer
         key={initialCategory}
         initialCategory={initialCategory}
-        entries={references}
+        entries={searchable}
         categories={referenceCategories}
         authoredIds={AUTHORED_REFERENCES.map((entry) => entry.id)}
       />

@@ -2,9 +2,10 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { AUTHORED_REFERENCES } from '@/lib/academy/authored-content';
-import { lessonMap, referenceMap } from '@/lib/academy/curriculum';
+import { referenceMap } from '@/lib/academy/curriculum';
 import { CodeBlock, DocNotice, DocSection, DocShell } from '@/components/course/DocShell';
-import { isPublishedLesson } from '@/lib/academy/published';
+import { readReferenceLessons } from '@/lib/academy/reference-links-server';
+import { safeReference } from '../../../../scripts/reading-edition.mjs';
 import { getPublicOrigin } from '@/lib/academy/site';
 
 type ReferencePageProps = { params: Promise<{ referenceId: string }> };
@@ -32,6 +33,8 @@ export default async function ReferencePage({ params }: ReferencePageProps) {
   const entry = referenceMap.get(referenceId);
   if (!entry) notFound();
   const authored = referenceById.get(referenceId);
+  const related = readReferenceLessons(referenceId);
+  const official = authored ? safeReference(authored.canonicalUrl) : null;
   return (
     <DocShell section="reference">
       <nav aria-label="Breadcrumb" className="mb-5 text-xs text-slate-500">
@@ -66,14 +69,15 @@ export default async function ReferencePage({ params }: ReferencePageProps) {
           <DocSection id="security" title="Security and performance notes">
             <ul className="list-disc space-y-2 pl-6">{authored.securityPerformanceNotes.map((item) => <li key={item}>{item}</li>)}</ul>
           </DocSection>
-          <DocSection id="related" title="Related lessons and official source">
-            <ul className="list-disc space-y-2 pl-6">
-              {authored.relatedLessonIds.map((id) => <li key={id}><Link href={`/learn/${id}`} className="text-cyan-700 hover:underline dark:text-[#7DEBFF]">{lessonMap.get(id)?.title ?? id}</Link> <span className="text-xs text-slate-500 dark:text-slate-400">({id} · {isPublishedLesson(id) ? 'Available lesson' : 'Not published'})</span></li>)}
-              <li><a href={authored.canonicalUrl} target="_blank" rel="noopener noreferrer" className="text-cyan-700 hover:underline dark:text-[#7DEBFF]">Official documentation</a></li>
-            </ul>
-          </DocSection>
         </>
       )}
+      <DocSection id="related" title="Related lessons and official source">
+        {related.length ? <ul className="space-y-2">{related.map(item => <li key={item.id} className="flex flex-wrap items-baseline gap-x-2">
+          <Link href={'/learn/' + item.id} className="break-words text-cyan-700 underline dark:text-cyan-300">{item.title}</Link>
+          <span className="text-xs text-slate-500">{item.id} · {item.access === 'published' ? 'Published' : item.access === 'reading' ? 'Reading · lab pending' : 'Planned'}</span>
+        </li>)}</ul> : <p>No explicit lesson cross-reference has been authored yet.</p>}
+        {official && <a href={official} target="_blank" rel="noopener noreferrer" className="mt-3 inline-block text-cyan-700 underline dark:text-cyan-300">Official documentation (opens in a new tab)</a>}
+      </DocSection>
     </DocShell>
   );
 }
