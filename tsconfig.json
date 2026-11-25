@@ -45,6 +45,8 @@
     "drafts/nestjs",
     "examples/nestjs-vertical",
     "examples/p4-runtime/prisma",
-    "labs/nestjs-*/**/*"
+    "labs/nestjs-*/**/*",
+    "drafts/p4/labs",
+    "examples/p8-nest-integrity"
   ]
 }

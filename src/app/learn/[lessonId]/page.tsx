@@ -12,7 +12,7 @@ import { LocalLessonCompletion } from '@/components/course/LocalLessonCompletion
 import { LessonNotebook } from '@/components/course/LessonNotebook';
 import { readCourseProgress, readReadingIds, readReadingLesson } from '@/lib/academy/course-progress-server';
 import { ReadingEditionArticle } from '@/components/course/ReadingEditionArticle';
-import { readingModuleNavigation } from '../../../scripts/reading-navigation.mjs';
+import { readingModuleNavigation } from '../../../../scripts/reading-navigation.mjs';
 
 type LessonPageProps = { params: Promise<{ lessonId: string }> };
 
