@@ -83,7 +83,21 @@ In a multi-request system, repeat the test with two independent users and at lea
 
 <Misconception claim="ReportsModule imports TasksModule but cannot resolve TasksService because it is not exported." correction="A provider must be exported by its owning module and imported through that module to be visible elsewhere." />
 
-<KnowledgeCheck question="Which design is safest for cross-module boundaries?" choices={["Make the controller hold every stateful dependency permanently.","Keep business rules in an injectable service and verify the boundary with actual runtime behavior.","Expose persistent entities directly because TypeScript hides private fields.","Treat a mock array as proof of database transactions."]} correctIndex={1} explanation="A provider must be exported by its owning module and imported through that module to be visible elsewhere." misconception="ReportsModule imports TasksModule but cannot resolve TasksService because it is not exported." lessonId="11.03.05" />
+<KnowledgeCheck question="ReportsModule imports TasksModule but cannot inject TasksService. Which change makes the owned provider visible?" choices={["Export TasksService from TasksModule.","Add a second unrelated TasksService instance in ReportsModule.","Make every module global.","Import the controller instead of the module."]} correctIndex={0} explanation="An imported module exposes only providers it explicitly exports." misconception="ReportsModule imports TasksModule but cannot resolve TasksService because it is not exported." lessonId="11.03.05" />
+
+## Applied engineering walkthrough
+
+Modules establish explicit dependency visibility. A provider belongs to the module registering it; another module can resolve it only through the appropriate exports and imports. Re-registering the same class in the consumer may create another instance and hide the underlying design problem. Prefer a narrow public service contract instead of exporting every internal implementation. Circular dependencies often signal that responsibilities need to be separated.
+
+### Diagnose the concrete failure
+
+Follow ReportsService to TasksService. In the starter, inspect the missing export; compilation of a testing module should fail to resolve the dependency. In the solution, TasksModule exports the service and ReportsModule imports the owner. Resolve ReportsService and assert the returned count. Distinguish the specific dependency-resolution failure from missing package installation.
+
+### Independent exercise and evidence
+
+Draw a dependency graph for Tasks, Reports and Notifications. Decide which services each module exports, and remove a dependency cycle by extracting a small shared port or orchestrator. Record the relevant import/export arrays and the resolved service behavior after repair.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Pure contract checks, framework wiring and real database qualification are separate evidence. Keep the existing starter and solution unchanged; do not award course credit from source review alone.
 
 ## Bug Hunt: reproduce, diagnose and repair
 
