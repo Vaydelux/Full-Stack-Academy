@@ -72,6 +72,20 @@ A nine-row fixture is too small to establish an index advantage. Recreate this c
 
 When query execution moves into a real Next.js/NestJS application, measure request concurrency and database calls as well as SQL time. Remember that schema changes alter future write costs, vacuum work and storage. An index may improve a selective read but slow bulk inserts; a pooled connection may conserve memory but alter transaction/session semantics.
 
+## Applied SQL walkthrough
+
+Performance profiling begins with a correctness baseline and a concrete hypothesis. The proposed index places tenant and status equality keys before timestamp and ID ordering, matching the filtered feed. LIMIT makes access order relevant, but table size, skew and visibility can change the plan. Compare end-to-end request time separately from server execution time.
+
+### Predict and diagnose the result
+
+Capture the exact query result and baseline plan before creating the index. Use a repeatable synthetic dataset and the same parameters after creating it. Collect repeated measurements, including p50 and p95, buffers and index storage; label warm-up and sample size. Report neutral or negative outcomes rather than selecting only a favorable run.
+
+### Independent exercise and evidence
+
+Create a short decision record: workload, hypothesis, controlled change, correctness assertions, measurement table, write/storage cost and keep-or-remove recommendation. Include an alternate tenant with a different row distribution. Record the actual evidence only when PostgreSQL and the representative workload are available.
+
+**Qualification boundary:** These are measurement instructions and hypotheses, not recorded benchmark results. Use disposable PostgreSQL data and preserve the existing starter and solution. A source check does not prove a faster query or safe production configuration.
+
 ## Bug Hunt
 
 1. Predict why the starter is incomplete: The starter has no targeted index and lacks measured before/after optimization evidence. SQL syntax alone cannot establish improvement.
