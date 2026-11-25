@@ -3,7 +3,7 @@ export function normalizeDiscoveryQuery(value) {
   return typeof value === 'string' ? value.slice(0,160).trim().normalize('NFKC').toLowerCase() : '';
 }
 export function searchAcademy(lessons, references, query, scope='all', page=1) {
-  const normalized=normalizeDiscoveryQuery(query);
+  const normalized=normalizeDiscoveryQuery(query).replace(/\(\)/g,'').trim();
   if (!normalized) return {total:0,items:[],page:1,pages:0};
   const tokens=normalized.split(/\s+/).filter(Boolean).slice(0,8);
   const all=[...(scope==='references'?[]:lessons.map(x=>({...x,kind:'lesson'}))),...(scope==='lessons'?[]:references.map(x=>({...x,kind:'reference'})))];
@@ -12,7 +12,7 @@ export function searchAcademy(lessons, references, query, scope='all', page=1) {
     const key=row.kind+':'+row.id;
     if(seen.has(key))continue;
     seen.add(key);
-    const title=normalizeDiscoveryQuery(row.title),id=normalizeDiscoveryQuery(row.id);
+    const title=normalizeDiscoveryQuery(row.title).replace(/\(\)/g,''),id=normalizeDiscoveryQuery(row.id);
     const haystack=[id,title,row.context,row.summary].map(v=>typeof v==='string'?v.normalize('NFKC').toLowerCase():'').join(' ');
     if(!tokens.every(t=>haystack.includes(t)))continue;
     const score=(id===normalized?120:id.startsWith(normalized)?70:0)+(title===normalized?100:title.startsWith(normalized)?50:0)+tokens.reduce((n,t)=>n+(title.includes(t)?12:0),0);

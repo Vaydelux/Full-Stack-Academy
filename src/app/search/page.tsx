@@ -21,10 +21,10 @@ export default async function SearchPage({searchParams}:{searchParams:Promise<Pa
  return <DocShell>
   <h1 className="text-3xl font-extrabold tracking-tight">Search academy</h1>
   <p className="mt-3 text-sm text-slate-600 dark:text-slate-300">Find curriculum topics and API references in one place. Reading editions and reference drafts do not grant course credit.</p>
-  <form action="/search" method="get" role="search" className="mt-6 grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto_auto] sm:items-end">
+  <form action="/search" method="get" role="search" className="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(0,1fr)_auto_auto] xl:items-end">
    <label className="min-w-0 text-sm font-semibold">Search topics and references<input name="q" type="search" defaultValue={query} maxLength={160} className="mt-1 min-h-11 w-full rounded-lg border border-slate-300 bg-white px-3 dark:border-white/20 dark:bg-slate-950" /></label>
-   <label className="text-sm font-semibold">Search in<select name="scope" defaultValue={scope} className="mt-1 block min-h-11 w-full rounded-lg border border-slate-300 bg-white px-3 dark:border-white/20 dark:bg-slate-950"><option value="all">Everything</option><option value="lessons">Curriculum</option><option value="references">References</option></select></label>
-   <button type="submit" className="min-h-11 rounded-lg bg-cyan-700 px-5 font-semibold text-white hover:bg-cyan-800">Search</button>
+   <label className="min-w-0 text-sm font-semibold">Search in<select name="scope" defaultValue={scope} className="mt-1 block min-h-11 w-full rounded-lg border border-slate-300 bg-white px-3 dark:border-white/20 dark:bg-slate-950"><option value="all">Everything</option><option value="lessons">Curriculum</option><option value="references">References</option></select></label>
+   <button type="submit" className="min-h-11 rounded-lg bg-cyan-700 sm:col-span-2 xl:col-span-1 px-5 font-semibold text-white hover:bg-cyan-800">Search</button>
   </form>
   {!query?<p className="mt-6 text-sm text-slate-600 dark:text-slate-300">Try an API name, lesson ID or technology.</p>:<>
    <p role="status" className="mt-6 text-sm text-slate-600 dark:text-slate-300">{result.total} matching results</p>

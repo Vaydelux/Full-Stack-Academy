@@ -24,7 +24,7 @@ export default async function ReferenceIndex({ searchParams }: { searchParams: P
       <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-600 dark:text-slate-300">
         Explore {summary.referenceSubjects} indexed technical subjects across {referenceCategories.length} categories.
         {' '}{AUTHORED_REFERENCES.length} have authored draft pages with syntax, examples, mistakes and links to official documentation.
-        Indexed-only entries remain visibly unimplemented. Search by API name, version or summary, or narrow the category.
+        Authored drafts are distinct from runtime-qualified examples. Search by API name, version or summary, or narrow the category.
       </p>
       <details className="mt-5 rounded-xl border border-slate-200 p-4 text-sm dark:border-white/10">
         <summary className="cursor-pointer font-semibold">Reference coverage by technology</summary>

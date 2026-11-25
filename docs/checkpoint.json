@@ -11,7 +11,7 @@
   "development": {
     "branch": "feature/f11-3-reading-format",
     "state": "f17-contextual-learning-ux-source-implemented",
-    "note": "F17 contextual curriculum navigation, shared server search, discovery-first landing, responsive controls and reading typography. Source checks pending full build/browser."
+    "note": "F17 contextual module navigation, shared server search, discovery-first layout, reading typography and resume-first dashboard. First six exact-source Node22 tests passed; expanded tests and browser qualification pending."
   },
   "snapshot": {
     "tracks": 28,

@@ -14,8 +14,8 @@ export function DocShell({ children, active, section = 'learn', activeCategory, 
   const activeClass = ' bg-cyan-500/10 font-semibold text-cyan-700 dark:text-cyan-300';
   const navigation = section === 'reference' ? (
     <nav aria-label="Reference categories" className="space-y-1">
-      <Link href="/reference" className={navLink}>All references</Link>
-      {referenceCategories.map(category => <Link key={category} href={'/reference?category='+encodeURIComponent(category)} className={navLink+(category===activeCategory?activeClass:'')}>{category}</Link>)}
+      <Link href="/reference" aria-current={activeCategory==='all'?'page':undefined} className={navLink+(activeCategory==='all'?activeClass:'')}>All references</Link>
+      {referenceCategories.map(category => <Link key={category} href={'/reference?category='+encodeURIComponent(category)} aria-current={category===activeCategory?'true':undefined} className={navLink+(category===activeCategory?activeClass:'')}>{category}</Link>)}
     </nav>
   ) : (
     <nav aria-label="Curriculum sections" className="space-y-3">
@@ -56,6 +56,7 @@ export function DocShell({ children, active, section = 'learn', activeCategory, 
             <Link href="/reference" className="flex items-center gap-1 hover:text-cyan-600 dark:hover:text-[#7DEBFF]">
               <LibraryBig size={15} aria-hidden="true" /> Reference
             </Link>
+            <Link href="/" className="flex min-h-9 items-center font-semibold hover:underline">Workspace</Link>
             <Link href="/search" className="flex min-h-9 items-center gap-1 rounded-lg px-2 hover:underline"><Search size={15} aria-hidden="true" /> Search</Link>
           </div>
         </nav>

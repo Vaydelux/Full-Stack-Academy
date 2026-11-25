@@ -118,6 +118,19 @@ export function LearningDashboard() {
         A quieter way to continue your learning. Progress comes from your own knowledge checks and self-assessment, not automatic code grading. Everything here stays in this browser.
       </p>
 
+      <section aria-labelledby="continue-heading" className="mt-5 rounded-xl border border-cyan-600/30 bg-cyan-50 p-6 dark:bg-cyan-300/[0.055]">
+        <h2 id="continue-heading" className="text-xl font-bold">Continue learning</h2>
+        {overview.nextLesson ? (
+          <>
+            <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">Your next available lesson is:</p>
+            <p className="mt-2 font-semibold">{overview.nextLesson.id} · {overview.nextLesson.title}</p>
+            <Link className="mt-4 inline-flex items-center gap-2 rounded-lg bg-cyan-700 px-4 py-2.5 text-sm font-bold text-white hover:bg-cyan-800" href={'/learn/' + overview.nextLesson.id}>
+              Resume lesson <ArrowRight size={16} aria-hidden="true" />
+            </Link>
+          </>
+        ) : <p className="mt-2 text-sm">Every currently published lesson is marked complete. New lessons will appear here as the course grows.</p>}
+      </section>
+
       <section aria-label="Learning progress" className="mt-5 grid gap-3 md:grid-cols-3">
         <div className={statStyle}>
           <CheckCircle2 className="text-emerald-600 dark:text-emerald-300" size={21} aria-hidden="true" />
@@ -138,19 +151,6 @@ export function LearningDashboard() {
           <p className="text-sm text-slate-500">Estimated published reading and lab time remaining</p>
           <p className="mt-3 text-xs text-slate-500">Planning estimate, not a timer or deadline.</p>
         </div>
-      </section>
-
-      <section aria-labelledby="continue-heading" className="mt-5 rounded-xl border border-cyan-600/30 bg-cyan-50 p-6 dark:bg-cyan-300/[0.055]">
-        <h2 id="continue-heading" className="text-xl font-bold">Continue learning</h2>
-        {overview.nextLesson ? (
-          <>
-            <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">Your next available lesson is:</p>
-            <p className="mt-2 font-semibold">{overview.nextLesson.id} · {overview.nextLesson.title}</p>
-            <Link className="mt-4 inline-flex items-center gap-2 rounded-lg bg-cyan-700 px-4 py-2.5 text-sm font-bold text-white hover:bg-cyan-800" href={'/learn/' + overview.nextLesson.id}>
-              Resume lesson <ArrowRight size={16} aria-hidden="true" />
-            </Link>
-          </>
-        ) : <p className="mt-2 text-sm">Every currently published lesson is marked complete. New lessons will appear here as the course grows.</p>}
       </section>
 
       <p className="mt-5 text-sm text-slate-500">Looking for the course author's publication progress? <Link href="/learn/roadmap" className="font-semibold text-cyan-700 underline underline-offset-4 dark:text-cyan-300">View curriculum roadmap</Link>. Your own completions and notes are tracked separately.</p>
