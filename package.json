@@ -445,7 +445,7 @@
     "test:vercel-freeze": "node --test tests/vercel-freeze.test.mjs",
     "verify:vercel-freeze": "node scripts/verify-vercel-freeze.mjs",
     "status:nestjs-drafts": "node scripts/verify-nestjs-drafts.mjs --json",
-    "test:nestjs-drafts": "node scripts/verify-nestjs-drafts.mjs --check && node --test tests/nestjs-drafts.test.mjs tests/nest-publication-state.test.mjs && node examples/nestjs-vertical/scripts/verify-runtime-test-coverage.mjs --check && node --test examples/nestjs-vertical/tests/runtime-coverage-source.test.mjs && npm run test:nestjs-offline && npm run test:nestjs-candidates",
+    "test:nestjs-drafts": "node scripts/verify-nestjs-drafts.mjs --check && node --test tests/nestjs-drafts.test.mjs tests/nest-publication-state.test.mjs && node examples/nestjs-vertical/scripts/verify-runtime-test-coverage.mjs --check && node --test examples/nestjs-vertical/tests/runtime-coverage-source.test.mjs && npm run test:nestjs-offline && npm run test:nestjs-candidates && npm run test:nestjs-projection",
     "qualify:nestjs:architecture": "npm run qualify --prefix examples/nestjs-vertical",
     "status:nestjs-test-coverage": "node examples/nestjs-vertical/scripts/verify-runtime-test-coverage.mjs --json",
     "test:nestjs-offline-transactions": "node --experimental-strip-types --test examples/nestjs-vertical/tests/transactions.offline.test.mjs",
@@ -500,7 +500,9 @@
     "test:nestjs-offline-qualification": "node --test examples/nestjs-vertical/tests/red-green.offline.test.mjs examples/nestjs-vertical/tests/module-qualification.offline.test.mjs",
     "status:nestjs-candidates": "node scripts/verify-nest-candidates.mjs --json",
     "test:nestjs-candidates": "node scripts/verify-nest-candidates.mjs --check && node --test tests/nest-candidate-contract.test.mjs tests/nest-candidate-inventory.test.mjs",
-    "refresh:nestjs-candidates": "node scripts/verify-nest-candidates.mjs --refresh"
+    "refresh:nestjs-candidates": "node scripts/verify-nest-candidates.mjs --refresh",
+    "rehearse:nestjs": "node scripts/rehearse-nest-publication.mjs",
+    "test:nestjs-projection": "node --test tests/nest-release-projection.test.mjs && npm run rehearse:nestjs"
   },
   "dependencies": {
     "clsx": "^2.1.1",

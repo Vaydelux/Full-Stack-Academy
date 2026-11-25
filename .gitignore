@@ -43,3 +43,5 @@ next-env.d.ts
 
 # Isolated NestJS teaching build output
 /examples/nestjs-vertical/dist/
+
+/examples/nestjs-vertical/dist.lab-lock/
