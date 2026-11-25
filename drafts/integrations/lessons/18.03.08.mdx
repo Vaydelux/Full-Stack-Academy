@@ -52,6 +52,20 @@ The corresponding module exercises **TenantSearch: tenant isolation, ranking, st
 
 For a production implementation, document the secret-owner or principal, durability plan, error and recovery policy, rate/resource bounds, privacy guarantees, observability without sensitive payloads, and the credential/version-rotation procedure.
 
+## Applied engineering walkthrough
+
+A useful search interface needs correctness, relevance and bounded performance together. The teaching model rejects stale cursors and uses deterministic ranking; it does not reproduce a real engine's indexing latency or tokenizer. Authorization must remain effective across every page and index update.
+
+### Diagnose the concrete failure
+
+Run the existing search fixture tests and trace a title match, hidden document, foreign document and second page. Change the index and verify the old cursor is rejected. Record exact returned IDs rather than only a count.
+
+### Independent exercise and evidence
+
+Prepare a release matrix for real SQL or search engine, relevance, pagination, authorization, indexing lag and accessibility. Measure performance on a representative synthetic corpus only after correctness passes.
+
+**Qualification boundary:** These are practice instructions, not recorded results. Preserve existing specifications and laboratory contracts. Qualify actual external services separately using authorized disposable infrastructure.
+
 ## Knowledge check
 
 1. Which authenticated actor, external sender, or tenant owns the data in this scenario?
