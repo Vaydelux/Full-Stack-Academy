@@ -52,6 +52,20 @@ The corresponding module exercises **signWebhook and WebhookInbox: raw bytes, fr
 
 For a production implementation, document the secret-owner or principal, durability plan, error and recovery policy, rate/resource bounds, privacy guarantees, observability without sensitive payloads, and the credential/version-rotation procedure.
 
+## Applied engineering walkthrough
+
+An incoming webhook workflow separates transport authenticity, durable event intake and domain processing. A signed tenant field still needs correlation with authoritative provider account or resource mappings. The inbox must retain stable delivery identity and handle retries without repeating committed effects.
+
+### Diagnose the concrete failure
+
+Use the existing local signed-event fixture to trace accepted intake and pending processing. Replay the same event, reject modified or stale input, and simulate failure before completion. Inspect the recorded final effect count and the retry outcome.
+
+### Independent exercise and evidence
+
+Prepare a release matrix covering provider signature compatibility, bounded raw-body handling, durable uniqueness, transaction recovery and actual resource authorization. Record local and live evidence separately before publication.
+
+**Qualification boundary:** These are practice instructions, not recorded results. Preserve existing specifications and laboratory contracts. Qualify actual external services separately using authorized disposable infrastructure.
+
 ## Knowledge check
 
 1. Which authenticated actor, external sender, or tenant owns the data in this scenario?
