@@ -44,6 +44,20 @@ node --test --test-name-pattern="19[.]03" examples/p6-quality/labs.test.mjs
 
 Synthetic row/actor model; no Nest DI, network server, PostgreSQL or RLS execution.
 
+## Applied engineering walkthrough
+
+RLS is evaluated by PostgreSQL under an actual role and policy context. Table owners and bypass roles can produce misleading positive results. An in-memory scoped-read model can express the expected contract but does not prove SQL policy enforcement.
+
+### Diagnose the concrete failure
+
+Run an authorized disposable RLS test with a non-bypass role and two known tenant records. Assert the permitted record exists and the other is excluded. Check missing context and attempted foreign mutation. Use actual authenticated requests separately from simulated claims.
+
+### Independent exercise and evidence
+
+Design a CRUD policy matrix covering SELECT, INSERT, UPDATE and DELETE under permitted and denied identities. Record effective role, exact row IDs and actual SQL outcomes.
+
+**Evidence boundary:** These are practice instructions, not recorded test results. Preserve the existing model, specification and draft flag; external runtime qualification remains independent.
+
 ## Knowledge check
 
 1. Which public behavior or invariant is being protected?
