@@ -64,8 +64,8 @@ test('unqualified Nest draft source is excluded from the Next root lint pipeline
 });
 
 
-test('P10 architecture and request pipeline contain sixteen distinct applied assessments and walkthroughs',()=>{
- const ids=['11.01','11.02'].flatMap(mod=>Array.from({length:8},(_,i)=>mod+'.'+String(i+1).padStart(2,'0')));
+test('P10 all four NestJS modules contain thirty-two distinct applied assessments and walkthroughs',()=>{
+ const ids=['11.01','11.02','11.03','11.04'].flatMap(mod=>Array.from({length:8},(_,i)=>mod+'.'+String(i+1).padStart(2,'0')));
  const questions=new Set(),answerCounts=[0,0,0,0];
  for(const id of ids){
   const mdx=read('drafts/nestjs/lessons/'+id+'.mdx').replaceAll('\r\n','\n');
@@ -88,6 +88,6 @@ test('P10 architecture and request pipeline contain sixteen distinct applied ass
   assert.ok(walk.includes('**Qualification boundary:**'),id);
   assert.doesNotMatch(mdx,/<LabGate\b/,id);
  }
- assert.equal(questions.size,16);
+ assert.equal(questions.size,32);
  assert.ok(answerCounts.every(count=>count>0),'Avoid all correct answers in the same position');
 });
