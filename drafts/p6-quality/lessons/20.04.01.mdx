@@ -44,6 +44,20 @@ node --test --test-name-pattern="20[.]04" examples/p6-quality/labs.test.mjs
 
 Synthetic topology policy; no OS/firewall/TLS/DNS/IaC or restore enforcement tested.
 
+## Applied engineering walkthrough
+
+Linux permissions describe access for an owner, group and others; directory traversal permissions also affect whether a file is reachable. A service identity should have read access to its configuration and write access only where required. Restrictive file modes are not proof that privileged administrators cannot read a secret.
+
+### Diagnose the concrete failure
+
+Create a synthetic secret in an isolated temporary directory and compare its owner, group and mode before and after restricting access. Under a separate authorized test identity, verify access is denied when the environment permits. Never change permissions on system files or real secrets.
+
+### Independent exercise and evidence
+
+Design a service filesystem layout with read-only application code, writable data and restricted configuration. Record effective identities, directory permissions and observed denial; distinguish mode inspection from a real access test.
+
+**Evidence boundary:** These are practice instructions, not recorded test results. Preserve the existing model, specification and draft flag; external runtime qualification remains independent.
+
 ## Knowledge check
 
 1. Which public behavior or invariant is being protected?
