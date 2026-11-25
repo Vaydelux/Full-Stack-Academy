@@ -43,6 +43,20 @@ Your acceptance criteria must include a positive authorized case and a negative 
 
 A successfully verified JWT alone does not establish permission to any resource.
 
+## Applied engineering walkthrough
+
+Authentication answers who is making the request; authorization answers whether that actor may perform an action on a resource. Both checks are required on every protected server path. A verified invoice identifier or token does not make the invoice accessible. Membership and permitted action should be resolved from trusted state.
+
+### Diagnose the concrete failure
+
+Use two fake organizations with known invoices. Verify an anonymous caller is rejected, an authorized member receives the permitted invoice, and a valid user requesting a foreign invoice receives no invoice fields. Verify the database query actually includes the authorized scope.
+
+### Independent exercise and evidence
+
+Write a policy matrix for invoice read, export and edit, including revoked membership. Decide which denial responses should conceal object existence. Record status and persisted state, and never record raw tokens or invoice details.
+
+**Qualification boundary:** These are practice instructions, not recorded audit results. Use synthetic data and authorized disposable infrastructure. Preserve existing laboratory contracts and publication status.
+
 ## Knowledge check
 
 1. Which input is controlled by the attacker in this scenario?
