@@ -17,3 +17,6 @@ The first command runs 42 model tests and 11 synthetic manuscript-auditor fixtur
 | 27 | webAcceptance, apiAcceptance, workspaceAcceptance, productionAcceptance, defenseAcceptance |
 
 Perform the individual manuscript exercises on real, authorized disposable tools before publication. See the capstone project specification and final authoring checkpoint.
+
+## Executable capstone vertical
+The companion `examples/p7-runtime` uses real SQLite files, independent child processes and loopback HTTP to exercise offline sync, membership/entitlements, tenant-scoped search, audit and restore. Run `npm run test:p7-runtime`. It does not certify native bridges, provider identity, AI grounding or mobile/device quality; retain all module-specific gates.

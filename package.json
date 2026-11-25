@@ -42,6 +42,7 @@
     "serve:p6:lab": "node examples/p6-runtime/serve.mjs",
     "test:p6-operations-source": "node examples/p6-operations/verify-track.mjs && node --test examples/p6-operations/labs.test.mjs examples/p6-operations/verify-track.test.mjs && node --test --test-name-pattern=\"P10 2[123]\" tests/p10-operations-platform-editorial.test.mjs",
     "test:p7-source": "node examples/p7-platforms/verify-track.mjs && node --test examples/p7-platforms/labs.test.mjs examples/p7-platforms/verify-track.test.mjs && node --test --test-name-pattern=\"P10 2[4567]\" tests/p10-operations-platform-editorial.test.mjs",
+    "test:p7-runtime": "node --test examples/p7-runtime/runtime.test.mjs",
     "status:publication-phases": "node scripts/curriculum-phase-program.mjs --markdown",
     "test:publication-phases": "node scripts/curriculum-phase-program.mjs --check && node --test tests/curriculum-phase-program.test.mjs",
     "test:labs": "node scripts/run-local-labs.mjs",

@@ -14,6 +14,7 @@ const REQUIRED = Object.freeze([
  'test:p6-operations-source',
  'test:p6-runtime',
  'test:p7-source',
+  'test:p7-runtime',
  'test:late-phase',
  'test:p8-learning',
  'test:p8-reference',
