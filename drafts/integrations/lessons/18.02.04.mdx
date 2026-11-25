@@ -52,6 +52,20 @@ The corresponding module exercises **MailOutbox: consent, idempotency, bounded r
 
 For a production implementation, document the secret-owner or principal, durability plan, error and recovery policy, rate/resource bounds, privacy guarantees, observability without sensitive payloads, and the credential/version-rotation procedure.
 
+## Applied engineering walkthrough
+
+Provider callbacks are untrusted until authenticated using the exact provider protocol. A verified bounce event should update the associated delivery and suppression record according to its scope. Delivery events may be repeated or out of order; accepted and bounced are different facts rather than a single success flag.
+
+### Diagnose the concrete failure
+
+Use a local signed synthetic callback and inspect the recorded event identity. Repeat it and verify one logical receipt. Modify the body and ensure no state changes. Simulate a late delivery event after a bounce and define the intended precedence.
+
+### Independent exercise and evidence
+
+Design a callback reconciliation policy including provider identity, event type, message reference and suppression scope. Record verified event decisions and final state; real provider signatures remain a separate gate.
+
+**Qualification boundary:** These are practice instructions, not recorded results. Preserve existing specifications and laboratory contracts. Qualify actual external services separately using authorized disposable infrastructure.
+
 ## Knowledge check
 
 1. Which authenticated actor, external sender, or tenant owns the data in this scenario?
