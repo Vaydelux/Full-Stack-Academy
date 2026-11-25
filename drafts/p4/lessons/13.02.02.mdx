@@ -80,6 +80,20 @@ A safe projection avoids oversharing but does not grant access to the selected r
 
 A safe persistence layer should accept explicit request-scoped identities, use bounded queries, reject unsupported input, and keep internal query types from becoming public API DTOs. For permission-sensitive mutations, reason about database constraints and application authorization separately: a valid foreign key does not mean the calling actor may update that row.
 
+## Applied persistence walkthrough
+
+select explicitly limits the returned fields, including nested relation fields. include adds related data to a result and may bring along scalar fields the consumer does not need. A nested select prevents unnecessary disclosure, but a corrupt or incorrectly modeled relationship could still join across tenants. The database relation and authorization checks are independent.
+
+### Diagnose the concrete failure
+
+Inspect the returned task and nested owner keys for an authorized tenant. Use fake private fields in fixture records and ensure they are absent. Compare the number of tasks, the ordering and the twenty-row bound. Verify relation ownership against the actual database constraints.
+
+### Independent exercise and evidence
+
+Design a task-card DTO with owner display name, no email or internal credentials. Decide how an optional missing owner should appear. Record exact response keys and measured query calls rather than assuming nested loading always uses one SQL statement.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Use the pinned Prisma 7 toolchain and disposable PostgreSQL database. Preserve the starter and solution; source review does not qualify generated code or authorization.
+
 ## Bug Hunt
 
 1. State the starter's observable defect: The starter includes every owner column: internalRole, passwordHash and private email fields can leak into serialized responses if the model changes.
