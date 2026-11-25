@@ -44,6 +44,20 @@ node --test --test-name-pattern="19[.]04" examples/p6-quality/labs.test.mjs
 
 Metrics model uses supplied samples; no real load generation, chaos or database benchmark.
 
+## Applied engineering walkthrough
+
+Competing workers need an atomic claim or lease boundary and a defined recovery path. A file-based multiprocess test and a database row-lock test demonstrate different mechanisms. A single successful claim is not evidence of exactly-once external effects.
+
+### Diagnose the concrete failure
+
+Run the existing isolated multiprocess inbox tests when their environment is available. Identify the one-claim invariant and stale claim behavior. Separately plan two actual PostgreSQL sessions competing for a known job with bounded lock deadlines.
+
+### Independent exercise and evidence
+
+Design a deterministic concurrency test using barriers and stable job IDs. Record claim winners, rejected stale completion and final effect count. Do not infer database isolation from filesystem locking.
+
+**Evidence boundary:** These are practice instructions, not recorded test results. Preserve the existing model, specification and draft flag; external runtime qualification remains independent.
+
 ## Knowledge check
 
 1. Which public behavior or invariant is being protected?
