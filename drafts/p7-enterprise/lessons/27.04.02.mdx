@@ -44,6 +44,20 @@ node --test --test-name-pattern="27[.]04" examples/p7-platforms/labs.test.mjs
 
 Capstone readiness rubric only; no container, deployment, scan, benchmark or restore is verified by supplied booleans.
 
+## Applied engineering walkthrough
+
+A delivery pipeline should bind immutable source, toolchain, dependency lockfiles and required checks to a candidate artifact. Define the local verification matrix first and preserve failure exit codes; hosted automation is a transport for those checks, not a substitute for them. Never label an absent check as passing.
+
+### Diagnose the concrete failure
+
+Run the existing qualification coordinator in plan mode, inspect its required commands and simulate a failing test or missing toolchain. Verify the release cannot proceed merely because earlier checks succeeded or an unrelated artifact exists.
+
+### Independent exercise and evidence
+
+Create a commit-bound receipt containing actual tool versions, commands, results, log locations and artifact hashes. Keep the existing Actions and deployment freeze; record missing runtime checks as blockers rather than changing required gates to obtain a green result.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify actual infrastructure, build, security, performance, recovery and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

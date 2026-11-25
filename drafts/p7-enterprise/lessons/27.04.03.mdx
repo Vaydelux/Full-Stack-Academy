@@ -44,6 +44,20 @@ node --test --test-name-pattern="27[.]04" examples/p7-platforms/labs.test.mjs
 
 Capstone readiness rubric only; no container, deployment, scan, benchmark or restore is verified by supplied booleans.
 
+## Applied engineering walkthrough
+
+A deployment should use a reviewed immutable artifact with known configuration and database compatibility. Plan schema changes for the old and new application versions if they may coexist. Rollback of application code may not undo data changes, so define recovery for migrations separately.
+
+### Diagnose the concrete failure
+
+Rehearse a disposable release from a known baseline to a candidate. Inject a failed smoke check and return traffic to the prior compatible version. Verify the database and user-visible workflow remain consistent rather than only observing a process restart.
+
+### Independent exercise and evidence
+
+Document artifact digest, migration strategy, health check, rollback trigger and responsible operator. Record the observed recovery time and any irreversible changes. No live deployment is required for the practice.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify actual infrastructure, build, security, performance, recovery and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

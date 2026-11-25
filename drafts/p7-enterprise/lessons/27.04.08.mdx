@@ -44,6 +44,20 @@ node --test --test-name-pattern="27[.]04" examples/p7-platforms/labs.test.mjs
 
 Capstone readiness rubric only; no container, deployment, scan, benchmark or restore is verified by supplied booleans.
 
+## Applied engineering walkthrough
+
+Production acceptance combines exact-candidate build evidence, security checks, observability, workload results, rollback and tested recovery with independent review. The productionAcceptance model evaluates supplied evidence flags; it does not run infrastructure or prove that the recorded evidence is genuine. Missing gates must remain visible.
+
+### Diagnose the concrete failure
+
+Run the rubric with a missing restore or security item and verify it cannot approve release. Gather actual results from the disposable stack, including one failed smoke and recovery case, and bind them to the candidate source and artifact.
+
+### Independent exercise and evidence
+
+Assemble a release packet with owner, commands, runtime versions, evidence references and blocking defects. Record an explicit go or no-go decision with reviewer identity; preserve the academy deployment freeze until the real publication gates pass.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify actual infrastructure, build, security, performance, recovery and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?
