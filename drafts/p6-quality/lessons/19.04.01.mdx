@@ -44,6 +44,20 @@ node --test --test-name-pattern="19[.]04" examples/p6-quality/labs.test.mjs
 
 Metrics model uses supplied samples; no real load generation, chaos or database benchmark.
 
+## Applied engineering walkthrough
+
+A load scenario defines arrival pattern, duration, request mix and resource limits. Arrival-rate tests attempt a target rate independently of response duration, while closed workloads may slow their request rate when responses slow. Measure dropped iterations and failures as well as latency.
+
+### Diagnose the concrete failure
+
+Use a dedicated loopback endpoint and a bounded arrival-rate scenario. Confirm the generator can sustain the intended rate and collect duration, error and dropped-iteration counts. Deliberately tighten a threshold and verify the test fails.
+
+### Independent exercise and evidence
+
+Design a small reproducible k6 scenario with warmup, steady load and teardown. Record generator limits and actual target identity. The existing latency model does not run k6.
+
+**Evidence boundary:** These are practice instructions, not recorded test results. Preserve the existing model, specification and draft flag; external runtime qualification remains independent.
+
 ## Knowledge check
 
 1. Which public behavior or invariant is being protected?
