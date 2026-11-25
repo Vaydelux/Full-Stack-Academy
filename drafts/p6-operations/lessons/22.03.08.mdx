@@ -44,6 +44,20 @@ node --test --test-name-pattern="22[.]03" examples/p6-operations/labs.test.mjs
 
 Capacity arithmetic only; no actual CDN, cache cluster, balancing, cost quotes or scaling benchmark.
 
+## Applied engineering walkthrough
+
+Capacity forecasting combines several demand scenarios with independently measured bottlenecks. A model that checks application replica feasibility is not a complete database or provider capacity plan. Forecast uncertainty and operational headroom should remain visible.
+
+### Diagnose the concrete failure
+
+Run capacity for low, expected and high hypothetical demand and inspect required replicas and cap feasibility. Add a separate connection budget and fixed spending limit. Identify scenarios where the application estimate passes but another constraint blocks the plan.
+
+### Independent exercise and evidence
+
+Prepare a forecast with assumptions, bottleneck inventory, measurement gaps and scaling triggers. Record model outputs and real benchmark evidence separately; no live scaling changes are needed.
+
+**Evidence boundary:** These are practice instructions, not recorded capacity or benchmark results. Preserve the existing specification, model and unpublished status. Actual deployment measurements remain independent.
+
 ## Knowledge check
 
 1. Which invariant or operational measurement determines success?

@@ -44,6 +44,20 @@ node --test --test-name-pattern="22[.]03" examples/p6-operations/labs.test.mjs
 
 Capacity arithmetic only; no actual CDN, cache cluster, balancing, cost quotes or scaling benchmark.
 
+## Applied engineering walkthrough
+
+Capacity arithmetic uses measured sustainable per-instance throughput, desired headroom and a resource cap. With 100 requests per second per instance and 20% reserved headroom, usable capacity is 80 per instance. Two instances fit 160 requests per second; 161 requires three under the stated model.
+
+### Diagnose the concrete failure
+
+Run capacity on the two adjacent demand values and inspect required instances and feasibility. Compare with a separate database connection ceiling. Verify that insufficient resource capacity cannot be reported as feasible.
+
+### Independent exercise and evidence
+
+Design a horizontal scaling worksheet with sustainable throughput, headroom, replica cap and dependency limits. Record the assumptions and measured basis when available; the arithmetic does not qualify actual autoscaling.
+
+**Evidence boundary:** These are practice instructions, not recorded capacity or benchmark results. Preserve the existing specification, model and unpublished status. Actual deployment measurements remain independent.
+
 ## Knowledge check
 
 1. Which invariant or operational measurement determines success?
