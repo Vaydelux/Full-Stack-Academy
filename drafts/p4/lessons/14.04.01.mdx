@@ -80,6 +80,20 @@ A private flag alone does not prevent overbroad authenticated Storage policies. 
 
 Private buckets need specific Storage policies, server-controlled paths and explicit expiration/cleanup rules. Realtime private channels require policies on realtime.messages for permitted operations; a client-specified filter alone is not authorization. Persistent business state remains in PostgreSQL, not in Presence or Broadcast payloads.
 
+## Applied persistence walkthrough
+
+Bucket visibility and object access are distinct. A private bucket requires authorization for downloads, while public bucket downloads are intentionally public. The fixture creates a private bucket with allowed MIME types and a size limit; these settings are not a malware scanner or proof of the actual file format. Storage policies remain necessary for client operations.
+
+### Diagnose the concrete failure
+
+Use a disposable bucket and two synthetic users. Attempt unauthenticated read, authorized read, foreign-user read and an upload exceeding the configured limit. Inspect bucket configuration and policies separately; do not use real documents or publish signed links in evidence.
+
+### Independent exercise and evidence
+
+Design an asset inventory distinguishing public marketing assets from private customer documents. Define allowed formats, quotas, ownership and retention. Record observed bucket behavior and denied access with synthetic object identifiers.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Use isolated test identities, storage and channels. Preserve the existing starter and solution; source review cannot qualify live upload, webhook or Realtime security.
+
 ## Bug Hunt
 
 1. Predict the attack or failure: The starter marks sensitive business documents as public, making them readable without an authorized user session.
