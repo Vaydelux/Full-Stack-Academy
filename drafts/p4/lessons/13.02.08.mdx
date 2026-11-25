@@ -82,6 +82,20 @@ Tenant isolation is the baseline, not all authorization. Add user-to-project mem
 
 A safe persistence layer should accept explicit request-scoped identities, use bounded queries, reject unsupported input, and keep internal query types from becoming public API DTOs. For permission-sensitive mutations, reason about database constraints and application authorization separately: a valid foreign key does not mean the calling actor may update that row.
 
+## Applied persistence walkthrough
+
+A typed repository centralizes data access, but its input types do not establish authenticated context. The example checks the project in the tenant, then queries tasks with the same tenant and project ID. Returning an empty array for missing or forbidden projects avoids disclosing existence, but may obscure a legitimate empty project; decide whether the API contract needs a distinct safe result.
+
+### Diagnose the concrete failure
+
+Test a project with tasks, an empty project and another tenant's project. Verify the permitted response is limited to one hundred ordered rows and public fields. Check missing tenant and invalid project IDs. In a real database, simulate a project deletion between the lookup and child query and define the expected behavior.
+
+### Independent exercise and evidence
+
+Design a repository port with a bounded page contract and a clear not-found policy. Specify how the service derives the tenant from membership and how a real database test proves cross-tenant exclusion. Record response shape, exact IDs and denied cases.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Use the pinned Prisma 7 toolchain and disposable PostgreSQL database. Preserve the starter and solution; source review does not qualify generated code or authorization.
+
 ## Bug Hunt
 
 1. State the starter's observable defect: The starter lets callers enumerate tasks in any project ID, with unrestricted result fields and no tenant/project authorization boundary.
