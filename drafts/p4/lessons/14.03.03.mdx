@@ -83,6 +83,20 @@ Tests using a privileged SQL role can bypass RLS and produce misleading results.
 
 RLS applies subject to PostgreSQL roles, table ownership, policy composition and operation type. In an exposed schema, verify grants and RLS together. For writes, review INSERT WITH CHECK and UPDATE USING/WITH CHECK, not just SELECT. In Supabase, do not use user-editable `user_metadata` as authority for privileged roles. A service-role client may bypass RLS; it must not be used to repair a client permission error.
 
+## Applied persistence walkthrough
+
+The SQL harness switches to the authenticated role and supplies a synthetic JWT subject within a transaction. This tests policy evaluation against known rows, but it deliberately bypasses the actual token issuance and verification path. The exact positive count prevents a vacuous pass on an empty table, and the zero forbidden count demonstrates exclusion for that role.
+
+### Diagnose the concrete failure
+
+Run the named assertion on an isolated local Supabase database with the matching seeded rows and grants. Inspect the effective role and the two counts, and use rollback to contain the test. Repeat with the second subject and a missing subject. Separately use the real Data API with signed test tokens to verify the full access path.
+
+### Independent exercise and evidence
+
+Build a matrix for SELECT, INSERT, UPDATE and DELETE, including attempted owner and tenant reassignment. Each cell should specify expected rows or failure class. Record actual SQL role results separately from real HTTP/JWT acceptance.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Use an isolated Supabase environment and real non-bypass caller roles. Preserve the existing starter and solution; source review cannot certify row policies or authorization.
+
 ## Bug Hunt and regression matrix
 
 1. Predict the disclosure caused by the starter: The starter counts rows but does not assert that another user's row is hidden, so a permissive USING (true) policy could pass unnoticed.
