@@ -42,6 +42,20 @@ Document both a permitted happy path and a rejected adversarial path. Integratio
 
 A passing UI check or source-only checklist cannot establish secure production behavior. An observed negative test and reviewed trust boundary are essential.
 
+## Applied engineering walkthrough
+
+File uploads combine identity, storage location, untrusted bytes and a lifecycle state. The server must choose the object path and enforce limits independently of client metadata. Byte signatures are a preliminary format check, not a malware guarantee. Keep uploads nonpublic until the processing policy approves them.
+
+### Diagnose the concrete failure
+
+Use fake small files and test permitted upload intent, invalid size, mismatched declared type and attempted ownership override. Confirm rejected input creates no public object. Simulate a failed scan and verify the object remains quarantined. Inspect real storage permissions separately.
+
+### Independent exercise and evidence
+
+Design a state machine for pending, quarantined, ready and rejected assets. Include orphan cleanup, access checks and audit events. Record synthetic object IDs and final states without logging upload tokens.
+
+**Qualification boundary:** These are practice instructions, not recorded audit results. Use synthetic data and authorized disposable infrastructure. Preserve existing laboratory contracts and publication status.
+
 ## Knowledge check
 
 1. Which input is attacker-controlled?
