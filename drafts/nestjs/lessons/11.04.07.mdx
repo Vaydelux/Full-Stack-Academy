@@ -80,7 +80,21 @@ The lesson's instructor snippet demonstrates the mechanism but is not a deployab
 
 <Misconception claim="The /ready endpoint always returns 200 even when the dependency probe has failed." correction="Liveness and readiness answer different operational questions and must not both report success during an outage." />
 
-<KnowledgeCheck question="What should a release reviewer demand for health endpoints?" choices={["A passing source-text search is sufficient.","The actual Nest runtime shows the specified positive case and a meaningful denial or failure case.","A project compiles, so tenancy is proven.","A local demo endpoint may safely be exposed publicly without auth."]} correctIndex={1} explanation="Liveness and readiness answer different operational questions and must not both report success during an outage." misconception="The /ready endpoint always returns 200 even when the dependency probe has failed." lessonId="11.04.07" />
+<KnowledgeCheck question="The database is temporarily unavailable, but the service process is responsive. Which probe should normally fail?" choices={["Both must fail and force immediate restart.","Neither should fail.","Readiness, if the database is required to serve traffic.","Only liveness, regardless of traffic capability."]} correctIndex={2} explanation="Readiness and liveness measure different operational conditions." misconception="The /ready endpoint always returns 200 even when the dependency probe has failed." lessonId="11.04.07" />
+
+## Applied engineering walkthrough
+
+Liveness indicates whether an instance is alive; readiness indicates whether it can accept intended traffic. A required dependency outage may make readiness fail while liveness remains healthy. The sample uses a mutable flag, not a real probe. A production dependency probe needs short timeouts, bounded load and safe response details. Avoid triggering restart loops for recoverable external failures.
+
+### Diagnose the concrete failure
+
+Call /health/live and /health/ready before readiness is true. Expect 200 for liveness and 503 for readiness. Flip the fixture flag, repeat, then simulate an outage. Confirm readiness returns to 503 while liveness remains 200. Run through a real adapter for final acceptance.
+
+### Independent exercise and evidence
+
+Design a readiness policy for a database and an optional email service. Decide which outage should remove the instance from traffic and which should merely degrade functionality. Record statuses for startup, healthy operation, dependency failure and recovery.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Container, HTTP, socket and operational tests require the actual installed runtime. Keep the existing starter and solution unchanged; do not award course credit from source review alone.
 
 ## Bug Hunt: reproduce, diagnose and repair
 
