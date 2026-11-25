@@ -69,6 +69,20 @@ Include columns consume space and increase write amplification. Index-only scans
 
 When query execution moves into a real Next.js/NestJS application, measure request concurrency and database calls as well as SQL time. Remember that schema changes alter future write costs, vacuum work and storage. An index may improve a selective read but slow bulk inserts; a pooled connection may conserve memory but alter transaction/session semantics.
 
+## Applied SQL walkthrough
+
+A partial index stores entries only for rows satisfying its predicate; the query must imply that predicate for PostgreSQL to use it. INCLUDE stores additional payload columns without making them search keys. An index-only scan also depends on visibility-map state, so including title does not guarantee zero heap fetches. The teaching index does not include an ID tie-breaker.
+
+### Predict and diagnose the result
+
+Compare active-only queries against queries that also include archived tasks. Inspect index definition, plan and heap fetch counts on realistic data. Confirm the same correct rows are returned before and after the index. Check how changing deleted_at affects index membership.
+
+### Independent exercise and evidence
+
+Design a covering index for an active tenant feed that includes the actual sort tie-breaker and selected payload. Explain how additional payload increases index size. Measure before/after read buffers and write costs on a disposable workload; do not infer a win from the index definition alone.
+
+**Qualification boundary:** These are measurement instructions and hypotheses, not recorded benchmark results. Use disposable PostgreSQL data and preserve the existing starter and solution. A source check does not prove a faster query or safe production configuration.
+
 ## Bug Hunt
 
 1. Predict why the starter is incomplete: Without the active-only predicate, the index maintains archived rows that this feed never requests.
