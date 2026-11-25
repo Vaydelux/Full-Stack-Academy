@@ -1,3 +1,5 @@
+> **F20.1 — Independent dependency audit coverage:** Release-only ten-gate profile now audits both independently installed teaching workspaces (runtime and all dependencies), with strict fail-closed results. Five local Node22 injected-response tests passed; actual registry, missing Nest lock, full build and browser qualification remain blocked. No publication or deployment change.
+
 > **F20 — Release candidate:** Source freeze and explicit nine-step local qualification profile, full manuscript audit, reading/responsive/boundary browser gates, dashboard storage warning and extended import/syntax checks. 38 connector checks and five exact-coordinator Node fixture checks passed. Missing genuine Nest lock, local DNS/Node24 and full qualification remain blockers; see `docs/F20_RELEASE_CANDIDATE.md`.
 
 > **F19 — Production hardening:** Search file tracing, origin/URL validation, storage recovery, bounded sandbox diagnostics and mandatory milestone regression gates. See `docs/F19_PRODUCTION_HARDENING.md`. Six exact-source Node22 boundary tests and 41 connector source/matrix test bodies passed. Full release qualification remains pending.

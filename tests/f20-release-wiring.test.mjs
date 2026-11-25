@@ -5,10 +5,13 @@ import {RELEASE_STEPS,STEPS} from '../scripts/qualification-coordinator.mjs';
 const read=p=>readFileSync(new URL('../'+p,import.meta.url),'utf8');
 const scripts=JSON.parse(read('package.json')).scripts;
 test('release profile extends all existing qualification steps without adding mutations',()=>{
- assert.equal(RELEASE_STEPS.length,STEPS.length+4);
+ assert.equal(RELEASE_STEPS.length,STEPS.length+5);
  assert.ok(STEPS.every(s=>RELEASE_STEPS.includes(s)));
  assert.equal(new Set(RELEASE_STEPS.map(s=>s.id)).size,RELEASE_STEPS.length);
  for(const step of RELEASE_STEPS){assert.ok(scripts[step.script]);assert.doesNotMatch(step.script,/deploy|promote|publish/);}
+ assert.equal(RELEASE_STEPS[2].script,'audit:release:workspaces');
+ assert.equal(scripts['audit:release:workspaces'],'node scripts/audit-release-workspaces.mjs');
+ assert.ok(scripts['test:release-gate-coverage'].includes('tests/audit-release-workspaces.test.mjs'));
  assert.equal(scripts['qualify:release:source'],'node scripts/f18-qualification-audit.mjs --check');
 });
 test('responsive and boundary browser commands start a local production server',()=>{

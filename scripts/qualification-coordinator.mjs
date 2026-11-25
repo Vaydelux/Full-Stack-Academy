@@ -18,7 +18,9 @@ export const STEPS = Object.freeze([
 // A website release candidate includes curriculum and all documentation browser gates.
 export const RELEASE_STEPS = Object.freeze([
  Object.freeze({id:'curriculum-source-audit',script:'qualify:release:source',timeout:300_000}),
- ...STEPS,
+ STEPS[0],
+ Object.freeze({id:'workspace-dependency-audit',script:'audit:release:workspaces',timeout:600_000}),
+ ...STEPS.slice(1),
  Object.freeze({id:'reading-edition-browser',script:'qualify:reading:browser',timeout:360_000}),
  Object.freeze({id:'responsive-discovery-browser',script:'qualify:f17:browser',timeout:360_000}),
  Object.freeze({id:'production-boundaries-browser',script:'qualify:f20:browser',timeout:360_000}),

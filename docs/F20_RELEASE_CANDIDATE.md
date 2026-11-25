@@ -36,3 +36,7 @@ The local shell reports Node v22.16.0/npm 10.9.2 and git ls-remote fails DNS res
 - Browser tests remain authored, not executed. The note reload assertion now waits for hydration instead of racing it. No current dependency advisory result, full source audit, application build, browser acceptance, reviewer approval, publication or hosted deployment is claimed.
 
 **Release verdict: BLOCKED.** The candidate is feature-frozen; the next work is resolving genuine qualification failures, not F21 feature expansion. PR #73 remains draft and unmerged. Retain existing production until a verified release is approved.
+
+## F20.1 — Independent dependency audit coverage
+
+The release-only profile now has ten gates. Before expensive runtime qualification it audits the two independently installed teaching workspaces (Forms/Query and NestJS) with both runtime and all-dependency scopes. No nested high/critical exceptions are granted; unavailable registry, malformed or inconsistent audit data, missing npm v3 locks and nonzero unexpected exits fail closed. Legacy all/P1 profiles and root audit policy remain unchanged. Five real local Node 22.16.0 regression tests passed with injected audit responses and synthetic locks; no actual registry vulnerability query or full release run was performed. The full checkout still fails DNS, the genuine Nest lock is absent, Node24 and browser qualification remain unverified. No publication or deployment change.
