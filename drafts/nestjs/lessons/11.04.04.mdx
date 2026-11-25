@@ -81,7 +81,21 @@ The lesson's instructor snippet demonstrates the mechanism but is not a deployab
 
 <Misconception claim="The resource remains active after app.close, causing hanging processes and duplicate work." correction="A long-running provider must stop timers and close connections as Nest shuts down." />
 
-<KnowledgeCheck question="What should a release reviewer demand for lifecycle graceful shutdown?" choices={["A passing source-text search is sufficient.","The actual Nest runtime shows the specified positive case and a meaningful denial or failure case.","A project compiles, so tenancy is proven.","A local demo endpoint may safely be exposed publicly without auth."]} correctIndex={1} explanation="A long-running provider must stop timers and close connections as Nest shuts down." misconception="The resource remains active after app.close, causing hanging processes and duplicate work." lessonId="11.04.04" />
+<KnowledgeCheck question="The shutdown hook runs twice. What should a resource-owning provider ensure?" choices={["Open a replacement connection every time.","Ignore all shutdown calls.","Force immediate process exit before cleanup.","Release the resource once, with explicit handling of cleanup failures."]} correctIndex={3} explanation="Idempotent cleanup avoids double-closing resources." misconception="The resource remains active after app.close, causing hanging processes and duplicate work." lessonId="11.04.04" />
+
+## Applied engineering walkthrough
+
+Graceful shutdown is a resource-ownership protocol: stop accepting new work, drain bounded in-flight work, then close clients. The fixture demonstrates one idempotent close guard; it does not implement a drain or asynchronous connection shutdown. Setting stopped before close avoids duplicate calls, but a throwing close requires an explicit recovery policy. Signal-triggered lifecycle hooks must be enabled and exercised separately from app.close.
+
+### Diagnose the concrete failure
+
+Invoke the worker shutdown hook twice with a recording connection and check the close count remains one. In the full app, initiate shutdown while a request is active; observe whether new work is refused and ongoing work drains within a deadline. A fake close count alone cannot prove sockets or pools are released.
+
+### Independent exercise and evidence
+
+Design a worker shutdown sequence with a deadline, no new jobs and a final connection close. Record the expected behavior when an active job finishes, times out or the close operation fails. Decide whether an orchestrator should retry the job after termination.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Container, HTTP, socket and operational tests require the actual installed runtime. Keep the existing starter and solution unchanged; do not award course credit from source review alone.
 
 ## Bug Hunt: reproduce, diagnose and repair
 
