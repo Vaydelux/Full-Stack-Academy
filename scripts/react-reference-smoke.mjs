@@ -21,8 +21,10 @@ export async function verifyReactReferences({page,base,assert,wait}) {
  const context=page.getByText('Prerequisites and official documentation',{exact:true});
  await context.click();
  await wait(page.getByRole('link',{name:'useEffect',exact:true}));
- const indexOnly=await page.goto(base+'/reference/react-react-memo');
- assert.equal(indexOnly.status(),200);
- assert.equal(await page.locator('meta[name="robots"][content*="noindex"]').count(),1,'Unwritten reference stays noindex');
- console.log('React reference smoke authored: search/filter, authored draft and indexed-only SEO boundaries');
+ const memo=await page.goto(base+'/reference/react-react-memo');
+ assert.equal(memo.status(),200);
+ await wait(page.getByRole('heading',{name:'React: React.memo'}));
+ const unknown=await page.goto(base+'/reference/nonexistent-reference-f16');
+ assert.equal(unknown.status(),404,'Unknown reference stays unavailable');
+ console.log('React reference smoke authored: search/filter, authored draft and unknown-route boundaries');
 }

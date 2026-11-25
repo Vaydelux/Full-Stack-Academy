@@ -1,3 +1,5 @@
+> **F16 — Encyclopedia authoring freeze:** 115 new drafts, 303/303 canonical references covered, 327 explicit links across 206 topics. Both batches structurally validated in connector runtime; exact full-checkout regression and browser smoke updated but not run. See `docs/F16_REFERENCE_COMPLETION.md`.
+
 > **F16 A:** Added 57 remaining Web/HTML, CSS, JavaScript, TypeScript and React drafts. Source-quality gate passed; remaining framework and production references still pending.
 
 > **F15 — Backend/production encyclopedia:** 63 new authored drafts (188/303 total), 63/63 committed records source-validated; three new integration test bodies passed with extracted registry in connector V8; six existing exact-source Node22.16.0 quality tests passed. 212 distinct edges across 138 topics; full checkout/browser/runtime pending. See `docs/F15_BACKEND_PRODUCTION_REFERENCE.md`.
