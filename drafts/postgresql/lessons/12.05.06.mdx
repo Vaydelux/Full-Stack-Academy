@@ -71,6 +71,20 @@ A settings SELECT cannot establish PgBouncer configuration or throughput. Do not
 
 Practice describing a failure in terms of its blast radius, detection signal and recovery path. What would happen if the database were unavailable during a migration, WAL archives were missing, a pooled connection lost session state, or an operator accidentally targeted production? Identify the prerequisite that would prevent or contain each failure.
 
+## Applied SQL walkthrough
+
+A connection pooler can multiplex client connections onto fewer database backends. Session mode preserves backend affinity for a client session; transaction mode assigns a backend for a transaction and may not preserve session-scoped state afterward. Feature support depends on the actual pooler and configuration, including prepared statement handling. Budget both client and backend connections.
+
+### Predict and diagnose the result
+
+Inspect the database's connection settings and observed connections as a baseline, not a complete capacity measurement. Model all API replicas and background workers, including rolling deployment overlap. On a dedicated pooler, test temporary-table use, LISTEN and session-level advisory locks across transaction boundaries instead of assuming backend affinity.
+
+### Independent exercise and evidence
+
+Choose a pooling mode for a stateless HTTP API and a separate long-lived notification worker. Define pool acquisition deadlines, backend limits and overload responses. Record mode, concurrency, pool wait, backend usage and the result of feature-compatibility tests. No pooler configuration is changed by the displayed SQL.
+
+**Qualification boundary:** These are operational practice instructions, not a completed recovery or security audit. Use only explicitly authorized disposable infrastructure. Preserve the existing starter, solution and acceptance contract.
+
 ## Bug Hunt
 
 1. State the specific unsafe assumption: The starter reads a ceiling but ignores reserved connections and currently observed usage across workers and replicas.
