@@ -44,6 +44,20 @@ node --test --test-name-pattern="27[.]05" examples/p7-platforms/labs.test.mjs
 
 Final defense rubric only; actual human review, exploit verification, performance, costs and upgrade rehearsal remain separate.
 
+## Applied engineering walkthrough
+
+A security review is an authorized investigation of a defined candidate and its trust boundaries, not an unrestricted attempt to break unrelated systems. Start with synthetic identities, an isolated environment, explicit impact limits and a reporting path. Prioritize reproducible violations of authentication, authorization, input handling and secret management.
+
+### Diagnose the concrete failure
+
+Review the disposable workspace using two synthetic organizations, direct protected requests and malformed inputs. Document one reproduced defect or explicitly record that the selected test did not reproduce one. If a defect is found, add a failing regression before the correction and rerun it afterward.
+
+### Independent exercise and evidence
+
+Produce a scoped finding record with candidate revision, expected and observed behavior, reproduction, impact, fix and retest. Record unresolved risks and review ownership without including real credentials or private customer records.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify actual implementation, review, recovery, cost and candidate evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

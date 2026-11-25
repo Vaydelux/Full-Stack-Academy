@@ -44,6 +44,20 @@ node --test --test-name-pattern="27[.]05" examples/p7-platforms/labs.test.mjs
 
 Final defense rubric only; actual human review, exploit verification, performance, costs and upgrade rehearsal remain separate.
 
+## Applied engineering walkthrough
+
+Good documentation makes a fresh checkout reproducible and explains the public contracts, setup, architecture, operational boundaries and troubleshooting. Keep commands aligned with checked-in scripts, specify supported tool versions and identify required versus optional dependencies. Use safe synthetic examples rather than copying production configuration.
+
+### Diagnose the concrete failure
+
+Ask a reviewer to follow the setup guide from an isolated clean checkout. Compare documented API examples to actual responses, including invalid input and denied access. Record the first broken or ambiguous instruction rather than silently fixing the reviewer's environment.
+
+### Independent exercise and evidence
+
+Write a concise maintenance guide with configuration sources, migration steps, common failures and verification commands. Include a versioned OpenAPI reference and evidence of actual execution; mark steps that could not be reproduced.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify actual implementation, review, recovery, cost and candidate evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?
