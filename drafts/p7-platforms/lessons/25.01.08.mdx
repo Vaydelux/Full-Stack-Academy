@@ -44,6 +44,20 @@ node --test --test-name-pattern="25[.]01" examples/p7-platforms/labs.test.mjs
 
 In-memory count/deduplication model; no warehouse, materialized-view freshness, ClickHouse or dbt runtime qualification.
 
+## Applied engineering walkthrough
+
+A trustworthy dashboard defines metric grain, filters, time zone, deduplication, freshness and privacy alongside its chart. Visual agreement with an expected shape does not establish correct aggregation. Use a small deterministic fixture whose totals can be calculated independently.
+
+### Diagnose the concrete failure
+
+Run aggregateEvents on synthetic duplicate and distinct events, then compare results with an actual disposable database query. Test empty data, late arrival and an unauthorized scope rather than only the happy path.
+
+### Independent exercise and evidence
+
+Create a metric card with freshness and definition, reconcile displayed totals to the source and record any mismatches. Keep real SQL execution and chart accessibility review separate from local model evidence.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify actual database, analytics tools and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

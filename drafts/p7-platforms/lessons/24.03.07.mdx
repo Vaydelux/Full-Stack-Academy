@@ -44,6 +44,20 @@ node --test --test-name-pattern="24[.]03" examples/p7-platforms/labs.test.mjs
 
 Synthetic command permission model; actual Rust commands, capability enforcement, installers and signatures require platform builds.
 
+## Applied engineering walkthrough
+
+An artifact is specific to its OS and architecture and may depend on a supported WebView runtime. Development compilation is not evidence of clean-machine installation. Keep debug packaging separate from release signing, installer dependencies and distribution requirements.
+
+### Diagnose the concrete failure
+
+Build a development artifact for an available target. Inspect architecture, identity, dependencies and embedded UI version. Install under a clean test account and start without a development server.
+
+### Independent exercise and evidence
+
+Create a target matrix with hashes, install, launch and uninstall behavior. Mark unavailable operating systems not-run instead of treating a single host build as cross-platform acceptance.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify actual Tauri builds, OS behavior and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

@@ -44,6 +44,20 @@ node --test --test-name-pattern="21[.]03" examples/p6-operations/labs.test.mjs
 
 Synthetic incident decisions only; no real emergency response, restored backups, alerting or production capacity measurements.
 
+## Applied engineering walkthrough
+
+A useful postmortem explains how system conditions enabled an incident and how changes will reduce recurrence. Distinguish facts, contributing factors and unresolved hypotheses. Actions need owners, deadlines and verifiable completion rather than broad promises or blame.
+
+### Diagnose the concrete failure
+
+Write a synthetic timeline with detection, escalation, mitigation and recovery. Identify one missing control and propose an action that can be tested. Compare the proposal with an individual-blame explanation and inspect which produces useful evidence.
+
+### Independent exercise and evidence
+
+Design an action register with priority, owner and acceptance test. Record what remains unknown and plan a follow-up verification without claiming the simulated outage occurred.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve the existing specification, model and unpublished status. Actual incident and recovery qualification remain independent.
+
 ## Knowledge check
 
 1. Which invariant or operational measurement determines success?

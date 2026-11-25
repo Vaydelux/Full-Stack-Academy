@@ -44,6 +44,20 @@ node --test --test-name-pattern="24[.]04" examples/p7-platforms/labs.test.mjs
 
 Synthetic queue acknowledgement model only; physical touch, OS background behavior, push delivery and store acceptance require device tests.
 
+## Applied engineering walkthrough
+
+A push token identifies a delivery endpoint rather than authenticated user authority. Associate it with authorized account and installation state on the server, update it on rotation and remove stale associations at logout. Avoid sensitive message text on lock screens by default.
+
+### Diagnose the concrete failure
+
+Register a synthetic installation for account A, rotate its token, then sign in as B. Inspect mappings and ensure a notification for A does not route to B's current session.
+
+### Independent exercise and evidence
+
+Define consent, invalid-token cleanup and delivery acknowledgement behavior. Send one message only through an authorized sandbox; distinguish provider acceptance, device display and user reading.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify actual device, provider and human accessibility evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

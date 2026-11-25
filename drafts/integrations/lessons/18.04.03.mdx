@@ -52,6 +52,20 @@ The corresponding module exercises **signWebhook and WebhookInbox: raw bytes, fr
 
 For a production implementation, document the secret-owner or principal, durability plan, error and recovery policy, rate/resource bounds, privacy guarantees, observability without sensitive payloads, and the credential/version-rotation procedure.
 
+## Applied engineering walkthrough
+
+A retry budget constrains attempts and total elapsed time. Circuit breakers stop calls to a repeatedly failing dependency and allow controlled probes after a cooldown. A timeout may leave an external write outcome uncertain; retries require a safe operation contract rather than an assumption that nothing happened.
+
+### Diagnose the concrete failure
+
+Use a scripted local provider returning temporary failure, timeout and success. Trace attempt delays and terminal outcome, then compare a permanent validation rejection that should not be retried. Assert every repeated write retains its logical operation identity.
+
+### Independent exercise and evidence
+
+Design closed, open and half-open breaker states with bounded probes and dependency-specific deadlines. Record transition times, attempts and final state. Qualify actual dependency latency separately.
+
+**Qualification boundary:** These are practice instructions, not recorded results. Preserve existing specifications and laboratory contracts. Qualify actual external services separately using authorized disposable infrastructure.
+
 ## Knowledge check
 
 1. Which authenticated actor, external sender, or tenant owns the data in this scenario?

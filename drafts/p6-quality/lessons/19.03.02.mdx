@@ -44,6 +44,20 @@ node --test --test-name-pattern="19[.]03" examples/p6-quality/labs.test.mjs
 
 Synthetic row/actor model; no Nest DI, network server, PostgreSQL or RLS execution.
 
+## Applied engineering walkthrough
+
+A service unit test protects domain decisions and returned data, not just internal calls. An explicit DTO projection prevents accidental leakage of newly added persistence fields. Tenant and owner authorization should be exercised independently of the successful mapping.
+
+### Diagnose the concrete failure
+
+Use the existing scopedRead model with an allowed actor and a row containing a synthetic private field. Assert exact public keys and values. Repeat with a foreign actor and confirm no private information is returned.
+
+### Independent exercise and evidence
+
+Design tests for missing record, wrong tenant and a permitted owner with extra stored fields. Record exact expected output and the policy decision; actual HTTP serialization remains a separate gate.
+
+**Evidence boundary:** These are practice instructions, not recorded test results. Preserve the existing model, specification and draft flag; external runtime qualification remains independent.
+
 ## Knowledge check
 
 1. Which public behavior or invariant is being protected?

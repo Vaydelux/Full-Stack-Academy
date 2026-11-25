@@ -44,6 +44,20 @@ node --test --test-name-pattern="20[.]01" examples/p6-quality/labs.test.mjs
 
 Declarative policy model; no Docker engine, image build, scan or real network isolation executed.
 
+## Applied engineering walkthrough
+
+An isolated local stack combines reproducible images, dependency health, persistence, least privilege and explicit network boundaries. The local policy model tests declared requirements; it cannot inspect running containers or verify backup recovery. Use synthetic fixtures and a dedicated project namespace.
+
+### Diagnose the concrete failure
+
+Evaluate containerPolicy and topologyPolicy for the intended architecture, then create the corresponding isolated stack when Docker is available. Verify application health, private database connectivity and persistent test data. Test unsafe configuration in the model only.
+
+### Independent exercise and evidence
+
+Prepare a stack acceptance record listing images, ports, roles, health, mounts and cleanup. Record each actual Docker test separately and mark unavailable infrastructure not-run.
+
+**Evidence boundary:** These are practice instructions, not recorded test results. Preserve the existing model, specification and draft flag; external runtime qualification remains independent.
+
 ## Knowledge check
 
 1. Which public behavior or invariant is being protected?

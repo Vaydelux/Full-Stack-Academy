@@ -89,6 +89,20 @@ A database owner or privileged administrator can disable or bypass a trigger. Re
 
 The right choice can change with workload size, tenant access patterns, migration risk and operational constraints. Optimize a schema only after correctness and measured query behavior. A trigger, index, or foreign key is not evidence of complete application authorization.
 
+## Applied SQL walkthrough
+
+An audit row records an event with tenant, actor, action and occurrence time. The fixture prevents ordinary UPDATE and DELETE through a trigger, but it is not tamper-evident storage: privileged roles may disable triggers, and TRUNCATE is outside this row trigger. The actor value is required but not independently verified by the table. Production audit design needs least privilege and controlled retention.
+
+### Predict and diagnose the result
+
+Insert a synthetic audit event and predict rejection of update and delete attempts. Run the named acceptance inside the disposable transaction and verify the original row remains. Avoid testing privileged bypass on a real database. Record operation type, failure class and retained event fields.
+
+### Independent exercise and evidence
+
+Design an audit writer role that can append but cannot rewrite existing events. Specify how the application derives verified actor and tenant identity, how sensitive payloads are excluded and how retention is managed. Record positive append and negative mutation expectations without claiming cryptographic tamper resistance.
+
+**Qualification boundary:** Predicted results are not executed PostgreSQL evidence. Use the existing disposable database acceptance gate and preserve the original starter and solution. No publication credit is granted by this walkthrough.
+
 ## Bug hunt and regression reasoning
 
 1. **Reproduce:** A privileged module updates an audit log to hide an action. A mutable audit table with nullable actor data is not a trustworthy application history.

@@ -44,6 +44,20 @@ node --test --test-name-pattern="20[.]03" examples/p6-quality/labs.test.mjs
 
 Boolean release decision model, not deployment, migration, traffic switching or verified rollback.
 
+## Applied engineering walkthrough
+
+Expand-contract migrations keep old and new code compatible during a staged rollout. Add compatible fields, deploy dual-compatible readers and writers, backfill data and verify constraints before removing old fields. Reversing application deployment does not necessarily reverse schema changes safely.
+
+### Diagnose the concrete failure
+
+Model an incompatible schema with releaseDecision and verify rollout is held. In a disposable database, exercise both old and new queries before and after expansion. Test incomplete backfill and a remaining old writer.
+
+### Independent exercise and evidence
+
+Design a migration timeline with compatibility windows, reconciliation checks and a forward-repair plan. Record actual schema and data outcomes only after running the isolated migration.
+
+**Evidence boundary:** These are practice instructions, not recorded test results. Preserve the existing model, specification and draft flag; external runtime qualification remains independent.
+
 ## Knowledge check
 
 1. Which public behavior or invariant is being protected?

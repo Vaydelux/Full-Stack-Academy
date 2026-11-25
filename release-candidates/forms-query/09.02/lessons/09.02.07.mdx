@@ -84,7 +84,7 @@ export default function ErrorForm(){
 
 <Misconception claim="The starter treats a fetch response as success without checking response.ok." correction="Fetch resolves on HTTP 4xx/5xx; inspect response.ok. Map field validation into setError, root failures into root.server, and use setFocus for correction." />
 
-<KnowledgeCheck question="Which repair best addresses server errors and focus?" choices={["Always trust the browser to enforce security.","Use one authoritative form state and verify the tested behavior.","Ignore non-200 HTTP responses if fetch resolved.","Treat TypeScript types as runtime authorization."]} correctIndex={1} explanation="Fetch resolves on HTTP 4xx/5xx; inspect response.ok. Map field validation into setError, root failures into root.server, and use setFocus for correction." misconception="The starter treats a fetch response as success without checking response.ok." lessonId="09.02.07" />
+<KnowledgeCheck question="The server rejects one field and returns a general conflict. How should the UI respond?" choices={["Map known field errors and show an accessible form-level error for the conflict.","Focus a hidden element and clear all fields.","Display raw server stack traces.","Mark the request as successful and refresh."]} correctIndex={0} explanation="Field errors and operation errors have different scopes. Accessible announcements and focus should help the learner recover without losing input." misconception="The starter treats a fetch response as success without checking response.ok." lessonId="09.02.07" />
 
 ## Bug Hunt: reproduce, diagnose and repair
 
@@ -108,6 +108,12 @@ A fulfilled `fetch` call may have HTTP status 422 or 503; successful transport i
 **Independent exercise:** Mock 422, then 503, and test with the keyboard. Check the active element, `aria-invalid`, the error relationship via `aria-describedby` and the number of confirmed saves. A visible red sentence alone is not sufficient.
 
 **Security boundary:** Use trusted generic error descriptions or constrained server codes. Do not interpolate untrusted error-body markup, internal stack traces or raw HTML into the form. Error announcements and focus recovery need testing by a real screen-reader user before publication.
+
+## Applied debugging clinic
+
+Submit a valid-looking title that the server rejects. Inspect the named field error, keyboard focus and preserved input. Then simulate a general conflict with no matching field; expose a form-level error rather than inventing a field name. Verify screen-reader announcements manually.
+
+**Evidence to record:** the initial state, action, observed result, expected result and smallest repair. Explain whether the defect belongs to the form, rendered widget, or HTTP boundary. Re-run the original failing interaction after the repair.
 
 ## Guided local lab
 

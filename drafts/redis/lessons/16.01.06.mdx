@@ -50,6 +50,20 @@ In the test notes, separate what the in-memory fixture genuinely observed from R
 
 Tenant prefixes reduce collision risk but never replace tenant authorization in the database.
 
+## Applied engineering walkthrough
+
+Cache keys encode identity and result context. Tenant, resource ID, projection and schema version may all matter. Separators must not create ambiguous key encodings. A key namespace prevents accidental collisions but does not authenticate a caller; derive tenant from verified membership.
+
+### Diagnose the concrete failure
+
+Create two tenants with resource 42 and distinct values. Verify generated keys differ and both correct reads return their own data. Test malformed key parts and ensure an invalid request cannot mutate an unrelated key. Use an explicit allowlist or unambiguous encoding.
+
+### Independent exercise and evidence
+
+Design keys for a paginated filtered task list and a user-specific view. Explain when role or policy revision must be part of the key. Record exact synthetic keys and cross-tenant exclusion.
+
+**Qualification boundary:** These are practice instructions, not recorded results. Preserve the existing lab and publication status; in-memory tests do not qualify live Redis or BullMQ behavior.
+
 ## Knowledge check
 
 1. What is authoritative in this scenario, and what state is derived or replayable?

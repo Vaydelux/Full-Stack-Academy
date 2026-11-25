@@ -77,6 +77,20 @@ Pooler modes and endpoint availability vary by project and plan. Verify current 
 
 Explicitly choose how identity is propagated between Next.js, NestJS, Prisma, and Supabase. When a privileged server role bypasses RLS, the NestJS service must check permissions and the database role should still be restricted. Prefer verified membership from trusted server data over user-editable metadata or query parameters.
 
+## Applied persistence walkthrough
+
+Direct and pooled endpoints have different capacity and session semantics. Migration tooling may require a direct or suitable session-mode connection; runtime pools should use a compatible endpoint and mode. The sample separates environment names but does not verify host, TLS, role or pooler support. Consult the actual project connection instructions rather than copying URLs from another environment.
+
+### Diagnose the concrete failure
+
+Confirm both endpoints against the disposable project's settings, redact secrets and test missing variables independently. Inspect current role/database on each permitted connection. Exercise a migration on the migration target and an ordinary request on the runtime path; verify neither points to production.
+
+### Independent exercise and evidence
+
+Plan the runtime connection budget across API instances and workers, then a separate migration role with approved elevated privileges. Record pool mode, version, endpoint identity and session-feature compatibility.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Use pinned tooling and a disposable local or explicitly approved test environment. Preserve the starter and solution; source review does not qualify real database roles or authorization.
+
 ## Bug Hunt
 
 1. Predict who can exploit this bug: The starter silently routes schema changes through a possibly transaction-pooled session, where connection/session assumptions may break.

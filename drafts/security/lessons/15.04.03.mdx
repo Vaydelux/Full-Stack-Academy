@@ -42,6 +42,20 @@ Document both a permitted happy path and a rejected adversarial path. Integratio
 
 A passing UI check or source-only checklist cannot establish secure production behavior. An observed negative test and reviewed trust boundary are essential.
 
+## Applied engineering walkthrough
+
+Routine key rotation and emergency compromise response have different constraints. Planned rotation can overlap valid keys while clients adopt the new key; compromised keys may need immediate revocation. Token expiry, verifier caches and refresh sessions affect how quickly access actually disappears.
+
+### Diagnose the concrete failure
+
+In a controlled test issuer, verify tokens signed by the intended old and new keys during a planned transition, then test rejection after retirement. Simulate an emergency revocation separately and measure remaining access. Do not log private keys or bearer tokens.
+
+### Independent exercise and evidence
+
+Design a rotation runbook naming key owner, issuance cutover, verification overlap, retirement and rollback conditions. Record synthetic verification outcomes and actual session freshness limitations.
+
+**Qualification boundary:** These are practice instructions, not recorded audit results. Use synthetic data and authorized disposable infrastructure. Preserve existing laboratory contracts and publication status.
+
 ## Knowledge check
 
 1. Which input is attacker-controlled?

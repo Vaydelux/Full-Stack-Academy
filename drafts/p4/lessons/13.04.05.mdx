@@ -79,6 +79,20 @@ A TypeScript request interface does not validate the JWT by itself. The guard mu
 
 Explicitly choose how identity is propagated between Next.js, NestJS, Prisma, and Supabase. When a privileged server role bypasses RLS, the NestJS service must check permissions and the database role should still be restricted. Prefer verified membership from trusted server data over user-editable metadata or query parameters.
 
+## Applied persistence walkthrough
+
+A Nest guard establishes an authenticated actor; the service must still authorize the requested action and resource. A tenant claim can be stale and client-provided metadata can be untrusted. Resolve current membership from authoritative server data before using it to scope a privileged Prisma query. The fixture delegates to listForActor and does not implement that verification itself.
+
+### Diagnose the concrete failure
+
+Test a missing actor, invalid credentials, authenticated nonmember and authorized member through the actual HTTP route. Confirm the denied cases never call the protected data operation. Verify the service query filters by the trusted tenant and projects allowed fields. Capture no raw token or private data.
+
+### Independent exercise and evidence
+
+Design a test where membership is revoked while a token remains valid. Decide which sensitive operations require a fresh database membership check. Record HTTP outcomes and repository invocation counts.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Use pinned tooling and a disposable local or explicitly approved test environment. Preserve the starter and solution; source review does not qualify real database roles or authorization.
+
 ## Bug Hunt
 
 1. Predict who can exploit this bug: A user can replace the query parameter tenantId and ask a superuser-backed repository to return another tenant's records.

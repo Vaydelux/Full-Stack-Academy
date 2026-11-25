@@ -73,6 +73,20 @@ The Prisma Client type system does not enforce BOLA prevention. Treat a client-p
 
 A safe persistence layer should accept explicit request-scoped identities, use bounded queries, reject unsupported input, and keep internal query types from becoming public API DTOs. For permission-sensitive mutations, reason about database constraints and application authorization separately: a valid foreign key does not mean the calling actor may update that row.
 
+## Applied persistence walkthrough
+
+findUnique identifies a record using a unique key; findFirst searches for a record matching supplied predicates; findMany returns a collection. The example deliberately uses both ID and tenantId in findFirst. A unique ID alone says nothing about whether a caller is permitted to see the record. The trusted tenant must be resolved before repository execution.
+
+### Diagnose the concrete failure
+
+Seed a matching ID in the authorized tenant and a distinct ID in another tenant. Compare permitted lookup, nonexistent lookup and cross-tenant lookup: the last two should return null under this contract. Check the selected fields and verify missing context fails before querying.
+
+### Independent exercise and evidence
+
+Design a tenant-scoped list with an optional validated status filter. Specify whether an omitted filter means all permitted statuses, and how an invalid status is rejected. Record returned IDs, projection and the denied case.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Use the pinned Prisma 7 toolchain and disposable PostgreSQL database. Preserve the starter and solution; source review does not qualify generated code or authorization.
+
 ## Bug Hunt
 
 1. State the starter's observable defect: An ID may be globally unique but it does not prove the caller is permitted to read its record. The starter returns a task by ID alone.

@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
+import { selectReferences } from '@/lib/academy/reference-search.mjs';
 import type { ReferenceSubject } from '@/lib/academy/types';
 
 type Visibility = 'all' | 'authored' | 'indexed';
@@ -10,33 +11,23 @@ export function ReferenceExplorer({
   entries,
   categories,
   authoredIds,
+  initialCategory = 'all',
 }: {
   entries: ReferenceSubject[];
   categories: string[];
   authoredIds: string[];
+  initialCategory?: string;
 }) {
   const [query, setQuery] = useState('');
-  const [category, setCategory] = useState('all');
+  const [category, setCategory] = useState(initialCategory);
   const [visibility, setVisibility] = useState<Visibility>('all');
   const [limit, setLimit] = useState(36);
   const authoredSet = useMemo(() => new Set(authoredIds), [authoredIds]);
 
-  const results = useMemo(() => {
-    const term = query.trim().toLocaleLowerCase();
-    return entries
-      .filter((entry) => {
-        const hasDraft = authoredSet.has(entry.id);
-        if (category !== 'all' && entry.category !== category) return false;
-        if (visibility === 'authored' && !hasDraft) return false;
-        if (visibility === 'indexed' && hasDraft) return false;
-        if (!term) return true;
-        return `${entry.title} ${entry.category} ${entry.id}`.toLocaleLowerCase().includes(term);
-      })
-      .sort((left, right) => {
-        const publicationRank = Number(authoredSet.has(right.id)) - Number(authoredSet.has(left.id));
-        return publicationRank || left.title.localeCompare(right.title);
-      });
-  }, [entries, query, category, visibility, authoredSet]);
+  const results = useMemo(
+    () => selectReferences(entries, authoredIds, { query, category, visibility }),
+    [entries, authoredIds, query, category, visibility],
+  );
 
   const visible = results.slice(0, limit);
   function reset() {

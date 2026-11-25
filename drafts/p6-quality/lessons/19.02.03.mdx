@@ -44,6 +44,20 @@ node --test --test-name-pattern="19[.]02" examples/p6-quality/labs.test.mjs
 
 Plain JavaScript UI state model; installed React/Vitest/Testing Library/MSW and real browsers require separate tests.
 
+## Applied engineering walkthrough
+
+Asynchronous React state must distinguish the latest intended request from earlier in-flight work. Cancellation can reduce unnecessary work, but a late response still needs protection when cancellation is ineffective. A component test should assert the visible result, not simply that two fetches occurred.
+
+### Diagnose the concrete failure
+
+Use explicit promise barriers for search A and B. Resolve B first and verify the new result appears, then resolve A and ensure it cannot replace B. Repeat with an older request rejecting after B succeeds.
+
+### Independent exercise and evidence
+
+Design a component test for rapid filter changes, unmount cleanup and stale error suppression. Record resolution order and final rendered content; the pure model is not React execution evidence.
+
+**Evidence boundary:** These are practice instructions, not recorded test results. Preserve the existing model, specification and draft flag; external runtime qualification remains independent.
+
 ## Knowledge check
 
 1. Which public behavior or invariant is being protected?

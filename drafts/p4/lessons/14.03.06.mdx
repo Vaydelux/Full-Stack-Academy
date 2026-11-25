@@ -85,6 +85,20 @@ A caller-controlled actor object cannot be trusted even if typed in TypeScript. 
 
 RLS applies subject to PostgreSQL roles, table ownership, policy composition and operation type. In an exposed schema, verify grants and RLS together. For writes, review INSERT WITH CHECK and UPDATE USING/WITH CHECK, not just SELECT. In Supabase, do not use user-editable `user_metadata` as authority for privileged roles. A service-role client may bypass RLS; it must not be used to repair a client permission error.
 
+## Applied persistence walkthrough
+
+A server-only secret key is privileged; the caller must never receive it or use the endpoint as a generic administrative proxy. The moderation example checks the actor and tenant, then scopes the update to both document ID and tenant. A zero-row update can have no API error, so success still requires an explicit affected-row contract. Actor claims must be derived from current trusted authorization.
+
+### Diagnose the concrete failure
+
+Test an authorized moderator, ordinary user and moderator targeting another tenant's known document. Inspect before/after active flags, and verify an absent target does not produce a misleading success message. Keep privileged credentials only in an isolated server process. Test a revoked moderator separately.
+
+### Independent exercise and evidence
+
+Design a moderation response that confirms exactly one permitted change or gives a safe not-found result. Add an audit event with verified actor and action, and document atomicity requirements. Record effective permission checks and resulting state without secrets.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Use an isolated Supabase environment and real non-bypass caller roles. Preserve the existing starter and solution; source review cannot certify row policies or authorization.
+
 ## Bug Hunt and regression matrix
 
 1. Predict the disclosure caused by the starter: The starter exposes a secret key to browser code and applies an unrestricted privileged update without validating the actor's tenant or permissions.

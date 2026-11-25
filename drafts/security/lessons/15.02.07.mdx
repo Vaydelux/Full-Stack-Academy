@@ -42,6 +42,20 @@ Document both a permitted happy path and a rejected adversarial path. Integratio
 
 A passing UI check or source-only checklist cannot establish secure production behavior. An observed negative test and reviewed trust boundary are essential.
 
+## Applied engineering walkthrough
+
+SCIM provisions identities and groups; it does not guarantee immediate session revocation. Deactivation must affect authoritative membership state. Repeated provisioning requests need stable identity matching and safe replay behavior.
+
+### Diagnose the concrete failure
+
+In a disposable directory integration, create an account, assign membership, deactivate it and repeat deactivation. Verify no usable membership remains and no duplicate account appears. Test existing session access separately.
+
+### Independent exercise and evidence
+
+Design reconciliation for delayed or failed provisioning and define a revocation objective. Record provider event IDs, membership transitions and session outcomes using synthetic identities.
+
+**Qualification boundary:** These are practice instructions, not recorded audit results. Use synthetic data and authorized disposable infrastructure. Preserve existing laboratory contracts and publication status.
+
 ## Knowledge check
 
 1. Which input is attacker-controlled?

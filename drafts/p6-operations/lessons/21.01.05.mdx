@@ -44,6 +44,20 @@ node --test --test-name-pattern="21[.]01" examples/p6-operations/labs.test.mjs
 
 Local field-allowlist model only; Pino, exporters, collectors and Sentry require installed tools and actual trace propagation.
 
+## Applied engineering walkthrough
+
+OpenTelemetry instrumentation should initialize before modules that need automatic instrumentation are loaded. Exporters and processors have lifecycle and resource limits; a missing export can be instrumentation or transport failure. Tracing should not block every request on remote delivery.
+
+### Diagnose the concrete failure
+
+Start a disposable Node service using the installed SDK and local exporter. Send one loopback request and inspect service resource attributes and request span. Simulate exporter failure and verify application behavior and diagnostic reporting.
+
+### Independent exercise and evidence
+
+Design startup, sampling and bounded shutdown for telemetry. Record SDK version, exported spans and any dropped evidence; the safeLog model does not initialize OpenTelemetry.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve the existing specification, model and unpublished status. Actual instrumentation and runtime qualification remain independent.
+
 ## Knowledge check
 
 1. Which invariant or operational measurement determines success?

@@ -81,6 +81,20 @@ No schema generator or @unique attribute grants a caller read permission. Never 
 
 A production-ready persistence boundary has to address error mapping, least-privileged database credentials, transaction/connection lifecycle, tenant authorization and request cancellation. Whenever schema changes are involved, review migration SQL and compatibility with the previous app version. Never expose database credentials in a `NEXT_PUBLIC_` variable or include them in a public web bundle.
 
+## Applied persistence walkthrough
+
+Separate the Prisma schema, generated client and physical database schema. Adding tenantId makes ownership representable; the composite index supports tenant-scoped lookup but does not filter rows by itself. The primary key is globally unique in this example, so two tenants cannot each reuse task ID 1. The generated client reflects the model, while deployed migrations establish the actual database constraints.
+
+### Diagnose the concrete failure
+
+Compare the starter and solution model, then inspect the SQL produced by the pinned Prisma 7 migration tool in a disposable environment. Confirm required tenantId, its index and the absence of embedded credentials. Seed two tenant datasets and compare an unrestricted query with the tenant-filtered query. Never infer access control from an index.
+
+### Independent exercise and evidence
+
+Design a model for a project-owned task with a tenant-aware project reference. Explain which rules belong to schema constraints, repository predicates and authorization. Record generated SQL, accepted rows and a forbidden cross-tenant case.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Use the pinned Prisma 7 toolchain and disposable PostgreSQL database. Preserve the starter and solution; source review does not qualify generated code or authorization.
+
 ## Bug Hunt
 
 1. Observe the unsafe starter: The starter stores tasks without a tenant key. A strongly typed client cannot reconstruct ownership that the physical schema never represented.

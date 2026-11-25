@@ -44,6 +44,20 @@ node --test --test-name-pattern="24[.]01" examples/p7-platforms/labs.test.mjs
 
 Native builds, WebView isolation and plugin permissions require a real device.
 
+## Applied engineering walkthrough
+
+An app can lose its process after entering the background; a lifecycle callback is not guaranteed to run before every termination. Persist a small validated edit record before reporting it as durable. Use a stable operation identity when reconciling uncertain remote writes, and distinguish a queued operation from one acknowledged by the server.
+
+### Diagnose the concrete failure
+
+Create a synthetic task edit, interrupt the application before acknowledgement, and relaunch. Compare persisted intent with the visible pending state. A duplicate server effect after replay is a different defect from a lost local edit and needs its own assertion.
+
+### Independent exercise and evidence
+
+Exercise process death before persistence, after persistence and after remote acknowledgement. Record expected recovery for each point, then use an authorized device to observe actual outcomes. Do not claim exactly-once delivery from a local queue.
+
+**Evidence boundary:** These are practice instructions, not recorded results. The local model cannot qualify a native build, secure storage, permissions or real hardware. Preserve draft status until external gates pass.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

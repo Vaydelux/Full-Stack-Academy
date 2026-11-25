@@ -72,6 +72,20 @@ This snippet is illustrative and not a complete runtime-login provisioning scrip
 
 Explicitly choose how identity is propagated between Next.js, NestJS, Prisma, and Supabase. When a privileged server role bypasses RLS, the NestJS service must check permissions and the database role should still be restricted. Prefer verified membership from trusted server data over user-editable metadata or query parameters.
 
+## Applied persistence walkthrough
+
+A NOLOGIN group role describes privileges; a runtime login must be separately configured to inherit or assume the intended permissions. The fixture grants schema usage and three table operations, not deletion or role creation. Depending on table defaults, sequence permissions may also be required. Existing grants or ownership can broaden access beyond this snippet.
+
+### Diagnose the concrete failure
+
+Inspect the actual login's effective grants and memberships in an isolated instance. Try an allowed read and write and a denied delete or unrelated schema read. Ensure the runtime identity is not the table owner or a BYPASSRLS role when relying on RLS. Do not run role DDL on a real project for this exercise.
+
+### Independent exercise and evidence
+
+Write a grant matrix for app runtime, migration owner and reporting identities. Include sequence usage where justified and test effective permission denial. Record SQLSTATE and the actual connected role.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Use pinned tooling and a disposable local or explicitly approved test environment. Preserve the starter and solution; source review does not qualify real database roles or authorization.
+
 ## Bug Hunt
 
 1. Predict who can exploit this bug: A superuser application login can bypass RLS and change unrelated schemas, turning a simple code flaw into a database-wide exposure.

@@ -43,6 +43,20 @@ Your acceptance criteria must include a positive authorized case and a negative 
 
 Encryption at rest does not justify collecting or retaining unnecessary data.
 
+## Applied engineering walkthrough
+
+Classify data according to sensitivity, use and retention requirements. Reset links and access tokens are credentials, whereas correlation IDs are diagnostic references. Even routine profile and access data can identify people when combined. Collect only fields required for a defined purpose and restrict log access and retention.
+
+### Diagnose the concrete failure
+
+Use synthetic profile records and a fake Authorization header to exercise the logger. Assert that diagnostic event name and correlation ID remain available while credentials and reset URL query strings are absent. Check nested errors and structured metadata, not just the normal message.
+
+### Independent exercise and evidence
+
+Create a data inventory listing category, purpose, authorized readers, retention and deletion process. Design a safe incident investigation log with pseudonymous identifiers. Record what was excluded and why; use no real personal records.
+
+**Qualification boundary:** These are practice instructions, not recorded audit results. Use synthetic data and authorized disposable infrastructure. Preserve existing laboratory contracts and publication status.
+
 ## Knowledge check
 
 1. Which input is controlled by the attacker in this scenario?

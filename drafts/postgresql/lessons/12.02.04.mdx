@@ -81,6 +81,20 @@ A composite FK does not replace RLS, object-level authorization, row ownership c
 
 The right choice can change with workload size, tenant access patterns, migration risk and operational constraints. Optimize a schema only after correctness and measured query behavior. A trigger, index, or foreign key is not evidence of complete application authorization.
 
+## Applied SQL walkthrough
+
+Tenant identity is part of a relationship when numeric identifiers overlap across organizations. A composite foreign key requires the referenced pair to exist, not merely the project ID somewhere in the database. In a production design the referenced columns need a matching unique or primary key. Indexing the referencing columns may improve joins and parent deletion checks, but it does not enforce actor authorization.
+
+### Predict and diagnose the result
+
+Predict outcomes for an attachment referencing an existing project within its own tenant and one referencing a project that exists only in another tenant. Inspect which key pair is checked by the constraint. The existing acceptance must distinguish cross-tenant rejection from a missing-table or syntax failure.
+
+### Independent exercise and evidence
+
+Design a task-to-project relation with tenant-aware primary and foreign keys. Specify a verified tenant context for API reads and writes and a separate role-based access test. Record the allowed pair, forbidden pair and SQLSTATE; explain why the composite constraint does not prevent an unrestricted SELECT.
+
+**Qualification boundary:** Predicted results are not executed PostgreSQL evidence. Use the existing disposable database acceptance gate and preserve the original starter and solution. No publication credit is granted by this walkthrough.
+
 ## Bug hunt and regression reasoning
 
 1. **Reproduce:** The application sends tenant alpha's attachment metadata but points it to a project owned by beta. An unrelated integer foreign key—or no foreign key—does not validate tenant ownership.

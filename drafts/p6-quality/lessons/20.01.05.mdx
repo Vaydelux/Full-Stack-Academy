@@ -44,6 +44,20 @@ node --test --test-name-pattern="20[.]01" examples/p6-quality/labs.test.mjs
 
 Declarative policy model; no Docker engine, image build, scan or real network isolation executed.
 
+## Applied engineering walkthrough
+
+Container networks limit reachability according to actual topology. Publishing a port maps access to the host and can expose services beyond the intended application network. Internal service discovery and database authentication are separate controls. A private network alone is not authorization.
+
+### Diagnose the concrete failure
+
+Inspect a disposable Compose configuration and verify only the intended ingress is published. Confirm the app reaches its database by service name, while the database has no direct public mapping. Test connectivity only within the authorized test topology.
+
+### Independent exercise and evidence
+
+Draw the network segments and allowed flows for edge, app, worker and database. Record inspected port bindings and connectivity outcomes, and keep credential and role tests independent.
+
+**Evidence boundary:** These are practice instructions, not recorded test results. Preserve the existing model, specification and draft flag; external runtime qualification remains independent.
+
 ## Knowledge check
 
 1. Which public behavior or invariant is being protected?

@@ -50,6 +50,20 @@ The tests exercise local Node state or loopback HTTP behavior. Document separate
 
 Presence state is not an access-control list, durable audit trail or proof of identity.
 
+## Applied engineering walkthrough
+
+Collaborative presence provides a temporary indication of participation. It does not establish editing rights, and disconnected sessions need expiration. Cursor position is ephemeral and should not overwrite the authoritative document or its revision.
+
+### Diagnose the concrete failure
+
+Heartbeat two synthetic collaborators and inspect presence. Advance the test clock beyond the configured TTL and verify their entries disappear while document text and revision remain unchanged. Test a nonmember separately.
+
+### Independent exercise and evidence
+
+Design a privacy-aware presence payload with a bounded lease and per-connection identity. Record membership decisions and observed presence transitions independently of document writes.
+
+**Qualification boundary:** These are practice instructions, not recorded results. Preserve the original laboratory and publication status. Local simulations do not qualify actual browser or distributed provider behavior.
+
 ## Knowledge check
 
 1. Which actor, resource, version or event cursor is authoritative in this scenario?

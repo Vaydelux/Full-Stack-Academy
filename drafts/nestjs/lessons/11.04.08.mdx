@@ -85,7 +85,21 @@ The lesson's instructor snippet demonstrates the mechanism but is not a deployab
 
 <Misconception claim="The practice API binds publicly on 0.0.0.0 and lacks a shutdown hook." correction="A release candidate needs explicit adapter, loopback fixture binding, shutdown hooks and bounded error exposure." />
 
-<KnowledgeCheck question="What should a release reviewer demand for lab production service skeleton?" choices={["A passing source-text search is sufficient.","The actual Nest runtime shows the specified positive case and a meaningful denial or failure case.","A project compiles, so tenancy is proven.","A local demo endpoint may safely be exposed publicly without auth."]} correctIndex={1} explanation="A release candidate needs explicit adapter, loopback fixture binding, shutdown hooks and bounded error exposure." misconception="The practice API binds publicly on 0.0.0.0 and lacks a shutdown hook." lessonId="11.04.08" />
+<KnowledgeCheck question="Why should a local unauthenticated teaching server bind to 127.0.0.1 instead of 0.0.0.0?" choices={["It guarantees database transactions.","It makes authentication unnecessary in production.","It automatically enables TLS.","It limits the listener to the local machine rather than all network interfaces."]} correctIndex={3} explanation="Loopback binding reduces unintended network exposure but does not replace production security." misconception="The practice API binds publicly on 0.0.0.0 and lacks a shutdown hook." lessonId="11.04.08" />
+
+## Applied engineering walkthrough
+
+A service composition root defines configuration, adapter, listening interface and shutdown ownership. The fixture uses Fastify, validates a local port and binds to literal loopback; port zero is useful for isolated tests. It is a minimal skeleton, not production-ready authentication, observability, deployment or database integration. If listening fails after creation, a hardened bootstrap must close the partially created application.
+
+### Diagnose the concrete failure
+
+Start on port zero and inspect the actual listener address and adapter. Confirm invalid port input is rejected before creating the app. Close the app explicitly and verify the listener is no longer reachable. Add a failure injection for occupied port in a disposable test and check for leaked resources; the current skeleton does not explicitly close on listen failure.
+
+### Independent exercise and evidence
+
+Write a release checklist for a real service: verified config, authorization, bounded inputs, error handling, readiness, request logging, database lifecycle and deployment review. Record the local listener address, adapter, startup failure and shutdown outcome. Do not expose the teaching listener publicly.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Container, HTTP, socket and operational tests require the actual installed runtime. Keep the existing starter and solution unchanged; do not award course credit from source review alone.
 
 ## Bug Hunt: reproduce, diagnose and repair
 

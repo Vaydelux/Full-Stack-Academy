@@ -50,6 +50,20 @@ In the test notes, separate what the in-memory fixture genuinely observed from R
 
 A dashboard counter alone does not prove notification delivery.
 
+## Applied engineering walkthrough
+
+Failed jobs require observable state, not silent disappearance. Capture bounded diagnostics and attempt history while excluding private payloads and credentials. Terminal failures should be reviewable and alertable, but redrive must be an explicit authorized operation.
+
+### Diagnose the concrete failure
+
+Drive a synthetic failing job through its retry budget. Verify terminal state, attempt count and safe diagnostic fields. Check it no longer consumes normal worker capacity and that an authorized operator can inspect it.
+
+### Independent exercise and evidence
+
+Design an alert threshold for terminal failures and excessive queue age. Specify who may redrive, how corrected input is reviewed and how the original operation identity is preserved.
+
+**Qualification boundary:** These are practice instructions, not recorded results. Preserve the existing lab and publication status; in-memory tests do not qualify live Redis or BullMQ behavior.
+
 ## Knowledge check
 
 1. What is authoritative in this scenario, and what state is derived or replayable?

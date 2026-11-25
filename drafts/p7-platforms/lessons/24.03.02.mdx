@@ -44,6 +44,20 @@ node --test --test-name-pattern="24[.]03" examples/p7-platforms/labs.test.mjs
 
 Synthetic command permission model; actual Rust commands, capability enforcement, installers and signatures require platform builds.
 
+## Applied engineering walkthrough
+
+Rust types eliminate some invalid internal states, but deserialization and business rules still form an untrusted input boundary. Return structured safe errors without exposing filesystem paths, secrets or panic details. Resource bounds and authorization remain explicit requirements.
+
+### Diagnose the concrete failure
+
+Implement a synthetic command accepting a bounded document identifier. Try valid input, missing fields, oversized input and an identifier belonging to another authorized scope.
+
+### Independent exercise and evidence
+
+Define an error vocabulary and compare UI handling for invalid, forbidden and unavailable results. Record compiler and runtime evidence separately; verify denied calls never mutate persisted data.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify actual Tauri builds, OS behavior and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

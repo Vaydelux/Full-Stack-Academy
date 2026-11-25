@@ -44,6 +44,20 @@ node --test --test-name-pattern="21[.]02" examples/p6-operations/labs.test.mjs
 
 Synthetic error-budget arithmetic only; real probes, alerts, concurrency and fault recovery require actual isolated services.
 
+## Applied engineering walkthrough
+
+An SLI measures an explicitly defined population; an SLO sets a target over a window. At a 99% success target and 1000 eligible requests, ten failures exhaust the budget. A zero-request window is insufficient evidence, not perfect reliability. Specify exclusions before collecting results.
+
+### Diagnose the concrete failure
+
+Evaluate the existing errorBudget model with ten and eleven failures, then zero traffic. Compare the outcomes with the chosen target and inspect remaining budget rather than rounding the success percentage.
+
+### Independent exercise and evidence
+
+Define an eligible request population, window, success condition and minimum sample count for an API. Record actual counts and distinguish a model result from a production SLO.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve the existing specification, model and unpublished status. Actual resilience and runtime qualification remain independent.
+
 ## Knowledge check
 
 1. Which invariant or operational measurement determines success?

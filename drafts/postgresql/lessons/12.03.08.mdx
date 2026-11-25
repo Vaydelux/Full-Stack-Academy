@@ -71,6 +71,20 @@ This red/green is deterministic sequential simulation, NOT a real two-session co
 
 A useful production verification matrix varies input identity, tenant, the number of concurrent writers, repeated request keys and observed SQLSTATE outcomes. When a conflict occurs, the correct application behavior is usually to report it or retry the *whole* safe operation from a new snapshot—not to silently overwrite the last writer's state.
 
+## Applied SQL walkthrough
+
+A lost update occurs when two clients calculate new state from the same old value and one overwrites the other's committed change. The solution uses version one as a precondition for both absolute balance updates. Only the first changes the row to balance nine, revision two. The fixture executes sequential statements to model a stale edit, not actual overlapping sessions.
+
+### Predict and diagnose the result
+
+In a shared disposable table, let A and B read the same initial balance and version, then have A commit its conditional write. Let B submit its old version; under Read Committed expect zero affected rows. Test the unsafe variant separately and compare its final value. Never use a production wallet or rely on timing sleeps as the only coordination.
+
+### Independent exercise and evidence
+
+Build a two-client test with explicit barriers for reads and commits. Record both observed revisions, write row counts and final state. Include a retry after rereading and recomputing the intended operation, not replaying an obsolete absolute balance. Classify this evidence separately from the existing single-session acceptance.
+
+**Qualification boundary:** These are predictions and experiment instructions, not recorded database results. The existing single-session SQL gate cannot establish true concurrent behavior. Use isolated test infrastructure and preserve the existing starter and solution.
+
 ## Bug Hunt
 
 1. Predict the specific broken state: The starter simulates two workers writing from the same version, but applies both writes unconditionally.

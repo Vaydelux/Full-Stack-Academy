@@ -81,6 +81,20 @@ One large batch is not always optimal. Very large IN lists and relations may req
 
 A safe persistence layer should accept explicit request-scoped identities, use bounded queries, reject unsupported input, and keep internal query types from becoming public API DTOs. For permission-sensitive mutations, reason about database constraints and application authorization separately: a valid foreign key does not mean the calling actor may update that row.
 
+## Applied persistence walkthrough
+
+Batch loading fetches parents once and then children for the selected parent IDs, reducing query count from one plus the number of parents to at most two logical ORM calls in this example. The grouping map preserves empty projects. The child collection is not bounded per project, so a large project can still create excessive memory and payload size. Two queries may observe different snapshots.
+
+### Diagnose the concrete failure
+
+Compare results for one project, several projects and an empty project. Instrument actual SQL calls instead of assuming ORM calls equal round trips. Verify both queries include tenant context, and record response bytes as child counts grow. Check the order if child order matters; the child query has no explicit order.
+
+### Independent exercise and evidence
+
+Design a bounded child preview or a separate paginated child endpoint. Compare it with nested relation loading using real instrumentation and consistent expected results. Record query count, rows, response bytes and any snapshot consistency requirement.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Use the pinned Prisma 7 toolchain and disposable PostgreSQL database. Preserve the starter and solution; source review does not qualify generated code or authorization.
+
 ## Bug Hunt
 
 1. State the starter's observable defect: The starter issues one task query per project and does not filter child tasks by tenant, causing N+1 round trips and possible cross-tenant results.

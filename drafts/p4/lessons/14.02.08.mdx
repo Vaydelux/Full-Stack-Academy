@@ -80,6 +80,20 @@ The membership lookup requires its own RLS policy and Grants. This sample does n
 
 In production, model expired access tokens, refresh-token rotation, multiple concurrent tabs, CSRF/state handling where applicable, cookie attributes, MFA enrollment and logout propagation. Never rely on raw JWT decoding, a mutable cookie JSON field, an unverified redirect URL or a user-editable metadata claim to authorize administrative actions.
 
+## Applied persistence walkthrough
+
+A safe login flow must bind a verified identity to authoritative membership data. The snippet fetches a current user and queries a specific tenant membership. The supplied tenant candidate is not trusted just because it appears in a variable; the membership query is the authorization check. RLS on memberships must prevent other users' membership rows from being exposed. Privileged paths need equivalent independent checks.
+
+### Diagnose the concrete failure
+
+Seed two fake users and tenants. Verify an authorized membership is returned, a nonexistent or foreign membership is denied, and expired or invalid credentials fail before data access. Test duplicate memberships as a data-integrity error; maybeSingle does not make the relationship unique. Inspect actual row-policy behavior as each user.
+
+### Independent exercise and evidence
+
+Design a route that handles a tenant switch only after current membership is verified. Include revoked membership and no-session cases, safe public errors, and role-specific action checks. Record identity and tenant as synthetic IDs and expected versus actual authorization outcomes.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Use isolated synthetic identities and the pinned SDK. Preserve the existing starter and solution; source inspection does not establish actual Auth or session security.
+
 ## Bug Hunt
 
 1. State the attack or broken state: The starter trusts user-editable user_metadata and getSession as a server-side role decision, allowing an attacker to claim isAdmin.

@@ -44,6 +44,20 @@ node --test --test-name-pattern="24[.]03" examples/p7-platforms/labs.test.mjs
 
 Synthetic command permission model; actual Rust commands, capability enforcement, installers and signatures require platform builds.
 
+## Applied engineering walkthrough
+
+Give each window only the native capabilities it requires. A preview window should not inherit editor privileges merely because both belong to the same application. Review capability files, plugin defaults and platform-specific configuration together; deny by default.
+
+### Diagnose the concrete failure
+
+Compare main/read and preview/read using the model, then invoke a benign denied command from a real preview window. Verify no native operation is performed.
+
+### Independent exercise and evidence
+
+Draft a matrix for settings, editor and preview windows. Add a regression for a newly created window with no assigned capabilities, and record actual installed application identity and results.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify actual Tauri builds, OS behavior and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

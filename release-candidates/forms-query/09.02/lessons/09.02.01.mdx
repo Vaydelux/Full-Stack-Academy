@@ -81,7 +81,7 @@ export default function TitleForm() {
 
 <Misconception claim="The title is hard-coded and never updated by the registered field." correction="A controlled input receives its current value and change handler from React. An uncontrolled input keeps its current value in the DOM, and React Hook Form can register it via a ref. Pick one owner per field." />
 
-<KnowledgeCheck question="Which repair best addresses controlled vs uncontrolled inputs?" choices={["Always trust the browser to enforce security.","Use one authoritative form state and verify the tested behavior.","Ignore non-200 HTTP responses if fetch resolved.","Treat TypeScript types as runtime authorization."]} correctIndex={1} explanation="A controlled input receives its current value and change handler from React. An uncontrolled input keeps its current value in the DOM, and React Hook Form can register it via a ref. Pick one owner per field." misconception="The title is hard-coded and never updated by the registered field." lessonId="09.02.01" />
+<KnowledgeCheck question="A form has a fixed value prop and a registered input. Why does typing fail?" choices={["The value prop owns the displayed value without a matching update.","The HTTP server has rejected a request.","Register always disables native inputs.","The form needs a second state variable."]} correctIndex={0} explanation="A controlled value must be updated by its owner. For a native registered field, let RHF manage the input instead." misconception="The title is hard-coded and never updated by the registered field." lessonId="09.02.01" />
 
 ## Bug Hunt: reproduce, diagnose and repair
 
@@ -105,6 +105,12 @@ A native text input already keeps transient keystrokes in the browser. When you 
 **Independent exercise:** Type a valid title, submit, and inspect the last confirmed output. Then enter only two characters and verify the output does not change. Finally, explain why the API still needs its own 3–100-character validation even when the browser rejects the same input.
 
 **Production boundary:** This instructor example confirms the submitted value locally; it does not prove the server saved a record. Keep the editable draft and the last confirmed operation conceptually distinct. If a parent fetches new data while the form is dirty, choose an explicit merge, warning or discard policy instead of silently replacing the current field.
+
+## Applied debugging clinic
+
+An edit dialog opens with title Alpha. Typing Beta must change the input and submitted value. A parent rerender must not replace Beta with Alpha. Reset should restore the explicit default. Use the React inspector to find a fixed value prop before changing validation or networking.
+
+**Evidence to record:** the initial state, action, observed result, expected result and smallest repair. Explain whether the defect belongs to the form, rendered widget, or HTTP boundary. Re-run the original failing interaction after the repair.
 
 ## Guided local lab
 

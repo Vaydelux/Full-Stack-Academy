@@ -42,6 +42,20 @@ Document both a permitted happy path and a rejected adversarial path. Integratio
 
 A passing UI check or source-only checklist cannot establish secure production behavior. An observed negative test and reviewed trust boundary are essential.
 
+## Applied engineering walkthrough
+
+CSRF concerns unwanted authenticated actions caused by a browser automatically attaching credentials. SameSite reduces some cross-site cookie use, but it does not replace a complete request policy. Use framework-supported tokens or strict origin verification as appropriate, and never change state through a safe-method route.
+
+### Diagnose the concrete failure
+
+On the local API, compare a legitimate same-origin mutation with a synthetic untrusted-origin request. Assert the denied request changes no data. Test missing or mismatched anti-CSRF evidence and distinguish an unauthenticated request from a rejected authenticated mutation.
+
+### Independent exercise and evidence
+
+Document cookie attributes, accepted origins, mutation methods and token lifecycle. Record the actual browser and server results; a unit check of a header string does not prove full browser cookie behavior.
+
+**Qualification boundary:** These are practice instructions, not recorded audit results. Use synthetic data and authorized disposable infrastructure. Preserve existing laboratory contracts and publication status.
+
 ## Knowledge check
 
 1. Which input is attacker-controlled?

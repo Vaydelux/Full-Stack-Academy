@@ -16,6 +16,7 @@ const interactiveIds = [...idList[1].matchAll(/'([^']+)'/g)].map(m=>m[1]);
 const refSection = authored.split('export const AUTHORED_REFERENCES')[1]?.split('export function findAuthoredReference')[0];
 assert.ok(refSection, 'Could not locate authored references');
 const references = [...refSection.matchAll(/^\s*(?:id:\s*'([^']+)'|"id":\s*"([^"]+)")/gm)].map(m=>m[1] ?? m[2]);
+assert.equal(new Set(references).size,references.length,'Duplicate authored reference IDs');
 const labs = fs.readdirSync(path.join(root,'labs')).filter(slug=>fs.existsSync(path.join(root,'labs',slug,'lab.json')));
 const published = [...new Set([...interactiveIds,...mdxIds])];
 const completeModules = [...new Set(curriculum.lessons.map(l=>l.moduleId))].filter(

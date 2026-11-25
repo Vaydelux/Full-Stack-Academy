@@ -50,6 +50,20 @@ In the test notes, separate what the in-memory fixture genuinely observed from R
 
 The in-memory simulator is not BullMQ and does not survive process restarts.
 
+## Applied engineering walkthrough
+
+Receipt delivery is a workflow with committed, queued, processing and delivered outcomes. A successful enqueue is not a successful provider send. A temporary provider outage should leave durable work recoverable and avoid misrepresenting delivery status.
+
+### Diagnose the concrete failure
+
+Run the existing outbox tests and trace a synthetic receipt through failure, delay, retry and completion. Verify no completed receipt becomes pending again because of a stale claim. Keep provider calls simulated unless a disposable integration is configured.
+
+### Independent exercise and evidence
+
+Design an email dispatch dashboard showing queue age, attempts and confirmed delivery status. Record the recovery sequence and duplicate prevention evidence. Real provider acceptance remains independent.
+
+**Qualification boundary:** These are practice instructions, not recorded results. Preserve the existing lab and publication status; in-memory tests do not qualify live Redis or BullMQ behavior.
+
 ## Knowledge check
 
 1. What is authoritative in this scenario, and what state is derived or replayable?

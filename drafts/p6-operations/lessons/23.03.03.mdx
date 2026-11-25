@@ -44,6 +44,20 @@ node --test --test-name-pattern="23[.]03" examples/p6-operations/labs.test.mjs
 
 In-memory synthetic idempotency model; no broker, durable store, transactional outbox or exactly-once side-effect evidence.
 
+## Applied engineering walkthrough
+
+A transactional outbox stores the business change and event record in the same local database transaction. A relay later publishes committed events; marking publication and broker delivery can fail independently. Consumers must tolerate duplicate deliveries, and a rollback must leave neither committed order nor outbox.
+
+### Diagnose the concrete failure
+
+In a disposable database, plan a successful order/outbox transaction and an aborted one. Simulate relay interruption after publishing but before marking completion. Verify the intended retry preserves the same event identity.
+
+### Independent exercise and evidence
+
+Design an outbox claim, retry and cleanup contract with bounded recovery. Record database commit outcomes and external delivery evidence separately; the local consumer model does not prove atomic publication.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve the existing specification, model and unpublished status. Actual persistence, broker and provider qualification remain independent.
+
 ## Knowledge check
 
 1. Which invariant or operational measurement determines success?

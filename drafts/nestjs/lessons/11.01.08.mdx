@@ -80,7 +80,21 @@ A quick workaround would hide the immediate symptom, but it would leave the orig
 
 <Misconception claim="The endpoint returns status up when a required service is unavailable." correction="A health endpoint must reflect actual service readiness instead of returning a constant green response." />
 
-<KnowledgeCheck question="What should the reviewer verify for lab hello api?" choices={["The source contains a decorator, so the runtime must work.","The real Nest application exhibits the specified behavior and rejects the broken case.","TypeScript types alone authorize incoming requests.","A mocked substring search proves the HTTP contract."]} correctIndex={1} explanation="A health endpoint must reflect actual service readiness instead of returning a constant green response." misconception="The endpoint returns status up when a required service is unavailable." lessonId="11.01.08" />
+<KnowledgeCheck question="A process is running, but its required database is temporarily unavailable. What should the readiness endpoint report?" choices={["200 because the process exists.","404 because the health route is absent.","A full database exception and credentials.","503 until the required dependency is ready."]} correctIndex={3} explanation="Readiness must reflect ability to serve, not merely process existence." misconception="The endpoint returns status up when a required service is unavailable." lessonId="11.01.08" />
+
+## Applied engineering walkthrough
+
+Readiness answers whether the instance can serve intended traffic; liveness answers whether the process is alive. They should not be conflated: a temporary database outage may make a service unready without requiring a restart. The fixture exposes a manually controlled readiness provider, not a real dependency probe. Production readiness checks should be bounded, cheap and avoid leaking dependency details.
+
+### Diagnose the concrete failure
+
+Initialize the health module with readiness false and request its health endpoint: expect 503. Set the provider to ready and repeat: expect 200 with status up. Set it false again and verify 503 returns. Test through a booted app to prove the controller sees the same container-managed state as the test.
+
+### Independent exercise and evidence
+
+Sketch separate liveness and readiness endpoints for a task service with a database dependency. Define expected status codes for startup, dependency outage and recovery, and state which probe needs the dependency. Record the three-state HTTP sequence and close the test app.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Run the existing Nest architecture suite with real dependencies; retain the starter and solution source unchanged. Do not award course credit from source review alone.
 
 ## Bug Hunt: reproduce, diagnose and repair
 

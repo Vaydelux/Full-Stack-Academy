@@ -44,6 +44,20 @@ node --test --test-name-pattern="22[.]02" examples/p6-operations/labs.test.mjs
 
 Synthetic latency sample analysis only; actual CPU/heap profiles, Fastify comparison, query plans and HTTP behavior need real runtimes.
 
+## Applied engineering walkthrough
+
+Batching amortizes per-request overhead but changes failure, cancellation and resource limits. Authorize each resource operation separately even when requests share one envelope. Decide whether partial results are permitted and preserve correlation to each input.
+
+### Diagnose the concrete failure
+
+Build a synthetic batch with ten permitted reads and one foreign item. Assert each allowed result matches its input and the forbidden item returns the intended safe denial. Compare with individual requests using the same workload.
+
+### Independent exercise and evidence
+
+Design a bounded batch contract with maximum items, per-item status and timeout policy. Record response size, latency and authorization cases; do not infer atomicity unless explicitly implemented.
+
+**Evidence boundary:** These are practice instructions, not recorded benchmark results. Preserve the existing specification, model and unpublished status. Actual API and database measurements remain independent.
+
 ## Knowledge check
 
 1. Which invariant or operational measurement determines success?

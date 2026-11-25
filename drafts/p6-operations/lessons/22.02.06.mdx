@@ -44,6 +44,20 @@ node --test --test-name-pattern="22[.]02" examples/p6-operations/labs.test.mjs
 
 Synthetic latency sample analysis only; actual CPU/heap profiles, Fastify comparison, query plans and HTTP behavior need real runtimes.
 
+## Applied engineering walkthrough
+
+Compression reduces transferred bytes at the cost of encoding and decoding work. Benefits depend on payload size, entropy and client negotiation. Responses need accurate Content-Encoding and cache variation. Avoid indiscriminate compression of responses containing secrets mixed with attacker-controlled content.
+
+### Diagnose the concrete failure
+
+Benchmark identical synthetic public JSON with and without supported compression. Verify decompressed content matches and record actual transferred bytes, CPU and latency. Test unsupported encoding negotiation and small payloads.
+
+### Independent exercise and evidence
+
+Design a compression threshold and supported encoding policy based on observed workload. Record correctness, CPU tradeoff and safe cache headers rather than assuming a fixed percentage saving.
+
+**Evidence boundary:** These are practice instructions, not recorded benchmark results. Preserve the existing specification, model and unpublished status. Actual API and database measurements remain independent.
+
 ## Knowledge check
 
 1. Which invariant or operational measurement determines success?

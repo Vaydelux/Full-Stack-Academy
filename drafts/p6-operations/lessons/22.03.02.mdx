@@ -44,6 +44,20 @@ node --test --test-name-pattern="22[.]03" examples/p6-operations/labs.test.mjs
 
 Capacity arithmetic only; no actual CDN, cache cluster, balancing, cost quotes or scaling benchmark.
 
+## Applied engineering walkthrough
+
+Multiple cache tiers trade latency and origin load against freshness and memory. Each tier needs compatible key scope, expiry and invalidation. A process cache can retain stale data after Redis changes, and private representations must not enter shared public namespaces.
+
+### Diagnose the concrete failure
+
+Map browser, edge, process and Redis tiers for a synthetic catalog read. Simulate a miss at each tier and an authoritative update. Trace which tier supplies the response and which invalidations remain necessary.
+
+### Independent exercise and evidence
+
+Design a tier-by-tier freshness contract with tenant and representation scope, fallback load and observability. Record returned versions and origin calls for matched scenarios.
+
+**Evidence boundary:** These are practice instructions, not recorded capacity or benchmark results. Preserve the existing specification, model and unpublished status. Actual deployment measurements remain independent.
+
 ## Knowledge check
 
 1. Which invariant or operational measurement determines success?

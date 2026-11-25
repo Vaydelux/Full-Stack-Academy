@@ -44,6 +44,20 @@ node --test --test-name-pattern="23[.]02" examples/p6-operations/labs.test.mjs
 
 Small synthetic dependency graph only; real module enforcement, transactions and feature flag runtime not executed.
 
+## Applied engineering walkthrough
+
+An invariant may require related local writes to commit atomically. A single database transaction can protect inventory reservation and order creation if both participate in the same transaction context. External payment calls cannot be rolled back by the database, so their uncertainty requires separate workflow design.
+
+### Diagnose the concrete failure
+
+In a disposable database, plan a successful reservation and order insert followed by a forced failure case. Verify both writes commit or both roll back using a fresh connection. Inspect affected-row counts and the stock invariant.
+
+### Independent exercise and evidence
+
+Design transaction ownership for cross-module operations and an external payment workflow with durable identity. Record actual database outcomes independently of the architectural model.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve the existing specification, model and unpublished status. Actual module, persistence and runtime qualification remain independent.
+
 ## Knowledge check
 
 1. Which invariant or operational measurement determines success?

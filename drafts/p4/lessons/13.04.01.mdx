@@ -75,6 +75,20 @@ A successful SQL connection does not inherit per-user Supabase JWT/RLS context. 
 
 Explicitly choose how identity is propagated between Next.js, NestJS, Prisma, and Supabase. When a privileged server role bypasses RLS, the NestJS service must check permissions and the database role should still be restricted. Prefer verified membership from trusted server data over user-editable metadata or query parameters.
 
+## Applied persistence walkthrough
+
+A direct PostgreSQL connection and the Supabase Data API are different trust paths. The adapter uses database credentials, not a user's API JWT. server-only helps prevent accidental browser imports in a supported Next.js build, but does not make a privileged database role safe. Connection settings and access rights must match the intended server operation.
+
+### Diagnose the concrete failure
+
+Inspect the local composition root and confirm a missing pool URL fails before construction. Connect only to an approved disposable project or local database, inspect current_user and current_database, and run an authorized read. Build the application and check that no credentials or generated server-only module enter a browser bundle.
+
+### Independent exercise and evidence
+
+Design two access paths for a task app: user-scoped Data API and server-side Prisma with restricted database role. Record which path enforces RLS, which has independent authorization, and the test evidence required for each.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Use pinned tooling and a disposable local or explicitly approved test environment. Preserve the starter and solution; source review does not qualify real database roles or authorization.
+
 ## Bug Hunt
 
 1. Predict who can exploit this bug: An SQL database URL placed under NEXT_PUBLIC exposes database credentials in the web bundle and allows direct connections outside the intended server perimeter.

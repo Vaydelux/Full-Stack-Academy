@@ -75,6 +75,20 @@ Without a tenant and status predicate, even correctly sorted rows can disclose u
 
 For production systems, distinguish this basic query exercise from actual role privileges, row-level security, constraints across tenant boundaries, input validation, indexes, transaction isolation, and migration safety. Those topics appear in later canonical PostgreSQL and Supabase modules. The teaching fixture deliberately uses static tenant IDs and does not implement real authentication.
 
+## Applied SQL walkthrough
+
+SQL filtering and ordering are distinct operations: WHERE limits the eligible rows and ORDER BY defines their presentation order. The supplied task fixture contains two alpha todo tasks, IDs 101 and 104. Task 104 has an unknown estimate. Sorting by an identifier establishes a unique tie-breaker; sorting by a nonunique value alone leaves ties unspecified. For nullable sort fields, specify NULLS FIRST or NULLS LAST when the contract requires it.
+
+### Predict and diagnose the result
+
+Predict Build followed by Draft when ordering the two eligible tasks by ID. Inspect the estimate values: 5 and NULL. Compare the starter against the exact expected row set, not just a row count. Apply ORDER BY id to the outermost SELECT when consuming the view; an internal ordering is not a universal ordering guarantee for a later query.
+
+### Independent exercise and evidence
+
+Design a page sorted by estimate ascending, unknown estimates last, then ID. Predict the first item and describe how a keyset cursor must encode the same ordering contract. Record expected identifiers and excluded beta task 103. Bind tenant and status parameters in a real API.
+
+**Qualification boundary:** Predicted results are not executed PostgreSQL evidence. Use the existing disposable database acceptance gate and preserve the original starter and solution. No publication credit is granted by this walkthrough.
+
 ## Bug Hunt
 
 1. **Reproduce:** The starter sorts all tasks, including a different tenant and completed work, instead of finding alpha's open tasks.

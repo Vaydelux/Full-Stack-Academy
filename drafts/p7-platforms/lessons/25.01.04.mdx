@@ -44,6 +44,20 @@ node --test --test-name-pattern="25[.]01" examples/p7-platforms/labs.test.mjs
 
 In-memory count/deduplication model; no warehouse, materialized-view freshness, ClickHouse or dbt runtime qualification.
 
+## Applied engineering walkthrough
+
+A warehouse pipeline separates raw ingestion, standardized staging and curated business metrics. Each layer needs documented ownership, grain, lineage and incremental processing rules. Immutable raw data still needs a reviewed retention policy; do not assume indefinite storage is acceptable.
+
+### Diagnose the concrete failure
+
+Create synthetic raw order events containing duplicates, late arrivals and malformed amounts. Define a staging transformation and show how curated totals are derived without counting the same order twice.
+
+### Independent exercise and evidence
+
+Draw a lineage graph and identify stable source keys, rejected-row handling and a rebuild path. Compare a full rebuild to incremental replay against the same fixed expected totals.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify actual database, analytics tools and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

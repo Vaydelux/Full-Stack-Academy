@@ -44,6 +44,20 @@ node --test --test-name-pattern="21[.]03" examples/p6-operations/labs.test.mjs
 
 Synthetic incident decisions only; no real emergency response, restored backups, alerting or production capacity measurements.
 
+## Applied engineering walkthrough
+
+Capacity planning combines demand forecasts with measured resource limits and operational headroom. CPU, connection pools, memory, queue throughput and upstream limits may saturate at different rates. A forecast is a hypothesis bounded by its assumptions, not a guarantee.
+
+### Diagnose the concrete failure
+
+Use the existing capacity model for low and high hypothetical demand and compare against a separate database connection budget. Inspect whether an application-feasible scenario still exceeds the database limit.
+
+### Independent exercise and evidence
+
+Design a capacity worksheet with measured sustainable rate, peak assumptions and dependency constraints. Record uncertainty and identify the next controlled measurement.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve the existing specification, model and unpublished status. Actual incident and recovery qualification remain independent.
+
 ## Knowledge check
 
 1. Which invariant or operational measurement determines success?

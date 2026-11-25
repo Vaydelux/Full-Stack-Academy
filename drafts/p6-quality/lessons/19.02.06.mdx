@@ -44,6 +44,20 @@ node --test --test-name-pattern="19[.]02" examples/p6-quality/labs.test.mjs
 
 Plain JavaScript UI state model; installed React/Vitest/Testing Library/MSW and real browsers require separate tests.
 
+## Applied engineering walkthrough
+
+Visual regression compares rendered appearance against a reviewed baseline. Control viewport, fonts, data, animations and device settings to reduce unrelated differences. A screenshot can detect clipping but does not establish keyboard operation or accessible names.
+
+### Diagnose the concrete failure
+
+Capture the same synthetic card at narrow and wide widths in a deterministic browser fixture. Introduce deliberate clipping in a disposable copy and inspect the difference before restoring it. Review any new baseline rather than accepting changes automatically.
+
+### Independent exercise and evidence
+
+Define a viewport and theme matrix, dynamic-content masking policy and reviewer criteria. Record image differences and pair visual tests with behavior and accessibility tests.
+
+**Evidence boundary:** These are practice instructions, not recorded test results. Preserve the existing model, specification and draft flag; external runtime qualification remains independent.
+
 ## Knowledge check
 
 1. Which public behavior or invariant is being protected?

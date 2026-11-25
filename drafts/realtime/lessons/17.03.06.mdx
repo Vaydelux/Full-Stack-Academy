@@ -50,6 +50,20 @@ The tests exercise local Node state or loopback HTTP behavior. Document separate
 
 Automatic overwrites may be destructive even if the API returns HTTP 200.
 
+## Applied engineering walkthrough
+
+Conflict resolution must make the user's local intent and authoritative remote state distinguishable. An automatic retry of an outdated absolute value may discard another user's work. Offer an explicit compare, discard or merge decision rather than silently rebasing arbitrary text.
+
+### Diagnose the concrete failure
+
+Queue a version-one draft, update the server to version two and attempt synchronization. Verify the conflicting draft remains available and no silent overwrite occurs. Resolve against the current version explicitly and check the final revision.
+
+### Independent exercise and evidence
+
+Design an accessible conflict dialog with labels for local and remote changes and a clear confirmation step. Record state transitions and retained drafts; qualify keyboard and screen-reader behavior separately.
+
+**Qualification boundary:** These are practice instructions, not recorded results. Preserve the original laboratory and publication status. Local simulations do not qualify actual browser or distributed provider behavior.
+
 ## Knowledge check
 
 1. Which actor, resource, version or event cursor is authoritative in this scenario?

@@ -85,7 +85,21 @@ The lesson's instructor snippet demonstrates the mechanism but is not a deployab
 
 <Misconception claim="The testing module resolves the live mailer and would send real emails." correction="Provider overrides let integration-style tests exercise real Nest DI without contacting external systems." />
 
-<KnowledgeCheck question="What should a release reviewer demand for testing modules and overrides?" choices={["A passing source-text search is sufficient.","The actual Nest runtime shows the specified positive case and a meaningful denial or failure case.","A project compiles, so tenancy is proven.","A local demo endpoint may safely be exposed publicly without auth."]} correctIndex={1} explanation="Provider overrides let integration-style tests exercise real Nest DI without contacting external systems." misconception="The testing module resolves the live mailer and would send real emails." lessonId="11.04.05" />
+<KnowledgeCheck question="How should a Nest test verify that Notifications delegates to a mailer without sending actual mail?" choices={["Override the Mailer provider before compiling TestingModule.","Send an actual email to every test recipient.","Instantiate Notifications with an unconfigured live SDK.","Assert only that the source includes Injectable."]} correctIndex={0} explanation="Provider overrides preserve container wiring while replacing the external dependency." misconception="The testing module resolves the live mailer and would send real emails." lessonId="11.04.05" />
+
+## Applied engineering walkthrough
+
+TestingModule exercises real Nest dependency injection without needing a live external service. Override the mailer before compile, then resolve Notifications through the container. A fake records calls or throws to model failure. This confirms wiring and delegation, not delivery by a real email provider. For end-to-end delivery use a safe sandbox and separate explicit qualification.
+
+### Diagnose the concrete failure
+
+Provide a fake mailer that captures its recipient, invoke notify and assert one matching call. Then configure the fake to reject and verify notify propagates the error rather than claiming success. Close the testing module. The default mailer in the teaching fixture is inert; do not treat this as proof of real delivery.
+
+### Independent exercise and evidence
+
+Design a fake payment or notification adapter with success, timeout and permanent failure outcomes. Choose observable assertions for each. Record call counts and captured synthetic data, and ensure no network requests or actual credentials are used.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Container, HTTP, socket and operational tests require the actual installed runtime. Keep the existing starter and solution unchanged; do not award course credit from source review alone.
 
 ## Bug Hunt: reproduce, diagnose and repair
 

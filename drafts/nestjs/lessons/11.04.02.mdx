@@ -93,7 +93,21 @@ The lesson's instructor snippet demonstrates the mechanism but is not a deployab
 
 <Misconception claim="The module injects an unresolved Promise in place of a usable endpoint configuration." correction="Dynamic modules should resolve and validate async configuration before exposing clients to consumers." />
 
-<KnowledgeCheck question="What should a release reviewer demand for async module configuration?" choices={["A passing source-text search is sufficient.","The actual Nest runtime shows the specified positive case and a meaningful denial or failure case.","A project compiles, so tenancy is proven.","A local demo endpoint may safely be exposed publicly without auth."]} correctIndex={1} explanation="Dynamic modules should resolve and validate async configuration before exposing clients to consumers." misconception="The module injects an unresolved Promise in place of a usable endpoint configuration." lessonId="11.04.02" />
+<KnowledgeCheck question="A consumer receives a Promise where it expects a ready configuration value. Which provider design resolves this correctly?" choices={["Register an asynchronous useFactory that Nest awaits.","Cast the Promise to string.","Ignore configuration until the first request.","Expose every environment variable to consumers."]} correctIndex={0} explanation="Nest resolves the asynchronous factory before injecting its result." misconception="The module injects an unresolved Promise in place of a usable endpoint configuration." lessonId="11.04.02" />
+
+## Applied engineering walkthrough
+
+A dynamic module returns module metadata and can register providers based on configuration. Nest awaits an asynchronous factory before injecting its resolved result into dependents. The fixture validates URL syntax and HTTPS scheme; that is not an outbound request allowlist or SSRF defense. A production client must validate destination ownership, credentials, redirects and network policy separately.
+
+### Diagnose the concrete failure
+
+Compile the module with a valid HTTPS endpoint and inspect the injected API_URL value. Supply malformed input and HTTP instead, expecting configuration failure. Isolate environment changes across tests and restore previous values. The starter's unresolved promise must be diagnosed at the container boundary, not by checking only a TypeScript return type.
+
+### Independent exercise and evidence
+
+Design a dynamic module configured by an injected settings service rather than process.env directly. Add acceptance cases for missing and invalid settings; explain why dependency startup must fail before serving requests. Record the resolved provider type and redacted configuration outcome.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Container, HTTP, socket and operational tests require the actual installed runtime. Keep the existing starter and solution unchanged; do not award course credit from source review alone.
 
 ## Bug Hunt: reproduce, diagnose and repair
 

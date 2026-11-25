@@ -78,7 +78,21 @@ If the UI shows a generic error, classify the failure at the nearest authoritati
 
 <Misconception claim="The HTTP handler never runs because middleware forgets to call next." correction="Middleware has to call next exactly once after attaching safe request data." />
 
-<KnowledgeCheck question="Which verification proves middleware execution?" choices={["A decorator's name exists in source.","A real Nest request reaches the correct stage and demonstrates the specified positive and negative outcomes.","An interface type was exported.","The UI hides the endpoint, so it must be protected."]} correctIndex={1} explanation="Middleware has to call next exactly once after attaching safe request data." misconception="The HTTP handler never runs because middleware forgets to call next." lessonId="11.02.01" />
+<KnowledgeCheck question="Middleware attaches an ID but the request times out and the handler never runs. Which missing operation is most likely?" choices={["Call the controller directly from middleware.","Call next once after preparing the request.","Move the correlation ID into a singleton global.","Return a successful status without forwarding every request."]} correctIndex={1} explanation="Middleware must forward the request unless it intentionally completes the response." misconception="The HTTP handler never runs because middleware forgets to call next." lessonId="11.02.01" />
+
+## Applied engineering walkthrough
+
+Middleware runs early, before guards and pipes. It is appropriate for correlation metadata and cross-cutting request preparation, not for deciding object-level access. Call next exactly once unless ending the response deliberately. The fixture generates its own random UUID; a caller-supplied correlation header may be useful for tracing but is not authentication, and should be bounded and sanitized before logging.
+
+### Diagnose the concrete failure
+
+Send two requests and trace generated IDs separately. In the broken starter, next is not called, so the downstream handler never executes. A real HTTP test needs a short client deadline rather than waiting forever. The existing request-pipeline suite invokes the middleware class directly; passing that check alone does not prove the HTTP adapter wiring.
+
+### Independent exercise and evidence
+
+Add a safe request-start marker to the middleware in a disposable copy, omitting headers and payloads. Compare successful forwarding, deliberate response termination and an accidental missing next call. Record the marker count, unique IDs and whether the handler ran.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. The existing request-pipeline checks include direct class and pure-function tests; real HTTP and adapter acceptance remain distinct release requirements. Do not award course credit from source review alone.
 
 ## Bug Hunt: reproduce, diagnose and repair
 

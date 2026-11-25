@@ -84,6 +84,20 @@ JOIN and GROUP BY can produce plausible counts while still double-counting rows,
 
 For production systems, distinguish this basic query exercise from actual role privileges, row-level security, constraints across tenant boundaries, input validation, indexes, transaction isolation, and migration safety. Those topics appear in later canonical PostgreSQL and Supabase modules. The teaching fixture deliberately uses static tenant IDs and does not implement real authentication.
 
+## Applied SQL walkthrough
+
+A useful reporting query combines several contracts: the population is active alpha users, relationships preserve users without matching projects or tasks, and the filtered aggregate counts only todo children. Filtering inside COUNT avoids eliminating rows that have no open work. The supplied fixture yields Ana with one open task and Bo with one; disabled Dee and beta user Cy are excluded.
+
+### Predict and diagnose the result
+
+Trace each user's projects and their tasks on paper, including Ana's empty project. Compare predicted counts against the instructor view. Verify excluded users explicitly and check that each included user appears once. In a disposable copy add an active alpha user without projects and expect a zero count, not a missing row.
+
+### Independent exercise and evidence
+
+Create a reporting matrix containing an active owner with several tasks, an active user without projects, a disabled user and another tenant. Predict every row and open-task count before running SQL. Record both inclusion and exclusion assertions; do not interpret a plausible dashboard total as evidence of correctness.
+
+**Qualification boundary:** Predicted results are not executed PostgreSQL evidence. Use the existing disposable database acceptance gate and preserve the original starter and solution. No publication credit is granted by this walkthrough.
+
 ## Bug Hunt
 
 1. **Reproduce:** The starter counts finished work and includes disabled users or other tenants in the owner report.

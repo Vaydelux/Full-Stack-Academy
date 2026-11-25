@@ -44,6 +44,20 @@ node --test --test-name-pattern="23[.]04" examples/p6-operations/labs.test.mjs
 
 Retry decision teaching model only; no network partition, broker, service discovery, replication or multi-region benchmark.
 
+## Applied engineering walkthrough
+
+Service extraction is justified by concrete needs such as independent scaling, isolation, ownership or deployment cadence. It adds network contracts, observability, distributed failures and operational overhead. Optimizing a module or extracting a worker can solve a bottleneck at lower complexity.
+
+### Diagnose the concrete failure
+
+Compare a synthetic modular monolith with a separately scaled worker and an extracted service. Identify the expensive workload and which change addresses it without duplicating business ownership. Document the new failure boundaries for each option.
+
+### Independent exercise and evidence
+
+Write an ADR with measured extraction triggers, migration stages and compatibility risks. Record which measurements are available and which remain hypotheses; avoid premature decomposition.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve the existing specification, model and unpublished status. Actual distributed runtime qualification remains independent.
+
 ## Knowledge check
 
 1. Which invariant or operational measurement determines success?

@@ -77,7 +77,7 @@ export function CreateTask(){
 
 <Misconception claim="The starter sends a POST without invalidating task-list queries and has no idempotency contract." correction="Queries describe remote reads; mutations perform writes. Invalidate the relevant query namespace when writes succeed, then let refetch reconcile client state with server truth." />
 
-<KnowledgeCheck question="What is the reliable approach to mutations and invalidation?" choices={["Assume cached browser state equals server truth forever.","Use TanStack Query resource identity and the server's HTTP contract.","Ignore failure responses to keep the UI fast.","Disable all validation once the code typechecks."]} correctIndex={1} explanation="Queries describe remote reads; mutations perform writes. Invalidate the relevant query namespace when writes succeed, then let refetch reconcile client state with server truth." misconception="The starter sends a POST without invalidating task-list queries and has no idempotency contract." lessonId="09.03.03" />
+<KnowledgeCheck question="Creating a task changes both todo and all-task views. What should happen after the server confirms?" choices={["Invalidate or update every affected query view using the known key structure.","Only change the form field.","Disable all future reads.","Invalidate unrelated user queries."]} correctIndex={0} explanation="Mutation confirmation and read-cache freshness are distinct; update or invalidate affected views deliberately." misconception="The starter sends a POST without invalidating task-list queries and has no idempotency contract." lessonId="09.03.03" />
 
 ## Bug Hunt: reproduce, diagnose and repair
 
@@ -101,6 +101,12 @@ export function CreateTask(){
 **Independent exercise:** Create one task and observe a single POST followed by refreshed GET data. Repeat with a 422 and assert that no success state or success-only cache invalidation occurs. Toggle between filtered lists to verify the newly created record appears only where it belongs.
 
 **Idempotency rule:** For retries of the same logical mutation, preserve the payload and idempotency key. Generating a new key can double-create resources after response loss; automatic retries must be bounded and conditional on the failure type.
+
+## Applied debugging clinic
+
+Create a task while two list filters have cached results. Identify affected keys, await the mutation and observe subsequent GETs. A 422 response should keep the draft and must not produce a confirmed task. An unrelated profile cache should not be invalidated simply because a task changed.
+
+**Evidence to record:** query identity, request outcome, cache state before and after the action, and the recovery decision. Separate observed network behavior from what the UI displays. Re-run the original failing interaction after the repair.
 
 ## Guided local lab
 

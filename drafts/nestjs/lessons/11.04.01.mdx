@@ -77,7 +77,21 @@ The lesson's instructor snippet demonstrates the mechanism but is not a deployab
 
 <Misconception claim="A service creates an adapter directly and cannot be replaced inside TestingModule." correction="A stable injection token separates the contract from the concrete adapter." />
 
-<KnowledgeCheck question="What should a release reviewer demand for custom providers and tokens?" choices={["A passing source-text search is sufficient.","The actual Nest runtime shows the specified positive case and a meaningful denial or failure case.","A project compiles, so tenancy is proven.","A local demo endpoint may safely be exposed publicly without auth."]} correctIndex={1} explanation="A stable injection token separates the contract from the concrete adapter." misconception="A service creates an adapter directly and cannot be replaced inside TestingModule." lessonId="11.04.01" />
+<KnowledgeCheck question="Two symbols have the same description but were created separately. Why does the injection registration fail?" choices={["Symbols must contain a database URL.","The token identities differ even though their descriptions match.","All custom providers require request scope.","Nest can inject only primitive strings."]} correctIndex={1} explanation="The provider and consumer must use the exact same runtime token." misconception="A service creates an adapter directly and cannot be replaced inside TestingModule." lessonId="11.04.01" />
+
+## Applied engineering walkthrough
+
+Custom providers map a runtime token to a class, existing provider, value or factory. Use a shared symbol when a TypeScript interface cannot serve as a runtime identifier. useClass asks Nest to construct an implementation; useValue supplies an existing object; useExisting aliases an existing provider instead of creating another instance. The fixture's reader only requires the small read port, not a storage SDK.
+
+### Diagnose the concrete failure
+
+Register STORAGE with a fake adapter that returns a distinctive value. Compile a real TestingModule and resolve Reader. Replace the provider in a second container and verify the change. If the token is missing or a new symbol with the same description is used, diagnose the registration rather than altering the reader.
+
+### Independent exercise and evidence
+
+Design a storage provider registration using useFactory for configuration-dependent construction. Describe how to replace it with useValue in a test without accessing real credentials. Record the selected token and the output from each configured implementation.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Container, HTTP, socket and operational tests require the actual installed runtime. Keep the existing starter and solution unchanged; do not award course credit from source review alone.
 
 ## Bug Hunt: reproduce, diagnose and repair
 

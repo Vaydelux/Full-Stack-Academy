@@ -52,6 +52,20 @@ The corresponding module exercises **inspectUpload, issueUploadToken, verifyUplo
 
 For a production implementation, document the secret-owner or principal, durability plan, error and recovery policy, rate/resource bounds, privacy guarantees, observability without sensitive payloads, and the credential/version-rotation procedure.
 
+## Applied engineering walkthrough
+
+Image processing consumes decoded pixel memory, not merely compressed file size. Validate dimensions and total pixels before allocating expensive buffers where the decoder permits. Isolate processing, restrict formats and strip unnecessary metadata from public derivatives.
+
+### Diagnose the concrete failure
+
+Specify a synthetic image corpus with normal dimensions, an excessive pixel count and invalid encoding. The existing signature fixture cannot establish decoder limits. Use a real sandboxed decoder in a disposable integration and verify rejected samples produce no derivative.
+
+### Independent exercise and evidence
+
+Design a thumbnail worker with deterministic resize rules, time and memory ceilings and explicit metadata policy. Record source/output dimensions, resource measurements and decoder version when tested.
+
+**Qualification boundary:** These are practice instructions, not recorded results. Preserve existing specifications and laboratory contracts. Qualify actual external services separately using authorized disposable infrastructure.
+
 ## Knowledge check
 
 1. Which authenticated actor, external sender, or tenant owns the data in this scenario?

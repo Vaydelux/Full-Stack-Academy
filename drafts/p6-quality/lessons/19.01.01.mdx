@@ -44,6 +44,20 @@ node --test --test-name-pattern="19[.]01" examples/p6-quality/labs.test.mjs
 
 Pure inventory model; no real database or browser is tested.
 
+## Applied engineering walkthrough
+
+Choose the cheapest test boundary that can actually falsify the invariant. A pure reservation function can establish arithmetic and rejection behavior, but only an actual concurrent database transaction can establish that two callers cannot oversell. A browser checkout test adds integration evidence at the user boundary, not exhaustive concurrency coverage.
+
+### Diagnose the concrete failure
+
+Run the reservation model with stock five and quantity three, then request six. Assert both the accepted remaining stock and the rejected outcome. Plan two independent database sessions competing for the last units, and a browser test that checks the user-visible confirmation.
+
+### Independent exercise and evidence
+
+Produce a three-row test matrix with invariant, boundary, fixture, assertion and unresolved dependency. Record actual model results separately from the proposed database and browser tests.
+
+**Evidence boundary:** These are practice instructions, not recorded test results. Preserve the existing model, specification and draft flag; external runtime qualification remains independent.
+
 ## Knowledge check
 
 1. Which public behavior or invariant is being protected?

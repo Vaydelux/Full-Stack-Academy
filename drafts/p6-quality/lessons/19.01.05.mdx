@@ -44,6 +44,20 @@ node --test --test-name-pattern="19[.]01" examples/p6-quality/labs.test.mjs
 
 Pure inventory model; no real database or browser is tested.
 
+## Applied engineering walkthrough
+
+Mock external effects at a deliberate boundary, not every internal function. A recorder can establish whether the service requested a send and with what safe payload, but does not prove email delivery or transaction atomicity. Failure paths should verify no inappropriate side effect occurs.
+
+### Diagnose the concrete failure
+
+Use an injected recorder and attempt a successful reservation and an oversell. Check the success calls the recorder once and the rejection never calls it. Simulate recorder failure and decide whether inventory has already committed.
+
+### Independent exercise and evidence
+
+Design a transactional outbox boundary for reservation confirmation. Record model call counts and list the database/provider tests required to establish durable delivery.
+
+**Evidence boundary:** These are practice instructions, not recorded test results. Preserve the existing model, specification and draft flag; external runtime qualification remains independent.
+
 ## Knowledge check
 
 1. Which public behavior or invariant is being protected?

@@ -42,6 +42,20 @@ Document both a permitted happy path and a rejected adversarial path. Integratio
 
 A passing UI check or source-only checklist cannot establish secure production behavior. An observed negative test and reviewed trust boundary are essential.
 
+## Applied engineering walkthrough
+
+The defect is missing object-level authorization: a valid session does not establish permission to a specific object. The repair belongs in the server's resource lookup and mutation predicates, not randomized IDs or hidden UI controls.
+
+### Diagnose the concrete failure
+
+Within the Academy fixture, test an allowed document read and edit and a known foreign document read and edit. Assert no private fields are returned and no forbidden state changes. Verify the authorized action still succeeds.
+
+### Independent exercise and evidence
+
+Write a regression matrix for read, update, delete and signed-link issuance. Record exact allowed and forbidden resource IDs and the enforcing policy. Review before claiming complete API security.
+
+**Qualification boundary:** These are practice instructions, not recorded audit results. Use synthetic data and authorized disposable infrastructure. Preserve existing laboratory contracts and publication status.
+
 ## Knowledge check
 
 1. Which input is attacker-controlled?

@@ -70,6 +70,20 @@ SELECT from pg_roles is read-only metadata inspection, not a privilege grant or 
 
 Practice describing a failure in terms of its blast radius, detection signal and recovery path. What would happen if the database were unavailable during a migration, WAL archives were missing, a pooled connection lost session state, or an operator accidentally targeted production? Identify the prerequisite that would prevent or contain each failure.
 
+## Applied SQL walkthrough
+
+Least privilege grants each runtime identity only the operations it needs. A login role need not own tables, create databases or create other roles. Role flags alone are insufficient: inherited memberships, object grants, schema USAGE and row policies also determine effective access. Use a separate migration identity and never give a routine API unrestricted administrative permissions.
+
+### Predict and diagnose the result
+
+Inspect the current role flags using the provided SELECT. In an isolated database, verify actual grants and run a positive test for permitted table operations and a negative test for a forbidden object or administrative operation. Record the effective role and insufficient_privilege SQLSTATE 42501 when appropriate; a superuser test cannot demonstrate ordinary runtime denial.
+
+### Independent exercise and evidence
+
+Design runtime, migration and read-only reporting roles with a permission matrix covering schema, table, sequence and administrative actions. Add a negative cross-schema read and a positive authorized write to the test plan. Record actual grants and failures without exposing credentials or modifying production roles.
+
+**Qualification boundary:** These are operational practice instructions, not a completed recovery or security audit. Use only explicitly authorized disposable infrastructure. Preserve the existing starter, solution and acceptance contract.
+
 ## Bug Hunt
 
 1. State the specific unsafe assumption: The starter prints a role name without checking whether the login is a superuser or can create roles/databases.

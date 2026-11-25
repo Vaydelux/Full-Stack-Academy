@@ -82,6 +82,20 @@ Realtime policies are evaluated for channel joining and refreshed under certain 
 
 Private buckets need specific Storage policies, server-controlled paths and explicit expiration/cleanup rules. Realtime private channels require policies on realtime.messages for permitted operations; a client-specified filter alone is not authorization. Persistent business state remains in PostgreSQL, not in Presence or Broadcast payloads.
 
+## Applied persistence walkthrough
+
+Realtime private channel authorization uses policies on realtime.messages for the relevant extension and operation. A private topic is not secret merely because it contains a tenant ID. The sample extracts the second colon-delimited segment and checks membership; a production policy should validate the entire topic format to avoid unintended aliases. The read policy does not grant send permission.
+
+### Diagnose the concrete failure
+
+Join an intended private topic as a member and try the same topic as a nonmember. Test malformed and alternate-prefix topic names and inspect whether the policy permits more than intended. Test receiving and sending independently with actual connected clients. Confirm the membership relation has suitable grants and protection.
+
+### Independent exercise and evidence
+
+Design an exact topic namespace for tenant events and separate read/send permissions. Include membership revocation and reauthorization behavior in the test plan. Record allowed and denied joins and actual event delivery, not token contents.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Use isolated test identities, storage and channels. Preserve the existing starter and solution; source review cannot qualify live upload, webhook or Realtime security.
+
 ## Bug Hunt
 
 1. Predict the attack or failure: The starter's read policy allows any signed-in user to receive broadcasts from any other tenant's private channel.

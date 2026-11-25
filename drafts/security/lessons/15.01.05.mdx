@@ -43,6 +43,20 @@ Your acceptance criteria must include a positive authorized case and a negative 
 
 Safe default behavior must be enforced on the server, not only by hiding UI controls.
 
+## Applied engineering walkthrough
+
+Fail-closed defaults mean missing configuration does not expand permissions. An absent sharing policy is different from an explicit public policy. A provisioning workflow may create resources before all policy rows exist, so private defaults must hold during incomplete or failed setup. Administrative access should have a separate explicit authorization path.
+
+### Diagnose the concrete failure
+
+Seed a newly created project with no sharing policy, a private project and an explicitly shared project. Verify only the intended actor can read the first two, and check the public case against the documented sharing rule. Simulate failed provisioning and verify the resource remains private.
+
+### Independent exercise and evidence
+
+Define a sharing state machine with private, invited and public states. Specify who can transition each state and how revocation works. Record allowed and denied reads before and after transitions, including missing or malformed policy records.
+
+**Qualification boundary:** These are practice instructions, not recorded audit results. Use synthetic data and authorized disposable infrastructure. Preserve existing laboratory contracts and publication status.
+
 ## Knowledge check
 
 1. Which input is controlled by the attacker in this scenario?

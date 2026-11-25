@@ -73,6 +73,20 @@ COALESCE can be useful for display, but replacing every NULL with a fake sentine
 
 For production systems, distinguish this basic query exercise from actual role privileges, row-level security, constraints across tenant boundaries, input validation, indexes, transaction isolation, and migration safety. Those topics appear in later canonical PostgreSQL and Supabase modules. The teaching fixture deliberately uses static tenant IDs and does not implement real authentication.
 
+## Applied SQL walkthrough
+
+SQL has three truth values: TRUE, FALSE and UNKNOWN. Comparing a value with NULL using ordinary equality yields UNKNOWN; WHERE retains only TRUE. IS NULL explicitly identifies absent values. In the supplied fixture, alpha tasks 101 and 104 have no due date, while beta task 103 must remain excluded. An empty string is not the same thing as a missing date.
+
+### Predict and diagnose the result
+
+Predict the result of due_on = NULL, due_on IS NULL and due_on IS NOT NULL separately while retaining the tenant predicate. Verify that ordinary equality selects no rows, the null predicate selects two, and the non-null predicate selects the other three alpha tasks. Test an actual date comparison separately.
+
+### Independent exercise and evidence
+
+Design an overdue report that excludes tasks without a due date, plus a separate unscheduled-task count. Choose an explicit reporting date rather than relying on today's clock. Explain why replacing NULL with an arbitrary old date can misclassify tasks. Record exact task identifiers and expected counts.
+
+**Qualification boundary:** Predicted results are not executed PostgreSQL evidence. Use the existing disposable database acceptance gate and preserve the original starter and solution. No publication credit is granted by this walkthrough.
+
 ## Bug Hunt
 
 1. **Reproduce:** The starter checks due_on = NULL, which selects no overdue-unscheduled rows instead of matching NULL dates.

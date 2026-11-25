@@ -73,6 +73,20 @@ A Prisma adapter connection may use a privileged database role and bypass Supaba
 
 A production-ready persistence boundary has to address error mapping, least-privileged database credentials, transaction/connection lifecycle, tenant authorization and request cancellation. Whenever schema changes are involved, review migration SQL and compatibility with the previous app version. Never expose database credentials in a `NEXT_PUBLIC_` variable or include them in a public web bundle.
 
+## Applied persistence walkthrough
+
+Prisma ORM 7's PostgreSQL client uses a driver adapter in this fixture. The adapter receives the server-only database URL and delegates connection behavior to the underlying driver. Pool configuration, TLS, runtime lifetime and connection limits need independent review. Constructing a new client per request can multiply pools; reuse a suitably scoped client rather than relying on type safety for resource ownership.
+
+### Diagnose the concrete failure
+
+Confirm matching pinned Prisma 7 packages and generated code, then open a read-only connection against a disposable database role. Exercise missing configuration and an invalid target separately. Close the client after the test, check connection counts, and never print the URL in failure output.
+
+### Independent exercise and evidence
+
+Plan the lifetime of a client in a long-running Nest service and in a serverless invocation. Describe how process count affects pool size, and record actual connection and timeout behavior before choosing defaults.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Use the pinned Prisma 7 toolchain and disposable PostgreSQL database. Preserve the starter and solution; source review does not qualify generated code or authorization.
+
 ## Bug Hunt
 
 1. Observe the unsafe starter: Constructing PrismaClient without the required driver adapter is not a valid Prisma ORM v7 PostgreSQL integration.

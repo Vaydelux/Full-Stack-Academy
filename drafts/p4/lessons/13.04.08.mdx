@@ -83,6 +83,20 @@ The example implements tenant-level access only. Add per-document ACLs when tena
 
 Explicitly choose how identity is propagated between Next.js, NestJS, Prisma, and Supabase. When a privileged server role bypasses RLS, the NestJS service must check permissions and the database role should still be restricted. Prefer verified membership from trusted server data over user-editable metadata or query parameters.
 
+## Applied persistence walkthrough
+
+The repository checks membership then fetches a tenant-scoped document with public projection. A verified actor is a prerequisite, not a public request object. The two queries can race with membership revocation, so sensitive operations may require an atomic policy or transaction-level authorization design. The snippet is not a complete authentication or revocation guarantee.
+
+### Diagnose the concrete failure
+
+Use two actual test tenants and a known document in each. Verify membership absence produces a denial, a permitted document returns only public fields, and a cross-tenant document returns null. Add a membership-revocation test between lookup and read in a disposable environment, and document the remaining consistency requirement.
+
+### Independent exercise and evidence
+
+Design an authorization boundary that couples the membership predicate to the resource read, or uses a correctly scoped RLS policy under a non-bypass role. Compare exact allowed and denied IDs, actual role and revocation behavior. No production project is needed.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Use pinned tooling and a disposable local or explicitly approved test environment. Preserve the starter and solution; source review does not qualify real database roles or authorization.
+
 ## Bug Hunt
 
 1. Predict who can exploit this bug: The starter uses findUnique by record ID without any verified actor membership and returns another organization's document via the service route.

@@ -42,6 +42,20 @@ Document both a permitted happy path and a rejected adversarial path. Integratio
 
 A passing UI check or source-only checklist cannot establish secure production behavior. An observed negative test and reviewed trust boundary are essential.
 
+## Applied engineering walkthrough
+
+Incident response separates detection, containment, evidence preservation, eradication and recovery. Restoring availability without removing compromised access can recreate the incident. Prioritize containment according to business impact and avoid deleting evidence while investigating.
+
+### Diagnose the concrete failure
+
+Run a tabletop exercise using synthetic alerts for a leaked service credential. Identify who owns containment, which affected access should be revoked, and which logs and artifacts must be preserved. Verify a replacement credential can be tested in isolation.
+
+### Independent exercise and evidence
+
+Write a timed incident record with observed facts, hypotheses, decisions and owners. Include communication, recovery validation and a post-incident action list. Do not report a simulated incident as an actual breach.
+
+**Qualification boundary:** These are practice instructions, not recorded audit results. Use synthetic data and authorized disposable infrastructure. Preserve existing laboratory contracts and publication status.
+
 ## Knowledge check
 
 1. Which input is attacker-controlled?

@@ -44,6 +44,20 @@ node --test --test-name-pattern="19[.]02" examples/p6-quality/labs.test.mjs
 
 Plain JavaScript UI state model; installed React/Vitest/Testing Library/MSW and real browsers require separate tests.
 
+## Applied engineering walkthrough
+
+Flakiness often comes from nondeterministic dependencies, timing assumptions or tests observing the wrong state. A fixed delay hides the reason for waiting and can fail on slower systems. Await a meaningful condition and coordinate asynchronous inputs explicitly.
+
+### Diagnose the concrete failure
+
+Run the existing reversed-response model and plan the corresponding browser case using controlled responses. Replace the arbitrary sleep with a wait for the intended visible result. Repeat completion orders and inspect failures rather than increasing retries.
+
+### Independent exercise and evidence
+
+Create a diagnostic record for one flaky test with reproduction sequence, root cause, deterministic correction and repeated-run results. Quarantine only with a documented owner and expiry if the cause remains unresolved.
+
+**Evidence boundary:** These are practice instructions, not recorded test results. Preserve the existing model, specification and draft flag; external runtime qualification remains independent.
+
 ## Knowledge check
 
 1. Which public behavior or invariant is being protected?

@@ -44,6 +44,20 @@ node --test --test-name-pattern="20[.]04" examples/p6-quality/labs.test.mjs
 
 Synthetic topology policy; no OS/firewall/TLS/DNS/IaC or restore enforcement tested.
 
+## Applied engineering walkthrough
+
+A reverse proxy terminates or forwards client connections and routes them to private upstreams. The application must trust forwarded identity and scheme headers only from known proxy infrastructure. TLS termination, request limits, timeouts and upstream health are independent configuration decisions.
+
+### Diagnose the concrete failure
+
+In a disposable Caddy instance, forward a synthetic HTTP request to a loopback application and inspect the observed request scheme and host. Verify the intended public ingress and private upstream arrangement. Test malformed or untrusted forwarding metadata without contacting external services.
+
+### Independent exercise and evidence
+
+Design a proxy route with explicit upstream, allowed host, body limit, timeout and safe logging. Record actual local routing and header behavior when Caddy is available, not just the topology model.
+
+**Evidence boundary:** These are practice instructions, not recorded test results. Preserve the existing model, specification and draft flag; external runtime qualification remains independent.
+
 ## Knowledge check
 
 1. Which public behavior or invariant is being protected?

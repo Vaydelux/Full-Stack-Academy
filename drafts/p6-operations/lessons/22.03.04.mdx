@@ -44,6 +44,20 @@ node --test --test-name-pattern="22[.]03" examples/p6-operations/labs.test.mjs
 
 Capacity arithmetic only; no actual CDN, cache cluster, balancing, cost quotes or scaling benchmark.
 
+## Applied engineering walkthrough
+
+A stateless API stores durable session or business state outside individual replicas, or uses an appropriate verified token contract. Load balancing routes around unhealthy instances according to readiness and configuration. Persistent connections and in-flight work need draining behavior.
+
+### Diagnose the concrete failure
+
+In an isolated two-instance fixture send authorized requests through the local balancer, stop one instance and verify intended traffic reaches the remaining ready instance. Inspect session continuity and failure counts; do not assume zero interruptions.
+
+### Independent exercise and evidence
+
+Design a load-balancer acceptance checklist covering readiness, timeouts, forwarding trust, graceful drain and external state ownership. Record actual local routing and authorization behavior.
+
+**Evidence boundary:** These are practice instructions, not recorded capacity or benchmark results. Preserve the existing specification, model and unpublished status. Actual deployment measurements remain independent.
+
 ## Knowledge check
 
 1. Which invariant or operational measurement determines success?

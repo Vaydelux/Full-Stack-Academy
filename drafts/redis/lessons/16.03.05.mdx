@@ -50,6 +50,20 @@ In the test notes, separate what the in-memory fixture genuinely observed from R
 
 A delayed job is not an SLA for exact wall-clock execution.
 
+## Applied engineering walkthrough
+
+Delayed jobs are eligible no earlier than a scheduled time; a busy queue may process them later. Recurring schedules need a timezone and a policy for missed or repeated runs. A process-local timer cannot reliably survive a restart or multiple replicas.
+
+### Diagnose the concrete failure
+
+With a deterministic clock, create one future job and one due job. Verify only the due item is claimable, then advance the clock and inspect eligibility. In live tests, restart the worker and check persisted schedules without relying on long sleeps.
+
+### Independent exercise and evidence
+
+Design a weekly summary schedule using an explicit timezone, stable occurrence identifier and missed-run policy. Record due time versus actual processing time and duplicate prevention.
+
+**Qualification boundary:** These are practice instructions, not recorded results. Preserve the existing lab and publication status; in-memory tests do not qualify live Redis or BullMQ behavior.
+
 ## Knowledge check
 
 1. What is authoritative in this scenario, and what state is derived or replayable?

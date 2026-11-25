@@ -2,8 +2,9 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { AUTHORED_REFERENCES } from '@/lib/academy/authored-content';
-import { referenceMap } from '@/lib/academy/curriculum';
+import { lessonMap, referenceMap } from '@/lib/academy/curriculum';
 import { CodeBlock, DocNotice, DocSection, DocShell } from '@/components/course/DocShell';
+import { isPublishedLesson } from '@/lib/academy/published';
 import { getPublicOrigin } from '@/lib/academy/site';
 
 type ReferencePageProps = { params: Promise<{ referenceId: string }> };
@@ -32,9 +33,9 @@ export default async function ReferencePage({ params }: ReferencePageProps) {
   if (!entry) notFound();
   const authored = referenceById.get(referenceId);
   return (
-    <DocShell>
+    <DocShell section="reference">
       <nav aria-label="Breadcrumb" className="mb-5 text-xs text-slate-500">
-        <Link href="/reference" className="hover:underline">Reference library</Link> / {entry.category}
+        <Link href="/reference" className="hover:underline">Reference library</Link> / <Link href={`/reference?category=${encodeURIComponent(entry.category)}`} className="hover:underline">{entry.category}</Link>
       </nav>
       <p className="text-xs font-bold uppercase tracking-[.2em] text-cyan-700 dark:text-[#7DEBFF]">{entry.category}</p>
       <h1 className="mt-3 text-3xl font-extrabold tracking-tight sm:text-4xl">{authored?.heading ?? entry.title}</h1>
@@ -47,6 +48,13 @@ export default async function ReferencePage({ params }: ReferencePageProps) {
         <>
           <p className="mt-4 text-sm leading-7 text-slate-600 dark:text-slate-300">{authored.summary}</p>
           <p className="mt-2 text-xs text-slate-500">{authored.majorVersion} · {authored.status}</p>
+          <DocNotice>Authored draft. Examples are illustrative and may require local setup; this page is not a runtime qualification receipt.</DocNotice>
+          <nav aria-label="On this page" className="mt-5 rounded-xl border border-slate-200 p-4 dark:border-white/10">
+            <h2 className="mb-3 text-sm font-bold">On this page</h2>
+            <ul className="grid gap-2 text-sm sm:grid-cols-2">
+              {([['syntax','Syntax'],['parameters','Parameters'],['returns','Return value'],['minimal','Minimal example'],['production','Production example'],['mistakes','Common mistakes'],['security','Security and performance'],['related','Related lessons']] as const).map(([id,label]) => <li key={id}><a href={`#${id}`} className="text-cyan-700 hover:underline dark:text-cyan-300">{label}</a></li>)}
+            </ul>
+          </nav>
           <DocSection id="syntax" title="Syntax"><CodeBlock code={authored.syntax} /></DocSection>
           <DocSection id="parameters" title="Parameters"><p>{authored.parameters}</p></DocSection>
           <DocSection id="returns" title="Return value"><p>{authored.returns}</p></DocSection>
@@ -60,8 +68,8 @@ export default async function ReferencePage({ params }: ReferencePageProps) {
           </DocSection>
           <DocSection id="related" title="Related lessons and official source">
             <ul className="list-disc space-y-2 pl-6">
-              {authored.relatedLessonIds.map((id) => <li key={id}><Link href={`/learn/${id}`} className="text-cyan-700 hover:underline dark:text-[#7DEBFF]">Lesson {id}</Link></li>)}
-              <li><a href={authored.canonicalUrl} target="_blank" rel="noopener noreferrer" className="text-cyan-700 hover:underline dark:text-[#7DEBFF]">Official versioned documentation</a></li>
+              {authored.relatedLessonIds.map((id) => <li key={id}><Link href={`/learn/${id}`} className="text-cyan-700 hover:underline dark:text-[#7DEBFF]">{lessonMap.get(id)?.title ?? id}</Link> <span className="text-xs text-slate-500 dark:text-slate-400">({id} · {isPublishedLesson(id) ? 'Available lesson' : 'Not published'})</span></li>)}
+              <li><a href={authored.canonicalUrl} target="_blank" rel="noopener noreferrer" className="text-cyan-700 hover:underline dark:text-[#7DEBFF]">Official documentation</a></li>
             </ul>
           </DocSection>
         </>

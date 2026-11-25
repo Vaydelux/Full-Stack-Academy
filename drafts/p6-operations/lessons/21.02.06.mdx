@@ -44,6 +44,20 @@ node --test --test-name-pattern="21[.]02" examples/p6-operations/labs.test.mjs
 
 Synthetic error-budget arithmetic only; real probes, alerts, concurrency and fault recovery require actual isolated services.
 
+## Applied engineering walkthrough
+
+Bulkheads isolate resource pools so one workload cannot exhaust every worker or connection. Backpressure bounds admitted work when demand exceeds capacity. A finite queue trades delayed acceptance against explicit rejection; it does not create more downstream throughput.
+
+### Diagnose the concrete failure
+
+Create a disposable two-worker pool with a queue cap of three and hold tasks at a barrier. Verify overflow is rejected or delayed according to the contract and a separate workload still progresses. Release tasks and inspect recovery.
+
+### Independent exercise and evidence
+
+Design separate capacities for interactive requests and reports, including queue wait and cancellation. Record peak queue size, rejection count and unaffected workload progress.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve the existing specification, model and unpublished status. Actual resilience and runtime qualification remain independent.
+
 ## Knowledge check
 
 1. Which invariant or operational measurement determines success?

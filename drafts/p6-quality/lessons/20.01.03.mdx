@@ -44,6 +44,20 @@ node --test --test-name-pattern="20[.]01" examples/p6-quality/labs.test.mjs
 
 Declarative policy model; no Docker engine, image build, scan or real network isolation executed.
 
+## Applied engineering walkthrough
+
+Compose expresses local service topology, but a started container is not necessarily ready to serve. Health checks should verify a meaningful dependency or service condition with bounded timing. Startup ordering does not eliminate the need for runtime reconnection and graceful degradation.
+
+### Diagnose the concrete failure
+
+In an isolated stack, start the application with its database healthy and inspect a functional query. Repeat with a deliberately unavailable test database and verify readiness remains false. Check recovery after the dependency returns without replacing production services.
+
+### Independent exercise and evidence
+
+Design separate liveness and readiness probes and an application retry budget. Record actual service health transitions, query results and cleanup; the policy fixture checks configuration only.
+
+**Evidence boundary:** These are practice instructions, not recorded test results. Preserve the existing model, specification and draft flag; external runtime qualification remains independent.
+
 ## Knowledge check
 
 1. Which public behavior or invariant is being protected?

@@ -80,6 +80,20 @@ Presence is ephemeral and not a durable user-status or access-control database. 
 
 Private buckets need specific Storage policies, server-controlled paths and explicit expiration/cleanup rules. Realtime private channels require policies on realtime.messages for permitted operations; a client-specified filter alone is not authorization. Persistent business state remains in PostgreSQL, not in Presence or Broadcast payloads.
 
+## Applied persistence walkthrough
+
+Presence represents connected client state and Broadcast sends ephemeral application messages. Neither establishes a durable record nor proves a user's identity by itself. The sample uses a private channel and a proposed verified-user presence key, but client-controlled presence payloads must not grant authority. The shown handler observes presence; it does not register a track call.
+
+### Diagnose the concrete failure
+
+Connect two authorized clients and one nonmember. Verify private channel access, presence synchronization after explicit tracking where appropriate, and broadcast behavior under the configured policies. Disconnect and reconnect a client and verify stale display state is reconciled. Do not interpret a client-supplied presence label as verified permission.
+
+### Independent exercise and evidence
+
+Design a collaboration UI that uses presence only as an availability hint, while fetching authoritative membership from the server. Record channel access, event delivery, cleanup and reconnection behavior. Keep sensitive data out of ephemeral messages.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Use isolated test identities, storage and channels. Preserve the existing starter and solution; source review cannot qualify live upload, webhook or Realtime security.
+
 ## Bug Hunt
 
 1. Predict the attack or failure: The starter uses a public room with a predictable tenant topic. Unauthorized clients may join, observe presence or receive messages.

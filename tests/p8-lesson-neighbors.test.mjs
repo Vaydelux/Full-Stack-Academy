@@ -1,0 +1,14 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { lessonNeighbors } from '../src/lib/academy/lesson-neighbors.mjs';
+const lessons = ['01.01.01','01.01.02','01.01.03','01.01.04','01.02.01'].map(id => ({id,moduleId:id.slice(0,5)}));
+const published = ['01.01.01','01.01.03','01.01.04','01.02.01'];
+const get = id => lessonNeighbors(lessons,published,id);
+test('first published topic has no previous link',()=>assert.deepEqual(get('01.01.01'),{previous:null,next:lessons[2]}));
+test('middle topic uses published neighbors',()=>assert.deepEqual(get('01.01.03'),{previous:lessons[0],next:lessons[3]}));
+test('last topic does not cross module boundary',()=>assert.deepEqual(get('01.01.04'),{previous:lessons[2],next:null}));
+test('unpublished current topic does not expose lesson navigation',()=>assert.deepEqual(get('01.01.02'),{previous:null,next:null}));
+test('unknown topic fails closed',()=>assert.deepEqual(get('99.99.99'),{previous:null,next:null}));
+test('single published topic has no neighbors',()=>assert.deepEqual(get('01.02.01'),{previous:null,next:null}));
+test('canonical order wins over publication input order',()=>assert.deepEqual(lessonNeighbors(lessons,[...published].reverse(),'01.01.03'),get('01.01.03')));
+test('inputs are not mutated',()=>{const before=JSON.stringify([lessons,published]);get('01.01.03');assert.equal(JSON.stringify([lessons,published]),before);});

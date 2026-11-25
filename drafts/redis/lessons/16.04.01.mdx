@@ -50,6 +50,20 @@ In the test notes, separate what the in-memory fixture genuinely observed from R
 
 A transaction in one database does not include an external Redis publish automatically.
 
+## Applied engineering walkthrough
+
+A transactional outbox records the intended event in the same database transaction as the business change. A relay publishes committed outbox rows later. Publication and marking the row published are not atomic across a separate queue; redelivery and idempotent processing are expected.
+
+### Diagnose the concrete failure
+
+Simulate a business commit with an outbox event and a failed queue publish. Verify the committed event remains eligible for relay. Compare with an aborted business transaction, which must not leave a committed outbox row. Use a real database to establish atomicity.
+
+### Independent exercise and evidence
+
+Design outbox fields for event identity, type, payload version, tenant, due time and claim state. Record commit and relay outcomes; test recovery after interruption without inventing a second event identity.
+
+**Qualification boundary:** These are practice instructions, not recorded results. Preserve the existing lab and publication status; in-memory tests do not qualify live Redis or BullMQ behavior.
+
 ## Knowledge check
 
 1. What is authoritative in this scenario, and what state is derived or replayable?

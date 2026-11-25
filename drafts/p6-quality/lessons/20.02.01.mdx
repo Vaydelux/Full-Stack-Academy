@@ -44,6 +44,20 @@ node --test --test-name-pattern="20[.]02" examples/p6-quality/labs.test.mjs
 
 Synthetic CI evidence only; no hosted workflow, branch protection change or cryptographic provenance.
 
+## Applied engineering walkthrough
+
+A job defines an execution boundary and a matrix expands it into expected platform or configuration combinations. Evidence aggregation must require every expected combination for the same commit. A matrix declaration alone does not prove jobs actually executed.
+
+### Diagnose the concrete failure
+
+Model Linux and Windows Node 24 results using matrixGate. Remove one platform, substitute a stale candidate and compare with a complete matching set. Preserve separate platform-specific logs.
+
+### Independent exercise and evidence
+
+Design a local-first matrix with exact runtime, OS, command and candidate identity for each job. Record each platform as passed, failed or not-run. Do not enable hosted Actions merely to demonstrate the model.
+
+**Evidence boundary:** These are practice instructions, not recorded test results. Preserve the existing model, specification and draft flag; external runtime qualification remains independent.
+
 ## Knowledge check
 
 1. Which public behavior or invariant is being protected?

@@ -44,6 +44,20 @@ node --test --test-name-pattern="24[.]04" examples/p7-platforms/labs.test.mjs
 
 Synthetic queue acknowledgement model only; physical touch, OS background behavior, push delivery and store acceptance require device tests.
 
+## Applied engineering walkthrough
+
+An application link is routing input, not an authorization grant. Validate scheme or associated domain, parse only known route shapes and bounded parameters, then enforce server authorization for protected resources. Avoid placing credentials and sensitive payloads in URLs.
+
+### Diagnose the concrete failure
+
+Open a known task link, invalid identifier and foreign-tenant link. Compare navigation and actual API outcomes; do not show cached private content before the authorization decision.
+
+### Independent exercise and evidence
+
+Test cold launch, running app and signed-out recovery. Record association verification, routing results and access decisions separately. Reject malformed encodings without forwarding them to native commands.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify actual device, provider and human accessibility evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

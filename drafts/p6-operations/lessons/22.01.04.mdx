@@ -44,6 +44,20 @@ node --test --test-name-pattern="22[.]01" examples/p6-operations/labs.test.mjs
 
 Synthetic measured-value budget only; actual Core Web Vitals, browser profiles and real-user metrics are unexecuted.
 
+## Applied engineering walkthrough
+
+Responsive images should deliver appropriate dimensions and formats without unnecessary bytes; explicit aspect ratio reserves layout space. Font loading choices trade visual consistency, transfer and rendering delay. Prioritize only assets critical to initial content.
+
+### Diagnose the concrete failure
+
+Compare a disposable page using oversized assets with one using appropriately sized variants under fixed conditions. Inspect resource sizes, layout shifts and visual quality. Verify below-the-fold media does not compete unnecessarily with the hero.
+
+### Independent exercise and evidence
+
+Create an asset inventory with sizes, responsive rules, loading priority and accessibility text. Record before/after browser measurements and screenshots when the fixture is available.
+
+**Evidence boundary:** These are practice instructions, not recorded benchmark results. Preserve the existing specification, model and unpublished status. Actual browser measurement and qualification remain independent.
+
 ## Knowledge check
 
 1. Which invariant or operational measurement determines success?

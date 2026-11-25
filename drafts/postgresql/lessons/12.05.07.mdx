@@ -71,6 +71,20 @@ The temporary fixture used for source examples is intentionally not a valid pg_d
 
 Practice describing a failure in terms of its blast radius, detection signal and recovery path. What would happen if the database were unavailable during a migration, WAL archives were missing, a pooled connection lost session state, or an operator accidentally targeted production? Identify the prerequisite that would prevent or contain each failure.
 
+## Applied SQL walkthrough
+
+A restore drill tests whether a backup can become a usable database in a new environment. The sample count and ordered checksum compare selected fixture fields; they do not cover every schema object, row value, privilege or extension. The aggregate may return NULL on empty data, and the checksum is a teaching consistency check rather than a cryptographic authenticity guarantee.
+
+### Predict and diagnose the result
+
+Capture baseline counts and checksums from a persistent disposable sample table, not the temporary fixture that disappears when its session ends. Follow the existing runbook for a logical dump and a fresh restore target. Verify object definitions, constraints and representative queries as well as the baseline fields. Record restore errors and elapsed time.
+
+### Independent exercise and evidence
+
+Plan a rehearsal with a deliberately incomplete backup or an unavailable required extension in an isolated environment. Define an abort condition and how to obtain a valid replacement backup. Record tool and database versions, backup identity, restore duration and application-level smoke results before declaring recovery successful.
+
+**Qualification boundary:** These are operational practice instructions, not a completed recovery or security audit. Use only explicitly authorized disposable infrastructure. Preserve the existing starter, solution and acceptance contract.
+
 ## Bug Hunt
 
 1. State the specific unsafe assumption: The starter records only row count from the original database and never tests recovery into an isolated target.

@@ -50,6 +50,20 @@ In the test notes, separate what the in-memory fixture genuinely observed from R
 
 In-memory idempotency cannot guarantee durable exactly-once effects.
 
+## Applied engineering walkthrough
+
+Deduplication prevents some repeated submissions, while idempotency ensures repeating a logical operation does not duplicate its business effect. Queue job IDs alone may not survive retention or replay indefinitely. A database uniqueness constraint or provider idempotency key can provide a durable boundary.
+
+### Diagnose the concrete failure
+
+Deliver the same synthetic event twice and inspect one recorded business effect. Simulate a crash after the provider effect but before acknowledgement. Verify replay uses the original operation identity rather than generating another.
+
+### Independent exercise and evidence
+
+Design a durable receipt with request fingerprint, result and retention policy. Explain changed-payload conflict and ambiguous provider outcomes. Record final effect count and distinguish simulated from actual provider behavior.
+
+**Qualification boundary:** These are practice instructions, not recorded results. Preserve the existing lab and publication status; in-memory tests do not qualify live Redis or BullMQ behavior.
+
 ## Knowledge check
 
 1. What is authoritative in this scenario, and what state is derived or replayable?

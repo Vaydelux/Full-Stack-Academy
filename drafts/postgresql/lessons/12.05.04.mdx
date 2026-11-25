@@ -69,6 +69,20 @@ This is a connection-identity sanity test, not proof of network isolation, secre
 
 Practice describing a failure in terms of its blast radius, detection signal and recovery path. What would happen if the database were unavailable during a migration, WAL archives were missing, a pooled connection lost session state, or an operator accidentally targeted production? Identify the prerequisite that would prevent or contain each failure.
 
+## Applied SQL walkthrough
+
+Environment identity is a safety boundary, not just a filename or environment variable. A database name can be reused across servers, so verify the host, database, connected role and deployment context together. The sample view reads actual connection identity. The existing runner requires explicit opt-in and local test naming; these checks reduce accidental targeting but are not proof of a complete isolation policy.
+
+### Predict and diagnose the result
+
+Before running any lab, compare the expected connection identity with current_database and current_user. Use a dedicated test role and ensure the intended disposable server is selected. Try invalid configuration values using the runner validation functions without connecting to a remote server. Do not print passwords or complete connection URLs.
+
+### Independent exercise and evidence
+
+Design separate development, test and production credential scopes and a fail-closed startup policy for destructive test tools. Include a case where a valid database name is paired with the wrong host or role. Record redacted target identity, refusal behavior and operator confirmation requirements.
+
+**Qualification boundary:** These are operational practice instructions, not a completed recovery or security audit. Use only explicitly authorized disposable infrastructure. Preserve the existing starter, solution and acceptance contract.
+
 ## Bug Hunt
 
 1. State the specific unsafe assumption: The starter labels every connection as production/admin regardless of the actual database or active role.

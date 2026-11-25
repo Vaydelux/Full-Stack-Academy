@@ -1,0 +1,26 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+const read=path=>readFileSync(new URL('../'+path,import.meta.url),'utf8').replaceAll('\r\n','\n');
+const ids=['09.02','09.03'].flatMap(mod=>Array.from({length:8},(_,i)=>mod+'.'+String(i+1).padStart(2,'0')));
+const quiz=s=>s.match(/<KnowledgeCheck[^\n]+\/>/g);
+const clinic=s=>s.match(/## Applied debugging clinic\n[\s\S]*?(?=## Guided local lab)/)?.[0];
+const fences=s=>[...s.matchAll(/\x60\x60\x60tsx\n([\s\S]*?)\n\x60\x60\x60/g)].map(m=>m[1].trim());
+for(const id of ids)test(id+' preview and candidate assessment parity',()=>{
+ const draft=read('drafts/forms-query/lessons/'+id+'.mdx');
+ const candidate=read('release-candidates/forms-query/'+id.slice(0,5)+'/lessons/'+id+'.mdx');
+ assert.equal(quiz(draft)?.length,1);
+ assert.deepEqual(quiz(draft),quiz(candidate));
+ const tag=quiz(draft)[0];
+ const choices=JSON.parse(tag.match(/choices=\{(\[[^\n]*?\])\}/)[1]);
+ const index=Number(tag.match(/correctIndex=\{(\d+)\}/)[1]);
+ assert.equal(choices.length,4);
+ assert.equal(new Set(choices).size,4);
+ assert.ok(index>=0&&index<choices.length);
+ assert.ok(clinic(draft)?.includes('Evidence to record:'));
+ assert.equal(clinic(draft),clinic(candidate));
+ assert.equal(fences(draft).length,2);
+ assert.deepEqual(fences(draft),fences(candidate));
+ assert.ok(!draft.includes('<LabGate'));
+ assert.ok(candidate.includes('<LabGate lessonId="'+id+'"'));
+});

@@ -72,6 +72,20 @@ The SQL runner wraps all three statements in one transaction, but does not prove
 
 A useful production verification matrix varies input identity, tenant, the number of concurrent writers, repeated request keys and observed SQLSTATE outcomes. When a conflict occurs, the correct application behavior is usually to report it or retry the *whole* safe operation from a new snapshot—not to silently overwrite the last writer's state.
 
+## Applied SQL walkthrough
+
+A transaction boundary should cover all database changes that represent one business fact. Here debit, credit and transfer.completed event belong together. The outer test runner provides BEGIN and rollback. The event table is a database record, not proof that a notification was delivered. In a real service a checked-out connection owns the transaction until commit or rollback.
+
+### Predict and diagnose the result
+
+Predict balances eight and four, and one event for a two-unit transfer. Inject a failed event insert in a disposable experiment and verify the balance changes are rolled back. Test a missing destination and insufficient balance as additional contracts because the shown fixture does not check affected rows or implement an authorization boundary.
+
+### Independent exercise and evidence
+
+Sketch a transactional outbox worker: commit the business changes and outbox row together, then publish outside the transaction with retries and deduplication. Specify what happens when delivery succeeds but acknowledgement fails. Record committed rows and distinguish database atomicity from external delivery guarantees.
+
+**Qualification boundary:** These are predictions and experiment instructions, not recorded database results. The existing single-session SQL gate cannot establish true concurrent behavior. Use isolated test infrastructure and preserve the existing starter and solution.
+
 ## Bug Hunt
 
 1. Predict the specific broken state: The starter moves wallet units but skips the required audit event, leaving no durable record of the operation.

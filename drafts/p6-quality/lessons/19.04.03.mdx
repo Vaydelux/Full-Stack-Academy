@@ -44,6 +44,20 @@ node --test --test-name-pattern="19[.]04" examples/p6-quality/labs.test.mjs
 
 Metrics model uses supplied samples; no real load generation, chaos or database benchmark.
 
+## Applied engineering walkthrough
+
+Database load testing separates pool acquisition, network and query execution time. More concurrency can increase queueing rather than throughput. Query plan measurements must use comparable parameters and data distributions; discarded failures bias results.
+
+### Diagnose the concrete failure
+
+Against a dedicated database, run one fixed query at two bounded concurrency levels. Record completed operations, errors, acquisition wait and execution plans. Stop if resource use exceeds the agreed disposable budget.
+
+### Independent exercise and evidence
+
+Design a controlled experiment varying only pool concurrency while holding dataset, query and duration constant. Record p95 and throughput with failure counts; a synthetic latency array cannot qualify PostgreSQL.
+
+**Evidence boundary:** These are practice instructions, not recorded test results. Preserve the existing model, specification and draft flag; external runtime qualification remains independent.
+
 ## Knowledge check
 
 1. Which public behavior or invariant is being protected?

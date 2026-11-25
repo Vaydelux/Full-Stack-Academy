@@ -86,6 +86,20 @@ TypeScript interfaces are erased at runtime. The HTTP handler must verify identi
 
 In a multi-tenant API, input validation, role-aware database credentials, optimistic concurrency, migration review and response-shape controls must be considered together. Favor bounded queries and explicit domain operations over returning raw privileged ORM interfaces to HTTP handlers. Record the query plan or migration state instead of guessing.
 
+## Applied persistence walkthrough
+
+A repository port defines what business logic can request from persistence, while an adapter implements it using Prisma. Readonly types communicate intent but are not an authentication mechanism. verifiedTenantId is a contract supplied by trusted server logic; constructing the same object in an untrusted caller must not grant access. The bounded projection narrows the result.
+
+### Diagnose the concrete failure
+
+Use a fake adapter to verify business behavior without a database, then a real Prisma adapter to verify query predicates and result shape. Confirm missing context fails and another tenant's rows are excluded. A fake test cannot prove actual database authorization.
+
+### Independent exercise and evidence
+
+Design a TaskReader with an explicit cursor and public DTO. Decide which errors are domain-level and which remain infrastructure details. Record fake-contract evidence and real database acceptance separately.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Use the pinned Prisma 7 toolchain and disposable PostgreSQL database. Preserve the starter and solution; source review does not qualify generated code or authorization.
+
 ## Bug Hunt
 
 1. Make a concrete failure prediction: A general repository exports the privileged PrismaClient and lets controllers pass raw where filters, so tenant checks are easy to forget.

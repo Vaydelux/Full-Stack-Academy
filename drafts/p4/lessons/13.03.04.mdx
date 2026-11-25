@@ -73,6 +73,20 @@ The example's one-shot UPDATE is for tiny synthetic data only. Large production 
 
 In a multi-tenant API, input validation, role-aware database credentials, optimistic concurrency, migration review and response-shape controls must be considered together. Favor bounded queries and explicit domain operations over returning raw privileged ORM interfaces to HTTP handlers. Record the query plan or migration state instead of guessing.
 
+## Applied persistence walkthrough
+
+Expand-contract changes let old and new application versions coexist. Adding a nullable column is expansion; backfill updates only missing values, and NOT NULL is the final invariant. The SQL demonstrates a sequence, not a zero-downtime guarantee. Old writers may still create NULL rows until compatible writes or defaults are deployed.
+
+### Diagnose the concrete failure
+
+Predict the result of running the backfill twice and confirm only missing priorities are changed. Before enforcing NOT NULL, verify zero missing values and test writes from both app versions. Measure locks and backfill duration on representative isolated data.
+
+### Independent exercise and evidence
+
+Design a rollout with compatible reads, new writes, batched backfill and final constraint. Define abort conditions and a forward repair; record why dropping the field is not a safe rollback after users write new data.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Use the pinned Prisma 7 toolchain and disposable PostgreSQL database. Preserve the starter and solution; source review does not qualify generated code or authorization.
+
 ## Bug Hunt
 
 1. Make a concrete failure prediction: A migration adds a required column to a populated table in one step, potentially failing or blocking a mixed-version deployment.

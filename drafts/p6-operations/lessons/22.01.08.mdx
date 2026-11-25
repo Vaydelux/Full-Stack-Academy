@@ -44,6 +44,20 @@ node --test --test-name-pattern="22[.]01" examples/p6-operations/labs.test.mjs
 
 Synthetic measured-value budget only; actual Core Web Vitals, browser profiles and real-user metrics are unexecuted.
 
+## Applied engineering walkthrough
+
+A performance budget is a versioned acceptance contract. Each required metric has a unit, threshold and measurement method, and missing values must fail rather than default to zero. A model tests gate decisions but does not collect browser evidence.
+
+### Diagnose the concrete failure
+
+Run webBudget with a complete within-budget fixture, increase bytes by one above the limit and remove one required metric. Check both negative cases. Plan matched real browser trials against a stable baseline.
+
+### Independent exercise and evidence
+
+Write a budget receipt containing commit, environment, workload, metrics and pass/fail decisions. Include functional and accessibility regressions as independent release gates.
+
+**Evidence boundary:** These are practice instructions, not recorded benchmark results. Preserve the existing specification, model and unpublished status. Actual browser measurement and qualification remain independent.
+
 ## Knowledge check
 
 1. Which invariant or operational measurement determines success?

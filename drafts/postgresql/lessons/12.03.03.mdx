@@ -70,6 +70,20 @@ Inspecting xmin is educational only; it is not a stable application version coun
 
 A useful production verification matrix varies input identity, tenant, the number of concurrent writers, repeated request keys and observed SQLSTATE outcomes. When a conflict occurs, the correct application behavior is usually to report it or retry the *whole* safe operation from a new snapshot—not to silently overwrite the last writer's state.
 
+## Applied SQL walkthrough
+
+MVCC allows PostgreSQL to preserve row versions for different snapshots. Readers see versions appropriate to their isolation level rather than necessarily the newest physical tuple. The fixture exposes xmin as an observation of tuple creation, not a stable business version. Transaction IDs wrap and tuples may be frozen; use an explicit revision column for application concurrency.
+
+### Predict and diagnose the result
+
+Inspect the alpha wallet rows and tuple_creator values. Do not expect a fixed transaction ID or infer a global ordering from xmin. In a separate shared test table, hold a Repeatable Read transaction open while another connection updates and commits a row. Compare visibility in the old snapshot with a new transaction.
+
+### Independent exercise and evidence
+
+Draw a timeline for initial version V1, an update producing V2, and a reader holding a prior snapshot. Identify when the old tuple becomes eligible for cleanup and why a long-running transaction may delay that. Record snapshots and observable values; avoid claiming storage reclamation from tuple IDs alone.
+
+**Qualification boundary:** These are predictions and experiment instructions, not recorded database results. The existing single-session SQL gate cannot establish true concurrent behavior. Use isolated test infrastructure and preserve the existing starter and solution.
+
 ## Bug Hunt
 
 1. Predict the specific broken state: The starter selects only values and hides the tuple-version diagnostic needed to discuss MVCC internals.

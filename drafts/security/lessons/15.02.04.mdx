@@ -42,6 +42,20 @@ Document both a permitted happy path and a rejected adversarial path. Integratio
 
 A passing UI check or source-only checklist cannot establish secure production behavior. An observed negative test and reviewed trust boundary are essential.
 
+## Applied engineering walkthrough
+
+An active workspace identifier is a requested context, not proof of membership. Resolve the actor and permitted tenant on the server, then scope reads and writes. A user belonging to multiple organizations may have different permissions in each.
+
+### Diagnose the concrete failure
+
+Use two synthetic tenants and a member authorized for only one. Verify selection of the allowed workspace, rejection of the other and denial after membership revocation. Check affected-row counts and unchanged foreign records.
+
+### Independent exercise and evidence
+
+Design tenant switching with server validation, private cache partitioning and invalidation on revocation. Record allowed and denied IDs and role-specific actions; test privileged database paths independently.
+
+**Qualification boundary:** These are practice instructions, not recorded audit results. Use synthetic data and authorized disposable infrastructure. Preserve existing laboratory contracts and publication status.
+
 ## Knowledge check
 
 1. Which input is attacker-controlled?

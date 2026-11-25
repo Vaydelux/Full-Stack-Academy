@@ -44,6 +44,20 @@ node --test --test-name-pattern="21[.]02" examples/p6-operations/labs.test.mjs
 
 Synthetic error-budget arithmetic only; real probes, alerts, concurrency and fault recovery require actual isolated services.
 
+## Applied engineering walkthrough
+
+Liveness checks whether a process should continue; readiness checks whether it can serve the intended traffic. Tying liveness directly to a shared dependency can create restart storms. Readiness should be bounded and avoid expensive diagnostics or secret disclosure.
+
+### Diagnose the concrete failure
+
+In a disposable loopback service, interrupt a required dependency and check both endpoints. Verify readiness fails while the still-functional process remains live. Restore the dependency and inspect readiness recovery.
+
+### Independent exercise and evidence
+
+Design probes with deadlines, startup behavior and routing expectations. Record observed status and recovery timing separately from the synthetic decision model.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve the existing specification, model and unpublished status. Actual resilience and runtime qualification remain independent.
+
 ## Knowledge check
 
 1. Which invariant or operational measurement determines success?

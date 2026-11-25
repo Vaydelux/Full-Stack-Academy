@@ -1,4 +1,4 @@
-import { TaskRequestError } from './api.ts';
+import { TaskRequestError, TaskResponseError } from './api.ts';
 import type { TaskFilter, TaskStatus } from './api.ts';
 
 /** Stable, non-secret cache identity for the bounded local task list. */
@@ -24,11 +24,12 @@ export function nextTaskStatus(status: TaskStatus): TaskStatus {
  * Network failures and 5xx can be ambiguous and must retain the SAME key.
  */
 export function shouldRetainCreateAttempt(error: unknown): boolean {
-  return !(error instanceof TaskRequestError) || error.status === 429 || error.status >= 500;
+  return !(error instanceof TaskRequestError) || error.status === 408 || error.status === 429 || error.status >= 500;
 }
 
 /** Intentional read cancellation is not a transport fault. Never retry terminal errors. */
 export function shouldRetryRead(count: number, error: unknown): boolean {
   if (error !== null && typeof error === 'object' && 'name' in error && error.name === 'AbortError') return false;
+  if (error instanceof TaskResponseError) return false;
   return Number.isInteger(count) && count >= 0 && count < 1 && shouldRetainCreateAttempt(error);
 }

@@ -44,6 +44,20 @@ node --test --test-name-pattern="22[.]02" examples/p6-operations/labs.test.mjs
 
 Synthetic latency sample analysis only; actual CPU/heap profiles, Fastify comparison, query plans and HTTP behavior need real runtimes.
 
+## Applied engineering walkthrough
+
+A database pool controls concurrent checked-out connections, not database throughput itself. Requests can spend more time waiting for a connection than executing SQL. Increasing pool size across replicas may overwhelm the server; budget total connections and measure both acquisition and work time.
+
+### Diagnose the concrete failure
+
+Use requestProfile on matched synthetic queue and work durations. In a dedicated database compare two bounded pool settings and inspect p95 wait, execution time, errors and active connections. Stop at the agreed resource limit.
+
+### Independent exercise and evidence
+
+Design a pool budget for API replicas and workers including rolling deployment overlap. Record acquisition timeouts and sustainable throughput before choosing a larger pool.
+
+**Evidence boundary:** These are practice instructions, not recorded benchmark results. Preserve the existing specification, model and unpublished status. Actual API and database measurements remain independent.
+
 ## Knowledge check
 
 1. Which invariant or operational measurement determines success?

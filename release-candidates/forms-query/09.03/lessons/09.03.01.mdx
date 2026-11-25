@@ -76,7 +76,7 @@ export default function TaskList({status}:{status:Filter}) {
 
 <Misconception claim="The starter uses a constant cache key for different status-filtered responses." correction="A Query key is the identity of a remote resource view. Filter, scope and pagination mode belong in the key. queryFn receives AbortSignal so obsolete reads can cancel." />
 
-<KnowledgeCheck question="What is the reliable approach to query keys and caching?" choices={["Assume cached browser state equals server truth forever.","Use TanStack Query resource identity and the server's HTTP contract.","Ignore failure responses to keep the UI fast.","Disable all validation once the code typechecks."]} correctIndex={1} explanation="A Query key is the identity of a remote resource view. Filter, scope and pagination mode belong in the key. queryFn receives AbortSignal so obsolete reads can cancel." misconception="The starter uses a constant cache key for different status-filtered responses." lessonId="09.03.01" />
+<KnowledgeCheck question="Two filters use the same query key but different HTTP parameters. What happens?" choices={["The cache treats both views as the same resource.","Query automatically includes all URL parameters.","Each filter receives a separate cache because React rerenders.","The API automatically fixes the client cache."]} correctIndex={0} explanation="Every effective resource variable belongs in the structured key. Authorization still belongs to the server." misconception="The starter uses a constant cache key for different status-filtered responses." lessonId="09.03.01" />
 
 ## Bug Hunt: reproduce, diagnose and repair
 
@@ -100,6 +100,12 @@ A query key identifies *which server view* the cache represents, not just which 
 **Independent exercise:** Fetch todo, switch immediately to done, and switch back. Predict which cache slots exist, then trigger a slow request and cancel it. Verify the query function actually forwards the signal; merely accepting a `signal` parameter without using it is insufficient.
 
 **Trust boundary:** Query keys are not backend authorization, and browser caches may be inspected. Do not include access tokens or raw private task titles in keys. A server must enforce tenant access on *every* request, including a request for an older cached identifier.
+
+## Applied debugging clinic
+
+Trace todo and done requests with distinguishable response IDs. Draw each cache key and corresponding result. Switch quickly while a response is delayed; verify the fetch receives the cancellation signal. Key separation prevents cross-filter contamination even when cancellation is unavailable.
+
+**Evidence to record:** query identity, request outcome, cache state before and after the action, and the recovery decision. Separate observed network behavior from what the UI displays. Re-run the original failing interaction after the repair.
 
 ## Guided local lab
 

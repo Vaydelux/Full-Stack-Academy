@@ -50,6 +50,20 @@ The tests exercise local Node state or loopback HTTP behavior. Document separate
 
 Push services and email APIs have delivery semantics the in-memory notification example does not simulate.
 
+## Applied engineering walkthrough
+
+An email or push provider may acknowledge acceptance without confirming final delivery. Retry transient failures within a budget and distinguish permanent invalid recipients or revoked device tokens. Ambiguous acknowledgement requires stable operation identity.
+
+### Diagnose the concrete failure
+
+Use a fake provider returning acceptance, a transient timeout and a permanent rejection. Verify each yields a distinct recorded state and the timeout retry retains the original identity. Do not send real messages.
+
+### Independent exercise and evidence
+
+Design provider status mapping with accepted, delivered, bounced and failed states where supported. Record attempt outcomes and what actual provider receipts would establish.
+
+**Qualification boundary:** These are practice instructions, not recorded results. Preserve the original laboratory and publication status. Local simulations do not qualify actual browser or distributed provider behavior.
+
 ## Knowledge check
 
 1. Which actor, resource, version or event cursor is authoritative in this scenario?

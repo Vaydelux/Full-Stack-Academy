@@ -80,6 +80,20 @@ This pool max is illustrative, not a universally safe production value. PgBounce
 
 In a multi-tenant API, input validation, role-aware database credentials, optimistic concurrency, migration review and response-shape controls must be considered together. Favor bounded queries and explicit domain operations over returning raw privileged ORM interfaces to HTTP handlers. Record the query plan or migration state instead of guessing.
 
+## Applied persistence walkthrough
+
+The adapter owns a pool with a maximum of five connections in this example. Each running process can create its own pool, so five is not a deployment-wide limit. Acquisition and network failures need bounded handling; connectionTimeoutMillis is not a statement deadline. Closing a shared client after each request defeats reuse.
+
+### Diagnose the concrete failure
+
+Estimate the combined maximum for six API processes and two workers using the same five-connection cap: forty potential connections before reserves. In a disposable load test inspect actual backend usage, acquisition wait and errors. Verify shutdown closes resources without interrupting accepted work unexpectedly.
+
+### Independent exercise and evidence
+
+Design a connection budget including rolling deployments and operational reserve. Measure whether reducing process pool size creates queues or improves server stability. Record observed concurrency and timeout behavior; do not raise limits without measuring.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Use the pinned Prisma 7 toolchain and disposable PostgreSQL database. Preserve the starter and solution; source review does not qualify generated code or authorization.
+
 ## Bug Hunt
 
 1. Make a concrete failure prediction: A route handler creates a new PrismaPg pool and PrismaClient per request. With multiple server instances, those connections can exhaust the PostgreSQL limit.

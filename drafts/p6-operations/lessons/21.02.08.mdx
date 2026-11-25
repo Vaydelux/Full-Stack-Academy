@@ -44,6 +44,20 @@ node --test --test-name-pattern="21[.]02" examples/p6-operations/labs.test.mjs
 
 Synthetic error-budget arithmetic only; real probes, alerts, concurrency and fault recovery require actual isolated services.
 
+## Applied engineering walkthrough
+
+A fault experiment states a hypothesis, scope, impact limits and recovery condition before injecting failure. Synthetic budget arithmetic is useful but cannot demonstrate real resilience. Measure baseline, failure and recovery using comparable observations.
+
+### Diagnose the concrete failure
+
+In an isolated handler, inject a bounded deterministic fault sequence and collect success and failure counts. Remove the fault, repeat the workload and compare recovery to the stated target. Record retries and stop conditions.
+
+### Independent exercise and evidence
+
+Prepare a fault rehearsal record with exact environment, affected dependency, baseline, observed failure and recovery evidence. Mark untested external services not-run.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve the existing specification, model and unpublished status. Actual resilience and runtime qualification remain independent.
+
 ## Knowledge check
 
 1. Which invariant or operational measurement determines success?

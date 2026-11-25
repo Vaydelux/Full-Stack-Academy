@@ -52,6 +52,20 @@ The corresponding module exercises **MailOutbox: consent, idempotency, bounded r
 
 For a production implementation, document the secret-owner or principal, durability plan, error and recovery policy, rate/resource bounds, privacy guarantees, observability without sensitive payloads, and the credential/version-rotation procedure.
 
+## Applied engineering walkthrough
+
+Idempotent scheduling ties a logical notification to a stable recipient and operation key. Reusing a key for a different template or payload must be a defined conflict, not an overwrite. A successful outbox deduplication check does not establish exactly-once email delivery.
+
+### Diagnose the concrete failure
+
+Schedule a synthetic receipt twice using the same key and verify one job. Repeat with a different template and inspect the conflict. Simulate a lost send acknowledgement and confirm any retry uses the original identity.
+
+### Independent exercise and evidence
+
+Design a durable send receipt with payload fingerprint and provider reference. Include reconciliation of ambiguous outcomes and retention limits. Record job count, changed-payload denial and external effect evidence separately.
+
+**Qualification boundary:** These are practice instructions, not recorded results. Preserve existing specifications and laboratory contracts. Qualify actual external services separately using authorized disposable infrastructure.
+
 ## Knowledge check
 
 1. Which authenticated actor, external sender, or tenant owns the data in this scenario?

@@ -52,6 +52,20 @@ The corresponding module exercises **inspectUpload, issueUploadToken, verifyUplo
 
 For a production implementation, document the secret-owner or principal, durability plan, error and recovery policy, rate/resource bounds, privacy guarantees, observability without sensitive payloads, and the credential/version-rotation procedure.
 
+## Applied engineering walkthrough
+
+Magic bytes help recognize a format but a signature is not complete structural validation. Extensions may be renamed and client MIME metadata can be inaccurate. A trusted parser must handle malformed or truncated content and enforce format-specific limits.
+
+### Diagnose the concrete failure
+
+Compare a fake PDF header with a matching PDF declaration and with a PNG declaration. Verify mismatch rejection. Construct a truncated sample that passes a leading-byte check and explain why it still needs a decoder or parser gate.
+
+### Independent exercise and evidence
+
+Create a table of permitted formats, declared media types, structural checks and size limits. Record which checks are provided by the fixture and which need a real parser.
+
+**Qualification boundary:** These are practice instructions, not recorded results. Preserve existing specifications and laboratory contracts. Qualify actual external services separately using authorized disposable infrastructure.
+
 ## Knowledge check
 
 1. Which authenticated actor, external sender, or tenant owns the data in this scenario?

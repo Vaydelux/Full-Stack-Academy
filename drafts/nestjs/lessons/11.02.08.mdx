@@ -76,7 +76,21 @@ If the UI shows a generic error, classify the failure at the nearest authoritati
 
 <Misconception claim="The guard authorizes everyone and the team mistakenly relies on validation to protect private records." correction="Guards run before pipes, making authorization an independent boundary for protected requests." />
 
-<KnowledgeCheck question="Which verification proves bug hunt guard order?" choices={["A decorator's name exists in source.","A real Nest request reaches the correct stage and demonstrates the specified positive and negative outcomes.","An interface type was exported.","The UI hides the endpoint, so it must be protected."]} correctIndex={1} explanation="Guards run before pipes, making authorization an independent boundary for protected requests." misconception="The guard authorizes everyone and the team mistakenly relies on validation to protect private records." lessonId="11.02.08" />
+<KnowledgeCheck question="A team expects a validation pipe to authenticate an anonymous request before a permission guard runs. Why is that unsafe?" choices={["Pipes run after the response is sent.","Guards and pipes always run concurrently.","Interceptors automatically authorize every user.","Guards run before pipes, and authentication/authorization must be independent of validation."]} correctIndex={3} explanation="A valid payload cannot replace an access decision at the guard boundary." misconception="The guard authorizes everyone and the team mistakenly relies on validation to protect private records." lessonId="11.02.08" />
+
+## Applied engineering walkthrough
+
+For ordinary Nest HTTP requests the relevant order is middleware, guards, interceptor pre-handler logic, pipes, controller, interceptor post-handler logic; uncaught exceptions flow to applicable filters. A guard sees raw route data before a pipe validates it, so it must validate any raw identifiers it uses. Validation does not grant access. The fixture assumes a trusted, already-populated user principal; production code must ensure that assumption through verified authentication.
+
+### Diagnose the concrete failure
+
+Build a trace for a denied request and an authorized request. For denial, expect the guard to stop processing before the protected handler; for authorization, continue to pipe and handler. The existing direct guard test checks missing principal, missing permission and intended permission; an actual Nest HTTP test is needed to verify ordering. Do not infer runtime order from the class-only checks.
+
+### Independent exercise and evidence
+
+Plan three integration cases: anonymous valid body, authenticated unauthorized malformed body, and authorized malformed body. Specify which boundary should reject each, and prove the handler is never called in denial cases. Record the stage trace and HTTP status rather than exposing the request body.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. The existing request-pipeline checks include direct class and pure-function tests; real HTTP and adapter acceptance remain distinct release requirements. Do not award course credit from source review alone.
 
 ## Bug Hunt: reproduce, diagnose and repair
 

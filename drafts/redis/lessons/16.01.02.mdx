@@ -50,6 +50,20 @@ In the test notes, separate what the in-memory fixture genuinely observed from R
 
 An expiration deadline is a freshness bound, not an authorization or durability guarantee.
 
+## Applied engineering walkthrough
+
+Redis data structures have different access patterns. Strings can hold serialized snapshots, hashes group fields, and sorted sets maintain score order. Expiration is a key lifecycle property, not a universal business freshness guarantee. Set the value and expiry together where possible; replacing a key can alter its TTL.
+
+### Diagnose the concrete failure
+
+With a controlled clock in the local fixture, inspect a value before and after its expiration and confirm a new load replaces it. Test zero, negative and excessive TTL input. In live Redis inspect TTL semantics for missing keys and keys without expiry independently.
+
+### Independent exercise and evidence
+
+Design a TTL policy for catalog descriptions, stock counts and negative responses. Explain why short TTL alone does not guarantee immediate price changes. Record expiry behavior and actual Redis integration separately.
+
+**Qualification boundary:** These are practice instructions, not recorded results. Preserve the existing lab and publication status; in-memory tests do not qualify live Redis or BullMQ behavior.
+
 ## Knowledge check
 
 1. What is authoritative in this scenario, and what state is derived or replayable?

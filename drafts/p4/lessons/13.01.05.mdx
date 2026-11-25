@@ -71,6 +71,20 @@ CLI config is not automatic authorization. A correct URL can still connect as a 
 
 A production-ready persistence boundary has to address error mapping, least-privileged database credentials, transaction/connection lifecycle, tenant authorization and request cancellation. Whenever schema changes are involved, review migration SQL and compatibility with the previous app version. Never expose database credentials in a `NEXT_PUBLIC_` variable or include them in a public web bundle.
 
+## Applied persistence walkthrough
+
+The shown configuration separates schema and migration paths from the database endpoint. dotenv/config loads local environment values; a deployed process should obtain credentials from its approved secret store. The migration identity can differ from the runtime identity. A correctly discovered config may still target the wrong database, so confirm identity before issuing mutations.
+
+### Diagnose the concrete failure
+
+Run configuration discovery with the pinned Prisma 7 CLI on an isolated checkout, verify the schema and migration paths, and check database name and role using a safe identity query. Test absent DATABASE_URL without contacting a server. Do not expose the environment or embed it in a browser bundle.
+
+### Independent exercise and evidence
+
+Design separate runtime and migration configuration for development, staging and production. Include a preflight rule that refuses test execution against a production target. Record only redacted environment identity and tool version.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Use the pinned Prisma 7 toolchain and disposable PostgreSQL database. Preserve the starter and solution; source review does not qualify generated code or authorization.
+
 ## Bug Hunt
 
 1. Observe the unsafe starter: The starter puts secrets into a NEXT_PUBLIC variable and suggests a pre-v7 datasource URL placement.

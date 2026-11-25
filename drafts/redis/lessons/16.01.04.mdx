@@ -50,6 +50,20 @@ In the test notes, separate what the in-memory fixture genuinely observed from R
 
 Writing both stores independently without a failure strategy creates inconsistent state.
 
+## Applied engineering walkthrough
+
+Write-through attempts to update cache alongside the authoritative write, while invalidation removes derived state after the successful commit. Neither automatically creates an atomic transaction across SQL and Redis. A delayed reader can still publish stale data; version checks or generation fencing can help contain the race.
+
+### Diagnose the concrete failure
+
+Update a synthetic price, invalidate after commit and verify the next read sees the new value. Force a failed database update and check the cache contract. Hold an old loader in progress while invalidation occurs and inspect whether stale results are republished.
+
+### Independent exercise and evidence
+
+Design a durable invalidation event for failed cache deletion. Define TTL fallback and permitted freshness lag. Record commit order, invalidation and returned versions across independent processes before claiming distributed consistency.
+
+**Qualification boundary:** These are practice instructions, not recorded results. Preserve the existing lab and publication status; in-memory tests do not qualify live Redis or BullMQ behavior.
+
 ## Knowledge check
 
 1. What is authoritative in this scenario, and what state is derived or replayable?

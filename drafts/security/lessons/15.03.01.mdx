@@ -42,6 +42,20 @@ Document both a permitted happy path and a rejected adversarial path. Integratio
 
 A passing UI check or source-only checklist cannot establish secure production behavior. An observed negative test and reviewed trust boundary are essential.
 
+## Applied engineering walkthrough
+
+XSS prevention depends on the output context. Rendering text avoids interpreting markup; HTML sanitization is needed only when rich markup is intentionally supported. URL, attribute and JavaScript contexts require different controls. CSP is defense in depth, not a replacement for safe rendering.
+
+### Diagnose the concrete failure
+
+In a disposable note viewer, use a benign markup-shaped string and confirm it appears as literal text instead of becoming an element. For rich notes, verify an allowed formatting element remains while disallowed active content is removed. Check stored and displayed values independently.
+
+### Independent exercise and evidence
+
+Design a rich-text preview with a documented allowlist and maintained sanitizer. Record DOM assertions and browser behavior; do not test third-party systems or rely on a screenshot alone.
+
+**Qualification boundary:** These are practice instructions, not recorded audit results. Use synthetic data and authorized disposable infrastructure. Preserve existing laboratory contracts and publication status.
+
 ## Knowledge check
 
 1. Which input is attacker-controlled?

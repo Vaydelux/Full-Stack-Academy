@@ -44,6 +44,20 @@ node --test --test-name-pattern="21[.]01" examples/p6-operations/labs.test.mjs
 
 Local field-allowlist model only; Pino, exporters, collectors and Sentry require installed tools and actual trace propagation.
 
+## Applied engineering walkthrough
+
+Metric cardinality grows with combinations of label values. One hundred user IDs multiplied by routes and statuses can create far more series than three route templates. Trace sampling is a separate cost and fidelity tradeoff; a sampled trace set cannot prove every request was recorded.
+
+### Diagnose the concrete failure
+
+Compare a synthetic label inventory using per-user labels and bounded route labels. Count distinct combinations. Define a sampling rule and identify rare failures that might not appear in a sample.
+
+### Independent exercise and evidence
+
+Design a telemetry budget with bounded metric dimensions, trace sampling and independent error counters. Record series counts and actual export volume when instrumentation is available.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve the existing specification, model and unpublished status. Actual instrumentation and runtime qualification remain independent.
+
 ## Knowledge check
 
 1. Which invariant or operational measurement determines success?

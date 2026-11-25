@@ -44,6 +44,20 @@ node --test --test-name-pattern="24[.]02" examples/p7-platforms/labs.test.mjs
 
 In-memory sync model; actual SQLite persistence, durable queue, crash recovery and conflict reconciliation are not established.
 
+## Applied engineering walkthrough
+
+Offline synchronization requires an atomic local outbox, authenticated server commands, idempotent effects, stable feed order and conflict recovery. No single in-memory model demonstrates their joint durability. Start with a small task entity and explicit state transitions.
+
+### Diagnose the concrete failure
+
+Run a fixed timeline with local edit, dropped acknowledgement, reconnect, remote delete and stale replay. Compare pending count and visible state at every step; reproduce with disposable SQLite and a scoped API.
+
+### Independent exercise and evidence
+
+Submit a failure matrix for process death, account switch and expired cursor. Attach sanitized database snapshots, meaningful negative evidence and any runtime checks not performed.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify real persistence, network, device and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

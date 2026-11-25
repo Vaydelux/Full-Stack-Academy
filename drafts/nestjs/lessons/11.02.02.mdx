@@ -77,7 +77,21 @@ If the UI shows a generic error, classify the failure at the nearest authoritati
 
 <Misconception claim="A malformed body reaches the controller unchanged and may produce an unexpected 500." correction="Use PipeTransform to turn unknown request payloads into parsed typed data or an explicit 400." />
 
-<KnowledgeCheck question="Which verification proves pipes and zod validation?" choices={["A decorator's name exists in source.","A real Nest request reaches the correct stage and demonstrates the specified positive and negative outcomes.","An interface type was exported.","The UI hides the endpoint, so it must be protected."]} correctIndex={1} explanation="Use PipeTransform to turn unknown request payloads into parsed typed data or an explicit 400." misconception="A malformed body reaches the controller unchanged and may produce an unexpected 500." lessonId="11.02.02" />
+<KnowledgeCheck question="The client sends a valid title plus an unexpected admin property. What does the shown z.object schema do by default?" choices={["Authorize the admin property.","Reject every request with a 500.","Strip the unknown property; strictObject would reject it instead.","Automatically write the unknown property to the database."]} correctIndex={2} explanation="Unknown-key handling is a schema choice; the parsed output is the trusted shape." misconception="A malformed body reaches the controller unchanged and may produce an unexpected 500." lessonId="11.02.02" />
+
+## Applied engineering walkthrough
+
+A pipe converts untrusted input into a validated value or an explicit client error. The solution uses safeParse and returns result.data, so the trimmed title reaches the controller. This is a Zod object with default unknown-key stripping, not strict unknown-field rejection. If the contract requires rejecting extra fields, use strictObject and test that choice. Pipes cannot verify who is allowed to create a task.
+
+### Diagnose the concrete failure
+
+Compare `{title: '  task  '}`, `{title: 'x'}` and `{title: 42}`. The first should return the normalized title; the others should raise BadRequestException. Also try an extra admin field: the current schema strips it. Attach the pipe to the HTTP argument and verify actual 400 responses before claiming end-to-end validation.
+
+### Independent exercise and evidence
+
+Design a create-task DTO that rejects unknown fields and accepts an optional bounded description. Write a positive and two negative cases, including attempted privilege-field injection. Record raw input, parsed output and error class/status; do not log sensitive body data.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. The existing request-pipeline checks include direct class and pure-function tests; real HTTP and adapter acceptance remain distinct release requirements. Do not award course credit from source review alone.
 
 ## Bug Hunt: reproduce, diagnose and repair
 

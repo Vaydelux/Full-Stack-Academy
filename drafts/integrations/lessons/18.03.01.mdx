@@ -52,6 +52,20 @@ The corresponding module exercises **TenantSearch: tenant isolation, ranking, st
 
 For a production implementation, document the secret-owner or principal, durability plan, error and recovery policy, rate/resource bounds, privacy guarantees, observability without sensitive payloads, and the credential/version-rotation procedure.
 
+## Applied engineering walkthrough
+
+PostgreSQL full text search transforms text into lexemes using a chosen configuration and matches a parsed query against a tsvector. GIN can accelerate matching, but ranking and sorting still have costs. Tenant authorization must constrain the candidate set, independently of textual similarity.
+
+### Diagnose the concrete failure
+
+Seed two tenants with identical searchable phrases and a known permitted document. Compare expected matching IDs against actual PostgreSQL FTS on a disposable database. Inspect the plan with and without the intended index and use bound query values.
+
+### Independent exercise and evidence
+
+Design a search vector combining weighted title and body fields. Specify language configuration, update maintenance and a stable ordering tie-breaker. Record actual query plan and relevance outcomes rather than treating the in-memory scorer as SQL.
+
+**Qualification boundary:** These are practice instructions, not recorded results. Preserve existing specifications and laboratory contracts. Qualify actual external services separately using authorized disposable infrastructure.
+
 ## Knowledge check
 
 1. Which authenticated actor, external sender, or tenant owns the data in this scenario?

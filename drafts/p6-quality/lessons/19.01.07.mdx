@@ -44,6 +44,20 @@ node --test --test-name-pattern="19[.]01" examples/p6-quality/labs.test.mjs
 
 Pure inventory model; no real database or browser is tested.
 
+## Applied engineering walkthrough
+
+Line coverage measures execution, not whether a test notices wrong behavior. A test can visit the rejection branch without asserting its result. Branch coverage and mutation testing offer complementary signals, but none independently certifies correctness.
+
+### Diagnose the concrete failure
+
+Run the original negative test, then change a disposable copy to accept overselling. Confirm the test fails for the expected assertion rather than a syntax error. Restore the source and confirm the green case.
+
+### Independent exercise and evidence
+
+Review a coverage report alongside an invariant checklist. Choose one unprotected branch and add a meaningful assertion. Record the mutant, expected failure and restored result.
+
+**Evidence boundary:** These are practice instructions, not recorded test results. Preserve the existing model, specification and draft flag; external runtime qualification remains independent.
+
 ## Knowledge check
 
 1. Which public behavior or invariant is being protected?

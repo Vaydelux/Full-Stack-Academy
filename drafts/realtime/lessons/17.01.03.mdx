@@ -50,6 +50,20 @@ The tests exercise local Node state or loopback HTTP behavior. Document separate
 
 A finite in-memory replay buffer is not durable event recovery after a server restart.
 
+## Applied engineering walkthrough
+
+A resume cursor identifies a position in retained history. Replay can restore missed events only while the required history is available. If the cursor predates retention, a fresh authoritative snapshot is required. Subscribe and snapshot coordination must avoid a gap between the two.
+
+### Diagnose the concrete failure
+
+Publish several synthetic events and reconnect from a known cursor. Verify only later events are replayed. Advance beyond retention and check the explicit snapshot-required outcome. Test a cursor belonging to a different stream independently.
+
+### Independent exercise and evidence
+
+Design snapshot-plus-cursor synchronization with deduplication and a bounded replay window. Record received IDs and the gap recovery decision. Do not claim durable replay from in-memory history.
+
+**Qualification boundary:** These are practice instructions, not recorded results. Preserve the original laboratory and publication status. Local simulations do not qualify actual browser or distributed provider behavior.
+
 ## Knowledge check
 
 1. Which actor, resource, version or event cursor is authoritative in this scenario?

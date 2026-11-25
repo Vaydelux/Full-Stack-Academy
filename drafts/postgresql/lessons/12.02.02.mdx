@@ -78,6 +78,20 @@ Surrogate keys do not by themselves enforce tenancy. Queries, composite foreign 
 
 The right choice can change with workload size, tenant access patterns, migration risk and operational constraints. Optimize a schema only after correctness and measured query behavior. A trigger, index, or foreign key is not evidence of complete application authorization.
 
+## Applied SQL walkthrough
+
+An identity primary key supplies stable row identity; a separate unique constraint expresses business uniqueness within a tenant. Identity values may have gaps after rollback and must not be treated as sequence numbers without gaps. A unique tenant/email pair allows the same email in distinct tenants. The fixture uses ordinary text equality and does not implement email normalization or ownership verification.
+
+### Predict and diagnose the result
+
+Predict the behavior of duplicate tenant/email inserts and the same email under a different tenant. Inspect generated IDs without assuming consecutive values. Confirm that missing required fields fail independently of uniqueness. A successful insert is not proof that the actor is authorized to create an account.
+
+### Independent exercise and evidence
+
+Design an account email-change operation preserving the primary key. Describe how dependent foreign keys remain stable and how the unique business key handles competing changes. Record expected constraint failures and separate the application authorization check.
+
+**Qualification boundary:** Predicted results are not executed PostgreSQL evidence. Use the existing disposable database acceptance gate and preserve the original starter and solution. No publication credit is granted by this walkthrough.
+
 ## Bug hunt and regression reasoning
 
 1. **Reproduce:** Two organizations can invite the same email. Treating email as the sole global primary key wrongly prevents the second organization from creating its own account.

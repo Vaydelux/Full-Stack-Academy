@@ -44,6 +44,20 @@ node --test --test-name-pattern="22[.]01" examples/p6-operations/labs.test.mjs
 
 Synthetic measured-value budget only; actual Core Web Vitals, browser profiles and real-user metrics are unexecuted.
 
+## Applied engineering walkthrough
+
+Streaming can render an independent primary shell while secondary server data is pending. Suspense boundaries should match user-visible loading areas. Authorization must be established before private content is emitted; streaming is not a way to postpone access control.
+
+### Diagnose the concrete failure
+
+In an isolated route hold secondary data behind a controlled promise. Observe primary content, accessible fallback and eventual secondary content. Reject the secondary request and inspect the intended error state without exposing private data.
+
+### Independent exercise and evidence
+
+Design a route boundary diagram separating critical and optional work. Record first-byte and visible-content timings independently, alongside error and authorization checks.
+
+**Evidence boundary:** These are practice instructions, not recorded benchmark results. Preserve the existing specification, model and unpublished status. Actual browser measurement and qualification remain independent.
+
 ## Knowledge check
 
 1. Which invariant or operational measurement determines success?

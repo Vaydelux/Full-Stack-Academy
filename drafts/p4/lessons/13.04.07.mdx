@@ -75,6 +75,20 @@ A mocked JWT is not equivalent to Supabase Auth. Run the final matrix against a 
 
 Explicitly choose how identity is propagated between Next.js, NestJS, Prisma, and Supabase. When a privileged server role bypasses RLS, the NestJS service must check permissions and the database role should still be restricted. Prefer verified membership from trusted server data over user-editable metadata or query parameters.
 
+## Applied persistence walkthrough
+
+Cross-tenant acceptance needs real identities, known fixture records and explicit forbidden cases. A check that every returned row belongs to alpha can pass on an empty list, so also assert a known allowed record and expected count. Test the user-scoped API and privileged server repository separately; one passing path does not qualify the other.
+
+### Diagnose the concrete failure
+
+Seed known alpha and beta tasks in the isolated test environment. Assert the exact permitted alpha IDs, then request a known beta ID as alpha and expect a safe not-found response. Repeat using the server path and include revoked membership. Clean up only the isolated fixture data.
+
+### Independent exercise and evidence
+
+Design a regression matrix for anonymous, authorized member, nonmember and privileged server acting for a member. Record explicit allowed and excluded rows and actual database role. Do not infer live RLS results from mocked API objects.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Use pinned tooling and a disposable local or explicitly approved test environment. Preserve the starter and solution; source review does not qualify real database roles or authorization.
+
 ## Bug Hunt
 
 1. Predict who can exploit this bug: A positive-only test passes even when alpha can enumerate beta's records, because it never probes forbidden operations.

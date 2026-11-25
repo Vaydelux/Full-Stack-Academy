@@ -77,6 +77,20 @@ A correct redirect URL does not replace checking state, verifier association and
 
 In production, model expired access tokens, refresh-token rotation, multiple concurrent tabs, CSRF/state handling where applicable, cookie attributes, MFA enrollment and logout propagation. Never rely on raw JWT decoding, a mutable cookie JSON field, an unverified redirect URL or a user-editable metadata claim to authorize administrative actions.
 
+## Applied persistence walkthrough
+
+OAuth redirects the browser to an identity provider, while PKCE binds the authorization code exchange to the originating client using a verifier and challenge. The snippet starts the flow but does not implement the callback. The callback must exchange the code in the correct session context, handle errors and restrict post-login destinations to trusted local paths.
+
+### Diagnose the concrete failure
+
+Configure a disposable provider or test identity flow with an exact approved callback. Verify successful exchange, rejected reused or malformed code and cancellation. Test an unexpected return destination and ensure it cannot cause an open redirect. Do not capture authorization codes or tokens in logs.
+
+### Independent exercise and evidence
+
+Draw the browser, provider and callback sequence and identify the point at which the app verifies the resulting identity. Record status transitions and allowed redirect origins; distinguish provider login from tenant membership.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Use isolated synthetic identities and the pinned SDK. Preserve the existing starter and solution; source inspection does not establish actual Auth or session security.
+
 ## Bug Hunt
 
 1. State the attack or broken state: The starter lets an untrusted redirect destination receive the OAuth callback flow, creating a redirect/session-handling risk.

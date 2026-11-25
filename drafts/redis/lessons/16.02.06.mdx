@@ -50,6 +50,20 @@ In the test notes, separate what the in-memory fixture genuinely observed from R
 
 A rate limiter is not a substitute for authentication abuse detection or bot protection.
 
+## Applied engineering walkthrough
+
+A shared rate limiter enforces one counter or token budget across processes. Separate read and increment operations can race; accounting and expiry need an atomic contract. Fixed windows permit bursts at boundaries, while token or sliding-window designs offer different behavior. Store failure policy should match endpoint sensitivity.
+
+### Diagnose the concrete failure
+
+Use two synthetic API instances sharing the same test limit. Send a bounded sequence and verify the combined accepted count, not each process's count. Exercise a window transition and an unavailable store. Verify a caller-controlled identity field cannot reset the budget.
+
+### Independent exercise and evidence
+
+Design a login limiter with account and trusted network dimensions, neutral errors and bounded retries. Record timing, accepted/denied counts and the actual atomic primitive used in live Redis.
+
+**Qualification boundary:** These are practice instructions, not recorded results. Preserve the existing lab and publication status; in-memory tests do not qualify live Redis or BullMQ behavior.
+
 ## Knowledge check
 
 1. What is authoritative in this scenario, and what state is derived or replayable?

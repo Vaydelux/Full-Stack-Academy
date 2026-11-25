@@ -44,6 +44,20 @@ node --test --test-name-pattern="22[.]03" examples/p6-operations/labs.test.mjs
 
 Capacity arithmetic only; no actual CDN, cache cluster, balancing, cost quotes or scaling benchmark.
 
+## Applied engineering walkthrough
+
+Scaling decisions need a cost model across compute, database, storage, network transfer and operational time. A lower per-instance price may not produce a lower total cost when additional replicas or dependencies are required. Use explicit assumed prices rather than pretending to know current provider charges.
+
+### Diagnose the concrete failure
+
+Compare two synthetic configurations with specified instance counts and hypothetical unit costs. Include fixed database and transfer costs, then vary peak demand. Inspect whether each plan remains within its stated cap and latency objective.
+
+### Independent exercise and evidence
+
+Write a decision record with cost assumptions, resource constraints and a measurable upgrade trigger. Replace assumptions with current official pricing and measured usage only during actual deployment planning.
+
+**Evidence boundary:** These are practice instructions, not recorded capacity or benchmark results. Preserve the existing specification, model and unpublished status. Actual deployment measurements remain independent.
+
 ## Knowledge check
 
 1. Which invariant or operational measurement determines success?

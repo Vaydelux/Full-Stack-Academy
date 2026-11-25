@@ -44,6 +44,20 @@ node --test --test-name-pattern="22[.]02" examples/p6-operations/labs.test.mjs
 
 Synthetic latency sample analysis only; actual CPU/heap profiles, Fastify comparison, query plans and HTTP behavior need real runtimes.
 
+## Applied engineering walkthrough
+
+End-to-end latency is the sum of components for each request. Percentiles are computed on the resulting per-request totals, not by adding percentiles of independently distributed components. Retain errors and timeouts in the defined reporting population to avoid hiding degraded service.
+
+### Diagnose the concrete failure
+
+Run requestProfile using paired queue and execution durations and inspect total p95. Compare with a misleading sum of component p95 values. Benchmark one controlled change in a disposable API and record failures separately.
+
+### Independent exercise and evidence
+
+Prepare a measurement record containing paired observations, estimator, workload, baseline and changed results. Require correctness and error-rate gates before accepting latency improvements.
+
+**Evidence boundary:** These are practice instructions, not recorded benchmark results. Preserve the existing specification, model and unpublished status. Actual API and database measurements remain independent.
+
 ## Knowledge check
 
 1. Which invariant or operational measurement determines success?

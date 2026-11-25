@@ -71,6 +71,20 @@ Prisma's server-side database user may bypass Supabase RLS. Enforce tenant/objec
 
 A production-ready persistence boundary has to address error mapping, least-privileged database credentials, transaction/connection lifecycle, tenant authorization and request cancellation. Whenever schema changes are involved, review migration SQL and compatibility with the previous app version. Never expose database credentials in a `NEXT_PUBLIC_` variable or include them in a public web bundle.
 
+## Applied persistence walkthrough
+
+The read path begins with a server-verified tenant, then uses a bounded query and explicit projection. A tenant predicate is required even when the primary key is globally unique. Selecting only public fields reduces accidental disclosure but is not a membership check. The shown verifiedTenantIdFromRequest is a placeholder for a real authorization boundary, not a value to accept from the browser.
+
+### Diagnose the concrete failure
+
+Generate the client and seed two tenant datasets in a disposable database. Confirm the query returns at most twenty rows in ID order, with only id and title. Test missing tenant context and a second tenant's known record. Inspect the built client bundle to ensure the database URL is absent.
+
+### Independent exercise and evidence
+
+Design a server endpoint that derives tenant context from verified membership, calls the repository and returns only public fields. Record positive and negative row IDs, response fields, query limit and the real database role.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Use the pinned Prisma 7 toolchain and disposable PostgreSQL database. Preserve the starter and solution; source review does not qualify generated code or authorization.
+
 ## Bug Hunt
 
 1. Observe the unsafe starter: The starter fetches every tenant's tasks and all selected model fields from a potentially privileged server connection.

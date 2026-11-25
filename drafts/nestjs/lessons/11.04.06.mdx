@@ -116,7 +116,21 @@ The lesson's instructor snippet demonstrates the mechanism but is not a deployab
 
 <Misconception claim="A single path-only cache entry can return tenant A's response to tenant B." correction="A cache interceptor must isolate verified tenant views and apply a finite TTL." />
 
-<KnowledgeCheck question="What should a release reviewer demand for caching and interceptors?" choices={["A passing source-text search is sufficient.","The actual Nest runtime shows the specified positive case and a meaningful denial or failure case.","A project compiles, so tenancy is proven.","A local demo endpoint may safely be exposed publicly without auth."]} correctIndex={1} explanation="A cache interceptor must isolate verified tenant views and apply a finite TTL." misconception="A single path-only cache entry can return tenant A's response to tenant B." lessonId="11.04.06" />
+<KnowledgeCheck question="Two users in one tenant have different resource permissions. What is wrong with a cache keyed only by URL and tenant?" choices={["It will necessarily use too much disk space.","It may serve one user's authorized view to another user.","It cannot store JSON.","It always expires before the next request."]} correctIndex={1} explanation="Cache identity must preserve the authorized view, not just the tenant and path." misconception="A single path-only cache entry can return tenant A's response to tenant B." lessonId="11.04.06" />
+
+## Applied engineering walkthrough
+
+A cache is derived state, not an authorization source. The example keys entries by verified tenant, verified user and URL, bounds entries and expires them after one second. It invalidates tenant entries on successful mutation emission. This local cache is not coherent across processes, cannot guarantee immediate permission revocation, and may repopulate stale data when an in-flight read finishes after invalidation. Do not cache sensitive responses without a policy.
+
+### Diagnose the concrete failure
+
+Compare two users within one tenant and two distinct tenants requesting the same URL. Confirm their cached values stay separate and that requests missing identity bypass caching. Test expiration and mutation failure. For a deeper concurrency case, hold an old GET until after a successful write and check whether it can repopulate stale data.
+
+### Independent exercise and evidence
+
+Design a versioned cache key or generation counter that prevents late reads from restoring invalidated entries. Describe how permission changes affect cache identity and invalidation. Record cache hits, misses, handler calls and expiry using deterministic test time where possible.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Container, HTTP, socket and operational tests require the actual installed runtime. Keep the existing starter and solution unchanged; do not award course credit from source review alone.
 
 ## Bug Hunt: reproduce, diagnose and repair
 

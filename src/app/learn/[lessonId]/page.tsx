@@ -2,8 +2,9 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { AUTHORED_LESSONS } from '@/lib/academy/authored-content';
-import { lessonMap, moduleMap } from '@/lib/academy/curriculum';
+import { lessonsByModule, lessonMap, moduleMap } from '@/lib/academy/curriculum';
 import { CodeBlock, DocNotice, DocSection, DocShell } from '@/components/course/DocShell';
+import { lessonNeighbors } from '@/lib/academy/lesson-neighbors.mjs';
 import { getPublicOrigin } from '@/lib/academy/site';
 import { LessonArticle } from '@/content/lesson-registry';
 import { MDX_METADATA, PUBLISHED_LESSON_IDS, lessonRubric } from '@/lib/academy/published';
@@ -38,6 +39,7 @@ export default async function LessonPage({ params }: LessonPageProps) {
   const authored = AUTHORED_LESSONS[lessonId];
   const mdxMeta = MDX_METADATA.get(lessonId);
   const localRubric = mdxMeta ? lessonRubric(lessonId) : undefined;
+  const neighbors = lessonNeighbors(lessonsByModule.get(lesson.moduleId) ?? [], PUBLISHED_LESSON_IDS, lessonId);
   const staged = !authored && !mdxMeta && readCourseProgress().draftIds.includes(lessonId);
   return (
     <DocShell active={authored || mdxMeta ? lessonId : undefined}>
@@ -164,6 +166,18 @@ export default async function LessonPage({ params }: LessonPageProps) {
           </div>
         </>
       ) : null}
+      {(authored || mdxMeta) && (neighbors.previous || neighbors.next) && (
+        <nav aria-label="Adjacent published lessons" className="mt-10 grid gap-3 border-t border-slate-200 pt-6 sm:grid-cols-2 dark:border-white/10">
+          {neighbors.previous && <Link rel="prev" href={`/learn/${neighbors.previous.id}`} className="min-w-0 break-words rounded-xl border border-slate-200 p-4 hover:border-cyan-500 dark:border-white/15">
+            <span className="block text-xs font-semibold text-cyan-700 dark:text-cyan-300">Previous available lesson</span>
+            <span className="mt-2 block text-sm font-bold">{neighbors.previous.title}</span>
+          </Link>}
+          {neighbors.next && <Link rel="next" href={`/learn/${neighbors.next.id}`} className="min-w-0 break-words rounded-xl border border-slate-200 p-4 hover:border-cyan-500 sm:col-start-2 dark:border-white/15">
+            <span className="block text-xs font-semibold text-cyan-700 dark:text-cyan-300">Next available lesson</span>
+            <span className="mt-2 block text-sm font-bold">{neighbors.next.title}</span>
+          </Link>}
+        </nav>
+      )}
     </DocShell>
   );
 }

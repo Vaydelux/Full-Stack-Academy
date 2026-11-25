@@ -44,6 +44,20 @@ node --test --test-name-pattern="24[.]04" examples/p7-platforms/labs.test.mjs
 
 Synthetic queue acknowledgement model only; physical touch, OS background behavior, push delivery and store acceptance require device tests.
 
+## Applied engineering walkthrough
+
+Mobile background execution is opportunistic; scheduled timers do not guarantee work runs on demand. Persist work before scheduling, reconcile on foreground entry and bound retries. Show unresolved synchronization state rather than claiming completion while work is deferred.
+
+### Diagnose the concrete failure
+
+Persist two operations, acknowledge one and terminate before the second finishes. On restart inspect resumeQueue eligibility and verify that acknowledged work is not repeated.
+
+### Independent exercise and evidence
+
+Test delayed execution, battery restrictions and offline behavior on a representative device. Record pending, acknowledged and failed states, along with platform constraints and actual timing rather than an assumed interval.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify actual device, provider and human accessibility evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

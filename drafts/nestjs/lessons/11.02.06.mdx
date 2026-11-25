@@ -70,7 +70,21 @@ If the UI shows a generic error, classify the failure at the nearest authoritati
 
 <Misconception claim="A serialized user record includes passwordHash in the HTTP response." correction="Response DTOs should expose intentionally selected public fields rather than returning persistent entities unchanged." />
 
-<KnowledgeCheck question="Which verification proves structured responses?" choices={["A decorator's name exists in source.","A real Nest request reaches the correct stage and demonstrates the specified positive and negative outcomes.","An interface type was exported.","The UI hides the endpoint, so it must be protected."]} correctIndex={1} explanation="Response DTOs should expose intentionally selected public fields rather than returning persistent entities unchanged." misconception="A serialized user record includes passwordHash in the HTTP response." lessonId="11.02.06" />
+<KnowledgeCheck question="A function declares PublicAccount as its return type but returns the original Account object. What prevents passwordHash from being serialized?" choices={["The TypeScript return annotation alone.","An HTTP status code.","Explicitly constructing a new object containing only public fields.","Using a shorter interface name."]} correctIndex={2} explanation="Only actual runtime projection removes private fields from the outgoing object." misconception="A serialized user record includes passwordHash in the HTTP response." lessonId="11.02.06" />
+
+## Applied engineering walkthrough
+
+A TypeScript return type is erased at runtime and does not remove extra object properties. Returning a persistence entity can expose password hashes, tokens or private metadata. Build an explicit allowlisted DTO at the response boundary. Selecting only needed database columns is useful defense in depth, but still authorize the request independently.
+
+### Diagnose the concrete failure
+
+Pass an account containing id, displayName and passwordHash to accountResponse. Compare JSON serialization of the original object and the projected object. The latter must have exactly the public fields. Test with extra properties to prove the projection remains allowlisted. The existing test is a pure projection check; an HTTP route test is required to verify serialization end to end.
+
+### Independent exercise and evidence
+
+Create a second DTO for a public task that omits internal organization notes. Write a test with unexpected private fields and assert exact public keys. Record the input keys, output keys and the absence of sensitive properties. Never use real hashes or personal records in the fixture.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. The existing request-pipeline checks include direct class and pure-function tests; real HTTP and adapter acceptance remain distinct release requirements. Do not award course credit from source review alone.
 
 ## Bug Hunt: reproduce, diagnose and repair
 

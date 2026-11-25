@@ -43,6 +43,20 @@ Your acceptance criteria must include a positive authorized case and a negative 
 
 Type-valid input is still untrusted input.
 
+## Applied engineering walkthrough
+
+Trust boundaries identify where data changes authority, not just where processes communicate. A schema can validate that role is a string without establishing that the caller holds that role. Define a public input DTO separately from a verified principal and a persistence DTO. Privileged fields should never be mass-assigned from request data.
+
+### Diagnose the concrete failure
+
+Send a normal update to a synthetic record and a request containing an unexpected role field. Verify the server either rejects the unexpected field or discards it according to the contract, and confirm the stored privilege does not change. Inspect the actual data passed into the persistence layer.
+
+### Independent exercise and evidence
+
+Design a profile update accepting only display name and preferred locale. Trace identity, membership and mutation fields separately. Record the allowed update and denied privilege change; validate the trusted principal at the server boundary.
+
+**Qualification boundary:** These are practice instructions, not recorded audit results. Use synthetic data and authorized disposable infrastructure. Preserve existing laboratory contracts and publication status.
+
 ## Knowledge check
 
 1. Which input is controlled by the attacker in this scenario?

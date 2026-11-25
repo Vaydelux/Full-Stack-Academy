@@ -44,6 +44,20 @@ node --test --test-name-pattern="24[.]02" examples/p7-platforms/labs.test.mjs
 
 In-memory sync model; actual SQLite persistence, durable queue, crash recovery and conflict reconciliation are not established.
 
+## Applied engineering walkthrough
+
+A synchronization cursor belongs to a specific feed, ordering and authorized scope. Use stable ordering with a tie breaker or a server sequence. Persist the cursor in the same local transaction as the complete page so partial application cannot skip records.
+
+### Diagnose the concrete failure
+
+Create five records with tied timestamps, use pages of two, and interrupt midway through the second page. Restart from the prior checkpoint and verify visible records are not duplicated or skipped.
+
+### Independent exercise and evidence
+
+Exercise a wrong-account cursor and an expired cursor. Design bounded resnapshot and record the cursor, applied record IDs and database commit state.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify real persistence, network, device and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

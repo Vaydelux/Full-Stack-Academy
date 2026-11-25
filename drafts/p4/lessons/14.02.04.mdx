@@ -80,6 +80,20 @@ Do not log factor secrets, recovery codes or TOTP values. Implement recovery and
 
 In production, model expired access tokens, refresh-token rotation, multiple concurrent tabs, CSRF/state handling where applicable, cookie attributes, MFA enrollment and logout propagation. Never rely on raw JWT decoding, a mutable cookie JSON field, an unverified redirect URL or a user-editable metadata claim to authorize administrative actions.
 
+## Applied persistence walkthrough
+
+Enrolling a factor does not automatically establish higher assurance for the current session. The flow must verify the challenge and then check the session assurance level. Enrollment also needs a secure user interface for the generated secret or QR code. Recovery and factor removal require separate policies, and sensitive server operations must enforce the required assurance independently.
+
+### Diagnose the concrete failure
+
+Use a synthetic account to enroll and challenge a TOTP factor. Exercise an invalid or expired code and confirm the protected action is denied until the required assurance is present. Verify the backend's enforcement rather than relying on the client display. Never record actual factor secrets or codes.
+
+### Independent exercise and evidence
+
+Design recovery for a lost factor with an independently verified support or account recovery process. Specify reauthentication, audit events and rate limiting. Record the expected denial and successful assurance transition without exposing recovery secrets.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Use isolated synthetic identities and the pinned SDK. Preserve the existing starter and solution; source inspection does not establish actual Auth or session security.
+
 ## Bug Hunt
 
 1. State the attack or broken state: The starter marks MFA as completed immediately after enrollment, even if the user never proves control of the TOTP factor.

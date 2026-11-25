@@ -77,6 +77,20 @@ TO authenticated alone is not authorization. Security-definer views/functions an
 
 On an actual full-stack app, draw the flow from browser through the authenticated server endpoint to Supabase Auth or PostgreSQL. Annotate which requests use a publishable key, which need a user JWT, which require database grants, and which should never be allowed outside server infrastructure. Storage and Realtime must be authorized independently of ordinary table policies.
 
+## Applied persistence walkthrough
+
+Schema exposure controls which schemas the Data API can reach; grants determine object access and RLS controls rows. The fixture enables RLS and grants authenticated SELECT with an owner predicate. It does not demonstrate permissions for other operations. Default grants can differ between projects, so inspect actual effective grants. Views need separate security review.
+
+### Diagnose the concrete failure
+
+Use two fake authenticated users and known notes in an isolated project. Assert exactly the owner's note appears and the other user's note is excluded. Try an anonymous request and a write, inspect applicable grants and policies, and distinguish an empty authorized result from an object-permission error.
+
+### Independent exercise and evidence
+
+Design an API schema containing only intended public objects and a separate internal schema. Explain how a security-invoker view preserves the calling role's access boundary. Record exposed schemas, grants and real allowed/denied results.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Use an isolated local Supabase environment or an explicitly approved disposable project. Preserve the starter and solution; do not treat source review as live platform or security qualification.
+
 ## Bug Hunt
 
 1. Reproduce the unsafe setup: The starter grants authenticated users SELECT on a newly created public table with no RLS policy, potentially exposing every owner's notes.

@@ -44,6 +44,20 @@ node --test --test-name-pattern="24[.]03" examples/p7-platforms/labs.test.mjs
 
 Synthetic command permission model; actual Rust commands, capability enforcement, installers and signatures require platform builds.
 
+## Applied engineering walkthrough
+
+Use a per-user application data location rather than the install directory or current working directory. Transactions protect related writes; versioned migrations establish schema evolution. A failed migration needs a defined recovery strategy, including backup and incompatible downgrade handling.
+
+### Diagnose the concrete failure
+
+Create a database at schema version one, insert a task and restart. Upgrade to version two, inspect the existing row, then induce a failed migration and verify data and version.
+
+### Independent exercise and evidence
+
+Test a second user directory and unavailable disk. Record supported backup and restore behavior and distinguish a reopened database from merely creating a new database.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify actual Tauri builds, OS behavior and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

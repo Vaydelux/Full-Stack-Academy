@@ -50,6 +50,20 @@ In the test notes, separate what the in-memory fixture genuinely observed from R
 
 An LRU-like eviction policy does not guarantee a particular key survives.
 
+## Applied engineering walkthrough
+
+Redis eviction responds to memory pressure; expiration responds to time. Allkeys policies may evict any eligible key, while volatile policies consider keys with expiry. With no eligible eviction candidates, writes may fail. Queue state and disposable cache entries have different durability needs.
+
+### Diagnose the concrete failure
+
+In a dedicated Redis test instance, apply a bounded synthetic workload and inspect used memory, evicted keys, errors and origin loads. Compare a cache-oriented policy with noeviction under the same workload. Do not change production settings.
+
+### Independent exercise and evidence
+
+Choose separate capacity and eviction strategies for derived cache and durable workflow infrastructure. Record the memory budget, measured hit ratio and failure behavior rather than assuming a policy guarantees availability.
+
+**Qualification boundary:** These are practice instructions, not recorded results. Preserve the existing lab and publication status; in-memory tests do not qualify live Redis or BullMQ behavior.
+
 ## Knowledge check
 
 1. What is authoritative in this scenario, and what state is derived or replayable?

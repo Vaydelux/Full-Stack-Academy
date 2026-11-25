@@ -75,6 +75,20 @@ Avoid sensitive info in URLs, referrer headers and analytics. Ensure callback en
 
 In production, model expired access tokens, refresh-token rotation, multiple concurrent tabs, CSRF/state handling where applicable, cookie attributes, MFA enrollment and logout propagation. Never rely on raw JWT decoding, a mutable cookie JSON field, an unverified redirect URL or a user-editable metadata claim to authorize administrative actions.
 
+## Applied persistence walkthrough
+
+Password-reset emails should lead only to approved application destinations. The shown code constructs a fixed path from configured origin; it does not validate that configuration against an explicit allowlist or implement the password-update callback. Public responses should avoid account enumeration. Reset tokens and links are sensitive credentials.
+
+### Diagnose the concrete failure
+
+Use a local test mailbox and synthetic account. Confirm the reset link targets the expected environment and that a valid recovery session can update the password. Exercise expired and reused links and an unapproved redirect. Review template configuration without copying secret links into evidence.
+
+### Independent exercise and evidence
+
+Create a matrix of local and deployed callback origins with exact intended paths. Define a neutral response for unknown email addresses and a bounded request rate. Record status and redirect decisions, not token values.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Use isolated synthetic identities and the pinned SDK. Preserve the existing starter and solution; source inspection does not establish actual Auth or session security.
+
 ## Bug Hunt
 
 1. State the attack or broken state: An untrusted redirectTo parameter can be used to send password-reset flows to an attacker-controlled destination.

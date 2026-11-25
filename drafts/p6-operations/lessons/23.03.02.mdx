@@ -44,6 +44,20 @@ node --test --test-name-pattern="23[.]03" examples/p6-operations/labs.test.mjs
 
 In-memory synthetic idempotency model; no broker, durable store, transactional outbox or exactly-once side-effect evidence.
 
+## Applied engineering walkthrough
+
+Eventual consistency permits derived views to lag authoritative state. A missing projection immediately after a committed write does not prove the resource does not exist. Show pending state and define how the client obtains authoritative confirmation. Never use a stale projection as the sole authorization source.
+
+### Diagnose the concrete failure
+
+Simulate a committed order and delayed read projection. Verify the user sees a pending state until projection catches up. Inject duplicate and out-of-order updates and examine whether the intended revision policy prevents stale replacement.
+
+### Independent exercise and evidence
+
+Design a reconciliation path with versioned records and measurable projection lag. Record observed convergence and unresolved failures; a synthetic sequence is not distributed consistency proof.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve the existing specification, model and unpublished status. Actual persistence, broker and provider qualification remain independent.
+
 ## Knowledge check
 
 1. Which invariant or operational measurement determines success?

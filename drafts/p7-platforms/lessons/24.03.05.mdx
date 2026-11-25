@@ -44,6 +44,20 @@ node --test --test-name-pattern="24[.]03" examples/p7-platforms/labs.test.mjs
 
 Synthetic command permission model; actual Rust commands, capability enforcement, installers and signatures require platform builds.
 
+## Applied engineering walkthrough
+
+Updater authenticity requires signature verification using a trusted public key and appropriate artifact metadata. Transport encryption is not an artifact signature. Plan key rotation, release channels and recovery from installation failure before enabling automatic updates.
+
+### Diagnose the concrete failure
+
+With disposable signing material, compare a valid update against a modified artifact. Verify the tampered artifact is rejected and the installed version remains usable.
+
+### Independent exercise and evidence
+
+Prepare a release record with target architecture, version, digest, signature and recovery steps. Keep private keys out of source and evidence; a mock cannot establish actual updater behavior.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify actual Tauri builds, OS behavior and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

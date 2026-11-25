@@ -72,6 +72,20 @@ A query can succeed while exposing data from another tenant or leaking email. Te
 
 For production systems, distinguish this basic query exercise from actual role privileges, row-level security, constraints across tenant boundaries, input validation, indexes, transaction isolation, and migration safety. Those topics appear in later canonical PostgreSQL and Supabase modules. The teaching fixture deliberately uses static tenant IDs and does not implement real authentication.
 
+## Applied SQL walkthrough
+
+A relation represents facts with a defined row shape. PostgreSQL enforces declared types and nullability; a SELECT projection chooses the columns returned, while WHERE chooses rows. In the supplied fixture, alpha contains users 1, 2 and 4. User 3 belongs to beta. The repaired view intentionally includes inactive user 4 because it is a tenant directory, not an active-user report. It excludes email entirely, even for permitted rows.
+
+### Predict and diagnose the result
+
+Predict three rows with identifiers 1, 2 and 4, and exactly three columns: id, display_name and active. Compare the starter and solution using the acceptance script. Do not assume insertion order; select from the view with ORDER BY id when inspecting results. Inspect information_schema.columns in the current temporary schema to confirm that email is absent.
+
+### Independent exercise and evidence
+
+Design an active-only public directory. Predict identifiers 1 and 2, then explain why adding active=true changes the business contract rather than merely improving security. Record the returned identifiers, column names, and one forbidden tenant row. A fixed alpha predicate is not production authorization.
+
+**Qualification boundary:** Predicted results are not executed PostgreSQL evidence. Use the existing disposable database acceptance gate and preserve the original starter and solution. No publication credit is granted by this walkthrough.
+
 ## Bug Hunt
 
 1. **Reproduce:** The starter leaks the users' email field and includes a second tenant.

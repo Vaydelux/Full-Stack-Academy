@@ -44,6 +44,20 @@ node --test --test-name-pattern="24[.]02" examples/p7-platforms/labs.test.mjs
 
 In-memory sync model; actual SQLite persistence, durable queue, crash recovery and conflict reconciliation are not established.
 
+## Applied engineering walkthrough
+
+A tombstone preserves a deletion as a versioned event for disconnected replicas. Deleting all history too early may let stale clients resurrect records. Cleanup requires a defensible replica watermark or a resnapshot obligation, not just elapsed time.
+
+### Diagnose the concrete failure
+
+Create an entity, synchronize its deletion, then replay an older edit. Assert that the entity stays absent from active lists and the stale revision is rejected.
+
+### Independent exercise and evidence
+
+Model two replicas, one offline past retention. Explain why that client must resynchronize rather than replay against missing history. Record the permitted cleanup condition and deletion version.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify real persistence, network, device and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

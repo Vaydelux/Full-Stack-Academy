@@ -86,6 +86,20 @@ A PostgreSQL schema name or Prisma @@schema does not itself provide access contr
 
 In a multi-tenant API, input validation, role-aware database credentials, optimistic concurrency, migration review and response-shape controls must be considered together. Favor bounded queries and explicit domain operations over returning raw privileged ORM interfaces to HTTP handlers. Record the query plan or migration state instead of guessing.
 
+## Applied persistence walkthrough
+
+PostgreSQL schemas organize database objects; they do not automatically isolate tenants or authorize roles. Prisma multi-schema mapping associates models with app or audit. Model names and SQL schema qualification must be reviewed when generating migrations. The runtime role should not gain audit write access merely because both models exist in one generated client.
+
+### Diagnose the concrete failure
+
+Inspect the resulting SQL on a disposable target and confirm each table resides in the expected schema. Run an application-role read and a forbidden audit mutation. Check schema USAGE and object grants separately. An introspection result cannot prove least privilege.
+
+### Independent exercise and evidence
+
+Design independent DDL ownership and runtime grants for app and audit schemas. Explain how a new schema is introduced without broadening the public API surface. Record table locations, effective role and negative privilege results.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Use the pinned Prisma 7 toolchain and disposable PostgreSQL database. Preserve the starter and solution; source review does not qualify generated code or authorization.
+
 ## Bug Hunt
 
 1. Make a concrete failure prediction: A service maps a private internal audit model into a default exposed application schema, confusing Data API exposure with server-only persistence.

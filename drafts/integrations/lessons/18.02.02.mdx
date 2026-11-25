@@ -52,6 +52,20 @@ The corresponding module exercises **MailOutbox: consent, idempotency, bounded r
 
 For a production implementation, document the secret-owner or principal, durability plan, error and recovery policy, rate/resource bounds, privacy guarantees, observability without sensitive payloads, and the credential/version-rotation procedure.
 
+## Applied engineering walkthrough
+
+Component-based templates separate layout from dynamic values. React normally escapes text interpolations, but raw HTML, URL schemes and third-party tracking need separate review. A valid HTML snapshot does not prove accessibility or rendering across mail clients.
+
+### Diagnose the concrete failure
+
+Render synthetic display names and task titles containing punctuation with the actual pinned template library when available. Check that text remains literal, links resolve to approved origins and missing variables fail safely. The local outbox fixture does not render React Email.
+
+### Independent exercise and evidence
+
+Design a versioned template contract with required variables, plain-text alternative, approved links and readable mobile layout. Record snapshots and real client preview results separately.
+
+**Qualification boundary:** These are practice instructions, not recorded results. Preserve existing specifications and laboratory contracts. Qualify actual external services separately using authorized disposable infrastructure.
+
 ## Knowledge check
 
 1. Which authenticated actor, external sender, or tenant owns the data in this scenario?

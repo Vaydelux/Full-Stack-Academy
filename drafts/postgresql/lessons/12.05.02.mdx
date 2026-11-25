@@ -71,6 +71,20 @@ An empty pg_stat_replication result on a standalone test server is not evidence 
 
 Practice describing a failure in terms of its blast radius, detection signal and recovery path. What would happen if the database were unavailable during a migration, WAL archives were missing, a pooled connection lost session state, or an operator accidentally targeted production? Identify the prerequisite that would prevent or contain each failure.
 
+## Applied SQL walkthrough
+
+Physical streaming replication sends WAL from a primary to a standby. A standby may replay changes later than they commit on the primary, so read-after-write on a replica can be stale. The sender statistics are observed on the primary, receiver statistics on the standby; empty results may reflect topology or privileges. Replication is not a backup because erroneous writes may also replicate.
+
+### Predict and diagnose the result
+
+Use two dedicated, correctly configured test instances. Identify each role with pg_is_in_recovery, then observe sender and receiver status and WAL positions. Commit a synthetic marker on the primary and measure when it becomes visible on the standby. Lag columns can be NULL and do not always represent a forecast of catch-up time.
+
+### Independent exercise and evidence
+
+Design routing for an application that needs immediate confirmation after a write but can tolerate stale reporting reads. Explain when to use the primary, what happens during a standby outage, and how to avoid split-brain during failover. Record role, marker visibility and observed lag; do not promote a real replica in this exercise.
+
+**Qualification boundary:** These are operational practice instructions, not a completed recovery or security audit. Use only explicitly authorized disposable infrastructure. Preserve the existing starter, solution and acceptance contract.
+
 ## Bug Hunt
 
 1. State the specific unsafe assumption: The starter checks whether the local server is in recovery but does not inspect sender/receiver status or whether a replica is actually caught up.

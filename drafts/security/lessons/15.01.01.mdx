@@ -43,6 +43,20 @@ Your acceptance criteria must include a positive authorized case and a negative 
 
 A STRIDE label is a brainstorming aid, not evidence that the proposed control has been implemented.
 
+## Applied engineering walkthrough
+
+Start with a diagram, not a threat list. Mark the browser as untrusted, the API as the policy enforcement point, and the database and storage as protected assets. STRIDE organizes possible threats; prioritize each by impact, likelihood and existing mitigations. An authenticated caller can still cross a resource boundary.
+
+### Diagnose the concrete failure
+
+Create a synthetic workspace A document and workspace B document. Ask which identity is verified and which document identifier is merely input. A valid member's read should return the allowed document; a foreign document should return a nonrevealing denial with no title.
+
+### Independent exercise and evidence
+
+Produce a threat register with asset, entry point, abuse case, mitigation owner, test ID and residual risk. Choose one threat per STRIDE category and explain why its proposed control addresses it. Record review decisions, not unsupported compliance claims.
+
+**Qualification boundary:** These are practice instructions, not recorded audit results. Use synthetic data and authorized disposable infrastructure. Preserve existing laboratory contracts and publication status.
+
 ## Knowledge check
 
 1. Which input is controlled by the attacker in this scenario?

@@ -44,6 +44,20 @@ node --test --test-name-pattern="24[.]01" examples/p7-platforms/labs.test.mjs
 
 Native builds, WebView isolation and plugin permissions require a real device.
 
+## Applied engineering walkthrough
+
+Capacitor preserves a web rendering model inside a native shell, whereas React Native normally renders native UI components through its own runtime. Start with an inventory of shared routing, validation and domain code, then distinguish reusable web presentation from platform-specific capabilities. Neither architecture automatically supplies offline storage, acceptable startup time or native accessibility.
+
+### Diagnose the concrete failure
+
+Draw a camera request from the UI to the operating system for each option. Mark which code runs as web content, which plugin or native module mediates the request, and where the permission decision occurs. A page that navigates to an unexpected origin must not inherit the camera capability.
+
+### Independent exercise and evidence
+
+Compare a synthetic task screen using startup time, interaction latency, accessibility and maintenance criteria. Record the chosen architecture and a measurable reason to reverse the decision after device testing.
+
+**Evidence boundary:** These are practice instructions, not recorded results. The local model cannot qualify a native build, secure storage, permissions or real hardware. Preserve draft status until external gates pass.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

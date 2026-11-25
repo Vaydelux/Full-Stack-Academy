@@ -81,6 +81,20 @@ A unique conflict is not a reason to echo the conflicting record or reveal anoth
 
 A safe persistence layer should accept explicit request-scoped identities, use bounded queries, reject unsupported input, and keep internal query types from becoming public API DTOs. For permission-sensitive mutations, reason about database constraints and application authorization separately: a valid foreign key does not mean the calling actor may update that row.
 
+## Applied persistence walkthrough
+
+Prisma error codes are useful at a persistence boundary, but their meaning must be interpreted in the operation context. The example maps P2002 to conflict and P2025 to not found and uses a generic public 500 otherwise. It checks a structural code rather than a verified Prisma exception class; a production boundary should avoid trusting arbitrary thrown objects and must preserve useful safe diagnostics.
+
+### Diagnose the concrete failure
+
+Create a duplicate unique value and an operation targeting a missing record in a real disposable database. Capture the error class and code without exposing metadata or query parameters. Compare the HTTP mapping with the intended contract. Test an unexpected failure separately and verify no stack or connection URL reaches the response.
+
+### Independent exercise and evidence
+
+Design a mapping table for validation, uniqueness, missing records and transient transaction conflicts. Explain which errors can be retried and which need a changed request. Record status, public message and redacted diagnostic fields.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Use the pinned Prisma 7 toolchain and disposable PostgreSQL database. Preserve the starter and solution; source review does not qualify generated code or authorization.
+
 ## Bug Hunt
 
 1. State the starter's observable defect: The starter returns an internal database exception directly to the client, potentially disclosing table names, query parameters, constraint identifiers or credentials.

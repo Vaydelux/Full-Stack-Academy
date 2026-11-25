@@ -44,6 +44,20 @@ node --test --test-name-pattern="23[.]02" examples/p6-operations/labs.test.mjs
 
 Small synthetic dependency graph only; real module enforcement, transactions and feature flag runtime not executed.
 
+## Applied engineering walkthrough
+
+Repository interfaces describe business-facing persistence capabilities rather than exposing unrestricted ORM operations. A fake can help test application policy, but it may differ from actual database isolation, constraint behavior and error semantics. Contract tests should compare both implementations.
+
+### Diagnose the concrete failure
+
+Define a bounded reservation and lookup port. Exercise the fake with permitted and forbidden tenant inputs, then plan the equivalent real database adapter checks. Verify the business code does not depend on ORM-specific types.
+
+### Independent exercise and evidence
+
+Write a shared repository acceptance matrix including missing rows, concurrent updates and denied scope. Record fake results and live adapter outcomes separately.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve the existing specification, model and unpublished status. Actual module, persistence and runtime qualification remain independent.
+
 ## Knowledge check
 
 1. Which invariant or operational measurement determines success?

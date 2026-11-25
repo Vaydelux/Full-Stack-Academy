@@ -42,6 +42,20 @@ Document both a permitted happy path and a rejected adversarial path. Integratio
 
 A passing UI check or source-only checklist cannot establish secure production behavior. An observed negative test and reviewed trust boundary are essential.
 
+## Applied engineering walkthrough
+
+HTTP security headers constrain browser behavior but do not fix missing authorization or unsafe rendering. CSP should reflect the application's actual script and resource requirements. Frame-ancestors restricts embedding; HSTS has domain-wide operational consequences and requires established HTTPS readiness.
+
+### Diagnose the concrete failure
+
+Inspect the actual response headers from a disposable local application and compare expected values. Use a report-only CSP trial before enforcement where appropriate, and check normal functionality plus a controlled blocked resource. Inspect pages, redirects and error responses separately.
+
+### Independent exercise and evidence
+
+Design a header policy for an authenticated application with no third-party scripts unless explicitly justified. Record browser console results and response headers, and review HTTPS/HSTS deployment scope before enabling it.
+
+**Qualification boundary:** These are practice instructions, not recorded audit results. Use synthetic data and authorized disposable infrastructure. Preserve existing laboratory contracts and publication status.
+
 ## Knowledge check
 
 1. Which input is attacker-controlled?

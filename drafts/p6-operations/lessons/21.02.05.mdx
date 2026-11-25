@@ -44,6 +44,22 @@ node --test --test-name-pattern="21[.]02" examples/p6-operations/labs.test.mjs
 
 Synthetic error-budget arithmetic only; real probes, alerts, concurrency and fault recovery require actual isolated services.
 
+## Applied engineering walkthrough
+
+A request deadline is the total available time, whereas an attempt timeout bounds one call. Retries consume both time and dependency capacity. An ambiguous write needs stable idempotency identity or reconciliation; permanent errors should not retry.
+
+### Diagnose the concrete failure
+
+Evaluate retryDecision for transient and permanent failure, exhausted deadline and non-idempotent operation. Model elapsed time for multiple attempts and confirm the next attempt fits the remaining budget.
+
+The existing retryDecision model checks only that time remains, attempts are available and the operation is eligible. It does not calculate the delay plus next attempt duration or enforce an actual deadline; those require a separate transport-level test.
+
+### Independent exercise and evidence
+
+Design a single retry-owning layer with capped attempts, jitter and propagated deadlines. Record expected decision and actual elapsed time when a real local transport is available.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve the existing specification, model and unpublished status. Actual resilience and runtime qualification remain independent.
+
 ## Knowledge check
 
 1. Which invariant or operational measurement determines success?

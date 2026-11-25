@@ -44,6 +44,20 @@ node --test --test-name-pattern="20[.]02" examples/p6-quality/labs.test.mjs
 
 Synthetic CI evidence only; no hosted workflow, branch protection change or cryptographic provenance.
 
+## Applied engineering walkthrough
+
+Build automation separates untrusted changes from privileged deployment operations. Secrets should be available only to the approved job and environment that needs them. Masking logs is defense in depth, not permission to echo credentials. Review permissions and artifact trust boundaries before executing third-party code.
+
+### Diagnose the concrete failure
+
+Use a fake secret marker in a local diagnostic fixture and inspect sanitized output. Review a hypothetical pull request job with no deployment credentials, then identify why providing them would violate the boundary. Do not alter the actual workflow settings.
+
+### Independent exercise and evidence
+
+Design a permission matrix for read-only test jobs, artifact publication and approved deployment. Record the secret owner, scope and review results using synthetic values only.
+
+**Evidence boundary:** These are practice instructions, not recorded test results. Preserve the existing model, specification and draft flag; external runtime qualification remains independent.
+
 ## Knowledge check
 
 1. Which public behavior or invariant is being protected?

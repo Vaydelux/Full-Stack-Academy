@@ -44,6 +44,20 @@ node --test --test-name-pattern="22[.]02" examples/p6-operations/labs.test.mjs
 
 Synthetic latency sample analysis only; actual CPU/heap profiles, Fastify comparison, query plans and HTTP behavior need real runtimes.
 
+## Applied engineering walkthrough
+
+An N+1 read issues a parent query and separate child queries for each parent. Batching or joining can reduce round trips but may multiply rows, enlarge payloads or change ordering. Apply tenant filters at every required boundary and preserve the intended parent and child result set.
+
+### Diagnose the concrete failure
+
+Seed twenty synthetic parents and children in an isolated database. Count actual SQL statements and compare the repeated reads with a bounded batch. Verify exact allowed IDs and empty parent behavior before inspecting plans and latency.
+
+### Independent exercise and evidence
+
+Design a paginated repository with bounded child loading. Record query count, rows, transfer bytes and plans, including the denied foreign-tenant case.
+
+**Evidence boundary:** These are practice instructions, not recorded benchmark results. Preserve the existing specification, model and unpublished status. Actual API and database measurements remain independent.
+
 ## Knowledge check
 
 1. Which invariant or operational measurement determines success?

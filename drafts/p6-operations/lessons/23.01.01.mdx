@@ -44,6 +44,20 @@ node --test --test-name-pattern="23[.]01" examples/p6-operations/labs.test.mjs
 
 Directed dependency model only; no actual codebase static graph, framework migration or architecture certification.
 
+## Applied engineering walkthrough
+
+Cohesion measures how closely a module's responsibilities belong together; coupling describes how changes propagate between modules. SOLID principles help diagnose expensive dependencies but are not a requirement to create an interface for every class. Organize around independently changing business rules.
+
+### Diagnose the concrete failure
+
+Draw the order service's inventory, billing, formatting and delivery responsibilities. Introduce a synthetic change to email formatting and identify which order-policy code would need modification before and after separating a sender port. Check the resulting dependency graph.
+
+### Independent exercise and evidence
+
+Design a module boundary justified by two concrete change scenarios. Record which dependencies remain, which tests become simpler and what additional abstractions cost.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve the existing specification, model and unpublished status. Actual source dependency and runtime qualification remain independent.
+
 ## Knowledge check
 
 1. Which invariant or operational measurement determines success?

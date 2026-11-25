@@ -44,6 +44,20 @@ node --test --test-name-pattern="20[.]03" examples/p6-quality/labs.test.mjs
 
 Boolean release decision model, not deployment, migration, traffic switching or verified rollback.
 
+## Applied engineering walkthrough
+
+A deployment rehearsal combines artifact identity, environment authorization, compatibility, readiness and functional acceptance. The release decision model checks policy inputs; it cannot prove actual traffic routing or recovery. Test both advancement and blocked paths.
+
+### Diagnose the concrete failure
+
+Run the existing module tests and examine healthy, failed-smoke and unapproved candidate decisions. Trace the previous artifact identity and incompatible schema outcome. Plan an isolated application rehearsal with a known rollback target.
+
+### Independent exercise and evidence
+
+Produce a deployment handoff packet with preflight, smoke tests, rollback criteria and actual evidence statuses. Leave external deployment and database recovery marked not-run until exercised.
+
+**Evidence boundary:** These are practice instructions, not recorded test results. Preserve the existing model, specification and draft flag; external runtime qualification remains independent.
+
 ## Knowledge check
 
 1. Which public behavior or invariant is being protected?

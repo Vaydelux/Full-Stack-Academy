@@ -105,7 +105,7 @@ export default function RetryForm(){
 
 <Misconception claim="The starter generates a new idempotency key for every retry and has no in-flight lock." correction="A logical operation consists of validated payload plus an idempotency key. Lock while pending; retain both across retries; clear only after confirmed success." />
 
-<KnowledgeCheck question="Which repair best addresses async submissions?" choices={["Always trust the browser to enforce security.","Use one authoritative form state and verify the tested behavior.","Ignore non-200 HTTP responses if fetch resolved.","Treat TypeScript types as runtime authorization."]} correctIndex={1} explanation="A logical operation consists of validated payload plus an idempotency key. Lock while pending; retain both across retries; clear only after confirmed success." misconception="The starter generates a new idempotency key for every retry and has no in-flight lock." lessonId="09.02.05" />
+<KnowledgeCheck question="A submission is in flight and the response is lost. What is the correct recovery?" choices={["Always show success immediately.","Automatically create a new record with a fresh key.","Clear the form before checking the response.","Preserve the draft, reconcile the uncertain outcome and retry only under a safe server contract."]} correctIndex={3} explanation="An unknown response is not proof of failure. Duplicate suppression needs a server-supported idempotency contract." misconception="The starter generates a new idempotency key for every retry and has no in-flight lock." lessonId="09.02.05" />
 
 ## Bug Hunt: reproduce, diagnose and repair
 
@@ -129,6 +129,12 @@ An ambiguous response is not proof that the server did nothing. A create can be 
 **Independent exercise:** Simulate a successful 201 that never reaches the browser, then replay. Count actual server effects, not just client calls. Change the retry key and explain precisely when duplication becomes possible.
 
 **Real-system caveat:** Aborting a fetch does not guarantee the server aborted the operation. For important financial, order or account mutations, deduplication must be durable, correctly scoped and expire under a deliberate retention policy. The educational loopback API is not a payment ledger.
+
+## Applied debugging clinic
+
+Throttle the network, double-click submit and inspect the request count. Then simulate a rejected request and confirm the draft survives. A pending flag prevents ordinary duplicate clicks but is not durable idempotency; a response lost after commit requires reconciliation or a safe replay.
+
+**Evidence to record:** the initial state, action, observed result, expected result and smallest repair. Explain whether the defect belongs to the form, rendered widget, or HTTP boundary. Re-run the original failing interaction after the repair.
 
 ## Guided local lab
 

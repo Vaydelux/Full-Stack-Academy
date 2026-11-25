@@ -44,6 +44,20 @@ node --test --test-name-pattern="20[.]02" examples/p6-quality/labs.test.mjs
 
 Synthetic CI evidence only; no hosted workflow, branch protection change or cryptographic provenance.
 
+## Applied engineering walkthrough
+
+A delivery pipeline can be exercised locally when hosted CI is unavailable. Separate orchestration from the commands it runs, validate the expected job graph and bind results to one candidate. Planning a command is not executing it, and recursive scripts can accidentally invoke themselves.
+
+### Diagnose the concrete failure
+
+Run the local qualification plan command where the prerequisites are available and inspect expected steps without executing hosted workflows. Model missing and stale results using matrixGate. Check that each declared job maps to a real command.
+
+### Independent exercise and evidence
+
+Design a local pipeline with preflight, installation, lint, typecheck, tests, build and evidence aggregation. Record plan versus execution status separately and identify missing runtime prerequisites.
+
+**Evidence boundary:** These are practice instructions, not recorded test results. Preserve the existing model, specification and draft flag; external runtime qualification remains independent.
+
 ## Knowledge check
 
 1. Which public behavior or invariant is being protected?

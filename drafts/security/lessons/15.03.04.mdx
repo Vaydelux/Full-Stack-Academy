@@ -42,6 +42,20 @@ Document both a permitted happy path and a rejected adversarial path. Integratio
 
 A passing UI check or source-only checklist cannot establish secure production behavior. An observed negative test and reviewed trust boundary are essential.
 
+## Applied engineering walkthrough
+
+An outbound fetch is a server privilege boundary. Prefer fixed, approved destinations, disable unnecessary redirect following, and enforce network egress restrictions. URL parsing and hostname checks alone cannot establish the actual connection destination; DNS and redirects may change it. Apply controls to every outbound path.
+
+### Diagnose the concrete failure
+
+Use a local fake outbound transport and approved synthetic host configuration. Verify an allowed destination is called and a denied destination never reaches the transport. Test redirect denial with controlled stubs. Do not connect to metadata services or real internal networks.
+
+### Independent exercise and evidence
+
+Write an outbound service policy identifying allowed destinations, protocol, bounded response size and timeout. Record decisions and transport invocation counts; qualify the actual network enforcement in an authorized isolated environment.
+
+**Qualification boundary:** These are practice instructions, not recorded audit results. Use synthetic data and authorized disposable infrastructure. Preserve existing laboratory contracts and publication status.
+
 ## Knowledge check
 
 1. Which input is attacker-controlled?

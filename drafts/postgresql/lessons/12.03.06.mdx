@@ -69,6 +69,20 @@ A uniqueness constraint prevents duplicate committed keys; it does not make an u
 
 A useful production verification matrix varies input identity, tenant, the number of concurrent writers, repeated request keys and observed SQLSTATE outcomes. When a conflict occurs, the correct application behavior is usually to report it or retry the *whole* safe operation from a new snapshot—not to silently overwrite the last writer's state.
 
+## Applied SQL walkthrough
+
+A unique constraint is a database-enforced invariant across rows. A read-then-insert check alone races when two transactions see the same missing SKU. The fixture defines uniqueness over tenant and SKU; a duplicate pair is forbidden, but the same SKU in another tenant is permitted. A constraint enforces uniqueness regardless of which application instance writes.
+
+### Predict and diagnose the result
+
+Attempt a valid insert, a duplicate pair and an equivalent SKU under a different tenant. Record the unique_violation SQLSTATE 23505 for the duplicate. Then design a real two-session test: both read the absent pair, one inserts and commits, and the other must not produce a second committed row.
+
+### Independent exercise and evidence
+
+Choose between returning a conflict and an intentional ON CONFLICT action for a creation endpoint. Explain why DO UPDATE is not a harmless replacement for DO NOTHING when existing data must remain unchanged. Record final row count and both client outcomes; avoid depending on query timing to protect the invariant.
+
+**Qualification boundary:** These are predictions and experiment instructions, not recorded database results. The existing single-session SQL gate cannot establish true concurrent behavior. Use isolated test infrastructure and preserve the existing starter and solution.
+
 ## Bug Hunt
 
 1. Predict the specific broken state: The starter permits duplicate tenant/SKU pairs and leaves a race even if the API checks for duplicates first.

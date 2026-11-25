@@ -52,6 +52,20 @@ The corresponding module exercises **TenantSearch: tenant isolation, ranking, st
 
 For a production implementation, document the secret-owner or principal, durability plan, error and recovery policy, rate/resource bounds, privacy guarantees, observability without sensitive payloads, and the credential/version-rotation procedure.
 
+## Applied engineering walkthrough
+
+Search analytics can expose sensitive intent even without document bodies. Avoid collecting raw query text unless justified by an explicit purpose and privacy controls. Aggregate counts, latency and zero-result rates by authorized scope, with retention and small-cohort disclosure review.
+
+### Diagnose the concrete failure
+
+Feed synthetic query observations into a proposed aggregation design. Verify counts and latency summaries without persisting a fake credential embedded in input. Check a tenant dashboard cannot retrieve another tenant's metrics.
+
+### Independent exercise and evidence
+
+Design an analytics schema with bounded dimensions, retention and access policy. Record collected versus intentionally excluded fields and the actual query-isolation test when implemented.
+
+**Qualification boundary:** These are practice instructions, not recorded results. Preserve existing specifications and laboratory contracts. Qualify actual external services separately using authorized disposable infrastructure.
+
 ## Knowledge check
 
 1. Which authenticated actor, external sender, or tenant owns the data in this scenario?

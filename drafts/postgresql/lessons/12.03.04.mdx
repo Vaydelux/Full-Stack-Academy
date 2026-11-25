@@ -71,6 +71,20 @@ Real APIs must read the updated row count and return a conflict/retry decision w
 
 A useful production verification matrix varies input identity, tenant, the number of concurrent writers, repeated request keys and observed SQLSTATE outcomes. When a conflict occurs, the correct application behavior is usually to report it or retry the *whole* safe operation from a new snapshot—not to silently overwrite the last writer's state.
 
+## Applied SQL walkthrough
+
+Optimistic concurrency adds an expected revision to the write predicate. PostgreSQL checks the row at the UPDATE boundary, and the increment occurs atomically with the balance change. The first update at version one succeeds, producing balance nine and version two; the second using the same expected version should affect zero rows. A zero row count must be handled, not reported as success.
+
+### Predict and diagnose the result
+
+Check the first and second affected-row counts separately in a disposable extension of the fixture. Verify the final wallet values and that beta remains untouched. Under Read Committed, a competing UPDATE may wait for the first writer and then recheck the predicate. At stricter isolation a serialization failure may be the outcome instead.
+
+### Independent exercise and evidence
+
+Design a REST update accepting an expected revision, mapping a stale write to a conflict or precondition failure. Explain why reading the version and updating without the predicate is unsafe. Record the expected response, committed state and bounded retry policy for transient database failures.
+
+**Qualification boundary:** These are predictions and experiment instructions, not recorded database results. The existing single-session SQL gate cannot establish true concurrent behavior. Use isolated test infrastructure and preserve the existing starter and solution.
+
 ## Bug Hunt
 
 1. Predict the specific broken state: The starter performs a second stale write unconditionally, turning a 1-unit debit into a 4-unit debit.

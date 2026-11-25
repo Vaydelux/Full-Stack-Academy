@@ -14,10 +14,19 @@ const base='release-candidates/forms-query/09.02';
 
 export function rhfReviewFingerprint({readSource=read}={}){
  const shared=[
+  'examples/forms-query-vertical/react-client/src/api.ts',
+  'examples/forms-query-vertical/react-client/src/policy.ts',
+  'tests/forms-query-response-contract.test.mjs',
   'src/content/forms-query-draft-registry.tsx',
   'src/app/learn/projects/forms-query/drafts/[lessonId]/page.tsx',
   'src/app/learn/projects/forms-query/page.tsx',
   'src/app/learn/[lessonId]/page.tsx',
+  'src/components/course/DocShell.tsx',
+  'src/components/course/DocNavigation.tsx',
+  'src/components/course/CopyCodeButton.tsx',
+  'src/lib/academy/lesson-neighbors.mjs',
+  'mdx-components.tsx',
+  'src/app/globals.css',
   'src/components/course/LessonBlocks.tsx',
   'src/components/course/KnowledgeCheck.tsx',
   'scripts/verify-rhf-release-browser.mjs',

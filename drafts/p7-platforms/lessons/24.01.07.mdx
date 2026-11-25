@@ -44,6 +44,20 @@ node --test --test-name-pattern="24[.]01" examples/p7-platforms/labs.test.mjs
 
 Native builds, WebView isolation and plugin permissions require a real device.
 
+## Applied engineering walkthrough
+
+Platform-backed secure storage reduces exposure of persistent credentials but does not make a compromised application or device trustworthy. Store only the credentials required for the session, keep access tokens short-lived where the authentication design permits, and define refresh, revocation and local logout separately. Do not use real credentials in practice logs or screenshots.
+
+### Diagnose the concrete failure
+
+Use a synthetic refresh token to trace where it is written, read and removed. Inspect ordinary preferences, web storage and logs for accidental copies. Test expiry and logout, including failure to contact the remote service; local removal does not itself demonstrate server revocation.
+
+### Independent exercise and evidence
+
+Document platform storage options and the actual plugin behavior on an authorized device, including backup and reinstall limitations. Submit sanitized evidence for logout, expired sessions and inaccessible storage without exposing token values.
+
+**Evidence boundary:** These are practice instructions, not recorded results. The local model cannot qualify a native build, secure storage, permissions or real hardware. Preserve draft status until external gates pass.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

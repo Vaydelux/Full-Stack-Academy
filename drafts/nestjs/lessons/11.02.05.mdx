@@ -77,7 +77,21 @@ If the UI shows a generic error, classify the failure at the nearest authoritati
 
 <Misconception claim="The filter sends an HTTP 500 for a known 404 and exposes the raw exception message." correction="An HttpException filter must return a safe status and predictable response body without leaking internals." />
 
-<KnowledgeCheck question="Which verification proves exception filters?" choices={["A decorator's name exists in source.","A real Nest request reaches the correct stage and demonstrates the specified positive and negative outcomes.","An interface type was exported.","The UI hides the endpoint, so it must be protected."]} correctIndex={1} explanation="An HttpException filter must return a safe status and predictable response body without leaking internals." misconception="The filter sends an HTTP 500 for a known 404 and exposes the raw exception message." lessonId="11.02.05" />
+<KnowledgeCheck question="A known 404 contains an internal database message. What should a public filter return?" choices={["Always send HTTP 500 with the original message.","Preserve 404 and return a bounded, safe error body.","Send HTTP 200 with an error string.","Return the full stack for debugging."]} correctIndex={1} explanation="Preserve the known status and avoid exposing internal exception details." misconception="The filter sends an HTTP 500 for a known 404 and exposes the raw exception message." lessonId="11.02.05" />
+
+## Applied engineering walkthrough
+
+Exception filters translate exceptions into the transport response. A filter restricted to HttpException handles that class, not every possible error. Preserve known HTTP status codes and expose a deliberately safe error envelope. Unexpected failures should remain server errors, with details recorded only in protected logs. Adapter-specific response methods need real adapter acceptance, or use Nest's HTTP adapter abstraction for portability.
+
+### Diagnose the concrete failure
+
+Throw an HttpException with a sensitive internal message and status 403 using the existing filter fixture. Check that the response remains 403 and the body contains REQUEST_FAILED without the original message. Repeat with a known 404 in a real route. An exception filter must not report HTTP 200 for a failed operation.
+
+### Independent exercise and evidence
+
+Design an error contract with a stable code and correlation ID, with no stack or secret content. Decide which fields a UI may display and which belong only in logs. Record status and serialized body for a denied request and a missing resource.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. The existing request-pipeline checks include direct class and pure-function tests; real HTTP and adapter acceptance remain distinct release requirements. Do not award course credit from source review alone.
 
 ## Bug Hunt: reproduce, diagnose and repair
 

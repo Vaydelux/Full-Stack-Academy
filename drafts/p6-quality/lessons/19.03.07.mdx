@@ -44,6 +44,20 @@ node --test --test-name-pattern="19[.]03" examples/p6-quality/labs.test.mjs
 
 Synthetic row/actor model; no Nest DI, network server, PostgreSQL or RLS execution.
 
+## Applied engineering walkthrough
+
+Contract tests verify the supported boundary shape and meaning. Snapshots are useful for detecting unexpected changes, but blindly updating them can approve accidental secret exposure. Assert required fields, types and excluded fields directly where the contract is critical.
+
+### Diagnose the concrete failure
+
+Compare the scopedRead result with the documented minimal DTO. In a disposable copy add a private field or remove a required field and confirm the assertion fails. Inspect actual HTTP serialization independently of the pure model.
+
+### Independent exercise and evidence
+
+Design a versioned response schema with an explicit compatibility policy for additive and breaking changes. Record expected shape, negative mutation and reviewer decision for any snapshot change.
+
+**Evidence boundary:** These are practice instructions, not recorded test results. Preserve the existing model, specification and draft flag; external runtime qualification remains independent.
+
 ## Knowledge check
 
 1. Which public behavior or invariant is being protected?

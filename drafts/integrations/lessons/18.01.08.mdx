@@ -52,6 +52,20 @@ The corresponding module exercises **inspectUpload, issueUploadToken, verifyUplo
 
 For a production implementation, document the secret-owner or principal, durability plan, error and recovery policy, rate/resource bounds, privacy guarantees, observability without sensitive payloads, and the credential/version-rotation procedure.
 
+## Applied engineering walkthrough
+
+A complete asset pipeline combines trusted identity, bounded input, private storage, scan state and resource authorization. Public marketing derivatives and private receipts have different access requirements. A successful signature test alone cannot certify content safety or storage privacy.
+
+### Diagnose the concrete failure
+
+Run the existing asset fixture tests and trace synthetic PNG and PDF records through quarantine and approved reads. Check foreign-tenant denial, mismatched format and scanner failure. Assert that rejected cases never create a publicly readable result.
+
+### Independent exercise and evidence
+
+Prepare a pipeline release matrix for real decoder, scanner, object store, authorization, signed capability and cleanup behavior. Record local fixture evidence separately from each actual provider gate.
+
+**Qualification boundary:** These are practice instructions, not recorded results. Preserve existing specifications and laboratory contracts. Qualify actual external services separately using authorized disposable infrastructure.
+
 ## Knowledge check
 
 1. Which authenticated actor, external sender, or tenant owns the data in this scenario?

@@ -44,6 +44,20 @@ node --test --test-name-pattern="23[.]04" examples/p6-operations/labs.test.mjs
 
 Retry decision teaching model only; no network partition, broker, service discovery, replication or multi-region benchmark.
 
+## Applied engineering walkthrough
+
+NATS Core, JetStream and Kafka have different persistence, replay and acknowledgement mechanisms. Ordering depends on the stream or partition and consumer configuration, rather than being universally global. Select a broker using actual workload requirements and operational capacity.
+
+### Diagnose the concrete failure
+
+Write a synthetic workload requiring retained events, keyed ordering and restart recovery. Compare relevant broker modes, then plan an isolated test with duplicate delivery and consumer restart. Do not infer durable replay from a basic publish-subscribe demonstration.
+
+### Independent exercise and evidence
+
+Prepare a broker decision matrix covering retention, replay, ordering scope, backpressure, delivery guarantees and ownership. Record exact tested configuration and observed outcomes if the runtime is available.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve the existing specification, model and unpublished status. Actual distributed runtime qualification remains independent.
+
 ## Knowledge check
 
 1. Which invariant or operational measurement determines success?

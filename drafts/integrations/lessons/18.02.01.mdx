@@ -52,6 +52,20 @@ The corresponding module exercises **MailOutbox: consent, idempotency, bounded r
 
 For a production implementation, document the secret-owner or principal, durability plan, error and recovery policy, rate/resource bounds, privacy guarantees, observability without sensitive payloads, and the credential/version-rotation procedure.
 
+## Applied engineering walkthrough
+
+Separate messages necessary for a requested transaction from optional promotional communication. Classify intent when creating a job and enforce marketing preferences again when claiming it. Consent and applicable legal obligations depend on jurisdiction and actual purpose, not a label chosen by the application.
+
+### Diagnose the concrete failure
+
+Enqueue a synthetic receipt and promotional message for an opted-in recipient, then revoke marketing consent before claim. Verify the receipt follows its transactional policy and the promotion is suppressed. Check that no provider call occurs for the suppressed job.
+
+### Independent exercise and evidence
+
+Design a purpose and preference matrix with consent provenance, unsubscribe handling and suppression reconciliation. Record accepted and denied job IDs without sending email or making legal compliance claims.
+
+**Qualification boundary:** These are practice instructions, not recorded results. Preserve existing specifications and laboratory contracts. Qualify actual external services separately using authorized disposable infrastructure.
+
 ## Knowledge check
 
 1. Which authenticated actor, external sender, or tenant owns the data in this scenario?

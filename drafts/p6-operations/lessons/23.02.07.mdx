@@ -44,6 +44,20 @@ node --test --test-name-pattern="23[.]02" examples/p6-operations/labs.test.mjs
 
 Small synthetic dependency graph only; real module enforcement, transactions and feature flag runtime not executed.
 
+## Applied engineering walkthrough
+
+A shared kernel contains a small set of stable concepts deliberately owned by cooperating modules. Generic utilities should not import business modules, while domain-specific rules belong with their owner unless shared semantics are explicitly agreed. Excessive sharing makes independent changes harder.
+
+### Diagnose the concrete failure
+
+Classify a date parser, a money value and an order-discount policy by responsibility. Draw proposed dependencies and identify where moving a discount rule into generic utilities would create hidden coupling.
+
+### Independent exercise and evidence
+
+Design an ownership and change policy for shared code, including compatibility review. Record why each shared concept is needed and which module remains authoritative.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve the existing specification, model and unpublished status. Actual module, persistence and runtime qualification remain independent.
+
 ## Knowledge check
 
 1. Which invariant or operational measurement determines success?

@@ -42,6 +42,20 @@ Document both a permitted happy path and a rejected adversarial path. Integratio
 
 A passing UI check or source-only checklist cannot establish secure production behavior. An observed negative test and reviewed trust boundary are essential.
 
+## Applied engineering walkthrough
+
+ABAC evaluates trusted actor, resource and environment attributes alongside an action. A role may permit edits generally but a locked document can prohibit a specific edit. Attribute freshness matters when state changes between check and write. Policy rules should be explicit and fail closed when required attributes are absent.
+
+### Diagnose the concrete failure
+
+Use an editor in the correct tenant with unlocked and locked synthetic documents. Verify only the unlocked write succeeds; also test missing membership and another tenant's unlocked document. Ensure a rejected mutation leaves the record unchanged.
+
+### Independent exercise and evidence
+
+Design a policy for editing an archived record with an explicit restore action. Couple the state predicate to the write when concurrent changes matter. Record actor attributes, resource version, decision and final state.
+
+**Qualification boundary:** These are practice instructions, not recorded audit results. Use synthetic data and authorized disposable infrastructure. Preserve existing laboratory contracts and publication status.
+
 ## Knowledge check
 
 1. Which input is attacker-controlled?

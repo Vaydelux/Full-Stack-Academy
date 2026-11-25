@@ -44,6 +44,20 @@ node --test --test-name-pattern="22[.]03" examples/p6-operations/labs.test.mjs
 
 Capacity arithmetic only; no actual CDN, cache cluster, balancing, cost quotes or scaling benchmark.
 
+## Applied engineering walkthrough
+
+A regression benchmark compares equivalent workload and environment with a versioned baseline. One noisy run can be misleading; repeated trials and a documented tolerance help distinguish variation from meaningful change. Correctness and error rates remain mandatory.
+
+### Diagnose the concrete failure
+
+Store a synthetic baseline and changed result, then test a threshold crossing and a missing observation. Plan matched real runs on the same runtime, data and workload, preserving errors rather than discarding slow requests.
+
+### Independent exercise and evidence
+
+Design a performance regression receipt containing source and artifact identity, environment, repetitions, sample count and disposition. Record actual measured variance separately from synthetic gate decisions.
+
+**Evidence boundary:** These are practice instructions, not recorded capacity or benchmark results. Preserve the existing specification, model and unpublished status. Actual deployment measurements remain independent.
+
 ## Knowledge check
 
 1. Which invariant or operational measurement determines success?

@@ -44,6 +44,20 @@ node --test --test-name-pattern="20[.]01" examples/p6-quality/labs.test.mjs
 
 Declarative policy model; no Docker engine, image build, scan or real network isolation executed.
 
+## Applied engineering walkthrough
+
+Multi-stage builds separate compilation from runtime. Copy only the artifacts and dependencies needed by the final process. Credentials should use supported build-secret mechanisms and must not be baked into layers or copied from build context. A smaller image is not inherently secure.
+
+### Diagnose the concrete failure
+
+Sketch builder and runtime stages and identify files crossing between them. Build a disposable image when Docker is available and inspect final layers, runtime entrypoint and installed dependencies. Verify a synthetic secret marker is absent from the artifact.
+
+### Independent exercise and evidence
+
+Design a minimal runtime stage with explicit ownership and a non-root user. Record image size, startup smoke result and inspected secret boundaries, not a hypothetical size saving.
+
+**Evidence boundary:** These are practice instructions, not recorded test results. Preserve the existing model, specification and draft flag; external runtime qualification remains independent.
+
 ## Knowledge check
 
 1. Which public behavior or invariant is being protected?

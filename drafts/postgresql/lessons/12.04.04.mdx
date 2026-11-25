@@ -75,6 +75,20 @@ Cursor columns need compatible stable comparison semantics, a deterministic ORDE
 
 When query execution moves into a real Next.js/NestJS application, measure request concurrency and database calls as well as SQL time. Remember that schema changes alter future write costs, vacuum work and storage. An index may improve a selective read but slow bulk inserts; a pooled connection may conserve memory but alter transaction/session semantics.
 
+## Applied SQL walkthrough
+
+Keyset pagination continues from the last ordered tuple rather than skipping a changing number of rows. The descending pair of created_at and id creates a total order, so the next-page predicate uses a strict less-than tuple comparison. The provided cursor is a fixed test value, not an authenticated opaque token. Both ordering columns should be non-null for this simple contract.
+
+### Predict and diagnose the result
+
+Predict IDs 7 and 6 after the specified Jan 8 cursor and verify the tenant of each row. Test a timestamp tie to ensure the ID determines which item follows. Repeat with an invalid cursor and another tenant in a proposed API; reject incompatible cursor context before executing a query.
+
+### Independent exercise and evidence
+
+Design the next-page token to bind tenant, filter, ordering version and last tuple, with input validation and integrity protection where needed. Explain why inserts, deletes and updates can still affect traversal without a stable snapshot. Record page IDs and duplicate/omission expectations.
+
+**Qualification boundary:** These are measurement instructions and hypotheses, not recorded benchmark results. Use disposable PostgreSQL data and preserve the existing starter and solution. A source check does not prove a faster query or safe production configuration.
+
 ## Bug Hunt
 
 1. Predict why the starter is incomplete: OFFSET 1 uses a page-number position rather than the given last-seen cursor. New rows inserted ahead of the cursor can shift page boundaries.

@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {extractFences,matchesExerciseFiles,inspectP4Manuscripts} from '../scripts/verify-source.mjs';
@@ -34,4 +35,18 @@ test('missing or extra snippet blocks never pass',()=>{
 });
 test('unknown source code fence languages are rejected',()=>{
  assert.throws(()=>extractFences(article('text','a','b'),'html'),/Unsupported/);
+});
+
+
+test('P10 all eight Prisma and Supabase modules retain applied persistence walkthroughs',()=>{
+ for(const track of ['13','14'])for(let m=1;m<=4;m++)for(let n=1;n<=8;n++){
+  const id=track+'.'+String(m).padStart(2,'0')+'.'+String(n).padStart(2,'0');
+  const mdx=readFileSync(new URL('../../../drafts/p4/lessons/'+id+'.mdx',import.meta.url),'utf8').replaceAll('\r\n','\n');
+  const walk=mdx.match(/## Applied persistence walkthrough\n([\s\S]*?)(?=## Bug Hunt)/)?.[1]??'';
+  assert.ok(walk.trim().split(/\s+/).length>=130,id+' walkthrough missing or shallow');
+  for(const marker of ['### Diagnose the concrete failure','### Independent exercise and evidence','**Qualification boundary:**'])assert.ok(walk.includes(marker),id+' missing '+marker);
+  assert.equal((mdx.match(/<KnowledgeCheck\b/g)||[]).length,1,id);
+  assert.equal((mdx.match(/\x60\x60\x60(\w+)\n[\s\S]*?\n\x60\x60\x60/g)||[]).length,2,id);
+  assert.doesNotMatch(mdx,/<LabGate\b/,id);
+ }
 });

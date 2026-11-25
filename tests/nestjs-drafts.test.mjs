@@ -62,3 +62,32 @@ test('unqualified Nest draft source is excluded from the Next root lint pipeline
  assert.match(config,/"drafts\/nestjs\/\*\*"/);
  assert.match(config,/"examples\/nestjs-vertical\/\*\*"/);
 });
+
+
+test('P10 all four NestJS modules contain thirty-two distinct applied assessments and walkthroughs',()=>{
+ const ids=['11.01','11.02','11.03','11.04'].flatMap(mod=>Array.from({length:8},(_,i)=>mod+'.'+String(i+1).padStart(2,'0')));
+ const questions=new Set(),answerCounts=[0,0,0,0];
+ for(const id of ids){
+  const mdx=read('drafts/nestjs/lessons/'+id+'.mdx').replaceAll('\r\n','\n');
+  const tags=mdx.match(/<KnowledgeCheck[^\n]+\/>/g);
+  assert.equal(tags?.length,1,id);
+  const tag=tags[0];
+  const question=JSON.parse(tag.match(/question=(".*?") choices=/)[1]);
+  assert.ok(!questions.has(question),id+' repeated assessment');
+  questions.add(question);
+  const choices=JSON.parse(tag.match(/choices=\{(\[[^\n]*?\])\}/)[1]);
+  const answer=Number(tag.match(/correctIndex=\{(\d+)\}/)[1]);
+  assert.equal(choices.length,4,id);
+  assert.equal(new Set(choices).size,4,id);
+  assert.ok(answer>=0&&answer<4,id);
+  answerCounts[answer]++;
+  const walk=mdx.match(/## Applied engineering walkthrough\n([\s\S]*?)(?=## Bug Hunt)/)?.[1]??'';
+  assert.ok(walk.split(/\s+/).length>=150,id+' shallow walkthrough');
+  assert.ok(walk.includes('### Diagnose the concrete failure'),id);
+  assert.ok(walk.includes('### Independent exercise and evidence'),id);
+  assert.ok(walk.includes('**Qualification boundary:**'),id);
+  assert.doesNotMatch(mdx,/<LabGate\b/,id);
+ }
+ assert.equal(questions.size,32);
+ assert.ok(answerCounts.every(count=>count>0),'Avoid all correct answers in the same position');
+});

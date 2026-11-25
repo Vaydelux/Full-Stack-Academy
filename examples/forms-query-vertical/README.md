@@ -19,7 +19,7 @@ node --test tests/forms-query-http.test.mjs
 node --test tests/forms-query-workflow.test.mjs
 node --test tests/forms-query-contract.test.mjs
 node --test tests/forms-query-project-route.test.mjs
-node --experimental-strip-types --test tests/forms-query-react-api.test.mjs tests/forms-query-policy.test.mjs
+node --experimental-strip-types --test tests/forms-query-react-api.test.mjs tests/forms-query-response-contract.test.mjs tests/forms-query-policy.test.mjs tests/forms-query-cancellation.test.mjs
 node --test tests/forms-query-react-wiring.test.mjs
 node --test tests/forms-query-native-ui.test.mjs
 ```
@@ -47,7 +47,7 @@ The test server uses an ephemeral loopback port (no privileged port). It is star
 - Create returns 201 with a Location header. Replays with the same normalized payload and key return the same task; a reused key with a changed payload returns 409.
 - A successful state-changing write invalidates earlier pagination cursors; stale pagination returns 409 so clients restart rather than silently duplicating items. The cursor also encodes the selected status filter and refuses cross-filter reuse. A no-op status PATCH leaves the revision unchanged.
 - Conditional status updates read the full request body, then compare the **current** revision immediately before the synchronous in-memory update; two competing edits with the same version cannot both commit.
-- Capacity is 100 tasks; all data disappears at server restart. A maximum of 200 idempotency records are retained in memory, and older ones are evicted.
+- Capacity is 100 tasks; all data disappears at server restart. A maximum of 200 idempotency records are retained in memory. Once the ledger is full, new keys are rejected rather than evicting accepted keys; a fresh fixture is required.
 - The server binds to 127.0.0.1 or ::1 only, rejects spoofed Host and absolute HTTP request targets, and rejects mismatched Origin / cross-site Fetch Metadata. No wildcard CORS is issued. Vite's local proxy rewrites only its exact trusted dev Origin to the local API Origin.
 - There are **no accounts, durable database, authorization, TLS, production rate limits or multi-user isolation**. Do not deploy to an internet-facing host.
 
@@ -103,3 +103,9 @@ See [WORKBOOK.md](WORKBOOK.md) for the 16 canonical topic exercises and acceptan
 - Server validation is authoritative even when the form validates on the client.
 - Idempotency is in-memory, not durable across restarts or independently shared across instances.
 - Input cap, cross-origin guard and loopback binding are defense-in-depth for a teaching fixture, not full production security.
+
+## React response-contract debugging exercise
+
+HTTP success is not proof of a valid payload. The typed React HTTP client checks the expected success status (200 read/update, 201 create, 204 delete), JSON media type, task identity and required fields, safe revision, pagination size, filter membership, duplicate IDs within a page, and immediate cursor progress. It projects known task fields instead of retaining arbitrary properties. A malformed successful response produces TaskResponseError; reads do not automatically retry that contract error, but an unconfirmed create retains its original logical operation key. HTTP 408, 429 and 5xx also preserve the key; read retries are limited to one attempt.
+
+Run the response-contract test suite on Node 22+ with type stripping. The test uses real loopback HTTP for malformed responses and simulates corruption after the primary teaching API has committed a create; retrying with the same key returns the single existing task. In a disposable copy, restore the old unchecked cast and observe failures. Explain why changing the key after an uncertain acknowledgement can duplicate the operation. This validates the dependency-free client boundary, not React Hook Form/TanStack Query rendering or production service security. Validation is page-local, not a cross-page deduplication guarantee or response-size limit.

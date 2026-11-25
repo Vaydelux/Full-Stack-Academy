@@ -50,6 +50,20 @@ The tests exercise local Node state or loopback HTTP behavior. Document separate
 
 This Academy lab intentionally implements CAS, not a Yjs CRDT or shared text merging.
 
+## Applied engineering walkthrough
+
+A compare-and-swap editor rejects stale whole-document writes; a CRDT represents operations or shared structures that can merge under its defined semantics. Yjs can synchronize compatible updates, but convergence does not provide resource authorization or guarantee the merged result satisfies business intent.
+
+### Diagnose the concrete failure
+
+Compare two concurrent whole-note edits in the existing version fixture. Then plan a separate real Yjs experiment using two documents, independent text inserts and updates exchanged in both orders. Assert the final shared text converges without pretending the version fixture implements Yjs.
+
+### Independent exercise and evidence
+
+Design a collaboration architecture with authenticated document access, persisted updates, compaction and bounded message sizes. Record exact library version and convergence evidence only after running actual Yjs.
+
+**Qualification boundary:** These are practice instructions, not recorded results. Preserve the original laboratory and publication status. Local simulations do not qualify actual browser or distributed provider behavior.
+
 ## Knowledge check
 
 1. Which actor, resource, version or event cursor is authoritative in this scenario?

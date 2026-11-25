@@ -50,6 +50,20 @@ The tests exercise local Node state or loopback HTTP behavior. Document separate
 
 Presence describes liveness, not verified read receipts or durable membership.
 
+## Applied engineering walkthrough
+
+Presence is ephemeral evidence that a client recently participated, not a durable membership record. Heartbeats extend a bounded lease; multiple tabs can represent several connections for one identity. Expiration and disconnect cleanup should not remove another active session.
+
+### Diagnose the concrete failure
+
+Use the controlled clock to heartbeat two authorized users, advance time to the expiry boundary and inspect the active list. Test duplicate heartbeats and a foreign tenant query. Compare online state with durable membership.
+
+### Independent exercise and evidence
+
+Design a presence model distinguishing user and connection identity. Specify heartbeat interval, expiry and privacy-safe display fields. Record clock transitions and visible members; never use presence as permission.
+
+**Qualification boundary:** These are practice instructions, not recorded results. Preserve the original laboratory and publication status. Local simulations do not qualify actual browser or distributed provider behavior.
+
 ## Knowledge check
 
 1. Which actor, resource, version or event cursor is authoritative in this scenario?

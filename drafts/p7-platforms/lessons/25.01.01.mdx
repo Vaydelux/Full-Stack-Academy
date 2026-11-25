@@ -44,6 +44,20 @@ node --test --test-name-pattern="25[.]01" examples/p7-platforms/labs.test.mjs
 
 In-memory count/deduplication model; no warehouse, materialized-view freshness, ClickHouse or dbt runtime qualification.
 
+## Applied engineering walkthrough
+
+An operational point lookup and a reporting aggregation have different access patterns. OLTP typically favors short indexed transactions, while analytics may scan many rows and compute grouped results. Separation is justified by observed contention, freshness requirements and cost, not simply because a warehouse is fashionable.
+
+### Diagnose the concrete failure
+
+Use a synthetic order dataset and compare a single-order lookup against a monthly aggregation. Record query plan, elapsed time and concurrent write latency; do not infer a workload capacity from one run.
+
+### Independent exercise and evidence
+
+Propose a reporting path with an explicit data grain, freshness target and isolation strategy. Compare read replica, materialized view and separate warehouse under the same requirements.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify actual database, analytics tools and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

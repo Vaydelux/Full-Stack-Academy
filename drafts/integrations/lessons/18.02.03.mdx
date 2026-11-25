@@ -52,6 +52,20 @@ The corresponding module exercises **MailOutbox: consent, idempotency, bounded r
 
 For a production implementation, document the secret-owner or principal, durability plan, error and recovery policy, rate/resource bounds, privacy guarantees, observability without sensitive payloads, and the credential/version-rotation procedure.
 
+## Applied engineering walkthrough
+
+A provider adapter translates domain send intents into vendor-specific requests and normalizes results. Acceptance, definitive rejection and ambiguous timeout must remain distinct. Switching providers after uncertainty can duplicate a message if the second provider cannot share the original idempotency contract.
+
+### Diagnose the concrete failure
+
+Use two deterministic fake adapters returning equivalent accepted outcomes. Inject a timeout and malformed acknowledgement, then verify the result remains uncertain rather than reporting delivery or blindly switching providers. Check diagnostics contain no credential.
+
+### Independent exercise and evidence
+
+Design a typed send port with logical operation identity and provider-specific receipt reference. Record contract results and an explicit failover policy; qualify both actual providers separately.
+
+**Qualification boundary:** These are practice instructions, not recorded results. Preserve existing specifications and laboratory contracts. Qualify actual external services separately using authorized disposable infrastructure.
+
 ## Knowledge check
 
 1. Which authenticated actor, external sender, or tenant owns the data in this scenario?

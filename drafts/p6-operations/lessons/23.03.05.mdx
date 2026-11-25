@@ -44,6 +44,20 @@ node --test --test-name-pattern="23[.]03" examples/p6-operations/labs.test.mjs
 
 In-memory synthetic idempotency model; no broker, durable store, transactional outbox or exactly-once side-effect evidence.
 
+## Applied engineering walkthrough
+
+A saga coordinates local transactions across independent services. Compensation is a new business operation that attempts to repair an earlier effect; it is not a distributed rollback. Compensation can fail, and external writes need stable identities and explicit uncertainty handling.
+
+### Diagnose the concrete failure
+
+Sketch reserve, charge and ship steps, then simulate a definitive payment failure before shipment. Verify the intended compensation releases the reservation. Model a failed compensation and ensure the workflow remains recoverable rather than reporting success.
+
+### Independent exercise and evidence
+
+Design a persisted saga state machine with idempotent steps, compensation retries and escalation. Record each transition and external effect identity; actual provider behavior requires independent qualification.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve the existing specification, model and unpublished status. Actual persistence, broker and provider qualification remain independent.
+
 ## Knowledge check
 
 1. Which invariant or operational measurement determines success?

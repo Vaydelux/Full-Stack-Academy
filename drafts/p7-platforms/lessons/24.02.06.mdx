@@ -44,6 +44,20 @@ node --test --test-name-pattern="24[.]02" examples/p7-platforms/labs.test.mjs
 
 In-memory sync model; actual SQLite persistence, durable queue, crash recovery and conflict reconciliation are not established.
 
+## Applied engineering walkthrough
+
+Partition offline data, files, queues and keys by the authenticated account. Encryption at rest does not authorize access by the wrong account in an unlocked application. Remote revocation cannot immediately wipe an unreachable device, so document the residual risk.
+
+### Diagnose the concrete failure
+
+Sign in as two synthetic accounts in sequence. Inspect query results and pending operations after switching, logging out offline and restarting. Never replay the first account's edits under the second identity.
+
+### Independent exercise and evidence
+
+Define cleanup failure, retention and key lifecycle behavior. Record local deletion independently from actual server revocation and test using synthetic credentials only.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify real persistence, network, device and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

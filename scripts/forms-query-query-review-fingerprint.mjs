@@ -8,9 +8,18 @@ const read=p=>fs.readFileSync(path.join(root,p),'utf8');
 const ids=Array.from({length:8},(_,i)=>'09.03.'+String(i+1).padStart(2,'0'));
 export function queryReviewFingerprint({readSource=read}={}){
  const shared=[
+  'examples/forms-query-vertical/react-client/src/api.ts',
+  'examples/forms-query-vertical/react-client/src/policy.ts',
+  'tests/forms-query-response-contract.test.mjs',
   'src/app/learn/[lessonId]/page.tsx',
   'src/app/learn/projects/forms-query/page.tsx',
   'src/app/learn/projects/forms-query/drafts/[lessonId]/page.tsx',
+  'src/components/course/DocShell.tsx',
+  'src/components/course/DocNavigation.tsx',
+  'src/components/course/CopyCodeButton.tsx',
+  'src/lib/academy/lesson-neighbors.mjs',
+  'mdx-components.tsx',
+  'src/app/globals.css',
   'src/components/course/LessonBlocks.tsx',
   'src/components/course/KnowledgeCheck.tsx',
   'scripts/verify-query-release-browser.mjs',

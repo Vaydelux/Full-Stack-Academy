@@ -44,6 +44,20 @@ node --test --test-name-pattern="24[.]04" examples/p7-platforms/labs.test.mjs
 
 Synthetic queue acknowledgement model only; physical touch, OS background behavior, push delivery and store acceptance require device tests.
 
+## Applied engineering walkthrough
+
+Distinguish work that was sent, work acknowledged by the server and acknowledgement durably applied locally. Sending is not completion. Use a stable operation identifier and persist acknowledgement before removing queue entries; uncertain work must remain recoverable.
+
+### Diagnose the concrete failure
+
+Prepare three operations in different states, interrupt after remote acceptance and restart. Check resumeQueue eligibility, replay the uncertain operation with its original ID and inspect final effects.
+
+### Independent exercise and evidence
+
+Test loss before send, after send and during acknowledgement persistence. Record pending counts, server results and actual device restart behavior. Keep retry limits and explicit unresolved states visible.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify actual device, provider and human accessibility evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

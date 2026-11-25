@@ -44,6 +44,20 @@ node --test --test-name-pattern="24[.]02" examples/p7-platforms/labs.test.mjs
 
 In-memory sync model; actual SQLite persistence, durable queue, crash recovery and conflict reconciliation are not established.
 
+## Applied engineering walkthrough
+
+Keep each local entity edit and its pending operation in one SQLite transaction. Either both survive a restart or neither does; a server acknowledgement is a separate event. Stable entity identifiers and revisions make subsequent reconciliation possible.
+
+### Diagnose the concrete failure
+
+Interrupt between entity update and queue insert, roll back, and reopen the database. Verify neither write survives. Repeat with commit and confirm both survive.
+
+### Independent exercise and evidence
+
+Add an account partition and verify another synthetic account cannot read its queue. Record transaction boundaries, database rows before and after restart and the unresolved remote acknowledgement.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify real persistence, network, device and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

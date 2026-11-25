@@ -44,6 +44,20 @@ node --test --test-name-pattern="20[.]02" examples/p6-quality/labs.test.mjs
 
 Synthetic CI evidence only; no hosted workflow, branch protection change or cryptographic provenance.
 
+## Applied engineering walkthrough
+
+Branch protection is an enforcement boundary, not a substitute for meaningful test definitions. Required checks should refer to the intended candidate and authorized review policy. Changing source after approval can invalidate evidence. Local decision models cannot inspect or modify actual branch rules.
+
+### Diagnose the concrete failure
+
+Evaluate a complete matching check set, then omit a mandatory job and verify denial. Review hypothetical rules for authorized merge and stale review without changing repository settings. Identify which real settings would require independent verification.
+
+### Independent exercise and evidence
+
+Write a merge policy with required jobs, evidence freshness and authorized exceptions. Record model outcomes separately from actual branch configuration and review approval.
+
+**Evidence boundary:** These are practice instructions, not recorded test results. Preserve the existing model, specification and draft flag; external runtime qualification remains independent.
+
 ## Knowledge check
 
 1. Which public behavior or invariant is being protected?

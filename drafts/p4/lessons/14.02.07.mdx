@@ -73,6 +73,20 @@ Global sign-out revokes refresh tokens but may not make every already-issued JWT
 
 In production, model expired access tokens, refresh-token rotation, multiple concurrent tabs, CSRF/state handling where applicable, cookie attributes, MFA enrollment and logout propagation. Never rely on raw JWT decoding, a mutable cookie JSON field, an unverified redirect URL or a user-editable metadata claim to authorize administrative actions.
 
+## Applied persistence walkthrough
+
+Sign-out invalidates the selected session scope's refresh capability; an already issued access token may remain valid until its expiry. The example chooses global sign-out and clears app cache after success. A production app also needs local private-state handling on failure and server-side freshness checks where immediate revocation matters. Do not equate a redirect with session invalidation.
+
+### Diagnose the concrete failure
+
+Sign in on two independent test clients, choose global sign-out and observe refresh failure on both. Separately test the previously issued unexpired access token and document its bounded lifetime. Verify private cache and UI state are cleared and that protected routes check identity and resource permission again.
+
+### Independent exercise and evidence
+
+Design a sign-out failure state that hides private UI data while clearly indicating that server revocation is unconfirmed. Record local cache behavior, refresh outcomes and session scope without storing token values.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Use isolated synthetic identities and the pinned SDK. Preserve the existing starter and solution; source inspection does not establish actual Auth or session security.
+
 ## Bug Hunt
 
 1. State the attack or broken state: The starter only toggles browser UI state. It does not ask Supabase Auth to revoke refresh sessions or invalidate server-side access decisions.

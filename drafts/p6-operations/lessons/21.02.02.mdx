@@ -44,6 +44,20 @@ node --test --test-name-pattern="21[.]02" examples/p6-operations/labs.test.mjs
 
 Synthetic error-budget arithmetic only; real probes, alerts, concurrency and fault recovery require actual isolated services.
 
+## Applied engineering walkthrough
+
+Alerting should signal actionable impact rather than every isolated error. Budget burn expresses observed failure rate relative to the permitted rate. Short and long observation windows help separate brief spikes from sustained damage. Alert ownership and a clear response matter as much as threshold tuning.
+
+### Diagnose the concrete failure
+
+Draw a synthetic timeline with one failure followed by recovery, then sustained failures. Compare a per-error page with a multi-window burn rule. Identify the action and owner for each alert.
+
+### Independent exercise and evidence
+
+Design a page and a lower-priority ticket for distinct burn conditions. Record thresholds, expected notifications and a no-data policy; do not claim measured alert quality without operational evidence.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve the existing specification, model and unpublished status. Actual resilience and runtime qualification remain independent.
+
 ## Knowledge check
 
 1. Which invariant or operational measurement determines success?

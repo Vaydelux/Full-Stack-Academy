@@ -87,6 +87,20 @@ Do not rely on getSession's user object as independent server authorization. Coo
 
 In production, model expired access tokens, refresh-token rotation, multiple concurrent tabs, CSRF/state handling where applicable, cookie attributes, MFA enrollment and logout propagation. Never rely on raw JWT decoding, a mutable cookie JSON field, an unverified redirect URL or a user-editable metadata claim to authorize administrative actions.
 
+## Applied persistence walkthrough
+
+SSR needs request-scoped cookie access. Server Components cannot persist cookie updates, so the shown catch relies on a correctly configured Next.js Proxy or other writable response boundary. The helper alone does not implement refresh. Never share a user-specific server client across requests or cache a personalized response as public content. Validate identity at protected server actions and routes.
+
+### Diagnose the concrete failure
+
+Test a signed-in request, expired access token with valid refresh and forged or invalid session data. Verify refreshed cookies reach the request and browser via the actual response path. Run two independent user sessions and confirm their cookies and cached results never mix. Use redacted headers only.
+
+### Independent exercise and evidence
+
+Design the complete request path from Proxy to server component and mutation endpoint, including a logout transition and no-store handling for private responses. Record HTTP outcomes, refresh behavior and two-user isolation; inspect the pinned SSR library contract.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Use isolated synthetic identities and the pinned SDK. Preserve the existing starter and solution; source inspection does not establish actual Auth or session security.
+
 ## Bug Hunt
 
 1. State the attack or broken state: The starter treats attacker-controlled cookie JSON as an authority for administrator access, without verifying a token or its issuer.

@@ -85,6 +85,20 @@ A beautifully factored CTE can still return unauthorized data if its predicates 
 
 For production systems, distinguish this basic query exercise from actual role privileges, row-level security, constraints across tenant boundaries, input validation, indexes, transaction isolation, and migration safety. Those topics appear in later canonical PostgreSQL and Supabase modules. The teaching fixture deliberately uses static tenant IDs and does not implement real authentication.
 
+## Applied SQL walkthrough
+
+A common table expression names an intermediate relation within one statement. The task_counts CTE filters alpha tasks and aggregates by project before joining to the project relation. Its result is not a permanent table or an access-control boundary. PostgreSQL may inline eligible CTEs; materialization decisions affect execution plans, not the logical correctness requirement.
+
+### Predict and diagnose the result
+
+Compute intermediate counts: project 10 has three tasks and project 11 has two. Project 12 has no matching task group. Joining the counts and requiring at least two yields projects 10 and 11 only. Inspect intermediate results and final results independently. The final project filter remains necessary even if the CTE itself is tenant-filtered.
+
+### Independent exercise and evidence
+
+Design a variant reporting every alpha project including those below the threshold. Use a left join and describe the treatment of missing counts. Compare a CTE version with a derived table using EXPLAIN on a disposable database only after proving identical results. Record expected groups and the reason for the chosen structure.
+
+**Qualification boundary:** Predicted results are not executed PostgreSQL evidence. Use the existing disposable database acceptance gate and preserve the original starter and solution. No publication credit is granted by this walkthrough.
+
 ## Bug Hunt
 
 1. **Reproduce:** The starter aggregates all tenants before filtering and leaks beta's project through the report.

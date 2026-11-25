@@ -42,6 +42,20 @@ Document both a permitted happy path and a rejected adversarial path. Integratio
 
 A passing UI check or source-only checklist cannot establish secure production behavior. An observed negative test and reviewed trust boundary are essential.
 
+## Applied engineering walkthrough
+
+Object-level authorization is required even when identifiers are globally unique or hard to guess. Scope the lookup by trusted membership and action. Decide whether missing and forbidden objects share an external response; neither should disclose private resource details.
+
+### Diagnose the concrete failure
+
+Seed a known allowed and a known forbidden record. Request each using the same test actor. Assert exact allowed fields and absence of foreign data; the positive case prevents denial-everything implementations from passing.
+
+### Independent exercise and evidence
+
+Extend the test to update and delete, verifying persisted state after denied actions. Record the repository predicate, public response and enforcing policy; ensure the UI is not the only control.
+
+**Qualification boundary:** These are practice instructions, not recorded audit results. Use synthetic data and authorized disposable infrastructure. Preserve existing laboratory contracts and publication status.
+
 ## Knowledge check
 
 1. Which input is attacker-controlled?

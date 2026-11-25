@@ -44,6 +44,20 @@ node --test --test-name-pattern="23[.]04" examples/p6-operations/labs.test.mjs
 
 Retry decision teaching model only; no network partition, broker, service discovery, replication or multi-region benchmark.
 
+## Applied engineering walkthrough
+
+Partitioning distributes data or workload according to a chosen key. Hashing can distribute many keys while still concentrating a large tenant on one partition. Cross-partition queries and transactions may become more expensive. Choose the partition key according to actual access and ownership patterns.
+
+### Diagnose the concrete failure
+
+Assign synthetic tenant workloads to four partitions and introduce one disproportionately busy tenant. Compare the distribution before and after a proposed key change. Check whether the change preserves required tenant isolation and query behavior.
+
+### Independent exercise and evidence
+
+Design a partition strategy with skew monitoring, rebalancing and migration constraints. Record modeled distribution and measured workload evidence separately.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve the existing specification, model and unpublished status. Actual distributed runtime qualification remains independent.
+
 ## Knowledge check
 
 1. Which invariant or operational measurement determines success?

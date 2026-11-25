@@ -44,6 +44,20 @@ node --test --test-name-pattern="24[.]01" examples/p7-platforms/labs.test.mjs
 
 Native builds, WebView isolation and plugin permissions require a real device.
 
+## Applied engineering walkthrough
+
+Ask for a platform permission only at the point where a feature needs it. A denial is a normal application state, not an exceptional crash path. Prefer scoped system pickers when they satisfy the requirement; the operating system version and plugin determine whether broader access is even available. Network connectivity and authorization are separate from media access.
+
+### Diagnose the concrete failure
+
+Start with permission denied, invoke the relevant feature, and inspect whether it presents a usable alternative. Grant access, then revoke it through system settings and retry. The application should re-evaluate current permission rather than relying on an old in-memory flag.
+
+### Independent exercise and evidence
+
+Design a matrix for first request, denial, revocation and restricted selection. Record OS version, requested scope, user-visible behavior and whether access remains confined to the requested resource.
+
+**Evidence boundary:** These are practice instructions, not recorded results. The local model cannot qualify a native build, secure storage, permissions or real hardware. Preserve draft status until external gates pass.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

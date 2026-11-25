@@ -52,6 +52,20 @@ The corresponding module exercises **signWebhook and WebhookInbox: raw bytes, fr
 
 For a production implementation, document the secret-owner or principal, durability plan, error and recovery policy, rate/resource bounds, privacy guarantees, observability without sensitive payloads, and the credential/version-rotation procedure.
 
+## Applied engineering walkthrough
+
+Webhook authenticity depends on the exact sender protocol and original received bytes. Verify signatures before parsing or processing the body. Timestamp freshness reduces replay exposure but does not replace durable event deduplication. Validate bounded inputs and use the provider's maintained verifier when available.
+
+### Diagnose the concrete failure
+
+Generate synthetic signed payloads using the local teaching protocol. Verify the valid event is accepted, then modify its bytes, use an expired timestamp and repeat the valid delivery. Confirm invalid cases create no trusted event and the repeated event has one logical identity.
+
+### Independent exercise and evidence
+
+Design a receiver that validates sender identity, event schema and provider-scoped delivery ID before domain processing. Record verification decisions and persisted effects; do not claim compatibility with an actual provider without testing its protocol.
+
+**Qualification boundary:** These are practice instructions, not recorded results. Preserve existing specifications and laboratory contracts. Qualify actual external services separately using authorized disposable infrastructure.
+
 ## Knowledge check
 
 1. Which authenticated actor, external sender, or tenant owns the data in this scenario?

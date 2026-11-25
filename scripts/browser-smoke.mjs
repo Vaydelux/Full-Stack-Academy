@@ -4,6 +4,7 @@ import { verifyJsTsBatch } from './js-ts-batch-smoke.mjs';
 import { verifyGitTrack } from './git-track-smoke.mjs';
 import { verifyReactBatch } from './react-batch-smoke.mjs';
 import { verifyReactAdvanced } from './react-advanced-smoke.mjs';
+import { verifyDocumentationUI } from './p8-documentation-ui-smoke.mjs';
 import { verifyReactReferences } from './react-reference-smoke.mjs';
 import { verifyReactNextMilestone } from './react-next-milestone-smoke.mjs';
 import { verifyNextFullTrack } from './next-full-track-smoke.mjs';
@@ -414,6 +415,7 @@ try {
   await verifyReactBatch({page,base,assert,wait});
   await verifyReactAdvanced({page,base,assert,wait});
   await verifyReactReferences({page,base,assert,wait});
+  await verifyDocumentationUI({browser,base,assert});
   await verifyReactNextMilestone({page,base,assert,wait});
   await verifyNextFullTrack({page,base,assert,wait});
   await verifyUiTrack({page,base,assert,wait});

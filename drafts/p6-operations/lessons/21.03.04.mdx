@@ -44,6 +44,20 @@ node --test --test-name-pattern="21[.]03" examples/p6-operations/labs.test.mjs
 
 Synthetic incident decisions only; no real emergency response, restored backups, alerting or production capacity measurements.
 
+## Applied engineering walkthrough
+
+A backup success message proves a backup operation reported success, not that recovery works. A restore drill needs a separate authorized target and verification of schema, records, permissions and a representative application operation. Measure elapsed recovery time from a defined starting point.
+
+### Diagnose the concrete failure
+
+Restore a synthetic backup into a dedicated disposable database when available. Compare known row counts, constraints and an application query. Test an incomplete backup in isolation and record the failure without changing the source database.
+
+### Independent exercise and evidence
+
+Design a recovery checklist with backup identity, target, approval, consistency checks and cleanup. Record actual restore duration only when the drill runs.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve the existing specification, model and unpublished status. Actual incident and recovery qualification remain independent.
+
 ## Knowledge check
 
 1. Which invariant or operational measurement determines success?

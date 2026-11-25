@@ -44,6 +44,20 @@ node --test --test-name-pattern="22[.]01" examples/p6-operations/labs.test.mjs
 
 Synthetic measured-value budget only; actual Core Web Vitals, browser profiles and real-user metrics are unexecuted.
 
+## Applied engineering walkthrough
+
+Virtualization limits mounted rows to the visible window plus overscan. It reduces DOM work but introduces focus, scrolling and accessibility challenges. Stable row identity and accurate size estimates matter, especially when rows are dynamic.
+
+### Diagnose the concrete failure
+
+Render a synthetic ten-thousand-row dataset in a real disposable browser with and without virtualization. Inspect DOM node count, scroll to known rows and navigate using the keyboard. Check that focus is not lost when items leave the window.
+
+### Independent exercise and evidence
+
+Design a list contract for stable keys, overscan, accessible row position and find/navigation behavior. Record browser measurements and manual keyboard results separately.
+
+**Evidence boundary:** These are practice instructions, not recorded benchmark results. Preserve the existing specification, model and unpublished status. Actual browser measurement and qualification remain independent.
+
 ## Knowledge check
 
 1. Which invariant or operational measurement determines success?

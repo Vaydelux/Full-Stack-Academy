@@ -79,7 +79,21 @@ A quick workaround would hide the immediate symptom, but it would leave the orig
 
 <Misconception claim="A controller manually instantiates a service, bypassing DI overrides and per-request lifecycle." correction="Nest resolves registered providers through the container rather than manual new statements in controllers." />
 
-<KnowledgeCheck question="What should the reviewer verify for injectable providers?" choices={["The source contains a decorator, so the runtime must work.","The real Nest application exhibits the specified behavior and rejects the broken case.","TypeScript types alone authorize incoming requests.","A mocked substring search proves the HTTP contract."]} correctIndex={1} explanation="Nest resolves registered providers through the container rather than manual new statements in controllers." misconception="A controller manually instantiates a service, bypassing DI overrides and per-request lifecycle." lessonId="11.01.03" />
+<KnowledgeCheck question="A test supplies a TasksService override returning 99, but the controller still returns the hardcoded service count. What is the likely design error?" choices={["The HTTP method should be PATCH.","The controller constructed its own service instead of using injection.","The override needs to change the URL.","A provider must always be request-scoped."]} correctIndex={1} explanation="Constructor injection lets the Nest container own and replace dependencies." misconception="A controller manually instantiates a service, bypassing DI overrides and per-request lifecycle." lessonId="11.01.03" />
+
+## Applied engineering walkthrough
+
+A provider is a container-managed dependency. Injectable metadata enables construction, but the provider must also be registered or exported from an imported module. Constructor injection makes dependencies explicit and permits test overrides. A manual new bypasses those overrides and can create inconsistent lifecycle or configuration ownership.
+
+### Diagnose the concrete failure
+
+Follow the constructor dependency from TasksController to TasksService in the module providers array. The existing test overrides the registered service; compare the observed count to the override rather than assuming a class method's default output proves injection. If Nest cannot resolve a dependency, inspect module visibility and injection token before changing the constructor.
+
+### Independent exercise and evidence
+
+Design a TasksRepository interface and an injection token using a symbol. Describe how to supply an in-memory implementation for tests and a database implementation for production. Record whether the override reaches the controller and explain why manual construction would bypass it.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Run the existing Nest architecture suite with real dependencies; retain the starter and solution source unchanged. Do not award course credit from source review alone.
 
 ## Bug Hunt: reproduce, diagnose and repair
 

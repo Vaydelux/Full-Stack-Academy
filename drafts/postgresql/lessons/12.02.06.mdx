@@ -82,6 +82,20 @@ CHECK treats NULL as unknown; NOT NULL must be explicit. Case-folding behavior m
 
 The right choice can change with workload size, tenant access patterns, migration risk and operational constraints. Optimize a schema only after correctness and measured query behavior. A trigger, index, or foreign key is not evidence of complete application authorization.
 
+## Applied SQL walkthrough
+
+A CHECK enforces an expression on one row, while a unique index enforces a relationship across rows. CHECK accepts UNKNOWN, which is why NOT NULL remains necessary. The fixture uses lower(sku) in a tenant-scoped unique expression index and rejects negative quantities. Lowercasing is not a complete Unicode or whitespace normalization policy.
+
+### Predict and diagnose the result
+
+Predict rejection of a negative quantity, NULL quantity, too-short trimmed SKU and duplicate case-variant SKU in the same tenant. The same normalized SKU can exist in another tenant. Use SQLSTATE and constraint names to distinguish validation failures from uniqueness conflicts.
+
+### Independent exercise and evidence
+
+Design an inventory decrement that cannot take the quantity below zero under concurrent requests. Use a conditional UPDATE and inspect the affected row count; retain the CHECK as defense in depth. Record expected final quantity and rejected write. Real concurrent execution belongs to the transactions module.
+
+**Qualification boundary:** Predicted results are not executed PostgreSQL evidence. Use the existing disposable database acceptance gate and preserve the original starter and solution. No publication credit is granted by this walkthrough.
+
 ## Bug hunt and regression reasoning
 
 1. **Reproduce:** The inventory accepts a negative quantity and treats 'widget' and 'WIDGET' as different SKUs. Both violate the intended domain contract.

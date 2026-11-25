@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-11-24",
+  "updatedAt": "2026-11-25",
   "baseline": {
     "branch": "main",
     "sha": "394e6d0f620f4740912b0d50cbcbbf5aecc83e8e",
@@ -9,16 +9,16 @@
     "productionUrl": "https://fullstack-academy-ecru.vercel.app/"
   },
   "development": {
-    "branch": "feat/p1-http-resilience-and-workbook-20261124",
-    "state": "p1-real-http-resilience-source-merged-publication-blocked",
-    "note": "25/25 targeted Node22 tests actually passed, 12 original failures reproduced (10 HTTP, 2 policy); exact source and test blobs checked. Added bounded receipt ledger, replay Location, malformed body/cursor handling, intentional read cancellation, 16-topic companion workbook and mandatory offline gate. Full Node24/Next, browser and manual reviews not executed. Catalog 889/889 authored; 338 published, 551 unpublished."
+    "branch": "feat/p8-publication-evidence",
+    "state": "p10-track24-complete-track25-analytics-expanded-runtime-blocked",
+    "note": "P10.9: 32 additional manuscripts expanded, 32/32 precommit source checks and 32/32 committed patch inspections passed. 455/551 unique unpublished drafts expanded (456 expanded draft files including already-published 15.02.04). Track 24 complete; Track 25.01 complete. No full Node24/MDX/browser, database, provider or native device qualification."
   },
   "snapshot": {
     "tracks": 28,
     "modules": 111,
     "catalogTopics": 889,
     "indexedReferences": 303,
-    "authoredReferenceDrafts": 38,
+    "authoredReferenceDrafts": 66,
     "authoredInteractiveModels": 4,
     "authoredMdxLessons": 337,
     "publishedLessons": 338,
@@ -73,6 +73,6 @@
     "devHighFindings": 14,
     "exceptionExpires": "2026-12-02"
   },
-  "nextMilestone": "Qualify P1 09.02 and 09.03 real installed React/Next browser and manual accessibility using stable Node24.9+; execute full checkout gates including new resilience tests; correct real failures, review and promote module atomically. No new bulk manuscript work.",
-  "status": "all-topics-authored-p1-real-http-regressions-passed-publication-blocked"
+  "nextMilestone": "P10.9 continuation: 25.02–25.04 AI/RAG, geospatial and media (24 drafts); Track 26 enterprise (32); Track 27 capstone (40). Then freeze editorial expansion and qualify/publish modules in P1–P7 order.",
+  "status": "all-topics-authored-p10-platforms-partially-expanded-publication-blocked"
 }

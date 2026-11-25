@@ -78,7 +78,7 @@ export default function StepsForm(){
 
 <Misconception claim="The starter uses key={index} and allows unlimited rows; reordering or deleting can shift user edits." correction="useFieldArray tracks a stable generated field ID. Use field.id for React keys; the numeric index is only for field registration paths." />
 
-<KnowledgeCheck question="Which repair best addresses dynamic field arrays?" choices={["Always trust the browser to enforce security.","Use one authoritative form state and verify the tested behavior.","Ignore non-200 HTTP responses if fetch resolved.","Treat TypeScript types as runtime authorization."]} correctIndex={1} explanation="useFieldArray tracks a stable generated field ID. Use field.id for React keys; the numeric index is only for field registration paths." misconception="The starter uses key={index} and allows unlimited rows; reordering or deleting can shift user edits." lessonId="09.02.04" />
+<KnowledgeCheck question="Removing the first row makes the second row display the wrong input. What should you inspect?" choices={["The generated field.id used as the React key.","The HTTP cache freshness.","The form submit timeout.","The browser timezone."]} correctIndex={0} explanation="Stable field identities preserve React component identity when rows are inserted or removed; an array index does not." misconception="The starter uses key={index} and allows unlimited rows; reordering or deleting can shift user edits." lessonId="09.02.04" />
 
 ## Bug Hunt: reproduce, diagnose and repair
 
@@ -102,6 +102,12 @@ Field arrays expose both the row's current nested-field index and a stable gener
 **Independent exercise:** Enter three distinct labels, remove the middle one, and compare the remaining rendered inputs with the RHF submission payload. Locate any `key={index}` and reason about React reconciliation before changing the remove logic.
 
 **Security boundary:** A disabled Add button is not an API limit. The server must cap the collection length and validate every nested value because a direct HTTP client can bypass browser controls. For accessible rows, keep labels and errors associated with the correct field after deletion.
+
+## Applied debugging clinic
+
+Create three rows with distinct labels, remove the middle row, and reorder the survivors. Confirm both the displayed labels and submitted array order. Use field.id for rendering identity; use the array index in the registered field path. A persistent domain identifier is separate from the generated field key.
+
+**Evidence to record:** the initial state, action, observed result, expected result and smallest repair. Explain whether the defect belongs to the form, rendered widget, or HTTP boundary. Re-run the original failing interaction after the repair.
 
 ## Guided local lab
 

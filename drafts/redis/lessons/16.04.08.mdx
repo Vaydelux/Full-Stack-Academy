@@ -50,6 +50,20 @@ In the test notes, separate what the in-memory fixture genuinely observed from R
 
 The simulator demonstrates state transitions, not external webhook signatures or network security.
 
+## Applied engineering walkthrough
+
+Recovering a failed webhook requires retaining its logical event identity. Redrive is a controlled new attempt of the same operation, not a new business event. A completed event should not be reopened by a stale or duplicate delivery. External effects need durable deduplication beyond queue state.
+
+### Diagnose the concrete failure
+
+Drive a synthetic event to terminal failure, correct the stubbed cause and redrive it. Verify successful completion and reject a repeated completion or stale claim. Compare event identity before and after the recovery.
+
+### Independent exercise and evidence
+
+Write an operator handoff with original event ID, attempts, failure category, remediation and final effect count. Include a crash-after-effect scenario and record which live provider or database checks remain missing.
+
+**Qualification boundary:** These are practice instructions, not recorded results. Preserve the existing lab and publication status; in-memory tests do not qualify live Redis or BullMQ behavior.
+
 ## Knowledge check
 
 1. What is authoritative in this scenario, and what state is derived or replayable?

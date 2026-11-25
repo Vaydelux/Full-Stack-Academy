@@ -50,6 +50,20 @@ In the test notes, separate what the in-memory fixture genuinely observed from R
 
 Cache-aside does not guarantee fresh data after a write without invalidation.
 
+## Applied engineering walkthrough
+
+Cache-aside reads the cache first and loads authoritative data on miss, then stores a bounded snapshot. The loader must enforce tenant scope and projection before population. Do not treat missing private objects as shareable cache entries; negative caching requires a specific policy.
+
+### Diagnose the concrete failure
+
+Trace miss, successful database load, cache population and later hit. Simulate a missing private record and a failed loader; verify neither creates an unauthorized positive entry. Inspect the key and stored fields rather than assuming serialization is safe.
+
+### Independent exercise and evidence
+
+Design a product-detail cache with explicit schema version and tenant context. Record response values, loader counts and failure behavior. Explain which fields must never be cached across users.
+
+**Qualification boundary:** These are practice instructions, not recorded results. Preserve the existing lab and publication status; in-memory tests do not qualify live Redis or BullMQ behavior.
+
 ## Knowledge check
 
 1. What is authoritative in this scenario, and what state is derived or replayable?

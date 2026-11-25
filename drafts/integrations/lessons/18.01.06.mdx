@@ -52,6 +52,20 @@ The corresponding module exercises **inspectUpload, issueUploadToken, verifyUplo
 
 For a production implementation, document the secret-owner or principal, durability plan, error and recovery policy, rate/resource bounds, privacy guarantees, observability without sensitive payloads, and the credential/version-rotation procedure.
 
+## Applied engineering walkthrough
+
+Scanning is an asynchronous verdict boundary. Quarantined objects must stay inaccessible until the required scan returns a trusted clean result. Scanner timeout or internal failure is not equivalent to clean; policy determines retry or blocked state. A clean verdict is not a guarantee against every threat.
+
+### Diagnose the concrete failure
+
+Exercise the existing state transition for clean, malicious and failed outcomes with synthetic objects. Verify only the clean outcome permits a read. Repeat a failed verdict and ensure it cannot silently promote an asset.
+
+### Independent exercise and evidence
+
+Design scanner isolation, bounded retries, verdict provenance and review for false positives. Record state changes and actual engine qualification separately; do not upload harmful files for this exercise.
+
+**Qualification boundary:** These are practice instructions, not recorded results. Preserve existing specifications and laboratory contracts. Qualify actual external services separately using authorized disposable infrastructure.
+
 ## Knowledge check
 
 1. Which authenticated actor, external sender, or tenant owns the data in this scenario?

@@ -44,6 +44,20 @@ node --test --test-name-pattern="23[.]02" examples/p6-operations/labs.test.mjs
 
 Small synthetic dependency graph only; real module enforcement, transactions and feature flag runtime not executed.
 
+## Applied engineering walkthrough
+
+A domain event describes a fact that occurred, such as OrderPlaced. An in-process precommit signal can coordinate local logic but must not be confused with a durable announcement of committed state. A transactional outbox bridges commit and later delivery.
+
+### Diagnose the concrete failure
+
+Define an event envelope and a local handler for a synthetic accepted order. Force the order operation to fail before commit and verify no committed-success event should be delivered. Compare with the intended outbox record.
+
+### Independent exercise and evidence
+
+Design event ownership, version and consumer expectations. Record commit and event sequencing, and require real database and broker evidence for durability.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve the existing specification, model and unpublished status. Actual module, persistence and runtime qualification remain independent.
+
 ## Knowledge check
 
 1. Which invariant or operational measurement determines success?

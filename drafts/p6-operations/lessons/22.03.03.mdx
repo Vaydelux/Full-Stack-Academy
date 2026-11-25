@@ -44,6 +44,20 @@ node --test --test-name-pattern="22[.]03" examples/p6-operations/labs.test.mjs
 
 Capacity arithmetic only; no actual CDN, cache cluster, balancing, cost quotes or scaling benchmark.
 
+## Applied engineering walkthrough
+
+Cache consistency depends on ordering between committed writes, invalidation and asynchronous refill. Version-aware writes prevent a known older version from replacing a newer one, but version comparisons must be atomic at the relevant boundary. TTL only limits some stale-state windows.
+
+### Diagnose the concrete failure
+
+Use a controlled sequence where version three is committed and an earlier loader returns version two later. Verify the intended fencing design rejects the old value. Test delayed invalidation and cache outage independently.
+
+### Independent exercise and evidence
+
+Design an invalidation/outbox strategy with monotonic revisions and bounded recovery. Record authoritative and cached revisions, completion order and allowed staleness; qualify real distributed races separately.
+
+**Evidence boundary:** These are practice instructions, not recorded capacity or benchmark results. Preserve the existing specification, model and unpublished status. Actual deployment measurements remain independent.
+
 ## Knowledge check
 
 1. Which invariant or operational measurement determines success?

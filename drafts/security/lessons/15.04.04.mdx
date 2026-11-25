@@ -42,6 +42,20 @@ Document both a permitted happy path and a rejected adversarial path. Integratio
 
 A passing UI check or source-only checklist cannot establish secure production behavior. An observed negative test and reviewed trust boundary are essential.
 
+## Applied engineering walkthrough
+
+Security patch management is a risk-based deployment process. Identify affected versions, reachable code and impact, then choose a supported patched version compatible with the application. A major upgrade may introduce unrelated breakage; a lockfile change alone does not establish that deployed artifacts contain the fix.
+
+### Diagnose the concrete failure
+
+Compare the resolved dependency versions before and after a reviewed update in a disposable checkout. Run focused security regression cases, broader application tests and an artifact inventory check. Distinguish direct and transitive dependency changes.
+
+### Independent exercise and evidence
+
+Prepare an advisory-to-release record with affected range, selected patch, migration risk, verification and rollback. Define a deadline based on risk and evidence rather than silently suppressing audit failures.
+
+**Qualification boundary:** These are practice instructions, not recorded audit results. Use synthetic data and authorized disposable infrastructure. Preserve existing laboratory contracts and publication status.
+
 ## Knowledge check
 
 1. Which input is attacker-controlled?

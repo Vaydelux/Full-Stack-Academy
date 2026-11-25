@@ -77,6 +77,20 @@ Neither UI validation nor TypeScript types prevent direct SQL clients from inser
 
 For production systems, distinguish this basic query exercise from actual role privileges, row-level security, constraints across tenant boundaries, input validation, indexes, transaction isolation, and migration safety. Those topics appear in later canonical PostgreSQL and Supabase modules. The teaching fixture deliberately uses static tenant IDs and does not implement real authentication.
 
+## Applied SQL walkthrough
+
+Constraints protect data even when a writer bypasses the web application. A primary key identifies a row, a foreign key requires a referenced task to exist, NOT NULL prevents absent required values, and CHECK evaluates an invariant. The note body rule tests trimmed length but does not normalize stored whitespace. The fixture's single-column task reference does not by itself encode tenant ownership.
+
+### Predict and diagnose the result
+
+Plan one permitted note for existing task 100, one orphan reference, one whitespace-only body and one repeated primary key. Run the existing acceptance in its rollback-only session. Expected PostgreSQL failure classes include foreign_key_violation, check_violation and unique_violation. A failing statement inside a transaction needs a savepoint or exception block before subsequent assertions.
+
+### Independent exercise and evidence
+
+Design a tenant-scoped note schema with a composite reference to a tenant/task key. Explain why a foreign key proves existence but not the calling user's permission. Record the constraint name or SQLSTATE rather than relying on the exact English database error message.
+
+**Qualification boundary:** Predicted results are not executed PostgreSQL evidence. Use the existing disposable database acceptance gate and preserve the original starter and solution. No publication credit is granted by this walkthrough.
+
 ## Bug Hunt
 
 1. **Reproduce:** The starter's task-notes table accepts an orphan task reference and a whitespace-only note.

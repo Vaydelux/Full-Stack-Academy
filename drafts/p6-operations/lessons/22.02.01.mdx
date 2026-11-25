@@ -44,6 +44,20 @@ node --test --test-name-pattern="22[.]02" examples/p6-operations/labs.test.mjs
 
 Synthetic latency sample analysis only; actual CPU/heap profiles, Fastify comparison, query plans and HTTP behavior need real runtimes.
 
+## Applied engineering walkthrough
+
+CPU profiles identify where sampled execution time is spent; heap snapshots describe retained objects and references. A high allocation rate is not automatically a leak. Compare profiles under equivalent workloads and observe retained memory after repeated operations and appropriate garbage collection.
+
+### Diagnose the concrete failure
+
+Profile a bounded synthetic CPU-heavy handler using Node's supported tools. Inspect its hottest function, make one isolated improvement and repeat the workload. Use synthetic objects for heap inspection; never collect real private payloads.
+
+### Independent exercise and evidence
+
+Design a reproducible profiling receipt with runtime version, sample duration, workload, CPU and memory observations. Record measured changes and independent correctness checks.
+
+**Evidence boundary:** These are practice instructions, not recorded benchmark results. Preserve the existing specification, model and unpublished status. Actual API and database measurements remain independent.
+
 ## Knowledge check
 
 1. Which invariant or operational measurement determines success?

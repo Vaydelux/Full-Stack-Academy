@@ -52,6 +52,20 @@ The corresponding module exercises **TenantSearch: tenant isolation, ranking, st
 
 For a production implementation, document the secret-owner or principal, durability plan, error and recovery policy, rate/resource bounds, privacy guarantees, observability without sensitive payloads, and the credential/version-rotation procedure.
 
+## Applied engineering walkthrough
+
+Trigram similarity compares overlapping character groups and can support approximate matches for names or short phrases. It complements rather than replaces linguistic full text search. Threshold choice changes recall, precision and candidate cost. Index support depends on the actual operator and index class.
+
+### Diagnose the concrete failure
+
+Prepare synthetic exact, typo and unrelated names, including matching names in a foreign tenant. Predict intended results and compare real pg_trgm similarity values and plans on an isolated instance. Verify tenant scope before interpreting the ranking.
+
+### Independent exercise and evidence
+
+Design a small labeled relevance set and compare threshold choices on it. Record false positives, missed intended matches and measured query cost; do not claim a universal optimal threshold.
+
+**Qualification boundary:** These are practice instructions, not recorded results. Preserve existing specifications and laboratory contracts. Qualify actual external services separately using authorized disposable infrastructure.
+
 ## Knowledge check
 
 1. Which authenticated actor, external sender, or tenant owns the data in this scenario?

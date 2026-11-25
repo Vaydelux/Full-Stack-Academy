@@ -44,6 +44,20 @@ node --test --test-name-pattern="23[.]02" examples/p6-operations/labs.test.mjs
 
 Small synthetic dependency graph only; real module enforcement, transactions and feature flag runtime not executed.
 
+## Applied engineering walkthrough
+
+Feature toggles control exposure of a capability, not permission to use it. Cohort assignment should be stable for the intended subject, and unavailable configuration needs an explicit safe default. A disabled client UI does not replace server-side authorization.
+
+### Diagnose the concrete failure
+
+Evaluate a proposed feature flag for two synthetic authorized users and an unauthorized user. Verify stable assignment and default-off behavior, then assert the unauthorized actor remains denied even when the flag is enabled.
+
+### Independent exercise and evidence
+
+Design flag ownership, rollout, emergency disable and removal criteria. Record assignment and authorization outcomes independently.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve the existing specification, model and unpublished status. Actual module, persistence and runtime qualification remain independent.
+
 ## Knowledge check
 
 1. Which invariant or operational measurement determines success?

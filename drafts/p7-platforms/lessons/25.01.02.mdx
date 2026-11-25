@@ -44,6 +44,20 @@ node --test --test-name-pattern="25[.]01" examples/p7-platforms/labs.test.mjs
 
 In-memory count/deduplication model; no warehouse, materialized-view freshness, ClickHouse or dbt runtime qualification.
 
+## Applied engineering walkthrough
+
+Define the grain before writing an aggregation: a count of order lines is not a count of distinct orders. A materialized view stores a result that can become stale, so expose its refresh time and document the impact of concurrent writes and refresh operations.
+
+### Diagnose the concrete failure
+
+Seed orders with multiple lines and compare row count against distinct order count. Refresh a materialized view, insert another order and show which result changes before and after refresh.
+
+### Independent exercise and evidence
+
+Write acceptance cases for empty intervals, duplicate join rows and delayed refresh. Record query, source totals and freshness boundary; verify actual PostgreSQL behavior independently.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify actual database, analytics tools and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

@@ -44,6 +44,20 @@ node --test --test-name-pattern="20[.]04" examples/p6-quality/labs.test.mjs
 
 Synthetic topology policy; no OS/firewall/TLS/DNS/IaC or restore enforcement tested.
 
+## Applied engineering walkthrough
+
+Infrastructure as code expresses desired resources in reviewable configuration. A plan shows proposed changes against the currently observed state, but provider behavior and drift can affect the actual apply. Provider versions and dependency locks are part of reproducibility.
+
+### Diagnose the concrete failure
+
+In a disposable local-only OpenTofu workspace, validate the configuration and inspect a plan with no production credentials. Compare the expected resource inventory and identify any unintended deletion or network exposure. Do not apply changes for this source-only exercise.
+
+### Independent exercise and evidence
+
+Design a review checklist for version pins, resource naming, plan digest, approved target and rollback or recovery strategy. Record the actual command results only if the tool is installed.
+
+**Evidence boundary:** These are practice instructions, not recorded test results. Preserve the existing model, specification and draft flag; external runtime qualification remains independent.
+
 ## Knowledge check
 
 1. Which public behavior or invariant is being protected?

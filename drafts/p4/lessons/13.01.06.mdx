@@ -68,6 +68,20 @@ A successful CLI exit does not prove zero downtime. Consider locks, concurrent a
 
 A production-ready persistence boundary has to address error mapping, least-privileged database credentials, transaction/connection lifecycle, tenant authorization and request cancellation. Whenever schema changes are involved, review migration SQL and compatibility with the previous app version. Never expose database credentials in a `NEXT_PUBLIC_` variable or include them in a public web bundle.
 
+## Applied persistence walkthrough
+
+Prisma 7 migrate dev is for authoring migrations in development and can involve a shadow database or reset prompts. migrate deploy applies existing pending migrations in a controlled target; it is not a substitute for drift checks or an automatic client-generation step. Keep the version-pinned CLI and SQL history under review. Do not run development migration commands on production.
+
+### Diagnose the concrete failure
+
+Use two disposable databases: author a migration on the development target, review its SQL and apply it to the second using the pinned Prisma 7 deployment command. Inspect the resulting schema and migration history. Confirm the older app can operate during the compatibility window and that generation is performed separately.
+
+### Independent exercise and evidence
+
+Write an expand/backfill/contract plan for tenantId on an existing populated table. Identify which changes need staged deployment and an abort condition if backfill fails. Record schema parity, migration checksums and the chosen forward-repair strategy.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Use the pinned Prisma 7 toolchain and disposable PostgreSQL database. Preserve the starter and solution; source review does not qualify generated code or authorization.
+
 ## Bug Hunt
 
 1. Observe the unsafe starter: The starter would attempt interactive development-time migration creation in a production workflow.

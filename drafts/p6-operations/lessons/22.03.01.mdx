@@ -44,6 +44,20 @@ node --test --test-name-pattern="22[.]03" examples/p6-operations/labs.test.mjs
 
 Capacity arithmetic only; no actual CDN, cache cluster, balancing, cost quotes or scaling benchmark.
 
+## Applied engineering walkthrough
+
+CDN caching reduces repeated origin traffic for eligible representations. Purging an edge cache is distinct from browser cache expiration and may propagate asynchronously. Define public versus private representations explicitly; authenticated cart data should not enter a shared public cache.
+
+### Diagnose the concrete failure
+
+In a disposable proxy fixture cache a public catalog response, change its authoritative version and exercise the purge contract. Check the next read and verify two distinct users cannot receive each other's private cart. Inspect actual cache headers.
+
+### Independent exercise and evidence
+
+Design public catalog caching with versioned assets, bounded freshness and explicit purge behavior. Record observed representation versions and isolation outcomes; a modeled purge is not provider evidence.
+
+**Evidence boundary:** These are practice instructions, not recorded capacity or benchmark results. Preserve the existing specification, model and unpublished status. Actual deployment measurements remain independent.
+
 ## Knowledge check
 
 1. Which invariant or operational measurement determines success?

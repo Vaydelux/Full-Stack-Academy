@@ -77,7 +77,21 @@ In a multi-request system, repeat the test with two independent users and at lea
 
 <Misconception claim="TasksService always constructs PostgresTaskStore, making isolated tests impossible." correction="Business code depends on an abstract port injected by a token, not a concrete database constructor." />
 
-<KnowledgeCheck question="Which design is safest for dependency inversion?" choices={["Make the controller hold every stateful dependency permanently.","Keep business rules in an injectable service and verify the boundary with actual runtime behavior.","Expose persistent entities directly because TypeScript hides private fields.","Treat a mock array as proof of database transactions."]} correctIndex={1} explanation="Business code depends on an abstract port injected by a token, not a concrete database constructor." misconception="TasksService always constructs PostgresTaskStore, making isolated tests impossible." lessonId="11.03.04" />
+<KnowledgeCheck question="A TypeScript interface is erased at runtime. How can Nest inject a registered implementation of that interface?" choices={["Use the interface name as a runtime value.","Instantiate a database store in the constructor.","Declare all providers global.","Register and inject the same exported runtime token."]} correctIndex={3} explanation="A runtime token bridges the erased interface and registered implementation." misconception="TasksService always constructs PostgresTaskStore, making isolated tests impossible." lessonId="11.03.04" />
+
+## Applied engineering walkthrough
+
+Dependency inversion separates policy from infrastructure. A TypeScript interface describes the port but does not exist at runtime; Nest needs a token that can identify a provider. A symbol exported from one module preserves identity when imported elsewhere. Register a compatible implementation against the exact token at the composition root. Avoid making domain services construct database clients or read infrastructure configuration themselves.
+
+### Diagnose the concrete failure
+
+Register a TaskStore that returns a distinctive count, then resolve TasksService through a real testing module. Verify the service delegates to the registered implementation. Replace it with a different implementation and repeat. A missing provider registration is a container error, not the semantic red failure that demonstrates hardcoded construction.
+
+### Independent exercise and evidence
+
+Sketch a store port for reading task summaries and two implementations, one memory-backed and one database-backed. Document error semantics and ownership of the database connection. Record the override result and token identity; do not assume a shared interface proves both adapters behave identically.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Pure contract checks, framework wiring and real database qualification are separate evidence. Keep the existing starter and solution unchanged; do not award course credit from source review alone.
 
 ## Bug Hunt: reproduce, diagnose and repair
 

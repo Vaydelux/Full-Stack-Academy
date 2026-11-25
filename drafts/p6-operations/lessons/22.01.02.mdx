@@ -44,6 +44,20 @@ node --test --test-name-pattern="22[.]01" examples/p6-operations/labs.test.mjs
 
 Synthetic measured-value budget only; actual Core Web Vitals, browser profiles and real-user metrics are unexecuted.
 
+## Applied engineering walkthrough
+
+Bundle analysis inspects delivered JavaScript and its dependency graph, not source file length. Server-only modules and client boundaries affect which code is shipped. Tree shaking and code splitting depend on actual imports and build configuration. A smaller chunk can still delay interaction if expensive to evaluate.
+
+### Diagnose the concrete failure
+
+Build a disposable Next application and inspect its client chunks before and after removing an unused dependency. Compare compressed transfer and parse/execution costs where measurable. Verify the affected feature still works.
+
+### Independent exercise and evidence
+
+Set a route-specific client budget and an explicit reviewer for exceptions. Record build configuration, chunk sizes and functional results; do not infer improvement from source edits alone.
+
+**Evidence boundary:** These are practice instructions, not recorded benchmark results. Preserve the existing specification, model and unpublished status. Actual browser measurement and qualification remain independent.
+
 ## Knowledge check
 
 1. Which invariant or operational measurement determines success?

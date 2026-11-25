@@ -50,6 +50,20 @@ The tests exercise local Node state or loopback HTTP behavior. Document separate
 
 Optimistic UI is not automatically a conflict-free collaboration algorithm.
 
+## Applied engineering walkthrough
+
+An optimistic edit gives immediate feedback while a write remains unconfirmed. Preserve the prior confirmed state and the user's draft independently. A success response must identify the committed revision; a timeout can be ambiguous, and a stale write needs explicit conflict handling.
+
+### Diagnose the concrete failure
+
+Edit a versioned synthetic note and hold the response. Observe the optimistic display, then return a rejection and verify the draft is retained for recovery. Repeat with a committed response and confirm the accepted revision.
+
+### Independent exercise and evidence
+
+Design a pending-edit state machine with committed, rejected, conflicting and uncertain outcomes. Record the visible text, confirmed revision and retained draft for each transition.
+
+**Qualification boundary:** These are practice instructions, not recorded results. Preserve the original laboratory and publication status. Local simulations do not qualify actual browser or distributed provider behavior.
+
 ## Knowledge check
 
 1. Which actor, resource, version or event cursor is authoritative in this scenario?

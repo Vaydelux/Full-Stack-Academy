@@ -52,6 +52,20 @@ The corresponding module exercises **TenantSearch: tenant isolation, ranking, st
 
 For a production implementation, document the secret-owner or principal, durability plan, error and recovery policy, rate/resource bounds, privacy guarantees, observability without sensitive payloads, and the credential/version-rotation procedure.
 
+## Applied engineering walkthrough
+
+Relevance ranking is a product contract, not a property of insertion order. The local fixture illustrates title/body weighting and deterministic tie-breaking. A real engine may tokenize, normalize and score differently, so preserve a labeled expected-result set when changing ranking.
+
+### Diagnose the concrete failure
+
+Index synthetic documents containing an exact title match, body-only match and unrelated text. Verify the intended title match ranks higher and ties have a stable order. Repeat after changing insertion order to distinguish rank from storage sequence.
+
+### Independent exercise and evidence
+
+Create a relevance evaluation set with navigational, broad and ambiguous queries. Record top results, expected ranking and any tradeoffs. Keep fixture ranking and actual engine evaluation separate.
+
+**Qualification boundary:** These are practice instructions, not recorded results. Preserve existing specifications and laboratory contracts. Qualify actual external services separately using authorized disposable infrastructure.
+
 ## Knowledge check
 
 1. Which authenticated actor, external sender, or tenant owns the data in this scenario?

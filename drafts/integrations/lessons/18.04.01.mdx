@@ -52,6 +52,20 @@ The corresponding module exercises **signWebhook and WebhookInbox: raw bytes, fr
 
 For a production implementation, document the secret-owner or principal, durability plan, error and recovery policy, rate/resource bounds, privacy guarantees, observability without sensitive payloads, and the credential/version-rotation procedure.
 
+## Applied engineering walkthrough
+
+A provider client is a privileged server boundary. The application derives the requested business operation from verified user context, then selects a fixed provider endpoint and adds server-owned credentials. Arbitrary outbound destinations and raw diagnostic headers should not cross this boundary.
+
+### Diagnose the concrete failure
+
+Use a fake transport to capture an allowed request and verify only the adapter sets authorization. Submit an invalid destination or unauthorized actor and verify the transport is never called. Inspect logs and a disposable client build for a synthetic credential sentinel.
+
+### Independent exercise and evidence
+
+Design an adapter with approved host configuration, request deadlines, response size limits and safe error mapping. Record accepted destinations and denied requests, without printing credentials.
+
+**Qualification boundary:** These are practice instructions, not recorded results. Preserve existing specifications and laboratory contracts. Qualify actual external services separately using authorized disposable infrastructure.
+
 ## Knowledge check
 
 1. Which authenticated actor, external sender, or tenant owns the data in this scenario?

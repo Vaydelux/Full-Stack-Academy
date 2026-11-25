@@ -44,6 +44,20 @@ node --test --test-name-pattern="22[.]02" examples/p6-operations/labs.test.mjs
 
 Synthetic latency sample analysis only; actual CPU/heap profiles, Fastify comparison, query plans and HTTP behavior need real runtimes.
 
+## Applied engineering walkthrough
+
+Framework comparisons require equivalent application semantics. Serialization, validation, middleware and database work can dominate HTTP adapter overhead. Compare warmup, concurrency, request mix and runtime settings rather than treating a framework's benchmark as your application's result.
+
+### Diagnose the concrete failure
+
+Build equivalent disposable endpoints in Fastify and an alternative using the same data and validation contract. Repeat matched trials, record errors and latency, and confirm identical results. Do not change several variables at once.
+
+### Independent exercise and evidence
+
+Write a benchmark decision record with environment, versions, workload, variance and migration cost. Choose an adapter only after measured benefit and compatibility are established.
+
+**Evidence boundary:** These are practice instructions, not recorded benchmark results. Preserve the existing specification, model and unpublished status. Actual API and database measurements remain independent.
+
 ## Knowledge check
 
 1. Which invariant or operational measurement determines success?

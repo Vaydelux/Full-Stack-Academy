@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { inspectPostgresDrafts, checkSnippetParity } from '../scripts/verify-source.mjs';
@@ -38,4 +39,16 @@ test('real DB qualifier rejects remote and unrelated databases',()=>{
 test('real DB qualifier accepts isolated local test hosts only',()=>{
  assert.equal(validateTestDb('postgres://u:p@127.0.0.1:5432/academy_test','YES'),
   'postgres://u:p@127.0.0.1:5432/academy_test');
+});
+
+
+test('P10 applied SQL walkthroughs retain prediction, practice and qualification boundaries',()=>{
+ for(let n=1;n<=8;n++){
+  const id='12.01.'+String(n).padStart(2,'0');
+  const mdx=readFileSync(new URL('../../../drafts/postgresql/lessons/'+id+'.mdx',import.meta.url),'utf8').replaceAll('\r\n','\n');
+  const walk=mdx.match(/## Applied SQL walkthrough\n([\s\S]*?)(?=## Bug [Hh]unt)/)?.[1]??'';
+  assert.ok(walk.trim().split(/\s+/).length>=130,id+' walkthrough missing or shallow');
+  for(const marker of ['### Predict and diagnose the result','### Independent exercise and evidence','**Qualification boundary:**'])assert.ok(walk.includes(marker),id+' missing '+marker);
+  assert.doesNotMatch(mdx,/<LabGate\b/,id);
+ }
 });

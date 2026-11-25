@@ -44,6 +44,20 @@ node --test --test-name-pattern="19[.]03" examples/p6-quality/labs.test.mjs
 
 Synthetic row/actor model; no Nest DI, network server, PostgreSQL or RLS execution.
 
+## Applied engineering walkthrough
+
+Migration tests validate both fresh installation and upgrades from real prior schema shapes. A new NOT NULL constraint requires existing rows and concurrent writers to satisfy it. A clean install alone misses compatibility and backfill defects.
+
+### Diagnose the concrete failure
+
+Replay the prior migration history in a disposable database and insert a synthetic legacy row. Apply the proposed expansion and backfill, inspect data, then verify the final constraint. Test old and new application writes during the compatibility window.
+
+### Independent exercise and evidence
+
+Design upgrade acceptance with row-count reconciliation, reviewed SQL, constraint checks and a data-preserving failure strategy. Record migration versions and actual legacy data outcomes.
+
+**Evidence boundary:** These are practice instructions, not recorded test results. Preserve the existing model, specification and draft flag; external runtime qualification remains independent.
+
 ## Knowledge check
 
 1. Which public behavior or invariant is being protected?

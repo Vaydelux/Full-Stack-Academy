@@ -83,6 +83,20 @@ Keyset pagination is not a snapshot: deletions, mutable sort keys and authorizat
 
 A safe persistence layer should accept explicit request-scoped identities, use bounded queries, reject unsupported input, and keep internal query types from becoming public API DTOs. For permission-sensitive mutations, reason about database constraints and application authorization separately: a valid foreign key does not mean the calling actor may update that row.
 
+## Applied persistence walkthrough
+
+Cursor pagination uses a stable order and a unique cursor key. The example checks cursor ownership, skips the cursor itself and limits the page, but converts pageSize permissively and does not guarantee integer input. Validate finite positive integer limits at the request boundary. A cursor lookup followed by a page query can also race with deletion; define the expected stale-cursor behavior.
+
+### Diagnose the concrete failure
+
+Seed a tenant with more than one page and another tenant with a known cursor. Verify page IDs are ordered, the cursor is not repeated and the other tenant's cursor is rejected. Try fractional, negative and nonnumeric limits at the API boundary. Record what happens when a cursor row disappears.
+
+### Independent exercise and evidence
+
+Design an opaque cursor encoding filter and ordering context, with validation and a documented restart behavior. Explain why pagination across independent transactions is not a stable snapshot. Record page IDs, limits and negative cursor cases.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Use the pinned Prisma 7 toolchain and disposable PostgreSQL database. Preserve the starter and solution; source review does not qualify generated code or authorization.
+
 ## Bug Hunt
 
 1. State the starter's observable defect: Deep offset pages grow expensive and can shift when new rows arrive. createdAt alone is not unique, so ties may reorder results.

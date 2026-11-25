@@ -44,6 +44,20 @@ node --test --test-name-pattern="23[.]03" examples/p6-operations/labs.test.mjs
 
 In-memory synthetic idempotency model; no broker, durable store, transactional outbox or exactly-once side-effect evidence.
 
+## Applied engineering walkthrough
+
+At-most-once, at-least-once and exactly-once guarantees apply to a defined transport or processing boundary. A broker acknowledgement can be lost after a side effect, allowing redelivery. Exactly-once broker features do not automatically guarantee exactly-once email or payment effects.
+
+### Diagnose the concrete failure
+
+Simulate a duplicate delivery using the existing consumer model and inspect the unchanged total. Then draw a failure after an external provider accepts a request but before the local receipt commits. Explain why the model cannot establish the external outcome.
+
+### Independent exercise and evidence
+
+Design a delivery contract with acknowledgement timing, durable deduplication and provider reconciliation. Record which guarantees apply to each boundary and which remain untested.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve the existing specification, model and unpublished status. Actual persistence, broker and provider qualification remain independent.
+
 ## Knowledge check
 
 1. Which invariant or operational measurement determines success?

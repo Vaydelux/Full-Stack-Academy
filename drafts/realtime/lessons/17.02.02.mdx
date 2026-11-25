@@ -50,6 +50,20 @@ The tests exercise local Node state or loopback HTTP behavior. Document separate
 
 Read/unread state must not double as a proof of external delivery.
 
+## Applied engineering walkthrough
+
+Read state belongs to a recipient's notification record, not a global event. Preferences control future delivery according to the documented policy; disabling a channel need not delete past notices. Authorization applies to both reading and marking items.
+
+### Diagnose the concrete failure
+
+Create two users with notifications and mark one user's item read. Verify the other user's unread count remains unchanged. Disable future in-app delivery and verify a new eligible event follows the preference.
+
+### Independent exercise and evidence
+
+Design a mark-all-read operation bounded by recipient and an optional cutoff. Test a concurrent incoming notification and decide whether it remains unread. Record counts and denied mutations.
+
+**Qualification boundary:** These are practice instructions, not recorded results. Preserve the original laboratory and publication status. Local simulations do not qualify actual browser or distributed provider behavior.
+
 ## Knowledge check
 
 1. Which actor, resource, version or event cursor is authoritative in this scenario?

@@ -50,6 +50,20 @@ In the test notes, separate what the in-memory fixture genuinely observed from R
 
 A dead-letter queue is a recovery process, not an automatic data disposal policy.
 
+## Applied engineering walkthrough
+
+Poison jobs repeatedly fail for a persistent reason, such as incompatible schema. Bounded attempts and terminal isolation prevent them consuming ordinary capacity forever. A dead-letter workflow should preserve diagnostic context without storing unnecessary secrets. Redrive requires a corrected cause and authorization.
+
+### Diagnose the concrete failure
+
+Drive a synthetic invalid job through its configured failure budget and verify terminal state. Check a valid following job can still proceed. Correct the underlying cause and explicitly redrive using the original operation identity.
+
+### Independent exercise and evidence
+
+Design a redrive checklist including schema version, root cause, operator, replay risk and audit event. Record attempt counts and final state; never automatically replay all terminal failures without review.
+
+**Qualification boundary:** These are practice instructions, not recorded results. Preserve the existing lab and publication status; in-memory tests do not qualify live Redis or BullMQ behavior.
+
 ## Knowledge check
 
 1. What is authoritative in this scenario, and what state is derived or replayable?

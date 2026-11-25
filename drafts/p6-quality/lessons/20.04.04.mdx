@@ -44,6 +44,20 @@ node --test --test-name-pattern="20[.]04" examples/p6-quality/labs.test.mjs
 
 Synthetic topology policy; no OS/firewall/TLS/DNS/IaC or restore enforcement tested.
 
+## Applied engineering walkthrough
+
+DNS records map names to service addresses, while resolver caching and TTL influence how long an earlier answer may persist. CDN caching of HTTP responses is a distinct layer. Changing DNS does not instantly move all clients, and cached assets can outlive an origin change.
+
+### Diagnose the concrete failure
+
+Draw two synthetic resolvers, one holding the previous record and another resolving the new one. Model a migration during the TTL window and verify both origins remain compatible. Plan independent CDN cache invalidation where the application requires it.
+
+### Independent exercise and evidence
+
+Design a domain cutover with lower TTL preparation, health verification, compatible origins and rollback conditions. Record actual DNS and HTTP observations only during an authorized test.
+
+**Evidence boundary:** These are practice instructions, not recorded test results. Preserve the existing model, specification and draft flag; external runtime qualification remains independent.
+
 ## Knowledge check
 
 1. Which public behavior or invariant is being protected?

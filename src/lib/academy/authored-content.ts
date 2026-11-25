@@ -908,6 +908,918 @@ export const AUTHORED_LESSON_IDS = ['06.01.01', '07.02.01', '09.01.02', '15.02.0
 /* ------------------------------------------------------------------ */
 
 export const AUTHORED_REFERENCES: AuthoredReference[] = [
+{
+  "id": "prisma-findmany",
+  "matchCategories": [
+    "Prisma"
+  ],
+  "matchTitles": [
+    "findMany"
+  ],
+  "heading": "Prisma: findMany",
+  "category": "Prisma",
+  "majorVersion": "Prisma ORM 7",
+  "status": "Authored reference draft",
+  "summary": "Query a filtered collection.",
+  "syntax": "prisma.task.findMany({ take: 20 })",
+  "lang": "ts",
+  "parameters": "See syntax and official reference; production-oriented snippets assume configured clients, schemas and authorized context.",
+  "returns": "Returns an array of selected records.",
+  "minimalExample": "prisma.task.findMany({ take: 20 })",
+  "productionExample": "await prisma.task.findMany({ where: { workspaceId: authorizedWorkspaceId }, orderBy: [{ createdAt: 'desc' }, { id: 'desc' }], take: 20, select: { id: true, title: true } })",
+  "commonMistakes": [
+    "Never accept an arbitrary workspace ID as proof of access."
+  ],
+  "securityPerformanceNotes": [
+    "Bound result size and use deterministic ordering."
+  ],
+  "relatedLessonIds": [
+    "13.02.01"
+  ],
+  "canonicalUrl": "https://www.prisma.io/docs/orm/v7/reference/prisma-client-reference"
+},
+{
+  "id": "prisma-select",
+  "matchCategories": [
+    "Prisma"
+  ],
+  "matchTitles": [
+    "select"
+  ],
+  "heading": "Prisma: select",
+  "category": "Prisma",
+  "majorVersion": "Prisma ORM 7",
+  "status": "Authored reference draft",
+  "summary": "Choose only required response fields.",
+  "syntax": "prisma.user.findMany({ select: { id: true } })",
+  "lang": "ts",
+  "parameters": "See syntax and official reference; production-oriented snippets assume configured clients, schemas and authorized context.",
+  "returns": "Returns a projection of matching records.",
+  "minimalExample": "prisma.user.findMany({ select: { id: true } })",
+  "productionExample": "await prisma.user.findUnique({ where: { id: verifiedUserId }, select: { id: true, displayName: true } })",
+  "commonMistakes": [
+    "Do not combine select and include at the same query level."
+  ],
+  "securityPerformanceNotes": [
+    "Omit private fields explicitly; selection is not authorization."
+  ],
+  "relatedLessonIds": [
+    "13.02.02"
+  ],
+  "canonicalUrl": "https://www.prisma.io/docs/orm/v7/prisma-client/queries/select-fields"
+},
+{
+  "id": "prisma-transaction",
+  "matchCategories": [
+    "Prisma"
+  ],
+  "matchTitles": [
+    "$transaction"
+  ],
+  "heading": "Prisma: $transaction",
+  "category": "Prisma",
+  "majorVersion": "Prisma ORM 7",
+  "status": "Authored reference draft",
+  "summary": "Execute related changes atomically.",
+  "syntax": "await prisma.$transaction([queryA, queryB])",
+  "lang": "ts",
+  "parameters": "See syntax and official reference; production-oriented snippets assume configured clients, schemas and authorized context.",
+  "returns": "Returns the callback result or array of operation results; failure rolls back.",
+  "minimalExample": "await prisma.$transaction([queryA, queryB])",
+  "productionExample": "await prisma.$transaction(async tx => {\n  const project = await tx.project.findFirstOrThrow({ where: { id: projectId, organizationId: authorizedOrganizationId } });\n  await tx.task.create({ data: { projectId: project.id, title } });\n  await tx.outboxEvent.create({ data: { topic: 'task.created', payload: { projectId: project.id } } });\n});",
+  "commonMistakes": [
+    "Calling the outer client inside a callback escapes its transaction.",
+    "External network calls inside the transaction increase lock duration and cannot be rolled back by PostgreSQL."
+  ],
+  "securityPerformanceNotes": [
+    "Keep the transaction short and avoid external network calls.",
+    "Use bounded whole-transaction retries for serialization conflicts, and a transactional outbox for side effects."
+  ],
+  "relatedLessonIds": [
+    "13.02.04",
+    "15.02.04",
+    "16.04.01"
+  ],
+  "canonicalUrl": "https://www.prisma.io/docs/orm/prisma-client/queries/transactions"
+},
+{
+  "id": "prisma-queryraw",
+  "matchCategories": [
+    "Prisma"
+  ],
+  "matchTitles": [
+    "$queryRaw"
+  ],
+  "heading": "Prisma: $queryRaw",
+  "category": "Prisma",
+  "majorVersion": "Prisma ORM 7",
+  "status": "Authored reference draft",
+  "summary": "Execute parameterized raw SQL when ORM queries are insufficient.",
+  "syntax": "await prisma.$queryRaw`SELECT 1`",
+  "lang": "ts",
+  "parameters": "See syntax and official reference; production-oriented snippets assume configured clients, schemas and authorized context.",
+  "returns": "Returns query rows; runtime shape still requires validation.",
+  "minimalExample": "await prisma.$queryRaw`SELECT 1`",
+  "productionExample": "await prisma.$queryRaw`SELECT id, title FROM tasks WHERE workspace_id = ${authorizedWorkspaceId} LIMIT 20`",
+  "commonMistakes": [
+    "Do not concatenate untrusted text or use placeholders for SQL identifiers."
+  ],
+  "securityPerformanceNotes": [
+    "Enforce authorization and whitelist any dynamic identifiers."
+  ],
+  "relatedLessonIds": [
+    "13.03.01"
+  ],
+  "canonicalUrl": "https://www.prisma.io/docs/orm/v7/reference/prisma-client-reference"
+},
+{
+  "id": "supabase-getclaims",
+  "matchCategories": [
+    "Supabase"
+  ],
+  "matchTitles": [
+    "getClaims"
+  ],
+  "heading": "Supabase: getClaims",
+  "category": "Supabase",
+  "majorVersion": "supabase-js 2",
+  "status": "Authored reference draft",
+  "summary": "Verify the access token and obtain claims.",
+  "syntax": "const { data, error } = await supabase.auth.getClaims()",
+  "lang": "ts",
+  "parameters": "See syntax and official reference; production-oriented snippets assume configured clients, schemas and authorized context.",
+  "returns": "Verified claims or an error.",
+  "minimalExample": "const { data, error } = await supabase.auth.getClaims()",
+  "productionExample": "const result = await supabase.auth.getClaims(); if (result.error || !result.data?.claims.sub) throw new Error('Unauthorized'); const userId = result.data.claims.sub;",
+  "commonMistakes": [
+    "Do not trust editable user metadata for authorization."
+  ],
+  "securityPerformanceNotes": [
+    "Claims can be stale; check current resource membership for sensitive operations."
+  ],
+  "relatedLessonIds": [
+    "14.02.06"
+  ],
+  "canonicalUrl": "https://supabase.com/docs/reference/javascript/auth-getclaims"
+},
+{
+  "id": "supabase-rls-policy",
+  "matchCategories": [
+    "Supabase"
+  ],
+  "matchTitles": [
+    "RLS policy"
+  ],
+  "heading": "Supabase: RLS policy",
+  "category": "Supabase",
+  "majorVersion": "Supabase / PostgreSQL",
+  "status": "Authored reference draft",
+  "summary": "Restrict rows visible to API roles.",
+  "syntax": "ALTER TABLE public.tasks ENABLE ROW LEVEL SECURITY;",
+  "lang": "sql",
+  "parameters": "See syntax and official reference; production-oriented snippets assume configured clients, schemas and authorized context.",
+  "returns": "Controls which rows a role may read or modify.",
+  "minimalExample": "ALTER TABLE public.tasks ENABLE ROW LEVEL SECURITY;",
+  "productionExample": "CREATE POLICY own_tasks ON public.tasks FOR SELECT TO authenticated USING ((SELECT auth.uid()) = owner_id);",
+  "commonMistakes": [
+    "TO authenticated alone does not enforce ownership."
+  ],
+  "securityPerformanceNotes": [
+    "Grant only required table privileges and test with two distinct identities."
+  ],
+  "relatedLessonIds": [
+    "14.03.01"
+  ],
+  "canonicalUrl": "https://supabase.com/docs/guides/database/postgres/row-level-security"
+},
+{
+  "id": "supabase-auth-uid",
+  "matchCategories": [
+    "Supabase"
+  ],
+  "matchTitles": [
+    "auth.uid"
+  ],
+  "heading": "Supabase: auth.uid",
+  "category": "Supabase",
+  "majorVersion": "Supabase / PostgreSQL",
+  "status": "Authored reference draft",
+  "summary": "Resolve the requesting user ID inside SQL policies.",
+  "syntax": "SELECT auth.uid();",
+  "lang": "sql",
+  "parameters": "See syntax and official reference; production-oriented snippets assume configured clients, schemas and authorized context.",
+  "returns": "A user UUID or null when unauthenticated.",
+  "minimalExample": "SELECT auth.uid();",
+  "productionExample": "CREATE POLICY own_task_update ON public.tasks FOR UPDATE TO authenticated USING ((SELECT auth.uid()) = owner_id) WITH CHECK ((SELECT auth.uid()) = owner_id);",
+  "commonMistakes": [
+    "An UPDATE also requires an appropriate SELECT policy."
+  ],
+  "securityPerformanceNotes": [
+    "Test ownership changes and cross-user writes, not just successful updates."
+  ],
+  "relatedLessonIds": [
+    "14.03.02"
+  ],
+  "canonicalUrl": "https://supabase.com/docs/guides/database/postgres/row-level-security"
+},
+{
+  "id": "supabase-service-role-key",
+  "matchCategories": [
+    "Supabase"
+  ],
+  "matchTitles": [
+    "Service role key"
+  ],
+  "heading": "Supabase: Service role key",
+  "category": "Supabase",
+  "majorVersion": "supabase-js 2",
+  "status": "Authored reference draft",
+  "summary": "Use privileged API credentials only in trusted server code.",
+  "syntax": "const secret = process.env.SUPABASE_SECRET_KEY;",
+  "lang": "ts",
+  "parameters": "See syntax and official reference; production-oriented snippets assume configured clients, schemas and authorized context.",
+  "returns": "A privileged credential, not a user identity.",
+  "minimalExample": "const secret = process.env.SUPABASE_SECRET_KEY;",
+  "productionExample": "if (!process.env.SUPABASE_SECRET_KEY) throw new Error('Missing server credential'); // Create a separate server-only admin client; authorize the caller before every privileged operation.",
+  "commonMistakes": [
+    "Never put secret or legacy service_role keys in NEXT_PUBLIC variables."
+  ],
+  "securityPerformanceNotes": [
+    "Prefer scoped user clients where possible; redact secrets from logs."
+  ],
+  "relatedLessonIds": [
+    "14.03.06"
+  ],
+  "canonicalUrl": "https://supabase.com/docs/guides/getting-started/api-keys"
+},
+{
+  "id": "redis-get",
+  "matchCategories": [
+    "Redis & BullMQ"
+  ],
+  "matchTitles": [
+    "GET"
+  ],
+  "heading": "Redis & BullMQ: GET",
+  "category": "Redis & BullMQ",
+  "majorVersion": "Redis",
+  "status": "Authored reference draft",
+  "summary": "Read a cached string value.",
+  "syntax": "GET task:42",
+  "lang": "bash",
+  "parameters": "See syntax and official reference; production-oriented snippets assume configured clients, schemas and authorized context.",
+  "returns": "String value or nil for a missing key.",
+  "minimalExample": "GET task:42",
+  "productionExample": "GET workspace:demo:task:42:v1",
+  "commonMistakes": [
+    "A cache hit does not prove current user authorization."
+  ],
+  "securityPerformanceNotes": [
+    "Scope cache keys and authorize requests before returning cached data."
+  ],
+  "relatedLessonIds": [
+    "16.01.03"
+  ],
+  "canonicalUrl": "https://redis.io/docs/latest/commands/get/"
+},
+{
+  "id": "redis-set-ex",
+  "matchCategories": [
+    "Redis & BullMQ"
+  ],
+  "matchTitles": [
+    "SET EX"
+  ],
+  "heading": "Redis & BullMQ: SET EX",
+  "category": "Redis & BullMQ",
+  "majorVersion": "Redis",
+  "status": "Authored reference draft",
+  "summary": "Store a string with a bounded lifetime.",
+  "syntax": "SET demo value EX 60",
+  "lang": "bash",
+  "parameters": "See syntax and official reference; production-oriented snippets assume configured clients, schemas and authorized context.",
+  "returns": "OK on successful write.",
+  "minimalExample": "SET demo value EX 60",
+  "productionExample": "SET workspace:demo:summary:v1 '{\"count\":4}' EX 120",
+  "commonMistakes": [
+    "TTL is not an invalidation strategy by itself."
+  ],
+  "securityPerformanceNotes": [
+    "Do not store credentials in general-purpose caches; bound lifetime and memory."
+  ],
+  "relatedLessonIds": [
+    "16.01.02"
+  ],
+  "canonicalUrl": "https://redis.io/docs/latest/commands/set/"
+},
+{
+  "id": "redis-scan",
+  "matchCategories": [
+    "Redis & BullMQ"
+  ],
+  "matchTitles": [
+    "SCAN"
+  ],
+  "heading": "Redis & BullMQ: SCAN",
+  "category": "Redis & BullMQ",
+  "majorVersion": "Redis",
+  "status": "Authored reference draft",
+  "summary": "Incrementally iterate keys without using a blocking KEYS scan.",
+  "syntax": "SCAN 0",
+  "lang": "bash",
+  "parameters": "See syntax and official reference; production-oriented snippets assume configured clients, schemas and authorized context.",
+  "returns": "A next cursor and a batch of keys.",
+  "minimalExample": "SCAN 0",
+  "productionExample": "SCAN 0 MATCH workspace:demo:* COUNT 100",
+  "commonMistakes": [
+    "A nonzero cursor with an empty batch is not completion."
+  ],
+  "securityPerformanceNotes": [
+    "SCAN may return duplicates; COUNT is a hint and cluster scans need shard awareness."
+  ],
+  "relatedLessonIds": [
+    "16.02.07"
+  ],
+  "canonicalUrl": "https://redis.io/docs/latest/commands/scan/"
+},
+{
+  "id": "redis-attempts",
+  "matchCategories": [
+    "Redis & BullMQ"
+  ],
+  "matchTitles": [
+    "attempts"
+  ],
+  "heading": "Redis & BullMQ: attempts",
+  "category": "Redis & BullMQ",
+  "majorVersion": "BullMQ 5",
+  "status": "Authored reference draft",
+  "summary": "Bound retry attempts for failed jobs.",
+  "syntax": "await queue.add('notify', payload, { attempts: 3 })",
+  "lang": "ts",
+  "parameters": "See syntax and official reference; production-oriented snippets assume configured clients, schemas and authorized context.",
+  "returns": "A queued job with configured retry policy.",
+  "minimalExample": "await queue.add('notify', payload, { attempts: 3 })",
+  "productionExample": "await queue.add('notify', { eventId }, { attempts: 4, backoff: { type: 'exponential', delay: 1000 } })",
+  "commonMistakes": [
+    "A retried job can repeat a side effect after a worker crash."
+  ],
+  "securityPerformanceNotes": [
+    "Make the handler idempotent; do not retry permanent failures indefinitely."
+  ],
+  "relatedLessonIds": [
+    "16.03.04"
+  ],
+  "canonicalUrl": "https://docs.bullmq.io/guide/jobs/retrying-job"
+},
+{
+  "id": "testing-vitest-test",
+  "matchCategories": [
+    "Testing & Operations"
+  ],
+  "matchTitles": [
+    "Vitest test"
+  ],
+  "heading": "Testing & Operations: Vitest test",
+  "category": "Testing & Operations",
+  "majorVersion": "Vitest",
+  "status": "Authored reference draft",
+  "summary": "Describe an observable test case.",
+  "syntax": "test('adds', () => expect(1 + 2).toBe(3))",
+  "lang": "ts",
+  "parameters": "See syntax and official reference; production-oriented snippets assume configured clients, schemas and authorized context.",
+  "returns": "A registered test with pass/fail outcome.",
+  "minimalExample": "test('adds', () => expect(1 + 2).toBe(3))",
+  "productionExample": "test('rejects an overdraft', () => { expect(() => debit(10, 11)).toThrow(); })",
+  "commonMistakes": [
+    "Do not assert only that an implementation was called."
+  ],
+  "securityPerformanceNotes": [
+    "Test business invariants and negative cases without production credentials."
+  ],
+  "relatedLessonIds": [
+    "19.01.02"
+  ],
+  "canonicalUrl": "https://vitest.dev/api/"
+},
+{
+  "id": "testing-page-getbyrole",
+  "matchCategories": [
+    "Testing & Operations"
+  ],
+  "matchTitles": [
+    "page.getByRole"
+  ],
+  "heading": "Testing & Operations: page.getByRole",
+  "category": "Testing & Operations",
+  "majorVersion": "Playwright",
+  "status": "Authored reference draft",
+  "summary": "Locate a control by accessible role and name.",
+  "syntax": "page.getByRole('button', { name: 'Save' })",
+  "lang": "ts",
+  "parameters": "See syntax and official reference; production-oriented snippets assume configured clients, schemas and authorized context.",
+  "returns": "A locator that can be awaited or asserted.",
+  "minimalExample": "page.getByRole('button', { name: 'Save' })",
+  "productionExample": "await page.getByRole('button', { name: 'Save task' }).click(); await expect(page.getByRole('status')).toHaveText('Task saved');",
+  "commonMistakes": [
+    "Do not rely on arbitrary sleeps or CSS implementation details."
+  ],
+  "securityPerformanceNotes": [
+    "Role selectors improve semantic coverage but do not replace manual accessibility review."
+  ],
+  "relatedLessonIds": [
+    "19.02.02"
+  ],
+  "canonicalUrl": "https://playwright.dev/docs/locators"
+},
+{
+  "id": "testing-idempotency-key",
+  "matchCategories": [
+    "Testing & Operations"
+  ],
+  "matchTitles": [
+    "idempotency key"
+  ],
+  "heading": "Testing & Operations: idempotency key",
+  "category": "Testing & Operations",
+  "majorVersion": "HTTP application contract",
+  "status": "Authored reference draft",
+  "summary": "Identify one logical write across retries.",
+  "syntax": "Idempotency-Key: operation-uuid",
+  "lang": "ts",
+  "parameters": "See syntax and official reference; production-oriented snippets assume configured clients, schemas and authorized context.",
+  "returns": "Server-defined replay or conflict response.",
+  "minimalExample": "Idempotency-Key: operation-uuid",
+  "productionExample": "const key = crypto.randomUUID(); // Persist for this logical action.\nawait fetch('/api/tasks', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Idempotency-Key': key }, body: JSON.stringify(draft) });",
+  "commonMistakes": [
+    "A new key on each retry can duplicate a completed operation."
+  ],
+  "securityPerformanceNotes": [
+    "Bind the key to authenticated identity and payload; atomically persist outcome."
+  ],
+  "relatedLessonIds": [
+    "10.02.04"
+  ],
+  "canonicalUrl": "https://docs.stripe.com/api/idempotent_requests"
+},
+{
+  "id": "testing-dockerfile",
+  "matchCategories": [
+    "Testing & Operations"
+  ],
+  "matchTitles": [
+    "Dockerfile"
+  ],
+  "heading": "Testing & Operations: Dockerfile",
+  "category": "Testing & Operations",
+  "majorVersion": "Docker",
+  "status": "Authored reference draft",
+  "summary": "Define a reproducible image build.",
+  "syntax": "FROM node:24-bookworm-slim",
+  "lang": "bash",
+  "parameters": "See syntax and official reference; production-oriented snippets assume configured clients, schemas and authorized context.",
+  "returns": "An image built from instructions.",
+  "minimalExample": "FROM node:24-bookworm-slim",
+  "productionExample": "FROM node:24-bookworm-slim\nWORKDIR /app\nCOPY package*.json ./\nRUN npm ci --omit=dev\nCOPY --chown=node:node . .\nUSER node\nCMD [\"node\", \"server.js\"]",
+  "commonMistakes": [
+    "Never copy secrets or node_modules into the build context."
+  ],
+  "securityPerformanceNotes": [
+    "Use .dockerignore, verified digest pinning and non-root runtime; example assumes a JS server and real lockfile."
+  ],
+  "relatedLessonIds": [
+    "20.01.01"
+  ],
+  "canonicalUrl": "https://docs.docker.com/reference/dockerfile/"
+},
+{
+  "id": "nestjs-module",
+  "matchCategories": [
+    "NestJS"
+  ],
+  "matchTitles": [
+    "@Module"
+  ],
+  "heading": "NestJS: @Module",
+  "category": "NestJS",
+  "majorVersion": "NestJS 12 (curriculum target)",
+  "status": "Authored reference draft",
+  "summary": "Groups providers and controllers; exports expose selected providers to importing modules.",
+  "syntax": "@Module({ providers: [TaskService], exports: [TaskService] })",
+  "lang": "ts",
+  "parameters": "Framework-managed classes and request context; snippets assume relevant imports.",
+  "returns": "Groups providers and controllers; exports expose selected providers to importing modules.",
+  "minimalExample": "@Module({ providers: [TaskService], exports: [TaskService] })",
+  "productionExample": "@Module({ providers: [TaskService], exports: [TaskService] })\nclass TasksModule {}\n@Module({ imports: [TasksModule], controllers: [ReportsController] })\nclass ReportsModule {}",
+  "commonMistakes": [
+    "Import the module that exports the dependency, not a duplicate provider."
+  ],
+  "securityPerformanceNotes": [
+    "Validate untrusted input and enforce authorization separately."
+  ],
+  "relatedLessonIds": [
+    "11.01.01"
+  ],
+  "canonicalUrl": "https://docs.nestjs.com/modules"
+},
+{
+  "id": "nestjs-injectable",
+  "matchCategories": [
+    "NestJS"
+  ],
+  "matchTitles": [
+    "@Injectable"
+  ],
+  "heading": "NestJS: @Injectable",
+  "category": "NestJS",
+  "majorVersion": "NestJS 12 (curriculum target)",
+  "status": "Authored reference draft",
+  "summary": "Marks a class for dependency injection; registration in a module is still required.",
+  "syntax": "@Injectable()\nclass TaskService {}",
+  "lang": "ts",
+  "parameters": "Framework-managed classes and request context; snippets assume relevant imports.",
+  "returns": "Marks a class for dependency injection; registration in a module is still required.",
+  "minimalExample": "@Injectable()\nclass TaskService {}",
+  "productionExample": "@Injectable()\nclass TaskService { constructor(@Inject(TASK_REPOSITORY) private readonly repo: TaskRepository) {} }",
+  "commonMistakes": [
+    "Do not instantiate injected services manually in controllers."
+  ],
+  "securityPerformanceNotes": [
+    "Validate untrusted input and enforce authorization separately."
+  ],
+  "relatedLessonIds": [
+    "11.01.01"
+  ],
+  "canonicalUrl": "https://docs.nestjs.com/providers"
+},
+{
+  "id": "nestjs-canactivate",
+  "matchCategories": [
+    "NestJS"
+  ],
+  "matchTitles": [
+    "CanActivate"
+  ],
+  "heading": "NestJS: CanActivate",
+  "category": "NestJS",
+  "majorVersion": "NestJS 12 (curriculum target)",
+  "status": "Authored reference draft",
+  "summary": "A guard decides whether a route may proceed before pipes run. An authenticated principal still needs object-level authorization.",
+  "syntax": "canActivate(context: ExecutionContext): boolean { return false; }",
+  "lang": "ts",
+  "parameters": "ExecutionContext exposes request and handler metadata. Guards may return boolean, Promise<boolean> or Observable<boolean>.",
+  "returns": "True permits execution; false normally produces HTTP 403. An authentication guard may throw HTTP 401.",
+  "minimalExample": "canActivate(context: ExecutionContext): boolean { return false; }",
+  "productionExample": "@Injectable()\nclass MembershipGuard implements CanActivate {\n constructor(private readonly policy: MembershipPolicy) {}\n async canActivate(ctx: ExecutionContext) { const request = ctx.switchToHttp().getRequest(); if (!request.user) return false; return this.policy.canRead(request.user, request.params.workspaceId); }\n}",
+  "commonMistakes": [
+    "Deny by default; verify resource ownership in the service too.",
+    "Do not authorize using an unverified route ID or assume pipes have already validated it."
+  ],
+  "securityPerformanceNotes": [
+    "Validate untrusted input and enforce authorization separately.",
+    "Verify identity before membership checks; repeat object-level authorization in tenant-scoped service queries."
+  ],
+  "relatedLessonIds": [
+    "11.02.03",
+    "15.02.04"
+  ],
+  "canonicalUrl": "https://docs.nestjs.com/guards"
+},
+{
+  "id": "nestjs-pipetransform",
+  "matchCategories": [
+    "NestJS"
+  ],
+  "matchTitles": [
+    "PipeTransform"
+  ],
+  "heading": "NestJS: PipeTransform",
+  "category": "NestJS",
+  "majorVersion": "NestJS 12 (curriculum target)",
+  "status": "Authored reference draft",
+  "summary": "Transforms or validates an argument before the handler.",
+  "syntax": "transform(value: unknown) { return schema.parse(value); }",
+  "lang": "ts",
+  "parameters": "Framework-managed classes and request context; snippets assume relevant imports.",
+  "returns": "Transforms or validates an argument before the handler.",
+  "minimalExample": "transform(value: unknown) { return schema.parse(value); }",
+  "productionExample": "@Injectable()\nclass TaskPipe implements PipeTransform {\n transform(value: unknown) { const parsed = taskSchema.safeParse(value); if (!parsed.success) throw new BadRequestException('Invalid task'); return parsed.data; }\n}",
+  "commonMistakes": [
+    "Map validation failures to BadRequestException rather than leaking schema internals."
+  ],
+  "securityPerformanceNotes": [
+    "Validate untrusted input and enforce authorization separately."
+  ],
+  "relatedLessonIds": [
+    "11.02.02"
+  ],
+  "canonicalUrl": "https://docs.nestjs.com/pipes"
+},
+{
+  "id": "nestjs-nestinterceptor",
+  "matchCategories": [
+    "NestJS"
+  ],
+  "matchTitles": [
+    "NestInterceptor"
+  ],
+  "heading": "NestJS: NestInterceptor",
+  "category": "NestJS",
+  "majorVersion": "NestJS 12 (curriculum target)",
+  "status": "Authored reference draft",
+  "summary": "Wraps handler execution with an observable.",
+  "syntax": "intercept(context: ExecutionContext, next: CallHandler) { return next.handle(); }",
+  "lang": "ts",
+  "parameters": "Framework-managed classes and request context; snippets assume relevant imports.",
+  "returns": "Wraps handler execution with an observable.",
+  "minimalExample": "intercept(context: ExecutionContext, next: CallHandler) { return next.handle(); }",
+  "productionExample": "intercept(_context: ExecutionContext, next: CallHandler) { const started = performance.now(); return next.handle().pipe(finalize(() => metrics.observe(performance.now() - started))); }",
+  "commonMistakes": [
+    "Do not subscribe manually or swallow errors."
+  ],
+  "securityPerformanceNotes": [
+    "Validate untrusted input and enforce authorization separately."
+  ],
+  "relatedLessonIds": [
+    "11.02.04"
+  ],
+  "canonicalUrl": "https://docs.nestjs.com/interceptors"
+},
+{
+  "id": "nestjs-exceptionfilter",
+  "matchCategories": [
+    "NestJS"
+  ],
+  "matchTitles": [
+    "ExceptionFilter"
+  ],
+  "heading": "NestJS: ExceptionFilter",
+  "category": "NestJS",
+  "majorVersion": "NestJS 12 (curriculum target)",
+  "status": "Authored reference draft",
+  "summary": "Handles matching uncaught exceptions at a transport boundary.",
+  "syntax": "@Catch(HttpException)\nclass Filter implements ExceptionFilter { catch(e: HttpException, host: ArgumentsHost) { host.switchToHttp().getResponse().status(e.getStatus()).json({statusCode:e.getStatus()}); } }",
+  "lang": "ts",
+  "parameters": "Framework-managed classes and request context; snippets assume relevant imports.",
+  "returns": "Handles matching uncaught exceptions at a transport boundary.",
+  "minimalExample": "@Catch(HttpException)\nclass Filter implements ExceptionFilter { catch(e: HttpException, host: ArgumentsHost) { host.switchToHttp().getResponse().status(e.getStatus()).json({statusCode:e.getStatus()}); } }",
+  "productionExample": "@Catch(HttpException)\nclass SafeHttpFilter implements ExceptionFilter { catch(error: HttpException, host: ArgumentsHost) { const status = error.getStatus(); host.switchToHttp().getResponse().status(status).json({ statusCode: status, message: status >= 500 ? 'Internal error' : 'Request rejected' }); } }",
+  "commonMistakes": [
+    "Never expose stack traces or database error details."
+  ],
+  "securityPerformanceNotes": [
+    "Validate untrusted input and enforce authorization separately."
+  ],
+  "relatedLessonIds": [
+    "11.02.05"
+  ],
+  "canonicalUrl": "https://docs.nestjs.com/exception-filters"
+},
+{
+  "id": "postgresql-on-conflict",
+  "matchCategories": [
+    "PostgreSQL"
+  ],
+  "matchTitles": [
+    "ON CONFLICT"
+  ],
+  "heading": "PostgreSQL: ON CONFLICT",
+  "category": "PostgreSQL",
+  "majorVersion": "PostgreSQL 17+",
+  "status": "Authored reference draft",
+  "summary": "Handles unique constraint conflicts atomically.",
+  "syntax": "INSERT INTO requests(id) VALUES ($1) ON CONFLICT (id) DO NOTHING RETURNING id;",
+  "lang": "sql",
+  "parameters": "SQL identifiers and bound values; examples assume the named tables exist.",
+  "returns": "Handles unique constraint conflicts atomically.",
+  "minimalExample": "INSERT INTO requests(id) VALUES ($1) ON CONFLICT (id) DO NOTHING RETURNING id;",
+  "productionExample": "INSERT INTO requests(tenant_id, request_id, payload_hash) VALUES ($1, $2, $3) ON CONFLICT (tenant_id, request_id) DO NOTHING RETURNING request_id;\n-- If no row returns, compare the persisted payload hash before replay.",
+  "commonMistakes": [
+    "A duplicate key alone does not establish identical request payloads."
+  ],
+  "securityPerformanceNotes": [
+    "Use parameterized queries and a least-privilege database role."
+  ],
+  "relatedLessonIds": [
+    "12.03.06"
+  ],
+  "canonicalUrl": "https://www.postgresql.org/docs/current/sql-insert.html"
+},
+{
+  "id": "postgresql-transaction-isolation",
+  "matchCategories": [
+    "PostgreSQL"
+  ],
+  "matchTitles": [
+    "transaction isolation"
+  ],
+  "heading": "PostgreSQL: transaction isolation",
+  "category": "PostgreSQL",
+  "majorVersion": "PostgreSQL 17+",
+  "status": "Authored reference draft",
+  "summary": "Controls which concurrent changes a transaction can observe.",
+  "syntax": "BEGIN ISOLATION LEVEL SERIALIZABLE;\n-- perform related reads and writes\nCOMMIT;",
+  "lang": "sql",
+  "parameters": "SQL identifiers and bound values; examples assume the named tables exist.",
+  "returns": "Controls which concurrent changes a transaction can observe.",
+  "minimalExample": "BEGIN ISOLATION LEVEL SERIALIZABLE;\n-- perform related reads and writes\nCOMMIT;",
+  "productionExample": "BEGIN ISOLATION LEVEL SERIALIZABLE;\nUPDATE inventory SET available = available - 1 WHERE id = 1 AND available >= 1 RETURNING available;\n-- Inspect the returned row; retry the whole transaction on 40001.\nCOMMIT;",
+  "commonMistakes": [
+    "Retry the whole transaction on SQLSTATE 40001, not just the last statement."
+  ],
+  "securityPerformanceNotes": [
+    "Use parameterized queries and a least-privilege database role."
+  ],
+  "relatedLessonIds": [
+    "12.03.01"
+  ],
+  "canonicalUrl": "https://www.postgresql.org/docs/current/transaction-iso.html"
+},
+{
+  "id": "postgresql-mvcc",
+  "matchCategories": [
+    "PostgreSQL"
+  ],
+  "matchTitles": [
+    "MVCC"
+  ],
+  "heading": "PostgreSQL: MVCC",
+  "category": "PostgreSQL",
+  "majorVersion": "PostgreSQL 17+",
+  "status": "Authored reference draft",
+  "summary": "Uses row versions and snapshots to support concurrent access.",
+  "syntax": "BEGIN ISOLATION LEVEL REPEATABLE READ;\nSELECT * FROM tasks;\nCOMMIT;",
+  "lang": "sql",
+  "parameters": "SQL identifiers and bound values; examples assume the named tables exist.",
+  "returns": "Uses row versions and snapshots to support concurrent access.",
+  "minimalExample": "BEGIN ISOLATION LEVEL REPEATABLE READ;\nSELECT * FROM tasks;\nCOMMIT;",
+  "productionExample": "BEGIN ISOLATION LEVEL REPEATABLE READ;\nSELECT count(*) FROM tasks WHERE workspace_id = 1;\n-- Another session commits a new task here.\nSELECT count(*) FROM tasks WHERE workspace_id = 1;\nCOMMIT;",
+  "commonMistakes": [
+    "Long-lived transactions can delay cleanup of obsolete row versions."
+  ],
+  "securityPerformanceNotes": [
+    "Use parameterized queries and a least-privilege database role."
+  ],
+  "relatedLessonIds": [
+    "12.03.03"
+  ],
+  "canonicalUrl": "https://www.postgresql.org/docs/current/mvcc.html"
+},
+{
+  "id": "postgresql-unique",
+  "matchCategories": [
+    "PostgreSQL"
+  ],
+  "matchTitles": [
+    "UNIQUE"
+  ],
+  "heading": "PostgreSQL: UNIQUE",
+  "category": "PostgreSQL",
+  "majorVersion": "PostgreSQL 17+",
+  "status": "Authored reference draft",
+  "summary": "Enforces uniqueness under concurrent writes.",
+  "syntax": "ALTER TABLE requests ADD UNIQUE (tenant_id, request_id);",
+  "lang": "sql",
+  "parameters": "SQL identifiers and bound values; examples assume the named tables exist.",
+  "returns": "Enforces uniqueness under concurrent writes.",
+  "minimalExample": "ALTER TABLE requests ADD UNIQUE (tenant_id, request_id);",
+  "productionExample": "CREATE TABLE request_keys (tenant_id bigint NOT NULL, request_id uuid NOT NULL, UNIQUE (tenant_id, request_id));",
+  "commonMistakes": [
+    "A pre-insert SELECT is not a substitute for a unique constraint."
+  ],
+  "securityPerformanceNotes": [
+    "Use parameterized queries and a least-privilege database role."
+  ],
+  "relatedLessonIds": [
+    "12.03.06"
+  ],
+  "canonicalUrl": "https://www.postgresql.org/docs/current/ddl-constraints.html"
+},
+{
+  "id": "postgresql-check",
+  "matchCategories": [
+    "PostgreSQL"
+  ],
+  "matchTitles": [
+    "CHECK"
+  ],
+  "heading": "PostgreSQL: CHECK",
+  "category": "PostgreSQL",
+  "majorVersion": "PostgreSQL 17+",
+  "status": "Authored reference draft",
+  "summary": "Enforces a row-level predicate on inserted or updated values.",
+  "syntax": "ALTER TABLE accounts ADD CHECK (balance >= 0);",
+  "lang": "sql",
+  "parameters": "SQL identifiers and bound values; examples assume the named tables exist.",
+  "returns": "Enforces a row-level predicate on inserted or updated values.",
+  "minimalExample": "ALTER TABLE accounts ADD CHECK (balance >= 0);",
+  "productionExample": "CREATE TABLE inventory (id bigint PRIMARY KEY, available integer NOT NULL CHECK (available >= 0));",
+  "commonMistakes": [
+    "CHECK permits unknown results; use NOT NULL when absence is invalid."
+  ],
+  "securityPerformanceNotes": [
+    "Use parameterized queries and a least-privilege database role."
+  ],
+  "relatedLessonIds": [
+    "12.03.07"
+  ],
+  "canonicalUrl": "https://www.postgresql.org/docs/current/ddl-constraints.html"
+},
+{
+  "id": "postgresql-returning",
+  "matchCategories": [
+    "PostgreSQL"
+  ],
+  "matchTitles": [
+    "RETURNING"
+  ],
+  "heading": "PostgreSQL: RETURNING",
+  "category": "PostgreSQL",
+  "majorVersion": "PostgreSQL 17+",
+  "status": "Authored reference draft",
+  "summary": "Returns rows affected by a write without a separate read.",
+  "syntax": "UPDATE tasks SET revision=revision+1 WHERE id=$1 AND revision=$2 RETURNING revision;",
+  "lang": "sql",
+  "parameters": "SQL identifiers and bound values; examples assume the named tables exist.",
+  "returns": "Returns rows affected by a write without a separate read.",
+  "minimalExample": "UPDATE tasks SET revision=revision+1 WHERE id=$1 AND revision=$2 RETURNING revision;",
+  "productionExample": "UPDATE tasks SET done = true, revision = revision + 1 WHERE workspace_id = $1 AND id = $2 AND revision = $3 RETURNING id, revision;",
+  "commonMistakes": [
+    "Zero returned rows may indicate a stale revision or missing resource."
+  ],
+  "securityPerformanceNotes": [
+    "Use parameterized queries and a least-privilege database role."
+  ],
+  "relatedLessonIds": [
+    "12.03.04"
+  ],
+  "canonicalUrl": "https://www.postgresql.org/docs/current/dml-returning.html"
+},
+{
+  "id": "nestjs-useguards",
+  "matchCategories": [
+    "NestJS"
+  ],
+  "matchTitles": [
+    "@UseGuards"
+  ],
+  "heading": "NestJS: @UseGuards",
+  "category": "NestJS · Authorization",
+  "majorVersion": "NestJS 12 (curriculum target)",
+  "status": "Authored reference draft",
+  "summary": "Bind guards to a controller or handler. Authentication and resource authorization are separate decisions.",
+  "syntax": "@UseGuards(AuthGuard, MembershipGuard)",
+  "lang": "ts",
+  "parameters": "Guard classes or instances; class-based registration enables dependency injection.",
+  "returns": "A decorator that attaches guard metadata.",
+  "minimalExample": "@UseGuards(AuthGuard)\n@Get('profile')\nprofile() { return { ok: true }; }",
+  "productionExample": "@UseGuards(JwtAuthGuard, OrgMembershipGuard)\n@Get(':id')\nfindProject(@Param('id') id: string, @CurrentPrincipal() principal: VerifiedPrincipal) {\n  return this.projectsService.findAuthorized(principal, id);\n}",
+  "commonMistakes": [
+    "Assuming a valid JWT authorizes access to every object ID.",
+    "Assuming pipes have validated route parameters before a guard runs."
+  ],
+  "securityPerformanceNotes": [
+    "Validate raw identifiers used by guards and enforce tenant scope in database queries."
+  ],
+  "relatedLessonIds": [
+    "11.02.03",
+    "15.02.03"
+  ],
+  "canonicalUrl": "https://docs.nestjs.com/guards"
+},
+{
+  "id": "nestjs-app-guard",
+  "matchCategories": [
+    "NestJS"
+  ],
+  "matchTitles": [
+    "APP_GUARD"
+  ],
+  "heading": "NestJS: APP_GUARD",
+  "category": "NestJS · Authorization",
+  "majorVersion": "NestJS 12 (curriculum target)",
+  "status": "Authored reference draft",
+  "summary": "Register a global guard through the provider system so dependency injection remains available.",
+  "syntax": "{ provide: APP_GUARD, useClass: AuthGuard }",
+  "lang": "ts",
+  "parameters": "APP_GUARD injection token from @nestjs/core and a registered guard class.",
+  "returns": "A provider registration applying the guard globally.",
+  "minimalExample": "@Module({ providers: [{ provide: APP_GUARD, useClass: AuthGuard }] })\nclass AppModule {}",
+  "productionExample": "@Module({ imports: [IdentityModule], providers: [{ provide: APP_GUARD, useClass: JwtAuthGuard }] })\nclass ApiModule {}\n// Explicitly declare public routes and test that protected routes deny unauthenticated requests.",
+  "commonMistakes": [
+    "Using global authentication as a replacement for object-level authorization.",
+    "Allowing routes by default when public-route metadata is absent."
+  ],
+  "securityPerformanceNotes": [
+    "Keep public-route exceptions narrow and verify denied requests in integration tests."
+  ],
+  "relatedLessonIds": [
+    "11.02.03",
+    "11.02.08"
+  ],
+  "canonicalUrl": "https://docs.nestjs.com/guards"
+},
+
   {
     id: 'zod-safeparse',
     matchCategories: ['Zod'],
@@ -951,97 +1863,12 @@ return { ok: true as const, value: result.data };`,
     relatedLessonIds: ['09.01.02'],
     canonicalUrl: 'https://zod.dev/basics',
   },
-  {
-    id: 'prisma-transaction',
-    matchCategories: ['Prisma'],
-    matchTitles: ['$transaction'],
-    heading: 'Prisma 7: prisma.$transaction()',
-    category: 'Prisma · Database transactions',
-    majorVersion: 'Prisma 7',
-    status: 'Authored reference draft',
-    summary:
-      'Group dependent database reads and writes into a single atomic unit that commits together or rolls back completely on failure.',
-    syntax: `await prisma.$transaction(async (tx) => {
-  await tx.account.update({ /* ... */ });
-  await tx.ledgerEntry.create({ /* ... */ });
-});`,
-    lang: 'ts',
-    parameters: 'Interactive callback `(tx) => Promise<T>` or sequential array `[op1, op2]` plus optional `{ isolationLevel, timeout, maxWait }`.',
-    returns: 'Promise resolving with the callback result or tuple of sequential query outputs; rolls back on thrown error.',
-    minimalExample: `await prisma.$transaction([
-  prisma.user.update({ where: { id }, data: { active: true } }),
-  prisma.auditLog.create({ data: { actorId: id, action: 'activate' } }),
-]);`,
-    productionExample: `await prisma.$transaction(async (tx) => {
-  const project = await tx.project.findFirstOrThrow({
-    where: { id: projectId, organizationId },
-  });
-  await tx.task.create({ data: { projectId: project.id, title } });
-  await tx.outboxEvent.create({
-    data: { topic: 'task.created', payload: { projectId: project.id } },
-  });
-});`,
-    commonMistakes: [
-      'Performing external HTTP requests or sending emails while database locks are held inside a transaction.',
-      'Assuming a database transaction enforces object-level authorization automatically without tenant scoping.',
-      'Forgetting bounded retries when running under strict isolation levels like Serializable.',
-    ],
-    securityPerformanceNotes: [
-      'Keep transactions as short as possible to avoid connection-pool exhaustion and lock contention.',
-      'Use a transactional outbox table for async side effects (emails, webhooks) instead of calling external providers mid-transaction.',
-    ],
-    relatedLessonIds: ['15.02.04'],
-    canonicalUrl: 'https://www.prisma.io/docs/orm/prisma-client/queries/transactions',
-  },
-  {
-    id: 'nestjs-canactivate',
-    matchCategories: ['NestJS'],
-    matchTitles: ['CanActivate', '@UseGuards', 'APP_GUARD'],
-    heading: 'NestJS: CanActivate & @UseGuards()',
-    category: 'NestJS · Backend authorization',
-    majorVersion: 'NestJS 12',
-    status: 'Authored reference draft',
-    summary:
-      'Guards inspect trusted execution context to decide whether an incoming request may proceed to a controller route handler.',
-    syntax: `@UseGuards(AuthGuard)
-@Get(':id')
-findOne() { /* ... */ }`,
-    lang: 'ts',
-    parameters: 'context: ExecutionContext — grants access to HTTP/WebSocket/RPC request metadata and handler decorators.',
-    returns: 'boolean | Promise<boolean> | Observable<boolean> — returning false denies access (403 Forbidden unless customized).',
-    minimalExample: `import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 
-@Injectable()
-export class DemoGuard implements CanActivate {
-  canActivate(context: ExecutionContext): boolean {
-    return Boolean(context.switchToHttp().getRequest().user);
-  }
-}`,
-    productionExample: `@UseGuards(JwtAuthGuard, OrgMembershipGuard)
-@Get(':id')
-async findProject(
-  @Param('id') id: string,
-  @CurrentPrincipal() principal: VerifiedPrincipal,
-) {
-  return this.projectsService.findAuthorized(principal, id);
-}`,
-    commonMistakes: [
-      'Treating any valid authenticated user as authorized to read any record ID (BOLA/IDOR vulnerability).',
-      'Trusting unverified user or organization IDs supplied in route params or JSON bodies.',
-      'Registering guards globally via `new Guard()` instead of `APP_GUARD` when dependency injection is required.',
-      'Forgetting equivalent authorization checks on WebSocket gateways and background job triggers.',
-    ],
-    securityPerformanceNotes: [
-      'Verify JWT signature, issuer, audience, and expiry before trusting principal claims.',
-      'Pair route guards with tenant-scoped service queries and negative cross-tenant integration tests.',
-    ],
-    relatedLessonIds: ['15.02.04'],
-    canonicalUrl: 'https://docs.nestjs.com/guards',
-  },
+
   {
     id: 'redis-set',
     matchCategories: ['Redis & BullMQ'],
-    matchTitles: ['SET', 'SET EX'],
+    matchTitles: ['SET'],
     heading: 'Redis: SET with Expiry (EX)',
     category: 'Redis & BullMQ · Cache',
     majorVersion: 'Redis 7+',
@@ -1066,7 +1893,7 @@ await redisCache.set(cacheKey, JSON.stringify(safeDto), 'EX', 60);`,
       'Never share one Redis instance with `allkeys-lru` eviction for both cache and BullMQ queues.',
       'Always define bounded TTLs and explicit invalidation rules on mutations.',
     ],
-    relatedLessonIds: [],
+    relatedLessonIds: ['16.01.02', '16.01.03'],
     canonicalUrl: 'https://redis.io/docs/latest/commands/set/',
   },
 {

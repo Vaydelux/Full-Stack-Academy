@@ -43,6 +43,20 @@ Your acceptance criteria must include a positive authorized case and a negative 
 
 A complete diagram or a passing unit mock is not equivalent to an integration-tested security boundary.
 
+## Applied engineering walkthrough
+
+A useful threat model links a documented boundary to executable acceptance criteria. For a document service, uploading, listing, reading and sharing are separate actions. Signed links delegate access and must be issued only after resource authorization. The object store and API may have different enforcement paths.
+
+### Diagnose the concrete failure
+
+Use a disposable fixture with two members and a nonmember. Verify allowed upload and read, denied foreign read/write and denied signed-link issuance. Check that an unauthorized operation creates neither a document row nor a storage capability. Record the actual control that blocks each case.
+
+### Independent exercise and evidence
+
+Produce a small release packet: data-flow diagram, prioritized threats, permission matrix, negative test IDs and residual risks. Identify which provider or live identity tests are missing. Obtain independent review before calling the control verified.
+
+**Qualification boundary:** These are practice instructions, not recorded audit results. Use synthetic data and authorized disposable infrastructure. Preserve existing laboratory contracts and publication status.
+
 ## Knowledge check
 
 1. Which input is controlled by the attacker in this scenario?

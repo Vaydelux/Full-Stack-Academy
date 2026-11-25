@@ -44,6 +44,20 @@ node --test --test-name-pattern="24[.]02" examples/p7-platforms/labs.test.mjs
 
 In-memory sync model; actual SQLite persistence, durable queue, crash recovery and conflict reconciliation are not established.
 
+## Applied engineering walkthrough
+
+A timeout is uncertain acknowledgement, not evidence of rejection. Persist the original operation and replay the same identifier under a bounded retry budget. Permanent validation or authorization failures require a different recovery path than transient connectivity loss.
+
+### Diagnose the concrete failure
+
+Simulate acceptance followed by a dropped response. Reconnect, replay and verify the final revision did not increase again. Inject permanent denial and check that blind retries stop.
+
+### Independent exercise and evidence
+
+Use a deterministic clock to measure backoff bounds and cancellation, including restart. Record pending and terminal outcomes and distinguish simulated responses from real network fault tests.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify real persistence, network, device and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?
