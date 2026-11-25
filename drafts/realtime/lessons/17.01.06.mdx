@@ -50,6 +50,20 @@ The tests exercise local Node state or loopback HTTP behavior. Document separate
 
 Automatic browser SSE reconnects do not remove the need for authorization and replay-gap handling.
 
+## Applied engineering walkthrough
+
+Reconnect policies need bounded exponential backoff and jitter to avoid a synchronized recovery storm. Keep at most one intended subscription per owner and clean up obsolete handlers. Resume only from a validated cursor; authentication failure may require a new session instead of infinite retries.
+
+### Diagnose the concrete failure
+
+Interrupt a disposable stream, publish an event during disconnection, and resume from the last applied ID. Check that replay fills the missing update without duplicating visible state. Simulate a terminal denial separately.
+
+### Independent exercise and evidence
+
+Design reconnect states for offline, connecting, active, denied and resync. Record retry limits, cleanup and final event IDs. Qualify actual browser lifecycle and network interruption separately.
+
+**Qualification boundary:** These are practice instructions, not recorded results. Preserve the original laboratory and publication status. Local simulations do not qualify actual browser or distributed provider behavior.
+
 ## Knowledge check
 
 1. Which actor, resource, version or event cursor is authoritative in this scenario?
