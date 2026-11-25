@@ -52,6 +52,20 @@ The corresponding module exercises **signWebhook and WebhookInbox: raw bytes, fr
 
 For a production implementation, document the secret-owner or principal, durability plan, error and recovery policy, rate/resource bounds, privacy guarantees, observability without sensitive payloads, and the credential/version-rotation procedure.
 
+## Applied engineering walkthrough
+
+A credential should authorize only the operations its workload requires. An inbound signature verification secret and an outbound API key have different purposes and should not be reused. Environment isolation, restricted storage and rotation reduce the impact of compromise; application authorization still applies.
+
+### Diagnose the concrete failure
+
+Prepare a synthetic inventory of read, write and verification credentials. Test a fake read-only adapter against an attempted write and confirm denial. For a real provider, verify effective scopes with an explicitly authorized sandbox account.
+
+### Independent exercise and evidence
+
+Design ownership, least-privilege scope, rotation and emergency revocation procedures. Record permission outcomes and redacted key identifiers, never the secret values.
+
+**Qualification boundary:** These are practice instructions, not recorded results. Preserve existing specifications and laboratory contracts. Qualify actual external services separately using authorized disposable infrastructure.
+
 ## Knowledge check
 
 1. Which authenticated actor, external sender, or tenant owns the data in this scenario?
