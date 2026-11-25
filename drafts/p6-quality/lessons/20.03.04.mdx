@@ -44,6 +44,20 @@ node --test --test-name-pattern="20[.]03" examples/p6-quality/labs.test.mjs
 
 Boolean release decision model, not deployment, migration, traffic switching or verified rollback.
 
+## Applied engineering walkthrough
+
+Liveness indicates whether a process should continue running; readiness indicates whether it can serve intended traffic. A functional smoke test verifies a meaningful user operation. A listening port alone does not establish database connectivity or permission correctness.
+
+### Diagnose the concrete failure
+
+Supply a healthy process result and failed smoke result to the local release gate. Verify the candidate does not advance. In an isolated application, interrupt a required dependency and check readiness and smoke independently.
+
+### Independent exercise and evidence
+
+Design a bounded readiness endpoint and a synthetic functional smoke case using a known test record. Record actual status and error classification; keep sensitive details out of public probes.
+
+**Evidence boundary:** These are practice instructions, not recorded test results. Preserve the existing model, specification and draft flag; external runtime qualification remains independent.
+
 ## Knowledge check
 
 1. Which public behavior or invariant is being protected?
