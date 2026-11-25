@@ -445,7 +445,7 @@
     "test:vercel-freeze": "node --test tests/vercel-freeze.test.mjs",
     "verify:vercel-freeze": "node scripts/verify-vercel-freeze.mjs",
     "status:nestjs-drafts": "node scripts/verify-nestjs-drafts.mjs --json",
-    "test:nestjs-drafts": "node scripts/verify-nestjs-drafts.mjs --check && node --test tests/nestjs-drafts.test.mjs tests/nest-publication-state.test.mjs && node examples/nestjs-vertical/scripts/verify-runtime-test-coverage.mjs --check && node --test examples/nestjs-vertical/tests/runtime-coverage-source.test.mjs && npm run test:nestjs-offline && npm run test:nestjs-candidates && npm run test:nestjs-projection",
+    "test:nestjs-drafts": "node scripts/verify-nestjs-drafts.mjs --check && node --test tests/nestjs-drafts.test.mjs tests/nest-publication-state.test.mjs && node examples/nestjs-vertical/scripts/verify-runtime-test-coverage.mjs --check && node --test examples/nestjs-vertical/tests/runtime-coverage-source.test.mjs && npm run test:nestjs-offline && npm run test:nestjs-candidates && npm run test:nestjs-projection && npm run test:nestjs-promotion",
     "qualify:nestjs:architecture": "npm run qualify --prefix examples/nestjs-vertical",
     "status:nestjs-test-coverage": "node examples/nestjs-vertical/scripts/verify-runtime-test-coverage.mjs --json",
     "test:nestjs-offline-transactions": "node --experimental-strip-types --test examples/nestjs-vertical/tests/transactions.offline.test.mjs",
@@ -502,7 +502,10 @@
     "test:nestjs-candidates": "node scripts/verify-nest-candidates.mjs --check && node --test tests/nest-candidate-contract.test.mjs tests/nest-candidate-inventory.test.mjs",
     "refresh:nestjs-candidates": "node scripts/verify-nest-candidates.mjs --refresh",
     "rehearse:nestjs": "node scripts/rehearse-nest-publication.mjs",
-    "test:nestjs-projection": "node --test tests/nest-release-projection.test.mjs && npm run rehearse:nestjs"
+    "test:nestjs-projection": "node --test tests/nest-release-projection.test.mjs && npm run rehearse:nestjs",
+    "promote:nestjs": "node scripts/promote-nest-module.mjs",
+    "qualify:nestjs:browser": "node scripts/verify-academy-browser.mjs --nest-module",
+    "test:nestjs-promotion": "node --test tests/nest-promotion-guard.test.mjs"
   },
   "dependencies": {
     "clsx": "^2.1.1",

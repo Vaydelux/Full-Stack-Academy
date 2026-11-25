@@ -1,0 +1,24 @@
+{
+  "moduleId": "11.02",
+  "reviewed": false,
+  "keyboard": false,
+  "zoom200": false,
+  "screenReaderPassed": false,
+  "reviewer": "",
+  "screenReader": "",
+  "browser": "",
+  "operatingSystem": "",
+  "date": "",
+  "sourceSha256": "",
+  "lessonIds": [
+    "11.02.01",
+    "11.02.02",
+    "11.02.03",
+    "11.02.04",
+    "11.02.05",
+    "11.02.06",
+    "11.02.07",
+    "11.02.08"
+  ],
+  "notes": "EXAMPLE ONLY. No actual review has been completed."
+}

@@ -10,8 +10,8 @@
   },
   "development": {
     "branch": "main",
-    "state": "f1-p2-read-only-projection-and-lab-wrapper-prepared",
-    "note": "Implemented read-only Nest article/metadata/lab/registry/script projection for four modules, 51 paths each in memory, and generated topic-specific wrappers with lock/compiler/TAP checks. Seven isolated Node24.11.1 regression tests passed; all 32 actual draft marker sets inspected via connector. Full filesystem rehearsal, real Nest lab execution, production build, manual review and guarded apply remain not-run. 338/889 published unchanged."
+    "state": "f1-p2-guarded-local-promotion-implemented-runtime-blocked",
+    "note": "All four Nest modules have guarded plan/review/apply, exact phase ordering, source/index fingerprint, named human evidence, local-only review fixture, transactional rollback, full postflight and dedicated browser acceptance. Nine new Node24.11.1 tests plus seven projection tests passed in isolated reconstruction. No full checkout, actual Nest/Chromium, review or promotion performed; 338/889 published unchanged."
   },
   "snapshot": {
     "tracks": 28,
@@ -73,6 +73,6 @@
     "devHighFindings": 14,
     "exceptionExpires": "2026-12-02"
   },
-  "nextMilestone": "Resolve genuine P1 network/browser environment. Run npm run rehearse:nestjs on full checkout, qualify actual Nest runtime with genuine lock, review candidate MDX and named accessibility, implement guarded promotion with real postflight and rollback. No new curriculum scope.",
+  "nextMilestone": "Resolve genuine networked checkout and browser access, qualify and publish P1 to 354; generate and commit genuine Nest lock, run guarded P2 module promotion after actual review, reaching 386. No scope expansion.",
   "status": "editorial-merged-f1-partial-runtime-qualification-blocked"
 }
