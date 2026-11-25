@@ -44,6 +44,20 @@ node --test --test-name-pattern="19[.]04" examples/p6-quality/labs.test.mjs
 
 Metrics model uses supplied samples; no real load generation, chaos or database benchmark.
 
+## Applied engineering walkthrough
+
+A mean hides distribution shape. Tail percentiles describe the upper part of observed request latency and depend on the estimator and sample size. The supplied nearest-rank example contains eighteen ten-millisecond samples and two one-second samples; its p95 is one second.
+
+### Diagnose the concrete failure
+
+Run the model with the prescribed twenty samples and inspect the reported percentile. Compare a dataset with the same mean but a different tail. Check that the threshold fails even though many requests are fast.
+
+### Independent exercise and evidence
+
+Design latency reporting with sample count, estimator, p50, p95, p99 and error rate. Specify how timeouts enter the measurement. Record the observed results, not estimated production latency.
+
+**Evidence boundary:** These are practice instructions, not recorded test results. Preserve the existing model, specification and draft flag; external runtime qualification remains independent.
+
 ## Knowledge check
 
 1. Which public behavior or invariant is being protected?
