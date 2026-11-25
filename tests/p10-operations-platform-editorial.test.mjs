@@ -24,6 +24,7 @@ for(const [family,tracks] of scopes){
     assert.equal((front.match(/^readyToPublish: false$/gm)||[]).length,1,id);
     assert.equal((front.match(/^readyToPublish:/gm)||[]).length,1,id);
     assert.doesNotMatch(mdx,/<LabGate\b/,id);
+    if(['21.02.05','23.04.03'].includes(id))assert.ok(walk.includes('does not calculate the delay plus next attempt duration'),id+' missing retry model limitation');
     assert.ok(specifications[id],id+' missing specification');
     for(const [key,value] of Object.entries(specifications[id]))assert.ok(mdx.includes(value),id+' specification drift '+key);
    }

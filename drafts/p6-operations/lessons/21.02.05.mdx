@@ -52,6 +52,8 @@ A request deadline is the total available time, whereas an attempt timeout bound
 
 Evaluate retryDecision for transient and permanent failure, exhausted deadline and non-idempotent operation. Model elapsed time for multiple attempts and confirm the next attempt fits the remaining budget.
 
+The existing retryDecision model checks only that time remains, attempts are available and the operation is eligible. It does not calculate the delay plus next attempt duration or enforce an actual deadline; those require a separate transport-level test.
+
 ### Independent exercise and evidence
 
 Design a single retry-owning layer with capped attempts, jitter and propagated deadlines. Record expected decision and actual elapsed time when a real local transport is available.

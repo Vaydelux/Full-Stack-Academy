@@ -52,6 +52,8 @@ Retries multiply across layers when each service independently retries a downstr
 
 Run retryDecision with a safe transient failure and then exhausted time, maximum attempts, permanent failure and non-idempotent input. Compare the resulting decisions. Sketch three layers each retrying and identify the potential multiplication of calls.
 
+The existing retryDecision model checks only that time remains, attempts are available and the operation is eligible. It does not calculate the delay plus next attempt duration or enforce an actual deadline; those require a separate transport-level test.
+
 ### Independent exercise and evidence
 
 Design one retry policy with capped attempts, elapsed deadline and jitter. Record decisions and actual transport timings separately, including uncertain external write behavior.
