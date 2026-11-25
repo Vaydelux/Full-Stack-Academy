@@ -44,6 +44,20 @@ node --test --test-name-pattern="22[.]01" examples/p6-operations/labs.test.mjs
 
 Synthetic measured-value budget only; actual Core Web Vitals, browser profiles and real-user metrics are unexecuted.
 
+## Applied engineering walkthrough
+
+A waterfall reveals when requests start and what they wait for. Independent operations can overlap, but dependent data requires correct ordering. Parallel execution also increases instantaneous pressure on shared resources. Inspect the critical path rather than assuming all parallelism is beneficial.
+
+### Diagnose the concrete failure
+
+Use synthetic delays for two independent requests and one dependent request. Compare sequential and parallel traces in a disposable page, retaining the necessary dependency. Verify exact returned data and authorization after the change.
+
+### Independent exercise and evidence
+
+Draw the request dependency graph and mark critical resources. Record start, completion and visible rendering time for matched trials, including any increased resource pressure.
+
+**Evidence boundary:** These are practice instructions, not recorded benchmark results. Preserve the existing specification, model and unpublished status. Actual browser measurement and qualification remain independent.
+
 ## Knowledge check
 
 1. Which invariant or operational measurement determines success?

@@ -44,6 +44,20 @@ node --test --test-name-pattern="22[.]01" examples/p6-operations/labs.test.mjs
 
 Synthetic measured-value budget only; actual Core Web Vitals, browser profiles and real-user metrics are unexecuted.
 
+## Applied engineering walkthrough
+
+LCP measures loading of the largest eligible visible content element, INP measures interaction responsiveness, and CLS measures unexpected layout shifts. They describe different dimensions. A lab observation is not equivalent to field data at the 75th percentile, and missing interactions cannot prove good INP.
+
+### Diagnose the concrete failure
+
+Evaluate webBudget with the specified threshold values, then make CLS exceed its limit while LCP improves. Verify the overall gate fails. Collect browser traces on a fixed fixture when the runtime is available.
+
+### Independent exercise and evidence
+
+Design a performance evidence sheet recording viewport, device, network, sample population and each metric independently. Distinguish synthetic model inputs, lab measurements and actual field measurements.
+
+**Evidence boundary:** These are practice instructions, not recorded benchmark results. Preserve the existing specification, model and unpublished status. Actual browser measurement and qualification remain independent.
+
 ## Knowledge check
 
 1. Which invariant or operational measurement determines success?

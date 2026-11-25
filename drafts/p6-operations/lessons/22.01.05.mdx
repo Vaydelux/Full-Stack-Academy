@@ -44,6 +44,20 @@ node --test --test-name-pattern="22[.]01" examples/p6-operations/labs.test.mjs
 
 Synthetic measured-value budget only; actual Core Web Vitals, browser profiles and real-user metrics are unexecuted.
 
+## Applied engineering walkthrough
+
+Resource hints and route prefetch spend bandwidth before a resource is explicitly requested. They can improve likely navigation but compete with current-page critical resources and may fetch unused data. Evaluate priority and network conditions instead of prefetching every possible route.
+
+### Diagnose the concrete failure
+
+In a disposable browser scenario compare no prefetch, targeted prefetch and eager prefetch. Use the same navigation sequence and throttling, inspect request timing and transfer totals, and check current-page rendering.
+
+### Independent exercise and evidence
+
+Design a prefetch policy for likely navigation and constrained connections. Record actual navigation latency and initial-page cost, with explicit user-data cache boundaries.
+
+**Evidence boundary:** These are practice instructions, not recorded benchmark results. Preserve the existing specification, model and unpublished status. Actual browser measurement and qualification remain independent.
+
 ## Knowledge check
 
 1. Which invariant or operational measurement determines success?
