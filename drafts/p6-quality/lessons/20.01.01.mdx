@@ -44,6 +44,20 @@ node --test --test-name-pattern="20[.]01" examples/p6-quality/labs.test.mjs
 
 Declarative policy model; no Docker engine, image build, scan or real network isolation executed.
 
+## Applied engineering walkthrough
+
+An image is an immutable content-addressed artifact once identified by digest; a container is a running instance with its own writable layer. Tags can move, so pinning a digest improves repeatability but does not prove safety. Multi-platform images may reference a manifest index with platform-specific children.
+
+### Diagnose the concrete failure
+
+Compare a synthetic tag-only reference with a digest-qualified reference in the policy fixture. In a real disposable Docker environment inspect the selected platform, image digest and layer history. Confirm recreation starts from the intended artifact.
+
+### Independent exercise and evidence
+
+Document build input, platform, base digest and runtime artifact identity. Explain how deliberate security updates replace a pinned digest through review. Record actual image metadata rather than inventing build output.
+
+**Evidence boundary:** These are practice instructions, not recorded test results. Preserve the existing model, specification and draft flag; external runtime qualification remains independent.
+
 ## Knowledge check
 
 1. Which public behavior or invariant is being protected?
