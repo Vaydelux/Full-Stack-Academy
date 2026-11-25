@@ -50,6 +50,20 @@ In the test notes, separate what the in-memory fixture genuinely observed from R
 
 Cluster availability and data partitioning are separate from application tenant authorization.
 
+## Applied engineering walkthrough
+
+Redis Cluster distributes keys across hash slots. Multi-key operations requiring atomic execution generally need keys in the same slot; hash tags allow deliberate co-location. Co-locating everything under one tag can concentrate load. Client support for topology changes and redirection matters.
+
+### Diagnose the concrete failure
+
+Select a pair of keys used by one atomic operation and inspect their slots in a real disposable cluster. Compare deliberately co-located keys with independent keys. Test cluster-aware client behavior during a controlled topology change.
+
+### Independent exercise and evidence
+
+Design tenant-scoped keys that co-locate only the data requiring atomicity. Explain the tradeoff between distribution and atomic groups. Record slot identities, supported operation results and failure behavior.
+
+**Qualification boundary:** These are practice instructions, not recorded results. Preserve the existing lab and publication status; in-memory tests do not qualify live Redis or BullMQ behavior.
+
 ## Knowledge check
 
 1. What is authoritative in this scenario, and what state is derived or replayable?
