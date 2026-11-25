@@ -44,6 +44,20 @@ node --test --test-name-pattern="24[.]03" examples/p7-platforms/labs.test.mjs
 
 Synthetic command permission model; actual Rust commands, capability enforcement, installers and signatures require platform builds.
 
+## Applied engineering walkthrough
+
+A file picker supplies user intent for a specific resource, not blanket permission to traverse a directory. Validate the opened file at the native boundary, limit reads and do not trust extensions as content validation. Account for symlinks and changes between validation and opening.
+
+### Diagnose the concrete failure
+
+Use a temporary directory, a valid document and a separate out-of-scope fixture. Try an allowed selection, a forbidden path and a link to it. Confirm no unauthorized bytes are returned.
+
+### Independent exercise and evidence
+
+Define accepted size and format, test empty and oversized files, and document safe handle-based access. A string prefix comparison alone does not demonstrate containment.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify actual Tauri builds, OS behavior and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

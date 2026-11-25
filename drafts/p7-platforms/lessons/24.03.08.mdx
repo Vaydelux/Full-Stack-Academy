@@ -44,6 +44,20 @@ node --test --test-name-pattern="24[.]03" examples/p7-platforms/labs.test.mjs
 
 Synthetic command permission model; actual Rust commands, capability enforcement, installers and signatures require platform builds.
 
+## Applied engineering walkthrough
+
+Desktop capstone acceptance spans the webview, narrow native commands, scoped file access and persistent storage. Package identity, installation and local data retention are distinct concerns. Keep a synthetic task workflow reproducible without accessing real personal documents.
+
+### Diagnose the concrete failure
+
+Select a synthetic document, create a task referencing it, restart and inspect state. Repeat from an unauthorized window and confirm native access is denied. Try malformed input without database mutation.
+
+### Independent exercise and evidence
+
+Prepare an installer and recovery matrix for missing WebView, failed migration, uninstall and reinstall. Record retained data behavior and whether cleanup requires a separate explicit action.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify actual Tauri builds, OS behavior and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?
