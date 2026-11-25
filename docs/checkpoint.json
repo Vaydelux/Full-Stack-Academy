@@ -10,8 +10,8 @@
   },
   "development": {
     "branch": "feat/p8-publication-evidence",
-    "state": "p10-security-redis-jobs-editorial-complete-runtime-blocked",
-    "note": "P10.7 first batch: 64 Security and Redis/BullMQ drafts across 8 modules expanded; 64/64 committed-source editorial checks passed; 32/32 exact-source cache/outbox tests executed on Node22. 216/551 unpublished drafts expanded across P8–P10. Live security, Redis/BullMQ, Node24/MDX/browser qualification pending."
+    "state": "p10-p5-editorial-complete-runtime-blocked",
+    "note": "P10.7B expanded 56 Realtime and Integrations drafts across seven modules; 56/56 committed-source checks passed and original manuscripts preserved. 13/13 exact-source Node22 notification tests executed successfully. Cumulative 272/551 unpublished drafts editorially enhanced. Full Node24/MDX/browser and actual distributed/provider gates remain outstanding."
   },
   "snapshot": {
     "tracks": 28,
@@ -73,6 +73,6 @@
     "devHighFindings": 14,
     "exceptionExpires": "2026-12-02"
   },
-  "nextMilestone": "P10.7 continuation: 24 Realtime/collaboration and 32 application integration drafts (tracks 17–18); then P10.8. Continue P9 real qualification separately.",
-  "status": "all-topics-authored-p10-security-redis-editorial-complete-publication-blocked"
+  "nextMilestone": "P10.8: expand existing Testing/QA (19), Docker/CI/CD (20), Observability/SRE (21), Performance (22), Architecture/DDD (23) drafts in module batches; continue P9 real qualification independently.",
+  "status": "all-topics-authored-p10-p5-editorial-complete-publication-blocked"
 }
