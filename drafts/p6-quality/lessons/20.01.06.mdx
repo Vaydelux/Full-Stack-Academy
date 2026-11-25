@@ -44,6 +44,20 @@ node --test --test-name-pattern="20[.]01" examples/p6-quality/labs.test.mjs
 
 Declarative policy model; no Docker engine, image build, scan or real network isolation executed.
 
+## Applied engineering walkthrough
+
+Run containers with the least privileges required by the workload. Non-root UID, restricted capabilities, a read-only root filesystem and explicit writable mounts address different risks. A non-root process can still misuse credentials or access writable sensitive paths.
+
+### Diagnose the concrete failure
+
+Evaluate the model using UID 1000 and UID zero and inspect the distinct policy outcomes. In an isolated Docker image verify effective user identity and attempt a harmless write to intended and prohibited paths. Do not mount the host Docker socket.
+
+### Independent exercise and evidence
+
+Design a runtime permission matrix for writable temp data, logs and application files. Record effective UID, mount permissions and denial results rather than inferring isolation from a Dockerfile alone.
+
+**Evidence boundary:** These are practice instructions, not recorded test results. Preserve the existing model, specification and draft flag; external runtime qualification remains independent.
+
 ## Knowledge check
 
 1. Which public behavior or invariant is being protected?
