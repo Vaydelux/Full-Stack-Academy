@@ -50,6 +50,20 @@ In the test notes, separate what the in-memory fixture genuinely observed from R
 
 Random key suffixes can defeat cache hits and worsen load if applied blindly.
 
+## Applied engineering walkthrough
+
+A hot key concentrates operations on one shard even if other shards are idle. Adding shards does not split a single key's workload automatically. Read replication, local caching, batching or partitioning may help depending on consistency needs. Splitting counters complicates exact aggregation.
+
+### Diagnose the concrete failure
+
+Compare equal total request volumes using one popular key and a uniform key distribution on disposable infrastructure. Inspect per-node operations, latency and resource usage, not just cluster totals. Verify the same result correctness under each design.
+
+### Independent exercise and evidence
+
+Choose a strategy for a high-traffic public product read and a strongly consistent counter. Explain why the same remedy may not fit both. Record per-shard metrics and freshness tradeoffs.
+
+**Qualification boundary:** These are practice instructions, not recorded results. Preserve the existing lab and publication status; in-memory tests do not qualify live Redis or BullMQ behavior.
+
 ## Knowledge check
 
 1. What is authoritative in this scenario, and what state is derived or replayable?
