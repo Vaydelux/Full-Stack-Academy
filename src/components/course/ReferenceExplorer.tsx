@@ -23,6 +23,7 @@ export function ReferenceExplorer({
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState(initialCategory);
   const [visibility, setVisibility] = useState<Visibility>('all');
+  const hasIndexedOnly = entries.some(entry => !authoredIds.includes(entry.id));
   const [limit, setLimit] = useState(36);
   const authoredSet = useMemo(() => new Set(authoredIds), [authoredIds]);
 
@@ -49,7 +50,7 @@ export function ReferenceExplorer({
             maxLength={160}
             value={query}
             onChange={(event) => { setQuery(event.target.value); setLimit(36); }}
-            className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-700 dark:border-white/20 dark:bg-slate-950 dark:text-white"
+            className="min-h-11 min-w-0 w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-700 dark:border-white/20 dark:bg-slate-950 dark:text-white"
           />
         </div>
         <div>
@@ -74,7 +75,7 @@ export function ReferenceExplorer({
           >
             <option value="all">All entries</option>
             <option value="authored">Authored drafts only</option>
-            <option value="indexed">Indexed only</option>
+            {hasIndexedOnly && <option value="indexed">Indexed only</option>}
           </select>
         </div>
       </div>

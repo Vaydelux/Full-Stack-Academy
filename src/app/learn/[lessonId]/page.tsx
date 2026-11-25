@@ -50,7 +50,7 @@ export default async function LessonPage({ params }: LessonPageProps) {
     const readingIds = readReadingIds();
     const moduleNavigation = readingModuleNavigation(lessonsByModule.get(lesson.moduleId) ?? [], PUBLISHED_LESSON_IDS, readingIds, lessonId);
     const sourceUrl = 'https://github.com/Vaydelux/Full-Stack-Academy/blob/main/drafts/' + reading.group + '/lessons/' + reading.id + '.mdx';
-    return <DocShell>
+    return <DocShell active={lessonId} catalog={accessCatalog}>
       <nav aria-label="Breadcrumb" className="mb-5 text-xs text-slate-500"><Link href="/learn">Curriculum</Link> / <Link href={'/learn/track/' + lesson.trackId}>{lesson.track}</Link> / Reading edition</nav>
       <p className="text-xs font-bold uppercase tracking-widest text-cyan-700 dark:text-cyan-300">{lesson.id} · {lesson.level} · Reading edition</p>
       <h1 className="mt-3 text-3xl font-extrabold tracking-tight sm:text-4xl">{lesson.title}</h1>
@@ -69,7 +69,7 @@ export default async function LessonPage({ params }: LessonPageProps) {
   }
   const staged = !authored && !mdxMeta && readCourseProgress().draftIds.includes(lessonId);
   return (
-    <DocShell active={authored || mdxMeta ? lessonId : undefined}>
+    <DocShell active={lessonId} catalog={accessCatalog}>
       <nav aria-label="Breadcrumb" className="mb-5 text-xs text-slate-500">
         <Link href="/learn" className="hover:underline">Curriculum</Link>
         {' / '}

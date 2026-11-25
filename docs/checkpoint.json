@@ -10,8 +10,8 @@
   },
   "development": {
     "branch": "feature/f11-3-reading-format",
-    "state": "f16-encyclopedia-authoring-complete-qualification-pending",
-    "note": "F16 adds all 115 remaining references (303/303), 327 explicit relationships across 206 topics; all 115 source-valid and three new extracted-data test bodies passed in connector JS. Full locked build/browser pending."
+    "state": "f17-contextual-learning-ux-source-implemented",
+    "note": "F17 contextual curriculum navigation, shared server search, discovery-first landing, responsive controls and reading typography. Source checks pending full build/browser."
   },
   "snapshot": {
     "tracks": 28,
@@ -73,6 +73,6 @@
     "devHighFindings": 14,
     "exceptionExpires": "2026-12-02"
   },
-  "nextMilestone": "Freeze encyclopedia authoring; qualify full checkout and refine reading/search/accessibility before release.",
-  "status": "f16-encyclopedia-authoring-complete-full-build-pending"
+  "nextMilestone": "Qualify full checkout, responsive interaction matrix, then curriculum/lab release gates.",
+  "status": "f17-ux-full-build-pending"
 }

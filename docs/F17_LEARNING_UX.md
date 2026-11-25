@@ -1,0 +1,5 @@
+# F17 — Learning experience refinement
+
+Contextual curriculum navigation renders only the active module's lesson links plus track groups, with explicit published/reading/planned status. Reference sidebar highlights the active category. Mobile collapsible navigation is preserved. Curriculum search appears first; beginner cards and reference outlines collapse. Documentation-only typography and code overflow improvements, bounded filters, category-aware discovery and dashboard layout adjustments preserve completion and storage contracts. New /search uses a server GET form, bounded query/scope/pagination, compact server-selected results, no client-side registry transfer, and noindex. Search does not certify or change published IDs. No dependency changes.
+
+Six pure discovery regression cases and local Playwright smoke (four viewport sizes, six routes, active reading nav and scoped search) are provided. Full checkout, locked build, responsive browser, keyboard/contrast review and performance measurement are pending. Keep draft PR and authoring freeze.

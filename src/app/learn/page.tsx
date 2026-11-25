@@ -35,6 +35,7 @@ export default function CourseIndex() {
       <p className="mt-4 max-w-3xl text-sm leading-7 text-slate-600 dark:text-slate-300">
         {summary.tracks} tracks, {summary.modules} modules and {summary.plannedLessons} mapped topics. Published lessons retain their regular learning flow. Reading editions make authored material accessible while editorial and lab qualification are pending.
       </p>
+      <PublishedLessonExplorer catalog={curriculumCatalog} edition="unified" />
       <div className="mt-6 rounded-xl border border-cyan-600/25 bg-cyan-50 p-4 dark:bg-cyan-300/[0.06]">
         <p className="text-sm font-semibold">Returning to learn?</p>
         <p className="mt-1 text-xs leading-6 text-slate-600 dark:text-slate-300">Find your next unfinished lesson, review module progress and export your local notes without searching the entire catalog.</p>
@@ -47,9 +48,9 @@ export default function CourseIndex() {
         </div>
         <Link href="/learn/projects" className="inline-flex min-h-10 items-center rounded-lg border border-slate-300 px-4 py-2 text-sm font-bold hover:border-cyan-500 dark:border-white/20">Explore practice projects</Link>
       </div>
-      <section aria-label="Beginner learning path" className="mt-8">
-        <h2 className="mb-3 text-xl font-bold">Start here</h2>
-        <div className="grid gap-3 sm:grid-cols-2">
+      <details className="mt-8 rounded-xl border border-slate-200 p-4 dark:border-white/10">
+        <summary className="cursor-pointer text-lg font-bold">Start here · beginner learning path</summary>
+        <div className="mt-4 grid gap-3 sm:grid-cols-2">
           {learningModules.map((module,index) => {
             const lessons = LOCAL_LAB_LESSONS.filter(lesson => lesson.moduleId === module.id);
             return <article key={module.id} className="rounded-xl border border-slate-200 bg-white p-5 dark:border-white/10 dark:bg-white/[0.03]">
@@ -61,7 +62,7 @@ export default function CourseIndex() {
             </article>;
           })}
         </div>
-      </section>
+      </details>
       <section aria-label="Course publication progress" className="mt-7 rounded-xl border border-slate-200 bg-white p-4 dark:border-white/10 dark:bg-white/[0.035]">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
@@ -71,7 +72,6 @@ export default function CourseIndex() {
           <Link href="/learn/roadmap" className="inline-flex min-h-10 items-center rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold hover:border-cyan-500 dark:border-white/20">View course roadmap</Link>
         </div>
       </section>
-      <PublishedLessonExplorer catalog={curriculumCatalog} edition="unified" />
       <section aria-label="Reading editions" className="mt-6 rounded-xl border border-slate-200 bg-white p-4 dark:border-white/10 dark:bg-white/[0.035]">
         <h2 className="font-bold">Read the remaining authored curriculum</h2>
         <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">Browse only staged lessons when you want to focus on independent reading. Reading editions contain the actual manuscript and practice examples, but do not grant lab certification or completion credit.</p>

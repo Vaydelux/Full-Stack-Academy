@@ -34,7 +34,7 @@ function ReadingElement({ block }: { block: AnchoredReadingBlock }): ReactNode {
 }
 export function ReadingEditionArticle({ source, title }: { source: string; title: string }) {
   const { blocks, outline } = readingOutline(parseReading(source), title);
-  return <article aria-label="Reading edition article" className="mt-7 min-w-0 max-w-4xl space-y-5 break-words text-sm leading-7 text-slate-700 dark:text-slate-300">
+  return <article aria-label="Reading edition article" className="academy-doc-prose mt-7 min-w-0 max-w-4xl space-y-5 break-words text-sm leading-7 text-slate-700 dark:text-slate-300">
     <DocNotice>Reading edition — examples and acceptance criteria are instructional, not recorded runtime results. Review is pending. Labs and completion remain disabled for this article.</DocNotice>
     {outline.length > 0 && <details className="rounded-xl border border-slate-200 p-4 dark:border-white/10">
       <summary className="cursor-pointer font-semibold">On this page</summary>

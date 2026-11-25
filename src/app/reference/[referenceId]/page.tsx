@@ -36,7 +36,7 @@ export default async function ReferencePage({ params }: ReferencePageProps) {
   const related = readReferenceLessons(referenceId);
   const official = authored ? safeReference(authored.canonicalUrl) : null;
   return (
-    <DocShell section="reference">
+    <DocShell section="reference" activeCategory={entry.category}>
       <nav aria-label="Breadcrumb" className="mb-5 text-xs text-slate-500">
         <Link href="/reference" className="hover:underline">Reference library</Link> / <Link href={`/reference?category=${encodeURIComponent(entry.category)}`} className="hover:underline">{entry.category}</Link>
       </nav>
@@ -52,12 +52,12 @@ export default async function ReferencePage({ params }: ReferencePageProps) {
           <p className="mt-4 text-sm leading-7 text-slate-600 dark:text-slate-300">{authored.summary}</p>
           <p className="mt-2 text-xs text-slate-500">{authored.majorVersion} · {authored.status}</p>
           <DocNotice>Authored draft. Examples are illustrative and may require local setup; this page is not a runtime qualification receipt.</DocNotice>
-          <nav aria-label="On this page" className="mt-5 rounded-xl border border-slate-200 p-4 dark:border-white/10">
-            <h2 className="mb-3 text-sm font-bold">On this page</h2>
+          <details className="mt-5 rounded-xl border border-slate-200 p-4 dark:border-white/10">
+            <summary className="cursor-pointer text-sm font-semibold">On this page</summary><nav aria-label="On this page" className="mt-3">
             <ul className="grid gap-2 text-sm sm:grid-cols-2">
               {([['syntax','Syntax'],['parameters','Parameters'],['returns','Return value'],['minimal','Minimal example'],['production','Production example'],['mistakes','Common mistakes'],['security','Security and performance'],['related','Related lessons']] as const).map(([id,label]) => <li key={id}><a href={`#${id}`} className="text-cyan-700 hover:underline dark:text-cyan-300">{label}</a></li>)}
             </ul>
-          </nav>
+          </nav></details>
           <DocSection id="syntax" title="Syntax"><CodeBlock code={authored.syntax} /></DocSection>
           <DocSection id="parameters" title="Parameters"><p>{authored.parameters}</p></DocSection>
           <DocSection id="returns" title="Return value"><p>{authored.returns}</p></DocSection>

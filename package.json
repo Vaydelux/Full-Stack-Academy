@@ -462,6 +462,8 @@
     "status:postgresql-drafts": "node examples/postgresql-basics/scripts/verify-source.mjs --json",
     "qualify:postgresql:12-01": "node examples/postgresql-basics/scripts/qualify.mjs",
     "qualify:reading:browser": "node scripts/verify-academy-browser.mjs --reading",
+    "test:f17-discovery": "node --test tests/f17-discovery.test.mjs",
+    "qualify:f17:browser": "node scripts/f17-ux-browser-smoke.mjs",
     "test:course-roadmap": "node --experimental-strip-types --test tests/course-roadmap.test.mjs tests/reading-edition.test.mjs tests/reading-inventory.test.mjs tests/reading-navigation.test.mjs tests/reading-release-boundary.test.mjs tests/reading-edition-integration.test.mjs tests/curriculum-access.test.mjs",
     "test:postgresql-modeling-source": "node examples/postgresql-modeling/scripts/verify-source.mjs --check && node --test examples/postgresql-modeling/tests/source.test.mjs",
     "status:postgresql-modeling": "node examples/postgresql-modeling/scripts/verify-source.mjs --json",

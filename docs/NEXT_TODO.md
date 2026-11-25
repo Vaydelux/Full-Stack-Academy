@@ -1,3 +1,5 @@
+> **F17 — Learning UX:** Contextual module navigation, unified server search, discovery-first landing, responsive reading and dashboard improvements. Full build and browser pending; see `docs/F17_LEARNING_UX.md`.
+
 > **F16 — Encyclopedia authoring freeze:** 115 new drafts, 303/303 canonical references covered, 327 explicit links across 206 topics. All 115 new records revalidated against actual index and curriculum; three new regression bodies passed in connector JS with extracted data. Full TypeScript-import suite, locked build and browser smoke pending. See `docs/F16_REFERENCE_COMPLETION.md`.
 
 > **F16 A:** Added 57 remaining Web/HTML, CSS, JavaScript, TypeScript and React drafts. Source-quality gate passed; remaining framework and production references still pending.

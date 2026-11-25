@@ -6,7 +6,7 @@ import { ArrowRight, Search } from 'lucide-react';
 import { filterCurriculumAccess, type CurriculumAccess } from '../../../scripts/curriculum-access.mjs';
 import { discoverPublishedLessons, type DiscoverableLesson } from '@/lib/academy/lesson-discovery';
 
-const controlClass = 'min-h-10 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-offset-2 focus-visible:outline-cyan-600 dark:border-white/20 dark:bg-[#15161c] dark:text-slate-100';
+const controlClass = 'min-w-0 max-w-full min-h-11 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-offset-2 focus-visible:outline-cyan-600 dark:border-white/20 dark:bg-[#15161c] dark:text-slate-100';
 
 export function PublishedLessonExplorer({ catalog, edition = 'published' }: { catalog: readonly DiscoverableLesson[]; edition?: 'published' | 'reading' | 'unified' }) {
   const reading = edition === 'reading';
@@ -42,12 +42,12 @@ export function PublishedLessonExplorer({ catalog, edition = 'published' }: { ca
           <option value="all">All topics</option><option value="published">Published</option><option value="reading">Reading · lab pending</option><option value="planned">Planned</option>
         </select>
       </label>}
-      <div className="mt-4 grid gap-3 md:grid-cols-[minmax(0,1fr)_minmax(175px,235px)_minmax(120px,165px)]">
+      <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(0,1fr)_minmax(0,235px)_minmax(0,165px)]">
         <label htmlFor="lesson-explorer-search" className="flex flex-col gap-1.5 text-xs font-semibold">
           Search lessons
           <span className="relative">
             <Search size={17} aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
-            <input id="lesson-explorer-search" type="search" value={query} onChange={e => updateQuery(e.target.value)}
+            <input id="lesson-explorer-search" type="search" maxLength={160} value={query} onChange={e => updateQuery(e.target.value)}
               placeholder="e.g. React effects, 10.03.01" className={controlClass + ' w-full pl-10'} />
           </span>
         </label>

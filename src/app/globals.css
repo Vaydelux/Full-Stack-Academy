@@ -141,3 +141,14 @@ html.light .academy-subtle {
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
 }
+
+/* F17 documentation-only layout; leave the interactive workspace unchanged. */
+.academy-doc-shell { scroll-padding-top: 8rem; }
+.academy-doc-main { overflow-wrap: anywhere; }
+.academy-doc-prose { font-size: 15px; line-height: 1.8; }
+.academy-doc-prose p, .academy-doc-prose li { max-inline-size: 76ch; }
+.academy-doc-prose pre { overflow-wrap: normal; word-break: normal; }
+.academy-doc-shell ::selection { background: #a5f3fc; color: #164e63; }
+.academy-doc-shell progress { accent-color: #0891b2; }
+@media (min-width: 1024px) { .academy-doc-shell { scroll-padding-top: 5rem; } }
+@media (max-width: 640px) { .academy-doc-prose { font-size: 15px; } .academy-doc-main { padding-bottom: 3rem; } }

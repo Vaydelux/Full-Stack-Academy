@@ -18,7 +18,7 @@ export default async function ReferenceIndex({ searchParams }: { searchParams: P
   const searchable = references.map(entry => { const draft = authoredById.get(entry.id); return { ...entry, summary: draft?.summary, version: draft?.majorVersion, heading: draft?.heading }; });
   const coverage = referenceCoverage(references, AUTHORED_REFERENCES.map(entry => entry.id));
   return (
-    <DocShell section="reference">
+    <DocShell section="reference" activeCategory={initialCategory}>
       <p className="text-xs font-bold uppercase tracking-[.2em] text-cyan-700 dark:text-[#7DEBFF]">Modern reference encyclopedia</p>
       <h1 className="mt-3 text-3xl font-extrabold tracking-tight sm:text-4xl">API and library references</h1>
       <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-600 dark:text-slate-300">

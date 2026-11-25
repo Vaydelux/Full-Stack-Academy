@@ -118,7 +118,7 @@ export function LearningDashboard() {
         A quieter way to continue your learning. Progress comes from your own knowledge checks and self-assessment, not automatic code grading. Everything here stays in this browser.
       </p>
 
-      <section aria-label="Learning progress" className="mt-8 grid gap-3 sm:grid-cols-3">
+      <section aria-label="Learning progress" className="mt-5 grid gap-3 md:grid-cols-3">
         <div className={statStyle}>
           <CheckCircle2 className="text-emerald-600 dark:text-emerald-300" size={21} aria-hidden="true" />
           <p className="mt-3 text-3xl font-extrabold tabular-nums">{overview.completed}<span className="text-base font-normal text-slate-500"> / {overview.total}</span></p>
@@ -140,7 +140,7 @@ export function LearningDashboard() {
         </div>
       </section>
 
-      <section aria-labelledby="continue-heading" className="mt-7 rounded-2xl border border-cyan-600/30 bg-cyan-50 p-6 dark:bg-cyan-300/[0.055]">
+      <section aria-labelledby="continue-heading" className="mt-5 rounded-xl border border-cyan-600/30 bg-cyan-50 p-6 dark:bg-cyan-300/[0.055]">
         <h2 id="continue-heading" className="text-xl font-bold">Continue learning</h2>
         {overview.nextLesson ? (
           <>
@@ -161,11 +161,11 @@ export function LearningDashboard() {
         <h2 id="module-progress-heading" className="text-xl font-bold">Your modules</h2>
         <p className="mt-2 text-sm text-slate-500">Search by topic or lesson ID, then jump into one module at a time.</p>
         <div className="mt-4 flex flex-wrap items-end gap-3">
-          <label className="flex min-w-56 flex-1 flex-col gap-1 text-xs font-semibold" htmlFor="dashboard-search">
+          <label className="flex min-w-0 basis-56 flex-1 flex-col gap-1 text-xs font-semibold" htmlFor="dashboard-search">
             Find a module or lesson
             <span className="relative">
               <Search aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" size={17} />
-              <input id="dashboard-search" value={query} onChange={(e) => { setQuery(e.target.value); setShown(18); }}
+              <input id="dashboard-search" maxLength={160} value={query} onChange={(e) => { setQuery(e.target.value); setShown(18); }}
                 type="search" placeholder="React, 06.01, HTTP…" className="w-full rounded-lg border border-slate-300 bg-white py-2.5 pl-10 pr-3 text-sm text-slate-900 outline-offset-2 focus-visible:outline-cyan-600 dark:border-white/20 dark:bg-[#15161c] dark:text-white" />
             </span>
           </label>
