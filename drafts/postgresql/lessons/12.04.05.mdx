@@ -75,6 +75,20 @@ A JOIN can multiply parent rows and be inefficient for deeply nested relationshi
 
 When query execution moves into a real Next.js/NestJS application, measure request concurrency and database calls as well as SQL time. Remember that schema changes alter future write costs, vacuum work and storage. An index may improve a selective read but slow bulk inserts; a pooled connection may conserve memory but alter transaction/session semantics.
 
+## Applied SQL walkthrough
+
+N+1 describes an application issuing one parent query followed by a separate child query for every parent. A set-based join reduces round trips but may repeat parent data for every child. The fixture preserves projects without tasks using LEFT JOIN. Alternatives include a bounded batch query and grouping rows in the application; the right choice depends on cardinality and response size.
+
+### Predict and diagnose the result
+
+Instrument a real query executor to count database calls while requesting 1, 10 and 100 projects. Compare the same authorized result from the repeated calls and the set-based approach. Inspect row multiplication and parent fields repeated on the wire. Do not mistake one query for automatically low cost.
+
+### Independent exercise and evidence
+
+Design a paginated project list that loads only the visible parent page, then fetches children in a bounded query using those IDs and a tenant predicate. Record calls, rows, bytes and latency. Test an empty project and a large child collection separately.
+
+**Qualification boundary:** These are measurement instructions and hypotheses, not recorded benchmark results. Use disposable PostgreSQL data and preserve the existing starter and solution. A source check does not prove a faster query or safe production configuration.
+
 ## Bug Hunt
 
 1. Predict why the starter is incomplete: The starter illustrates repeated per-project queries. An API loop that repeats the second query for every returned project causes network and planning overhead.
