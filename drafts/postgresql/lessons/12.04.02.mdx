@@ -69,6 +69,20 @@ The index definition can be correct while the planner chooses a sequential scan.
 
 When query execution moves into a real Next.js/NestJS application, measure request concurrency and database calls as well as SQL time. Remember that schema changes alter future write costs, vacuum work and storage. An index may improve a selective read but slow bulk inserts; a pooled connection may conserve memory but alter transaction/session semantics.
 
+## Applied SQL walkthrough
+
+A multicolumn B-tree index orders keys lexicographically. With a tenant equality predicate, the created_at and id descending keys match a newest-first feed and provide a unique tie-breaker. The index can support compatible ordering, but its benefit depends on selectivity, data volume and the planner. Every extra index adds storage and maintenance work to inserts and updates.
+
+### Predict and diagnose the result
+
+Inspect pg_indexes to confirm the actual key order. Compare a query constrained to one tenant with a query spanning all tenants; the second may not use the index for global time ordering. On representative disposable data, collect before/after plans and the same result rows without forcing a planner option.
+
+### Independent exercise and evidence
+
+Design a feed index for a tenant and status equality filter followed by timestamp and ID ordering. Compare its read coverage with the existing tenant-first index and consider whether both are justified. Record plan evidence, index size and write workload effects.
+
+**Qualification boundary:** These are measurement instructions and hypotheses, not recorded benchmark results. Use disposable PostgreSQL data and preserve the existing starter and solution. A source check does not prove a faster query or safe production configuration.
+
 ## Bug Hunt
 
 1. Predict why the starter is incomplete: The starter indexes only the sort column. In a multi-tenant feed, it does not encode the tenant filter as the leading index key.
