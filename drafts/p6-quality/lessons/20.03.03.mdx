@@ -44,6 +44,20 @@ node --test --test-name-pattern="20[.]03" examples/p6-quality/labs.test.mjs
 
 Boolean release decision model, not deployment, migration, traffic switching or verified rollback.
 
+## Applied engineering walkthrough
+
+Rolling deployment replaces instances gradually while versions coexist. Readiness gates prevent routing to an unready replacement, but capacity, schema and API compatibility must also hold. Connection draining and background job ownership matter during shutdown.
+
+### Diagnose the concrete failure
+
+Draw a two-instance deployment and trace a healthy replacement, then an unhealthy one. Verify the release model holds or rolls back as specified. In a local orchestrated test, check actual traffic routing and in-flight request completion.
+
+### Independent exercise and evidence
+
+Design an upgrade with minimum available capacity and a rollback trigger. Record version transitions, health and request outcomes; do not claim zero downtime from the decision model.
+
+**Evidence boundary:** These are practice instructions, not recorded test results. Preserve the existing model, specification and draft flag; external runtime qualification remains independent.
+
 ## Knowledge check
 
 1. Which public behavior or invariant is being protected?
