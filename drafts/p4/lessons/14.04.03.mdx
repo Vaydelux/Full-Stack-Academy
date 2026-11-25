@@ -83,6 +83,20 @@ The snippet's browser-side checks cannot identify malicious bytes. Configure buc
 
 Private buckets need specific Storage policies, server-controlled paths and explicit expiration/cleanup rules. Realtime private channels require policies on realtime.messages for permitted operations; a client-specified filter alone is not authorization. Persistent business state remains in PostgreSQL, not in Presence or Broadcast payloads.
 
+## Applied persistence walkthrough
+
+Browser MIME type and size checks improve usability but are not authoritative because clients control metadata. The storage service must enforce actual size limits, and a trusted processing path should inspect file bytes before marking a document usable. Content sniffing is not a full malware guarantee. The sample upload disables overwrite and chooses a randomized user-prefixed key.
+
+### Diagnose the concrete failure
+
+Attempt a valid small file, empty file, oversized file and content with a misleading extension or MIME type. Confirm the browser check alone can be bypassed and that the trusted ingestion path still rejects or quarantines invalid data. Test path collisions and cross-user access without uploading real sensitive files.
+
+### Independent exercise and evidence
+
+Design a pending/quarantined/ready state machine with size checks, type verification and a scanning decision. Record synthetic byte counts, accepted formats and status transitions. Do not serve unverified uploads as trusted content.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Use isolated test identities, storage and channels. Preserve the existing starter and solution; source review cannot qualify live upload, webhook or Realtime security.
+
 ## Bug Hunt
 
 1. Predict the attack or failure: The starter trusts the browser's file.type and original filename. A renamed executable or oversize payload can bypass those checks.
