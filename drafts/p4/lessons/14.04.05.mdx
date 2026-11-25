@@ -78,6 +78,20 @@ Filters are not security policies. Realtime publication and RLS visibility diffe
 
 Private buckets need specific Storage policies, server-controlled paths and explicit expiration/cleanup rules. Realtime private channels require policies on realtime.messages for permitted operations; a client-specified filter alone is not authorization. Persistent business state remains in PostgreSQL, not in Presence or Broadcast payloads.
 
+## Applied persistence walkthrough
+
+A Postgres Changes subscription observes database change events; the filter selects events of interest but is not the authorization boundary. The source table must be configured for the relevant publication and protected by appropriate policies. Event handling should invalidate or reconcile local state, not assume events are a complete durable queue. The exact event semantics depend on the configured replication and access path.
+
+### Diagnose the concrete failure
+
+Use two synthetic tenants and subscribe with real authorized identities. Change a permitted task and verify expected invalidation; change a foreign tenant task and confirm it does not reveal unauthorized data. Test disconnect/reconnect and remove the channel on unmount. Review event-specific behavior, especially deletion, against the current Realtime documentation.
+
+### Independent exercise and evidence
+
+Design a reconnect strategy that refetches authoritative server state instead of trusting that every event was received. Record subscription state, delivered event identifiers and cache behavior. Do not log private row payloads.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Use isolated test identities, storage and channels. Preserve the existing starter and solution; source review cannot qualify live upload, webhook or Realtime security.
+
 ## Bug Hunt
 
 1. Predict the attack or failure: The starter lacks tenant scoping and directly renders row contents, possibly disclosing unrelated columns or stale data.
