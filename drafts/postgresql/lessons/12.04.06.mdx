@@ -71,6 +71,20 @@ A source-derived setting is not a validated pool configuration. Verify real pool
 
 When query execution moves into a real Next.js/NestJS application, measure request concurrency and database calls as well as SQL time. Remember that schema changes alter future write costs, vacuum work and storage. An index may improve a selective read but slow bulk inserts; a pooled connection may conserve memory but alter transaction/session semantics.
 
+## Applied SQL walkthrough
+
+Database connections consume backend resources; a client pool limits simultaneous checked-out connections, not the number of incoming HTTP requests. Capacity must be budgeted across replicas, workers, deployments and operational access. The fixture reads max_connections and superuser_reserved_connections, but PostgreSQL may also reserve other slots and managed providers can impose tighter limits.
+
+### Predict and diagnose the result
+
+Use a hypothetical 100-connection database with 20 slots reserved for operations and other workloads. Four API replicas at 15 connections each use 60, leaving 20 within that illustrative budget. Check the actual server settings and pool wait times before applying any allocation. Never change max_connections for this exercise.
+
+### Independent exercise and evidence
+
+Make a connection budget for API replicas, background workers and rolling deployments where old and new replicas overlap. Define pool acquisition timeouts and overload behavior. Record active/idle connections, acquisition wait and failed requests under a controlled local load rather than increasing every pool automatically.
+
+**Qualification boundary:** These are measurement instructions and hypotheses, not recorded benchmark results. Use disposable PostgreSQL data and preserve the existing starter and solution. A source check does not prove a faster query or safe production configuration.
+
 ## Bug Hunt
 
 1. Predict why the starter is incomplete: A hardcoded pool budget assumes capacity the database might not have. It can exhaust connections when several replicas start simultaneously.
