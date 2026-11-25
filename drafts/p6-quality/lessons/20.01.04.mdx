@@ -44,6 +44,20 @@ node --test --test-name-pattern="20[.]01" examples/p6-quality/labs.test.mjs
 
 Declarative policy model; no Docker engine, image build, scan or real network isolation executed.
 
+## Applied engineering walkthrough
+
+Bind mounts expose a host path to a container, whereas named volumes are managed storage with an independent lifecycle. Container recreation need not remove a named volume, but volume deletion can destroy data. Mounts can obscure files already present in an image.
+
+### Diagnose the concrete failure
+
+Seed synthetic data in a dedicated named volume, recreate the disposable container without deleting the volume, and verify the data remains. Mount a fake configuration read-only and verify the intended process cannot write it. Inspect only the designated test paths.
+
+### Independent exercise and evidence
+
+Design an explicit persistence and backup plan for database data and read-only configuration. Record mount type, ownership and retention behavior; avoid destructive cleanup of unrelated volumes.
+
+**Evidence boundary:** These are practice instructions, not recorded test results. Preserve the existing model, specification and draft flag; external runtime qualification remains independent.
+
 ## Knowledge check
 
 1. Which public behavior or invariant is being protected?
