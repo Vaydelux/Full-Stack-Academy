@@ -5,6 +5,7 @@ import {readFileSync,readdirSync} from 'node:fs';
 import {resolve,dirname} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {buildLatePlan,evidenceTemplate,validateEvidence,manuscriptPath} from './late-phase-plan.mjs';
+import {reviewPack,exportReview,verifyReviewArtifacts,readLocalArtifact} from './late-review-pack.mjs';
 import {reconcilePublishedInventory} from '../examples/p4-foundations/scripts/reconcile-published.mjs';
 const root=resolve(dirname(fileURLToPath(import.meta.url)),'..');
 const read=p=>readFileSync(resolve(root,p),'utf8'),json=p=>JSON.parse(read(p));
@@ -30,4 +31,12 @@ if(args.length===0||args.length===1&&args[0]==='--check'){
 else if(args.length===2&&args[0]==='--module')console.log(JSON.stringify(find(args[1]),null,2));
 else if(args.length===2&&args[0]==='--template')console.log(JSON.stringify(evidenceTemplate(find(args[1])),null,2));
 else if(args.length===3&&args[0]==='--check-evidence')console.log(JSON.stringify(validateEvidence(find(args[1]),JSON.parse(readFileSync(resolve(args[2]),'utf8'))),null,2));
-else throw Error('Usage: --check | --json | --module ID | --template ID | --check-evidence ID FILE');
+else if(args.length===2&&args[0]==='--export-review'){
+ const m=find(args[1]),pack=reviewPack(m,result.familyBindings[m.family],read,evidenceTemplate(m));
+ console.log(JSON.stringify({directory:exportReview(pack),moduleId:m.id,files:pack.size,publicationApproved:false},null,2));
+}else if(args.length===3&&args[0]==='--check-review-artifacts'){
+ const m=find(args[1]),directory=resolve(args[2]),pack=reviewPack(m,result.familyBindings[m.family],read,evidenceTemplate(m));
+ for(const [path,source] of pack)if(path!=='evidence.json')assert.equal(readFileSync(resolve(directory,path),'utf8'),source,'Review package drift: '+path);
+ const evidence=JSON.parse(readFileSync(resolve(directory,'evidence.json'),'utf8'));
+ console.log(JSON.stringify(verifyReviewArtifacts(m,evidence,p=>readLocalArtifact(resolve(directory,'artifacts'),p),validateEvidence),null,2));
+}else throw Error('Usage: --check | --json | --module ID | --template ID | --check-evidence ID FILE | --export-review ID | --check-review-artifacts ID DIRECTORY');

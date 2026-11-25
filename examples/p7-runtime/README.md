@@ -38,3 +38,6 @@ Nine tests passed under Node 24.11.1 in an isolated directory. The tests open re
 No module or lesson is automatically promoted. The 136 P7 authored candidates remain unpublished. Full checkout offline/build, native, browser, provider, AI, geospatial and media gates are unexecuted in this milestone. The mandatory offline matrix requires the new test command; late-phase fingerprints include these files.
 
 Next: finish the P7 analytics/RAG/geospatial/media exercises with actual local inputs, then implement guarded publication projections in curriculum order and obtain genuine runtime and human review evidence. Do not extend curriculum breadth or skip P1/P2 gates.
+
+## Specialized F8.6 exercises
+`specialized.mjs` adds SQLite event aggregation and retention/hold checks, local bag-of-words retrieval with exact source-span validation, great-circle radius filtering and strict canonical PCM WAV inspection. Six additional tests are now part of `npm run test:p7-runtime`. No external AI, geospatial provider, media transcode/RTC or legal compliance is claimed. See `docs/F8_6_SPECIALIZED_REVIEW_HANDOFF.md`.
