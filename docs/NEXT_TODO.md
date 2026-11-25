@@ -1,3 +1,5 @@
+> **F16 A:** Added 57 remaining Web/HTML, CSS, JavaScript, TypeScript and React drafts. Source-quality gate passed; remaining framework and production references still pending.
+
 > **F15 — Backend/production encyclopedia:** 63 new authored drafts (188/303 total), 63/63 committed records source-validated; three new integration test bodies passed with extracted registry in connector V8; six existing exact-source Node22.16.0 quality tests passed. 212 distinct edges across 138 topics; full checkout/browser/runtime pending. See `docs/F15_BACKEND_PRODUCTION_REFERENCE.md`.
 
 > **F14 — Reference encyclopedia:** Added 51 foundational reference drafts (125/303 total), category coverage, and source-quality gate; all 51 committed new drafts passed source validation in connector V8; six quality tests passed in real Node22.16.0 with both exact blob hashes matched. Registry reconciliation: 149 edges across 102 lessons, no unknown targets. Full checkout and runtime validation pending. See `docs/F14_REFERENCE_ENCYCLOPEDIA.md`.

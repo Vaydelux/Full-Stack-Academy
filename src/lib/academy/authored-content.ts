@@ -6677,6 +6677,1716 @@ await redisCache.set(cacheKey, JSON.stringify(safeDto), 'EX', 60);`,
     "21.03.02"
   ],
   "canonicalUrl": "https://sre.google/workbook/incident-response/"
+},
+{
+  "id": "web-html-document",
+  "matchCategories": [
+    "Web & HTML"
+  ],
+  "matchTitles": [
+    "HTML document"
+  ],
+  "heading": "Web & HTML: HTML document",
+  "category": "Web & HTML",
+  "majorVersion": "HTML / Web platform",
+  "status": "Authored reference draft",
+  "summary": "A standards-mode HTML document establishes language, metadata and body content.",
+  "syntax": "<!doctype html><html lang=\"en\">…</html>",
+  "lang": "html",
+  "parameters": "Doctype, root element, head and body.",
+  "returns": "Browser parses a DOM in standards mode.",
+  "minimalExample": "<!doctype html><html lang=\"en\"><head><title>Home</title></head><body>Home</body></html>",
+  "productionExample": "<!doctype html>\n<html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><title>Tasks</title></head><body><main><h1>Tasks</h1></main></body></html>",
+  "commonMistakes": [
+    "Missing doctype or document language."
+  ],
+  "securityPerformanceNotes": [
+    "Use semantic landmarks and meaningful titles; validate markup."
+  ],
+  "relatedLessonIds": [
+    "01.01.01"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/HTML"
+},
+{
+  "id": "web-html",
+  "matchCategories": [
+    "Web & HTML"
+  ],
+  "matchTitles": [
+    "html"
+  ],
+  "heading": "Web & HTML: html",
+  "category": "Web & HTML",
+  "majorVersion": "HTML / Web platform",
+  "status": "Authored reference draft",
+  "summary": "The root element contains document head and body.",
+  "syntax": "<html lang=\"en\">…</html>",
+  "lang": "html",
+  "parameters": "Global attributes including lang and dir.",
+  "returns": "Root document element.",
+  "minimalExample": "<html lang=\"en\"><head><title>Home</title></head><body></body></html>",
+  "productionExample": "<html lang=\"ar\" dir=\"rtl\"><head><title>مثال</title></head><body><main>مثال</main></body></html>",
+  "commonMistakes": [
+    "Using language metadata only on a visual label."
+  ],
+  "securityPerformanceNotes": [
+    "Declare the actual document language to aid pronunciation and translation."
+  ],
+  "relatedLessonIds": [
+    "01.01.01"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/html"
+},
+{
+  "id": "web-head",
+  "matchCategories": [
+    "Web & HTML"
+  ],
+  "matchTitles": [
+    "head"
+  ],
+  "heading": "Web & HTML: head",
+  "category": "Web & HTML",
+  "majorVersion": "HTML / Web platform",
+  "status": "Authored reference draft",
+  "summary": "Contains machine-readable document metadata.",
+  "syntax": "<head><title>Page</title></head>",
+  "lang": "html",
+  "parameters": "Metadata elements, stylesheet links and appropriate scripts.",
+  "returns": "Metadata rather than primary visible page content.",
+  "minimalExample": "<head><title>Academy</title></head>",
+  "productionExample": "<head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><title>HTML reference | Academy</title><link rel=\"stylesheet\" href=\"/styles.css\"></head>",
+  "commonMistakes": [
+    "Putting primary article content in head."
+  ],
+  "securityPerformanceNotes": [
+    "Minimize blocking resources and give each route a descriptive title."
+  ],
+  "relatedLessonIds": [
+    "01.01.02"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/head"
+},
+{
+  "id": "web-meta",
+  "matchCategories": [
+    "Web & HTML"
+  ],
+  "matchTitles": [
+    "meta"
+  ],
+  "heading": "Web & HTML: meta",
+  "category": "Web & HTML",
+  "majorVersion": "HTML / Web platform",
+  "status": "Authored reference draft",
+  "summary": "Declares metadata such as encoding, viewport and descriptions.",
+  "syntax": "<meta name=\"description\" content=\"…\">",
+  "lang": "html",
+  "parameters": "charset, name/content, or supported http-equiv pairs.",
+  "returns": "Document metadata; void element.",
+  "minimalExample": "<meta charset=\"utf-8\">",
+  "productionExample": "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><meta name=\"description\" content=\"Learn accessible form controls.\">",
+  "commonMistakes": [
+    "Disabling zoom with viewport settings."
+  ],
+  "securityPerformanceNotes": [
+    "Never place secrets in metadata; send security headers from the server."
+  ],
+  "relatedLessonIds": [
+    "01.01.02"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/meta"
+},
+{
+  "id": "web-link",
+  "matchCategories": [
+    "Web & HTML"
+  ],
+  "matchTitles": [
+    "link"
+  ],
+  "heading": "Web & HTML: link",
+  "category": "Web & HTML",
+  "majorVersion": "HTML / Web platform",
+  "status": "Authored reference draft",
+  "summary": "Connects the document to external resources or relationships.",
+  "syntax": "<link rel=\"stylesheet\" href=\"/app.css\">",
+  "lang": "html",
+  "parameters": "rel, href and relationship-specific attributes.",
+  "returns": "Resource or metadata relationship; void element.",
+  "minimalExample": "<link rel=\"icon\" href=\"/icon.svg\">",
+  "productionExample": "<link rel=\"preload\" href=\"/fonts/ui.woff2\" as=\"font\" type=\"font/woff2\" crossorigin><link rel=\"stylesheet\" href=\"/app.css\">",
+  "commonMistakes": [
+    "Preloading everything or using mismatched crossorigin attributes."
+  ],
+  "securityPerformanceNotes": [
+    "Preload only critical assets and use trusted resource origins."
+  ],
+  "relatedLessonIds": [
+    "01.01.02"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/link"
+},
+{
+  "id": "web-script",
+  "matchCategories": [
+    "Web & HTML"
+  ],
+  "matchTitles": [
+    "script"
+  ],
+  "heading": "Web & HTML: script",
+  "category": "Web & HTML",
+  "majorVersion": "HTML / Web platform",
+  "status": "Authored reference draft",
+  "summary": "Embeds or references executable code or supported data blocks.",
+  "syntax": "<script type=\"module\" src=\"/app.js\"></script>",
+  "lang": "html",
+  "parameters": "src, type, async, defer and integrity where applicable.",
+  "returns": "Loads/evaluates scripts according to their type and attributes.",
+  "minimalExample": "<script defer src=\"/app.js\"></script>",
+  "productionExample": "<script type=\"module\" src=\"/assets/app.js\"></script>\n<!-- Serve a CSP that permits the intended script origin. -->",
+  "commonMistakes": [
+    "Treating async as preserving source execution order."
+  ],
+  "securityPerformanceNotes": [
+    "Avoid untrusted script sources and inline user-controlled script text."
+  ],
+  "relatedLessonIds": [
+    "01.01.02"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/script"
+},
+{
+  "id": "web-article",
+  "matchCategories": [
+    "Web & HTML"
+  ],
+  "matchTitles": [
+    "article"
+  ],
+  "heading": "Web & HTML: article",
+  "category": "Web & HTML",
+  "majorVersion": "HTML / Web platform",
+  "status": "Authored reference draft",
+  "summary": "Represents self-contained content that could be independently reused.",
+  "syntax": "<article><h2>Title</h2>…</article>",
+  "lang": "html",
+  "parameters": "Global HTML attributes and article content.",
+  "returns": "Semantic article element.",
+  "minimalExample": "<article><h2>Release notes</h2><p>Version 1</p></article>",
+  "productionExample": "<main><h1>News</h1><article aria-labelledby=\"news-1\"><h2 id=\"news-1\">Release notes</h2><time datetime=\"2026-11-26\">26 November</time><p>Updates</p></article></main>",
+  "commonMistakes": [
+    "Using article as a generic styling wrapper."
+  ],
+  "securityPerformanceNotes": [
+    "Provide useful headings and preserve logical reading order."
+  ],
+  "relatedLessonIds": [
+    "01.01.03"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/article"
+},
+{
+  "id": "web-section",
+  "matchCategories": [
+    "Web & HTML"
+  ],
+  "matchTitles": [
+    "section"
+  ],
+  "heading": "Web & HTML: section",
+  "category": "Web & HTML",
+  "majorVersion": "HTML / Web platform",
+  "status": "Authored reference draft",
+  "summary": "Groups a thematic section, typically identified by a heading.",
+  "syntax": "<section><h2>Topic</h2>…</section>",
+  "lang": "html",
+  "parameters": "Global attributes; accessible name can make a region landmark.",
+  "returns": "Semantic section element.",
+  "minimalExample": "<section><h2>Examples</h2><p>Example text</p></section>",
+  "productionExample": "<section aria-labelledby=\"security\"><h2 id=\"security\">Security</h2><p>Validate input at the trust boundary.</p></section>",
+  "commonMistakes": [
+    "Creating a section for every styling wrapper."
+  ],
+  "securityPerformanceNotes": [
+    "Use headings for structure; avoid excessive named landmarks."
+  ],
+  "relatedLessonIds": [
+    "01.01.04"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/section"
+},
+{
+  "id": "web-nav",
+  "matchCategories": [
+    "Web & HTML"
+  ],
+  "matchTitles": [
+    "nav"
+  ],
+  "heading": "Web & HTML: nav",
+  "category": "Web & HTML",
+  "majorVersion": "HTML / Web platform",
+  "status": "Authored reference draft",
+  "summary": "Identifies a major group of navigation links.",
+  "syntax": "<nav aria-label=\"Primary\">…</nav>",
+  "lang": "html",
+  "parameters": "Global attributes and navigation content.",
+  "returns": "Navigation landmark.",
+  "minimalExample": "<nav><a href=\"/learn\">Learn</a></nav>",
+  "productionExample": "<nav aria-label=\"Curriculum\"><ul><li><a href=\"/learn\" aria-current=\"page\">Learn</a></li><li><a href=\"/reference\">Reference</a></li></ul></nav>",
+  "commonMistakes": [
+    "Using the same label for multiple distinct navigation landmarks."
+  ],
+  "securityPerformanceNotes": [
+    "Use descriptive landmark labels and visible focus."
+  ],
+  "relatedLessonIds": [
+    "01.01.06"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/nav"
+},
+{
+  "id": "web-aside",
+  "matchCategories": [
+    "Web & HTML"
+  ],
+  "matchTitles": [
+    "aside"
+  ],
+  "heading": "Web & HTML: aside",
+  "category": "Web & HTML",
+  "majorVersion": "HTML / Web platform",
+  "status": "Authored reference draft",
+  "summary": "Represents content tangentially related to surrounding content.",
+  "syntax": "<aside>…</aside>",
+  "lang": "html",
+  "parameters": "Global attributes and complementary content.",
+  "returns": "Complementary content; landmark semantics depend on context.",
+  "minimalExample": "<aside><h2>Tip</h2><p>Try keyboard navigation.</p></aside>",
+  "productionExample": "<main><article><h1>Forms</h1><p>Use native controls.</p></article><aside aria-label=\"Further reading\"><a href=\"/reference\">Reference library</a></aside></main>",
+  "commonMistakes": [
+    "Putting required main content exclusively in aside."
+  ],
+  "securityPerformanceNotes": [
+    "Keep supplemental content distinct from the primary reading path."
+  ],
+  "relatedLessonIds": [
+    "01.01.03"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/aside"
+},
+{
+  "id": "web-picture",
+  "matchCategories": [
+    "Web & HTML"
+  ],
+  "matchTitles": [
+    "picture"
+  ],
+  "heading": "Web & HTML: picture",
+  "category": "Web & HTML",
+  "majorVersion": "HTML / Web platform",
+  "status": "Authored reference draft",
+  "summary": "Lets the browser choose image sources by media condition or format.",
+  "syntax": "<picture><source …><img …></picture>",
+  "lang": "html",
+  "parameters": "Ordered source elements with media/type/srcset and required img fallback.",
+  "returns": "One rendered image chosen by the browser.",
+  "minimalExample": "<picture><source srcset=\"photo.webp\" type=\"image/webp\"><img src=\"photo.jpg\" alt=\"Mountain\"></picture>",
+  "productionExample": "<picture><source media=\"(min-width: 900px)\" srcset=\"wide.jpg\"><img src=\"narrow.jpg\" width=\"640\" height=\"360\" alt=\"Dashboard overview\"></picture>",
+  "commonMistakes": [
+    "Putting alt on source instead of img."
+  ],
+  "securityPerformanceNotes": [
+    "Reserve space for the chosen image ratio and avoid unnecessary large downloads."
+  ],
+  "relatedLessonIds": [
+    "01.01.07"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/picture"
+},
+{
+  "id": "web-aria-label",
+  "matchCategories": [
+    "Web & HTML"
+  ],
+  "matchTitles": [
+    "aria-label"
+  ],
+  "heading": "Web & HTML: aria-label",
+  "category": "Web & HTML",
+  "majorVersion": "HTML / Web platform",
+  "status": "Authored reference draft",
+  "summary": "Supplies an accessible name when the element permits naming.",
+  "syntax": "aria-label=\"Close dialog\"",
+  "lang": "html",
+  "parameters": "A string describing the control's purpose.",
+  "returns": "Accessible name subject to accessible-name computation.",
+  "minimalExample": "<button aria-label=\"Close\">×</button>",
+  "productionExample": "<button type=\"button\" aria-label=\"Remove task\"><svg aria-hidden=\"true\" viewBox=\"0 0 10 10\"><path d=\"M1 1L9 9M9 1L1 9\"/></svg></button>",
+  "commonMistakes": [
+    "Overriding useful visible text with a different accessible name."
+  ],
+  "securityPerformanceNotes": [
+    "Prefer visible labels when possible; verify accessible name with assistive technology."
+  ],
+  "relatedLessonIds": [
+    "01.03.06"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-label"
+},
+{
+  "id": "web-tabindex",
+  "matchCategories": [
+    "Web & HTML"
+  ],
+  "matchTitles": [
+    "tabindex"
+  ],
+  "heading": "Web & HTML: tabindex",
+  "category": "Web & HTML",
+  "majorVersion": "HTML / Web platform",
+  "status": "Authored reference draft",
+  "summary": "Controls sequential focus participation and programmatic focus.",
+  "syntax": "tabindex=\"0\"",
+  "lang": "html",
+  "parameters": "Integer; 0 follows natural order, -1 allows programmatic focus without normal tab stop.",
+  "returns": "Changes focus behavior, not interaction semantics.",
+  "minimalExample": "<h2 tabindex=\"-1\" id=\"results\">Results</h2>",
+  "productionExample": "<h2 id=\"errors\" tabindex=\"-1\">Please correct errors</h2><script>document.querySelector('#errors').focus()</script>",
+  "commonMistakes": [
+    "Using positive tabindex to repair DOM order or making divs behave like buttons without keyboard support."
+  ],
+  "securityPerformanceNotes": [
+    "Prefer native controls and logical DOM order; restore focus after transient UI."
+  ],
+  "relatedLessonIds": [
+    "01.03.02"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/tabindex"
+},
+{
+  "id": "web-request",
+  "matchCategories": [
+    "Web & HTML"
+  ],
+  "matchTitles": [
+    "Request"
+  ],
+  "heading": "Web & HTML: Request",
+  "category": "Web & HTML",
+  "majorVersion": "HTML / Web platform",
+  "status": "Authored reference draft",
+  "summary": "Represents an HTTP request used by Fetch.",
+  "syntax": "new Request(input, init)",
+  "lang": "js",
+  "parameters": "URL or Request, method, headers, body and signal options.",
+  "returns": "Request object; body is a stream that may be consumed once.",
+  "minimalExample": "const req = new Request('/api/tasks');",
+  "productionExample": "const req = new Request('/api/tasks', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({title}), signal });\nconst res = await fetch(req);",
+  "commonMistakes": [
+    "Reading a consumed request body twice."
+  ],
+  "securityPerformanceNotes": [
+    "Validate server-side inputs and use same-origin or explicitly trusted destinations."
+  ],
+  "relatedLessonIds": [
+    "01.04.02"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/API/Request"
+},
+{
+  "id": "web-response",
+  "matchCategories": [
+    "Web & HTML"
+  ],
+  "matchTitles": [
+    "Response"
+  ],
+  "heading": "Web & HTML: Response",
+  "category": "Web & HTML",
+  "majorVersion": "HTML / Web platform",
+  "status": "Authored reference draft",
+  "summary": "Represents the status, headers and body of an HTTP response.",
+  "syntax": "new Response(body, { status, headers })",
+  "lang": "js",
+  "parameters": "Optional body and status/statusText/headers.",
+  "returns": "Response with body-reading methods and status information.",
+  "minimalExample": "const res = new Response('OK', {status:200});",
+  "productionExample": "return Response.json({ id: task.id, title: task.title }, { status: 200, headers: { 'Cache-Control': 'private, no-store' } });",
+  "commonMistakes": [
+    "Assuming every fetch response is successful or every body is JSON."
+  ],
+  "securityPerformanceNotes": [
+    "Project safe fields and avoid shared caches for private results."
+  ],
+  "relatedLessonIds": [
+    "01.04.02"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/API/Response"
+},
+{
+  "id": "web-url",
+  "matchCategories": [
+    "Web & HTML"
+  ],
+  "matchTitles": [
+    "URL"
+  ],
+  "heading": "Web & HTML: URL",
+  "category": "Web & HTML",
+  "majorVersion": "HTML / Web platform",
+  "status": "Authored reference draft",
+  "summary": "Parses, resolves and exposes components of a URL.",
+  "syntax": "new URL(input, base?)",
+  "lang": "js",
+  "parameters": "Absolute URL or relative input with a valid base.",
+  "returns": "URL instance; invalid input throws.",
+  "minimalExample": "const url = new URL('/learn', 'https://example.org');",
+  "productionExample": "const url = new URL('/search', 'https://example.org');\nurl.searchParams.set('q', query);\nconst href = url.toString();",
+  "commonMistakes": [
+    "Assuming a successfully parsed URL is an authorized destination."
+  ],
+  "securityPerformanceNotes": [
+    "Allowlist protocol and origin for redirects or outbound requests; parsing is not SSRF defense."
+  ],
+  "relatedLessonIds": [
+    "01.04.03"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/API/URL"
+},
+{
+  "id": "web-localstorage",
+  "matchCategories": [
+    "Web & HTML"
+  ],
+  "matchTitles": [
+    "localStorage"
+  ],
+  "heading": "Web & HTML: localStorage",
+  "category": "Web & HTML",
+  "majorVersion": "HTML / Web platform",
+  "status": "Authored reference draft",
+  "summary": "Provides synchronous origin-scoped string storage that can persist across browser sessions.",
+  "syntax": "localStorage.setItem(key, value)",
+  "lang": "js",
+  "parameters": "String keys and values; getItem/removeItem/clear.",
+  "returns": "getItem returns string or null; writes may throw.",
+  "minimalExample": "localStorage.setItem('theme','dark');",
+  "productionExample": "try { localStorage.setItem('preferences:v1', JSON.stringify({ theme: 'dark' })); } catch { showStorageWarning(); }",
+  "commonMistakes": [
+    "Storing access tokens or assuming storage cannot fail."
+  ],
+  "securityPerformanceNotes": [
+    "Keep non-sensitive preferences only; validate loaded JSON and handle quota/privacy restrictions."
+  ],
+  "relatedLessonIds": [
+    "01.04.04"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage"
+},
+{
+  "id": "web-indexeddb",
+  "matchCategories": [
+    "Web & HTML"
+  ],
+  "matchTitles": [
+    "IndexedDB"
+  ],
+  "heading": "Web & HTML: IndexedDB",
+  "category": "Web & HTML",
+  "majorVersion": "HTML / Web platform",
+  "status": "Authored reference draft",
+  "summary": "Asynchronous transactional browser database for structured data.",
+  "syntax": "indexedDB.open(name, version)",
+  "lang": "js",
+  "parameters": "Database name/version; upgrade handler creates stores and indexes.",
+  "returns": "IDBOpenDBRequest with success, error and upgrade events.",
+  "minimalExample": "const request = indexedDB.open('notes', 1);\nrequest.onupgradeneeded = () => request.result.createObjectStore('notes', {keyPath:'id'});",
+  "productionExample": "const request = indexedDB.open('notes', 1);\nrequest.onupgradeneeded = () => request.result.createObjectStore('notes', {keyPath:'id'});\nrequest.onsuccess = () => {\n const db = request.result; const tx = db.transaction('notes','readwrite');\n tx.objectStore('notes').put({id:'a',text:'Draft'});\n tx.oncomplete = () => db.close(); tx.onabort = () => db.close();\n};",
+  "commonMistakes": [
+    "Reporting a write as durable before transaction completion."
+  ],
+  "securityPerformanceNotes": [
+    "Handle blocked upgrades, failures and quota; local data is not a trusted server source."
+  ],
+  "relatedLessonIds": [
+    "03.04.05"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API"
+},
+{
+  "id": "web-service-worker",
+  "matchCategories": [
+    "Web & HTML"
+  ],
+  "matchTitles": [
+    "Service Worker"
+  ],
+  "heading": "Web & HTML: Service Worker",
+  "category": "Web & HTML",
+  "majorVersion": "HTML / Web platform",
+  "status": "Authored reference draft",
+  "summary": "A background worker can handle eligible requests and support offline behavior within its scope.",
+  "syntax": "navigator.serviceWorker.register('/sw.js')",
+  "lang": "js",
+  "parameters": "Script URL and optional registration scope/options.",
+  "returns": "Promise<ServiceWorkerRegistration>.",
+  "minimalExample": "await navigator.serviceWorker.register('/sw.js');",
+  "productionExample": "// sw.js: cache only explicitly approved public assets.\nself.addEventListener('fetch', event => {\n const url = new URL(event.request.url);\n if (event.request.method === 'GET' && url.origin === self.location.origin && url.pathname === '/assets/help.css') {\n  event.respondWith(caches.match(event.request).then(hit => hit || fetch(event.request)));\n }\n});",
+  "commonMistakes": [
+    "Caching every response including authenticated pages."
+  ],
+  "securityPerformanceNotes": [
+    "Use HTTPS, scoped cache policies and versioned cleanup; test offline and update lifecycle."
+  ],
+  "relatedLessonIds": [
+    "03.04.05"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API"
+},
+{
+  "id": "web-cors",
+  "matchCategories": [
+    "Web & HTML"
+  ],
+  "matchTitles": [
+    "CORS"
+  ],
+  "heading": "Web & HTML: CORS",
+  "category": "Web & HTML",
+  "majorVersion": "HTML / Web platform",
+  "status": "Authored reference draft",
+  "summary": "Browser cross-origin response-access mechanism based on server response headers.",
+  "syntax": "Access-Control-Allow-Origin: https://app.example.org",
+  "lang": "text",
+  "parameters": "Origin, allowed methods/headers, optional credentials and preflight policy.",
+  "returns": "Browser permits or denies script access to cross-origin responses.",
+  "minimalExample": "Access-Control-Allow-Origin: https://app.example.org",
+  "productionExample": "Access-Control-Allow-Origin: https://app.example.org\nAccess-Control-Allow-Credentials: true\nVary: Origin\n# For preflight, allow only required methods and headers.",
+  "commonMistakes": [
+    "Treating CORS as server-side authorization or combining credentialed requests with wildcard origin."
+  ],
+  "securityPerformanceNotes": [
+    "Check origin against an allowlist; authenticate and authorize every sensitive operation."
+  ],
+  "relatedLessonIds": [
+    "01.04.06"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS"
+},
+{
+  "id": "web-csp",
+  "matchCategories": [
+    "Web & HTML"
+  ],
+  "matchTitles": [
+    "CSP"
+  ],
+  "heading": "Web & HTML: CSP",
+  "category": "Web & HTML",
+  "majorVersion": "HTML / Web platform",
+  "status": "Authored reference draft",
+  "summary": "Content Security Policy restricts allowed sources and selected browser behaviors.",
+  "syntax": "Content-Security-Policy: default-src 'self'",
+  "lang": "text",
+  "parameters": "Directives such as script-src, object-src, base-uri and frame-ancestors.",
+  "returns": "Browser enforces or reports violations of the supplied policy.",
+  "minimalExample": "Content-Security-Policy: default-src 'self'; object-src 'none'",
+  "productionExample": "Content-Security-Policy-Report-Only: default-src 'self'; script-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'\n# Review violations and adapt before enforcing.",
+  "commonMistakes": [
+    "Adding unsafe-inline merely to suppress violations."
+  ],
+  "securityPerformanceNotes": [
+    "Use a framework-compatible nonce/hash strategy and output encoding; CSP is defense in depth."
+  ],
+  "relatedLessonIds": [
+    "01.04.07"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CSP"
+},
+{
+  "id": "css-min",
+  "matchCategories": [
+    "CSS"
+  ],
+  "matchTitles": [
+    "min()"
+  ],
+  "heading": "CSS: min()",
+  "category": "CSS",
+  "majorVersion": "CSS",
+  "status": "Authored reference draft",
+  "summary": "Chooses the smallest compatible calculation.",
+  "syntax": "width: min(100%, 60rem);",
+  "lang": "css",
+  "parameters": "Comma-separated compatible calculations.",
+  "returns": "Computed CSS numeric value.",
+  "minimalExample": "width: min(100%, 40rem);",
+  "productionExample": ".content { inline-size: min(100% - 2rem, 72rem); margin-inline: auto; }",
+  "commonMistakes": [
+    "Combining incompatible dimensions."
+  ],
+  "securityPerformanceNotes": [
+    "Check zoom and intrinsic sizing rather than forcing fixed widths."
+  ],
+  "relatedLessonIds": [
+    "02.02.03"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/CSS/min"
+},
+{
+  "id": "css-max",
+  "matchCategories": [
+    "CSS"
+  ],
+  "matchTitles": [
+    "max()"
+  ],
+  "heading": "CSS: max()",
+  "category": "CSS",
+  "majorVersion": "CSS",
+  "status": "Authored reference draft",
+  "summary": "Chooses the largest compatible calculation.",
+  "syntax": "padding: max(1rem, 2vw);",
+  "lang": "css",
+  "parameters": "Comma-separated compatible calculations.",
+  "returns": "Computed CSS numeric value.",
+  "minimalExample": "width: max(10rem, 20vw);",
+  "productionExample": ".page { padding-inline: max(1rem, env(safe-area-inset-left)); }",
+  "commonMistakes": [
+    "Using max to enforce an oversized minimum on narrow screens."
+  ],
+  "securityPerformanceNotes": [
+    "Test narrow containers and safe-area behavior."
+  ],
+  "relatedLessonIds": [
+    "02.02.03"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/CSS/max"
+},
+{
+  "id": "css-font-display",
+  "matchCategories": [
+    "CSS"
+  ],
+  "matchTitles": [
+    "font-display"
+  ],
+  "heading": "CSS: font-display",
+  "category": "CSS",
+  "majorVersion": "CSS",
+  "status": "Authored reference draft",
+  "summary": "Controls font face rendering while the font downloads.",
+  "syntax": "@font-face { font-display: swap; }",
+  "lang": "css",
+  "parameters": "auto, block, swap, fallback or optional.",
+  "returns": "Font loading/rendering strategy.",
+  "minimalExample": "@font-face { font-family: UI; src: url(ui.woff2); font-display: swap; }",
+  "productionExample": "@font-face { font-family: UI; src: url(/ui.woff2) format('woff2'); font-display: optional; }\nbody { font-family: UI, system-ui, sans-serif; }",
+  "commonMistakes": [
+    "Assuming swap eliminates layout shift."
+  ],
+  "securityPerformanceNotes": [
+    "Choose compatible fallback metrics and preload only necessary faces."
+  ],
+  "relatedLessonIds": [
+    "02.04.04"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display"
+},
+{
+  "id": "css-contain",
+  "matchCategories": [
+    "CSS"
+  ],
+  "matchTitles": [
+    "contain"
+  ],
+  "heading": "CSS: contain",
+  "category": "CSS",
+  "majorVersion": "CSS",
+  "status": "Authored reference draft",
+  "summary": "Limits propagation of layout, paint, size or style effects.",
+  "syntax": "contain: layout paint;",
+  "lang": "css",
+  "parameters": "Containment keywords, strict or content.",
+  "returns": "Changes containment boundaries and potentially containing blocks.",
+  "minimalExample": ".card { contain: layout paint; }",
+  "productionExample": ".preview { contain: layout paint; overflow: clip; }",
+  "commonMistakes": [
+    "Using size containment without a meaningful size or clipping intended popovers."
+  ],
+  "securityPerformanceNotes": [
+    "Profile actual performance and test overlays and intrinsic layout."
+  ],
+  "relatedLessonIds": [
+    "02.04.01"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/CSS/contain"
+},
+{
+  "id": "css-content-visibility",
+  "matchCategories": [
+    "CSS"
+  ],
+  "matchTitles": [
+    "content-visibility"
+  ],
+  "heading": "CSS: content-visibility",
+  "category": "CSS",
+  "majorVersion": "CSS",
+  "status": "Authored reference draft",
+  "summary": "Allows the browser to skip rendering work for off-screen content.",
+  "syntax": "content-visibility: auto;",
+  "lang": "css",
+  "parameters": "visible, auto or hidden.",
+  "returns": "Rendering work may be deferred; auto does not mean display:none.",
+  "minimalExample": ".chapter { content-visibility: auto; }",
+  "productionExample": ".chapter { content-visibility: auto; contain-intrinsic-size: auto 600px; }",
+  "commonMistakes": [
+    "Applying hidden to content intended to remain discoverable."
+  ],
+  "securityPerformanceNotes": [
+    "Test focus, find-in-page and scroll stability; measure before retaining optimization."
+  ],
+  "relatedLessonIds": [
+    "02.04.01"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/CSS/content-visibility"
+},
+{
+  "id": "css-animation",
+  "matchCategories": [
+    "CSS"
+  ],
+  "matchTitles": [
+    "animation"
+  ],
+  "heading": "CSS: animation",
+  "category": "CSS",
+  "majorVersion": "CSS",
+  "status": "Authored reference draft",
+  "summary": "Runs named keyframes with timing and iteration settings.",
+  "syntax": "animation: fade-in 200ms ease-out;",
+  "lang": "css",
+  "parameters": "Name, duration, timing, delay, iterations, direction and fill mode.",
+  "returns": "Animation of supported properties.",
+  "minimalExample": "@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }\n.item { animation: fade-in 200ms; }",
+  "productionExample": "@keyframes reveal { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }\n.card { animation: reveal 180ms ease-out; }\n@media (prefers-reduced-motion: reduce) { .card { animation: none; } }",
+  "commonMistakes": [
+    "Animating layout-heavy properties continuously or ignoring reduced motion."
+  ],
+  "securityPerformanceNotes": [
+    "Prefer inexpensive properties where suitable and keep content usable without motion."
+  ],
+  "relatedLessonIds": [
+    "02.03.04"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/CSS/animation"
+},
+{
+  "id": "javascript-promise",
+  "matchCategories": [
+    "JavaScript"
+  ],
+  "matchTitles": [
+    "Promise"
+  ],
+  "heading": "JavaScript: Promise",
+  "category": "JavaScript",
+  "majorVersion": "ECMAScript / Web APIs",
+  "status": "Authored reference draft",
+  "summary": "Represents eventual fulfillment or rejection of an asynchronous operation.",
+  "syntax": "new Promise((resolve, reject) => …)",
+  "lang": "js",
+  "parameters": "Executor invoked synchronously; resolve/reject settle the promise.",
+  "returns": "Promise with then/catch/finally; handlers run asynchronously.",
+  "minimalExample": "const p = Promise.resolve(42);",
+  "productionExample": "function delay(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }\nawait delay(100);",
+  "commonMistakes": [
+    "Using an async executor or leaving a rejection unhandled."
+  ],
+  "securityPerformanceNotes": [
+    "Use native promise-returning APIs directly; cancellation needs a separate mechanism."
+  ],
+  "relatedLessonIds": [
+    "03.03.03"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise"
+},
+{
+  "id": "javascript-object-entries",
+  "matchCategories": [
+    "JavaScript"
+  ],
+  "matchTitles": [
+    "Object.entries"
+  ],
+  "heading": "JavaScript: Object.entries",
+  "category": "JavaScript",
+  "majorVersion": "ECMAScript / Web APIs",
+  "status": "Authored reference draft",
+  "summary": "Returns own enumerable string-keyed property pairs.",
+  "syntax": "Object.entries(object)",
+  "lang": "js",
+  "parameters": "Object or coercible value; null/undefined throw.",
+  "returns": "Array of [key,value] pairs.",
+  "minimalExample": "Object.entries({a:1,b:2});",
+  "productionExample": "const allowed = new Set(['theme','density']);\nconst prefs = Object.fromEntries(Object.entries(input).filter(([key]) => allowed.has(key)));",
+  "commonMistakes": [
+    "Assuming inherited or symbol keys are included."
+  ],
+  "securityPerformanceNotes": [
+    "Validate allowed values too; filtering keys alone is not complete input validation."
+  ],
+  "relatedLessonIds": [
+    "03.01.06"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/entries"
+},
+{
+  "id": "javascript-try-catch",
+  "matchCategories": [
+    "JavaScript"
+  ],
+  "matchTitles": [
+    "try/catch"
+  ],
+  "heading": "JavaScript: try/catch",
+  "category": "JavaScript",
+  "majorVersion": "ECMAScript / Web APIs",
+  "status": "Authored reference draft",
+  "summary": "Handles exceptions from a protected block and optionally performs cleanup.",
+  "syntax": "try { … } catch (error) { … } finally { … }",
+  "lang": "js",
+  "parameters": "Blocks and optional catch binding.",
+  "returns": "Control flow continues or propagates according to block behavior.",
+  "minimalExample": "try { JSON.parse('{'); } catch { console.log('Invalid JSON'); }",
+  "productionExample": "try { await work(); } catch (error) { reportSafeError(error); throw error; } finally { releaseResource(); }",
+  "commonMistakes": [
+    "Returning from finally and overriding an earlier result or exception."
+  ],
+  "securityPerformanceNotes": [
+    "Handle expected failures narrowly; avoid logging sensitive input."
+  ],
+  "relatedLessonIds": [
+    "03.02.06"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/try...catch"
+},
+{
+  "id": "javascript-throw",
+  "matchCategories": [
+    "JavaScript"
+  ],
+  "matchTitles": [
+    "throw"
+  ],
+  "heading": "JavaScript: throw",
+  "category": "JavaScript",
+  "majorVersion": "ECMAScript / Web APIs",
+  "status": "Authored reference draft",
+  "summary": "Raises an exception and transfers control to a matching handler.",
+  "syntax": "throw new Error('message');",
+  "lang": "js",
+  "parameters": "Any expression; Error objects are recommended.",
+  "returns": "Does not return normally.",
+  "minimalExample": "throw new Error('Invalid input');",
+  "productionExample": "if (!Number.isInteger(page) || page < 1) throw new RangeError('Invalid page');",
+  "commonMistakes": [
+    "Throwing raw user data or relying on strings for error identity."
+  ],
+  "securityPerformanceNotes": [
+    "Map internal exceptions to safe external messages at the boundary."
+  ],
+  "relatedLessonIds": [
+    "03.02.06"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/throw"
+},
+{
+  "id": "javascript-import",
+  "matchCategories": [
+    "JavaScript"
+  ],
+  "matchTitles": [
+    "import"
+  ],
+  "heading": "JavaScript: import",
+  "category": "JavaScript",
+  "majorVersion": "ECMAScript / Web APIs",
+  "status": "Authored reference draft",
+  "summary": "Declares a static module dependency and imported bindings.",
+  "syntax": "import { name } from './module.js';",
+  "lang": "js",
+  "parameters": "Module specifier and named/default/namespace bindings.",
+  "returns": "Live read-only imported bindings in an ES module.",
+  "minimalExample": "import { parse } from './parse.js';",
+  "productionExample": "import { validateTask } from './domain/task.js';\nimport { saveTask } from './adapters/repository.js';",
+  "commonMistakes": [
+    "Confusing static import with dynamic import() or using wrong runtime extensions."
+  ],
+  "securityPerformanceNotes": [
+    "Separate browser and server module graphs; avoid importing secrets into client bundles."
+  ],
+  "relatedLessonIds": [
+    "03.02.05"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import"
+},
+{
+  "id": "javascript-export",
+  "matchCategories": [
+    "JavaScript"
+  ],
+  "matchTitles": [
+    "export"
+  ],
+  "heading": "JavaScript: export",
+  "category": "JavaScript",
+  "majorVersion": "ECMAScript / Web APIs",
+  "status": "Authored reference draft",
+  "summary": "Exposes named or default module bindings to importers.",
+  "syntax": "export function name() {}",
+  "lang": "js",
+  "parameters": "Declarations, export lists or re-export specifiers.",
+  "returns": "Module exports; named exports are live bindings.",
+  "minimalExample": "export const version = 1;",
+  "productionExample": "export { parseTask } from './task.js';\nexport { createTaskService } from './service.js';",
+  "commonMistakes": [
+    "Exporting every internal helper and accidentally expanding public API."
+  ],
+  "securityPerformanceNotes": [
+    "Keep package boundaries small and avoid exporting secret configuration."
+  ],
+  "relatedLessonIds": [
+    "03.02.05"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/export"
+},
+{
+  "id": "javascript-eventtarget",
+  "matchCategories": [
+    "JavaScript"
+  ],
+  "matchTitles": [
+    "EventTarget"
+  ],
+  "heading": "JavaScript: EventTarget",
+  "category": "JavaScript",
+  "majorVersion": "ECMAScript / Web APIs",
+  "status": "Authored reference draft",
+  "summary": "Interface for registering listeners and dispatching events.",
+  "syntax": "new EventTarget()",
+  "lang": "js",
+  "parameters": "Event type, listener and dispatchable Event objects.",
+  "returns": "EventTarget with listener/dispatch methods.",
+  "minimalExample": "const target = new EventTarget();\ntarget.dispatchEvent(new Event('ready'));",
+  "productionExample": "const bus = new EventTarget();\nbus.addEventListener('task:changed', e => refresh(e.detail));\nbus.dispatchEvent(new CustomEvent('task:changed', {detail:{id:'a'}}));",
+  "commonMistakes": [
+    "Expecting dispatchEvent to perform asynchronous event delivery."
+  ],
+  "securityPerformanceNotes": [
+    "Do not treat arbitrary custom-event payloads as trusted authorization evidence."
+  ],
+  "relatedLessonIds": [
+    "03.04.01"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/API/EventTarget"
+},
+{
+  "id": "javascript-addeventlistener",
+  "matchCategories": [
+    "JavaScript"
+  ],
+  "matchTitles": [
+    "addEventListener"
+  ],
+  "heading": "JavaScript: addEventListener",
+  "category": "JavaScript",
+  "majorVersion": "ECMAScript / Web APIs",
+  "status": "Authored reference draft",
+  "summary": "Registers a callback for events on an EventTarget.",
+  "syntax": "target.addEventListener(type, listener, options)",
+  "lang": "js",
+  "parameters": "Event type, callback and options such as once, passive or signal.",
+  "returns": "Undefined; listener remains until removed or configured cleanup occurs.",
+  "minimalExample": "button.addEventListener('click', () => openPanel());",
+  "productionExample": "const controller = new AbortController();\nwindow.addEventListener('resize', onResize, {signal:controller.signal});\n// During cleanup:\ncontroller.abort();",
+  "commonMistakes": [
+    "Adding a new anonymous handler on every render without cleanup."
+  ],
+  "securityPerformanceNotes": [
+    "Use abort/remove cleanup; avoid blocking scroll with unnecessary non-passive handlers."
+  ],
+  "relatedLessonIds": [
+    "03.04.01"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener"
+},
+{
+  "id": "javascript-queuemicrotask",
+  "matchCategories": [
+    "JavaScript"
+  ],
+  "matchTitles": [
+    "queueMicrotask"
+  ],
+  "heading": "JavaScript: queueMicrotask",
+  "category": "JavaScript",
+  "majorVersion": "ECMAScript / Web APIs",
+  "status": "Authored reference draft",
+  "summary": "Queues a callback in the microtask queue.",
+  "syntax": "queueMicrotask(callback)",
+  "lang": "js",
+  "parameters": "Function invoked after current stack, before the next task when checkpoint runs.",
+  "returns": "Undefined; callback errors surface as exceptions.",
+  "minimalExample": "queueMicrotask(() => console.log('after stack'));",
+  "productionExample": "let pending = false;\nfunction scheduleFlush() { if (pending) return; pending = true; queueMicrotask(() => { pending = false; flushChanges(); }); }",
+  "commonMistakes": [
+    "Recursively enqueuing microtasks and starving rendering."
+  ],
+  "securityPerformanceNotes": [
+    "Bound work; use task scheduling when yielding to the browser is required."
+  ],
+  "relatedLessonIds": [
+    "03.03.02"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/API/Window/queueMicrotask"
+},
+{
+  "id": "javascript-structuredclone",
+  "matchCategories": [
+    "JavaScript"
+  ],
+  "matchTitles": [
+    "structuredClone"
+  ],
+  "heading": "JavaScript: structuredClone",
+  "category": "JavaScript",
+  "majorVersion": "ECMAScript / Web APIs",
+  "status": "Authored reference draft",
+  "summary": "Copies supported structured-cloneable values, optionally transferring ownership.",
+  "syntax": "structuredClone(value, { transfer })",
+  "lang": "js",
+  "parameters": "Cloneable value and optional transfer list.",
+  "returns": "Independent clone; unsupported values throw DataCloneError.",
+  "minimalExample": "const copy = structuredClone({items:[1,2]});",
+  "productionExample": "const snapshot = structuredClone({ tasks, filters });\n// Work on a detached data snapshot, not live DOM objects.",
+  "commonMistakes": [
+    "Expecting functions or DOM nodes to clone."
+  ],
+  "securityPerformanceNotes": [
+    "Large clones consume memory; transfer only buffers you no longer need."
+  ],
+  "relatedLessonIds": [
+    "03.02.07"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/API/Window/structuredClone"
+},
+{
+  "id": "javascript-abortsignal",
+  "matchCategories": [
+    "JavaScript"
+  ],
+  "matchTitles": [
+    "AbortSignal"
+  ],
+  "heading": "JavaScript: AbortSignal",
+  "category": "JavaScript",
+  "majorVersion": "ECMAScript / Web APIs",
+  "status": "Authored reference draft",
+  "summary": "Communicates cancellation to APIs that observe a signal.",
+  "syntax": "controller.signal",
+  "lang": "js",
+  "parameters": "Signal from AbortController or supported static constructors such as timeout.",
+  "returns": "AbortSignal with aborted, reason and abort events.",
+  "minimalExample": "const signal = AbortSignal.timeout(3000);",
+  "productionExample": "const signal = AbortSignal.any([userController.signal, AbortSignal.timeout(5000)]);\nconst res = await fetch('/api/tasks', {signal});\nif (!res.ok) throw new Error('Request failed');",
+  "commonMistakes": [
+    "Reusing a signal after it has aborted."
+  ],
+  "securityPerformanceNotes": [
+    "Check runtime support; aborting a client request does not reverse server-side mutations."
+  ],
+  "relatedLessonIds": [
+    "03.03.05"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal"
+},
+{
+  "id": "typescript-type",
+  "matchCategories": [
+    "TypeScript"
+  ],
+  "matchTitles": [
+    "type"
+  ],
+  "heading": "TypeScript: type",
+  "category": "TypeScript",
+  "majorVersion": "TypeScript",
+  "status": "Authored reference draft",
+  "summary": "Defines a named type alias for a type expression.",
+  "syntax": "type Name = Expression;",
+  "lang": "ts",
+  "parameters": "Type expression and optional type parameters.",
+  "returns": "Compile-time alias; erased at runtime.",
+  "minimalExample": "type ID = string;",
+  "productionExample": "type TaskResult = {ok:true; id:string} | {ok:false; reason:string};",
+  "commonMistakes": [
+    "Assuming a type alias constructs or validates values."
+  ],
+  "securityPerformanceNotes": [
+    "Use runtime validation at external boundaries."
+  ],
+  "relatedLessonIds": [
+    "04.01.04"
+  ],
+  "canonicalUrl": "https://www.typescriptlang.org/docs/handbook/2/everyday-types.html#type-aliases"
+},
+{
+  "id": "typescript-interface",
+  "matchCategories": [
+    "TypeScript"
+  ],
+  "matchTitles": [
+    "interface"
+  ],
+  "heading": "TypeScript: interface",
+  "category": "TypeScript",
+  "majorVersion": "TypeScript",
+  "status": "Authored reference draft",
+  "summary": "Describes an object shape and supports extension/declaration merging.",
+  "syntax": "interface Name { field: Type }",
+  "lang": "ts",
+  "parameters": "Property/method declarations and optional extends.",
+  "returns": "Compile-time structural object type.",
+  "minimalExample": "interface Task { id: string }",
+  "productionExample": "interface TaskRepository { find(id:string): Promise<Task | null>; }\ninterface Task { id:string; title:string; }",
+  "commonMistakes": [
+    "Assuming interfaces are nominal or exist at runtime."
+  ],
+  "securityPerformanceNotes": [
+    "Keep contracts narrow and validate data crossing process boundaries."
+  ],
+  "relatedLessonIds": [
+    "04.01.04"
+  ],
+  "canonicalUrl": "https://www.typescriptlang.org/docs/handbook/2/everyday-types.html#interfaces"
+},
+{
+  "id": "typescript-never",
+  "matchCategories": [
+    "TypeScript"
+  ],
+  "matchTitles": [
+    "never"
+  ],
+  "heading": "TypeScript: never",
+  "category": "TypeScript",
+  "majorVersion": "TypeScript",
+  "status": "Authored reference draft",
+  "summary": "Represents values that cannot occur in a valid type flow.",
+  "syntax": "const impossible: never = value;",
+  "lang": "ts",
+  "parameters": "Type position; often used in exhaustiveness checks.",
+  "returns": "Bottom type, assignable to other types.",
+  "minimalExample": "function fail(message:string): never { throw new Error(message); }",
+  "productionExample": "type State = 'open' | 'closed';\nfunction label(s:State):string { switch(s){case 'open':return 'Open';case 'closed':return 'Closed';default:{const unreachable:never=s;return unreachable;}} }",
+  "commonMistakes": [
+    "Forcing an assertion to never to silence missing cases."
+  ],
+  "securityPerformanceNotes": [
+    "Use exhaustive checks on validated discriminants; unknown runtime values still need rejection."
+  ],
+  "relatedLessonIds": [
+    "04.02.05"
+  ],
+  "canonicalUrl": "https://www.typescriptlang.org/docs/handbook/2/narrowing.html#the-never-type"
+},
+{
+  "id": "typescript-union",
+  "matchCategories": [
+    "TypeScript"
+  ],
+  "matchTitles": [
+    "union"
+  ],
+  "heading": "TypeScript: union",
+  "category": "TypeScript",
+  "majorVersion": "TypeScript",
+  "status": "Authored reference draft",
+  "summary": "Represents a value belonging to one or more alternative types.",
+  "syntax": "type Value = A | B;",
+  "lang": "ts",
+  "parameters": "Member types separated by |.",
+  "returns": "Union with operations limited to safely shared members until narrowing.",
+  "minimalExample": "type ID = string | number;",
+  "productionExample": "function normalizeId(id:string|number):string { return typeof id === 'number' ? String(id) : id.trim(); }",
+  "commonMistakes": [
+    "Accessing a member-specific property before narrowing."
+  ],
+  "securityPerformanceNotes": [
+    "Validate runtime inputs instead of trusting union annotations."
+  ],
+  "relatedLessonIds": [
+    "04.01.03"
+  ],
+  "canonicalUrl": "https://www.typescriptlang.org/docs/handbook/2/everyday-types.html#union-types"
+},
+{
+  "id": "typescript-intersection",
+  "matchCategories": [
+    "TypeScript"
+  ],
+  "matchTitles": [
+    "intersection"
+  ],
+  "heading": "TypeScript: intersection",
+  "category": "TypeScript",
+  "majorVersion": "TypeScript",
+  "status": "Authored reference draft",
+  "summary": "Combines requirements of multiple types.",
+  "syntax": "type Combined = A & B;",
+  "lang": "ts",
+  "parameters": "Types separated by &.",
+  "returns": "Type requiring compatibility with all constituents.",
+  "minimalExample": "type Entity = {id:string} & {createdAt:Date};",
+  "productionExample": "type AuditedTask = {id:string;title:string} & {createdAt:Date;updatedAt:Date};\nfunction timestamp(t:AuditedTask){return t.updatedAt.toISOString();}",
+  "commonMistakes": [
+    "Intersecting incompatible properties and assuming the result is usable."
+  ],
+  "securityPerformanceNotes": [
+    "Intersection types do not merge or validate runtime objects."
+  ],
+  "relatedLessonIds": [
+    "04.01.03"
+  ],
+  "canonicalUrl": "https://www.typescriptlang.org/docs/handbook/2/objects.html#intersection-types"
+},
+{
+  "id": "typescript-infer",
+  "matchCategories": [
+    "TypeScript"
+  ],
+  "matchTitles": [
+    "infer"
+  ],
+  "heading": "TypeScript: infer",
+  "category": "TypeScript",
+  "majorVersion": "TypeScript",
+  "status": "Authored reference draft",
+  "summary": "Introduces an inferred type variable inside a conditional type pattern.",
+  "syntax": "type Element<T> = T extends (infer U)[] ? U : never;",
+  "lang": "ts",
+  "parameters": "Conditional extends pattern and inferred variable.",
+  "returns": "Derived type selected by conditional inference.",
+  "minimalExample": "type Item<T> = T extends Array<infer U> ? U : never;",
+  "productionExample": "type ResponseBody<T> = T extends Promise<infer R> ? R : T;\ntype Body = ResponseBody<Promise<{id:string}>>;",
+  "commonMistakes": [
+    "Expecting infer to inspect runtime values."
+  ],
+  "securityPerformanceNotes": [
+    "Prefer built-in utility types where they express the same intent."
+  ],
+  "relatedLessonIds": [
+    "04.02.04"
+  ],
+  "canonicalUrl": "https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#inferring-within-conditional-types"
+},
+{
+  "id": "typescript-as-const",
+  "matchCategories": [
+    "TypeScript"
+  ],
+  "matchTitles": [
+    "as const"
+  ],
+  "heading": "TypeScript: as const",
+  "category": "TypeScript",
+  "majorVersion": "TypeScript",
+  "status": "Authored reference draft",
+  "summary": "Requests literal inference and readonly object/tuple properties for literal expressions.",
+  "syntax": "const value = {kind:'ready'} as const;",
+  "lang": "ts",
+  "parameters": "Literal expression.",
+  "returns": "Narrower compile-time type; does not freeze the runtime object.",
+  "minimalExample": "const roles = ['reader','editor'] as const;",
+  "productionExample": "const statuses = ['open','done'] as const;\ntype Status = typeof statuses[number];\nfunction isStatus(value:unknown):value is Status { return statuses.some(s=>s===value); }",
+  "commonMistakes": [
+    "Assuming readonly typing means deep runtime immutability."
+  ],
+  "securityPerformanceNotes": [
+    "Validate external values; use explicit runtime freezing if needed."
+  ],
+  "relatedLessonIds": [
+    "04.01.03"
+  ],
+  "canonicalUrl": "https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-4.html#const-assertions"
+},
+{
+  "id": "typescript-type-guards",
+  "matchCategories": [
+    "TypeScript"
+  ],
+  "matchTitles": [
+    "Type guards"
+  ],
+  "heading": "TypeScript: Type guards",
+  "category": "TypeScript",
+  "majorVersion": "TypeScript",
+  "status": "Authored reference draft",
+  "summary": "Narrow values using runtime checks or a user-defined type predicate.",
+  "syntax": "function isString(x:unknown): x is string { return typeof x === 'string'; }",
+  "lang": "ts",
+  "parameters": "Value to inspect and truthful predicate.",
+  "returns": "Boolean result that informs control-flow type analysis.",
+  "minimalExample": "if (typeof input === 'string') input.trim();",
+  "productionExample": "function isTask(x:unknown):x is {id:string;title:string} { return typeof x==='object' && x!==null && 'id' in x && typeof x.id==='string' && 'title' in x && typeof x.title==='string'; }",
+  "commonMistakes": [
+    "Declaring a predicate that returns true without checking required fields."
+  ],
+  "securityPerformanceNotes": [
+    "Validate nested data and semantic constraints, not just superficial shape."
+  ],
+  "relatedLessonIds": [
+    "04.01.06"
+  ],
+  "canonicalUrl": "https://www.typescriptlang.org/docs/handbook/2/narrowing.html"
+},
+{
+  "id": "typescript-tsconfig-strict",
+  "matchCategories": [
+    "TypeScript"
+  ],
+  "matchTitles": [
+    "tsconfig strict"
+  ],
+  "heading": "TypeScript: tsconfig strict",
+  "category": "TypeScript",
+  "majorVersion": "TypeScript",
+  "status": "Authored reference draft",
+  "summary": "Enables the TypeScript family of strict checking options.",
+  "syntax": "{\"compilerOptions\":{\"strict\":true}}",
+  "lang": "json",
+  "parameters": "Compiler configuration and optional individual flag overrides.",
+  "returns": "Compile-time diagnostics.",
+  "minimalExample": "{\"compilerOptions\":{\"strict\":true}}",
+  "productionExample": "{\"compilerOptions\":{\"strict\":true,\"noUncheckedIndexedAccess\":true,\"exactOptionalPropertyTypes\":true,\"noEmit\":true}}",
+  "commonMistakes": [
+    "Assuming strict enables every additional checking flag or validates runtime data."
+  ],
+  "securityPerformanceNotes": [
+    "Run a real typecheck in release gates and avoid blanket suppressions."
+  ],
+  "relatedLessonIds": [
+    "04.01.01"
+  ],
+  "canonicalUrl": "https://www.typescriptlang.org/docs/tsconfig/#strict"
+},
+{
+  "id": "typescript-nodenext",
+  "matchCategories": [
+    "TypeScript"
+  ],
+  "matchTitles": [
+    "NodeNext"
+  ],
+  "heading": "TypeScript: NodeNext",
+  "category": "TypeScript",
+  "majorVersion": "TypeScript",
+  "status": "Authored reference draft",
+  "summary": "Models Node.js ESM/CommonJS resolution and emit behavior.",
+  "syntax": "{\"compilerOptions\":{\"module\":\"NodeNext\",\"moduleResolution\":\"NodeNext\"}}",
+  "lang": "json",
+  "parameters": "Module settings, package type and file extensions influence behavior.",
+  "returns": "Compiler resolution and emit matching modeled Node semantics.",
+  "minimalExample": "{\"compilerOptions\":{\"module\":\"NodeNext\"}}",
+  "productionExample": "{\"compilerOptions\":{\"module\":\"NodeNext\",\"moduleResolution\":\"NodeNext\",\"strict\":true,\"outDir\":\"dist\"}}\n// In ESM source: import { task } from './task.js';",
+  "commonMistakes": [
+    "Using extensionless relative imports in native Node ESM without a supporting loader."
+  ],
+  "securityPerformanceNotes": [
+    "Test the emitted package under the intended Node version."
+  ],
+  "relatedLessonIds": [
+    "04.04.02"
+  ],
+  "canonicalUrl": "https://www.typescriptlang.org/docs/tsconfig/#module"
+},
+{
+  "id": "react-jsx",
+  "matchCategories": [
+    "React"
+  ],
+  "matchTitles": [
+    "JSX"
+  ],
+  "heading": "React: JSX",
+  "category": "React",
+  "majorVersion": "React 19",
+  "status": "Authored reference draft",
+  "summary": "Syntax extension for expressing React element trees.",
+  "syntax": "const element = <h1>Hello</h1>;",
+  "lang": "tsx",
+  "parameters": "Tags, props, children and JavaScript expressions in braces.",
+  "returns": "React element descriptions, not immediate DOM nodes.",
+  "minimalExample": "const title = <h1>Learn</h1>;",
+  "productionExample": "function Task({title}:{title:string}) { return <article><h2>{title}</h2><button type=\"button\">Open</button></article>; }",
+  "commonMistakes": [
+    "Treating JSX as raw HTML or inserting untrusted HTML."
+  ],
+  "securityPerformanceNotes": [
+    "React escapes text by default; avoid unsafe HTML injection."
+  ],
+  "relatedLessonIds": [
+    "06.01.01"
+  ],
+  "canonicalUrl": "https://react.dev/learn/writing-markup-with-jsx"
+},
+{
+  "id": "react-component",
+  "matchCategories": [
+    "React"
+  ],
+  "matchTitles": [
+    "Component"
+  ],
+  "heading": "React: Component",
+  "category": "React",
+  "majorVersion": "React 19",
+  "status": "Authored reference draft",
+  "summary": "A React component describes UI based on props and state.",
+  "syntax": "function Task() { return <p>Task</p>; }",
+  "lang": "tsx",
+  "parameters": "Props object; hooks follow React rules.",
+  "returns": "React node returned for rendering.",
+  "minimalExample": "function Greeting(){return <h1>Hello</h1>;}",
+  "productionExample": "function TaskCard({title,done}:{title:string;done:boolean}){return <article><h2>{title}</h2><p>{done?'Completed':'Open'}</p></article>;}",
+  "commonMistakes": [
+    "Calling a component directly as a normal function or mutating during render."
+  ],
+  "securityPerformanceNotes": [
+    "Keep render pure; isolate side effects and state ownership."
+  ],
+  "relatedLessonIds": [
+    "06.01.02"
+  ],
+  "canonicalUrl": "https://react.dev/learn/your-first-component"
+},
+{
+  "id": "react-props",
+  "matchCategories": [
+    "React"
+  ],
+  "matchTitles": [
+    "props"
+  ],
+  "heading": "React: props",
+  "category": "React",
+  "majorVersion": "React 19",
+  "status": "Authored reference draft",
+  "summary": "Read-only inputs passed from a parent to a component.",
+  "syntax": "<Task title=\"Read\" />",
+  "lang": "tsx",
+  "parameters": "Named props; component reads the props object.",
+  "returns": "Component receives a snapshot of inputs.",
+  "minimalExample": "function Title({text}:{text:string}){return <h1>{text}</h1>;}",
+  "productionExample": "function TaskRow({task,onOpen}:{task:{id:string;title:string};onOpen:(id:string)=>void}){return <button onClick={()=>onOpen(task.id)}>{task.title}</button>;}",
+  "commonMistakes": [
+    "Mutating a prop or copying it to state without a reason."
+  ],
+  "securityPerformanceNotes": [
+    "Pass only needed data; do not expose secrets to client component props."
+  ],
+  "relatedLessonIds": [
+    "06.01.02"
+  ],
+  "canonicalUrl": "https://react.dev/learn/passing-props-to-a-component"
+},
+{
+  "id": "react-children",
+  "matchCategories": [
+    "React"
+  ],
+  "matchTitles": [
+    "children"
+  ],
+  "heading": "React: children",
+  "category": "React",
+  "majorVersion": "React 19",
+  "status": "Authored reference draft",
+  "summary": "The children prop carries nested JSX/content supplied by the parent.",
+  "syntax": "<Panel><Content /></Panel>",
+  "lang": "tsx",
+  "parameters": "ReactNode children; may be empty or multiple nodes.",
+  "returns": "Component receives nested content as props.children.",
+  "minimalExample": "function Box({children}:{children:React.ReactNode}){return <div>{children}</div>;}",
+  "productionExample": "function Section({title,children}:{title:string;children:React.ReactNode}){return <section><h2>{title}</h2>{children}</section>;}",
+  "commonMistakes": [
+    "Assuming children is always one element or a normal array."
+  ],
+  "securityPerformanceNotes": [
+    "Use composition without forcing unnecessary wrappers or cloning arbitrary children."
+  ],
+  "relatedLessonIds": [
+    "06.01.03"
+  ],
+  "canonicalUrl": "https://react.dev/learn/passing-props-to-a-component#passing-jsx-as-children"
+},
+{
+  "id": "react-uselayouteffect",
+  "matchCategories": [
+    "React"
+  ],
+  "matchTitles": [
+    "useLayoutEffect"
+  ],
+  "heading": "React: useLayoutEffect",
+  "category": "React",
+  "majorVersion": "React 19",
+  "status": "Authored reference draft",
+  "summary": "Runs layout-related effects before browser repaint after DOM updates.",
+  "syntax": "useLayoutEffect(setup, deps)",
+  "lang": "tsx",
+  "parameters": "Setup, optional cleanup and dependency list.",
+  "returns": "Undefined; setup/cleanup follow effect lifecycle.",
+  "minimalExample": "useLayoutEffect(()=>{setWidth(ref.current?.offsetWidth??0);},[]);",
+  "productionExample": "useLayoutEffect(()=>{const node=ref.current;if(!node)return;const update=()=>setWidth(node.getBoundingClientRect().width);update();const observer=new ResizeObserver(update);observer.observe(node);return()=>observer.disconnect();},[]);",
+  "commonMistakes": [
+    "Using it for routine data fetching or omitting cleanup."
+  ],
+  "securityPerformanceNotes": [
+    "Prefer useEffect unless pre-paint measurement is necessary; server has no layout."
+  ],
+  "relatedLessonIds": [
+    "06.03.06"
+  ],
+  "canonicalUrl": "https://react.dev/reference/react/useLayoutEffect"
+},
+{
+  "id": "react-error-boundaries",
+  "matchCategories": [
+    "React"
+  ],
+  "matchTitles": [
+    "Error boundaries"
+  ],
+  "heading": "React: Error boundaries",
+  "category": "React",
+  "majorVersion": "React 19",
+  "status": "Authored reference draft",
+  "summary": "A React error boundary catches rendering failures in its descendant tree.",
+  "syntax": "class Boundary extends React.Component { static getDerivedStateFromError() { … } }",
+  "lang": "tsx",
+  "parameters": "Child tree, fallback state and optional logging lifecycle.",
+  "returns": "Fallback UI after a caught descendant render error.",
+  "minimalExample": "class Boundary extends React.Component { state={failed:false};static getDerivedStateFromError(){return {failed:true};}render(){return this.state.failed?<p>Unavailable</p>:this.props.children;} }",
+  "productionExample": "class Boundary extends React.Component<{children:React.ReactNode},{failed:boolean}>{state={failed:false};static getDerivedStateFromError(){return {failed:true};}componentDidCatch(error:Error){reportSafeError(error);}render(){return this.state.failed?<p role=\"alert\">This panel is unavailable.</p>:this.props.children;}}",
+  "commonMistakes": [
+    "Expecting boundaries to catch all event-handler or asynchronous failures."
+  ],
+  "securityPerformanceNotes": [
+    "Design meaningful recovery and sanitize diagnostics; do not expose stack traces to users."
+  ],
+  "relatedLessonIds": [
+    "06.04.07"
+  ],
+  "canonicalUrl": "https://react.dev/reference/react/Component#catching-rendering-errors-with-an-error-boundary"
+},
+{
+  "id": "react-context",
+  "matchCategories": [
+    "React"
+  ],
+  "matchTitles": [
+    "Context"
+  ],
+  "heading": "React: Context",
+  "category": "React",
+  "majorVersion": "React 19",
+  "status": "Authored reference draft",
+  "summary": "Shares a value with descendants without threading props through every intermediate component.",
+  "syntax": "const Theme = createContext(defaultValue);",
+  "lang": "tsx",
+  "parameters": "Default value; provider supplies value; consumers call useContext.",
+  "returns": "Context object and closest-provider value.",
+  "minimalExample": "const Theme=createContext('light');",
+  "productionExample": "const Theme=createContext<'light'|'dark'>('light');\nfunction App(){return <Theme value=\"dark\"><Toolbar/></Theme>;}\nfunction Toolbar(){return <span>{useContext(Theme)}</span>;}",
+  "commonMistakes": [
+    "Using context as server authorization or creating provider objects unnecessarily."
+  ],
+  "securityPerformanceNotes": [
+    "Split unrelated frequently changing contexts and avoid sensitive client values."
+  ],
+  "relatedLessonIds": [
+    "06.04.01"
+  ],
+  "canonicalUrl": "https://react.dev/reference/react/createContext"
+},
+{
+  "id": "react-custom-hooks",
+  "matchCategories": [
+    "React"
+  ],
+  "matchTitles": [
+    "Custom hooks"
+  ],
+  "heading": "React: Custom hooks",
+  "category": "React",
+  "majorVersion": "React 19",
+  "status": "Authored reference draft",
+  "summary": "A custom Hook composes reusable stateful logic using React Hooks.",
+  "syntax": "function useOnline() { … }",
+  "lang": "tsx",
+  "parameters": "Arguments and return values defined by the hook.",
+  "returns": "Reusable logic; each call has its own hook state unless external store is shared.",
+  "minimalExample": "function useFlag(){const [flag,setFlag]=useState(false);return [flag,setFlag] as const;}",
+  "productionExample": "function useDocumentTitle(title:string){useEffect(()=>{const previous=document.title;document.title=title;return()=>{document.title=previous;};},[title]);}",
+  "commonMistakes": [
+    "Calling hooks conditionally or assuming state is shared between hook calls."
+  ],
+  "securityPerformanceNotes": [
+    "Design stable contracts and clean up subscriptions/resources."
+  ],
+  "relatedLessonIds": [
+    "06.04.02"
+  ],
+  "canonicalUrl": "https://react.dev/learn/reusing-logic-with-custom-hooks"
+},
+{
+  "id": "react-react-memo",
+  "matchCategories": [
+    "React"
+  ],
+  "matchTitles": [
+    "React.memo"
+  ],
+  "heading": "React: React.memo",
+  "category": "React",
+  "majorVersion": "React 19",
+  "status": "Authored reference draft",
+  "summary": "Memoizes a component to potentially skip rerendering when props are unchanged.",
+  "syntax": "const MemoTask = memo(Task);",
+  "lang": "tsx",
+  "parameters": "Component and optional equality comparator.",
+  "returns": "Memoized component; state/context updates can still rerender it.",
+  "minimalExample": "const Row = memo(function Row({title}:{title:string}){return <li>{title}</li>;});",
+  "productionExample": "const TaskRow=memo(function TaskRow({id,title,onOpen}:{id:string;title:string;onOpen:(id:string)=>void}){return <button onClick={()=>onOpen(id)}>{title}</button>;});",
+  "commonMistakes": [
+    "Using custom equality that ignores function props or assuming memo guarantees no rerender."
+  ],
+  "securityPerformanceNotes": [
+    "Profile real bottlenecks; do not depend on memo for correctness."
+  ],
+  "relatedLessonIds": [
+    "06.05.05"
+  ],
+  "canonicalUrl": "https://react.dev/reference/react/memo"
 }
 ];
 

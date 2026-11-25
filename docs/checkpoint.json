@@ -10,15 +10,15 @@
   },
   "development": {
     "branch": "feature/f11-3-reading-format",
-    "state": "f15-backend-production-reference-expansion-draft",
-    "note": "F15 added 63 source-validated backend/production reference drafts (188/303 total), 212 explicit edges across 138 topics; three new extracted-data test bodies passed in connector V8, six exact-source Node22 quality tests passed. Full locked build/browser pending."
+    "state": "f16-foundations-complete-backend-pending",
+    "note": "F16 part A: 57 remaining foundational reference drafts added; source validation passed. Full checkout pending."
   },
   "snapshot": {
     "tracks": 28,
     "modules": 111,
     "catalogTopics": 889,
     "indexedReferences": 303,
-    "authoredReferenceDrafts": 188,
+    "authoredReferenceDrafts": 245,
     "authoredInteractiveModels": 4,
     "authoredMdxLessons": 337,
     "publishedLessons": 338,
@@ -74,5 +74,5 @@
     "exceptionExpires": "2026-12-02"
   },
   "nextMilestone": "Close remaining encyclopedia gaps; qualify complete checkout and real runtime before release.",
-  "status": "f15-reference-expansion-full-build-pending"
+  "status": "f16-reference-expansion-in-progress"
 }
