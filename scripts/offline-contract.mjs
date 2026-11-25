@@ -12,6 +12,7 @@ const REQUIRED = Object.freeze([
  'test:p5-bundle',
  'test:p6-quality-source',
  'test:p6-operations-source',
+ 'test:p6-runtime',
  'test:p7-source',
  'test:late-phase',
  'test:p8-learning',

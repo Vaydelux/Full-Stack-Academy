@@ -48,6 +48,7 @@ const steps = [
   'test:curriculum-readiness',
   'test:p6-quality-source',
   'test:p6-operations-source',
+  'test:p6-runtime',
   'test:p7-source',
   'test:late-phase',
   'test:p8-learning',

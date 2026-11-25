@@ -60,3 +60,6 @@ The instructor must demonstrate an authorized user reading their own notificatio
 - [Supabase — Presence](https://supabase.com/docs/guides/realtime/presence)
 - [Yjs — Shared types](https://docs.yjs.dev/getting-started/working-with-shared-types)
 - [Yjs — Awareness](https://docs.yjs.dev/getting-started/adding-awareness)
+
+## Operational runtime follow-on
+See `examples/p6-runtime/README.md` for real local process/HTTP/SSE/SQLite and telemetry tests, measured loopback load, and opt-in WebSocket/Docker qualification source. Existing teaching models remain separate; no lesson is published by these tests.

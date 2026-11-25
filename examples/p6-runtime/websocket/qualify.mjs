@@ -1,0 +1,11 @@
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {spawnSync} from 'node:child_process';
+import {fileURLToPath} from 'node:url';
+assert.equal(process.versions.node.split('.')[0],'24','Node 24 required');
+const read=p=>JSON.parse(readFileSync(new URL(p,import.meta.url),'utf8')),pkg=read('package.json'),lock=read('package-lock.json');
+assert.ok(lock.lockfileVersion>=3&&lock.packages?.['']);assert.equal(lock.packages['node_modules/ws']?.version,pkg.dependencies.ws);assert.equal(read('node_modules/ws/package.json').version,pkg.dependencies.ws);
+const result=spawnSync(process.execPath,['--test','--test-reporter=tap','acceptance.test.mjs'],{cwd:fileURLToPath(new URL('.',import.meta.url)),encoding:'utf8',timeout:30000,maxBuffer:1024*1024});
+assert.ok(!result.error&&!result.signal&&result.status===0,'WebSocket qualification failed');
+for(const [key,value] of [['tests',1],['pass',1],['fail',0],['cancelled',0],['skipped',0],['todo',0]])assert.equal(result.stdout.match(new RegExp('^# '+key+' '+value+'\\r?$','gm'))?.length,1,'Missing TAP evidence '+key);
+console.log('Real WebSocket transport passed; publication NOT approved.');

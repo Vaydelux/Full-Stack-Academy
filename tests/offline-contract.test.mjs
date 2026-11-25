@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {auditOfflineMatrix} from '../scripts/offline-contract.mjs';
-const phase=['test:release-gate-coverage','test:forms-query-resilience','test:curriculum-readiness','test:publication-phases','test:p4-source','test:p5-bundle','test:p6-quality-source','test:p6-operations-source','test:p7-source','test:late-phase','test:p8-learning','test:p8-reference','test:p8-ui','lint','typecheck','test','build'];
+const phase=['test:release-gate-coverage','test:forms-query-resilience','test:curriculum-readiness','test:publication-phases','test:p4-source','test:p5-bundle','test:p6-quality-source','test:p6-operations-source','test:p6-runtime','test:p7-source','test:late-phase','test:p8-learning','test:p8-reference','test:p8-ui','lint','typecheck','test','build'];
 const p5=['test:p5-security','test:p5-postgresql-source','test:p5-rls-source','test:p5-curriculum-source','test:p5-httpdb-source','test:p5-container-source','test:p5-evidence-source','test:p5-cache-jobs','test:p5-distributed-source','test:p5-redis-source','test:p5-realtime-labs','test:p5-realtime-source','test:p5-integrations-labs','test:p5-integrations-source','test:p5-integrations-http','test:p5-postgres-search-source','test:p5-webhook-integrity','test:p5-durable-inbox','test:p5-durable-http','test:p5-multiprocess-inbox','test:p5-postgres-inbox-source'];
 const scripts=Object.fromEntries([...phase,...p5].map(name=>[name,'node --test source.test.mjs']));
 scripts['test:p5-bundle']=p5.map(name=>'npm run '+name).join(' && ');
@@ -37,3 +37,5 @@ for(const step of ['test:p8-learning','test:p8-reference','test:p8-ui'])test('mi
 test('missing late-phase qualification plan blocks offline gate',()=>expect(run({offlineSource:source(phase.filter(x=>x!=='test:late-phase'))}),'missing-required-release-step:test:late-phase'));
 
 test('missing real distributed service source checks blocks offline verification',()=>expect(run({scripts:{...scripts,'test:p5-bundle':scripts['test:p5-bundle'].replace(' && npm run test:p5-distributed-source','')}}),'missing-p5-substep:npm run test:p5-distributed-source'));
+
+test('missing real P6 runtime tests blocks offline gate',()=>expect(run({offlineSource:source(phase.filter(x=>x!=='test:p6-runtime'))}),'missing-required-release-step:test:p6-runtime'));

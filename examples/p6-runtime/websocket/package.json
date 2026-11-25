@@ -1,0 +1,14 @@
+{
+  "name": "academy-websocket-runtime",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24.11.1 <25"
+  },
+  "dependencies": {
+    "ws": "8.23.0"
+  },
+  "scripts": {
+    "qualify": "node qualify.mjs"
+  }
+}

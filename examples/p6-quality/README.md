@@ -20,3 +20,6 @@ These deliberately small examples are **teaching models**, not validators for ar
 Every manuscript specifies an independent scenario, concept, guided task, positive and negative acceptance, reference, and qualification boundary. Real tools must be run only against explicitly authorized disposable environments. No Actions or Vercel changes are required.
 
 See `docs/ACADEMY_P6_TESTING_DELIVERY_CHECKPOINT_20261124.md`.
+
+## Operational runtime follow-on
+See `examples/p6-runtime/README.md` for real local process/HTTP/SSE/SQLite and telemetry tests, measured loopback load, and opt-in WebSocket/Docker qualification source. Existing teaching models remain separate; no lesson is published by these tests.

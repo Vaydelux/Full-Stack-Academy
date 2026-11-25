@@ -1,0 +1,6 @@
+*
+!Dockerfile
+!serve.mjs
+!service.mjs
+!resilience.mjs
+!telemetry.mjs

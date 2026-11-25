@@ -18,3 +18,6 @@ Run `node --test examples/p6-operations/labs.test.mjs` (30 cases) and `node --te
 All inputs are synthetic; no production credentials, live services, deployment or paid resources are required for these models. For each manuscript, perform the guided real-tool experiment in an authorized disposable environment before claiming external acceptance. In particular never feed real private data to log/profile fixtures, assume supplied strings are safe merely because a log field was allowed, or equate an in-memory idempotency map with a durable inbox.
 
 See `docs/ACADEMY_P6_OPERATIONS_ARCHITECTURE_CHECKPOINT_20261124.md`.
+
+## Operational runtime follow-on
+See `examples/p6-runtime/README.md` for real local process/HTTP/SSE/SQLite and telemetry tests, measured loopback load, and opt-in WebSocket/Docker qualification source. Existing teaching models remain separate; no lesson is published by these tests.
