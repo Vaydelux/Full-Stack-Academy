@@ -78,7 +78,21 @@ In a multi-request system, repeat the test with two independent users and at lea
 
 <Misconception claim="A task title is concatenated into a raw SQL query, allowing injection." correction="Domain services should use an injectable repository contract instead of building SQL strings." />
 
-<KnowledgeCheck question="Which design is safest for repository pattern?" choices={["Make the controller hold every stateful dependency permanently.","Keep business rules in an injectable service and verify the boundary with actual runtime behavior.","Expose persistent entities directly because TypeScript hides private fields.","Treat a mock array as proof of database transactions."]} correctIndex={1} explanation="Domain services should use an injectable repository contract instead of building SQL strings." misconception="A task title is concatenated into a raw SQL query, allowing injection." lessonId="11.03.02" />
+<KnowledgeCheck question="A user title contains an apostrophe. How should a repository safely supply it to PostgreSQL?" choices={["Remove all punctuation from legitimate titles.","Put the title in a bound parameter array.","Concatenate it into SQL after trimming.","Use the title as an SQL column name."]} correctIndex={1} explanation="Bound values remain data instead of becoming SQL syntax." misconception="A task title is concatenated into a raw SQL query, allowing injection." lessonId="11.03.02" />
+
+## Applied engineering walkthrough
+
+A repository is a boundary around persistence. The service supplies domain inputs; the adapter supplies SQL and bound values. In this example the title occupies a value placeholder, not part of the query text. Parameterization does not authorize access, and it cannot bind SQL identifiers such as a column name. Production queries also need explicit tenant predicates and a projection of required columns; SELECT * is only illustrative here.
+
+### Diagnose the concrete failure
+
+Use a fake query client that records the SQL string and parameter array. Compare a normal title and a title containing an apostrophe. Both must use identical SQL text and distinct parameter values. The intentionally broken starter changes SQL text instead. A recording fake proves the binding contract only, not actual PostgreSQL execution or tenant isolation.
+
+### Independent exercise and evidence
+
+Design a repository method to list titles within an authorized workspace. Add a tenant predicate, an explicit selected-column list and a bounded limit. Record the resulting SQL and argument array for two distinct workspaces. Later run the same contract against a disposable PostgreSQL schema.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Pure contract checks, framework wiring and real database qualification are separate evidence. Keep the existing starter and solution unchanged; do not award course credit from source review alone.
 
 ## Bug Hunt: reproduce, diagnose and repair
 
