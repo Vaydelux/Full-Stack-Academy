@@ -9,9 +9,9 @@
     "productionUrl": "https://fullstack-academy-ecru.vercel.app/"
   },
   "development": {
-    "branch": "feat/p8-publication-evidence",
-    "state": "p10-editorial-complete-curriculum-frozen-runtime-qualification-pending",
-    "note": "P10.10: all 40 capstone manuscripts expanded; 40/40 precommit source checks and committed patch inspections passed. Source inventory 889 unique canonical topics, 338 published, 551 unpublished, 552 draft files including overlap 15.02.04. Editorial program 551/551 unique unpublished topics expanded by cumulative milestone records. Scope guard and 12 isolated Node22 regression tests added; whole-checkout gate not executed. No release approval."
+    "branch": "main",
+    "state": "f1-partial-node24-source-tests-passed-environment-blocked",
+    "note": "PR #72 merged at 08a53a2c9a0b6c6b0a526695d7c998a49671b8a0. Node24.11.1 bundled with Playwright located and executed: 33/33 isolated tests passed against six exact merged source/test blobs (12 scope, 11 staged inventory, 10 P1 navigation classifier); 23/23 scope and inventory tests also passed Node22. Direct GitHub/npm registry DNS unavailable, Chromium loopback blocked by administrator, no PostgreSQL/Docker; full build and P1 browser qualification not run. 338/889 published unchanged; editorial scope frozen."
   },
   "snapshot": {
     "tracks": 28,
@@ -73,6 +73,6 @@
     "devHighFindings": 14,
     "exceptionExpires": "2026-12-02"
   },
-  "nextMilestone": "F1/P9: clean Node24.9+ checkout, genuine locks, P1 coordinator --plan-p1 then --run-p1, human review and atomic 09.02/09.03 promotions; follow P2–P7 module qualification and publication. No new curriculum scope.",
-  "status": "curriculum-editorial-frozen-runtime-and-publication-blocked"
+  "nextMilestone": "F1 continuation: approved clean Node24.9+ checkout with npm registry access and Playwright browser permitted on loopback. Run P1 coordinator --plan-p1 then --run-p1, complete named manual accessibility reviews, and qualify/promote 09.02 then 09.03. Generate genuine Nest lock independently before full-profile qualification.",
+  "status": "editorial-merged-f1-partial-runtime-qualification-blocked"
 }
