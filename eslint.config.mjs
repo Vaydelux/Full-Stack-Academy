@@ -18,6 +18,8 @@ const eslintConfig = [
       "drafts/nestjs/**",
       "labs/nestjs-*/**",
       "examples/nestjs-vertical/**",
+      "examples/p4-runtime/prisma/generated/**",
+      "examples/p4-runtime/prisma/node_modules/**",
       "prototype/**",
     ],
   },

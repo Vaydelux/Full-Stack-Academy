@@ -44,6 +44,7 @@
     "examples/forms-query-vertical/.ssr-qualification-*",
     "drafts/nestjs",
     "examples/nestjs-vertical",
+    "examples/p4-runtime/prisma",
     "labs/nestjs-*/**/*"
   ]
 }

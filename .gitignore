@@ -45,3 +45,6 @@ next-env.d.ts
 /examples/nestjs-vertical/dist/
 
 /examples/nestjs-vertical/dist.lab-lock/
+
+# Prisma teaching workspace generated client
+/examples/p4-runtime/prisma/generated/

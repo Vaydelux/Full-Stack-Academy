@@ -1,0 +1,20 @@
+import assert from 'node:assert/strict';
+import {readFileSync,existsSync} from 'node:fs';
+import {spawnSync} from 'node:child_process';
+import {fileURLToPath} from 'node:url';
+import {pgConfig,preflightPg} from '../guard.mjs';
+const root=fileURLToPath(new URL('.',import.meta.url));
+assert.equal(process.versions.node.split('.')[0],'24','Node 24 required');
+const url=pgConfig();
+for(const key of Object.keys(process.env))if(/^PG/i.test(key)||/^(DATABASE_URL|DIRECT_URL|SHADOW_DATABASE_URL)$/i.test(key))delete process.env[key];
+assert.ok(existsSync(new URL('package-lock.json',import.meta.url)),'Generate and commit a genuine isolated npm lockfile before qualification');
+const pkg=JSON.parse(readFileSync(new URL('package.json',import.meta.url),'utf8')),lock=JSON.parse(readFileSync(new URL('package-lock.json',import.meta.url),'utf8'));
+assert.ok(lock.lockfileVersion>=3&&lock.packages?.[''],'Invalid lockfile');
+for(const [name,version] of Object.entries({...pkg.dependencies,...pkg.devDependencies})){assert.equal(lock.packages['node_modules/'+name]?.version,version,'Lock version mismatch '+name);assert.equal(JSON.parse(readFileSync(new URL('node_modules/'+name+'/package.json',import.meta.url),'utf8')).version,version,'Installed version mismatch '+name);}
+const {Client}=await import('pg');const client=new Client({connectionString:url,connectionTimeoutMillis:5000,statement_timeout:5000});
+try{await client.connect();await preflightPg(client);}finally{await client.end();}
+function run(args){const p=spawnSync(process.execPath,args,{cwd:root,env:process.env,stdio:'pipe',encoding:'utf8',timeout:120000,maxBuffer:4*1024*1024,windowsHide:true});assert.ok(!p.error&&!p.signal&&p.status===0,'Prisma qualification step failed: '+args[0]+' '+(args[1]??''));return p.stdout;}
+for(const args of [['validate'],['generate'],['migrate','deploy'],['migrate','status']])run(['node_modules/prisma/build/index.js',...args]);
+const output=run(['--experimental-transform-types','--test','--test-reporter=tap','live.test.mjs']);
+for(const [key,value] of [['tests',1],['pass',1],['fail',0],['cancelled',0],['skipped',0],['todo',0]])assert.equal(output.match(new RegExp('^# '+key+' '+value+'\\r?$','gm'))?.length,1,'Missing exact test result '+key);
+console.log('Prisma integration: real generated client/migration/CRUD test passed; module publication NOT approved.');

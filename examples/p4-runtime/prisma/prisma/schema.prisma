@@ -1,0 +1,23 @@
+generator client {
+  provider = "prisma-client"
+  output = "../generated"
+  moduleFormat = "esm"
+  importFileExtension = "ts"
+}
+datasource db {
+  provider = "postgresql"
+}
+model Membership {
+  tenantId String
+  actorId String
+  role String
+  @@id([tenantId, actorId])
+}
+model Task {
+  tenantId String
+  id String
+  title String
+  version Int @default(1)
+  @@id([tenantId, id])
+  @@index([tenantId, version])
+}
