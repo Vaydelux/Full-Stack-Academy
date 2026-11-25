@@ -44,6 +44,20 @@ node --test --test-name-pattern="20[.]02" examples/p6-quality/labs.test.mjs
 
 Synthetic CI evidence only; no hosted workflow, branch protection change or cryptographic provenance.
 
+## Applied engineering walkthrough
+
+Supply-chain qualification evaluates resolved dependencies and artifact contents, not just package names in a manifest. A scanner reports known findings at a particular time. Unavailable data and expired exceptions should remain blocked or explicitly reviewed, never silently counted as clean.
+
+### Diagnose the concrete failure
+
+Inspect the repository's dependency-audit command and model a synthetic critical finding with no valid exception. Test an expired exception and a scanner failure. Compare with the documented permitted result; no advisory lookup is implied by this model.
+
+### Independent exercise and evidence
+
+Design an exception record with affected version, rationale, owner, expiry and planned remediation. Record tool identity and advisory evidence when actually available, without suppressing unknown findings.
+
+**Evidence boundary:** These are practice instructions, not recorded test results. Preserve the existing model, specification and draft flag; external runtime qualification remains independent.
+
 ## Knowledge check
 
 1. Which public behavior or invariant is being protected?
