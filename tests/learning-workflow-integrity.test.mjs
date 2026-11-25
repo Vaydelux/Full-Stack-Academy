@@ -70,7 +70,7 @@ test('failed browser storage writes surface an explicit warning', () => {
   const store = read('src/lib/academy/store.ts');
   const notebook = read('src/components/course/LessonNotebook.tsx');
   const shelf = read('src/components/course/SavedLessonShelf.tsx');
-  assert.match(store, /storageError = !savePersisted\(next\)/);
+  assert.match(store, /storageError = state\.storageReadBlocked \|\| !savePersisted\(next\)/);
   assert.match(notebook, /Browser storage is unavailable or full/);
   assert.match(shelf, /Browser storage could not save/);
 });

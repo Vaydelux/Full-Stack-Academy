@@ -11,7 +11,7 @@
   "development": {
     "branch": "feature/f11-3-reading-format",
     "state": "f19-production-boundaries-source-implemented",
-    "note": "F19 search deployment tracing, storage recovery, strict origin/reference validation, bounded preview messages and mandatory F17/F18/F19 release tests. Qualification pending."
+    "note": "F19 hardening committed; six exact-source Node22 tests and 41 connector source/matrix checks passed. 80 local release steps inventoried; full Node24 build/browser/audit pending."
   },
   "snapshot": {
     "tracks": 28,
