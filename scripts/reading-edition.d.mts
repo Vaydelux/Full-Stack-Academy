@@ -7,7 +7,7 @@ export type ReadingBlock =
   | { kind: 'step'; title: string; file: string; expected: string }
   | { kind: 'quiz'; question: string; choices: string[]; answer: number; explanation: string; misconception: string }
   | { kind: 'table'; headers: string[]; rows: string[][] };
-export type InlineToken = { kind: 'text' | 'code' | 'strong'; text: string } | { kind: 'link'; text: string; href: string };
+export type InlineToken = { kind: 'text' | 'code' | 'strong' | 'emphasis'; text: string } | { kind: 'link'; text: string; href: string };
 export function readingInventory(records: readonly StagedManuscript[], publishedIds: readonly string[]): StagedManuscript[];
 export function parseReading(source: string): ReadingBlock[];
 export function inlineTokens(text: string): InlineToken[];
