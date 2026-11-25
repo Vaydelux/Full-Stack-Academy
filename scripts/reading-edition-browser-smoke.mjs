@@ -29,6 +29,16 @@ try{
  await page.getByRole('heading',{name:'Reading editions',level:1}).waitFor();
  await page.getByText(remaining.length+' authored manuscripts for reading and independent study.',{exact:true}).waitFor();
  const before=await storage();
+ assert.equal((await page.goto(base+'/learn'))?.status(),200);
+ await page.getByRole('heading',{name:'Find any curriculum topic'}).waitFor();
+ const availability=page.getByLabel('Learning availability');
+ await availability.selectOption('reading');
+ await page.getByRole('status').filter({hasText:remaining.length+' matching topics'}).waitFor();
+ await availability.selectOption('published');
+ await page.getByRole('status').filter({hasText:published.length+' matching topics'}).waitFor();
+ await availability.selectOption('all');
+ await page.getByRole('status').filter({hasText:catalog.lessons.length+' matching topics'}).waitFor();
+ assert.equal((await page.goto(base+'/learn/reading'))?.status(),200);
  if(sample.length){
   const first=sample[0];const search=page.getByRole('searchbox',{name:'Search lessons'});
   await search.fill(first.id);
@@ -45,6 +55,11 @@ try{
    assert.equal(await page.getByRole('region',{name:'Lesson completion'}).count(),0);
    assert.equal(await page.getByRole('button',{name:'Mark complete',exact:true}).count(),0);
    assert.equal(await article.locator('iframe, form, script').count(),0);
+   const continuation=page.getByRole('navigation',{name:'Continue curriculum'});
+   const available=catalog.lessons.filter(l=>published.includes(l.id)||remaining.some(r=>r.id===l.id));
+   const index=available.findIndex(l=>l.id===record.id);
+   if(index>0)assert.equal(await continuation.locator('a[rel="prev"]').getAttribute('href'),'/learn/'+available[index-1].id);
+   if(index<available.length-1)assert.equal(await continuation.locator('a[rel="next"]').getAttribute('href'),'/learn/'+available[index+1].id);
    const moduleNav=page.getByRole('navigation',{name:'Reading module lessons',includeHidden:true});
    assert.equal(await moduleNav.locator('a[aria-current="page"]').getAttribute('href'),'/learn/'+record.id);
    const outline=article.getByRole('navigation',{name:'Reading section outline',includeHidden:true});

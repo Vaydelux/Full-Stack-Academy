@@ -1,7 +1,7 @@
 /**
  * Stateless course discovery and saved-lesson selectors.
- * Inputs must be the canonical PUBLISHED lesson catalog; never use the planned
- * curriculum catalog for actions that imply a lesson is already available.
+ * Discovery may display explicitly labeled planned topics; saved-learning and
+ * completion actions must still receive only the canonical PUBLISHED catalog.
  */
 export interface DiscoverableLesson {
   id: string;
@@ -11,6 +11,7 @@ export interface DiscoverableLesson {
   level: string;
   minutes: number;
   description?: string;
+  access?: 'published' | 'reading' | 'planned';
 }
 
 export interface DiscoverFilter {
@@ -72,7 +73,7 @@ function catalogDistinct(catalog: readonly DiscoverableLesson[]) {
 }
 
 /**
- * All search tokens must match some part of one published lesson. Results
+ * All search tokens must match some part of one catalog lesson. Results
  * rank exact/prefix IDs and titles first and otherwise keep canonical order.
  */
 export function discoverPublishedLessons(

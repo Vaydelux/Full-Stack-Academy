@@ -2,8 +2,9 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { PublishedLessonExplorer } from '@/components/course/PublishedLessonExplorer';
 import type { DiscoverableLesson } from '@/lib/academy/lesson-discovery';
-import { MDX_METADATA, PUBLISHED_LESSON_IDS, LOCAL_LAB_LESSONS } from '@/lib/academy/published';
-import { lessonMap, moduleMap, modulesByTrack, summary, trackMap, TRACK_GROUPS } from '@/lib/academy/curriculum';
+import { MDX_METADATA, LOCAL_LAB_LESSONS } from '@/lib/academy/published';
+import { moduleMap, modulesByTrack, summary, trackMap, TRACK_GROUPS } from '@/lib/academy/curriculum';
+import { readCurriculumAccess } from '@/lib/academy/course-progress-server';
 import { DocShell } from '@/components/course/DocShell';
 
 export const metadata: Metadata = {
@@ -12,19 +13,12 @@ export const metadata: Metadata = {
 };
 
 export default function CourseIndex() {
-  const publishedCatalog: DiscoverableLesson[] = PUBLISHED_LESSON_IDS.map(id => {
-    const lesson = lessonMap.get(id);
-    const meta = MDX_METADATA.get(id);
-    const moduleId = lesson?.moduleId ?? id.slice(0, 5);
-    return {
-      id,
-      title: meta?.title ?? lesson?.title ?? id,
-      moduleId,
-      moduleTitle: moduleMap.get(moduleId)?.title ?? moduleId,
-      level: meta?.level ?? lesson?.level ?? 'Core',
-      minutes: meta?.estimatedMinutes ?? lesson?.estimatedMinutes ?? 0,
-      description: meta?.description ?? '',
-    };
+  const curriculumCatalog: DiscoverableLesson[] = readCurriculumAccess().map(lesson => {
+    const meta = lesson.access === 'published' ? MDX_METADATA.get(lesson.id) : undefined;
+    return { id: lesson.id, title: meta?.title ?? lesson.title, moduleId: lesson.moduleId,
+      moduleTitle: moduleMap.get(lesson.moduleId)?.title ?? lesson.module,
+      level: meta?.level ?? lesson.level, minutes: meta?.estimatedMinutes ?? lesson.estimatedMinutes,
+      description: meta?.description ?? moduleMap.get(lesson.moduleId)?.outcome ?? '', access: lesson.access };
   });
   const learningModules = [
     { id: '00.01', title: 'Computing & internet foundations', description: 'Understand how applications and the web work.' },
@@ -77,10 +71,10 @@ export default function CourseIndex() {
           <Link href="/learn/roadmap" className="inline-flex min-h-10 items-center rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold hover:border-cyan-500 dark:border-white/20">View course roadmap</Link>
         </div>
       </section>
-      <PublishedLessonExplorer catalog={publishedCatalog} />
+      <PublishedLessonExplorer catalog={curriculumCatalog} edition="unified" />
       <section aria-label="Reading editions" className="mt-6 rounded-xl border border-slate-200 bg-white p-4 dark:border-white/10 dark:bg-white/[0.035]">
         <h2 className="font-bold">Read the remaining authored curriculum</h2>
-        <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">Explore staged lessons separately from published lessons. Reading editions contain the actual manuscript and practice examples, but do not grant lab certification or completion credit.</p>
+        <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">Browse only staged lessons when you want to focus on independent reading. Reading editions contain the actual manuscript and practice examples, but do not grant lab certification or completion credit.</p>
         <Link href="/learn/reading" className="mt-3 inline-flex rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold hover:border-cyan-500 dark:border-white/20">Browse reading editions</Link>
       </section>
       <section aria-labelledby="tracks-title" className="mt-10">
