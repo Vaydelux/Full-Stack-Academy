@@ -70,6 +70,20 @@ Repeatable Read and Serializable describe visibility across concurrent transacti
 
 A useful production verification matrix varies input identity, tenant, the number of concurrent writers, repeated request keys and observed SQLSTATE outcomes. When a conflict occurs, the correct application behavior is usually to report it or retry the *whole* safe operation from a new snapshot—not to silently overwrite the last writer's state.
 
+## Applied SQL walkthrough
+
+Atomicity means a transaction commits all its changes or none; consistency means the chosen invariants hold at commit; isolation controls concurrent visibility; durability concerns survival of acknowledged commits under the configured durability guarantees. Here the outer runner supplies the transaction. The two UPDATE statements conserve the initial total of twelve units: A becomes six and B becomes six. That alone is insufficient to establish isolation or a complete transfer contract.
+
+### Predict and diagnose the result
+
+Compare the expected balances 6 and 6 with the starter's 6 and 2. Verify both individual values as well as their sum; a sum alone could conceal a transfer in the wrong direction. Use a savepoint in an isolated session to simulate a failed credit and roll back the debit. A real implementation must check affected rows and sufficient funds.
+
+### Independent exercise and evidence
+
+On a separate disposable persistent table visible to two connections, compare repeated reads in Read Committed and Repeatable Read while another session commits an update. Record isolation level, read values and commit outcome. For Serializable, design a competing invariant check and capture any serialization failure; retry the whole transaction, not an individual statement.
+
+**Qualification boundary:** These are predictions and experiment instructions, not recorded database results. The existing single-session SQL gate cannot establish true concurrent behavior. Use isolated test infrastructure and preserve the existing starter and solution.
+
 ## Bug Hunt
 
 1. Predict the specific broken state: The starter debits one wallet but forgets the corresponding credit. Both statements would be separate side effects without a transaction.
