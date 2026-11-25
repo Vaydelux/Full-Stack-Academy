@@ -74,6 +74,20 @@ An idempotent upsert can still overwrite sensitive production data if the connec
 
 A production-ready persistence boundary has to address error mapping, least-privileged database credentials, transaction/connection lifecycle, tenant authorization and request cancellation. Whenever schema changes are involved, review migration SQL and compatibility with the previous app version. Never expose database credentials in a `NEXT_PUBLIC_` variable or include them in a public web bundle.
 
+## Applied persistence walkthrough
+
+A seed is an explicit development or test data operation, not a production migration. The compound unique key identifies the demo tenant/email pair. Upsert with an empty update preserves an existing record instead of generating a new user on each run. Prisma 7 requires an explicit seed command and configured seed script; never assume migration automatically seeds.
+
+### Diagnose the concrete failure
+
+Run the configured seed twice on the same disposable database and verify one demo user with the same identity. Compare a plain create-based seed, which either duplicates records or hits uniqueness. Test that a refusal guard blocks an unrelated environment before connecting.
+
+### Independent exercise and evidence
+
+Design deterministic fixture data for two tenants with fake users and projects. Explain which rows may be reset safely and how to avoid removing unrelated records. Record the two run counts, key identity and explicit target check.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Use the pinned Prisma 7 toolchain and disposable PostgreSQL database. Preserve the starter and solution; source review does not qualify generated code or authorization.
+
 ## Bug Hunt
 
 1. Observe the unsafe starter: The starter is not idempotent: rerunning a seed may create duplicates or fail after a partial previous run.
