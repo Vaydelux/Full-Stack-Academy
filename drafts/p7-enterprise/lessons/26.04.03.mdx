@@ -44,6 +44,20 @@ node --test --test-name-pattern="26[.]04" examples/p7-platforms/labs.test.mjs
 
 Synthetic tenant-admin authorization model only; actual RBAC, audit integrity, support workflows and migration safety require runtime acceptance.
 
+## Applied engineering walkthrough
+
+Configuration needs a validated schema, explicit precedence, versioned updates and safe defaults. Separate secret values from ordinary settings and expose only the minimum metadata needed for administration. Reject unknown or invalid fields rather than silently accepting configuration that cannot be applied.
+
+### Diagnose the concrete failure
+
+Prepare two synthetic versions of application settings with conflicting precedence. Submit an invalid port, unknown key and stale revision. Verify the prior valid configuration remains active and no secret is returned in the error.
+
+### Independent exercise and evidence
+
+Design a staged activation and rollback process with an owner and change reason. Record the effective nonsecret configuration, version and rejected inputs, then simulate a startup failure after a proposed change.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify actual API, database, authorization, browser and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

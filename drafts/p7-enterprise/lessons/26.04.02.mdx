@@ -44,6 +44,20 @@ node --test --test-name-pattern="26[.]04" examples/p7-platforms/labs.test.mjs
 
 Synthetic tenant-admin authorization model only; actual RBAC, audit integrity, support workflows and migration safety require runtime acceptance.
 
+## Applied engineering walkthrough
+
+Feature flags control rollout, not authorization. Evaluate the intended tenant, default and version on the server, and retain a separate permission check for protected actions. Give every temporary flag an owner and expiry so abandoned rollout branches do not become permanent policy.
+
+### Diagnose the concrete failure
+
+Create a synthetic flag enabled for one tenant and disabled for another. Attempt an unauthorized change and enable the flag for a user who lacks the underlying action permission. Verify the feature remains inaccessible to that user.
+
+### Independent exercise and evidence
+
+Record flag purpose, safe default, rollout scope, version and rollback. Test concurrent edits and an unavailable flag service, documenting the chosen fallback without granting new privileges.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify actual API, database, authorization, browser and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?
