@@ -76,6 +76,20 @@ Incorrect ON predicates can silently return no rows—or connect a record to the
 
 For production systems, distinguish this basic query exercise from actual role privileges, row-level security, constraints across tenant boundaries, input validation, indexes, transaction isolation, and migration safety. Those topics appear in later canonical PostgreSQL and Supabase modules. The teaching fixture deliberately uses static tenant IDs and does not implement real authentication.
 
+## Applied SQL walkthrough
+
+A join matches rows by a relationship, not by coincidentally equal values. Here project.owner_id references user.id; matching tenant_id as well expresses the intended tenant boundary. An inner join drops unmatched rows, and a one-to-many relationship may multiply rows. In the fixture, alpha projects 10, 11 and 12 map to Ana, Bo and Ana respectively. The project with no tasks still has an owner.
+
+### Predict and diagnose the result
+
+Inspect the join result as project ID and owner pairs. Verify each relationship against the original tables. Compare with a join on project ID and user ID; the numeric domains differ and that predicate cannot express ownership. Count rows per project to detect duplicate matches rather than checking only that the query runs.
+
+### Independent exercise and evidence
+
+Sketch a project list including an optional owner display name for a hypothetical nullable ownership model. Explain how LEFT JOIN changes the result and how a WHERE predicate on the right table can remove unmatched rows. Record expected ownership pairs and the excluded beta project 20.
+
+**Qualification boundary:** Predicted results are not executed PostgreSQL evidence. Use the existing disposable database acceptance gate and preserve the original starter and solution. No publication credit is granted by this walkthrough.
+
 ## Bug Hunt
 
 1. **Reproduce:** The starter joins the project to a user with the same numeric ID, not its owner_id; it also has no tenant scope.
