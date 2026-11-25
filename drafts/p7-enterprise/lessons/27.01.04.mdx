@@ -44,6 +44,20 @@ node --test --test-name-pattern="27[.]01" examples/p7-platforms/labs.test.mjs
 
 Capstone rubric checks supplied evidence flags only; no actual app build, SEO, browser or accessibility verification.
 
+## Applied engineering walkthrough
+
+A component library supplies consistent semantics, visual tokens and interaction states. Start with native controls where appropriate, define accessible names and focus behavior, then compose larger patterns. Color, spacing and typography tokens should support both themes without replacing semantic meaning.
+
+### Diagnose the concrete failure
+
+Build a local button, labeled input, dialog and table using shared tokens. Exercise disabled, loading, error and keyboard states; inspect dialog focus return and ensure visible text remains readable in both themes.
+
+### Independent exercise and evidence
+
+Document each component's API, allowed variants and interaction contract. Add a small usage example and negative case for missing labels or focus loss; distinguish visual inspection from actual assistive technology acceptance.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and verify actual application, browser and human review evidence independently.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

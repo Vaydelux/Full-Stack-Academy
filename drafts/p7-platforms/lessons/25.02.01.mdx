@@ -44,6 +44,20 @@ node --test --test-name-pattern="25[.]02" examples/p7-platforms/labs.test.mjs
 
 Synthetic citation membership check; not evidence of factual grounding, model safety, embeddings or real provider behavior.
 
+## Applied engineering walkthrough
+
+Separate model inference, streamed presentation and tool execution into distinct interfaces. Treat structured output as a proposed value until application-side validation succeeds. A streamed fragment is not necessarily a complete JSON document, and a successful model call does not authorize a write.
+
+### Diagnose the concrete failure
+
+Use a mock that returns a typed read-only answer, then one with missing source IDs and another with malformed JSON. Verify the UI distinguishes incomplete, invalid and completed states without invoking a tool.
+
+### Independent exercise and evidence
+
+Implement a bounded mock answer flow with cancellation, a deadline and a safe unavailable state. Record request and response schemas, validation failures and zero unintended external side effects.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status; independently verify actual model, database, retrieval, provider and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

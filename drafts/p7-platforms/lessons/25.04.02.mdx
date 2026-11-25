@@ -44,6 +44,20 @@ node --test --test-name-pattern="25[.]04" examples/p7-platforms/labs.test.mjs
 
 Synthetic resource-bound model; no actual FFmpeg sandbox, CDN, HLS, WebRTC or moderation service acceptance.
 
+## Applied engineering walkthrough
+
+Adaptive streaming packages media into renditions with different bitrates or resolutions and describes them in a manifest. The player chooses based on bandwidth, buffer and decoding capability. Segment duration and keyframe alignment affect switching, seek behavior and request overhead.
+
+### Diagnose the concrete failure
+
+Generate renditions from a short self-created clip in an isolated environment. Inspect the manifest and play under two controlled bandwidth profiles; check startup, switching and seek behavior rather than just successful packaging.
+
+### Independent exercise and evidence
+
+Record codecs, rendition sizes, segment durations and player observations. Include an unsupported codec or missing segment and document recovery. Do not claim browser or device compatibility without testing it.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify actual media tools, storage, playback, provider and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

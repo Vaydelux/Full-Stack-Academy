@@ -44,6 +44,20 @@ node --test --test-name-pattern="26[.]01" examples/p7-platforms/labs.test.mjs
 
 Synthetic policy check on already-validated claims only; no actual SAML assertion, SCIM, MFA, token or identity-provider verification.
 
+## Applied engineering walkthrough
+
+SAML federates authentication between an identity provider and a service provider. A signed assertion is not automatically valid for every service or every request. Use a maintained library and trusted metadata to check issuer, signature, audience, recipient, time, correlation and replay as appropriate to the selected flow.
+
+### Diagnose the concrete failure
+
+Draw a synthetic SP-initiated flow and test a permitted disposable IdP configuration. Compare a valid response with wrong audience, expired assertion and repeated assertion. Confirm that rejected responses create no application session.
+
+### Independent exercise and evidence
+
+Write an IdP trust configuration and rotation checklist. Record sanitized assertion validation outcomes and replay handling; never log raw assertions or treat a decoded identity as an authorized organization member.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify actual IdP, application authorization, database and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

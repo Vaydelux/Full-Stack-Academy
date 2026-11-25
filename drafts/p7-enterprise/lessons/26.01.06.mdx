@@ -44,6 +44,20 @@ node --test --test-name-pattern="26[.]01" examples/p7-platforms/labs.test.mjs
 
 Synthetic policy check on already-validated claims only; no actual SAML assertion, SCIM, MFA, token or identity-provider verification.
 
+## Applied engineering walkthrough
+
+Enterprise policy changes can affect every member of an organization and may accidentally lock out administrators. Require action-level authorization, validated scoped changes, explicit version checks and a controlled recovery path. A privileged session for one tenant does not confer authority over another.
+
+### Diagnose the concrete failure
+
+Prepare a versioned synthetic policy update and try a stale revision, unauthorized actor and foreign organization. Verify rejected updates leave the prior policy active and record a safe diagnostic.
+
+### Independent exercise and evidence
+
+Design staged enforcement, notification and a tightly controlled recovery mechanism. Record change reason, previous and new version, authorized approver and rollback constraints; test lockout recovery without weakening normal controls.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify actual IdP, application authorization, database and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

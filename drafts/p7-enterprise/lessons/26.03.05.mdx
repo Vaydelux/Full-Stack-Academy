@@ -44,6 +44,20 @@ node --test --test-name-pattern="26[.]03" examples/p7-platforms/labs.test.mjs
 
 Synthetic retention review model only; not legal advice or proof of compliance. Verify current law and organization-specific obligations with qualified counsel.
 
+## Applied engineering walkthrough
+
+Key management covers generation, storage, access, versioning, rotation, recovery and eventual retirement. Encrypted data remains unavailable if the required historical key is lost. A rotation plan must distinguish new encryption from migration of existing ciphertext and limit who can perform recovery.
+
+### Diagnose the concrete failure
+
+Encrypt synthetic fixtures with a test key version, rotate new writes to a second version, and verify authorized recovery of the first record. Attempt decryption without the required key and confirm failure does not leak data.
+
+### Independent exercise and evidence
+
+Create a key inventory and recovery checklist with owners, backup verification and retirement criteria. Record only key identifiers and sanitized test outcomes; never include secret key material.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status; actual controls, legal applicability, runtime and independent review remain separate gates.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

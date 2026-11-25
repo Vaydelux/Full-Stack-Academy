@@ -44,6 +44,20 @@ node --test --test-name-pattern="25[.]03" examples/p7-platforms/labs.test.mjs
 
 Coordinate validation model only; real PostGIS geometry, index, map rendering and location privacy require separate acceptance.
 
+## Applied engineering walkthrough
+
+Location information can reveal sensitive patterns even when names are removed. Collect only the precision and frequency required for the feature, restrict who can access exact records and define retention. Aggregation or rounding reduces some exposure but is not an anonymity guarantee.
+
+### Diagnose the concrete failure
+
+Use synthetic coordinates belonging to two tenants. Compare a coarse public display to a restricted exact record, and verify that a foreign tenant cannot obtain the precise value through search or export.
+
+### Independent exercise and evidence
+
+Create a data inventory covering collection, precision, audience, logs, backups and deletion. Test authorization and retention using synthetic records; document unresolved privacy and consent review.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify actual PostGIS, browser, device and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

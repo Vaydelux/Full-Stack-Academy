@@ -44,6 +44,20 @@ node --test --test-name-pattern="26[.]04" examples/p7-platforms/labs.test.mjs
 
 Synthetic tenant-admin authorization model only; actual RBAC, audit integrity, support workflows and migration safety require runtime acceptance.
 
+## Applied engineering walkthrough
+
+Support access should be narrowly scoped, time-limited, attributable to a documented purpose and independently reviewable. Prefer a specific read-only support capability over an unrestricted impersonation session. Consent or approval requirements depend on the reviewed policy; a support ticket alone is not universal permission.
+
+### Diagnose the concrete failure
+
+Create a synthetic ticket and an approved read-only grant with an expiry. Attempt access before approval, to an unrelated tenant, after expiry and to a mutation endpoint. Verify every forbidden action leaves protected state unchanged.
+
+### Independent exercise and evidence
+
+Record grant identity, purpose, approver, time range and access events. Design revocation and emergency recovery without exposing user credentials or permitting silent unlimited impersonation.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify actual API, database, authorization, browser and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

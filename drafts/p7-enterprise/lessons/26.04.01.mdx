@@ -44,6 +44,20 @@ node --test --test-name-pattern="26[.]04" examples/p7-platforms/labs.test.mjs
 
 Synthetic tenant-admin authorization model only; actual RBAC, audit integrity, support workflows and migration safety require runtime acceptance.
 
+## Applied engineering walkthrough
+
+An audit console is itself a privileged data access surface. Scope every query and export to the authorized tenant, bound time ranges and page sizes, and use stable ordering with a unique tie breaker. Redact sensitive fields before serialization; a frontend filter cannot enforce tenant isolation.
+
+### Diagnose the concrete failure
+
+Seed two synthetic tenants with overlapping action types and timestamps. Query one tenant with a bounded filter, then supply the other tenant's identifier and an invalid cursor. Verify no foreign records appear in either JSON or export.
+
+### Independent exercise and evidence
+
+Define search, pagination and export permissions separately. Record expected result IDs, redacted fields and denied requests, including a role revoked between viewing the list and requesting an export.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify actual API, database, authorization, browser and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

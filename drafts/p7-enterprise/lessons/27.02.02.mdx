@@ -44,6 +44,20 @@ node --test --test-name-pattern="27[.]02" examples/p7-platforms/labs.test.mjs
 
 Capstone API status/DTO rubric only; no live NestJS, PostgreSQL, Prisma, Supabase or JWT validation established.
 
+## Applied engineering walkthrough
+
+Nest modules establish a clear ownership boundary for controllers, use cases, providers and infrastructure adapters. Keep HTTP details at the transport boundary and inject a repository contract into the task use case. A guard verifies an appropriate identity or policy, while object-level authorization still belongs at the relevant decision point.
+
+### Diagnose the concrete failure
+
+Build a disposable task module and substitute a controlled repository in a test. Exercise correct dependency resolution, a missing provider, an anonymous request and a foreign-tenant task access.
+
+### Independent exercise and evidence
+
+Draw the dependency graph and identify which layer decides each invariant. Record actual module bootstrap and HTTP evidence separately from mocked provider tests; avoid circular ownership between modules.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify actual API, database, authentication and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

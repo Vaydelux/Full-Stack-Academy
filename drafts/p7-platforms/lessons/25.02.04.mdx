@@ -44,6 +44,20 @@ node --test --test-name-pattern="25[.]02" examples/p7-platforms/labs.test.mjs
 
 Synthetic citation membership check; not evidence of factual grounding, model safety, embeddings or real provider behavior.
 
+## Applied engineering walkthrough
+
+An embedding index is tied to an embedding model, version, vector dimension and distance metric. Mixing incompatible embeddings may yield meaningless similarity or fail at insertion. Store source identity, version and tenant scope alongside vectors, and choose a migration strategy before changing embedding models.
+
+### Diagnose the concrete failure
+
+In a disposable pgvector database insert a small set of synthetic vectors, query using the selected metric and enforce tenant filtering. Attempt insertion with the wrong dimension and test a similar foreign-tenant vector.
+
+### Independent exercise and evidence
+
+Record schema, index strategy, query plan and expected ordering. Compare exact results to approximate retrieval only if an actual index is available; do not interpret vector similarity as factual answer correctness.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status; independently verify actual model, database, retrieval, provider and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

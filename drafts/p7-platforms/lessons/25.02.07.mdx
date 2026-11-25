@@ -44,6 +44,20 @@ node --test --test-name-pattern="25[.]02" examples/p7-platforms/labs.test.mjs
 
 Synthetic citation membership check; not evidence of factual grounding, model safety, embeddings or real provider behavior.
 
+## Applied engineering walkthrough
+
+A fallback provider must obey the same schema, authorization rules, deadline and usage limits as the primary provider. A timeout can leave the status of a tool side effect uncertain; never repeat a privileged write merely because a different model is available. Bound fallback attempts and distinguish permanent failures.
+
+### Diagnose the concrete failure
+
+Simulate primary timeout, malformed output and a valid fallback. Verify one bounded fallback at most and no repeated tool effect. Exercise a permanent authorization denial and confirm the router does not treat it as a retryable outage.
+
+### Independent exercise and evidence
+
+Define a policy matrix for provider errors, remaining budget, cancellation and output validation. Record actual call counts and synthetic usage; real provider behavior requires separately approved credentials and tests.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status; independently verify actual model, database, retrieval, provider and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

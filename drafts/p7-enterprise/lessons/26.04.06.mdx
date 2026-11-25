@@ -44,6 +44,20 @@ node --test --test-name-pattern="26[.]04" examples/p7-platforms/labs.test.mjs
 
 Synthetic tenant-admin authorization model only; actual RBAC, audit integrity, support workflows and migration safety require runtime acceptance.
 
+## Applied engineering walkthrough
+
+Abuse management combines bounded preventive controls with accountable review, reversible enforcement where appropriate and an appeal process. A noisy detector does not prove wrongdoing, so separate automated signals from the final policy decision. Scope restrictions to the necessary resource, account and duration.
+
+### Diagnose the concrete failure
+
+Use synthetic abuse signals to trigger a temporary restriction and a reviewer decision. Add a false-positive case and an expired restriction, verifying that the appropriate recovery and appeal paths remain available.
+
+### Independent exercise and evidence
+
+Define a state machine with reasons, reviewer authority, expiry and audit. Record decision evidence and denial cases without collecting real harmful material; test concurrent reviewer actions and reversal.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify actual API, database, authorization, browser and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

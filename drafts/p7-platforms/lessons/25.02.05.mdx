@@ -44,6 +44,20 @@ node --test --test-name-pattern="25[.]02" examples/p7-platforms/labs.test.mjs
 
 Synthetic citation membership check; not evidence of factual grounding, model safety, embeddings or real provider behavior.
 
+## Applied engineering walkthrough
+
+Chunk size determines the balance between local detail, surrounding context and retrieval cost. Preserve source identifiers, version and offsets so retrieved fragments can be traced back to the original document. Overlap can improve context but also creates duplicates and increases token usage.
+
+### Diagnose the concrete failure
+
+Split a synthetic handbook at headings and compare fixed-length chunks against section-aware chunks using questions that cross boundaries. Inspect whether the correct source fragment appears among the retrieved results.
+
+### Independent exercise and evidence
+
+Create a small labeled corpus with expected source passages and measure recall at a fixed retrieval depth. Record chunking settings, duplicate handling and the cases that require neighboring context.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status; independently verify actual model, database, retrieval, provider and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

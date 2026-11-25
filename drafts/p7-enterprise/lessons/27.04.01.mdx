@@ -44,6 +44,20 @@ node --test --test-name-pattern="27[.]04" examples/p7-platforms/labs.test.mjs
 
 Capstone readiness rubric only; no container, deployment, scan, benchmark or restore is verified by supplied booleans.
 
+## Applied engineering walkthrough
+
+Compose describes a local multi-service topology, not a production security boundary by itself. Give the API and database a private network, persist the intended database volume and publish only ports required by the exercise. Keep secrets outside image layers and distinguish process startup from application readiness.
+
+### Diagnose the concrete failure
+
+Start a disposable application and database stack with synthetic configuration. Inspect published ports, service discovery and health checks. Delay database readiness and verify the application handles the dependency without losing data or exposing the database publicly.
+
+### Independent exercise and evidence
+
+Record image identities, environment sources, volumes and readiness results. Restart the stack and verify committed data survives; test teardown without deleting unrelated volumes. Do not treat a Compose file inspection as actual container execution.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify actual infrastructure, build, security, performance, recovery and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

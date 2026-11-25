@@ -44,6 +44,20 @@ node --test --test-name-pattern="26[.]04" examples/p7-platforms/labs.test.mjs
 
 Synthetic tenant-admin authorization model only; actual RBAC, audit integrity, support workflows and migration safety require runtime acceptance.
 
+## Applied engineering walkthrough
+
+A privileged administration interface needs server-side authorization for each operation, explicit reason and appropriate confirmation for sensitive actions, plus an attributable audit record. Hiding controls helps usability but does not prevent direct API requests. Define failure and recovery paths before enabling destructive controls.
+
+### Diagnose the concrete failure
+
+Run adminAllowed for authorized and forbidden cases, then design a disposable settings action with direct API bypass attempts, stale revision and failed audit persistence. Verify foreign and denied actions leave state unchanged.
+
+### Independent exercise and evidence
+
+Submit an administration capstone matrix covering permissions, confirmations, audit events, concurrent changes and recovery. Record actual request and database results and independent reviewer evidence, not only visible UI behavior.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify actual API, database, authorization, browser and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

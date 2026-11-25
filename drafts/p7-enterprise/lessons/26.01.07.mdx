@@ -44,6 +44,20 @@ node --test --test-name-pattern="26[.]01" examples/p7-platforms/labs.test.mjs
 
 Synthetic policy check on already-validated claims only; no actual SAML assertion, SCIM, MFA, token or identity-provider verification.
 
+## Applied engineering walkthrough
+
+An audit event records an attributable action, target, outcome, time and correlation identifier. Separate security audit records from verbose application logs, restrict who may read them and avoid copying secrets or assertions. Integrity and retention require explicit storage controls beyond a well-shaped JSON object.
+
+### Diagnose the concrete failure
+
+Generate synthetic successful and rejected administrative actions. Verify required fields, correct tenant scope and absence of tokens, raw assertions and unnecessary personal data. Try reading another tenant's event.
+
+### Independent exercise and evidence
+
+Design access rules, retention and tamper-evidence requirements. Record sanitized events and negative query evidence, including a failed write to the audit sink and the chosen fail-open or fail-closed policy.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify actual IdP, application authorization, database and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

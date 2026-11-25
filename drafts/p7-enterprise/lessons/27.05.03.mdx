@@ -44,6 +44,20 @@ node --test --test-name-pattern="27[.]05" examples/p7-platforms/labs.test.mjs
 
 Final defense rubric only; actual human review, exploit verification, performance, costs and upgrade rehearsal remain separate.
 
+## Applied engineering walkthrough
+
+Architecture defense explains why the selected design fits measured constraints and what would justify changing it. Compare alternatives using coupling, ownership, latency, failure domains, cost and migration effort. A diagram of many services is not evidence of scalability or good boundaries.
+
+### Diagnose the concrete failure
+
+Present the task workspace ADR and trace one user request through its data and trust boundaries. Compare the current design with a separate service under a hypothetical scaling or ownership change, and identify the new failure modes introduced by extraction.
+
+### Independent exercise and evidence
+
+Define measurable reversal criteria, a safe migration path and the contracts that must remain stable. Support claims with actual tests or measurements where available and explicitly identify assumptions; do not invent workload evidence to defend the design.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify actual implementation, review, recovery, cost and candidate evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

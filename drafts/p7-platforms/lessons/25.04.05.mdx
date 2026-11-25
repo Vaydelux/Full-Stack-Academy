@@ -44,6 +44,20 @@ node --test --test-name-pattern="25[.]04" examples/p7-platforms/labs.test.mjs
 
 Synthetic resource-bound model; no actual FFmpeg sandbox, CDN, HLS, WebRTC or moderation service acceptance.
 
+## Applied engineering walkthrough
+
+A signed URL is a time-limited bearer capability for a particular resource and operation. Authorization must occur before issuance; an unexpired link may remain usable by anyone possessing it. Keep scope narrow, avoid logging capability strings and ensure CDN policies do not expose private representations.
+
+### Diagnose the concrete failure
+
+Generate test capabilities with a disposable local signer for one synthetic object. Compare valid, expired and wrong-object requests. Verify the issuer denies a foreign account before producing a signature.
+
+### Independent exercise and evidence
+
+Specify expiry, operation, object identity, issuance audit and revocation limitations. Record sanitized verification outcomes, including caching behavior; do not expose actual credentials or signed production URLs.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify actual media tools, storage, playback, provider and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

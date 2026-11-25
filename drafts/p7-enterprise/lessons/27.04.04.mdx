@@ -44,6 +44,20 @@ node --test --test-name-pattern="27[.]04" examples/p7-platforms/labs.test.mjs
 
 Capstone readiness rubric only; no container, deployment, scan, benchmark or restore is verified by supplied booleans.
 
+## Applied engineering walkthrough
+
+Observability joins structured logs, bounded metrics and traces around user-visible behavior. Use route templates and controlled dimensions instead of identifiers that create unbounded metric cardinality. Correlation should help diagnose failure without leaking tokens, request bodies or personal data.
+
+### Diagnose the concrete failure
+
+Instrument a disposable API and cause a bounded synthetic dependency failure. Inspect latency and error signals, correlate the trace with a sanitized log and verify the alert identifies an actionable symptom rather than a noisy internal event.
+
+### Independent exercise and evidence
+
+Write a runbook with signal, owner, first diagnostic steps, escalation and restoration checks. Record actual emitted telemetry and alert behavior where supported; distinguish local instrumentation from an external collector or incident-response certification.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify actual infrastructure, build, security, performance, recovery and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

@@ -44,6 +44,20 @@ node --test --test-name-pattern="27[.]04" examples/p7-platforms/labs.test.mjs
 
 Capstone readiness rubric only; no container, deployment, scan, benchmark or restore is verified by supplied booleans.
 
+## Applied engineering walkthrough
+
+Security release review starts with trust boundaries and concrete abuse cases: unauthenticated requests, cross-tenant access, malformed inputs, secret exposure and recovery. Dependency scanning supplies useful evidence but cannot establish absence of vulnerabilities. Triage actual findings by affected version, reachability and remediation rather than silently ignoring them.
+
+### Diagnose the concrete failure
+
+Against the disposable candidate, run authorized negative tests for missing identity, foreign object access and invalid input. Inspect secret handling and perform the configured dependency audit on the exact lockfile when available. Verify denied mutations leave state unchanged.
+
+### Independent exercise and evidence
+
+Record each finding, reproducible evidence, severity rationale and remediation or time-bounded exception. Include a retest and unresolved owner; a source scan alone must not authorize a release.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify actual infrastructure, build, security, performance, recovery and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

@@ -44,6 +44,20 @@ node --test --test-name-pattern="25[.]02" examples/p7-platforms/labs.test.mjs
 
 Synthetic citation membership check; not evidence of factual grounding, model safety, embeddings or real provider behavior.
 
+## Applied engineering walkthrough
+
+Select a model against an explicit task and evaluation corpus rather than a brand or maximum context size. Track answer quality, tail latency, input and output tokens and actual spend independently. A cheaper call can become expensive if it requires repeated retries or manual correction.
+
+### Diagnose the concrete failure
+
+Prepare twenty fixed synthetic questions and score candidate outputs with the same rubric. Include unsupported and ambiguous questions; compare incorrect confident answers against appropriately uncertain responses.
+
+### Independent exercise and evidence
+
+Design an approved budget cap, timeout and stop condition. Record model identifiers, evaluated inputs, actual usage if permitted and uncertainty in results; use mocked costs rather than claiming current pricing without verification.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status; independently verify actual model, database, retrieval, provider and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

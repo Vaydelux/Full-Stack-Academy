@@ -44,6 +44,20 @@ node --test --test-name-pattern="26[.]03" examples/p7-platforms/labs.test.mjs
 
 Synthetic retention review model only; not legal advice or proof of compliance. Verify current law and organization-specific obligations with qualified counsel.
 
+## Applied engineering walkthrough
+
+Retention eligibility identifies candidate records; it is not authorization to destroy them. Check policy version, cutoff semantics, applicable holds and dependencies before execution. A dry run should reveal scope and counts, followed by controlled execution and evidence of actual results.
+
+### Diagnose the concrete failure
+
+Run retentionDecision at the cutoff, before it and with an active hold. Produce a synthetic dry-run list and verify held or out-of-scope records remain untouched.
+
+### Independent exercise and evidence
+
+Design a staged cleanup with approval, bounded batches and restart behavior. Record candidate count, deleted count, failed records and reconciliation; keep legal review and actual storage behavior independent of the local model.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status; actual controls, legal applicability, runtime and independent review remain separate gates.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

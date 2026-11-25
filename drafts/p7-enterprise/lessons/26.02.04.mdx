@@ -44,6 +44,20 @@ node --test --test-name-pattern="26[.]02" examples/p7-platforms/labs.test.mjs
 
 Synthetic entitlement policy; no payment provider authenticity, tax, invoicing, real charges or durable billing integration verified.
 
+## Applied engineering walkthrough
+
+Grace and dunning are explicit policy decisions, not incidental consequences of callback timing. Define paid-through time, notification stages, retry rules and the access cutoff. A failed renewal does not necessarily imply immediate loss of access, and an indefinite grace period can violate the business policy.
+
+### Diagnose the concrete failure
+
+Use a fixed synthetic clock to evaluate past-due state just before, exactly at and after the paidUntil boundary. Compare successful retry and unrecovered failure, and inspect the resulting access decision.
+
+### Independent exercise and evidence
+
+Build a notification and recovery timeline with deterministic dates and idempotent message identities. Record cutoff semantics and the user-facing state; verify actual provider retry behavior separately.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status; independently verify real sandbox signatures, database durability, billing and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

@@ -44,6 +44,20 @@ node --test --test-name-pattern="27[.]05" examples/p7-platforms/labs.test.mjs
 
 Final defense rubric only; actual human review, exploit verification, performance, costs and upgrade rehearsal remain separate.
 
+## Applied engineering walkthrough
+
+An upgrade is a controlled change to an existing system, not a reason to refresh every dependency simultaneously. Inventory the affected versions, advisories, compatibility constraints and migration obligations. Preserve the previous lockfile and artifact identity so the impact and recovery path remain reviewable.
+
+### Diagnose the concrete failure
+
+Choose one dependency in a disposable branch and inspect its relevant migration notes. Generate a genuine resolved lockfile with the supported toolchain, run focused tests and the full applicable gate, then compare the candidate to the baseline.
+
+### Independent exercise and evidence
+
+Record version changes, lockfile differences, regression outcomes and deployment compatibility. Define rollback or forward recovery and unresolved findings; if registry access or the required runtime is unavailable, stop without inventing a lockfile or claiming an upgrade succeeded.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify actual implementation, review, recovery, cost and candidate evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

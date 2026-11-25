@@ -44,6 +44,20 @@ node --test --test-name-pattern="26[.]04" examples/p7-platforms/labs.test.mjs
 
 Synthetic tenant-admin authorization model only; actual RBAC, audit integrity, support workflows and migration safety require runtime acceptance.
 
+## Applied engineering walkthrough
+
+Tenant administration requires action-level authorization rather than relying on the label administrator. Validate the actor's active membership, target tenant and permitted role transition before modifying membership. Prevent a lower-privileged administrator from assigning authority outside their delegation.
+
+### Diagnose the concrete failure
+
+Use adminAllowed for a same-tenant request and foreign-tenant request. Extend the exercise with a forbidden role elevation and a removed member attempting another operation. Check that denial leaves membership unchanged.
+
+### Independent exercise and evidence
+
+Design an invite and role-transition matrix with expiration, revocation and audit requirements. Record actual affected rows and authorization decisions separately from the teaching model.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify actual API, database, authorization, browser and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

@@ -44,6 +44,20 @@ node --test --test-name-pattern="26[.]02" examples/p7-platforms/labs.test.mjs
 
 Synthetic entitlement policy; no payment provider authenticity, tax, invoicing, real charges or durable billing integration verified.
 
+## Applied engineering walkthrough
+
+A provider subscription state and an application's entitlement are related but separate. Define permitted transitions, effective time and product access policy explicitly. Cancellation may take effect immediately or at period end depending on the reviewed contract; unknown states must not silently grant privileges.
+
+### Diagnose the concrete failure
+
+Create a table for trial, active, canceled and expired subscriptions using synthetic times. Exercise the exact cutoff and an unrecognized status, then compare the access decision with the policy.
+
+### Independent exercise and evidence
+
+Record state, effective time and reason for each transition. Include late events and a policy change, and distinguish payment provider reconciliation from local entitlement evaluation.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status; independently verify real sandbox signatures, database durability, billing and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

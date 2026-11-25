@@ -44,6 +44,20 @@ node --test --test-name-pattern="26[.]01" examples/p7-platforms/labs.test.mjs
 
 Synthetic policy check on already-validated claims only; no actual SAML assertion, SCIM, MFA, token or identity-provider verification.
 
+## Applied engineering walkthrough
+
+A device listing describes sessions or installation associations; it is not itself a revocation mechanism. Enforce expiry, token verification and server-side revocation according to the chosen session architecture. Short-lived access tokens may remain valid until expiration unless additional checks invalidate them.
+
+### Diagnose the concrete failure
+
+Create two synthetic device sessions, revoke one and attempt the same protected action using each. Inspect whether access and refresh paths enforce the intended revocation policy, including a request already in flight.
+
+### Independent exercise and evidence
+
+Define session identifiers, expiry, refresh rotation, logout and compromised-device recovery. Record access outcomes and any unavoidable revocation delay; keep credentials out of test evidence.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify actual IdP, application authorization, database and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

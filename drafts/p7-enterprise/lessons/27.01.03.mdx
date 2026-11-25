@@ -44,6 +44,20 @@ node --test --test-name-pattern="27[.]01" examples/p7-platforms/labs.test.mjs
 
 Capstone rubric checks supplied evidence flags only; no actual app build, SEO, browser or accessibility verification.
 
+## Applied engineering walkthrough
+
+Information architecture connects user goals to route ownership, navigation and authorization. Distinguish public documentation, sign-in, organization selection and protected workspace screens. A route diagram must include loading, empty, denied and failure states, not just the successful dashboard.
+
+### Diagnose the concrete failure
+
+Trace a signed-out visitor opening a protected task link, a member switching organizations and a missing task. Identify when the server authorizes the destination and when the UI can safely display data.
+
+### Independent exercise and evidence
+
+Create a route inventory with page purpose, required identity, data dependencies and expected error behavior. Test direct navigation and refresh as well as sidebar navigation; avoid duplicate navigation trees that can drift.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and verify actual application, browser and human review evidence independently.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

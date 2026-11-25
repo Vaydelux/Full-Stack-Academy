@@ -44,6 +44,20 @@ node --test --test-name-pattern="27[.]04" examples/p7-platforms/labs.test.mjs
 
 Capstone readiness rubric only; no container, deployment, scan, benchmark or restore is verified by supplied booleans.
 
+## Applied engineering walkthrough
+
+Performance qualification defines a repeatable workload, acceptable latency and error thresholds and resource limits before measuring. Compare the same request mix, dataset, duration and environment across candidates. Percentiles need adequate samples, and low latency with incorrect or rejected requests is not success.
+
+### Diagnose the concrete failure
+
+Run a bounded local load exercise against a disposable API with a fixed synthetic dataset. Record throughput, p95 latency, errors and resource use, then alter one variable such as query shape. Verify correct responses as part of the benchmark.
+
+### Independent exercise and evidence
+
+Document warm-up, concurrency, tool version, sample size and stop criteria. Repeat the workload and report variation; do not extrapolate local results to production capacity or claim a benchmark when the load tool is unavailable.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify actual infrastructure, build, security, performance, recovery and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

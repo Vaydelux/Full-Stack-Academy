@@ -44,6 +44,20 @@ node --test --test-name-pattern="25[.]02" examples/p7-platforms/labs.test.mjs
 
 Synthetic citation membership check; not evidence of factual grounding, model safety, embeddings or real provider behavior.
 
+## Applied engineering walkthrough
+
+Evaluate retrieval and generated answers separately. A relevant retrieved passage can still lead to an unsupported answer, while correct abstention may be the desired result for missing information. Include authorized, unauthorized, ambiguous and adversarial cases; keep evaluation fixtures separate from tuning data.
+
+### Diagnose the concrete failure
+
+Create labeled synthetic questions with expected facts, source identifiers and abstention behavior. Inject a plausible wrong answer and a foreign citation; score each dimension independently rather than collapsing everything into one accuracy number.
+
+### Independent exercise and evidence
+
+Write a regression rubric covering source recall, factual support, policy compliance, latency and usage. Compare two mock configurations and record individual failures, not just an aggregate score.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status; independently verify actual model, database, retrieval, provider and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

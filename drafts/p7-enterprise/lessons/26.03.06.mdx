@@ -44,6 +44,20 @@ node --test --test-name-pattern="26[.]03" examples/p7-platforms/labs.test.mjs
 
 Synthetic retention review model only; not legal advice or proof of compliance. Verify current law and organization-specific obligations with qualified counsel.
 
+## Applied engineering walkthrough
+
+Data residency concerns where data is processed and where copies exist, including backups, telemetry, content delivery and support access. Selecting a database region does not establish that every processing activity stays in that region. Transfer obligations depend on the reviewed factual and legal context.
+
+### Diagnose the concrete failure
+
+Draw a synthetic application flow from browser to API, database, backup, telemetry and support. Mark every known region and identify unknown routing or processor locations rather than assuming a single region.
+
+### Independent exercise and evidence
+
+Prepare a location and processor inventory with verification source, contract questions and owners. Record gaps for qualified review; do not claim a deployment is legally compliant based on its region setting.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status; actual controls, legal applicability, runtime and independent review remain separate gates.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

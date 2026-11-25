@@ -44,6 +44,20 @@ node --test --test-name-pattern="27[.]02" examples/p7-platforms/labs.test.mjs
 
 Capstone API status/DTO rubric only; no live NestJS, PostgreSQL, Prisma, Supabase or JWT validation established.
 
+## Applied engineering walkthrough
+
+A JWT is an assertion that requires verification against trusted issuer configuration, appropriate signing keys, audience and time constraints. Decoding its payload is not authentication. Use the supported library and handle key rotation according to the chosen issuer contract; authorization must still resolve active membership.
+
+### Diagnose the concrete failure
+
+Use authorized local or sandbox Supabase fixtures to verify a valid, expired, tampered and wrong-audience token. Confirm failed verification cannot create an authenticated request context or reach a protected write.
+
+### Independent exercise and evidence
+
+Document issuer, audience, algorithm policy and key refresh behavior. Record sanitized rejection reasons and key-rotation tests without retaining actual token values or claiming an unavailable provider was exercised.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify actual API, database, authentication and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

@@ -44,6 +44,20 @@ node --test --test-name-pattern="27[.]02" examples/p7-platforms/labs.test.mjs
 
 Capstone API status/DTO rubric only; no live NestJS, PostgreSQL, Prisma, Supabase or JWT validation established.
 
+## Applied engineering walkthrough
+
+A create-task contract defines accepted request fields, bounded values, success response and expected error shapes. OpenAPI describes the interface; runtime validation still must reject untrusted input. Keep a single reviewed mapping between the Zod schema and generated client contract rather than allowing silent drift.
+
+### Diagnose the concrete failure
+
+Submit a valid synthetic task, an overlong title, a missing property and an unexpected organization field. Verify the server validates each request before invoking the use case and returns the documented error shape.
+
+### Independent exercise and evidence
+
+Compare generated client types, OpenAPI examples and actual HTTP responses for the same fixture. Record the request and response evidence and ensure validation does not replace membership or object authorization.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify actual API, database, authentication and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

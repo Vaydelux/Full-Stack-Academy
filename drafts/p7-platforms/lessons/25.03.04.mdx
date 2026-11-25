@@ -44,6 +44,20 @@ node --test --test-name-pattern="25[.]03" examples/p7-platforms/labs.test.mjs
 
 Coordinate validation model only; real PostGIS geometry, index, map rendering and location privacy require separate acceptance.
 
+## Applied engineering walkthrough
+
+A map viewport can change quickly during pan and zoom, so request bounded data and cancel or ignore stale responses. Cluster or paginate dense point sets without implying that the visible markers represent every record. Provide a usable list or table alternative to map-only controls.
+
+### Diagnose the concrete failure
+
+Use a synthetic point list, change the viewport twice and delay the first response. Verify that the older response cannot overwrite the current view and that a dense viewport cannot request unlimited records.
+
+### Independent exercise and evidence
+
+Design a keyboard-operable list with synchronized selection, clear empty and loading states and accessible names. Record narrow-screen and keyboard results independently of map rendering correctness.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify actual PostGIS, browser, device and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

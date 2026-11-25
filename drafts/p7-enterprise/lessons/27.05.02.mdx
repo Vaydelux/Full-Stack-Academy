@@ -44,6 +44,20 @@ node --test --test-name-pattern="27[.]05" examples/p7-platforms/labs.test.mjs
 
 Final defense rubric only; actual human review, exploit verification, performance, costs and upgrade rehearsal remain separate.
 
+## Applied engineering walkthrough
+
+A fault drill tests a specific resilience hypothesis with bounded impact, observable signals, an abort condition and a restoration plan. Choose an isolated dependency and predict what the user and authoritative state should experience. An uncontrolled outage is not a useful substitute for a designed experiment.
+
+### Diagnose the concrete failure
+
+Introduce a synthetic dependency timeout in the disposable workspace. Observe request latency, bounded retries, fallback behavior and persisted state; stop if the agreed limit is exceeded. Restore the dependency and verify the user journey and queued work recover.
+
+### Independent exercise and evidence
+
+Record the experiment setup, actual fault duration, signals, user-visible impact, recovery and any unexpected effect. Compare results to the hypothesis and identify the next corrective test. Keep production systems outside the exercise.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify actual implementation, review, recovery, cost and candidate evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

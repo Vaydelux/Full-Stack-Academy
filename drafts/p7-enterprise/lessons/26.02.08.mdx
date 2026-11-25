@@ -44,6 +44,20 @@ node --test --test-name-pattern="26[.]02" examples/p7-platforms/labs.test.mjs
 
 Synthetic entitlement policy; no payment provider authenticity, tax, invoicing, real charges or durable billing integration verified.
 
+## Applied engineering walkthrough
+
+Billing acceptance combines authentic callbacks, durable deduplication, explicit state transitions, time-based access and reconciliation. Events may arrive out of order; timestamps alone may not establish authoritative ordering. When the provider contract does not support a safe local ordering rule, reconcile with authoritative provider state.
+
+### Diagnose the concrete failure
+
+Replay renewal, cancellation, duplicate delivery and an older renewal in a synthetic ledger. Verify canceled access is not revived by stale information and the same event cannot grant credit twice.
+
+### Independent exercise and evidence
+
+Create a failure matrix for invalid signature, uncertain commit, delayed event and provider unavailability. Record expected entitlement and recovery action for each, and clearly label actual sandbox and database checks not-run when absent.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status; independently verify real sandbox signatures, database durability, billing and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

@@ -44,6 +44,20 @@ node --test --test-name-pattern="27[.]05" examples/p7-platforms/labs.test.mjs
 
 Final defense rubric only; actual human review, exploit verification, performance, costs and upgrade rehearsal remain separate.
 
+## Applied engineering walkthrough
+
+Cost planning begins with a workload model: users, requests, stored records, transferred bytes, background work and external service calls. Free-tier eligibility and billing units vary by provider and can change. Separate fixed costs from usage-driven costs, and make uncertainty and hard resource limits visible.
+
+### Diagnose the concrete failure
+
+Build low, base and high hypothetical monthly scenarios using consistent units. Double one variable at a time and identify the largest cost driver. Check that a hypothetical increase in retries or media delivery is represented rather than hidden in an average.
+
+### Independent exercise and evidence
+
+Prepare an assumption table with usage quantities, unit-price source and verification date before using real prices. Use clearly labeled hypothetical rates for practice and define budget alerts, quotas and a stop condition without provisioning paid resources.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify actual implementation, review, recovery, cost and candidate evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

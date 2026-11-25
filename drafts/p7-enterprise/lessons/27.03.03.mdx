@@ -44,6 +44,20 @@ node --test --test-name-pattern="27[.]03" examples/p7-platforms/labs.test.mjs
 
 Synthetic integrated-feature rubric; actual upload, mail, Redis, websocket, search and audit behavior require live isolated tests.
 
+## Applied engineering walkthrough
+
+An assignment and its notification intent should commit together through a durable outbox; external delivery happens independently. A worker needs a stable job identity, bounded retries and a way to distinguish accepted work from an uncertain acknowledgement. A failed mail request must not roll back an already committed assignment.
+
+### Diagnose the concrete failure
+
+Write an assignment and outbox row in one disposable transaction, then simulate sender failure and acknowledgement loss. Retry the same job identity and inspect the number of logical effects. Force the database transaction to fail and verify no orphan notification remains.
+
+### Independent exercise and evidence
+
+Prepare a delivery state and retry matrix including permanent rejection, worker restart and duplicate delivery. Record persisted intent and delivery attempts separately; do not infer exactly-once external delivery from a fake sender.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify actual API, storage, database, queue, cache, browser and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

@@ -44,6 +44,20 @@ node --test --test-name-pattern="25[.]04" examples/p7-platforms/labs.test.mjs
 
 Synthetic resource-bound model; no actual FFmpeg sandbox, CDN, HLS, WebRTC or moderation service acceptance.
 
+## Applied engineering walkthrough
+
+An untrusted media file reaches a complex decoder, so validate declared limits and isolate processing with constrained CPU, memory, disk and execution time. File extensions and metadata alone do not establish safety. Pass arguments as structured process parameters and never concatenate user input into a shell command.
+
+### Diagnose the concrete failure
+
+Run mediaAllowed against a fixture exceeding the pixel limit, then process a small synthetic file using a disposable constrained worker. Exercise a corrupt input and a time limit without exposing host files.
+
+### Independent exercise and evidence
+
+Define input and output bounds, cleanup and terminal failure behavior. Record exit status, resource observations and absence of promoted outputs after failure; distinguish model validation from actual decoder isolation.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify actual media tools, storage, playback, provider and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

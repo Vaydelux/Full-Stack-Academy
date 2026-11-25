@@ -44,6 +44,20 @@ node --test --test-name-pattern="26[.]04" examples/p7-platforms/labs.test.mjs
 
 Synthetic tenant-admin authorization model only; actual RBAC, audit integrity, support workflows and migration safety require runtime acceptance.
 
+## Applied engineering walkthrough
+
+Bulk imports are untrusted input and often create many side effects. Stage and validate rows, map fields explicitly, bound file size and row count, and choose a transactional or resumable application strategy. Dry-run output must not be confused with committed records, and repeated imports need stable deduplication rules.
+
+### Diagnose the concrete failure
+
+Build a synthetic CSV containing valid, duplicate and malformed rows. Run validation without writes, then apply the accepted set in a disposable database. Interrupt a batch and verify restart follows the documented policy.
+
+### Independent exercise and evidence
+
+Create a bounded rejected-row report with safe error fields, tenant scope and operation identity. Record accepted and rejected counts, retry results and the exact database effects; avoid exporting raw sensitive cells.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify actual API, database, authorization, browser and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

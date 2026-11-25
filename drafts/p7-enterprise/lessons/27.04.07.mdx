@@ -44,6 +44,20 @@ node --test --test-name-pattern="27[.]04" examples/p7-platforms/labs.test.mjs
 
 Capstone readiness rubric only; no container, deployment, scan, benchmark or restore is verified by supplied booleans.
 
+## Applied engineering walkthrough
+
+A backup is only useful if it can be restored to a compatible, authorized environment and the recovered application behaves correctly. Define recovery time and recovery point objectives as targets, then measure actual elapsed time and recoverable data. Keep restore tests separate from live data and live credentials.
+
+### Diagnose the concrete failure
+
+Create synthetic records, take a disposable backup and restore into an isolated database. Compare counts and selected invariants, then exercise the restored task workflow. Include a corrupted or missing backup case and verify failure is reported honestly.
+
+### Independent exercise and evidence
+
+Record backup identity, schema and database versions, restore duration, recoverable checkpoint and integrity checks. Explain any gap to the objectives and assign a corrective action; a successful backup command alone is insufficient.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify actual infrastructure, build, security, performance, recovery and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

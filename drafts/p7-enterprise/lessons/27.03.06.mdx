@@ -44,6 +44,20 @@ node --test --test-name-pattern="27[.]03" examples/p7-platforms/labs.test.mjs
 
 Synthetic integrated-feature rubric; actual upload, mail, Redis, websocket, search and audit behavior require live isolated tests.
 
+## Applied engineering walkthrough
+
+Search results are a derived index with explicit freshness and access contracts. Filter by authorized tenant and relevant ACL before ranking, bound query and page size, and use stable result ordering. A delayed indexing event must not overwrite a newer document version or resurrect a deleted item.
+
+### Diagnose the concrete failure
+
+Seed similar synthetic task titles in two tenants and query as one member. Test pagination, an oversized query and an older index update arriving after deletion. Verify the foreign record never appears in results or counts.
+
+### Independent exercise and evidence
+
+Document index fields, source version, rebuild strategy and expected freshness. Record result IDs, denied requests and stale-event decisions; distinguish a local ranking example from actual engine and database qualification.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify actual API, storage, database, queue, cache, browser and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

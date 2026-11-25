@@ -44,6 +44,20 @@ node --test --test-name-pattern="26[.]01" examples/p7-platforms/labs.test.mjs
 
 Synthetic policy check on already-validated claims only; no actual SAML assertion, SCIM, MFA, token or identity-provider verification.
 
+## Applied engineering walkthrough
+
+SCIM is a provisioning contract, not an authentication protocol. Map external identities to stable internal identities and keep repeated operations safe. Deactivation must prevent applicable access and may require revocation of sessions and tokens; hiding an account in the UI does not revoke it.
+
+### Diagnose the concrete failure
+
+Rehearse synthetic create, attribute update, group removal and deactivate events, including duplicate delivery. Verify the internal membership transitions and whether subsequent protected requests still succeed.
+
+### Independent exercise and evidence
+
+Design conflict handling for duplicate external IDs, out-of-order updates and partial failures. Record an auditable reconciliation path and actual session revocation evidence separately from provisioning model results.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify actual IdP, application authorization, database and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

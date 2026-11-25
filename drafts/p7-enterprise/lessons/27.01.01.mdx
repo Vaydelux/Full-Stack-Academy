@@ -44,6 +44,20 @@ node --test --test-name-pattern="27[.]01" examples/p7-platforms/labs.test.mjs
 
 Capstone rubric checks supplied evidence flags only; no actual app build, SEO, browser or accessibility verification.
 
+## Applied engineering walkthrough
+
+Start the capstone with a small multi-tenant task workspace, not a list of frameworks. Separate anonymous visitors, members and administrators, and define what each can accomplish. A useful requirement names the actor, action, expected result and measurable failure condition. Optional billing and native clients remain outside this first release.
+
+### Diagnose the concrete failure
+
+Write acceptance cases for sign-in, task creation, editing and isolation between two synthetic organizations. Ask what happens when a member is removed, a request fails or a task does not exist; turn each ambiguity into an explicit requirement.
+
+### Independent exercise and evidence
+
+Create a traceability table linking each requirement to a route, server invariant and test. Mark non-goals and dependencies, and record a review decision before adding features. Use the same scope throughout subsequent capstone modules.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and verify actual application, browser and human review evidence independently.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

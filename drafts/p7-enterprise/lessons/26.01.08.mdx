@@ -44,6 +44,20 @@ node --test --test-name-pattern="26[.]01" examples/p7-platforms/labs.test.mjs
 
 Synthetic policy check on already-validated claims only; no actual SAML assertion, SCIM, MFA, token or identity-provider verification.
 
+## Applied engineering walkthrough
+
+Enterprise identity joins multiple independent boundaries: IdP trust, provisioning, organization membership, session lifecycle, step-up authentication and administrative authorization. A successful SSO login establishes identity under the configured trust rules, not blanket access to all enterprise resources.
+
+### Diagnose the concrete failure
+
+Use synthetic enterpriseAccess cases and build a matrix for replayed assertions, removed group membership, revoked devices and foreign-tenant escalation. Trace each case to the component responsible for denying it.
+
+### Independent exercise and evidence
+
+Prepare a disposable IdP and application acceptance plan with explicit expected state changes, audit records and recovery procedures. Record actual integration and negative results separately from the local teaching model.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify actual IdP, application authorization, database and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?
