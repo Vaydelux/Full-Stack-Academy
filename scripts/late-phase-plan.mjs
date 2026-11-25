@@ -34,7 +34,8 @@ export function buildLatePlan({catalog,publishedIds,files,read,gates,scripts}){
  const familyBindings={};
  for(const family of families){
   const prefix='examples/'+EXAMPLES[family]+'/',draftPrefix='drafts/'+family+'/';
-  const shared=files.filter(p=>p.startsWith(prefix)||p.startsWith(draftPrefix)&&!p.startsWith(draftPrefix+'lessons/')).sort();
+  const distributed=['redis','realtime'].includes(family)?'examples/p5-distributed-runtime/':null;
+  const shared=files.filter(p=>p.startsWith(prefix)||p.startsWith(draftPrefix)&&!p.startsWith(draftPrefix+'lessons/')||distributed&&p.startsWith(distributed)).sort();
   assert.ok(shared.some(p=>p.startsWith(prefix)&&p.endsWith('.test.mjs')),'No related teaching tests: '+family);
   assert.ok(typeof scripts[SOURCE_COMMANDS[family]]==='string'&&scripts[SOURCE_COMMANDS[family]].trim(),'Missing source command '+family);
   familyBindings[family]=Object.fromEntries(shared.map(p=>[p,sha(read(p))]));

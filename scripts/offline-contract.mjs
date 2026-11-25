@@ -25,7 +25,7 @@ const REQUIRED = Object.freeze([
 const P5_REQUIRED = Object.freeze([
  'test:p5-security','test:p5-postgresql-source','test:p5-rls-source',
  'test:p5-curriculum-source','test:p5-httpdb-source','test:p5-container-source',
- 'test:p5-evidence-source','test:p5-cache-jobs','test:p5-redis-source',
+ 'test:p5-evidence-source','test:p5-cache-jobs','test:p5-distributed-source','test:p5-redis-source',
  'test:p5-realtime-labs','test:p5-realtime-source',
  'test:p5-integrations-labs','test:p5-integrations-source',
  'test:p5-integrations-http','test:p5-postgres-search-source',

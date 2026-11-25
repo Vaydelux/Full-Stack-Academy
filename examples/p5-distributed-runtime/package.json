@@ -1,0 +1,14 @@
+{
+  "name": "academy-distributed-runtime",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24.11.1 <25"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "2.119.2",
+    "bullmq": "6.7.8",
+    "ioredis": "5.8.2",
+    "pg": "8.23.1"
+  }
+}

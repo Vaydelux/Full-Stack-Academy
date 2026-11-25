@@ -52,3 +52,6 @@ Recommended evidence: exact `node --version`, test command, count of executed te
 - [BullMQ idempotent jobs](https://docs.bullmq.io/patterns/idempotent-jobs)
 - [BullMQ retries](https://docs.bullmq.io/guide/retrying-failing-jobs)
 - [BullMQ production considerations](https://docs.bullmq.io/guide/going-to-production)
+
+## Real-service follow-on
+The companion `examples/p5-distributed-runtime` workspace contains Redis Lua cache and BullMQ/PostgreSQL durable receipt/effect integration source. It supplements rather than replaces these in-memory labs. See its README for isolated live qualification commands and outstanding evidence.

@@ -21,3 +21,6 @@ Set ACADEMY_SUPABASE_ISOLATED=YES, ACADEMY_SUPABASE_URL (e.g. http://127.0.0.1:5
 npm run test:p4-runtime-source runs 11 isolated guard/HTTP and repository tests, which use injected fetch/query/transaction responses; these do not connect to services. Runtime tests require actual service access and fail rather than silently skip. No automatic promotion.
 
 References: https://www.prisma.io/docs/orm/v7/prisma-client/setup-and-configuration/introduction ; https://www.prisma.io/docs/orm/v7/prisma-schema/overview/generators ; https://supabase.com/docs/guides/api/securing-your-api ; https://supabase.com/docs/reference/self-hosting-auth ; https://supabase.com/docs/guides/storage/security/access-control
+
+## Extended qualification
+The separate `examples/p5-distributed-runtime` workspace now contains SDK-based signed upload, signed download expiry and private Broadcast authorization acceptance source. See its README and run `npm run qualify:p4:supabase-extended` only after completing the documented independent local setup. Not live-qualified here.
