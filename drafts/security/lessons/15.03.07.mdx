@@ -42,6 +42,20 @@ Document both a permitted happy path and a rejected adversarial path. Integratio
 
 A passing UI check or source-only checklist cannot establish secure production behavior. An observed negative test and reviewed trust boundary are essential.
 
+## Applied engineering walkthrough
+
+Dependency security requires knowing what was installed and which code executes during installation and build. A lockfile pins resolution but does not prove provenance or safety. Review changes, scripts and advisories in context; distinguish reachable risk from a raw vulnerability count.
+
+### Diagnose the concrete failure
+
+Inspect a synthetic lockfile change and identify newly introduced packages and lifecycle scripts. Compare a clean pinned install with the reviewed expected tree in a disposable environment. Verify build and regression results after a security update.
+
+### Independent exercise and evidence
+
+Create a dependency update record with advisory, affected version, patched range, compatibility assessment and rollback path. Include artifact integrity and reviewer evidence; never execute an unreviewed script merely to inspect its behavior.
+
+**Qualification boundary:** These are practice instructions, not recorded audit results. Use synthetic data and authorized disposable infrastructure. Preserve existing laboratory contracts and publication status.
+
 ## Knowledge check
 
 1. Which input is attacker-controlled?
