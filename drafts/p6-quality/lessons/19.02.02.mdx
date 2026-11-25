@@ -44,6 +44,20 @@ node --test --test-name-pattern="19[.]02" examples/p6-quality/labs.test.mjs
 
 Plain JavaScript UI state model; installed React/Vitest/Testing Library/MSW and real browsers require separate tests.
 
+## Applied engineering walkthrough
+
+Accessible role and name queries express how a user identifies a control. A CSS selector targets implementation details and may survive even when a button loses its accessible name. A role query is not a complete accessibility audit; keyboard, focus and screen-reader behavior remain relevant.
+
+### Diagnose the concrete failure
+
+Find a synthetic Save button by its role and accessible name. Change only the styling and verify the test still passes. Remove the label in a disposable fixture and confirm the query fails for the intended reason.
+
+### Independent exercise and evidence
+
+Design queries for a labeled input, dialog and status message. Record their roles and names, then plan a manual screen-reader check for announcements and interaction.
+
+**Evidence boundary:** These are practice instructions, not recorded test results. Preserve the existing model, specification and draft flag; external runtime qualification remains independent.
+
 ## Knowledge check
 
 1. Which public behavior or invariant is being protected?
