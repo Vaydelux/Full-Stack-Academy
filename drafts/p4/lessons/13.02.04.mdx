@@ -83,6 +83,20 @@ A database transaction cannot atomically commit an external message broker or pa
 
 A safe persistence layer should accept explicit request-scoped identities, use bounded queries, reject unsupported input, and keep internal query types from becoming public API DTOs. For permission-sensitive mutations, reason about database constraints and application authorization separately: a valid foreign key does not mean the calling actor may update that row.
 
+## Applied persistence walkthrough
+
+An interactive transaction supplies a transaction-scoped client for all participating statements. The debit uses a balance predicate and an atomic decrement; the credit must update exactly one destination row. Throwing aborts the transaction. The example does not specify an isolation level, durable operation key or deterministic lock order; production transfers need those decisions separately.
+
+### Diagnose the concrete failure
+
+Check valid transfer, insufficient balance, missing destination and same-account rejection. For the missing destination case, verify the source debit rolls back. On a real database, run concurrent competing transfers with bounded deadlines and inspect final balances. Do not treat a fake transaction callback as PostgreSQL isolation evidence.
+
+### Independent exercise and evidence
+
+Design a retry policy for transient serialization or deadlock failures. Retry the whole operation only when safe, and use a durable idempotency record for uncertain outcomes. Record affected rows, final balance totals and actual transaction failure classes.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Use the pinned Prisma 7 toolchain and disposable PostgreSQL database. Preserve the starter and solution; source review does not qualify generated code or authorization.
+
 ## Bug Hunt
 
 1. State the starter's observable defect: A failure after the debit but before the credit leaves the first wallet reduced. It also omits tenant predicates and an insufficient-balance check.
