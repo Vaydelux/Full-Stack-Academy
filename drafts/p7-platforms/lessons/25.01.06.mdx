@@ -44,6 +44,20 @@ node --test --test-name-pattern="25[.]01" examples/p7-platforms/labs.test.mjs
 
 In-memory count/deduplication model; no warehouse, materialized-view freshness, ClickHouse or dbt runtime qualification.
 
+## Applied engineering walkthrough
+
+dbt expresses SQL transformations as versioned models and a dependency graph. Separate staging cleanup from business-level definitions, and make tests enforce the declared grain. A passing uniqueness test does not independently prove a revenue calculation matches the intended business meaning.
+
+### Diagnose the concrete failure
+
+Create a disposable staging model and a curated revenue model. Inject a duplicate order ID and missing required key, then verify the appropriate data tests fail before correcting the fixture.
+
+### Independent exercise and evidence
+
+Document refunds, currency, time windows and excluded statuses in a metric definition. Rebuild the models and reconcile results against a hand-calculated synthetic dataset, recording the exact target and model revision.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify actual database, analytics tools and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

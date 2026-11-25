@@ -44,6 +44,20 @@ node --test --test-name-pattern="25[.]01" examples/p7-platforms/labs.test.mjs
 
 In-memory count/deduplication model; no warehouse, materialized-view freshness, ClickHouse or dbt runtime qualification.
 
+## Applied engineering walkthrough
+
+Data quality controls make assumptions explicit: unique keys, required fields, allowed values, bounded ranges and referential consistency. Invalid input should follow a documented reject or quarantine policy rather than silently changing totals. Include checks for unexpected volume and freshness where meaningful.
+
+### Diagnose the concrete failure
+
+Inject duplicate identifiers, missing keys, invalid amounts and an unknown parent into staging. Verify which assertions reject each row and ensure accepted totals exclude rejected records.
+
+### Independent exercise and evidence
+
+Build a quality report with rule ID, rejected count, owner and recovery path. Test correction and replay without introducing a duplicate, and avoid logging raw sensitive values in rejected-row diagnostics.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify actual database, analytics tools and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

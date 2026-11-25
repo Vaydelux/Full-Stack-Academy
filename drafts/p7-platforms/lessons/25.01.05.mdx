@@ -44,6 +44,20 @@ node --test --test-name-pattern="25[.]01" examples/p7-platforms/labs.test.mjs
 
 In-memory count/deduplication model; no warehouse, materialized-view freshness, ClickHouse or dbt runtime qualification.
 
+## Applied engineering walkthrough
+
+ClickHouse analytical performance depends on storage engine, sort key, partitioning and query shape. The sort key is not a relational uniqueness guarantee. Choose it from common filters and data distribution, and avoid tiny partitions or frequent small writes without evidence.
+
+### Diagnose the concrete failure
+
+Use an isolated synthetic event table and compare filtered aggregations for two documented sort-key designs. Record selected rows, elapsed time and ingestion conditions under a comparable workload.
+
+### Independent exercise and evidence
+
+Design a repeatable ingestion and deduplication contract and test a duplicate event. Report measured query behavior separately from correctness; do not treat a fast aggregate as proof of accurate counts.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify actual database, analytics tools and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

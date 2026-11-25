@@ -44,6 +44,20 @@ node --test --test-name-pattern="25[.]01" examples/p7-platforms/labs.test.mjs
 
 In-memory count/deduplication model; no warehouse, materialized-view freshness, ClickHouse or dbt runtime qualification.
 
+## Applied engineering walkthrough
+
+An analytics event contract needs a stable event identity, schema version, occurrence time and scope for permitted use. Distinguish event time from receipt time, and avoid including unnecessary personal data. A replay with identical identity must not inflate an aggregate.
+
+### Diagnose the concrete failure
+
+Submit a synthetic view event twice and one purchase event with a distinct ID. Compare unique counts, then attempt conflicting content under the original ID and define explicit rejection or quarantine behavior.
+
+### Independent exercise and evidence
+
+Specify required fields, version compatibility and late-arrival handling. Record which events are eligible for analytics under the reviewed purpose and how withdrawn eligibility affects downstream records.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify actual database, analytics tools and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?
