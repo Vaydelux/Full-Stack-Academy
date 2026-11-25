@@ -1,0 +1,830 @@
+{
+  "schemaVersion": 1,
+  "moduleId": "11.02",
+  "sourceCommit": "4d8f5cc4467ccb56cf09cb8dd2383304f38781a5",
+  "publicationReady": false,
+  "commonSourceBindings": [
+    {
+      "path": "examples/nestjs-vertical/package.json",
+      "gitBlob": "b7bf07ea017c8ff637c0a00574463083cd298101"
+    },
+    {
+      "path": "examples/nestjs-vertical/tsconfig.json",
+      "gitBlob": "cb0841f58bf8ece41dd0c7df5f9c630cb09317ab"
+    },
+    {
+      "path": "examples/nestjs-vertical/scripts/red-green.mjs",
+      "gitBlob": "6ca45e494858f53d3e399489e1745604f456e5de"
+    },
+    {
+      "path": "examples/nestjs-vertical/scripts/module-qualification.mjs",
+      "gitBlob": "6101e84c50f92e6221c2fa128b8e50f679709d73"
+    },
+    {
+      "path": "examples/nestjs-vertical/scripts/require-lock.mjs",
+      "gitBlob": "5becab4f3cdcc0351f32d6d392d541eded915286"
+    },
+    {
+      "path": "examples/nestjs-vertical/scripts/lock-integrity.mjs",
+      "gitBlob": "c34b6caabfcf05fbded750418935062cde8c3626"
+    },
+    {
+      "path": "examples/nestjs-vertical/scripts/verify-runtime-test-coverage.mjs",
+      "gitBlob": "abf74d0c22b6abb1b9e21745ccb3a343848339e9"
+    }
+  ],
+  "candidates": [
+    {
+      "id": "11.02.01",
+      "moduleId": "11.02",
+      "title": "Middleware execution",
+      "slug": "middleware-execution",
+      "publicationReady": false,
+      "runtimeExecuted": false,
+      "reviewedAt": null,
+      "sourceBindings": [
+        {
+          "path": "drafts/nestjs/lessons/11.02.01.mdx",
+          "gitBlob": "a4d8d6ac75388bbadd604c7c3d74bf067effec13"
+        },
+        {
+          "path": "drafts/nestjs/lessons/11.02.01.meta.json",
+          "gitBlob": "ac30355bfd4d0465754c32add42b1cc888f68ee4"
+        },
+        {
+          "path": "drafts/nestjs/labs/middleware-execution/lab.json",
+          "gitBlob": "672fc7be82aced84a8c3868a1044ae605dc5536e"
+        },
+        {
+          "path": "drafts/nestjs/labs/middleware-execution/starter.ts",
+          "gitBlob": "e12f2a0a2db442c1af6b43284bd1f697027ed84a"
+        },
+        {
+          "path": "drafts/nestjs/labs/middleware-execution/solution.ts",
+          "gitBlob": "ddebeb913527a408d1f1bb0ccc85bc9f1840b5c6"
+        },
+        {
+          "path": "examples/nestjs-vertical/tests/request-pipeline.test.mjs",
+          "gitBlob": "b886c67ac092347d3cf4134d8df721d5c78b41ff"
+        }
+      ],
+      "targetPaths": [
+        "src/content/lessons/11.02.01.mdx",
+        "src/content/lessons/11.02.01.meta.json",
+        "labs/nestjs-middleware-execution/lab.json",
+        "labs/nestjs-middleware-execution/starter/solution.ts",
+        "labs/nestjs-middleware-execution/solution/solution.ts",
+        "labs/nestjs-middleware-execution/solution.test.mjs"
+      ],
+      "runtime": {
+        "suite": "examples/nestjs-vertical/tests/request-pipeline.test.mjs",
+        "topic": "11.02.01",
+        "integration": null,
+        "negativeMode": "semantic-runtime"
+      },
+      "proposedMetadata": {
+        "id": "11.02.01",
+        "title": "Middleware execution",
+        "trackId": "11",
+        "moduleId": "11.02",
+        "level": "Intermediate",
+        "estimatedMinutes": 60,
+        "description": "Middleware has to call next exactly once after attaching safe request data. GET /tasks completes and carries a correlation ID without hanging.",
+        "labId": "lab.node.nestjs-middleware-execution",
+        "stack": {
+          "node": "24",
+          "nestjs": "12",
+          "typescriptNestjs": "6"
+        },
+        "prerequisites": [
+          "11.01.08"
+        ],
+        "objectives": [
+          "Middleware has to call next exactly once after attaching safe request data.",
+          "GET /tasks completes and carries a correlation ID without hanging.",
+          "Do not create a trust boundary from an unverified client-supplied header."
+        ],
+        "rubric": [
+          "Middleware has to call next exactly once after attaching safe request data.",
+          "GET /tasks completes and carries a correlation ID without hanging.",
+          "Do not create a trust boundary from an unverified client-supplied header."
+        ],
+        "sources": [
+          {
+            "label": "Primary official reference",
+            "url": "https://docs.nestjs.com/"
+          },
+          {
+            "label": "Supporting official reference",
+            "url": "https://docs.nestjs.com/middleware"
+          }
+        ],
+        "reviewedAt": null
+      },
+      "proposedLab": {
+        "id": "lab.node.nestjs-middleware-execution",
+        "lessonId": "11.02.01",
+        "title": "NestJS practice: Middleware execution",
+        "runtime": "node-24-nestjs-12-typescript-6",
+        "starter": "labs/nestjs-middleware-execution/starter/solution.ts",
+        "solution": "labs/nestjs-middleware-execution/solution/solution.ts",
+        "tests": "labs/nestjs-middleware-execution/solution.test.mjs",
+        "expected": "GET /tasks completes and carries a correlation ID without hanging.",
+        "security": "Do not create a trust boundary from an unverified client-supplied header."
+      }
+    },
+    {
+      "id": "11.02.02",
+      "moduleId": "11.02",
+      "title": "Pipes and Zod validation",
+      "slug": "pipes-zod-validation",
+      "publicationReady": false,
+      "runtimeExecuted": false,
+      "reviewedAt": null,
+      "sourceBindings": [
+        {
+          "path": "drafts/nestjs/lessons/11.02.02.mdx",
+          "gitBlob": "fb7c8049ab8a13aec5558e33895652c4a5aa925b"
+        },
+        {
+          "path": "drafts/nestjs/lessons/11.02.02.meta.json",
+          "gitBlob": "a1920eab88419d13654052767ecc92c028e8f020"
+        },
+        {
+          "path": "drafts/nestjs/labs/pipes-zod-validation/lab.json",
+          "gitBlob": "f8835397249487c5c6f7c737b1efa9a85a6d0e8b"
+        },
+        {
+          "path": "drafts/nestjs/labs/pipes-zod-validation/starter.ts",
+          "gitBlob": "5412475dc438f8a15dc86d9fd3175251a9fc5542"
+        },
+        {
+          "path": "drafts/nestjs/labs/pipes-zod-validation/solution.ts",
+          "gitBlob": "3ca118dde7a059e3a671aefa8cf7defce56988a2"
+        },
+        {
+          "path": "examples/nestjs-vertical/tests/request-pipeline.test.mjs",
+          "gitBlob": "b886c67ac092347d3cf4134d8df721d5c78b41ff"
+        }
+      ],
+      "targetPaths": [
+        "src/content/lessons/11.02.02.mdx",
+        "src/content/lessons/11.02.02.meta.json",
+        "labs/nestjs-pipes-zod-validation/lab.json",
+        "labs/nestjs-pipes-zod-validation/starter/solution.ts",
+        "labs/nestjs-pipes-zod-validation/solution/solution.ts",
+        "labs/nestjs-pipes-zod-validation/solution.test.mjs"
+      ],
+      "runtime": {
+        "suite": "examples/nestjs-vertical/tests/request-pipeline.test.mjs",
+        "topic": "11.02.02",
+        "integration": null,
+        "negativeMode": "semantic-runtime"
+      },
+      "proposedMetadata": {
+        "id": "11.02.02",
+        "title": "Pipes and Zod validation",
+        "trackId": "11",
+        "moduleId": "11.02",
+        "level": "Intermediate",
+        "estimatedMinutes": 60,
+        "description": "Use PipeTransform to turn unknown request payloads into parsed typed data or an explicit 400. POST an invalid title to receive 400; POST a valid title and see a normalized payload.",
+        "labId": "lab.node.nestjs-pipes-zod-validation",
+        "stack": {
+          "node": "24",
+          "nestjs": "12",
+          "typescriptNestjs": "6"
+        },
+        "prerequisites": [
+          "11.02.01"
+        ],
+        "objectives": [
+          "Use PipeTransform to turn unknown request payloads into parsed typed data or an explicit 400.",
+          "POST an invalid title to receive 400; POST a valid title and see a normalized payload.",
+          "A TypeScript DTO annotation does not validate incoming JSON without a runtime pipe."
+        ],
+        "rubric": [
+          "Use PipeTransform to turn unknown request payloads into parsed typed data or an explicit 400.",
+          "POST an invalid title to receive 400; POST a valid title and see a normalized payload.",
+          "A TypeScript DTO annotation does not validate incoming JSON without a runtime pipe."
+        ],
+        "sources": [
+          {
+            "label": "Primary official reference",
+            "url": "https://docs.nestjs.com/"
+          },
+          {
+            "label": "Supporting official reference",
+            "url": "https://docs.nestjs.com/pipes"
+          }
+        ],
+        "reviewedAt": null
+      },
+      "proposedLab": {
+        "id": "lab.node.nestjs-pipes-zod-validation",
+        "lessonId": "11.02.02",
+        "title": "NestJS practice: Pipes and Zod validation",
+        "runtime": "node-24-nestjs-12-typescript-6",
+        "starter": "labs/nestjs-pipes-zod-validation/starter/solution.ts",
+        "solution": "labs/nestjs-pipes-zod-validation/solution/solution.ts",
+        "tests": "labs/nestjs-pipes-zod-validation/solution.test.mjs",
+        "expected": "POST an invalid title to receive 400; POST a valid title and see a normalized payload.",
+        "security": "A TypeScript DTO annotation does not validate incoming JSON without a runtime pipe."
+      }
+    },
+    {
+      "id": "11.02.03",
+      "moduleId": "11.02",
+      "title": "Guards and authorization",
+      "slug": "guards-authorization",
+      "publicationReady": false,
+      "runtimeExecuted": false,
+      "reviewedAt": null,
+      "sourceBindings": [
+        {
+          "path": "drafts/nestjs/lessons/11.02.03.mdx",
+          "gitBlob": "64b3e1982759c9c526290634c80c3a025629810d"
+        },
+        {
+          "path": "drafts/nestjs/lessons/11.02.03.meta.json",
+          "gitBlob": "a8932af1e54c0fa80427e574483df172c1514e5b"
+        },
+        {
+          "path": "drafts/nestjs/labs/guards-authorization/lab.json",
+          "gitBlob": "e2d47e92a3ccc7b97837ca85ce63297f158e9510"
+        },
+        {
+          "path": "drafts/nestjs/labs/guards-authorization/starter.ts",
+          "gitBlob": "28b8e1592ef4f4dbc3ab7ba3e3986d0c391ddf89"
+        },
+        {
+          "path": "drafts/nestjs/labs/guards-authorization/solution.ts",
+          "gitBlob": "2dd08faf7f75bfc4fc2a097c2e32f1260f095b60"
+        },
+        {
+          "path": "examples/nestjs-vertical/tests/request-pipeline.test.mjs",
+          "gitBlob": "b886c67ac092347d3cf4134d8df721d5c78b41ff"
+        }
+      ],
+      "targetPaths": [
+        "src/content/lessons/11.02.03.mdx",
+        "src/content/lessons/11.02.03.meta.json",
+        "labs/nestjs-guards-authorization/lab.json",
+        "labs/nestjs-guards-authorization/starter/solution.ts",
+        "labs/nestjs-guards-authorization/solution/solution.ts",
+        "labs/nestjs-guards-authorization/solution.test.mjs"
+      ],
+      "runtime": {
+        "suite": "examples/nestjs-vertical/tests/request-pipeline.test.mjs",
+        "topic": "11.02.03",
+        "integration": null,
+        "negativeMode": "semantic-runtime"
+      },
+      "proposedMetadata": {
+        "id": "11.02.03",
+        "title": "Guards and authorization",
+        "trackId": "11",
+        "moduleId": "11.02",
+        "level": "Intermediate",
+        "estimatedMinutes": 60,
+        "description": "Nest guards make an access decision before protected route handling. GET /private returns 403 with no authorization; authorized test principal can pass.",
+        "labId": "lab.node.nestjs-guards-authorization",
+        "stack": {
+          "node": "24",
+          "nestjs": "12",
+          "typescriptNestjs": "6"
+        },
+        "prerequisites": [
+          "11.02.02"
+        ],
+        "objectives": [
+          "Nest guards make an access decision before protected route handling.",
+          "GET /private returns 403 with no authorization; authorized test principal can pass.",
+          "A toy Bearer string is only an educational fixture; production must verify signed credentials and scope."
+        ],
+        "rubric": [
+          "Nest guards make an access decision before protected route handling.",
+          "GET /private returns 403 with no authorization; authorized test principal can pass.",
+          "A toy Bearer string is only an educational fixture; production must verify signed credentials and scope."
+        ],
+        "sources": [
+          {
+            "label": "Primary official reference",
+            "url": "https://docs.nestjs.com/"
+          },
+          {
+            "label": "Supporting official reference",
+            "url": "https://docs.nestjs.com/guards"
+          }
+        ],
+        "reviewedAt": null
+      },
+      "proposedLab": {
+        "id": "lab.node.nestjs-guards-authorization",
+        "lessonId": "11.02.03",
+        "title": "NestJS practice: Guards and authorization",
+        "runtime": "node-24-nestjs-12-typescript-6",
+        "starter": "labs/nestjs-guards-authorization/starter/solution.ts",
+        "solution": "labs/nestjs-guards-authorization/solution/solution.ts",
+        "tests": "labs/nestjs-guards-authorization/solution.test.mjs",
+        "expected": "GET /private returns 403 with no authorization; authorized test principal can pass.",
+        "security": "A toy Bearer string is only an educational fixture; production must verify signed credentials and scope."
+      }
+    },
+    {
+      "id": "11.02.04",
+      "moduleId": "11.02",
+      "title": "Interceptors and tracing",
+      "slug": "interceptors-tracing",
+      "publicationReady": false,
+      "runtimeExecuted": false,
+      "reviewedAt": null,
+      "sourceBindings": [
+        {
+          "path": "drafts/nestjs/lessons/11.02.04.mdx",
+          "gitBlob": "c200f561a0a4f659a3e900a2f782be2f9199ba59"
+        },
+        {
+          "path": "drafts/nestjs/lessons/11.02.04.meta.json",
+          "gitBlob": "ec6bfa44aa9910650cd674938c574e50090d38dd"
+        },
+        {
+          "path": "drafts/nestjs/labs/interceptors-tracing/lab.json",
+          "gitBlob": "e3e610b4bc408f46c7fd2d7629072a559f7492ff"
+        },
+        {
+          "path": "drafts/nestjs/labs/interceptors-tracing/starter.ts",
+          "gitBlob": "d4534c3f3e66b63ff7db251b1c10c1dd0c88c44b"
+        },
+        {
+          "path": "drafts/nestjs/labs/interceptors-tracing/solution.ts",
+          "gitBlob": "9b51264c340ed126bc0f87f313a0c47ec4c0486d"
+        },
+        {
+          "path": "examples/nestjs-vertical/tests/request-pipeline.test.mjs",
+          "gitBlob": "b886c67ac092347d3cf4134d8df721d5c78b41ff"
+        }
+      ],
+      "targetPaths": [
+        "src/content/lessons/11.02.04.mdx",
+        "src/content/lessons/11.02.04.meta.json",
+        "labs/nestjs-interceptors-tracing/lab.json",
+        "labs/nestjs-interceptors-tracing/starter/solution.ts",
+        "labs/nestjs-interceptors-tracing/solution/solution.ts",
+        "labs/nestjs-interceptors-tracing/solution.test.mjs"
+      ],
+      "runtime": {
+        "suite": "examples/nestjs-vertical/tests/request-pipeline.test.mjs",
+        "topic": "11.02.04",
+        "integration": null,
+        "negativeMode": "semantic-runtime"
+      },
+      "proposedMetadata": {
+        "id": "11.02.04",
+        "title": "Interceptors and tracing",
+        "trackId": "11",
+        "moduleId": "11.02",
+        "level": "Intermediate",
+        "estimatedMinutes": 60,
+        "description": "An interceptor should preserve the route result while adding a bounded response envelope or trace metadata. A handler returning a task remains visible in the intercepted result and contains a request trace ID.",
+        "labId": "lab.node.nestjs-interceptors-tracing",
+        "stack": {
+          "node": "24",
+          "nestjs": "12",
+          "typescriptNestjs": "6"
+        },
+        "prerequisites": [
+          "11.02.03"
+        ],
+        "objectives": [
+          "An interceptor should preserve the route result while adding a bounded response envelope or trace metadata.",
+          "A handler returning a task remains visible in the intercepted result and contains a request trace ID.",
+          "Do not echo access tokens, cookies, or private headers as tracing metadata."
+        ],
+        "rubric": [
+          "An interceptor should preserve the route result while adding a bounded response envelope or trace metadata.",
+          "A handler returning a task remains visible in the intercepted result and contains a request trace ID.",
+          "Do not echo access tokens, cookies, or private headers as tracing metadata."
+        ],
+        "sources": [
+          {
+            "label": "Primary official reference",
+            "url": "https://docs.nestjs.com/"
+          },
+          {
+            "label": "Supporting official reference",
+            "url": "https://docs.nestjs.com/interceptors"
+          }
+        ],
+        "reviewedAt": null
+      },
+      "proposedLab": {
+        "id": "lab.node.nestjs-interceptors-tracing",
+        "lessonId": "11.02.04",
+        "title": "NestJS practice: Interceptors and tracing",
+        "runtime": "node-24-nestjs-12-typescript-6",
+        "starter": "labs/nestjs-interceptors-tracing/starter/solution.ts",
+        "solution": "labs/nestjs-interceptors-tracing/solution/solution.ts",
+        "tests": "labs/nestjs-interceptors-tracing/solution.test.mjs",
+        "expected": "A handler returning a task remains visible in the intercepted result and contains a request trace ID.",
+        "security": "Do not echo access tokens, cookies, or private headers as tracing metadata."
+      }
+    },
+    {
+      "id": "11.02.05",
+      "moduleId": "11.02",
+      "title": "Exception filters",
+      "slug": "exception-filters",
+      "publicationReady": false,
+      "runtimeExecuted": false,
+      "reviewedAt": null,
+      "sourceBindings": [
+        {
+          "path": "drafts/nestjs/lessons/11.02.05.mdx",
+          "gitBlob": "111a42036aee23c865adc41781d89eaaeaa1b326"
+        },
+        {
+          "path": "drafts/nestjs/lessons/11.02.05.meta.json",
+          "gitBlob": "d5eef9f946f871db2fa26a8cdceb0e7b5494a042"
+        },
+        {
+          "path": "drafts/nestjs/labs/exception-filters/lab.json",
+          "gitBlob": "bc5caec667aeb0611ce631b174691c3787c20fb2"
+        },
+        {
+          "path": "drafts/nestjs/labs/exception-filters/starter.ts",
+          "gitBlob": "e4c2fda5ee7ad5f23431655e25ca74cf52060ff7"
+        },
+        {
+          "path": "drafts/nestjs/labs/exception-filters/solution.ts",
+          "gitBlob": "98b878675c28c4d3b963e7dbbc8c61e753c664b4"
+        },
+        {
+          "path": "examples/nestjs-vertical/tests/request-pipeline.test.mjs",
+          "gitBlob": "b886c67ac092347d3cf4134d8df721d5c78b41ff"
+        }
+      ],
+      "targetPaths": [
+        "src/content/lessons/11.02.05.mdx",
+        "src/content/lessons/11.02.05.meta.json",
+        "labs/nestjs-exception-filters/lab.json",
+        "labs/nestjs-exception-filters/starter/solution.ts",
+        "labs/nestjs-exception-filters/solution/solution.ts",
+        "labs/nestjs-exception-filters/solution.test.mjs"
+      ],
+      "runtime": {
+        "suite": "examples/nestjs-vertical/tests/request-pipeline.test.mjs",
+        "topic": "11.02.05",
+        "integration": null,
+        "negativeMode": "semantic-runtime"
+      },
+      "proposedMetadata": {
+        "id": "11.02.05",
+        "title": "Exception filters",
+        "trackId": "11",
+        "moduleId": "11.02",
+        "level": "Intermediate",
+        "estimatedMinutes": 60,
+        "description": "An HttpException filter must return a safe status and predictable response body without leaking internals. A NotFoundException retains status 404 with a safe error code; unknown exceptions are 500.",
+        "labId": "lab.node.nestjs-exception-filters",
+        "stack": {
+          "node": "24",
+          "nestjs": "12",
+          "typescriptNestjs": "6"
+        },
+        "prerequisites": [
+          "11.02.04"
+        ],
+        "objectives": [
+          "An HttpException filter must return a safe status and predictable response body without leaking internals.",
+          "A NotFoundException retains status 404 with a safe error code; unknown exceptions are 500.",
+          "Never return stack traces, SQL fragments, service keys, or raw internal errors."
+        ],
+        "rubric": [
+          "An HttpException filter must return a safe status and predictable response body without leaking internals.",
+          "A NotFoundException retains status 404 with a safe error code; unknown exceptions are 500.",
+          "Never return stack traces, SQL fragments, service keys, or raw internal errors."
+        ],
+        "sources": [
+          {
+            "label": "Primary official reference",
+            "url": "https://docs.nestjs.com/"
+          },
+          {
+            "label": "Supporting official reference",
+            "url": "https://docs.nestjs.com/exception-filters"
+          }
+        ],
+        "reviewedAt": null
+      },
+      "proposedLab": {
+        "id": "lab.node.nestjs-exception-filters",
+        "lessonId": "11.02.05",
+        "title": "NestJS practice: Exception filters",
+        "runtime": "node-24-nestjs-12-typescript-6",
+        "starter": "labs/nestjs-exception-filters/starter/solution.ts",
+        "solution": "labs/nestjs-exception-filters/solution/solution.ts",
+        "tests": "labs/nestjs-exception-filters/solution.test.mjs",
+        "expected": "A NotFoundException retains status 404 with a safe error code; unknown exceptions are 500.",
+        "security": "Never return stack traces, SQL fragments, service keys, or raw internal errors."
+      }
+    },
+    {
+      "id": "11.02.06",
+      "moduleId": "11.02",
+      "title": "Structured responses",
+      "slug": "structured-responses",
+      "publicationReady": false,
+      "runtimeExecuted": false,
+      "reviewedAt": null,
+      "sourceBindings": [
+        {
+          "path": "drafts/nestjs/lessons/11.02.06.mdx",
+          "gitBlob": "b1d01a776aea10e517e6bf66575eb9ff38f8321c"
+        },
+        {
+          "path": "drafts/nestjs/lessons/11.02.06.meta.json",
+          "gitBlob": "c8c4c379d92f3b3f551e79af8f9683997add91e5"
+        },
+        {
+          "path": "drafts/nestjs/labs/structured-responses/lab.json",
+          "gitBlob": "b6e66d091545a1686702658646804856fd408a99"
+        },
+        {
+          "path": "drafts/nestjs/labs/structured-responses/starter.ts",
+          "gitBlob": "80d526c58402cacc1b77a162edd39bf789c2550e"
+        },
+        {
+          "path": "drafts/nestjs/labs/structured-responses/solution.ts",
+          "gitBlob": "f2606b14a95b09a28ff06f0807902b8f7c41c698"
+        },
+        {
+          "path": "examples/nestjs-vertical/tests/request-pipeline.test.mjs",
+          "gitBlob": "b886c67ac092347d3cf4134d8df721d5c78b41ff"
+        }
+      ],
+      "targetPaths": [
+        "src/content/lessons/11.02.06.mdx",
+        "src/content/lessons/11.02.06.meta.json",
+        "labs/nestjs-structured-responses/lab.json",
+        "labs/nestjs-structured-responses/starter/solution.ts",
+        "labs/nestjs-structured-responses/solution/solution.ts",
+        "labs/nestjs-structured-responses/solution.test.mjs"
+      ],
+      "runtime": {
+        "suite": "examples/nestjs-vertical/tests/request-pipeline.test.mjs",
+        "topic": "11.02.06",
+        "integration": null,
+        "negativeMode": "semantic-runtime"
+      },
+      "proposedMetadata": {
+        "id": "11.02.06",
+        "title": "Structured responses",
+        "trackId": "11",
+        "moduleId": "11.02",
+        "level": "Intermediate",
+        "estimatedMinutes": 60,
+        "description": "Response DTOs should expose intentionally selected public fields rather than returning persistent entities unchanged. GET /account returns only id, displayName, and stable public fields.",
+        "labId": "lab.node.nestjs-structured-responses",
+        "stack": {
+          "node": "24",
+          "nestjs": "12",
+          "typescriptNestjs": "6"
+        },
+        "prerequisites": [
+          "11.02.05"
+        ],
+        "objectives": [
+          "Response DTOs should expose intentionally selected public fields rather than returning persistent entities unchanged.",
+          "GET /account returns only id, displayName, and stable public fields.",
+          "Never assume JSON serialization or a TypeScript interface automatically redacts secrets."
+        ],
+        "rubric": [
+          "Response DTOs should expose intentionally selected public fields rather than returning persistent entities unchanged.",
+          "GET /account returns only id, displayName, and stable public fields.",
+          "Never assume JSON serialization or a TypeScript interface automatically redacts secrets."
+        ],
+        "sources": [
+          {
+            "label": "Primary official reference",
+            "url": "https://docs.nestjs.com/"
+          },
+          {
+            "label": "Supporting official reference",
+            "url": "https://docs.nestjs.com/techniques/serialization"
+          }
+        ],
+        "reviewedAt": null
+      },
+      "proposedLab": {
+        "id": "lab.node.nestjs-structured-responses",
+        "lessonId": "11.02.06",
+        "title": "NestJS practice: Structured responses",
+        "runtime": "node-24-nestjs-12-typescript-6",
+        "starter": "labs/nestjs-structured-responses/starter/solution.ts",
+        "solution": "labs/nestjs-structured-responses/solution/solution.ts",
+        "tests": "labs/nestjs-structured-responses/solution.test.mjs",
+        "expected": "GET /account returns only id, displayName, and stable public fields.",
+        "security": "Never assume JSON serialization or a TypeScript interface automatically redacts secrets."
+      }
+    },
+    {
+      "id": "11.02.07",
+      "moduleId": "11.02",
+      "title": "Request context",
+      "slug": "request-context",
+      "publicationReady": false,
+      "runtimeExecuted": false,
+      "reviewedAt": null,
+      "sourceBindings": [
+        {
+          "path": "drafts/nestjs/lessons/11.02.07.mdx",
+          "gitBlob": "77eb39b7f5441e0dafe7f3bf656f3e144de76c0f"
+        },
+        {
+          "path": "drafts/nestjs/lessons/11.02.07.meta.json",
+          "gitBlob": "270843f5a8b04a5dc56e51cdf8d12513c3e43638"
+        },
+        {
+          "path": "drafts/nestjs/labs/request-context/lab.json",
+          "gitBlob": "c844d20e7918a1726d18e9a5ca21258401d16302"
+        },
+        {
+          "path": "drafts/nestjs/labs/request-context/starter.ts",
+          "gitBlob": "197fdc4eccbe75141ee2afa87d3d3d86e9fe0559"
+        },
+        {
+          "path": "drafts/nestjs/labs/request-context/solution.ts",
+          "gitBlob": "c446dc17aec7605e0da5c2e28c415f315c4338d0"
+        },
+        {
+          "path": "examples/nestjs-vertical/tests/request-pipeline.test.mjs",
+          "gitBlob": "b886c67ac092347d3cf4134d8df721d5c78b41ff"
+        }
+      ],
+      "targetPaths": [
+        "src/content/lessons/11.02.07.mdx",
+        "src/content/lessons/11.02.07.meta.json",
+        "labs/nestjs-request-context/lab.json",
+        "labs/nestjs-request-context/starter/solution.ts",
+        "labs/nestjs-request-context/solution/solution.ts",
+        "labs/nestjs-request-context/solution.test.mjs"
+      ],
+      "runtime": {
+        "suite": "examples/nestjs-vertical/tests/request-pipeline.test.mjs",
+        "topic": "11.02.07",
+        "integration": null,
+        "negativeMode": "semantic-runtime"
+      },
+      "proposedMetadata": {
+        "id": "11.02.07",
+        "title": "Request context",
+        "trackId": "11",
+        "moduleId": "11.02",
+        "level": "Intermediate",
+        "estimatedMinutes": 60,
+        "description": "A request-context value belongs in a per-request async execution scope, not a mutable process global. Interleave two asynchronous requests and verify each retains its own ID.",
+        "labId": "lab.node.nestjs-request-context",
+        "stack": {
+          "node": "24",
+          "nestjs": "12",
+          "typescriptNestjs": "6"
+        },
+        "prerequisites": [
+          "11.02.06"
+        ],
+        "objectives": [
+          "A request-context value belongs in a per-request async execution scope, not a mutable process global.",
+          "Interleave two asynchronous requests and verify each retains its own ID.",
+          "Never store access tokens or sensitive user profiles in diagnostic context."
+        ],
+        "rubric": [
+          "A request-context value belongs in a per-request async execution scope, not a mutable process global.",
+          "Interleave two asynchronous requests and verify each retains its own ID.",
+          "Never store access tokens or sensitive user profiles in diagnostic context."
+        ],
+        "sources": [
+          {
+            "label": "Primary official reference",
+            "url": "https://docs.nestjs.com/"
+          },
+          {
+            "label": "Supporting official reference",
+            "url": "https://docs.nestjs.com/recipes/async-local-storage"
+          }
+        ],
+        "reviewedAt": null
+      },
+      "proposedLab": {
+        "id": "lab.node.nestjs-request-context",
+        "lessonId": "11.02.07",
+        "title": "NestJS practice: Request context",
+        "runtime": "node-24-nestjs-12-typescript-6",
+        "starter": "labs/nestjs-request-context/starter/solution.ts",
+        "solution": "labs/nestjs-request-context/solution/solution.ts",
+        "tests": "labs/nestjs-request-context/solution.test.mjs",
+        "expected": "Interleave two asynchronous requests and verify each retains its own ID.",
+        "security": "Never store access tokens or sensitive user profiles in diagnostic context."
+      }
+    },
+    {
+      "id": "11.02.08",
+      "moduleId": "11.02",
+      "title": "Bug Hunt guard order",
+      "slug": "guard-order-bug-hunt",
+      "publicationReady": false,
+      "runtimeExecuted": false,
+      "reviewedAt": null,
+      "sourceBindings": [
+        {
+          "path": "drafts/nestjs/lessons/11.02.08.mdx",
+          "gitBlob": "f89ae91b9c4ebe29e3f374e9ee75abf9ba7c59b2"
+        },
+        {
+          "path": "drafts/nestjs/lessons/11.02.08.meta.json",
+          "gitBlob": "0f43d2dfdb9fdd8961e03db576e47632b400879a"
+        },
+        {
+          "path": "drafts/nestjs/labs/guard-order-bug-hunt/lab.json",
+          "gitBlob": "9689e43be2fab7aef712b3558c3237a6282a2eb5"
+        },
+        {
+          "path": "drafts/nestjs/labs/guard-order-bug-hunt/starter.ts",
+          "gitBlob": "978ea21c9b989e4091d088b7e45fc84c71cb117d"
+        },
+        {
+          "path": "drafts/nestjs/labs/guard-order-bug-hunt/solution.ts",
+          "gitBlob": "759bb3f971745cf45db8b56cc48d8d3b173b1367"
+        },
+        {
+          "path": "examples/nestjs-vertical/tests/request-pipeline.test.mjs",
+          "gitBlob": "b886c67ac092347d3cf4134d8df721d5c78b41ff"
+        }
+      ],
+      "targetPaths": [
+        "src/content/lessons/11.02.08.mdx",
+        "src/content/lessons/11.02.08.meta.json",
+        "labs/nestjs-guard-order-bug-hunt/lab.json",
+        "labs/nestjs-guard-order-bug-hunt/starter/solution.ts",
+        "labs/nestjs-guard-order-bug-hunt/solution/solution.ts",
+        "labs/nestjs-guard-order-bug-hunt/solution.test.mjs"
+      ],
+      "runtime": {
+        "suite": "examples/nestjs-vertical/tests/request-pipeline.test.mjs",
+        "topic": "11.02.08",
+        "integration": null,
+        "negativeMode": "semantic-runtime"
+      },
+      "proposedMetadata": {
+        "id": "11.02.08",
+        "title": "Bug Hunt guard order",
+        "trackId": "11",
+        "moduleId": "11.02",
+        "level": "Intermediate",
+        "estimatedMinutes": 60,
+        "description": "Guards run before pipes, making authorization an independent boundary for protected requests. Unauthenticated requests are denied before a handler executes; authorized invalid bodies still return 400.",
+        "labId": "lab.node.nestjs-guard-order-bug-hunt",
+        "stack": {
+          "node": "24",
+          "nestjs": "12",
+          "typescriptNestjs": "6"
+        },
+        "prerequisites": [
+          "11.02.07"
+        ],
+        "objectives": [
+          "Guards run before pipes, making authorization an independent boundary for protected requests.",
+          "Unauthenticated requests are denied before a handler executes; authorized invalid bodies still return 400.",
+          "Authorization must not depend on client-side form validation, a permissive guard, or a role string in JSON."
+        ],
+        "rubric": [
+          "Guards run before pipes, making authorization an independent boundary for protected requests.",
+          "Unauthenticated requests are denied before a handler executes; authorized invalid bodies still return 400.",
+          "Authorization must not depend on client-side form validation, a permissive guard, or a role string in JSON."
+        ],
+        "sources": [
+          {
+            "label": "Primary official reference",
+            "url": "https://docs.nestjs.com/"
+          },
+          {
+            "label": "Supporting official reference",
+            "url": "https://docs.nestjs.com/faq/request-lifecycle"
+          }
+        ],
+        "reviewedAt": null
+      },
+      "proposedLab": {
+        "id": "lab.node.nestjs-guard-order-bug-hunt",
+        "lessonId": "11.02.08",
+        "title": "NestJS practice: Bug Hunt guard order",
+        "runtime": "node-24-nestjs-12-typescript-6",
+        "starter": "labs/nestjs-guard-order-bug-hunt/starter/solution.ts",
+        "solution": "labs/nestjs-guard-order-bug-hunt/solution/solution.ts",
+        "tests": "labs/nestjs-guard-order-bug-hunt/solution.test.mjs",
+        "expected": "Unauthenticated requests are denied before a handler executes; authorized invalid bodies still return 400.",
+        "security": "Authorization must not depend on client-side form validation, a permissive guard, or a role string in JSON."
+      }
+    }
+  ]
+}
