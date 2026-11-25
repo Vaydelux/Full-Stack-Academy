@@ -112,3 +112,6 @@ Run the response-contract test suite on Node 22+ with type stripping. The test u
 
 ## F10.1 fixture lifecycle
 The disposable local API serializes its startup/shutdown transitions: concurrent start is rejected, close waits for pending startup, repeated close shares the shutdown, and close during a failed bind leaves the fixture restartable. Closing terminates active HTTP connections, including clients with incomplete request bodies. This is an intentional test-fixture policy, not production graceful draining. Use `await app.close()` before restarting. The memory store remains scoped to the API object, not persisted across process restart. Regression command: `npm run test:forms-query-http`.
+
+## F10.2 typed-client response boundary
+The React client's dependency-independent API now verifies the requested create title/priority and original todo/revision-one receipt; PATCH must acknowledge the requested status and either unchanged or exactly incremented revision. It bounds decoded response bodies (64 KiB success, 8 KiB error), rejects invalid UTF-8 and preserves the caller's abort reason. Oversized error titles fall back to the received HTTP status. These are local fixture contracts, not generic API limits or a production timeout policy. Run `npm run test:forms-query-react-api` for contract tests; full React browser qualification is separate.

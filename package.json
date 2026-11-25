@@ -21,7 +21,7 @@
     "test:forms-query-project-route": "node --test tests/forms-query-project-route.test.mjs",
     "test:forms-query-drafts": "node scripts/verify-forms-query-drafts.mjs",
     "test:forms-query-draft-types": "node scripts/verify-forms-query-draft-types.mjs",
-    "test:forms-query-react-api": "node --experimental-strip-types --test tests/forms-query-react-api.test.mjs tests/forms-query-response-contract.test.mjs tests/forms-query-error-body-cancellation.test.mjs",
+    "test:forms-query-react-api": "node --experimental-strip-types --test tests/forms-query-react-api.test.mjs tests/forms-query-response-contract.test.mjs tests/forms-query-error-body-cancellation.test.mjs tests/forms-query-acknowledgement.test.mjs",
     "test:forms-query-policy": "node --experimental-strip-types --test tests/forms-query-policy.test.mjs",
     "test:forms-query-react-wiring": "node --test tests/forms-query-react-wiring.test.mjs",
     "test:forms-query-native-ui": "node --test tests/forms-query-native-ui.test.mjs",
