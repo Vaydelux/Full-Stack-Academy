@@ -191,7 +191,18 @@ export function createTaskApi({ host = '127.0.0.1', maxItems = MAX_ITEMS, maxIde
   return {
     server,
     async start(port = 0) {
-      await new Promise((resolve, reject) => { server.once('error', reject); server.listen(port, host, resolve); });
+      await new Promise((resolve, reject) => {
+        const cleanup = () => {
+          server.off('error', onError);
+          server.off('listening', onListening);
+        };
+        const onError = error => { cleanup(); reject(error); };
+        const onListening = () => { cleanup(); resolve(); };
+        server.once('error', onError);
+        server.once('listening', onListening);
+        try { server.listen(port, host); }
+        catch (error) { onError(error); }
+      });
       const address = server.address();
       return `http://${host === '::1' ? '[::1]' : host}:${address.port}`;
     },

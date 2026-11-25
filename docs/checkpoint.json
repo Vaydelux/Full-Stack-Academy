@@ -10,8 +10,8 @@
   },
   "development": {
     "branch": "main",
-    "state": "f1-partial-node24-source-tests-passed-environment-blocked",
-    "note": "PR #72 merged at 08a53a2c9a0b6c6b0a526695d7c998a49671b8a0. Node24.11.1 bundled with Playwright located and executed: 33/33 isolated tests passed against six exact merged source/test blobs (12 scope, 11 staged inventory, 10 P1 navigation classifier); 23/23 scope and inventory tests also passed Node22. Direct GitHub/npm registry DNS unavailable, Chromium loopback blocked by administrator, no PostgreSQL/Docker; full build and P1 browser qualification not run. 338/889 published unchanged; editorial scope frozen."
+    "state": "f1-p1-http-lifecycle-repaired-partial-qualification",
+    "note": "P1 teaching API startup lifecycle repaired after reproduced listener leakage. Node24.11.1 actual isolated regression run: 56 passing (33 prior, 3 new real-socket lifecycle, 20 existing HTTP cases), two static-asset HTTP cases excluded; full checkout and browser remain blocked. 338/889 published unchanged; scope frozen."
   },
   "snapshot": {
     "tracks": 28,
@@ -73,6 +73,6 @@
     "devHighFindings": 14,
     "exceptionExpires": "2026-12-02"
   },
-  "nextMilestone": "F1 continuation: approved clean Node24.9+ checkout with npm registry access and Playwright browser permitted on loopback. Run P1 coordinator --plan-p1 then --run-p1, complete named manual accessibility reviews, and qualify/promote 09.02 then 09.03. Generate genuine Nest lock independently before full-profile qualification.",
+  "nextMilestone": "P1 full clean-checkout qualification with npm registry and approved Chromium loopback, complete named accessibility reviews, then guarded promotions 09.02/09.03. No further broad authoring.",
   "status": "editorial-merged-f1-partial-runtime-qualification-blocked"
 }

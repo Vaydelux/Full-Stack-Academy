@@ -23,6 +23,7 @@ const checks=[
  {name:'Staging lesson/metadata contract',program:'node',args:['scripts/verify-forms-query-drafts.mjs']},
  {name:'Real HTTP and source contract test suites',program:'node',args:['--test',
   'tests/forms-query-http.test.mjs',
+  'tests/forms-query-listener-lifecycle.test.mjs',
   'tests/forms-query-resilience.test.mjs',
   'tests/forms-query-workflow.test.mjs',
   'tests/forms-query-contract.test.mjs',
