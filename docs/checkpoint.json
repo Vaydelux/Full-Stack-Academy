@@ -10,8 +10,8 @@
   },
   "development": {
     "branch": "feat/p8-publication-evidence",
-    "state": "p10-postgresql-basics-modeling-editorial-complete",
-    "note": "All 32 Nest drafts previously enhanced; this batch expanded 16 PostgreSQL SQL Essentials and Relational Modeling drafts, with 16/16 committed-source walkthrough checks. Existing SQL examples preserved. Prior isolated test runs remain historical; no new database or aggregate test execution claimed."
+    "state": "p10-postgresql-editorial-complete-runtime-blocked",
+    "note": "All 40 PostgreSQL drafts editorially expanded across five modules; latest 24/24 committed-source walkthrough checks passed, code fences and assessments preserved. Prior isolated test results remain historical; no new real database, MDX or aggregate runtime test claimed."
   },
   "snapshot": {
     "tracks": 28,
@@ -73,6 +73,6 @@
     "devHighFindings": 14,
     "exceptionExpires": "2026-12-02"
   },
-  "nextMilestone": "P10.5 continuation: PostgreSQL 12.03 Transactions and Concurrency, 12.04 Query Performance, 12.05 Operations and Recovery. Continue P9 real runtime qualification separately.",
-  "status": "all-topics-authored-p10-nest-editorial-complete-publication-blocked"
+  "nextMilestone": "P10.6: expand existing Prisma and Supabase drafts, module by module. In parallel, unblock P9 clean Node24.9+ checkout and real P1–P3 qualification before module-atomic publication.",
+  "status": "all-topics-authored-p10-postgresql-editorial-complete-publication-blocked"
 }
