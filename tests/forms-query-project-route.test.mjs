@@ -35,8 +35,26 @@ test('project describes real status transitions and conflict recovery',()=>{
  assert.match(source,/PATCH/);
  assert.match(source,/409 or 412/);
 });
-test('practice route does not alter published lesson IDs or lesson registry',()=>{
- const checkpoint=JSON.parse(read('docs/checkpoint.json'));
- assert.equal(checkpoint.snapshot.publishedLessons,338);
- assert.equal(checkpoint.snapshot.authoredMdxLessons,337);
+// Exact registry reconciliation is performed by checkpoint:check and
+// test:curriculum-readiness. This gate protects the historical publication floor
+// without rejecting successful module promotion in the same offline suite.
+function assertPublicationSnapshot(snapshot){
+ const {publishedLessons,authoredMdxLessons,catalogTopics}=snapshot;
+ assert.ok([publishedLessons,authoredMdxLessons,catalogTopics].every(Number.isSafeInteger));
+ assert.ok(publishedLessons>=338,'Published lesson baseline regressed');
+ assert.ok(authoredMdxLessons>=337,'MDX lesson baseline regressed');
+ assert.ok(authoredMdxLessons<=publishedLessons&&publishedLessons<=catalogTopics,'Invalid publication totals');
+}
+test('publication snapshot preserves the historical floor',()=>{
+ assertPublicationSnapshot(JSON.parse(read('docs/checkpoint.json')).snapshot);
+});
+test('publication snapshot accepts both planned P1 promotion counts and final coverage',()=>{
+ for(const [publishedLessons,authoredMdxLessons] of [[338,337],[346,345],[354,353],[889,888]]){
+  assert.doesNotThrow(()=>assertPublicationSnapshot({publishedLessons,authoredMdxLessons,catalogTopics:889}));
+ }
+});
+test('publication snapshot rejects regression or inconsistent totals',()=>{
+ for(const [publishedLessons,authoredMdxLessons] of [[337,337],[338,336],[346,347],[890,889],[346.5,345]]){
+  assert.throws(()=>assertPublicationSnapshot({publishedLessons,authoredMdxLessons,catalogTopics:889}));
+ }
 });

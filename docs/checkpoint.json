@@ -10,8 +10,8 @@
   },
   "development": {
     "branch": "main",
-    "state": "f1-p1-http-native-ui-refresh-repaired-partial-qualification",
-    "note": "Node24.11.1 reconstructed P1 suite: 175/175 passed, zero skipped, including all 22 existing HTTP tests (static assets restored), 20 resilience, 29 workflow, 11 simulated-DOM native UI, and earlier typed/client/inventory/navigation tests. Fixed reproduced misleading PATCH/DELETE success after failed list refresh; two red/green regressions. Exact 23 local source/test/asset blob hashes verified. Full checkout/install, React/Next/actual Chromium and named manual review outstanding; 338/889 published unchanged."
+    "state": "f1-p1-publication-count-regression-repaired-runtime-blocked",
+    "note": "Node24.11.1 reconstructed suite rerun: 175/175 passed. Reproduced fixed-baseline project-route test failure at projected RHF publication (346 != 338); repaired test to allow valid advancement, preserve historical floor and reject inconsistent totals. Three targeted tests passed for each synthetic checkpoint 338, 346, 354; full source/route suite not run. Actual registry reconciliation and exact promoter targets preserved. Full checkout/install/React/Next/browser and manual review remain blocked; 338/889 published unchanged."
   },
   "snapshot": {
     "tracks": 28,
