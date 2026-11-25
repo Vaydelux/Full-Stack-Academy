@@ -50,6 +50,20 @@ The tests exercise local Node state or loopback HTTP behavior. Document separate
 
 Local deduplication cannot guarantee exactly-once external delivery after restarts.
 
+## Applied engineering walkthrough
+
+A delivery record ties a logical event to recipient, channel and attempt history. Retries reuse the same logical key, while individual attempts may have distinct trace IDs. A provider acknowledgement lost in transit does not mean the message was unsent.
+
+### Diagnose the concrete failure
+
+Deliver one synthetic notification twice and inspect the duplicate outcome. Simulate a lost provider acknowledgement and verify the retry uses the original identity. Check that late failure evidence does not incorrectly undo a terminal success.
+
+### Independent exercise and evidence
+
+Design a durable delivery ledger and reconciliation process for provider callbacks. Record operation IDs, attempt states and final effect count; an in-memory duplicate test is not durable delivery evidence.
+
+**Qualification boundary:** These are practice instructions, not recorded results. Preserve the original laboratory and publication status. Local simulations do not qualify actual browser or distributed provider behavior.
+
 ## Knowledge check
 
 1. Which actor, resource, version or event cursor is authoritative in this scenario?
