@@ -52,6 +52,20 @@ The corresponding module exercises **inspectUpload, issueUploadToken, verifyUplo
 
 For a production implementation, document the secret-owner or principal, durability plan, error and recovery policy, rate/resource bounds, privacy guarantees, observability without sensitive payloads, and the credential/version-rotation procedure.
 
+## Applied engineering walkthrough
+
+Background processing separates the accepted upload from expensive metadata extraction or derivative generation. Stable job identity prevents some duplicate work, but durable state and idempotent writes are needed across crashes. Processing results must match the intended immutable asset version.
+
+### Diagnose the concrete failure
+
+Simulate accepted input, duplicate processing delivery and a failed scan. Verify a retry cannot bypass the quarantine rule and that no unapproved derivative becomes visible. Test a delayed outcome from an obsolete asset version in the proposed design.
+
+### Independent exercise and evidence
+
+Design a durable job record keyed by asset revision and processing stage. Include retry, timeout and orphan cleanup rules. Record final asset state and effect count; actual worker and storage acceptance remain separate.
+
+**Qualification boundary:** These are practice instructions, not recorded results. Preserve existing specifications and laboratory contracts. Qualify actual external services separately using authorized disposable infrastructure.
+
 ## Knowledge check
 
 1. Which authenticated actor, external sender, or tenant owns the data in this scenario?
