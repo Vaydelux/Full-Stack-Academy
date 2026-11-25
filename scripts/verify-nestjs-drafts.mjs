@@ -4,6 +4,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
+import { inspectNestPublication } from './nest-publication-state.mjs';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const file=relative=>path.join(root,relative);
 const read=relative=>fs.readFileSync(file(relative),'utf8').replaceAll('\r\n','\n');
@@ -61,17 +62,18 @@ export function inspectNestJsDrafts(){
       !mdx.includes('lessonId="'+id+'"')||!mdx.includes('## Bug Hunt')||!mdx.includes('## Official references'))problem(id,'Missing required teaching sections');
    if(mdx.length<4000)problem(id,'Lesson prose too shallow for a staged course');
    if(/<LabGate\b|dangerouslySetInnerHTML\s*=|<script\b/i.test(mdx))problem(id,'Unsafe or prematurely published MDX');
-   if(liveIndex.includes('lessons/'+id+'.meta.json')||liveMdx.includes('./lessons/'+id+'.mdx')||
-     exists('src/content/lessons/'+id+'.meta.json'))problem(id,'Draft incorrectly registered as published');
-   topics.push({id,moduleId:item.moduleId,title:item.title,labSlug:slug,sourceReady:true,publication:'draft'});
+   const state=inspectNestPublication({id,title:item.title,moduleId:item.moduleId,slug},{exists,read,json,liveIndex,liveMdx});
+   for(const issue of state.issues)problem(id,issue);
+   topics.push({id,moduleId:item.moduleId,title:item.title,labSlug:slug,sourceReady:!issues.some(issue=>issue.id===id),publication:state.publication});
   } catch(error){problem(id,error.message);}
  }
  const actualLabs=fs.readdirSync(file(labsDir),{withFileTypes:true}).filter(x=>x.isDirectory()).map(x=>x.name);
  if(actualLabs.length!==32||actualLabs.some(slug=>!usedSlugs.has(slug)))problem('labs','Expected 32 distinct lab folders');
  if(checkpoint.publishedLessons<338)problem('checkpoint','Published count regressed below the P1 baseline');
  const nestLock=exists('examples/nestjs-vertical/package-lock.json');
- const byModule=modules.map(id=>({moduleId:id,drafted:topics.filter(t=>t.moduleId===id).length,published:0,
+ const byModule=modules.map(id=>({moduleId:id,drafted:topics.filter(t=>t.moduleId===id).length,published:topics.filter(t=>t.moduleId===id&&t.publication==='published').length,
   runtimeQualified:false,blockers:['Nest 12 real module and HTTP tests not run','Human accessibility evidence not recorded',...(nestLock?[]:['Trusted nested npm lockfile not generated'])]}));
+ for(const module of byModule)if(![0,8].includes(module.published))problem(module.moduleId,'Nest module publication must be atomic');
  return {status:issues.length?'source-invalid':'draft-source-ready',publishedUnchanged:checkpoint.publishedLessons,
   drafted:topics.length,modules:byModule,topics,issues,realNestRuntimeExecuted:false,
   hasNpmLockfile:nestLock,canPublish:false,

@@ -10,8 +10,8 @@
   },
   "development": {
     "branch": "main",
-    "state": "f1-p2-parallel-module-qualification-preparation",
-    "note": "Prepared all four NestJS module runtime paths and hardened 31 starter/instructor checks to reject unrelated exceptions. 13 isolated Node24 tests passed (7 red/green helper, 6 module qualification planner); actual Nest framework/PG/socket tests not run. P1 remains blocked by network and browser policies, 338/889 published unchanged."
+    "state": "f1-p2-parallel-module-qualification-and-transition-preparation",
+    "note": "P2 all four module runtime paths prepared, 31 starter/instructor harness comparisons hardened, Nest draft audit made transition-aware for complete published lesson/lab/registry artifacts and retained draft parity. 20 isolated Node24.11.1 helper tests pass (13 prior plus 7 transition checks). Full framework, P1 and actual promotion remain not-run. 338/889 published unchanged."
   },
   "snapshot": {
     "tracks": 28,
