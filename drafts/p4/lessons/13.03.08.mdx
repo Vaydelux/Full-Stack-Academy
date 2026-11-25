@@ -75,6 +75,20 @@ Never use migrate reset on production. A schema diff can suggest destructive SQL
 
 In a multi-tenant API, input validation, role-aware database credentials, optimistic concurrency, migration review and response-shape controls must be considered together. Favor bounded queries and explicit domain operations over returning raw privileged ORM interfaces to HTTP handlers. Record the query plan or migration state instead of guessing.
 
+## Applied persistence walkthrough
+
+Drift occurs when the physical schema diverges from the intended migration history, often after manual DDL or a failed rollout. A migration status check alone may not expose every physical difference. The create-only development command can still detect drift and prompt for reset; it is not a production-safe repair command. Investigate on an isolated copy.
+
+### Diagnose the concrete failure
+
+Capture the history state and a schema diff on a disposable replica. Identify whether the discrepancy is an unapplied migration, changed history or manual DDL. Generate a reviewed forward repair only after determining the intended source of truth. Stop on any unexpected reset prompt.
+
+### Independent exercise and evidence
+
+Write a drift incident record with expected/actual schema, impact, repair SQL and a fresh replay result. Include a data-preserving contingency if a migration has partially applied. Never mark an unapplied repair as complete.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Use the pinned Prisma 7 toolchain and disposable PostgreSQL database. Preserve the starter and solution; source review does not qualify generated code or authorization.
+
 ## Bug Hunt
 
 1. Make a concrete failure prediction: A hotfix changes the database directly, but the migration history remains unchanged. The next release succeeds locally yet fails or loses the hotfix in a clean environment.
