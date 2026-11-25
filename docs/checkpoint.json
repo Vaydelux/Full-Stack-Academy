@@ -10,8 +10,8 @@
   },
   "development": {
     "branch": "feat/p8-publication-evidence",
-    "state": "p10-track24-complete-track25-analytics-expanded-runtime-blocked",
-    "note": "P10.9: 32 additional manuscripts expanded, 32/32 precommit source checks and 32/32 committed patch inspections passed. 455/551 unique unpublished drafts expanded (456 expanded draft files including already-published 15.02.04). Track 24 complete; Track 25.01 complete. No full Node24/MDX/browser, database, provider or native device qualification."
+    "state": "p10-tracks24-26-editorial-complete-capstone-remaining-runtime-blocked",
+    "note": "P10.9 complete: all 96 manuscripts across Tracks 24–26 have applied walkthroughs. Latest 56 additional manuscripts passed 56/56 precommit source checks and 56/56 committed-patch inspections, 7,791 added whitespace-delimited words. Unique unpublished editorial progress 511/551, 338/889 published unchanged. Full Node24, MDX/browser, real provider/database/device and human accessibility qualification not executed."
   },
   "snapshot": {
     "tracks": 28,
@@ -73,6 +73,6 @@
     "devHighFindings": 14,
     "exceptionExpires": "2026-12-02"
   },
-  "nextMilestone": "P10.9 continuation: 25.02–25.04 AI/RAG, geospatial and media (24 drafts); Track 26 enterprise (32); Track 27 capstone (40). Then freeze editorial expansion and qualify/publish modules in P1–P7 order.",
-  "status": "all-topics-authored-p10-platforms-partially-expanded-publication-blocked"
+  "nextMilestone": "P10.10: Track 27 final capstone, modules 27.01–27.05 (40 manuscripts). Then freeze editorial expansion, execute P9 local qualification and publish complete modules in P1–P7 order. Keep PR #71 draft until gates pass.",
+  "status": "all-topics-authored-p10-capstone-editorial-remaining-publication-blocked"
 }
