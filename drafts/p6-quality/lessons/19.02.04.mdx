@@ -44,6 +44,20 @@ node --test --test-name-pattern="19[.]02" examples/p6-quality/labs.test.mjs
 
 Plain JavaScript UI state model; installed React/Vitest/Testing Library/MSW and real browsers require separate tests.
 
+## Applied engineering walkthrough
+
+Mock Service Worker intercepts network requests at a boundary while allowing the application to use its normal HTTP client. Configure unhandled requests to fail in tests so missing handlers do not silently contact real services. Reset handlers and mutable fixture state between tests.
+
+### Diagnose the concrete failure
+
+With an installed MSW setup, define a synthetic successful endpoint and override it with a 503 response for one case. Assert the visible success and error states, then reset the override and confirm the next test sees the baseline response.
+
+### Independent exercise and evidence
+
+Design handlers for malformed JSON, timeout and stale data alongside normal responses. Record request and UI outcomes, and keep real API contract testing separate from mock acceptance.
+
+**Evidence boundary:** These are practice instructions, not recorded test results. Preserve the existing model, specification and draft flag; external runtime qualification remains independent.
+
 ## Knowledge check
 
 1. Which public behavior or invariant is being protected?
