@@ -50,6 +50,20 @@ In the test notes, separate what the in-memory fixture genuinely observed from R
 
 Retries can repeat side effects unless the consumer is idempotent.
 
+## Applied engineering walkthrough
+
+Retry transient failures with bounded attempts and backoff; classify permanent input errors separately. Jitter prevents synchronized retries from all workers. Timeouts do not prove the provider rejected an operation, so reuse a stable idempotency identity for ambiguous outcomes.
+
+### Diagnose the concrete failure
+
+Use a controlled clock and a provider stub that fails once then succeeds. Assert the retry is not eligible before its due time, and repeated failures reach the terminal state. Verify a permanent error does not loop indefinitely.
+
+### Independent exercise and evidence
+
+Design a retry policy including maximum elapsed time, attempt count, provider rate limits and operator escalation. Record scheduled times and final status, not actual provider success.
+
+**Qualification boundary:** These are practice instructions, not recorded results. Preserve the existing lab and publication status; in-memory tests do not qualify live Redis or BullMQ behavior.
+
 ## Knowledge check
 
 1. What is authoritative in this scenario, and what state is derived or replayable?
