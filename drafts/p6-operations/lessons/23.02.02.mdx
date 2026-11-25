@@ -44,6 +44,20 @@ node --test --test-name-pattern="23[.]02" examples/p6-operations/labs.test.mjs
 
 Small synthetic dependency graph only; real module enforcement, transactions and feature flag runtime not executed.
 
+## Applied engineering walkthrough
+
+A public module contract exposes only the information a consumer needs. Internal entity shapes can evolve independently when a stable DTO is mapped at the boundary. A shared process does not eliminate the need for authorization or compatibility.
+
+### Diagnose the concrete failure
+
+Define getOrderSummary with an explicit safe projection. Change a synthetic internal order representation and verify the consumer receives the same public shape. Add a private field and check that it is excluded.
+
+### Independent exercise and evidence
+
+Design contract tests for billing's order lookup, missing orders and denied tenant scope. Record exact response keys and compatibility decisions.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve the existing specification, model and unpublished status. Actual module, persistence and runtime qualification remain independent.
+
 ## Knowledge check
 
 1. Which invariant or operational measurement determines success?

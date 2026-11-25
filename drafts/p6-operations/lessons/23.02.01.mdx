@@ -44,6 +44,20 @@ node --test --test-name-pattern="23[.]02" examples/p6-operations/labs.test.mjs
 
 Small synthetic dependency graph only; real module enforcement, transactions and feature flag runtime not executed.
 
+## Applied engineering walkthrough
+
+A modular monolith can share one deployable process and database while keeping business ownership explicit. Orders should not mutate inventory's private tables through arbitrary SQL. Use a module contract to express the desired operation and let the owning module enforce its invariants.
+
+### Diagnose the concrete failure
+
+Draw order and inventory ownership and list current dependency edges. Propose a reservation operation through the inventory module rather than direct table writes. Test a valid reservation and an excessive quantity through that contract.
+
+### Independent exercise and evidence
+
+Design module ownership rules for tables, public interfaces and cross-module transactions. Record the dependency graph and actual invariant tests separately.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve the existing specification, model and unpublished status. Actual module, persistence and runtime qualification remain independent.
+
 ## Knowledge check
 
 1. Which invariant or operational measurement determines success?

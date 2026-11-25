@@ -44,6 +44,20 @@ node --test --test-name-pattern="23[.]02" examples/p6-operations/labs.test.mjs
 
 Small synthetic dependency graph only; real module enforcement, transactions and feature flag runtime not executed.
 
+## Applied engineering walkthrough
+
+Circular dependencies make module initialization, testing and ownership harder to reason about. A cycle can be indirect even when no two modules directly import each other. Resolve the underlying dependency by introducing a coordinating use case or a narrow contract, not merely a lazy import.
+
+### Diagnose the concrete failure
+
+Run dependencyCycle on orders to billing to inventory to orders. Verify the indirect cycle, then remove the inappropriate edge through a coordinating application boundary and rerun. Test a self-cycle separately.
+
+### Independent exercise and evidence
+
+Document the before/after dependency graph and the reason for each retained edge. Record static results and plan actual source and runtime wiring checks.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve the existing specification, model and unpublished status. Actual module, persistence and runtime qualification remain independent.
+
 ## Knowledge check
 
 1. Which invariant or operational measurement determines success?
