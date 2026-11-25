@@ -70,6 +70,20 @@ supabase db reset is destructive to the local database. Never aim training opera
 
 On an actual full-stack app, draw the flow from browser through the authenticated server endpoint to Supabase Auth or PostgreSQL. Annotate which requests use a publishable key, which need a user JWT, which require database grants, and which should never be allowed outside server infrastructure. Storage and Realtime must be authorized independently of ordinary table policies.
 
+## Applied persistence walkthrough
+
+The local Supabase stack lets learners rehearse migrations and auth/storage behavior without using a production project. It requires the supported CLI and container runtime, available ports and an isolated working directory. Reset destroys the local database and should be used only with synthetic fixtures. Local behavior is useful evidence but hosted configuration can still differ.
+
+### Diagnose the concrete failure
+
+Inspect CLI help and container prerequisites, then initialize a dedicated disposable project. Start the local services, verify their actual status and target identity, and replay tracked migrations with fake users only. Confirm the intended sample data after reset. Do not copy real production data or secrets into the lab.
+
+### Independent exercise and evidence
+
+Design a repeatable local acceptance checklist for database schema, Auth, Data API and private storage. Record versions, expected services and real positive/negative cases, including cleanup. Hosted provider qualification remains separate.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Use an isolated local Supabase environment or an explicitly approved disposable project. Preserve the starter and solution; do not treat source review as live platform or security qualification.
+
 ## Bug Hunt
 
 1. Reproduce the unsafe setup: The starter jumps to a remote database push and skips local schema replay and environment validation.
