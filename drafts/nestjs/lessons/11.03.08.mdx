@@ -93,7 +93,21 @@ In a multi-request system, repeat the test with two independent users and at lea
 
 <Misconception claim="ProjectsController directly constructs its service, making the module hard to override." correction="A reusable projects feature should encapsulate service, controller and store token in an explicit Nest module." />
 
-<KnowledgeCheck question="Which design is safest for lab reusable project module?" choices={["Make the controller hold every stateful dependency permanently.","Keep business rules in an injectable service and verify the boundary with actual runtime behavior.","Expose persistent entities directly because TypeScript hides private fields.","Treat a mock array as proof of database transactions."]} correctIndex={1} explanation="A reusable projects feature should encapsulate service, controller and store token in an explicit Nest module." misconception="ProjectsController directly constructs its service, making the module hard to override." lessonId="11.03.08" />
+<KnowledgeCheck question="How can a ProjectsModule be reused with a different storage implementation in a test?" choices={["Edit the controller source for every test.","Export every internal object globally.","Construct ProjectsService manually inside each route.","Override PROJECT_STORE while preserving the service and controller."]} correctIndex={3} explanation="The token and module boundary allow the adapter to change without rewriting consumers." misconception="ProjectsController directly constructs its service, making the module hard to override." lessonId="11.03.08" />
+
+## Applied engineering walkthrough
+
+The reusable feature module owns its controller, service and store provider registration. A runtime token lets the service depend on a port without knowing the storage implementation. Exporting the service permits other modules to consume a narrow interface while the controller remains a transport adapter. The in-memory store is intentionally static and not a real multi-tenant repository.
+
+### Diagnose the concrete failure
+
+Override PROJECT_STORE in a Nest testing module with a store that returns a distinctive project identifier. Resolve the service and confirm the override is used; then exercise GET /projects through a real app. The test must distinguish a provider override from a default hardcoded result. Close the test container and HTTP application.
+
+### Independent exercise and evidence
+
+Extend the design on paper with a project lookup method that accepts a verified workspace context. Specify the store contract, exported service and HTTP not-found behavior. Record the overridden result and one denied cross-workspace scenario planned for a real database integration test.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Pure contract checks, framework wiring and real database qualification are separate evidence. Keep the existing starter and solution unchanged; do not award course credit from source review alone.
 
 ## Bug Hunt: reproduce, diagnose and repair
 
