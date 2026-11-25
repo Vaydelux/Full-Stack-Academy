@@ -50,6 +50,20 @@ In the test notes, separate what the in-memory fixture genuinely observed from R
 
 At-least-once delivery is not a bug; assuming exactly once is the mistake.
 
+## Applied engineering walkthrough
+
+At-least-once delivery permits duplicate processing attempts. A lease or fencing token prevents a former claimant from changing newer job state, but an external effect may already have occurred. Stable idempotency identity and durable outcome records address that distinct problem.
+
+### Diagnose the concrete failure
+
+Claim a synthetic job, advance the clock past lease expiry and claim it again. Attempt completion using the first claim and verify rejection. Complete with the second valid claim. Test external effect deduplication separately.
+
+### Independent exercise and evidence
+
+Design a consumer with a durable processed-event record and a stable provider idempotency key. Record claim versions, completion decisions and final effect count; do not claim exactly-once delivery.
+
+**Qualification boundary:** These are practice instructions, not recorded results. Preserve the existing lab and publication status; in-memory tests do not qualify live Redis or BullMQ behavior.
+
 ## Knowledge check
 
 1. What is authoritative in this scenario, and what state is derived or replayable?
