@@ -42,6 +42,20 @@ Document both a permitted happy path and a rejected adversarial path. Integratio
 
 A passing UI check or source-only checklist cannot establish secure production behavior. An observed negative test and reviewed trust boundary are essential.
 
+## Applied engineering walkthrough
+
+A release gate combines evidence tied to the exact reviewed source and artifact. Unit tests, runtime acceptance, security review and deployment readiness are distinct requirements. A stale success report must not approve changed code; missing evidence is a blocked state, not a passing result.
+
+### Diagnose the concrete failure
+
+Construct a synthetic evidence matrix with one stale commit identifier, one missing negative test and one absent reviewer. Verify the gate refuses each incomplete variant, then accepts only a complete matching fixture. The synthetic success does not certify the real release.
+
+### Independent exercise and evidence
+
+Design a release packet that lists immutable commit, test environment, artifact hashes, positive/negative outcomes, reviewers and residual risks. Record which mandatory gates are blocked and the action needed to unblock each.
+
+**Qualification boundary:** These are practice instructions, not recorded audit results. Use synthetic data and authorized disposable infrastructure. Preserve existing laboratory contracts and publication status.
+
 ## Knowledge check
 
 1. Which input is attacker-controlled?
