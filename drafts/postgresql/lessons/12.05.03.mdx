@@ -71,6 +71,20 @@ A tiny temporary-table success does not qualify a production migration: on large
 
 Practice describing a failure in terms of its blast radius, detection signal and recovery path. What would happen if the database were unavailable during a migration, WAL archives were missing, a pooled connection lost session state, or an operator accidentally targeted production? Identify the prerequisite that would prevent or contain each failure.
 
+## Applied SQL walkthrough
+
+An expand-backfill-contract migration separates compatibility changes from final constraints. The example adds a nullable priority column, derives values from state, then makes it required. In a live system old application versions may continue inserting rows without priority during the backfill. A single disposable transaction demonstrates the data invariant but does not prove zero-downtime deployment.
+
+### Predict and diagnose the result
+
+Predict priority two for open tasks and one for the others. Verify there are no NULL values after backfill and that the column is non-nullable. Plan a separate concurrent writer experiment: introduce compatible application writes or a suitable default before the final constraint. Inspect locks, table size and backfill progress before proposing a production migration.
+
+### Independent exercise and evidence
+
+Write a staged deployment timeline with an abort condition for each phase, compatible reads/writes during rollout and a reconciliation query. Plan bounded backfill batches for a large table and explicitly discuss why dropping data is not a safe automatic rollback. Record affected rows and constraints on the disposable dataset.
+
+**Qualification boundary:** These are operational practice instructions, not a completed recovery or security audit. Use only explicitly authorized disposable infrastructure. Preserve the existing starter, solution and acceptance contract.
+
 ## Bug Hunt
 
 1. State the specific unsafe assumption: The starter adds a nullable priority column but never backfills existing rows or enforces the intended non-null rule.
