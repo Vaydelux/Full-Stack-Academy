@@ -50,6 +50,20 @@ In the test notes, separate what the in-memory fixture genuinely observed from R
 
 Caching does not make an expensive underlying query disappear on cold start.
 
+## Applied engineering walkthrough
+
+Caching is an optimization of a derived read path, not the authoritative store. Repeated catalog reads can share a response only when all result-affecting context agrees. A cold miss still incurs database work; a cache failure can shift all demand back to the database.
+
+### Diagnose the concrete failure
+
+Use the existing fake loader and request one public product twice. Record first miss, second hit and exactly one loader call. Then change the underlying value and exercise the intended invalidation or expiry rule. Verify another tenant's response cannot be reused.
+
+### Independent exercise and evidence
+
+Design a cache eligibility checklist for public product descriptions versus private invoices. Include freshness tolerance, cardinality and fallback load. Compare actual read counts before and after on a representative disposable workload.
+
+**Qualification boundary:** These are practice instructions, not recorded results. Preserve the existing lab and publication status; in-memory tests do not qualify live Redis or BullMQ behavior.
+
 ## Knowledge check
 
 1. What is authoritative in this scenario, and what state is derived or replayable?
