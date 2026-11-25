@@ -72,6 +72,20 @@ A hardcoded tenant in a fixture does not enforce authorization in a web app. Pro
 
 The right choice can change with workload size, tenant access patterns, migration risk and operational constraints. Optimize a schema only after correctness and measured query behavior. A trigger, index, or foreign key is not evidence of complete application authorization.
 
+## Applied SQL walkthrough
+
+Tenant filtering must happen before rows cross the data-access boundary. A status predicate alone selects matching tasks across organizations. The fixture uses a hardcoded tenant to teach query correctness; a production query must bind tenant identity from verified context, not accept an arbitrary client-supplied tenant. Row-level security can provide an additional boundary when tested with actual application roles.
+
+### Predict and diagnose the result
+
+Compare starter and solution against the same two-tenant fixture. Enumerate permitted alpha todo IDs and explicitly identify forbidden beta todo rows from the fixture before execution. A count alone can pass despite substituting a forbidden row for an allowed one; assert exact IDs and tenant values.
+
+### Independent exercise and evidence
+
+Design a regression matrix for two tenants with overlapping local IDs, matching status values and a user with no membership. Specify the API denial behavior and the expected database row set for each authorized context. Record exact allowed and excluded IDs, and distinguish query correctness from authentication and RLS qualification.
+
+**Qualification boundary:** Predicted results are not executed PostgreSQL evidence. Use the existing disposable database acceptance gate and preserve the original starter and solution. No publication credit is granted by this walkthrough.
+
 ## Bug hunt and regression reasoning
 
 1. **Reproduce:** A project dashboard filters tasks by status but not by workspace. It returns beta's unfinished task to alpha, despite producing a syntactically valid table.
