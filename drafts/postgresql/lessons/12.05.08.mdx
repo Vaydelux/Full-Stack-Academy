@@ -71,6 +71,20 @@ Never use production credentials or destructive `--clean` against an existing en
 
 Practice describing a failure in terms of its blast radius, detection signal and recovery path. What would happen if the database were unavailable during a migration, WAL archives were missing, a pooled connection lost session state, or an operator accidentally targeted production? Identify the prerequisite that would prevent or contain each failure.
 
+## Applied SQL walkthrough
+
+Recovery is complete only when an independent target contains the expected data and the application can use it under the intended permissions. The provided query measures restored row count and a deterministic checksum over two selected fields. Compare it with evidence captured before the simulated incident. Logical restoration is not point-in-time recovery, and a successful drill on a tiny sample does not establish production RTO.
+
+### Predict and diagnose the result
+
+Use the persistent local sample specified in the runbook and restore to the dedicated recovery database. Confirm target identity before any cleanup. Compare baseline and restored counts, checksum, representative constraints and a read-only application query. Record any missing roles or extensions and do not reuse a target that contains unrelated data.
+
+### Independent exercise and evidence
+
+Prepare a handoff record with incident hypothesis, selected backup, target identity, restore start/end times, measured loss and functional verification. Include a no-go decision if consistency fails and the process for safely cleaning up only the disposable target. A separate realistic rehearsal is required before claiming operational recovery objectives.
+
+**Qualification boundary:** These are operational practice instructions, not a completed recovery or security audit. Use only explicitly authorized disposable infrastructure. Preserve the existing starter, solution and acceptance contract.
+
 ## Bug Hunt
 
 1. State the specific unsafe assumption: The starter can display live rows but has no evidence that any backup was created or that the rows would survive a database loss.
