@@ -50,6 +50,20 @@ The tests exercise local Node state or loopback HTTP behavior. Document separate
 
 This is a process-local CAS exercise; genuine CRDT convergence requires a real Yjs/provider integration.
 
+## Applied engineering walkthrough
+
+The collaborative notes prototype combines permissions, revisions, local pending edits and ephemeral presence. These mechanisms teach conflict detection and recovery, not distributed CRDT convergence. Treat each state boundary and failure mode as a separate acceptance requirement.
+
+### Diagnose the concrete failure
+
+Run the existing collaboration suite and trace a permitted edit, a stale edit, duplicate operation identity, denied write and offline retry. Verify final text, revision and retained pending state. Confirm presence expiry never changes document data.
+
+### Independent exercise and evidence
+
+Prepare a capstone acceptance matrix including real browser offline behavior, persistent storage, authorized transport and optional actual Yjs convergence. Record local model outcomes separately from those external gates.
+
+**Qualification boundary:** These are practice instructions, not recorded results. Preserve the original laboratory and publication status. Local simulations do not qualify actual browser or distributed provider behavior.
+
 ## Knowledge check
 
 1. Which actor, resource, version or event cursor is authoritative in this scenario?
