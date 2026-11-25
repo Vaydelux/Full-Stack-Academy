@@ -72,6 +72,20 @@ supabase db reset deletes local data not recreated by migrations/seed. Never run
 
 On an actual full-stack app, draw the flow from browser through the authenticated server endpoint to Supabase Auth or PostgreSQL. Annotate which requests use a publishable key, which need a user JWT, which require database grants, and which should never be allowed outside server infrastructure. Storage and Realtime must be authorized independently of ordinary table policies.
 
+## Applied persistence walkthrough
+
+Reviewed migrations preserve reproducible database changes; the SQL editor is useful for exploration but out-of-band DDL can create drift. Local reset replays migration history and seed data and destroys existing local database contents. The CLI version determines available commands. Never execute reset against an unrelated linked project or assume that local data is disposable.
+
+### Diagnose the concrete failure
+
+Check CLI help and verify the dedicated local project before generating a migration with the installed tool. Review the generated SQL, rebuild the disposable local database, and compare schema and policies. Test replay from a clean environment, not just from the one where the SQL was manually tried.
+
+### Independent exercise and evidence
+
+Plan a release for adding a table and its access policies, including explicit grants and RLS. Record migration order, clean replay result and a forward-repair strategy. Keep platform-managed schemas outside unrelated app DDL changes.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Use an isolated local Supabase environment or an explicitly approved disposable project. Preserve the starter and solution; do not treat source review as live platform or security qualification.
+
 ## Bug Hunt
 
 1. Reproduce the unsafe setup: The starter suggests pushing database changes without a checked-in, reviewed migration or verifying the project target.
