@@ -44,6 +44,20 @@ node --test --test-name-pattern="27[.]01" examples/p7-platforms/labs.test.mjs
 
 Capstone rubric checks supplied evidence flags only; no actual app build, SEO, browser or accessibility verification.
 
+## Applied engineering walkthrough
+
+Frontend acceptance must connect the agreed scope, actual workspace behavior, public route rendering and accessibility to the same candidate commit. A passing rubric model checks declared evidence, not whether a browser interaction occurred. Separate build, automated browser and human review results.
+
+### Diagnose the concrete failure
+
+Run webAcceptance with one missing required evidence item and verify the decision does not pass. Then gather actual candidate-specific build output, direct route responses and browser observations where the environment supports them.
+
+### Independent exercise and evidence
+
+Submit a frontend release packet containing exact source revision, commands, route matrix, negative authorization results and unresolved issues. Keep the module unpublished until all relevant gates and reviewer decisions are recorded.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and verify actual application, browser and human review evidence independently.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

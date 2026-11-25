@@ -44,6 +44,20 @@ node --test --test-name-pattern="27[.]01" examples/p7-platforms/labs.test.mjs
 
 Capstone rubric checks supplied evidence flags only; no actual app build, SEO, browser or accessibility verification.
 
+## Applied engineering walkthrough
+
+Accessibility acceptance combines keyboard navigation, meaningful names and roles, visible focus, contrast, zoom and assistive technology observations. Automated tests cover selected rules but do not establish that a complete task journey is usable. Include errors and dynamic updates in the review.
+
+### Diagnose the concrete failure
+
+Complete the task creation flow using only keyboard input at normal and 200 percent zoom. Trigger invalid input, inspect focus and error association, then repeat with an available screen reader and record what is announced.
+
+### Independent exercise and evidence
+
+Prepare a review matrix with browser, viewport, assistive technology, observed behavior and defect severity. Include dark and light themes and narrow screens. Mark unavailable human review not-run rather than inventing evidence.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and verify actual application, browser and human review evidence independently.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

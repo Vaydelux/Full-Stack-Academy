@@ -44,6 +44,20 @@ node --test --test-name-pattern="27[.]01" examples/p7-platforms/labs.test.mjs
 
 Capstone rubric checks supplied evidence flags only; no actual app build, SEO, browser or accessibility verification.
 
+## Applied engineering walkthrough
+
+Public discoverability depends on useful server-rendered content, accurate metadata, crawlable links and a consistent canonical URL. Protected workspace routes must enforce authentication regardless of crawler directives. A robots directive is not a confidentiality mechanism, and a client-only title does not establish the initial rendered document.
+
+### Diagnose the concrete failure
+
+Build a public landing page and inspect the actual HTML response for title, description, canonical URL and meaningful links. Request a protected route anonymously and verify it returns no private workspace content.
+
+### Independent exercise and evidence
+
+Record route-specific indexing policy, status codes and rendered metadata. Test duplicate URL variants and a missing public page. Keep search-engine indexing and real field performance as separate external measurements.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and verify actual application, browser and human review evidence independently.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

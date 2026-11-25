@@ -44,6 +44,20 @@ node --test --test-name-pattern="27[.]01" examples/p7-platforms/labs.test.mjs
 
 Capstone rubric checks supplied evidence flags only; no actual app build, SEO, browser or accessibility verification.
 
+## Applied engineering walkthrough
+
+Authentication establishes identity, while authorization determines whether that identity may perform a particular action in the selected organization. A frontend route guard can improve navigation but cannot protect the underlying data. Resolve the actor and active membership at the server for every protected operation.
+
+### Diagnose the concrete failure
+
+Use synthetic signed-in, anonymous and foreign-tenant sessions to open the same workspace route and call its data endpoint directly. Remove membership after navigation and verify the next protected request is denied.
+
+### Independent exercise and evidence
+
+Define session expiry, sign-in return path and safe denied states. Record actual response status and absence of foreign data, including cached content during account switching. Never pass client-supplied tenant context as proof of membership.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and verify actual application, browser and human review evidence independently.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

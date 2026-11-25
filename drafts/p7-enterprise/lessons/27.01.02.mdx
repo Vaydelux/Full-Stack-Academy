@@ -44,6 +44,20 @@ node --test --test-name-pattern="27[.]01" examples/p7-platforms/labs.test.mjs
 
 Capstone rubric checks supplied evidence flags only; no actual app build, SEO, browser or accessibility verification.
 
+## Applied engineering walkthrough
+
+An architecture decision record makes a tradeoff explicit rather than awarding points for extra services. A single Next application can reduce operational overhead; a separate Nest API can establish a useful service boundary when ownership, independent clients or workload justify it. Compare alternatives using deployment, data ownership, testing and failure behavior.
+
+### Diagnose the concrete failure
+
+Sketch the same task creation journey in both designs, including validation, authorization and persistence. Identify the extra network failure in the separated design and the coupling risk in the single-process design.
+
+### Independent exercise and evidence
+
+Write an ADR with constraints, chosen option, consequences and measurable reversal criteria. Preserve stable business contracts so a later extraction is possible without speculative infrastructure; record unresolved operational evidence.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and verify actual application, browser and human review evidence independently.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?
