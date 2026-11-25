@@ -52,6 +52,20 @@ The corresponding module exercises **inspectUpload, issueUploadToken, verifyUplo
 
 For a production implementation, document the secret-owner or principal, durability plan, error and recovery policy, rate/resource bounds, privacy guarantees, observability without sensitive payloads, and the credential/version-rotation procedure.
 
+## Applied engineering walkthrough
+
+A signed capability delegates a specific operation under defined conditions. Bind the actor, tenant, object identity and expiry to the signed claims; do not accept independent request fields as overrides. Expiry limits the window of use but does not enforce single-use semantics without durable nonce tracking.
+
+### Diagnose the concrete failure
+
+Issue a synthetic token for an allowed actor using the local signer. Verify it before expiry, then exercise wrong actor, wrong tenant, altered token and expiry. Test whether repeated valid use is permitted by the fixture rather than claiming replay prevention automatically.
+
+### Independent exercise and evidence
+
+Design distinct upload and download capability contracts, including object state, expiration and optional single-use enforcement. Record decisions and synthetic claim IDs, never live signed URLs.
+
+**Qualification boundary:** These are practice instructions, not recorded results. Preserve existing specifications and laboratory contracts. Qualify actual external services separately using authorized disposable infrastructure.
+
 ## Knowledge check
 
 1. Which authenticated actor, external sender, or tenant owns the data in this scenario?
