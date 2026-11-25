@@ -81,6 +81,20 @@ This SELECT example does not automatically secure writes. INSERT needs WITH CHEC
 
 RLS applies subject to PostgreSQL roles, table ownership, policy composition and operation type. In an exposed schema, verify grants and RLS together. For writes, review INSERT WITH CHECK and UPDATE USING/WITH CHECK, not just SELECT. In Supabase, do not use user-editable `user_metadata` as authority for privileged roles. A service-role client may bypass RLS; it must not be used to repair a client permission error.
 
+## Applied persistence walkthrough
+
+The capstone SELECT rule requires both ownership and tenant membership; each condition excludes a different unauthorized case. A known owner without membership should fail, and a tenant member who does not own the task should fail under this specific contract. Existing permissive policies can broaden access if left in place. The fixture covers reads only.
+
+### Diagnose the concrete failure
+
+Seed four cases: own task in authorized tenant, own task outside membership, another owner's task inside membership, and another tenant's task. Verify only the first is returned under the intended policy. Inspect grants and applicable policies, and repeat through the real Data API using actual test identities.
+
+### Independent exercise and evidence
+
+Design a complete CRUD matrix preserving both the existing and new row invariants for UPDATE and the proposed row invariant for INSERT. Include a privileged server path as an independent authorization test. Record exact IDs and actual SQL/HTTP outcomes, not just source parity.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Use an isolated Supabase environment and real non-bypass caller roles. Preserve the existing starter and solution; source review cannot certify row policies or authorization.
+
 ## Bug Hunt and regression matrix
 
 1. Predict the disclosure caused by the starter: The starter's policy returns tasks for any authenticated user because every task has a non-null tenantId.
