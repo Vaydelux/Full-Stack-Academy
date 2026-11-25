@@ -6,3 +6,6 @@ Six pure discovery regression cases and local Playwright smoke (four viewport si
 
 ## Follow-up
 The first six discovery cases passed in real Node 22.16.0, with exact committed file hashes 721703dc79b64d70347cba682fbf9257efad552e and bb6d7cad5f607bc4d98a68e7fca6bcbaa98c991d. Follow-up adds an API-parentheses case, preserves an explicit workspace link, marks the active reference category, prioritizes dashboard resume, and adds four source-wiring regressions. The final expanded suite will need full checkout execution. DNS resolution of github.com failed in the local shell. This is not a browser accessibility, runtime, bundle-size or production readiness result.
+
+## Final evidence
+All seven final search tests passed using Node 22.16.0; reconstructed source and test Git hashes exactly match 94d5e065d76a96f3c9f991da39037343f91fbcd4 and 8ab0545820ed482a1fe3e59cc960ecd2ca317c57. Four source-wiring test bodies also passed in the connector JS runtime against committed file contents (not a Node full-checkout run). Snapshot remains 889 topics, 303 authored reference drafts, 338 published lessons and 337 lab fixtures. The local browser smoke covers a proposed 24 route/viewport checks plus scoped search and active navigation; not executed. No visual approval, accessibility compliance, performance measurement or production deployment claim.

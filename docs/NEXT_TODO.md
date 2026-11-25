@@ -1,4 +1,4 @@
-> **F17 — Learning UX:** Contextual module navigation, unified server search, discovery-first landing, responsive reading and dashboard improvements. Six exact-source Node22 discovery tests passed; added API-parentheses and four source-wiring cases. Full build and browser pending; see `docs/F17_LEARNING_UX.md`.
+> **F17 — Learning UX:** Contextual module navigation, unified server search, discovery-first landing, responsive reading and dashboard improvements. Seven final exact-source Node22 discovery tests passed; four source-wiring test bodies passed in connector runtime. Full build and browser pending; see `docs/F17_LEARNING_UX.md`.
 
 > **F16 — Encyclopedia authoring freeze:** 115 new drafts, 303/303 canonical references covered, 327 explicit links across 206 topics. All 115 new records revalidated against actual index and curriculum; three new regression bodies passed in connector JS with extracted data. Full TypeScript-import suite, locked build and browser smoke pending. See `docs/F16_REFERENCE_COMPLETION.md`.
 
