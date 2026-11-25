@@ -50,6 +50,20 @@ The tests exercise local Node state or loopback HTTP behavior. Document separate
 
 A persistent connection is not a durable event log or an authentication mechanism.
 
+## Applied engineering walkthrough
+
+Polling trades simplicity for repeated request overhead. SSE provides a unidirectional HTTP event stream; writes can remain normal authenticated HTTP requests. WebSockets support bidirectional messages but require their own lifecycle and protocol. None supplies durable replay automatically.
+
+### Diagnose the concrete failure
+
+Open the existing loopback feed, inspect the event-stream content type and publish one synthetic activity through POST. Compare the received event with the authoritative record. Close the stream and verify the subscriber is removed.
+
+### Independent exercise and evidence
+
+Choose a transport for a dashboard, a chat application and a low-frequency report. Explain connection budgets, reconnect behavior and when a snapshot is needed. Record actual local transport evidence separately from deployment proxy behavior.
+
+**Qualification boundary:** These are practice instructions, not recorded results. Preserve the original laboratory and publication status. Local simulations do not qualify actual browser or distributed provider behavior.
+
 ## Knowledge check
 
 1. Which actor, resource, version or event cursor is authoritative in this scenario?
