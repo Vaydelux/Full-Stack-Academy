@@ -16,6 +16,7 @@ const eslintConfig = [
       "public/**",
       "preview-src/**",
       "drafts/nestjs/**",
+      "labs/nestjs-*/**",
       "examples/nestjs-vertical/**",
       "prototype/**",
     ],

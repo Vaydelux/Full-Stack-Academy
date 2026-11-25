@@ -43,6 +43,7 @@
     "examples/forms-query-vertical/react-client",
     "examples/forms-query-vertical/.ssr-qualification-*",
     "drafts/nestjs",
-    "examples/nestjs-vertical"
+    "examples/nestjs-vertical",
+    "labs/nestjs-*/**/*"
   ]
 }

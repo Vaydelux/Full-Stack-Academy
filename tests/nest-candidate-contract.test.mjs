@@ -1,0 +1,27 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { candidatePaths, gitBlobId, inspectCandidate } from '../scripts/nest-candidate-contract.mjs';
+function fixture(id='11.01.01') {
+ const slug='bootstrap-module-graph',moduleId=id.slice(0,5),title='Bootstrap and module graph',level='Intermediate';
+ const topic={id,moduleId,title,level};const paths=candidatePaths(id,slug);
+ const meta={id,title,moduleId,labSlug:slug,sourceStatus:'draft-unverified',runtimeQualification:'not-run',reviewStatus:'unreviewed',estimatedMinutes:60,objective:'Register feature modules in root imports.',acceptance:'Boot real Nest and check the route.',misconception:'Feature controller is unreachable.',securityBoundary:'Bind local only and verify access at the server boundary.',prerequisites:['10.04.08'],officialReferences:['https://docs.nestjs.com/','https://docs.nestjs.com/modules']};
+ const lab={lessonId:id,readyToPublish:false,requiresRealNestTest:true,expectedPositive:meta.acceptance,expectedNegative:meta.misconception,starter:paths.sources[3],solution:paths.sources[4]};
+ const data=new Map([[paths.sources[0],'```ts\nred\n```\n\n```ts\ngreen\n```\n'],[paths.sources[1],JSON.stringify(meta)],[paths.sources[2],JSON.stringify(lab)],[paths.sources[3],'red'],[paths.sources[4],'green'],[paths.suite,`test('${id} expected behavior',()=>{});`]]);
+ if(paths.integration)data.set(paths.integration,`test('${id} integration',()=>{});`);
+ const c={id,moduleId,title,slug,publicationReady:false,runtimeExecuted:false,reviewedAt:null,targetPaths:paths.targets,sourceBindings:paths.sources.map(path=>({path,gitBlob:gitBlobId(data.get(path))})),runtime:{suite:paths.suite,topic:id,integration:paths.integration,negativeMode:id==='11.04.08'?'unsafe-starter-source-only':'semantic-runtime'},proposedMetadata:{id,title,trackId:'11',moduleId,level,estimatedMinutes:60,description:meta.objective+' '+meta.acceptance,labId:'lab.node.nestjs-'+slug,stack:{node:'24',nestjs:'12',typescriptNestjs:'6'},prerequisites:meta.prerequisites,objectives:[meta.objective,meta.acceptance,meta.securityBoundary],rubric:[meta.objective,meta.acceptance,meta.securityBoundary],sources:meta.officialReferences.map((url,i)=>({label:i===0?'Primary official reference':'Supporting official reference',url})),reviewedAt:null},proposedLab:{id:'lab.node.nestjs-'+slug,lessonId:id,title:'NestJS practice: '+title,runtime:'node-24-nestjs-12-typescript-6',starter:paths.targets[3],solution:paths.targets[4],tests:paths.targets[5],expected:meta.acceptance,security:meta.securityBoundary}};
+ return {c,topic,data,read:p=>{assert.ok(data.has(p),p);return data.get(p);}};
+}
+const check=f=>inspectCandidate(f.c,f.topic,f.read);
+function rebind(f,p){f.c.sourceBindings.find(x=>x.path===p).gitBlob=gitBlobId(f.read(p));}
+test('source-bound candidate remains unapproved',()=>assert.deepEqual(check(fixture()),{id:'11.01.01',sourceBound:true,publicationApproved:false}));
+test('Git blob identifier hashes UTF8 bytes and header',()=>assert.equal(gitBlobId('hello\n'),'ce013625030ba8dba906f756967f9e9ca394464a'));
+test('all four module paths are bounded and integrations are retained',()=>{assert.match(candidatePaths('11.02.08','a-b').suite,/request-pipeline/);assert.match(candidatePaths('11.03.06','a-b').integration,/postgres/);assert.match(candidatePaths('11.04.03','a-b').integration,/websocket/);assert.equal(candidatePaths('11.01.01','a-b').integration,null);});
+test('unsafe input is rejected',()=>{for(const [id,slug] of [['11.05.01','ok'],['11.01.09','ok'],['11.01.01','../bad']])assert.throws(()=>candidatePaths(id,slug));});
+test('any changed source invalidates the candidate',()=>{const f=fixture();f.data.set(f.c.sourceBindings[3].path,'drift');assert.throws(()=>check(f),/Candidate source changed/);});
+test('rehashed divergent example code is still rejected',()=>{const f=fixture();const p=f.c.sourceBindings[3].path;f.data.set(p,'drift');rebind(f,p);assert.throws(()=>check(f));});
+test('runtime suite without the exact topic fails',()=>{const f=fixture();f.data.set(f.c.runtime.suite,"test('11.01.02 other',()=>{});");rebind(f,f.c.runtime.suite);assert.throws(()=>check(f),/Missing or duplicate/);});
+test('both service integration cases require real integration source',()=>{for(const id of ['11.03.06','11.04.03']){const f=fixture(id);assert.equal(check(f).sourceBound,true);f.data.set(f.c.runtime.integration,'no test');rebind(f,f.c.runtime.integration);assert.throws(()=>check(f),/Missing topic integration/);}});
+test('review or publication claims are refused',()=>{for(const [key,value] of [['runtimeExecuted',true],['publicationReady',true],['reviewedAt','2026-11-25']]){const f=fixture();f.c[key]=value;assert.throws(()=>check(f));}});
+test('proposed metadata, paths and compiler pin cannot drift',()=>{for(const edit of [c=>c.proposedMetadata.stack.typescriptNestjs='5',c=>c.targetPaths[0]='../escape',c=>c.proposedLab.tests='other',c=>c.proposedMetadata.reviewedAt='2026-11-25']){const f=fixture();edit(f.c);assert.throws(()=>check(f));}});
+test('unsafe public bind starter stays source-only',()=>{const f=fixture('11.04.08');assert.equal(check(f).sourceBound,true);f.c.runtime.negativeMode='semantic-runtime';assert.throws(()=>check(f));});
+test('Windows CRLF checkout preserves an LF-bound candidate',()=>{const f=fixture();for(const [p,s] of f.data)f.data.set(p,s.replaceAll('\n','\r\n'));assert.equal(check(f).sourceBound,true);});

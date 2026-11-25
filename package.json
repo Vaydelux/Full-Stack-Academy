@@ -445,7 +445,7 @@
     "test:vercel-freeze": "node --test tests/vercel-freeze.test.mjs",
     "verify:vercel-freeze": "node scripts/verify-vercel-freeze.mjs",
     "status:nestjs-drafts": "node scripts/verify-nestjs-drafts.mjs --json",
-    "test:nestjs-drafts": "node scripts/verify-nestjs-drafts.mjs --check && node --test tests/nestjs-drafts.test.mjs tests/nest-publication-state.test.mjs && node examples/nestjs-vertical/scripts/verify-runtime-test-coverage.mjs --check && node --test examples/nestjs-vertical/tests/runtime-coverage-source.test.mjs && npm run test:nestjs-offline",
+    "test:nestjs-drafts": "node scripts/verify-nestjs-drafts.mjs --check && node --test tests/nestjs-drafts.test.mjs tests/nest-publication-state.test.mjs && node examples/nestjs-vertical/scripts/verify-runtime-test-coverage.mjs --check && node --test examples/nestjs-vertical/tests/runtime-coverage-source.test.mjs && npm run test:nestjs-offline && npm run test:nestjs-candidates",
     "qualify:nestjs:architecture": "npm run qualify --prefix examples/nestjs-vertical",
     "status:nestjs-test-coverage": "node examples/nestjs-vertical/scripts/verify-runtime-test-coverage.mjs --json",
     "test:nestjs-offline-transactions": "node --experimental-strip-types --test examples/nestjs-vertical/tests/transactions.offline.test.mjs",
@@ -497,7 +497,10 @@
     "qualify:academy:local": "node scripts/qualification-coordinator.mjs",
     "qualify:p5:postgres-search": "node examples/p5-integrations/postgres-search/qualify.mjs --run",
     "qualify:nestjs:module": "npm run qualify:module --prefix examples/nestjs-vertical --",
-    "test:nestjs-offline-qualification": "node --test examples/nestjs-vertical/tests/red-green.offline.test.mjs examples/nestjs-vertical/tests/module-qualification.offline.test.mjs"
+    "test:nestjs-offline-qualification": "node --test examples/nestjs-vertical/tests/red-green.offline.test.mjs examples/nestjs-vertical/tests/module-qualification.offline.test.mjs",
+    "status:nestjs-candidates": "node scripts/verify-nest-candidates.mjs --json",
+    "test:nestjs-candidates": "node scripts/verify-nest-candidates.mjs --check && node --test tests/nest-candidate-contract.test.mjs tests/nest-candidate-inventory.test.mjs",
+    "refresh:nestjs-candidates": "node scripts/verify-nest-candidates.mjs --refresh"
   },
   "dependencies": {
     "clsx": "^2.1.1",

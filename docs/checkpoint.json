@@ -10,8 +10,8 @@
   },
   "development": {
     "branch": "main",
-    "state": "f1-p2-parallel-module-qualification-and-transition-preparation",
-    "note": "P2 all four module runtime paths prepared, 31 starter/instructor harness comparisons hardened, Nest draft audit made transition-aware for complete published lesson/lab/registry artifacts and retained draft parity. 20 isolated Node24.11.1 helper tests pass (13 prior plus 7 transition checks). Full framework, P1 and actual promotion remain not-run. 338/889 published unchanged."
+    "state": "f1-p2-candidate-contracts-prepared-runtime-blocked",
+    "note": "32 source-bound Nest candidate records across all four modules, 194 topic-level and 28 shared source bindings, 192 planned artifact paths. Candidate contracts deliberately unapproved; 17 new isolated Node24.11.1 tests passed and previous 20 P2 helper tests rerun passed. Full candidate filesystem check, actual projection/real lab wrappers, installed Nest and P1 runtime/human gates not run; 338/889 published unchanged."
   },
   "snapshot": {
     "tracks": 28,
@@ -73,6 +73,6 @@
     "devHighFindings": 14,
     "exceptionExpires": "2026-12-02"
   },
-  "nextMilestone": "Run P1 on approved networked checkout, then use npm run qualify:nestjs:module -- --run 11.01 after genuine nested lock generation; module-specific PG/socket requirements preserved. No curriculum expansion.",
+  "nextMilestone": "Qualify P1 on approved networked Node24 checkout; for P2 run test:nestjs-candidates, generate genuine lock, qualify module, implement actual article rendering and executable lab wrappers, human review and atomic promoter. Scope frozen.",
   "status": "editorial-merged-f1-partial-runtime-qualification-blocked"
 }
