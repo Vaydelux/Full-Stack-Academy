@@ -2,9 +2,9 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 
-for(const [track,folder] of [['15','security'],['16','redis']]){
- test('P10 track '+track+' retains all 32 applied engineering walkthroughs',()=>{
-  for(let m=1;m<=4;m++)for(let n=1;n<=8;n++){
+for(const [track,folder,modules] of [['15','security',4],['16','redis',4],['17','realtime',3],['18','integrations',4]]){
+ test('P10 track '+track+' retains all '+(modules*8)+' applied engineering walkthroughs',()=>{
+  for(let m=1;m<=modules;m++)for(let n=1;n<=8;n++){
    const id=track+'.'+String(m).padStart(2,'0')+'.'+String(n).padStart(2,'0');
    const mdx=readFileSync(new URL('../drafts/'+folder+'/lessons/'+id+'.mdx',import.meta.url),'utf8').replaceAll('\r\n','\n');
    const walk=mdx.match(/## Applied engineering walkthrough\n([\s\S]*?)(?=## Knowledge check)/)?.[1]??'';
