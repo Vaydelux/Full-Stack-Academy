@@ -50,6 +50,20 @@ In the test notes, separate what the in-memory fixture genuinely observed from R
 
 A connection pool improves efficiency but is not a failover or authentication strategy.
 
+## Applied engineering walkthrough
+
+A Redis client may multiplex commands on a shared connection. Blocking commands and subscriptions can require dedicated connections depending on the client. A connection per request is not a safe default. Resource ownership includes startup, error handling and bounded shutdown.
+
+### Diagnose the concrete failure
+
+Instrument a disposable process to count actual connections under concurrent requests. Simulate an unavailable Redis endpoint and verify requests fail or fall back within a defined deadline. Verify reconnect does not create unbounded clients.
+
+### Independent exercise and evidence
+
+Design separate command and worker connection ownership. Budget total connections across replicas, including deployment overlap. Record connection counts and acquisition or command timeout behavior.
+
+**Qualification boundary:** These are practice instructions, not recorded results. Preserve the existing lab and publication status; in-memory tests do not qualify live Redis or BullMQ behavior.
+
 ## Knowledge check
 
 1. What is authoritative in this scenario, and what state is derived or replayable?
