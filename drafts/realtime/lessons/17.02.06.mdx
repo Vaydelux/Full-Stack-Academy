@@ -50,6 +50,20 @@ The tests exercise local Node state or loopback HTTP behavior. Document separate
 
 A UTC-hour teaching example is not a production timezone/DST scheduler.
 
+## Applied engineering walkthrough
+
+Quiet hours depend on local time, timezone and a defined channel policy. Intervals crossing midnight require different comparisons from ordinary daytime intervals. Consent and unsubscribe rules remain distinct from quiet hours; mandatory transactional notices require an explicit policy.
+
+### Diagnose the concrete failure
+
+Use a controlled clock to test just before 22:00 UTC, inside the overnight interval and at 06:00 UTC. Check the intended email eligibility and continued in-app storage. Test an independently disabled email preference.
+
+### Independent exercise and evidence
+
+Extend the design to a named timezone with daylight-saving transitions and a clear policy for delayed messages. Record clock inputs and decisions; avoid hardcoding a fixed offset for all users.
+
+**Qualification boundary:** These are practice instructions, not recorded results. Preserve the original laboratory and publication status. Local simulations do not qualify actual browser or distributed provider behavior.
+
 ## Knowledge check
 
 1. Which actor, resource, version or event cursor is authoritative in this scenario?
