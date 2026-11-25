@@ -50,6 +50,20 @@ The tests exercise local Node state or loopback HTTP behavior. Document separate
 
 Obscure document IDs cannot replace permissions on each operation.
 
+## Applied engineering walkthrough
+
+Sharing requires both resource membership and action authorization. A viewer can read but should not edit; a nonmember cannot gain access just by knowing a document ID. A share token, if supported, must have a defined capability, expiry and revocation contract.
+
+### Diagnose the concrete failure
+
+Use an owner, viewer and foreign tenant identity in the local fixture. Verify the permitted read and owner edit, then deny a viewer edit and foreign read. Inspect the final revision to ensure denied writes changed nothing.
+
+### Independent exercise and evidence
+
+Build a matrix for owner, editor, viewer and nonmember across read, edit and share actions. Record the actual server policy and denied outcomes; test revocation on existing connections separately.
+
+**Qualification boundary:** These are practice instructions, not recorded results. Preserve the original laboratory and publication status. Local simulations do not qualify actual browser or distributed provider behavior.
+
 ## Knowledge check
 
 1. Which actor, resource, version or event cursor is authoritative in this scenario?
