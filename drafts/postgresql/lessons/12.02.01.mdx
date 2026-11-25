@@ -81,6 +81,20 @@ Normalization is a logical data-integrity decision, not a performance guarantee.
 
 The right choice can change with workload size, tenant access patterns, migration risk and operational constraints. Optimize a schema only after correctness and measured query behavior. A trigger, index, or foreign key is not evidence of complete application authorization.
 
+## Applied SQL walkthrough
+
+Normalize repeating facts into separate relations. A contact can exist without an address; each address belongs to a contact and the composite key rejects the same address twice for that contact. The fixture does not enforce email syntax or case normalization. Denormalized read models trade simpler reads for synchronization work.
+
+### Predict and diagnose the result
+
+Predict acceptance of two distinct addresses for one contact, rejection of a duplicate pair and rejection of an orphan address. Inspect the existing acceptance script for the specific failure assertion. A comma-separated field cannot enforce these individual relationships using an ordinary foreign key.
+
+### Independent exercise and evidence
+
+Design a migration from a comma-separated field: stage parsed values, resolve ambiguous entries and duplicates, backfill child rows, reconcile counts, then switch readers and writers. Record permitted and forbidden pairs; explain why migration rollback requires a data-preservation plan.
+
+**Qualification boundary:** Predicted results are not executed PostgreSQL evidence. Use the existing disposable database acceptance gate and preserve the original starter and solution. No publication credit is granted by this walkthrough.
+
 ## Bug hunt and regression reasoning
 
 1. **Reproduce:** A signup form allows a user to add multiple contact emails. The first design stores comma-separated addresses in one column. Searching, deduplicating, and constraining an individual address becomes unreliable.
