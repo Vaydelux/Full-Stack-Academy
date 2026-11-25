@@ -42,6 +42,20 @@ Document both a permitted happy path and a rejected adversarial path. Integratio
 
 A passing UI check or source-only checklist cannot establish secure production behavior. An observed negative test and reviewed trust boundary are essential.
 
+## Applied engineering walkthrough
+
+SAML federation exchanges assertions between an identity provider and service provider. Trust comes from configured metadata and vetted signature validation. Audience, recipient, time constraints and request correlation matter. Local permissions require authoritative mapping.
+
+### Diagnose the concrete failure
+
+Use a dedicated test identity provider and maintained library. Verify a normal login, then use supported test fixtures for expired assertion, invalid recipient and replay. Confirm failures do not create a session.
+
+### Independent exercise and evidence
+
+Draw the trust relationship and plan metadata rotation, account linking and local membership checks. Record verification decisions and version without retaining assertion contents.
+
+**Qualification boundary:** These are practice instructions, not recorded audit results. Use synthetic data and authorized disposable infrastructure. Preserve existing laboratory contracts and publication status.
+
 ## Knowledge check
 
 1. Which input is attacker-controlled?
