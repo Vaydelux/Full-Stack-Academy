@@ -80,7 +80,21 @@ In a multi-request system, repeat the test with two independent users and at lea
 
 <Misconception claim="A task-created event is emitted before persistence succeeds, triggering false notifications." correction="Events should be emitted after a committed operation, with durable delivery for critical side effects." />
 
-<KnowledgeCheck question="Which design is safest for domain events?" choices={["Make the controller hold every stateful dependency permanently.","Keep business rules in an injectable service and verify the boundary with actual runtime behavior.","Expose persistent entities directly because TypeScript hides private fields.","Treat a mock array as proof of database transactions."]} correctIndex={1} explanation="Events should be emitted after a committed operation, with durable delivery for critical side effects." misconception="A task-created event is emitted before persistence succeeds, triggering false notifications." lessonId="11.03.07" />
+<KnowledgeCheck question="A notification event is sent before task persistence completes, and persistence then fails. Which design prevents the false notification?" choices={["Emit earlier to reduce latency.","Ignore the persistence error.","Emit after confirmed persistence; use an outbox for durable delivery.","Treat the event as proof of a successful write."]} correctIndex={2} explanation="An event must reflect a successful domain change; durable delivery needs additional guarantees." misconception="A task-created event is emitted before persistence succeeds, triggering false notifications." lessonId="11.03.07" />
+
+## Applied engineering walkthrough
+
+A domain event represents something that happened, not a promise that it might happen. The solution awaits save before emitting task.created. The in-process EventEmitter is synchronous and non-durable; a listener can throw after persistence, or the process can terminate before the event is delivered. A successful save call does not prove a larger surrounding transaction has committed. Critical side effects need a transactional outbox and idempotent consumers.
+
+### Diagnose the concrete failure
+
+Use a writer that records success or rejects, and an emitter that records event delivery. The success order must be write then event; the failure path must not emit. Add a listener that throws after the write, and explain why an error response does not necessarily prove that the write failed. Do not silently retry creation with a new identity.
+
+### Independent exercise and evidence
+
+Sketch an outbox table storing an event ID and payload in the same transaction as the task. Describe a worker that publishes committed rows and a consumer that tolerates duplicate delivery. Record the failure window between write and emit in the simple fixture and the outbox mitigation.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Pure contract checks, framework wiring and real database qualification are separate evidence. Keep the existing starter and solution unchanged; do not award course credit from source review alone.
 
 ## Bug Hunt: reproduce, diagnose and repair
 
