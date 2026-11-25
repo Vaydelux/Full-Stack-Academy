@@ -2,6 +2,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import {inspectPublishedSql} from '../../../scripts/pg-promotion-guard.mjs';
 import { readPersistencePublishedCount } from '../../../scripts/persistence-publication-baseline.mjs';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../../..');
 const read=relative=>fs.readFileSync(path.join(root,relative),'utf8').replaceAll('\r\n','\n');
@@ -60,12 +61,12 @@ export function inspectModelingDrafts(){
     fail(id,'Lesson is incomplete');
    if(!meta.officialReferences?.every(url=>url.startsWith('https://www.postgresql.org/docs/')&&article.includes(url)))
     fail(id,'Official SQL docs missing from metadata/lesson');
-   if(/<LabGate\b|<script\b|dangerouslySetInnerHTML/.test(article)||
-      present('src/content/lessons/'+id+'.mdx')||present('src/content/lessons/'+id+'.meta.json'))
-    fail(id,'Draft unexpectedly published or unsafe MDX');
-   records.push({id,title:topic.title,slug,status:'draft-unverified'});
+   if(/<LabGate\b|<script\b|dangerouslySetInnerHTML/.test(article))fail(id,'Unsafe draft MDX');
+   const publication=inspectPublishedSql({id,title:topic.title,slug},{exists:present,read});
+   records.push({id,title:topic.title,slug,status:'draft-unverified',publication});
   }catch(error){fail(id,error.message);}
  }
+ if(records.some(r=>r.publication==='published')&&!records.every(r=>r.publication==='published'))fail('module','Partial 12.02 publication');
  if(!present('examples/postgresql-modeling/fixture.sql'))fail('fixture','Missing temporary-table data');
  const published=json('docs/checkpoint.json').snapshot.publishedLessons;
  try{readPersistencePublishedCount(root);}catch(error){fail('checkpoint',error.message);}

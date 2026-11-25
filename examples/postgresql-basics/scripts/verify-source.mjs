@@ -2,6 +2,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import {inspectPublishedSql} from '../../../scripts/pg-promotion-guard.mjs';
 import { readPersistencePublishedCount } from '../../../scripts/persistence-publication-baseline.mjs';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../../..');
 const read=rel=>fs.readFileSync(path.join(root,rel),'utf8').replaceAll('\r\n','\n');
@@ -43,12 +44,14 @@ export function inspectPostgresDrafts(){
    if((article.match(/<LessonStep\b/g)||[]).length!==3||!article.includes('<LearningGoals')||!article.includes('<KnowledgeCheck')||!article.includes('lessonId="'+id+'"'))problem(id,'Missing guided lesson or quiz');
    if(article.length<3500||!article.includes('## Bug Hunt')||!article.includes('## Official references'))problem(id,'Incomplete instructional material');
    if(!meta.officialReferences?.every(u=>u.startsWith('https://www.postgresql.org/docs/')&&article.includes(u)))problem(id,'Missing official reference');
-   if(/<LabGate\b|dangerouslySetInnerHTML\s*=|<script\b/i.test(article)||exists('src/content/lessons/'+id+'.mdx')||exists('src/content/lessons/'+id+'.meta.json'))problem(id,'Draft in live registry or unsafe MDX');
-   entries.push({id,title:row.title,slug,status:'draft-unverified'});
+   if(/<LabGate\b|dangerouslySetInnerHTML\s*=|<script\b/i.test(article))problem(id,'Unsafe draft MDX');
+   const publication=inspectPublishedSql({id,title:row.title,slug},{exists,read});
+   entries.push({id,title:row.title,slug,status:'draft-unverified',publication});
   }catch(error){problem(id,error.message);}
  }
  if(fs.readdirSync(path.join(root,'drafts/postgresql/lessons')).filter(x=>/^12\.01\.\d{2}\.mdx$/.test(x)).length!==8)problem('drafts','Wrong MDX count');
  if(used.size!==8)problem('labs','Wrong number of canonical 12.01 lab slugs');
+ if(entries.some(r=>r.publication==='published')&&!entries.every(r=>r.publication==='published'))problem('module','Partial 12.01 publication');
  if(!exists('examples/postgresql-basics/fixture.sql'))problem('fixture','Missing SQL fixture');
  const published=json('docs/checkpoint.json').snapshot.publishedLessons;
  try{readPersistencePublishedCount(root);}catch(error){problem('checkpoint',error.message);}

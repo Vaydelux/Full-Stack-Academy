@@ -1,10 +1,10 @@
-/** Actual Chromium acceptance for one locally projected/published Nest module. */
+/** Actual Chromium acceptance for one locally projected/published Nest or SQL module. */
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
-const id=process.env.ACADEMY_NEST_MODULE;
-assert.match(id??'',/^11\.0[1-4]$/);
+const id=process.env.ACADEMY_MODULE_REVIEW||process.env.ACADEMY_NEST_MODULE;
+assert.match(id??'',/^(11\.0[1-4]|12\.0[12])$/);
 const base=new URL(process.env.ACADEMY_BASE_URL);
 assert.equal(base.hostname,'127.0.0.1');assert.equal(base.protocol,'http:');
 const catalog=JSON.parse(readFileSync(new URL('../data/curriculum.json',import.meta.url),'utf8'));
@@ -40,4 +40,4 @@ try{
   assert.deepEqual(errors,[],'Browser page errors');
  }finally{await context.close();}
 }finally{await browser.close();}
-console.log('Nest module browser acceptance: 8 lessons, 24 viewport checks, 8 knowledge checks; human accessibility not evaluated.');
+console.log('Module '+id+' browser acceptance: 8 lessons, 24 viewport checks, 8 knowledge checks; human accessibility not evaluated.');

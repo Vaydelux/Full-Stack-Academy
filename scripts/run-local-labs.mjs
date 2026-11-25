@@ -11,6 +11,7 @@ const labsRoot=path.join(root,'labs');
 const files=[];
 const browserFiles=[];
 const nestFiles=[];
+const sqlFiles=[];
 const seen=new Set();
 for(const entry of fs.readdirSync(labsRoot,{withFileTypes:true}).filter(x=>x.isDirectory()).sort((a,b)=>a.name.localeCompare(b.name))){
  const manifestPath=path.join(labsRoot,entry.name,'lab.json');
@@ -25,11 +26,14 @@ for(const entry of fs.readdirSync(labsRoot,{withFileTypes:true}).filter(x=>x.isD
  if(seen.has(resolved))throw new Error('Duplicate lab acceptance file: '+testFile);
  seen.add(resolved);
  // Real-browser labs must not start dozens of Chromium processes in one test batch.
- if(typeof manifest.runtime==='string'&&manifest.runtime==='node-24-nestjs-12-typescript-6')nestFiles.push(testFile);
+ if(manifest.runtime==='postgresql-17-local'){
+  if(!/^labs\/postgresql-12-0[12]-0[1-8]\/solution\.test\.mjs$/.test(testFile))throw Error('Invalid published PostgreSQL test path: '+testFile);
+  sqlFiles.push(testFile);
+ }else if(typeof manifest.runtime==='string'&&manifest.runtime==='node-24-nestjs-12-typescript-6')nestFiles.push(testFile);
  else if(typeof manifest.runtime==='string'&&manifest.runtime.includes('browser'))browserFiles.push(testFile);
  else files.push(testFile);
 }
-if(!files.length&&!browserFiles.length&&!nestFiles.length)throw new Error('No local labs discovered');
+if(!files.length&&!browserFiles.length&&!nestFiles.length&&!sqlFiles.length)throw new Error('No local labs discovered');
 
 const batchSize=20;
 for(let i=0;i<files.length;i+=batchSize){
@@ -70,5 +74,12 @@ if(!process.exitCode){
   if(result.error||result.status!==0){console.error('NestJS lab failed:',result.error?.message??'exit '+result.status);process.exitCode=1;break;}
  }
 }
-if(!process.exitCode)console.log('All '+(files.length+browserFiles.length+nestFiles.length)+' instructor lab test files completed successfully.');
+if(!process.exitCode){
+ for(const file of sqlFiles){
+  console.log('\n=== Isolated PostgreSQL local lab: '+file+' ===');
+  const result=spawnSync(process.execPath,['--test',file],{cwd:root,env:process.env,stdio:'inherit',timeout:60000});
+  if(result.error||result.status!==0){console.error('PostgreSQL lab failed:',result.error?.message??'exit '+result.status);process.exitCode=1;break;}
+ }
+}
+if(!process.exitCode)console.log('All '+(files.length+browserFiles.length+nestFiles.length+sqlFiles.length)+' instructor lab test files completed successfully.');
 
