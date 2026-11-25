@@ -30,3 +30,6 @@ npm run test:p5-distributed-source uses injected Redis/PostgreSQL responses for 
 - https://supabase.com/docs/guides/realtime/authorization
 
 Actual live execution, lockfile creation, full repository build and release qualification remain blocked in the current local environment. Do not mark any lesson complete from this source or its synthetic tests.
+
+## F9.3 per-topic PostgreSQL acceptance
+With the same isolated distributed workspace and genuine installed lock, run `npm run qualify:postgresql:extended -- 12.03.01` (one of 12.03.01–08, 12.04.01/05/07/08), or `npm run qualify:postgresql:extended -- all`. Each case uses a fresh UUID schema. The JSON includes observed results; no timing/index-speed guarantee and no automatic publication. Performance uses 20,000 synthetic rows, EXPLAIN (ANALYZE, BUFFERS, FORMAT JSON), three baseline/indexed runs, result parity, N+1 query count and vacuum statistics. It is complementary to the original named red/green SQL tests and reviewer obligations. Actual server execution is pending. See F9.3 handoff for separate logical restore.

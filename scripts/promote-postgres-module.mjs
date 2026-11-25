@@ -2,6 +2,8 @@
 import assert from 'node:assert/strict';
 import {execFileSync,spawnSync} from 'node:child_process';
 import {createRequire} from 'node:module';
+import {createHash} from 'node:crypto';
+import {journaledProjection,recoverPublication,journalPending} from './pg-publication-journal.mjs';
 import {readFileSync,existsSync,lstatSync,mkdtempSync,writeFileSync,rmSync,realpathSync} from 'node:fs';
 import {resolve,dirname,join,isAbsolute,basename,relative,sep} from 'node:path';
 import {fileURLToPath} from 'node:url';
@@ -10,11 +12,19 @@ import {assertP1Checkout,markP1ReviewFixture} from './p1-publication-review.mjs'
 import {buildPersistencePlan} from './persistence-release-plan.mjs';
 import {projectSqlModule} from './f9-publication.mjs';
 import {runSqlPair,connectionEnvironment} from './persistence-sql-runner.mjs';
-import {evidencePath,topicIds,requireOrder,reviewFingerprint,sqlReceipt,validateReview,transactProjection} from './pg-promotion-guard.mjs';
+import {evidencePath,topicIds,requireOrder,reviewFingerprint,sqlReceipt,validateReview} from './pg-promotion-guard.mjs';
 const root=resolve(dirname(fileURLToPath(import.meta.url)),'..'),read=p=>readFileSync(join(root,p),'utf8'),json=p=>JSON.parse(read(p)),exists=p=>existsSync(join(root,p));
 const encode=o=>JSON.stringify(o,null,2)+'\n';
-const [mode,id,...extra]=process.argv.slice(2);assert.ok(!extra.length&&['--plan','--review','--apply'].includes(mode)&&['12.01','12.02'].includes(id),'Usage: npm run promote:postgresql -- --plan|--review|--apply 12.01|12.02');
+const [mode,id,...extra]=process.argv.slice(2);assert.ok(mode==='--recover'&&id===undefined||!extra.length&&['--plan','--review','--apply'].includes(mode)&&['12.01','12.02'].includes(id),'Usage: npm run promote:postgresql -- --plan|--review|--apply 12.01|12.02 | --recover');
 const git=args=>execFileSync('git',args,{cwd:root,encoding:'utf8',timeout:30000,maxBuffer:32*1024*1024});
+assert.equal(realpathSync(git(['rev-parse','--show-toplevel']).trim()),realpathSync(root));
+const gitDir=git(['rev-parse','--absolute-git-dir']).trim();
+const indexDigest=()=>createHash('sha256').update(git(['ls-files','--stage','-z'])).digest('hex');
+if(mode==='--recover'){
+ console.log(encode(recoverPublication(root,gitDir,git(['rev-parse','HEAD']).trim(),indexDigest())));
+ process.exit(0);
+}
+assert.ok(!journalPending(gitDir),'Interrupted publication journal exists; stop all qualification processes and use --recover before proceeding');
 const head=assertP1Checkout(root,{reviewOnly:mode==='--review',evidencePath:mode==='--apply'?evidencePath(id):undefined});
 const next=JSON.parse(execFileSync(process.execPath,['scripts/publish-academy.mjs','--next'],{cwd:root,encoding:'utf8',timeout:60000,maxBuffer:1024*1024})).next;
 const catalog=json('data/curriculum.json'),checkpoint=json('docs/checkpoint.json'),module=buildPersistencePlan(catalog,read).modules.find(m=>m.id===id),projection=projectSqlModule(module,catalog,read,exists);
@@ -41,16 +51,19 @@ if(mode!=='--plan'){
  const writes=new Map(projection.writes);
  if(review)for(const topic of topicIds(id)){const p='src/content/lessons/'+topic+'.meta.json';writes.set(p,encode({...JSON.parse(writes.get(p)),reviewedAt:review.date}));}
  const file='docs/checkpoint.json',state='postgresql-local-qualified-awaiting-commit';
- writes.set(file,encode(review?{...checkpoint,status:state,development:{...checkpoint.development,state,note:'Local PostgreSQL '+id+'; tracked review '+reviewPath},nextMilestone:'Inspect exact local changes before committing; deployment remains frozen.'}:markP1ReviewFixture(checkpoint,id)));
- const verify=()=>{for(const [p,value] of writes)if(p!==file)assert.equal(read(p),value,'Projection changed: '+p);};
+ const record=review?{...checkpoint,status:state,development:{...checkpoint.development,state,note:'Local PostgreSQL '+id+'; tracked review '+reviewPath},nextMilestone:'Inspect exact local changes before committing; deployment remains frozen.'}:markP1ReviewFixture(checkpoint,id);
+const projectedSnapshot={...checkpoint.snapshot,publishedLessons:order.target,authoredMdxLessons:checkpoint.snapshot.authoredMdxLessons+8,labFixtures:checkpoint.snapshot.labFixtures+8,completeModules:[...checkpoint.snapshot.completeModules,id].sort()};
+writes.set(file,encode({...record,updatedAt:new Date().toISOString().slice(0,10),snapshot:projectedSnapshot}));
+ const verify=()=>{for(const [p,value] of writes)assert.equal(read(p),value,'Projection changed: '+p);};
  let output;
- transactProjection(root,writes,()=>{
-  verify();run('run','checkpoint:write');const snapshot=json(file).snapshot;assert.equal(snapshot.publishedLessons,order.target);assert.equal(snapshot.authoredMdxLessons,checkpoint.snapshot.authoredMdxLessons+8);assert.equal(snapshot.labFixtures,checkpoint.snapshot.labFixtures+8);assert.ok(snapshot.completeModules.includes(id));const checkpointAfter=read(file);
+ const indexBefore=indexDigest();
+ journaledProjection(root,gitDir,head,indexBefore,writes,()=>{
+  verify();run('run','checkpoint:check');const snapshot=json(file).snapshot;assert.equal(snapshot.publishedLessons,order.target);assert.equal(snapshot.authoredMdxLessons,checkpoint.snapshot.authoredMdxLessons+8);assert.equal(snapshot.labFixtures,checkpoint.snapshot.labFixtures+8);assert.ok(snapshot.completeModules.includes(id));const checkpointAfter=read(file);
   run('run','verify:content');run('run','test:curriculum-readiness');run('run','test:postgresql-drafts');run('run','test:postgresql-modeling-source');
   for(const topic of topicIds(id))run('run','lab:postgresql-'+topic.replaceAll('.','-'));
   if(review)run('run','verify:offline');else run('run','build');
   run('run','qualify:postgresql:browser','--',id);
-  verify();assert.equal(read(file),checkpointAfter,'Checkpoint drift');assert.equal(fingerprint(),sourceSha256);
+  verify();assert.equal(read(file),checkpointAfter,'Checkpoint drift');assert.equal(fingerprint(),sourceSha256);assert.equal(indexDigest(),indexBefore);
   assertP1Checkout(root,{expectedHead:head,reviewOnly:mode==='--review',allowedChanges:writes});
   if(!review){
    const temp=realpathSync(tmpdir()),rel=relative(realpathSync(root),temp);assert.ok(isAbsolute(rel)||rel==='..'||rel.startsWith('..'+sep),'Review receipt must be outside checkout');output=mkdtempSync(join(temp,'academy-postgresql-review-'));

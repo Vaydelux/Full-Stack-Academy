@@ -1,0 +1,7 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {createHash} from 'node:crypto';
+import {restoreEnvironments,verifyArchive} from '../scripts/pg-restore-drill.mjs';
+const env={ACADEMY_ISOLATED_PG:'YES',ACADEMY_PG_RESTORE_ISOLATED:'YES',PG_TEST_URL:'postgres://test:secret@127.0.0.1:5432/academy_test_backup',PG_RESTORE_TEST_URL:'postgres://test:secret@127.0.0.1:5432/academy_test_restore',PGOPTIONS:'malicious'};
+test('restore requires two separately named disposable databases and rejects remote or missing opt-in',()=>{const {source,target}=restoreEnvironments(env);assert.equal(source.PGDATABASE,'academy_test_backup');assert.equal(target.PGDATABASE,'academy_test_restore');assert.equal(source.PGOPTIONS,undefined);for(const changes of [{ACADEMY_PG_RESTORE_ISOLATED:'NO'},{PG_RESTORE_TEST_URL:env.PG_TEST_URL},{PG_TEST_URL:'postgres://test:secret@example.com/academy_test_backup'}])assert.throws(()=>restoreEnvironments({...env,...changes}));});
+test('custom archive integrity refuses altered bytes, malformed format and oversized archive',()=>{const data=Buffer.from('PGDMPsynthetic archive fixture'),digest=createHash('sha256').update(data).digest('hex');verifyArchive(data,digest);const altered=Buffer.from(data);altered[altered.length-1]^=1;assert.throws(()=>verifyArchive(altered,digest),/digest mismatch/);assert.throws(()=>verifyArchive(Buffer.from('invalid'),digest));assert.throws(()=>verifyArchive(Buffer.alloc(9*1024*1024),digest));});

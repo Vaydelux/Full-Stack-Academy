@@ -1,0 +1,7 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {selectedTopics,summarizePlan} from './p3-acceptance.mjs';
+test('exact eight transaction topics and four performance topics, no implicit unknown or operations qualification',()=>{const ids=selectedTopics('all');assert.equal(ids.length,12);assert.deepEqual(ids.slice(0,8),Array.from({length:8},(_,i)=>'12.03.0'+(i+1)));assert.deepEqual(selectedTopics('12.04.07'),['12.04.07']);assert.throws(()=>selectedTopics('12.05.07'));assert.throws(()=>selectedTopics(undefined));});
+const plan=()=>[{'Plan':{'Node Type':'Seq Scan','Plan Rows':200,'Actual Rows':200,'Actual Loops':1,'Shared Hit Blocks':20,'Shared Read Blocks':0},'Planning Time':.25,'Execution Time':1.2}];
+test('actual plan shape extracts row, buffer and timing data without assuming an index win',()=>{assert.deepEqual(summarizePlan(plan()),{node:'Seq Scan',estimatedRows:200,actualRows:200,loops:1,sharedHits:20,sharedReads:0,planningMs:.25,executionMs:1.2});const p=plan();p[0].Plan['Node Type']='Index Scan';assert.equal(summarizePlan(p).node,'Index Scan');});
+test('estimated-only or malformed plan cannot masquerade as execution evidence',()=>{for(const key of ['Actual Rows','Actual Loops','Shared Hit Blocks']){const p=plan();delete p[0].Plan[key];assert.throws(()=>summarizePlan(p),/Missing actual plan/);}const p=plan();delete p[0]['Execution Time'];assert.throws(()=>summarizePlan(p),/Missing timing/);assert.throws(()=>summarizePlan([]));});
