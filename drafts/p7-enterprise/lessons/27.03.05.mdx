@@ -44,6 +44,20 @@ node --test --test-name-pattern="27[.]03" examples/p7-platforms/labs.test.mjs
 
 Synthetic integrated-feature rubric; actual upload, mail, Redis, websocket, search and audit behavior require live isolated tests.
 
+## Applied engineering walkthrough
+
+Realtime messages supplement the authoritative workspace state; they do not replace authorized reads and writes. Scope subscriptions to verified membership, include event identity or revision and reconcile gaps after reconnect. A client that has lost access must not continue receiving protected updates.
+
+### Diagnose the concrete failure
+
+Connect two synthetic tenants through a disposable SSE or WebSocket fixture. Send an authorized update, attempt a foreign subscription, interrupt connectivity and reconnect with a known checkpoint. Remove membership and verify the documented revocation behavior.
+
+### Independent exercise and evidence
+
+Create an event timeline with duplicate, delayed and missing updates. Record observed order, reconciliation requests and final visible state. Keep transport-level delivery claims distinct from actual database consistency and user authorization.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify actual API, storage, database, queue, cache, browser and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

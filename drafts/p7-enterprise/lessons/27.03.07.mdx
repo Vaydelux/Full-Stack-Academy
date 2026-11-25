@@ -44,6 +44,20 @@ node --test --test-name-pattern="27[.]03" examples/p7-platforms/labs.test.mjs
 
 Synthetic integrated-feature rubric; actual upload, mail, Redis, websocket, search and audit behavior require live isolated tests.
 
+## Applied engineering walkthrough
+
+Audit events should capture actor, action, target, outcome, time and correlation without copying secrets or unnecessary task content. A successful mutation and a rejected attempt are different outcomes; define how each is recorded and who may inspect it. Durable audit integrity needs more than a console log.
+
+### Diagnose the concrete failure
+
+Create, edit and deny synthetic task actions. Trace a correlation identifier through the request and audit record, then attempt a foreign-tenant audit read. Simulate a failed audit write and inspect the documented behavior.
+
+### Independent exercise and evidence
+
+Design scoped audit queries, retention and protected evidence export. Record event identity, affected object and outcome alongside actual transaction evidence; test duplicate event handling and redaction of sensitive inputs.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify actual API, storage, database, queue, cache, browser and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

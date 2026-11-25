@@ -44,6 +44,20 @@ node --test --test-name-pattern="27[.]03" examples/p7-platforms/labs.test.mjs
 
 Synthetic integrated-feature rubric; actual upload, mail, Redis, websocket, search and audit behavior require live isolated tests.
 
+## Applied engineering walkthrough
+
+Cross-feature acceptance follows a task from authorized creation through attachment, assignment, notification, cache, live update, search and audit. Each feature has its own failure boundary and recovery contract; the whole workflow must preserve tenant isolation and authoritative task state when a dependency fails.
+
+### Diagnose the concrete failure
+
+Run workspaceAcceptance with a missing security or recovery item, then execute the available real workflow with synthetic tenants. Interrupt one background effect, reconnect the live client and compare the authoritative task to cache and search views.
+
+### Independent exercise and evidence
+
+Build a commit-bound matrix of expected and observed outcomes, including negative upload, foreign access and duplicate job cases. Record unresolved dependencies and actual runtime evidence separately from a rubric result; do not promote on a declared checklist alone.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify actual API, storage, database, queue, cache, browser and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

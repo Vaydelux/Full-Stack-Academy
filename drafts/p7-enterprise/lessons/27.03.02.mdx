@@ -44,6 +44,20 @@ node --test --test-name-pattern="27[.]03" examples/p7-platforms/labs.test.mjs
 
 Synthetic integrated-feature rubric; actual upload, mail, Redis, websocket, search and audit behavior require live isolated tests.
 
+## Applied engineering walkthrough
+
+An upload introduces untrusted bytes into a privileged processing pipeline. Check declared and actual size, validate the format using appropriate bounded processing, bind the object to its owner and quarantine it until the reviewed release policy permits access. Never treat a filename or browser-provided media type as proof.
+
+### Diagnose the concrete failure
+
+Upload a small self-created valid fixture, then a mismatched extension and an oversized fixture. Request access to a pending object and try an unrelated tenant's object identifier. Verify rejection before public delivery or protected metadata disclosure.
+
+### Independent exercise and evidence
+
+Draw the upload state machine and test a failed scan, interrupted transfer and duplicate completion event. Record object and database state, bounded cleanup and authorized download behavior separately from local validation results.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify actual API, storage, database, queue, cache, browser and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?

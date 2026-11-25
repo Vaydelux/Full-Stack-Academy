@@ -44,6 +44,20 @@ node --test --test-name-pattern="27[.]03" examples/p7-platforms/labs.test.mjs
 
 Synthetic integrated-feature rubric; actual upload, mail, Redis, websocket, search and audit behavior require live isolated tests.
 
+## Applied engineering walkthrough
+
+Cache entries are derived state, not the authoritative task record. Include tenant and relevant authorization scope in keys, bound lifetime and define invalidation or versioning after database commit. An old asynchronous cache fill can otherwise overwrite newer results after invalidation.
+
+### Diagnose the concrete failure
+
+Warm a disposable Redis cache for two tenants, commit a task update and invalidate or advance its version. Delay an older read until after the update and verify the stale result cannot be installed as current. Check that an unrelated tenant remains unaffected.
+
+### Independent exercise and evidence
+
+Record key structure, TTL, hit and miss behavior, authoritative version and recovery when Redis is unavailable. Compare correctness before and after caching, rather than treating a cache hit as proof of authorized or fresh data.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve draft status and independently verify actual API, storage, database, queue, cache, browser and reviewer evidence.
+
 ## Knowledge check
 
 1. What is the invariant and trust boundary?
