@@ -90,6 +90,20 @@ The HMAC header/format shown is a teaching contract, not a claim that Supabase D
 
 Private buckets need specific Storage policies, server-controlled paths and explicit expiration/cleanup rules. Realtime private channels require policies on realtime.messages for permitted operations; a client-specified filter alone is not authorization. Persistent business state remains in PostgreSQL, not in Presence or Broadcast payloads.
 
+## Applied persistence walkthrough
+
+Webhook signatures authenticate a specific byte sequence using a shared secret and the sender's defined protocol. Verify the original raw body before parsing; a different serialized representation may produce a different signature. The example demonstrates HMAC, not a universal Supabase webhook signing contract. The hex parser is permissive, so validate the exact signature format and body length before comparison. Authentication alone does not prevent replay.
+
+### Diagnose the concrete failure
+
+Use synthetic signed payloads to verify an accepted event, tampered bytes, wrong signature and malformed signature format. Test repeated delivery against the actual durable unique-event constraint and confirm only one business effect. Apply size and timestamp bounds where the provider contract supports them. Never expose the signing secret.
+
+### Independent exercise and evidence
+
+Design a delivery contract with sender authentication, bounded payload validation, event identity and transactional processing. Include a crash after business commit but before acknowledgement, and explain how replay is handled. Record accepted/rejected event IDs and final effects.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Use isolated test identities, storage and channels. Preserve the existing starter and solution; source review cannot qualify live upload, webhook or Realtime security.
+
 ## Bug Hunt
 
 1. Predict the attack or failure: The starter treats arbitrary JSON POST bodies as trusted instructions and reprocesses the same document on every retry.
