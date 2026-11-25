@@ -50,6 +50,20 @@ In the test notes, separate what the in-memory fixture genuinely observed from R
 
 Scaling consumers without backpressure can worsen a downstream incident.
 
+## Applied engineering walkthrough
+
+Worker scaling increases throughput only until another dependency becomes saturated. Total concurrency must respect CPU, memory, database pools and provider rate limits. Queue depth alone is insufficient; oldest pending age and completion rate show whether backlog is growing.
+
+### Diagnose the concrete failure
+
+Compare two bounded worker configurations on an identical synthetic workload. Record queue age, completions per interval, failures and dependency utilization. Check whether extra workers increase retries instead of useful throughput.
+
+### Independent exercise and evidence
+
+Design a scaling policy with maximum concurrency, backpressure and cooldown. Include provider-specific capacity and cost. Record measured outcomes before choosing a worker count.
+
+**Qualification boundary:** These are practice instructions, not recorded results. Preserve the existing lab and publication status; in-memory tests do not qualify live Redis or BullMQ behavior.
+
 ## Knowledge check
 
 1. What is authoritative in this scenario, and what state is derived or replayable?
