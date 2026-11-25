@@ -87,6 +87,20 @@ Prisma's @relation is a data relationship, not an actor authorization decision. 
 
 A production-ready persistence boundary has to address error mapping, least-privileged database credentials, transaction/connection lifecycle, tenant authorization and request cancellation. Whenever schema changes are involved, review migration SQL and compatibility with the previous app version. Never expose database credentials in a `NEXT_PUBLIC_` variable or include them in a public web bundle.
 
+## Applied persistence walkthrough
+
+Relations have both a logical navigation surface and physical key constraints. The solution references the owner using tenantId and ownerId together, which protects the pair even though the user ID alone is unique. TaskState constrains the stored status; it does not enforce legal transitions such as who may mark work done. Inspect actual migration SQL to confirm the relation's physical enforcement.
+
+### Diagnose the concrete failure
+
+Predict a same-tenant task insert and a task referring to a user from another tenant. The first should pass; the second should fail the composite foreign key. Validate the schema with the exact installed CLI first: snippets are illustrative, and formatting or parser issues are not proof of a semantic negative case.
+
+### Independent exercise and evidence
+
+Sketch a task-to-project relation and decide what should happen when a project is deleted. Compare restricting deletion against cascading it, including the risk of unintended data loss. Record actual constraint names and outcomes in the disposable database.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Use the pinned Prisma 7 toolchain and disposable PostgreSQL database. Preserve the starter and solution; source review does not qualify generated code or authorization.
+
 ## Bug Hunt
 
 1. Observe the unsafe starter: The starter's owner foreign key checks only a numeric ID, allowing an alpha task to reference a beta user when the relationship is extended to multi-tenant data.
