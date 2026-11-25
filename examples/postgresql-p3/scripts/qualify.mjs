@@ -5,7 +5,7 @@
  */
 import fs from 'node:fs';
 import path from 'node:path';
-import { spawnSync } from 'node:child_process';
+import { connectionEnvironment, runSqlPair } from '../../../scripts/persistence-sql-runner.mjs';
 import { fileURLToPath } from 'node:url';
 import { isSqlContract } from '../../../scripts/persistence-release-plan.mjs';
 
@@ -34,32 +34,12 @@ export function validateIsolatedPostgres(urlText,approval){
  if(!user)throw Error('Explicit local test database role required');
  const port=url.port||'5432';
  if(!/^\d+$/.test(port)||Number(port)<1||Number(port)>65535)throw Error('Invalid PostgreSQL port');
+ connectionEnvironment(urlText,approval,{});
  return {hostname:url.hostname,database,user,password:decodeURIComponent(url.password),port};
 }
 
-function postgresRun(connection,fixture,source,acceptance){
- // Never inherit arbitrary libpq config such as PGSERVICE or PGOPTIONS.
- const env=Object.fromEntries(Object.entries(process.env).filter(([name])=>!name.startsWith('PG')));
- const safeEnv={...env,PGHOST:connection.hostname,PGDATABASE:connection.database,
-  PGPORT:connection.port,PGUSER:connection.user,PGPASSWORD:connection.password,
-  PGSSLMODE:'disable',PGCONNECT_TIMEOUT:'4',PGAPPNAME:'academy-p3-qualification'};
- const input=[
-  'BEGIN;',
-  "SET LOCAL statement_timeout='5000ms';",
-  "SET LOCAL lock_timeout='1000ms';",
-  fixture,source,acceptance,'ROLLBACK;','',
- ].join('\n');
- const result=spawnSync('psql',['-X','--no-password','-v','ON_ERROR_STOP=1','-q','-A','-t'],{
-  input,encoding:'utf8',timeout:15000,maxBuffer:256_000,env:safeEnv,
- });
- if(result.error)throw Error('psql execution failed: '+result.error.message);
- if(result.signal)throw Error('psql process interrupted');
- return {success:result.status===0,
-  stderr:(result.stderr??'').slice(0,1100)};
-}
-
 export function qualify(options={}){
- const db=validateIsolatedPostgres(process.env.PG_TEST_URL,process.env.ACADEMY_ISOLATED_PG);
+ validateIsolatedPostgres(process.env.PG_TEST_URL,process.env.ACADEMY_ISOLATED_PG);
  const chosen=options.moduleId?[options.moduleId]:Object.keys(moduleFolders);
  for(const id of chosen)if(!moduleFolders[id])throw Error('Unsupported module '+id);
  let greenPass=0,redExpected=0,manualSkipped=0;
@@ -86,13 +66,8 @@ export function qualify(options={}){
    const assertSql=read(file+'acceptance.sql');
    if(!assertSql.includes("RAISE EXCEPTION '"+row.id))
     throw Error(row.id+' is missing its named SQL semantic acceptance assertion');
-   const green=postgresRun(db,fixture,read(file+'solution.sql'),assertSql);
-   if(!green.success)throw Error(row.id+' instructor SQL failed: '+green.stderr);
-   greenPass++;
-   const red=postgresRun(db,fixture,read(file+'starter.sql'),assertSql);
-   if(red.success||!red.stderr.includes(row.id))
-    throw Error(row.id+' learner starter did not reproduce its named semantic failure: '+red.stderr);
-   redExpected++;
+  runSqlPair({id:row.id,fixture,starter:read(file+'starter.sql'),solution:read(file+'solution.sql'),acceptance:assertSql});
+   greenPass++;redExpected++;
    console.log(row.id+' REAL SQL PASS (instructor and expected semantic failure)');
   }
  }

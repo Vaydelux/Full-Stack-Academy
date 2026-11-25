@@ -1,7 +1,7 @@
 /** Real PostgreSQL 12.02 positive AND negative semantic checks. No remote DB access. */
 import fs from 'node:fs';
 import path from 'node:path';
-import { spawnSync } from 'node:child_process';
+import { connectionEnvironment, runSqlPair } from '../../../scripts/persistence-sql-runner.mjs';
 import { fileURLToPath } from 'node:url';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../../..');
 const read=relative=>fs.readFileSync(path.join(root,relative),'utf8');
@@ -19,25 +19,11 @@ export function validateDatabaseConnection(raw,optIn){
  const port=url.port||'5432';
  if(!Number.isInteger(Number(port))||Number(port)<1||Number(port)>65535)
   throw Error('Invalid test PostgreSQL port');
+ connectionEnvironment(raw,optIn,{});
  return {host:url.hostname,port,database:db,user,password:decodeURIComponent(url.password)};
 }
-function execSql(connection,fixture,source,assertions){
- // Drop inherited PG* configuration to prevent service-file/host overrides.
- const env=Object.fromEntries(Object.entries(process.env).filter(([key])=>!key.startsWith('PG')));
- const pg={
-  PGHOST:connection.host,PGPORT:connection.port,PGDATABASE:connection.database,
-  PGUSER:connection.user,PGPASSWORD:connection.password,PGSSLMODE:'disable',
- };
- const input=['BEGIN;',"SET LOCAL statement_timeout='5000ms';",
-  "SET LOCAL lock_timeout='1000ms';",fixture,source,assertions,'ROLLBACK;',''].join('\n');
- const result=spawnSync('psql',['-X','--no-password','-q','-A','-t','-v','ON_ERROR_STOP=1'],{
-  input,encoding:'utf8',timeout:15000,maxBuffer:200_000,env:{...env,...pg},
- });
- if(result.error)throw Error('psql is unavailable or failed: '+result.error.message);
- return {ok:result.status===0,stderr:(result.stderr??'').slice(0,800)};
-}
 export function qualify(){
- const connection=validateDatabaseConnection(process.env.PG_TEST_URL,process.env.ACADEMY_ISOLATED_PG);
+ validateDatabaseConnection(process.env.PG_TEST_URL,process.env.ACADEMY_ISOLATED_PG);
  const manifest=JSON.parse(read('examples/postgresql-modeling/module.json'));
  if(manifest.moduleId!=='12.02'||manifest.readyToPublish!==false||manifest.lessons?.length!==8)
   throw Error('Invalid source manifest');
@@ -46,11 +32,7 @@ export function qualify(){
  for(const item of manifest.lessons){
   const dir='drafts/postgresql/labs/'+item.slug+'/';
   const assertions=read(dir+'acceptance.sql');
-  const green=execSql(connection,fixture,read(dir+'solution.sql'),assertions);
-  if(!green.ok)throw Error(item.id+' instructor FAILED: '+green.stderr);
-  const red=execSql(connection,fixture,read(dir+'starter.sql'),assertions);
-  if(red.ok||!red.stderr.includes(item.id))
-   throw Error(item.id+' starter did not demonstrate named semantic failure: '+red.stderr);
+  runSqlPair({id:item.id,fixture,starter:read(dir+'starter.sql'),solution:read(dir+'solution.sql'),acceptance:assertions});
   passed++;console.log(item.id+' instructor OK, starter semantic failure verified');
  }
  console.log('PostgreSQL 12.02 real SQL: '+passed+'/8 instructor and '+passed+'/8 expected-red checks; publication still blocked.');
