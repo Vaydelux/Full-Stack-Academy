@@ -34,7 +34,7 @@
     "qualify:forms-query:full": "node scripts/qualify-forms-query.mjs --full",
     "status:curriculum": "node scripts/curriculum-readiness.mjs",
     "test:curriculum-readiness": "node scripts/curriculum-readiness.mjs --check && node --test tests/staged-inventory.test.mjs",
-    "test:p6-quality-source": "node examples/p6-quality/verify-track.mjs && node --test examples/p6-quality/labs.test.mjs examples/p6-quality/verify-track.test.mjs",
+    "test:p6-quality-source": "node examples/p6-quality/verify-track.mjs && node --test examples/p6-quality/labs.test.mjs examples/p6-quality/verify-track.test.mjs tests/p10-p6-editorial.test.mjs",
     "test:p6-operations-source": "node examples/p6-operations/verify-track.mjs && node --test examples/p6-operations/labs.test.mjs examples/p6-operations/verify-track.test.mjs",
     "test:p7-source": "node examples/p7-platforms/verify-track.mjs && node --test examples/p7-platforms/labs.test.mjs examples/p7-platforms/verify-track.test.mjs",
     "status:publication-phases": "node scripts/curriculum-phase-program.mjs --markdown",
