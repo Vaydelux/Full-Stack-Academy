@@ -43,6 +43,20 @@ Your acceptance criteria must include a positive authorized case and a negative 
 
 Encoding or obfuscating a secret in client JavaScript does not make it secret.
 
+## Applied engineering walkthrough
+
+Secrets and public configuration have different distribution rules. Public browser configuration can be embedded in a bundle; database passwords and privileged service credentials cannot. Server-only imports help enforce a code boundary, but build outputs, logs, deployment previews and error messages also need inspection. Least-privilege credentials reduce the impact of leakage.
+
+### Diagnose the concrete failure
+
+Build a disposable sample using a synthetic sentinel secret, then scan the client output and logs for that sentinel. Verify that only the intended public origin is exposed. Check missing server configuration fails safely without printing values. If a real secret was exposed, deletion from source alone is insufficient.
+
+### Independent exercise and evidence
+
+Create a credential inventory with owner, permitted environment, access scope and rotation procedure. Plan revocation and replacement following accidental exposure. Record redacted findings and the exact build inspected; never include genuine secrets in evidence.
+
+**Qualification boundary:** These are practice instructions, not recorded audit results. Use synthetic data and authorized disposable infrastructure. Preserve existing laboratory contracts and publication status.
+
 ## Knowledge check
 
 1. Which input is controlled by the attacker in this scenario?
