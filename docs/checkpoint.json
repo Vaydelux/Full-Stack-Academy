@@ -10,8 +10,8 @@
   },
   "development": {
     "branch": "main",
-    "state": "f1-p1-typed-http-cancellation-repaired-partial-qualification",
-    "note": "Node24.11.1 isolated reconstructed P1 qualification: 57/57 typed-client tests passed (20 actual HTTP client, 17 response contracts, 12 retry policy, 5 cancellation, 3 new error-body cancellation). Combined reconstructed test run 113/113 passed, two prior static-asset cases filtered out. Fixed reproduced loss of AbortError after non-success HTTP response headers; red 2/3 failed then green 3/3. Full checkout/registry DNS, actual browser and human review remain blocked; 338/889 published unchanged."
+    "state": "f1-p1-http-native-ui-refresh-repaired-partial-qualification",
+    "note": "Node24.11.1 reconstructed P1 suite: 175/175 passed, zero skipped, including all 22 existing HTTP tests (static assets restored), 20 resilience, 29 workflow, 11 simulated-DOM native UI, and earlier typed/client/inventory/navigation tests. Fixed reproduced misleading PATCH/DELETE success after failed list refresh; two red/green regressions. Exact 23 local source/test/asset blob hashes verified. Full checkout/install, React/Next/actual Chromium and named manual review outstanding; 338/889 published unchanged."
   },
   "snapshot": {
     "tracks": 28,
@@ -73,6 +73,6 @@
     "devHighFindings": 14,
     "exceptionExpires": "2026-12-02"
   },
-  "nextMilestone": "Complete actual full P1 checkout/install/React and Next browser qualification and named accessibility reviews, then guarded 09.02/09.03 module promotions. Keep scope frozen.",
+  "nextMilestone": "F1: use approved clean checkout and networked npm registry with permitted Chromium loopback, run P1 coordinator and named accessibility reviews, then qualify/promote 09.02 and 09.03. Do not expand curriculum.",
   "status": "editorial-merged-f1-partial-runtime-qualification-blocked"
 }

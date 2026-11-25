@@ -275,3 +275,31 @@ test('request log never stores the idempotency key or user-supplied title',async
  const key=intercepted.requests.find(x=>x.key).key;
  assert.ok(!log.includes(key));
 }));
+
+test('confirmed PATCH with failed refresh reports stale list rather than full success',async()=>withBrowser(async({doc,base,intercepted})=>{
+ await create(doc,'Patch refresh boundary');
+ await until(()=>count(doc)===1,'task creation');
+ intercepted.failNextList=true;
+ await doc.getElementById('tasks').querySelectorAll('.change-status')[0].click();
+ assert.equal((await apiList(base))[0].status,'doing');
+ assert.match(text(doc,'list-status'),/updated.*refresh/i);
+ assert.equal(doc.getElementById('list-status').classList.contains('error'),true);
+ assert.match(journal(doc),/GET error/);
+ await doc.getElementById('refresh').click();
+ await until(()=>text(doc,'tasks').includes('In progress'),'refreshed status');
+ assert.equal(doc.getElementById('list-status').classList.contains('error'),false);
+}));
+
+test('confirmed DELETE with failed refresh reports stale list rather than full success',async()=>withBrowser(async({doc,base,intercepted})=>{
+ await create(doc,'Delete refresh boundary');
+ await until(()=>count(doc)===1,'task creation');
+ intercepted.failNextList=true;
+ await doc.getElementById('tasks').querySelectorAll('.remove')[0].click();
+ assert.deepEqual(await apiList(base),[]);
+ assert.match(text(doc,'list-status'),/deleted.*refresh/i);
+ assert.equal(doc.getElementById('list-status').classList.contains('error'),true);
+ assert.match(journal(doc),/GET error/);
+ await doc.getElementById('refresh').click();
+ await until(()=>count(doc)===0,'refreshed empty list');
+ assert.equal(doc.getElementById('list-status').classList.contains('error'),false);
+}));

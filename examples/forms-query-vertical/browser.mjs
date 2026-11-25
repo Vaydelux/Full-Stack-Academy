@@ -81,8 +81,8 @@ function render() {
       try {
         await api.setStatus(task.id, next, task.revision);
         record('PATCH 200', `Status changed to ${next}; revision checked.`);
-        await load(false);
-        message(listStatus, 'Task updated using its latest revision.');
+        if (await load(false)) message(listStatus, 'Task updated using its latest revision.');
+        else message(listStatus, 'Task updated, but the list could not refresh. Refresh before continuing.', true);
       } catch (error) {
         record(`PATCH ${error.status ?? 'error'}`, error.status === 412 ? 'Stale revision; refresh needed.' : 'Status update failed.');
         message(listStatus, error.status === 412
@@ -102,8 +102,8 @@ function render() {
       try {
         await api.remove(task.id);
         record('DELETE 204', 'Task removed; list cursor invalidated.');
-        await load(false);
-        message(listStatus, 'Task deleted. The list was refreshed.');
+        if (await load(false)) message(listStatus, 'Task deleted. The list was refreshed.');
+        else message(listStatus, 'Task deleted, but the list could not refresh. Refresh before continuing.', true);
       } catch (error) {
         record(`DELETE ${error.status ?? 'error'}`, 'Delete did not complete.');
         message(listStatus, error.message ?? 'Delete failed.', true);
@@ -134,6 +134,7 @@ async function load(append) {
     record('GET 200', `${page.items.length} task records received${nextCursor ? '; next cursor available' : ''}.`);
     render();
     if (records.length) message(listStatus, `${records.length} tasks displayed${nextCursor ? ' · more available' : ''}.`);
+    return true;
   } catch (error) {
     if (controller !== activeController || error.name === 'AbortError') return;
     record(`GET ${error.status ?? 'error'}`, error.status === 409 ? 'List revision changed; restarting.' : 'Read failed.');
