@@ -50,6 +50,20 @@ In the test notes, separate what the in-memory fixture genuinely observed from R
 
 Persistence improves recovery but is not equivalent to cross-region backup or exactly-once delivery.
 
+## Applied engineering walkthrough
+
+Redis persistence choices affect how much state can survive restart. RDB snapshots and append-only persistence have different recovery and performance tradeoffs; neither alone establishes business durability. A cache can often be rebuilt, while queued work may require a durable outbox or independently recoverable source.
+
+### Diagnose the concrete failure
+
+Restart only a dedicated test instance with synthetic keys. Compare expected and observed recovery under its actual persistence configuration. Separately simulate a lost queued item and demonstrate the recovery design from durable operation records.
+
+### Independent exercise and evidence
+
+Define recovery objectives for cache, session state and queued work. Record configuration, restart behavior and reconstructed job identifiers; do not equate a successful container start with recovered business state.
+
+**Qualification boundary:** These are practice instructions, not recorded results. Preserve the existing lab and publication status; in-memory tests do not qualify live Redis or BullMQ behavior.
+
 ## Knowledge check
 
 1. What is authoritative in this scenario, and what state is derived or replayable?
