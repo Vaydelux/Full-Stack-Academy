@@ -11,7 +11,7 @@
   "development": {
     "branch": "feature/f11-3-reading-format",
     "state": "f16-encyclopedia-authoring-complete-qualification-pending",
-    "note": "F16 added 115 authored drafts; all 303 canonical references covered; 327 explicit edges across 206 topics. Source reconciliation passed; full integration/build/browser pending."
+    "note": "F16 adds all 115 remaining references (303/303), 327 explicit relationships across 206 topics; all 115 source-valid and three new extracted-data test bodies passed in connector JS. Full locked build/browser pending."
   },
   "snapshot": {
     "tracks": 28,

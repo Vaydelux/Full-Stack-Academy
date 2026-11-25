@@ -7236,7 +7236,7 @@ await redisCache.set(cacheKey, JSON.stringify(safeDto), 'EX', 60);`,
   "parameters": "Script URL and optional registration scope/options.",
   "returns": "Promise<ServiceWorkerRegistration>.",
   "minimalExample": "await navigator.serviceWorker.register('/sw.js');",
-  "productionExample": "// sw.js: cache only explicitly approved public assets.\nself.addEventListener('fetch', event => {\n const url = new URL(event.request.url);\n if (event.request.method === 'GET' && url.origin === self.location.origin && url.pathname === '/assets/help.css') {\n  event.respondWith(caches.match(event.request).then(hit => hit || fetch(event.request)));\n }\n});",
+  "productionExample": "// sw.js: serve pre-cached public assets only when explicitly approved.\nself.addEventListener('fetch', event => {\n const url = new URL(event.request.url);\n if (event.request.method === 'GET' && url.origin === self.location.origin && url.pathname === '/assets/help.css') {\n  event.respondWith(caches.match(event.request).then(hit => hit || fetch(event.request)));\n }\n});",
   "commonMistakes": [
     "Caching every response including authenticated pages."
   ],
@@ -8615,7 +8615,7 @@ await redisCache.set(cacheKey, JSON.stringify(safeDto), 'EX', 60);`,
   "lang": "tsx",
   "parameters": "Serializable arguments or FormData; trusted identity must be obtained on the server.",
   "returns": "Action return value or redirect/error control flow.",
-  "minimalExample": "'use server';\nexport async function save(formData:FormData){await savePublicDraft(formData.get('title'));}",
+  "minimalExample": "'use server';\nexport async function save(formData:FormData){const user=await requireUser();await saveDraftForUser(user.id,validateTitle(formData.get('title')));}",
   "productionExample": "'use server';\nexport async function save(formData:FormData){const user=await requireUser();const title=validateTitle(formData.get('title'));await createTaskForUser(user.id,title);revalidatePath('/tasks');}",
   "commonMistakes": [
     "Treating a Server Action as a private function inaccessible to malicious requests."

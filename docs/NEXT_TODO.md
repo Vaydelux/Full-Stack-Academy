@@ -1,4 +1,4 @@
-> **F16 — Encyclopedia authoring freeze:** 115 new drafts, 303/303 canonical references covered, 327 explicit links across 206 topics. Both batches structurally validated in connector runtime; exact full-checkout regression and browser smoke updated but not run. See `docs/F16_REFERENCE_COMPLETION.md`.
+> **F16 — Encyclopedia authoring freeze:** 115 new drafts, 303/303 canonical references covered, 327 explicit links across 206 topics. All 115 new records revalidated against actual index and curriculum; three new regression bodies passed in connector JS with extracted data. Full TypeScript-import suite, locked build and browser smoke pending. See `docs/F16_REFERENCE_COMPLETION.md`.
 
 > **F16 A:** Added 57 remaining Web/HTML, CSS, JavaScript, TypeScript and React drafts. Source-quality gate passed; remaining framework and production references still pending.
 
