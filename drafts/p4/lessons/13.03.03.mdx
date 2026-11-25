@@ -74,6 +74,20 @@ Prisma migrate deploy does not automatically certify a zero-downtime change or r
 
 In a multi-tenant API, input validation, role-aware database credentials, optimistic concurrency, migration review and response-shape controls must be considered together. Favor bounded queries and explicit domain operations over returning raw privileged ORM interfaces to HTTP handlers. Record the query plan or migration state instead of guessing.
 
+## Applied persistence walkthrough
+
+Migration history is a sequence of reviewed changes, not simply the current schema file. Applied migration SQL should be treated as immutable; modifying it afterward can create checksum or history conflicts. Prisma 7 migration status provides history information, but it is not exhaustive physical schema drift verification. Generate the client separately after migration changes.
+
+### Diagnose the concrete failure
+
+Replay committed migration files on a fresh disposable target and compare the resulting schema with the intended contract. On another test target deliberately introduce a harmless out-of-band schema change and compare status with an actual schema diff. Do not reset production or edit applied migration SQL.
+
+### Independent exercise and evidence
+
+Write a release checklist with the CLI version, reviewed migration files, history state, schema diff and application compatibility. Explain how a forward corrective migration preserves history.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Use the pinned Prisma 7 toolchain and disposable PostgreSQL database. Preserve the starter and solution; source review does not qualify generated code or authorization.
+
 ## Bug Hunt
 
 1. Make a concrete failure prediction: A developer changes the live schema with db push while previously applied migration files are untracked. Recreating a clean environment no longer reproduces the same database.
