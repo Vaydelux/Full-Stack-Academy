@@ -44,6 +44,20 @@ node --test --test-name-pattern="20[.]03" examples/p6-quality/labs.test.mjs
 
 Boolean release decision model, not deployment, migration, traffic switching or verified rollback.
 
+## Applied engineering walkthrough
+
+A rollback returns to a known previous artifact, not a mutable tag or an unreviewed rebuild. The previous application must remain compatible with current data and configuration. Destructive migration reversal may lose newly written data, so forward repair can be safer.
+
+### Diagnose the concrete failure
+
+Model a candidate with failed smoke and a known previous version. Verify the returned decision identifies that previous version. Test schema incompatibility and missing approval separately; no actual deployment occurs.
+
+### Independent exercise and evidence
+
+Write a rollback receipt with artifact digest, trigger, operator, compatibility evidence and post-rollback smoke result. Document when rollback is unsafe and escalation is required.
+
+**Evidence boundary:** These are practice instructions, not recorded test results. Preserve the existing model, specification and draft flag; external runtime qualification remains independent.
+
 ## Knowledge check
 
 1. Which public behavior or invariant is being protected?
