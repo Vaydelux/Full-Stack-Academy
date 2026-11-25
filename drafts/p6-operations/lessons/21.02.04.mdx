@@ -44,6 +44,20 @@ node --test --test-name-pattern="21[.]02" examples/p6-operations/labs.test.mjs
 
 Synthetic error-budget arithmetic only; real probes, alerts, concurrency and fault recovery require actual isolated services.
 
+## Applied engineering walkthrough
+
+A circuit breaker limits repeated calls to a failing dependency. Closed permits calls, open rejects them quickly, and half-open admits a bounded probe. Thresholds and cooldown depend on workload; a breaker does not make ambiguous external writes safe to retry.
+
+### Diagnose the concrete failure
+
+Use a fake clock and a scripted provider with three failures. Verify the open state makes no additional provider calls, then advance the clock and allow one probe. Test both successful and failed probes.
+
+### Independent exercise and evidence
+
+Design a breaker with bounded probes, failure classification and observability. Record state transitions and call counts; actual transport failure behavior requires integration testing.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve the existing specification, model and unpublished status. Actual resilience and runtime qualification remain independent.
+
 ## Knowledge check
 
 1. Which invariant or operational measurement determines success?

@@ -44,6 +44,20 @@ node --test --test-name-pattern="21[.]02" examples/p6-operations/labs.test.mjs
 
 Synthetic error-budget arithmetic only; real probes, alerts, concurrency and fault recovery require actual isolated services.
 
+## Applied engineering walkthrough
+
+Graceful degradation preserves essential behavior while clearly disabling optional features. A recommendation failure must not compromise checkout correctness, and a stale private response is never a safe generic fallback. Distinguish optional data from required authorization and business invariants.
+
+### Diagnose the concrete failure
+
+Simulate a recommendation timeout and verify the synthetic checkout remains correct while the recommendation panel reports unavailable. Fail a required payment or authorization step separately and confirm the operation does not falsely succeed.
+
+### Independent exercise and evidence
+
+Design a dependency criticality matrix and explicit fallback per optional service. Record user-visible state and business outcome; qualify actual dependency failures separately.
+
+**Evidence boundary:** These are practice instructions, not recorded results. Preserve the existing specification, model and unpublished status. Actual resilience and runtime qualification remain independent.
+
 ## Knowledge check
 
 1. Which invariant or operational measurement determines success?
