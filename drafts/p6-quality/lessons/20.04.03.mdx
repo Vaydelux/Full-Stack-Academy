@@ -44,6 +44,20 @@ node --test --test-name-pattern="20[.]04" examples/p6-quality/labs.test.mjs
 
 Synthetic topology policy; no OS/firewall/TLS/DNS/IaC or restore enforcement tested.
 
+## Applied engineering walkthrough
+
+HTTPS protects the connection only when the client verifies an appropriate certificate chain, hostname and validity. Automated renewal requires successful challenge handling and continued domain control. Expiration monitoring should provide enough lead time to remediate a failed renewal.
+
+### Diagnose the concrete failure
+
+Inspect a disposable test certificate and its subject alternative names and validity interval. In an isolated TLS fixture, test the intended host and a hostname mismatch. Do not disable certificate verification to make a failing test green.
+
+### Independent exercise and evidence
+
+Write a certificate lifecycle runbook covering issuance, renewal monitoring, failure escalation and verified client acceptance. Record actual certificate dates and test outcomes only from authorized infrastructure.
+
+**Evidence boundary:** These are practice instructions, not recorded test results. Preserve the existing model, specification and draft flag; external runtime qualification remains independent.
+
 ## Knowledge check
 
 1. Which public behavior or invariant is being protected?
