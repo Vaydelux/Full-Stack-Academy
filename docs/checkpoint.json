@@ -11,7 +11,7 @@
   "development": {
     "branch": "feature/f11-3-reading-format",
     "state": "f14-foundational-reference-expansion-draft",
-    "note": "F14 added 51 source-validated foundational reference drafts across six categories; 125/303 authored. Full build and browser pending."
+    "note": "F14 added 51 source-validated reference drafts across six categories (125/303 total), 149 explicit edges across 102 topics; six actual Node22.16.0 quality tests passed with exact source hashes. Full locked build/browser pending."
   },
   "snapshot": {
     "tracks": 28,
