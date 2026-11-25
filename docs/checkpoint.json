@@ -10,8 +10,8 @@
   },
   "development": {
     "branch": "main",
-    "state": "f1-p1-publication-count-regression-repaired-runtime-blocked",
-    "note": "Node24.11.1 reconstructed suite rerun: 175/175 passed. Reproduced fixed-baseline project-route test failure at projected RHF publication (346 != 338); repaired test to allow valid advancement, preserve historical floor and reject inconsistent totals. Three targeted tests passed for each synthetic checkpoint 338, 346, 354; full source/route suite not run. Actual registry reconciliation and exact promoter targets preserved. Full checkout/install/React/Next/browser and manual review remain blocked; 338/889 published unchanged."
+    "state": "f1-p1-publication-program-integrity-guard-runtime-blocked",
+    "note": "All seven phases and 69 pending modules reconciled against canonical IDs and Git tree at e9d7859e. Added source-derived publication queue and integrity gate; 11/11 isolated Node24.11.1 synthetic program tests passed. No full checkout, runtime, browser or manual qualification; no new publication. Current 338/889 published, 551 expanded unpublished."
   },
   "snapshot": {
     "tracks": 28,
@@ -73,6 +73,6 @@
     "devHighFindings": 14,
     "exceptionExpires": "2026-12-02"
   },
-  "nextMilestone": "F1: use approved clean checkout and networked npm registry with permitted Chromium loopback, run P1 coordinator and named accessibility reviews, then qualify/promote 09.02 and 09.03. Do not expand curriculum.",
+  "nextMilestone": "Run existing P1 qualification on approved networked clean checkout with genuine dependencies and Chromium; named reviews and atomic 09.02 then 09.03 promotion. Use status:curriculum -- --json to inspect complete P1-P7 queue; no new curriculum scope.",
   "status": "editorial-merged-f1-partial-runtime-qualification-blocked"
 }

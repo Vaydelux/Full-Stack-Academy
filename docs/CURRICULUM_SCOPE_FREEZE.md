@@ -23,3 +23,7 @@ Effective 2026-11-25, the curriculum editorial expansion program is complete. Th
 ## Known blockers
 
 F1: bundled Node 24.11.1 found and 33 isolated exact-source tests passed; default shell remains Node22. Direct GitHub clone and registry DNS blocked; PostgreSQL and Docker unavailable. Synthetic Chromium loopback navigation blocked by administrator policy. FFmpeg exists but no media exercise executed. See docs/F1_MERGED_QUALIFICATION_CHECKPOINT.md. Genuine Nest lock and external provider/device/manual evidence remain required. Historical results do not qualify the final branch. The 40 capstone source checks and commit patch inspections are not runtime passes.
+
+## Publication queue and finalization reporting
+
+Run `npm run status:curriculum -- --json` for the complete seven-phase queue with exact remaining lesson IDs, missing-source lists, phase targets, required runtime examples and next pending module. The existing `test:curriculum-readiness` gate checks phase scope, historical publication coverage, atomic module publication (except the existing 15.02.04), earlier phase completion before later phases, and exact checkpoint module IDs. The queue is advisory about qualification: it never approves publication and cannot replace executable labs, actual runtime tests, human review or the guarded promoters. Qualification work may proceed in parallel; publish in the established program order.

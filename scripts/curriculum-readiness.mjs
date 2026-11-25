@@ -5,6 +5,7 @@
 import fs from 'node:fs';
 import { collectStagedIds } from './staged-inventory.mjs';
 import { verifyFrozenScope } from './curriculum-scope-freeze.mjs';
+import { buildPublicationQueue } from './publication-queue.mjs';
 import path from 'node:path';
 import assert from 'node:assert/strict';
 import { fileURLToPath } from 'node:url';
@@ -35,20 +36,28 @@ const totals={
  plannedWithoutStaging:curriculum.lessons.length-published.size-stagedUnpublished.size,
  completeModules:modules.filter(m=>m.complete).length,incompleteModules:modules.filter(m=>!m.complete).length,
 };
+const publicationQueue=buildPublicationQueue(curriculum,published,staged);
 if(process.argv.includes('--check')){
+ assert.deepEqual(publicationQueue.issues,[], 'Publication program integrity violations');
+ assert.equal(publicationQueue.remaining,totals.topics-totals.published);
+ assert.equal(publicationQueue.remainingModules,totals.incompleteModules);
  const frozen=JSON.parse(read('data/curriculum-scope-freeze.json'));
  verifyFrozenScope(curriculum,frozen,published,staged);
  assert.equal(totals.tracks,checkpoint.snapshot.tracks);
  assert.equal(totals.modules,checkpoint.snapshot.modules);
  assert.equal(totals.topics,checkpoint.snapshot.catalogTopics);
  assert.equal(totals.published,checkpoint.snapshot.publishedLessons);
- assert.equal(totals.completeModules,checkpoint.snapshot.completeModules.length);
+ assert.deepEqual(modules.filter(m=>m.complete).map(m=>m.id).sort(),[...checkpoint.snapshot.completeModules].sort());
  assert.ok([...staged].every(id=>curriculum.lessons.some(topic=>topic.id===id)), 'Unknown staged lesson ID');
  assert.ok([...stagedUnpublished].every(id=>!published.has(id)), 'Staged metrics cannot include published topics');
 }
-if(process.argv.includes('--json'))console.log(JSON.stringify({totals,modules},null,2));
+if(process.argv.includes('--json'))console.log(JSON.stringify({totals,modules,publicationQueue},null,2));
 else {
  console.log('Curriculum coverage:',JSON.stringify(totals,null,2));
+ console.log('\nPublication program (inventory only):');
+ for(const p of publicationQueue.phases)console.log(p.id+' '+p.title+': '+p.remaining+' remaining; target '+p.targetPublished);
+ console.log('Next module: '+(publicationQueue.next?.id??'none')+'; qualification not evaluated');
+ if(publicationQueue.issues.length)console.error('Publication integrity issues:',publicationQueue.issues);
  console.log('\nNext incomplete module families:');
  for(const m of modules.filter(m=>!m.complete).slice(0,24)){
   console.log(m.id.padEnd(7)+m.title.padEnd(33).slice(0,33)+'  '+m.published+'/'+m.total+' published · '+m.staged+' staged');
