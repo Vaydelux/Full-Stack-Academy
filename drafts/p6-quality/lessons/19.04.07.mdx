@@ -44,6 +44,20 @@ node --test --test-name-pattern="19[.]04" examples/p6-quality/labs.test.mjs
 
 Metrics model uses supplied samples; no real load generation, chaos or database benchmark.
 
+## Applied engineering walkthrough
+
+Sharding reduces test wall time by distributing independent test cases, but release evidence requires every expected shard from the same candidate. Missing, duplicate or stale shard results cannot be treated as success. Shared fixtures must be isolated across workers.
+
+### Diagnose the concrete failure
+
+Feed matrixGate the three expected synthetic shard identities for one commit. Omit one, duplicate another and substitute a stale commit result; verify each incomplete set fails. Compare with the complete result set.
+
+### Independent exercise and evidence
+
+Design a shard inventory with deterministic partitioning, unique identity and artifact binding. Record execution times and aggregation outcomes without enabling any hosted CI workflow.
+
+**Evidence boundary:** These are practice instructions, not recorded test results. Preserve the existing model, specification and draft flag; external runtime qualification remains independent.
+
 ## Knowledge check
 
 1. Which public behavior or invariant is being protected?
