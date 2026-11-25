@@ -11,7 +11,7 @@
   "development": {
     "branch": "feature/f11-3-reading-format",
     "state": "f18-source-qualification-audit",
-    "note": "F18 read-only manuscript/lab triage and advisory staged prerequisites; full checkout and earliest P1 runtime/human review pending."
+    "note": "F18 source-triage audit and advisory manuscript prerequisites; 552 staged tree paths reconciled, 27 bodies and 16 P1 manifests inspected, eight connector model checks and four exact-source Node22 filesystem tests passed. Full checkout and P1 qualification pending."
   },
   "snapshot": {
     "tracks": 28,
