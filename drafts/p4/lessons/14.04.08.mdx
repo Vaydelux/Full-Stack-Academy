@@ -88,6 +88,20 @@ Storage and PostgreSQL are not one atomic transaction. Plan idempotency, token e
 
 Private buckets need specific Storage policies, server-controlled paths and explicit expiration/cleanup rules. Realtime private channels require policies on realtime.messages for permitted operations; a client-specified filter alone is not authorization. Persistent business state remains in PostgreSQL, not in Presence or Broadcast payloads.
 
+## Applied persistence walkthrough
+
+An upload intent separates permission to start an upload from the decision to publish an object. The example creates a durable PENDING document and issues a token for a server-chosen path. Token issuance can fail after the database row is created; a retry or cleanup path is required. User prefix and a document ID are not by themselves proof of tenant membership. READY must depend on trusted content verification.
+
+### Diagnose the concrete failure
+
+Test authorized intent creation, invalid ID, denied actor and duplicate intent, then inject token issuance failure after the PENDING write. Verify that the row remains non-public and can be safely reconciled. Complete a synthetic upload and validate actual bytes before transitioning to READY. Test cross-tenant download and failed scan separately.
+
+### Independent exercise and evidence
+
+Design a reconciliation worker for expired intents, orphaned objects and duplicate completion events. Define a state transition contract and how tenant ownership is checked for every operation. Record intent identity, final state and cleanup evidence without logging tokens.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Use isolated test identities, storage and channels. Preserve the existing starter and solution; source review cannot qualify live upload, webhook or Realtime security.
+
 ## Bug Hunt
 
 1. Predict the attack or failure: The starter trusts client tenant/path, uploads to public storage and creates unscoped metadata; failure between upload and DB insert creates inconsistent or exposed files.
