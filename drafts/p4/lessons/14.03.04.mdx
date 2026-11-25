@@ -75,6 +75,20 @@ Filtering by tenant alone is not sufficient when membership is per project. Do n
 
 RLS applies subject to PostgreSQL roles, table ownership, policy composition and operation type. In an exposed schema, verify grants and RLS together. For writes, review INSERT WITH CHECK and UPDATE USING/WITH CHECK, not just SELECT. In Supabase, do not use user-editable `user_metadata` as authority for privileged roles. A service-role client may bypass RLS; it must not be used to repair a client permission error.
 
+## Applied persistence walkthrough
+
+A Prisma connection may run with privileges that bypass row policies, so it must not inherit an assumption of browser-user isolation. The snippet builds allowed project IDs from an authorization function, then intersects tenant, project and status in the query. The authorization function is not implemented here; membership freshness and race behavior remain part of the design.
+
+### Diagnose the concrete failure
+
+Use two test tenants and a known forbidden project inside the same tenant as well as one outside it. Verify the authorized project list and the final result, including the empty allowed-list case. Check the actual connected database role and ensure the result stays bounded. Test permission revocation between authorization and read.
+
+### Independent exercise and evidence
+
+Design a repository query that couples current permission checks to the resource selection when freshness is required. Compare it with a non-bypass database role plus RLS. Record both positive row IDs and forbidden IDs for the privileged path.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Use an isolated Supabase environment and real non-bypass caller roles. Preserve the existing starter and solution; source review cannot certify row policies or authorization.
+
 ## Bug Hunt and regression matrix
 
 1. Predict the disclosure caused by the starter: The starter queries all open tasks through a potentially privileged database connection without checking tenant or project access.
