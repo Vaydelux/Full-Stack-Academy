@@ -2,6 +2,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { readPersistencePublishedCount } from '../../../scripts/persistence-publication-baseline.mjs';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../../..');
 const read=rel=>fs.readFileSync(path.join(root,rel),'utf8').replaceAll('\r\n','\n');
 const json=rel=>JSON.parse(read(rel));
@@ -50,7 +51,7 @@ export function inspectPostgresDrafts(){
  if(used.size!==8)problem('labs','Wrong number of canonical 12.01 lab slugs');
  if(!exists('examples/postgresql-basics/fixture.sql'))problem('fixture','Missing SQL fixture');
  const published=json('docs/checkpoint.json').snapshot.publishedLessons;
- if(published!==338)problem('checkpoint','Source must not modify published baseline');
+ try{readPersistencePublishedCount(root);}catch(error){problem('checkpoint',error.message);}
  return {status:issues.length?'source-invalid':'draft-source-ready',drafted:entries.length,entries,publishedUnchanged:published,realPostgresExecuted:false,canPublish:false,issues,note:'Read-only integrity; no live PostgreSQL, browser, accessibility or release execution'};
 }
 if(process.argv[1]&&fileURLToPath(import.meta.url)===path.resolve(process.argv[1])){

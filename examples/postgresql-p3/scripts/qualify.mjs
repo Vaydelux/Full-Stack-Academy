@@ -7,6 +7,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import { isSqlContract } from '../../../scripts/persistence-release-plan.mjs';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../../..');
 const read=file=>fs.readFileSync(path.join(root,file),'utf8');
@@ -80,7 +81,8 @@ export function qualify(options={}){
     console.log(row.id+' MANUAL EVIDENCE REQUIRED (not run)');
     continue;
    }
-   if(row.qualificationKind!=='sql-contract')throw Error('Unsupported qualification type');
+   if(!isSqlContract(row.qualificationKind))throw Error('Unsupported qualification type');
+   if(id==='12.03'&&(row.qualificationKind!=='single-session-sql-semantics'||contract.requiresSeparateConcurrencyReview!==true))throw Error('Separate concurrency review must remain mandatory');
    const assertSql=read(file+'acceptance.sql');
    if(!assertSql.includes("RAISE EXCEPTION '"+row.id))
     throw Error(row.id+' is missing its named SQL semantic acceptance assertion');

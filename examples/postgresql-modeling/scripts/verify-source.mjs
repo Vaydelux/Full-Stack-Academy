@@ -2,6 +2,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { readPersistencePublishedCount } from '../../../scripts/persistence-publication-baseline.mjs';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../../..');
 const read=relative=>fs.readFileSync(path.join(root,relative),'utf8').replaceAll('\r\n','\n');
 const json=relative=>JSON.parse(read(relative));
@@ -67,7 +68,7 @@ export function inspectModelingDrafts(){
  }
  if(!present('examples/postgresql-modeling/fixture.sql'))fail('fixture','Missing temporary-table data');
  const published=json('docs/checkpoint.json').snapshot.publishedLessons;
- if(published!==338)fail('checkpoint','Publication baseline changed unexpectedly');
+ try{readPersistencePublishedCount(root);}catch(error){fail('checkpoint',error.message);}
  return {status:issues.length?'source-invalid':'draft-source-ready',drafted:records.length,records,
    publishedUnchanged:published,realPostgresExecuted:false,canPublish:false,issues};
 }

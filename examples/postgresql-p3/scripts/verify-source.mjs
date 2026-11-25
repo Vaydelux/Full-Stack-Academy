@@ -2,6 +2,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { isSqlContract } from '../../../scripts/persistence-release-plan.mjs';
+import { readPersistencePublishedCount } from '../../../scripts/persistence-publication-baseline.mjs';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../../..');
 const modules=[
@@ -24,7 +26,7 @@ export function inspectExtendedPostgresDrafts(){
  const issue=(id,reason)=>problems.push({id,reason});
  const curr=json('data/curriculum.json'),baseline=json('docs/checkpoint.json').snapshot;
  const published=baseline.publishedLessons;
- if(published!==338)issue('baseline','Published checkpoint must not change during source-only milestone');
+ try{readPersistencePublishedCount(root);}catch(error){issue('baseline',error.message);}
  let auto=0,manual=0;
  const seen=new Set();
  for(const mod of modules){
@@ -71,7 +73,8 @@ export function inspectExtendedPostgresDrafts(){
       issue(id,'Draft improperly published or unsafe MDX');
     const kind=lab.qualificationKind;
     if(meta.evidenceMode&&meta.evidenceMode!==kind)issue(id,'Evidence type mismatch');
-    if(kind==='sql-contract'){
+    if(isSqlContract(kind)){
+      if(mod.id==='12.03'&&(kind!=='single-session-sql-semantics'||lab.requiresSeparateConcurrencyReview!==true))issue(id,'Separate concurrency review missing');
       auto++;
       if(lab.acceptance!==folder+'/acceptance.sql'||!exists(lab.acceptance)||
          !read(folder+'/acceptance.sql').includes("RAISE EXCEPTION '"+id))
@@ -91,7 +94,7 @@ export function inspectExtendedPostgresDrafts(){
    .filter(x=>x.startsWith(mod.id+'.')&&x.endsWith('.mdx'));
   if(matching.length!==8)issue(mod.id,'Unexpected lesson count for this module');
   if(items.filter(x=>x.id.startsWith(mod.id+'.')).length!==8)issue(mod.id,'Incomplete module lab source');
-  if(items.filter(x=>x.id.startsWith(mod.id+'.')&&x.kind==='sql-contract').length!==mod.auto ||
+  if(items.filter(x=>x.id.startsWith(mod.id+'.')&&isSqlContract(x.kind)).length!==mod.auto ||
      items.filter(x=>x.id.startsWith(mod.id+'.')&&x.kind==='manual-evidence').length!==mod.manual)
    issue(mod.id,'Semantic vs manual evidence classification changed');
  }
