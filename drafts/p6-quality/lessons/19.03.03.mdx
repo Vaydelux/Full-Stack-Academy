@@ -44,6 +44,20 @@ node --test --test-name-pattern="19[.]03" examples/p6-quality/labs.test.mjs
 
 Synthetic row/actor model; no Nest DI, network server, PostgreSQL or RLS execution.
 
+## Applied engineering walkthrough
+
+API integration tests traverse real routing, middleware, authorization and serialization on the intended adapter. Direct controller calls bypass some of those boundaries. Bind a disposable listener to loopback on an ephemeral port, use bounded client deadlines and close it afterward.
+
+### Diagnose the concrete failure
+
+Send anonymous, authorized and foreign-tenant requests to the installed local API. Assert the documented 401, 200 and 404 outcomes respectively, including exact allowed fields and no foreign data. Inspect persisted state for denied writes.
+
+### Independent exercise and evidence
+
+Design an HTTP acceptance matrix covering malformed input, missing session, denied scope and success. Record actual status, response contract and cleanup rather than equating a service mock with API evidence.
+
+**Evidence boundary:** These are practice instructions, not recorded test results. Preserve the existing model, specification and draft flag; external runtime qualification remains independent.
+
 ## Knowledge check
 
 1. Which public behavior or invariant is being protected?
