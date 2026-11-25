@@ -25,7 +25,7 @@ test('the read-only plan works before or after a complete eight-topic publicatio
 });
 test('apply is explicit and requires real browser, human review and Node24',()=>{
  assert.equal(pkg.scripts['promote:forms-query:rhf'],'node scripts/promote-forms-query-rhf.mjs');
- assert.match(program,/--plan','--apply'/);
+ assert.match(program,/--plan','--simulate','--review','--apply'/);
  assert.match(program,/Number\(process\.versions\.node\.split\('\.'\)\[0\]\)!==24/);
  assert.match(program,/ACADEMY_BROWSER_ROOT/);
  assert.match(program,/humanEvidence\(\)/);

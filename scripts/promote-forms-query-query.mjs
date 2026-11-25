@@ -12,6 +12,7 @@ import {inspectQueryPublicationCandidates} from './verify-forms-query-query-cand
 import {inspectFormsQueryPromotion} from './forms-query-promotion-readiness.mjs';
 import {renderPublishedQueryArticle} from './forms-query-query-release-article.mjs';
 import {queryReviewFingerprint} from './forms-query-query-review-fingerprint.mjs';
+import {assertP1Checkout,markP1ReviewFixture,REVIEW_FIXTURE_DATE} from './p1-publication-review.mjs';
 import {projectionFingerprint,verifyProjectionOnDisk} from './forms-query-projection-integrity.mjs';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const local=p=>path.join(root,p);
@@ -179,7 +180,10 @@ function applyTransaction(projection,reviewSha){
   }
   verifyProjectionOnDisk(projection,read);
   exec('npm',['run','checkpoint:write'],30_000);
-  exec('npm',['run','verify:offline']);
+  if(mode==='--review'){
+   exec('npm',['run','verify:content']);
+   exec('npm',['run','build']);
+  }else exec('npm',['run','verify:offline']);
   exec('npm',['run','qualify:forms-query:preview-browser'],420_000);
   verifyProjectionOnDisk(projection,read);
   assert.equal(queryReviewFingerprint(),reviewSha,'Reviewed Query content changed during postflight');
@@ -187,6 +191,12 @@ function applyTransaction(projection,reviewSha){
   assert.equal(checkpoint.snapshot.publishedLessons,354);
   assert.ok(checkpoint.snapshot.completeModules.includes('09.02'));
   assert.ok(checkpoint.snapshot.completeModules.includes('09.03'));
+  assertP1Checkout(root,{expectedHead:promotionHead,reviewOnly:mode==='--review',allowedChanges:new Set([...projection.keys(),'docs/checkpoint.json'])});
+  if(mode==='--review'){
+   fs.writeFileSync(local('docs/checkpoint.json'),JSON.stringify(markP1ReviewFixture(json('docs/checkpoint.json'),'09.03'),null,2)+'\n');
+   console.log(JSON.stringify({moduleId:'09.03',status:'disposable-review-fixture',sourceSha256:queryReviewFingerprint(),publicationApproved:false,committed:false,deployed:false},null,2));
+   return;
+  }
   checkpoint.status='p1-query-09.03-locally-qualified-awaiting-commit';
   checkpoint.development={...checkpoint.development,
    state:'p1-09.03-locally-qualified-eight-lessons-awaiting-commit',
@@ -205,9 +215,10 @@ function applyTransaction(projection,reviewSha){
   throw error;
  }
 }
+let promotionHead;
 const mode=process.argv[2]??'--plan';
-if(process.argv.length>3||!['--plan','--simulate','--apply'].includes(mode))
- throw Error('Usage: npm run promote:forms-query:query -- --plan|--simulate|--apply');
+if(process.argv.length>3||!['--plan','--simulate','--review','--apply'].includes(mode))
+ throw Error('Usage: npm run promote:forms-query:query -- --plan|--simulate|--review|--apply');
 const plan=candidatePlan();
 if(mode==='--plan')console.log(JSON.stringify({...plan,changesWritten:0},null,2));
 else if(mode==='--simulate')console.log(JSON.stringify(simulateQueryPublication(),null,2));
@@ -216,13 +227,15 @@ else{
  if(!plan.rhfPrerequisitePublished)throw Error('RHF 09.02 must be published before Query 09.03');
  if(Number(process.versions.node.split('.')[0])!==24)throw Error('Node 24 required for publication');
  if(!process.env.ACADEMY_BROWSER_ROOT)throw Error('Actual Playwright/Chromium installation required');
+ promotionHead=assertP1Checkout(root,{reviewOnly:mode==='--review',...(mode==='--apply'?{evidencePath}:{})});
  if(gitStatus())throw Error('Start publication from a clean Git worktree');
- const review=verifiedReview();
+ const review=mode==='--review'?{date:REVIEW_FIXTURE_DATE,sourceSha256:queryReviewFingerprint()}:verifiedReview();
  exec('npm',['ci']);
  exec('npm',['ci','--prefix','examples/forms-query-vertical/react-client']);
  exec('npm',['run','qualify:forms-query:full']);
  exec('npm',['run','qualify:forms-query:query-browser'],600_000);
  assert.equal(queryReviewFingerprint(),review.sourceSha256,'Human-reviewed Query source changed during preflight');
  if(gitStatus())throw Error('Preflight modified the Git worktree; inspect before releasing');
+ assertP1Checkout(root,{expectedHead:promotionHead,reviewOnly:mode==='--review',...(mode==='--apply'?{evidencePath}:{})});
  applyTransaction(preparedQueryWrites(review.date),review.sourceSha256);
 }

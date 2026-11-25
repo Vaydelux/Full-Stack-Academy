@@ -13,6 +13,7 @@ import {inspectRHFPublicationCandidates} from './verify-forms-query-rhf-candidat
 import {inspectFormsQueryPromotion} from './forms-query-promotion-readiness.mjs';
 import {rhfReviewFingerprint} from './forms-query-review-fingerprint.mjs';
 import {renderPublishedRHFArticle} from './forms-query-release-article.mjs';
+import {assertP1Checkout,markP1ReviewFixture,REVIEW_FIXTURE_DATE} from './p1-publication-review.mjs';
 import {projectionFingerprint,verifyProjectionOnDisk} from './forms-query-projection-integrity.mjs';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const local=p=>path.join(root,p);
@@ -198,7 +199,10 @@ function applyWrites(writes, expectedReviewedSha){
   // The first full test suite before promotion cannot substitute for testing
   // the published Next MDX imports, regenerated routes, new lab manifests,
   // and source-derived checkpoint AFTER promotion.
-  run('npm',['run','verify:offline']);
+  if(mode==='--review'){
+   run('npm',['run','verify:content']);
+   run('npm',['run','build']);
+  }else run('npm',['run','verify:offline']);
   run('npm',['run','qualify:forms-query:preview-browser'],420_000);
   verifyProjectionOnDisk(writes,read);
   assert.equal(rhfReviewFingerprint(),expectedReviewedSha,
@@ -208,6 +212,12 @@ function applyWrites(writes, expectedReviewedSha){
   assert.ok(checkpoint.completeModules.includes('09.02'));
   // Update release provenance only after the complete postpublication suite
   // passes; this describes a qualified *local worktree*, not a deployment.
+  assertP1Checkout(root,{expectedHead:promotionHead,reviewOnly:mode==='--review',allowedChanges:new Set([...writes.keys(),'docs/checkpoint.json'])});
+  if(mode==='--review'){
+   fs.writeFileSync(local('docs/checkpoint.json'),JSON.stringify(markP1ReviewFixture(json('docs/checkpoint.json'),'09.02'),null,2)+'\n');
+   console.log(JSON.stringify({moduleId:'09.02',status:'disposable-review-fixture',sourceSha256:rhfReviewFingerprint(),publicationApproved:false,committed:false,deployed:false},null,2));
+   return;
+  }
   const record=json('docs/checkpoint.json');
   record.status='p1-rhf-09.02-local-publication-qualified-awaiting-commit';
   record.development={
@@ -229,8 +239,9 @@ function applyWrites(writes, expectedReviewedSha){
   throw error;
  }
 }
+let promotionHead;
 const mode=process.argv[2]??'--plan';
-if(process.argv.length>3||!['--plan','--simulate','--apply'].includes(mode))throw new Error('Usage: npm run promote:forms-query:rhf -- --plan|--simulate|--apply');
+if(process.argv.length>3||!['--plan','--simulate','--review','--apply'].includes(mode))throw new Error('Usage: npm run promote:forms-query:rhf -- --plan|--simulate|--review|--apply');
 const plan=sourcePlan();
 if(mode==='--plan'){
  console.log(JSON.stringify({...plan,status:plan.alreadyPublished?'already published; no files changed':'unpublished; no files changed'},null,2));
@@ -240,8 +251,9 @@ if(mode==='--plan'){
  if(plan.alreadyPublished)throw new Error('RHF 09.02 is already published; apply cannot overwrite it');
  if(Number(process.versions.node.split('.')[0])!==24)throw new Error('Promotion requires Node.js 24');
  if(!process.env.ACADEMY_BROWSER_ROOT)throw new Error('Real Playwright browser installation required');
+ promotionHead=assertP1Checkout(root,{reviewOnly:mode==='--review',...(mode==='--apply'?{evidencePath}:{})});
  if(capture('git',['status','--porcelain']))throw new Error('Start promotion from a clean Git worktree');
- const reviewer=humanEvidence();
+ const reviewer=mode==='--review'?{date:REVIEW_FIXTURE_DATE,sourceSha256:rhfReviewFingerprint()}:humanEvidence();
  // Run the complete source/practice/Chromium qualification on this exact tree.
  run('npm',['ci']);
  run('npm',['ci','--prefix','examples/forms-query-vertical/react-client']);
@@ -254,6 +266,7 @@ if(mode==='--plan'){
  if(capture('git',['status','--porcelain'])){
   throw new Error('Preflight modified the Git worktree; inspect changes before publication');
  }
+ assertP1Checkout(root,{expectedHead:promotionHead,reviewOnly:mode==='--review',...(mode==='--apply'?{evidencePath}:{})});
  const writes=preparedWrites(reviewer.date);
  applyWrites(writes,reviewer.sourceSha256);
 }

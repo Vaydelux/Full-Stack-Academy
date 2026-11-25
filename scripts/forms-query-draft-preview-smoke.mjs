@@ -5,6 +5,7 @@
  */
 import assert from 'node:assert/strict';
 import { readFileSync, readdirSync } from 'node:fs';
+import {p1ModuleStates} from './p1-browser-state.mjs';
 
 const lessons=JSON.parse(readFileSync(new URL('../data/curriculum.json',import.meta.url),'utf8')).lessons;
 const canonical=lessons.filter(x=>x.moduleId==='09.02'||x.moduleId==='09.03').sort((a,b)=>a.id.localeCompare(b.id));
@@ -37,6 +38,7 @@ async function answerQuiz(page,lessonId,sourcePath){
 export async function verifyFormsQueryDraftPreviews({page,base}){
  assert.equal(canonical.length,16,'Expected the full sixteen-topic catalog');
  assert.ok([0,8,16].includes(drafts.length),'Only complete eight-topic modules may transition');
+ p1ModuleStates(readdirSync(new URL('../src/content/lessons/',import.meta.url)));
  const originalViewport=page.viewportSize();
  try{
   await page.goto(base+'/learn/projects/forms-query');
@@ -95,6 +97,9 @@ export async function verifyFormsQueryDraftPreviews({page,base}){
      'Published P1 route failed '+topic.id+' at '+viewport.width+'x'+viewport.height);
     await page.getByRole('heading',{name:topic.title,level:1,exact:true}).waitFor();
     await page.getByRole('article',{name:'Guided lesson'}).waitFor();
+    assert.match((await page.locator('meta[name="robots"]').first().getAttribute('content'))??'',/^index(?:,|\s|$)/,'Published route must be indexable: '+topic.id);
+    await page.getByRole('region',{name:'Lesson completion'}).waitFor();
+    assert.equal(await page.getByRole('button',{name:'Mark complete',exact:true}).isEnabled(),false,'Unqualified lab must not grant completion');
     const sizes=await page.evaluate(()=>({
      viewport:window.innerWidth,
      document:document.documentElement.scrollWidth,
@@ -115,6 +120,16 @@ export async function verifyFormsQueryDraftPreviews({page,base}){
     assert.equal(await persistedQuiz(page,first),null,'Correct draft quiz must not grant persisted progress');
     await page.reload({waitUntil:'networkidle'});
     assert.equal(await persistedQuiz(page,first),null,'Draft progress persisted after reload');
+  }
+
+  for(const topic of publishedTopics){
+   await page.goto(base+'/learn/'+topic.id,{waitUntil:'networkidle'});
+   await answerQuiz(page,topic.id,'../src/content/lessons/'+topic.id+'.mdx');
+   await page.waitForFunction(([key,id])=>JSON.parse(localStorage.getItem(key)??'{}').quizzes?.[id]===true,[storeKey,topic.id]);
+   await page.reload({waitUntil:'networkidle'});
+   assert.equal(await persistedQuiz(page,topic.id),true,'Published quiz must persist: '+topic.id);
+   const retired=await page.goto(base+route(topic.id),{waitUntil:'domcontentloaded'});
+   assert.equal(retired?.status(),404,'Published topic must retire draft route: '+topic.id);
   }
 
   // Same KnowledgeCheck must still credit PUBLISHED lessons outside context.

@@ -1,4 +1,7 @@
 import assert from 'node:assert/strict';
+import {readdirSync} from 'node:fs';
+import {p1ModuleStates,verifyP1RouteState} from './p1-browser-state.mjs';
+const p1States=p1ModuleStates(readdirSync(new URL('../src/content/lessons/',import.meta.url)));
 import { verifyCssTrack } from './css-track-smoke.mjs';
 import { verifyJsTsBatch } from './js-ts-batch-smoke.mjs';
 import { verifyGitTrack } from './git-track-smoke.mjs';
@@ -72,9 +75,8 @@ try {
   await wait(page.getByText('Correct — you identified the concept.'));
   await page.goto(base + '/reference/zod-safeparse');
   await wait(page.getByRole('heading',{name:/Zod 4: schema.safeParse/}));
-  await page.goto(base + '/learn/09.02.01');
-  assert.ok(await page.locator('meta[name="robots"][content*="noindex"]').count() > 0, 'Planned curriculum topic must have a noindex directive');
-  await wait(page.getByText('Planned lesson — not published.', {exact:true}));
+  await verifyP1RouteState(page,base,'09.02.01',p1States['09.02']);
+  await verifyP1RouteState(page,base,'09.03.01',p1States['09.03']);
   await page.goto(base + '/learn/00.01.01');
   await wait(page.getByRole('heading',{name:'What runs in a browser vs on a server?',exact:true}));
   await page.getByRole('radio',{name:/Only in the trusted server environment/}).check();
@@ -310,8 +312,6 @@ try {
   await page.goto(base + '/learn/01.04.01');
   await wait(page.getByRole('heading', { name: "The problem we're solving" }));
   assert.equal(await page.locator('meta[name="robots"][content*="noindex"]').count(),0,'Published Web APIs lesson must be indexable');
-  await page.goto(base + '/learn/09.02.01');
-  assert.ok(await page.locator('meta[name="robots"][content*="noindex"]').count() > 0, 'Next unauthored React lesson must remain noindex');
   const webLab = slug => new URL('../labs/'+slug+'/solution/index.html', import.meta.url).href;
   const webSlugs = ['web-dom','web-fetch-json','web-url','web-storage','web-permissions','web-cors','web-csp','web-devtools'];
   for(const slug of webSlugs){
@@ -372,8 +372,6 @@ try {
   await page.goto(base + '/learn/02.01.01');
   await wait(page.getByRole('heading', { name: "The problem we're solving" }));
   assert.equal(await page.locator('meta[name="robots"][content*="noindex"]').count(), 0, 'Published CSS lessons must be indexable');
-  await page.goto(base + '/learn/09.02.01');
-  assert.ok(await page.locator('meta[name="robots"][content*="noindex"]').count() > 0, 'Next unauthored React lesson remains noindex');
   const cssLab = slug => new URL('../labs/' + slug + '/solution/index.html', import.meta.url).href;
   const cssSlugs = ["css-selectors","css-cascade","css-layers","css-box-model","css-typography","css-logical","css-states","css-responsive-card"];
   for (const slug of cssSlugs) {

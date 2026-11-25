@@ -42,7 +42,7 @@ const checks=[
   args:['--test','tests/forms-query-promotion-command.test.mjs',
    'tests/forms-query-promotion-rehearsal.test.mjs',
    'tests/forms-query-published-article.test.mjs',
-   'tests/forms-query-review-fingerprint.test.mjs']},
+   'tests/forms-query-review-fingerprint.test.mjs','tests/p1-finalization.test.mjs']},
  {name:'Eight Query candidate packs, Next SSR contracts, source hash, and read-only promotion rehearsal',program:'node',
   args:['--test','tests/forms-query-query-candidates.test.mjs',
    'tests/forms-query-query-browser-gate.test.mjs',
