@@ -1,3 +1,5 @@
+> **F15 — Backend/production encyclopedia:** 63 new authored drafts (188/303 total), canonical source validation passed in connector runtime; three integration cases wired, full checkout/browser/runtime pending. See `docs/F15_BACKEND_PRODUCTION_REFERENCE.md`.
+
 > **F14 — Reference encyclopedia:** Added 51 foundational reference drafts (125/303 total), category coverage, and source-quality gate; all 51 committed new drafts passed source validation in connector V8; six quality tests passed in real Node22.16.0 with both exact blob hashes matched. Registry reconciliation: 149 edges across 102 lessons, no unknown targets. Full checkout and runtime validation pending. See `docs/F14_REFERENCE_ENCYCLOPEDIA.md`.
 
 > **F13 — Reference integration:** Added eight foundational reference drafts (74/303), bidirectional explicit lesson graph, version/summary search and contextual reference links. 16/16 real Node22.16.0 graph/search tests passed with all four committed blob hashes matched; actual source reconciliation found 98 distinct edges across 72 lessons and no unknown targets. Full checkout/build/browser pending. See `docs/F13_REFERENCE_INTEGRATION.md`.

@@ -4787,6 +4787,1896 @@ await redisCache.set(cacheKey, JSON.stringify(safeDto), 'EX', 60);`,
     "07.01.06"
   ],
   "canonicalUrl": "https://nextjs.org/docs/app/api-reference/components/link"
+},
+{
+  "id": "nestjs-controller",
+  "matchCategories": [
+    "NestJS"
+  ],
+  "matchTitles": [
+    "@Controller"
+  ],
+  "heading": "NestJS: @Controller",
+  "category": "NestJS",
+  "majorVersion": "NestJS",
+  "status": "Authored reference draft",
+  "summary": "Associates a class with a route prefix; decorated methods handle requests.",
+  "syntax": "@Controller('tasks')",
+  "lang": "ts",
+  "parameters": "Optional path or controller options.",
+  "returns": "Registers a controller when declared in a module.",
+  "minimalExample": "@Controller('tasks') class TasksController {}",
+  "productionExample": "@Controller('tasks')\nexport class TasksController {\n  constructor(private readonly tasks: TasksService) {}\n  @Get() list() { return this.tasks.listPublic(); }\n}",
+  "commonMistakes": [
+    "Putting database access directly in every controller."
+  ],
+  "securityPerformanceNotes": [
+    "Keep authorization and validation at request/service boundaries; register the controller in its module."
+  ],
+  "relatedLessonIds": [
+    "11.01.02"
+  ],
+  "canonicalUrl": "https://docs.nestjs.com/controllers"
+},
+{
+  "id": "nestjs-get",
+  "matchCategories": [
+    "NestJS"
+  ],
+  "matchTitles": [
+    "@Get"
+  ],
+  "heading": "NestJS: @Get",
+  "category": "NestJS",
+  "majorVersion": "NestJS",
+  "status": "Authored reference draft",
+  "summary": "Binds a controller method to an HTTP GET route.",
+  "syntax": "@Get(':id')",
+  "lang": "ts",
+  "parameters": "Optional relative path.",
+  "returns": "Dispatches GET requests to the method; Nest serializes returned data by default.",
+  "minimalExample": "@Get() list() { return []; }",
+  "productionExample": "@Get(':id')\n@UseGuards(SessionGuard)\nget(@Param('id') id: string, @Req() req: AuthenticatedRequest) {\n  return this.tasks.getForUser(req.user.id, id);\n}",
+  "commonMistakes": [
+    "Treating a URL parameter as proof of ownership."
+  ],
+  "securityPerformanceNotes": [
+    "GET should not mutate domain state; validate IDs and enforce object access."
+  ],
+  "relatedLessonIds": [
+    "11.01.02"
+  ],
+  "canonicalUrl": "https://docs.nestjs.com/controllers"
+},
+{
+  "id": "nestjs-post",
+  "matchCategories": [
+    "NestJS"
+  ],
+  "matchTitles": [
+    "@Post"
+  ],
+  "heading": "NestJS: @Post",
+  "category": "NestJS",
+  "majorVersion": "NestJS",
+  "status": "Authored reference draft",
+  "summary": "Binds a controller method to POST; Nest defaults to status 201.",
+  "syntax": "@Post()",
+  "lang": "ts",
+  "parameters": "Optional path; use @HttpCode to change status deliberately.",
+  "returns": "Handles POST and serializes the result by default.",
+  "minimalExample": "@Post() create(@Body() dto: CreateTaskDto) { return this.tasks.create(dto); }",
+  "productionExample": "@Post()\n@UseGuards(SessionGuard)\ncreate(@Body() dto: CreateTaskDto, @Req() req: AuthenticatedRequest) {\n  return this.tasks.createForUser(req.user.id, dto);\n}",
+  "commonMistakes": [
+    "Assuming a TypeScript DTO validates JSON by itself."
+  ],
+  "securityPerformanceNotes": [
+    "Configure runtime validation and explicit editable fields; design safe retry semantics for writes."
+  ],
+  "relatedLessonIds": [
+    "11.01.02"
+  ],
+  "canonicalUrl": "https://docs.nestjs.com/controllers"
+},
+{
+  "id": "nestjs-inject",
+  "matchCategories": [
+    "NestJS"
+  ],
+  "matchTitles": [
+    "@Inject"
+  ],
+  "heading": "NestJS: @Inject",
+  "category": "NestJS",
+  "majorVersion": "NestJS",
+  "status": "Authored reference draft",
+  "summary": "Selects a dependency by token when class-based inference is insufficient.",
+  "syntax": "@Inject(TASK_REPOSITORY)",
+  "lang": "ts",
+  "parameters": "Provider token (class, string or symbol).",
+  "returns": "Resolves the registered provider in the module graph.",
+  "minimalExample": "constructor(@Inject(TASK_REPOSITORY) private readonly repo: TaskRepository) {}",
+  "productionExample": "const TASK_REPOSITORY = Symbol('TASK_REPOSITORY');\n@Module({ providers: [{ provide: TASK_REPOSITORY, useClass: PgTaskRepository }, TaskService] })\nclass TasksModule {}",
+  "commonMistakes": [
+    "Declaring independent symbols with the same description and expecting equality."
+  ],
+  "securityPerformanceNotes": [
+    "Export a single shared token; avoid global mutable providers for request-specific state."
+  ],
+  "relatedLessonIds": [
+    "11.04.01"
+  ],
+  "canonicalUrl": "https://docs.nestjs.com/fundamentals/custom-providers"
+},
+{
+  "id": "nestjs-executioncontext",
+  "matchCategories": [
+    "NestJS"
+  ],
+  "matchTitles": [
+    "ExecutionContext"
+  ],
+  "heading": "NestJS: ExecutionContext",
+  "category": "NestJS",
+  "majorVersion": "NestJS",
+  "status": "Authored reference draft",
+  "summary": "Extends ArgumentsHost with information about the invoked handler and class.",
+  "syntax": "context.switchToHttp().getRequest()",
+  "lang": "ts",
+  "parameters": "Context supplied by Nest to guards and interceptors.",
+  "returns": "Accesses transport-specific arguments, handler and class metadata.",
+  "minimalExample": "const handler = context.getHandler();",
+  "productionExample": "canActivate(context: ExecutionContext) {\n  if (context.getType() !== 'http') return false;\n  const request = context.switchToHttp().getRequest<AuthenticatedRequest>();\n  return Boolean(request.user?.id);\n}",
+  "commonMistakes": [
+    "Using HTTP-only request extraction for WebSocket or RPC handlers."
+  ],
+  "securityPerformanceNotes": [
+    "This sample is only an authentication-presence check; enforce resource-specific authorization separately."
+  ],
+  "relatedLessonIds": [
+    "11.02.03"
+  ],
+  "canonicalUrl": "https://docs.nestjs.com/fundamentals/execution-context"
+},
+{
+  "id": "nestjs-middleware",
+  "matchCategories": [
+    "NestJS"
+  ],
+  "matchTitles": [
+    "Middleware"
+  ],
+  "heading": "NestJS: Middleware",
+  "category": "NestJS",
+  "majorVersion": "NestJS",
+  "status": "Authored reference draft",
+  "summary": "Runs before route handlers and can enrich or terminate requests.",
+  "syntax": "use(req, res, next)",
+  "lang": "ts",
+  "parameters": "Request, response and continuation; interfaces depend on adapter.",
+  "returns": "Continues the pipeline when next() is called.",
+  "minimalExample": "use(req: Request, res: Response, next: NextFunction) { next(); }",
+  "productionExample": "// Express adapter example\nuse(req: Request, res: Response, next: NextFunction) {\n  const id = randomUUID();\n  res.setHeader('X-Request-Id', id);\n  next();\n}",
+  "commonMistakes": [
+    "Forgetting next() without ending the response."
+  ],
+  "securityPerformanceNotes": [
+    "Do not trust incoming correlation IDs by default; avoid logging authorization headers."
+  ],
+  "relatedLessonIds": [
+    "11.02.01"
+  ],
+  "canonicalUrl": "https://docs.nestjs.com/middleware"
+},
+{
+  "id": "nestjs-testingmodule",
+  "matchCategories": [
+    "NestJS"
+  ],
+  "matchTitles": [
+    "TestingModule"
+  ],
+  "heading": "NestJS: TestingModule",
+  "category": "NestJS",
+  "majorVersion": "NestJS",
+  "status": "Authored reference draft",
+  "summary": "Builds an isolated Nest dependency graph for tests.",
+  "syntax": "Test.createTestingModule({ providers: [] }).compile()",
+  "lang": "ts",
+  "parameters": "Module metadata and optional provider overrides.",
+  "returns": "Promise<TestingModule> with DI lookup and lifecycle methods.",
+  "minimalExample": "const module = await Test.createTestingModule({ providers: [TasksService] }).compile();",
+  "productionExample": "const module = await Test.createTestingModule({ providers: [TasksService, { provide: TASK_REPOSITORY, useValue: fakeRepo }] }).compile();\ntry { expect(module.get(TasksService)).toBeDefined(); } finally { await module.close(); }",
+  "commonMistakes": [
+    "Mocking everything and calling it an HTTP integration test."
+  ],
+  "securityPerformanceNotes": [
+    "Test real persistence and request pipeline separately; close test resources."
+  ],
+  "relatedLessonIds": [
+    "11.04.05"
+  ],
+  "canonicalUrl": "https://docs.nestjs.com/fundamentals/testing"
+},
+{
+  "id": "nestjs-configmodule",
+  "matchCategories": [
+    "NestJS"
+  ],
+  "matchTitles": [
+    "ConfigModule"
+  ],
+  "heading": "NestJS: ConfigModule",
+  "category": "NestJS",
+  "majorVersion": "NestJS",
+  "status": "Authored reference draft",
+  "summary": "Loads application configuration through dependency injection.",
+  "syntax": "ConfigModule.forRoot(options)",
+  "lang": "ts",
+  "parameters": "Options include validate, isGlobal and environment-file settings.",
+  "returns": "A dynamic module exposing ConfigService.",
+  "minimalExample": "ConfigModule.forRoot()",
+  "productionExample": "ConfigModule.forRoot({ validate: env => {\n  if (typeof env.DATABASE_URL !== 'string' || !env.DATABASE_URL) throw new Error('DATABASE_URL required');\n  return env;\n} })",
+  "commonMistakes": [
+    "Assuming get<string>() proves a variable exists or has correct format."
+  ],
+  "securityPerformanceNotes": [
+    "Validate all required settings at startup; do not print secrets in validation errors."
+  ],
+  "relatedLessonIds": [
+    "11.01.05"
+  ],
+  "canonicalUrl": "https://docs.nestjs.com/techniques/configuration"
+},
+{
+  "id": "postgresql-select",
+  "matchCategories": [
+    "PostgreSQL"
+  ],
+  "matchTitles": [
+    "SELECT"
+  ],
+  "heading": "PostgreSQL: SELECT",
+  "category": "PostgreSQL",
+  "majorVersion": "PostgreSQL",
+  "status": "Authored reference draft",
+  "summary": "Reads rows or computed expressions from one or more sources.",
+  "syntax": "SELECT columns FROM table WHERE predicate;",
+  "lang": "sql",
+  "parameters": "Projection, source, filter and optional ordering.",
+  "returns": "A result set; order is unspecified without ORDER BY.",
+  "minimalExample": "SELECT id, title FROM tasks;",
+  "productionExample": "SELECT id, title FROM tasks WHERE workspace_id = $1 AND archived_at IS NULL ORDER BY id LIMIT 50;",
+  "commonMistakes": [
+    "Using SELECT * in a public API or expecting implicit row ordering."
+  ],
+  "securityPerformanceNotes": [
+    "Bind parameters through a database driver; enforce tenant membership before supplying workspace ID."
+  ],
+  "relatedLessonIds": [
+    "12.01.02"
+  ],
+  "canonicalUrl": "https://www.postgresql.org/docs/current/sql-select.html"
+},
+{
+  "id": "postgresql-insert",
+  "matchCategories": [
+    "PostgreSQL"
+  ],
+  "matchTitles": [
+    "INSERT"
+  ],
+  "heading": "PostgreSQL: INSERT",
+  "category": "PostgreSQL",
+  "majorVersion": "PostgreSQL",
+  "status": "Authored reference draft",
+  "summary": "Creates rows subject to constraints and privileges.",
+  "syntax": "INSERT INTO tasks (title) VALUES ($1);",
+  "lang": "sql",
+  "parameters": "Target columns and values or query; optional RETURNING.",
+  "returns": "Inserted rows if RETURNING is used; otherwise command count.",
+  "minimalExample": "INSERT INTO tasks (title) VALUES ('Read docs');",
+  "productionExample": "INSERT INTO tasks (workspace_id, title) VALUES ($1, $2) RETURNING id, title;",
+  "commonMistakes": [
+    "Concatenating untrusted values into SQL or ignoring unique violations."
+  ],
+  "securityPerformanceNotes": [
+    "Check tenant authorization; use constraints and idempotency for replayable operations."
+  ],
+  "relatedLessonIds": [
+    "12.01.08"
+  ],
+  "canonicalUrl": "https://www.postgresql.org/docs/current/sql-insert.html"
+},
+{
+  "id": "postgresql-update",
+  "matchCategories": [
+    "PostgreSQL"
+  ],
+  "matchTitles": [
+    "UPDATE"
+  ],
+  "heading": "PostgreSQL: UPDATE",
+  "category": "PostgreSQL",
+  "majorVersion": "PostgreSQL",
+  "status": "Authored reference draft",
+  "summary": "Changes matching rows; supports conditional version checks.",
+  "syntax": "UPDATE tasks SET title = $1 WHERE id = $2;",
+  "lang": "sql",
+  "parameters": "SET expressions, WHERE predicate and optional RETURNING.",
+  "returns": "Updated rows with RETURNING, otherwise count.",
+  "minimalExample": "UPDATE tasks SET done = true WHERE id = 1;",
+  "productionExample": "UPDATE tasks SET title = $1, version = version + 1 WHERE id = $2 AND workspace_id = $3 AND version = $4 RETURNING id, version;",
+  "commonMistakes": [
+    "Omitting WHERE or ignoring zero-row optimistic conflicts."
+  ],
+  "securityPerformanceNotes": [
+    "Use parameter binding and verified tenant scope; distinguish conflicts from successful writes."
+  ],
+  "relatedLessonIds": [
+    "12.03.04"
+  ],
+  "canonicalUrl": "https://www.postgresql.org/docs/current/sql-update.html"
+},
+{
+  "id": "postgresql-delete",
+  "matchCategories": [
+    "PostgreSQL"
+  ],
+  "matchTitles": [
+    "DELETE"
+  ],
+  "heading": "PostgreSQL: DELETE",
+  "category": "PostgreSQL",
+  "majorVersion": "PostgreSQL",
+  "status": "Authored reference draft",
+  "summary": "Removes rows matching a predicate.",
+  "syntax": "DELETE FROM tasks WHERE id = $1;",
+  "lang": "sql",
+  "parameters": "Target, filter and optional RETURNING.",
+  "returns": "Deleted rows with RETURNING or command count.",
+  "minimalExample": "DELETE FROM tasks WHERE id = 1;",
+  "productionExample": "DELETE FROM tasks WHERE id = $1 AND workspace_id = $2 RETURNING id;",
+  "commonMistakes": [
+    "Omitting WHERE or overlooking cascade constraints."
+  ],
+  "securityPerformanceNotes": [
+    "Require authorization and review retention requirements before physical deletion."
+  ],
+  "relatedLessonIds": [
+    "12.02.05"
+  ],
+  "canonicalUrl": "https://www.postgresql.org/docs/current/sql-delete.html"
+},
+{
+  "id": "postgresql-join",
+  "matchCategories": [
+    "PostgreSQL"
+  ],
+  "matchTitles": [
+    "JOIN"
+  ],
+  "heading": "PostgreSQL: JOIN",
+  "category": "PostgreSQL",
+  "majorVersion": "PostgreSQL",
+  "status": "Authored reference draft",
+  "summary": "Combines rows according to a join condition and join type.",
+  "syntax": "SELECT * FROM a JOIN b ON a.id = b.a_id;",
+  "lang": "sql",
+  "parameters": "Left/right sources and ON or USING condition.",
+  "returns": "Combined rows; outer joins preserve unmatched rows on their retained side.",
+  "minimalExample": "SELECT t.title, p.name FROM tasks t JOIN projects p ON p.id = t.project_id;",
+  "productionExample": "SELECT t.id, p.name FROM tasks t LEFT JOIN projects p ON p.id = t.project_id AND p.workspace_id = t.workspace_id WHERE t.workspace_id = $1;",
+  "commonMistakes": [
+    "Filtering a nullable right-side column in WHERE and unintentionally removing unmatched rows."
+  ],
+  "securityPerformanceNotes": [
+    "Use tenant-safe foreign keys and inspect multiplicity and indexes."
+  ],
+  "relatedLessonIds": [
+    "12.01.03"
+  ],
+  "canonicalUrl": "https://www.postgresql.org/docs/current/queries-table-expressions.html"
+},
+{
+  "id": "postgresql-group-by",
+  "matchCategories": [
+    "PostgreSQL"
+  ],
+  "matchTitles": [
+    "GROUP BY"
+  ],
+  "heading": "PostgreSQL: GROUP BY",
+  "category": "PostgreSQL",
+  "majorVersion": "PostgreSQL",
+  "status": "Authored reference draft",
+  "summary": "Partitions input rows into groups for aggregate computation.",
+  "syntax": "SELECT status, count(*) FROM tasks GROUP BY status;",
+  "lang": "sql",
+  "parameters": "Grouping expressions and aggregate expressions.",
+  "returns": "One result row per group unless grouping sets alter that shape.",
+  "minimalExample": "SELECT status, count(*) FROM tasks GROUP BY status;",
+  "productionExample": "SELECT status, count(*) AS task_count FROM tasks WHERE workspace_id = $1 GROUP BY status ORDER BY status;",
+  "commonMistakes": [
+    "Selecting ungrouped nonaggregated columns without a valid functional dependency."
+  ],
+  "securityPerformanceNotes": [
+    "Filter tenant rows before aggregation; bound group cardinality for public reports."
+  ],
+  "relatedLessonIds": [
+    "12.01.04"
+  ],
+  "canonicalUrl": "https://www.postgresql.org/docs/current/queries-table-expressions.html"
+},
+{
+  "id": "postgresql-having",
+  "matchCategories": [
+    "PostgreSQL"
+  ],
+  "matchTitles": [
+    "HAVING"
+  ],
+  "heading": "PostgreSQL: HAVING",
+  "category": "PostgreSQL",
+  "majorVersion": "PostgreSQL",
+  "status": "Authored reference draft",
+  "summary": "Filters groups after aggregation rather than individual source rows.",
+  "syntax": "GROUP BY status HAVING count(*) > 5",
+  "lang": "sql",
+  "parameters": "Predicate over group expressions and aggregates.",
+  "returns": "Only groups satisfying the predicate.",
+  "minimalExample": "SELECT status, count(*) FROM tasks GROUP BY status HAVING count(*) > 5;",
+  "productionExample": "SELECT project_id, count(*) FROM tasks WHERE workspace_id = $1 GROUP BY project_id HAVING count(*) >= $2;",
+  "commonMistakes": [
+    "Putting aggregate predicates in WHERE."
+  ],
+  "securityPerformanceNotes": [
+    "Use WHERE to reduce input early and avoid exposing unauthorized aggregate counts."
+  ],
+  "relatedLessonIds": [
+    "12.01.04"
+  ],
+  "canonicalUrl": "https://www.postgresql.org/docs/current/queries-table-expressions.html"
+},
+{
+  "id": "postgresql-order-by",
+  "matchCategories": [
+    "PostgreSQL"
+  ],
+  "matchTitles": [
+    "ORDER BY"
+  ],
+  "heading": "PostgreSQL: ORDER BY",
+  "category": "PostgreSQL",
+  "majorVersion": "PostgreSQL",
+  "status": "Authored reference draft",
+  "summary": "Sorts query results according to one or more expressions.",
+  "syntax": "ORDER BY created_at DESC, id DESC",
+  "lang": "sql",
+  "parameters": "Expressions, ASC/DESC, optional NULLS FIRST/LAST.",
+  "returns": "Ordered result set; ties need additional keys for deterministic ordering.",
+  "minimalExample": "SELECT id FROM tasks ORDER BY id DESC;",
+  "productionExample": "SELECT id, created_at FROM tasks WHERE workspace_id = $1 ORDER BY created_at DESC NULLS LAST, id DESC LIMIT 50;",
+  "commonMistakes": [
+    "Paginating on a nonunique sort column without a tie-breaker."
+  ],
+  "securityPerformanceNotes": [
+    "Design indexes to match frequently used filters and order; allowlist user-selected sort columns."
+  ],
+  "relatedLessonIds": [
+    "12.01.02"
+  ],
+  "canonicalUrl": "https://www.postgresql.org/docs/current/queries-order.html"
+},
+{
+  "id": "postgresql-limit",
+  "matchCategories": [
+    "PostgreSQL"
+  ],
+  "matchTitles": [
+    "LIMIT"
+  ],
+  "heading": "PostgreSQL: LIMIT",
+  "category": "PostgreSQL",
+  "majorVersion": "PostgreSQL",
+  "status": "Authored reference draft",
+  "summary": "Caps how many rows a query returns.",
+  "syntax": "LIMIT 50",
+  "lang": "sql",
+  "parameters": "Nonnegative count or bound parameter.",
+  "returns": "At most the requested count.",
+  "minimalExample": "SELECT id FROM tasks ORDER BY id LIMIT 10;",
+  "productionExample": "SELECT id, title FROM tasks WHERE workspace_id = $1 AND id > $2 ORDER BY id LIMIT $3;",
+  "commonMistakes": [
+    "Applying LIMIT without stable ordering."
+  ],
+  "securityPerformanceNotes": [
+    "Validate and cap page size; use keyset paging when appropriate."
+  ],
+  "relatedLessonIds": [
+    "12.04.04"
+  ],
+  "canonicalUrl": "https://www.postgresql.org/docs/current/queries-limit.html"
+},
+{
+  "id": "postgresql-with",
+  "matchCategories": [
+    "PostgreSQL"
+  ],
+  "matchTitles": [
+    "WITH"
+  ],
+  "heading": "PostgreSQL: WITH",
+  "category": "PostgreSQL",
+  "majorVersion": "PostgreSQL",
+  "status": "Authored reference draft",
+  "summary": "Defines named query expressions (CTEs) for a statement.",
+  "syntax": "WITH recent AS (SELECT ...) SELECT * FROM recent;",
+  "lang": "sql",
+  "parameters": "Named query and optional column names, materialization or recursion options.",
+  "returns": "Rows produced by the outer statement.",
+  "minimalExample": "WITH counts AS (SELECT count(*) AS n FROM tasks) SELECT n FROM counts;",
+  "productionExample": "WITH scoped AS (SELECT status FROM tasks WHERE workspace_id = $1) SELECT status, count(*) FROM scoped GROUP BY status;",
+  "commonMistakes": [
+    "Assuming every CTE is always materialized."
+  ],
+  "securityPerformanceNotes": [
+    "Inspect plans; scope sensitive rows at their source, not only in the final projection."
+  ],
+  "relatedLessonIds": [
+    "12.01.07"
+  ],
+  "canonicalUrl": "https://www.postgresql.org/docs/current/queries-with.html"
+},
+{
+  "id": "postgresql-begin",
+  "matchCategories": [
+    "PostgreSQL"
+  ],
+  "matchTitles": [
+    "BEGIN"
+  ],
+  "heading": "PostgreSQL: BEGIN",
+  "category": "PostgreSQL",
+  "majorVersion": "PostgreSQL",
+  "status": "Authored reference draft",
+  "summary": "Starts an explicit transaction block on the current connection.",
+  "syntax": "BEGIN;",
+  "lang": "sql",
+  "parameters": "Optional isolation and access mode.",
+  "returns": "Transaction remains open until commit or rollback.",
+  "minimalExample": "BEGIN; SELECT 1; COMMIT;",
+  "productionExample": "BEGIN;\nUPDATE tasks SET done = true WHERE id = $1 AND workspace_id = $2;\nINSERT INTO audit_events (workspace_id, task_id, action) VALUES ($2, $1, 'completed');\nCOMMIT;",
+  "commonMistakes": [
+    "Executing statements on different pooled connections."
+  ],
+  "securityPerformanceNotes": [
+    "Keep transactions short; roll back on error and verify the affected row before auditing a mutation."
+  ],
+  "relatedLessonIds": [
+    "12.03.07"
+  ],
+  "canonicalUrl": "https://www.postgresql.org/docs/current/sql-begin.html"
+},
+{
+  "id": "postgresql-commit",
+  "matchCategories": [
+    "PostgreSQL"
+  ],
+  "matchTitles": [
+    "COMMIT"
+  ],
+  "heading": "PostgreSQL: COMMIT",
+  "category": "PostgreSQL",
+  "majorVersion": "PostgreSQL",
+  "status": "Authored reference draft",
+  "summary": "Completes a successful transaction and makes its changes committed.",
+  "syntax": "COMMIT;",
+  "lang": "sql",
+  "parameters": "Optional transaction chaining mode.",
+  "returns": "Ends the current successful transaction.",
+  "minimalExample": "BEGIN; SELECT 1; COMMIT;",
+  "productionExample": "-- After all invariant checks succeed on the same connection:\nCOMMIT;",
+  "commonMistakes": [
+    "Reporting success before commit or assuming commit cannot fail."
+  ],
+  "securityPerformanceNotes": [
+    "Handle commit errors and ambiguous network outcomes; design idempotent recovery."
+  ],
+  "relatedLessonIds": [
+    "12.03.07"
+  ],
+  "canonicalUrl": "https://www.postgresql.org/docs/current/sql-commit.html"
+},
+{
+  "id": "postgresql-rollback",
+  "matchCategories": [
+    "PostgreSQL"
+  ],
+  "matchTitles": [
+    "ROLLBACK"
+  ],
+  "heading": "PostgreSQL: ROLLBACK",
+  "category": "PostgreSQL",
+  "majorVersion": "PostgreSQL",
+  "status": "Authored reference draft",
+  "summary": "Discards uncommitted changes in the current transaction.",
+  "syntax": "ROLLBACK;",
+  "lang": "sql",
+  "parameters": "Optional chaining mode; ROLLBACK TO SAVEPOINT is separate.",
+  "returns": "Ends the current transaction without committing changes.",
+  "minimalExample": "BEGIN; SELECT 1; ROLLBACK;",
+  "productionExample": "-- On any failed validation or database statement:\nROLLBACK;\n-- Release the connection after the transaction is closed.",
+  "commonMistakes": [
+    "Returning a failed transaction to the connection pool without rollback."
+  ],
+  "securityPerformanceNotes": [
+    "Rollback does not undo external emails or HTTP calls; use an outbox where needed."
+  ],
+  "relatedLessonIds": [
+    "12.03.07"
+  ],
+  "canonicalUrl": "https://www.postgresql.org/docs/current/sql-rollback.html"
+},
+{
+  "id": "postgresql-create-index",
+  "matchCategories": [
+    "PostgreSQL"
+  ],
+  "matchTitles": [
+    "CREATE INDEX"
+  ],
+  "heading": "PostgreSQL: CREATE INDEX",
+  "category": "PostgreSQL",
+  "majorVersion": "PostgreSQL",
+  "status": "Authored reference draft",
+  "summary": "Creates an access structure that can speed queries at a write and storage cost.",
+  "syntax": "CREATE INDEX name ON table (column);",
+  "lang": "sql",
+  "parameters": "Index method, columns/expressions and optional predicate.",
+  "returns": "Creates an index; no query result rows.",
+  "minimalExample": "CREATE INDEX tasks_status_idx ON tasks (status);",
+  "productionExample": "CREATE INDEX CONCURRENTLY tasks_workspace_created_idx ON tasks (workspace_id, created_at DESC, id DESC);",
+  "commonMistakes": [
+    "Creating indexes indiscriminately or running CONCURRENTLY inside a transaction block."
+  ],
+  "securityPerformanceNotes": [
+    "Check production migration locking and disk budget; compare actual plans before retaining indexes."
+  ],
+  "relatedLessonIds": [
+    "12.04.02"
+  ],
+  "canonicalUrl": "https://www.postgresql.org/docs/current/sql-createindex.html"
+},
+{
+  "id": "postgresql-foreign-key",
+  "matchCategories": [
+    "PostgreSQL"
+  ],
+  "matchTitles": [
+    "FOREIGN KEY"
+  ],
+  "heading": "PostgreSQL: FOREIGN KEY",
+  "category": "PostgreSQL",
+  "majorVersion": "PostgreSQL",
+  "status": "Authored reference draft",
+  "summary": "Enforces referential integrity between related keys.",
+  "syntax": "FOREIGN KEY (project_id) REFERENCES projects(id)",
+  "lang": "sql",
+  "parameters": "Referencing and referenced columns; optional update/delete actions.",
+  "returns": "Constraint rejects invalid references according to its rules.",
+  "minimalExample": "ALTER TABLE tasks ADD FOREIGN KEY (project_id) REFERENCES projects(id);",
+  "productionExample": "-- Requires a unique key on projects(workspace_id,id).\nALTER TABLE tasks ADD CONSTRAINT task_project_fk FOREIGN KEY (workspace_id, project_id) REFERENCES projects(workspace_id, id);",
+  "commonMistakes": [
+    "Using independent tenant and project IDs without ensuring they belong together."
+  ],
+  "securityPerformanceNotes": [
+    "Composite keys can prevent cross-tenant relationships; review delete behavior and referencing-column indexes."
+  ],
+  "relatedLessonIds": [
+    "12.01.05"
+  ],
+  "canonicalUrl": "https://www.postgresql.org/docs/current/ddl-constraints.html"
+},
+{
+  "id": "postgresql-row-level-security",
+  "matchCategories": [
+    "PostgreSQL"
+  ],
+  "matchTitles": [
+    "row level security"
+  ],
+  "heading": "PostgreSQL: row level security",
+  "category": "PostgreSQL",
+  "majorVersion": "PostgreSQL",
+  "status": "Authored reference draft",
+  "summary": "Applies policy predicates to row visibility and permitted changes.",
+  "syntax": "ALTER TABLE tasks ENABLE ROW LEVEL SECURITY;",
+  "lang": "sql",
+  "parameters": "Policies specify commands, roles, USING and WITH CHECK predicates.",
+  "returns": "Row access is filtered or rejected; absent applicable policies default to denial when RLS applies.",
+  "minimalExample": "ALTER TABLE tasks ENABLE ROW LEVEL SECURITY;\nCREATE POLICY read_own ON tasks FOR SELECT TO app_user USING (owner_name = current_user);",
+  "productionExample": "-- Supabase example; grants are separate.\nALTER TABLE tasks ENABLE ROW LEVEL SECURITY;\nCREATE POLICY read_own ON tasks FOR SELECT TO authenticated USING ((select auth.uid()) = user_id);\nCREATE POLICY update_own ON tasks FOR UPDATE TO authenticated USING ((select auth.uid()) = user_id) WITH CHECK ((select auth.uid()) = user_id);",
+  "commonMistakes": [
+    "Testing only as table owner or a BYPASSRLS role."
+  ],
+  "securityPerformanceNotes": [
+    "Test anon, authenticated and cross-tenant cases; table privileges and privileged server roles require separate review."
+  ],
+  "relatedLessonIds": [
+    "14.03.01"
+  ],
+  "canonicalUrl": "https://www.postgresql.org/docs/current/ddl-rowsecurity.html"
+},
+{
+  "id": "prisma-model",
+  "matchCategories": [
+    "Prisma"
+  ],
+  "matchTitles": [
+    "model"
+  ],
+  "heading": "Prisma: model",
+  "category": "Prisma",
+  "majorVersion": "Prisma ORM 7",
+  "status": "Authored reference draft",
+  "summary": "Defines a database-backed model and generated client surface.",
+  "syntax": "model Task { ... }",
+  "lang": "prisma",
+  "parameters": "Fields, scalar types, attributes and relations in schema.prisma.",
+  "returns": "Generated model types/client methods after generation; schema migration is separate.",
+  "minimalExample": "model Task {\n  id Int @id @default(autoincrement())\n  title String\n}",
+  "productionExample": "model Task {\n  id String @id @default(uuid())\n  workspaceId String\n  title String\n  @@index([workspaceId, id])\n}",
+  "commonMistakes": [
+    "Expecting schema edits to update the deployed database automatically."
+  ],
+  "securityPerformanceNotes": [
+    "Review generated migrations and tenant isolation; keep Prisma Client generated from the matching schema."
+  ],
+  "relatedLessonIds": [
+    "13.01.01"
+  ],
+  "canonicalUrl": "https://www.prisma.io/docs/orm/v7/prisma-schema/data-model/models"
+},
+{
+  "id": "prisma-relation",
+  "matchCategories": [
+    "Prisma"
+  ],
+  "matchTitles": [
+    "@relation"
+  ],
+  "heading": "Prisma: @relation",
+  "category": "Prisma",
+  "majorVersion": "Prisma ORM 7",
+  "status": "Authored reference draft",
+  "summary": "Describes relationships and their relation scalar fields.",
+  "syntax": "project Project @relation(fields: [projectId], references: [id])",
+  "lang": "prisma",
+  "parameters": "Related model, relation scalar fields and referenced fields; actions may be configured.",
+  "returns": "Relation-aware generated query input/output and database constraints depending on configuration.",
+  "minimalExample": "projectId Int\nproject Project @relation(fields: [projectId], references: [id])",
+  "productionExample": "workspaceId String\nprojectId String\nproject Project @relation(fields: [workspaceId, projectId], references: [workspaceId, id])\n// Project requires the corresponding composite unique key.",
+  "commonMistakes": [
+    "Assuming relation loading alone enforces tenant isolation."
+  ],
+  "securityPerformanceNotes": [
+    "Use composite constraints where appropriate and authorize accesses; examine cascade behavior."
+  ],
+  "relatedLessonIds": [
+    "13.01.02"
+  ],
+  "canonicalUrl": "https://www.prisma.io/docs/orm/v7/prisma-schema/data-model/relations"
+},
+{
+  "id": "prisma-findunique",
+  "matchCategories": [
+    "Prisma"
+  ],
+  "matchTitles": [
+    "findUnique"
+  ],
+  "heading": "Prisma: findUnique",
+  "category": "Prisma",
+  "majorVersion": "Prisma ORM 7",
+  "status": "Authored reference draft",
+  "summary": "Reads one record via a unique selector, optionally projecting fields.",
+  "syntax": "prisma.task.findUnique({ where: { id } })",
+  "lang": "ts",
+  "parameters": "WhereUniqueInput and optional select/include.",
+  "returns": "Record or null (findUniqueOrThrow rejects when absent).",
+  "minimalExample": "await prisma.task.findUnique({ where: { id: taskId } });",
+  "productionExample": "await prisma.task.findUnique({ where: { id: taskId, workspaceId: authorizedWorkspaceId }, select: { id: true, title: true } });",
+  "commonMistakes": [
+    "Using a unique ID as evidence of access."
+  ],
+  "securityPerformanceNotes": [
+    "Scope to authorized tenant and handle null without leaking existence; use explicit output projection."
+  ],
+  "relatedLessonIds": [
+    "13.02.01"
+  ],
+  "canonicalUrl": "https://www.prisma.io/docs/orm/v7/reference/prisma-client-reference"
+},
+{
+  "id": "prisma-create",
+  "matchCategories": [
+    "Prisma"
+  ],
+  "matchTitles": [
+    "create"
+  ],
+  "heading": "Prisma: create",
+  "category": "Prisma",
+  "majorVersion": "Prisma ORM 7",
+  "status": "Authored reference draft",
+  "summary": "Creates a record with typed data and optional nested writes.",
+  "syntax": "prisma.task.create({ data })",
+  "lang": "ts",
+  "parameters": "Create input and optional selection; model defaults apply.",
+  "returns": "Created record with requested projection.",
+  "minimalExample": "await prisma.task.create({ data: { title: 'Learn', workspaceId } });",
+  "productionExample": "await prisma.task.create({ data: { title: validated.title, workspaceId: authorizedWorkspaceId }, select: { id: true, title: true } });",
+  "commonMistakes": [
+    "Passing the entire untrusted request body to data."
+  ],
+  "securityPerformanceNotes": [
+    "Validate allowlisted fields and derive ownership from verified context."
+  ],
+  "relatedLessonIds": [
+    "13.02.03"
+  ],
+  "canonicalUrl": "https://www.prisma.io/docs/orm/v7/reference/prisma-client-reference"
+},
+{
+  "id": "prisma-update",
+  "matchCategories": [
+    "Prisma"
+  ],
+  "matchTitles": [
+    "update"
+  ],
+  "heading": "Prisma: update",
+  "category": "Prisma",
+  "majorVersion": "Prisma ORM 7",
+  "status": "Authored reference draft",
+  "summary": "Updates a uniquely identified record with typed operations.",
+  "syntax": "prisma.task.update({ where, data })",
+  "lang": "ts",
+  "parameters": "Unique selector, update input and optional output selection.",
+  "returns": "Updated record; rejects when required record is missing.",
+  "minimalExample": "await prisma.task.update({ where: { id }, data: { done: true } });",
+  "productionExample": "await prisma.task.update({ where: { id, workspaceId: authorizedWorkspaceId, version: expectedVersion }, data: { title: validated.title, version: { increment: 1 } }, select: { id: true, version: true } });",
+  "commonMistakes": [
+    "Performing a stale read followed by an unguarded update."
+  ],
+  "securityPerformanceNotes": [
+    "Use atomic predicates/version checks and translate expected missing/conflict errors."
+  ],
+  "relatedLessonIds": [
+    "13.02.03"
+  ],
+  "canonicalUrl": "https://www.prisma.io/docs/orm/v7/reference/prisma-client-reference"
+},
+{
+  "id": "prisma-delete",
+  "matchCategories": [
+    "Prisma"
+  ],
+  "matchTitles": [
+    "delete"
+  ],
+  "heading": "Prisma: delete",
+  "category": "Prisma",
+  "majorVersion": "Prisma ORM 7",
+  "status": "Authored reference draft",
+  "summary": "Deletes one record selected by a unique filter.",
+  "syntax": "prisma.task.delete({ where })",
+  "lang": "ts",
+  "parameters": "Unique selector and optional output projection.",
+  "returns": "Deleted record; rejects if the required record does not exist.",
+  "minimalExample": "await prisma.task.delete({ where: { id } });",
+  "productionExample": "await prisma.task.delete({ where: { id, workspaceId: authorizedWorkspaceId }, select: { id: true } });",
+  "commonMistakes": [
+    "Assuming deletion is automatically soft-delete or safe with cascade constraints."
+  ],
+  "securityPerformanceNotes": [
+    "Check authorization and retention policy; treat retry behavior explicitly."
+  ],
+  "relatedLessonIds": [
+    "13.02.03"
+  ],
+  "canonicalUrl": "https://www.prisma.io/docs/orm/v7/reference/prisma-client-reference"
+},
+{
+  "id": "prisma-upsert",
+  "matchCategories": [
+    "Prisma"
+  ],
+  "matchTitles": [
+    "upsert"
+  ],
+  "heading": "Prisma: upsert",
+  "category": "Prisma",
+  "majorVersion": "Prisma ORM 7",
+  "status": "Authored reference draft",
+  "summary": "Creates or updates based on a unique selector.",
+  "syntax": "prisma.task.upsert({ where, create, update })",
+  "lang": "ts",
+  "parameters": "Unique selector plus create/update data.",
+  "returns": "Resulting record with requested projection.",
+  "minimalExample": "await prisma.setting.upsert({ where: { userId }, create: { userId, theme: 'dark' }, update: { theme: 'dark' } });",
+  "productionExample": "await prisma.setting.upsert({ where: { userId: verifiedUserId }, create: { userId: verifiedUserId, theme: validated.theme }, update: { theme: validated.theme }, select: { theme: true } });",
+  "commonMistakes": [
+    "Assuming every upsert is delegated to a single database statement."
+  ],
+  "securityPerformanceNotes": [
+    "Back uniqueness with a database constraint; handle race errors and scope to verified identity."
+  ],
+  "relatedLessonIds": [
+    "13.02.03"
+  ],
+  "canonicalUrl": "https://www.prisma.io/docs/orm/v7/reference/prisma-client-reference"
+},
+{
+  "id": "prisma-include",
+  "matchCategories": [
+    "Prisma"
+  ],
+  "matchTitles": [
+    "include"
+  ],
+  "heading": "Prisma: include",
+  "category": "Prisma",
+  "majorVersion": "Prisma ORM 7",
+  "status": "Authored reference draft",
+  "summary": "Loads related records as part of a query result.",
+  "syntax": "prisma.project.findMany({ include: { tasks: true } })",
+  "lang": "ts",
+  "parameters": "Relation keys and optional nested query options.",
+  "returns": "Parent records augmented by selected relation data.",
+  "minimalExample": "await prisma.project.findMany({ include: { tasks: true } });",
+  "productionExample": "await prisma.project.findMany({ where: { workspaceId: authorizedWorkspaceId }, take: 20, include: { tasks: { where: { archived: false }, take: 10, orderBy: { id: 'asc' }, select: { id: true, title: true } } } });",
+  "commonMistakes": [
+    "Returning unbounded related collections or assuming include filters the parent."
+  ],
+  "securityPerformanceNotes": [
+    "Bound both levels, inspect generated queries, and ensure relation-level visibility."
+  ],
+  "relatedLessonIds": [
+    "13.02.02"
+  ],
+  "canonicalUrl": "https://www.prisma.io/docs/orm/v7/reference/prisma-client-reference"
+},
+{
+  "id": "prisma-cursor",
+  "matchCategories": [
+    "Prisma"
+  ],
+  "matchTitles": [
+    "cursor"
+  ],
+  "heading": "Prisma: cursor",
+  "category": "Prisma",
+  "majorVersion": "Prisma ORM 7",
+  "status": "Authored reference draft",
+  "summary": "Resumes a query from a uniquely identifiable record.",
+  "syntax": "findMany({ cursor: { id }, skip: 1, take: 20, orderBy: { id: 'asc' } })",
+  "lang": "ts",
+  "parameters": "Unique cursor, take, optional skip and consistent ordering.",
+  "returns": "Page of records; skip:1 excludes the cursor itself.",
+  "minimalExample": "await prisma.task.findMany({ cursor: { id: lastId }, skip: 1, take: 20, orderBy: { id: 'asc' } });",
+  "productionExample": "await prisma.task.findMany({ where: { workspaceId: authorizedWorkspaceId }, ...(verifiedCursor ? { cursor: { id: verifiedCursor }, skip: 1 } : {}), orderBy: { id: 'asc' }, take: pageSize });",
+  "commonMistakes": [
+    "Using a cursor from another tenant or changing sort between requests."
+  ],
+  "securityPerformanceNotes": [
+    "Validate cursor scope and page size; use stable unique order and suitable indexes."
+  ],
+  "relatedLessonIds": [
+    "13.02.05"
+  ],
+  "canonicalUrl": "https://www.prisma.io/docs/orm/v7/prisma-client/queries/pagination"
+},
+{
+  "id": "prisma-driver-adapter",
+  "matchCategories": [
+    "Prisma"
+  ],
+  "matchTitles": [
+    "driver adapter"
+  ],
+  "heading": "Prisma: driver adapter",
+  "category": "Prisma",
+  "majorVersion": "Prisma ORM 7",
+  "status": "Authored reference draft",
+  "summary": "Connects Prisma ORM 7 Client to a supported database driver.",
+  "syntax": "new PrismaClient({ adapter })",
+  "lang": "ts",
+  "parameters": "Generated client and adapter configured for the selected database.",
+  "returns": "Client instance using the adapter's underlying connection behavior.",
+  "minimalExample": "const adapter = new PrismaPg({ connectionString });\nconst prisma = new PrismaClient({ adapter });",
+  "productionExample": "import { PrismaPg } from '@prisma/adapter-pg';\nimport { PrismaClient } from './generated/prisma/client';\nconst connectionString = process.env.DATABASE_URL;\nif (!connectionString) throw new Error('DATABASE_URL required');\nexport const prisma = new PrismaClient({ adapter: new PrismaPg({ connectionString }) });",
+  "commonMistakes": [
+    "Creating a new client per request or importing server credentials into browser code."
+  ],
+  "securityPerformanceNotes": [
+    "Reuse appropriately per process, bound pool connections and keep the generated path aligned with schema output."
+  ],
+  "relatedLessonIds": [
+    "13.01.04"
+  ],
+  "canonicalUrl": "https://www.prisma.io/docs/orm/v7/core-concepts/supported-databases/database-drivers"
+},
+{
+  "id": "supabase-signinwithpassword",
+  "matchCategories": [
+    "Supabase"
+  ],
+  "matchTitles": [
+    "signInWithPassword"
+  ],
+  "heading": "Supabase: signInWithPassword",
+  "category": "Supabase",
+  "majorVersion": "Supabase JS v2",
+  "status": "Authored reference draft",
+  "summary": "Authenticates a user using an email/password or phone/password credential.",
+  "syntax": "supabase.auth.signInWithPassword({ email, password })",
+  "lang": "ts",
+  "parameters": "Credential pair for a supported sign-in method.",
+  "returns": "Promise resolving to data and error; successful data includes user/session.",
+  "minimalExample": "const { data, error } = await supabase.auth.signInWithPassword({ email, password });",
+  "productionExample": "const { error } = await supabase.auth.signInWithPassword({ email: validated.email, password: validated.password });\nif (error) return { ok: false, message: 'Sign-in failed' };\nreturn { ok: true };",
+  "commonMistakes": [
+    "Logging credentials or giving account-enumeration clues through detailed errors."
+  ],
+  "securityPerformanceNotes": [
+    "Use HTTPS, rate limiting and safe redirects; sign-in does not replace RLS or object-level access."
+  ],
+  "relatedLessonIds": [
+    "14.02.01"
+  ],
+  "canonicalUrl": "https://supabase.com/docs/reference/javascript/auth-signinwithpassword"
+},
+{
+  "id": "supabase-getuser",
+  "matchCategories": [
+    "Supabase"
+  ],
+  "matchTitles": [
+    "getUser"
+  ],
+  "heading": "Supabase: getUser",
+  "category": "Supabase",
+  "majorVersion": "Supabase JS v2",
+  "status": "Authored reference draft",
+  "summary": "Requests the authenticated user from the Auth server rather than merely trusting cached session data.",
+  "syntax": "supabase.auth.getUser()",
+  "lang": "ts",
+  "parameters": "Optional access token; otherwise uses the client's session.",
+  "returns": "Promise of user data or auth error.",
+  "minimalExample": "const { data: { user }, error } = await supabase.auth.getUser();",
+  "productionExample": "const { data: { user }, error } = await supabase.auth.getUser();\nif (error || !user) return new Response('Unauthorized', { status: 401 });\nreturn Response.json(await listAllowedTasks(user.id));",
+  "commonMistakes": [
+    "Using editable user_metadata for permissions."
+  ],
+  "securityPerformanceNotes": [
+    "Enforce database and resource permissions separately; do not cache private responses across users."
+  ],
+  "relatedLessonIds": [
+    "14.02.06"
+  ],
+  "canonicalUrl": "https://supabase.com/docs/reference/javascript/auth-getuser"
+},
+{
+  "id": "supabase-signout",
+  "matchCategories": [
+    "Supabase"
+  ],
+  "matchTitles": [
+    "signOut"
+  ],
+  "heading": "Supabase: signOut",
+  "category": "Supabase",
+  "majorVersion": "Supabase JS v2",
+  "status": "Authored reference draft",
+  "summary": "Signs out according to the selected session scope.",
+  "syntax": "supabase.auth.signOut({ scope: 'local' })",
+  "lang": "ts",
+  "parameters": "Scope local, global (default), or others.",
+  "returns": "Promise containing error or successful sign-out result.",
+  "minimalExample": "const { error } = await supabase.auth.signOut();",
+  "productionExample": "const { error } = await supabase.auth.signOut({ scope: 'local' });\nif (error) return showError('Sign-out failed');\nclearPrivateClientCache();\nwindow.location.assign('/login');",
+  "commonMistakes": [
+    "Assuming an issued access token becomes invalid immediately in every service."
+  ],
+  "securityPerformanceNotes": [
+    "Keep sensitive token lifetimes short and verify strict session revocation requirements separately."
+  ],
+  "relatedLessonIds": [
+    "14.02.07"
+  ],
+  "canonicalUrl": "https://supabase.com/docs/reference/javascript/auth-signout"
+},
+{
+  "id": "supabase-createsignedurl",
+  "matchCategories": [
+    "Supabase"
+  ],
+  "matchTitles": [
+    "createSignedUrl"
+  ],
+  "heading": "Supabase: createSignedUrl",
+  "category": "Supabase",
+  "majorVersion": "Supabase JS v2",
+  "status": "Authored reference draft",
+  "summary": "Creates time-limited access to a private storage object.",
+  "syntax": "supabase.storage.from(bucket).createSignedUrl(path, expiresIn)",
+  "lang": "ts",
+  "parameters": "Object path, expiry in seconds and optional options.",
+  "returns": "Promise of signed URL data or error.",
+  "minimalExample": "const { data, error } = await supabase.storage.from('documents').createSignedUrl(path, 60);",
+  "productionExample": "const path = await authorizedDocumentPath(currentUserId, documentId);\nconst { data, error } = await supabase.storage.from('documents').createSignedUrl(path, 120);\nif (error || !data) throw new Error('Download unavailable');\nreturn data.signedUrl;",
+  "commonMistakes": [
+    "Signing arbitrary user-supplied paths or using long expiry by default."
+  ],
+  "securityPerformanceNotes": [
+    "Treat signed URLs as bearer capabilities; do not log or share them indiscriminately; enforce storage policy."
+  ],
+  "relatedLessonIds": [
+    "14.03.05"
+  ],
+  "canonicalUrl": "https://supabase.com/docs/reference/javascript/file-buckets-createsignedurl"
+},
+{
+  "id": "supabase-storage-bucket",
+  "matchCategories": [
+    "Supabase"
+  ],
+  "matchTitles": [
+    "Storage bucket"
+  ],
+  "heading": "Supabase: Storage bucket",
+  "category": "Supabase",
+  "majorVersion": "Supabase JS v2",
+  "status": "Authored reference draft",
+  "summary": "Groups storage objects under a bucket with public/private access configuration.",
+  "syntax": "supabase.storage.from('documents')",
+  "lang": "ts",
+  "parameters": "Bucket identifier; operations use object paths.",
+  "returns": "Bucket-scoped Storage API client.",
+  "minimalExample": "const bucket = supabase.storage.from('documents');",
+  "productionExample": "const { data, error } = await supabase.storage.from('documents').download(authorizedPath);\nif (error || !data) throw new Error('Document unavailable');\nreturn data;",
+  "commonMistakes": [
+    "Assuming bucket names or folder prefixes alone authorize access."
+  ],
+  "securityPerformanceNotes": [
+    "Use private buckets for confidential data, policy checks on storage.objects, server validation of uploads and no privileged keys in the browser."
+  ],
+  "relatedLessonIds": [
+    "14.04.01"
+  ],
+  "canonicalUrl": "https://supabase.com/docs/guides/storage/buckets/fundamentals"
+},
+{
+  "id": "supabase-onauthstatechange",
+  "matchCategories": [
+    "Supabase"
+  ],
+  "matchTitles": [
+    "onAuthStateChange"
+  ],
+  "heading": "Supabase: onAuthStateChange",
+  "category": "Supabase",
+  "majorVersion": "Supabase JS v2",
+  "status": "Authored reference draft",
+  "summary": "Subscribes to client authentication events and receives session changes.",
+  "syntax": "supabase.auth.onAuthStateChange(callback)",
+  "lang": "ts",
+  "parameters": "Synchronous event callback with event name and session.",
+  "returns": "Subscription that can be unsubscribed.",
+  "minimalExample": "const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => updateUi(event, session));",
+  "productionExample": "useEffect(() => {\n  const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {\n    setSignedIn(Boolean(session));\n    if (event === 'SIGNED_OUT') clearPrivateClientCache();\n  });\n  return () => subscription.unsubscribe();\n}, [supabase]);",
+  "commonMistakes": [
+    "Leaking subscriptions or awaiting other Supabase Auth operations inside the callback."
+  ],
+  "securityPerformanceNotes": [
+    "Treat events as UI synchronization, not server-side proof of identity or authorization."
+  ],
+  "relatedLessonIds": [
+    "14.02.07"
+  ],
+  "canonicalUrl": "https://supabase.com/docs/reference/javascript/auth-onauthstatechange"
+},
+{
+  "id": "redis-del",
+  "matchCategories": [
+    "Redis & BullMQ"
+  ],
+  "matchTitles": [
+    "DEL"
+  ],
+  "heading": "Redis & BullMQ: DEL",
+  "category": "Redis & BullMQ",
+  "majorVersion": "Redis / BullMQ",
+  "status": "Authored reference draft",
+  "summary": "Removes one or more keys and their associated values.",
+  "syntax": "DEL key [key ...]",
+  "lang": "text",
+  "parameters": "One or more keys.",
+  "returns": "Integer number of keys removed.",
+  "minimalExample": "DEL cache:task:1",
+  "productionExample": "DEL cache:tenant:42:task:1 cache:tenant:42:task-list",
+  "commonMistakes": [
+    "Deleting unscoped keys or using KEYS to discover large invalidation sets."
+  ],
+  "securityPerformanceNotes": [
+    "Derive tenant-scoped keys from verified context; large values may benefit from UNLINK."
+  ],
+  "relatedLessonIds": [
+    "16.01.04"
+  ],
+  "canonicalUrl": "https://redis.io/docs/latest/commands/del/"
+},
+{
+  "id": "redis-expire",
+  "matchCategories": [
+    "Redis & BullMQ"
+  ],
+  "matchTitles": [
+    "EXPIRE"
+  ],
+  "heading": "Redis & BullMQ: EXPIRE",
+  "category": "Redis & BullMQ",
+  "majorVersion": "Redis / BullMQ",
+  "status": "Authored reference draft",
+  "summary": "Sets a relative lifetime in seconds on an existing key.",
+  "syntax": "EXPIRE key seconds",
+  "lang": "text",
+  "parameters": "Key, seconds and optional conditional expiration mode.",
+  "returns": "1 if timeout was set, 0 otherwise.",
+  "minimalExample": "EXPIRE cache:task:1 60",
+  "productionExample": "EXPIRE cache:tenant:42:task:1 120 NX",
+  "commonMistakes": [
+    "Assuming separate SET and EXPIRE always succeed atomically."
+  ],
+  "securityPerformanceNotes": [
+    "For new cache values use SET with expiration; account for missing keys and stale entries."
+  ],
+  "relatedLessonIds": [
+    "16.01.02"
+  ],
+  "canonicalUrl": "https://redis.io/docs/latest/commands/expire/"
+},
+{
+  "id": "redis-ttl",
+  "matchCategories": [
+    "Redis & BullMQ"
+  ],
+  "matchTitles": [
+    "TTL"
+  ],
+  "heading": "Redis & BullMQ: TTL",
+  "category": "Redis & BullMQ",
+  "majorVersion": "Redis / BullMQ",
+  "status": "Authored reference draft",
+  "summary": "Reports a key's remaining lifetime in seconds.",
+  "syntax": "TTL key",
+  "lang": "text",
+  "parameters": "Key name.",
+  "returns": "Seconds remaining, -1 for no expiration, -2 for absent key.",
+  "minimalExample": "TTL cache:task:1",
+  "productionExample": "TTL cache:tenant:42:task-list\n# Alert on -1 for cache keys that should expire.",
+  "commonMistakes": [
+    "Treating -1 and -2 as equivalent."
+  ],
+  "securityPerformanceNotes": [
+    "Track unexpectedly persistent cache keys without logging private payloads."
+  ],
+  "relatedLessonIds": [
+    "16.01.02"
+  ],
+  "canonicalUrl": "https://redis.io/docs/latest/commands/ttl/"
+},
+{
+  "id": "redis-incr",
+  "matchCategories": [
+    "Redis & BullMQ"
+  ],
+  "matchTitles": [
+    "INCR"
+  ],
+  "heading": "Redis & BullMQ: INCR",
+  "category": "Redis & BullMQ",
+  "majorVersion": "Redis / BullMQ",
+  "status": "Authored reference draft",
+  "summary": "Atomically increments an integer string, initializing a missing key at zero.",
+  "syntax": "INCR key",
+  "lang": "text",
+  "parameters": "Key holding an integer-compatible value.",
+  "returns": "Incremented integer.",
+  "minimalExample": "INCR metric:requests",
+  "productionExample": "INCR rate:tenant:42:minute:202611260400\n# Use an atomic script or transaction for counter + expiration in a fixed-window limiter.",
+  "commonMistakes": [
+    "Assuming INCR alone provides a complete rate limiter."
+  ],
+  "securityPerformanceNotes": [
+    "Attach expiration atomically, choose scoped keys, and handle counter/storage failures explicitly."
+  ],
+  "relatedLessonIds": [
+    "16.02.06"
+  ],
+  "canonicalUrl": "https://redis.io/docs/latest/commands/incr/"
+},
+{
+  "id": "redis-mget",
+  "matchCategories": [
+    "Redis & BullMQ"
+  ],
+  "matchTitles": [
+    "MGET"
+  ],
+  "heading": "Redis & BullMQ: MGET",
+  "category": "Redis & BullMQ",
+  "majorVersion": "Redis / BullMQ",
+  "status": "Authored reference draft",
+  "summary": "Reads multiple string keys in argument order.",
+  "syntax": "MGET key [key ...]",
+  "lang": "text",
+  "parameters": "One or more keys.",
+  "returns": "Array of values or nil for missing/non-string keys.",
+  "minimalExample": "MGET cache:a cache:b",
+  "productionExample": "MGET cache:{tenant42}:task:1 cache:{tenant42}:task:2",
+  "commonMistakes": [
+    "Losing positional correspondence when a key is missing."
+  ],
+  "securityPerformanceNotes": [
+    "Bound batch sizes; in Redis Cluster multi-key operations may require the same hash slot."
+  ],
+  "relatedLessonIds": [
+    "16.01.02"
+  ],
+  "canonicalUrl": "https://redis.io/docs/latest/commands/mget/"
+},
+{
+  "id": "redis-hset",
+  "matchCategories": [
+    "Redis & BullMQ"
+  ],
+  "matchTitles": [
+    "HSET"
+  ],
+  "heading": "Redis & BullMQ: HSET",
+  "category": "Redis & BullMQ",
+  "majorVersion": "Redis / BullMQ",
+  "status": "Authored reference draft",
+  "summary": "Creates or updates fields in a hash.",
+  "syntax": "HSET key field value [field value ...]",
+  "lang": "text",
+  "parameters": "Hash key and one or more field-value pairs.",
+  "returns": "Number of newly added fields, not number of changed values.",
+  "minimalExample": "HSET task:1 title Learn done 0",
+  "productionExample": "HSET cache:tenant:42:task:1 title Learn status open\nEXPIRE cache:tenant:42:task:1 60",
+  "commonMistakes": [
+    "Interpreting a zero result as failure when existing fields were updated."
+  ],
+  "securityPerformanceNotes": [
+    "Apply key TTL deliberately; use atomic operations if hash and TTL must change together."
+  ],
+  "relatedLessonIds": [
+    "16.01.02"
+  ],
+  "canonicalUrl": "https://redis.io/docs/latest/commands/hset/"
+},
+{
+  "id": "redis-hget",
+  "matchCategories": [
+    "Redis & BullMQ"
+  ],
+  "matchTitles": [
+    "HGET"
+  ],
+  "heading": "Redis & BullMQ: HGET",
+  "category": "Redis & BullMQ",
+  "majorVersion": "Redis / BullMQ",
+  "status": "Authored reference draft",
+  "summary": "Reads one field from a hash.",
+  "syntax": "HGET key field",
+  "lang": "text",
+  "parameters": "Hash key and field name.",
+  "returns": "String value or nil when absent.",
+  "minimalExample": "HGET task:1 title",
+  "productionExample": "HGET cache:tenant:42:task:1 status\n# If nil, load authorized data from its source.",
+  "commonMistakes": [
+    "Treating missing values as an empty string."
+  ],
+  "securityPerformanceNotes": [
+    "Cache reads never replace tenant authorization; design explicit cache miss behavior."
+  ],
+  "relatedLessonIds": [
+    "16.01.02"
+  ],
+  "canonicalUrl": "https://redis.io/docs/latest/commands/hget/"
+},
+{
+  "id": "redis-sadd",
+  "matchCategories": [
+    "Redis & BullMQ"
+  ],
+  "matchTitles": [
+    "SADD"
+  ],
+  "heading": "Redis & BullMQ: SADD",
+  "category": "Redis & BullMQ",
+  "majorVersion": "Redis / BullMQ",
+  "status": "Authored reference draft",
+  "summary": "Adds unique members to a Redis set.",
+  "syntax": "SADD key member [member ...]",
+  "lang": "text",
+  "parameters": "Set key and member strings.",
+  "returns": "Number of new members added.",
+  "minimalExample": "SADD tags css js css",
+  "productionExample": "SADD cache:tenant:42:project:1:task-ids 101 102",
+  "commonMistakes": [
+    "Assuming set member iteration has stable ordering."
+  ],
+  "securityPerformanceNotes": [
+    "Bound collection size; sets do not provide per-member TTL or durable business uniqueness."
+  ],
+  "relatedLessonIds": [
+    "16.01.02"
+  ],
+  "canonicalUrl": "https://redis.io/docs/latest/commands/sadd/"
+},
+{
+  "id": "redis-zadd",
+  "matchCategories": [
+    "Redis & BullMQ"
+  ],
+  "matchTitles": [
+    "ZADD"
+  ],
+  "heading": "Redis & BullMQ: ZADD",
+  "category": "Redis & BullMQ",
+  "majorVersion": "Redis / BullMQ",
+  "status": "Authored reference draft",
+  "summary": "Adds or updates members of a sorted set using numeric scores.",
+  "syntax": "ZADD key score member",
+  "lang": "text",
+  "parameters": "Score/member pairs and optional modifiers.",
+  "returns": "Number of new members by default; options can alter count semantics.",
+  "minimalExample": "ZADD ranking 10 alice 20 bob",
+  "productionExample": "ZADD cache:tenant:42:recent-tasks 1730000000 task-101\nZRANGE cache:tenant:42:recent-tasks 0 9 REV",
+  "commonMistakes": [
+    "Using timestamps as unique scores without handling ties."
+  ],
+  "securityPerformanceNotes": [
+    "Keep retention bounded, and avoid using sorted-set ranking as an authorization mechanism."
+  ],
+  "relatedLessonIds": [
+    "16.01.02"
+  ],
+  "canonicalUrl": "https://redis.io/docs/latest/commands/zadd/"
+},
+{
+  "id": "redis-bullmq-queue",
+  "matchCategories": [
+    "Redis & BullMQ"
+  ],
+  "matchTitles": [
+    "BullMQ Queue"
+  ],
+  "heading": "Redis & BullMQ: BullMQ Queue",
+  "category": "Redis & BullMQ",
+  "majorVersion": "Redis / BullMQ",
+  "status": "Authored reference draft",
+  "summary": "BullMQ Queue submits jobs into a Redis-backed queue.",
+  "syntax": "queue.add(name, data, options)",
+  "lang": "ts",
+  "parameters": "Queue name, connection, job name, serializable data and job options.",
+  "returns": "Promise<Job> for the added job.",
+  "minimalExample": "const queue = new Queue('emails', { connection });\nawait queue.add('send', { messageId });",
+  "productionExample": "const queue = new Queue('emails', { connection });\ntry { await queue.add('send', { messageId: verifiedMessageId }, { jobId: verifiedMessageId, attempts: 3, backoff: { type: 'exponential', delay: 1000 } }); } finally { await queue.close(); }",
+  "commonMistakes": [
+    "Treating job insertion as proof the external effect completed."
+  ],
+  "securityPerformanceNotes": [
+    "Use durable idempotency, small payloads, bounded retries and appropriate queue retention."
+  ],
+  "relatedLessonIds": [
+    "16.03.02"
+  ],
+  "canonicalUrl": "https://docs.bullmq.io/guide/queues"
+},
+{
+  "id": "redis-worker",
+  "matchCategories": [
+    "Redis & BullMQ"
+  ],
+  "matchTitles": [
+    "Worker"
+  ],
+  "heading": "Redis & BullMQ: Worker",
+  "category": "Redis & BullMQ",
+  "majorVersion": "Redis / BullMQ",
+  "status": "Authored reference draft",
+  "summary": "BullMQ Worker processes jobs from a queue and reports completion or failure.",
+  "syntax": "new Worker(queueName, processor, options)",
+  "lang": "ts",
+  "parameters": "Queue name, async processor, connection and concurrency options.",
+  "returns": "Worker instance; processor result is stored when the job completes.",
+  "minimalExample": "const worker = new Worker('emails', job => send(job.data.messageId), { connection });",
+  "productionExample": "const worker = new Worker('emails', async job => {\n  await sendIdempotently(job.data.messageId);\n}, { connection, concurrency: 4 });\nworker.on('error', err => logger.error({ name: err.name }, 'worker error'));\n// Await worker.close() during graceful shutdown.",
+  "commonMistakes": [
+    "Assuming each processor runs exactly once."
+  ],
+  "securityPerformanceNotes": [
+    "Persist effect idempotency; bound concurrency and use a dedicated non-evicting queue Redis configuration."
+  ],
+  "relatedLessonIds": [
+    "16.03.03"
+  ],
+  "canonicalUrl": "https://docs.bullmq.io/guide/workers"
+},
+{
+  "id": "redis-backoff",
+  "matchCategories": [
+    "Redis & BullMQ"
+  ],
+  "matchTitles": [
+    "backoff"
+  ],
+  "heading": "Redis & BullMQ: backoff",
+  "category": "Redis & BullMQ",
+  "majorVersion": "Redis / BullMQ",
+  "status": "Authored reference draft",
+  "summary": "Delays retry attempts for failed BullMQ jobs.",
+  "syntax": "{ attempts: 3, backoff: { type: 'exponential', delay: 1000 } }",
+  "lang": "ts",
+  "parameters": "Total attempts and fixed/exponential/custom backoff configuration.",
+  "returns": "Job options scheduling subsequent attempts after failure.",
+  "minimalExample": "await queue.add('sync', data, { attempts: 3, backoff: { type: 'fixed', delay: 1000 } });",
+  "productionExample": "await queue.add('deliver', { deliveryId }, { attempts: 5, backoff: { type: 'exponential', delay: 2000 } });\n// Processor classifies permanent failures separately and deduplicates effects.",
+  "commonMistakes": [
+    "Retrying permanent validation failures or assuming retry guarantees delivery."
+  ],
+  "securityPerformanceNotes": [
+    "Use bounded retry budgets, monitoring and idempotent effects."
+  ],
+  "relatedLessonIds": [
+    "16.03.04"
+  ],
+  "canonicalUrl": "https://docs.bullmq.io/guide/retrying-failing-jobs"
+},
+{
+  "id": "redis-deduplication",
+  "matchCategories": [
+    "Redis & BullMQ"
+  ],
+  "matchTitles": [
+    "deduplication"
+  ],
+  "heading": "Redis & BullMQ: deduplication",
+  "category": "Redis & BullMQ",
+  "majorVersion": "Redis / BullMQ",
+  "status": "Authored reference draft",
+  "summary": "Suppresses duplicate BullMQ submissions while a configured deduplication identity is active.",
+  "syntax": "queue.add(name, data, { deduplication: { id } })",
+  "lang": "ts",
+  "parameters": "Job name, data and deduplication ID; mode may include TTL or other options.",
+  "returns": "Job submission result; duplicate requests may be ignored per mode.",
+  "minimalExample": "await queue.add('sync', { accountId }, { deduplication: { id: accountId } });",
+  "productionExample": "await queue.add('refresh', { resourceId: authorizedId }, { deduplication: { id: 'refresh-' + authorizedId } });\n// Worker still uses durable idempotency for side effects.",
+  "commonMistakes": [
+    "Confusing temporary queue deduplication with exactly-once processing."
+  ],
+  "securityPerformanceNotes": [
+    "Scope IDs by tenant and operation; keep durable business invariants outside Redis job metadata."
+  ],
+  "relatedLessonIds": [
+    "16.03.06"
+  ],
+  "canonicalUrl": "https://docs.bullmq.io/guide/jobs/deduplication"
+},
+{
+  "id": "testing-vitest-describe",
+  "matchCategories": [
+    "Testing & Operations"
+  ],
+  "matchTitles": [
+    "Vitest describe"
+  ],
+  "heading": "Testing & Operations: Vitest describe",
+  "category": "Testing & Operations",
+  "majorVersion": "Testing and operations",
+  "status": "Authored reference draft",
+  "summary": "Groups related Vitest tests with nested setup and descriptive names.",
+  "syntax": "describe('feature', () => { ... })",
+  "lang": "ts",
+  "parameters": "Suite name and suite-definition callback.",
+  "returns": "Registers a test suite; does not itself assert behavior.",
+  "minimalExample": "describe('math', () => { test('adds', () => expect(1 + 1).toBe(2)); });",
+  "productionExample": "describe('task access', () => {\n  test('denies another tenant', async () => { await expect(service.read('other-tenant', taskId)).rejects.toThrow(); });\n  test('allows owner', async () => { expect(await service.read(ownerId, taskId)).toMatchObject({ id: taskId }); });\n});",
+  "commonMistakes": [
+    "Using suite hooks to create shared mutable fixtures across tests."
+  ],
+  "securityPerformanceNotes": [
+    "Exercise denial and positive paths; keep fixtures isolated."
+  ],
+  "relatedLessonIds": [
+    "19.02.01"
+  ],
+  "canonicalUrl": "https://vitest.dev/api/#describe"
+},
+{
+  "id": "testing-expect",
+  "matchCategories": [
+    "Testing & Operations"
+  ],
+  "matchTitles": [
+    "expect"
+  ],
+  "heading": "Testing & Operations: expect",
+  "category": "Testing & Operations",
+  "majorVersion": "Testing and operations",
+  "status": "Authored reference draft",
+  "summary": "Makes assertions about observed values and asynchronous outcomes.",
+  "syntax": "expect(actual).toBe(expected)",
+  "lang": "ts",
+  "parameters": "Actual value and matcher; use resolves/rejects for promises.",
+  "returns": "Assertion succeeds or throws a test failure.",
+  "minimalExample": "expect(total).toBe(2);",
+  "productionExample": "await expect(createTask(invalidInput)).rejects.toThrow();\nexpect(await repo.count()).toBe(beforeCount);",
+  "commonMistakes": [
+    "Asserting only that a function was called instead of checking outcomes."
+  ],
+  "securityPerformanceNotes": [
+    "Test meaningful invariants and failure side effects; await asynchronous assertions."
+  ],
+  "relatedLessonIds": [
+    "19.02.01"
+  ],
+  "canonicalUrl": "https://vitest.dev/api/expect.html"
+},
+{
+  "id": "testing-vi-mock",
+  "matchCategories": [
+    "Testing & Operations"
+  ],
+  "matchTitles": [
+    "vi.mock"
+  ],
+  "heading": "Testing & Operations: vi.mock",
+  "category": "Testing & Operations",
+  "majorVersion": "Testing and operations",
+  "status": "Authored reference draft",
+  "summary": "Replaces a module with a test double in Vitest.",
+  "syntax": "vi.mock('./client', factory)",
+  "lang": "ts",
+  "parameters": "Module specifier and optional factory; mock declaration is hoisted.",
+  "returns": "Registers mocked module behavior.",
+  "minimalExample": "vi.mock('./client', () => ({ load: vi.fn() }));",
+  "productionExample": "vi.mock('./mailer', () => ({ send: vi.fn().mockResolvedValue({ id: 'test' }) }));\n// Assert domain behavior with the fake; run a separate real adapter integration test.",
+  "commonMistakes": [
+    "Capturing variables not initialized at hoisted mock time."
+  ],
+  "securityPerformanceNotes": [
+    "Mock external boundaries, not every implementation detail; reset state between cases."
+  ],
+  "relatedLessonIds": [
+    "19.01.05"
+  ],
+  "canonicalUrl": "https://vitest.dev/api/vi.html#vi-mock"
+},
+{
+  "id": "testing-beforeeach",
+  "matchCategories": [
+    "Testing & Operations"
+  ],
+  "matchTitles": [
+    "beforeEach"
+  ],
+  "heading": "Testing & Operations: beforeEach",
+  "category": "Testing & Operations",
+  "majorVersion": "Testing and operations",
+  "status": "Authored reference draft",
+  "summary": "Runs setup before each test in its suite.",
+  "syntax": "beforeEach(async () => { ... })",
+  "lang": "ts",
+  "parameters": "Setup callback and optional timeout/configuration.",
+  "returns": "Registers per-test setup, awaiting supported async work.",
+  "minimalExample": "beforeEach(() => { items = []; });",
+  "productionExample": "beforeEach(async () => { repo = await makeIsolatedTestRepository(); });\nafterEach(async () => { await repo.dispose(); });",
+  "commonMistakes": [
+    "Reusing mutable fixtures across concurrent tests."
+  ],
+  "securityPerformanceNotes": [
+    "Prefer independent fixtures and clean resources even after failures."
+  ],
+  "relatedLessonIds": [
+    "19.01.03"
+  ],
+  "canonicalUrl": "https://vitest.dev/api/#beforeeach"
+},
+{
+  "id": "testing-playwright-test",
+  "matchCategories": [
+    "Testing & Operations"
+  ],
+  "matchTitles": [
+    "Playwright test"
+  ],
+  "heading": "Testing & Operations: Playwright test",
+  "category": "Testing & Operations",
+  "majorVersion": "Testing and operations",
+  "status": "Authored reference draft",
+  "summary": "Defines a browser test with Playwright fixtures and assertions.",
+  "syntax": "test('name', async ({ page }) => { ... })",
+  "lang": "ts",
+  "parameters": "Name and callback with isolated fixtures such as page.",
+  "returns": "Registers a test; async callback completes or fails.",
+  "minimalExample": "test('home', async ({ page }) => { await page.goto('/'); await expect(page.getByRole('heading', { name: 'Home' })).toBeVisible(); });",
+  "productionExample": "test('keyboard submission', async ({ page }) => {\n  await page.goto('/tasks/new');\n  await page.getByRole('textbox', { name: 'Title' }).fill('Read docs');\n  await page.getByRole('button', { name: 'Save' }).press('Enter');\n  await expect(page.getByText('Task created')).toBeVisible();\n});",
+  "commonMistakes": [
+    "Using fixed sleeps or testing a page without verifying a user-observable result."
+  ],
+  "securityPerformanceNotes": [
+    "Use isolated test accounts and origins, semantic locators and deterministic fixtures."
+  ],
+  "relatedLessonIds": [
+    "19.02.07"
+  ],
+  "canonicalUrl": "https://playwright.dev/docs/writing-tests"
+},
+{
+  "id": "testing-docker-compose",
+  "matchCategories": [
+    "Testing & Operations"
+  ],
+  "matchTitles": [
+    "docker compose"
+  ],
+  "heading": "Testing & Operations: docker compose",
+  "category": "Testing & Operations",
+  "majorVersion": "Testing and operations",
+  "status": "Authored reference draft",
+  "summary": "Declares and runs multi-container services for a reproducible environment.",
+  "syntax": "docker compose up -d",
+  "lang": "yaml",
+  "parameters": "Compose file, services, networks, volumes and environment configuration.",
+  "returns": "Starts declared services; exit status reflects CLI operation, not necessarily app readiness.",
+  "minimalExample": "services:\n  redis:\n    image: redis:7-alpine",
+  "productionExample": "services:\n  redis:\n    image: redis:7-alpine\n    healthcheck:\n      test: [CMD, redis-cli, ping]\n      interval: 5s\n      timeout: 2s\n      retries: 5\n    volumes: [redis_data:/data]\nvolumes:\n  redis_data: {}",
+  "commonMistakes": [
+    "Assuming container start means service readiness or publishing database ports unnecessarily."
+  ],
+  "securityPerformanceNotes": [
+    "Use isolated networks, pinned image digests for releases and safe volume/secret management."
+  ],
+  "relatedLessonIds": [
+    "20.01.03"
+  ],
+  "canonicalUrl": "https://docs.docker.com/compose/"
+},
+{
+  "id": "testing-pino-logger",
+  "matchCategories": [
+    "Testing & Operations"
+  ],
+  "matchTitles": [
+    "Pino logger"
+  ],
+  "heading": "Testing & Operations: Pino logger",
+  "category": "Testing & Operations",
+  "majorVersion": "Testing and operations",
+  "status": "Authored reference draft",
+  "summary": "Produces structured JSON application logs with configurable levels and redaction.",
+  "syntax": "const logger = pino(options)",
+  "lang": "ts",
+  "parameters": "Logger options, level, serializers and redaction paths.",
+  "returns": "Logger with level methods and child loggers.",
+  "minimalExample": "const logger = pino();\nlogger.info({ taskId }, 'Task loaded');",
+  "productionExample": "const logger = pino({ redact: ['req.headers.authorization', 'req.headers.cookie', 'password'] });\nlogger.child({ requestId }).info({ operation: 'task.create' }, 'Task created');",
+  "commonMistakes": [
+    "Assuming redaction covers arbitrary nested objects or secrets interpolated into messages."
+  ],
+  "securityPerformanceNotes": [
+    "Use allowlisted structured fields, bounded retention and no raw credential logging."
+  ],
+  "relatedLessonIds": [
+    "21.01.01"
+  ],
+  "canonicalUrl": "https://getpino.io/#/docs/api"
+},
+{
+  "id": "testing-slo",
+  "matchCategories": [
+    "Testing & Operations"
+  ],
+  "matchTitles": [
+    "SLO"
+  ],
+  "heading": "Testing & Operations: SLO",
+  "category": "Testing & Operations",
+  "majorVersion": "Testing and operations",
+  "status": "Authored reference draft",
+  "summary": "A measurable service reliability target over an explicitly defined window.",
+  "syntax": "SLO = target for a specified SLI and time window",
+  "lang": "text",
+  "parameters": "SLI definition, population, target and evaluation window.",
+  "returns": "A target and corresponding error budget, not a monitoring signal by itself.",
+  "minimalExample": "99.9% successful eligible requests over 30 days.",
+  "productionExample": "Example: 99.9% of eligible API requests succeed over rolling 30 days; define exclusions and track 0.1% error budget consumption.",
+  "commonMistakes": [
+    "Choosing arbitrary targets without measuring user impact or defining eligible requests."
+  ],
+  "securityPerformanceNotes": [
+    "Use burn-rate alerting and align targets with product expectations and cost."
+  ],
+  "relatedLessonIds": [
+    "21.02.01"
+  ],
+  "canonicalUrl": "https://sre.google/workbook/implementing-slos/"
+},
+{
+  "id": "testing-sli",
+  "matchCategories": [
+    "Testing & Operations"
+  ],
+  "matchTitles": [
+    "SLI"
+  ],
+  "heading": "Testing & Operations: SLI",
+  "category": "Testing & Operations",
+  "majorVersion": "Testing and operations",
+  "status": "Authored reference draft",
+  "summary": "Measures a service behavior relevant to users, often as good events divided by eligible events.",
+  "syntax": "availability SLI = good requests / eligible requests",
+  "lang": "text",
+  "parameters": "Good-event criteria, population and time window.",
+  "returns": "Ratio or other explicitly defined reliability measurement.",
+  "minimalExample": "990 successful requests / 1000 eligible requests = 99%.",
+  "productionExample": "Define good requests as eligible API responses without server errors; record numerator and denominator over a rolling window and alert on budget burn.",
+  "commonMistakes": [
+    "Using average latency to hide slow tail requests or silently excluding failures."
+  ],
+  "securityPerformanceNotes": [
+    "Define missing-data behavior and avoid high-cardinality personal identifiers in metrics."
+  ],
+  "relatedLessonIds": [
+    "21.02.01"
+  ],
+  "canonicalUrl": "https://sre.google/workbook/implementing-slos/"
+},
+{
+  "id": "testing-runbook",
+  "matchCategories": [
+    "Testing & Operations"
+  ],
+  "matchTitles": [
+    "runbook"
+  ],
+  "heading": "Testing & Operations: runbook",
+  "category": "Testing & Operations",
+  "majorVersion": "Testing and operations",
+  "status": "Authored reference draft",
+  "summary": "Documents actionable operational response steps for a defined failure mode.",
+  "syntax": "Trigger → diagnose → mitigate → verify → escalate",
+  "lang": "text",
+  "parameters": "Symptoms, ownership, prerequisites, safe commands, rollback and escalation.",
+  "returns": "Repeatable response guidance; not an automatic recovery guarantee.",
+  "minimalExample": "If the API is unhealthy, check readiness and recent deploys.",
+  "productionExample": "Trigger: sustained error-budget burn.\n1. Confirm impact and assign incident lead.\n2. Compare errors by release and dependency.\n3. Use approved rollback if release-correlated.\n4. Verify SLI recovery; communicate and record evidence.",
+  "commonMistakes": [
+    "Writing only a list of commands without decision criteria or verification."
+  ],
+  "securityPerformanceNotes": [
+    "Use least-privilege access; rehearse recovery, keep secrets out of the runbook and review after incidents."
+  ],
+  "relatedLessonIds": [
+    "21.03.02"
+  ],
+  "canonicalUrl": "https://sre.google/workbook/incident-response/"
 }
 ];
 
