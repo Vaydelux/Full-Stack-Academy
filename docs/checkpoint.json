@@ -10,8 +10,8 @@
   },
   "development": {
     "branch": "main",
-    "state": "f11-progressive-reading-edition-implemented-build-pending",
-    "note": "Separated reading access from existing published/completion registry. All 12 draft groups included by shared inventory; 552 tracked distinct manuscripts, including historical 15.02.04, give 551 candidate reading editions. Data-only renderer and inventory tests passed in isolated source subset. Full build, actual article rendering, browser and certification pending; snapshot unchanged."
+    "state": "f11-1-reading-navigation-source-coverage-confirmed-build-pending",
+    "note": "Actual Git tree/catalog reconciliation confirmed 889 canonical topics, 338 published + 551 reading candidates, no missing or unknown IDs. Added stable section anchors, duplicate title suppression and module navigation. 13 isolated Node tests passed. Full build/browser/deployment pending."
   },
   "snapshot": {
     "tracks": 28,
@@ -73,6 +73,6 @@
     "devHighFindings": 14,
     "exceptionExpires": "2026-12-02"
   },
-  "nextMilestone": "Run full reading-edition integration and production build on a networked checkout, verify reading routes and accessibility, then release reading editions separately from ordered lab certification. No production freeze bypass.",
-  "status": "progressive-reading-implemented-build-blocked"
+  "nextMilestone": "Complete full checkout, npm ci, course roadmap integration tests, typecheck/lint/build and reading browser qualification before releasing; retain existing certified registry.",
+  "status": "reading-source-coverage-confirmed-build-blocked"
 }

@@ -45,6 +45,13 @@ try{
    assert.equal(await page.getByRole('region',{name:'Lesson completion'}).count(),0);
    assert.equal(await page.getByRole('button',{name:'Mark complete',exact:true}).count(),0);
    assert.equal(await article.locator('iframe, form, script').count(),0);
+   const moduleNav=page.getByRole('navigation',{name:'Reading module lessons',includeHidden:true});
+   assert.equal(await moduleNav.locator('a[aria-current="page"]').getAttribute('href'),'/learn/'+record.id);
+   const outline=article.getByRole('navigation',{name:'Reading section outline',includeHidden:true});
+   const targets=await outline.locator('a').evaluateAll(links=>links.map(link=>link.getAttribute('href')));
+   assert.ok(targets.length>0,'Missing reading outline '+record.id);
+   assert.equal(new Set(targets).size,targets.length,'Duplicate section anchors '+record.id);
+   for(const target of targets)assert.equal(await page.evaluate(id=>document.getElementById(id.slice(1))!==null,target),true,'Missing section anchor '+target);
    const reveal=article.getByText('Reveal answer and explanation',{exact:true}).first();
    if(await reveal.count())await reveal.click();
    assert.equal(await storage(),before,'Reading must not mutate course progress '+record.id);

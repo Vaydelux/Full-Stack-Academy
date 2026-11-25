@@ -12,6 +12,7 @@ import { LocalLessonCompletion } from '@/components/course/LocalLessonCompletion
 import { LessonNotebook } from '@/components/course/LessonNotebook';
 import { readCourseProgress, readReadingIds, readReadingLesson } from '@/lib/academy/course-progress-server';
 import { ReadingEditionArticle } from '@/components/course/ReadingEditionArticle';
+import { readingModuleNavigation } from '../../../scripts/reading-navigation.mjs';
 
 type LessonPageProps = { params: Promise<{ lessonId: string }> };
 
@@ -44,7 +45,9 @@ export default async function LessonPage({ params }: LessonPageProps) {
   const neighbors = lessonNeighbors(lessonsByModule.get(lesson.moduleId) ?? [], PUBLISHED_LESSON_IDS, lessonId);
   const reading = !authored && !mdxMeta ? readReadingLesson(lessonId) : undefined;
   if (reading) {
-    const accessible = [...PUBLISHED_LESSON_IDS, ...readReadingIds()];
+    const readingIds = readReadingIds();
+    const accessible = [...PUBLISHED_LESSON_IDS, ...readingIds];
+    const moduleNavigation = readingModuleNavigation(lessonsByModule.get(lesson.moduleId) ?? [], PUBLISHED_LESSON_IDS, readingIds, lessonId);
     const adjacent = lessonNeighbors(lessonsByModule.get(lesson.moduleId) ?? [], accessible, lessonId);
     const sourceUrl = 'https://github.com/Vaydelux/Full-Stack-Academy/blob/main/drafts/' + reading.group + '/lessons/' + reading.id + '.mdx';
     return <DocShell>
@@ -53,7 +56,13 @@ export default async function LessonPage({ params }: LessonPageProps) {
       <h1 className="mt-3 text-3xl font-extrabold tracking-tight sm:text-4xl">{lesson.title}</h1>
       <p className="mt-3 text-sm text-slate-600 dark:text-slate-300">Editorial review pending · Lab not certified · No completion credit</p>
       <div className="mt-4 flex flex-wrap gap-4 text-sm font-semibold text-cyan-700 dark:text-cyan-300"><Link href="/learn/reading" className="underline underline-offset-2">Browse reading editions</Link><a href={sourceUrl} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">Inspect original manuscript</a></div>
-      <ReadingEditionArticle source={reading.source} />
+      {moduleNavigation.length > 0 && <details className="mt-5 rounded-xl border border-slate-200 p-4 dark:border-white/10">
+        <summary className="cursor-pointer text-sm font-semibold">{moduleMap.get(lesson.moduleId)?.title ?? lesson.module} · {moduleNavigation.length} readable topics</summary>
+        <nav aria-label="Reading module lessons" className="mt-3"><ol className="space-y-1">
+          {moduleNavigation.map(item => <li key={item.id}><Link href={'/learn/' + item.id} aria-current={item.active ? 'page' : undefined} className={'flex flex-wrap items-baseline gap-x-2 rounded-lg px-2 py-2 text-sm hover:bg-slate-100 dark:hover:bg-white/5 ' + (item.active ? 'font-bold text-cyan-700 dark:text-cyan-300' : '')}><span className="font-mono text-xs">{item.id}</span><span className="min-w-0 flex-1">{item.title}</span><span className="text-xs text-slate-500">{item.edition === 'published' ? 'Published' : 'Reading'}</span></Link></li>)}
+        </ol></nav>
+      </details>}
+      <ReadingEditionArticle source={reading.source} title={lesson.title} />
       {(adjacent.previous || adjacent.next) && <nav aria-label="Adjacent reading lessons" className="mt-10 grid gap-3 border-t border-slate-200 pt-6 sm:grid-cols-2 dark:border-white/10">
         {adjacent.previous && <Link href={'/learn/' + adjacent.previous.id} className="rounded-xl border border-slate-200 p-4 text-sm hover:border-cyan-500 dark:border-white/15"><span className="block text-xs text-slate-500">Previous lesson</span>{adjacent.previous.title}</Link>}
         {adjacent.next && <Link href={'/learn/' + adjacent.next.id} className="rounded-xl border border-slate-200 p-4 text-sm hover:border-cyan-500 dark:border-white/15 sm:col-start-2"><span className="block text-xs text-slate-500">Next lesson</span>{adjacent.next.title}</Link>}
