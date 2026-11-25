@@ -20,8 +20,8 @@ export default async function ReferenceIndex({ searchParams }: { searchParams: P
       <h1 className="mt-3 text-3xl font-extrabold tracking-tight sm:text-4xl">API and library references</h1>
       <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-600 dark:text-slate-300">
         Explore {summary.referenceSubjects} indexed technical subjects across {referenceCategories.length} categories.
-        {AUTHORED_REFERENCES.length} have authored draft pages with syntax, examples, mistakes and links to official documentation.
-        Indexed-only entries remain visibly unimplemented. Start with a search or narrow the category.
+        {' '}{AUTHORED_REFERENCES.length} have authored draft pages with syntax, examples, mistakes and links to official documentation.
+        Indexed-only entries remain visibly unimplemented. Search by API name, version or summary, or narrow the category.
       </p>
       <ReferenceExplorer
         key={initialCategory}

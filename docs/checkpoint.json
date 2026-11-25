@@ -11,7 +11,7 @@
   "development": {
     "branch": "feature/f11-3-reading-format",
     "state": "f13-reference-graph-and-foundations-draft",
-    "note": "F13 explicit reference graph, eight new foundational reference drafts, richer search; full build and browser pending."
+    "note": "F13: 74 authored reference drafts, 98 distinct explicit graph edges across 72 lessons; 16 real Node22.16.0 tests passed with matching Git blob hashes. Locked build and browser pending."
   },
   "snapshot": {
     "tracks": 28,
