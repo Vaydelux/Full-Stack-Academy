@@ -50,6 +50,20 @@ In the test notes, separate what the in-memory fixture genuinely observed from R
 
 Job completion and user-visible external delivery acknowledgment may differ.
 
+## Applied engineering walkthrough
+
+Queue status and business delivery status are related but distinct state machines. Pending, processing, retryable failure, terminal failure and confirmed delivery need explicit transitions. A provider accepting a request may still not mean final delivery. A stale worker should not regress terminal state.
+
+### Diagnose the concrete failure
+
+Trace a synthetic job through claim, retry and completion, then attempt an invalid transition and late completion. Verify the state remains correct and public status accurately describes confirmed versus pending work.
+
+### Independent exercise and evidence
+
+Design a status model with attempt history, timestamps and safe public labels. Record permitted transitions, rejected transitions and provider confirmation semantics separately.
+
+**Qualification boundary:** These are practice instructions, not recorded results. Preserve the existing lab and publication status; in-memory tests do not qualify live Redis or BullMQ behavior.
+
 ## Knowledge check
 
 1. What is authoritative in this scenario, and what state is derived or replayable?
