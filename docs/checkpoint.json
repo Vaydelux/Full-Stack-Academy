@@ -11,7 +11,7 @@
   "development": {
     "branch": "feature/f11-3-reading-format",
     "state": "f15-backend-production-reference-expansion-draft",
-    "note": "F15 added 63 source-validated backend and production reference drafts; 188/303 authored. Examples and full build pending."
+    "note": "F15 added 63 source-validated backend/production reference drafts (188/303 total), 212 explicit edges across 138 topics; three new extracted-data test bodies passed in connector V8, six exact-source Node22 quality tests passed. Full locked build/browser pending."
   },
   "snapshot": {
     "tracks": 28,

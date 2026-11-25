@@ -5346,7 +5346,7 @@ await redisCache.set(cacheKey, JSON.stringify(safeDto), 'EX', 60);`,
   "parameters": "Optional isolation and access mode.",
   "returns": "Transaction remains open until commit or rollback.",
   "minimalExample": "BEGIN; SELECT 1; COMMIT;",
-  "productionExample": "BEGIN;\nUPDATE tasks SET done = true WHERE id = $1 AND workspace_id = $2;\nINSERT INTO audit_events (workspace_id, task_id, action) VALUES ($2, $1, 'completed');\nCOMMIT;",
+  "productionExample": "BEGIN;\nWITH changed AS (\n  UPDATE tasks SET done = true WHERE id = $1 AND workspace_id = $2 AND done = false\n  RETURNING workspace_id, id\n)\nINSERT INTO audit_events (workspace_id, task_id, action)\nSELECT workspace_id, id, 'completed' FROM changed;\nCOMMIT;",
   "commonMistakes": [
     "Executing statements on different pooled connections."
   ],
