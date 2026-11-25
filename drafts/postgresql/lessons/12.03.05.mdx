@@ -71,6 +71,20 @@ Production idempotency also needs a request-payload hash, expiry policy, in-flig
 
 A useful production verification matrix varies input identity, tenant, the number of concurrent writers, repeated request keys and observed SQLSTATE outcomes. When a conflict occurs, the correct application behavior is usually to report it or retry the *whole* safe operation from a new snapshot—not to silently overwrite the last writer's state.
 
+## Applied SQL walkthrough
+
+An idempotency record identifies a logical operation within a tenant. The unique tenant/key pair prevents duplicate records. ON CONFLICT DO NOTHING preserves the first result in this fixture: key charge-1 keeps result 100 rather than becoming 999. It does not automatically execute a business operation exactly once or detect a changed payload. A production receipt should include a request fingerprint and a well-defined replay contract.
+
+### Predict and diagnose the result
+
+Inspect the result row after both inserts and verify there is one record with the original result. On a separate shared table, submit the same key concurrently with independent connections; observe unique-index arbitration and read the winning committed result. Test reuse with a different payload and define a conflict outcome rather than silently treating it as a valid replay.
+
+### Independent exercise and evidence
+
+Design an operation that writes its business change and receipt in one transaction. Simulate losing the response after commit, then retry with the original key. Specify retention and failure recovery; external side effects need their own idempotency or outbox contract. Record receipt count, operation count and replay behavior.
+
+**Qualification boundary:** These are predictions and experiment instructions, not recorded database results. The existing single-session SQL gate cannot establish true concurrent behavior. Use isolated test infrastructure and preserve the existing starter and solution.
+
 ## Bug Hunt
 
 1. Predict the specific broken state: The starter's ON CONFLICT DO UPDATE overwrites the first response with a second, conflicting outcome.
