@@ -10,8 +10,8 @@
   },
   "development": {
     "branch": "feature/f11-3-reading-format",
-    "state": "f17-contextual-learning-ux-source-implemented",
-    "note": "F17 contextual navigation, unified server search, discovery-first landing, reading typography and resume-first dashboard. Seven final exact-source Node22 tests and four connector source-wiring cases passed. Full build/browser pending."
+    "state": "f18-source-qualification-audit",
+    "note": "F18 read-only manuscript/lab triage and advisory staged prerequisites; full checkout and earliest P1 runtime/human review pending."
   },
   "snapshot": {
     "tracks": 28,
@@ -73,6 +73,6 @@
     "devHighFindings": 14,
     "exceptionExpires": "2026-12-02"
   },
-  "nextMilestone": "Qualify full checkout, responsive interaction matrix, then curriculum/lab release gates.",
-  "status": "f17-ux-full-build-pending"
+  "nextMilestone": "Run full audit and P1 Node24/browser qualification on a networked checkout; fix evidence blockers before promotion.",
+  "status": "f18-source-audit-implemented-publication-blocked"
 }

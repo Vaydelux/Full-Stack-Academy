@@ -7,17 +7,19 @@ import { safeReference } from '../../../scripts/reading-edition.mjs';
 
 const accessLabel = { published: 'Published', reading: 'Reading · lab pending', planned: 'Planned · not available' } as const;
 
-export function CurriculumContext({ lesson, catalog }: { lesson: CurriculumLesson; catalog: readonly AccessTopic<CurriculumLesson>[] }) {
+export function CurriculumContext({ lesson, catalog, manuscriptPrerequisites = [] }: { lesson: CurriculumLesson; catalog: readonly AccessTopic<CurriculumLesson>[]; manuscriptPrerequisites?: readonly string[] }) {
   const prerequisites = curriculumPrerequisites(catalog, lesson.prerequisites, lesson.id);
+  const advisory = curriculumPrerequisites(catalog, manuscriptPrerequisites.filter(id=>!lesson.prerequisites.includes(id)), lesson.id);
   const reference = safeReference(lesson.referenceUrl);
   const references = readLessonReferences(lesson.id);
-  if (!reference && !prerequisites.length && !references.length) return null;
+  if (!reference && !prerequisites.length && !advisory.length && !references.length) return null;
   return <details className="mt-5 rounded-xl border border-slate-200 p-4 text-sm dark:border-white/10">
     <summary className="cursor-pointer font-semibold">Prerequisites and official documentation</summary>
     {references.length > 0 && <div className="mt-3"><h2 className="font-semibold">Academy reference library</h2><ul className="mt-2 space-y-2">{references.map(item => <li key={item.id}><Link href={'/reference/' + item.id} className="break-words text-cyan-700 underline dark:text-cyan-300">{item.title}</Link> <span className="text-xs text-slate-500">· {item.authored ? 'Authored draft' : 'Index only'}</span></li>)}</ul></div>}
     {prerequisites.length > 0 && <ul className="mt-3 space-y-2">{prerequisites.map(item =>
       <li key={item.id} className="flex flex-wrap items-baseline gap-x-2"><Link href={'/learn/' + item.id} className="break-words font-medium text-cyan-700 underline dark:text-cyan-300">{item.id} · {item.title}</Link><span className="text-xs text-slate-500">{accessLabel[item.access]}</span></li>
     )}</ul>}
+    {advisory.length > 0 && <div className="mt-3"><h2 className="font-semibold">Suggested preparation from the manuscript</h2><ul className="mt-2 space-y-2">{advisory.map(item=><li key={item.id}><Link href={'/learn/'+item.id} className="break-words text-cyan-700 underline dark:text-cyan-300">{item.id} · {item.title}</Link> <span className="text-xs text-slate-500">· {accessLabel[item.access]}</span></li>)}</ul><p className="mt-2 text-xs text-slate-500">Draft guidance only; not a completion requirement or editorial approval.</p></div>}
     {reference && <a href={reference} target="_blank" rel="noopener noreferrer" className="mt-3 inline-block break-words font-semibold text-cyan-700 underline dark:text-cyan-300">Official documentation for this topic (opens in a new tab)</a>}
     <p className="mt-2 text-xs text-slate-500">These are curriculum references, not a record of completed prerequisites.</p>
   </details>;

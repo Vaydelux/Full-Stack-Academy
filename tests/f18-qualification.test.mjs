@@ -1,0 +1,17 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {auditPrerequisites,auditManuscript,auditLabManifest,auditCurriculum} from '../scripts/f18-qualification-model.mjs';
+const topics=[{id:'01.01.01',moduleId:'01.01',title:'First',prerequisites:[]},{id:'01.01.02',moduleId:'01.01',title:'Second',prerequisites:[]}];
+const parse=()=>[{kind:'heading',text:'Knowledge check'},{kind:'paragraph',text:'Draft qualification: negative case fails. [Official](https://example.org/docs)'}];
+const safe=url=>url.startsWith('https://')?url:null;
+const record={id:'01.01.02',group:'sample',source:'# Second',meta:{id:'01.01.02',moduleId:'01.01',title:'Second',prerequisites:['01.01.01'],labSlug:'second'}};
+const path='drafts/sample/labs/second/lab.json',manifest={lessonId:'01.01.02',readyToPublish:false,starter:'drafts/sample/labs/second/starter.js',solution:'drafts/sample/labs/second/solution.js'};
+const options={catalog:{lessons:topics,modules:[{id:'01.01'}]},publishedIds:['01.01.01'],records:[record],manifests:[{path,manifest}],parseReading:parse,safeReference:safe,fileExists:()=>true};
+test('empty canonical graph is flagged without inventing dependencies',()=>{const a=auditPrerequisites(topics,[record.meta]);assert.equal(a.canonicalEdges,0);assert.equal(a.manuscriptEdges,1);assert.equal(a.topicsWithGuidance,1);assert.equal(a.advisories.length,1);assert.deepEqual(a.errors,[]);});
+test('unknown, duplicate, self and cyclic prerequisite edges are reported',()=>{const a=auditPrerequisites([{...topics[0],prerequisites:['01.01.02']},topics[1]],[{id:'01.01.02',prerequisites:['01.01.01','01.01.01','01.01.02','missing']}]);assert.equal(a.errors.length,4);});
+test('manuscript source problems and review flags never imply runtime approval',()=>{const a=auditManuscript({...record,source:'~~~js\nconst x=1',meta:{...record.meta,readyToPublish:true}},topics[1],()=>[],safe);assert.equal(a.issues.length,3);assert.ok(a.review.length);assert.equal(a.runtime,'not-run');assert.equal(a.publicationApproved,false);});
+test('fenced code content is excluded from link triage',()=>{const a=auditManuscript(record,topics[1],()=>[{kind:'heading',text:'Draft'},{kind:'code',text:'[bad](http://bad)'}],safe);assert.equal(a.links,0);assert.equal(a.issues.length,0);});
+test('lab manifest rejects unsafe paths and publication flags',()=>{const a=auditLabManifest({path,manifest:{...manifest,starter:'drafts/sample/labs/second/../secret',readyToPublish:true}},new Map(topics.map(x=>[x.id,x])),()=>true);assert.equal(a.issues.length,2);});
+test('missing assets and shared starter/solution are detected',()=>{const a=auditLabManifest({path,manifest:{...manifest,solution:manifest.starter}},new Map(topics.map(x=>[x.id,x])),()=>false);assert.equal(a.issues.length,3);});
+test('source-only report separates historical drafts and publication',()=>{const a=auditCurriculum({...options,records:[{...record,id:'01.01.01',meta:undefined},record]});assert.equal(a.totals.historical,1);assert.equal(a.totals.reading,1);assert.equal(a.totals.missing,0);assert.equal(a.publicationApproved,false);assert.equal(a.modules[0].labManifests,1);assert.deepEqual(a.issues,[]);});
+test('missing manuscript, duplicate manifest, and incorrect binding cannot disappear',()=>{const a=auditCurriculum({...options,records:[{...record,meta:{...record.meta,labSlug:'other'}}],manifests:[{path,manifest},{path,manifest}]});assert.equal(a.issues.length,2);assert.equal(auditCurriculum({...options,records:[],manifests:[]}).totals.missing,1);});

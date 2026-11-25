@@ -24,9 +24,13 @@ export function collectStagedManuscripts(root,catalog){
    if(!idPattern.test(id)||!topic)throw Error('Unknown draft ID: '+id);
    if(seen.has(id))throw Error('Duplicate draft ID: '+id);
    const metaPath=join(dir,id+'.meta.json');
+   let prerequisites;
    if(existsSync(metaPath)){
     const meta=JSON.parse(readFileSync(metaPath,'utf8'));
     if(meta.id!==id)throw Error('Draft metadata ID mismatch: '+id);
+    if(meta.readyToPublish===true || meta.publication===true)throw Error('Unsafe draft publication flag: '+id);
+    if(meta.moduleId!==undefined && meta.moduleId!==topic.moduleId)throw Error('Draft metadata module mismatch: '+id);
+    if(Array.isArray(meta.prerequisites))prerequisites=[...new Set(meta.prerequisites.filter(dep=>typeof dep==='string'&&dep!==id&&canonical.has(dep)))];
    }else{
     const front=source.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n/);
     const flags=front?.[1].split(/\r?\n/).filter(line=>/^(readyToPublish|publication):/.test(line))??[];
@@ -34,7 +38,7 @@ export function collectStagedManuscripts(root,catalog){
     if(!front||field(front[1],'id')!==id||field(front[1],'module')!==topic.moduleId||field(front[1],'status')!=='draft-unverified'||!safeFlag)throw Error('Invalid manuscript frontmatter: '+id);
    }
    if(!source.trim()||Buffer.byteLength(source)>256*1024)throw Error('Empty or oversized manuscript: '+id);
-   seen.add(id);records.push({id,group:group.name,source});
+   seen.add(id);records.push({id,group:group.name,source,...(prerequisites?.length?{prerequisites}:{})});
   }
  }
  return records.sort((a,b)=>a.id.localeCompare(b.id));

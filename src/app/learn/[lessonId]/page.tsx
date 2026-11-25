@@ -62,7 +62,7 @@ export default async function LessonPage({ params }: LessonPageProps) {
           {moduleNavigation.map(item => <li key={item.id}><Link href={'/learn/' + item.id} aria-current={item.active ? 'page' : undefined} className={'flex flex-wrap items-baseline gap-x-2 rounded-lg px-2 py-2 text-sm hover:bg-slate-100 dark:hover:bg-white/5 ' + (item.active ? 'font-bold text-cyan-700 dark:text-cyan-300' : '')}><span className="font-mono text-xs">{item.id}</span><span className="min-w-0 flex-1">{item.title}</span><span className="text-xs text-slate-500">{item.edition === 'published' ? 'Published' : 'Reading'}</span></Link></li>)}
         </ol></nav>
       </details>}
-      <CurriculumContext lesson={lesson} catalog={accessCatalog} />
+      <CurriculumContext lesson={lesson} catalog={accessCatalog} manuscriptPrerequisites={reading.prerequisites} />
       <ReadingEditionArticle source={reading.source} title={lesson.title} />
       <CurriculumContinuation lesson={lesson} catalog={accessCatalog} />
     </DocShell>;
