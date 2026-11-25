@@ -76,6 +76,20 @@ Neither migrate deploy nor supabase db push is safe to call blindly against prod
 
 Explicitly choose how identity is propagated between Next.js, NestJS, Prisma, and Supabase. When a privileged server role bypasses RLS, the NestJS service must check permissions and the database role should still be restricted. Prefer verified membership from trusted server data over user-editable metadata or query parameters.
 
+## Applied persistence walkthrough
+
+Choose one authoritative migration history per database object. Prisma-owned application tables and Supabase-managed Auth/Storage objects have different lifecycle ownership; two tools independently editing the same object can create drift. RLS policy SQL needs a reviewed migration path even when the ORM schema cannot express it. Do not modify platform-managed internals casually.
+
+### Diagnose the concrete failure
+
+Map each application table, policy, function and managed schema to its designated owner. Rebuild a disposable environment from the reviewed histories and compare the resulting database objects. Run the installed CLI help before using any version-dependent command. Do not run resets or migrations against production.
+
+### Independent exercise and evidence
+
+Draft a release sequence ordering application DDL, RLS policies, generated client and app deployment. Record both migration histories and a replay result; define how to reconcile a manual change without editing already applied history.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Use pinned tooling and a disposable local or explicitly approved test environment. Preserve the starter and solution; source review does not qualify real database roles or authorization.
+
 ## Bug Hunt
 
 1. Predict who can exploit this bug: The starter lets two independent unreviewed schema operations modify the same table without an authoritative history.
