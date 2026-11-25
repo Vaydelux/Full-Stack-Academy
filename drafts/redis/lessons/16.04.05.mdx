@@ -50,6 +50,20 @@ In the test notes, separate what the in-memory fixture genuinely observed from R
 
 Graceful shutdown reduces disruption but cannot eliminate crashes or duplicates.
 
+## Applied engineering walkthrough
+
+Graceful shutdown stops accepting new work and allows active tasks a bounded time to finish. Forced termination can still occur, so recoverable leases and idempotency are necessary. A worker should not claim more jobs while draining or report success for interrupted work.
+
+### Diagnose the concrete failure
+
+Simulate shutdown during a held job claim. Verify new work is not accepted by the draining worker, then allow the claim to expire and be recovered by another worker. Reject a late completion from the old claim.
+
+### Independent exercise and evidence
+
+Design a shutdown deadline aligned with deployment termination grace and lease renewal. Record in-flight count, recovery time and final state. Qualify actual signal handling and BullMQ shutdown separately.
+
+**Qualification boundary:** These are practice instructions, not recorded results. Preserve the existing lab and publication status; in-memory tests do not qualify live Redis or BullMQ behavior.
+
 ## Knowledge check
 
 1. What is authoritative in this scenario, and what state is derived or replayable?
