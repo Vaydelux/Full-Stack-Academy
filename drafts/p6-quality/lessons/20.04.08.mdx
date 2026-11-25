@@ -44,6 +44,20 @@ node --test --test-name-pattern="20[.]04" examples/p6-quality/labs.test.mjs
 
 Synthetic topology policy; no OS/firewall/TLS/DNS/IaC or restore enforcement tested.
 
+## Applied engineering walkthrough
+
+A production topology is a set of explicit trust, availability and recovery boundaries. Public TLS ingress forwards to private services; workers and data stores need narrowly scoped connectivity and credentials. Recovery is a demonstrated ability, not a backup checkbox.
+
+### Diagnose the concrete failure
+
+Exercise topologyPolicy with a permitted edge and private app, worker and data services. Introduce a public database, missing TLS or absent restore evidence and inspect each denial. Plan an isolated deployment rehearsal using synthetic data.
+
+### Independent exercise and evidence
+
+Produce a topology diagram, connectivity matrix, resource ownership list and recovery acceptance record. Label model checks, real network tests and restore evidence separately; no actual production host is modified.
+
+**Evidence boundary:** These are practice instructions, not recorded test results. Preserve the existing model, specification and draft flag; external runtime qualification remains independent.
+
 ## Knowledge check
 
 1. Which public behavior or invariant is being protected?
