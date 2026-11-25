@@ -1,4 +1,4 @@
-> **F20 — Release candidate:** Source freeze and explicit nine-step local qualification profile, full manuscript audit, reading/responsive/boundary browser gates, dashboard storage warning and extended import/syntax checks. Release not approved; see `docs/F20_RELEASE_CANDIDATE.md`.
+> **F20 — Release candidate:** Source freeze and explicit nine-step local qualification profile, full manuscript audit, reading/responsive/boundary browser gates, dashboard storage warning and extended import/syntax checks. 38 connector checks and five exact-coordinator Node fixture checks passed. Missing genuine Nest lock, local DNS/Node24 and full qualification remain blockers; see `docs/F20_RELEASE_CANDIDATE.md`.
 
 > **F19 — Production hardening:** Search file tracing, origin/URL validation, storage recovery, bounded sandbox diagnostics and mandatory milestone regression gates. See `docs/F19_PRODUCTION_HARDENING.md`. Six exact-source Node22 boundary tests and 41 connector source/matrix test bodies passed. Full release qualification remains pending.
 

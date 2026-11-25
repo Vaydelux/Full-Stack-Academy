@@ -32,7 +32,8 @@ try{
  await notebook.getByText('Note saved on this device.').waitFor();
  assert.equal(await page.evaluate(k=>JSON.parse(localStorage.getItem(k)).notes['06.01.01'],key),'F20 synthetic local note');
  await page.reload();await notebook.getByText(/Private study note/).click();
- await note.waitFor();assert.equal(await note.inputValue(),'F20 synthetic local note');
+ await page.waitForFunction(()=>document.getElementById('lesson-note-06.01.01')?.value==='F20 synthetic local note');
+ assert.equal(await note.inputValue(),'F20 synthetic local note');
  assert.deepEqual(errors,[]);await context.close();
 
  const bad=await browser.newContext({viewport:{width:390,height:844},reducedMotion:'reduce'});

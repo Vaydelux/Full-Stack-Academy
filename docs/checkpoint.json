@@ -11,7 +11,7 @@
   "development": {
     "branch": "feature/f11-3-reading-format",
     "state": "f20-release-candidate-qualification-blocked",
-    "note": "F20 release profile adds full manuscript audit and reading/responsive/boundary browser gates; fixed local browser harness and extended import/syntax checks. Actual release blocked on full checkout, Node24 and external/manual evidence."
+    "note": "F20 source freeze and nine-stage release profile. 38 connector checks and five exact-coordinator Node fixture checks passed; committed inventory reconciled. Full checkout and Node24 unavailable; Nest lock missing, full audit/build/browser/reviews unexecuted."
   },
   "snapshot": {
     "tracks": 28,
@@ -73,6 +73,6 @@
     "devHighFindings": 14,
     "exceptionExpires": "2026-12-02"
   },
-  "nextMilestone": "Stop feature expansion; run release profile on a clean Node24 checkout, resolve observed failures, then review merge/deployment separately.",
+  "nextMilestone": "Generate genuine Nest lockfile on a trusted Node24.9+ checkout; run --plan-release then --run-release, resolve actual blockers, review deployment separately.",
   "status": "release-candidate-not-qualified"
 }
