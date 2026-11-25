@@ -43,6 +43,20 @@ Your acceptance criteria must include a positive authorized case and a negative 
 
 A checklist checkbox without reproducible acceptance evidence is not a verified security control.
 
+## Applied engineering walkthrough
+
+ASVS is a verification standard rather than a product certification earned by a successful login. Pin the selected standard version and level before mapping requirements; requirement identifiers may change between versions. Each mapping needs a control location, test evidence, scope and reviewer. Mark unsupported or inapplicable controls with an explicit rationale.
+
+### Diagnose the concrete failure
+
+Select a relevant authorization requirement from the official ASVS release. Compare browser-only input validation with an actual server test using synthetic unauthorized access. Check that the positive case succeeds and the negative case fails at the intended enforcement point.
+
+### Independent exercise and evidence
+
+Create a small evidence matrix with standard version, exact requirement identifier, implementation file, test command, result, reviewer and unresolved risk. Distinguish not tested from failed and passed. Do not claim ASVS compliance from a partial checklist.
+
+**Qualification boundary:** These are practice instructions, not recorded audit results. Use synthetic data and authorized disposable infrastructure. Preserve existing laboratory contracts and publication status.
+
 ## Knowledge check
 
 1. Which input is controlled by the attacker in this scenario?
