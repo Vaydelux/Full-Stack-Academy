@@ -50,6 +50,20 @@ The tests exercise local Node state or loopback HTTP behavior. Document separate
 
 Large fan-out needs provider backpressure and transactional persistence, not a giant synchronous loop.
 
+## Applied engineering walkthrough
+
+Fan-out expands one event into recipient-specific work. Large audiences need bounded batches, stable pagination and durable progress. Membership and preferences can change during delivery, so define whether eligibility is evaluated at event time or send time.
+
+### Diagnose the concrete failure
+
+Create an announcement for two synthetic recipients with a shared event identity. Verify both receive one item and replay does not duplicate either. Simulate an interrupted batch and resume from recorded progress.
+
+### Independent exercise and evidence
+
+Design a bounded fan-out worker with backpressure and per-recipient identity. Record expected and actual recipient counts, partial failure and eligibility timing.
+
+**Qualification boundary:** These are practice instructions, not recorded results. Preserve the original laboratory and publication status. Local simulations do not qualify actual browser or distributed provider behavior.
+
 ## Knowledge check
 
 1. Which actor, resource, version or event cursor is authoritative in this scenario?
