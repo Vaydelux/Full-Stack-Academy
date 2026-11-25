@@ -42,6 +42,20 @@ Document both a permitted happy path and a rejected adversarial path. Integratio
 
 A passing UI check or source-only checklist cannot establish secure production behavior. An observed negative test and reviewed trust boundary are essential.
 
+## Applied engineering walkthrough
+
+OpenID Connect provides an identity layer on OAuth. ID tokens and API access tokens have different purposes. Use a maintained verifier configured for intended issuer, audience, algorithm and expiry, and verify nonce where required in the login flow. Verified claims still do not grant resource permission.
+
+### Diagnose the concrete failure
+
+Use a controlled test issuer to check valid authentication, invalid signature, wrong issuer/audience and expiry. Verify rejection before protected data access. Test key rotation through supported discovery without accepting caller-supplied key URLs.
+
+### Independent exercise and evidence
+
+Document the trusted issuer, token type, algorithms and membership lookup. Record verification decisions and synthetic identifiers, not token contents.
+
+**Qualification boundary:** These are practice instructions, not recorded audit results. Use synthetic data and authorized disposable infrastructure. Preserve existing laboratory contracts and publication status.
+
 ## Knowledge check
 
 1. Which input is attacker-controlled?
