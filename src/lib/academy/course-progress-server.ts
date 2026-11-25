@@ -1,30 +1,24 @@
 import 'server-only';
-import { existsSync, readFileSync, readdirSync } from 'node:fs';
-import path from 'node:path';
 import { lessons, modules } from '@/lib/academy/curriculum';
 import { PUBLISHED_LESSON_IDS } from '@/lib/academy/published';
 import phaseDefinitions from '../../../data/publication-phases.json';
+import { collectStagedManuscripts } from '../../../scripts/staged-inventory.mjs';
+import { readingInventory } from '../../../scripts/reading-edition.mjs';
 import { buildCourseProgress } from './course-progress-model';
 
-export function readCourseProgress() {
-  const root=process.cwd();
-  const directories=[
-    'drafts/forms-query/lessons',
-    'drafts/nestjs/lessons',
-    'drafts/postgresql/lessons',
-    'drafts/p4/lessons',
-  ];
-  const published=new Set<string>(PUBLISHED_LESSON_IDS);
-  const drafted:string[]=[];
-  for(const folder of directories){
-    const location=path.join(root,folder);
-    if(!existsSync(location))continue;
-    for(const file of readdirSync(location).filter(n=>n.endsWith('.meta.json')).sort()){
-      const record=JSON.parse(readFileSync(path.join(location,file),'utf8')) as {id?:unknown};
-      if(typeof record.id!=='string')throw Error('Invalid draft metadata: '+file);
-      // Retained historical source is no longer a draft after publication.
-      if(!published.has(record.id))drafted.push(record.id);
-    }
-  }
-  return buildCourseProgress(lessons,modules,PUBLISHED_LESSON_IDS,drafted,phaseDefinitions);
+function buildSnapshot() {
+  const reading = readingInventory(collectStagedManuscripts(process.cwd(), { lessons }), PUBLISHED_LESSON_IDS);
+  const byId = new Map(reading.map(record => [record.id, record]));
+  const progress = buildCourseProgress(lessons, modules, PUBLISHED_LESSON_IDS, reading.map(record => record.id), phaseDefinitions);
+  return { byId, progress };
 }
+// Production source is immutable for the lifetime of a build/server instance.
+// Development intentionally rescans so manuscript edits do not require a restart.
+let snapshot: ReturnType<typeof buildSnapshot> | undefined;
+function readSnapshot() {
+  if (process.env.NODE_ENV !== 'production') return buildSnapshot();
+  return snapshot ??= buildSnapshot();
+}
+export function readCourseProgress() { return readSnapshot().progress; }
+export function readReadingLesson(id: string) { return readSnapshot().byId.get(id); }
+export function readReadingIds() { return readSnapshot().progress.draftIds; }

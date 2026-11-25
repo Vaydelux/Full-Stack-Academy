@@ -1,6 +1,6 @@
 /**
  * Pure course-production read model.
- * Published lesson count is NOT learner completion; drafts are NOT available.
+ * Published lesson count is NOT learner completion; reading editions remain outside the published registry.
  */
 export type CatalogTopic = { id: string; moduleId: string };
 export type CatalogModule = { id: string; title: string; track: string };

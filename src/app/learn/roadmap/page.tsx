@@ -21,12 +21,12 @@ export default function CourseRoadmapPage() {
       <p className="mt-4 max-w-3xl text-sm leading-7 text-slate-600 dark:text-slate-300">
         This shows how much of the curriculum has been written and released. It is
         separate from <Link href="/learn/dashboard" className="font-semibold underline underline-offset-4">your personal learning progress</Link>.
-        An authored draft is not a published lesson, runnable hosted lab, or passed release check.
+        Reading editions make staged manuscripts accessible without representing them as fully released or runtime-qualified lessons.
       </p>
       <section className="mt-7 grid gap-3 sm:grid-cols-3" aria-label="Publication progress">
         {[
-          { label:'Published and available', value:progress.published,detail:'Available to learners now' },
-          { label:'Authored drafts', value:progress.drafted,detail:'Not yet released or qualified' },
+          { label:'Published lessons', value:progress.published,detail:'Existing published registry' },
+          { label:'Reading editions', value:progress.drafted,detail:'Readable; editorial and lab review pending' },
           { label:'Still to author', value:progress.toAuthor,detail:'Canonical syllabus topics remaining' },
         ].map(stat=>(
           <div key={stat.label} className="rounded-xl border border-slate-200 bg-white p-4 dark:border-white/10 dark:bg-white/[0.035]">
@@ -42,7 +42,13 @@ export default function CourseRoadmapPage() {
           <span className="tabular-nums">{Math.round(100*progress.published/progress.total)}%</span>
         </div>
         <progress aria-label="Published lesson share" max={progress.total} value={progress.published} className="mt-3 h-3 w-full accent-cyan-700 dark:accent-cyan-400"/>
-        <p className="mt-2 text-xs text-slate-500">Only the published share is learner-accessible. Drafts do not inflate this percentage.</p>
+        <p className="mt-2 text-xs text-slate-500">The published share measures the existing full lesson registry, not reading access. Reading editions never inflate this number.</p>
+      </div>
+      <div className="mt-3 rounded-xl border border-slate-200 bg-white p-4 dark:border-white/10 dark:bg-white/[0.035]">
+        <div className="flex flex-wrap justify-between gap-2 text-sm"><strong>Reading access (published + reading editions)</strong><span className="tabular-nums">{progress.published+progress.drafted}/{progress.total}</span></div>
+        <progress aria-label="Reading access share" max={progress.total} value={progress.published+progress.drafted} className="mt-3 h-3 w-full accent-cyan-700 dark:accent-cyan-400"/>
+        <p className="mt-2 text-xs text-slate-500">This measures source-backed reading access, not verified labs or learner completion.</p>
+        <Link href="/learn/reading" className="mt-3 inline-flex text-sm font-semibold text-cyan-700 underline dark:text-cyan-300">Browse reading editions</Link>
       </div>
       <section className="mt-9 space-y-4" aria-labelledby="phases-title">
         <h2 id="phases-title" className="text-xl font-bold">Roadmap by phase</h2>
@@ -52,7 +58,7 @@ export default function CourseRoadmapPage() {
             <summary className="cursor-pointer rounded-xl p-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-500">
               <span className="flex flex-wrap items-center justify-between gap-2">
                 <span className="text-sm font-bold">{phase.id} · {phase.title}</span>
-                <span className="text-xs tabular-nums text-slate-500">{phase.published} published · {phase.drafted} drafted · {phase.toAuthor} planned</span>
+                <span className="text-xs tabular-nums text-slate-500">{phase.published} published · {phase.drafted} reading · {phase.toAuthor} planned</span>
               </span>
             </summary>
             <div className="border-t border-slate-200 px-4 pb-4 pt-3 dark:border-white/10">
@@ -63,9 +69,9 @@ export default function CourseRoadmapPage() {
                     <div className="flex flex-wrap items-start justify-between gap-2">
                       <div className="min-w-0">
                         <Link href={'/learn/track/'+module.track} className="text-sm font-semibold text-cyan-700 underline-offset-2 hover:underline dark:text-cyan-300">{module.id} · {module.title}</Link>
-                        <p className="mt-1 text-xs text-slate-500">{module.published}/{module.total} published · {module.drafted} drafts · {module.toAuthor} not authored</p>
+                        <p className="mt-1 text-xs text-slate-500">{module.published}/{module.total} published · {module.drafted} reading · {module.toAuthor} not authored</p>
                       </div>
-                      <span className="text-xs text-slate-500">{module.status==='authored-draft'?'In editorial review':module.status==='published'?'Published':module.status==='in-progress'?'Partially published':'Planned'}</span>
+                      <span className="text-xs text-slate-500">{module.status==='authored-draft'?'Reading edition':module.status==='published'?'Published':module.status==='in-progress'?'Partially published':'Planned'}</span>
                     </div>
                     <progress aria-label={module.title+' published share'} max={module.total||1} value={module.published} className="mt-2 h-2 w-full accent-cyan-700 dark:accent-cyan-400"/>
                   </li>

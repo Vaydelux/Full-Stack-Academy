@@ -3,6 +3,11 @@ import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  // Only lesson manuscripts and paired metadata, never lab sources or local credentials.
+  outputFileTracingIncludes: {
+    '/learn/**': ['./drafts/*/lessons/*.mdx', './drafts/*/lessons/*.meta.json'],
+    '/learn': ['./drafts/*/lessons/*.mdx', './drafts/*/lessons/*.meta.json'],
+  },
   pageExtensions: ['js', 'jsx', 'md', 'mdx', 'ts', 'tsx'],
   async headers() {
     return [

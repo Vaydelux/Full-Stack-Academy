@@ -40,7 +40,7 @@ export default async function TrackPage({ params }: TrackPageProps) {
       <h1 className="mt-3 text-3xl font-extrabold tracking-tight">{track.title}</h1>
       <p className="mt-3 text-sm leading-7 text-slate-600 dark:text-slate-300">{track.outcome}</p>
       <p className="mt-3 text-xs text-slate-500">{modules.length} modules · {count} topics</p>
-      <div className="mt-6"><DocNotice>Published lessons are available for learning and completion. “Draft” means the manuscript exists but has not passed release qualification; “Planned” means no source lesson is authored yet. Neither draft nor planned topics can be marked complete.</DocNotice></div>
+      <div className="mt-6"><DocNotice>Published lessons retain their normal completion flow. Reading editions expose authored manuscripts with pending editorial and lab qualification; they do not award course credit. Planned topics have no manuscript yet.</DocNotice></div>
       <div className="mt-8 space-y-5">
         {modules.map((module) => (
           <section key={module.id} className="rounded-xl border border-slate-200 bg-white p-4 dark:border-white/10 dark:bg-white/[0.03]">
@@ -57,7 +57,7 @@ export default async function TrackPage({ params }: TrackPageProps) {
                       <span className="mt-0.5 shrink-0 font-mono text-[11px] text-slate-500">{lesson.id}</span>
                       <span className="min-w-0 flex-1 text-sm">{lesson.title}</span>
                       <span className={`max-w-24 shrink-0 text-right text-[10px] font-semibold ${published ? 'text-emerald-700 dark:text-emerald-400' : 'text-slate-500'}`}>
-                        {published ? 'Published' : drafted ? 'Draft — not available' : 'Planned'}
+                        {published ? 'Published' : drafted ? 'Reading · lab pending' : 'Planned'}
                       </span>
                     </Link>
                   </li>

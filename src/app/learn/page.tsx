@@ -39,7 +39,7 @@ export default function CourseIndex() {
       <p className="text-xs font-bold uppercase tracking-[.2em] text-cyan-600 dark:text-[#7DEBFF]">Structured hands-on curriculum</p>
       <h1 className="mt-3 text-3xl font-extrabold tracking-tight sm:text-4xl">Learn modern full-stack engineering</h1>
       <p className="mt-4 max-w-3xl text-sm leading-7 text-slate-600 dark:text-slate-300">
-        {summary.tracks} tracks, {summary.modules} modules and {summary.plannedLessons} mapped topics. Only published lessons contain verified teaching material; the remaining topics are explicitly marked as planned.
+        {summary.tracks} tracks, {summary.modules} modules and {summary.plannedLessons} mapped topics. Published lessons retain their regular learning flow. Reading editions make authored material accessible while editorial and lab qualification are pending.
       </p>
       <div className="mt-6 rounded-xl border border-cyan-600/25 bg-cyan-50 p-4 dark:bg-cyan-300/[0.06]">
         <p className="text-sm font-semibold">Returning to learn?</p>
@@ -78,6 +78,11 @@ export default function CourseIndex() {
         </div>
       </section>
       <PublishedLessonExplorer catalog={publishedCatalog} />
+      <section aria-label="Reading editions" className="mt-6 rounded-xl border border-slate-200 bg-white p-4 dark:border-white/10 dark:bg-white/[0.035]">
+        <h2 className="font-bold">Read the remaining authored curriculum</h2>
+        <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">Explore staged lessons separately from published lessons. Reading editions contain the actual manuscript and practice examples, but do not grant lab certification or completion credit.</p>
+        <Link href="/learn/reading" className="mt-3 inline-flex rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold hover:border-cyan-500 dark:border-white/20">Browse reading editions</Link>
+      </section>
       <section aria-labelledby="tracks-title" className="mt-10">
         <h2 id="tracks-title" className="mb-4 text-xl font-bold">Tracks and subtopics</h2>
         <div className="space-y-6">

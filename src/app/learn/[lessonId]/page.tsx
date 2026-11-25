@@ -10,12 +10,13 @@ import { LessonArticle } from '@/content/lesson-registry';
 import { MDX_METADATA, PUBLISHED_LESSON_IDS, lessonRubric } from '@/lib/academy/published';
 import { LocalLessonCompletion } from '@/components/course/LocalLessonCompletion';
 import { LessonNotebook } from '@/components/course/LessonNotebook';
-import { readCourseProgress } from '@/lib/academy/course-progress-server';
+import { readCourseProgress, readReadingIds, readReadingLesson } from '@/lib/academy/course-progress-server';
+import { ReadingEditionArticle } from '@/components/course/ReadingEditionArticle';
 
 type LessonPageProps = { params: Promise<{ lessonId: string }> };
 
 export function generateStaticParams() {
-  return PUBLISHED_LESSON_IDS.map((lessonId) => ({ lessonId }));
+  return [...PUBLISHED_LESSON_IDS, ...readReadingIds()].map((lessonId) => ({ lessonId }));
 }
 
 export async function generateMetadata({ params }: LessonPageProps): Promise<Metadata> {
@@ -24,6 +25,7 @@ export async function generateMetadata({ params }: LessonPageProps): Promise<Met
   const authored = AUTHORED_LESSONS[lessonId];
   const mdxMeta = MDX_METADATA.get(lessonId);
   if (!lesson) return { title: 'Lesson not found', robots: { index: false } };
+  if (!authored && !mdxMeta && readReadingLesson(lessonId)) return { title: lesson.title + ' — Reading Edition | Full-Stack Engineering Academy', description: 'Read the authored manuscript; editorial and lab qualification remain pending. No course credit.', robots: { index: false, follow: true } };
   return {
     title: `${mdxMeta?.title ?? authored?.headline ?? lesson.title} | Full-Stack Engineering Academy`,
     description: mdxMeta?.description ?? authored?.subtitle ?? `Planned lesson: ${lesson.title}. This topic has not yet been authored or reviewed.`,
@@ -40,6 +42,24 @@ export default async function LessonPage({ params }: LessonPageProps) {
   const mdxMeta = MDX_METADATA.get(lessonId);
   const localRubric = mdxMeta ? lessonRubric(lessonId) : undefined;
   const neighbors = lessonNeighbors(lessonsByModule.get(lesson.moduleId) ?? [], PUBLISHED_LESSON_IDS, lessonId);
+  const reading = !authored && !mdxMeta ? readReadingLesson(lessonId) : undefined;
+  if (reading) {
+    const accessible = [...PUBLISHED_LESSON_IDS, ...readReadingIds()];
+    const adjacent = lessonNeighbors(lessonsByModule.get(lesson.moduleId) ?? [], accessible, lessonId);
+    const sourceUrl = 'https://github.com/Vaydelux/Full-Stack-Academy/blob/main/drafts/' + reading.group + '/lessons/' + reading.id + '.mdx';
+    return <DocShell>
+      <nav aria-label="Breadcrumb" className="mb-5 text-xs text-slate-500"><Link href="/learn">Curriculum</Link> / <Link href={'/learn/track/' + lesson.trackId}>{lesson.track}</Link> / Reading edition</nav>
+      <p className="text-xs font-bold uppercase tracking-widest text-cyan-700 dark:text-cyan-300">{lesson.id} · {lesson.level} · Reading edition</p>
+      <h1 className="mt-3 text-3xl font-extrabold tracking-tight sm:text-4xl">{lesson.title}</h1>
+      <p className="mt-3 text-sm text-slate-600 dark:text-slate-300">Editorial review pending · Lab not certified · No completion credit</p>
+      <div className="mt-4 flex flex-wrap gap-4 text-sm font-semibold text-cyan-700 dark:text-cyan-300"><Link href="/learn/reading" className="underline underline-offset-2">Browse reading editions</Link><a href={sourceUrl} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">Inspect original manuscript</a></div>
+      <ReadingEditionArticle source={reading.source} />
+      {(adjacent.previous || adjacent.next) && <nav aria-label="Adjacent reading lessons" className="mt-10 grid gap-3 border-t border-slate-200 pt-6 sm:grid-cols-2 dark:border-white/10">
+        {adjacent.previous && <Link href={'/learn/' + adjacent.previous.id} className="rounded-xl border border-slate-200 p-4 text-sm hover:border-cyan-500 dark:border-white/15"><span className="block text-xs text-slate-500">Previous lesson</span>{adjacent.previous.title}</Link>}
+        {adjacent.next && <Link href={'/learn/' + adjacent.next.id} className="rounded-xl border border-slate-200 p-4 text-sm hover:border-cyan-500 dark:border-white/15 sm:col-start-2"><span className="block text-xs text-slate-500">Next lesson</span>{adjacent.next.title}</Link>}
+      </nav>}
+    </DocShell>;
+  }
   const staged = !authored && !mdxMeta && readCourseProgress().draftIds.includes(lessonId);
   return (
     <DocShell active={authored || mdxMeta ? lessonId : undefined}>
