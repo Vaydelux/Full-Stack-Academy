@@ -10,15 +10,15 @@
   },
   "development": {
     "branch": "feature/f11-3-reading-format",
-    "state": "f13-reference-graph-and-foundations-draft",
-    "note": "F13: 74 authored reference drafts, 98 distinct explicit graph edges across 72 lessons; 16 real Node22.16.0 tests passed with matching Git blob hashes. Locked build and browser pending."
+    "state": "f14-foundational-reference-expansion-draft",
+    "note": "F14 added 51 source-validated foundational reference drafts across six categories; 125/303 authored. Full build and browser pending."
   },
   "snapshot": {
     "tracks": 28,
     "modules": 111,
     "catalogTopics": 889,
     "indexedReferences": 303,
-    "authoredReferenceDrafts": 74,
+    "authoredReferenceDrafts": 125,
     "authoredInteractiveModels": 4,
     "authoredMdxLessons": 337,
     "publishedLessons": 338,
@@ -73,6 +73,6 @@
     "devHighFindings": 14,
     "exceptionExpires": "2026-12-02"
   },
-  "nextMilestone": "Qualify full checkout with locked dependencies, course-roadmap, reference tests, full production build and real browser smoke; keep certification separate.",
-  "status": "f13-reference-integration-full-build-pending"
+  "nextMilestone": "Expand remaining React/Next and backend references; qualify locked full checkout and browser before release.",
+  "status": "f14-reference-expansion-full-build-pending"
 }

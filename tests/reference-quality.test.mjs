@@ -1,0 +1,12 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {validateReferenceDrafts,referenceCoverage} from '../scripts/reference-quality.mjs';
+const index=[{id:'a',category:'JS',title:'a'},{id:'b',category:'JS',title:'b'},{id:'c',category:'CSS',title:'c'}];
+const lessons=[{id:'01'}];
+const draft={id:'a',matchCategories:['JS'],matchTitles:['a'],heading:'A',majorVersion:'1',summary:'Summary',syntax:'a()',lang:'js',parameters:'None',returns:'Value',minimalExample:'a()',productionExample:'const result=a()',commonMistakes:['Mistake'],securityPerformanceNotes:['Boundary'],relatedLessonIds:['01'],status:'Authored reference draft',canonicalUrl:'https://example.org/docs'};
+test('valid draft passes without claiming runtime qualification',()=>assert.equal(validateReferenceDrafts([draft],index,lessons),1));
+test('canonical IDs, category and title must match',()=>{for(const change of [{id:'missing'},{matchCategories:['CSS']},{matchTitles:['b']}])assert.throws(()=>validateReferenceDrafts([{...draft,...change}],index,lessons),/Canonical mismatch/);});
+test('duplicate drafts and unknown lesson IDs fail',()=>{assert.throws(()=>validateReferenceDrafts([draft,draft],index,lessons),/Duplicate/);assert.throws(()=>validateReferenceDrafts([{...draft,relatedLessonIds:['missing']}],index,lessons),/Unknown lesson/);});
+test('incomplete or repeated examples and missing engineering notes fail',()=>{for(const change of [{parameters:''},{productionExample:'a()'},{commonMistakes:[]},{securityPerformanceNotes:[' ']}])assert.throws(()=>validateReferenceDrafts([{...draft,...change}],index,lessons));});
+test('draft status and HTTPS authority are explicit',()=>{assert.throws(()=>validateReferenceDrafts([{...draft,status:'Published'}],index,lessons),/Invalid draft status/);for(const canonicalUrl of ['http://example.org','https:example.org','https://user@example.org','https://example.org/ bad'])assert.throws(()=>validateReferenceDrafts([{...draft,canonicalUrl}],index,lessons),/Unsafe official URL/);});
+test('category coverage counts drafts separately from index-only subjects',()=>assert.deepEqual(referenceCoverage(index,['a','a','unknown']),[{category:'JS',indexed:2,authored:1,remaining:1},{category:'CSS',indexed:1,authored:0,remaining:1}]));

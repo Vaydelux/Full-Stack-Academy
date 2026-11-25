@@ -3257,6 +3257,1536 @@ await redisCache.set(cacheKey, JSON.stringify(safeDto), 'EX', 60);`,
     "04.02.05"
   ],
   "canonicalUrl": "https://www.typescriptlang.org/docs/handbook/2/narrowing.html#discriminated-unions"
+},
+{
+  "id": "web-button",
+  "matchCategories": [
+    "Web & HTML"
+  ],
+  "matchTitles": [
+    "button"
+  ],
+  "heading": "Web & HTML: button",
+  "category": "Web & HTML",
+  "majorVersion": "HTML Living Standard / Web APIs",
+  "status": "Authored reference draft",
+  "summary": "A native interactive control with keyboard activation and form participation.",
+  "syntax": "<button type=\"button\">Open</button>",
+  "lang": "html",
+  "parameters": "type, disabled, name and value; default type in a form is submit.",
+  "returns": "Dispatches activation and can submit a form; has no return value.",
+  "minimalExample": "<button type=\"button\">Show details</button>",
+  "productionExample": "<form action=\"/profile\" method=\"post\">\n  <button type=\"submit\">Save profile</button>\n  <button type=\"button\" id=\"cancel\">Cancel</button>\n</form>",
+  "commonMistakes": [
+    "Omitting type on a non-submit button inside a form."
+  ],
+  "securityPerformanceNotes": [
+    "Use a native button with a meaningful accessible name; server-side authorization still applies."
+  ],
+  "relatedLessonIds": [
+    "01.02.03"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/button"
+},
+{
+  "id": "web-form",
+  "matchCategories": [
+    "Web & HTML"
+  ],
+  "matchTitles": [
+    "form"
+  ],
+  "heading": "Web & HTML: form",
+  "category": "Web & HTML",
+  "majorVersion": "HTML Living Standard / Web APIs",
+  "status": "Authored reference draft",
+  "summary": "Groups form-associated controls for submitting user input.",
+  "syntax": "<form action=\"/search\" method=\"get\">…</form>",
+  "lang": "html",
+  "parameters": "action, method, enctype and associated named controls.",
+  "returns": "Navigation or submission with successful controls unless an event handler prevents it.",
+  "minimalExample": "<form action=\"/search\"><input name=\"q\"><button>Search</button></form>",
+  "productionExample": "<form action=\"/feedback\" method=\"post\">\n  <label for=\"message\">Feedback</label>\n  <textarea id=\"message\" name=\"message\" required maxlength=\"1000\"></textarea>\n  <button type=\"submit\">Send</button>\n</form>",
+  "commonMistakes": [
+    "Assuming browser validation protects the API."
+  ],
+  "securityPerformanceNotes": [
+    "Validate and authorize on the server; use CSRF protection where cookie-authenticated mutations require it."
+  ],
+  "relatedLessonIds": [
+    "01.02.03"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/form"
+},
+{
+  "id": "web-input",
+  "matchCategories": [
+    "Web & HTML"
+  ],
+  "matchTitles": [
+    "input"
+  ],
+  "heading": "Web & HTML: input",
+  "category": "Web & HTML",
+  "majorVersion": "HTML Living Standard / Web APIs",
+  "status": "Authored reference draft",
+  "summary": "A form control whose behavior and validation depend on its input type.",
+  "syntax": "<input type=\"email\" name=\"email\" required>",
+  "lang": "html",
+  "parameters": "type, name, value, required, autocomplete and type-specific constraints.",
+  "returns": "A form-associated element; submission encodes its successful value.",
+  "minimalExample": "<label>Email <input type=\"email\" name=\"email\"></label>",
+  "productionExample": "<label for=\"work-email\">Work email</label>\n<input id=\"work-email\" name=\"email\" type=\"email\" autocomplete=\"email\" required maxlength=\"254\">",
+  "commonMistakes": [
+    "Using numeric input for identifiers that are not quantities, or missing labels."
+  ],
+  "securityPerformanceNotes": [
+    "Client constraints improve feedback but untrusted values still require server validation."
+  ],
+  "relatedLessonIds": [
+    "01.02.02"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/input"
+},
+{
+  "id": "web-fieldset",
+  "matchCategories": [
+    "Web & HTML"
+  ],
+  "matchTitles": [
+    "fieldset"
+  ],
+  "heading": "Web & HTML: fieldset",
+  "category": "Web & HTML",
+  "majorVersion": "HTML Living Standard / Web APIs",
+  "status": "Authored reference draft",
+  "summary": "Groups related controls with a shared accessible label supplied by legend.",
+  "syntax": "<fieldset><legend>Preferences</legend>…</fieldset>",
+  "lang": "html",
+  "parameters": "disabled, form and name; legend labels the group.",
+  "returns": "A semantic form group; disabled descendants generally do not submit, with the first legend exception.",
+  "minimalExample": "<fieldset><legend>Contact</legend><label><input type=\"radio\" name=\"contact\" value=\"email\">Email</label></fieldset>",
+  "productionExample": "<fieldset>\n  <legend>Notification frequency</legend>\n  <label><input type=\"radio\" name=\"frequency\" value=\"daily\" required>Daily</label>\n  <label><input type=\"radio\" name=\"frequency\" value=\"weekly\">Weekly</label>\n</fieldset>",
+  "commonMistakes": [
+    "Using visual headings alone for related radio buttons."
+  ],
+  "securityPerformanceNotes": [
+    "Native grouping improves navigation by assistive technology; never use disabled UI as authorization."
+  ],
+  "relatedLessonIds": [
+    "01.02.01"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/fieldset"
+},
+{
+  "id": "web-dialog",
+  "matchCategories": [
+    "Web & HTML"
+  ],
+  "matchTitles": [
+    "dialog"
+  ],
+  "heading": "Web & HTML: dialog",
+  "category": "Web & HTML",
+  "majorVersion": "HTML Living Standard / Web APIs",
+  "status": "Authored reference draft",
+  "summary": "Native dialog element for modal or non-modal interactions.",
+  "syntax": "dialog.showModal(); // on an HTMLDialogElement",
+  "lang": "html",
+  "parameters": "showModal(), show(), close(); open is reflected state.",
+  "returns": "Methods open or close the dialog; modal mode enters the top layer.",
+  "minimalExample": "<dialog id=\"confirm\"><p>Continue?</p><form method=\"dialog\"><button>Close</button></form></dialog>",
+  "productionExample": "<button id=\"open\">Review changes</button>\n<dialog id=\"review\" aria-labelledby=\"review-title\">\n  <h2 id=\"review-title\">Review changes</h2>\n  <form method=\"dialog\"><button autofocus>Close</button></form>\n</dialog>\n<script>document.querySelector('#open').addEventListener('click', () => document.querySelector('#review').showModal());</script>",
+  "commonMistakes": [
+    "Toggling open directly when a modal with focus handling is intended."
+  ],
+  "securityPerformanceNotes": [
+    "Test Escape, focus return and keyboard navigation; destructive operations need explicit confirmation and server checks."
+  ],
+  "relatedLessonIds": [
+    "01.02.06"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/dialog"
+},
+{
+  "id": "web-details",
+  "matchCategories": [
+    "Web & HTML"
+  ],
+  "matchTitles": [
+    "details"
+  ],
+  "heading": "Web & HTML: details",
+  "category": "Web & HTML",
+  "majorVersion": "HTML Living Standard / Web APIs",
+  "status": "Authored reference draft",
+  "summary": "A native disclosure widget with a summary and expandable content.",
+  "syntax": "<details><summary>More information</summary>…</details>",
+  "lang": "html",
+  "parameters": "open controls initial expanded state; summary provides the disclosure label.",
+  "returns": "An element with expanded/collapsed state and toggle events.",
+  "minimalExample": "<details><summary>Help</summary><p>Choose a plan.</p></details>",
+  "productionExample": "<details>\n  <summary>Technical requirements</summary>\n  <p>Use an HTTPS connection and a supported browser.</p>\n</details>",
+  "commonMistakes": [
+    "Putting the only required action or critical error message inside a collapsed disclosure."
+  ],
+  "securityPerformanceNotes": [
+    "Keep the summary keyboard-accessible and avoid unnecessarily recreating disclosure behavior with scripts."
+  ],
+  "relatedLessonIds": [
+    "01.02.06"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/details"
+},
+{
+  "id": "web-img",
+  "matchCategories": [
+    "Web & HTML"
+  ],
+  "matchTitles": [
+    "img"
+  ],
+  "heading": "Web & HTML: img",
+  "category": "Web & HTML",
+  "majorVersion": "HTML Living Standard / Web APIs",
+  "status": "Authored reference draft",
+  "summary": "Embeds an image with text alternatives and optional responsive source selection.",
+  "syntax": "<img src=\"/photo.jpg\" alt=\"Description\" width=\"640\" height=\"480\">",
+  "lang": "html",
+  "parameters": "src, alt, width, height, loading, srcset and sizes.",
+  "returns": "An image element; browser selects and decodes a resource.",
+  "minimalExample": "<img src=\"/logo.png\" alt=\"Academy\">",
+  "productionExample": "<img src=\"/diagram-640.png\" srcset=\"/diagram-640.png 640w, /diagram-1280.png 1280w\" sizes=\"(max-width: 700px) 100vw, 700px\" width=\"640\" height=\"360\" alt=\"Request flows from browser to server\">",
+  "commonMistakes": [
+    "Omitting meaningful alt text or making every image lazy-loaded including the LCP image."
+  ],
+  "securityPerformanceNotes": [
+    "Reserve dimensions to reduce layout shifts; use empty alt for purely decorative images."
+  ],
+  "relatedLessonIds": [
+    "01.03.07"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/img"
+},
+{
+  "id": "web-a",
+  "matchCategories": [
+    "Web & HTML"
+  ],
+  "matchTitles": [
+    "a"
+  ],
+  "heading": "Web & HTML: a",
+  "category": "Web & HTML",
+  "majorVersion": "HTML Living Standard / Web APIs",
+  "status": "Authored reference draft",
+  "summary": "Creates a hyperlink when href is present.",
+  "syntax": "<a href=\"/learn\">Curriculum</a>",
+  "lang": "html",
+  "parameters": "href, target, rel and download; href determines the destination.",
+  "returns": "A navigable link, not a button for local actions.",
+  "minimalExample": "<a href=\"#content\">Skip to content</a>",
+  "productionExample": "<a href=\"https://example.org/docs\" target=\"_blank\" rel=\"noopener noreferrer\">External documentation (opens in a new tab)</a>",
+  "commonMistakes": [
+    "Using href=\"#\" for buttons or building a URL from untrusted input without validation."
+  ],
+  "securityPerformanceNotes": [
+    "Use descriptive link text; allowlist permitted URL schemes and destinations as appropriate."
+  ],
+  "relatedLessonIds": [
+    "01.01.06"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/a"
+},
+{
+  "id": "web-urlsearchparams",
+  "matchCategories": [
+    "Web & HTML"
+  ],
+  "matchTitles": [
+    "URLSearchParams"
+  ],
+  "heading": "Web & HTML: URLSearchParams",
+  "category": "Web & HTML",
+  "majorVersion": "HTML Living Standard / Web APIs",
+  "status": "Authored reference draft",
+  "summary": "Parses and serializes URL query parameters using form-style encoding.",
+  "syntax": "new URLSearchParams(init)",
+  "lang": "js",
+  "parameters": "Query string, iterable pairs, record or another URLSearchParams; get, set, append and delete operate on entries.",
+  "returns": "URLSearchParams; get returns a string or null, getAll an array.",
+  "minimalExample": "const params = new URLSearchParams('q=css&page=2');\nconsole.log(params.get('q'));",
+  "productionExample": "const url = new URL('/search', 'https://example.org');\nurl.searchParams.set('q', searchTerm);\nurl.searchParams.set('page', '1');\n// Pass url to a request; validate the query server-side.",
+  "commonMistakes": [
+    "Concatenating raw input into a query or assuming set preserves duplicate values."
+  ],
+  "securityPerformanceNotes": [
+    "Never place credentials in query strings; validate pagination and filters on the server."
+  ],
+  "relatedLessonIds": [
+    "01.04.03"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams"
+},
+{
+  "id": "web-abortcontroller",
+  "matchCategories": [
+    "Web & HTML"
+  ],
+  "matchTitles": [
+    "AbortController"
+  ],
+  "heading": "Web & HTML: AbortController",
+  "category": "Web & HTML",
+  "majorVersion": "HTML Living Standard / Web APIs",
+  "status": "Authored reference draft",
+  "summary": "Coordinates cancellation of operations that observe an AbortSignal.",
+  "syntax": "const controller = new AbortController();",
+  "lang": "js",
+  "parameters": "signal is passed to an abort-aware operation; abort(reason?) signals cancellation.",
+  "returns": "AbortController with a signal; abort() itself returns undefined.",
+  "minimalExample": "const controller = new AbortController();\nconst pending = fetch('/api/tasks', { signal: controller.signal });\ncontroller.abort();\nawait pending.catch(() => {});",
+  "productionExample": "const controller = new AbortController();\nconst timer = setTimeout(() => controller.abort(), 5000);\ntry {\n  const response = await fetch('/api/tasks', { signal: controller.signal });\n  if (!response.ok) throw new Error('Request failed');\n  return await response.json();\n} finally { clearTimeout(timer); }",
+  "commonMistakes": [
+    "Reusing an already-aborted signal or assuming cancellation undoes a server mutation."
+  ],
+  "securityPerformanceNotes": [
+    "Clear timers and distinguish cancellation from genuine failure; retries need independent signals and safe semantics."
+  ],
+  "relatedLessonIds": [
+    "03.03.05"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/API/AbortController"
+},
+{
+  "id": "css-display",
+  "matchCategories": [
+    "CSS"
+  ],
+  "matchTitles": [
+    "display"
+  ],
+  "heading": "CSS: display",
+  "category": "CSS",
+  "majorVersion": "CSS",
+  "status": "Authored reference draft",
+  "summary": "Controls the outer and inner display behavior of an element.",
+  "syntax": "display: grid;",
+  "lang": "css",
+  "parameters": "Values include block, inline, flex, grid, contents and none.",
+  "returns": "A computed CSS display value controlling box generation and layout.",
+  "minimalExample": "nav { display: flex; }",
+  "productionExample": ".toolbar { display: flex; flex-wrap: wrap; gap: .75rem; align-items: center; }\n.toolbar > * { min-width: 0; }",
+  "commonMistakes": [
+    "Using display:none for content that should remain available to assistive technology."
+  ],
+  "securityPerformanceNotes": [
+    "DOM order and visual order should align; test hidden content and keyboard access."
+  ],
+  "relatedLessonIds": [
+    "02.02.01"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/CSS/display"
+},
+{
+  "id": "css-position",
+  "matchCategories": [
+    "CSS"
+  ],
+  "matchTitles": [
+    "position"
+  ],
+  "heading": "CSS: position",
+  "category": "CSS",
+  "majorVersion": "CSS",
+  "status": "Authored reference draft",
+  "summary": "Determines how an element is positioned and whether it participates in normal flow.",
+  "syntax": "position: sticky; top: 0;",
+  "lang": "css",
+  "parameters": "static, relative, absolute, fixed, sticky and inset properties.",
+  "returns": "A positioned box whose containing block and scroll ancestor depend on the mode.",
+  "minimalExample": "header { position: sticky; top: 0; }",
+  "productionExample": ".panel { position: relative; }\n.panel .close { position: absolute; inset-block-start: .5rem; inset-inline-end: .5rem; }\n.panel { padding-inline-end: 3rem; }",
+  "commonMistakes": [
+    "Expecting sticky to work without an inset or ignoring a scroll ancestor."
+  ],
+  "securityPerformanceNotes": [
+    "Avoid covering focused controls or text at high zoom; test overflow ancestors."
+  ],
+  "relatedLessonIds": [
+    "02.02.04"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/CSS/position"
+},
+{
+  "id": "css-z-index",
+  "matchCategories": [
+    "CSS"
+  ],
+  "matchTitles": [
+    "z-index"
+  ],
+  "heading": "CSS: z-index",
+  "category": "CSS",
+  "majorVersion": "CSS",
+  "status": "Authored reference draft",
+  "summary": "Controls stacking order within a stacking context, not globally across all elements.",
+  "syntax": "z-index: 10;",
+  "lang": "css",
+  "parameters": "auto or integer on positioned elements and flex/grid items.",
+  "returns": "A stack level in the relevant stacking context.",
+  "minimalExample": "header { position: relative; z-index: 2; }",
+  "productionExample": ".layout { isolation: isolate; }\n.sticky-header { position: sticky; top: 0; z-index: 10; }\n.popover { position: absolute; z-index: 20; }",
+  "commonMistakes": [
+    "Increasing z-index indefinitely when the element is trapped in a lower stacking context."
+  ],
+  "securityPerformanceNotes": [
+    "Document layering tokens; prefer native top-layer dialogs for modal UI."
+  ],
+  "relatedLessonIds": [
+    "02.02.04"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/CSS/z-index"
+},
+{
+  "id": "css-box-sizing",
+  "matchCategories": [
+    "CSS"
+  ],
+  "matchTitles": [
+    "box-sizing"
+  ],
+  "heading": "CSS: box-sizing",
+  "category": "CSS",
+  "majorVersion": "CSS",
+  "status": "Authored reference draft",
+  "summary": "Selects whether declared width and height include padding and border.",
+  "syntax": "box-sizing: border-box;",
+  "lang": "css",
+  "parameters": "content-box or border-box.",
+  "returns": "A sizing rule applied to the element's dimensions.",
+  "minimalExample": ".card { box-sizing: border-box; width: 200px; padding: 16px; }",
+  "productionExample": "*, *::before, *::after { box-sizing: border-box; }\n.card { width: 100%; max-width: 30rem; padding: 1rem; border: 1px solid; }",
+  "commonMistakes": [
+    "Calculating widths manually while forgetting borders and padding."
+  ],
+  "securityPerformanceNotes": [
+    "Use consistent sizing defaults and verify horizontal overflow at narrow widths."
+  ],
+  "relatedLessonIds": [
+    "02.01.04"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/CSS/box-sizing"
+},
+{
+  "id": "css-flex",
+  "matchCategories": [
+    "CSS"
+  ],
+  "matchTitles": [
+    "flex"
+  ],
+  "heading": "CSS: flex",
+  "category": "CSS",
+  "majorVersion": "CSS",
+  "status": "Authored reference draft",
+  "summary": "Shorthand controlling flex growth, shrinkage and base size.",
+  "syntax": "flex: 1 1 12rem;",
+  "lang": "css",
+  "parameters": "flex-grow, flex-shrink and flex-basis.",
+  "returns": "Computed flex item sizing in its parent's main axis.",
+  "minimalExample": ".item { flex: 1 1 0; }",
+  "productionExample": ".toolbar { display: flex; flex-wrap: wrap; gap: .5rem; }\n.search { flex: 1 1 14rem; min-width: 0; }\n.actions { flex: 0 0 auto; }",
+  "commonMistakes": [
+    "Assuming flex:1 always overcomes intrinsic minimum content size."
+  ],
+  "securityPerformanceNotes": [
+    "Use min-width:0 when appropriate and test zoom and long content."
+  ],
+  "relatedLessonIds": [
+    "02.02.01"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/CSS/flex"
+},
+{
+  "id": "css-gap",
+  "matchCategories": [
+    "CSS"
+  ],
+  "matchTitles": [
+    "gap"
+  ],
+  "heading": "CSS: gap",
+  "category": "CSS",
+  "majorVersion": "CSS",
+  "status": "Authored reference draft",
+  "summary": "Defines gutters between grid or flex items and multi-column content.",
+  "syntax": "gap: .5rem 1rem;",
+  "lang": "css",
+  "parameters": "row-gap and column-gap, one or two nonnegative lengths or percentages.",
+  "returns": "Spacing between tracks or items, not outside the container.",
+  "minimalExample": ".grid { display: grid; gap: 1rem; }",
+  "productionExample": ".cards { display: grid; grid-template-columns: repeat(auto-fit,minmax(min(100%, 16rem),1fr)); gap: clamp(.75rem,2vw,1.5rem); }",
+  "commonMistakes": [
+    "Using gap to replace all outer padding or assuming percentage gaps resolve identically in every layout."
+  ],
+  "securityPerformanceNotes": [
+    "Use spacing tokens and let containers own outer padding."
+  ],
+  "relatedLessonIds": [
+    "02.02.02"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/CSS/gap"
+},
+{
+  "id": "css-has",
+  "matchCategories": [
+    "CSS"
+  ],
+  "matchTitles": [
+    ":has()"
+  ],
+  "heading": "CSS: :has()",
+  "category": "CSS",
+  "majorVersion": "CSS",
+  "status": "Authored reference draft",
+  "summary": "Relational pseudo-class that selects an element based on matching relative selectors.",
+  "syntax": "article:has(> img) { … }",
+  "lang": "css",
+  "parameters": "A relative selector list anchored at the candidate element.",
+  "returns": "Matches elements satisfying at least one argument.",
+  "minimalExample": ".field:has(input:invalid) { border-color: crimson; }",
+  "productionExample": ".field:has(input:focus-visible) { outline: 2px solid currentColor; }\n.field:has(> input:user-invalid) .error { display: block; }",
+  "commonMistakes": [
+    "Using :has() as the only way to communicate an error or applying extremely broad selectors."
+  ],
+  "securityPerformanceNotes": [
+    "Scope selectors to components; include text errors and appropriate accessible associations."
+  ],
+  "relatedLessonIds": [
+    "02.03.06"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/CSS/%3Ahas"
+},
+{
+  "id": "css-transition",
+  "matchCategories": [
+    "CSS"
+  ],
+  "matchTitles": [
+    "transition"
+  ],
+  "heading": "CSS: transition",
+  "category": "CSS",
+  "majorVersion": "CSS",
+  "status": "Authored reference draft",
+  "summary": "Interpolates supported CSS property changes over a duration.",
+  "syntax": "transition: opacity 150ms ease;",
+  "lang": "css",
+  "parameters": "property, duration, timing function, delay and optional behavior.",
+  "returns": "Computed transition configuration, with animation when a supported value changes.",
+  "minimalExample": "button { transition: background-color 150ms ease; }",
+  "productionExample": ".panel { transition: opacity 150ms ease, transform 150ms ease; }\n@media (prefers-reduced-motion: reduce) { .panel { transition: none; } }",
+  "commonMistakes": [
+    "Using transition:all on layout-heavy components or hiding focus feedback."
+  ],
+  "securityPerformanceNotes": [
+    "Respect reduced-motion settings and profile expensive property changes."
+  ],
+  "relatedLessonIds": [
+    "02.03.04"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/CSS/transition"
+},
+{
+  "id": "javascript-const",
+  "matchCategories": [
+    "JavaScript"
+  ],
+  "matchTitles": [
+    "const"
+  ],
+  "heading": "JavaScript: const",
+  "category": "JavaScript",
+  "majorVersion": "ECMAScript",
+  "status": "Authored reference draft",
+  "summary": "Declares a block-scoped binding that cannot be reassigned.",
+  "syntax": "const value = expression;",
+  "lang": "js",
+  "parameters": "An identifier or binding pattern and required initializer.",
+  "returns": "A binding, not a guarantee that an object's contents are immutable.",
+  "minimalExample": "const count = 1;",
+  "productionExample": "const settings = { theme: 'light' };\nconst updated = { ...settings, theme: 'dark' };",
+  "commonMistakes": [
+    "Confusing immutable bindings with deeply immutable values."
+  ],
+  "securityPerformanceNotes": [
+    "Prefer const by default; avoid accidentally sharing mutable nested state."
+  ],
+  "relatedLessonIds": [
+    "03.01.01"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/const"
+},
+{
+  "id": "javascript-let",
+  "matchCategories": [
+    "JavaScript"
+  ],
+  "matchTitles": [
+    "let"
+  ],
+  "heading": "JavaScript: let",
+  "category": "JavaScript",
+  "majorVersion": "ECMAScript",
+  "status": "Authored reference draft",
+  "summary": "Declares a block-scoped binding that may be reassigned.",
+  "syntax": "let count = 0;",
+  "lang": "js",
+  "parameters": "An identifier or binding pattern; optional initializer in normal declarations.",
+  "returns": "A mutable lexical binding; access before initialization throws.",
+  "minimalExample": "let count = 0;\ncount += 1;",
+  "productionExample": "let attempts = 0;\nwhile (attempts < 3) {\n  attempts += 1;\n  if (await attemptOperation()) break;\n}",
+  "commonMistakes": [
+    "Relying on access before initialization or using mutable global state for requests."
+  ],
+  "securityPerformanceNotes": [
+    "Keep reassignment local and bounded; retries require safe operation semantics."
+  ],
+  "relatedLessonIds": [
+    "03.01.01"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/let"
+},
+{
+  "id": "javascript-async",
+  "matchCategories": [
+    "JavaScript"
+  ],
+  "matchTitles": [
+    "async"
+  ],
+  "heading": "JavaScript: async",
+  "category": "JavaScript",
+  "majorVersion": "ECMAScript",
+  "status": "Authored reference draft",
+  "summary": "Declares a function that always returns a promise, enabling await within its body.",
+  "syntax": "async function load() { … }",
+  "lang": "js",
+  "parameters": "Ordinary function parameters; await is allowed in the body.",
+  "returns": "Promise resolved from the return value or rejected by a thrown error.",
+  "minimalExample": "async function count() { return 3; }",
+  "productionExample": "async function getTask(id) {\n  const response = await fetch('/api/tasks/' + encodeURIComponent(id));\n  if (!response.ok) throw new Error('Load failed');\n  return response.json();\n}",
+  "commonMistakes": [
+    "Forgetting to handle rejected promises or assuming async automatically makes CPU-heavy code nonblocking."
+  ],
+  "securityPerformanceNotes": [
+    "Bound I/O and propagate errors explicitly; validate remote response data."
+  ],
+  "relatedLessonIds": [
+    "03.03.03"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function"
+},
+{
+  "id": "javascript-await",
+  "matchCategories": [
+    "JavaScript"
+  ],
+  "matchTitles": [
+    "await"
+  ],
+  "heading": "JavaScript: await",
+  "category": "JavaScript",
+  "majorVersion": "ECMAScript",
+  "status": "Authored reference draft",
+  "summary": "Suspends the enclosing async function until a promise or value is settled.",
+  "syntax": "const result = await expression;",
+  "lang": "js",
+  "parameters": "A value, promise or thenable; permitted in async functions and modules at top level.",
+  "returns": "Fulfillment value, or throws the rejection reason.",
+  "minimalExample": "const value = await Promise.resolve(42);",
+  "productionExample": "const [account, preferences] = await Promise.all([loadAccount(), loadPreferences()]);\n// Independent operations start together; handle rejection at the caller.",
+  "commonMistakes": [
+    "Serially awaiting independent work or expecting await to block all JavaScript execution."
+  ],
+  "securityPerformanceNotes": [
+    "Limit concurrency for large collections; use a deadline for remote calls."
+  ],
+  "relatedLessonIds": [
+    "03.03.03"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/await"
+},
+{
+  "id": "javascript-array-map",
+  "matchCategories": [
+    "JavaScript"
+  ],
+  "matchTitles": [
+    "Array.map"
+  ],
+  "heading": "JavaScript: Array.map",
+  "category": "JavaScript",
+  "majorVersion": "ECMAScript",
+  "status": "Authored reference draft",
+  "summary": "Transforms each present element of an array into an element of a new array.",
+  "syntax": "items.map((value, index, array) => result)",
+  "lang": "js",
+  "parameters": "Callback receives value, index and source array; optional thisArg.",
+  "returns": "New array of callback results, retaining holes in sparse arrays.",
+  "minimalExample": "const doubled = [1, 2].map(n => n * 2);",
+  "productionExample": "const publicTasks = tasks.map(({ id, title, done }) => ({ id, title, done }));",
+  "commonMistakes": [
+    "Using map purely for side effects or forgetting to return from a block callback."
+  ],
+  "securityPerformanceNotes": [
+    "Map does not perform authorization; project only approved fields at a trusted boundary."
+  ],
+  "relatedLessonIds": [
+    "03.01.06"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map"
+},
+{
+  "id": "javascript-array-filter",
+  "matchCategories": [
+    "JavaScript"
+  ],
+  "matchTitles": [
+    "Array.filter"
+  ],
+  "heading": "JavaScript: Array.filter",
+  "category": "JavaScript",
+  "majorVersion": "ECMAScript",
+  "status": "Authored reference draft",
+  "summary": "Creates a shallow new array of present elements passing a predicate.",
+  "syntax": "items.filter(value => predicate(value))",
+  "lang": "js",
+  "parameters": "Callback and optional thisArg; truthiness decides inclusion.",
+  "returns": "New array containing the selected values.",
+  "minimalExample": "const evens = [1, 2, 3].filter(n => n % 2 === 0);",
+  "productionExample": "const visibleTasks = tasks.filter(task => !task.archived && task.status === selectedStatus);",
+  "commonMistakes": [
+    "Expecting filter to modify the source or using client filtering to enforce access control."
+  ],
+  "securityPerformanceNotes": [
+    "Filter private records on the server before delivery; avoid repeated expensive passes when profiling warrants it."
+  ],
+  "relatedLessonIds": [
+    "03.01.06"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter"
+},
+{
+  "id": "javascript-array-reduce",
+  "matchCategories": [
+    "JavaScript"
+  ],
+  "matchTitles": [
+    "Array.reduce"
+  ],
+  "heading": "JavaScript: Array.reduce",
+  "category": "JavaScript",
+  "majorVersion": "ECMAScript",
+  "status": "Authored reference draft",
+  "summary": "Accumulates array elements into one result by repeatedly applying a reducer.",
+  "syntax": "items.reduce((acc, value) => next, initial)",
+  "lang": "js",
+  "parameters": "Reducer and optional initial accumulator; supplying an initial value handles empty arrays.",
+  "returns": "Final accumulator; throws on an empty array without an initial value.",
+  "minimalExample": "const total = [1, 2, 3].reduce((sum, n) => sum + n, 0);",
+  "productionExample": "const totals = orders.reduce((acc, order) => {\n  acc[order.status] = (acc[order.status] ?? 0) + 1;\n  return acc;\n}, Object.create(null));",
+  "commonMistakes": [
+    "Omitting the initial value or using reduce when a simpler loop is clearer."
+  ],
+  "securityPerformanceNotes": [
+    "Use validated grouping keys and avoid repeatedly copying large accumulators."
+  ],
+  "relatedLessonIds": [
+    "03.01.06"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce"
+},
+{
+  "id": "javascript-array-find",
+  "matchCategories": [
+    "JavaScript"
+  ],
+  "matchTitles": [
+    "Array.find"
+  ],
+  "heading": "JavaScript: Array.find",
+  "category": "JavaScript",
+  "majorVersion": "ECMAScript",
+  "status": "Authored reference draft",
+  "summary": "Returns the first array element whose predicate is truthy.",
+  "syntax": "items.find(value => predicate(value))",
+  "lang": "js",
+  "parameters": "Callback receives element, index and array; optional thisArg.",
+  "returns": "Matching value or undefined if none matches.",
+  "minimalExample": "const first = [3, 8, 10].find(n => n > 5);",
+  "productionExample": "const task = tasks.find(item => item.id === selectedId);\nif (!task) return showEmptyState();\nrenderTask(task);",
+  "commonMistakes": [
+    "Treating undefined as proof that an element with value undefined was not present."
+  ],
+  "securityPerformanceNotes": [
+    "Use findIndex when position matters; server authorization is separate from client lookup."
+  ],
+  "relatedLessonIds": [
+    "03.01.06"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find"
+},
+{
+  "id": "javascript-map",
+  "matchCategories": [
+    "JavaScript"
+  ],
+  "matchTitles": [
+    "Map"
+  ],
+  "heading": "JavaScript: Map",
+  "category": "JavaScript",
+  "majorVersion": "ECMAScript",
+  "status": "Authored reference draft",
+  "summary": "Key-value collection with arbitrary key types and insertion-order iteration.",
+  "syntax": "const map = new Map(entries);",
+  "lang": "js",
+  "parameters": "Iterable key/value pairs; set, get, has and delete.",
+  "returns": "Map instance; get returns value or undefined, set returns the map.",
+  "minimalExample": "const counts = new Map([['open', 2]]);",
+  "productionExample": "const byId = new Map(tasks.map(task => [task.id, task]));\nif (byId.has(id)) renderTask(byId.get(id));",
+  "commonMistakes": [
+    "Using object keys with bracket assignment on a Map or assuming get distinguishes missing from undefined."
+  ],
+  "securityPerformanceNotes": [
+    "Bound long-lived maps and remove stale entries; Map is not a serialized JSON format."
+  ],
+  "relatedLessonIds": [
+    "03.02.02"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map"
+},
+{
+  "id": "javascript-set",
+  "matchCategories": [
+    "JavaScript"
+  ],
+  "matchTitles": [
+    "Set"
+  ],
+  "heading": "JavaScript: Set",
+  "category": "JavaScript",
+  "majorVersion": "ECMAScript",
+  "status": "Authored reference draft",
+  "summary": "Collection of unique values using SameValueZero equality.",
+  "syntax": "const set = new Set(iterable);",
+  "lang": "js",
+  "parameters": "Optional iterable; add, has, delete and size.",
+  "returns": "Set instance retaining insertion order.",
+  "minimalExample": "const unique = [...new Set(['a', 'a', 'b'])];",
+  "productionExample": "const selected = new Set(selectedIds);\nconst visible = tasks.filter(task => selected.has(task.id));",
+  "commonMistakes": [
+    "Assuming separately created objects with equal fields deduplicate."
+  ],
+  "securityPerformanceNotes": [
+    "Use stable primitive keys for identity and bound long-lived sets."
+  ],
+  "relatedLessonIds": [
+    "03.02.02"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set"
+},
+{
+  "id": "javascript-json-parse",
+  "matchCategories": [
+    "JavaScript"
+  ],
+  "matchTitles": [
+    "JSON.parse"
+  ],
+  "heading": "JavaScript: JSON.parse",
+  "category": "JavaScript",
+  "majorVersion": "ECMAScript",
+  "status": "Authored reference draft",
+  "summary": "Parses JSON text into a JavaScript value.",
+  "syntax": "JSON.parse(text, reviver?)",
+  "lang": "js",
+  "parameters": "JSON string and optional reviver callback.",
+  "returns": "A value described by the JSON; malformed JSON throws SyntaxError.",
+  "minimalExample": "const value = JSON.parse('{\"count\":2}');",
+  "productionExample": "let raw;\ntry { raw = JSON.parse(requestText); } catch { throw new Error('Invalid JSON'); }\n// Pass raw to a runtime schema validator before accessing fields.",
+  "commonMistakes": [
+    "Treating parse as schema validation or merging unknown objects into privileged state."
+  ],
+  "securityPerformanceNotes": [
+    "Limit body size before parsing and validate allowed keys and values afterward."
+  ],
+  "relatedLessonIds": [
+    "03.02.06"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/parse"
+},
+{
+  "id": "javascript-json-stringify",
+  "matchCategories": [
+    "JavaScript"
+  ],
+  "matchTitles": [
+    "JSON.stringify"
+  ],
+  "heading": "JavaScript: JSON.stringify",
+  "category": "JavaScript",
+  "majorVersion": "ECMAScript",
+  "status": "Authored reference draft",
+  "summary": "Serializes supported JavaScript values into JSON text.",
+  "syntax": "JSON.stringify(value, replacer?, space?)",
+  "lang": "js",
+  "parameters": "Value, optional replacer function/array and indentation.",
+  "returns": "String or undefined for unsupported top-level values; cycles and ordinary BigInt values throw.",
+  "minimalExample": "const json = JSON.stringify({ done: false });",
+  "productionExample": "const dto = { id: task.id, title: task.title, done: task.done };\nreturn new Response(JSON.stringify(dto), { headers: { 'Content-Type': 'application/json' } });",
+  "commonMistakes": [
+    "Assuming serialization preserves Map, Set, undefined or every JavaScript type."
+  ],
+  "securityPerformanceNotes": [
+    "Project public fields explicitly; avoid exposing secrets and oversized payloads."
+  ],
+  "relatedLessonIds": [
+    "03.02.06"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify"
+},
+{
+  "id": "typescript-unknown",
+  "matchCategories": [
+    "TypeScript"
+  ],
+  "matchTitles": [
+    "unknown"
+  ],
+  "heading": "TypeScript: unknown",
+  "category": "TypeScript",
+  "majorVersion": "TypeScript",
+  "status": "Authored reference draft",
+  "summary": "Safe top type for values that must be narrowed before use.",
+  "syntax": "let input: unknown;",
+  "lang": "ts",
+  "parameters": "Any value can be assigned; use guards to access specific operations.",
+  "returns": "Compile-time type; no runtime validation is added.",
+  "minimalExample": "function length(x: unknown) { return typeof x === 'string' ? x.length : 0; }",
+  "productionExample": "function parseTitle(input: unknown): string {\n  if (typeof input !== 'string' || input.trim().length === 0) throw new Error('Invalid title');\n  return input.trim();\n}",
+  "commonMistakes": [
+    "Replacing unknown with any or asserting a remote payload to a trusted type."
+  ],
+  "securityPerformanceNotes": [
+    "Validate untrusted values at the server boundary; type annotations are erased."
+  ],
+  "relatedLessonIds": [
+    "04.03.02"
+  ],
+  "canonicalUrl": "https://www.typescriptlang.org/docs/handbook/2/functions.html#unknown"
+},
+{
+  "id": "typescript-keyof",
+  "matchCategories": [
+    "TypeScript"
+  ],
+  "matchTitles": [
+    "keyof"
+  ],
+  "heading": "TypeScript: keyof",
+  "category": "TypeScript",
+  "majorVersion": "TypeScript",
+  "status": "Authored reference draft",
+  "summary": "Produces the union of allowed property keys for an object type.",
+  "syntax": "type Keys = keyof T;",
+  "lang": "ts",
+  "parameters": "An object type; index signatures may widen the key union.",
+  "returns": "A compile-time property-key union.",
+  "minimalExample": "type Keys = keyof { id: string; done: boolean };",
+  "productionExample": "function get<T, K extends keyof T>(obj: T, key: K): T[K] {\n  return obj[key];\n}",
+  "commonMistakes": [
+    "Assuming keyof lists actual runtime keys or always returns only string keys."
+  ],
+  "securityPerformanceNotes": [
+    "Validate user-supplied property selectors at runtime; do not expose arbitrary object fields."
+  ],
+  "relatedLessonIds": [
+    "04.02.02"
+  ],
+  "canonicalUrl": "https://www.typescriptlang.org/docs/handbook/2/keyof-types.html"
+},
+{
+  "id": "typescript-typeof",
+  "matchCategories": [
+    "TypeScript"
+  ],
+  "matchTitles": [
+    "typeof"
+  ],
+  "heading": "TypeScript: typeof",
+  "category": "TypeScript",
+  "majorVersion": "TypeScript",
+  "status": "Authored reference draft",
+  "summary": "Captures the static type of a variable or property in a type position.",
+  "syntax": "type Config = typeof config;",
+  "lang": "ts",
+  "parameters": "An identifier or property access supported in a type query.",
+  "returns": "A compile-time type, distinct from the runtime typeof operator.",
+  "minimalExample": "const value = { id: 1 };\ntype Value = typeof value;",
+  "productionExample": "const defaults = { pageSize: 20, sort: 'newest' as const };\ntype Defaults = typeof defaults;\nconst config: Defaults = { pageSize: 50, sort: 'newest' };",
+  "commonMistakes": [
+    "Using type-position typeof as a runtime schema or calling arbitrary expressions in a type query."
+  ],
+  "securityPerformanceNotes": [
+    "Keep static config types separate from validation of runtime overrides."
+  ],
+  "relatedLessonIds": [
+    "04.02.02"
+  ],
+  "canonicalUrl": "https://www.typescriptlang.org/docs/handbook/2/typeof-types.html"
+},
+{
+  "id": "typescript-satisfies",
+  "matchCategories": [
+    "TypeScript"
+  ],
+  "matchTitles": [
+    "satisfies"
+  ],
+  "heading": "TypeScript: satisfies",
+  "category": "TypeScript",
+  "majorVersion": "TypeScript",
+  "status": "Authored reference draft",
+  "summary": "Checks an expression against a type while retaining useful inferred information.",
+  "syntax": "expression satisfies TargetType",
+  "lang": "ts",
+  "parameters": "An expression and target type; the check is compile-time.",
+  "returns": "The expression's value with inference preserved subject to contextual typing.",
+  "minimalExample": "const colors = { primary: '#0088ff' } satisfies Record<string, string>;",
+  "productionExample": "type Role = 'reader' | 'editor';\nconst permissions = { reader: ['read'], editor: ['read', 'write'] } satisfies Record<Role, readonly string[]>;",
+  "commonMistakes": [
+    "Assuming satisfies validates incoming JSON or makes an object immutable."
+  ],
+  "securityPerformanceNotes": [
+    "Use it for authored configuration; enforce actual permissions on the server."
+  ],
+  "relatedLessonIds": [
+    "04.03.01"
+  ],
+  "canonicalUrl": "https://www.typescriptlang.org/docs/release-notes/typescript-4-9.html"
+},
+{
+  "id": "typescript-partial",
+  "matchCategories": [
+    "TypeScript"
+  ],
+  "matchTitles": [
+    "Partial"
+  ],
+  "heading": "TypeScript: Partial",
+  "category": "TypeScript",
+  "majorVersion": "TypeScript",
+  "status": "Authored reference draft",
+  "summary": "Makes all top-level properties of a type optional.",
+  "syntax": "type Patch = Partial<T>;",
+  "lang": "ts",
+  "parameters": "An object type T.",
+  "returns": "Mapped type with optional properties; not recursively partial.",
+  "minimalExample": "type Patch = Partial<{ title: string; done: boolean }>;",
+  "productionExample": "type Editable = { title: string; done: boolean };\nfunction merge(current: Editable, patch: Partial<Editable>): Editable {\n  return { ...current, ...patch };\n}",
+  "commonMistakes": [
+    "Applying Partial to an entire database entity and permitting updates to protected fields."
+  ],
+  "securityPerformanceNotes": [
+    "Use an explicit editable DTO and runtime allowlist; distinguish absent values from explicit undefined."
+  ],
+  "relatedLessonIds": [
+    "04.02.06"
+  ],
+  "canonicalUrl": "https://www.typescriptlang.org/docs/handbook/utility-types.html#partialtype"
+},
+{
+  "id": "typescript-pick",
+  "matchCategories": [
+    "TypeScript"
+  ],
+  "matchTitles": [
+    "Pick"
+  ],
+  "heading": "TypeScript: Pick",
+  "category": "TypeScript",
+  "majorVersion": "TypeScript",
+  "status": "Authored reference draft",
+  "summary": "Selects specified properties from an existing type.",
+  "syntax": "type Public = Pick<T, K>;",
+  "lang": "ts",
+  "parameters": "T and a key union K constrained to keyof T.",
+  "returns": "Object type containing the selected properties.",
+  "minimalExample": "type Public = Pick<{ id: string; secret: string }, 'id'>;",
+  "productionExample": "type User = { id: string; name: string; passwordHash: string };\ntype PublicUser = Pick<User, 'id' | 'name'>;\nfunction toPublic(user: User): PublicUser { return { id: user.id, name: user.name }; }",
+  "commonMistakes": [
+    "Assigning a full object to Pick and assuming runtime fields were removed."
+  ],
+  "securityPerformanceNotes": [
+    "Construct the public object explicitly before serialization."
+  ],
+  "relatedLessonIds": [
+    "04.02.06"
+  ],
+  "canonicalUrl": "https://www.typescriptlang.org/docs/handbook/utility-types.html#picktype-keys"
+},
+{
+  "id": "typescript-omit",
+  "matchCategories": [
+    "TypeScript"
+  ],
+  "matchTitles": [
+    "Omit"
+  ],
+  "heading": "TypeScript: Omit",
+  "category": "TypeScript",
+  "majorVersion": "TypeScript",
+  "status": "Authored reference draft",
+  "summary": "Creates a type excluding selected keys from an object type.",
+  "syntax": "type WithoutSecret = Omit<T, K>;",
+  "lang": "ts",
+  "parameters": "An object type and keys to omit.",
+  "returns": "Mapped type excluding the selected properties.",
+  "minimalExample": "type Safe = Omit<{ id: string; token: string }, 'token'>;",
+  "productionExample": "type Internal = { id: string; title: string; debug: string };\ntype Public = Omit<Internal, 'debug'>;\nfunction serialize(item: Internal): Public { return { id: item.id, title: item.title }; }",
+  "commonMistakes": [
+    "Assuming Omit removes fields from a runtime object or protects future sensitive additions."
+  ],
+  "securityPerformanceNotes": [
+    "For public responses prefer explicit field allowlists that fail safely when models grow."
+  ],
+  "relatedLessonIds": [
+    "04.02.06"
+  ],
+  "canonicalUrl": "https://www.typescriptlang.org/docs/handbook/utility-types.html#omittype-keys"
+},
+{
+  "id": "typescript-record",
+  "matchCategories": [
+    "TypeScript"
+  ],
+  "matchTitles": [
+    "Record"
+  ],
+  "heading": "TypeScript: Record",
+  "category": "TypeScript",
+  "majorVersion": "TypeScript",
+  "status": "Authored reference draft",
+  "summary": "Constructs an object type mapping a key union to a value type.",
+  "syntax": "type Lookup = Record<K, V>;",
+  "lang": "ts",
+  "parameters": "K must be a property-key type; V is the value type.",
+  "returns": "Mapped object type with the specified keys.",
+  "minimalExample": "type Flags = Record<'read' | 'write', boolean>;",
+  "productionExample": "type Status = 'open' | 'done';\nconst label: Record<Status, string> = { open: 'Open', done: 'Completed' };",
+  "commonMistakes": [
+    "Treating Record<string,T> as proof every arbitrary runtime key exists."
+  ],
+  "securityPerformanceNotes": [
+    "Use explicit unions or Map for dynamic keys and validate incoming lookup keys."
+  ],
+  "relatedLessonIds": [
+    "04.02.06"
+  ],
+  "canonicalUrl": "https://www.typescriptlang.org/docs/handbook/utility-types.html#recordkeys-type"
+},
+{
+  "id": "typescript-returntype",
+  "matchCategories": [
+    "TypeScript"
+  ],
+  "matchTitles": [
+    "ReturnType"
+  ],
+  "heading": "TypeScript: ReturnType",
+  "category": "TypeScript",
+  "majorVersion": "TypeScript",
+  "status": "Authored reference draft",
+  "summary": "Extracts the return type of a function type.",
+  "syntax": "type Result = ReturnType<typeof fn>;",
+  "lang": "ts",
+  "parameters": "A callable function type; overloaded functions use the last signature for inference.",
+  "returns": "Compile-time return type.",
+  "minimalExample": "type Result = ReturnType<() => number>;",
+  "productionExample": "function makeTask(id: string) { return { id, done: false }; }\ntype Task = ReturnType<typeof makeTask>;\nconst tasks: Task[] = [];",
+  "commonMistakes": [
+    "Expecting ReturnType to execute a function or unwrap an async result."
+  ],
+  "securityPerformanceNotes": [
+    "Use Awaited with async return types when appropriate; validate runtime responses separately."
+  ],
+  "relatedLessonIds": [
+    "04.02.06"
+  ],
+  "canonicalUrl": "https://www.typescriptlang.org/docs/handbook/utility-types.html#returntypetype"
+},
+{
+  "id": "typescript-awaited",
+  "matchCategories": [
+    "TypeScript"
+  ],
+  "matchTitles": [
+    "Awaited"
+  ],
+  "heading": "TypeScript: Awaited",
+  "category": "TypeScript",
+  "majorVersion": "TypeScript",
+  "status": "Authored reference draft",
+  "summary": "Models recursive promise-like unwrapping performed by await.",
+  "syntax": "type Resolved = Awaited<T>;",
+  "lang": "ts",
+  "parameters": "A type potentially containing Promise-like values.",
+  "returns": "The recursively unwrapped type; distributes over unions.",
+  "minimalExample": "type Value = Awaited<Promise<number>>;",
+  "productionExample": "async function load() { return { id: 'task-1' }; }\ntype Task = Awaited<ReturnType<typeof load>>;",
+  "commonMistakes": [
+    "Assuming Awaited converts runtime promises to synchronous values."
+  ],
+  "securityPerformanceNotes": [
+    "Keep rejection handling and cancellation explicit; static types do not model all failures."
+  ],
+  "relatedLessonIds": [
+    "04.02.06"
+  ],
+  "canonicalUrl": "https://www.typescriptlang.org/docs/handbook/utility-types.html#awaitedtype"
+},
+{
+  "id": "react-key",
+  "matchCategories": [
+    "React"
+  ],
+  "matchTitles": [
+    "key"
+  ],
+  "heading": "React: key",
+  "category": "React",
+  "majorVersion": "React 19",
+  "status": "Authored reference draft",
+  "summary": "Provides sibling identity so React can associate rendered elements with previous instances.",
+  "syntax": "<Item key={item.id} />",
+  "lang": "tsx",
+  "parameters": "Stable string or number key, unique among siblings; not delivered as a normal prop.",
+  "returns": "React element identity hint.",
+  "minimalExample": "const rows = items.map(item => <li key={item.id}>{item.title}</li>);",
+  "productionExample": "function TaskList({ tasks }) {\n  return <ul>{tasks.map(task => <TaskRow key={task.id} task={task} />)}</ul>;\n}",
+  "commonMistakes": [
+    "Using random keys or mutable array indices for reorderable data."
+  ],
+  "securityPerformanceNotes": [
+    "Use stable domain IDs to preserve state; keys are not authorization identifiers."
+  ],
+  "relatedLessonIds": [
+    "06.01.05"
+  ],
+  "canonicalUrl": "https://react.dev/learn/rendering-lists#keeping-list-items-in-order-with-key"
+},
+{
+  "id": "react-usememo",
+  "matchCategories": [
+    "React"
+  ],
+  "matchTitles": [
+    "useMemo"
+  ],
+  "heading": "React: useMemo",
+  "category": "React",
+  "majorVersion": "React 19",
+  "status": "Authored reference draft",
+  "summary": "Caches the result of a pure calculation between renders when dependencies are unchanged.",
+  "syntax": "const result = useMemo(calculateValue, dependencies);",
+  "lang": "tsx",
+  "parameters": "Pure calculation and every reactive dependency used by it.",
+  "returns": "Calculated value; cache is a performance optimization, not semantic storage.",
+  "minimalExample": "const sorted = useMemo(() => [...items].sort(compare), [items, compare]);",
+  "productionExample": "function Search({ tasks, query }) {\n  const matching = useMemo(() => tasks.filter(t => t.title.includes(query)), [tasks, query]);\n  return <TaskList tasks={matching} />;\n}",
+  "commonMistakes": [
+    "Using useMemo to guarantee correctness or omitting dependencies."
+  ],
+  "securityPerformanceNotes": [
+    "Measure before adding memoization; avoid side effects during render."
+  ],
+  "relatedLessonIds": [
+    "06.05.06"
+  ],
+  "canonicalUrl": "https://react.dev/reference/react/useMemo"
+},
+{
+  "id": "react-usecallback",
+  "matchCategories": [
+    "React"
+  ],
+  "matchTitles": [
+    "useCallback"
+  ],
+  "heading": "React: useCallback",
+  "category": "React",
+  "majorVersion": "React 19",
+  "status": "Authored reference draft",
+  "summary": "Caches a function identity between renders while its reactive dependencies remain unchanged.",
+  "syntax": "const fn = useCallback(callback, dependencies);",
+  "lang": "tsx",
+  "parameters": "Function and dependency array; React does not call the callback for you.",
+  "returns": "Cached function reference.",
+  "minimalExample": "const onClose = useCallback(() => setOpen(false), []);",
+  "productionExample": "const addTask = useCallback((task) => {\n  setTasks(previous => [...previous, task]);\n}, []);\nreturn <TaskComposer onAdd={addTask} />;",
+  "commonMistakes": [
+    "Omitting dependencies to suppress rerenders or expecting the hook to invoke a callback."
+  ],
+  "securityPerformanceNotes": [
+    "Use stable references where profiling or dependency contracts justify them; avoid stale closure bugs."
+  ],
+  "relatedLessonIds": [
+    "06.05.06"
+  ],
+  "canonicalUrl": "https://react.dev/reference/react/useCallback"
+},
+{
+  "id": "react-usedeferredvalue",
+  "matchCategories": [
+    "React"
+  ],
+  "matchTitles": [
+    "useDeferredValue"
+  ],
+  "heading": "React: useDeferredValue",
+  "category": "React",
+  "majorVersion": "React 19",
+  "status": "Authored reference draft",
+  "summary": "Defers a value used by a lower-priority part of the UI while urgent updates remain responsive.",
+  "syntax": "const deferred = useDeferredValue(value);",
+  "lang": "tsx",
+  "parameters": "Value to defer; optional initial value in React 19.",
+  "returns": "Deferred version of the value; may lag during background rendering.",
+  "minimalExample": "const deferredQuery = useDeferredValue(query);",
+  "productionExample": "function Search({ tasks }) {\n  const [query, setQuery] = useState('');\n  const deferred = useDeferredValue(query);\n  return <><input aria-label=\"Search\" value={query} onChange={e => setQuery(e.target.value)} /><Results tasks={tasks} query={deferred} /></>;\n}",
+  "commonMistakes": [
+    "Treating deferred rendering as request debouncing or a fixed time delay."
+  ],
+  "securityPerformanceNotes": [
+    "Indicate stale results where useful; expensive child renders may need memoization."
+  ],
+  "relatedLessonIds": [
+    "06.04.04"
+  ],
+  "canonicalUrl": "https://react.dev/reference/react/useDeferredValue"
+},
+{
+  "id": "react-suspense",
+  "matchCategories": [
+    "React"
+  ],
+  "matchTitles": [
+    "Suspense"
+  ],
+  "heading": "React: Suspense",
+  "category": "React",
+  "majorVersion": "React 19",
+  "status": "Authored reference draft",
+  "summary": "Shows a fallback while supported descendants suspend during rendering.",
+  "syntax": "<Suspense fallback={<Loading />}>…</Suspense>",
+  "lang": "tsx",
+  "parameters": "fallback and children; suspension requires a compatible data source or lazy code.",
+  "returns": "A boundary that renders children or fallback.",
+  "minimalExample": "<Suspense fallback={<p>Loading…</p>}><LazyPanel /></Suspense>",
+  "productionExample": "function Dashboard() {\n  return <main><h1>Dashboard</h1><Suspense fallback={<p role=\"status\">Loading activity…</p>}><ActivityPanel /></Suspense></main>;\n}",
+  "commonMistakes": [
+    "Assuming Suspense automatically detects ordinary fetches in effects or replaces error boundaries."
+  ],
+  "securityPerformanceNotes": [
+    "Design boundaries around meaningful regions; do not reveal protected content before authorization."
+  ],
+  "relatedLessonIds": [
+    "06.04.07"
+  ],
+  "canonicalUrl": "https://react.dev/reference/react/Suspense"
+},
+{
+  "id": "next.js-page-tsx",
+  "matchCategories": [
+    "Next.js"
+  ],
+  "matchTitles": [
+    "page.tsx"
+  ],
+  "heading": "Next.js: page.tsx",
+  "category": "Next.js",
+  "majorVersion": "Next.js 16 App Router",
+  "status": "Authored reference draft",
+  "summary": "A page special file defines route UI for an App Router segment.",
+  "syntax": "export default function Page() { return <main>Page</main>; }",
+  "lang": "tsx",
+  "parameters": "Default component export; dynamic params and searchParams are asynchronous in Next.js 16 page props.",
+  "returns": "Rendered route content.",
+  "minimalExample": "export default function Page() { return <h1>Home</h1>; }",
+  "productionExample": "export default async function Page({ params }: { params: Promise<{ id: string }> }) {\n  const { id } = await params;\n  const task = await loadAuthorizedTask(id);\n  return <main><h1>{task.title}</h1></main>;\n}",
+  "commonMistakes": [
+    "Assuming route params are trusted or forgetting to await them."
+  ],
+  "securityPerformanceNotes": [
+    "Authorize on the server and keep secrets out of client modules."
+  ],
+  "relatedLessonIds": [
+    "07.01.02"
+  ],
+  "canonicalUrl": "https://nextjs.org/docs/app/api-reference/file-conventions/page"
+},
+{
+  "id": "next.js-layout-tsx",
+  "matchCategories": [
+    "Next.js"
+  ],
+  "matchTitles": [
+    "layout.tsx"
+  ],
+  "heading": "Next.js: layout.tsx",
+  "category": "Next.js",
+  "majorVersion": "Next.js 16 App Router",
+  "status": "Authored reference draft",
+  "summary": "A layout special file wraps route segments with shared UI.",
+  "syntax": "export default function Layout({ children }: { children: React.ReactNode }) { return children; }",
+  "lang": "tsx",
+  "parameters": "children plus supported route parameters; root layout includes html and body.",
+  "returns": "Shared route UI; layouts persist across compatible client navigations.",
+  "minimalExample": "export default function Layout({ children }: { children: React.ReactNode }) { return <section>{children}</section>; }",
+  "productionExample": "export default function DashboardLayout({ children }: { children: React.ReactNode }) {\n  return <div><nav aria-label=\"Dashboard\">Dashboard links</nav><main>{children}</main></div>;\n}",
+  "commonMistakes": [
+    "Expecting a persistent layout to re-read every query parameter or serve as the only authorization check."
+  ],
+  "securityPerformanceNotes": [
+    "Check authorization close to data access and mutations; avoid duplicated main landmarks."
+  ],
+  "relatedLessonIds": [
+    "07.01.02"
+  ],
+  "canonicalUrl": "https://nextjs.org/docs/app/api-reference/file-conventions/layout"
+},
+{
+  "id": "next.js-loading-tsx",
+  "matchCategories": [
+    "Next.js"
+  ],
+  "matchTitles": [
+    "loading.tsx"
+  ],
+  "heading": "Next.js: loading.tsx",
+  "category": "Next.js",
+  "majorVersion": "Next.js 16 App Router",
+  "status": "Authored reference draft",
+  "summary": "Provides an instant loading UI for a route segment using a Suspense boundary.",
+  "syntax": "export default function Loading() { return <p>Loading…</p>; }",
+  "lang": "tsx",
+  "parameters": "Default component export without required parameters.",
+  "returns": "Fallback UI during supported segment loading.",
+  "minimalExample": "export default function Loading() { return <p role=\"status\">Loading…</p>; }",
+  "productionExample": "export default function Loading() {\n  return <section aria-busy=\"true\"><h1>Tasks</h1><p role=\"status\">Loading task list…</p></section>;\n}",
+  "commonMistakes": [
+    "Using loading UI as a replacement for empty, denied or error states."
+  ],
+  "securityPerformanceNotes": [
+    "Avoid layout shifts and excessive animation; never expose private skeleton data."
+  ],
+  "relatedLessonIds": [
+    "07.01.04"
+  ],
+  "canonicalUrl": "https://nextjs.org/docs/app/api-reference/file-conventions/loading"
+},
+{
+  "id": "next.js-route-ts",
+  "matchCategories": [
+    "Next.js"
+  ],
+  "matchTitles": [
+    "route.ts"
+  ],
+  "heading": "Next.js: route.ts",
+  "category": "Next.js",
+  "majorVersion": "Next.js 16 App Router",
+  "status": "Authored reference draft",
+  "summary": "Defines HTTP route handlers in the App Router.",
+  "syntax": "export async function GET(request: Request) { return Response.json({ ok: true }); }",
+  "lang": "ts",
+  "parameters": "Named HTTP method exports; Request and optional route context.",
+  "returns": "Response or Promise<Response> for the requested method.",
+  "minimalExample": "export function GET() { return Response.json({ status: 'ok' }); }",
+  "productionExample": "export async function GET(request: Request) {\n  const session = await authenticate(request);\n  if (!session) return Response.json({ error: 'Unauthorized' }, { status: 401 });\n  return Response.json(await listAuthorizedTasks(session.userId));\n}",
+  "commonMistakes": [
+    "Treating route handlers as trusted internal calls or returning sensitive data from an unauthenticated GET."
+  ],
+  "securityPerformanceNotes": [
+    "Validate inputs, enforce object-level access and set appropriate cache policy for private data."
+  ],
+  "relatedLessonIds": [
+    "07.02.05"
+  ],
+  "canonicalUrl": "https://nextjs.org/docs/app/api-reference/file-conventions/route"
+},
+{
+  "id": "next.js-dynamic-segments",
+  "matchCategories": [
+    "Next.js"
+  ],
+  "matchTitles": [
+    "dynamic segments"
+  ],
+  "heading": "Next.js: dynamic segments",
+  "category": "Next.js",
+  "majorVersion": "Next.js 16 App Router",
+  "status": "Authored reference draft",
+  "summary": "Maps bracketed route folders to URL parameters.",
+  "syntax": "app/tasks/[id]/page.tsx",
+  "lang": "tsx",
+  "parameters": "Dynamic segment names; catch-all segments use [...name] and optional catch-all [[...name]].",
+  "returns": "Matched route parameters, read asynchronously in current page props.",
+  "minimalExample": "export default async function Page({ params }: { params: Promise<{ id: string }> }) { return <p>{(await params).id}</p>; }",
+  "productionExample": "export default async function Page({ params }: { params: Promise<{ id: string }> }) {\n  const { id } = await params;\n  if (!isValidTaskId(id)) notFound();\n  const task = await findTaskForCurrentUser(id);\n  if (!task) notFound();\n  return <h1>{task.title}</h1>;\n}",
+  "commonMistakes": [
+    "Assuming an identifier from the URL proves ownership."
+  ],
+  "securityPerformanceNotes": [
+    "Validate route identifiers, authorize record access and encode generated URL segments."
+  ],
+  "relatedLessonIds": [
+    "07.01.03"
+  ],
+  "canonicalUrl": "https://nextjs.org/docs/app/api-reference/file-conventions/dynamic-routes"
+},
+{
+  "id": "next.js-link",
+  "matchCategories": [
+    "Next.js"
+  ],
+  "matchTitles": [
+    "Link"
+  ],
+  "heading": "Next.js: Link",
+  "category": "Next.js",
+  "majorVersion": "Next.js 16 App Router",
+  "status": "Authored reference draft",
+  "summary": "Extends anchor navigation with Next.js client-side routing and prefetch behavior.",
+  "syntax": "<Link href=\"/learn\">Learn</Link>",
+  "lang": "tsx",
+  "parameters": "href, children and optional navigation/prefetch options.",
+  "returns": "A link element with framework navigation behavior.",
+  "minimalExample": "import Link from 'next/link';\nexport default function Nav() { return <Link href=\"/learn\">Learn</Link>; }",
+  "productionExample": "import Link from 'next/link';\nfunction TaskLinks({ tasks }) {\n  return <ul>{tasks.map(task => <li key={task.id}><Link href={'/tasks/' + encodeURIComponent(task.id)}>{task.title}</Link></li>)}</ul>;\n}",
+  "commonMistakes": [
+    "Using Link for button actions or accepting an arbitrary URL from untrusted input."
+  ],
+  "securityPerformanceNotes": [
+    "Keep meaningful anchor text, preserve native navigation semantics and validate destinations."
+  ],
+  "relatedLessonIds": [
+    "07.01.06"
+  ],
+  "canonicalUrl": "https://nextjs.org/docs/app/api-reference/components/link"
 }
 ];
 

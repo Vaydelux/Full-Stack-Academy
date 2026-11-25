@@ -405,7 +405,7 @@
     "test:forms-query-draft-preview": "node --test tests/forms-query-draft-preview.test.mjs",
     "qualify:p8:nest-integrity": "npm ci --prefix examples/p8-nest-integrity && npm test --prefix examples/p8-nest-integrity",
     "test:p8-ui": "node --test tests/p8-lesson-neighbors.test.mjs tests/bounded-child.test.mjs",
-    "test:p8-reference": "node --experimental-strip-types --test tests/p8-reference-search.test.mjs tests/p8-reference-catalog.test.mjs tests/reference-links.test.mjs tests/reference-links-integration.test.mjs",
+    "test:p8-reference": "node --experimental-strip-types --test tests/p8-reference-search.test.mjs tests/p8-reference-catalog.test.mjs tests/reference-links.test.mjs tests/reference-links-integration.test.mjs tests/reference-quality.test.mjs tests/f14-reference-expansion.test.mjs",
     "test:p8-learning": "node --test tests/p8-editorial-readiness.test.mjs tests/p8-source-evidence.test.mjs tests/p8-p1-editorial-parity.test.mjs examples/p8-conditional-write/server.test.mjs examples/p8-conditional-write/boundaries.test.mjs",
     "test:forms-query-p1-content": "node --test tests/forms-query-p1-content.test.mjs",
     "status:forms-query-p1": "node scripts/forms-query-p1-report.mjs --json",
