@@ -52,6 +52,20 @@ The corresponding module exercises **TenantSearch: tenant isolation, ranking, st
 
 For a production implementation, document the secret-owner or principal, durability plan, error and recovery policy, rate/resource bounds, privacy guarantees, observability without sensitive payloads, and the credential/version-rotation procedure.
 
+## Applied engineering walkthrough
+
+Choose a search engine based on measured requirements, not the number of features in its marketing material. PostgreSQL may be sufficient for a relational workload; a separate engine adds synchronization, capacity, deployment and authorization boundaries. Typo tolerance, filters and ranking quality should be evaluated against the same corpus.
+
+### Diagnose the concrete failure
+
+Use one synthetic corpus and a labeled query set to compare intended relevance and tenant isolation. Plan a measured evaluation of database FTS and candidate external engines without provisioning paid resources. Record index freshness and failure behavior as well as latency.
+
+### Independent exercise and evidence
+
+Write a decision record with workload, relevance criteria, infrastructure cost, security boundaries and migration triggers. Verify current official engine capabilities before a live comparison.
+
+**Qualification boundary:** These are practice instructions, not recorded results. Preserve existing specifications and laboratory contracts. Qualify actual external services separately using authorized disposable infrastructure.
+
 ## Knowledge check
 
 1. Which authenticated actor, external sender, or tenant owns the data in this scenario?
