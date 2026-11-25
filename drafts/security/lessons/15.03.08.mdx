@@ -42,6 +42,20 @@ Document both a permitted happy path and a rejected adversarial path. Integratio
 
 A passing UI check or source-only checklist cannot establish secure production behavior. An observed negative test and reviewed trust boundary are essential.
 
+## Applied engineering walkthrough
+
+API hardening combines several independent controls. Authorization restricts resources, parameterization protects SQL syntax and safe diagnostics prevent accidental disclosure. A passing validation test cannot substitute for a denied foreign write or a database constraint test.
+
+### Diagnose the concrete failure
+
+Run the existing synthetic API acceptance cases for authorized and unauthorized operations. Inspect exact public response fields and persisted state after each denied mutation. Exercise punctuation in a normal search and verify no fake credential appears in captured diagnostics.
+
+### Independent exercise and evidence
+
+Prepare a control matrix identifying where each enforcement occurs, which tests exercise it and what live database/browser evidence remains absent. Record independent positive and negative outcomes rather than a single overall security score.
+
+**Qualification boundary:** These are practice instructions, not recorded audit results. Use synthetic data and authorized disposable infrastructure. Preserve existing laboratory contracts and publication status.
+
 ## Knowledge check
 
 1. Which input is attacker-controlled?
