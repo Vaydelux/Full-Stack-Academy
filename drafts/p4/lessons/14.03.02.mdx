@@ -68,6 +68,20 @@ Supabase Auth anonymous sign-ins can use the authenticated Postgres role; TO aut
 
 RLS applies subject to PostgreSQL roles, table ownership, policy composition and operation type. In an exposed schema, verify grants and RLS together. For writes, review INSERT WITH CHECK and UPDATE USING/WITH CHECK, not just SELECT. In Supabase, do not use user-editable `user_metadata` as authority for privileged roles. A service-role client may bypass RLS; it must not be used to repair a client permission error.
 
+## Applied persistence walkthrough
+
+The authenticated role describes the database request role, not ownership of every row. auth.uid obtains the identity from the request context and can return NULL without an authenticated identity. A role-targeted owner predicate constrains the result; the explicit non-null check makes the intended boundary clear. Anonymous sign-ins can still use the authenticated role, so verify any stronger identity requirement separately.
+
+### Diagnose the concrete failure
+
+Compare a request without a session, one with a valid synthetic user and one attempting another user's ID. Verify the query uses the actual caller's context rather than a privileged service key. Check that user-editable metadata cannot alter access and that no broad policy overrides the expected restriction.
+
+### Independent exercise and evidence
+
+Design a policy for resources available only to verified members, not just anyone in the authenticated role. Decide which current membership or session attributes are authoritative. Record allowed and denied IDs and the verified role context.
+
+**Qualification boundary:** These are acceptance instructions, not recorded results. Use an isolated Supabase environment and real non-bypass caller roles. Preserve the existing starter and solution; source review cannot certify row policies or authorization.
+
 ## Bug Hunt and regression matrix
 
 1. Predict the disclosure caused by the starter: The starter gives any caller in the authenticated Postgres role access to all tasks and ignores row ownership.
