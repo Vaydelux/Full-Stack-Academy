@@ -45,3 +45,10 @@ test('root application compiler excludes independent staged teaching labs withou
  const scripts=json('package.json').scripts;
  for(const gate of ['qualify:forms-query:rhf-browser','qualify:forms-query:query-browser','test:forms-query-rhf-candidates','test:forms-query-query-candidates']) assert.ok(scripts[gate],gate);
 });
+
+test('dynamic field array prose renders the React key as literal inline code',()=>{
+ const source=read('drafts/forms-query/lessons/09.02.04.mdx');
+ const prose=source.split('\n').filter(line=>/^(?:\*\*What breaks|1\. \*\*Reproduce)/.test(line));
+ assert.equal(prose.length,2);
+ for(const line of prose) assert.ok(line.includes('`key={index}`'));
+});
