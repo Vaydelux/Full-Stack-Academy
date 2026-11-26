@@ -36,3 +36,12 @@ test('publication audit requires the nested trust boundary rather than root depe
  assert.match(source,/Nested npm lock does not match or authenticate/);
  assert.match(source,/node_modules\/['"]\+dep/);
 });
+
+test('root application compiler excludes independent staged teaching labs without weakening strictness',()=>{
+ const config=json('tsconfig.json');
+ assert.equal(config.compilerOptions.strict,true);
+ for(const directory of ['drafts/forms-query','release-candidates/forms-query','examples/forms-query-vertical/react-client']) assert.ok(config.exclude.includes(directory),directory);
+ assert.ok(config.include.includes('**/*.tsx'));
+ const scripts=json('package.json').scripts;
+ for(const gate of ['qualify:forms-query:rhf-browser','qualify:forms-query:query-browser','test:forms-query-rhf-candidates','test:forms-query-query-candidates']) assert.ok(scripts[gate],gate);
+});
