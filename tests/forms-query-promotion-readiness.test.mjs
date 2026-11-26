@@ -58,8 +58,8 @@ test('RHF/Query learning packages stay in the locked nested exercise workspace',
 
 test('source audit invalidates review evidence when RHF lesson/UI files change',()=>{
  const program=fs.readFileSync(new URL('../scripts/forms-query-promotion-readiness.mjs',import.meta.url),'utf8');
- assert.match(program,/e\.sourceSha256===rhfReviewFingerprint\(\)/);
- assert.match(program,/obsolete RHF lesson\/UI fingerprint/);
+ assert.match(program,/e\.sourceSha256===\(moduleId==='09\.02'\?rhfReviewFingerprint\(\):queryReviewFingerprint\(\)\)/);
+ assert.match(program,/obsolete Forms\/Query lesson\/UI fingerprint/);
 });
 
 

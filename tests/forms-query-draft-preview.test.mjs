@@ -63,7 +63,7 @@ test('project roadmap links to local previews and preserves GitHub source inspec
  assert.match(project,/isPublishedLesson\(topic\.id\) \? '\/learn\/' \+ topic\.id/);
  assert.match(project,/Published lesson/);
  assert.match(project,/View MDX source/);
- assert.match(project,/do not grant course progress/);
+ assert.match(project,/do\s+not grant course progress/);
 });
 test('each preview MDX imports only the existing trusted lesson components',()=>{
  for(const id of ids){

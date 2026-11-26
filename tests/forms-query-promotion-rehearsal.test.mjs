@@ -33,5 +33,6 @@ test('schema fixture cannot masquerade as human accessibility evidence',()=>{
  assert.match(source,/preparedWrites\('2000-01-01'\)/);
  assert.match(source,/No Node24, npm, Chromium or actual human accessibility verification performed/);
  assert.match(source,/if\(!fs\.existsSync\(local\(evidencePath\)\)\)/);
- assert.match(source,/const reviewer=humanEvidence\(\)/);
+ assert.match(source,/const reviewer=mode==='--review'\?\{date:REVIEW_FIXTURE_DATE,sourceSha256:rhfReviewFingerprint\(\)\}:humanEvidence\(\);/);
+ assert.match(source,/assertP1Checkout\(root,\{reviewOnly:mode==='--review',\.\.\.\(mode==='--apply'\?\{evidencePath\}:\{\}\)\}\)/);
 });
