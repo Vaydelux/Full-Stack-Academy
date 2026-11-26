@@ -20,6 +20,8 @@ test('all eight published RHF articles have live instructions without changing t
   assert.ok(published.includes('labId="lab.react.forms-query-'+slug+'"'));
   assert.deepEqual(fences(published),fences(candidate),id+' changed instructor/starter TSX');
   assert.equal((published.match(/<LessonStep\b/g)||[]).length,3);
+  assert.deepEqual([...published.matchAll(/^<LessonStep\b[^\n]*?\bfile="([^"]+)"/gm)].map(m=>m[1]),['starter/solution.tsx','solution/solution.tsx','lab.json'].map(file=>'labs/forms-query-'+slug+'/'+file),id+' projected asset paths');
+  assert.ok(!published.includes('drafts/forms-query/labs/'+slug+'/'),id+' retains draft asset path');
   assert.equal((published.match(/<KnowledgeCheck\b/g)||[]).length,1);
   assert.equal((published.match(/<LabGate\b/g)||[]).length,1);
   assert.ok(candidate.includes('This candidate is **not published**'),id+' original draft was unexpectedly edited');
