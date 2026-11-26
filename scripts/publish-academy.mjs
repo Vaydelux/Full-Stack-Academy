@@ -13,13 +13,14 @@ import {buildPersistencePlan} from './persistence-release-plan.mjs';
 import {nextPublication,projectSqlModule} from './f9-publication.mjs';
 import {extendedModules,projectPersistenceReview} from './persistence-review-projection.mjs';
 import {evidenceTemplate,checkEvidence} from './persistence-review-evidence.mjs';
+import {collectPgReviewArtifacts} from './pg-review-artifacts.mjs';
 const root=resolve(dirname(fileURLToPath(import.meta.url)),'..');
 const read=p=>readFileSync(join(root,p),'utf8'),json=p=>JSON.parse(read(p)),exists=p=>existsSync(join(root,p));
 const git=args=>execFileSync('git',args,{cwd:root,encoding:'utf8',timeout:30000,maxBuffer:32*1024*1024});
 const hash=s=>createHash('sha256').update(s).digest('hex');
 const args=process.argv.slice(2);
 const supported=['12.01','12.02',...extendedModules],mode=args[0],requested=args[1];
-assert.ok(args.length===1&&['--next','--check-projections'].includes(mode)||args.length===2&&mode==='--project'&&supported.includes(requested)||args.length===3&&mode==='--check-review-evidence'&&extendedModules.includes(requested),'Usage: --next | --check-projections | --project MODULE_ID | --check-review-evidence MODULE_ID DIRECTORY (review only)');
+assert.ok(args.length===1&&['--next','--check-projections'].includes(mode)||args.length===2&&mode==='--project'&&supported.includes(requested)||args.length===3&&(mode==='--check-review-evidence'&&extendedModules.includes(requested)||mode==='--collect-runtime-evidence'&&['12.04','12.05'].includes(requested)),'Usage: --next | --check-projections | --project MODULE_ID | --check-review-evidence MODULE_ID DIRECTORY | --collect-runtime-evidence 12.04|12.05 DIRECTORY (review only)');
 const project=(m,catalog)=>extendedModules.includes(m.id)?projectPersistenceReview(m,catalog,read,exists):projectSqlModule(m,catalog,read,exists);
 const catalog=json('data/curriculum.json'),checkpoint=json('docs/checkpoint.json').snapshot;
 const section=read('src/lib/academy/authored-content.ts').match(/export const AUTHORED_LESSON_IDS\s*=\s*\[([^\]]+)\]/);assert.ok(section,'Missing authored IDs');
@@ -39,7 +40,7 @@ else{
   // Recompute after checkout preflight; no copy into the source tree and no apply command.
   const m=buildPersistencePlan(catalog,read).modules.find(x=>x.id===requested),p=project(m,catalog);assert.equal(p.fingerprint,projections[0].fingerprint);
   const manifest={schemaVersion:2,commit:head,moduleId:m.id,sourceFingerprint:m.fingerprint,projectionFingerprint:p.fingerprint,orderedNext:next.next?.id??null,eligibleByOrder:next.next?.id===m.id,reviewFixtureDate:'2000-01-01',files:[...p.writes].map(([path,body])=>({path,sha256:hash(body),preimageSha256:exists(path)?hash(read(path)):null})),...(p.records?{obligations:p.records}:{}),runtimeExecuted:false,publicationApproved:false,applicable:false};
-  if(mode==='--check-review-evidence'){
+  if(['--check-review-evidence','--collect-runtime-evidence'].includes(mode)){
    const directory=realpathSync(resolve(args[2]));
    assert.ok(lstatSync(resolve(args[2])).isDirectory(),'Use a real review directory');
    const rel=relative(realpathSync(root),directory);assert.ok(isAbsolute(rel)||rel==='..'||rel.startsWith('..'+sep),'Review directory must be outside checkout');
@@ -49,6 +50,9 @@ else{
    };
    assert.deepEqual(JSON.parse(checked('manifest.json').toString('utf8')),manifest,'Manifest/source drift; regenerate at current HEAD');
    for(const [path,body] of p.writes)assert.equal(hash(checked('overlay/'+path)),hash(body),'Overlay drift '+path);
+   if(mode==='--collect-runtime-evidence'){
+    const result=collectPgReviewArtifacts({root,directory,manifest,module:m,projection:p,read,verifyCheckout:()=>{clean();assert.equal(git(['rev-parse','HEAD']).trim(),head);}});console.log(JSON.stringify(result,null,2));process.exit(0);
+   }
    const result=checkEvidence(evidenceTemplate(m.id,m.fingerprint,p),JSON.parse(checked('evidence.json').toString('utf8')),name=>checked('artifacts/'+name),new Date().toISOString().slice(0,10));
    clean();assert.equal(git(['rev-parse','HEAD']).trim(),head);console.log(JSON.stringify(result,null,2));process.exit(0);
   }

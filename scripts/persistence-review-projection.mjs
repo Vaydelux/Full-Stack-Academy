@@ -7,11 +7,12 @@ const sqlKind=k=>['sql-contract','single-session-sql-semantics'].includes(k);
 const familyKinds={'13.01':'manual-toolchain','13.02':'manual-prisma-integration','13.03':'manual-prisma-integration','13.04':'manual-prisma-supabase-integration','14.01':'manual-supabase-local','14.02':'manual-supabase-auth','14.03':'manual-rls-positive-negative','14.04':'manual-storage-realtime-integration'};
 const performanceTopics=new Set(['12.04.01','12.04.05','12.04.07','12.04.08']);
 const restoreTopics=new Set(['12.05.01','12.05.07','12.05.08']);
+const operationalObligations={'12.05.01':['pitr-recovery'],'12.05.02':['replica-replay-failure'],'12.05.05':['least-privilege-denial'],'12.05.06':['pooler-load-session-compatibility'],'12.05.07':['role-extension-compatibility'],'12.05.08':['ownership-recovery-reconciliation']};
 export function topicObligations(t){
  const courseModule=t.id.slice(0,5);assert.ok(extendedModules.includes(courseModule));assert.match(t.id,/^1[234]\.0[1-5]\.0[1-8]$/);
  if(courseModule==='12.03')assert.equal(t.kind,'single-session-sql-semantics');else if(courseModule.startsWith('12.'))assert.ok(['sql-contract','manual-evidence'].includes(t.kind));else assert.equal(t.kind,familyKinds[courseModule]);
  const sql=sqlKind(t.kind),concurrent=courseModule==='12.03',twoUsers=['14.03','14.04'].includes(courseModule);assert.equal(t.requiresSeparateConcurrencyReview===true,concurrent);if(twoUsers)assert.equal(t.requiresTwoAuthenticatedUsers,true);
- const runtime=[...(sql?['semantic-red-green']:[]),...(concurrent?['two-session-concurrency']:[]),...(performanceTopics.has(t.id)?['measured-performance']:[]),...(restoreTopics.has(t.id)?['logical-restore']:[]),...(!sql?['topic-specific-manual-runtime']:[]),...(twoUsers?['two-authenticated-users']:[])];
+ const runtime=[...(sql?['semantic-red-green']:[]),...(concurrent?['two-session-concurrency']:[]),...(performanceTopics.has(t.id)?['measured-performance']:[]),...(restoreTopics.has(t.id)?['logical-restore']:[]),...(!sql?['topic-specific-manual-runtime']:[]),...(operationalObligations[t.id]??[]),...(twoUsers?['two-authenticated-users']:[])];
  const supplemental=concurrent||performanceTopics.has(t.id)?'npm run qualify:postgresql:extended -- '+t.id:restoreTopics.has(t.id)?'npm run qualify:postgresql:restore':courseModule.startsWith('13.')?'npm run qualify:p4:prisma':courseModule.startsWith('14.')?'npm run qualify:p4:supabase':null;
  return {sql,concurrent,twoUsers,runtime,supplemental,executableTopicWrapper:sql,manualRequired:!sql||concurrent};
 }
