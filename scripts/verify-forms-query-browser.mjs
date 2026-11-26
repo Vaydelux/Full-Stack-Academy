@@ -8,6 +8,7 @@ import { createTaskApi } from '../examples/forms-query-vertical/task-api.mjs';
 import { spawn, spawnSync } from 'node:child_process';
 import { mkdtemp, readFile, rm } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
+import { createRequire } from 'node:module';
 import { tmpdir, platform } from 'node:os';
 import path from 'node:path';
 import { classifyTaskBrowserPage } from './forms-query-browser-navigation.mjs';
@@ -131,6 +132,7 @@ async function qualify() {
   const profile = await mkdtemp(path.join(tmpdir(), 'academy-local-browser-'));
   const server = createTaskApi();
   let child;
+  let hostedBrowser;
   let cdp;
   const results = [];
   try {
@@ -141,15 +143,30 @@ async function qualify() {
       '--disable-background-networking', '--remote-debugging-address=127.0.0.1',
       '--remote-debugging-port=0', '--user-data-dir=' + profile, 'about:blank',
     ];
-    if (rootUser && platform() === 'linux') args.unshift('--no-sandbox');
-    child = spawn(browser, args, { stdio: 'ignore', windowsHide: true });
-    child.on('error', () => {}); // handled through missing port/exit status below
-    const port = await waitForPort(profile, child);
-    const tabsResponse = await fetch('http://127.0.0.1:' + port + '/json/list');
-    if (!tabsResponse.ok) throw new Error('Could not inspect local Chromium tabs');
-    const tab = (await tabsResponse.json()).find(tab => tab.type === 'page');
-    if (!tab?.webSocketDebuggerUrl) throw new Error('No debuggable Chromium page found');
-    cdp = await connectCdp(tab.webSocketDebuggerUrl);
+    if (process.env.ACADEMY_NATIVE_BROWSER_DRIVER === 'playwright') {
+      // The hosted qualification already installs a pinned, isolated Playwright.
+      // Use its supported Chromium launch and real CDP transport, not a
+      // simulated DOM or a separately discovered DevToolsActivePort file.
+      const browserRoot = process.env.ACADEMY_BROWSER_ROOT;
+      if (!browserRoot || !path.isAbsolute(browserRoot)) throw new Error('Absolute ACADEMY_BROWSER_ROOT required for Playwright CDP');
+      const browserRequire = createRequire(path.join(browserRoot, 'package.json'));
+      const { chromium } = browserRequire('playwright');
+      hostedBrowser = await chromium.launch({ headless: true, executablePath: browser, timeout: 30_000 });
+      const context = await hostedBrowser.newContext();
+      const page = await context.newPage();
+      const session = await context.newCDPSession(page);
+      cdp = { send: (method, params = {}) => session.send(method, params), close: () => session.detach() };
+    } else {
+      if (rootUser && platform() === 'linux') args.unshift('--no-sandbox');
+      child = spawn(browser, args, { stdio: 'ignore', windowsHide: true });
+      child.on('error', () => {}); // handled through missing port/exit status below
+      const port = await waitForPort(profile, child);
+      const tabsResponse = await fetch('http://127.0.0.1:' + port + '/json/list');
+      if (!tabsResponse.ok) throw new Error('Could not inspect local Chromium tabs');
+      const tab = (await tabsResponse.json()).find(tab => tab.type === 'page');
+      if (!tab?.webSocketDebuggerUrl) throw new Error('No debuggable Chromium page found');
+      cdp = await connectCdp(tab.webSocketDebuggerUrl);
+    }
 
     await cdp.send('Page.enable');
     await cdp.send('Runtime.enable');
@@ -339,13 +356,14 @@ async function qualify() {
 
     const failed = results.filter(item => !item.passed);
     console.log(JSON.stringify({
-      browserBinary: browser, localOnly: true, nodeVersion: process.version,
+      browserBinary: browser, driver: hostedBrowser ? 'playwright-cdp' : 'websocket-cdp', localOnly: true, nodeVersion: process.version,
       checked: results.length, passed: results.length - failed.length, failed,
       scope: 'Native browser practice only; React RHF/Query runtime and screen reader not qualified',
     }, null, 2));
     if (failed.length) process.exitCode = 1;
   } finally {
-    try { cdp?.close(); } catch { /* already gone */ }
+    try { await cdp?.close(); } catch { /* already gone */ }
+    try { await hostedBrowser?.close(); } catch { /* already gone */ }
     if (child?.exitCode === null) {
       child.kill('SIGTERM');
       await Promise.race([

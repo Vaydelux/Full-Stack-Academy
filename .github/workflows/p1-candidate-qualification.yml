@@ -18,6 +18,7 @@ jobs:
     timeout-minutes: 75
     env:
       NEXT_TELEMETRY_DISABLED: '1'
+      ACADEMY_NATIVE_BROWSER_DRIVER: playwright
     steps:
       - uses: actions/checkout@v4
         with:
