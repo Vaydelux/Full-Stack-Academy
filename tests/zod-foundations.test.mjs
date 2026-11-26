@@ -70,5 +70,5 @@ test('all 19 canonical Zod reference topics now have authored, source-linked dra
   assert.ok(section.includes('"id": "'+row.id+'"')||section.includes("id: '"+row.id+"'"),row.id+' missing authored draft');
  }
  const cp=JSON.parse(read('docs/checkpoint.json'));
- assert.equal(cp.snapshot.authoredReferenceDrafts,38);
+ assert.equal(cp.snapshot.authoredReferenceDrafts,JSON.parse(read('data/reference-index.json')).entries.length,'all canonical references must remain authored');
 });
