@@ -1,0 +1,70 @@
+name: P1 candidate qualification
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, reopened, synchronize]
+    paths:
+      - '.github/workflows/p1-candidate-qualification.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: p1-candidate-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  p1:
+    if: github.event.pull_request.head.repo.full_name == github.repository && github.event.pull_request.head.ref == 'publication/p1-review-handoff'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 75
+    env:
+      NEXT_TELEMETRY_DISABLED: '1'
+      ACADEMY_BROWSER_ROOT: ${{ runner.temp }}/academy-browser
+      TMPDIR: ${{ runner.temp }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.11.1'
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            examples/forms-query-vertical/react-client/package-lock.json
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify exact candidate and clean checkout
+        env:
+          EXPECTED_HEAD: ${{ github.event.pull_request.head.sha }}
+        run: |
+          test "$(git rev-parse HEAD)" = "$EXPECTED_HEAD"
+          test -z "$(git status --porcelain=v1 --untracked-files=all)"
+          node --version
+          python --version
+      - name: Install isolated browser verifier
+        run: |
+          npm install --prefix "$ACADEMY_BROWSER_ROOT" --no-audit --no-fund --save-exact playwright@1.56.1
+          "$ACADEMY_BROWSER_ROOT/node_modules/.bin/playwright" install --with-deps chromium
+          browser=$(node -e 'const {createRequire}=require("node:module");const r=createRequire(process.env.ACADEMY_BROWSER_ROOT+"/package.json");process.stdout.write(r("playwright").chromium.executablePath())')
+          test -x "$browser"
+          printf 'ACADEMY_CHROME_BIN=%s\n' "$browser" >> "$GITHUB_ENV"
+      - name: Run P1 qualification only
+        shell: bash
+        run: |
+          set -o pipefail
+          npm run qualify:academy:local -- --run-p1 2>&1 | tee "$RUNNER_TEMP/p1-qualification.log"
+      - name: Retain automated qualification evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: p1-qualification-${{ github.event.pull_request.head.sha }}
+          path: |
+            ${{ runner.temp }}/p1-qualification.log
+            ${{ runner.temp }}/academy-qualification-*/receipt.json
+          if-no-files-found: warn
+          retention-days: 7
