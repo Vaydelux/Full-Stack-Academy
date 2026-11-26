@@ -19,7 +19,7 @@ const results=(id?[id]:MODULES).map(moduleId=>{
  const courseModule=audit.modules.find(m=>m.moduleId===moduleId);
  if(courseModule.published===8)return {moduleId,status:'already-published',changesWritten:0};
  assert.equal(courseModule.published,0);
- const pack=json('release-candidates/nestjs/'+moduleId+'/courseModule.json');
+ const pack=json('release-candidates/nestjs/'+moduleId+'/module.json');
  const writes=projectNestModule(pack,catalog,read,exists);
  return {moduleId,status:'source-rehearsal',...projectionFingerprint(writes),lessons:8,changesWritten:0};
 });
