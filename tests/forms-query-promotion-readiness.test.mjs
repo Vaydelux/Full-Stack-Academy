@@ -30,15 +30,15 @@ test('published totals remain source-derived rather than adding staged lessons',
  assert.ok(report.snapshot.labs>=337);
 });
 test('manual a11y evidence cannot be inferred from browser test source alone',()=>{
- for(const module of report.modules){
-  if(!module.a11y)assert.ok(module.blockers.some(b=>b.includes('screen-reader')));
+ for(const courseModule of report.modules){
+  if(!courseModule.a11y)assert.ok(courseModule.blockers.some(b=>b.includes('screen-reader')));
  }
 });
 test('each prepublication module has explicit actionable blockers',()=>{
- for(const module of report.modules){
-  assert.ok(Array.isArray(module.blockers));
-  assert.equal(module.ready,module.blockers.length===0);
-  if(module.published<module.total)assert.ok(module.blockers.some(b=>b.includes('Published MDX')));
+ for(const courseModule of report.modules){
+  assert.ok(Array.isArray(courseModule.blockers));
+  assert.equal(courseModule.ready,courseModule.blockers.length===0);
+  if(courseModule.published<courseModule.total)assert.ok(courseModule.blockers.some(b=>b.includes('Published MDX')));
  }
 });
 test('audit explicitly states that execution and assistive technology are out-of-scope',()=>{

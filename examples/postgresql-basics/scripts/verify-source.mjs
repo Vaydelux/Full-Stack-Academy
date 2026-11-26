@@ -16,12 +16,12 @@ export function checkSnippetParity(article,starter,solution){
 export function inspectPostgresDrafts(){
  const issues=[],entries=[];
  const problem=(id,message)=>issues.push({id,message});
- let curriculum,module;
- try{curriculum=json('data/curriculum.json');module=json('examples/postgresql-basics/module.json');}
+ let curriculum,courseModule;
+ try{curriculum=json('data/curriculum.json');courseModule=json('examples/postgresql-basics/module.json');}
  catch(error){return {status:'source-invalid',drafted:0,issues:[{id:'files',message:error.message}],realPostgresExecuted:false,canPublish:false};}
  const lessons=curriculum.lessons.filter(x=>x.moduleId==='12.01').sort((a,b)=>a.id.localeCompare(b.id));
- if(lessons.length!==8||module.lessons?.length!==8)problem('catalog','Expected eight canonical 12.01 lessons');
- if(module.moduleId!=='12.01'||module.readyToPublish!==false||module.runtimeQualification!=='not-run')problem('module','Premature release flags');
+ if(lessons.length!==8||courseModule.lessons?.length!==8)problem('catalog','Expected eight canonical 12.01 lessons');
+ if(courseModule.moduleId!=='12.01'||courseModule.readyToPublish!==false||courseModule.runtimeQualification!=='not-run')problem('module','Premature release flags');
  const used=new Set();
  for(let i=0;i<lessons.length;i++){
   const row=lessons[i],id=row.id,base='drafts/postgresql/lessons/'+id;
@@ -35,7 +35,7 @@ export function inspectPostgresDrafts(){
    if(meta.id!==id||meta.title!==row.title||meta.moduleId!=='12.01'||meta.trackId!=='12')problem(id,'Noncanonical lesson metadata');
    if(meta.sourceStatus!=='draft-unverified'||meta.runtimeQualification!=='not-run'||meta.reviewStatus!=='unreviewed')problem(id,'Premature lesson review or publication');
    if(meta.prerequisites?.length!==1||meta.prerequisites[0] !== (i?lessons[i-1].id:'10.04.08'))problem(id,'Wrong prerequisite chain');
-   if(module.lessons[i]?.id!==id||module.lessons[i]?.slug!==slug)problem(id,'Module content map differs');
+   if(courseModule.lessons[i]?.id!==id||courseModule.lessons[i]?.slug!==slug)problem(id,'Module content map differs');
    if(lab.lessonId!==id||lab.readyToPublish!==false||lab.requiresRealPostgresTest!==true||lab.sourceStatus!=='draft-unverified')problem(id,'Incorrect lab gate');
    if(lab.fixture!=='examples/postgresql-basics/fixture.sql')problem(id,'Wrong lab fixture');
    for(const name of ['starter','solution','acceptance'])if(lab[name]!==dir+'/'+name+'.sql')problem(id,'Wrong '+name+' SQL path');

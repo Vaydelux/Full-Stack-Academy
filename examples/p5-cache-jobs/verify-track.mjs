@@ -23,7 +23,7 @@ export function auditRedisTrack({catalog,load,publishedRegistry=''}) {
     if(!/https:\/\//.test(article))errors.push(topic.id+' missing source URL');
     if(publishedRegistry.includes(topic.id+'.mdx')||publishedRegistry.includes(topic.id+'.meta.json'))errors.push(topic.id+' prematurely published');
   }
-  for(const module of ['16.01','16.02','16.03','16.04'])if(counts[module]!==8)errors.push(module+' should have 8 topics');
+  for(const courseModule of ['16.01','16.02','16.03','16.04'])if(counts[courseModule]!==8)errors.push(courseModule+' should have 8 topics');
   return {ok:errors.length===0,errors,topics:topics.length,counts};
 }
 const file=fileURLToPath(import.meta.url);
