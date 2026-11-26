@@ -19,12 +19,23 @@ export async function verifyP1RouteState(page,base,id,published) {
   assert.equal(response?.status(),200,'P1 route failed: '+id);
   const robots=await page.locator('meta[name="robots"]').first().getAttribute('content');
   assert.match(robots??'',published?/^index(?:,|\s|$)/:/\bnoindex\b/,'Wrong robots directive: '+id);
-  const planned=page.getByText('Planned lesson — not published.',{exact:true});
+  // Every unpublished P1 topic has an authored reading edition. A bare
+  // planned placeholder is no longer the expected route for these IDs.
+  const reading=page.getByRole('article',{name:'Reading edition article'});
+  const guided=page.getByRole('article',{name:'Guided lesson'});
+  const completion=page.getByRole('region',{name:'Lesson completion'});
+  const noCredit=page.getByText('Editorial review pending · Lab not certified · No completion credit',{exact:true});
   if(published) {
-    await page.getByRole('article',{name:'Guided lesson'}).waitFor();
-    assert.equal(await planned.count(),0,'Published route still displays planned state: '+id);
+    await guided.waitFor({state:'visible'});
+    await completion.waitFor({state:'visible'});
+    assert.equal(await reading.count(),0,'Published route still displays reading edition: '+id);
+    assert.equal(await noCredit.count(),0,'Published route still displays no-credit notice: '+id);
   } else {
-    await planned.waitFor();
-    assert.equal(await page.getByRole('article',{name:'Guided lesson'}).count(),0,'Unpublished route exposes published article: '+id);
+    await reading.waitFor({state:'visible'});
+    await noCredit.waitFor({state:'visible'});
+    assert.equal(await guided.count(),0,'Unpublished route exposes published article: '+id);
+    assert.equal(await completion.count(),0,'Unpublished route exposes completion gate: '+id);
+    assert.equal(await page.getByRole('button',{name:'Mark complete',exact:true}).count(),0,'Unpublished route offers completion: '+id);
+    assert.equal(await reading.locator('iframe, form, script').count(),0,'Reading edition executes interactive content: '+id);
   }
 }

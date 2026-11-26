@@ -15,16 +15,21 @@ test('metadata accepts 338, 346 and 354 transitions',()=>{
 test('partial or reversed module publication is rejected',()=>{
   for(const names of [files('09.02').slice(1),files('09.03'),[...files('09.02'),...files('09.03').slice(1)]]) assert.throws(()=>p1ModuleStates(names));
 });
-function pageFixture({status=200,robots='noindex, nofollow',planned=true,article=false}={}) {
-  const element=present=>({count:async()=>Number(present),waitFor:async()=>assert.ok(present)});
-  return {goto:async()=>({status:()=>status}),locator:()=>({first:()=>({getAttribute:async()=>robots})}),getByText:()=>element(planned),getByRole:()=>element(article)};
+function pageFixture({status=200,robots='noindex, follow',reading=true,guided=false,completion=false,noCredit=true,markComplete=false,activeContent=false}={}) {
+  const element=present=>({count:async()=>Number(present),waitFor:async()=>assert.ok(present),locator:()=>element(activeContent)});
+  const roles={'Reading edition article':reading,'Guided lesson':guided,'Lesson completion':completion,'Mark complete':markComplete};
+  return {goto:async()=>({status:()=>status}),locator:()=>({first:()=>({getAttribute:async()=>robots})}),getByText:()=>element(noCredit),getByRole:(_role,{name})=>element(roles[name])};
 }
-test('route assertion accepts both expected states',async()=>{
+const publishedPage={robots:'index, follow',reading:false,guided:true,completion:true,noCredit:false};
+test('route assertion accepts reading edition and published lesson states',async()=>{
   await verifyP1RouteState(pageFixture(),'http://127.0.0.1:3000','09.02.01',false);
-  await verifyP1RouteState(pageFixture({robots:'index, follow',planned:false,article:true}),'http://127.0.0.1:3000','09.02.01',true);
+  await verifyP1RouteState(pageFixture(publishedPage),'http://127.0.0.1:3000','09.02.01',true);
 });
-test('route assertion rejects wrong robots, status, and contradictory content',async()=>{
-  for(const [overrides,published] of [[{status:404},false],[{robots:'index'},false],[{article:true},false],[{robots:'noindex',planned:false,article:true},true],[{robots:'index',article:true},true],[{robots:'index',planned:false},true]]) await assert.rejects(()=>verifyP1RouteState(pageFixture(overrides),'http://127.0.0.1:3000','09.02.01',published));
+test('route assertion rejects wrong robots, missing reading article, and credit leaks',async()=>{
+  for(const overrides of [{status:404},{robots:'index'},{reading:false},{noCredit:false},{guided:true},{completion:true},{markComplete:true},{activeContent:true}]) await assert.rejects(()=>verifyP1RouteState(pageFixture(overrides),'http://127.0.0.1:3000','09.02.01',false));
+});
+test('published route requires guided lesson and completion without contradictory reading state',async()=>{
+  for(const overrides of [{robots:'noindex'},{guided:false},{completion:false},{reading:true},{noCredit:true}]) await assert.rejects(()=>verifyP1RouteState(pageFixture({...publishedPage,...overrides}),'http://127.0.0.1:3000','09.02.01',true));
 });
 function fixture(t) {
   const dir=mkdtempSync(path.join(tmpdir(),'p1-review-'));t.after(()=>rmSync(dir,{recursive:true,force:true}));
