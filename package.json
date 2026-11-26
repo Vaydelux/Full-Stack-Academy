@@ -539,7 +539,9 @@
     "test:nestjs-projection": "node --test tests/nest-release-projection.test.mjs && npm run rehearse:nestjs",
     "promote:nestjs": "node scripts/promote-nest-module.mjs",
     "qualify:nestjs:browser": "node scripts/verify-academy-browser.mjs --nest-module",
-    "test:nestjs-promotion": "node --test tests/nest-promotion-guard.test.mjs tests/nest-review-preflight.test.mjs"
+    "test:nestjs-promotion": "node --test tests/nest-promotion-guard.test.mjs tests/nest-review-preflight.test.mjs",
+    "audit:mdx:expressions": "node scripts/audit-mdx-expressions.mjs",
+    "test:mdx:expressions": "node --test tests/mdx-expressions.test.mjs"
   },
   "dependencies": {
     "clsx": "^2.1.1",
