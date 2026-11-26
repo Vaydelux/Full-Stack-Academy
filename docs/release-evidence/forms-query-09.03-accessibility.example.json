@@ -17,5 +17,73 @@
     "09.03.07",
     "09.03.08"
   ],
-  "notes": "UNAPPROVED EXAMPLE. Do not claim review without actual keyboard/zoom/screen-reader observations."
+  "notes": "UNAPPROVED EXAMPLE. Do not claim review without actual keyboard/zoom/screen-reader observations.",
+  "browser": "",
+  "operatingSystem": "",
+  "observations": [
+    {
+      "id": "09.03.01",
+      "passed": false,
+      "keyboard": "",
+      "zoom200": "",
+      "screenReader": "",
+      "topicSpecific": ""
+    },
+    {
+      "id": "09.03.02",
+      "passed": false,
+      "keyboard": "",
+      "zoom200": "",
+      "screenReader": "",
+      "topicSpecific": ""
+    },
+    {
+      "id": "09.03.03",
+      "passed": false,
+      "keyboard": "",
+      "zoom200": "",
+      "screenReader": "",
+      "topicSpecific": ""
+    },
+    {
+      "id": "09.03.04",
+      "passed": false,
+      "keyboard": "",
+      "zoom200": "",
+      "screenReader": "",
+      "topicSpecific": ""
+    },
+    {
+      "id": "09.03.05",
+      "passed": false,
+      "keyboard": "",
+      "zoom200": "",
+      "screenReader": "",
+      "topicSpecific": ""
+    },
+    {
+      "id": "09.03.06",
+      "passed": false,
+      "keyboard": "",
+      "zoom200": "",
+      "screenReader": "",
+      "topicSpecific": ""
+    },
+    {
+      "id": "09.03.07",
+      "passed": false,
+      "keyboard": "",
+      "zoom200": "",
+      "screenReader": "",
+      "topicSpecific": ""
+    },
+    {
+      "id": "09.03.08",
+      "passed": false,
+      "keyboard": "",
+      "zoom200": "",
+      "screenReader": "",
+      "topicSpecific": ""
+    }
+  ]
 }

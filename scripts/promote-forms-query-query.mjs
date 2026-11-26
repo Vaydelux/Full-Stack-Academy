@@ -4,6 +4,7 @@
  * No GitHub Actions, Vercel, deployment or automatic commit/merge.
  */
 import fs from 'node:fs';
+import {validateP1HumanEvidence} from './p1-human-evidence.mjs';
 import path from 'node:path';
 import assert from 'node:assert/strict';
 import {spawnSync} from 'node:child_process';
@@ -76,7 +77,7 @@ function verifiedReview(){
  assert.match(review.sourceSha256??'',/^[a-f0-9]{64}$/);
  assert.equal(review.sourceSha256,queryReviewFingerprint(),'Human review is stale for the current Query lesson/SSR source');
  assert.deepEqual([...review.lessonIds].sort(),ids);
- return review;
+ return validateP1HumanEvidence(review,{moduleId:'09.03',sourceSha256:queryReviewFingerprint()});
 }
 export function preparedQueryWrites(reviewedAt){
  const files=new Map();

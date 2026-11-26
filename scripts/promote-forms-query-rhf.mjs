@@ -5,6 +5,7 @@
  * Never claim an automated screen-reader review.
  */
 import fs from 'node:fs';
+import {validateP1HumanEvidence} from './p1-human-evidence.mjs';
 import path from 'node:path';
 import assert from 'node:assert/strict';
 import {spawnSync} from 'node:child_process';
@@ -51,7 +52,7 @@ function humanEvidence(){
  assert.match(evidence.date,/^\d{4}-\d{2}-\d{2}$/);
  assert.ok(Number.isFinite(Date.parse(evidence.date)),'Invalid reviewer date');
  assert.deepEqual([...evidence.lessonIds].sort(),ids);
- return evidence;
+ return validateP1HumanEvidence(evidence,{moduleId:'09.02',sourceSha256:rhfReviewFingerprint()});
 }
 function sourcePlan(){
  const audited=inspectRHFPublicationCandidates();

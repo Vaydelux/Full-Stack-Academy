@@ -430,7 +430,7 @@
     "test:forms-query-dependency-boundary": "node --test tests/forms-query-dependency-boundary.test.mjs",
     "test:forms-query-lab-runner": "node --test tests/forms-query-lab-runner.test.mjs",
     "promote:forms-query:rhf": "node scripts/promote-forms-query-rhf.mjs",
-    "test:forms-query-promotion-command": "node --test tests/forms-query-promotion-command.test.mjs tests/p1-finalization.test.mjs",
+    "test:forms-query-promotion-command": "node --test tests/forms-query-promotion-command.test.mjs tests/p1-finalization.test.mjs tests/p1-human-evidence.test.mjs",
     "test:forms-query-promotion-rehearsal": "node --test tests/forms-query-promotion-rehearsal.test.mjs",
     "test:js-syntax": "node scripts/verify-js-syntax.mjs",
     "test:forms-query-review-fingerprint": "node --test tests/forms-query-review-fingerprint.test.mjs",
