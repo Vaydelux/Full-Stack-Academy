@@ -1,3 +1,4 @@
+import {p1ModuleStates} from '../scripts/p1-browser-state.mjs';
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import fs from 'node:fs';
@@ -55,8 +56,9 @@ test('HTTP capstone has listener, bounds, error envelopes and conditional cachin
  assert.ok(acceptance.includes("127.0.0.1"));
  assert.ok(acceptance.includes('server.close('));
 });
-test('planned React Hook Form remains unpublished and noindex boundary unchanged',()=>{
- assert.ok(!read('src/lib/academy/published.ts').includes('lessons/09.02.01.meta.json'));
+test('React Hook Form registry and browser publication boundary stay aligned',()=>{
+ const states=p1ModuleStates(fs.readdirSync(path.join(root,'src/content/lessons')));
+ assert.equal(read('src/lib/academy/published.ts').includes('lessons/09.02.01.meta.json'),states['09.02'],'Registry must match complete tracked RHF metadata');
  assert.ok(read('scripts/node-http-track-smoke.mjs').includes('09.02.01'));
  assert.ok(read('scripts/browser-smoke.mjs').includes('verifyNodeHttpTrack'));
 });

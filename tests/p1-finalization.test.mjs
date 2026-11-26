@@ -4,7 +4,7 @@ import { execFileSync } from 'node:child_process';
 import { mkdtempSync, writeFileSync, rmSync, mkdirSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
-import { p1ModuleStates, verifyP1RouteState } from '../scripts/p1-browser-state.mjs';
+import { p1ModuleStates, expectedP1Publication, verifyP1RouteState } from '../scripts/p1-browser-state.mjs';
 import { assertP1Checkout, markP1ReviewFixture, REVIEW_FIXTURE_STATUS } from '../scripts/p1-publication-review.mjs';
 const files=id=>Array.from({length:8},(_,i)=>id+'.'+String(i+1).padStart(2,'0')+'.meta.json');
 test('metadata accepts 338, 346 and 354 transitions',()=>{
@@ -58,4 +58,14 @@ test('postflight allows only expected changes and rejects changed HEAD',t=>{
 test('fixture checkpoint is explicitly not commit or deploy approval',()=>{
   const record={snapshot:{publishedLessons:346},status:'old',development:{old:true}};const next=markP1ReviewFixture(record,'09.02');
   assert.equal(next.status,REVIEW_FIXTURE_STATUS);assert.equal(next.development.state,REVIEW_FIXTURE_STATUS);assert.match(next.nextMilestone,/Never commit or deploy/);assert.deepEqual(next.snapshot,record.snapshot);assert.equal(record.status,'old');
+});
+
+test('legacy boundary is derived from metadata at all three atomic publication states',()=>{
+ const rhf=files('09.02'),query=files('09.03');
+ for(const [names,expected] of [[[],[false,false]],[rhf,[true,false]],[[...rhf,...query],[true,true]]]){
+  assert.deepEqual(['09.02.01','09.03.01'].map(id=>expectedP1Publication(id,names)),expected);
+ }
+ assert.throws(()=>expectedP1Publication('09.02.01',rhf.slice(1)));
+ assert.throws(()=>expectedP1Publication('09.03.01',query));
+ assert.throws(()=>expectedP1Publication('09.04.01',[]));
 });
