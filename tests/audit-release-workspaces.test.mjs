@@ -26,7 +26,7 @@ test('timeouts, signals, malformed JSON, registry errors and inconsistent counts
 test('each independent workspace receives runtime and full audits with explicit working directories', () => {
   const calls = [];
   const result = auditWorkspaces({ ...options, execute: (program, args, opts) => { calls.push({ program, args, opts }); return report(); } });
-  assert.equal(result.passed, true); assert.equal(calls.length, 4);
+  assert.equal(result.passed, true); assert.equal(calls.length, WORKSPACES.length * 2);
   for (const [i, workspace] of WORKSPACES.entries()) {
     assert.equal(calls[i * 2].opts.cwd, resolve(options.root, workspace));
     assert.equal(calls[i * 2 + 1].opts.cwd, resolve(options.root, workspace));
@@ -37,7 +37,7 @@ test('each independent workspace receives runtime and full audits with explicit 
 test('missing lock and execution errors cannot produce successful aggregate', () => {
   let calls = 0;
   const result = auditWorkspaces({ ...options, read: path => { if (path.includes('nestjs-vertical')) throw Error('missing'); return readFixture(path); }, execute: () => { calls++; throw Error('registry unavailable'); } });
-  assert.equal(calls, 2); assert.equal(result.passed, false);
+  assert.equal(calls, (WORKSPACES.length - 1) * 2); assert.equal(result.passed, false);
   assert.ok(result.results.some(r => r.reason === 'missing-or-invalid-lock'));
   assert.throws(() => auditWorkspaces({ ...options, npm: 'npm' }), /npm-cli/);
 });
@@ -56,4 +56,8 @@ test('manifest drift or missing direct integrity blocks audit before execution',
     assert.equal(result.results.length, WORKSPACES.length);
     assert.ok(result.results.every(item => item.reason === 'missing-or-invalid-lock'));
   }
+});
+
+test('release audits include every newly locked service workspace', () => {
+  assert.deepEqual(WORKSPACES, ['examples/forms-query-vertical/react-client', 'examples/nestjs-vertical', 'examples/p5-distributed-runtime', 'examples/p6-runtime/websocket']);
 });

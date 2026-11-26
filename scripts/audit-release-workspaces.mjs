@@ -5,7 +5,7 @@ import { dirname, resolve, join, isAbsolute, basename } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { inspectLockManifest } from '../examples/nestjs-vertical/scripts/lock-integrity.mjs';
 
-export const WORKSPACES = Object.freeze(['examples/forms-query-vertical/react-client', 'examples/nestjs-vertical']);
+export const WORKSPACES = Object.freeze(['examples/forms-query-vertical/react-client', 'examples/nestjs-vertical', 'examples/p5-distributed-runtime', 'examples/p6-runtime/websocket']);
 const severities = ['info', 'low', 'moderate', 'high', 'critical'];
 export function inspectWorkspaceAudit(result) {
   if (result?.error || result?.signal || ![0, 1].includes(result?.status)) return { passed: false, reason: 'audit-command-failed' };
