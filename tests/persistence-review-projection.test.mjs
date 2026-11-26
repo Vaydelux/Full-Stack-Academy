@@ -43,3 +43,10 @@ test('actual persistence manuscripts have valid quiz indices and distinct metada
   }
  }
 });
+
+test('operations never substitute logical restore for actual PITR, replication or other operator obligations',()=>{
+ const records=project(fixture('12.05')).records;
+ const expected={ '12.05.01':'pitr-recovery','12.05.02':'replica-replay-failure','12.05.05':'least-privilege-denial','12.05.06':'pooler-load-session-compatibility','12.05.07':'role-extension-compatibility','12.05.08':'ownership-recovery-reconciliation'};
+ for(const [id,kind] of Object.entries(expected)){const r=records.find(t=>t.id===id);assert.ok(r.runtime.includes(kind));assert.equal(r.executableTopicWrapper,false);assert.equal(r.manualRequired,true);}
+ assert.ok(records.find(t=>t.id==='12.05.01').runtime.includes('logical-restore'));
+});

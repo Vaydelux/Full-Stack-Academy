@@ -53,7 +53,7 @@ else{
    if(mode==='--collect-runtime-evidence'){
     const result=collectPgReviewArtifacts({root,directory,manifest,module:m,projection:p,read,verifyCheckout:()=>{clean();assert.equal(git(['rev-parse','HEAD']).trim(),head);}});console.log(JSON.stringify(result,null,2));process.exit(0);
    }
-   const result=checkEvidence(evidenceTemplate(m.id,m.fingerprint,p),JSON.parse(checked('evidence.json').toString('utf8')),name=>checked('artifacts/'+name),new Date().toISOString().slice(0,10));
+   const result=checkEvidence(evidenceTemplate(m.id,m.fingerprint,p),JSON.parse(checked('evidence.json').toString('utf8')),name=>checked('artifacts/'+name),new Date().toISOString().slice(0,10),manifest);
    clean();assert.equal(git(['rev-parse','HEAD']).trim(),head);console.log(JSON.stringify(result,null,2));process.exit(0);
   }
   const temp=realpathSync(tmpdir()),rel=relative(realpathSync(root),temp);assert.ok(isAbsolute(rel)||rel==='..'||rel.startsWith('..'+sep),'Temporary review must be outside checkout');

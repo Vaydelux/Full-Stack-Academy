@@ -29,11 +29,11 @@ export async function performanceCase(id,pool,s){
  const settings=Object.fromEntries((await c.query("SELECT name,setting||COALESCE(' '||unit,'') AS value FROM pg_settings WHERE name=ANY($1::text[])",[['work_mem','shared_buffers','effective_cache_size','random_page_cost','max_connections']])).rows.map(r=>[r.name,r.value]));
  const base={dataset,version,settings},finish=o=>validatePerformance(id,{...base,...o});
  if(id==='12.04.05'){
-  const scenarios=[];
+  const tasks=s+'.project_tasks';await c.query('CREATE TABLE '+tasks+'(project_id int REFERENCES '+table+'(id),tenant int NOT NULL,seq int NOT NULL,title text NOT NULL,PRIMARY KEY(project_id,seq)); INSERT INTO '+tasks+' SELECT id,tenant,n,payload FROM '+table+' CROSS JOIN generate_series(1,2) AS n; ANALYZE '+tasks);const scenarios=[];
   for(const parents of [1,10,100]){
-   const parentSql='SELECT id FROM '+table+' ORDER BY id LIMIT $1',childSql='SELECT id,tenant FROM '+table+' WHERE id=$1',batchSql='SELECT id,tenant FROM '+table+' WHERE id=ANY($1::int[]) ORDER BY id';
+   const parentSql='SELECT id FROM '+table+' WHERE tenant=7 ORDER BY id LIMIT $1',childSql='SELECT project_id,seq,title FROM '+tasks+' WHERE tenant=7 AND project_id=$1 ORDER BY seq',batchSql='SELECT project_id,seq,title FROM '+tasks+' WHERE tenant=7 AND project_id=ANY($1::int[]) ORDER BY project_id,seq';
    const measure=async batch=>{let calls=0,bytes=0;const query=async(sql,params)=>{calls++;const r=await c.query(sql,params);bytes+=Buffer.byteLength(JSON.stringify(r.rows));return r.rows;};const start=performance.now(),parent=await query(parentSql,[parents]),keys=parent.map(r=>r.id);const rows=[];if(batch)rows.push(...await query(batchSql,[keys]));else for(const key of keys)rows.push(...await query(childSql,[key]));return {calls,bytes,rows,ms:performance.now()-start,payloadBytes:Buffer.byteLength(JSON.stringify(rows))};};
-   const many=await measure(false),batch=await measure(true);assert.deepEqual(many.rows,batch.rows);assert.equal(many.rows.length,parents);
+   const many=await measure(false),batch=await measure(true);assert.deepEqual(many.rows,batch.rows);assert.equal(many.rows.length,parents*2);const joined=(await c.query('SELECT t.project_id,t.seq,t.title FROM (SELECT id,tenant FROM '+table+' WHERE tenant=7 ORDER BY id LIMIT $1) p JOIN '+tasks+' t ON t.project_id=p.id AND t.tenant=p.tenant ORDER BY t.project_id,t.seq',[parents])).rows;assert.deepEqual(joined,many.rows);
    scenarios.push({parents,manyQueries:many.calls,batchQueries:batch.calls,rows:many.rows.length,resultParity:true,manyBytes:many.payloadBytes,batchBytes:batch.payloadBytes,manyQueryResultBytes:many.bytes,batchQueryResultBytes:batch.bytes,manyMs:many.ms,batchMs:batch.ms});
   }
   return finish({scenarios,bytesScope:'UTF-8 JSON result payload, not network traffic'});

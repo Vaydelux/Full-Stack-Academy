@@ -4,7 +4,7 @@ Status: candidate implementation, not published. The current canonical queue sti
 
 ## Performance
 - 12.04.01: estimated-only negative control and three actual EXPLAIN (ANALYZE, BUFFERS) JSON plans.
-- 12.04.05: 1, 10 and 100 parent cases, measured client query counts, ordered result parity, JSON payload bytes (not on-wire traffic), and elapsed time.
+- 12.04.05: 1, 10 and 100 parent cases, two child tasks per parent, measured client query counts, ordered result parity with both batched and joined results, JSON payload bytes (not on-wire traffic), and elapsed time.
 - 12.04.07: committed updates/deletes, VACUUM outside a transaction, before/after statistics and measured duration; stats can lag.
 - 12.04.08: 20 actual plans before and after a targeted index, nearest-rank p50/p95 execution durations, total index bytes and result parity. No forced plan or speedup assertion.
 
@@ -19,6 +19,6 @@ Use a clean checkout, Node 24, genuine lockfiles, and disposable PostgreSQL 17+ 
 1. Run npm run publish:academy -- --project 12.04 (or 12.05).
 2. Use the returned external review directory with npm run publish:academy -- --collect-runtime-evidence 12.04 DIRECTORY (or 12.05).
 3. The collector checks the manifest, current checkout and every projected file, runs the supported real tests, then writes distinct source-bound logs. It refuses existing artifact paths. It reports hashes but does not fill the human review or mark approval.
-4. Complete genuine manual obligations, record observations, attach artifacts and fill the exported evidence.json with actual hashes. Use npm run publish:academy -- --check-review-evidence MODULE_ID DIRECTORY. That check verifies structure and artifact integrity only, not authenticity or release approval.
+4. Complete genuine manual obligations, record observations, attach artifacts and fill the exported evidence.json with actual hashes. Use npm run publish:academy -- --check-review-evidence MODULE_ID DIRECTORY. That check verifies structure, artifact integrity and exact commit/topic bindings and typed results for the supported collected artifacts, not authenticity or release approval.
 
 A separate guarded live projection/apply mechanism for these mixed-evidence modules is still required. The existing manual wrappers deliberately fail. No browser, accessibility, production recovery or deployment approval is implied. Do not commit credentials, synthetic review fixtures or operational logs containing secrets.
