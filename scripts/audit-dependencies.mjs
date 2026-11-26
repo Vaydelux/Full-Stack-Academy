@@ -1,3 +1,4 @@
+import { validateRootAudit } from './root-audit-report.mjs';
 import { spawnSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 const npm = process.platform === 'win32' ? 'npm.cmd' : 'npm';
@@ -21,9 +22,9 @@ function reviewedDevFinding(name, graph, ancestors = new Set()) {
 }
 let failed = false;
 for (const scope of ['runtime', 'all']) {
-  const result = spawnSync(npm, ['audit', '--json', ...(scope === 'runtime' ? ['--omit=dev'] : [])], { encoding: 'utf8', maxBuffer: 16 * 1024 * 1024, timeout: 120000, shell: process.platform === 'win32' });
+  const result = spawnSync(npm, ['audit', '--json', '--audit-level=high', ...(scope === 'runtime' ? ['--omit=dev'] : [])], { encoding: 'utf8', maxBuffer: 16 * 1024 * 1024, timeout: 120000, shell: process.platform === 'win32' });
   let report;
-  try { report = JSON.parse(result.stdout); } catch { console.error(scope, 'audit lookup failed', result.stderr); failed = true; continue; }
+  try { report = validateRootAudit(result); } catch { console.error(scope, 'audit lookup failed', result.stderr); failed = true; continue; }
   if (result.error || report.error || !report.metadata || !report.vulnerabilities) { console.error(scope, 'audit lookup unavailable', result.error ?? report.error); failed = true; continue; }
   console.log(scope, JSON.stringify(report.metadata.vulnerabilities));
   for (const [name, detail] of Object.entries(report.vulnerabilities)) {
