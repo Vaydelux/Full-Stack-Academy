@@ -21,3 +21,7 @@ References:
 - https://www.prisma.io/docs/orm/v7/prisma-client/queries/pagination
 - https://supabase.com/docs/guides/storage/security/access-control
 - https://supabase.com/docs/guides/storage/buckets/fundamentals
+
+## Repository-level follow-up
+
+The seed, keyset page and exact-title raw SQL exercises now execute through the verified-actor membership transaction instead of only using trusted direct Prisma Client calls. Reader seed attempts and nonmember cross-tenant page/raw access are denied before task access. The existing two-client optimistic contention exercise is preserved. Seven injected-client source tests passed on Node 22, including input bounds and parameter binding. Actual service execution is still pending; the wrappers do not demonstrate concurrent membership revocation or database-enforced RLS.
