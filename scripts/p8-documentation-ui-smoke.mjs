@@ -11,9 +11,21 @@ export async function verifyDocumentationUI({browser,base,assert}) {
       await page.getByRole('heading',{level:1,name:'NestJS: CanActivate'}).waitFor();
       const shell=page.locator('[data-doc-shell]');
       assert.ok(await shell.evaluate(el=>el.scrollWidth<=el.clientWidth+1),'Reference horizontal overflow at '+width);
+      // The current reference layout deliberately collapses its section outline.
+      // Open it through the actual user-facing disclosure, not a forced click.
+      const outline=page.locator('details').filter({has:page.locator('nav[aria-label="On this page"]')});
+      assert.equal(await outline.count(),1,'Expected one reference outline at '+width);
+      const summary=outline.locator('summary');
+      await summary.waitFor({state:'visible'});
+      assert.equal(await outline.evaluate(el=>el.open),false,'Outline must initially be collapsed');
+      await summary.focus();
+      await page.keyboard.press('Enter');
+      assert.equal(await outline.evaluate(el=>el.open),true,'Keyboard must open reference outline');
       const toc=page.getByRole('navigation',{name:'On this page'});
+      await toc.waitFor({state:'visible'});
       await toc.getByRole('link',{name:'Production example',exact:true}).click();
       assert.equal(new URL(page.url()).hash,'#production');
+      await page.locator('#production').getByRole('heading',{name:'Production example',exact:true}).waitFor({state:'visible'});
       const sidebar=page.getByRole('complementary',{name:'Reference categories'});
       if(width<1024){
         const toggle=sidebar.getByRole('button',{name:'Reference categories'});
@@ -30,9 +42,11 @@ export async function verifyDocumentationUI({browser,base,assert}) {
       await page.goto(base+'/learn/00.01.01');
       await page.getByRole('heading',{level:1}).waitFor();
       assert.ok(await page.locator('[data-doc-shell]').evaluate(el=>el.scrollWidth<=el.clientWidth+1),'Lesson horizontal overflow at '+width);
-      const lessons=page.getByRole('complementary',{name:'Available lessons'});
-      if(width<1024) await lessons.getByRole('button',{name:'Available lessons'}).click();
-      await lessons.locator('a[aria-current="page"]').waitFor();
+      const lessons=page.getByRole('complementary',{name:'Curriculum navigation'});
+      if(width<1024) await lessons.getByRole('button',{name:'Curriculum navigation'}).click();
+      const active=lessons.locator('a[aria-current="page"]');
+      await active.waitFor({state:'visible'});
+      assert.equal(await active.getAttribute('href'),'/learn/00.01.01');
       const adjacent=page.getByRole('navigation',{name:'Adjacent published lessons'});
       assert.equal(await adjacent.locator('a[rel="next"]').getAttribute('href'),'/learn/00.01.02');
       const skip=page.getByRole('link',{name:'Skip to article'});
