@@ -32,3 +32,32 @@ test('real Prisma generated client: tenant CRUD, permissions, constraints, rollb
   finally{await db.$disconnect();}
  }
 });
+
+test('real Prisma: repeatable seed, tenant filters, bounded keyset, raw parameters and concurrent writers',{timeout:60000},async()=>{
+ const connect=()=>new PrismaClient({adapter:new PrismaPg({connectionString:pgConfig(),connectionTimeoutMillis:5000})});
+ const a=connect(),b=connect(),prefix=randomUUID(),alpha=prefix+'-alpha',beta=prefix+'-beta';
+ const ids=['01','02','03','04','05'],title="literal ' OR '1'='1";
+ try{
+  const seed=()=>a.task.createMany({data:ids.map(id=>({tenantId:alpha,id,title:id==='03'?title:'Task '+id})),skipDuplicates:true});
+  assert.equal((await seed()).count,5);assert.equal((await seed()).count,0);
+  await b.task.create({data:{tenantId:beta,id:'03',title}});
+  assert.equal(await a.task.count({where:{tenantId:alpha}}),5);
+  assert.deepEqual(await a.task.findMany({where:{tenantId:alpha,title},select:{id:true}}),[{id:'03'}]);
+  assert.deepEqual(await a.task.findUnique({where:{tenantId_id:{tenantId:alpha,id:'03'}},select:{title:true}}),{title});
+  const page=after=>a.task.findMany({where:{tenantId:alpha,...(after===null?{}:{id:{gt:after}})},orderBy:{id:'asc'},take:2,select:{id:true}});
+  const seen=[];let after=null;
+  for(let n=0;n<4;n++){const rows=await page(after);if(!rows.length)break;seen.push(...rows.map(r=>r.id));after=rows.at(-1).id;}
+  assert.deepEqual(seen,ids);assert.deepEqual(await page(after),[]);
+  const exact=await a.$queryRaw`SELECT "id" FROM "Task" WHERE "tenantId"=${alpha} AND "title"=${title} ORDER BY "id"`;
+  assert.deepEqual(exact,[{id:'03'}]);
+  const absent=await a.$queryRaw`SELECT "id" FROM "Task" WHERE "tenantId"=${alpha} AND "title"=${"missing ' OR 1=1 --"}`;
+  assert.deepEqual(absent,[]);
+  const [left,right]=await Promise.all([a,b].map(db=>db.task.findUniqueOrThrow({where:{tenantId_id:{tenantId:alpha,id:'03'}}})));
+  assert.equal(left.version,1);assert.equal(right.version,1);
+  const results=await Promise.all([a,b].map((db,i)=>db.task.updateMany({where:{tenantId:alpha,id:'03',version:1},data:{title:'Winner '+i,version:{increment:1}}})));
+  assert.deepEqual(results.map(r=>r.count).sort(),[0,1]);
+  const final=await a.task.findUniqueOrThrow({where:{tenantId_id:{tenantId:alpha,id:'03'}}});
+  assert.equal(final.version,2);assert.equal(final.title,'Winner '+results.findIndex(r=>r.count===1));
+  assert.deepEqual(await b.task.findUnique({where:{tenantId_id:{tenantId:beta,id:'03'}},select:{title:true,version:true}}),{title,version:1});
+ }finally{try{await a.task.deleteMany({where:{tenantId:{in:[alpha,beta]}}});}finally{await Promise.all([a.$disconnect(),b.$disconnect()]);}}
+});

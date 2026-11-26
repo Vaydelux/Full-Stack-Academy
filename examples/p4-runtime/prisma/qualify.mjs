@@ -16,5 +16,5 @@ try{await client.connect();await preflightPg(client);}finally{await client.end()
 function run(args){const p=spawnSync(process.execPath,args,{cwd:root,env:process.env,stdio:'pipe',encoding:'utf8',timeout:120000,maxBuffer:4*1024*1024,windowsHide:true});assert.ok(!p.error&&!p.signal&&p.status===0,'Prisma qualification step failed: '+args[0]+' '+(args[1]??''));return p.stdout;}
 for(const args of [['validate'],['generate'],['migrate','deploy'],['migrate','status']])run(['node_modules/prisma/build/index.js',...args]);
 const output=run(['--experimental-transform-types','--test','--test-reporter=tap','live.test.mjs']);
-for(const [key,value] of [['tests',1],['pass',1],['fail',0],['cancelled',0],['skipped',0],['todo',0]])assert.equal(output.match(new RegExp('^# '+key+' '+value+'\\r?$','gm'))?.length,1,'Missing exact test result '+key);
+for(const [key,value] of [['tests',2],['pass',2],['fail',0],['cancelled',0],['skipped',0],['todo',0]])assert.equal(output.match(new RegExp('^# '+key+' '+value+'\\r?$','gm'))?.length,1,'Missing exact test result '+key);
 console.log('Prisma integration: real generated client/migration/CRUD test passed; module publication NOT approved.');
