@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import {readdirSync} from 'node:fs';
 
 /** Determine expected publication state from independent checked-in metadata, not the browser response. */
 export function p1ModuleStates(filenames) {
@@ -11,6 +12,12 @@ export function p1ModuleStates(filenames) {
   }
   assert.ok(!states['09.03']||states['09.02'],'Query cannot precede RHF');
   return states;
+}
+
+/** Read the independent expected state from the exact candidate checkout. */
+export function expectedP1Publication(id,filenames=readdirSync(new URL('../src/content/lessons/',import.meta.url))) {
+  assert.match(id,/^09\.0[23]\.0[1-8]$/,'Unsupported P1 lesson');
+  return p1ModuleStates(filenames)[id.slice(0,5)];
 }
 
 /** Assert the rendered route, not merely that navigation succeeded. */

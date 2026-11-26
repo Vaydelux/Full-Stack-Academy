@@ -1,3 +1,4 @@
+import {expectedP1Publication,verifyP1RouteState} from './p1-browser-state.mjs';
 // Exact-head offline Chromium verification for all three CSS track expansion modules.
 // This is a real browser check of static local fixtures, not a remote deployment or WCAG certificate.
 export async function verifyCssTrack({ page, base, assert, wait }) {
@@ -20,8 +21,8 @@ export async function verifyCssTrack({ page, base, assert, wait }) {
       assert.equal(await page.locator('meta[name="robots"][content*="noindex"]').count(),0,'Newly authored lesson must be indexed: ' + id);
     }
   }
-  await page.goto(base + '/learn/09.02.01');
-  assert.ok(await page.locator('meta[name="robots"][content*="noindex"]').count() > 0, 'Next unauthored React lesson must remain noindex');
+  const rhfPublished=expectedP1Publication('09.02.01');
+  await verifyP1RouteState(page,base,'09.02.01',rhfPublished);
 
   await page.setViewportSize({width:320,height:800});
   for (const group of groups) {

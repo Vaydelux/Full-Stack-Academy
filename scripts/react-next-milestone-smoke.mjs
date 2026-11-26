@@ -1,3 +1,4 @@
+import {expectedP1Publication,verifyP1RouteState} from './p1-browser-state.mjs';
 // This is a local Chromium/Next acceptance contract, NOT an executed browser result.
 export async function verifyReactNextMilestone({page,base,assert,wait}) {
  const previous=page.viewportSize();
@@ -9,13 +10,12 @@ export async function verifyReactNextMilestone({page,base,assert,wait}) {
   await wait(page.getByRole('heading',{name:"The problem we're solving"}));
   assert.equal(await page.locator('meta[name="robots"][content*="noindex"]').count(),0,'Authored lesson indexable '+id);
  }
- const planned=await page.goto(base+'/learn/09.02.01');
- assert.equal(planned.status(),200);
- assert.equal(await page.locator('meta[name="robots"][content*="noindex"]').count(),1,'Next planned topic remains noindex');
+ const rhfPublished=expectedP1Publication('09.02.01');
+ await verifyP1RouteState(page,base,'09.02.01',rhfPublished);
  const sitemap=await (await page.request.get(base+'/sitemap.xml')).text();
  if(sitemap.includes('<loc>')){
   for(const id of ids)assert.ok(sitemap.includes('/learn/'+id),'Authored topic sitemap '+id);
-  assert.ok(!sitemap.includes('/learn/09.02.01'),'No planned topic in sitemap');
+  assert.equal(sitemap.includes('/learn/09.02.01'),rhfPublished,'RHF sitemap must match tracked publication state');
  }
  await page.setViewportSize({width:320,height:800});
  await page.goto(base+'/learn/07.01.08');
