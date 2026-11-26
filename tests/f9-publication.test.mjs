@@ -25,10 +25,10 @@ test('real 12.03 manuscripts produce 59 guarded targets and require both runtime
  const {readFileSync}=await import('node:fs');
  const {buildPersistencePlan}=await import('../scripts/persistence-release-plan.mjs');
  const disk=p=>readFileSync(new URL('../'+p,import.meta.url),'utf8');
- const catalog=JSON.parse(disk('data/curriculum.json')),module=buildPersistencePlan(catalog,disk).modules.find(m=>m.id==='12.03');
+ const catalog=JSON.parse(disk('data/curriculum.json')),candidateModule=buildPersistencePlan(catalog,disk).modules.find(m=>m.id==='12.03');
  const f=fixture(),read=p=>f.files.has(p)?f.read(p):disk(p);
- const p=projectSqlModule(module,catalog,read,f.exists);
+ const p=projectSqlModule(candidateModule,catalog,read,f.exists);
  assert.equal(p.writes.size,59);assert.equal(p.publicationApproved,false);
- for(const t of module.topics){const dir='labs/postgresql-'+t.id.replaceAll('.','-')+'/';const body=p.writes.get(dir+'solution.test.mjs');assert.match(body,/runSqlPair/);assert.ok(body.includes('await runTopic('+JSON.stringify(t.id)+')'));assert.ok(p.writes.get('src/content/lessons/'+t.id+'.mdx').includes('interactive={false}'));assert.equal(p.writes.get(dir+'acceptance.sql'),disk('drafts/postgresql/labs/'+t.slug+'/acceptance.sql'));}
- const broken=structuredClone(module);broken.topics[0].requiresSeparateConcurrencyReview=false;assert.throws(()=>projectSqlModule(broken,catalog,read,f.exists));
+ for(const t of candidateModule.topics){const dir='labs/postgresql-'+t.id.replaceAll('.','-')+'/';const body=p.writes.get(dir+'solution.test.mjs');assert.match(body,/runSqlPair/);assert.ok(body.includes('await runTopic('+JSON.stringify(t.id)+')'));assert.ok(p.writes.get('src/content/lessons/'+t.id+'.mdx').includes('interactive={false}'));assert.equal(p.writes.get(dir+'acceptance.sql'),disk('drafts/postgresql/labs/'+t.slug+'/acceptance.sql'));}
+ const broken=structuredClone(candidateModule);broken.topics[0].requiresSeparateConcurrencyReview=false;assert.throws(()=>projectSqlModule(broken,catalog,read,f.exists));
 });
