@@ -12,10 +12,12 @@ import {assertP1Checkout,markP1ReviewFixture} from './p1-publication-review.mjs'
 import {buildPersistencePlan} from './persistence-release-plan.mjs';
 import {projectSqlModule} from './f9-publication.mjs';
 import {runSqlPair,connectionEnvironment} from './persistence-sql-runner.mjs';
+import {distributedPgUrl} from '../examples/p5-distributed-runtime/guards.mjs';
+import {parseConcurrencyOutput} from './pg-transaction-evidence.mjs';
 import {evidencePath,topicIds,requireOrder,reviewFingerprint,sqlReceipt,validateReview} from './pg-promotion-guard.mjs';
 const root=resolve(dirname(fileURLToPath(import.meta.url)),'..'),read=p=>readFileSync(join(root,p),'utf8'),json=p=>JSON.parse(read(p)),exists=p=>existsSync(join(root,p));
 const encode=o=>JSON.stringify(o,null,2)+'\n';
-const [mode,id,...extra]=process.argv.slice(2);assert.ok(mode==='--recover'&&id===undefined||!extra.length&&['--plan','--review','--apply'].includes(mode)&&['12.01','12.02'].includes(id),'Usage: npm run promote:postgresql -- --plan|--review|--apply 12.01|12.02 | --recover');
+const [mode,id,...extra]=process.argv.slice(2);assert.ok(mode==='--recover'&&id===undefined||!extra.length&&['--plan','--review','--apply'].includes(mode)&&['12.01','12.02','12.03'].includes(id),'Usage: npm run promote:postgresql -- --plan|--review|--apply 12.01|12.02|12.03 | --recover');
 const git=args=>execFileSync('git',args,{cwd:root,encoding:'utf8',timeout:30000,maxBuffer:32*1024*1024});
 assert.equal(realpathSync(git(['rev-parse','--show-toplevel']).trim()),realpathSync(root));
 const gitDir=git(['rev-parse','--absolute-git-dir']).trim();
@@ -32,9 +34,10 @@ const fingerprint=()=>reviewFingerprint(git(['ls-files','--stage','-z']),id,proj
 const blockers=[];let order;try{order=requireOrder(next,id);}catch{blockers.push('Earlier curriculum module must be published first: '+(next?.id??'none'));}
 if(!/^v24\.(?:9|[1-9]\d+)\.\d+$/.test(process.version))blockers.push('Node 24.9+ stable required');
 const npm=process.env.npm_execpath;if(!npm||!isAbsolute(npm)||basename(npm)!=='npm-cli.js'||!existsSync(npm))blockers.push('Invoke through npm run');
-for(const p of ['package-lock.json','examples/forms-query-vertical/react-client/package-lock.json','examples/nestjs-vertical/package-lock.json']){try{assert.ok(lstatSync(join(root,p)).isFile());git(['ls-files','--error-unmatch','--',p]);}catch{blockers.push('Missing tracked lockfile: '+p);}}
+for(const p of ['package-lock.json','examples/forms-query-vertical/react-client/package-lock.json','examples/nestjs-vertical/package-lock.json',...(id==='12.03'?['examples/p5-distributed-runtime/package-lock.json']:[])]){try{assert.ok(lstatSync(join(root,p)).isFile());git(['ls-files','--error-unmatch','--',p]);}catch{blockers.push('Missing tracked lockfile: '+p);}}
 try{assert.ok(isAbsolute(process.env.ACADEMY_BROWSER_ROOT??''));createRequire(join(process.env.ACADEMY_BROWSER_ROOT,'package.json')).resolve('playwright');}catch{blockers.push('Installed Playwright required through ACADEMY_BROWSER_ROOT');}
 try{connectionEnvironment(process.env.PG_TEST_URL,process.env.ACADEMY_ISOLATED_PG);}catch{blockers.push('Explicit disposable PostgreSQL connection required');}
+if(id==='12.03')try{distributedPgUrl();}catch{blockers.push('Explicit separate disposable distributed PostgreSQL connection required');}
 const psql=spawnSync('psql',['--version'],{encoding:'utf8',timeout:5000,windowsHide:true,shell:false});if(psql.error||psql.status!==0||psql.signal)blockers.push('psql executable required');
 const reviewPath=evidencePath(id);if(mode!=='--review'&&!exists(reviewPath))blockers.push('Named per-lesson review evidence missing: '+reviewPath);
 console.log(encode({moduleId:id,mode,next:next?.id??null,sourceSha256,projectionSha256:projection.fingerprint,blockers,publicationApproved:false}));
@@ -42,11 +45,12 @@ if(mode!=='--plan'){
  assert.deepEqual(blockers,[],'Publication preflight blocked');assert.ok(order);
  const review=mode==='--apply'?validateReview(json(reviewPath),{id,fingerprint:sourceSha256,today:new Date().toISOString().slice(0,10)}):null;
  const run=(...args)=>{console.log('Qualification: npm '+args.join(' '));const result=spawnSync(process.execPath,[npm,...args],{cwd:root,stdio:'inherit',timeout:7200000,windowsHide:true,shell:false,env:{...process.env,NEXT_TELEMETRY_DISABLED:'1'}});assert.ok(result.status===0&&!result.error&&!result.signal,'Qualification failed: '+args.join(' '));};
- run('ci');run('run','checkpoint:check');run('run','test:curriculum-readiness');
+ run('ci');if(id==='12.03')run('ci','--prefix','examples/p5-distributed-runtime');run('run','checkpoint:check');run('run','test:curriculum-readiness');
  assertP1Checkout(root,{expectedHead:head,reviewOnly:mode==='--review'});assert.equal(fingerprint(),sourceSha256);
  const fixture=Object.keys(courseModule.shared).find(p=>p.endsWith('/fixture.sql'));
  const results=courseModule.topics.map(t=>{const dir='drafts/postgresql/labs/'+t.slug+'/';return runSqlPair({id:t.id,fixture:read(fixture),starter:read(dir+'starter.sql'),solution:read(dir+'solution.sql'),acceptance:read(dir+'acceptance.sql')});});
- const receipt=sqlReceipt(id,sourceSha256,results);if(review)assert.deepEqual(receipt,review.sql,'Current SQL results differ from review receipt');
+ const concurrency=id==='12.03'?topicIds(id).map(topic=>parseConcurrencyOutput(execFileSync(process.execPath,['examples/p5-distributed-runtime/p3-acceptance-run.mjs',topic],{cwd:root,encoding:'utf8',timeout:120000,maxBuffer:256*1024,windowsHide:true}),topic)):undefined;
+ const receipt=sqlReceipt(id,sourceSha256,results,concurrency);if(review)assert.deepEqual(receipt,review.sql,'Current SQL results differ from review receipt');
  assertP1Checkout(root,{expectedHead:head,reviewOnly:mode==='--review'});assert.equal(fingerprint(),sourceSha256);
  const writes=new Map(projection.writes);
  if(review)for(const topic of topicIds(id)){const p='src/content/lessons/'+topic+'.meta.json';writes.set(p,encode({...JSON.parse(writes.get(p)),reviewedAt:review.date}));}
@@ -59,7 +63,7 @@ writes.set(file,encode({...record,updatedAt:new Date().toISOString().slice(0,10)
  const indexBefore=indexDigest();
  journaledProjection(root,gitDir,head,indexBefore,writes,()=>{
   verify();run('run','checkpoint:check');const snapshot=json(file).snapshot;assert.equal(snapshot.publishedLessons,order.target);assert.equal(snapshot.authoredMdxLessons,checkpoint.snapshot.authoredMdxLessons+8);assert.equal(snapshot.labFixtures,checkpoint.snapshot.labFixtures+8);assert.ok(snapshot.completeModules.includes(id));const checkpointAfter=read(file);
-  run('run','verify:content');run('run','test:curriculum-readiness');run('run','test:postgresql-drafts');run('run','test:postgresql-modeling-source');
+  run('run','verify:content');run('run','test:curriculum-readiness');run('run','test:postgresql-drafts');run('run','test:postgresql-modeling-source');if(id==='12.03')run('run','test:postgresql-p3-source');
   for(const topic of topicIds(id))run('run','lab:postgresql-'+topic.replaceAll('.','-'));
   if(review)run('run','verify:offline');else run('run','build');
   run('run','qualify:postgresql:browser','--',id);
