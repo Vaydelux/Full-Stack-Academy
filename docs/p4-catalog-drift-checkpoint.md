@@ -1,0 +1,7 @@
+# P4 scoped Prisma catalog drift checkpoint
+
+Candidate source only; no curriculum promotion. Migration history alone does not prove that the actual tables match the intended schema. The Prisma qualification now checks the catalog of its two model tables (Membership and Task) against a temporary reference created by replaying the exact reviewed initial migration in an isolated schema within a rollback-only transaction. A deliberately added reference-only column proves the comparison rejects drift. The initial migration digest is pinned before database or migration actions; future migration files require review of this exercise. LF checkout attributes make the migration-byte digest portable.
+
+Seven isolated Node 22 tests passed (injected catalog and query clients). Real PostgreSQL catalog queries, Prisma generated client, Node 24 and the complete offline/browser matrix have not run. The comparison is bounded to the teaching tables, columns, constraints and selected index metadata; it does not establish complete database drift detection, permissions, policies, trigger behavior or production recovery. Actual expand-contract, relation loading, Realtime, SSR/OAuth/MFA and publication gates remain outstanding.
+
+Next: obtain the genuine Prisma lockfile and disposable services, execute the integrated Prisma runner, fix actual failures before claiming topic qualification, and complete named P1 review. Do not promote this candidate or publish on the basis of injected-client tests.

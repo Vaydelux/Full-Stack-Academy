@@ -478,7 +478,7 @@
     "status:postgresql-p3": "node examples/postgresql-p3/scripts/verify-source.mjs --json",
     "qualify:postgresql:p3": "node examples/postgresql-p3/scripts/qualify.mjs",
     "test:p4-source": "node examples/p4-foundations/scripts/verify-source.mjs --check && node --test examples/p4-foundations/tests/source.test.mjs examples/p4-foundations/tests/upload-intent.test.mjs examples/p4-foundations/tests/reconcile-published.test.mjs && npm run test:persistence-release && npm run test:p4-runtime-source",
-    "test:p4-runtime-source": "node --test examples/p4-runtime/guard.test.mjs examples/p4-runtime/prisma/repository.test.mjs examples/p4-runtime/supabase/storage-denial.test.mjs examples/p4-runtime/prisma/data-exercises.test.mjs examples/p4-runtime/prisma/migration-history.test.mjs examples/p5-distributed-runtime/session-lifecycle.test.mjs",
+    "test:p4-runtime-source": "node --test examples/p4-runtime/guard.test.mjs examples/p4-runtime/prisma/repository.test.mjs examples/p4-runtime/supabase/storage-denial.test.mjs examples/p4-runtime/prisma/data-exercises.test.mjs examples/p4-runtime/prisma/migration-history.test.mjs examples/p5-distributed-runtime/session-lifecycle.test.mjs examples/p4-runtime/prisma/schema-drift.test.mjs",
     "qualify:p4:prisma": "npm run qualify --prefix examples/p4-runtime/prisma",
     "qualify:p4:supabase": "node examples/p4-runtime/supabase/live.mjs",
     "status:persistence-release": "node scripts/verify-persistence-release.mjs --json",
