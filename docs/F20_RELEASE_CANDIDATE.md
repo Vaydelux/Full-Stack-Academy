@@ -40,3 +40,7 @@ The local shell reports Node v22.16.0/npm 10.9.2 and git ls-remote fails DNS res
 ## F20.1 — Independent dependency audit coverage
 
 The release-only profile now has ten gates. Before expensive runtime qualification it audits the two independently installed teaching workspaces (Forms/Query and NestJS) with both runtime and all-dependency scopes. No nested high/critical exceptions are granted; unavailable registry, malformed or inconsistent audit data, missing npm v3 locks and nonzero unexpected exits fail closed. Legacy all/P1 profiles and root audit policy remain unchanged. Five real local Node 22.16.0 regression tests passed with injected audit responses and synthetic locks; no actual registry vulnerability query or full release run was performed. The full checkout still fails DNS, the genuine Nest lock is absent, Node24 and browser qualification remain unverified. No publication or deployment change.
+
+## F20.2 — Exhaustive route qualification
+
+Reading qualification now first checks every canonical lesson and reference HTTP document on the local production server, with bounded concurrency, per-request deadlines, no redirects, HTML shell and heading checks. Existing representative browser checks remain mandatory. The reading gate timeout is extended to accommodate the exhaustive inventory. This is implemented, not executed against the production build; registry and checkout DNS remain blocked. No publication approval.

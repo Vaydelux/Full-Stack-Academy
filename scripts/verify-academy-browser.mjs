@@ -34,7 +34,7 @@ try {
     env: { ...process.env, ACADEMY_BASE_URL: 'http://' + hostname + ':' + port, ...(nestModule || pgModule ? { ACADEMY_MODULE_REVIEW: nestModule || pgModule, ACADEMY_NEST_MODULE: nestModule ?? '' } : {}) },
     stdio: 'inherit',
     windowsHide: true,
-    timeoutMs: 300_000,
+    timeoutMs: readingOnly ? 1_800_000 : 300_000,
   });
 } finally {
   try {
