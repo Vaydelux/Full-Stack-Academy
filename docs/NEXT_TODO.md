@@ -213,3 +213,12 @@ npm run qualify:forms-query:full
 `docs/FORMS_QUERY_PUBLICATION_READINESS.md` — module publication steps/evidence; `docs/FORMS_QUERY_REAL_NODE_ACCEPTANCE.md` — prior 102 real Node tests; `docs/FORMS_QUERY_16_STAGING_ACCEPTANCE.md` — originally staged sources; `docs/CURRICULUM_FINISHING_ROADMAP.md` — full 889-topic roadmap; `AGENTS.md` — contributor guidance; `docs/checkpoint.json` — published source counts.
 
 **Guardrails:** No GitHub Actions, no Vercel checks, no fake npm lock integrity, no unqualified lesson publication. Distinguish historical reported checks from rerun results on a new candidate.
+
+## 2026-11-26 — Preview build qualification checkpoint
+
+- Tested commit: `a3a90d6e02742ade8ab48183255d57dcf2596aaf` (PR #73).
+- Vercel preview `dpl_8yajT3uQhYZVvjcMG1KmqjxmNETj`: READY; build completed in one minute.
+- MDX expression unit tests: 2/2 passed. Compiler audit: 353 executable lessons, zero findings. Build route inventory: 889 curriculum, 303 reference, 16 Forms/Query draft routes. The remaining data-only manuscripts are not covered by the executable MDX audit.
+- The Forms/Query test command was invoked and the chained build completed; individual test output was unavailable in the returned log excerpt.
+- Vercel project paused again; no production promotion or GitHub Actions initiated.
+- Remaining release blockers: genuine NestJS workspace lockfile, root/workspace security audits, complete local release qualification including browser and route census, and required human/publication approvals. Do not infer lab certification from static generation. Do not trigger another deployment without authorization.
