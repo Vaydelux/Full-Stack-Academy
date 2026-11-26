@@ -22,7 +22,7 @@ export function auditRealtimeTrack({catalog,load,publishedRegistry=''}) {
     if(!/^## Publication conditions\b/m.test(manuscript))errors.push(topic.id+' missing publication gate');
     if(publishedRegistry.includes(topic.id+'.mdx')||publishedRegistry.includes(topic.id+'.meta.json'))errors.push(topic.id+' prematurely published');
   }
-  for(const module of ['17.01','17.02','17.03'])if(counts[module]!==8)errors.push(module+' must contain exactly 8 topics');
+  for(const courseModule of ['17.01','17.02','17.03'])if(counts[courseModule]!==8)errors.push(courseModule+' must contain exactly 8 topics');
   return {ok:errors.length===0,errors,topics:topics.length,counts};
 }
 const self=fileURLToPath(import.meta.url);

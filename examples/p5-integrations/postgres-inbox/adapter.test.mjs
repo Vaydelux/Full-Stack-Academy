@@ -16,32 +16,32 @@ const clone=x=>structuredClone(x);
 class MockPool {
  constructor(){this.store=new Map();this.calls=[];this.releases=0;this.discards=[];this.clock=fixedNow;this.fail=null;}
  async connect(){
-  const pool=this;let rows=null,tenant=null;
+  let rows=null,tenant=null;
   return {
-   async query(sql,args=[]){
-    pool.calls.push({sql,args});
-    if(pool.fail && (pool.fail===sql||pool.fail==='any'))throw Error('simulated-db-failure');
-    if(sql==='BEGIN'){rows=new Map([...pool.store].map(([id,row])=>[id,clone(row)]));return {rowCount:null,rows:[]};}
-    if(sql==='COMMIT'){pool.store=rows;rows=null;return {rowCount:null,rows:[]};}
+   query: async (sql,args=[]) => {
+    this.calls.push({sql,args});
+    if(this.fail && (this.fail===sql||this.fail==='any'))throw Error('simulated-db-failure');
+    if(sql==='BEGIN'){rows=new Map([...this.store].map(([id,row])=>[id,clone(row)]));return {rowCount:null,rows:[]};}
+    if(sql==='COMMIT'){this.store=rows;rows=null;return {rowCount:null,rows:[]};}
     if(sql==='ROLLBACK'){rows=null;return {rowCount:null,rows:[]};}
     if(sql===SQL.context){assert.ok(rows);tenant=args[0];return {rowCount:1,rows:[{}]};}
     assert.ok(rows,'must be in transaction');
     if(sql===SQL.insert){const [t,p,e,digest,encrypted_body,iv,auth_tag]=args;assert.equal(t,tenant);
      const id=key(t,p,e);if(rows.has(id))return {rowCount:0,rows:[]};
      const row={tenant_id:t,provider:p,event_id:e,payload_digest:digest,
-      encrypted_body,iv,auth_tag,state:'pending',attempts:0,next_at:pool.clock,lease_token:null,lease_expires_at:null,created_at:pool.clock};
+      encrypted_body,iv,auth_tag,state:'pending',attempts:0,next_at:this.clock,lease_token:null,lease_expires_at:null,created_at:this.clock};
      rows.set(id,row);return {rowCount:1,rows:[row]};}
     if(sql===SQL.duplicate){const [t,p,e]=args;assert.equal(t,tenant);const row=rows.get(key(t,p,e));return {rowCount:row?1:0,rows:row?[row]:[]};}
     if(sql===SQL.expire){const [t,maxAttempts]=args;assert.equal(t,tenant);let count=0;
-     for(const row of rows.values())if(row.tenant_id===t&&row.state==='processing'&&row.lease_expires_at<=pool.clock&&row.attempts>=maxAttempts){row.state='dead-letter';row.lease_token=null;row.lease_expires_at=null;count++;}return {rowCount:count,rows:[]};}
-    if(sql===SQL.candidate){const [t,maxAttempts]=args;assert.equal(t,tenant);const matches=[...rows.values()].filter(row=>row.tenant_id===t&&row.attempts<maxAttempts&&((row.state==='pending'&&row.next_at<=pool.clock)||(row.state==='processing'&&row.lease_expires_at<=pool.clock)));return {rowCount:matches.length?1:0,rows:matches.slice(0,1)};}
-    if(sql===SQL.claim){const [t,p,e,lease,leaseMs]=args;assert.equal(t,tenant);const row=rows.get(key(t,p,e));assert.ok(row);row.state='processing';row.attempts++;row.lease_token=lease;row.lease_expires_at=pool.clock+leaseMs;return {rowCount:1,rows:[row]};}
-    if(sql===SQL.settle){const [t,p,e,lease,ok,maxAttempts,retryable]=args;assert.equal(t,tenant);const row=rows.get(key(t,p,e));if(!row||row.state!=='processing'||row.lease_token!==lease||row.lease_expires_at<=pool.clock)return {rowCount:0,rows:[]};
-     row.state=ok?'processed':row.attempts>=maxAttempts||!retryable?'dead-letter':'pending';row.lease_token=null;row.lease_expires_at=null;row.next_at=pool.clock+1000;return {rowCount:1,rows:[row]};}
+     for(const row of rows.values())if(row.tenant_id===t&&row.state==='processing'&&row.lease_expires_at<=this.clock&&row.attempts>=maxAttempts){row.state='dead-letter';row.lease_token=null;row.lease_expires_at=null;count++;}return {rowCount:count,rows:[]};}
+    if(sql===SQL.candidate){const [t,maxAttempts]=args;assert.equal(t,tenant);const matches=[...rows.values()].filter(row=>row.tenant_id===t&&row.attempts<maxAttempts&&((row.state==='pending'&&row.next_at<=this.clock)||(row.state==='processing'&&row.lease_expires_at<=this.clock)));return {rowCount:matches.length?1:0,rows:matches.slice(0,1)};}
+    if(sql===SQL.claim){const [t,p,e,lease,leaseMs]=args;assert.equal(t,tenant);const row=rows.get(key(t,p,e));assert.ok(row);row.state='processing';row.attempts++;row.lease_token=lease;row.lease_expires_at=this.clock+leaseMs;return {rowCount:1,rows:[row]};}
+    if(sql===SQL.settle){const [t,p,e,lease,ok,maxAttempts,retryable]=args;assert.equal(t,tenant);const row=rows.get(key(t,p,e));if(!row||row.state!=='processing'||row.lease_token!==lease||row.lease_expires_at<=this.clock)return {rowCount:0,rows:[]};
+     row.state=ok?'processed':row.attempts>=maxAttempts||!retryable?'dead-letter':'pending';row.lease_token=null;row.lease_expires_at=null;row.next_at=this.clock+1000;return {rowCount:1,rows:[row]};}
     if(sql===SQL.inspect){const [t,p,e]=args;assert.equal(t,tenant);const row=rows.get(key(t,p,e));return {rowCount:row?1:0,rows:row?[row]:[]};}
     throw Error('unknown-query');
    },
-   release(discard){pool.releases++;pool.discards.push(discard===true);}
+   release: (discard) => {this.releases++;this.discards.push(discard===true);}
   };
  }
 }

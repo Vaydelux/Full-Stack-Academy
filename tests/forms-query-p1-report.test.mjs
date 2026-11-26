@@ -23,11 +23,11 @@ test('status JSON reports both modules independently without asserting real brow
  assert.equal(report.queryCandidatePacks,8);
  assert.equal(report.claimedRuntimeOrA11yExecution,false);
  assert.equal(report.queryRuntimeBrowserQualified,false);
- for(const module of report.modules){
-  assert.equal(module.topics,8);
-  assert.equal(module.candidatePacks,8);
-  assert.equal(module.sourceReady,module.candidateErrors.length===0&&
-   module.blockers.every(b=>!b.startsWith('No valid staged')));
+ for(const courseModule of report.modules){
+  assert.equal(courseModule.topics,8);
+  assert.equal(courseModule.candidatePacks,8);
+  assert.equal(courseModule.sourceReady,courseModule.candidateErrors.length===0&&
+   courseModule.blockers.every(b=>!b.startsWith('No valid staged')));
  }
  const checkpoint=JSON.parse(read('docs/checkpoint.json'));
  assert.equal(report.date,checkpoint.updatedAt);

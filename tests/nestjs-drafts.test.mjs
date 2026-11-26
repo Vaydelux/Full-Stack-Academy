@@ -38,10 +38,10 @@ test('the runtime harness uses real Nest packages and tests both starters and in
 });
 test('a missing npm lock and manual qualification cannot be treated as green',()=>{
  assert.match(read('examples/nestjs-vertical/scripts/require-lock.mjs'),/package-lock\.json/);
- for(const module of audit.modules){
-  assert.equal(module.runtimeQualified,false);
-  assert.ok(module.blockers.some(x=>x.includes('real module')));
-  assert.ok(module.blockers.some(x=>x.includes('accessibility')));
+ for(const courseModule of audit.modules){
+  assert.equal(courseModule.runtimeQualified,false);
+  assert.ok(courseModule.blockers.some(x=>x.includes('real module')));
+  assert.ok(courseModule.blockers.some(x=>x.includes('accessibility')));
  }
 });
 

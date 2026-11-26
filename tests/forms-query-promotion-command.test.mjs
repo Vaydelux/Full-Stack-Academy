@@ -58,7 +58,7 @@ test('human evidence and the source-readiness audit use the same immutable RHF f
  const readiness=read('scripts/forms-query-promotion-readiness.mjs');
  const helper=read('scripts/forms-query-review-fingerprint.mjs');
  assert.match(program,/rhfReviewFingerprint\(\)/);
- assert.match(readiness,/e\.sourceSha256===rhfReviewFingerprint\(\)/);
+ assert.match(readiness,/e\.sourceSha256===\(moduleId==='09\.02'\?rhfReviewFingerprint\(\):queryReviewFingerprint\(\)\)/);
  assert.doesNotMatch(helper,/src\/content\/lesson-registry\.tsx|src\/lib\/academy\/published\.ts/);
  assert.match(helper,/src\/app\/learn\/projects\/forms-query\/page\.tsx/);
 });

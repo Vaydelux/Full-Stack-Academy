@@ -3017,6 +3017,7116 @@ await redisCache.set(cacheKey, JSON.stringify(safeDto), 'EX', 60);`,
     "09.01.08"
   ],
   "canonicalUrl": "https://zod.dev/api"
+},
+{
+  "id": "web-main",
+  "matchCategories": [
+    "Web & HTML"
+  ],
+  "matchTitles": [
+    "main"
+  ],
+  "heading": "HTML: main landmark",
+  "category": "Web & HTML",
+  "majorVersion": "HTML Living Standard",
+  "status": "Authored reference draft",
+  "summary": "Represents the dominant content of a document, allowing assistive technology to locate the primary landmark.",
+  "syntax": "<main id=\"content\">…</main>",
+  "lang": "html",
+  "parameters": "Global HTML attributes; use an id for a skip-link target.",
+  "returns": "A semantic element, not an interactive control.",
+  "minimalExample": "<main><h1>Dashboard</h1></main>",
+  "productionExample": "<a href=\"#content\">Skip to main content</a>\n<header>Application navigation</header>\n<main id=\"content\"><h1>Account overview</h1></main>",
+  "commonMistakes": [
+    "Using several visible main landmarks or nesting main inside nav, article or aside."
+  ],
+  "securityPerformanceNotes": [
+    "Prefer native landmarks to redundant ARIA; ensure the skip target is keyboard reachable."
+  ],
+  "relatedLessonIds": [
+    "01.01.03"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/main"
+},
+{
+  "id": "web-label",
+  "matchCategories": [
+    "Web & HTML"
+  ],
+  "matchTitles": [
+    "label"
+  ],
+  "heading": "HTML: label",
+  "category": "Web & HTML",
+  "majorVersion": "HTML Living Standard",
+  "status": "Authored reference draft",
+  "summary": "Associates text with a labelable form control so users can identify and activate it.",
+  "syntax": "<label for=\"email\">Email</label>",
+  "lang": "html",
+  "parameters": "for matches the control's unique id; nesting the control is another supported association.",
+  "returns": "A label association, not validation or authorization.",
+  "minimalExample": "<label for=\"name\">Name</label><input id=\"name\" name=\"name\">",
+  "productionExample": "<label for=\"email\">Work email</label>\n<input id=\"email\" name=\"email\" type=\"email\" autocomplete=\"email\" required aria-describedby=\"email-help\">\n<p id=\"email-help\">Use your work address.</p>",
+  "commonMistakes": [
+    "Replacing a visible label with placeholder text or duplicating IDs."
+  ],
+  "securityPerformanceNotes": [
+    "Server-side validation remains necessary; test keyboard and accessible name behavior."
+  ],
+  "relatedLessonIds": [
+    "01.02.01"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/label"
+},
+{
+  "id": "web-fetch",
+  "matchCategories": [
+    "Web & HTML"
+  ],
+  "matchTitles": [
+    "fetch"
+  ],
+  "heading": "Fetch API: fetch()",
+  "category": "Web & HTML",
+  "majorVersion": "Web Fetch API",
+  "status": "Authored reference draft",
+  "summary": "Starts an HTTP request and resolves to a Response even for ordinary HTTP error statuses.",
+  "syntax": "fetch(input, init?)",
+  "lang": "js",
+  "parameters": "input is a URL or Request; init can specify method, headers, body and AbortSignal.",
+  "returns": "Promise<Response>; network and abort errors reject the promise.",
+  "minimalExample": "const response = await fetch('/api/tasks');\nif (!response.ok) throw new Error(`HTTP ${response.status}`);\nconst tasks = await response.json();",
+  "productionExample": "const response = await fetch('/api/tasks', { signal: AbortSignal.timeout(5000), headers: { Accept: 'application/json' } });\nif (!response.ok) throw new Error(`HTTP ${response.status}`);\nconst payload = await response.json();\n// Validate payload against the application contract before use.",
+  "commonMistakes": [
+    "Assuming 404 or 500 rejects fetch, or treating response.json() as schema validation."
+  ],
+  "securityPerformanceNotes": [
+    "Bound request duration and response size at the appropriate boundary; do not retry unsafe mutations blindly."
+  ],
+  "relatedLessonIds": [
+    "01.04.02"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/API/Window/fetch"
+},
+{
+  "id": "css-grid-template-columns",
+  "matchCategories": [
+    "CSS"
+  ],
+  "matchTitles": [
+    "grid-template-columns"
+  ],
+  "heading": "CSS: grid-template-columns",
+  "category": "CSS",
+  "majorVersion": "CSS Grid Layout",
+  "status": "Authored reference draft",
+  "summary": "Defines the column track sizing of a grid container.",
+  "syntax": "grid-template-columns: repeat(3, minmax(0, 1fr));",
+  "lang": "css",
+  "parameters": "Track sizes, named lines and repeat() expressions; applies to grid containers.",
+  "returns": "A CSS computed track list; actual layout depends on available space and intrinsic sizes.",
+  "minimalExample": ".grid { display: grid; grid-template-columns: 1fr 1fr; }",
+  "productionExample": ".cards { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr)); }\n.cards > * { min-width: 0; overflow-wrap: anywhere; }",
+  "commonMistakes": [
+    "Assuming 1fr alone always prevents overflow from long unbreakable content."
+  ],
+  "securityPerformanceNotes": [
+    "Test narrow viewports and zoom; preserve DOM order instead of using layout to reorder meaning."
+  ],
+  "relatedLessonIds": [
+    "02.02.02"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/CSS/grid-template-columns"
+},
+{
+  "id": "javascript-promise-all",
+  "matchCategories": [
+    "JavaScript"
+  ],
+  "matchTitles": [
+    "Promise.all"
+  ],
+  "heading": "JavaScript: Promise.all()",
+  "category": "JavaScript",
+  "majorVersion": "ECMAScript",
+  "status": "Authored reference draft",
+  "summary": "Combines concurrent work, fulfilling with input-ordered values or rejecting when an input rejects.",
+  "syntax": "Promise.all(iterable)",
+  "lang": "js",
+  "parameters": "An iterable of promises or values.",
+  "returns": "A promise that fulfills with an array or rejects with the first observed rejection reason.",
+  "minimalExample": "const values = await Promise.all([Promise.resolve(1), Promise.resolve(2)]);",
+  "productionExample": "const [profile, settings] = await Promise.all([loadProfile(), loadSettings()]);\n// Both results are required; handle failure at the caller boundary.",
+  "commonMistakes": [
+    "Assuming rejection cancels other in-flight work, or invoking an unbounded number of requests."
+  ],
+  "securityPerformanceNotes": [
+    "Use bounded concurrency for large collections; propagate cancellation explicitly where supported."
+  ],
+  "relatedLessonIds": [
+    "03.03.04"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/all"
+},
+{
+  "id": "javascript-promise-allsettled",
+  "matchCategories": [
+    "JavaScript"
+  ],
+  "matchTitles": [
+    "Promise.allSettled"
+  ],
+  "heading": "JavaScript: Promise.allSettled()",
+  "category": "JavaScript",
+  "majorVersion": "ECMAScript",
+  "status": "Authored reference draft",
+  "summary": "Waits for every input to settle and reports each fulfillment or rejection in input order.",
+  "syntax": "Promise.allSettled(iterable)",
+  "lang": "js",
+  "parameters": "An iterable of promises or values.",
+  "returns": "A promise fulfilled with status-tagged result objects for each input.",
+  "minimalExample": "const results = await Promise.allSettled([Promise.resolve(1), Promise.reject(new Error('failed'))]);",
+  "productionExample": "const results = await Promise.allSettled([refreshProfile(), refreshPreferences()]);\nfor (const [index, result] of results.entries()) {\n  if (result.status === 'rejected') reportFailure(index);\n  else renderSection(index, result.value);\n}",
+  "commonMistakes": [
+    "Treating every settled operation as a success or reading value before checking status."
+  ],
+  "securityPerformanceNotes": [
+    "Avoid logging sensitive rejection payloads; bound fan-out and request duration separately."
+  ],
+  "relatedLessonIds": [
+    "03.03.04"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/allSettled"
+},
+{
+  "id": "typescript-generics",
+  "matchCategories": [
+    "TypeScript"
+  ],
+  "matchTitles": [
+    "generics"
+  ],
+  "heading": "TypeScript: Generics",
+  "category": "TypeScript",
+  "majorVersion": "TypeScript",
+  "status": "Authored reference draft",
+  "summary": "Preserve relationships between input and output types without discarding type information.",
+  "syntax": "function identity<T>(value: T): T { return value; }",
+  "lang": "ts",
+  "parameters": "Type parameters may be inferred, explicit or constrained with extends.",
+  "returns": "A generic signature; the type parameter is erased at runtime.",
+  "minimalExample": "function first<T>(items: readonly T[]): T | undefined { return items[0]; }",
+  "productionExample": "function indexById<T extends { id: string }>(items: readonly T[]): Map<string, T> {\n  return new Map(items.map(item => [item.id, item]));\n}",
+  "commonMistakes": [
+    "Using any instead of a type parameter, or expecting a generic type to validate JSON at runtime."
+  ],
+  "securityPerformanceNotes": [
+    "Validate external data separately; express only necessary constraints."
+  ],
+  "relatedLessonIds": [
+    "04.02.01"
+  ],
+  "canonicalUrl": "https://www.typescriptlang.org/docs/handbook/2/generics.html"
+},
+{
+  "id": "typescript-discriminated-unions",
+  "matchCategories": [
+    "TypeScript"
+  ],
+  "matchTitles": [
+    "Discriminated unions"
+  ],
+  "heading": "TypeScript: Discriminated unions",
+  "category": "TypeScript",
+  "majorVersion": "TypeScript",
+  "status": "Authored reference draft",
+  "summary": "Model mutually exclusive states with a shared literal discriminant so control-flow analysis narrows the data.",
+  "syntax": "type Result = { ok: true; value: string } | { ok: false; error: string };",
+  "lang": "ts",
+  "parameters": "Each variant carries a literal tag and its own required fields.",
+  "returns": "A union type narrowed through equality checks or switch statements.",
+  "minimalExample": "function message(r: Result) { return r.ok ? r.value : r.error; }",
+  "productionExample": "type State = { kind: 'loading' } | { kind: 'ready'; count: number } | { kind: 'error'; message: string };\nfunction describe(state: State): string {\n  switch (state.kind) {\n    case 'loading': return 'Loading';\n    case 'ready': return String(state.count);\n    case 'error': return state.message;\n    default: { const exhaustive: never = state; return exhaustive; }\n  }\n}",
+  "commonMistakes": [
+    "Using optional fields on one object and allowing impossible combinations of state."
+  ],
+  "securityPerformanceNotes": [
+    "Treat network responses as unknown until validated; type narrowing is not authorization."
+  ],
+  "relatedLessonIds": [
+    "04.02.05"
+  ],
+  "canonicalUrl": "https://www.typescriptlang.org/docs/handbook/2/narrowing.html#discriminated-unions"
+},
+{
+  "id": "web-button",
+  "matchCategories": [
+    "Web & HTML"
+  ],
+  "matchTitles": [
+    "button"
+  ],
+  "heading": "Web & HTML: button",
+  "category": "Web & HTML",
+  "majorVersion": "HTML Living Standard / Web APIs",
+  "status": "Authored reference draft",
+  "summary": "A native interactive control with keyboard activation and form participation.",
+  "syntax": "<button type=\"button\">Open</button>",
+  "lang": "html",
+  "parameters": "type, disabled, name and value; default type in a form is submit.",
+  "returns": "Dispatches activation and can submit a form; has no return value.",
+  "minimalExample": "<button type=\"button\">Show details</button>",
+  "productionExample": "<form action=\"/profile\" method=\"post\">\n  <button type=\"submit\">Save profile</button>\n  <button type=\"button\" id=\"cancel\">Cancel</button>\n</form>",
+  "commonMistakes": [
+    "Omitting type on a non-submit button inside a form."
+  ],
+  "securityPerformanceNotes": [
+    "Use a native button with a meaningful accessible name; server-side authorization still applies."
+  ],
+  "relatedLessonIds": [
+    "01.02.03"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/button"
+},
+{
+  "id": "web-form",
+  "matchCategories": [
+    "Web & HTML"
+  ],
+  "matchTitles": [
+    "form"
+  ],
+  "heading": "Web & HTML: form",
+  "category": "Web & HTML",
+  "majorVersion": "HTML Living Standard / Web APIs",
+  "status": "Authored reference draft",
+  "summary": "Groups form-associated controls for submitting user input.",
+  "syntax": "<form action=\"/search\" method=\"get\">…</form>",
+  "lang": "html",
+  "parameters": "action, method, enctype and associated named controls.",
+  "returns": "Navigation or submission with successful controls unless an event handler prevents it.",
+  "minimalExample": "<form action=\"/search\"><input name=\"q\"><button>Search</button></form>",
+  "productionExample": "<form action=\"/feedback\" method=\"post\">\n  <label for=\"message\">Feedback</label>\n  <textarea id=\"message\" name=\"message\" required maxlength=\"1000\"></textarea>\n  <button type=\"submit\">Send</button>\n</form>",
+  "commonMistakes": [
+    "Assuming browser validation protects the API."
+  ],
+  "securityPerformanceNotes": [
+    "Validate and authorize on the server; use CSRF protection where cookie-authenticated mutations require it."
+  ],
+  "relatedLessonIds": [
+    "01.02.03"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/form"
+},
+{
+  "id": "web-input",
+  "matchCategories": [
+    "Web & HTML"
+  ],
+  "matchTitles": [
+    "input"
+  ],
+  "heading": "Web & HTML: input",
+  "category": "Web & HTML",
+  "majorVersion": "HTML Living Standard / Web APIs",
+  "status": "Authored reference draft",
+  "summary": "A form control whose behavior and validation depend on its input type.",
+  "syntax": "<input type=\"email\" name=\"email\" required>",
+  "lang": "html",
+  "parameters": "type, name, value, required, autocomplete and type-specific constraints.",
+  "returns": "A form-associated element; submission encodes its successful value.",
+  "minimalExample": "<label>Email <input type=\"email\" name=\"email\"></label>",
+  "productionExample": "<label for=\"work-email\">Work email</label>\n<input id=\"work-email\" name=\"email\" type=\"email\" autocomplete=\"email\" required maxlength=\"254\">",
+  "commonMistakes": [
+    "Using numeric input for identifiers that are not quantities, or missing labels."
+  ],
+  "securityPerformanceNotes": [
+    "Client constraints improve feedback but untrusted values still require server validation."
+  ],
+  "relatedLessonIds": [
+    "01.02.02"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/input"
+},
+{
+  "id": "web-fieldset",
+  "matchCategories": [
+    "Web & HTML"
+  ],
+  "matchTitles": [
+    "fieldset"
+  ],
+  "heading": "Web & HTML: fieldset",
+  "category": "Web & HTML",
+  "majorVersion": "HTML Living Standard / Web APIs",
+  "status": "Authored reference draft",
+  "summary": "Groups related controls with a shared accessible label supplied by legend.",
+  "syntax": "<fieldset><legend>Preferences</legend>…</fieldset>",
+  "lang": "html",
+  "parameters": "disabled, form and name; legend labels the group.",
+  "returns": "A semantic form group; disabled descendants generally do not submit, with the first legend exception.",
+  "minimalExample": "<fieldset><legend>Contact</legend><label><input type=\"radio\" name=\"contact\" value=\"email\">Email</label></fieldset>",
+  "productionExample": "<fieldset>\n  <legend>Notification frequency</legend>\n  <label><input type=\"radio\" name=\"frequency\" value=\"daily\" required>Daily</label>\n  <label><input type=\"radio\" name=\"frequency\" value=\"weekly\">Weekly</label>\n</fieldset>",
+  "commonMistakes": [
+    "Using visual headings alone for related radio buttons."
+  ],
+  "securityPerformanceNotes": [
+    "Native grouping improves navigation by assistive technology; never use disabled UI as authorization."
+  ],
+  "relatedLessonIds": [
+    "01.02.01"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/fieldset"
+},
+{
+  "id": "web-dialog",
+  "matchCategories": [
+    "Web & HTML"
+  ],
+  "matchTitles": [
+    "dialog"
+  ],
+  "heading": "Web & HTML: dialog",
+  "category": "Web & HTML",
+  "majorVersion": "HTML Living Standard / Web APIs",
+  "status": "Authored reference draft",
+  "summary": "Native dialog element for modal or non-modal interactions.",
+  "syntax": "dialog.showModal(); // on an HTMLDialogElement",
+  "lang": "html",
+  "parameters": "showModal(), show(), close(); open is reflected state.",
+  "returns": "Methods open or close the dialog; modal mode enters the top layer.",
+  "minimalExample": "<dialog id=\"confirm\"><p>Continue?</p><form method=\"dialog\"><button>Close</button></form></dialog>",
+  "productionExample": "<button id=\"open\">Review changes</button>\n<dialog id=\"review\" aria-labelledby=\"review-title\">\n  <h2 id=\"review-title\">Review changes</h2>\n  <form method=\"dialog\"><button autofocus>Close</button></form>\n</dialog>\n<script>document.querySelector('#open').addEventListener('click', () => document.querySelector('#review').showModal());</script>",
+  "commonMistakes": [
+    "Toggling open directly when a modal with focus handling is intended."
+  ],
+  "securityPerformanceNotes": [
+    "Test Escape, focus return and keyboard navigation; destructive operations need explicit confirmation and server checks."
+  ],
+  "relatedLessonIds": [
+    "01.02.06"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/dialog"
+},
+{
+  "id": "web-details",
+  "matchCategories": [
+    "Web & HTML"
+  ],
+  "matchTitles": [
+    "details"
+  ],
+  "heading": "Web & HTML: details",
+  "category": "Web & HTML",
+  "majorVersion": "HTML Living Standard / Web APIs",
+  "status": "Authored reference draft",
+  "summary": "A native disclosure widget with a summary and expandable content.",
+  "syntax": "<details><summary>More information</summary>…</details>",
+  "lang": "html",
+  "parameters": "open controls initial expanded state; summary provides the disclosure label.",
+  "returns": "An element with expanded/collapsed state and toggle events.",
+  "minimalExample": "<details><summary>Help</summary><p>Choose a plan.</p></details>",
+  "productionExample": "<details>\n  <summary>Technical requirements</summary>\n  <p>Use an HTTPS connection and a supported browser.</p>\n</details>",
+  "commonMistakes": [
+    "Putting the only required action or critical error message inside a collapsed disclosure."
+  ],
+  "securityPerformanceNotes": [
+    "Keep the summary keyboard-accessible and avoid unnecessarily recreating disclosure behavior with scripts."
+  ],
+  "relatedLessonIds": [
+    "01.02.06"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/details"
+},
+{
+  "id": "web-img",
+  "matchCategories": [
+    "Web & HTML"
+  ],
+  "matchTitles": [
+    "img"
+  ],
+  "heading": "Web & HTML: img",
+  "category": "Web & HTML",
+  "majorVersion": "HTML Living Standard / Web APIs",
+  "status": "Authored reference draft",
+  "summary": "Embeds an image with text alternatives and optional responsive source selection.",
+  "syntax": "<img src=\"/photo.jpg\" alt=\"Description\" width=\"640\" height=\"480\">",
+  "lang": "html",
+  "parameters": "src, alt, width, height, loading, srcset and sizes.",
+  "returns": "An image element; browser selects and decodes a resource.",
+  "minimalExample": "<img src=\"/logo.png\" alt=\"Academy\">",
+  "productionExample": "<img src=\"/diagram-640.png\" srcset=\"/diagram-640.png 640w, /diagram-1280.png 1280w\" sizes=\"(max-width: 700px) 100vw, 700px\" width=\"640\" height=\"360\" alt=\"Request flows from browser to server\">",
+  "commonMistakes": [
+    "Omitting meaningful alt text or making every image lazy-loaded including the LCP image."
+  ],
+  "securityPerformanceNotes": [
+    "Reserve dimensions to reduce layout shifts; use empty alt for purely decorative images."
+  ],
+  "relatedLessonIds": [
+    "01.03.07"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/img"
+},
+{
+  "id": "web-a",
+  "matchCategories": [
+    "Web & HTML"
+  ],
+  "matchTitles": [
+    "a"
+  ],
+  "heading": "Web & HTML: a",
+  "category": "Web & HTML",
+  "majorVersion": "HTML Living Standard / Web APIs",
+  "status": "Authored reference draft",
+  "summary": "Creates a hyperlink when href is present.",
+  "syntax": "<a href=\"/learn\">Curriculum</a>",
+  "lang": "html",
+  "parameters": "href, target, rel and download; href determines the destination.",
+  "returns": "A navigable link, not a button for local actions.",
+  "minimalExample": "<a href=\"#content\">Skip to content</a>",
+  "productionExample": "<a href=\"https://example.org/docs\" target=\"_blank\" rel=\"noopener noreferrer\">External documentation (opens in a new tab)</a>",
+  "commonMistakes": [
+    "Using href=\"#\" for buttons or building a URL from untrusted input without validation."
+  ],
+  "securityPerformanceNotes": [
+    "Use descriptive link text; allowlist permitted URL schemes and destinations as appropriate."
+  ],
+  "relatedLessonIds": [
+    "01.01.06"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/a"
+},
+{
+  "id": "web-urlsearchparams",
+  "matchCategories": [
+    "Web & HTML"
+  ],
+  "matchTitles": [
+    "URLSearchParams"
+  ],
+  "heading": "Web & HTML: URLSearchParams",
+  "category": "Web & HTML",
+  "majorVersion": "HTML Living Standard / Web APIs",
+  "status": "Authored reference draft",
+  "summary": "Parses and serializes URL query parameters using form-style encoding.",
+  "syntax": "new URLSearchParams(init)",
+  "lang": "js",
+  "parameters": "Query string, iterable pairs, record or another URLSearchParams; get, set, append and delete operate on entries.",
+  "returns": "URLSearchParams; get returns a string or null, getAll an array.",
+  "minimalExample": "const params = new URLSearchParams('q=css&page=2');\nconsole.log(params.get('q'));",
+  "productionExample": "const url = new URL('/search', 'https://example.org');\nurl.searchParams.set('q', searchTerm);\nurl.searchParams.set('page', '1');\n// Pass url to a request; validate the query server-side.",
+  "commonMistakes": [
+    "Concatenating raw input into a query or assuming set preserves duplicate values."
+  ],
+  "securityPerformanceNotes": [
+    "Never place credentials in query strings; validate pagination and filters on the server."
+  ],
+  "relatedLessonIds": [
+    "01.04.03"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams"
+},
+{
+  "id": "web-abortcontroller",
+  "matchCategories": [
+    "Web & HTML"
+  ],
+  "matchTitles": [
+    "AbortController"
+  ],
+  "heading": "Web & HTML: AbortController",
+  "category": "Web & HTML",
+  "majorVersion": "HTML Living Standard / Web APIs",
+  "status": "Authored reference draft",
+  "summary": "Coordinates cancellation of operations that observe an AbortSignal.",
+  "syntax": "const controller = new AbortController();",
+  "lang": "js",
+  "parameters": "signal is passed to an abort-aware operation; abort(reason?) signals cancellation.",
+  "returns": "AbortController with a signal; abort() itself returns undefined.",
+  "minimalExample": "const controller = new AbortController();\nconst pending = fetch('/api/tasks', { signal: controller.signal });\ncontroller.abort();\nawait pending.catch(() => {});",
+  "productionExample": "const controller = new AbortController();\nconst timer = setTimeout(() => controller.abort(), 5000);\ntry {\n  const response = await fetch('/api/tasks', { signal: controller.signal });\n  if (!response.ok) throw new Error('Request failed');\n  return await response.json();\n} finally { clearTimeout(timer); }",
+  "commonMistakes": [
+    "Reusing an already-aborted signal or assuming cancellation undoes a server mutation."
+  ],
+  "securityPerformanceNotes": [
+    "Clear timers and distinguish cancellation from genuine failure; retries need independent signals and safe semantics."
+  ],
+  "relatedLessonIds": [
+    "03.03.05"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/API/AbortController"
+},
+{
+  "id": "css-display",
+  "matchCategories": [
+    "CSS"
+  ],
+  "matchTitles": [
+    "display"
+  ],
+  "heading": "CSS: display",
+  "category": "CSS",
+  "majorVersion": "CSS",
+  "status": "Authored reference draft",
+  "summary": "Controls the outer and inner display behavior of an element.",
+  "syntax": "display: grid;",
+  "lang": "css",
+  "parameters": "Values include block, inline, flex, grid, contents and none.",
+  "returns": "A computed CSS display value controlling box generation and layout.",
+  "minimalExample": "nav { display: flex; }",
+  "productionExample": ".toolbar { display: flex; flex-wrap: wrap; gap: .75rem; align-items: center; }\n.toolbar > * { min-width: 0; }",
+  "commonMistakes": [
+    "Using display:none for content that should remain available to assistive technology."
+  ],
+  "securityPerformanceNotes": [
+    "DOM order and visual order should align; test hidden content and keyboard access."
+  ],
+  "relatedLessonIds": [
+    "02.02.01"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/CSS/display"
+},
+{
+  "id": "css-position",
+  "matchCategories": [
+    "CSS"
+  ],
+  "matchTitles": [
+    "position"
+  ],
+  "heading": "CSS: position",
+  "category": "CSS",
+  "majorVersion": "CSS",
+  "status": "Authored reference draft",
+  "summary": "Determines how an element is positioned and whether it participates in normal flow.",
+  "syntax": "position: sticky; top: 0;",
+  "lang": "css",
+  "parameters": "static, relative, absolute, fixed, sticky and inset properties.",
+  "returns": "A positioned box whose containing block and scroll ancestor depend on the mode.",
+  "minimalExample": "header { position: sticky; top: 0; }",
+  "productionExample": ".panel { position: relative; }\n.panel .close { position: absolute; inset-block-start: .5rem; inset-inline-end: .5rem; }\n.panel { padding-inline-end: 3rem; }",
+  "commonMistakes": [
+    "Expecting sticky to work without an inset or ignoring a scroll ancestor."
+  ],
+  "securityPerformanceNotes": [
+    "Avoid covering focused controls or text at high zoom; test overflow ancestors."
+  ],
+  "relatedLessonIds": [
+    "02.02.04"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/CSS/position"
+},
+{
+  "id": "css-z-index",
+  "matchCategories": [
+    "CSS"
+  ],
+  "matchTitles": [
+    "z-index"
+  ],
+  "heading": "CSS: z-index",
+  "category": "CSS",
+  "majorVersion": "CSS",
+  "status": "Authored reference draft",
+  "summary": "Controls stacking order within a stacking context, not globally across all elements.",
+  "syntax": "z-index: 10;",
+  "lang": "css",
+  "parameters": "auto or integer on positioned elements and flex/grid items.",
+  "returns": "A stack level in the relevant stacking context.",
+  "minimalExample": "header { position: relative; z-index: 2; }",
+  "productionExample": ".layout { isolation: isolate; }\n.sticky-header { position: sticky; top: 0; z-index: 10; }\n.popover { position: absolute; z-index: 20; }",
+  "commonMistakes": [
+    "Increasing z-index indefinitely when the element is trapped in a lower stacking context."
+  ],
+  "securityPerformanceNotes": [
+    "Document layering tokens; prefer native top-layer dialogs for modal UI."
+  ],
+  "relatedLessonIds": [
+    "02.02.04"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/CSS/z-index"
+},
+{
+  "id": "css-box-sizing",
+  "matchCategories": [
+    "CSS"
+  ],
+  "matchTitles": [
+    "box-sizing"
+  ],
+  "heading": "CSS: box-sizing",
+  "category": "CSS",
+  "majorVersion": "CSS",
+  "status": "Authored reference draft",
+  "summary": "Selects whether declared width and height include padding and border.",
+  "syntax": "box-sizing: border-box;",
+  "lang": "css",
+  "parameters": "content-box or border-box.",
+  "returns": "A sizing rule applied to the element's dimensions.",
+  "minimalExample": ".card { box-sizing: border-box; width: 200px; padding: 16px; }",
+  "productionExample": "*, *::before, *::after { box-sizing: border-box; }\n.card { width: 100%; max-width: 30rem; padding: 1rem; border: 1px solid; }",
+  "commonMistakes": [
+    "Calculating widths manually while forgetting borders and padding."
+  ],
+  "securityPerformanceNotes": [
+    "Use consistent sizing defaults and verify horizontal overflow at narrow widths."
+  ],
+  "relatedLessonIds": [
+    "02.01.04"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/CSS/box-sizing"
+},
+{
+  "id": "css-flex",
+  "matchCategories": [
+    "CSS"
+  ],
+  "matchTitles": [
+    "flex"
+  ],
+  "heading": "CSS: flex",
+  "category": "CSS",
+  "majorVersion": "CSS",
+  "status": "Authored reference draft",
+  "summary": "Shorthand controlling flex growth, shrinkage and base size.",
+  "syntax": "flex: 1 1 12rem;",
+  "lang": "css",
+  "parameters": "flex-grow, flex-shrink and flex-basis.",
+  "returns": "Computed flex item sizing in its parent's main axis.",
+  "minimalExample": ".item { flex: 1 1 0; }",
+  "productionExample": ".toolbar { display: flex; flex-wrap: wrap; gap: .5rem; }\n.search { flex: 1 1 14rem; min-width: 0; }\n.actions { flex: 0 0 auto; }",
+  "commonMistakes": [
+    "Assuming flex:1 always overcomes intrinsic minimum content size."
+  ],
+  "securityPerformanceNotes": [
+    "Use min-width:0 when appropriate and test zoom and long content."
+  ],
+  "relatedLessonIds": [
+    "02.02.01"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/CSS/flex"
+},
+{
+  "id": "css-gap",
+  "matchCategories": [
+    "CSS"
+  ],
+  "matchTitles": [
+    "gap"
+  ],
+  "heading": "CSS: gap",
+  "category": "CSS",
+  "majorVersion": "CSS",
+  "status": "Authored reference draft",
+  "summary": "Defines gutters between grid or flex items and multi-column content.",
+  "syntax": "gap: .5rem 1rem;",
+  "lang": "css",
+  "parameters": "row-gap and column-gap, one or two nonnegative lengths or percentages.",
+  "returns": "Spacing between tracks or items, not outside the container.",
+  "minimalExample": ".grid { display: grid; gap: 1rem; }",
+  "productionExample": ".cards { display: grid; grid-template-columns: repeat(auto-fit,minmax(min(100%, 16rem),1fr)); gap: clamp(.75rem,2vw,1.5rem); }",
+  "commonMistakes": [
+    "Using gap to replace all outer padding or assuming percentage gaps resolve identically in every layout."
+  ],
+  "securityPerformanceNotes": [
+    "Use spacing tokens and let containers own outer padding."
+  ],
+  "relatedLessonIds": [
+    "02.02.02"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/CSS/gap"
+},
+{
+  "id": "css-has",
+  "matchCategories": [
+    "CSS"
+  ],
+  "matchTitles": [
+    ":has()"
+  ],
+  "heading": "CSS: :has()",
+  "category": "CSS",
+  "majorVersion": "CSS",
+  "status": "Authored reference draft",
+  "summary": "Relational pseudo-class that selects an element based on matching relative selectors.",
+  "syntax": "article:has(> img) { … }",
+  "lang": "css",
+  "parameters": "A relative selector list anchored at the candidate element.",
+  "returns": "Matches elements satisfying at least one argument.",
+  "minimalExample": ".field:has(input:invalid) { border-color: crimson; }",
+  "productionExample": ".field:has(input:focus-visible) { outline: 2px solid currentColor; }\n.field:has(> input:user-invalid) .error { display: block; }",
+  "commonMistakes": [
+    "Using :has() as the only way to communicate an error or applying extremely broad selectors."
+  ],
+  "securityPerformanceNotes": [
+    "Scope selectors to components; include text errors and appropriate accessible associations."
+  ],
+  "relatedLessonIds": [
+    "02.03.06"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/CSS/%3Ahas"
+},
+{
+  "id": "css-transition",
+  "matchCategories": [
+    "CSS"
+  ],
+  "matchTitles": [
+    "transition"
+  ],
+  "heading": "CSS: transition",
+  "category": "CSS",
+  "majorVersion": "CSS",
+  "status": "Authored reference draft",
+  "summary": "Interpolates supported CSS property changes over a duration.",
+  "syntax": "transition: opacity 150ms ease;",
+  "lang": "css",
+  "parameters": "property, duration, timing function, delay and optional behavior.",
+  "returns": "Computed transition configuration, with animation when a supported value changes.",
+  "minimalExample": "button { transition: background-color 150ms ease; }",
+  "productionExample": ".panel { transition: opacity 150ms ease, transform 150ms ease; }\n@media (prefers-reduced-motion: reduce) { .panel { transition: none; } }",
+  "commonMistakes": [
+    "Using transition:all on layout-heavy components or hiding focus feedback."
+  ],
+  "securityPerformanceNotes": [
+    "Respect reduced-motion settings and profile expensive property changes."
+  ],
+  "relatedLessonIds": [
+    "02.03.04"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/CSS/transition"
+},
+{
+  "id": "javascript-const",
+  "matchCategories": [
+    "JavaScript"
+  ],
+  "matchTitles": [
+    "const"
+  ],
+  "heading": "JavaScript: const",
+  "category": "JavaScript",
+  "majorVersion": "ECMAScript",
+  "status": "Authored reference draft",
+  "summary": "Declares a block-scoped binding that cannot be reassigned.",
+  "syntax": "const value = expression;",
+  "lang": "js",
+  "parameters": "An identifier or binding pattern and required initializer.",
+  "returns": "A binding, not a guarantee that an object's contents are immutable.",
+  "minimalExample": "const count = 1;",
+  "productionExample": "const settings = { theme: 'light' };\nconst updated = { ...settings, theme: 'dark' };",
+  "commonMistakes": [
+    "Confusing immutable bindings with deeply immutable values."
+  ],
+  "securityPerformanceNotes": [
+    "Prefer const by default; avoid accidentally sharing mutable nested state."
+  ],
+  "relatedLessonIds": [
+    "03.01.01"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/const"
+},
+{
+  "id": "javascript-let",
+  "matchCategories": [
+    "JavaScript"
+  ],
+  "matchTitles": [
+    "let"
+  ],
+  "heading": "JavaScript: let",
+  "category": "JavaScript",
+  "majorVersion": "ECMAScript",
+  "status": "Authored reference draft",
+  "summary": "Declares a block-scoped binding that may be reassigned.",
+  "syntax": "let count = 0;",
+  "lang": "js",
+  "parameters": "An identifier or binding pattern; optional initializer in normal declarations.",
+  "returns": "A mutable lexical binding; access before initialization throws.",
+  "minimalExample": "let count = 0;\ncount += 1;",
+  "productionExample": "let attempts = 0;\nwhile (attempts < 3) {\n  attempts += 1;\n  if (await attemptOperation()) break;\n}",
+  "commonMistakes": [
+    "Relying on access before initialization or using mutable global state for requests."
+  ],
+  "securityPerformanceNotes": [
+    "Keep reassignment local and bounded; retries require safe operation semantics."
+  ],
+  "relatedLessonIds": [
+    "03.01.01"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/let"
+},
+{
+  "id": "javascript-async",
+  "matchCategories": [
+    "JavaScript"
+  ],
+  "matchTitles": [
+    "async"
+  ],
+  "heading": "JavaScript: async",
+  "category": "JavaScript",
+  "majorVersion": "ECMAScript",
+  "status": "Authored reference draft",
+  "summary": "Declares a function that always returns a promise, enabling await within its body.",
+  "syntax": "async function load() { … }",
+  "lang": "js",
+  "parameters": "Ordinary function parameters; await is allowed in the body.",
+  "returns": "Promise resolved from the return value or rejected by a thrown error.",
+  "minimalExample": "async function count() { return 3; }",
+  "productionExample": "async function getTask(id) {\n  const response = await fetch('/api/tasks/' + encodeURIComponent(id));\n  if (!response.ok) throw new Error('Load failed');\n  return response.json();\n}",
+  "commonMistakes": [
+    "Forgetting to handle rejected promises or assuming async automatically makes CPU-heavy code nonblocking."
+  ],
+  "securityPerformanceNotes": [
+    "Bound I/O and propagate errors explicitly; validate remote response data."
+  ],
+  "relatedLessonIds": [
+    "03.03.03"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function"
+},
+{
+  "id": "javascript-await",
+  "matchCategories": [
+    "JavaScript"
+  ],
+  "matchTitles": [
+    "await"
+  ],
+  "heading": "JavaScript: await",
+  "category": "JavaScript",
+  "majorVersion": "ECMAScript",
+  "status": "Authored reference draft",
+  "summary": "Suspends the enclosing async function until a promise or value is settled.",
+  "syntax": "const result = await expression;",
+  "lang": "js",
+  "parameters": "A value, promise or thenable; permitted in async functions and modules at top level.",
+  "returns": "Fulfillment value, or throws the rejection reason.",
+  "minimalExample": "const value = await Promise.resolve(42);",
+  "productionExample": "const [account, preferences] = await Promise.all([loadAccount(), loadPreferences()]);\n// Independent operations start together; handle rejection at the caller.",
+  "commonMistakes": [
+    "Serially awaiting independent work or expecting await to block all JavaScript execution."
+  ],
+  "securityPerformanceNotes": [
+    "Limit concurrency for large collections; use a deadline for remote calls."
+  ],
+  "relatedLessonIds": [
+    "03.03.03"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/await"
+},
+{
+  "id": "javascript-array-map",
+  "matchCategories": [
+    "JavaScript"
+  ],
+  "matchTitles": [
+    "Array.map"
+  ],
+  "heading": "JavaScript: Array.map",
+  "category": "JavaScript",
+  "majorVersion": "ECMAScript",
+  "status": "Authored reference draft",
+  "summary": "Transforms each present element of an array into an element of a new array.",
+  "syntax": "items.map((value, index, array) => result)",
+  "lang": "js",
+  "parameters": "Callback receives value, index and source array; optional thisArg.",
+  "returns": "New array of callback results, retaining holes in sparse arrays.",
+  "minimalExample": "const doubled = [1, 2].map(n => n * 2);",
+  "productionExample": "const publicTasks = tasks.map(({ id, title, done }) => ({ id, title, done }));",
+  "commonMistakes": [
+    "Using map purely for side effects or forgetting to return from a block callback."
+  ],
+  "securityPerformanceNotes": [
+    "Map does not perform authorization; project only approved fields at a trusted boundary."
+  ],
+  "relatedLessonIds": [
+    "03.01.06"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map"
+},
+{
+  "id": "javascript-array-filter",
+  "matchCategories": [
+    "JavaScript"
+  ],
+  "matchTitles": [
+    "Array.filter"
+  ],
+  "heading": "JavaScript: Array.filter",
+  "category": "JavaScript",
+  "majorVersion": "ECMAScript",
+  "status": "Authored reference draft",
+  "summary": "Creates a shallow new array of present elements passing a predicate.",
+  "syntax": "items.filter(value => predicate(value))",
+  "lang": "js",
+  "parameters": "Callback and optional thisArg; truthiness decides inclusion.",
+  "returns": "New array containing the selected values.",
+  "minimalExample": "const evens = [1, 2, 3].filter(n => n % 2 === 0);",
+  "productionExample": "const visibleTasks = tasks.filter(task => !task.archived && task.status === selectedStatus);",
+  "commonMistakes": [
+    "Expecting filter to modify the source or using client filtering to enforce access control."
+  ],
+  "securityPerformanceNotes": [
+    "Filter private records on the server before delivery; avoid repeated expensive passes when profiling warrants it."
+  ],
+  "relatedLessonIds": [
+    "03.01.06"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter"
+},
+{
+  "id": "javascript-array-reduce",
+  "matchCategories": [
+    "JavaScript"
+  ],
+  "matchTitles": [
+    "Array.reduce"
+  ],
+  "heading": "JavaScript: Array.reduce",
+  "category": "JavaScript",
+  "majorVersion": "ECMAScript",
+  "status": "Authored reference draft",
+  "summary": "Accumulates array elements into one result by repeatedly applying a reducer.",
+  "syntax": "items.reduce((acc, value) => next, initial)",
+  "lang": "js",
+  "parameters": "Reducer and optional initial accumulator; supplying an initial value handles empty arrays.",
+  "returns": "Final accumulator; throws on an empty array without an initial value.",
+  "minimalExample": "const total = [1, 2, 3].reduce((sum, n) => sum + n, 0);",
+  "productionExample": "const totals = orders.reduce((acc, order) => {\n  acc[order.status] = (acc[order.status] ?? 0) + 1;\n  return acc;\n}, Object.create(null));",
+  "commonMistakes": [
+    "Omitting the initial value or using reduce when a simpler loop is clearer."
+  ],
+  "securityPerformanceNotes": [
+    "Use validated grouping keys and avoid repeatedly copying large accumulators."
+  ],
+  "relatedLessonIds": [
+    "03.01.06"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce"
+},
+{
+  "id": "javascript-array-find",
+  "matchCategories": [
+    "JavaScript"
+  ],
+  "matchTitles": [
+    "Array.find"
+  ],
+  "heading": "JavaScript: Array.find",
+  "category": "JavaScript",
+  "majorVersion": "ECMAScript",
+  "status": "Authored reference draft",
+  "summary": "Returns the first array element whose predicate is truthy.",
+  "syntax": "items.find(value => predicate(value))",
+  "lang": "js",
+  "parameters": "Callback receives element, index and array; optional thisArg.",
+  "returns": "Matching value or undefined if none matches.",
+  "minimalExample": "const first = [3, 8, 10].find(n => n > 5);",
+  "productionExample": "const task = tasks.find(item => item.id === selectedId);\nif (!task) return showEmptyState();\nrenderTask(task);",
+  "commonMistakes": [
+    "Treating undefined as proof that an element with value undefined was not present."
+  ],
+  "securityPerformanceNotes": [
+    "Use findIndex when position matters; server authorization is separate from client lookup."
+  ],
+  "relatedLessonIds": [
+    "03.01.06"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find"
+},
+{
+  "id": "javascript-map",
+  "matchCategories": [
+    "JavaScript"
+  ],
+  "matchTitles": [
+    "Map"
+  ],
+  "heading": "JavaScript: Map",
+  "category": "JavaScript",
+  "majorVersion": "ECMAScript",
+  "status": "Authored reference draft",
+  "summary": "Key-value collection with arbitrary key types and insertion-order iteration.",
+  "syntax": "const map = new Map(entries);",
+  "lang": "js",
+  "parameters": "Iterable key/value pairs; set, get, has and delete.",
+  "returns": "Map instance; get returns value or undefined, set returns the map.",
+  "minimalExample": "const counts = new Map([['open', 2]]);",
+  "productionExample": "const byId = new Map(tasks.map(task => [task.id, task]));\nif (byId.has(id)) renderTask(byId.get(id));",
+  "commonMistakes": [
+    "Using object keys with bracket assignment on a Map or assuming get distinguishes missing from undefined."
+  ],
+  "securityPerformanceNotes": [
+    "Bound long-lived maps and remove stale entries; Map is not a serialized JSON format."
+  ],
+  "relatedLessonIds": [
+    "03.02.02"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map"
+},
+{
+  "id": "javascript-set",
+  "matchCategories": [
+    "JavaScript"
+  ],
+  "matchTitles": [
+    "Set"
+  ],
+  "heading": "JavaScript: Set",
+  "category": "JavaScript",
+  "majorVersion": "ECMAScript",
+  "status": "Authored reference draft",
+  "summary": "Collection of unique values using SameValueZero equality.",
+  "syntax": "const set = new Set(iterable);",
+  "lang": "js",
+  "parameters": "Optional iterable; add, has, delete and size.",
+  "returns": "Set instance retaining insertion order.",
+  "minimalExample": "const unique = [...new Set(['a', 'a', 'b'])];",
+  "productionExample": "const selected = new Set(selectedIds);\nconst visible = tasks.filter(task => selected.has(task.id));",
+  "commonMistakes": [
+    "Assuming separately created objects with equal fields deduplicate."
+  ],
+  "securityPerformanceNotes": [
+    "Use stable primitive keys for identity and bound long-lived sets."
+  ],
+  "relatedLessonIds": [
+    "03.02.02"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set"
+},
+{
+  "id": "javascript-json-parse",
+  "matchCategories": [
+    "JavaScript"
+  ],
+  "matchTitles": [
+    "JSON.parse"
+  ],
+  "heading": "JavaScript: JSON.parse",
+  "category": "JavaScript",
+  "majorVersion": "ECMAScript",
+  "status": "Authored reference draft",
+  "summary": "Parses JSON text into a JavaScript value.",
+  "syntax": "JSON.parse(text, reviver?)",
+  "lang": "js",
+  "parameters": "JSON string and optional reviver callback.",
+  "returns": "A value described by the JSON; malformed JSON throws SyntaxError.",
+  "minimalExample": "const value = JSON.parse('{\"count\":2}');",
+  "productionExample": "let raw;\ntry { raw = JSON.parse(requestText); } catch { throw new Error('Invalid JSON'); }\n// Pass raw to a runtime schema validator before accessing fields.",
+  "commonMistakes": [
+    "Treating parse as schema validation or merging unknown objects into privileged state."
+  ],
+  "securityPerformanceNotes": [
+    "Limit body size before parsing and validate allowed keys and values afterward."
+  ],
+  "relatedLessonIds": [
+    "03.02.06"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/parse"
+},
+{
+  "id": "javascript-json-stringify",
+  "matchCategories": [
+    "JavaScript"
+  ],
+  "matchTitles": [
+    "JSON.stringify"
+  ],
+  "heading": "JavaScript: JSON.stringify",
+  "category": "JavaScript",
+  "majorVersion": "ECMAScript",
+  "status": "Authored reference draft",
+  "summary": "Serializes supported JavaScript values into JSON text.",
+  "syntax": "JSON.stringify(value, replacer?, space?)",
+  "lang": "js",
+  "parameters": "Value, optional replacer function/array and indentation.",
+  "returns": "String or undefined for unsupported top-level values; cycles and ordinary BigInt values throw.",
+  "minimalExample": "const json = JSON.stringify({ done: false });",
+  "productionExample": "const dto = { id: task.id, title: task.title, done: task.done };\nreturn new Response(JSON.stringify(dto), { headers: { 'Content-Type': 'application/json' } });",
+  "commonMistakes": [
+    "Assuming serialization preserves Map, Set, undefined or every JavaScript type."
+  ],
+  "securityPerformanceNotes": [
+    "Project public fields explicitly; avoid exposing secrets and oversized payloads."
+  ],
+  "relatedLessonIds": [
+    "03.02.06"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify"
+},
+{
+  "id": "typescript-unknown",
+  "matchCategories": [
+    "TypeScript"
+  ],
+  "matchTitles": [
+    "unknown"
+  ],
+  "heading": "TypeScript: unknown",
+  "category": "TypeScript",
+  "majorVersion": "TypeScript",
+  "status": "Authored reference draft",
+  "summary": "Safe top type for values that must be narrowed before use.",
+  "syntax": "let input: unknown;",
+  "lang": "ts",
+  "parameters": "Any value can be assigned; use guards to access specific operations.",
+  "returns": "Compile-time type; no runtime validation is added.",
+  "minimalExample": "function length(x: unknown) { return typeof x === 'string' ? x.length : 0; }",
+  "productionExample": "function parseTitle(input: unknown): string {\n  if (typeof input !== 'string' || input.trim().length === 0) throw new Error('Invalid title');\n  return input.trim();\n}",
+  "commonMistakes": [
+    "Replacing unknown with any or asserting a remote payload to a trusted type."
+  ],
+  "securityPerformanceNotes": [
+    "Validate untrusted values at the server boundary; type annotations are erased."
+  ],
+  "relatedLessonIds": [
+    "04.03.02"
+  ],
+  "canonicalUrl": "https://www.typescriptlang.org/docs/handbook/2/functions.html#unknown"
+},
+{
+  "id": "typescript-keyof",
+  "matchCategories": [
+    "TypeScript"
+  ],
+  "matchTitles": [
+    "keyof"
+  ],
+  "heading": "TypeScript: keyof",
+  "category": "TypeScript",
+  "majorVersion": "TypeScript",
+  "status": "Authored reference draft",
+  "summary": "Produces the union of allowed property keys for an object type.",
+  "syntax": "type Keys = keyof T;",
+  "lang": "ts",
+  "parameters": "An object type; index signatures may widen the key union.",
+  "returns": "A compile-time property-key union.",
+  "minimalExample": "type Keys = keyof { id: string; done: boolean };",
+  "productionExample": "function get<T, K extends keyof T>(obj: T, key: K): T[K] {\n  return obj[key];\n}",
+  "commonMistakes": [
+    "Assuming keyof lists actual runtime keys or always returns only string keys."
+  ],
+  "securityPerformanceNotes": [
+    "Validate user-supplied property selectors at runtime; do not expose arbitrary object fields."
+  ],
+  "relatedLessonIds": [
+    "04.02.02"
+  ],
+  "canonicalUrl": "https://www.typescriptlang.org/docs/handbook/2/keyof-types.html"
+},
+{
+  "id": "typescript-typeof",
+  "matchCategories": [
+    "TypeScript"
+  ],
+  "matchTitles": [
+    "typeof"
+  ],
+  "heading": "TypeScript: typeof",
+  "category": "TypeScript",
+  "majorVersion": "TypeScript",
+  "status": "Authored reference draft",
+  "summary": "Captures the static type of a variable or property in a type position.",
+  "syntax": "type Config = typeof config;",
+  "lang": "ts",
+  "parameters": "An identifier or property access supported in a type query.",
+  "returns": "A compile-time type, distinct from the runtime typeof operator.",
+  "minimalExample": "const value = { id: 1 };\ntype Value = typeof value;",
+  "productionExample": "const defaults = { pageSize: 20, sort: 'newest' as const };\ntype Defaults = typeof defaults;\nconst config: Defaults = { pageSize: 50, sort: 'newest' };",
+  "commonMistakes": [
+    "Using type-position typeof as a runtime schema or calling arbitrary expressions in a type query."
+  ],
+  "securityPerformanceNotes": [
+    "Keep static config types separate from validation of runtime overrides."
+  ],
+  "relatedLessonIds": [
+    "04.02.02"
+  ],
+  "canonicalUrl": "https://www.typescriptlang.org/docs/handbook/2/typeof-types.html"
+},
+{
+  "id": "typescript-satisfies",
+  "matchCategories": [
+    "TypeScript"
+  ],
+  "matchTitles": [
+    "satisfies"
+  ],
+  "heading": "TypeScript: satisfies",
+  "category": "TypeScript",
+  "majorVersion": "TypeScript",
+  "status": "Authored reference draft",
+  "summary": "Checks an expression against a type while retaining useful inferred information.",
+  "syntax": "expression satisfies TargetType",
+  "lang": "ts",
+  "parameters": "An expression and target type; the check is compile-time.",
+  "returns": "The expression's value with inference preserved subject to contextual typing.",
+  "minimalExample": "const colors = { primary: '#0088ff' } satisfies Record<string, string>;",
+  "productionExample": "type Role = 'reader' | 'editor';\nconst permissions = { reader: ['read'], editor: ['read', 'write'] } satisfies Record<Role, readonly string[]>;",
+  "commonMistakes": [
+    "Assuming satisfies validates incoming JSON or makes an object immutable."
+  ],
+  "securityPerformanceNotes": [
+    "Use it for authored configuration; enforce actual permissions on the server."
+  ],
+  "relatedLessonIds": [
+    "04.03.01"
+  ],
+  "canonicalUrl": "https://www.typescriptlang.org/docs/release-notes/typescript-4-9.html"
+},
+{
+  "id": "typescript-partial",
+  "matchCategories": [
+    "TypeScript"
+  ],
+  "matchTitles": [
+    "Partial"
+  ],
+  "heading": "TypeScript: Partial",
+  "category": "TypeScript",
+  "majorVersion": "TypeScript",
+  "status": "Authored reference draft",
+  "summary": "Makes all top-level properties of a type optional.",
+  "syntax": "type Patch = Partial<T>;",
+  "lang": "ts",
+  "parameters": "An object type T.",
+  "returns": "Mapped type with optional properties; not recursively partial.",
+  "minimalExample": "type Patch = Partial<{ title: string; done: boolean }>;",
+  "productionExample": "type Editable = { title: string; done: boolean };\nfunction merge(current: Editable, patch: Partial<Editable>): Editable {\n  return { ...current, ...patch };\n}",
+  "commonMistakes": [
+    "Applying Partial to an entire database entity and permitting updates to protected fields."
+  ],
+  "securityPerformanceNotes": [
+    "Use an explicit editable DTO and runtime allowlist; distinguish absent values from explicit undefined."
+  ],
+  "relatedLessonIds": [
+    "04.02.06"
+  ],
+  "canonicalUrl": "https://www.typescriptlang.org/docs/handbook/utility-types.html#partialtype"
+},
+{
+  "id": "typescript-pick",
+  "matchCategories": [
+    "TypeScript"
+  ],
+  "matchTitles": [
+    "Pick"
+  ],
+  "heading": "TypeScript: Pick",
+  "category": "TypeScript",
+  "majorVersion": "TypeScript",
+  "status": "Authored reference draft",
+  "summary": "Selects specified properties from an existing type.",
+  "syntax": "type Public = Pick<T, K>;",
+  "lang": "ts",
+  "parameters": "T and a key union K constrained to keyof T.",
+  "returns": "Object type containing the selected properties.",
+  "minimalExample": "type Public = Pick<{ id: string; secret: string }, 'id'>;",
+  "productionExample": "type User = { id: string; name: string; passwordHash: string };\ntype PublicUser = Pick<User, 'id' | 'name'>;\nfunction toPublic(user: User): PublicUser { return { id: user.id, name: user.name }; }",
+  "commonMistakes": [
+    "Assigning a full object to Pick and assuming runtime fields were removed."
+  ],
+  "securityPerformanceNotes": [
+    "Construct the public object explicitly before serialization."
+  ],
+  "relatedLessonIds": [
+    "04.02.06"
+  ],
+  "canonicalUrl": "https://www.typescriptlang.org/docs/handbook/utility-types.html#picktype-keys"
+},
+{
+  "id": "typescript-omit",
+  "matchCategories": [
+    "TypeScript"
+  ],
+  "matchTitles": [
+    "Omit"
+  ],
+  "heading": "TypeScript: Omit",
+  "category": "TypeScript",
+  "majorVersion": "TypeScript",
+  "status": "Authored reference draft",
+  "summary": "Creates a type excluding selected keys from an object type.",
+  "syntax": "type WithoutSecret = Omit<T, K>;",
+  "lang": "ts",
+  "parameters": "An object type and keys to omit.",
+  "returns": "Mapped type excluding the selected properties.",
+  "minimalExample": "type Safe = Omit<{ id: string; token: string }, 'token'>;",
+  "productionExample": "type Internal = { id: string; title: string; debug: string };\ntype Public = Omit<Internal, 'debug'>;\nfunction serialize(item: Internal): Public { return { id: item.id, title: item.title }; }",
+  "commonMistakes": [
+    "Assuming Omit removes fields from a runtime object or protects future sensitive additions."
+  ],
+  "securityPerformanceNotes": [
+    "For public responses prefer explicit field allowlists that fail safely when models grow."
+  ],
+  "relatedLessonIds": [
+    "04.02.06"
+  ],
+  "canonicalUrl": "https://www.typescriptlang.org/docs/handbook/utility-types.html#omittype-keys"
+},
+{
+  "id": "typescript-record",
+  "matchCategories": [
+    "TypeScript"
+  ],
+  "matchTitles": [
+    "Record"
+  ],
+  "heading": "TypeScript: Record",
+  "category": "TypeScript",
+  "majorVersion": "TypeScript",
+  "status": "Authored reference draft",
+  "summary": "Constructs an object type mapping a key union to a value type.",
+  "syntax": "type Lookup = Record<K, V>;",
+  "lang": "ts",
+  "parameters": "K must be a property-key type; V is the value type.",
+  "returns": "Mapped object type with the specified keys.",
+  "minimalExample": "type Flags = Record<'read' | 'write', boolean>;",
+  "productionExample": "type Status = 'open' | 'done';\nconst label: Record<Status, string> = { open: 'Open', done: 'Completed' };",
+  "commonMistakes": [
+    "Treating Record<string,T> as proof every arbitrary runtime key exists."
+  ],
+  "securityPerformanceNotes": [
+    "Use explicit unions or Map for dynamic keys and validate incoming lookup keys."
+  ],
+  "relatedLessonIds": [
+    "04.02.06"
+  ],
+  "canonicalUrl": "https://www.typescriptlang.org/docs/handbook/utility-types.html#recordkeys-type"
+},
+{
+  "id": "typescript-returntype",
+  "matchCategories": [
+    "TypeScript"
+  ],
+  "matchTitles": [
+    "ReturnType"
+  ],
+  "heading": "TypeScript: ReturnType",
+  "category": "TypeScript",
+  "majorVersion": "TypeScript",
+  "status": "Authored reference draft",
+  "summary": "Extracts the return type of a function type.",
+  "syntax": "type Result = ReturnType<typeof fn>;",
+  "lang": "ts",
+  "parameters": "A callable function type; overloaded functions use the last signature for inference.",
+  "returns": "Compile-time return type.",
+  "minimalExample": "type Result = ReturnType<() => number>;",
+  "productionExample": "function makeTask(id: string) { return { id, done: false }; }\ntype Task = ReturnType<typeof makeTask>;\nconst tasks: Task[] = [];",
+  "commonMistakes": [
+    "Expecting ReturnType to execute a function or unwrap an async result."
+  ],
+  "securityPerformanceNotes": [
+    "Use Awaited with async return types when appropriate; validate runtime responses separately."
+  ],
+  "relatedLessonIds": [
+    "04.02.06"
+  ],
+  "canonicalUrl": "https://www.typescriptlang.org/docs/handbook/utility-types.html#returntypetype"
+},
+{
+  "id": "typescript-awaited",
+  "matchCategories": [
+    "TypeScript"
+  ],
+  "matchTitles": [
+    "Awaited"
+  ],
+  "heading": "TypeScript: Awaited",
+  "category": "TypeScript",
+  "majorVersion": "TypeScript",
+  "status": "Authored reference draft",
+  "summary": "Models recursive promise-like unwrapping performed by await.",
+  "syntax": "type Resolved = Awaited<T>;",
+  "lang": "ts",
+  "parameters": "A type potentially containing Promise-like values.",
+  "returns": "The recursively unwrapped type; distributes over unions.",
+  "minimalExample": "type Value = Awaited<Promise<number>>;",
+  "productionExample": "async function load() { return { id: 'task-1' }; }\ntype Task = Awaited<ReturnType<typeof load>>;",
+  "commonMistakes": [
+    "Assuming Awaited converts runtime promises to synchronous values."
+  ],
+  "securityPerformanceNotes": [
+    "Keep rejection handling and cancellation explicit; static types do not model all failures."
+  ],
+  "relatedLessonIds": [
+    "04.02.06"
+  ],
+  "canonicalUrl": "https://www.typescriptlang.org/docs/handbook/utility-types.html#awaitedtype"
+},
+{
+  "id": "react-key",
+  "matchCategories": [
+    "React"
+  ],
+  "matchTitles": [
+    "key"
+  ],
+  "heading": "React: key",
+  "category": "React",
+  "majorVersion": "React 19",
+  "status": "Authored reference draft",
+  "summary": "Provides sibling identity so React can associate rendered elements with previous instances.",
+  "syntax": "<Item key={item.id} />",
+  "lang": "tsx",
+  "parameters": "Stable string or number key, unique among siblings; not delivered as a normal prop.",
+  "returns": "React element identity hint.",
+  "minimalExample": "const rows = items.map(item => <li key={item.id}>{item.title}</li>);",
+  "productionExample": "function TaskList({ tasks }) {\n  return <ul>{tasks.map(task => <TaskRow key={task.id} task={task} />)}</ul>;\n}",
+  "commonMistakes": [
+    "Using random keys or mutable array indices for reorderable data."
+  ],
+  "securityPerformanceNotes": [
+    "Use stable domain IDs to preserve state; keys are not authorization identifiers."
+  ],
+  "relatedLessonIds": [
+    "06.01.05"
+  ],
+  "canonicalUrl": "https://react.dev/learn/rendering-lists#keeping-list-items-in-order-with-key"
+},
+{
+  "id": "react-usememo",
+  "matchCategories": [
+    "React"
+  ],
+  "matchTitles": [
+    "useMemo"
+  ],
+  "heading": "React: useMemo",
+  "category": "React",
+  "majorVersion": "React 19",
+  "status": "Authored reference draft",
+  "summary": "Caches the result of a pure calculation between renders when dependencies are unchanged.",
+  "syntax": "const result = useMemo(calculateValue, dependencies);",
+  "lang": "tsx",
+  "parameters": "Pure calculation and every reactive dependency used by it.",
+  "returns": "Calculated value; cache is a performance optimization, not semantic storage.",
+  "minimalExample": "const sorted = useMemo(() => [...items].sort(compare), [items, compare]);",
+  "productionExample": "function Search({ tasks, query }) {\n  const matching = useMemo(() => tasks.filter(t => t.title.includes(query)), [tasks, query]);\n  return <TaskList tasks={matching} />;\n}",
+  "commonMistakes": [
+    "Using useMemo to guarantee correctness or omitting dependencies."
+  ],
+  "securityPerformanceNotes": [
+    "Measure before adding memoization; avoid side effects during render."
+  ],
+  "relatedLessonIds": [
+    "06.05.06"
+  ],
+  "canonicalUrl": "https://react.dev/reference/react/useMemo"
+},
+{
+  "id": "react-usecallback",
+  "matchCategories": [
+    "React"
+  ],
+  "matchTitles": [
+    "useCallback"
+  ],
+  "heading": "React: useCallback",
+  "category": "React",
+  "majorVersion": "React 19",
+  "status": "Authored reference draft",
+  "summary": "Caches a function identity between renders while its reactive dependencies remain unchanged.",
+  "syntax": "const fn = useCallback(callback, dependencies);",
+  "lang": "tsx",
+  "parameters": "Function and dependency array; React does not call the callback for you.",
+  "returns": "Cached function reference.",
+  "minimalExample": "const onClose = useCallback(() => setOpen(false), []);",
+  "productionExample": "const addTask = useCallback((task) => {\n  setTasks(previous => [...previous, task]);\n}, []);\nreturn <TaskComposer onAdd={addTask} />;",
+  "commonMistakes": [
+    "Omitting dependencies to suppress rerenders or expecting the hook to invoke a callback."
+  ],
+  "securityPerformanceNotes": [
+    "Use stable references where profiling or dependency contracts justify them; avoid stale closure bugs."
+  ],
+  "relatedLessonIds": [
+    "06.05.06"
+  ],
+  "canonicalUrl": "https://react.dev/reference/react/useCallback"
+},
+{
+  "id": "react-usedeferredvalue",
+  "matchCategories": [
+    "React"
+  ],
+  "matchTitles": [
+    "useDeferredValue"
+  ],
+  "heading": "React: useDeferredValue",
+  "category": "React",
+  "majorVersion": "React 19",
+  "status": "Authored reference draft",
+  "summary": "Defers a value used by a lower-priority part of the UI while urgent updates remain responsive.",
+  "syntax": "const deferred = useDeferredValue(value);",
+  "lang": "tsx",
+  "parameters": "Value to defer; optional initial value in React 19.",
+  "returns": "Deferred version of the value; may lag during background rendering.",
+  "minimalExample": "const deferredQuery = useDeferredValue(query);",
+  "productionExample": "function Search({ tasks }) {\n  const [query, setQuery] = useState('');\n  const deferred = useDeferredValue(query);\n  return <><input aria-label=\"Search\" value={query} onChange={e => setQuery(e.target.value)} /><Results tasks={tasks} query={deferred} /></>;\n}",
+  "commonMistakes": [
+    "Treating deferred rendering as request debouncing or a fixed time delay."
+  ],
+  "securityPerformanceNotes": [
+    "Indicate stale results where useful; expensive child renders may need memoization."
+  ],
+  "relatedLessonIds": [
+    "06.04.04"
+  ],
+  "canonicalUrl": "https://react.dev/reference/react/useDeferredValue"
+},
+{
+  "id": "react-suspense",
+  "matchCategories": [
+    "React"
+  ],
+  "matchTitles": [
+    "Suspense"
+  ],
+  "heading": "React: Suspense",
+  "category": "React",
+  "majorVersion": "React 19",
+  "status": "Authored reference draft",
+  "summary": "Shows a fallback while supported descendants suspend during rendering.",
+  "syntax": "<Suspense fallback={<Loading />}>…</Suspense>",
+  "lang": "tsx",
+  "parameters": "fallback and children; suspension requires a compatible data source or lazy code.",
+  "returns": "A boundary that renders children or fallback.",
+  "minimalExample": "<Suspense fallback={<p>Loading…</p>}><LazyPanel /></Suspense>",
+  "productionExample": "function Dashboard() {\n  return <main><h1>Dashboard</h1><Suspense fallback={<p role=\"status\">Loading activity…</p>}><ActivityPanel /></Suspense></main>;\n}",
+  "commonMistakes": [
+    "Assuming Suspense automatically detects ordinary fetches in effects or replaces error boundaries."
+  ],
+  "securityPerformanceNotes": [
+    "Design boundaries around meaningful regions; do not reveal protected content before authorization."
+  ],
+  "relatedLessonIds": [
+    "06.04.07"
+  ],
+  "canonicalUrl": "https://react.dev/reference/react/Suspense"
+},
+{
+  "id": "next.js-page-tsx",
+  "matchCategories": [
+    "Next.js"
+  ],
+  "matchTitles": [
+    "page.tsx"
+  ],
+  "heading": "Next.js: page.tsx",
+  "category": "Next.js",
+  "majorVersion": "Next.js 16 App Router",
+  "status": "Authored reference draft",
+  "summary": "A page special file defines route UI for an App Router segment.",
+  "syntax": "export default function Page() { return <main>Page</main>; }",
+  "lang": "tsx",
+  "parameters": "Default component export; dynamic params and searchParams are asynchronous in Next.js 16 page props.",
+  "returns": "Rendered route content.",
+  "minimalExample": "export default function Page() { return <h1>Home</h1>; }",
+  "productionExample": "export default async function Page({ params }: { params: Promise<{ id: string }> }) {\n  const { id } = await params;\n  const task = await loadAuthorizedTask(id);\n  return <main><h1>{task.title}</h1></main>;\n}",
+  "commonMistakes": [
+    "Assuming route params are trusted or forgetting to await them."
+  ],
+  "securityPerformanceNotes": [
+    "Authorize on the server and keep secrets out of client modules."
+  ],
+  "relatedLessonIds": [
+    "07.01.02"
+  ],
+  "canonicalUrl": "https://nextjs.org/docs/app/api-reference/file-conventions/page"
+},
+{
+  "id": "next.js-layout-tsx",
+  "matchCategories": [
+    "Next.js"
+  ],
+  "matchTitles": [
+    "layout.tsx"
+  ],
+  "heading": "Next.js: layout.tsx",
+  "category": "Next.js",
+  "majorVersion": "Next.js 16 App Router",
+  "status": "Authored reference draft",
+  "summary": "A layout special file wraps route segments with shared UI.",
+  "syntax": "export default function Layout({ children }: { children: React.ReactNode }) { return children; }",
+  "lang": "tsx",
+  "parameters": "children plus supported route parameters; root layout includes html and body.",
+  "returns": "Shared route UI; layouts persist across compatible client navigations.",
+  "minimalExample": "export default function Layout({ children }: { children: React.ReactNode }) { return <section>{children}</section>; }",
+  "productionExample": "export default function DashboardLayout({ children }: { children: React.ReactNode }) {\n  return <div><nav aria-label=\"Dashboard\">Dashboard links</nav><main>{children}</main></div>;\n}",
+  "commonMistakes": [
+    "Expecting a persistent layout to re-read every query parameter or serve as the only authorization check."
+  ],
+  "securityPerformanceNotes": [
+    "Check authorization close to data access and mutations; avoid duplicated main landmarks."
+  ],
+  "relatedLessonIds": [
+    "07.01.02"
+  ],
+  "canonicalUrl": "https://nextjs.org/docs/app/api-reference/file-conventions/layout"
+},
+{
+  "id": "next.js-loading-tsx",
+  "matchCategories": [
+    "Next.js"
+  ],
+  "matchTitles": [
+    "loading.tsx"
+  ],
+  "heading": "Next.js: loading.tsx",
+  "category": "Next.js",
+  "majorVersion": "Next.js 16 App Router",
+  "status": "Authored reference draft",
+  "summary": "Provides an instant loading UI for a route segment using a Suspense boundary.",
+  "syntax": "export default function Loading() { return <p>Loading…</p>; }",
+  "lang": "tsx",
+  "parameters": "Default component export without required parameters.",
+  "returns": "Fallback UI during supported segment loading.",
+  "minimalExample": "export default function Loading() { return <p role=\"status\">Loading…</p>; }",
+  "productionExample": "export default function Loading() {\n  return <section aria-busy=\"true\"><h1>Tasks</h1><p role=\"status\">Loading task list…</p></section>;\n}",
+  "commonMistakes": [
+    "Using loading UI as a replacement for empty, denied or error states."
+  ],
+  "securityPerformanceNotes": [
+    "Avoid layout shifts and excessive animation; never expose private skeleton data."
+  ],
+  "relatedLessonIds": [
+    "07.01.04"
+  ],
+  "canonicalUrl": "https://nextjs.org/docs/app/api-reference/file-conventions/loading"
+},
+{
+  "id": "next.js-route-ts",
+  "matchCategories": [
+    "Next.js"
+  ],
+  "matchTitles": [
+    "route.ts"
+  ],
+  "heading": "Next.js: route.ts",
+  "category": "Next.js",
+  "majorVersion": "Next.js 16 App Router",
+  "status": "Authored reference draft",
+  "summary": "Defines HTTP route handlers in the App Router.",
+  "syntax": "export async function GET(request: Request) { return Response.json({ ok: true }); }",
+  "lang": "ts",
+  "parameters": "Named HTTP method exports; Request and optional route context.",
+  "returns": "Response or Promise<Response> for the requested method.",
+  "minimalExample": "export function GET() { return Response.json({ status: 'ok' }); }",
+  "productionExample": "export async function GET(request: Request) {\n  const session = await authenticate(request);\n  if (!session) return Response.json({ error: 'Unauthorized' }, { status: 401 });\n  return Response.json(await listAuthorizedTasks(session.userId));\n}",
+  "commonMistakes": [
+    "Treating route handlers as trusted internal calls or returning sensitive data from an unauthenticated GET."
+  ],
+  "securityPerformanceNotes": [
+    "Validate inputs, enforce object-level access and set appropriate cache policy for private data."
+  ],
+  "relatedLessonIds": [
+    "07.02.05"
+  ],
+  "canonicalUrl": "https://nextjs.org/docs/app/api-reference/file-conventions/route"
+},
+{
+  "id": "next.js-dynamic-segments",
+  "matchCategories": [
+    "Next.js"
+  ],
+  "matchTitles": [
+    "dynamic segments"
+  ],
+  "heading": "Next.js: dynamic segments",
+  "category": "Next.js",
+  "majorVersion": "Next.js 16 App Router",
+  "status": "Authored reference draft",
+  "summary": "Maps bracketed route folders to URL parameters.",
+  "syntax": "app/tasks/[id]/page.tsx",
+  "lang": "tsx",
+  "parameters": "Dynamic segment names; catch-all segments use [...name] and optional catch-all [[...name]].",
+  "returns": "Matched route parameters, read asynchronously in current page props.",
+  "minimalExample": "export default async function Page({ params }: { params: Promise<{ id: string }> }) { return <p>{(await params).id}</p>; }",
+  "productionExample": "export default async function Page({ params }: { params: Promise<{ id: string }> }) {\n  const { id } = await params;\n  if (!isValidTaskId(id)) notFound();\n  const task = await findTaskForCurrentUser(id);\n  if (!task) notFound();\n  return <h1>{task.title}</h1>;\n}",
+  "commonMistakes": [
+    "Assuming an identifier from the URL proves ownership."
+  ],
+  "securityPerformanceNotes": [
+    "Validate route identifiers, authorize record access and encode generated URL segments."
+  ],
+  "relatedLessonIds": [
+    "07.01.03"
+  ],
+  "canonicalUrl": "https://nextjs.org/docs/app/api-reference/file-conventions/dynamic-routes"
+},
+{
+  "id": "next.js-link",
+  "matchCategories": [
+    "Next.js"
+  ],
+  "matchTitles": [
+    "Link"
+  ],
+  "heading": "Next.js: Link",
+  "category": "Next.js",
+  "majorVersion": "Next.js 16 App Router",
+  "status": "Authored reference draft",
+  "summary": "Extends anchor navigation with Next.js client-side routing and prefetch behavior.",
+  "syntax": "<Link href=\"/learn\">Learn</Link>",
+  "lang": "tsx",
+  "parameters": "href, children and optional navigation/prefetch options.",
+  "returns": "A link element with framework navigation behavior.",
+  "minimalExample": "import Link from 'next/link';\nexport default function Nav() { return <Link href=\"/learn\">Learn</Link>; }",
+  "productionExample": "import Link from 'next/link';\nfunction TaskLinks({ tasks }) {\n  return <ul>{tasks.map(task => <li key={task.id}><Link href={'/tasks/' + encodeURIComponent(task.id)}>{task.title}</Link></li>)}</ul>;\n}",
+  "commonMistakes": [
+    "Using Link for button actions or accepting an arbitrary URL from untrusted input."
+  ],
+  "securityPerformanceNotes": [
+    "Keep meaningful anchor text, preserve native navigation semantics and validate destinations."
+  ],
+  "relatedLessonIds": [
+    "07.01.06"
+  ],
+  "canonicalUrl": "https://nextjs.org/docs/app/api-reference/components/link"
+},
+{
+  "id": "nestjs-controller",
+  "matchCategories": [
+    "NestJS"
+  ],
+  "matchTitles": [
+    "@Controller"
+  ],
+  "heading": "NestJS: @Controller",
+  "category": "NestJS",
+  "majorVersion": "NestJS",
+  "status": "Authored reference draft",
+  "summary": "Associates a class with a route prefix; decorated methods handle requests.",
+  "syntax": "@Controller('tasks')",
+  "lang": "ts",
+  "parameters": "Optional path or controller options.",
+  "returns": "Registers a controller when declared in a module.",
+  "minimalExample": "@Controller('tasks') class TasksController {}",
+  "productionExample": "@Controller('tasks')\nexport class TasksController {\n  constructor(private readonly tasks: TasksService) {}\n  @Get() list() { return this.tasks.listPublic(); }\n}",
+  "commonMistakes": [
+    "Putting database access directly in every controller."
+  ],
+  "securityPerformanceNotes": [
+    "Keep authorization and validation at request/service boundaries; register the controller in its module."
+  ],
+  "relatedLessonIds": [
+    "11.01.02"
+  ],
+  "canonicalUrl": "https://docs.nestjs.com/controllers"
+},
+{
+  "id": "nestjs-get",
+  "matchCategories": [
+    "NestJS"
+  ],
+  "matchTitles": [
+    "@Get"
+  ],
+  "heading": "NestJS: @Get",
+  "category": "NestJS",
+  "majorVersion": "NestJS",
+  "status": "Authored reference draft",
+  "summary": "Binds a controller method to an HTTP GET route.",
+  "syntax": "@Get(':id')",
+  "lang": "ts",
+  "parameters": "Optional relative path.",
+  "returns": "Dispatches GET requests to the method; Nest serializes returned data by default.",
+  "minimalExample": "@Get() list() { return []; }",
+  "productionExample": "@Get(':id')\n@UseGuards(SessionGuard)\nget(@Param('id') id: string, @Req() req: AuthenticatedRequest) {\n  return this.tasks.getForUser(req.user.id, id);\n}",
+  "commonMistakes": [
+    "Treating a URL parameter as proof of ownership."
+  ],
+  "securityPerformanceNotes": [
+    "GET should not mutate domain state; validate IDs and enforce object access."
+  ],
+  "relatedLessonIds": [
+    "11.01.02"
+  ],
+  "canonicalUrl": "https://docs.nestjs.com/controllers"
+},
+{
+  "id": "nestjs-post",
+  "matchCategories": [
+    "NestJS"
+  ],
+  "matchTitles": [
+    "@Post"
+  ],
+  "heading": "NestJS: @Post",
+  "category": "NestJS",
+  "majorVersion": "NestJS",
+  "status": "Authored reference draft",
+  "summary": "Binds a controller method to POST; Nest defaults to status 201.",
+  "syntax": "@Post()",
+  "lang": "ts",
+  "parameters": "Optional path; use @HttpCode to change status deliberately.",
+  "returns": "Handles POST and serializes the result by default.",
+  "minimalExample": "@Post() create(@Body() dto: CreateTaskDto) { return this.tasks.create(dto); }",
+  "productionExample": "@Post()\n@UseGuards(SessionGuard)\ncreate(@Body() dto: CreateTaskDto, @Req() req: AuthenticatedRequest) {\n  return this.tasks.createForUser(req.user.id, dto);\n}",
+  "commonMistakes": [
+    "Assuming a TypeScript DTO validates JSON by itself."
+  ],
+  "securityPerformanceNotes": [
+    "Configure runtime validation and explicit editable fields; design safe retry semantics for writes."
+  ],
+  "relatedLessonIds": [
+    "11.01.02"
+  ],
+  "canonicalUrl": "https://docs.nestjs.com/controllers"
+},
+{
+  "id": "nestjs-inject",
+  "matchCategories": [
+    "NestJS"
+  ],
+  "matchTitles": [
+    "@Inject"
+  ],
+  "heading": "NestJS: @Inject",
+  "category": "NestJS",
+  "majorVersion": "NestJS",
+  "status": "Authored reference draft",
+  "summary": "Selects a dependency by token when class-based inference is insufficient.",
+  "syntax": "@Inject(TASK_REPOSITORY)",
+  "lang": "ts",
+  "parameters": "Provider token (class, string or symbol).",
+  "returns": "Resolves the registered provider in the module graph.",
+  "minimalExample": "constructor(@Inject(TASK_REPOSITORY) private readonly repo: TaskRepository) {}",
+  "productionExample": "const TASK_REPOSITORY = Symbol('TASK_REPOSITORY');\n@Module({ providers: [{ provide: TASK_REPOSITORY, useClass: PgTaskRepository }, TaskService] })\nclass TasksModule {}",
+  "commonMistakes": [
+    "Declaring independent symbols with the same description and expecting equality."
+  ],
+  "securityPerformanceNotes": [
+    "Export a single shared token; avoid global mutable providers for request-specific state."
+  ],
+  "relatedLessonIds": [
+    "11.04.01"
+  ],
+  "canonicalUrl": "https://docs.nestjs.com/fundamentals/custom-providers"
+},
+{
+  "id": "nestjs-executioncontext",
+  "matchCategories": [
+    "NestJS"
+  ],
+  "matchTitles": [
+    "ExecutionContext"
+  ],
+  "heading": "NestJS: ExecutionContext",
+  "category": "NestJS",
+  "majorVersion": "NestJS",
+  "status": "Authored reference draft",
+  "summary": "Extends ArgumentsHost with information about the invoked handler and class.",
+  "syntax": "context.switchToHttp().getRequest()",
+  "lang": "ts",
+  "parameters": "Context supplied by Nest to guards and interceptors.",
+  "returns": "Accesses transport-specific arguments, handler and class metadata.",
+  "minimalExample": "const handler = context.getHandler();",
+  "productionExample": "canActivate(context: ExecutionContext) {\n  if (context.getType() !== 'http') return false;\n  const request = context.switchToHttp().getRequest<AuthenticatedRequest>();\n  return Boolean(request.user?.id);\n}",
+  "commonMistakes": [
+    "Using HTTP-only request extraction for WebSocket or RPC handlers."
+  ],
+  "securityPerformanceNotes": [
+    "This sample is only an authentication-presence check; enforce resource-specific authorization separately."
+  ],
+  "relatedLessonIds": [
+    "11.02.03"
+  ],
+  "canonicalUrl": "https://docs.nestjs.com/fundamentals/execution-context"
+},
+{
+  "id": "nestjs-middleware",
+  "matchCategories": [
+    "NestJS"
+  ],
+  "matchTitles": [
+    "Middleware"
+  ],
+  "heading": "NestJS: Middleware",
+  "category": "NestJS",
+  "majorVersion": "NestJS",
+  "status": "Authored reference draft",
+  "summary": "Runs before route handlers and can enrich or terminate requests.",
+  "syntax": "use(req, res, next)",
+  "lang": "ts",
+  "parameters": "Request, response and continuation; interfaces depend on adapter.",
+  "returns": "Continues the pipeline when next() is called.",
+  "minimalExample": "use(req: Request, res: Response, next: NextFunction) { next(); }",
+  "productionExample": "// Express adapter example\nuse(req: Request, res: Response, next: NextFunction) {\n  const id = randomUUID();\n  res.setHeader('X-Request-Id', id);\n  next();\n}",
+  "commonMistakes": [
+    "Forgetting next() without ending the response."
+  ],
+  "securityPerformanceNotes": [
+    "Do not trust incoming correlation IDs by default; avoid logging authorization headers."
+  ],
+  "relatedLessonIds": [
+    "11.02.01"
+  ],
+  "canonicalUrl": "https://docs.nestjs.com/middleware"
+},
+{
+  "id": "nestjs-testingmodule",
+  "matchCategories": [
+    "NestJS"
+  ],
+  "matchTitles": [
+    "TestingModule"
+  ],
+  "heading": "NestJS: TestingModule",
+  "category": "NestJS",
+  "majorVersion": "NestJS",
+  "status": "Authored reference draft",
+  "summary": "Builds an isolated Nest dependency graph for tests.",
+  "syntax": "Test.createTestingModule({ providers: [] }).compile()",
+  "lang": "ts",
+  "parameters": "Module metadata and optional provider overrides.",
+  "returns": "Promise<TestingModule> with DI lookup and lifecycle methods.",
+  "minimalExample": "const module = await Test.createTestingModule({ providers: [TasksService] }).compile();",
+  "productionExample": "const module = await Test.createTestingModule({ providers: [TasksService, { provide: TASK_REPOSITORY, useValue: fakeRepo }] }).compile();\ntry { expect(module.get(TasksService)).toBeDefined(); } finally { await module.close(); }",
+  "commonMistakes": [
+    "Mocking everything and calling it an HTTP integration test."
+  ],
+  "securityPerformanceNotes": [
+    "Test real persistence and request pipeline separately; close test resources."
+  ],
+  "relatedLessonIds": [
+    "11.04.05"
+  ],
+  "canonicalUrl": "https://docs.nestjs.com/fundamentals/testing"
+},
+{
+  "id": "nestjs-configmodule",
+  "matchCategories": [
+    "NestJS"
+  ],
+  "matchTitles": [
+    "ConfigModule"
+  ],
+  "heading": "NestJS: ConfigModule",
+  "category": "NestJS",
+  "majorVersion": "NestJS",
+  "status": "Authored reference draft",
+  "summary": "Loads application configuration through dependency injection.",
+  "syntax": "ConfigModule.forRoot(options)",
+  "lang": "ts",
+  "parameters": "Options include validate, isGlobal and environment-file settings.",
+  "returns": "A dynamic module exposing ConfigService.",
+  "minimalExample": "ConfigModule.forRoot()",
+  "productionExample": "ConfigModule.forRoot({ validate: env => {\n  if (typeof env.DATABASE_URL !== 'string' || !env.DATABASE_URL) throw new Error('DATABASE_URL required');\n  return env;\n} })",
+  "commonMistakes": [
+    "Assuming get<string>() proves a variable exists or has correct format."
+  ],
+  "securityPerformanceNotes": [
+    "Validate all required settings at startup; do not print secrets in validation errors."
+  ],
+  "relatedLessonIds": [
+    "11.01.05"
+  ],
+  "canonicalUrl": "https://docs.nestjs.com/techniques/configuration"
+},
+{
+  "id": "postgresql-select",
+  "matchCategories": [
+    "PostgreSQL"
+  ],
+  "matchTitles": [
+    "SELECT"
+  ],
+  "heading": "PostgreSQL: SELECT",
+  "category": "PostgreSQL",
+  "majorVersion": "PostgreSQL",
+  "status": "Authored reference draft",
+  "summary": "Reads rows or computed expressions from one or more sources.",
+  "syntax": "SELECT columns FROM table WHERE predicate;",
+  "lang": "sql",
+  "parameters": "Projection, source, filter and optional ordering.",
+  "returns": "A result set; order is unspecified without ORDER BY.",
+  "minimalExample": "SELECT id, title FROM tasks;",
+  "productionExample": "SELECT id, title FROM tasks WHERE workspace_id = $1 AND archived_at IS NULL ORDER BY id LIMIT 50;",
+  "commonMistakes": [
+    "Using SELECT * in a public API or expecting implicit row ordering."
+  ],
+  "securityPerformanceNotes": [
+    "Bind parameters through a database driver; enforce tenant membership before supplying workspace ID."
+  ],
+  "relatedLessonIds": [
+    "12.01.02"
+  ],
+  "canonicalUrl": "https://www.postgresql.org/docs/current/sql-select.html"
+},
+{
+  "id": "postgresql-insert",
+  "matchCategories": [
+    "PostgreSQL"
+  ],
+  "matchTitles": [
+    "INSERT"
+  ],
+  "heading": "PostgreSQL: INSERT",
+  "category": "PostgreSQL",
+  "majorVersion": "PostgreSQL",
+  "status": "Authored reference draft",
+  "summary": "Creates rows subject to constraints and privileges.",
+  "syntax": "INSERT INTO tasks (title) VALUES ($1);",
+  "lang": "sql",
+  "parameters": "Target columns and values or query; optional RETURNING.",
+  "returns": "Inserted rows if RETURNING is used; otherwise command count.",
+  "minimalExample": "INSERT INTO tasks (title) VALUES ('Read docs');",
+  "productionExample": "INSERT INTO tasks (workspace_id, title) VALUES ($1, $2) RETURNING id, title;",
+  "commonMistakes": [
+    "Concatenating untrusted values into SQL or ignoring unique violations."
+  ],
+  "securityPerformanceNotes": [
+    "Check tenant authorization; use constraints and idempotency for replayable operations."
+  ],
+  "relatedLessonIds": [
+    "12.01.08"
+  ],
+  "canonicalUrl": "https://www.postgresql.org/docs/current/sql-insert.html"
+},
+{
+  "id": "postgresql-update",
+  "matchCategories": [
+    "PostgreSQL"
+  ],
+  "matchTitles": [
+    "UPDATE"
+  ],
+  "heading": "PostgreSQL: UPDATE",
+  "category": "PostgreSQL",
+  "majorVersion": "PostgreSQL",
+  "status": "Authored reference draft",
+  "summary": "Changes matching rows; supports conditional version checks.",
+  "syntax": "UPDATE tasks SET title = $1 WHERE id = $2;",
+  "lang": "sql",
+  "parameters": "SET expressions, WHERE predicate and optional RETURNING.",
+  "returns": "Updated rows with RETURNING, otherwise count.",
+  "minimalExample": "UPDATE tasks SET done = true WHERE id = 1;",
+  "productionExample": "UPDATE tasks SET title = $1, version = version + 1 WHERE id = $2 AND workspace_id = $3 AND version = $4 RETURNING id, version;",
+  "commonMistakes": [
+    "Omitting WHERE or ignoring zero-row optimistic conflicts."
+  ],
+  "securityPerformanceNotes": [
+    "Use parameter binding and verified tenant scope; distinguish conflicts from successful writes."
+  ],
+  "relatedLessonIds": [
+    "12.03.04"
+  ],
+  "canonicalUrl": "https://www.postgresql.org/docs/current/sql-update.html"
+},
+{
+  "id": "postgresql-delete",
+  "matchCategories": [
+    "PostgreSQL"
+  ],
+  "matchTitles": [
+    "DELETE"
+  ],
+  "heading": "PostgreSQL: DELETE",
+  "category": "PostgreSQL",
+  "majorVersion": "PostgreSQL",
+  "status": "Authored reference draft",
+  "summary": "Removes rows matching a predicate.",
+  "syntax": "DELETE FROM tasks WHERE id = $1;",
+  "lang": "sql",
+  "parameters": "Target, filter and optional RETURNING.",
+  "returns": "Deleted rows with RETURNING or command count.",
+  "minimalExample": "DELETE FROM tasks WHERE id = 1;",
+  "productionExample": "DELETE FROM tasks WHERE id = $1 AND workspace_id = $2 RETURNING id;",
+  "commonMistakes": [
+    "Omitting WHERE or overlooking cascade constraints."
+  ],
+  "securityPerformanceNotes": [
+    "Require authorization and review retention requirements before physical deletion."
+  ],
+  "relatedLessonIds": [
+    "12.02.05"
+  ],
+  "canonicalUrl": "https://www.postgresql.org/docs/current/sql-delete.html"
+},
+{
+  "id": "postgresql-join",
+  "matchCategories": [
+    "PostgreSQL"
+  ],
+  "matchTitles": [
+    "JOIN"
+  ],
+  "heading": "PostgreSQL: JOIN",
+  "category": "PostgreSQL",
+  "majorVersion": "PostgreSQL",
+  "status": "Authored reference draft",
+  "summary": "Combines rows according to a join condition and join type.",
+  "syntax": "SELECT * FROM a JOIN b ON a.id = b.a_id;",
+  "lang": "sql",
+  "parameters": "Left/right sources and ON or USING condition.",
+  "returns": "Combined rows; outer joins preserve unmatched rows on their retained side.",
+  "minimalExample": "SELECT t.title, p.name FROM tasks t JOIN projects p ON p.id = t.project_id;",
+  "productionExample": "SELECT t.id, p.name FROM tasks t LEFT JOIN projects p ON p.id = t.project_id AND p.workspace_id = t.workspace_id WHERE t.workspace_id = $1;",
+  "commonMistakes": [
+    "Filtering a nullable right-side column in WHERE and unintentionally removing unmatched rows."
+  ],
+  "securityPerformanceNotes": [
+    "Use tenant-safe foreign keys and inspect multiplicity and indexes."
+  ],
+  "relatedLessonIds": [
+    "12.01.03"
+  ],
+  "canonicalUrl": "https://www.postgresql.org/docs/current/queries-table-expressions.html"
+},
+{
+  "id": "postgresql-group-by",
+  "matchCategories": [
+    "PostgreSQL"
+  ],
+  "matchTitles": [
+    "GROUP BY"
+  ],
+  "heading": "PostgreSQL: GROUP BY",
+  "category": "PostgreSQL",
+  "majorVersion": "PostgreSQL",
+  "status": "Authored reference draft",
+  "summary": "Partitions input rows into groups for aggregate computation.",
+  "syntax": "SELECT status, count(*) FROM tasks GROUP BY status;",
+  "lang": "sql",
+  "parameters": "Grouping expressions and aggregate expressions.",
+  "returns": "One result row per group unless grouping sets alter that shape.",
+  "minimalExample": "SELECT status, count(*) FROM tasks GROUP BY status;",
+  "productionExample": "SELECT status, count(*) AS task_count FROM tasks WHERE workspace_id = $1 GROUP BY status ORDER BY status;",
+  "commonMistakes": [
+    "Selecting ungrouped nonaggregated columns without a valid functional dependency."
+  ],
+  "securityPerformanceNotes": [
+    "Filter tenant rows before aggregation; bound group cardinality for public reports."
+  ],
+  "relatedLessonIds": [
+    "12.01.04"
+  ],
+  "canonicalUrl": "https://www.postgresql.org/docs/current/queries-table-expressions.html"
+},
+{
+  "id": "postgresql-having",
+  "matchCategories": [
+    "PostgreSQL"
+  ],
+  "matchTitles": [
+    "HAVING"
+  ],
+  "heading": "PostgreSQL: HAVING",
+  "category": "PostgreSQL",
+  "majorVersion": "PostgreSQL",
+  "status": "Authored reference draft",
+  "summary": "Filters groups after aggregation rather than individual source rows.",
+  "syntax": "GROUP BY status HAVING count(*) > 5",
+  "lang": "sql",
+  "parameters": "Predicate over group expressions and aggregates.",
+  "returns": "Only groups satisfying the predicate.",
+  "minimalExample": "SELECT status, count(*) FROM tasks GROUP BY status HAVING count(*) > 5;",
+  "productionExample": "SELECT project_id, count(*) FROM tasks WHERE workspace_id = $1 GROUP BY project_id HAVING count(*) >= $2;",
+  "commonMistakes": [
+    "Putting aggregate predicates in WHERE."
+  ],
+  "securityPerformanceNotes": [
+    "Use WHERE to reduce input early and avoid exposing unauthorized aggregate counts."
+  ],
+  "relatedLessonIds": [
+    "12.01.04"
+  ],
+  "canonicalUrl": "https://www.postgresql.org/docs/current/queries-table-expressions.html"
+},
+{
+  "id": "postgresql-order-by",
+  "matchCategories": [
+    "PostgreSQL"
+  ],
+  "matchTitles": [
+    "ORDER BY"
+  ],
+  "heading": "PostgreSQL: ORDER BY",
+  "category": "PostgreSQL",
+  "majorVersion": "PostgreSQL",
+  "status": "Authored reference draft",
+  "summary": "Sorts query results according to one or more expressions.",
+  "syntax": "ORDER BY created_at DESC, id DESC",
+  "lang": "sql",
+  "parameters": "Expressions, ASC/DESC, optional NULLS FIRST/LAST.",
+  "returns": "Ordered result set; ties need additional keys for deterministic ordering.",
+  "minimalExample": "SELECT id FROM tasks ORDER BY id DESC;",
+  "productionExample": "SELECT id, created_at FROM tasks WHERE workspace_id = $1 ORDER BY created_at DESC NULLS LAST, id DESC LIMIT 50;",
+  "commonMistakes": [
+    "Paginating on a nonunique sort column without a tie-breaker."
+  ],
+  "securityPerformanceNotes": [
+    "Design indexes to match frequently used filters and order; allowlist user-selected sort columns."
+  ],
+  "relatedLessonIds": [
+    "12.01.02"
+  ],
+  "canonicalUrl": "https://www.postgresql.org/docs/current/queries-order.html"
+},
+{
+  "id": "postgresql-limit",
+  "matchCategories": [
+    "PostgreSQL"
+  ],
+  "matchTitles": [
+    "LIMIT"
+  ],
+  "heading": "PostgreSQL: LIMIT",
+  "category": "PostgreSQL",
+  "majorVersion": "PostgreSQL",
+  "status": "Authored reference draft",
+  "summary": "Caps how many rows a query returns.",
+  "syntax": "LIMIT 50",
+  "lang": "sql",
+  "parameters": "Nonnegative count or bound parameter.",
+  "returns": "At most the requested count.",
+  "minimalExample": "SELECT id FROM tasks ORDER BY id LIMIT 10;",
+  "productionExample": "SELECT id, title FROM tasks WHERE workspace_id = $1 AND id > $2 ORDER BY id LIMIT $3;",
+  "commonMistakes": [
+    "Applying LIMIT without stable ordering."
+  ],
+  "securityPerformanceNotes": [
+    "Validate and cap page size; use keyset paging when appropriate."
+  ],
+  "relatedLessonIds": [
+    "12.04.04"
+  ],
+  "canonicalUrl": "https://www.postgresql.org/docs/current/queries-limit.html"
+},
+{
+  "id": "postgresql-with",
+  "matchCategories": [
+    "PostgreSQL"
+  ],
+  "matchTitles": [
+    "WITH"
+  ],
+  "heading": "PostgreSQL: WITH",
+  "category": "PostgreSQL",
+  "majorVersion": "PostgreSQL",
+  "status": "Authored reference draft",
+  "summary": "Defines named query expressions (CTEs) for a statement.",
+  "syntax": "WITH recent AS (SELECT ...) SELECT * FROM recent;",
+  "lang": "sql",
+  "parameters": "Named query and optional column names, materialization or recursion options.",
+  "returns": "Rows produced by the outer statement.",
+  "minimalExample": "WITH counts AS (SELECT count(*) AS n FROM tasks) SELECT n FROM counts;",
+  "productionExample": "WITH scoped AS (SELECT status FROM tasks WHERE workspace_id = $1) SELECT status, count(*) FROM scoped GROUP BY status;",
+  "commonMistakes": [
+    "Assuming every CTE is always materialized."
+  ],
+  "securityPerformanceNotes": [
+    "Inspect plans; scope sensitive rows at their source, not only in the final projection."
+  ],
+  "relatedLessonIds": [
+    "12.01.07"
+  ],
+  "canonicalUrl": "https://www.postgresql.org/docs/current/queries-with.html"
+},
+{
+  "id": "postgresql-begin",
+  "matchCategories": [
+    "PostgreSQL"
+  ],
+  "matchTitles": [
+    "BEGIN"
+  ],
+  "heading": "PostgreSQL: BEGIN",
+  "category": "PostgreSQL",
+  "majorVersion": "PostgreSQL",
+  "status": "Authored reference draft",
+  "summary": "Starts an explicit transaction block on the current connection.",
+  "syntax": "BEGIN;",
+  "lang": "sql",
+  "parameters": "Optional isolation and access mode.",
+  "returns": "Transaction remains open until commit or rollback.",
+  "minimalExample": "BEGIN; SELECT 1; COMMIT;",
+  "productionExample": "BEGIN;\nWITH changed AS (\n  UPDATE tasks SET done = true WHERE id = $1 AND workspace_id = $2 AND done = false\n  RETURNING workspace_id, id\n)\nINSERT INTO audit_events (workspace_id, task_id, action)\nSELECT workspace_id, id, 'completed' FROM changed;\nCOMMIT;",
+  "commonMistakes": [
+    "Executing statements on different pooled connections."
+  ],
+  "securityPerformanceNotes": [
+    "Keep transactions short; roll back on error and verify the affected row before auditing a mutation."
+  ],
+  "relatedLessonIds": [
+    "12.03.07"
+  ],
+  "canonicalUrl": "https://www.postgresql.org/docs/current/sql-begin.html"
+},
+{
+  "id": "postgresql-commit",
+  "matchCategories": [
+    "PostgreSQL"
+  ],
+  "matchTitles": [
+    "COMMIT"
+  ],
+  "heading": "PostgreSQL: COMMIT",
+  "category": "PostgreSQL",
+  "majorVersion": "PostgreSQL",
+  "status": "Authored reference draft",
+  "summary": "Completes a successful transaction and makes its changes committed.",
+  "syntax": "COMMIT;",
+  "lang": "sql",
+  "parameters": "Optional transaction chaining mode.",
+  "returns": "Ends the current successful transaction.",
+  "minimalExample": "BEGIN; SELECT 1; COMMIT;",
+  "productionExample": "-- After all invariant checks succeed on the same connection:\nCOMMIT;",
+  "commonMistakes": [
+    "Reporting success before commit or assuming commit cannot fail."
+  ],
+  "securityPerformanceNotes": [
+    "Handle commit errors and ambiguous network outcomes; design idempotent recovery."
+  ],
+  "relatedLessonIds": [
+    "12.03.07"
+  ],
+  "canonicalUrl": "https://www.postgresql.org/docs/current/sql-commit.html"
+},
+{
+  "id": "postgresql-rollback",
+  "matchCategories": [
+    "PostgreSQL"
+  ],
+  "matchTitles": [
+    "ROLLBACK"
+  ],
+  "heading": "PostgreSQL: ROLLBACK",
+  "category": "PostgreSQL",
+  "majorVersion": "PostgreSQL",
+  "status": "Authored reference draft",
+  "summary": "Discards uncommitted changes in the current transaction.",
+  "syntax": "ROLLBACK;",
+  "lang": "sql",
+  "parameters": "Optional chaining mode; ROLLBACK TO SAVEPOINT is separate.",
+  "returns": "Ends the current transaction without committing changes.",
+  "minimalExample": "BEGIN; SELECT 1; ROLLBACK;",
+  "productionExample": "-- On any failed validation or database statement:\nROLLBACK;\n-- Release the connection after the transaction is closed.",
+  "commonMistakes": [
+    "Returning a failed transaction to the connection pool without rollback."
+  ],
+  "securityPerformanceNotes": [
+    "Rollback does not undo external emails or HTTP calls; use an outbox where needed."
+  ],
+  "relatedLessonIds": [
+    "12.03.07"
+  ],
+  "canonicalUrl": "https://www.postgresql.org/docs/current/sql-rollback.html"
+},
+{
+  "id": "postgresql-create-index",
+  "matchCategories": [
+    "PostgreSQL"
+  ],
+  "matchTitles": [
+    "CREATE INDEX"
+  ],
+  "heading": "PostgreSQL: CREATE INDEX",
+  "category": "PostgreSQL",
+  "majorVersion": "PostgreSQL",
+  "status": "Authored reference draft",
+  "summary": "Creates an access structure that can speed queries at a write and storage cost.",
+  "syntax": "CREATE INDEX name ON table (column);",
+  "lang": "sql",
+  "parameters": "Index method, columns/expressions and optional predicate.",
+  "returns": "Creates an index; no query result rows.",
+  "minimalExample": "CREATE INDEX tasks_status_idx ON tasks (status);",
+  "productionExample": "CREATE INDEX CONCURRENTLY tasks_workspace_created_idx ON tasks (workspace_id, created_at DESC, id DESC);",
+  "commonMistakes": [
+    "Creating indexes indiscriminately or running CONCURRENTLY inside a transaction block."
+  ],
+  "securityPerformanceNotes": [
+    "Check production migration locking and disk budget; compare actual plans before retaining indexes."
+  ],
+  "relatedLessonIds": [
+    "12.04.02"
+  ],
+  "canonicalUrl": "https://www.postgresql.org/docs/current/sql-createindex.html"
+},
+{
+  "id": "postgresql-foreign-key",
+  "matchCategories": [
+    "PostgreSQL"
+  ],
+  "matchTitles": [
+    "FOREIGN KEY"
+  ],
+  "heading": "PostgreSQL: FOREIGN KEY",
+  "category": "PostgreSQL",
+  "majorVersion": "PostgreSQL",
+  "status": "Authored reference draft",
+  "summary": "Enforces referential integrity between related keys.",
+  "syntax": "FOREIGN KEY (project_id) REFERENCES projects(id)",
+  "lang": "sql",
+  "parameters": "Referencing and referenced columns; optional update/delete actions.",
+  "returns": "Constraint rejects invalid references according to its rules.",
+  "minimalExample": "ALTER TABLE tasks ADD FOREIGN KEY (project_id) REFERENCES projects(id);",
+  "productionExample": "-- Requires a unique key on projects(workspace_id,id).\nALTER TABLE tasks ADD CONSTRAINT task_project_fk FOREIGN KEY (workspace_id, project_id) REFERENCES projects(workspace_id, id);",
+  "commonMistakes": [
+    "Using independent tenant and project IDs without ensuring they belong together."
+  ],
+  "securityPerformanceNotes": [
+    "Composite keys can prevent cross-tenant relationships; review delete behavior and referencing-column indexes."
+  ],
+  "relatedLessonIds": [
+    "12.01.05"
+  ],
+  "canonicalUrl": "https://www.postgresql.org/docs/current/ddl-constraints.html"
+},
+{
+  "id": "postgresql-row-level-security",
+  "matchCategories": [
+    "PostgreSQL"
+  ],
+  "matchTitles": [
+    "row level security"
+  ],
+  "heading": "PostgreSQL: row level security",
+  "category": "PostgreSQL",
+  "majorVersion": "PostgreSQL",
+  "status": "Authored reference draft",
+  "summary": "Applies policy predicates to row visibility and permitted changes.",
+  "syntax": "ALTER TABLE tasks ENABLE ROW LEVEL SECURITY;",
+  "lang": "sql",
+  "parameters": "Policies specify commands, roles, USING and WITH CHECK predicates.",
+  "returns": "Row access is filtered or rejected; absent applicable policies default to denial when RLS applies.",
+  "minimalExample": "ALTER TABLE tasks ENABLE ROW LEVEL SECURITY;\nCREATE POLICY read_own ON tasks FOR SELECT TO app_user USING (owner_name = current_user);",
+  "productionExample": "-- Supabase example; grants are separate.\nALTER TABLE tasks ENABLE ROW LEVEL SECURITY;\nCREATE POLICY read_own ON tasks FOR SELECT TO authenticated USING ((select auth.uid()) = user_id);\nCREATE POLICY update_own ON tasks FOR UPDATE TO authenticated USING ((select auth.uid()) = user_id) WITH CHECK ((select auth.uid()) = user_id);",
+  "commonMistakes": [
+    "Testing only as table owner or a BYPASSRLS role."
+  ],
+  "securityPerformanceNotes": [
+    "Test anon, authenticated and cross-tenant cases; table privileges and privileged server roles require separate review."
+  ],
+  "relatedLessonIds": [
+    "14.03.01"
+  ],
+  "canonicalUrl": "https://www.postgresql.org/docs/current/ddl-rowsecurity.html"
+},
+{
+  "id": "prisma-model",
+  "matchCategories": [
+    "Prisma"
+  ],
+  "matchTitles": [
+    "model"
+  ],
+  "heading": "Prisma: model",
+  "category": "Prisma",
+  "majorVersion": "Prisma ORM 7",
+  "status": "Authored reference draft",
+  "summary": "Defines a database-backed model and generated client surface.",
+  "syntax": "model Task { ... }",
+  "lang": "prisma",
+  "parameters": "Fields, scalar types, attributes and relations in schema.prisma.",
+  "returns": "Generated model types/client methods after generation; schema migration is separate.",
+  "minimalExample": "model Task {\n  id Int @id @default(autoincrement())\n  title String\n}",
+  "productionExample": "model Task {\n  id String @id @default(uuid())\n  workspaceId String\n  title String\n  @@index([workspaceId, id])\n}",
+  "commonMistakes": [
+    "Expecting schema edits to update the deployed database automatically."
+  ],
+  "securityPerformanceNotes": [
+    "Review generated migrations and tenant isolation; keep Prisma Client generated from the matching schema."
+  ],
+  "relatedLessonIds": [
+    "13.01.01"
+  ],
+  "canonicalUrl": "https://www.prisma.io/docs/orm/v7/prisma-schema/data-model/models"
+},
+{
+  "id": "prisma-relation",
+  "matchCategories": [
+    "Prisma"
+  ],
+  "matchTitles": [
+    "@relation"
+  ],
+  "heading": "Prisma: @relation",
+  "category": "Prisma",
+  "majorVersion": "Prisma ORM 7",
+  "status": "Authored reference draft",
+  "summary": "Describes relationships and their relation scalar fields.",
+  "syntax": "project Project @relation(fields: [projectId], references: [id])",
+  "lang": "prisma",
+  "parameters": "Related model, relation scalar fields and referenced fields; actions may be configured.",
+  "returns": "Relation-aware generated query input/output and database constraints depending on configuration.",
+  "minimalExample": "projectId Int\nproject Project @relation(fields: [projectId], references: [id])",
+  "productionExample": "workspaceId String\nprojectId String\nproject Project @relation(fields: [workspaceId, projectId], references: [workspaceId, id])\n// Project requires the corresponding composite unique key.",
+  "commonMistakes": [
+    "Assuming relation loading alone enforces tenant isolation."
+  ],
+  "securityPerformanceNotes": [
+    "Use composite constraints where appropriate and authorize accesses; examine cascade behavior."
+  ],
+  "relatedLessonIds": [
+    "13.01.02"
+  ],
+  "canonicalUrl": "https://www.prisma.io/docs/orm/v7/prisma-schema/data-model/relations"
+},
+{
+  "id": "prisma-findunique",
+  "matchCategories": [
+    "Prisma"
+  ],
+  "matchTitles": [
+    "findUnique"
+  ],
+  "heading": "Prisma: findUnique",
+  "category": "Prisma",
+  "majorVersion": "Prisma ORM 7",
+  "status": "Authored reference draft",
+  "summary": "Reads one record via a unique selector, optionally projecting fields.",
+  "syntax": "prisma.task.findUnique({ where: { id } })",
+  "lang": "ts",
+  "parameters": "WhereUniqueInput and optional select/include.",
+  "returns": "Record or null (findUniqueOrThrow rejects when absent).",
+  "minimalExample": "await prisma.task.findUnique({ where: { id: taskId } });",
+  "productionExample": "await prisma.task.findUnique({ where: { id: taskId, workspaceId: authorizedWorkspaceId }, select: { id: true, title: true } });",
+  "commonMistakes": [
+    "Using a unique ID as evidence of access."
+  ],
+  "securityPerformanceNotes": [
+    "Scope to authorized tenant and handle null without leaking existence; use explicit output projection."
+  ],
+  "relatedLessonIds": [
+    "13.02.01"
+  ],
+  "canonicalUrl": "https://www.prisma.io/docs/orm/v7/reference/prisma-client-reference"
+},
+{
+  "id": "prisma-create",
+  "matchCategories": [
+    "Prisma"
+  ],
+  "matchTitles": [
+    "create"
+  ],
+  "heading": "Prisma: create",
+  "category": "Prisma",
+  "majorVersion": "Prisma ORM 7",
+  "status": "Authored reference draft",
+  "summary": "Creates a record with typed data and optional nested writes.",
+  "syntax": "prisma.task.create({ data })",
+  "lang": "ts",
+  "parameters": "Create input and optional selection; model defaults apply.",
+  "returns": "Created record with requested projection.",
+  "minimalExample": "await prisma.task.create({ data: { title: 'Learn', workspaceId } });",
+  "productionExample": "await prisma.task.create({ data: { title: validated.title, workspaceId: authorizedWorkspaceId }, select: { id: true, title: true } });",
+  "commonMistakes": [
+    "Passing the entire untrusted request body to data."
+  ],
+  "securityPerformanceNotes": [
+    "Validate allowlisted fields and derive ownership from verified context."
+  ],
+  "relatedLessonIds": [
+    "13.02.03"
+  ],
+  "canonicalUrl": "https://www.prisma.io/docs/orm/v7/reference/prisma-client-reference"
+},
+{
+  "id": "prisma-update",
+  "matchCategories": [
+    "Prisma"
+  ],
+  "matchTitles": [
+    "update"
+  ],
+  "heading": "Prisma: update",
+  "category": "Prisma",
+  "majorVersion": "Prisma ORM 7",
+  "status": "Authored reference draft",
+  "summary": "Updates a uniquely identified record with typed operations.",
+  "syntax": "prisma.task.update({ where, data })",
+  "lang": "ts",
+  "parameters": "Unique selector, update input and optional output selection.",
+  "returns": "Updated record; rejects when required record is missing.",
+  "minimalExample": "await prisma.task.update({ where: { id }, data: { done: true } });",
+  "productionExample": "await prisma.task.update({ where: { id, workspaceId: authorizedWorkspaceId, version: expectedVersion }, data: { title: validated.title, version: { increment: 1 } }, select: { id: true, version: true } });",
+  "commonMistakes": [
+    "Performing a stale read followed by an unguarded update."
+  ],
+  "securityPerformanceNotes": [
+    "Use atomic predicates/version checks and translate expected missing/conflict errors."
+  ],
+  "relatedLessonIds": [
+    "13.02.03"
+  ],
+  "canonicalUrl": "https://www.prisma.io/docs/orm/v7/reference/prisma-client-reference"
+},
+{
+  "id": "prisma-delete",
+  "matchCategories": [
+    "Prisma"
+  ],
+  "matchTitles": [
+    "delete"
+  ],
+  "heading": "Prisma: delete",
+  "category": "Prisma",
+  "majorVersion": "Prisma ORM 7",
+  "status": "Authored reference draft",
+  "summary": "Deletes one record selected by a unique filter.",
+  "syntax": "prisma.task.delete({ where })",
+  "lang": "ts",
+  "parameters": "Unique selector and optional output projection.",
+  "returns": "Deleted record; rejects if the required record does not exist.",
+  "minimalExample": "await prisma.task.delete({ where: { id } });",
+  "productionExample": "await prisma.task.delete({ where: { id, workspaceId: authorizedWorkspaceId }, select: { id: true } });",
+  "commonMistakes": [
+    "Assuming deletion is automatically soft-delete or safe with cascade constraints."
+  ],
+  "securityPerformanceNotes": [
+    "Check authorization and retention policy; treat retry behavior explicitly."
+  ],
+  "relatedLessonIds": [
+    "13.02.03"
+  ],
+  "canonicalUrl": "https://www.prisma.io/docs/orm/v7/reference/prisma-client-reference"
+},
+{
+  "id": "prisma-upsert",
+  "matchCategories": [
+    "Prisma"
+  ],
+  "matchTitles": [
+    "upsert"
+  ],
+  "heading": "Prisma: upsert",
+  "category": "Prisma",
+  "majorVersion": "Prisma ORM 7",
+  "status": "Authored reference draft",
+  "summary": "Creates or updates based on a unique selector.",
+  "syntax": "prisma.task.upsert({ where, create, update })",
+  "lang": "ts",
+  "parameters": "Unique selector plus create/update data.",
+  "returns": "Resulting record with requested projection.",
+  "minimalExample": "await prisma.setting.upsert({ where: { userId }, create: { userId, theme: 'dark' }, update: { theme: 'dark' } });",
+  "productionExample": "await prisma.setting.upsert({ where: { userId: verifiedUserId }, create: { userId: verifiedUserId, theme: validated.theme }, update: { theme: validated.theme }, select: { theme: true } });",
+  "commonMistakes": [
+    "Assuming every upsert is delegated to a single database statement."
+  ],
+  "securityPerformanceNotes": [
+    "Back uniqueness with a database constraint; handle race errors and scope to verified identity."
+  ],
+  "relatedLessonIds": [
+    "13.02.03"
+  ],
+  "canonicalUrl": "https://www.prisma.io/docs/orm/v7/reference/prisma-client-reference"
+},
+{
+  "id": "prisma-include",
+  "matchCategories": [
+    "Prisma"
+  ],
+  "matchTitles": [
+    "include"
+  ],
+  "heading": "Prisma: include",
+  "category": "Prisma",
+  "majorVersion": "Prisma ORM 7",
+  "status": "Authored reference draft",
+  "summary": "Loads related records as part of a query result.",
+  "syntax": "prisma.project.findMany({ include: { tasks: true } })",
+  "lang": "ts",
+  "parameters": "Relation keys and optional nested query options.",
+  "returns": "Parent records augmented by selected relation data.",
+  "minimalExample": "await prisma.project.findMany({ include: { tasks: true } });",
+  "productionExample": "await prisma.project.findMany({ where: { workspaceId: authorizedWorkspaceId }, take: 20, include: { tasks: { where: { archived: false }, take: 10, orderBy: { id: 'asc' }, select: { id: true, title: true } } } });",
+  "commonMistakes": [
+    "Returning unbounded related collections or assuming include filters the parent."
+  ],
+  "securityPerformanceNotes": [
+    "Bound both levels, inspect generated queries, and ensure relation-level visibility."
+  ],
+  "relatedLessonIds": [
+    "13.02.02"
+  ],
+  "canonicalUrl": "https://www.prisma.io/docs/orm/v7/reference/prisma-client-reference"
+},
+{
+  "id": "prisma-cursor",
+  "matchCategories": [
+    "Prisma"
+  ],
+  "matchTitles": [
+    "cursor"
+  ],
+  "heading": "Prisma: cursor",
+  "category": "Prisma",
+  "majorVersion": "Prisma ORM 7",
+  "status": "Authored reference draft",
+  "summary": "Resumes a query from a uniquely identifiable record.",
+  "syntax": "findMany({ cursor: { id }, skip: 1, take: 20, orderBy: { id: 'asc' } })",
+  "lang": "ts",
+  "parameters": "Unique cursor, take, optional skip and consistent ordering.",
+  "returns": "Page of records; skip:1 excludes the cursor itself.",
+  "minimalExample": "await prisma.task.findMany({ cursor: { id: lastId }, skip: 1, take: 20, orderBy: { id: 'asc' } });",
+  "productionExample": "await prisma.task.findMany({ where: { workspaceId: authorizedWorkspaceId }, ...(verifiedCursor ? { cursor: { id: verifiedCursor }, skip: 1 } : {}), orderBy: { id: 'asc' }, take: pageSize });",
+  "commonMistakes": [
+    "Using a cursor from another tenant or changing sort between requests."
+  ],
+  "securityPerformanceNotes": [
+    "Validate cursor scope and page size; use stable unique order and suitable indexes."
+  ],
+  "relatedLessonIds": [
+    "13.02.05"
+  ],
+  "canonicalUrl": "https://www.prisma.io/docs/orm/v7/prisma-client/queries/pagination"
+},
+{
+  "id": "prisma-driver-adapter",
+  "matchCategories": [
+    "Prisma"
+  ],
+  "matchTitles": [
+    "driver adapter"
+  ],
+  "heading": "Prisma: driver adapter",
+  "category": "Prisma",
+  "majorVersion": "Prisma ORM 7",
+  "status": "Authored reference draft",
+  "summary": "Connects Prisma ORM 7 Client to a supported database driver.",
+  "syntax": "new PrismaClient({ adapter })",
+  "lang": "ts",
+  "parameters": "Generated client and adapter configured for the selected database.",
+  "returns": "Client instance using the adapter's underlying connection behavior.",
+  "minimalExample": "const adapter = new PrismaPg({ connectionString });\nconst prisma = new PrismaClient({ adapter });",
+  "productionExample": "import { PrismaPg } from '@prisma/adapter-pg';\nimport { PrismaClient } from './generated/prisma/client';\nconst connectionString = process.env.DATABASE_URL;\nif (!connectionString) throw new Error('DATABASE_URL required');\nexport const prisma = new PrismaClient({ adapter: new PrismaPg({ connectionString }) });",
+  "commonMistakes": [
+    "Creating a new client per request or importing server credentials into browser code."
+  ],
+  "securityPerformanceNotes": [
+    "Reuse appropriately per process, bound pool connections and keep the generated path aligned with schema output."
+  ],
+  "relatedLessonIds": [
+    "13.01.04"
+  ],
+  "canonicalUrl": "https://www.prisma.io/docs/orm/v7/core-concepts/supported-databases/database-drivers"
+},
+{
+  "id": "supabase-signinwithpassword",
+  "matchCategories": [
+    "Supabase"
+  ],
+  "matchTitles": [
+    "signInWithPassword"
+  ],
+  "heading": "Supabase: signInWithPassword",
+  "category": "Supabase",
+  "majorVersion": "Supabase JS v2",
+  "status": "Authored reference draft",
+  "summary": "Authenticates a user using an email/password or phone/password credential.",
+  "syntax": "supabase.auth.signInWithPassword({ email, password })",
+  "lang": "ts",
+  "parameters": "Credential pair for a supported sign-in method.",
+  "returns": "Promise resolving to data and error; successful data includes user/session.",
+  "minimalExample": "const { data, error } = await supabase.auth.signInWithPassword({ email, password });",
+  "productionExample": "const { error } = await supabase.auth.signInWithPassword({ email: validated.email, password: validated.password });\nif (error) return { ok: false, message: 'Sign-in failed' };\nreturn { ok: true };",
+  "commonMistakes": [
+    "Logging credentials or giving account-enumeration clues through detailed errors."
+  ],
+  "securityPerformanceNotes": [
+    "Use HTTPS, rate limiting and safe redirects; sign-in does not replace RLS or object-level access."
+  ],
+  "relatedLessonIds": [
+    "14.02.01"
+  ],
+  "canonicalUrl": "https://supabase.com/docs/reference/javascript/auth-signinwithpassword"
+},
+{
+  "id": "supabase-getuser",
+  "matchCategories": [
+    "Supabase"
+  ],
+  "matchTitles": [
+    "getUser"
+  ],
+  "heading": "Supabase: getUser",
+  "category": "Supabase",
+  "majorVersion": "Supabase JS v2",
+  "status": "Authored reference draft",
+  "summary": "Requests the authenticated user from the Auth server rather than merely trusting cached session data.",
+  "syntax": "supabase.auth.getUser()",
+  "lang": "ts",
+  "parameters": "Optional access token; otherwise uses the client's session.",
+  "returns": "Promise of user data or auth error.",
+  "minimalExample": "const { data: { user }, error } = await supabase.auth.getUser();",
+  "productionExample": "const { data: { user }, error } = await supabase.auth.getUser();\nif (error || !user) return new Response('Unauthorized', { status: 401 });\nreturn Response.json(await listAllowedTasks(user.id));",
+  "commonMistakes": [
+    "Using editable user_metadata for permissions."
+  ],
+  "securityPerformanceNotes": [
+    "Enforce database and resource permissions separately; do not cache private responses across users."
+  ],
+  "relatedLessonIds": [
+    "14.02.06"
+  ],
+  "canonicalUrl": "https://supabase.com/docs/reference/javascript/auth-getuser"
+},
+{
+  "id": "supabase-signout",
+  "matchCategories": [
+    "Supabase"
+  ],
+  "matchTitles": [
+    "signOut"
+  ],
+  "heading": "Supabase: signOut",
+  "category": "Supabase",
+  "majorVersion": "Supabase JS v2",
+  "status": "Authored reference draft",
+  "summary": "Signs out according to the selected session scope.",
+  "syntax": "supabase.auth.signOut({ scope: 'local' })",
+  "lang": "ts",
+  "parameters": "Scope local, global (default), or others.",
+  "returns": "Promise containing error or successful sign-out result.",
+  "minimalExample": "const { error } = await supabase.auth.signOut();",
+  "productionExample": "const { error } = await supabase.auth.signOut({ scope: 'local' });\nif (error) return showError('Sign-out failed');\nclearPrivateClientCache();\nwindow.location.assign('/login');",
+  "commonMistakes": [
+    "Assuming an issued access token becomes invalid immediately in every service."
+  ],
+  "securityPerformanceNotes": [
+    "Keep sensitive token lifetimes short and verify strict session revocation requirements separately."
+  ],
+  "relatedLessonIds": [
+    "14.02.07"
+  ],
+  "canonicalUrl": "https://supabase.com/docs/reference/javascript/auth-signout"
+},
+{
+  "id": "supabase-createsignedurl",
+  "matchCategories": [
+    "Supabase"
+  ],
+  "matchTitles": [
+    "createSignedUrl"
+  ],
+  "heading": "Supabase: createSignedUrl",
+  "category": "Supabase",
+  "majorVersion": "Supabase JS v2",
+  "status": "Authored reference draft",
+  "summary": "Creates time-limited access to a private storage object.",
+  "syntax": "supabase.storage.from(bucket).createSignedUrl(path, expiresIn)",
+  "lang": "ts",
+  "parameters": "Object path, expiry in seconds and optional options.",
+  "returns": "Promise of signed URL data or error.",
+  "minimalExample": "const { data, error } = await supabase.storage.from('documents').createSignedUrl(path, 60);",
+  "productionExample": "const path = await authorizedDocumentPath(currentUserId, documentId);\nconst { data, error } = await supabase.storage.from('documents').createSignedUrl(path, 120);\nif (error || !data) throw new Error('Download unavailable');\nreturn data.signedUrl;",
+  "commonMistakes": [
+    "Signing arbitrary user-supplied paths or using long expiry by default."
+  ],
+  "securityPerformanceNotes": [
+    "Treat signed URLs as bearer capabilities; do not log or share them indiscriminately; enforce storage policy."
+  ],
+  "relatedLessonIds": [
+    "14.03.05"
+  ],
+  "canonicalUrl": "https://supabase.com/docs/reference/javascript/file-buckets-createsignedurl"
+},
+{
+  "id": "supabase-storage-bucket",
+  "matchCategories": [
+    "Supabase"
+  ],
+  "matchTitles": [
+    "Storage bucket"
+  ],
+  "heading": "Supabase: Storage bucket",
+  "category": "Supabase",
+  "majorVersion": "Supabase JS v2",
+  "status": "Authored reference draft",
+  "summary": "Groups storage objects under a bucket with public/private access configuration.",
+  "syntax": "supabase.storage.from('documents')",
+  "lang": "ts",
+  "parameters": "Bucket identifier; operations use object paths.",
+  "returns": "Bucket-scoped Storage API client.",
+  "minimalExample": "const bucket = supabase.storage.from('documents');",
+  "productionExample": "const { data, error } = await supabase.storage.from('documents').download(authorizedPath);\nif (error || !data) throw new Error('Document unavailable');\nreturn data;",
+  "commonMistakes": [
+    "Assuming bucket names or folder prefixes alone authorize access."
+  ],
+  "securityPerformanceNotes": [
+    "Use private buckets for confidential data, policy checks on storage.objects, server validation of uploads and no privileged keys in the browser."
+  ],
+  "relatedLessonIds": [
+    "14.04.01"
+  ],
+  "canonicalUrl": "https://supabase.com/docs/guides/storage/buckets/fundamentals"
+},
+{
+  "id": "supabase-onauthstatechange",
+  "matchCategories": [
+    "Supabase"
+  ],
+  "matchTitles": [
+    "onAuthStateChange"
+  ],
+  "heading": "Supabase: onAuthStateChange",
+  "category": "Supabase",
+  "majorVersion": "Supabase JS v2",
+  "status": "Authored reference draft",
+  "summary": "Subscribes to client authentication events and receives session changes.",
+  "syntax": "supabase.auth.onAuthStateChange(callback)",
+  "lang": "ts",
+  "parameters": "Synchronous event callback with event name and session.",
+  "returns": "Subscription that can be unsubscribed.",
+  "minimalExample": "const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => updateUi(event, session));",
+  "productionExample": "useEffect(() => {\n  const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {\n    setSignedIn(Boolean(session));\n    if (event === 'SIGNED_OUT') clearPrivateClientCache();\n  });\n  return () => subscription.unsubscribe();\n}, [supabase]);",
+  "commonMistakes": [
+    "Leaking subscriptions or awaiting other Supabase Auth operations inside the callback."
+  ],
+  "securityPerformanceNotes": [
+    "Treat events as UI synchronization, not server-side proof of identity or authorization."
+  ],
+  "relatedLessonIds": [
+    "14.02.07"
+  ],
+  "canonicalUrl": "https://supabase.com/docs/reference/javascript/auth-onauthstatechange"
+},
+{
+  "id": "redis-del",
+  "matchCategories": [
+    "Redis & BullMQ"
+  ],
+  "matchTitles": [
+    "DEL"
+  ],
+  "heading": "Redis & BullMQ: DEL",
+  "category": "Redis & BullMQ",
+  "majorVersion": "Redis / BullMQ",
+  "status": "Authored reference draft",
+  "summary": "Removes one or more keys and their associated values.",
+  "syntax": "DEL key [key ...]",
+  "lang": "text",
+  "parameters": "One or more keys.",
+  "returns": "Integer number of keys removed.",
+  "minimalExample": "DEL cache:task:1",
+  "productionExample": "DEL cache:tenant:42:task:1 cache:tenant:42:task-list",
+  "commonMistakes": [
+    "Deleting unscoped keys or using KEYS to discover large invalidation sets."
+  ],
+  "securityPerformanceNotes": [
+    "Derive tenant-scoped keys from verified context; large values may benefit from UNLINK."
+  ],
+  "relatedLessonIds": [
+    "16.01.04"
+  ],
+  "canonicalUrl": "https://redis.io/docs/latest/commands/del/"
+},
+{
+  "id": "redis-expire",
+  "matchCategories": [
+    "Redis & BullMQ"
+  ],
+  "matchTitles": [
+    "EXPIRE"
+  ],
+  "heading": "Redis & BullMQ: EXPIRE",
+  "category": "Redis & BullMQ",
+  "majorVersion": "Redis / BullMQ",
+  "status": "Authored reference draft",
+  "summary": "Sets a relative lifetime in seconds on an existing key.",
+  "syntax": "EXPIRE key seconds",
+  "lang": "text",
+  "parameters": "Key, seconds and optional conditional expiration mode.",
+  "returns": "1 if timeout was set, 0 otherwise.",
+  "minimalExample": "EXPIRE cache:task:1 60",
+  "productionExample": "EXPIRE cache:tenant:42:task:1 120 NX",
+  "commonMistakes": [
+    "Assuming separate SET and EXPIRE always succeed atomically."
+  ],
+  "securityPerformanceNotes": [
+    "For new cache values use SET with expiration; account for missing keys and stale entries."
+  ],
+  "relatedLessonIds": [
+    "16.01.02"
+  ],
+  "canonicalUrl": "https://redis.io/docs/latest/commands/expire/"
+},
+{
+  "id": "redis-ttl",
+  "matchCategories": [
+    "Redis & BullMQ"
+  ],
+  "matchTitles": [
+    "TTL"
+  ],
+  "heading": "Redis & BullMQ: TTL",
+  "category": "Redis & BullMQ",
+  "majorVersion": "Redis / BullMQ",
+  "status": "Authored reference draft",
+  "summary": "Reports a key's remaining lifetime in seconds.",
+  "syntax": "TTL key",
+  "lang": "text",
+  "parameters": "Key name.",
+  "returns": "Seconds remaining, -1 for no expiration, -2 for absent key.",
+  "minimalExample": "TTL cache:task:1",
+  "productionExample": "TTL cache:tenant:42:task-list\n# Alert on -1 for cache keys that should expire.",
+  "commonMistakes": [
+    "Treating -1 and -2 as equivalent."
+  ],
+  "securityPerformanceNotes": [
+    "Track unexpectedly persistent cache keys without logging private payloads."
+  ],
+  "relatedLessonIds": [
+    "16.01.02"
+  ],
+  "canonicalUrl": "https://redis.io/docs/latest/commands/ttl/"
+},
+{
+  "id": "redis-incr",
+  "matchCategories": [
+    "Redis & BullMQ"
+  ],
+  "matchTitles": [
+    "INCR"
+  ],
+  "heading": "Redis & BullMQ: INCR",
+  "category": "Redis & BullMQ",
+  "majorVersion": "Redis / BullMQ",
+  "status": "Authored reference draft",
+  "summary": "Atomically increments an integer string, initializing a missing key at zero.",
+  "syntax": "INCR key",
+  "lang": "text",
+  "parameters": "Key holding an integer-compatible value.",
+  "returns": "Incremented integer.",
+  "minimalExample": "INCR metric:requests",
+  "productionExample": "INCR rate:tenant:42:minute:202611260400\n# Use an atomic script or transaction for counter + expiration in a fixed-window limiter.",
+  "commonMistakes": [
+    "Assuming INCR alone provides a complete rate limiter."
+  ],
+  "securityPerformanceNotes": [
+    "Attach expiration atomically, choose scoped keys, and handle counter/storage failures explicitly."
+  ],
+  "relatedLessonIds": [
+    "16.02.06"
+  ],
+  "canonicalUrl": "https://redis.io/docs/latest/commands/incr/"
+},
+{
+  "id": "redis-mget",
+  "matchCategories": [
+    "Redis & BullMQ"
+  ],
+  "matchTitles": [
+    "MGET"
+  ],
+  "heading": "Redis & BullMQ: MGET",
+  "category": "Redis & BullMQ",
+  "majorVersion": "Redis / BullMQ",
+  "status": "Authored reference draft",
+  "summary": "Reads multiple string keys in argument order.",
+  "syntax": "MGET key [key ...]",
+  "lang": "text",
+  "parameters": "One or more keys.",
+  "returns": "Array of values or nil for missing/non-string keys.",
+  "minimalExample": "MGET cache:a cache:b",
+  "productionExample": "MGET cache:{tenant42}:task:1 cache:{tenant42}:task:2",
+  "commonMistakes": [
+    "Losing positional correspondence when a key is missing."
+  ],
+  "securityPerformanceNotes": [
+    "Bound batch sizes; in Redis Cluster multi-key operations may require the same hash slot."
+  ],
+  "relatedLessonIds": [
+    "16.01.02"
+  ],
+  "canonicalUrl": "https://redis.io/docs/latest/commands/mget/"
+},
+{
+  "id": "redis-hset",
+  "matchCategories": [
+    "Redis & BullMQ"
+  ],
+  "matchTitles": [
+    "HSET"
+  ],
+  "heading": "Redis & BullMQ: HSET",
+  "category": "Redis & BullMQ",
+  "majorVersion": "Redis / BullMQ",
+  "status": "Authored reference draft",
+  "summary": "Creates or updates fields in a hash.",
+  "syntax": "HSET key field value [field value ...]",
+  "lang": "text",
+  "parameters": "Hash key and one or more field-value pairs.",
+  "returns": "Number of newly added fields, not number of changed values.",
+  "minimalExample": "HSET task:1 title Learn done 0",
+  "productionExample": "HSET cache:tenant:42:task:1 title Learn status open\nEXPIRE cache:tenant:42:task:1 60",
+  "commonMistakes": [
+    "Interpreting a zero result as failure when existing fields were updated."
+  ],
+  "securityPerformanceNotes": [
+    "Apply key TTL deliberately; use atomic operations if hash and TTL must change together."
+  ],
+  "relatedLessonIds": [
+    "16.01.02"
+  ],
+  "canonicalUrl": "https://redis.io/docs/latest/commands/hset/"
+},
+{
+  "id": "redis-hget",
+  "matchCategories": [
+    "Redis & BullMQ"
+  ],
+  "matchTitles": [
+    "HGET"
+  ],
+  "heading": "Redis & BullMQ: HGET",
+  "category": "Redis & BullMQ",
+  "majorVersion": "Redis / BullMQ",
+  "status": "Authored reference draft",
+  "summary": "Reads one field from a hash.",
+  "syntax": "HGET key field",
+  "lang": "text",
+  "parameters": "Hash key and field name.",
+  "returns": "String value or nil when absent.",
+  "minimalExample": "HGET task:1 title",
+  "productionExample": "HGET cache:tenant:42:task:1 status\n# If nil, load authorized data from its source.",
+  "commonMistakes": [
+    "Treating missing values as an empty string."
+  ],
+  "securityPerformanceNotes": [
+    "Cache reads never replace tenant authorization; design explicit cache miss behavior."
+  ],
+  "relatedLessonIds": [
+    "16.01.02"
+  ],
+  "canonicalUrl": "https://redis.io/docs/latest/commands/hget/"
+},
+{
+  "id": "redis-sadd",
+  "matchCategories": [
+    "Redis & BullMQ"
+  ],
+  "matchTitles": [
+    "SADD"
+  ],
+  "heading": "Redis & BullMQ: SADD",
+  "category": "Redis & BullMQ",
+  "majorVersion": "Redis / BullMQ",
+  "status": "Authored reference draft",
+  "summary": "Adds unique members to a Redis set.",
+  "syntax": "SADD key member [member ...]",
+  "lang": "text",
+  "parameters": "Set key and member strings.",
+  "returns": "Number of new members added.",
+  "minimalExample": "SADD tags css js css",
+  "productionExample": "SADD cache:tenant:42:project:1:task-ids 101 102",
+  "commonMistakes": [
+    "Assuming set member iteration has stable ordering."
+  ],
+  "securityPerformanceNotes": [
+    "Bound collection size; sets do not provide per-member TTL or durable business uniqueness."
+  ],
+  "relatedLessonIds": [
+    "16.01.02"
+  ],
+  "canonicalUrl": "https://redis.io/docs/latest/commands/sadd/"
+},
+{
+  "id": "redis-zadd",
+  "matchCategories": [
+    "Redis & BullMQ"
+  ],
+  "matchTitles": [
+    "ZADD"
+  ],
+  "heading": "Redis & BullMQ: ZADD",
+  "category": "Redis & BullMQ",
+  "majorVersion": "Redis / BullMQ",
+  "status": "Authored reference draft",
+  "summary": "Adds or updates members of a sorted set using numeric scores.",
+  "syntax": "ZADD key score member",
+  "lang": "text",
+  "parameters": "Score/member pairs and optional modifiers.",
+  "returns": "Number of new members by default; options can alter count semantics.",
+  "minimalExample": "ZADD ranking 10 alice 20 bob",
+  "productionExample": "ZADD cache:tenant:42:recent-tasks 1730000000 task-101\nZRANGE cache:tenant:42:recent-tasks 0 9 REV",
+  "commonMistakes": [
+    "Using timestamps as unique scores without handling ties."
+  ],
+  "securityPerformanceNotes": [
+    "Keep retention bounded, and avoid using sorted-set ranking as an authorization mechanism."
+  ],
+  "relatedLessonIds": [
+    "16.01.02"
+  ],
+  "canonicalUrl": "https://redis.io/docs/latest/commands/zadd/"
+},
+{
+  "id": "redis-bullmq-queue",
+  "matchCategories": [
+    "Redis & BullMQ"
+  ],
+  "matchTitles": [
+    "BullMQ Queue"
+  ],
+  "heading": "Redis & BullMQ: BullMQ Queue",
+  "category": "Redis & BullMQ",
+  "majorVersion": "Redis / BullMQ",
+  "status": "Authored reference draft",
+  "summary": "BullMQ Queue submits jobs into a Redis-backed queue.",
+  "syntax": "queue.add(name, data, options)",
+  "lang": "ts",
+  "parameters": "Queue name, connection, job name, serializable data and job options.",
+  "returns": "Promise<Job> for the added job.",
+  "minimalExample": "const queue = new Queue('emails', { connection });\nawait queue.add('send', { messageId });",
+  "productionExample": "const queue = new Queue('emails', { connection });\ntry { await queue.add('send', { messageId: verifiedMessageId }, { jobId: verifiedMessageId, attempts: 3, backoff: { type: 'exponential', delay: 1000 } }); } finally { await queue.close(); }",
+  "commonMistakes": [
+    "Treating job insertion as proof the external effect completed."
+  ],
+  "securityPerformanceNotes": [
+    "Use durable idempotency, small payloads, bounded retries and appropriate queue retention."
+  ],
+  "relatedLessonIds": [
+    "16.03.02"
+  ],
+  "canonicalUrl": "https://docs.bullmq.io/guide/queues"
+},
+{
+  "id": "redis-worker",
+  "matchCategories": [
+    "Redis & BullMQ"
+  ],
+  "matchTitles": [
+    "Worker"
+  ],
+  "heading": "Redis & BullMQ: Worker",
+  "category": "Redis & BullMQ",
+  "majorVersion": "Redis / BullMQ",
+  "status": "Authored reference draft",
+  "summary": "BullMQ Worker processes jobs from a queue and reports completion or failure.",
+  "syntax": "new Worker(queueName, processor, options)",
+  "lang": "ts",
+  "parameters": "Queue name, async processor, connection and concurrency options.",
+  "returns": "Worker instance; processor result is stored when the job completes.",
+  "minimalExample": "const worker = new Worker('emails', job => send(job.data.messageId), { connection });",
+  "productionExample": "const worker = new Worker('emails', async job => {\n  await sendIdempotently(job.data.messageId);\n}, { connection, concurrency: 4 });\nworker.on('error', err => logger.error({ name: err.name }, 'worker error'));\n// Await worker.close() during graceful shutdown.",
+  "commonMistakes": [
+    "Assuming each processor runs exactly once."
+  ],
+  "securityPerformanceNotes": [
+    "Persist effect idempotency; bound concurrency and use a dedicated non-evicting queue Redis configuration."
+  ],
+  "relatedLessonIds": [
+    "16.03.03"
+  ],
+  "canonicalUrl": "https://docs.bullmq.io/guide/workers"
+},
+{
+  "id": "redis-backoff",
+  "matchCategories": [
+    "Redis & BullMQ"
+  ],
+  "matchTitles": [
+    "backoff"
+  ],
+  "heading": "Redis & BullMQ: backoff",
+  "category": "Redis & BullMQ",
+  "majorVersion": "Redis / BullMQ",
+  "status": "Authored reference draft",
+  "summary": "Delays retry attempts for failed BullMQ jobs.",
+  "syntax": "{ attempts: 3, backoff: { type: 'exponential', delay: 1000 } }",
+  "lang": "ts",
+  "parameters": "Total attempts and fixed/exponential/custom backoff configuration.",
+  "returns": "Job options scheduling subsequent attempts after failure.",
+  "minimalExample": "await queue.add('sync', data, { attempts: 3, backoff: { type: 'fixed', delay: 1000 } });",
+  "productionExample": "await queue.add('deliver', { deliveryId }, { attempts: 5, backoff: { type: 'exponential', delay: 2000 } });\n// Processor classifies permanent failures separately and deduplicates effects.",
+  "commonMistakes": [
+    "Retrying permanent validation failures or assuming retry guarantees delivery."
+  ],
+  "securityPerformanceNotes": [
+    "Use bounded retry budgets, monitoring and idempotent effects."
+  ],
+  "relatedLessonIds": [
+    "16.03.04"
+  ],
+  "canonicalUrl": "https://docs.bullmq.io/guide/retrying-failing-jobs"
+},
+{
+  "id": "redis-deduplication",
+  "matchCategories": [
+    "Redis & BullMQ"
+  ],
+  "matchTitles": [
+    "deduplication"
+  ],
+  "heading": "Redis & BullMQ: deduplication",
+  "category": "Redis & BullMQ",
+  "majorVersion": "Redis / BullMQ",
+  "status": "Authored reference draft",
+  "summary": "Suppresses duplicate BullMQ submissions while a configured deduplication identity is active.",
+  "syntax": "queue.add(name, data, { deduplication: { id } })",
+  "lang": "ts",
+  "parameters": "Job name, data and deduplication ID; mode may include TTL or other options.",
+  "returns": "Job submission result; duplicate requests may be ignored per mode.",
+  "minimalExample": "await queue.add('sync', { accountId }, { deduplication: { id: accountId } });",
+  "productionExample": "await queue.add('refresh', { resourceId: authorizedId }, { deduplication: { id: 'refresh-' + authorizedId } });\n// Worker still uses durable idempotency for side effects.",
+  "commonMistakes": [
+    "Confusing temporary queue deduplication with exactly-once processing."
+  ],
+  "securityPerformanceNotes": [
+    "Scope IDs by tenant and operation; keep durable business invariants outside Redis job metadata."
+  ],
+  "relatedLessonIds": [
+    "16.03.06"
+  ],
+  "canonicalUrl": "https://docs.bullmq.io/guide/jobs/deduplication"
+},
+{
+  "id": "testing-vitest-describe",
+  "matchCategories": [
+    "Testing & Operations"
+  ],
+  "matchTitles": [
+    "Vitest describe"
+  ],
+  "heading": "Testing & Operations: Vitest describe",
+  "category": "Testing & Operations",
+  "majorVersion": "Testing and operations",
+  "status": "Authored reference draft",
+  "summary": "Groups related Vitest tests with nested setup and descriptive names.",
+  "syntax": "describe('feature', () => { ... })",
+  "lang": "ts",
+  "parameters": "Suite name and suite-definition callback.",
+  "returns": "Registers a test suite; does not itself assert behavior.",
+  "minimalExample": "describe('math', () => { test('adds', () => expect(1 + 1).toBe(2)); });",
+  "productionExample": "describe('task access', () => {\n  test('denies another tenant', async () => { await expect(service.read('other-tenant', taskId)).rejects.toThrow(); });\n  test('allows owner', async () => { expect(await service.read(ownerId, taskId)).toMatchObject({ id: taskId }); });\n});",
+  "commonMistakes": [
+    "Using suite hooks to create shared mutable fixtures across tests."
+  ],
+  "securityPerformanceNotes": [
+    "Exercise denial and positive paths; keep fixtures isolated."
+  ],
+  "relatedLessonIds": [
+    "19.02.01"
+  ],
+  "canonicalUrl": "https://vitest.dev/api/#describe"
+},
+{
+  "id": "testing-expect",
+  "matchCategories": [
+    "Testing & Operations"
+  ],
+  "matchTitles": [
+    "expect"
+  ],
+  "heading": "Testing & Operations: expect",
+  "category": "Testing & Operations",
+  "majorVersion": "Testing and operations",
+  "status": "Authored reference draft",
+  "summary": "Makes assertions about observed values and asynchronous outcomes.",
+  "syntax": "expect(actual).toBe(expected)",
+  "lang": "ts",
+  "parameters": "Actual value and matcher; use resolves/rejects for promises.",
+  "returns": "Assertion succeeds or throws a test failure.",
+  "minimalExample": "expect(total).toBe(2);",
+  "productionExample": "await expect(createTask(invalidInput)).rejects.toThrow();\nexpect(await repo.count()).toBe(beforeCount);",
+  "commonMistakes": [
+    "Asserting only that a function was called instead of checking outcomes."
+  ],
+  "securityPerformanceNotes": [
+    "Test meaningful invariants and failure side effects; await asynchronous assertions."
+  ],
+  "relatedLessonIds": [
+    "19.02.01"
+  ],
+  "canonicalUrl": "https://vitest.dev/api/expect.html"
+},
+{
+  "id": "testing-vi-mock",
+  "matchCategories": [
+    "Testing & Operations"
+  ],
+  "matchTitles": [
+    "vi.mock"
+  ],
+  "heading": "Testing & Operations: vi.mock",
+  "category": "Testing & Operations",
+  "majorVersion": "Testing and operations",
+  "status": "Authored reference draft",
+  "summary": "Replaces a module with a test double in Vitest.",
+  "syntax": "vi.mock('./client', factory)",
+  "lang": "ts",
+  "parameters": "Module specifier and optional factory; mock declaration is hoisted.",
+  "returns": "Registers mocked module behavior.",
+  "minimalExample": "vi.mock('./client', () => ({ load: vi.fn() }));",
+  "productionExample": "vi.mock('./mailer', () => ({ send: vi.fn().mockResolvedValue({ id: 'test' }) }));\n// Assert domain behavior with the fake; run a separate real adapter integration test.",
+  "commonMistakes": [
+    "Capturing variables not initialized at hoisted mock time."
+  ],
+  "securityPerformanceNotes": [
+    "Mock external boundaries, not every implementation detail; reset state between cases."
+  ],
+  "relatedLessonIds": [
+    "19.01.05"
+  ],
+  "canonicalUrl": "https://vitest.dev/api/vi.html#vi-mock"
+},
+{
+  "id": "testing-beforeeach",
+  "matchCategories": [
+    "Testing & Operations"
+  ],
+  "matchTitles": [
+    "beforeEach"
+  ],
+  "heading": "Testing & Operations: beforeEach",
+  "category": "Testing & Operations",
+  "majorVersion": "Testing and operations",
+  "status": "Authored reference draft",
+  "summary": "Runs setup before each test in its suite.",
+  "syntax": "beforeEach(async () => { ... })",
+  "lang": "ts",
+  "parameters": "Setup callback and optional timeout/configuration.",
+  "returns": "Registers per-test setup, awaiting supported async work.",
+  "minimalExample": "beforeEach(() => { items = []; });",
+  "productionExample": "beforeEach(async () => { repo = await makeIsolatedTestRepository(); });\nafterEach(async () => { await repo.dispose(); });",
+  "commonMistakes": [
+    "Reusing mutable fixtures across concurrent tests."
+  ],
+  "securityPerformanceNotes": [
+    "Prefer independent fixtures and clean resources even after failures."
+  ],
+  "relatedLessonIds": [
+    "19.01.03"
+  ],
+  "canonicalUrl": "https://vitest.dev/api/#beforeeach"
+},
+{
+  "id": "testing-playwright-test",
+  "matchCategories": [
+    "Testing & Operations"
+  ],
+  "matchTitles": [
+    "Playwright test"
+  ],
+  "heading": "Testing & Operations: Playwright test",
+  "category": "Testing & Operations",
+  "majorVersion": "Testing and operations",
+  "status": "Authored reference draft",
+  "summary": "Defines a browser test with Playwright fixtures and assertions.",
+  "syntax": "test('name', async ({ page }) => { ... })",
+  "lang": "ts",
+  "parameters": "Name and callback with isolated fixtures such as page.",
+  "returns": "Registers a test; async callback completes or fails.",
+  "minimalExample": "test('home', async ({ page }) => { await page.goto('/'); await expect(page.getByRole('heading', { name: 'Home' })).toBeVisible(); });",
+  "productionExample": "test('keyboard submission', async ({ page }) => {\n  await page.goto('/tasks/new');\n  await page.getByRole('textbox', { name: 'Title' }).fill('Read docs');\n  await page.getByRole('button', { name: 'Save' }).press('Enter');\n  await expect(page.getByText('Task created')).toBeVisible();\n});",
+  "commonMistakes": [
+    "Using fixed sleeps or testing a page without verifying a user-observable result."
+  ],
+  "securityPerformanceNotes": [
+    "Use isolated test accounts and origins, semantic locators and deterministic fixtures."
+  ],
+  "relatedLessonIds": [
+    "19.02.07"
+  ],
+  "canonicalUrl": "https://playwright.dev/docs/writing-tests"
+},
+{
+  "id": "testing-docker-compose",
+  "matchCategories": [
+    "Testing & Operations"
+  ],
+  "matchTitles": [
+    "docker compose"
+  ],
+  "heading": "Testing & Operations: docker compose",
+  "category": "Testing & Operations",
+  "majorVersion": "Testing and operations",
+  "status": "Authored reference draft",
+  "summary": "Declares and runs multi-container services for a reproducible environment.",
+  "syntax": "docker compose up -d",
+  "lang": "yaml",
+  "parameters": "Compose file, services, networks, volumes and environment configuration.",
+  "returns": "Starts declared services; exit status reflects CLI operation, not necessarily app readiness.",
+  "minimalExample": "services:\n  redis:\n    image: redis:7-alpine",
+  "productionExample": "services:\n  redis:\n    image: redis:7-alpine\n    healthcheck:\n      test: [CMD, redis-cli, ping]\n      interval: 5s\n      timeout: 2s\n      retries: 5\n    volumes: [redis_data:/data]\nvolumes:\n  redis_data: {}",
+  "commonMistakes": [
+    "Assuming container start means service readiness or publishing database ports unnecessarily."
+  ],
+  "securityPerformanceNotes": [
+    "Use isolated networks, pinned image digests for releases and safe volume/secret management."
+  ],
+  "relatedLessonIds": [
+    "20.01.03"
+  ],
+  "canonicalUrl": "https://docs.docker.com/compose/"
+},
+{
+  "id": "testing-pino-logger",
+  "matchCategories": [
+    "Testing & Operations"
+  ],
+  "matchTitles": [
+    "Pino logger"
+  ],
+  "heading": "Testing & Operations: Pino logger",
+  "category": "Testing & Operations",
+  "majorVersion": "Testing and operations",
+  "status": "Authored reference draft",
+  "summary": "Produces structured JSON application logs with configurable levels and redaction.",
+  "syntax": "const logger = pino(options)",
+  "lang": "ts",
+  "parameters": "Logger options, level, serializers and redaction paths.",
+  "returns": "Logger with level methods and child loggers.",
+  "minimalExample": "const logger = pino();\nlogger.info({ taskId }, 'Task loaded');",
+  "productionExample": "const logger = pino({ redact: ['req.headers.authorization', 'req.headers.cookie', 'password'] });\nlogger.child({ requestId }).info({ operation: 'task.create' }, 'Task created');",
+  "commonMistakes": [
+    "Assuming redaction covers arbitrary nested objects or secrets interpolated into messages."
+  ],
+  "securityPerformanceNotes": [
+    "Use allowlisted structured fields, bounded retention and no raw credential logging."
+  ],
+  "relatedLessonIds": [
+    "21.01.01"
+  ],
+  "canonicalUrl": "https://getpino.io/#/docs/api"
+},
+{
+  "id": "testing-slo",
+  "matchCategories": [
+    "Testing & Operations"
+  ],
+  "matchTitles": [
+    "SLO"
+  ],
+  "heading": "Testing & Operations: SLO",
+  "category": "Testing & Operations",
+  "majorVersion": "Testing and operations",
+  "status": "Authored reference draft",
+  "summary": "A measurable service reliability target over an explicitly defined window.",
+  "syntax": "SLO = target for a specified SLI and time window",
+  "lang": "text",
+  "parameters": "SLI definition, population, target and evaluation window.",
+  "returns": "A target and corresponding error budget, not a monitoring signal by itself.",
+  "minimalExample": "99.9% successful eligible requests over 30 days.",
+  "productionExample": "Example: 99.9% of eligible API requests succeed over rolling 30 days; define exclusions and track 0.1% error budget consumption.",
+  "commonMistakes": [
+    "Choosing arbitrary targets without measuring user impact or defining eligible requests."
+  ],
+  "securityPerformanceNotes": [
+    "Use burn-rate alerting and align targets with product expectations and cost."
+  ],
+  "relatedLessonIds": [
+    "21.02.01"
+  ],
+  "canonicalUrl": "https://sre.google/workbook/implementing-slos/"
+},
+{
+  "id": "testing-sli",
+  "matchCategories": [
+    "Testing & Operations"
+  ],
+  "matchTitles": [
+    "SLI"
+  ],
+  "heading": "Testing & Operations: SLI",
+  "category": "Testing & Operations",
+  "majorVersion": "Testing and operations",
+  "status": "Authored reference draft",
+  "summary": "Measures a service behavior relevant to users, often as good events divided by eligible events.",
+  "syntax": "availability SLI = good requests / eligible requests",
+  "lang": "text",
+  "parameters": "Good-event criteria, population and time window.",
+  "returns": "Ratio or other explicitly defined reliability measurement.",
+  "minimalExample": "990 successful requests / 1000 eligible requests = 99%.",
+  "productionExample": "Define good requests as eligible API responses without server errors; record numerator and denominator over a rolling window and alert on budget burn.",
+  "commonMistakes": [
+    "Using average latency to hide slow tail requests or silently excluding failures."
+  ],
+  "securityPerformanceNotes": [
+    "Define missing-data behavior and avoid high-cardinality personal identifiers in metrics."
+  ],
+  "relatedLessonIds": [
+    "21.02.01"
+  ],
+  "canonicalUrl": "https://sre.google/workbook/implementing-slos/"
+},
+{
+  "id": "testing-runbook",
+  "matchCategories": [
+    "Testing & Operations"
+  ],
+  "matchTitles": [
+    "runbook"
+  ],
+  "heading": "Testing & Operations: runbook",
+  "category": "Testing & Operations",
+  "majorVersion": "Testing and operations",
+  "status": "Authored reference draft",
+  "summary": "Documents actionable operational response steps for a defined failure mode.",
+  "syntax": "Trigger → diagnose → mitigate → verify → escalate",
+  "lang": "text",
+  "parameters": "Symptoms, ownership, prerequisites, safe commands, rollback and escalation.",
+  "returns": "Repeatable response guidance; not an automatic recovery guarantee.",
+  "minimalExample": "If the API is unhealthy, check readiness and recent deploys.",
+  "productionExample": "Trigger: sustained error-budget burn.\n1. Confirm impact and assign incident lead.\n2. Compare errors by release and dependency.\n3. Use approved rollback if release-correlated.\n4. Verify SLI recovery; communicate and record evidence.",
+  "commonMistakes": [
+    "Writing only a list of commands without decision criteria or verification."
+  ],
+  "securityPerformanceNotes": [
+    "Use least-privilege access; rehearse recovery, keep secrets out of the runbook and review after incidents."
+  ],
+  "relatedLessonIds": [
+    "21.03.02"
+  ],
+  "canonicalUrl": "https://sre.google/workbook/incident-response/"
+},
+{
+  "id": "web-html-document",
+  "matchCategories": [
+    "Web & HTML"
+  ],
+  "matchTitles": [
+    "HTML document"
+  ],
+  "heading": "Web & HTML: HTML document",
+  "category": "Web & HTML",
+  "majorVersion": "HTML / Web platform",
+  "status": "Authored reference draft",
+  "summary": "A standards-mode HTML document establishes language, metadata and body content.",
+  "syntax": "<!doctype html><html lang=\"en\">…</html>",
+  "lang": "html",
+  "parameters": "Doctype, root element, head and body.",
+  "returns": "Browser parses a DOM in standards mode.",
+  "minimalExample": "<!doctype html><html lang=\"en\"><head><title>Home</title></head><body>Home</body></html>",
+  "productionExample": "<!doctype html>\n<html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><title>Tasks</title></head><body><main><h1>Tasks</h1></main></body></html>",
+  "commonMistakes": [
+    "Missing doctype or document language."
+  ],
+  "securityPerformanceNotes": [
+    "Use semantic landmarks and meaningful titles; validate markup."
+  ],
+  "relatedLessonIds": [
+    "01.01.01"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/HTML"
+},
+{
+  "id": "web-html",
+  "matchCategories": [
+    "Web & HTML"
+  ],
+  "matchTitles": [
+    "html"
+  ],
+  "heading": "Web & HTML: html",
+  "category": "Web & HTML",
+  "majorVersion": "HTML / Web platform",
+  "status": "Authored reference draft",
+  "summary": "The root element contains document head and body.",
+  "syntax": "<html lang=\"en\">…</html>",
+  "lang": "html",
+  "parameters": "Global attributes including lang and dir.",
+  "returns": "Root document element.",
+  "minimalExample": "<html lang=\"en\"><head><title>Home</title></head><body></body></html>",
+  "productionExample": "<html lang=\"ar\" dir=\"rtl\"><head><title>مثال</title></head><body><main>مثال</main></body></html>",
+  "commonMistakes": [
+    "Using language metadata only on a visual label."
+  ],
+  "securityPerformanceNotes": [
+    "Declare the actual document language to aid pronunciation and translation."
+  ],
+  "relatedLessonIds": [
+    "01.01.01"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/html"
+},
+{
+  "id": "web-head",
+  "matchCategories": [
+    "Web & HTML"
+  ],
+  "matchTitles": [
+    "head"
+  ],
+  "heading": "Web & HTML: head",
+  "category": "Web & HTML",
+  "majorVersion": "HTML / Web platform",
+  "status": "Authored reference draft",
+  "summary": "Contains machine-readable document metadata.",
+  "syntax": "<head><title>Page</title></head>",
+  "lang": "html",
+  "parameters": "Metadata elements, stylesheet links and appropriate scripts.",
+  "returns": "Metadata rather than primary visible page content.",
+  "minimalExample": "<head><title>Academy</title></head>",
+  "productionExample": "<head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><title>HTML reference | Academy</title><link rel=\"stylesheet\" href=\"/styles.css\"></head>",
+  "commonMistakes": [
+    "Putting primary article content in head."
+  ],
+  "securityPerformanceNotes": [
+    "Minimize blocking resources and give each route a descriptive title."
+  ],
+  "relatedLessonIds": [
+    "01.01.02"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/head"
+},
+{
+  "id": "web-meta",
+  "matchCategories": [
+    "Web & HTML"
+  ],
+  "matchTitles": [
+    "meta"
+  ],
+  "heading": "Web & HTML: meta",
+  "category": "Web & HTML",
+  "majorVersion": "HTML / Web platform",
+  "status": "Authored reference draft",
+  "summary": "Declares metadata such as encoding, viewport and descriptions.",
+  "syntax": "<meta name=\"description\" content=\"…\">",
+  "lang": "html",
+  "parameters": "charset, name/content, or supported http-equiv pairs.",
+  "returns": "Document metadata; void element.",
+  "minimalExample": "<meta charset=\"utf-8\">",
+  "productionExample": "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><meta name=\"description\" content=\"Learn accessible form controls.\">",
+  "commonMistakes": [
+    "Disabling zoom with viewport settings."
+  ],
+  "securityPerformanceNotes": [
+    "Never place secrets in metadata; send security headers from the server."
+  ],
+  "relatedLessonIds": [
+    "01.01.02"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/meta"
+},
+{
+  "id": "web-link",
+  "matchCategories": [
+    "Web & HTML"
+  ],
+  "matchTitles": [
+    "link"
+  ],
+  "heading": "Web & HTML: link",
+  "category": "Web & HTML",
+  "majorVersion": "HTML / Web platform",
+  "status": "Authored reference draft",
+  "summary": "Connects the document to external resources or relationships.",
+  "syntax": "<link rel=\"stylesheet\" href=\"/app.css\">",
+  "lang": "html",
+  "parameters": "rel, href and relationship-specific attributes.",
+  "returns": "Resource or metadata relationship; void element.",
+  "minimalExample": "<link rel=\"icon\" href=\"/icon.svg\">",
+  "productionExample": "<link rel=\"preload\" href=\"/fonts/ui.woff2\" as=\"font\" type=\"font/woff2\" crossorigin><link rel=\"stylesheet\" href=\"/app.css\">",
+  "commonMistakes": [
+    "Preloading everything or using mismatched crossorigin attributes."
+  ],
+  "securityPerformanceNotes": [
+    "Preload only critical assets and use trusted resource origins."
+  ],
+  "relatedLessonIds": [
+    "01.01.02"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/link"
+},
+{
+  "id": "web-script",
+  "matchCategories": [
+    "Web & HTML"
+  ],
+  "matchTitles": [
+    "script"
+  ],
+  "heading": "Web & HTML: script",
+  "category": "Web & HTML",
+  "majorVersion": "HTML / Web platform",
+  "status": "Authored reference draft",
+  "summary": "Embeds or references executable code or supported data blocks.",
+  "syntax": "<script type=\"module\" src=\"/app.js\"></script>",
+  "lang": "html",
+  "parameters": "src, type, async, defer and integrity where applicable.",
+  "returns": "Loads/evaluates scripts according to their type and attributes.",
+  "minimalExample": "<script defer src=\"/app.js\"></script>",
+  "productionExample": "<script type=\"module\" src=\"/assets/app.js\"></script>\n<!-- Serve a CSP that permits the intended script origin. -->",
+  "commonMistakes": [
+    "Treating async as preserving source execution order."
+  ],
+  "securityPerformanceNotes": [
+    "Avoid untrusted script sources and inline user-controlled script text."
+  ],
+  "relatedLessonIds": [
+    "01.01.02"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/script"
+},
+{
+  "id": "web-article",
+  "matchCategories": [
+    "Web & HTML"
+  ],
+  "matchTitles": [
+    "article"
+  ],
+  "heading": "Web & HTML: article",
+  "category": "Web & HTML",
+  "majorVersion": "HTML / Web platform",
+  "status": "Authored reference draft",
+  "summary": "Represents self-contained content that could be independently reused.",
+  "syntax": "<article><h2>Title</h2>…</article>",
+  "lang": "html",
+  "parameters": "Global HTML attributes and article content.",
+  "returns": "Semantic article element.",
+  "minimalExample": "<article><h2>Release notes</h2><p>Version 1</p></article>",
+  "productionExample": "<main><h1>News</h1><article aria-labelledby=\"news-1\"><h2 id=\"news-1\">Release notes</h2><time datetime=\"2026-11-26\">26 November</time><p>Updates</p></article></main>",
+  "commonMistakes": [
+    "Using article as a generic styling wrapper."
+  ],
+  "securityPerformanceNotes": [
+    "Provide useful headings and preserve logical reading order."
+  ],
+  "relatedLessonIds": [
+    "01.01.03"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/article"
+},
+{
+  "id": "web-section",
+  "matchCategories": [
+    "Web & HTML"
+  ],
+  "matchTitles": [
+    "section"
+  ],
+  "heading": "Web & HTML: section",
+  "category": "Web & HTML",
+  "majorVersion": "HTML / Web platform",
+  "status": "Authored reference draft",
+  "summary": "Groups a thematic section, typically identified by a heading.",
+  "syntax": "<section><h2>Topic</h2>…</section>",
+  "lang": "html",
+  "parameters": "Global attributes; accessible name can make a region landmark.",
+  "returns": "Semantic section element.",
+  "minimalExample": "<section><h2>Examples</h2><p>Example text</p></section>",
+  "productionExample": "<section aria-labelledby=\"security\"><h2 id=\"security\">Security</h2><p>Validate input at the trust boundary.</p></section>",
+  "commonMistakes": [
+    "Creating a section for every styling wrapper."
+  ],
+  "securityPerformanceNotes": [
+    "Use headings for structure; avoid excessive named landmarks."
+  ],
+  "relatedLessonIds": [
+    "01.01.04"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/section"
+},
+{
+  "id": "web-nav",
+  "matchCategories": [
+    "Web & HTML"
+  ],
+  "matchTitles": [
+    "nav"
+  ],
+  "heading": "Web & HTML: nav",
+  "category": "Web & HTML",
+  "majorVersion": "HTML / Web platform",
+  "status": "Authored reference draft",
+  "summary": "Identifies a major group of navigation links.",
+  "syntax": "<nav aria-label=\"Primary\">…</nav>",
+  "lang": "html",
+  "parameters": "Global attributes and navigation content.",
+  "returns": "Navigation landmark.",
+  "minimalExample": "<nav><a href=\"/learn\">Learn</a></nav>",
+  "productionExample": "<nav aria-label=\"Curriculum\"><ul><li><a href=\"/learn\" aria-current=\"page\">Learn</a></li><li><a href=\"/reference\">Reference</a></li></ul></nav>",
+  "commonMistakes": [
+    "Using the same label for multiple distinct navigation landmarks."
+  ],
+  "securityPerformanceNotes": [
+    "Use descriptive landmark labels and visible focus."
+  ],
+  "relatedLessonIds": [
+    "01.01.06"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/nav"
+},
+{
+  "id": "web-aside",
+  "matchCategories": [
+    "Web & HTML"
+  ],
+  "matchTitles": [
+    "aside"
+  ],
+  "heading": "Web & HTML: aside",
+  "category": "Web & HTML",
+  "majorVersion": "HTML / Web platform",
+  "status": "Authored reference draft",
+  "summary": "Represents content tangentially related to surrounding content.",
+  "syntax": "<aside>…</aside>",
+  "lang": "html",
+  "parameters": "Global attributes and complementary content.",
+  "returns": "Complementary content; landmark semantics depend on context.",
+  "minimalExample": "<aside><h2>Tip</h2><p>Try keyboard navigation.</p></aside>",
+  "productionExample": "<main><article><h1>Forms</h1><p>Use native controls.</p></article><aside aria-label=\"Further reading\"><a href=\"/reference\">Reference library</a></aside></main>",
+  "commonMistakes": [
+    "Putting required main content exclusively in aside."
+  ],
+  "securityPerformanceNotes": [
+    "Keep supplemental content distinct from the primary reading path."
+  ],
+  "relatedLessonIds": [
+    "01.01.03"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/aside"
+},
+{
+  "id": "web-picture",
+  "matchCategories": [
+    "Web & HTML"
+  ],
+  "matchTitles": [
+    "picture"
+  ],
+  "heading": "Web & HTML: picture",
+  "category": "Web & HTML",
+  "majorVersion": "HTML / Web platform",
+  "status": "Authored reference draft",
+  "summary": "Lets the browser choose image sources by media condition or format.",
+  "syntax": "<picture><source …><img …></picture>",
+  "lang": "html",
+  "parameters": "Ordered source elements with media/type/srcset and required img fallback.",
+  "returns": "One rendered image chosen by the browser.",
+  "minimalExample": "<picture><source srcset=\"photo.webp\" type=\"image/webp\"><img src=\"photo.jpg\" alt=\"Mountain\"></picture>",
+  "productionExample": "<picture><source media=\"(min-width: 900px)\" srcset=\"wide.jpg\"><img src=\"narrow.jpg\" width=\"640\" height=\"360\" alt=\"Dashboard overview\"></picture>",
+  "commonMistakes": [
+    "Putting alt on source instead of img."
+  ],
+  "securityPerformanceNotes": [
+    "Reserve space for the chosen image ratio and avoid unnecessary large downloads."
+  ],
+  "relatedLessonIds": [
+    "01.01.07"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/picture"
+},
+{
+  "id": "web-aria-label",
+  "matchCategories": [
+    "Web & HTML"
+  ],
+  "matchTitles": [
+    "aria-label"
+  ],
+  "heading": "Web & HTML: aria-label",
+  "category": "Web & HTML",
+  "majorVersion": "HTML / Web platform",
+  "status": "Authored reference draft",
+  "summary": "Supplies an accessible name when the element permits naming.",
+  "syntax": "aria-label=\"Close dialog\"",
+  "lang": "html",
+  "parameters": "A string describing the control's purpose.",
+  "returns": "Accessible name subject to accessible-name computation.",
+  "minimalExample": "<button aria-label=\"Close\">×</button>",
+  "productionExample": "<button type=\"button\" aria-label=\"Remove task\"><svg aria-hidden=\"true\" viewBox=\"0 0 10 10\"><path d=\"M1 1L9 9M9 1L1 9\"/></svg></button>",
+  "commonMistakes": [
+    "Overriding useful visible text with a different accessible name."
+  ],
+  "securityPerformanceNotes": [
+    "Prefer visible labels when possible; verify accessible name with assistive technology."
+  ],
+  "relatedLessonIds": [
+    "01.03.06"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-label"
+},
+{
+  "id": "web-tabindex",
+  "matchCategories": [
+    "Web & HTML"
+  ],
+  "matchTitles": [
+    "tabindex"
+  ],
+  "heading": "Web & HTML: tabindex",
+  "category": "Web & HTML",
+  "majorVersion": "HTML / Web platform",
+  "status": "Authored reference draft",
+  "summary": "Controls sequential focus participation and programmatic focus.",
+  "syntax": "tabindex=\"0\"",
+  "lang": "html",
+  "parameters": "Integer; 0 follows natural order, -1 allows programmatic focus without normal tab stop.",
+  "returns": "Changes focus behavior, not interaction semantics.",
+  "minimalExample": "<h2 tabindex=\"-1\" id=\"results\">Results</h2>",
+  "productionExample": "<h2 id=\"errors\" tabindex=\"-1\">Please correct errors</h2><script>document.querySelector('#errors').focus()</script>",
+  "commonMistakes": [
+    "Using positive tabindex to repair DOM order or making divs behave like buttons without keyboard support."
+  ],
+  "securityPerformanceNotes": [
+    "Prefer native controls and logical DOM order; restore focus after transient UI."
+  ],
+  "relatedLessonIds": [
+    "01.03.02"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/tabindex"
+},
+{
+  "id": "web-request",
+  "matchCategories": [
+    "Web & HTML"
+  ],
+  "matchTitles": [
+    "Request"
+  ],
+  "heading": "Web & HTML: Request",
+  "category": "Web & HTML",
+  "majorVersion": "HTML / Web platform",
+  "status": "Authored reference draft",
+  "summary": "Represents an HTTP request used by Fetch.",
+  "syntax": "new Request(input, init)",
+  "lang": "js",
+  "parameters": "URL or Request, method, headers, body and signal options.",
+  "returns": "Request object; body is a stream that may be consumed once.",
+  "minimalExample": "const req = new Request('/api/tasks');",
+  "productionExample": "const req = new Request('/api/tasks', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({title}), signal });\nconst res = await fetch(req);",
+  "commonMistakes": [
+    "Reading a consumed request body twice."
+  ],
+  "securityPerformanceNotes": [
+    "Validate server-side inputs and use same-origin or explicitly trusted destinations."
+  ],
+  "relatedLessonIds": [
+    "01.04.02"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/API/Request"
+},
+{
+  "id": "web-response",
+  "matchCategories": [
+    "Web & HTML"
+  ],
+  "matchTitles": [
+    "Response"
+  ],
+  "heading": "Web & HTML: Response",
+  "category": "Web & HTML",
+  "majorVersion": "HTML / Web platform",
+  "status": "Authored reference draft",
+  "summary": "Represents the status, headers and body of an HTTP response.",
+  "syntax": "new Response(body, { status, headers })",
+  "lang": "js",
+  "parameters": "Optional body and status/statusText/headers.",
+  "returns": "Response with body-reading methods and status information.",
+  "minimalExample": "const res = new Response('OK', {status:200});",
+  "productionExample": "return Response.json({ id: task.id, title: task.title }, { status: 200, headers: { 'Cache-Control': 'private, no-store' } });",
+  "commonMistakes": [
+    "Assuming every fetch response is successful or every body is JSON."
+  ],
+  "securityPerformanceNotes": [
+    "Project safe fields and avoid shared caches for private results."
+  ],
+  "relatedLessonIds": [
+    "01.04.02"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/API/Response"
+},
+{
+  "id": "web-url",
+  "matchCategories": [
+    "Web & HTML"
+  ],
+  "matchTitles": [
+    "URL"
+  ],
+  "heading": "Web & HTML: URL",
+  "category": "Web & HTML",
+  "majorVersion": "HTML / Web platform",
+  "status": "Authored reference draft",
+  "summary": "Parses, resolves and exposes components of a URL.",
+  "syntax": "new URL(input, base?)",
+  "lang": "js",
+  "parameters": "Absolute URL or relative input with a valid base.",
+  "returns": "URL instance; invalid input throws.",
+  "minimalExample": "const url = new URL('/learn', 'https://example.org');",
+  "productionExample": "const url = new URL('/search', 'https://example.org');\nurl.searchParams.set('q', query);\nconst href = url.toString();",
+  "commonMistakes": [
+    "Assuming a successfully parsed URL is an authorized destination."
+  ],
+  "securityPerformanceNotes": [
+    "Allowlist protocol and origin for redirects or outbound requests; parsing is not SSRF defense."
+  ],
+  "relatedLessonIds": [
+    "01.04.03"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/API/URL"
+},
+{
+  "id": "web-localstorage",
+  "matchCategories": [
+    "Web & HTML"
+  ],
+  "matchTitles": [
+    "localStorage"
+  ],
+  "heading": "Web & HTML: localStorage",
+  "category": "Web & HTML",
+  "majorVersion": "HTML / Web platform",
+  "status": "Authored reference draft",
+  "summary": "Provides synchronous origin-scoped string storage that can persist across browser sessions.",
+  "syntax": "localStorage.setItem(key, value)",
+  "lang": "js",
+  "parameters": "String keys and values; getItem/removeItem/clear.",
+  "returns": "getItem returns string or null; writes may throw.",
+  "minimalExample": "localStorage.setItem('theme','dark');",
+  "productionExample": "try { localStorage.setItem('preferences:v1', JSON.stringify({ theme: 'dark' })); } catch { showStorageWarning(); }",
+  "commonMistakes": [
+    "Storing access tokens or assuming storage cannot fail."
+  ],
+  "securityPerformanceNotes": [
+    "Keep non-sensitive preferences only; validate loaded JSON and handle quota/privacy restrictions."
+  ],
+  "relatedLessonIds": [
+    "01.04.04"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage"
+},
+{
+  "id": "web-indexeddb",
+  "matchCategories": [
+    "Web & HTML"
+  ],
+  "matchTitles": [
+    "IndexedDB"
+  ],
+  "heading": "Web & HTML: IndexedDB",
+  "category": "Web & HTML",
+  "majorVersion": "HTML / Web platform",
+  "status": "Authored reference draft",
+  "summary": "Asynchronous transactional browser database for structured data.",
+  "syntax": "indexedDB.open(name, version)",
+  "lang": "js",
+  "parameters": "Database name/version; upgrade handler creates stores and indexes.",
+  "returns": "IDBOpenDBRequest with success, error and upgrade events.",
+  "minimalExample": "const request = indexedDB.open('notes', 1);\nrequest.onupgradeneeded = () => request.result.createObjectStore('notes', {keyPath:'id'});",
+  "productionExample": "const request = indexedDB.open('notes', 1);\nrequest.onupgradeneeded = () => request.result.createObjectStore('notes', {keyPath:'id'});\nrequest.onsuccess = () => {\n const db = request.result; const tx = db.transaction('notes','readwrite');\n tx.objectStore('notes').put({id:'a',text:'Draft'});\n tx.oncomplete = () => db.close(); tx.onabort = () => db.close();\n};",
+  "commonMistakes": [
+    "Reporting a write as durable before transaction completion."
+  ],
+  "securityPerformanceNotes": [
+    "Handle blocked upgrades, failures and quota; local data is not a trusted server source."
+  ],
+  "relatedLessonIds": [
+    "03.04.05"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API"
+},
+{
+  "id": "web-service-worker",
+  "matchCategories": [
+    "Web & HTML"
+  ],
+  "matchTitles": [
+    "Service Worker"
+  ],
+  "heading": "Web & HTML: Service Worker",
+  "category": "Web & HTML",
+  "majorVersion": "HTML / Web platform",
+  "status": "Authored reference draft",
+  "summary": "A background worker can handle eligible requests and support offline behavior within its scope.",
+  "syntax": "navigator.serviceWorker.register('/sw.js')",
+  "lang": "js",
+  "parameters": "Script URL and optional registration scope/options.",
+  "returns": "Promise<ServiceWorkerRegistration>.",
+  "minimalExample": "await navigator.serviceWorker.register('/sw.js');",
+  "productionExample": "// sw.js: serve pre-cached public assets only when explicitly approved.\nself.addEventListener('fetch', event => {\n const url = new URL(event.request.url);\n if (event.request.method === 'GET' && url.origin === self.location.origin && url.pathname === '/assets/help.css') {\n  event.respondWith(caches.match(event.request).then(hit => hit || fetch(event.request)));\n }\n});",
+  "commonMistakes": [
+    "Caching every response including authenticated pages."
+  ],
+  "securityPerformanceNotes": [
+    "Use HTTPS, scoped cache policies and versioned cleanup; test offline and update lifecycle."
+  ],
+  "relatedLessonIds": [
+    "03.04.05"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API"
+},
+{
+  "id": "web-cors",
+  "matchCategories": [
+    "Web & HTML"
+  ],
+  "matchTitles": [
+    "CORS"
+  ],
+  "heading": "Web & HTML: CORS",
+  "category": "Web & HTML",
+  "majorVersion": "HTML / Web platform",
+  "status": "Authored reference draft",
+  "summary": "Browser cross-origin response-access mechanism based on server response headers.",
+  "syntax": "Access-Control-Allow-Origin: https://app.example.org",
+  "lang": "text",
+  "parameters": "Origin, allowed methods/headers, optional credentials and preflight policy.",
+  "returns": "Browser permits or denies script access to cross-origin responses.",
+  "minimalExample": "Access-Control-Allow-Origin: https://app.example.org",
+  "productionExample": "Access-Control-Allow-Origin: https://app.example.org\nAccess-Control-Allow-Credentials: true\nVary: Origin\n# For preflight, allow only required methods and headers.",
+  "commonMistakes": [
+    "Treating CORS as server-side authorization or combining credentialed requests with wildcard origin."
+  ],
+  "securityPerformanceNotes": [
+    "Check origin against an allowlist; authenticate and authorize every sensitive operation."
+  ],
+  "relatedLessonIds": [
+    "01.04.06"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CORS"
+},
+{
+  "id": "web-csp",
+  "matchCategories": [
+    "Web & HTML"
+  ],
+  "matchTitles": [
+    "CSP"
+  ],
+  "heading": "Web & HTML: CSP",
+  "category": "Web & HTML",
+  "majorVersion": "HTML / Web platform",
+  "status": "Authored reference draft",
+  "summary": "Content Security Policy restricts allowed sources and selected browser behaviors.",
+  "syntax": "Content-Security-Policy: default-src 'self'",
+  "lang": "text",
+  "parameters": "Directives such as script-src, object-src, base-uri and frame-ancestors.",
+  "returns": "Browser enforces or reports violations of the supplied policy.",
+  "minimalExample": "Content-Security-Policy: default-src 'self'; object-src 'none'",
+  "productionExample": "Content-Security-Policy-Report-Only: default-src 'self'; script-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'\n# Review violations and adapt before enforcing.",
+  "commonMistakes": [
+    "Adding unsafe-inline merely to suppress violations."
+  ],
+  "securityPerformanceNotes": [
+    "Use a framework-compatible nonce/hash strategy and output encoding; CSP is defense in depth."
+  ],
+  "relatedLessonIds": [
+    "01.04.07"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CSP"
+},
+{
+  "id": "css-min",
+  "matchCategories": [
+    "CSS"
+  ],
+  "matchTitles": [
+    "min()"
+  ],
+  "heading": "CSS: min()",
+  "category": "CSS",
+  "majorVersion": "CSS",
+  "status": "Authored reference draft",
+  "summary": "Chooses the smallest compatible calculation.",
+  "syntax": "width: min(100%, 60rem);",
+  "lang": "css",
+  "parameters": "Comma-separated compatible calculations.",
+  "returns": "Computed CSS numeric value.",
+  "minimalExample": "width: min(100%, 40rem);",
+  "productionExample": ".content { inline-size: min(100% - 2rem, 72rem); margin-inline: auto; }",
+  "commonMistakes": [
+    "Combining incompatible dimensions."
+  ],
+  "securityPerformanceNotes": [
+    "Check zoom and intrinsic sizing rather than forcing fixed widths."
+  ],
+  "relatedLessonIds": [
+    "02.02.03"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/CSS/min"
+},
+{
+  "id": "css-max",
+  "matchCategories": [
+    "CSS"
+  ],
+  "matchTitles": [
+    "max()"
+  ],
+  "heading": "CSS: max()",
+  "category": "CSS",
+  "majorVersion": "CSS",
+  "status": "Authored reference draft",
+  "summary": "Chooses the largest compatible calculation.",
+  "syntax": "padding: max(1rem, 2vw);",
+  "lang": "css",
+  "parameters": "Comma-separated compatible calculations.",
+  "returns": "Computed CSS numeric value.",
+  "minimalExample": "width: max(10rem, 20vw);",
+  "productionExample": ".page { padding-inline: max(1rem, env(safe-area-inset-left)); }",
+  "commonMistakes": [
+    "Using max to enforce an oversized minimum on narrow screens."
+  ],
+  "securityPerformanceNotes": [
+    "Test narrow containers and safe-area behavior."
+  ],
+  "relatedLessonIds": [
+    "02.02.03"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/CSS/max"
+},
+{
+  "id": "css-font-display",
+  "matchCategories": [
+    "CSS"
+  ],
+  "matchTitles": [
+    "font-display"
+  ],
+  "heading": "CSS: font-display",
+  "category": "CSS",
+  "majorVersion": "CSS",
+  "status": "Authored reference draft",
+  "summary": "Controls font face rendering while the font downloads.",
+  "syntax": "@font-face { font-display: swap; }",
+  "lang": "css",
+  "parameters": "auto, block, swap, fallback or optional.",
+  "returns": "Font loading/rendering strategy.",
+  "minimalExample": "@font-face { font-family: UI; src: url(ui.woff2); font-display: swap; }",
+  "productionExample": "@font-face { font-family: UI; src: url(/ui.woff2) format('woff2'); font-display: optional; }\nbody { font-family: UI, system-ui, sans-serif; }",
+  "commonMistakes": [
+    "Assuming swap eliminates layout shift."
+  ],
+  "securityPerformanceNotes": [
+    "Choose compatible fallback metrics and preload only necessary faces."
+  ],
+  "relatedLessonIds": [
+    "02.04.04"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display"
+},
+{
+  "id": "css-contain",
+  "matchCategories": [
+    "CSS"
+  ],
+  "matchTitles": [
+    "contain"
+  ],
+  "heading": "CSS: contain",
+  "category": "CSS",
+  "majorVersion": "CSS",
+  "status": "Authored reference draft",
+  "summary": "Limits propagation of layout, paint, size or style effects.",
+  "syntax": "contain: layout paint;",
+  "lang": "css",
+  "parameters": "Containment keywords, strict or content.",
+  "returns": "Changes containment boundaries and potentially containing blocks.",
+  "minimalExample": ".card { contain: layout paint; }",
+  "productionExample": ".preview { contain: layout paint; overflow: clip; }",
+  "commonMistakes": [
+    "Using size containment without a meaningful size or clipping intended popovers."
+  ],
+  "securityPerformanceNotes": [
+    "Profile actual performance and test overlays and intrinsic layout."
+  ],
+  "relatedLessonIds": [
+    "02.04.01"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/CSS/contain"
+},
+{
+  "id": "css-content-visibility",
+  "matchCategories": [
+    "CSS"
+  ],
+  "matchTitles": [
+    "content-visibility"
+  ],
+  "heading": "CSS: content-visibility",
+  "category": "CSS",
+  "majorVersion": "CSS",
+  "status": "Authored reference draft",
+  "summary": "Allows the browser to skip rendering work for off-screen content.",
+  "syntax": "content-visibility: auto;",
+  "lang": "css",
+  "parameters": "visible, auto or hidden.",
+  "returns": "Rendering work may be deferred; auto does not mean display:none.",
+  "minimalExample": ".chapter { content-visibility: auto; }",
+  "productionExample": ".chapter { content-visibility: auto; contain-intrinsic-size: auto 600px; }",
+  "commonMistakes": [
+    "Applying hidden to content intended to remain discoverable."
+  ],
+  "securityPerformanceNotes": [
+    "Test focus, find-in-page and scroll stability; measure before retaining optimization."
+  ],
+  "relatedLessonIds": [
+    "02.04.01"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/CSS/content-visibility"
+},
+{
+  "id": "css-animation",
+  "matchCategories": [
+    "CSS"
+  ],
+  "matchTitles": [
+    "animation"
+  ],
+  "heading": "CSS: animation",
+  "category": "CSS",
+  "majorVersion": "CSS",
+  "status": "Authored reference draft",
+  "summary": "Runs named keyframes with timing and iteration settings.",
+  "syntax": "animation: fade-in 200ms ease-out;",
+  "lang": "css",
+  "parameters": "Name, duration, timing, delay, iterations, direction and fill mode.",
+  "returns": "Animation of supported properties.",
+  "minimalExample": "@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }\n.item { animation: fade-in 200ms; }",
+  "productionExample": "@keyframes reveal { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }\n.card { animation: reveal 180ms ease-out; }\n@media (prefers-reduced-motion: reduce) { .card { animation: none; } }",
+  "commonMistakes": [
+    "Animating layout-heavy properties continuously or ignoring reduced motion."
+  ],
+  "securityPerformanceNotes": [
+    "Prefer inexpensive properties where suitable and keep content usable without motion."
+  ],
+  "relatedLessonIds": [
+    "02.03.04"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/CSS/animation"
+},
+{
+  "id": "javascript-promise",
+  "matchCategories": [
+    "JavaScript"
+  ],
+  "matchTitles": [
+    "Promise"
+  ],
+  "heading": "JavaScript: Promise",
+  "category": "JavaScript",
+  "majorVersion": "ECMAScript / Web APIs",
+  "status": "Authored reference draft",
+  "summary": "Represents eventual fulfillment or rejection of an asynchronous operation.",
+  "syntax": "new Promise((resolve, reject) => …)",
+  "lang": "js",
+  "parameters": "Executor invoked synchronously; resolve/reject settle the promise.",
+  "returns": "Promise with then/catch/finally; handlers run asynchronously.",
+  "minimalExample": "const p = Promise.resolve(42);",
+  "productionExample": "function delay(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }\nawait delay(100);",
+  "commonMistakes": [
+    "Using an async executor or leaving a rejection unhandled."
+  ],
+  "securityPerformanceNotes": [
+    "Use native promise-returning APIs directly; cancellation needs a separate mechanism."
+  ],
+  "relatedLessonIds": [
+    "03.03.03"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise"
+},
+{
+  "id": "javascript-object-entries",
+  "matchCategories": [
+    "JavaScript"
+  ],
+  "matchTitles": [
+    "Object.entries"
+  ],
+  "heading": "JavaScript: Object.entries",
+  "category": "JavaScript",
+  "majorVersion": "ECMAScript / Web APIs",
+  "status": "Authored reference draft",
+  "summary": "Returns own enumerable string-keyed property pairs.",
+  "syntax": "Object.entries(object)",
+  "lang": "js",
+  "parameters": "Object or coercible value; null/undefined throw.",
+  "returns": "Array of [key,value] pairs.",
+  "minimalExample": "Object.entries({a:1,b:2});",
+  "productionExample": "const allowed = new Set(['theme','density']);\nconst prefs = Object.fromEntries(Object.entries(input).filter(([key]) => allowed.has(key)));",
+  "commonMistakes": [
+    "Assuming inherited or symbol keys are included."
+  ],
+  "securityPerformanceNotes": [
+    "Validate allowed values too; filtering keys alone is not complete input validation."
+  ],
+  "relatedLessonIds": [
+    "03.01.06"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/entries"
+},
+{
+  "id": "javascript-try-catch",
+  "matchCategories": [
+    "JavaScript"
+  ],
+  "matchTitles": [
+    "try/catch"
+  ],
+  "heading": "JavaScript: try/catch",
+  "category": "JavaScript",
+  "majorVersion": "ECMAScript / Web APIs",
+  "status": "Authored reference draft",
+  "summary": "Handles exceptions from a protected block and optionally performs cleanup.",
+  "syntax": "try { … } catch (error) { … } finally { … }",
+  "lang": "js",
+  "parameters": "Blocks and optional catch binding.",
+  "returns": "Control flow continues or propagates according to block behavior.",
+  "minimalExample": "try { JSON.parse('{'); } catch { console.log('Invalid JSON'); }",
+  "productionExample": "try { await work(); } catch (error) { reportSafeError(error); throw error; } finally { releaseResource(); }",
+  "commonMistakes": [
+    "Returning from finally and overriding an earlier result or exception."
+  ],
+  "securityPerformanceNotes": [
+    "Handle expected failures narrowly; avoid logging sensitive input."
+  ],
+  "relatedLessonIds": [
+    "03.02.06"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/try...catch"
+},
+{
+  "id": "javascript-throw",
+  "matchCategories": [
+    "JavaScript"
+  ],
+  "matchTitles": [
+    "throw"
+  ],
+  "heading": "JavaScript: throw",
+  "category": "JavaScript",
+  "majorVersion": "ECMAScript / Web APIs",
+  "status": "Authored reference draft",
+  "summary": "Raises an exception and transfers control to a matching handler.",
+  "syntax": "throw new Error('message');",
+  "lang": "js",
+  "parameters": "Any expression; Error objects are recommended.",
+  "returns": "Does not return normally.",
+  "minimalExample": "throw new Error('Invalid input');",
+  "productionExample": "if (!Number.isInteger(page) || page < 1) throw new RangeError('Invalid page');",
+  "commonMistakes": [
+    "Throwing raw user data or relying on strings for error identity."
+  ],
+  "securityPerformanceNotes": [
+    "Map internal exceptions to safe external messages at the boundary."
+  ],
+  "relatedLessonIds": [
+    "03.02.06"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/throw"
+},
+{
+  "id": "javascript-import",
+  "matchCategories": [
+    "JavaScript"
+  ],
+  "matchTitles": [
+    "import"
+  ],
+  "heading": "JavaScript: import",
+  "category": "JavaScript",
+  "majorVersion": "ECMAScript / Web APIs",
+  "status": "Authored reference draft",
+  "summary": "Declares a static module dependency and imported bindings.",
+  "syntax": "import { name } from './module.js';",
+  "lang": "js",
+  "parameters": "Module specifier and named/default/namespace bindings.",
+  "returns": "Live read-only imported bindings in an ES module.",
+  "minimalExample": "import { parse } from './parse.js';",
+  "productionExample": "import { validateTask } from './domain/task.js';\nimport { saveTask } from './adapters/repository.js';",
+  "commonMistakes": [
+    "Confusing static import with dynamic import() or using wrong runtime extensions."
+  ],
+  "securityPerformanceNotes": [
+    "Separate browser and server module graphs; avoid importing secrets into client bundles."
+  ],
+  "relatedLessonIds": [
+    "03.02.05"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import"
+},
+{
+  "id": "javascript-export",
+  "matchCategories": [
+    "JavaScript"
+  ],
+  "matchTitles": [
+    "export"
+  ],
+  "heading": "JavaScript: export",
+  "category": "JavaScript",
+  "majorVersion": "ECMAScript / Web APIs",
+  "status": "Authored reference draft",
+  "summary": "Exposes named or default module bindings to importers.",
+  "syntax": "export function name() {}",
+  "lang": "js",
+  "parameters": "Declarations, export lists or re-export specifiers.",
+  "returns": "Module exports; named exports are live bindings.",
+  "minimalExample": "export const version = 1;",
+  "productionExample": "export { parseTask } from './task.js';\nexport { createTaskService } from './service.js';",
+  "commonMistakes": [
+    "Exporting every internal helper and accidentally expanding public API."
+  ],
+  "securityPerformanceNotes": [
+    "Keep package boundaries small and avoid exporting secret configuration."
+  ],
+  "relatedLessonIds": [
+    "03.02.05"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/export"
+},
+{
+  "id": "javascript-eventtarget",
+  "matchCategories": [
+    "JavaScript"
+  ],
+  "matchTitles": [
+    "EventTarget"
+  ],
+  "heading": "JavaScript: EventTarget",
+  "category": "JavaScript",
+  "majorVersion": "ECMAScript / Web APIs",
+  "status": "Authored reference draft",
+  "summary": "Interface for registering listeners and dispatching events.",
+  "syntax": "new EventTarget()",
+  "lang": "js",
+  "parameters": "Event type, listener and dispatchable Event objects.",
+  "returns": "EventTarget with listener/dispatch methods.",
+  "minimalExample": "const target = new EventTarget();\ntarget.dispatchEvent(new Event('ready'));",
+  "productionExample": "const bus = new EventTarget();\nbus.addEventListener('task:changed', e => refresh(e.detail));\nbus.dispatchEvent(new CustomEvent('task:changed', {detail:{id:'a'}}));",
+  "commonMistakes": [
+    "Expecting dispatchEvent to perform asynchronous event delivery."
+  ],
+  "securityPerformanceNotes": [
+    "Do not treat arbitrary custom-event payloads as trusted authorization evidence."
+  ],
+  "relatedLessonIds": [
+    "03.04.01"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/API/EventTarget"
+},
+{
+  "id": "javascript-addeventlistener",
+  "matchCategories": [
+    "JavaScript"
+  ],
+  "matchTitles": [
+    "addEventListener"
+  ],
+  "heading": "JavaScript: addEventListener",
+  "category": "JavaScript",
+  "majorVersion": "ECMAScript / Web APIs",
+  "status": "Authored reference draft",
+  "summary": "Registers a callback for events on an EventTarget.",
+  "syntax": "target.addEventListener(type, listener, options)",
+  "lang": "js",
+  "parameters": "Event type, callback and options such as once, passive or signal.",
+  "returns": "Undefined; listener remains until removed or configured cleanup occurs.",
+  "minimalExample": "button.addEventListener('click', () => openPanel());",
+  "productionExample": "const controller = new AbortController();\nwindow.addEventListener('resize', onResize, {signal:controller.signal});\n// During cleanup:\ncontroller.abort();",
+  "commonMistakes": [
+    "Adding a new anonymous handler on every render without cleanup."
+  ],
+  "securityPerformanceNotes": [
+    "Use abort/remove cleanup; avoid blocking scroll with unnecessary non-passive handlers."
+  ],
+  "relatedLessonIds": [
+    "03.04.01"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener"
+},
+{
+  "id": "javascript-queuemicrotask",
+  "matchCategories": [
+    "JavaScript"
+  ],
+  "matchTitles": [
+    "queueMicrotask"
+  ],
+  "heading": "JavaScript: queueMicrotask",
+  "category": "JavaScript",
+  "majorVersion": "ECMAScript / Web APIs",
+  "status": "Authored reference draft",
+  "summary": "Queues a callback in the microtask queue.",
+  "syntax": "queueMicrotask(callback)",
+  "lang": "js",
+  "parameters": "Function invoked after current stack, before the next task when checkpoint runs.",
+  "returns": "Undefined; callback errors surface as exceptions.",
+  "minimalExample": "queueMicrotask(() => console.log('after stack'));",
+  "productionExample": "let pending = false;\nfunction scheduleFlush() { if (pending) return; pending = true; queueMicrotask(() => { pending = false; flushChanges(); }); }",
+  "commonMistakes": [
+    "Recursively enqueuing microtasks and starving rendering."
+  ],
+  "securityPerformanceNotes": [
+    "Bound work; use task scheduling when yielding to the browser is required."
+  ],
+  "relatedLessonIds": [
+    "03.03.02"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/API/Window/queueMicrotask"
+},
+{
+  "id": "javascript-structuredclone",
+  "matchCategories": [
+    "JavaScript"
+  ],
+  "matchTitles": [
+    "structuredClone"
+  ],
+  "heading": "JavaScript: structuredClone",
+  "category": "JavaScript",
+  "majorVersion": "ECMAScript / Web APIs",
+  "status": "Authored reference draft",
+  "summary": "Copies supported structured-cloneable values, optionally transferring ownership.",
+  "syntax": "structuredClone(value, { transfer })",
+  "lang": "js",
+  "parameters": "Cloneable value and optional transfer list.",
+  "returns": "Independent clone; unsupported values throw DataCloneError.",
+  "minimalExample": "const copy = structuredClone({items:[1,2]});",
+  "productionExample": "const snapshot = structuredClone({ tasks, filters });\n// Work on a detached data snapshot, not live DOM objects.",
+  "commonMistakes": [
+    "Expecting functions or DOM nodes to clone."
+  ],
+  "securityPerformanceNotes": [
+    "Large clones consume memory; transfer only buffers you no longer need."
+  ],
+  "relatedLessonIds": [
+    "03.02.07"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/API/Window/structuredClone"
+},
+{
+  "id": "javascript-abortsignal",
+  "matchCategories": [
+    "JavaScript"
+  ],
+  "matchTitles": [
+    "AbortSignal"
+  ],
+  "heading": "JavaScript: AbortSignal",
+  "category": "JavaScript",
+  "majorVersion": "ECMAScript / Web APIs",
+  "status": "Authored reference draft",
+  "summary": "Communicates cancellation to APIs that observe a signal.",
+  "syntax": "controller.signal",
+  "lang": "js",
+  "parameters": "Signal from AbortController or supported static constructors such as timeout.",
+  "returns": "AbortSignal with aborted, reason and abort events.",
+  "minimalExample": "const signal = AbortSignal.timeout(3000);",
+  "productionExample": "const signal = AbortSignal.any([userController.signal, AbortSignal.timeout(5000)]);\nconst res = await fetch('/api/tasks', {signal});\nif (!res.ok) throw new Error('Request failed');",
+  "commonMistakes": [
+    "Reusing a signal after it has aborted."
+  ],
+  "securityPerformanceNotes": [
+    "Check runtime support; aborting a client request does not reverse server-side mutations."
+  ],
+  "relatedLessonIds": [
+    "03.03.05"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal"
+},
+{
+  "id": "typescript-type",
+  "matchCategories": [
+    "TypeScript"
+  ],
+  "matchTitles": [
+    "type"
+  ],
+  "heading": "TypeScript: type",
+  "category": "TypeScript",
+  "majorVersion": "TypeScript",
+  "status": "Authored reference draft",
+  "summary": "Defines a named type alias for a type expression.",
+  "syntax": "type Name = Expression;",
+  "lang": "ts",
+  "parameters": "Type expression and optional type parameters.",
+  "returns": "Compile-time alias; erased at runtime.",
+  "minimalExample": "type ID = string;",
+  "productionExample": "type TaskResult = {ok:true; id:string} | {ok:false; reason:string};",
+  "commonMistakes": [
+    "Assuming a type alias constructs or validates values."
+  ],
+  "securityPerformanceNotes": [
+    "Use runtime validation at external boundaries."
+  ],
+  "relatedLessonIds": [
+    "04.01.04"
+  ],
+  "canonicalUrl": "https://www.typescriptlang.org/docs/handbook/2/everyday-types.html#type-aliases"
+},
+{
+  "id": "typescript-interface",
+  "matchCategories": [
+    "TypeScript"
+  ],
+  "matchTitles": [
+    "interface"
+  ],
+  "heading": "TypeScript: interface",
+  "category": "TypeScript",
+  "majorVersion": "TypeScript",
+  "status": "Authored reference draft",
+  "summary": "Describes an object shape and supports extension/declaration merging.",
+  "syntax": "interface Name { field: Type }",
+  "lang": "ts",
+  "parameters": "Property/method declarations and optional extends.",
+  "returns": "Compile-time structural object type.",
+  "minimalExample": "interface Task { id: string }",
+  "productionExample": "interface TaskRepository { find(id:string): Promise<Task | null>; }\ninterface Task { id:string; title:string; }",
+  "commonMistakes": [
+    "Assuming interfaces are nominal or exist at runtime."
+  ],
+  "securityPerformanceNotes": [
+    "Keep contracts narrow and validate data crossing process boundaries."
+  ],
+  "relatedLessonIds": [
+    "04.01.04"
+  ],
+  "canonicalUrl": "https://www.typescriptlang.org/docs/handbook/2/everyday-types.html#interfaces"
+},
+{
+  "id": "typescript-never",
+  "matchCategories": [
+    "TypeScript"
+  ],
+  "matchTitles": [
+    "never"
+  ],
+  "heading": "TypeScript: never",
+  "category": "TypeScript",
+  "majorVersion": "TypeScript",
+  "status": "Authored reference draft",
+  "summary": "Represents values that cannot occur in a valid type flow.",
+  "syntax": "const impossible: never = value;",
+  "lang": "ts",
+  "parameters": "Type position; often used in exhaustiveness checks.",
+  "returns": "Bottom type, assignable to other types.",
+  "minimalExample": "function fail(message:string): never { throw new Error(message); }",
+  "productionExample": "type State = 'open' | 'closed';\nfunction label(s:State):string { switch(s){case 'open':return 'Open';case 'closed':return 'Closed';default:{const unreachable:never=s;return unreachable;}} }",
+  "commonMistakes": [
+    "Forcing an assertion to never to silence missing cases."
+  ],
+  "securityPerformanceNotes": [
+    "Use exhaustive checks on validated discriminants; unknown runtime values still need rejection."
+  ],
+  "relatedLessonIds": [
+    "04.02.05"
+  ],
+  "canonicalUrl": "https://www.typescriptlang.org/docs/handbook/2/narrowing.html#the-never-type"
+},
+{
+  "id": "typescript-union",
+  "matchCategories": [
+    "TypeScript"
+  ],
+  "matchTitles": [
+    "union"
+  ],
+  "heading": "TypeScript: union",
+  "category": "TypeScript",
+  "majorVersion": "TypeScript",
+  "status": "Authored reference draft",
+  "summary": "Represents a value belonging to one or more alternative types.",
+  "syntax": "type Value = A | B;",
+  "lang": "ts",
+  "parameters": "Member types separated by |.",
+  "returns": "Union with operations limited to safely shared members until narrowing.",
+  "minimalExample": "type ID = string | number;",
+  "productionExample": "function normalizeId(id:string|number):string { return typeof id === 'number' ? String(id) : id.trim(); }",
+  "commonMistakes": [
+    "Accessing a member-specific property before narrowing."
+  ],
+  "securityPerformanceNotes": [
+    "Validate runtime inputs instead of trusting union annotations."
+  ],
+  "relatedLessonIds": [
+    "04.01.03"
+  ],
+  "canonicalUrl": "https://www.typescriptlang.org/docs/handbook/2/everyday-types.html#union-types"
+},
+{
+  "id": "typescript-intersection",
+  "matchCategories": [
+    "TypeScript"
+  ],
+  "matchTitles": [
+    "intersection"
+  ],
+  "heading": "TypeScript: intersection",
+  "category": "TypeScript",
+  "majorVersion": "TypeScript",
+  "status": "Authored reference draft",
+  "summary": "Combines requirements of multiple types.",
+  "syntax": "type Combined = A & B;",
+  "lang": "ts",
+  "parameters": "Types separated by &.",
+  "returns": "Type requiring compatibility with all constituents.",
+  "minimalExample": "type Entity = {id:string} & {createdAt:Date};",
+  "productionExample": "type AuditedTask = {id:string;title:string} & {createdAt:Date;updatedAt:Date};\nfunction timestamp(t:AuditedTask){return t.updatedAt.toISOString();}",
+  "commonMistakes": [
+    "Intersecting incompatible properties and assuming the result is usable."
+  ],
+  "securityPerformanceNotes": [
+    "Intersection types do not merge or validate runtime objects."
+  ],
+  "relatedLessonIds": [
+    "04.01.03"
+  ],
+  "canonicalUrl": "https://www.typescriptlang.org/docs/handbook/2/objects.html#intersection-types"
+},
+{
+  "id": "typescript-infer",
+  "matchCategories": [
+    "TypeScript"
+  ],
+  "matchTitles": [
+    "infer"
+  ],
+  "heading": "TypeScript: infer",
+  "category": "TypeScript",
+  "majorVersion": "TypeScript",
+  "status": "Authored reference draft",
+  "summary": "Introduces an inferred type variable inside a conditional type pattern.",
+  "syntax": "type Element<T> = T extends (infer U)[] ? U : never;",
+  "lang": "ts",
+  "parameters": "Conditional extends pattern and inferred variable.",
+  "returns": "Derived type selected by conditional inference.",
+  "minimalExample": "type Item<T> = T extends Array<infer U> ? U : never;",
+  "productionExample": "type ResponseBody<T> = T extends Promise<infer R> ? R : T;\ntype Body = ResponseBody<Promise<{id:string}>>;",
+  "commonMistakes": [
+    "Expecting infer to inspect runtime values."
+  ],
+  "securityPerformanceNotes": [
+    "Prefer built-in utility types where they express the same intent."
+  ],
+  "relatedLessonIds": [
+    "04.02.04"
+  ],
+  "canonicalUrl": "https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#inferring-within-conditional-types"
+},
+{
+  "id": "typescript-as-const",
+  "matchCategories": [
+    "TypeScript"
+  ],
+  "matchTitles": [
+    "as const"
+  ],
+  "heading": "TypeScript: as const",
+  "category": "TypeScript",
+  "majorVersion": "TypeScript",
+  "status": "Authored reference draft",
+  "summary": "Requests literal inference and readonly object/tuple properties for literal expressions.",
+  "syntax": "const value = {kind:'ready'} as const;",
+  "lang": "ts",
+  "parameters": "Literal expression.",
+  "returns": "Narrower compile-time type; does not freeze the runtime object.",
+  "minimalExample": "const roles = ['reader','editor'] as const;",
+  "productionExample": "const statuses = ['open','done'] as const;\ntype Status = typeof statuses[number];\nfunction isStatus(value:unknown):value is Status { return statuses.some(s=>s===value); }",
+  "commonMistakes": [
+    "Assuming readonly typing means deep runtime immutability."
+  ],
+  "securityPerformanceNotes": [
+    "Validate external values; use explicit runtime freezing if needed."
+  ],
+  "relatedLessonIds": [
+    "04.01.03"
+  ],
+  "canonicalUrl": "https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-4.html#const-assertions"
+},
+{
+  "id": "typescript-type-guards",
+  "matchCategories": [
+    "TypeScript"
+  ],
+  "matchTitles": [
+    "Type guards"
+  ],
+  "heading": "TypeScript: Type guards",
+  "category": "TypeScript",
+  "majorVersion": "TypeScript",
+  "status": "Authored reference draft",
+  "summary": "Narrow values using runtime checks or a user-defined type predicate.",
+  "syntax": "function isString(x:unknown): x is string { return typeof x === 'string'; }",
+  "lang": "ts",
+  "parameters": "Value to inspect and truthful predicate.",
+  "returns": "Boolean result that informs control-flow type analysis.",
+  "minimalExample": "if (typeof input === 'string') input.trim();",
+  "productionExample": "function isTask(x:unknown):x is {id:string;title:string} { return typeof x==='object' && x!==null && 'id' in x && typeof x.id==='string' && 'title' in x && typeof x.title==='string'; }",
+  "commonMistakes": [
+    "Declaring a predicate that returns true without checking required fields."
+  ],
+  "securityPerformanceNotes": [
+    "Validate nested data and semantic constraints, not just superficial shape."
+  ],
+  "relatedLessonIds": [
+    "04.01.06"
+  ],
+  "canonicalUrl": "https://www.typescriptlang.org/docs/handbook/2/narrowing.html"
+},
+{
+  "id": "typescript-tsconfig-strict",
+  "matchCategories": [
+    "TypeScript"
+  ],
+  "matchTitles": [
+    "tsconfig strict"
+  ],
+  "heading": "TypeScript: tsconfig strict",
+  "category": "TypeScript",
+  "majorVersion": "TypeScript",
+  "status": "Authored reference draft",
+  "summary": "Enables the TypeScript family of strict checking options.",
+  "syntax": "{\"compilerOptions\":{\"strict\":true}}",
+  "lang": "json",
+  "parameters": "Compiler configuration and optional individual flag overrides.",
+  "returns": "Compile-time diagnostics.",
+  "minimalExample": "{\"compilerOptions\":{\"strict\":true}}",
+  "productionExample": "{\"compilerOptions\":{\"strict\":true,\"noUncheckedIndexedAccess\":true,\"exactOptionalPropertyTypes\":true,\"noEmit\":true}}",
+  "commonMistakes": [
+    "Assuming strict enables every additional checking flag or validates runtime data."
+  ],
+  "securityPerformanceNotes": [
+    "Run a real typecheck in release gates and avoid blanket suppressions."
+  ],
+  "relatedLessonIds": [
+    "04.01.01"
+  ],
+  "canonicalUrl": "https://www.typescriptlang.org/docs/tsconfig/#strict"
+},
+{
+  "id": "typescript-nodenext",
+  "matchCategories": [
+    "TypeScript"
+  ],
+  "matchTitles": [
+    "NodeNext"
+  ],
+  "heading": "TypeScript: NodeNext",
+  "category": "TypeScript",
+  "majorVersion": "TypeScript",
+  "status": "Authored reference draft",
+  "summary": "Models Node.js ESM/CommonJS resolution and emit behavior.",
+  "syntax": "{\"compilerOptions\":{\"module\":\"NodeNext\",\"moduleResolution\":\"NodeNext\"}}",
+  "lang": "json",
+  "parameters": "Module settings, package type and file extensions influence behavior.",
+  "returns": "Compiler resolution and emit matching modeled Node semantics.",
+  "minimalExample": "{\"compilerOptions\":{\"module\":\"NodeNext\"}}",
+  "productionExample": "{\"compilerOptions\":{\"module\":\"NodeNext\",\"moduleResolution\":\"NodeNext\",\"strict\":true,\"outDir\":\"dist\"}}\n// In ESM source: import { task } from './task.js';",
+  "commonMistakes": [
+    "Using extensionless relative imports in native Node ESM without a supporting loader."
+  ],
+  "securityPerformanceNotes": [
+    "Test the emitted package under the intended Node version."
+  ],
+  "relatedLessonIds": [
+    "04.04.02"
+  ],
+  "canonicalUrl": "https://www.typescriptlang.org/docs/tsconfig/#module"
+},
+{
+  "id": "react-jsx",
+  "matchCategories": [
+    "React"
+  ],
+  "matchTitles": [
+    "JSX"
+  ],
+  "heading": "React: JSX",
+  "category": "React",
+  "majorVersion": "React 19",
+  "status": "Authored reference draft",
+  "summary": "Syntax extension for expressing React element trees.",
+  "syntax": "const element = <h1>Hello</h1>;",
+  "lang": "tsx",
+  "parameters": "Tags, props, children and JavaScript expressions in braces.",
+  "returns": "React element descriptions, not immediate DOM nodes.",
+  "minimalExample": "const title = <h1>Learn</h1>;",
+  "productionExample": "function Task({title}:{title:string}) { return <article><h2>{title}</h2><button type=\"button\">Open</button></article>; }",
+  "commonMistakes": [
+    "Treating JSX as raw HTML or inserting untrusted HTML."
+  ],
+  "securityPerformanceNotes": [
+    "React escapes text by default; avoid unsafe HTML injection."
+  ],
+  "relatedLessonIds": [
+    "06.01.01"
+  ],
+  "canonicalUrl": "https://react.dev/learn/writing-markup-with-jsx"
+},
+{
+  "id": "react-component",
+  "matchCategories": [
+    "React"
+  ],
+  "matchTitles": [
+    "Component"
+  ],
+  "heading": "React: Component",
+  "category": "React",
+  "majorVersion": "React 19",
+  "status": "Authored reference draft",
+  "summary": "A React component describes UI based on props and state.",
+  "syntax": "function Task() { return <p>Task</p>; }",
+  "lang": "tsx",
+  "parameters": "Props object; hooks follow React rules.",
+  "returns": "React node returned for rendering.",
+  "minimalExample": "function Greeting(){return <h1>Hello</h1>;}",
+  "productionExample": "function TaskCard({title,done}:{title:string;done:boolean}){return <article><h2>{title}</h2><p>{done?'Completed':'Open'}</p></article>;}",
+  "commonMistakes": [
+    "Calling a component directly as a normal function or mutating during render."
+  ],
+  "securityPerformanceNotes": [
+    "Keep render pure; isolate side effects and state ownership."
+  ],
+  "relatedLessonIds": [
+    "06.01.02"
+  ],
+  "canonicalUrl": "https://react.dev/learn/your-first-component"
+},
+{
+  "id": "react-props",
+  "matchCategories": [
+    "React"
+  ],
+  "matchTitles": [
+    "props"
+  ],
+  "heading": "React: props",
+  "category": "React",
+  "majorVersion": "React 19",
+  "status": "Authored reference draft",
+  "summary": "Read-only inputs passed from a parent to a component.",
+  "syntax": "<Task title=\"Read\" />",
+  "lang": "tsx",
+  "parameters": "Named props; component reads the props object.",
+  "returns": "Component receives a snapshot of inputs.",
+  "minimalExample": "function Title({text}:{text:string}){return <h1>{text}</h1>;}",
+  "productionExample": "function TaskRow({task,onOpen}:{task:{id:string;title:string};onOpen:(id:string)=>void}){return <button onClick={()=>onOpen(task.id)}>{task.title}</button>;}",
+  "commonMistakes": [
+    "Mutating a prop or copying it to state without a reason."
+  ],
+  "securityPerformanceNotes": [
+    "Pass only needed data; do not expose secrets to client component props."
+  ],
+  "relatedLessonIds": [
+    "06.01.02"
+  ],
+  "canonicalUrl": "https://react.dev/learn/passing-props-to-a-component"
+},
+{
+  "id": "react-children",
+  "matchCategories": [
+    "React"
+  ],
+  "matchTitles": [
+    "children"
+  ],
+  "heading": "React: children",
+  "category": "React",
+  "majorVersion": "React 19",
+  "status": "Authored reference draft",
+  "summary": "The children prop carries nested JSX/content supplied by the parent.",
+  "syntax": "<Panel><Content /></Panel>",
+  "lang": "tsx",
+  "parameters": "ReactNode children; may be empty or multiple nodes.",
+  "returns": "Component receives nested content as props.children.",
+  "minimalExample": "function Box({children}:{children:React.ReactNode}){return <div>{children}</div>;}",
+  "productionExample": "function Section({title,children}:{title:string;children:React.ReactNode}){return <section><h2>{title}</h2>{children}</section>;}",
+  "commonMistakes": [
+    "Assuming children is always one element or a normal array."
+  ],
+  "securityPerformanceNotes": [
+    "Use composition without forcing unnecessary wrappers or cloning arbitrary children."
+  ],
+  "relatedLessonIds": [
+    "06.01.03"
+  ],
+  "canonicalUrl": "https://react.dev/learn/passing-props-to-a-component#passing-jsx-as-children"
+},
+{
+  "id": "react-uselayouteffect",
+  "matchCategories": [
+    "React"
+  ],
+  "matchTitles": [
+    "useLayoutEffect"
+  ],
+  "heading": "React: useLayoutEffect",
+  "category": "React",
+  "majorVersion": "React 19",
+  "status": "Authored reference draft",
+  "summary": "Runs layout-related effects before browser repaint after DOM updates.",
+  "syntax": "useLayoutEffect(setup, deps)",
+  "lang": "tsx",
+  "parameters": "Setup, optional cleanup and dependency list.",
+  "returns": "Undefined; setup/cleanup follow effect lifecycle.",
+  "minimalExample": "useLayoutEffect(()=>{setWidth(ref.current?.offsetWidth??0);},[]);",
+  "productionExample": "useLayoutEffect(()=>{const node=ref.current;if(!node)return;const update=()=>setWidth(node.getBoundingClientRect().width);update();const observer=new ResizeObserver(update);observer.observe(node);return()=>observer.disconnect();},[]);",
+  "commonMistakes": [
+    "Using it for routine data fetching or omitting cleanup."
+  ],
+  "securityPerformanceNotes": [
+    "Prefer useEffect unless pre-paint measurement is necessary; server has no layout."
+  ],
+  "relatedLessonIds": [
+    "06.03.06"
+  ],
+  "canonicalUrl": "https://react.dev/reference/react/useLayoutEffect"
+},
+{
+  "id": "react-error-boundaries",
+  "matchCategories": [
+    "React"
+  ],
+  "matchTitles": [
+    "Error boundaries"
+  ],
+  "heading": "React: Error boundaries",
+  "category": "React",
+  "majorVersion": "React 19",
+  "status": "Authored reference draft",
+  "summary": "A React error boundary catches rendering failures in its descendant tree.",
+  "syntax": "class Boundary extends React.Component { static getDerivedStateFromError() { … } }",
+  "lang": "tsx",
+  "parameters": "Child tree, fallback state and optional logging lifecycle.",
+  "returns": "Fallback UI after a caught descendant render error.",
+  "minimalExample": "class Boundary extends React.Component { state={failed:false};static getDerivedStateFromError(){return {failed:true};}render(){return this.state.failed?<p>Unavailable</p>:this.props.children;} }",
+  "productionExample": "class Boundary extends React.Component<{children:React.ReactNode},{failed:boolean}>{state={failed:false};static getDerivedStateFromError(){return {failed:true};}componentDidCatch(error:Error){reportSafeError(error);}render(){return this.state.failed?<p role=\"alert\">This panel is unavailable.</p>:this.props.children;}}",
+  "commonMistakes": [
+    "Expecting boundaries to catch all event-handler or asynchronous failures."
+  ],
+  "securityPerformanceNotes": [
+    "Design meaningful recovery and sanitize diagnostics; do not expose stack traces to users."
+  ],
+  "relatedLessonIds": [
+    "06.04.07"
+  ],
+  "canonicalUrl": "https://react.dev/reference/react/Component#catching-rendering-errors-with-an-error-boundary"
+},
+{
+  "id": "react-context",
+  "matchCategories": [
+    "React"
+  ],
+  "matchTitles": [
+    "Context"
+  ],
+  "heading": "React: Context",
+  "category": "React",
+  "majorVersion": "React 19",
+  "status": "Authored reference draft",
+  "summary": "Shares a value with descendants without threading props through every intermediate component.",
+  "syntax": "const Theme = createContext(defaultValue);",
+  "lang": "tsx",
+  "parameters": "Default value; provider supplies value; consumers call useContext.",
+  "returns": "Context object and closest-provider value.",
+  "minimalExample": "const Theme=createContext('light');",
+  "productionExample": "const Theme=createContext<'light'|'dark'>('light');\nfunction App(){return <Theme value=\"dark\"><Toolbar/></Theme>;}\nfunction Toolbar(){return <span>{useContext(Theme)}</span>;}",
+  "commonMistakes": [
+    "Using context as server authorization or creating provider objects unnecessarily."
+  ],
+  "securityPerformanceNotes": [
+    "Split unrelated frequently changing contexts and avoid sensitive client values."
+  ],
+  "relatedLessonIds": [
+    "06.04.01"
+  ],
+  "canonicalUrl": "https://react.dev/reference/react/createContext"
+},
+{
+  "id": "react-custom-hooks",
+  "matchCategories": [
+    "React"
+  ],
+  "matchTitles": [
+    "Custom hooks"
+  ],
+  "heading": "React: Custom hooks",
+  "category": "React",
+  "majorVersion": "React 19",
+  "status": "Authored reference draft",
+  "summary": "A custom Hook composes reusable stateful logic using React Hooks.",
+  "syntax": "function useOnline() { … }",
+  "lang": "tsx",
+  "parameters": "Arguments and return values defined by the hook.",
+  "returns": "Reusable logic; each call has its own hook state unless external store is shared.",
+  "minimalExample": "function useFlag(){const [flag,setFlag]=useState(false);return [flag,setFlag] as const;}",
+  "productionExample": "function useDocumentTitle(title:string){useEffect(()=>{const previous=document.title;document.title=title;return()=>{document.title=previous;};},[title]);}",
+  "commonMistakes": [
+    "Calling hooks conditionally or assuming state is shared between hook calls."
+  ],
+  "securityPerformanceNotes": [
+    "Design stable contracts and clean up subscriptions/resources."
+  ],
+  "relatedLessonIds": [
+    "06.04.02"
+  ],
+  "canonicalUrl": "https://react.dev/learn/reusing-logic-with-custom-hooks"
+},
+{
+  "id": "react-react-memo",
+  "matchCategories": [
+    "React"
+  ],
+  "matchTitles": [
+    "React.memo"
+  ],
+  "heading": "React: React.memo",
+  "category": "React",
+  "majorVersion": "React 19",
+  "status": "Authored reference draft",
+  "summary": "Memoizes a component to potentially skip rerendering when props are unchanged.",
+  "syntax": "const MemoTask = memo(Task);",
+  "lang": "tsx",
+  "parameters": "Component and optional equality comparator.",
+  "returns": "Memoized component; state/context updates can still rerender it.",
+  "minimalExample": "const Row = memo(function Row({title}:{title:string}){return <li>{title}</li>;});",
+  "productionExample": "const TaskRow=memo(function TaskRow({id,title,onOpen}:{id:string;title:string;onOpen:(id:string)=>void}){return <button onClick={()=>onOpen(id)}>{title}</button>;});",
+  "commonMistakes": [
+    "Using custom equality that ignores function props or assuming memo guarantees no rerender."
+  ],
+  "securityPerformanceNotes": [
+    "Profile real bottlenecks; do not depend on memo for correctness."
+  ],
+  "relatedLessonIds": [
+    "06.05.05"
+  ],
+  "canonicalUrl": "https://react.dev/reference/react/memo"
+},
+{
+  "id": "next.js-error-tsx",
+  "matchCategories": [
+    "Next.js"
+  ],
+  "matchTitles": [
+    "error.tsx"
+  ],
+  "heading": "Next.js: error.tsx",
+  "category": "Next.js",
+  "majorVersion": "Next.js 16 App Router",
+  "status": "Authored reference draft",
+  "summary": "Defines a client error boundary for a route segment.",
+  "syntax": "'use client'; export default function Error({error,reset}) { … }",
+  "lang": "tsx",
+  "parameters": "Error and reset callback supplied by the framework.",
+  "returns": "Fallback UI with an optional recovery action.",
+  "minimalExample": "'use client';\nexport default function Error({reset}:{reset:()=>void}){return <button onClick={reset}>Retry</button>;}",
+  "productionExample": "'use client';\nexport default function Error({error,reset}:{error:Error & {digest?:string};reset:()=>void}){return <section role=\"alert\"><h2>Unable to load tasks</h2><button onClick={reset}>Try again</button></section>;}",
+  "commonMistakes": [
+    "Expecting the boundary to catch errors in its own segment layout."
+  ],
+  "securityPerformanceNotes": [
+    "Do not render private exception messages; use sanitized error correlation and test recovery."
+  ],
+  "relatedLessonIds": [
+    "07.01.04"
+  ],
+  "canonicalUrl": "https://nextjs.org/docs/app/api-reference/file-conventions/error"
+},
+{
+  "id": "next.js-not-found-tsx",
+  "matchCategories": [
+    "Next.js"
+  ],
+  "matchTitles": [
+    "not-found.tsx"
+  ],
+  "heading": "Next.js: not-found.tsx",
+  "category": "Next.js",
+  "majorVersion": "Next.js 16 App Router",
+  "status": "Authored reference draft",
+  "summary": "Provides fallback UI for notFound() in a route segment.",
+  "syntax": "export default function NotFound() { … }",
+  "lang": "tsx",
+  "parameters": "Default component; no required route props.",
+  "returns": "Not-found UI; response status can differ for streamed responses.",
+  "minimalExample": "export default function NotFound(){return <h1>Not found</h1>;}",
+  "productionExample": "export default function NotFound(){return <main><h1>Task not found</h1><p>It may be unavailable.</p><Link href=\"/tasks\">Return to tasks</Link></main>;}",
+  "commonMistakes": [
+    "Assuming all streamed not-found responses necessarily have HTTP 404."
+  ],
+  "securityPerformanceNotes": [
+    "Avoid revealing whether inaccessible private records exist; test indexing and navigation."
+  ],
+  "relatedLessonIds": [
+    "07.01.05"
+  ],
+  "canonicalUrl": "https://nextjs.org/docs/app/api-reference/file-conventions/not-found"
+},
+{
+  "id": "next.js-route-groups",
+  "matchCategories": [
+    "Next.js"
+  ],
+  "matchTitles": [
+    "route groups"
+  ],
+  "heading": "Next.js: route groups",
+  "category": "Next.js",
+  "majorVersion": "Next.js 16 App Router",
+  "status": "Authored reference draft",
+  "summary": "Organizes routes into parenthesized folders omitted from public URL segments.",
+  "syntax": "app/(marketing)/about/page.tsx",
+  "lang": "text",
+  "parameters": "Folder name enclosed in parentheses.",
+  "returns": "Route /about with the associated group layout.",
+  "minimalExample": "app/(public)/about/page.tsx  → /about",
+  "productionExample": "app/(public)/pricing/page.tsx  → /pricing\napp/(dashboard)/tasks/page.tsx → /tasks",
+  "commonMistakes": [
+    "Defining the same URL in different route groups."
+  ],
+  "securityPerformanceNotes": [
+    "Group organization is not an authentication boundary; multiple root layouts can cause full reloads."
+  ],
+  "relatedLessonIds": [
+    "07.01.01"
+  ],
+  "canonicalUrl": "https://nextjs.org/docs/app/api-reference/file-conventions/route-groups"
+},
+{
+  "id": "next.js-generatemetadata",
+  "matchCategories": [
+    "Next.js"
+  ],
+  "matchTitles": [
+    "generateMetadata"
+  ],
+  "heading": "Next.js: generateMetadata",
+  "category": "Next.js",
+  "majorVersion": "Next.js 16 App Router",
+  "status": "Authored reference draft",
+  "summary": "Builds route metadata dynamically on the server.",
+  "syntax": "export async function generateMetadata(props): Promise<Metadata> { … }",
+  "lang": "tsx",
+  "parameters": "Route props including asynchronous params and optional parent metadata.",
+  "returns": "Metadata object merged according to route hierarchy.",
+  "minimalExample": "export function generateMetadata(){return {title:'Tasks'};}",
+  "productionExample": "export async function generateMetadata({params}:{params:Promise<{id:string}>}):Promise<Metadata>{const {id}=await params;const post=await getPublicPost(id);return post?{title:post.title}:{title:'Not found',robots:{index:false}};}",
+  "commonMistakes": [
+    "Fetching private data to populate public metadata."
+  ],
+  "securityPerformanceNotes": [
+    "Use safe public fields, canonical URLs and explicit noindex for unavailable pages."
+  ],
+  "relatedLessonIds": [
+    "07.04.01"
+  ],
+  "canonicalUrl": "https://nextjs.org/docs/app/api-reference/functions/generate-metadata"
+},
+{
+  "id": "next.js-generatestaticparams",
+  "matchCategories": [
+    "Next.js"
+  ],
+  "matchTitles": [
+    "generateStaticParams"
+  ],
+  "heading": "Next.js: generateStaticParams",
+  "category": "Next.js",
+  "majorVersion": "Next.js 16 App Router",
+  "status": "Authored reference draft",
+  "summary": "Enumerates dynamic segment params for prerendering.",
+  "syntax": "export async function generateStaticParams() { return [{id:'a'}]; }",
+  "lang": "tsx",
+  "parameters": "Optional parent segment params for nested generation.",
+  "returns": "Array of parameter objects, possibly empty.",
+  "minimalExample": "export function generateStaticParams(){return [{slug:'intro'}];}",
+  "productionExample": "export async function generateStaticParams(){const posts=await listPublishedPosts();return posts.map(post=>({slug:post.slug}));}",
+  "commonMistakes": [
+    "Including private identifiers in public static routes or assuming the function reruns on every revalidation."
+  ],
+  "securityPerformanceNotes": [
+    "Bound generation work and use published allowlists."
+  ],
+  "relatedLessonIds": [
+    "07.03.06"
+  ],
+  "canonicalUrl": "https://nextjs.org/docs/app/api-reference/functions/generate-static-params"
+},
+{
+  "id": "next.js-server-components",
+  "matchCategories": [
+    "Next.js"
+  ],
+  "matchTitles": [
+    "Server Components"
+  ],
+  "heading": "Next.js: Server Components",
+  "category": "Next.js",
+  "majorVersion": "Next.js 16 App Router",
+  "status": "Authored reference draft",
+  "summary": "Render React components on the server without sending their implementation to the browser.",
+  "syntax": "export default async function Page() { … }",
+  "lang": "tsx",
+  "parameters": "Serializable boundary values where client components are involved.",
+  "returns": "React Server Component payload and resulting UI.",
+  "minimalExample": "export default async function Page(){return <p>{await loadPublicTitle()}</p>;}",
+  "productionExample": "import 'server-only';\nexport default async function Page(){const user=await requireUser();const tasks=await listAuthorizedTasks(user.id);return <TaskList tasks={tasks.map(({id,title})=>({id,title}))}/>;}",
+  "commonMistakes": [
+    "Using browser event handlers in a Server Component or passing secrets to client props."
+  ],
+  "securityPerformanceNotes": [
+    "Authorize at data access; never rely on server rendering alone to prevent client disclosure."
+  ],
+  "relatedLessonIds": [
+    "07.02.01"
+  ],
+  "canonicalUrl": "https://nextjs.org/docs/app/getting-started/server-and-client-components"
+},
+{
+  "id": "next.js-client-components",
+  "matchCategories": [
+    "Next.js"
+  ],
+  "matchTitles": [
+    "Client Components"
+  ],
+  "heading": "Next.js: Client Components",
+  "category": "Next.js",
+  "majorVersion": "Next.js 16 App Router",
+  "status": "Authored reference draft",
+  "summary": "Marks a client-module boundary for interactivity and browser APIs.",
+  "syntax": "'use client';",
+  "lang": "tsx",
+  "parameters": "Directive at module top; props passed from server must be serializable under React's supported rules.",
+  "returns": "Client-interactive React component; initial UI may also be prerendered.",
+  "minimalExample": "'use client';\nexport function Counter(){const [n,setN]=useState(0);return <button onClick={()=>setN(n+1)}>{n}</button>;}",
+  "productionExample": "'use client';\nexport function TaskFilter({initial}:{initial:string}){const [query,setQuery]=useState(initial);return <input aria-label=\"Filter tasks\" value={query} onChange={e=>setQuery(e.target.value)}/>;}",
+  "commonMistakes": [
+    "Marking every component as client or importing server secrets."
+  ],
+  "securityPerformanceNotes": [
+    "Keep client boundaries narrow; browser-only globals belong in appropriate lifecycle/event code."
+  ],
+  "relatedLessonIds": [
+    "07.02.01"
+  ],
+  "canonicalUrl": "https://nextjs.org/docs/app/api-reference/directives/use-client"
+},
+{
+  "id": "next.js-server-actions",
+  "matchCategories": [
+    "Next.js"
+  ],
+  "matchTitles": [
+    "Server Actions"
+  ],
+  "heading": "Next.js: Server Actions",
+  "category": "Next.js",
+  "majorVersion": "Next.js 16 App Router",
+  "status": "Authored reference draft",
+  "summary": "Server Functions used as actions execute server-side mutations through framework requests.",
+  "syntax": "'use server'; export async function save(formData:FormData){…}",
+  "lang": "tsx",
+  "parameters": "Serializable arguments or FormData; trusted identity must be obtained on the server.",
+  "returns": "Action return value or redirect/error control flow.",
+  "minimalExample": "'use server';\nexport async function save(formData:FormData){const user=await requireUser();await saveDraftForUser(user.id,validateTitle(formData.get('title')));}",
+  "productionExample": "'use server';\nexport async function save(formData:FormData){const user=await requireUser();const title=validateTitle(formData.get('title'));await createTaskForUser(user.id,title);revalidatePath('/tasks');}",
+  "commonMistakes": [
+    "Treating a Server Action as a private function inaccessible to malicious requests."
+  ],
+  "securityPerformanceNotes": [
+    "Authenticate, authorize and validate on every call; keep mutation retries and side effects safe."
+  ],
+  "relatedLessonIds": [
+    "07.02.04"
+  ],
+  "canonicalUrl": "https://nextjs.org/docs/app/getting-started/updating-data"
+},
+{
+  "id": "next.js-use-cache",
+  "matchCategories": [
+    "Next.js"
+  ],
+  "matchTitles": [
+    "use cache"
+  ],
+  "heading": "Next.js: use cache",
+  "category": "Next.js",
+  "majorVersion": "Next.js 16 App Router",
+  "status": "Authored reference draft",
+  "summary": "Opt-in directive for caching supported function/component results with Cache Components enabled.",
+  "syntax": "async function getCatalog(){'use cache';…}",
+  "lang": "tsx",
+  "parameters": "Serializable inputs and supported captured values form cache identity; enable cacheComponents.",
+  "returns": "Cached function/component result according to cache policy.",
+  "minimalExample": "async function getCatalog(){'use cache';return loadPublicCatalog();}",
+  "productionExample": "async function getPublicPosts(){'use cache';cacheTag('public-posts');return listPublishedPosts();}\n// next.config.ts: cacheComponents: true",
+  "commonMistakes": [
+    "Reading request cookies inside a normal shared cache scope or assuming all cached content is safe."
+  ],
+  "securityPerformanceNotes": [
+    "Cache only public or correctly partitioned data; validate invalidation and deployment cache behavior."
+  ],
+  "relatedLessonIds": [
+    "07.03.03"
+  ],
+  "canonicalUrl": "https://nextjs.org/docs/app/api-reference/directives/use-cache"
+},
+{
+  "id": "next.js-cachetag",
+  "matchCategories": [
+    "Next.js"
+  ],
+  "matchTitles": [
+    "cacheTag"
+  ],
+  "heading": "Next.js: cacheTag",
+  "category": "Next.js",
+  "majorVersion": "Next.js 16 App Router",
+  "status": "Authored reference draft",
+  "summary": "Associates a cached result with one or more invalidation labels.",
+  "syntax": "cacheTag('public-posts')",
+  "lang": "tsx",
+  "parameters": "Tag strings within supported Cache Components scopes.",
+  "returns": "Labels cache entries for later revalidation.",
+  "minimalExample": "async function load(){'use cache';cacheTag('posts');return listPublishedPosts();}",
+  "productionExample": "async function loadCategory(slug:string){'use cache';cacheTag('catalog','catalog-'+slug);return loadPublicCategory(slug);}",
+  "commonMistakes": [
+    "Expecting tag registration itself to invalidate anything."
+  ],
+  "securityPerformanceNotes": [
+    "Use bounded trusted tag identifiers; do not embed secrets or arbitrary unbounded user data."
+  ],
+  "relatedLessonIds": [
+    "07.03.03"
+  ],
+  "canonicalUrl": "https://nextjs.org/docs/app/api-reference/functions/cacheTag"
+},
+{
+  "id": "next.js-revalidatetag",
+  "matchCategories": [
+    "Next.js"
+  ],
+  "matchTitles": [
+    "revalidateTag"
+  ],
+  "heading": "Next.js: revalidateTag",
+  "category": "Next.js",
+  "majorVersion": "Next.js 16 App Router",
+  "status": "Authored reference draft",
+  "summary": "Marks tagged cached data stale or expires it according to the selected profile.",
+  "syntax": "revalidateTag('public-posts','max')",
+  "lang": "tsx",
+  "parameters": "Tag and cache-life profile; called from supported server contexts.",
+  "returns": "Invalidation signal; max uses stale-while-revalidate behavior.",
+  "minimalExample": "revalidateTag('posts','max');",
+  "productionExample": "'use server';\nexport async function publish(id:string){await requireEditor();await publishAuthorizedPost(id);revalidateTag('public-posts','max');}",
+  "commonMistakes": [
+    "Expecting max to synchronously guarantee read-your-writes."
+  ],
+  "securityPerformanceNotes": [
+    "For immediate Server Action read-your-writes consider updateTag; authorize before invalidation."
+  ],
+  "relatedLessonIds": [
+    "07.03.04"
+  ],
+  "canonicalUrl": "https://nextjs.org/docs/app/api-reference/functions/revalidateTag"
+},
+{
+  "id": "next.js-redirect",
+  "matchCategories": [
+    "Next.js"
+  ],
+  "matchTitles": [
+    "redirect"
+  ],
+  "heading": "Next.js: redirect",
+  "category": "Next.js",
+  "majorVersion": "Next.js 16 App Router",
+  "status": "Authored reference draft",
+  "summary": "Stops the current rendering or action flow and redirects to a destination.",
+  "syntax": "redirect('/login')",
+  "lang": "tsx",
+  "parameters": "Destination and optional push/replace navigation type.",
+  "returns": "Never returns normally; framework handles a thrown redirect signal.",
+  "minimalExample": "if (!user) redirect('/login');",
+  "productionExample": "const user=await getVerifiedUser();if(!user)redirect('/login');\nreturn <Dashboard userId={user.id}/>;",
+  "commonMistakes": [
+    "Catching redirect in a broad try/catch or accepting an unvalidated external destination."
+  ],
+  "securityPerformanceNotes": [
+    "Use fixed or allowlisted destinations; redirect is not a substitute for access checks."
+  ],
+  "relatedLessonIds": [
+    "07.01.05"
+  ],
+  "canonicalUrl": "https://nextjs.org/docs/app/api-reference/functions/redirect"
+},
+{
+  "id": "next.js-notfound",
+  "matchCategories": [
+    "Next.js"
+  ],
+  "matchTitles": [
+    "notFound"
+  ],
+  "heading": "Next.js: notFound",
+  "category": "Next.js",
+  "majorVersion": "Next.js 16 App Router",
+  "status": "Authored reference draft",
+  "summary": "Terminates the route segment with framework not-found handling.",
+  "syntax": "notFound()",
+  "lang": "tsx",
+  "parameters": "No arguments.",
+  "returns": "Never returns; activates not-found UI and noindex behavior.",
+  "minimalExample": "if (!post) notFound();",
+  "productionExample": "const task=await findTaskForCurrentUser(id);if(!task)notFound();\nreturn <h1>{task.title}</h1>;",
+  "commonMistakes": [
+    "Catching the notFound signal and converting it into unrelated errors."
+  ],
+  "securityPerformanceNotes": [
+    "Avoid distinguishing unauthorized and missing records where that would reveal private existence."
+  ],
+  "relatedLessonIds": [
+    "07.01.05"
+  ],
+  "canonicalUrl": "https://nextjs.org/docs/app/api-reference/functions/not-found"
+},
+{
+  "id": "next.js-cookies",
+  "matchCategories": [
+    "Next.js"
+  ],
+  "matchTitles": [
+    "cookies"
+  ],
+  "heading": "Next.js: cookies",
+  "category": "Next.js",
+  "majorVersion": "Next.js 16 App Router",
+  "status": "Authored reference draft",
+  "summary": "Reads incoming cookies; supported server mutation contexts can set outgoing cookies.",
+  "syntax": "const store = await cookies();",
+  "lang": "tsx",
+  "parameters": "No arguments; methods include get, getAll, set and delete in permitted contexts.",
+  "returns": "Promise resolving to cookie store.",
+  "minimalExample": "const theme=(await cookies()).get('theme')?.value;",
+  "productionExample": "'use server';\nexport async function setTheme(theme:unknown){if(theme!=='light'&&theme!=='dark')throw new Error('Invalid theme');(await cookies()).set('theme',theme,{sameSite:'lax',secure:true,path:'/'});}",
+  "commonMistakes": [
+    "Trying to set cookies during Server Component rendering or treating a cookie as verified identity."
+  ],
+  "securityPerformanceNotes": [
+    "Use appropriate HttpOnly/Secure/SameSite attributes for session cookies and verify the session separately."
+  ],
+  "relatedLessonIds": [
+    "07.02.03"
+  ],
+  "canonicalUrl": "https://nextjs.org/docs/app/api-reference/functions/cookies"
+},
+{
+  "id": "next.js-headers",
+  "matchCategories": [
+    "Next.js"
+  ],
+  "matchTitles": [
+    "headers"
+  ],
+  "heading": "Next.js: headers",
+  "category": "Next.js",
+  "majorVersion": "Next.js 16 App Router",
+  "status": "Authored reference draft",
+  "summary": "Reads the incoming HTTP request headers in a server context.",
+  "syntax": "const h = await headers();",
+  "lang": "tsx",
+  "parameters": "No arguments; read methods follow Headers API.",
+  "returns": "Promise of read-only request headers.",
+  "minimalExample": "const language=(await headers()).get('accept-language');",
+  "productionExample": "const h=await headers();const raw=h.get('accept-language')??'';\nconst locale=chooseSupportedLocale(raw.slice(0,256));",
+  "commonMistakes": [
+    "Trusting arbitrary forwarded headers or attempting to mutate read-only headers."
+  ],
+  "securityPerformanceNotes": [
+    "Validate forwarded metadata against trusted proxy configuration; do not expose authorization headers."
+  ],
+  "relatedLessonIds": [
+    "07.05.02"
+  ],
+  "canonicalUrl": "https://nextjs.org/docs/app/api-reference/functions/headers"
+},
+{
+  "id": "next.js-image",
+  "matchCategories": [
+    "Next.js"
+  ],
+  "matchTitles": [
+    "Image"
+  ],
+  "heading": "Next.js: Image",
+  "category": "Next.js",
+  "majorVersion": "Next.js 16 App Router",
+  "status": "Authored reference draft",
+  "summary": "Framework Image component supports image optimization and sizing.",
+  "syntax": "<Image src=\"/photo.jpg\" alt=\"…\" width={640} height={480}/>",
+  "lang": "tsx",
+  "parameters": "src, alt, dimensions or fill, sizes and other image options.",
+  "returns": "Image element with optimized resource selection where configured.",
+  "minimalExample": "<Image src=\"/logo.png\" alt=\"Academy\" width={128} height={128}/>",
+  "productionExample": "<Image src=\"/diagram.png\" alt=\"Browser to server request flow\" width={800} height={450} sizes=\"(max-width: 800px) 100vw, 800px\" style={{width:'100%',height:'auto'}}/>",
+  "commonMistakes": [
+    "Using fill without a positioned/sized parent or allowing arbitrary remote hosts."
+  ],
+  "securityPerformanceNotes": [
+    "Restrict remote patterns, preserve aspect ratio, and prioritize genuine LCP assets only."
+  ],
+  "relatedLessonIds": [
+    "07.04.05"
+  ],
+  "canonicalUrl": "https://nextjs.org/docs/app/api-reference/components/image"
+},
+{
+  "id": "next.js-fetch-caching",
+  "matchCategories": [
+    "Next.js"
+  ],
+  "matchTitles": [
+    "fetch caching"
+  ],
+  "heading": "Next.js: fetch caching",
+  "category": "Next.js",
+  "majorVersion": "Next.js 16 App Router",
+  "status": "Authored reference draft",
+  "summary": "Next.js server fetch exposes explicit persistent cache and revalidation options.",
+  "syntax": "fetch(url,{cache:'no-store'})",
+  "lang": "ts",
+  "parameters": "URL and fetch options including cache or next.revalidate/tags in supported contexts.",
+  "returns": "Promise<Response>; cache behavior depends on options and route context.",
+  "minimalExample": "const res=await fetch(url,{cache:'no-store'});",
+  "productionExample": "const res=await fetch('https://api.example.org/public/catalog',{next:{revalidate:300,tags:['catalog']}});if(!res.ok)throw new Error('Catalog unavailable');",
+  "commonMistakes": [
+    "Assuming all fetch calls are persistently cached by default or mixing conflicting options."
+  ],
+  "securityPerformanceNotes": [
+    "Use no-store for sensitive user-specific requests; validate data and configure deadlines."
+  ],
+  "relatedLessonIds": [
+    "07.03.01"
+  ],
+  "canonicalUrl": "https://nextjs.org/docs/app/api-reference/functions/fetch"
+},
+{
+  "id": "next.js-next-js-proxy",
+  "matchCategories": [
+    "Next.js"
+  ],
+  "matchTitles": [
+    "Next.js Proxy"
+  ],
+  "heading": "Next.js: Next.js Proxy",
+  "category": "Next.js",
+  "majorVersion": "Next.js 16 App Router",
+  "status": "Authored reference draft",
+  "summary": "Next.js 16 proxy.ts runs before matched requests and can redirect, rewrite or adjust headers.",
+  "syntax": "export function proxy(request:NextRequest){return NextResponse.next();}",
+  "lang": "ts",
+  "parameters": "NextRequest and optional matcher configuration.",
+  "returns": "NextResponse or supported response/continuation.",
+  "minimalExample": "export function proxy(){return NextResponse.next();}",
+  "productionExample": "export function proxy(req:NextRequest){if(!req.cookies.has('session'))return NextResponse.redirect(new URL('/login',req.url));return NextResponse.next();}\nexport const config={matcher:['/dashboard/:path*']};",
+  "commonMistakes": [
+    "Using Proxy as the sole authorization layer or performing slow data queries there."
+  ],
+  "securityPerformanceNotes": [
+    "Cookie presence is only an optimistic signal; verify identity and permissions at the data boundary."
+  ],
+  "relatedLessonIds": [
+    "07.05.02"
+  ],
+  "canonicalUrl": "https://nextjs.org/docs/app/api-reference/file-conventions/proxy"
+},
+{
+  "id": "nestjs-fastifyadapter",
+  "matchCategories": [
+    "NestJS"
+  ],
+  "matchTitles": [
+    "FastifyAdapter"
+  ],
+  "heading": "NestJS: FastifyAdapter",
+  "category": "NestJS",
+  "majorVersion": "NestJS",
+  "status": "Authored reference draft",
+  "summary": "Runs Nest HTTP applications on Fastify rather than the default Express adapter.",
+  "syntax": "NestFactory.create<NestFastifyApplication>(AppModule,new FastifyAdapter())",
+  "lang": "ts",
+  "parameters": "Root module, FastifyAdapter and optional application options.",
+  "returns": "Promise of NestFastifyApplication.",
+  "minimalExample": "const app=await NestFactory.create<NestFastifyApplication>(AppModule,new FastifyAdapter());await app.listen(3000);",
+  "productionExample": "const app=await NestFactory.create<NestFastifyApplication>(AppModule,new FastifyAdapter());app.enableShutdownHooks();await app.listen(3000,'0.0.0.0');",
+  "commonMistakes": [
+    "Using Express-specific middleware or response APIs unchanged."
+  ],
+  "securityPerformanceNotes": [
+    "Configure trusted proxies, body limits and network exposure deliberately; measure realistic workloads."
+  ],
+  "relatedLessonIds": [
+    "11.01.06"
+  ],
+  "canonicalUrl": "https://docs.nestjs.com/techniques/performance"
+},
+{
+  "id": "nestjs-bullmodule",
+  "matchCategories": [
+    "NestJS"
+  ],
+  "matchTitles": [
+    "BullModule"
+  ],
+  "heading": "NestJS: BullModule",
+  "category": "NestJS",
+  "majorVersion": "NestJS",
+  "status": "Authored reference draft",
+  "summary": "Integrates BullMQ queues into Nest dependency injection.",
+  "syntax": "BullModule.registerQueue({name:'emails'})",
+  "lang": "ts",
+  "parameters": "Queue names and connection configured with @nestjs/bullmq.",
+  "returns": "Dynamic module with injectable queue provider.",
+  "minimalExample": "BullModule.registerQueue({name:'emails'});",
+  "productionExample": "@Module({imports:[BullModule.registerQueue({name:'emails'})],providers:[EmailProducer]})\nclass EmailModule{}\n// EmailProducer injects @InjectQueue('emails') Queue.",
+  "commonMistakes": [
+    "Mixing @nestjs/bull and @nestjs/bullmq processor APIs."
+  ],
+  "securityPerformanceNotes": [
+    "Keep queue Redis non-evicting and configure idempotent effects and graceful shutdown."
+  ],
+  "relatedLessonIds": [
+    "16.03.01"
+  ],
+  "canonicalUrl": "https://docs.nestjs.com/techniques/queues"
+},
+{
+  "id": "nestjs-websocketgateway",
+  "matchCategories": [
+    "NestJS"
+  ],
+  "matchTitles": [
+    "WebSocketGateway"
+  ],
+  "heading": "NestJS: WebSocketGateway",
+  "category": "NestJS",
+  "majorVersion": "NestJS",
+  "status": "Authored reference draft",
+  "summary": "Declares a Nest gateway with transport-specific socket handlers.",
+  "syntax": "@WebSocketGateway()",
+  "lang": "ts",
+  "parameters": "Gateway options and adapter; @SubscribeMessage binds event handlers.",
+  "returns": "Gateway provider handling socket events.",
+  "minimalExample": "@WebSocketGateway() class EventsGateway{}",
+  "productionExample": "@WebSocketGateway() class EventsGateway{\n @SubscribeMessage('subscribe') async subscribe(@ConnectedSocket() client:Socket,@MessageBody() body:unknown){const room=validateRoom(body);await assertRoomAccess(client,room);await client.join(room);}\n}",
+  "commonMistakes": [
+    "Assuming an authenticated handshake authorizes every channel or message."
+  ],
+  "securityPerformanceNotes": [
+    "Validate payloads, authorize each subscription/action and cap event rates."
+  ],
+  "relatedLessonIds": [
+    "11.04.03"
+  ],
+  "canonicalUrl": "https://docs.nestjs.com/websockets/gateways"
+},
+{
+  "id": "nestjs-terminus-health",
+  "matchCategories": [
+    "NestJS"
+  ],
+  "matchTitles": [
+    "Terminus health"
+  ],
+  "heading": "NestJS: Terminus health",
+  "category": "NestJS",
+  "majorVersion": "NestJS",
+  "status": "Authored reference draft",
+  "summary": "Collects health indicators for application probe endpoints.",
+  "syntax": "health.check([() => indicator.pingCheck('database')])",
+  "lang": "ts",
+  "parameters": "HealthCheckService, configured indicators and endpoint decorator.",
+  "returns": "Structured health status; failed readiness can return service unavailable.",
+  "minimalExample": "@Get('health') @HealthCheck() check(){return this.health.check([]);}",
+  "productionExample": "@Get('ready') @HealthCheck() ready(){return this.health.check([()=>this.db.pingCheck('database')]);}\n// Configure a supported database indicator provider.",
+  "commonMistakes": [
+    "Making liveness depend on every external dependency."
+  ],
+  "securityPerformanceNotes": [
+    "Separate liveness from readiness, bound probe latency and avoid leaking infrastructure details."
+  ],
+  "relatedLessonIds": [
+    "11.04.07"
+  ],
+  "canonicalUrl": "https://docs.nestjs.com/recipes/terminus"
+},
+{
+  "id": "postgresql-offset",
+  "matchCategories": [
+    "PostgreSQL"
+  ],
+  "matchTitles": [
+    "OFFSET"
+  ],
+  "heading": "PostgreSQL: OFFSET",
+  "category": "PostgreSQL",
+  "majorVersion": "PostgreSQL",
+  "status": "Authored reference draft",
+  "summary": "Skips a specified number of rows before returning results.",
+  "syntax": "OFFSET 20 LIMIT 10",
+  "lang": "sql",
+  "parameters": "Nonnegative offset and optional limit.",
+  "returns": "Window of ordered rows; skipped rows may still require work.",
+  "minimalExample": "SELECT id FROM tasks ORDER BY id OFFSET 20 LIMIT 10;",
+  "productionExample": "SELECT id,title FROM tasks WHERE workspace_id=$1 ORDER BY created_at DESC,id DESC OFFSET $2 LIMIT $3;",
+  "commonMistakes": [
+    "Omitting deterministic ordering or using deep offsets without measuring cost."
+  ],
+  "securityPerformanceNotes": [
+    "Cap offset/page size; prefer keyset pagination for large changing data sets."
+  ],
+  "relatedLessonIds": [
+    "12.04.04"
+  ],
+  "canonicalUrl": "https://www.postgresql.org/docs/current/queries-limit.html"
+},
+{
+  "id": "postgresql-explain-analyze",
+  "matchCategories": [
+    "PostgreSQL"
+  ],
+  "matchTitles": [
+    "EXPLAIN ANALYZE"
+  ],
+  "heading": "PostgreSQL: EXPLAIN ANALYZE",
+  "category": "PostgreSQL",
+  "majorVersion": "PostgreSQL",
+  "status": "Authored reference draft",
+  "summary": "Executes a statement and reports actual plan timing and row counts.",
+  "syntax": "EXPLAIN (ANALYZE, BUFFERS) SELECT …;",
+  "lang": "sql",
+  "parameters": "Statement and optional plan/reporting options.",
+  "returns": "Execution plan with estimates and actual observations.",
+  "minimalExample": "EXPLAIN SELECT id FROM tasks WHERE id=1;",
+  "productionExample": "EXPLAIN (ANALYZE, BUFFERS) SELECT id,title FROM tasks WHERE workspace_id=42 ORDER BY id LIMIT 50;",
+  "commonMistakes": [
+    "Running EXPLAIN ANALYZE on mutating statements in production as though it were read-only."
+  ],
+  "securityPerformanceNotes": [
+    "Use safe representative reads or isolated rollback-capable tests; external effects may not roll back."
+  ],
+  "relatedLessonIds": [
+    "12.04.01"
+  ],
+  "canonicalUrl": "https://www.postgresql.org/docs/current/using-explain.html"
+},
+{
+  "id": "postgresql-jsonb",
+  "matchCategories": [
+    "PostgreSQL"
+  ],
+  "matchTitles": [
+    "jsonb"
+  ],
+  "heading": "PostgreSQL: jsonb",
+  "category": "PostgreSQL",
+  "majorVersion": "PostgreSQL",
+  "status": "Authored reference draft",
+  "summary": "Stores parsed JSON with query/index support, unlike text-preserving json.",
+  "syntax": "metadata jsonb",
+  "lang": "sql",
+  "parameters": "Valid JSON input, operators such as ->> and @>.",
+  "returns": "Binary-format JSON value; object key order and duplicates are not preserved.",
+  "minimalExample": "SELECT '{\"done\":true}'::jsonb->>'done';",
+  "productionExample": "SELECT id FROM tasks WHERE workspace_id=$1 AND metadata @> '{\"priority\":\"high\"}'::jsonb;",
+  "commonMistakes": [
+    "Putting core relational constraints entirely into JSON documents."
+  ],
+  "securityPerformanceNotes": [
+    "Validate shape, keep frequently joined/required fields relational, and choose indexes for observed queries."
+  ],
+  "relatedLessonIds": [
+    "12.01.01"
+  ],
+  "canonicalUrl": "https://www.postgresql.org/docs/current/datatype-json.html"
+},
+{
+  "id": "postgresql-pg-trgm",
+  "matchCategories": [
+    "PostgreSQL"
+  ],
+  "matchTitles": [
+    "pg_trgm"
+  ],
+  "heading": "PostgreSQL: pg_trgm",
+  "category": "PostgreSQL",
+  "majorVersion": "PostgreSQL",
+  "status": "Authored reference draft",
+  "summary": "Extension for trigram similarity and supported text search indexing.",
+  "syntax": "CREATE EXTENSION IF NOT EXISTS pg_trgm;",
+  "lang": "sql",
+  "parameters": "Text arguments, similarity operators/functions and compatible index operator classes.",
+  "returns": "Similarity score or matching rows depending on operation.",
+  "minimalExample": "SELECT similarity('academy','academi');",
+  "productionExample": "CREATE INDEX task_title_trgm ON tasks USING gin(title gin_trgm_ops);\nSELECT id,title FROM tasks WHERE workspace_id=$1 AND title % $2 ORDER BY similarity(title,$2) DESC,id LIMIT 20;",
+  "commonMistakes": [
+    "Assuming trigram search handles all semantic or language needs."
+  ],
+  "securityPerformanceNotes": [
+    "Use tenant filters and capped results; measure index size, write overhead and threshold quality."
+  ],
+  "relatedLessonIds": [
+    "18.03.02"
+  ],
+  "canonicalUrl": "https://www.postgresql.org/docs/current/pgtrgm.html"
+},
+{
+  "id": "postgresql-gin-index",
+  "matchCategories": [
+    "PostgreSQL"
+  ],
+  "matchTitles": [
+    "GIN index"
+  ],
+  "heading": "PostgreSQL: GIN index",
+  "category": "PostgreSQL",
+  "majorVersion": "PostgreSQL",
+  "status": "Authored reference draft",
+  "summary": "Generalized inverted index supports suitable multi-valued/operator-class searches.",
+  "syntax": "CREATE INDEX name ON table USING gin(column);",
+  "lang": "sql",
+  "parameters": "Column/expression and compatible operator class.",
+  "returns": "Index usable by supported predicates.",
+  "minimalExample": "CREATE INDEX tasks_metadata_gin ON tasks USING gin(metadata);",
+  "productionExample": "CREATE INDEX tasks_metadata_path_gin ON tasks USING gin(metadata jsonb_path_ops);\n-- Compare representative containment queries with EXPLAIN.",
+  "commonMistakes": [
+    "Assuming every JSON operator uses every GIN operator class."
+  ],
+  "securityPerformanceNotes": [
+    "Account for write cost and index maintenance; select operator class from real predicates."
+  ],
+  "relatedLessonIds": [
+    "12.04.03"
+  ],
+  "canonicalUrl": "https://www.postgresql.org/docs/current/gin.html"
+},
+{
+  "id": "prisma-id",
+  "matchCategories": [
+    "Prisma"
+  ],
+  "matchTitles": [
+    "@id"
+  ],
+  "heading": "Prisma: @id",
+  "category": "Prisma",
+  "majorVersion": "Prisma ORM 7",
+  "status": "Authored reference draft",
+  "summary": "Marks a single model field as its primary identifier.",
+  "syntax": "id String @id",
+  "lang": "prisma",
+  "parameters": "Field attribute; composite identifiers use @@id.",
+  "returns": "Primary key mapping and generated unique selector.",
+  "minimalExample": "id Int @id @default(autoincrement())",
+  "productionExample": "model Task {\n id String @id @default(uuid())\n workspaceId String\n title String\n}",
+  "commonMistakes": [
+    "Using primary key possession as proof of tenant access."
+  ],
+  "securityPerformanceNotes": [
+    "Review key generation, migration effects and authorization separately."
+  ],
+  "relatedLessonIds": [
+    "13.01.02"
+  ],
+  "canonicalUrl": "https://www.prisma.io/docs/orm/v7/reference/prisma-schema-reference"
+},
+{
+  "id": "prisma-default",
+  "matchCategories": [
+    "Prisma"
+  ],
+  "matchTitles": [
+    "@default"
+  ],
+  "heading": "Prisma: @default",
+  "category": "Prisma",
+  "majorVersion": "Prisma ORM 7",
+  "status": "Authored reference draft",
+  "summary": "Declares a default value or supported default expression for a field.",
+  "syntax": "done Boolean @default(false)",
+  "lang": "prisma",
+  "parameters": "Literal or supported function; connector-specific constraints apply.",
+  "returns": "Default applied according to generated client/database semantics.",
+  "minimalExample": "done Boolean @default(false)",
+  "productionExample": "model Task {\n id String @id @default(uuid())\n createdAt DateTime @default(now())\n done Boolean @default(false)\n}",
+  "commonMistakes": [
+    "Assuming defaults validate all incoming values or backfill old data automatically."
+  ],
+  "securityPerformanceNotes": [
+    "Inspect database migration SQL and preserve explicit domain invariants."
+  ],
+  "relatedLessonIds": [
+    "13.01.02"
+  ],
+  "canonicalUrl": "https://www.prisma.io/docs/orm/v7/reference/prisma-schema-reference"
+},
+{
+  "id": "prisma-unique",
+  "matchCategories": [
+    "Prisma"
+  ],
+  "matchTitles": [
+    "@unique"
+  ],
+  "heading": "Prisma: @unique",
+  "category": "Prisma",
+  "majorVersion": "Prisma ORM 7",
+  "status": "Authored reference draft",
+  "summary": "Declares uniqueness for a field; compound uniqueness uses @@unique.",
+  "syntax": "email String @unique",
+  "lang": "prisma",
+  "parameters": "Field or compound uniqueness attributes.",
+  "returns": "Unique constraint and generated unique selector.",
+  "minimalExample": "slug String @unique",
+  "productionExample": "model Project {\n id String @id @default(uuid())\n workspaceId String\n slug String\n @@unique([workspaceId,slug])\n}",
+  "commonMistakes": [
+    "Using global uniqueness when business uniqueness is tenant-scoped."
+  ],
+  "securityPerformanceNotes": [
+    "Handle concurrent uniqueness violations and review null/collation semantics in the database."
+  ],
+  "relatedLessonIds": [
+    "13.01.02"
+  ],
+  "canonicalUrl": "https://www.prisma.io/docs/orm/v7/reference/prisma-schema-reference"
+},
+{
+  "id": "prisma-index",
+  "matchCategories": [
+    "Prisma"
+  ],
+  "matchTitles": [
+    "@@index"
+  ],
+  "heading": "Prisma: @@index",
+  "category": "Prisma",
+  "majorVersion": "Prisma ORM 7",
+  "status": "Authored reference draft",
+  "summary": "Declares a non-unique model index for supported database access paths.",
+  "syntax": "@@index([workspaceId, createdAt])",
+  "lang": "prisma",
+  "parameters": "Fields, order and supported index configuration.",
+  "returns": "Index declared in generated migration.",
+  "minimalExample": "@@index([workspaceId])",
+  "productionExample": "model Task {\n id String @id\n workspaceId String\n createdAt DateTime\n @@index([workspaceId,createdAt,id])\n}",
+  "commonMistakes": [
+    "Indexing every column without checking actual queries."
+  ],
+  "securityPerformanceNotes": [
+    "Review migration locking, storage and write costs; validate plans."
+  ],
+  "relatedLessonIds": [
+    "13.01.02"
+  ],
+  "canonicalUrl": "https://www.prisma.io/docs/orm/v7/reference/prisma-schema-reference"
+},
+{
+  "id": "prisma-enum",
+  "matchCategories": [
+    "Prisma"
+  ],
+  "matchTitles": [
+    "enum"
+  ],
+  "heading": "Prisma: enum",
+  "category": "Prisma",
+  "majorVersion": "Prisma ORM 7",
+  "status": "Authored reference draft",
+  "summary": "Defines a finite set of named model values.",
+  "syntax": "enum Status { OPEN DONE }",
+  "lang": "prisma",
+  "parameters": "Enum name and members; connector behavior varies.",
+  "returns": "Generated enum type and supported database representation.",
+  "minimalExample": "enum Status {\n OPEN\n DONE\n}",
+  "productionExample": "enum TaskStatus {\n OPEN\n IN_PROGRESS\n DONE\n}\nmodel Task {\n id String @id\n status TaskStatus @default(OPEN)\n}",
+  "commonMistakes": [
+    "Renaming/removing values without considering existing rows and deployments."
+  ],
+  "securityPerformanceNotes": [
+    "Plan compatibility migrations and validate external input before persistence."
+  ],
+  "relatedLessonIds": [
+    "13.01.02"
+  ],
+  "canonicalUrl": "https://www.prisma.io/docs/orm/v7/reference/prisma-schema-reference"
+},
+{
+  "id": "prisma-where",
+  "matchCategories": [
+    "Prisma"
+  ],
+  "matchTitles": [
+    "where"
+  ],
+  "heading": "Prisma: where",
+  "category": "Prisma",
+  "majorVersion": "Prisma ORM 7",
+  "status": "Authored reference draft",
+  "summary": "Filters model records with typed predicates.",
+  "syntax": "prisma.task.findMany({where:{done:false}})",
+  "lang": "ts",
+  "parameters": "Model-specific WhereInput with operators and relation filters.",
+  "returns": "Matching records for the surrounding query.",
+  "minimalExample": "await prisma.task.findMany({where:{done:false}});",
+  "productionExample": "await prisma.task.findMany({where:{workspaceId:authorizedWorkspaceId,done:false,title:{contains:validatedQuery}},take:50,select:{id:true,title:true}});",
+  "commonMistakes": [
+    "Spreading user filters over required tenant predicates."
+  ],
+  "securityPerformanceNotes": [
+    "Build allowlisted predicates server-side and bound search complexity."
+  ],
+  "relatedLessonIds": [
+    "13.02.01"
+  ],
+  "canonicalUrl": "https://www.prisma.io/docs/orm/v7/reference/prisma-client-reference"
+},
+{
+  "id": "prisma-orderby",
+  "matchCategories": [
+    "Prisma"
+  ],
+  "matchTitles": [
+    "orderBy"
+  ],
+  "heading": "Prisma: orderBy",
+  "category": "Prisma",
+  "majorVersion": "Prisma ORM 7",
+  "status": "Authored reference draft",
+  "summary": "Orders returned records using model fields and supported related expressions.",
+  "syntax": "orderBy: [{createdAt:'desc'},{id:'desc'}]",
+  "lang": "ts",
+  "parameters": "OrderBy input with ascending/descending choices.",
+  "returns": "Ordered query result; unique tie-breaker yields deterministic order.",
+  "minimalExample": "await prisma.task.findMany({orderBy:{id:'asc'}});",
+  "productionExample": "await prisma.task.findMany({where:{workspaceId:authorizedWorkspaceId},orderBy:[{createdAt:'desc'},{id:'desc'}],take:50});",
+  "commonMistakes": [
+    "Using nonunique ordering for cursor paging."
+  ],
+  "securityPerformanceNotes": [
+    "Allowlist sort modes and use compatible indexes; maintain stable paging contract."
+  ],
+  "relatedLessonIds": [
+    "13.02.05"
+  ],
+  "canonicalUrl": "https://www.prisma.io/docs/orm/v7/reference/prisma-client-reference"
+},
+{
+  "id": "prisma-prismaclient",
+  "matchCategories": [
+    "Prisma"
+  ],
+  "matchTitles": [
+    "PrismaClient"
+  ],
+  "heading": "Prisma: PrismaClient",
+  "category": "Prisma",
+  "majorVersion": "Prisma ORM 7",
+  "status": "Authored reference draft",
+  "summary": "Generated typed database client configured for the selected connector.",
+  "syntax": "new PrismaClient({adapter})",
+  "lang": "ts",
+  "parameters": "Generated client constructor and driver adapter for typical Prisma 7 SQL use.",
+  "returns": "Client exposing model operations and lifecycle methods.",
+  "minimalExample": "const prisma=new PrismaClient({adapter});",
+  "productionExample": "import {PrismaPg} from '@prisma/adapter-pg';\nimport {PrismaClient} from './generated/prisma/client';\nconst connectionString=process.env.DATABASE_URL;if(!connectionString)throw new Error('DATABASE_URL required');\nexport const prisma=new PrismaClient({adapter:new PrismaPg({connectionString})});",
+  "commonMistakes": [
+    "Creating a fresh client and connection pool for every request."
+  ],
+  "securityPerformanceNotes": [
+    "Reuse according to runtime lifetime; keep generated code and credentials server-only."
+  ],
+  "relatedLessonIds": [
+    "13.01.03"
+  ],
+  "canonicalUrl": "https://www.prisma.io/docs/orm/v7/reference/prisma-client-reference"
+},
+{
+  "id": "prisma-prisma-migrate",
+  "matchCategories": [
+    "Prisma"
+  ],
+  "matchTitles": [
+    "Prisma Migrate"
+  ],
+  "heading": "Prisma: Prisma Migrate",
+  "category": "Prisma",
+  "majorVersion": "Prisma ORM 7",
+  "status": "Authored reference draft",
+  "summary": "Manages versioned database schema migrations.",
+  "syntax": "npx prisma migrate dev\nnpx prisma migrate deploy",
+  "lang": "bash",
+  "parameters": "Prisma config and target database; dev creates migrations, deploy applies pending ones.",
+  "returns": "CLI migration files/status and database changes depending on command.",
+  "minimalExample": "npx prisma migrate dev --name add_tasks",
+  "productionExample": "npx prisma migrate deploy\nnpx prisma generate\n# Run in reviewed release pipeline against the intended environment.",
+  "commonMistakes": [
+    "Running migrate dev against production or assuming deploy generates the client."
+  ],
+  "securityPerformanceNotes": [
+    "Review migrations, backup and plan expand-contract changes; use separate least-privilege migration credentials."
+  ],
+  "relatedLessonIds": [
+    "13.01.06"
+  ],
+  "canonicalUrl": "https://www.prisma.io/docs/cli/v7/migrate/deploy"
+},
+{
+  "id": "prisma-prisma-config-ts",
+  "matchCategories": [
+    "Prisma"
+  ],
+  "matchTitles": [
+    "prisma.config.ts"
+  ],
+  "heading": "Prisma: prisma.config.ts",
+  "category": "Prisma",
+  "majorVersion": "Prisma ORM 7",
+  "status": "Authored reference draft",
+  "summary": "Configures Prisma 7 CLI schema, migrations and datasource URL.",
+  "syntax": "export default defineConfig({schema:'prisma/schema.prisma',datasource:{url:env('DATABASE_URL')}})",
+  "lang": "ts",
+  "parameters": "Prisma config object and explicitly loaded environment.",
+  "returns": "CLI configuration used by migration and other supported commands.",
+  "minimalExample": "import 'dotenv/config';\nimport {defineConfig,env} from 'prisma/config';\nexport default defineConfig({schema:'prisma/schema.prisma',datasource:{url:env('DATABASE_URL')}});",
+  "productionExample": "import 'dotenv/config';\nimport {defineConfig,env} from 'prisma/config';\nexport default defineConfig({schema:'prisma/schema.prisma',migrations:{path:'prisma/migrations'},datasource:{url:env('MIGRATION_DATABASE_URL')}});",
+  "commonMistakes": [
+    "Embedding credentials in source or assuming config sets runtime adapter connections."
+  ],
+  "securityPerformanceNotes": [
+    "Use dedicated environment secrets and validate target before migrations; runtime adapter is configured separately."
+  ],
+  "relatedLessonIds": [
+    "13.01.05"
+  ],
+  "canonicalUrl": "https://www.prisma.io/docs/orm/v7/reference/prisma-config-reference"
+},
+{
+  "id": "supabase-createbrowserclient",
+  "matchCategories": [
+    "Supabase"
+  ],
+  "matchTitles": [
+    "createBrowserClient"
+  ],
+  "heading": "Supabase: createBrowserClient",
+  "category": "Supabase",
+  "majorVersion": "Supabase JS v2 / SSR",
+  "status": "Authored reference draft",
+  "summary": "Creates an SSR-compatible browser client using public project credentials.",
+  "syntax": "createBrowserClient(url,publishableKey)",
+  "lang": "ts",
+  "parameters": "Project URL, publishable key and optional client options.",
+  "returns": "Supabase client for browser auth/data operations.",
+  "minimalExample": "import {createBrowserClient} from '@supabase/ssr';\nconst supabase=createBrowserClient(url,publishableKey);",
+  "productionExample": "import {createBrowserClient} from '@supabase/ssr';\nexport function createClient(){return createBrowserClient(process.env.NEXT_PUBLIC_SUPABASE_URL!,process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!);}",
+  "commonMistakes": [
+    "Providing a secret or service-role key in a browser environment variable."
+  ],
+  "securityPerformanceNotes": [
+    "Use publishable keys and RLS; client construction does not grant application-level authorization."
+  ],
+  "relatedLessonIds": [
+    "14.02.02"
+  ],
+  "canonicalUrl": "https://supabase.com/docs/guides/auth/server-side/creating-a-client"
+},
+{
+  "id": "supabase-createserverclient",
+  "matchCategories": [
+    "Supabase"
+  ],
+  "matchTitles": [
+    "createServerClient"
+  ],
+  "heading": "Supabase: createServerClient",
+  "category": "Supabase",
+  "majorVersion": "Supabase JS v2 / SSR",
+  "status": "Authored reference draft",
+  "summary": "Creates a request-scoped SSR client with cookie read/write integration.",
+  "syntax": "createServerClient(url,publishableKey,{cookies:{getAll,setAll}})",
+  "lang": "ts",
+  "parameters": "Project credentials and framework-specific cookie adapter.",
+  "returns": "Request-bound Supabase client capable of session refresh integration.",
+  "minimalExample": "const supabase=createServerClient(url,key,{cookies:{getAll:()=>requestCookies.getAll(),setAll:writeResponseCookies}});",
+  "productionExample": "// In a writable server action/route context, with cookieStore=await cookies():\nconst supabase=createServerClient(url,key,{cookies:{getAll:()=>cookieStore.getAll(),setAll(items){for(const {name,value,options} of items)cookieStore.set(name,value,options);}}});\nconst {data:{user},error}=await supabase.auth.getUser();if(error||!user)throw new Error('Unauthorized');",
+  "commonMistakes": [
+    "Sharing a server client across requests or swallowing cookie updates in a writable context."
+  ],
+  "securityPerformanceNotes": [
+    "Propagate refresh cookies and required cache headers using the current SSR adapter guidance; never trust unverified session data."
+  ],
+  "relatedLessonIds": [
+    "14.02.02"
+  ],
+  "canonicalUrl": "https://supabase.com/docs/guides/auth/server-side/creating-a-client"
+},
+{
+  "id": "supabase-signinwithoauth",
+  "matchCategories": [
+    "Supabase"
+  ],
+  "matchTitles": [
+    "signInWithOAuth"
+  ],
+  "heading": "Supabase: signInWithOAuth",
+  "category": "Supabase",
+  "majorVersion": "Supabase JS v2 / SSR",
+  "status": "Authored reference draft",
+  "summary": "Initiates a provider-based OAuth authentication flow.",
+  "syntax": "supabase.auth.signInWithOAuth({provider:'github',options:{redirectTo}})",
+  "lang": "ts",
+  "parameters": "Configured provider and allowlisted redirect destination; SSR commonly uses PKCE.",
+  "returns": "Promise with provider authorization URL/data or error.",
+  "minimalExample": "await supabase.auth.signInWithOAuth({provider:'github'});",
+  "productionExample": "const {data,error}=await supabase.auth.signInWithOAuth({provider:'github',options:{redirectTo:'https://app.example.org/auth/callback'}});if(error||!data.url)throw new Error('Sign-in unavailable');\n// Server flow: persist PKCE cookies, then redirect to data.url; callback exchanges the code.",
+  "commonMistakes": [
+    "Accepting arbitrary callback destinations or forgetting PKCE cookie propagation."
+  ],
+  "securityPerformanceNotes": [
+    "Use configured redirect allowlists, validate callback and post-login navigation; authorize separately."
+  ],
+  "relatedLessonIds": [
+    "14.02.03"
+  ],
+  "canonicalUrl": "https://supabase.com/docs/reference/javascript/auth-signinwithoauth"
+},
+{
+  "id": "supabase-createsigneduploadurl",
+  "matchCategories": [
+    "Supabase"
+  ],
+  "matchTitles": [
+    "createSignedUploadUrl"
+  ],
+  "heading": "Supabase: createSignedUploadUrl",
+  "category": "Supabase",
+  "majorVersion": "Supabase JS v2 / SSR",
+  "status": "Authored reference draft",
+  "summary": "Creates a time-limited capability for uploading to a specified Storage path.",
+  "syntax": "supabase.storage.from(bucket).createSignedUploadUrl(path)",
+  "lang": "ts",
+  "parameters": "Bucket/path and supported options.",
+  "returns": "Promise containing signed-upload data or error.",
+  "minimalExample": "const {data,error}=await supabase.storage.from('documents').createSignedUploadUrl(path);",
+  "productionExample": "const path=await reserveAuthorizedUpload(userId,documentId);\nconst {data,error}=await supabase.storage.from('documents').createSignedUploadUrl(path);if(error||!data)throw new Error('Upload unavailable');\nreturn {path,token:data.token};",
+  "commonMistakes": [
+    "Signing caller-supplied paths or treating successful upload as content validation."
+  ],
+  "securityPerformanceNotes": [
+    "Use private buckets, storage policy, quotas, file validation and controlled post-upload processing; protect tokens."
+  ],
+  "relatedLessonIds": [
+    "14.04.02"
+  ],
+  "canonicalUrl": "https://supabase.com/docs/reference/javascript/file-buckets-createsigneduploadurl"
+},
+{
+  "id": "supabase-realtime-channel",
+  "matchCategories": [
+    "Supabase"
+  ],
+  "matchTitles": [
+    "Realtime channel"
+  ],
+  "heading": "Supabase: Realtime channel",
+  "category": "Supabase",
+  "majorVersion": "Supabase JS v2 / SSR",
+  "status": "Authored reference draft",
+  "summary": "Creates a channel for supported realtime subscriptions and messages.",
+  "syntax": "supabase.channel(topic,{config:{private:true}})",
+  "lang": "ts",
+  "parameters": "Topic and channel configuration, event handlers and subscription.",
+  "returns": "RealtimeChannel with subscribe/unsubscribe operations.",
+  "minimalExample": "const channel=supabase.channel('announcements');channel.subscribe();",
+  "productionExample": "const channel=supabase.channel('workspace:'+authorizedWorkspaceId,{config:{private:true}});\nchannel.on('broadcast',{event:'changed'},()=>refreshAuthorizedData()).subscribe();\n// Cleanup: await supabase.removeChannel(channel);",
+  "commonMistakes": [
+    "Assuming a guessed topic name proves access or leaking channels on rerender."
+  ],
+  "securityPerformanceNotes": [
+    "Configure Realtime authorization policies and private channels; validate messages and refresh authoritative data."
+  ],
+  "relatedLessonIds": [
+    "14.04.04"
+  ],
+  "canonicalUrl": "https://supabase.com/docs/guides/realtime/authorization"
+},
+{
+  "id": "supabase-broadcast",
+  "matchCategories": [
+    "Supabase"
+  ],
+  "matchTitles": [
+    "Broadcast"
+  ],
+  "heading": "Supabase: Broadcast",
+  "category": "Supabase",
+  "majorVersion": "Supabase JS v2 / SSR",
+  "status": "Authored reference draft",
+  "summary": "Sends transient event messages to other authorized channel participants.",
+  "syntax": "channel.send({type:'broadcast',event:'changed',payload:{…}})",
+  "lang": "ts",
+  "parameters": "Subscribed channel, event and serializable payload.",
+  "returns": "Promise of send status; not a durable delivery receipt.",
+  "minimalExample": "await channel.send({type:'broadcast',event:'ping',payload:{}});",
+  "productionExample": "const channel=supabase.channel('workspace:'+authorizedWorkspaceId,{config:{private:true}});\nchannel.subscribe(async status=>{if(status==='SUBSCRIBED')await channel.send({type:'broadcast',event:'changed',payload:{id:taskId}});});",
+  "commonMistakes": [
+    "Using broadcast as the sole durable database of task changes."
+  ],
+  "securityPerformanceNotes": [
+    "Use authorized private topics, minimal payloads, validation and durable state reconciliation."
+  ],
+  "relatedLessonIds": [
+    "14.04.06"
+  ],
+  "canonicalUrl": "https://supabase.com/docs/guides/realtime/broadcast"
+},
+{
+  "id": "supabase-presence",
+  "matchCategories": [
+    "Supabase"
+  ],
+  "matchTitles": [
+    "Presence"
+  ],
+  "heading": "Supabase: Presence",
+  "category": "Supabase",
+  "majorVersion": "Supabase JS v2 / SSR",
+  "status": "Authored reference draft",
+  "summary": "Tracks ephemeral participant state on a realtime channel.",
+  "syntax": "channel.track({online_at:new Date().toISOString()})",
+  "lang": "ts",
+  "parameters": "Channel, presence config and small state payload.",
+  "returns": "Promise of tracking status; presenceState() returns current observed state.",
+  "minimalExample": "channel.on('presence',{event:'sync'},()=>renderPresence(channel.presenceState())).subscribe();",
+  "productionExample": "const channel=supabase.channel('workspace:'+authorizedWorkspaceId,{config:{private:true}});\nchannel.on('presence',{event:'sync'},()=>renderPresence(channel.presenceState())).subscribe(async status=>{if(status==='SUBSCRIBED')await channel.track({online:true});});\n// Cleanup: remove channel.",
+  "commonMistakes": [
+    "Treating presence state as durable identity, authorization or attendance evidence."
+  ],
+  "securityPerformanceNotes": [
+    "Use minimal non-sensitive state and handle disconnects; authorize through trusted server/policy checks."
+  ],
+  "relatedLessonIds": [
+    "14.04.06"
+  ],
+  "canonicalUrl": "https://supabase.com/docs/guides/realtime/presence"
+},
+{
+  "id": "redis-eval",
+  "matchCategories": [
+    "Redis & BullMQ"
+  ],
+  "matchTitles": [
+    "EVAL"
+  ],
+  "heading": "Redis & BullMQ: EVAL",
+  "category": "Redis & BullMQ",
+  "majorVersion": "Redis / BullMQ",
+  "status": "Authored reference draft",
+  "summary": "Executes a Lua script atomically relative to other Redis commands.",
+  "syntax": "EVAL script numkeys key [key ...] arg [arg ...]",
+  "lang": "text",
+  "parameters": "Script, declared keys and ARGV inputs.",
+  "returns": "Script result converted to Redis protocol values.",
+  "minimalExample": "EVAL \"return redis.call('GET',KEYS[1])\" 1 cache:key",
+  "productionExample": "EVAL \"local n=redis.call('INCR',KEYS[1]); if n==1 then redis.call('EXPIRE',KEYS[1],ARGV[1]); end; return n\" 1 rate:tenant:42:minute 60",
+  "commonMistakes": [
+    "Constructing Lua source from untrusted strings or assuming script errors roll back prior writes."
+  ],
+  "securityPerformanceNotes": [
+    "Keep scripts bounded, pass keys/arguments explicitly, and account for cluster slot requirements."
+  ],
+  "relatedLessonIds": [
+    "16.02.06"
+  ],
+  "canonicalUrl": "https://redis.io/docs/latest/commands/eval/"
+},
+{
+  "id": "redis-redis-persistence",
+  "matchCategories": [
+    "Redis & BullMQ"
+  ],
+  "matchTitles": [
+    "Redis persistence"
+  ],
+  "heading": "Redis & BullMQ: Redis persistence",
+  "category": "Redis & BullMQ",
+  "majorVersion": "Redis / BullMQ",
+  "status": "Authored reference draft",
+  "summary": "Redis persistence writes state through snapshotting (RDB), append-only files (AOF), or both.",
+  "syntax": "appendonly yes",
+  "lang": "text",
+  "parameters": "Persistence mode, fsync policy, snapshots and operational settings.",
+  "returns": "Recoverable on-disk state with mode-dependent durability and recovery behavior.",
+  "minimalExample": "save 900 1",
+  "productionExample": "appendonly yes\nappendfsync everysec\n# Validate disk capacity, recovery and acceptable data-loss window.",
+  "commonMistakes": [
+    "Treating persistence as a substitute for backup or assuming no acknowledged writes can be lost."
+  ],
+  "securityPerformanceNotes": [
+    "Separate queue and cache requirements; exercise restore and monitor disk/rewrite overhead."
+  ],
+  "relatedLessonIds": [
+    "16.02.03"
+  ],
+  "canonicalUrl": "https://redis.io/docs/latest/operate/oss_and_stack/management/persistence/"
+},
+{
+  "id": "redis-eviction",
+  "matchCategories": [
+    "Redis & BullMQ"
+  ],
+  "matchTitles": [
+    "Eviction"
+  ],
+  "heading": "Redis & BullMQ: Eviction",
+  "category": "Redis & BullMQ",
+  "majorVersion": "Redis / BullMQ",
+  "status": "Authored reference draft",
+  "summary": "Configures behavior when Redis reaches its memory limit.",
+  "syntax": "maxmemory-policy allkeys-lru",
+  "lang": "text",
+  "parameters": "maxmemory and selected eviction policy.",
+  "returns": "Eligible keys may be evicted or writes rejected depending on policy.",
+  "minimalExample": "maxmemory 128mb\nmaxmemory-policy allkeys-lru",
+  "productionExample": "maxmemory 512mb\nmaxmemory-policy noeviction\n# Example for a dedicated durable-work queue; alert before exhaustion.",
+  "commonMistakes": [
+    "Using an evicting cache instance for BullMQ queue state."
+  ],
+  "securityPerformanceNotes": [
+    "Budget memory and monitor evictions/write failures; isolate disposable cache from job state."
+  ],
+  "relatedLessonIds": [
+    "16.02.02"
+  ],
+  "canonicalUrl": "https://redis.io/docs/latest/develop/reference/eviction/"
+},
+{
+  "id": "redis-job",
+  "matchCategories": [
+    "Redis & BullMQ"
+  ],
+  "matchTitles": [
+    "Job"
+  ],
+  "heading": "Redis & BullMQ: Job",
+  "category": "Redis & BullMQ",
+  "majorVersion": "Redis / BullMQ",
+  "status": "Authored reference draft",
+  "summary": "Represents a BullMQ job and its payload, lifecycle and progress metadata.",
+  "syntax": "const job=await queue.getJob(jobId)",
+  "lang": "ts",
+  "parameters": "Queue/job ID; job methods depend on its state.",
+  "returns": "Job instance or undefined when unavailable.",
+  "minimalExample": "const state=await job.getState();",
+  "productionExample": "const job=await queue.getJob(authorizedJobId);if(!job)return {status:'unknown'};\nreturn {status:await job.getState(),progress:job.progress};",
+  "commonMistakes": [
+    "Exposing arbitrary job payloads or treating queue state as permanent business truth."
+  ],
+  "securityPerformanceNotes": [
+    "Authorize status lookup against durable ownership; design retention and idempotent effects."
+  ],
+  "relatedLessonIds": [
+    "16.04.03"
+  ],
+  "canonicalUrl": "https://docs.bullmq.io/guide/jobs"
+},
+{
+  "id": "redis-flows",
+  "matchCategories": [
+    "Redis & BullMQ"
+  ],
+  "matchTitles": [
+    "Flows"
+  ],
+  "heading": "Redis & BullMQ: Flows",
+  "category": "Redis & BullMQ",
+  "majorVersion": "Redis / BullMQ",
+  "status": "Authored reference draft",
+  "summary": "FlowProducer submits parent/child job dependencies across queues.",
+  "syntax": "flow.add({name,queueName,children})",
+  "lang": "ts",
+  "parameters": "Job tree, queue names, data and options.",
+  "returns": "Flow job tree; parent waits for dependencies according to configured semantics.",
+  "minimalExample": "await flow.add({name:'report',queueName:'reports',children:[{name:'collect',queueName:'data'}]});",
+  "productionExample": "const flow=new FlowProducer({connection});try{await flow.add({name:'finalize',queueName:'reports',data:{reportId},children:[{name:'extract',queueName:'extracts',data:{reportId}}]});}finally{await flow.close();}",
+  "commonMistakes": [
+    "Assuming failed children automatically produce a successful parent or unbounded DAGs are free."
+  ],
+  "securityPerformanceNotes": [
+    "Define failure handling, idempotent operations, bounded fan-out and durable business status."
+  ],
+  "relatedLessonIds": [
+    "16.04.03"
+  ],
+  "canonicalUrl": "https://docs.bullmq.io/guide/flows/"
+},
+{
+  "id": "redis-repeatable-jobs",
+  "matchCategories": [
+    "Redis & BullMQ"
+  ],
+  "matchTitles": [
+    "Repeatable jobs"
+  ],
+  "heading": "Redis & BullMQ: Repeatable jobs",
+  "category": "Redis & BullMQ",
+  "majorVersion": "Redis / BullMQ",
+  "status": "Authored reference draft",
+  "summary": "Schedules repeated work; modern BullMQ uses Job Schedulers instead of legacy repeat options.",
+  "syntax": "queue.upsertJobScheduler(id,{every:60000},{name:'refresh',data:{}})",
+  "lang": "ts",
+  "parameters": "Stable scheduler ID, interval/cron config and job template.",
+  "returns": "Promise of the first scheduled job; scheduler produces subsequent jobs.",
+  "minimalExample": "await queue.upsertJobScheduler('refresh',{every:60000},{name:'refresh',data:{}});",
+  "productionExample": "await queue.upsertJobScheduler('daily-summary',{pattern:'0 8 * * *',tz:'UTC'},{name:'summarize',data:{scope:'public'},opts:{attempts:3}});",
+  "commonMistakes": [
+    "Confusing obsolete QueueScheduler with modern Job Scheduler APIs or assuming exact wall-clock execution under backlog."
+  ],
+  "securityPerformanceNotes": [
+    "Use compatible BullMQ version, explicit timezone and idempotent processing; monitor delayed jobs."
+  ],
+  "relatedLessonIds": [
+    "16.03.05"
+  ],
+  "canonicalUrl": "https://docs.bullmq.io/guide/job-schedulers/"
+},
+{
+  "id": "redis-queueevents",
+  "matchCategories": [
+    "Redis & BullMQ"
+  ],
+  "matchTitles": [
+    "QueueEvents"
+  ],
+  "heading": "Redis & BullMQ: QueueEvents",
+  "category": "Redis & BullMQ",
+  "majorVersion": "Redis / BullMQ",
+  "status": "Authored reference draft",
+  "summary": "Observes queue-wide events through a dedicated QueueEvents instance.",
+  "syntax": "const events=new QueueEvents(name,{connection})",
+  "lang": "ts",
+  "parameters": "Queue name, connection options and event listeners.",
+  "returns": "Event emitter for queue lifecycle events.",
+  "minimalExample": "events.on('completed',({jobId})=>console.log(jobId));",
+  "productionExample": "const events=new QueueEvents('emails',{connection});events.on('failed',({jobId})=>logger.warn({jobId},'Job failed'));await events.waitUntilReady();\n// On shutdown: await events.close();",
+  "commonMistakes": [
+    "Using events as the only durable ledger or leaving connections open."
+  ],
+  "securityPerformanceNotes": [
+    "Avoid private payload logging; reconcile with durable records and handle event retention gaps."
+  ],
+  "relatedLessonIds": [
+    "16.03.07"
+  ],
+  "canonicalUrl": "https://docs.bullmq.io/guide/events"
+},
+{
+  "id": "testing-k6-check",
+  "matchCategories": [
+    "Testing & Operations"
+  ],
+  "matchTitles": [
+    "k6 check"
+  ],
+  "heading": "Testing & Operations: k6 check",
+  "category": "Testing & Operations",
+  "majorVersion": "Testing and operations",
+  "status": "Authored reference draft",
+  "summary": "Records boolean check results during a k6 load test.",
+  "syntax": "check(response,{'status 200':r=>r.status===200})",
+  "lang": "js",
+  "parameters": "Value under test and named predicate functions.",
+  "returns": "Boolean result and recorded check metric; checks alone do not fail the overall test.",
+  "minimalExample": "check(res,{'status 200':r=>r.status===200});",
+  "productionExample": "export const options={thresholds:{checks:['rate>0.99'],http_req_duration:['p(95)<500']}};\nexport default function(){const res=http.get('http://localhost:3000/health');check(res,{'healthy':r=>r.status===200});}",
+  "commonMistakes": [
+    "Assuming a failed check automatically makes the process exit unsuccessfully."
+  ],
+  "securityPerformanceNotes": [
+    "Set thresholds and use isolated authorized targets with representative bounded traffic."
+  ],
+  "relatedLessonIds": [
+    "19.04.01"
+  ],
+  "canonicalUrl": "https://grafana.com/docs/k6/latest/using-k6/checks/"
+},
+{
+  "id": "testing-github-actions-job",
+  "matchCategories": [
+    "Testing & Operations"
+  ],
+  "matchTitles": [
+    "GitHub Actions job"
+  ],
+  "heading": "Testing & Operations: GitHub Actions job",
+  "category": "Testing & Operations",
+  "majorVersion": "Testing and operations",
+  "status": "Authored reference draft",
+  "summary": "Defines a set of CI steps scheduled on a runner.",
+  "syntax": "jobs: {verify: {runs-on: ubuntu-latest, steps: […]}}",
+  "lang": "yaml",
+  "parameters": "Runner, steps, dependencies, permissions and environment.",
+  "returns": "Job result and optional outputs/artifacts.",
+  "minimalExample": "jobs:\n  verify:\n    runs-on: ubuntu-latest\n    steps:\n      - run: node --version",
+  "productionExample": "permissions:\n  contents: read\njobs:\n  verify:\n    runs-on: ubuntu-latest\n    timeout-minutes: 15\n    steps:\n      - uses: actions/checkout@v4\n      - run: npm ci && npm test",
+  "commonMistakes": [
+    "Giving all jobs broad write permissions or treating a skipped job as a passing test."
+  ],
+  "securityPerformanceNotes": [
+    "Pin trusted actions to reviewed commit SHAs for hardened pipelines; avoid exposing secrets to untrusted PR code."
+  ],
+  "relatedLessonIds": [
+    "20.02.01"
+  ],
+  "canonicalUrl": "https://docs.github.com/en/actions/writing-workflows/workflow-syntax-for-github-actions"
+},
+{
+  "id": "testing-opentelemetry-span",
+  "matchCategories": [
+    "Testing & Operations"
+  ],
+  "matchTitles": [
+    "OpenTelemetry Span"
+  ],
+  "heading": "Testing & Operations: OpenTelemetry Span",
+  "category": "Testing & Operations",
+  "majorVersion": "Testing and operations",
+  "status": "Authored reference draft",
+  "summary": "Represents a timed operation in a distributed trace.",
+  "syntax": "tracer.startActiveSpan(name, callback)",
+  "lang": "ts",
+  "parameters": "Span name, attributes, context and callback/options.",
+  "returns": "Span with lifecycle, events and status; caller must end it.",
+  "minimalExample": "const span=tracer.startSpan('task.load');span.end();",
+  "productionExample": "await tracer.startActiveSpan('task.load',async span=>{try{return await loadTask(id);}catch(e){span.setStatus({code:SpanStatusCode.ERROR});throw e;}finally{span.end();}});",
+  "commonMistakes": [
+    "Forgetting span.end or recording secrets and unbounded user identifiers."
+  ],
+  "securityPerformanceNotes": [
+    "Use stable names, sampled traces, safe attributes and propagated context."
+  ],
+  "relatedLessonIds": [
+    "21.01.04"
+  ],
+  "canonicalUrl": "https://opentelemetry.io/docs/languages/js/instrumentation/"
+},
+{
+  "id": "testing-sentry-event",
+  "matchCategories": [
+    "Testing & Operations"
+  ],
+  "matchTitles": [
+    "Sentry event"
+  ],
+  "heading": "Testing & Operations: Sentry event",
+  "category": "Testing & Operations",
+  "majorVersion": "Testing and operations",
+  "status": "Authored reference draft",
+  "summary": "Represents captured error or diagnostic information submitted by an SDK.",
+  "syntax": "Sentry.captureException(error)",
+  "lang": "ts",
+  "parameters": "Error and optional scoped event context.",
+  "returns": "Event ID where supported; capture is not proof of delivery.",
+  "minimalExample": "Sentry.captureException(new Error('Example failure'));",
+  "productionExample": "try{await runTask();}catch(error){Sentry.withScope(scope=>{scope.setTag('operation','task.run');Sentry.captureException(error);});throw error;}",
+  "commonMistakes": [
+    "Sending raw request bodies, credentials or all personal data as event context."
+  ],
+  "securityPerformanceNotes": [
+    "Configure data scrubbing, sampling and retention; keep user-visible messages safe."
+  ],
+  "relatedLessonIds": [
+    "21.01.06"
+  ],
+  "canonicalUrl": "https://docs.sentry.io/platforms/javascript/usage/"
+},
+{
+  "id": "testing-adr",
+  "matchCategories": [
+    "Testing & Operations"
+  ],
+  "matchTitles": [
+    "ADR"
+  ],
+  "heading": "Testing & Operations: ADR",
+  "category": "Testing & Operations",
+  "majorVersion": "Testing and operations",
+  "status": "Authored reference draft",
+  "summary": "Records a significant architecture decision and why it was made.",
+  "syntax": "Title / Status / Context / Decision / Consequences",
+  "lang": "text",
+  "parameters": "Decision date, constraints, alternatives and trade-offs.",
+  "returns": "Versioned decision record with explicit consequences.",
+  "minimalExample": "ADR-001: Use a modular monolith. Status: Accepted.",
+  "productionExample": "ADR-001 — Modular monolith\nContext: solo team, shared transactions.\nAlternatives: independent services; modular monolith.\nDecision: one deployable with explicit module boundaries.\nConsequences: simpler operations, shared deployment blast radius.\nRevisit when measured independent scaling needs justify extraction.",
+  "commonMistakes": [
+    "Recording a choice without alternatives or revisiting obsolete decisions."
+  ],
+  "securityPerformanceNotes": [
+    "Treat ADRs as traceable engineering decisions, not proof of implementation."
+  ],
+  "relatedLessonIds": [
+    "23.01.07"
+  ],
+  "canonicalUrl": "https://adr.github.io/"
+},
+{
+  "id": "testing-csp",
+  "matchCategories": [
+    "Testing & Operations"
+  ],
+  "matchTitles": [
+    "CSP"
+  ],
+  "heading": "Testing & Operations: CSP",
+  "category": "Testing & Operations",
+  "majorVersion": "Testing and operations",
+  "status": "Authored reference draft",
+  "summary": "Security response header constrains executable/resource origins and framing.",
+  "syntax": "Content-Security-Policy: default-src 'self'",
+  "lang": "text",
+  "parameters": "Policy directives, nonce/hash strategy and optional reporting.",
+  "returns": "Browser-enforced policy with violation reporting when configured.",
+  "minimalExample": "Content-Security-Policy: default-src 'self'; object-src 'none'",
+  "productionExample": "Content-Security-Policy-Report-Only: default-src 'self'; script-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'\n# Test real framework assets and move to enforcement after review.",
+  "commonMistakes": [
+    "Deploying a policy copied from another app without verifying scripts or using unsafe-inline as a universal fix."
+  ],
+  "securityPerformanceNotes": [
+    "Combine output encoding, trusted resources and framework-specific nonce/hash handling; monitor reports safely."
+  ],
+  "relatedLessonIds": [
+    "15.04.05"
+  ],
+  "canonicalUrl": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CSP"
+},
+{
+  "id": "testing-owasp-asvs",
+  "matchCategories": [
+    "Testing & Operations"
+  ],
+  "matchTitles": [
+    "OWASP ASVS"
+  ],
+  "heading": "Testing & Operations: OWASP ASVS",
+  "category": "Testing & Operations",
+  "majorVersion": "Testing and operations",
+  "status": "Authored reference draft",
+  "summary": "Application Security Verification Standard supplies structured security requirements for verification.",
+  "syntax": "Requirement → implementation → evidence → review result",
+  "lang": "text",
+  "parameters": "Selected ASVS version, verification level, applicable requirements and evidence.",
+  "returns": "Traceable control matrix; not a certification from simply reading the standard.",
+  "minimalExample": "Map an authorization requirement to a negative access test.",
+  "productionExample": "Control: object access enforced.\nImplementation: server derives verified tenant and scopes query.\nEvidence: cross-tenant read/update tests and code review.\nResult: pending until tests execute under target configuration.",
+  "commonMistakes": [
+    "Claiming ASVS compliance from a checklist or automated scan alone."
+  ],
+  "securityPerformanceNotes": [
+    "Pin the standard version, document exclusions, and keep verification evidence and remediation ownership."
+  ],
+  "relatedLessonIds": [
+    "15.01.03"
+  ],
+  "canonicalUrl": "https://owasp.org/www-project-application-security-verification-standard/"
 }
 ];
 

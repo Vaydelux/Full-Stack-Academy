@@ -7,7 +7,7 @@ import { KnowledgeCheck } from '@/components/course/KnowledgeCheck';
 
 A shopping-list form lets a learner remove the middle row. With index-based React keys, entered values jump to another row because React reuses the wrong DOM input.
 
-**What breaks in the learner starter:** The starter uses key={index} and allows unlimited rows; reordering or deleting can shift user edits.
+**What breaks in the learner starter:** The starter uses `key={index}` and allows unlimited rows; reordering or deleting can shift user edits.
 
 ## Build the mental model
 
@@ -82,7 +82,7 @@ export default function StepsForm(){
 
 ## Bug Hunt: reproduce, diagnose and repair
 
-1. **Reproduce:** The starter uses key={index} and allows unlimited rows; reordering or deleting can shift user edits.
+1. **Reproduce:** The starter uses `key={index}` and allows unlimited rows; reordering or deleting can shift user edits.
 2. **Diagnose:** Locate who owns the current value, where it is transformed, and which effect or async boundary can invalidate assumptions.
 3. **Repair:** Preserve field-array identity with fields[].id, controlled append/remove, and bounded dynamic inputs.
 4. **Regression:** Type unique values in three rows; remove the middle row. The remaining values must match their original logical items. Adding past eight rows must be disabled.

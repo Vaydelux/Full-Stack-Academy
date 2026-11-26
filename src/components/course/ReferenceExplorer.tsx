@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { selectReferences } from '@/lib/academy/reference-search.mjs';
 import type { ReferenceSubject } from '@/lib/academy/types';
 
+type SearchableReference = ReferenceSubject & { summary?: string; version?: string; heading?: string };
+
 type Visibility = 'all' | 'authored' | 'indexed';
 
 export function ReferenceExplorer({
@@ -13,7 +15,7 @@ export function ReferenceExplorer({
   authoredIds,
   initialCategory = 'all',
 }: {
-  entries: ReferenceSubject[];
+  entries: SearchableReference[];
   categories: string[];
   authoredIds: string[];
   initialCategory?: string;
@@ -21,6 +23,7 @@ export function ReferenceExplorer({
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState(initialCategory);
   const [visibility, setVisibility] = useState<Visibility>('all');
+  const hasIndexedOnly = entries.some(entry => !authoredIds.includes(entry.id));
   const [limit, setLimit] = useState(36);
   const authoredSet = useMemo(() => new Set(authoredIds), [authoredIds]);
 
@@ -44,9 +47,10 @@ export function ReferenceExplorer({
             type="search"
             autoComplete="off"
             placeholder="Search a hook, function, property or topic"
+            maxLength={160}
             value={query}
             onChange={(event) => { setQuery(event.target.value); setLimit(36); }}
-            className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-700 dark:border-white/20 dark:bg-slate-950 dark:text-white"
+            className="min-h-11 min-w-0 w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-700 dark:border-white/20 dark:bg-slate-950 dark:text-white"
           />
         </div>
         <div>
@@ -71,7 +75,7 @@ export function ReferenceExplorer({
           >
             <option value="all">All entries</option>
             <option value="authored">Authored drafts only</option>
-            <option value="indexed">Indexed only</option>
+            {hasIndexedOnly && <option value="indexed">Indexed only</option>}
           </select>
         </div>
       </div>
@@ -102,9 +106,10 @@ export function ReferenceExplorer({
                 >
                   <span className="min-w-0 break-words text-sm font-semibold text-slate-900 dark:text-white">{item.title}</span>
                   <span className="flex flex-wrap items-center justify-between gap-3 text-xs text-slate-600 dark:text-slate-300">
-                    <span>{item.category}</span>
+                    <span>{item.category}{item.version ? ' · ' + item.version : ''}</span>
                     <span>{hasDraft ? 'Authored draft' : 'Index only'}</span>
                   </span>
+                  {item.summary && <span className="line-clamp-2 break-words text-xs leading-5 text-slate-600 dark:text-slate-300">{item.summary}</span>}
                 </Link>
               </li>
             );

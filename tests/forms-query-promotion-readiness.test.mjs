@@ -1,7 +1,7 @@
 import test from 'node:test';
 import fs from 'node:fs';
 import assert from 'node:assert/strict';
-import { inspectFormsQueryPromotion } from '../scripts/forms-query-promotion-readiness.mjs';
+import { inspectFormsQueryPromotion, hasTopicBrowserSource } from '../scripts/forms-query-promotion-readiness.mjs';
 
 const report=inspectFormsQueryPromotion();
 
@@ -30,15 +30,15 @@ test('published totals remain source-derived rather than adding staged lessons',
  assert.ok(report.snapshot.labs>=337);
 });
 test('manual a11y evidence cannot be inferred from browser test source alone',()=>{
- for(const module of report.modules){
-  if(!module.a11y)assert.ok(module.blockers.some(b=>b.includes('screen-reader')));
+ for(const courseModule of report.modules){
+  if(!courseModule.a11y)assert.ok(courseModule.blockers.some(b=>b.includes('screen-reader')));
  }
 });
 test('each prepublication module has explicit actionable blockers',()=>{
- for(const module of report.modules){
-  assert.ok(Array.isArray(module.blockers));
-  assert.equal(module.ready,module.blockers.length===0);
-  if(module.published<module.total)assert.ok(module.blockers.some(b=>b.includes('Published MDX')));
+ for(const courseModule of report.modules){
+  assert.ok(Array.isArray(courseModule.blockers));
+  assert.equal(courseModule.ready,courseModule.blockers.length===0);
+  if(courseModule.published<courseModule.total)assert.ok(courseModule.blockers.some(b=>b.includes('Published MDX')));
  }
 });
 test('audit explicitly states that execution and assistive technology are out-of-scope',()=>{
@@ -58,6 +58,22 @@ test('RHF/Query learning packages stay in the locked nested exercise workspace',
 
 test('source audit invalidates review evidence when RHF lesson/UI files change',()=>{
  const program=fs.readFileSync(new URL('../scripts/forms-query-promotion-readiness.mjs',import.meta.url),'utf8');
- assert.match(program,/e\.sourceSha256===rhfReviewFingerprint\(\)/);
- assert.match(program,/obsolete RHF lesson\/UI fingerprint/);
+ assert.match(program,/e\.sourceSha256===\(moduleId==='09\.02'\?rhfReviewFingerprint\(\):queryReviewFingerprint\(\)\)/);
+ assert.match(program,/obsolete Forms\/Query lesson\/UI fingerprint/);
+});
+
+
+test('SSR hydration requires the dedicated Next fixture and both actual runner call sites',()=>{
+ const read=p=>fs.readFileSync(new URL('../'+p,import.meta.url),'utf8');
+ const ssr=read('scripts/verify-forms-query-staged-ssr.mjs');
+ const launcher=read('scripts/verify-query-release-browser.mjs');
+ const browser=read('scripts/verify-forms-query-react-browser.mjs');
+ const checks={'09.03':read('scripts/verify-forms-query-staged-query.mjs')};
+ assert.equal(hasTopicBrowserSource('09.03','ssr-hydration',checks,ssr,launcher,browser),true);
+ for(const args of [['',launcher,browser],[ssr,'',browser],[ssr,launcher,''],[ssr.replace('Prefetched title missing from server HTML','removed'),launcher,browser]]){
+  assert.equal(hasTopicBrowserSource('09.03','ssr-hydration',checks,...args),false);
+ }
+ assert.equal(hasTopicBrowserSource('09.03','query-keys',checks,'','',''),true);
+ assert.equal(hasTopicBrowserSource('09.03','unknown-lab',checks,ssr,launcher,browser),false);
+ assert.equal(hasTopicBrowserSource('09.02','ssr-hydration',checks,ssr,launcher,browser),false);
 });

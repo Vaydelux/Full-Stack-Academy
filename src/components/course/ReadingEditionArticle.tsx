@@ -8,6 +8,7 @@ import { readingOutline, type AnchoredReadingBlock } from '../../../scripts/read
 function Inline({ text }: { text: string }) {
   return <>{inlineTokens(text).map((token, index) => {
     if (token.kind === 'strong') return <strong key={index}>{token.text}</strong>;
+    if (token.kind === 'emphasis') return <em key={index}>{token.text}</em>;
     if (token.kind === 'code') return <code key={index} className="rounded bg-slate-200/70 px-1 font-mono text-[.9em] break-all dark:bg-white/10">{token.text}</code>;
     if (token.kind === 'link') return <a key={index} href={token.href} target="_blank" rel="noopener noreferrer" className="font-medium text-cyan-700 underline underline-offset-2 break-all dark:text-cyan-300">{token.text}</a>;
     return <span key={index}>{token.text}</span>;
@@ -33,7 +34,7 @@ function ReadingElement({ block }: { block: AnchoredReadingBlock }): ReactNode {
 }
 export function ReadingEditionArticle({ source, title }: { source: string; title: string }) {
   const { blocks, outline } = readingOutline(parseReading(source), title);
-  return <article aria-label="Reading edition article" className="mt-7 min-w-0 max-w-4xl space-y-5 break-words text-sm leading-7 text-slate-700 dark:text-slate-300">
+  return <article aria-label="Reading edition article" className="academy-doc-prose mt-7 min-w-0 max-w-4xl space-y-5 break-words text-sm leading-7 text-slate-700 dark:text-slate-300">
     <DocNotice>Reading edition — examples and acceptance criteria are instructional, not recorded runtime results. Review is pending. Labs and completion remain disabled for this article.</DocNotice>
     {outline.length > 0 && <details className="rounded-xl border border-slate-200 p-4 dark:border-white/10">
       <summary className="cursor-pointer font-semibold">On this page</summary>

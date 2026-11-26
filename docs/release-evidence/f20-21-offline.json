@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "scope": "offline-quality-gate",
+  "commit": "2a2e419b91f182cd29e89e008312cc64aa3a5fd3",
+  "node": "v24.22.3",
+  "gateCount": 82,
+  "exitCode": 0,
+  "cleanCheckout": true,
+  "logSha256": "9a200d82783ae67fffd812600cac9bf4cab805bb7df2447b11492e4d62360fe7",
+  "rootLockSha256": "7741615e02b6c756718f8590119bb234eba9cf16f65d7ce65756f0523c98e241",
+  "instructorLabFiles": 337,
+  "staticPages": 1252,
+  "lint": {
+    "errors": 0,
+    "warnings": 237
+  },
+  "publicationApproved": false,
+  "fullReleaseCoordinatorReceipt": false,
+  "rawLogRetained": false
+}

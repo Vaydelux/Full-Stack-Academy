@@ -89,7 +89,7 @@ test('no leftover boilerplate directories or Nebula/Z.ai references exist in src
   }
 });
 
-test('all authored reference IDs and relatedReferenceIds exist in reference-index.json', () => {
+test('all authored reference IDs match reference-index.json exactly', () => {
   const refs = readJson('data/reference-index.json');
   const refIds = new Set(refs.entries.map((r) => r.id));
   const authoredSrc = fs.readFileSync(path.join(ROOT, 'src/lib/academy/authored-content.ts'), 'utf8');
@@ -109,7 +109,11 @@ test('all authored reference IDs and relatedReferenceIds exist in reference-inde
   for (const id of expectedIds) {
     assert.ok(refIds.has(id), `Missing reference id in index: ${id}`);
   }
-  assert.equal(authoredSrc.includes('next-js-'), false, 'Invalid next-js- prefix found');
-  assert.equal(authoredSrc.includes("'nest-guards'"), false, 'Invalid nest-guards id found');
+  const section = authoredSrc.split('export const AUTHORED_REFERENCES')[1]?.split('export function findAuthoredReference')[0];
+  assert.ok(section, 'Missing authored reference registry');
+  const authoredIds = [...section.matchAll(/^\s*(?:id:\s*'([^']+)'|"id":\s*"([^"]+)")/gm)].map(match => match[1] ?? match[2]);
+  assert.equal(new Set(authoredIds).size, authoredIds.length, 'Duplicate authored reference ID');
+  assert.deepEqual([...authoredIds].sort(), [...refIds].sort(), 'Authored reference IDs must match the canonical index');
+  assert.ok(authoredIds.includes('next.js-next-js-proxy'), 'Canonical Next.js Proxy reference missing');
 });
 

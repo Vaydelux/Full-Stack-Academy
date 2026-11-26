@@ -5,9 +5,9 @@ import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync, copyFileSy
 import { tmpdir } from 'node:os';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { LOCKS, STEPS, EXTERNAL_GATES, inspectCheckout, preflight, sameCheckout, makeReport, runQualification } from '../scripts/qualification-coordinator.mjs';
+import { LOCKS, STEPS, RELEASE_STEPS, EXTERNAL_GATES, inspectCheckout, preflight, sameCheckout, makeReport, runQualification } from '../scripts/qualification-coordinator.mjs';
 
-const initial=()=>({commit:'a'.repeat(40),clean:true,repoRoot:true,node:'v24.9.0',npmReady:true,browserReady:true,locks:Object.fromEntries(LOCKS.map(f=>[f,'b'.repeat(64)])),scripts:Object.fromEntries(STEPS.map(s=>[s.script,'node trusted.mjs']))});
+const initial=()=>({commit:'a'.repeat(40),clean:true,repoRoot:true,node:'v24.9.0',npmReady:true,browserReady:true,locks:Object.fromEntries(LOCKS.map(f=>[f,'b'.repeat(64)])),scripts:Object.fromEntries(RELEASE_STEPS.map(s=>[s.script,'node trusted.mjs']))});
 const harness=({states=[],results=[],base=initial(),profile='all'}={})=>{
  const calls=[],receipts=[];let count=0;
  const report=runQualification({profile,probe:()=>states[count++]??base,execute:step=>{calls.push(step.id);const value=results[calls.length-1];if(value instanceof Error)throw value;return value??{status:0};},save:r=>receipts.push(structuredClone(r)),now:()=> '2026-11-24T09:00:00.000Z'});
@@ -62,3 +62,35 @@ test('real CLI unknown option refuses execution',t=>{const {root}=fixture(t);con
 test('P1 profile excludes the missing P2 lock and records P2 as not-run',()=>{const s=initial();delete s.locks[LOCKS[2]];assert.deepEqual(preflight(s,'p1'),[]);assert.ok(preflight(s).some(x=>x.includes(LOCKS[2])));const {report,calls}=harness({base:s,profile:'p1'});assert.equal(report.profile,'p1');assert.equal(report.status,'automated-passed');assert.deepEqual(calls,STEPS.slice(0,4).map(x=>x.id));assert.ok(report.externalGates.some(x=>x.gate==='P2 NestJS runtime qualification'&&x.status==='not-run'));assert.equal(report.publicationApproved,false);});
 test('P1 still requires the actual React lock',()=>{const s=initial();delete s.locks[LOCKS[1]];assert.ok(preflight(s,'p1').some(x=>x.includes(LOCKS[1])));});
 test('unknown profile is rejected',()=>assert.throws(()=>makeReport(initial(),'unknown'),/Invalid qualification profile/));
+
+test('release profile requires full manuscript audit before expensive runtime gates',()=>{
+ const {report,calls}=harness({profile:'release'});
+ assert.equal(report.profile,'release');
+ assert.equal(report.status,'automated-passed');
+ assert.deepEqual(calls,RELEASE_STEPS.map(s=>s.id));
+ assert.equal(calls[0],'curriculum-source-audit');
+ assert.deepEqual(calls.slice(-3),['reading-edition-browser','responsive-discovery-browser','production-boundaries-browser']);
+ assert.equal(report.publicationApproved,false);
+ assert.ok(report.externalGates.some(x=>x.gate.includes('Deployment provenance')&&x.status==='not-run'));
+});
+test('release preflight refuses missing browser or manuscript script',()=>{
+ for(const step of RELEASE_STEPS.filter(s=>!STEPS.includes(s))){
+  const s=initial();delete s.scripts[step.script];
+  assert.ok(preflight(s,'release').includes('Missing npm script: '+step.script));
+ }
+});
+test('release source audit failure stops all later work',()=>{
+ const {report,calls}=harness({profile:'release',results:[{status:1}]});
+ assert.deepEqual(calls,['curriculum-source-audit']);
+ assert.equal(report.status,'failed');
+ assert.ok(report.steps.slice(1).every(x=>x.status==='not-run'));
+});
+test('real CLI release plan preserves explicit unexecuted state',t=>{
+ const {root,git}=fixture(t);
+ const result=spawnSync(process.execPath,[join(root,'scripts/qualification-coordinator.mjs'),'--plan-release'],{cwd:root,encoding:'utf8',env:{...process.env,npm_execpath:'',ACADEMY_BROWSER_ROOT:''}});
+ assert.equal(result.status,0,result.stderr);
+ const report=JSON.parse(result.stdout);
+ assert.equal(report.profile,'release');assert.equal(report.status,'not-run');
+ assert.deepEqual(report.steps.map(x=>x.id),RELEASE_STEPS.map(x=>x.id));assert.equal(report.publicationApproved,false);
+ assert.equal(git('status','--porcelain'),'');
+});

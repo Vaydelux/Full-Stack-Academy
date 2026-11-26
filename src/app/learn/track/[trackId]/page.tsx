@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation';
 import { isPublishedLesson } from '@/lib/academy/published';
 import { lessonsByModule, modulesByTrack, tracks, trackMap } from '@/lib/academy/curriculum';
 import { DocShell, DocNotice } from '@/components/course/DocShell';
-import { readCourseProgress } from '@/lib/academy/course-progress-server';
+import { readCourseProgress, readCurriculumAccess } from '@/lib/academy/course-progress-server';
 
 type TrackPageProps = { params: Promise<{ trackId: string }> };
 
@@ -28,7 +28,7 @@ export default async function TrackPage({ params }: TrackPageProps) {
   if (!track) notFound();
   const modules = modulesByTrack.get(trackId) ?? [];
   const roadmap=readCourseProgress();
-  const draftedIds=new Set(roadmap.draftIds);
+  const accessById = new Map(readCurriculumAccess().map(topic => [topic.id, topic.access]));
   const progressByModule=new Map(roadmap.phases.flatMap(p=>p.modules).map(m=>[m.id,m]));
   const count = modules.reduce((total, module) => total + (lessonsByModule.get(module.id)?.length ?? 0), 0);
   return (
@@ -50,7 +50,7 @@ export default async function TrackPage({ params }: TrackPageProps) {
             <ol className="mt-4 space-y-1.5">
               {(lessonsByModule.get(module.id) ?? []).map((lesson) => {
                 const published = isPublishedLesson(lesson.id);
-                const drafted=!published && draftedIds.has(lesson.id);
+                const drafted=!published && accessById.get(lesson.id) === 'reading';
                 return (
                   <li key={lesson.id}>
                     <Link href={`/learn/${lesson.id}`} className="flex items-start gap-3 rounded-lg p-2 hover:bg-slate-100 dark:hover:bg-white/[0.05]">

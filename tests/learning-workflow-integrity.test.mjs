@@ -29,10 +29,10 @@ test('lesson notes, bookmarks, and saved dashboard are wired without publishing 
   assert.match(read('src/app/sitemap.ts'), /PUBLISHED_LESSON_IDS/);
 });
 
-test('published-only catalog uses bounded progressive discovery not a 338-card static wall', () => {
+test('unified catalog uses bounded progressive discovery without changing saved-learning eligibility', () => {
   const page = read('src/app/learn/page.tsx');
   const ui = read('src/components/course/PublishedLessonExplorer.tsx');
-  assert.match(page, /<PublishedLessonExplorer catalog=\{publishedCatalog\}/);
+  assert.match(page, /<PublishedLessonExplorer catalog=\{curriculumCatalog\} edition="unified"/);
   assert.doesNotMatch(page, /aria-labelledby="published-title"/);
   assert.match(ui, /type="search"/);
   assert.match(ui, /aria-live="polite"/);
@@ -70,7 +70,7 @@ test('failed browser storage writes surface an explicit warning', () => {
   const store = read('src/lib/academy/store.ts');
   const notebook = read('src/components/course/LessonNotebook.tsx');
   const shelf = read('src/components/course/SavedLessonShelf.tsx');
-  assert.match(store, /storageError = !savePersisted\(next\)/);
+  assert.match(store, /storageError = state\.storageReadBlocked \|\| !savePersisted\(next\)/);
   assert.match(notebook, /Browser storage is unavailable or full/);
   assert.match(shelf, /Browser storage could not save/);
 });

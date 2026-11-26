@@ -41,7 +41,7 @@ test('release gate and checkpoint include real standalone built-in Node/HTTP sui
  assert.ok(cp.snapshot.authoredMdxLessons>=321,'minimum authoredMdxLessons coverage for this milestone');
  assert.ok(cp.snapshot.labFixtures>=321,'minimum labFixtures coverage for this milestone');
  assert.ok(cp.snapshot.completeModules.length>=40,'minimum completeModules.length coverage for this milestone');
- assert.equal(cp.snapshot.authoredReferenceDrafts,38);
+ assert.equal(cp.snapshot.authoredReferenceDrafts,JSON.parse(read('data/reference-index.json')).entries.length,'all canonical references must remain authored');
 });
 test('HTTP capstone has listener, bounds, error envelopes and conditional caching',()=>{
  const solution=read('labs/http-local-rest-contract/solution/solution.mjs');

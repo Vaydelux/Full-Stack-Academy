@@ -10,16 +10,17 @@ export function readingInventory(records, publishedIds) {
   return reading.sort((a, b) => a.id.localeCompare(b.id));
 }
 export function safeReference(raw) {
+  if (typeof raw !== 'string' || !/^https:\/\/[^/?#]/i.test(raw) || /[\s\\\x00-\x1f\x7f]/.test(raw)) return null;
   try { const url = new URL(raw); return url.protocol === 'https:' && !url.username && !url.password ? url.href : null; }
   catch { return null; }
 }
 export function inlineTokens(text) {
-  const tokens = [], pattern = /`([^`\n]+)`|\*\*([^*\n]+)\*\*|\[([^\]\n]+)\]\(([^\s)]+)\)/g;
+  const tokens = [], pattern = /`([^`\n]+)`|\*\*([^*\n]+)\*\*|\[([^\]\n]+)\]\(([^\s)]+)\)|(?<![\w*\\])\*([^*\s][^*\n]*?)\*(?![\w*])/g;
   let offset = 0;
   for (const m of text.matchAll(pattern)) {
     if (m.index > offset) tokens.push({ kind: 'text', text: text.slice(offset, m.index) });
     const href = m[4] && safeReference(m[4]);
-    tokens.push(m[1] ? { kind: 'code', text: m[1] } : m[2] ? { kind: 'strong', text: m[2] } : href ? { kind: 'link', text: m[3], href } : { kind: 'text', text: m[0] });
+    tokens.push(m[1] ? { kind: 'code', text: m[1] } : m[2] ? { kind: 'strong', text: m[2] } : href ? { kind: 'link', text: m[3], href } : m[5] ? { kind: 'emphasis', text: m[5] } : { kind: 'text', text: m[0] });
     offset = m.index + m[0].length;
   }
   if (offset < text.length) tokens.push({ kind: 'text', text: text.slice(offset) });
@@ -71,7 +72,35 @@ function teachingBlock(line) {
   return null;
 }
 const lessonImport = /^import \{ (?:LearningGoals, LessonStep, Misconception|KnowledgeCheck) \} from '@\/components\/course\/(?:LessonBlocks|KnowledgeCheck)';$/;
-const cells = line => line.trim().replace(/^\||\|$/g, '').split('|').map(s => s.trim());
+// Preserve escaped separators and matched inline code spans as cell content.
+function cells(line) {
+  const input = line.trim().replace(/^\|/, '');
+  const result = [];
+  let cell = '', i = 0;
+  while (i < input.length) {
+    const ch = input[i];
+    if (ch === '\\' && input[i + 1] === '|') {
+      cell += '|'; i += 2; continue;
+    }
+    if (ch === '`' && (i === 0 || input[i - 1] !== '\\')) {
+      const run = /^`+/.exec(input.slice(i))[0];
+      let end = i + run.length, matched = false;
+      while (end < input.length) {
+        if (input[end] !== '`') { end++; continue; }
+        const closing = /^`+/.exec(input.slice(end))[0];
+        if (closing.length === run.length) { end += closing.length; matched = true; break; }
+        end += closing.length;
+      }
+      if (matched) { cell += input.slice(i, end); i = end; continue; }
+      cell += run; i += run.length; continue;
+    }
+    if (ch === '|') { result.push(cell.trim()); cell = ''; }
+    else cell += ch;
+    i++;
+  }
+  if (!input.endsWith('|') || cell !== '') result.push(cell.trim());
+  return result;
+}
 export function parseReading(source) {
   if (typeof source !== 'string' || !source.trim() || Buffer.byteLength(source) > 256 * 1024) throw Error('Invalid or oversized reading source');
   const lines = source.replaceAll('\r\n', '\n').replace(/^---\n[\s\S]*?\n---\n/, '').split('\n');

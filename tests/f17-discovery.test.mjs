@@ -1,0 +1,12 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {normalizeDiscoveryQuery,searchAcademy} from '../scripts/academy-discovery.mjs';
+const lessons=[{id:'01.01.01',title:'Fetch API',context:'Web',status:'Published'},{id:'02.01.01',title:'Async requests',context:'Fetch API',status:'Reading · lab pending'}];
+const refs=[{id:'web-fetch',title:'Fetch',context:'Web API',summary:'HTTP requests',status:'Authored draft'}];
+test('empty and malformed queries are bounded and return no results',()=>{assert.equal(normalizeDiscoveryQuery(['x']),'');assert.equal(normalizeDiscoveryQuery('x'.repeat(200)).length,160);assert.equal(searchAcademy(lessons,refs,' ').total,0);});
+test('exact title ranks ahead of prefix and context',()=>assert.deepEqual(searchAcademy(lessons,refs,'FETCH').items.map(x=>x.id),['web-fetch','01.01.01','02.01.01']));
+test('search scopes and status remain distinct',()=>{assert.equal(searchAcademy(lessons,refs,'fetch','lessons').total,2);assert.equal(searchAcademy(lessons,refs,'fetch','references').items[0].status,'Authored draft');assert.equal(searchAcademy(lessons,refs,'async').items[0].status,'Reading · lab pending');});
+test('all tokens must match a single result and IDs work',()=>{assert.equal(searchAcademy(lessons,refs,'http requests').total,1);assert.equal(searchAcademy(lessons,refs,'01.01.01').items[0].kind,'lesson');});
+test('pagination is bounded and duplicate identities cannot inflate totals',()=>{const many=Array.from({length:45},(_,i)=>({id:String(i).padStart(2,'0'),title:'Topic',context:'Web',status:'Published'}));const result=searchAcademy([...many,many[0]],[],'topic','all',999);assert.equal(result.total,45);assert.equal(result.page,3);assert.equal(result.items.length,5);assert.equal(searchAcademy(many,[],'topic','all',-1).page,1);});
+test('source arrays are not mutated and distinct kinds keep same IDs',()=>{const input=[{id:'x',title:'Topic',context:'',status:'Published'}];const before=JSON.stringify(input);assert.equal(searchAcademy(input,input,'topic').total,2);assert.equal(JSON.stringify(input),before);});
+test('optional empty API parentheses match canonical reference names',()=>{assert.equal(searchAcademy(lessons,refs,'fetch()','references').items[0].id,'web-fetch');assert.equal(searchAcademy(lessons,refs,'()').total,0);});

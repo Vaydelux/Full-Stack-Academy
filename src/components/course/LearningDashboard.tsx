@@ -31,6 +31,7 @@ const buttonStyle = 'rounded-lg border border-slate-300 px-3 py-2 text-sm font-s
 
 export function LearningDashboard() {
   const hydrated = useAcademy((s) => s.hydrated);
+  const storageError = useAcademy((s) => s.storageError);
   const hydrate = useAcademy((s) => s.hydrate);
   const progress = useAcademy((s) => s.progress);
   const exportBackupJson = useAcademy((s) => s.exportBackupJson);
@@ -118,7 +119,20 @@ export function LearningDashboard() {
         A quieter way to continue your learning. Progress comes from your own knowledge checks and self-assessment, not automatic code grading. Everything here stays in this browser.
       </p>
 
-      <section aria-label="Learning progress" className="mt-8 grid gap-3 sm:grid-cols-3">
+      <section aria-labelledby="continue-heading" className="mt-5 rounded-xl border border-cyan-600/30 bg-cyan-50 p-6 dark:bg-cyan-300/[0.055]">
+        <h2 id="continue-heading" className="text-xl font-bold">Continue learning</h2>
+        {overview.nextLesson ? (
+          <>
+            <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">Your next available lesson is:</p>
+            <p className="mt-2 font-semibold">{overview.nextLesson.id} · {overview.nextLesson.title}</p>
+            <Link className="mt-4 inline-flex items-center gap-2 rounded-lg bg-cyan-700 px-4 py-2.5 text-sm font-bold text-white hover:bg-cyan-800" href={'/learn/' + overview.nextLesson.id}>
+              Resume lesson <ArrowRight size={16} aria-hidden="true" />
+            </Link>
+          </>
+        ) : <p className="mt-2 text-sm">Every currently published lesson is marked complete. New lessons will appear here as the course grows.</p>}
+      </section>
+
+      <section aria-label="Learning progress" className="mt-5 grid gap-3 md:grid-cols-3">
         <div className={statStyle}>
           <CheckCircle2 className="text-emerald-600 dark:text-emerald-300" size={21} aria-hidden="true" />
           <p className="mt-3 text-3xl font-extrabold tabular-nums">{overview.completed}<span className="text-base font-normal text-slate-500"> / {overview.total}</span></p>
@@ -140,20 +154,7 @@ export function LearningDashboard() {
         </div>
       </section>
 
-      <section aria-labelledby="continue-heading" className="mt-7 rounded-2xl border border-cyan-600/30 bg-cyan-50 p-6 dark:bg-cyan-300/[0.055]">
-        <h2 id="continue-heading" className="text-xl font-bold">Continue learning</h2>
-        {overview.nextLesson ? (
-          <>
-            <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">Your next available lesson is:</p>
-            <p className="mt-2 font-semibold">{overview.nextLesson.id} · {overview.nextLesson.title}</p>
-            <Link className="mt-4 inline-flex items-center gap-2 rounded-lg bg-cyan-700 px-4 py-2.5 text-sm font-bold text-white hover:bg-cyan-800" href={'/learn/' + overview.nextLesson.id}>
-              Resume lesson <ArrowRight size={16} aria-hidden="true" />
-            </Link>
-          </>
-        ) : <p className="mt-2 text-sm">Every currently published lesson is marked complete. New lessons will appear here as the course grows.</p>}
-      </section>
-
-      <p className="mt-5 text-sm text-slate-500">Looking for the course author's publication progress? <Link href="/learn/roadmap" className="font-semibold text-cyan-700 underline underline-offset-4 dark:text-cyan-300">View curriculum roadmap</Link>. Your own completions and notes are tracked separately.</p>
+      <p className="mt-5 text-sm text-slate-500">Looking for the course author&apos;s publication progress? <Link href="/learn/roadmap" className="font-semibold text-cyan-700 underline underline-offset-4 dark:text-cyan-300">View curriculum roadmap</Link>. Your own completions and notes are tracked separately.</p>
       <StudyPlanPanel />
       <SavedLessonShelf catalog={publishedCatalog} />
 
@@ -161,11 +162,11 @@ export function LearningDashboard() {
         <h2 id="module-progress-heading" className="text-xl font-bold">Your modules</h2>
         <p className="mt-2 text-sm text-slate-500">Search by topic or lesson ID, then jump into one module at a time.</p>
         <div className="mt-4 flex flex-wrap items-end gap-3">
-          <label className="flex min-w-56 flex-1 flex-col gap-1 text-xs font-semibold" htmlFor="dashboard-search">
+          <label className="flex min-w-0 basis-56 flex-1 flex-col gap-1 text-xs font-semibold" htmlFor="dashboard-search">
             Find a module or lesson
             <span className="relative">
               <Search aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" size={17} />
-              <input id="dashboard-search" value={query} onChange={(e) => { setQuery(e.target.value); setShown(18); }}
+              <input id="dashboard-search" maxLength={160} value={query} onChange={(e) => { setQuery(e.target.value); setShown(18); }}
                 type="search" placeholder="React, 06.01, HTTP…" className="w-full rounded-lg border border-slate-300 bg-white py-2.5 pl-10 pr-3 text-sm text-slate-900 outline-offset-2 focus-visible:outline-cyan-600 dark:border-white/20 dark:bg-[#15161c] dark:text-white" />
             </span>
           </label>
@@ -209,6 +210,7 @@ export function LearningDashboard() {
 
       <section aria-labelledby="backup-heading" className="mt-10 rounded-2xl border border-slate-200 p-5 dark:border-white/10">
         <h2 id="backup-heading" className="text-xl font-bold">Keep your progress</h2>
+        {storageError && <p role="alert" className="mt-3 text-sm font-semibold text-rose-700 dark:text-rose-300">Browser storage could not load or save progress. Current session changes may not survive reload. Export a backup before leaving; restore only a trusted backup.</p>}
         <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">
           Your bookmarks, notes, reflections, theme and self-assessed progress are stored in local browser storage. They do not sync across devices. Export a private JSON backup before clearing browser data.
         </p>

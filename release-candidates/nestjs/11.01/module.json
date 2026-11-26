@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "moduleId": "11.01",
-  "sourceCommit": "4d8f5cc4467ccb56cf09cb8dd2383304f38781a5",
+  "sourceCommit": "f569a493e7eaa58b1b87ed1e69734fc7b707541f",
   "publicationReady": false,
   "commonSourceBindings": [
     {
@@ -65,7 +65,7 @@
         },
         {
           "path": "examples/nestjs-vertical/tests/architecture.test.mjs",
-          "gitBlob": "28e8db549ef1568dbc59827d400c569aef52f929"
+          "gitBlob": "c9d9d09ac1fc51c08ddec9c4cdb7d010c99bb17b"
         }
       ],
       "targetPaths": [
@@ -164,7 +164,7 @@
         },
         {
           "path": "examples/nestjs-vertical/tests/architecture.test.mjs",
-          "gitBlob": "28e8db549ef1568dbc59827d400c569aef52f929"
+          "gitBlob": "c9d9d09ac1fc51c08ddec9c4cdb7d010c99bb17b"
         }
       ],
       "targetPaths": [
@@ -263,7 +263,7 @@
         },
         {
           "path": "examples/nestjs-vertical/tests/architecture.test.mjs",
-          "gitBlob": "28e8db549ef1568dbc59827d400c569aef52f929"
+          "gitBlob": "c9d9d09ac1fc51c08ddec9c4cdb7d010c99bb17b"
         }
       ],
       "targetPaths": [
@@ -362,7 +362,7 @@
         },
         {
           "path": "examples/nestjs-vertical/tests/architecture.test.mjs",
-          "gitBlob": "28e8db549ef1568dbc59827d400c569aef52f929"
+          "gitBlob": "c9d9d09ac1fc51c08ddec9c4cdb7d010c99bb17b"
         }
       ],
       "targetPaths": [
@@ -461,7 +461,7 @@
         },
         {
           "path": "examples/nestjs-vertical/tests/architecture.test.mjs",
-          "gitBlob": "28e8db549ef1568dbc59827d400c569aef52f929"
+          "gitBlob": "c9d9d09ac1fc51c08ddec9c4cdb7d010c99bb17b"
         }
       ],
       "targetPaths": [
@@ -560,7 +560,7 @@
         },
         {
           "path": "examples/nestjs-vertical/tests/architecture.test.mjs",
-          "gitBlob": "28e8db549ef1568dbc59827d400c569aef52f929"
+          "gitBlob": "c9d9d09ac1fc51c08ddec9c4cdb7d010c99bb17b"
         }
       ],
       "targetPaths": [
@@ -659,7 +659,7 @@
         },
         {
           "path": "examples/nestjs-vertical/tests/architecture.test.mjs",
-          "gitBlob": "28e8db549ef1568dbc59827d400c569aef52f929"
+          "gitBlob": "c9d9d09ac1fc51c08ddec9c4cdb7d010c99bb17b"
         }
       ],
       "targetPaths": [
@@ -758,7 +758,7 @@
         },
         {
           "path": "examples/nestjs-vertical/tests/architecture.test.mjs",
-          "gitBlob": "28e8db549ef1568dbc59827d400c569aef52f929"
+          "gitBlob": "c9d9d09ac1fc51c08ddec9c4cdb7d010c99bb17b"
         }
       ],
       "targetPaths": [

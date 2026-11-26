@@ -27,7 +27,9 @@ export function ProgressStorageSync() {
       try { storage = window.localStorage; } catch { return; }
       if (event.storageArea !== storage) return;
       if (event.key === STORAGE_KEY || event.key === null) {
-        useAcademy.getState().hydrate();
+        const state = useAcademy.getState();
+        // Do not erase unsaved changes in this tab after a failed read/write.
+        if (!state.storageError) state.hydrate();
       }
     };
     window.addEventListener('storage', onStorage);

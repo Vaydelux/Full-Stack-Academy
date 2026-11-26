@@ -12,7 +12,8 @@ const checkBoth = (slug, probe, expectedFailure) => verifyRedGreen(load, slug, p
 async function appResponse(rootModule,endpoint) {
   const app=await NestFactory.create(rootModule,new FastifyAdapter(),{logger:false});
   try {
-    const origin=await app.listen(0,'127.0.0.1');
+    await app.listen(0,'127.0.0.1');
+    const origin=await app.getUrl();
     const response=await fetch(origin+endpoint);
     return {status:response.status,body:await response.json()};
   } finally {await app.close();}
@@ -95,7 +96,8 @@ test('11.01.08 readiness returns HTTP 503 before confirmation',async()=>{
   Module({providers:[mod.Readiness],controllers:[mod.HealthController]})(Root);
   const app=await NestFactory.create(Root,new FastifyAdapter(),{logger:false});
   try {
-   const origin=await app.listen(0,'127.0.0.1');
+   await app.listen(0,'127.0.0.1');
+    const origin=await app.getUrl();
    const before=await fetch(origin+'/health');
    assert.equal(before.status,503);
    app.get(mod.Readiness).ready=true;

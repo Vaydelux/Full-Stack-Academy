@@ -27,7 +27,7 @@ export function audit({catalog,load,registry=''}) {
     if(!/https:\/\//.test(article))errors.push(topic.id+': missing reference URL');
     if(registry.includes(topic.id+'.mdx')||registry.includes(topic.id+'.meta.json'))errors.push(topic.id+': found in published registry');
   }
-  for(const module of ['15.01','15.02','15.03','15.04'])if(perModule[module]!==8)errors.push(module+': expected eight topics');
+  for(const courseModule of ['15.01','15.02','15.03','15.04'])if(perModule[courseModule]!==8)errors.push(courseModule+': expected eight topics');
   return {ok:errors.length===0,errors,topics:expected.length,perModule};
 }
 const current=fileURLToPath(import.meta.url);

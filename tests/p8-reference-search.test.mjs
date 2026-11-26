@@ -21,3 +21,9 @@ test('exact title outranks weaker authored matches',()=>assert.deepEqual(selectR
 test('unmatched term yields no entries',()=>assert.deepEqual(search({query:'nonsense'}),[]));
 test('search never mutates source array',()=>{const before=JSON.stringify(entries);search({query:'select'});assert.equal(JSON.stringify(entries),before);});
 test('tied titles are deterministic',()=>assert.deepEqual(selectReferences([{id:'z',title:'Same',category:'B'},{id:'a',title:'Same',category:'A'}],[]).map(e=>e.id),['a','z']));
+
+test('search includes authored summaries and versions without needing full code payload',()=>{
+ const data=[{id:'a',title:'Fetch',category:'Web',summary:'HTTP status checks',version:'Fetch API'},{id:'b',title:'Other',category:'Web'}];
+ assert.deepEqual(selectReferences(data,['a'],{query:'HTTP status'}).map(x=>x.id),['a']);
+ assert.deepEqual(selectReferences(data,['a'],{query:'Fetch API'}).map(x=>x.id),['a']);
+});

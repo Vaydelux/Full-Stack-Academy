@@ -38,7 +38,7 @@ test('every module in Track 10 has authored local lessons; RHF remains planned',
  assert.equal(cp.snapshot.authoredMdxLessons,337);
  assert.equal(cp.snapshot.labFixtures,337);
  assert.equal(cp.snapshot.completeModules.length,42);
- assert.equal(cp.snapshot.authoredReferenceDrafts,38);
+ assert.equal(cp.snapshot.authoredReferenceDrafts,JSON.parse(read('data/reference-index.json')).entries.length,'all canonical references must remain authored');
 });
 test('checked-in OpenAPI 3.1 security contract contains real operations and JSON schemas',()=>{
  const doc=JSON.parse(read('examples/task-contract/task-api.openapi.json'));

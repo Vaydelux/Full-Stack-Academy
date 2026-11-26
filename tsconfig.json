@@ -47,6 +47,7 @@
     "examples/p4-runtime/prisma",
     "labs/nestjs-*/**/*",
     "drafts/p4/labs",
-    "examples/p8-nest-integrity"
+    "examples/p8-nest-integrity",
+    "release-candidates/forms-query"
   ]
 }

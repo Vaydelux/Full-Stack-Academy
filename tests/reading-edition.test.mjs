@@ -24,3 +24,25 @@ test('reading inventory is independent of certified publication, filters retaine
 test('unclosed fence retains literal code and oversized source fails closed',()=>{
  assert.deepEqual(parseReading(fence+'sql\nSELECT 1;'),[{kind:'code',language:'sql',text:'SELECT 1;'}]);assert.throws(()=>parseReading('x'.repeat(256*1024+1)),/oversized/);
 });
+
+test('single-star emphasis renders in prose without changing code, bold or multiplication',()=>{
+ const tokens=inlineTokens('Understand *why* before **memorizing** '+String.fromCharCode(96)+'a*b'+String.fromCharCode(96)+' or calculating 2*3.');
+ assert.deepEqual(tokens.filter(t=>t.kind!=='text'),[{kind:'emphasis',text:'why'},{kind:'strong',text:'memorizing'},{kind:'code',text:'a*b'}]);
+ assert.deepEqual(inlineTokens('a*b*c and \\*literal*'),[{kind:'text',text:'a*b*c and \\*literal*'}]);
+});
+test('table rows retain escaped pipes and pipes in code without changing column count',()=>{
+ const tick=String.fromCharCode(96);
+ const b=parseReading(['| Type | Meaning |','| --- | --- |','| '+tick+'A | B'+tick+' | union |','| escaped \\| pipe | literal |','| end | |','## Next'].join('\n'));
+ assert.equal(b[0].kind,'table');
+ assert.deepEqual(b[0].rows,[[tick+'A | B'+tick,'union'],['escaped | pipe','literal'],['end','']]);
+ assert.equal(b[1].kind,'heading');
+});
+test('table supports matched multi-backtick spans and literal unmatched backticks',()=>{
+ const t=String.fromCharCode(96);
+ const b=parseReading(['| A | B |','| --- | --- |','| '+t+t+'x | '+t+'y'+t+t+' | ok |','| '+t+'unclosed | safe |'].join('\n'));
+ assert.deepEqual(b[0].rows,[[t+t+'x | '+t+'y'+t+t,'ok'],[t+'unclosed','safe']]);
+});
+test('HTTPS links require an explicit authority and reject ambiguous browser URL spellings',()=>{
+ for(const url of ['https:example.org','https:/example.org','https:///example.org','https://example.org\\@other.org',' https://example.org','https://exa\tmple.org']) assert.equal(safeReference(url),null,url);
+ assert.equal(safeReference('HTTPS://example.org/a?q=1#x'),'https://example.org/a?q=1#x');
+});

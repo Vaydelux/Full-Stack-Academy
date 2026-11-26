@@ -27,7 +27,7 @@ if(mode==='--recover'){
 assert.ok(!journalPending(gitDir),'Interrupted publication journal exists; stop all qualification processes and use --recover before proceeding');
 const head=assertP1Checkout(root,{reviewOnly:mode==='--review',evidencePath:mode==='--apply'?evidencePath(id):undefined});
 const next=JSON.parse(execFileSync(process.execPath,['scripts/publish-academy.mjs','--next'],{cwd:root,encoding:'utf8',timeout:60000,maxBuffer:1024*1024})).next;
-const catalog=json('data/curriculum.json'),checkpoint=json('docs/checkpoint.json'),module=buildPersistencePlan(catalog,read).modules.find(m=>m.id===id),projection=projectSqlModule(module,catalog,read,exists);
+const catalog=json('data/curriculum.json'),checkpoint=json('docs/checkpoint.json'),courseModule=buildPersistencePlan(catalog,read).modules.find(m=>m.id===id),projection=projectSqlModule(courseModule,catalog,read,exists);
 const fingerprint=()=>reviewFingerprint(git(['ls-files','--stage','-z']),id,projection.fingerprint),sourceSha256=fingerprint();
 const blockers=[];let order;try{order=requireOrder(next,id);}catch{blockers.push('Earlier curriculum module must be published first: '+(next?.id??'none'));}
 if(!/^v24\.(?:9|[1-9]\d+)\.\d+$/.test(process.version))blockers.push('Node 24.9+ stable required');
@@ -44,8 +44,8 @@ if(mode!=='--plan'){
  const run=(...args)=>{console.log('Qualification: npm '+args.join(' '));const result=spawnSync(process.execPath,[npm,...args],{cwd:root,stdio:'inherit',timeout:7200000,windowsHide:true,shell:false,env:{...process.env,NEXT_TELEMETRY_DISABLED:'1'}});assert.ok(result.status===0&&!result.error&&!result.signal,'Qualification failed: '+args.join(' '));};
  run('ci');run('run','checkpoint:check');run('run','test:curriculum-readiness');
  assertP1Checkout(root,{expectedHead:head,reviewOnly:mode==='--review'});assert.equal(fingerprint(),sourceSha256);
- const fixture=Object.keys(module.shared).find(p=>p.endsWith('/fixture.sql'));
- const results=module.topics.map(t=>{const dir='drafts/postgresql/labs/'+t.slug+'/';return runSqlPair({id:t.id,fixture:read(fixture),starter:read(dir+'starter.sql'),solution:read(dir+'solution.sql'),acceptance:read(dir+'acceptance.sql')});});
+ const fixture=Object.keys(courseModule.shared).find(p=>p.endsWith('/fixture.sql'));
+ const results=courseModule.topics.map(t=>{const dir='drafts/postgresql/labs/'+t.slug+'/';return runSqlPair({id:t.id,fixture:read(fixture),starter:read(dir+'starter.sql'),solution:read(dir+'solution.sql'),acceptance:read(dir+'acceptance.sql')});});
  const receipt=sqlReceipt(id,sourceSha256,results);if(review)assert.deepEqual(receipt,review.sql,'Current SQL results differ from review receipt');
  assertP1Checkout(root,{expectedHead:head,reviewOnly:mode==='--review'});assert.equal(fingerprint(),sourceSha256);
  const writes=new Map(projection.writes);
