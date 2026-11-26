@@ -1,3 +1,5 @@
+> **2026-11-26 current release baseline:** PR #73 merged; full offline matrix 82/82 passed, 337 instructor labs, 1252 static pages, prior real browser and isolated live-service evidence in NEXT_TODO.md. All 551 remaining manuscripts exist; 16 P1 candidate labs verified intact at merged source. Human approval not recorded. See [P1 human review worksheet](P1_HUMAN_REVIEW_WORKSHEET.md). Previous dated checkpoints below are historical. Publication count 338/889 remains unchanged.
+
 > **2026-11-25 P10.10 final editorial checkpoint:** All 40 Track 27 capstone manuscripts expanded; P10 editorial program reached **551/551 unique unpublished topics**, with **338/889 published** unchanged. Canonical source inventory verified at 889 unique IDs, zero uncovered/unknown IDs; one existing draft/published overlap `15.02.04`. Freeze scope at 28 tracks, 111 modules and 889 topics; allow corrections and qualified promotions only. New scope guard in existing curriculum readiness check; full Node24/Next/browser/DB/provider/manual review remains outstanding. Proceed with P9/P1 qualification, not more feature expansion. See `docs/CURRICULUM_SCOPE_FREEZE.md`.
 
 > **Latest P1 release preparation (2026-11-20):** Full eight-lesson RHF 09.02 promotion candidates now exist outside published registries with real-browser-backed individual test implementations and an isolated dynamic-port test runner. Source bundles reviewed 8/8; no fresh Node24/Chromium run or manual accessibility evidence is available here; the real nested npm lock is already present. `status:forms-query-rhf-candidates` and `test:forms-query-rhf-candidates` are source gates, **not release approval**. Module published total remains zero, overall total 338. See [P1 handoff](P1_RHF_PROMOTION_CANDIDATE.md).
@@ -8,7 +10,7 @@
 
 **Program established:** 2026-11-20  
 **Current canonical baseline:** 28 tracks · 111 modules · 889 topics · **338 published unique IDs** · 42 completed modules  
-**Work remaining:** **551 unpublished topics across 69 incomplete modules**, including **16 staged** React Hook Form / TanStack Query lessons and **535 without drafts**.  
+**Work remaining:** **551 unpublished topics across 69 incomplete modules**, all with authored manuscripts; 16 Forms/Query lessons have dedicated candidate bundles.  
 **Scope freeze:** Finish the existing curriculum before new tracks, product features or feature-heavy site redesigns. Security/reliability fixes that protect existing learning remain allowed.
 
 The canonical content and the live published registry determine all numbers. The script below generates phase status from actual files; this document is a development contract, **not** proof that unverified lessons have been published.
