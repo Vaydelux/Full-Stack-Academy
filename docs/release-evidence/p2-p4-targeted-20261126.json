@@ -1,0 +1,82 @@
+{
+  "scope": "P2-P4 targeted qualification",
+  "sourceCommit": "0345585f7b28e522bbffcb8b76111c0d12583b2d",
+  "node": "24.x",
+  "postgresql": "17.11",
+  "nestModules": [
+    {
+      "id": "11.01",
+      "steps": 6,
+      "logSha256": "80db9afb551199068a0169ff67a61686f938e1ace9527fb9d480d83c5362269a",
+      "status": "runtime-passed",
+      "exitCode": 0
+    },
+    {
+      "id": "11.02",
+      "steps": 6,
+      "logSha256": "8583e4a0ec1b68853c663d6a740d4b3cd818493d3cdd0b7d7417a36bd82f762f",
+      "status": "runtime-passed",
+      "exitCode": 0
+    },
+    {
+      "id": "11.03",
+      "steps": 7,
+      "logSha256": "c2d7ed0fe5c6ce49c4511604da82a8998996ebc24d59216681ee340d5c61d794",
+      "status": "runtime-passed",
+      "exitCode": 0
+    },
+    {
+      "id": "11.04",
+      "steps": 7,
+      "logSha256": "b96c5dc0fbfaf98ba38bd84fcd6e3ab12eca6873aa4afeeb2714477d21766407",
+      "status": "runtime-passed",
+      "exitCode": 0
+    }
+  ],
+  "extendedSql": {
+    "topics": [
+      "12.03.01",
+      "12.03.02",
+      "12.03.03",
+      "12.03.04",
+      "12.03.05",
+      "12.03.06",
+      "12.03.07",
+      "12.03.08",
+      "12.04.01",
+      "12.04.05",
+      "12.04.07",
+      "12.04.08"
+    ],
+    "exitCode": 0,
+    "logSha256": "8ec855f109ec0efbb2f843abdd35647b953786b7e9de11bc9b195312d8067f95"
+  },
+  "logicalRestore": {
+    "exitCode": 0,
+    "archiveBytes": 2251,
+    "archiveSha256": "07dc562f7766cec189774f11b07b64776f13fb55cc6d8e78dd27e237a669d6a3",
+    "contentSha256": "025546653affb8ddeb108e3f0a24f829ad41ccf9c0311d255947c7b19f790bf5",
+    "rows": 3,
+    "corruptArchiveRejected": true,
+    "logSha256": "f71e64e86d88d2bc85bab60af3959377c655666d74283a86c34dc529cbbb98c8",
+    "notQualified": [
+      "PITR",
+      "replication",
+      "role/ACL restoration",
+      "production recovery objectives"
+    ]
+  },
+  "testedSourceTree": "790eb5699ec1c66df3d9dec2ceb282fc4387d5bd",
+  "testedChangedBlobs": 45,
+  "persistenceRegression": {
+    "tests": 47,
+    "passed": 47,
+    "modulesProjected": 13,
+    "lessons": 104,
+    "executableSqlWrappers": 30,
+    "manualBlockedWrappers": 74,
+    "validQuizIndices": 104
+  },
+  "rawLogsRetained": false,
+  "publicationApproved": false
+}

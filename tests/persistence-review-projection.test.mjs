@@ -2,7 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
 import {spawnSync} from 'node:child_process';
-import {mkdtempSync,writeFileSync,rmSync} from 'node:fs';
+import {mkdtempSync,writeFileSync,rmSync,readFileSync,readdirSync} from 'node:fs';
+import {fileURLToPath} from 'node:url';
 import {join} from 'node:path';
 import {tmpdir} from 'node:os';
 import {extendedModules,projectPersistenceReview,topicObligations} from '../scripts/persistence-review-projection.mjs';
@@ -22,3 +23,23 @@ test('obligations preserve independent sessions and two-user checks, supplementa
 function complete(){const f=fixture('14.03'),p=project(f),template=evidenceTemplate(f.module.id,f.module.fingerprint,p),e=structuredClone(template),logs=new Map();Object.assign(e,{reviewer:'Named Reviewer',environment:'Disposable local test environment with synthetic accounts',date:'2026-11-26'});for(const l of e.lessons){l.positive='Authorized synthetic owner operation observed successfully.';l.negative='Foreign synthetic actor denied by intended policy.';for(const k of Object.keys(l.review))l.review[k]=true;for(const c of l.checks){c.observation='Observed separate runtime check and recorded output.';const name=l.id+'.'+c.kind+'.log',bytes=Buffer.from('synthetic fixture '+name);logs.set(name,bytes);c.artifactSha256=sha(bytes);}}return {template,e,logs,check:()=>checkEvidence(template,e,n=>logs.get(n),'2026-11-26')};}
 test('evidence checks exact per-topic/per-obligation bytes but never claims runtime qualification',()=>{const f=complete(),r=f.check();assert.equal(r.artifacts,16);assert.equal(r.artifactIntegrityVerified,true);assert.equal(r.authenticityVerified,false);assert.equal(r.runtimeQualified,false);assert.equal(r.publicationApproved,false);});
 test('evidence refuses incomplete, wrong source, changed artifact, missing two-user check and reused artifacts',()=>{for(const mutate of [f=>f.e.lessons[0].negative='',f=>f.e.sourceFingerprint='0'.repeat(64),f=>f.logs.set([...f.logs.keys()][0],Buffer.from('changed')),f=>f.e.lessons[0].checks.pop(),f=>f.e.lessons[0].review.keyboard=false,f=>{const [a,b]=[...f.logs.keys()];f.logs.set(b,f.logs.get(a));f.e.lessons[0].checks[1].artifactSha256=sha(f.logs.get(a));}]){const f=complete();mutate(f);assert.throws(f.check);}});
+
+test('actual persistence manuscripts have valid quiz indices and distinct metadata references',()=>{
+ const root=fileURLToPath(new URL('../',import.meta.url));
+ for(const family of ['postgresql','p4']){
+  const dir=join(root,'drafts',family,'lessons');
+  for(const name of readdirSync(dir).filter(n=>n.endsWith('.mdx'))){
+   const source=readFileSync(join(dir,name),'utf8');
+   const meta=JSON.parse(readFileSync(join(dir,name.replace(/\.mdx$/,'.meta.json')),'utf8'));
+   const urls=meta.officialReferences;
+   assert.ok(Array.isArray(urls)&&new Set(urls).size>=2&&urls.every(u=>new URL(u).protocol==='https:'&&source.includes(u)),name+' reference parity');
+   const quizzes=[...source.matchAll(/<KnowledgeCheck\b[\s\S]*?\/>/g)];
+   assert.ok(quizzes.length,name+' missing quiz');
+   for(const [tag] of quizzes){
+    const choices=JSON.parse(tag.match(/choices=\{(\[[\s\S]*?\])\}/)?.[1]??'null');
+    const index=tag.match(/correctIndex=\{([^}]+)\}/)?.[1];
+    assert.ok(Array.isArray(choices)&&choices.length>=2&&/^\d+$/.test(index??'')&&Number(index)<choices.length,name+' invalid quiz answer');
+   }
+  }
+ }
+});

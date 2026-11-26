@@ -13,7 +13,8 @@
   "reviewStatus": "unreviewed",
   "estimatedMinutes": 70,
   "officialReferences": [
-    "https://supabase.com/docs/guides/realtime/authorization"
+    "https://supabase.com/docs/guides/realtime/authorization",
+    "https://supabase.com/docs/guides/realtime/presence"
   ],
   "exerciseFormat": "ts"
 }

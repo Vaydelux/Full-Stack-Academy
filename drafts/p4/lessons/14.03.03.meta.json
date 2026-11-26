@@ -14,7 +14,7 @@
   "estimatedMinutes": 70,
   "officialReferences": [
     "https://supabase.com/docs/guides/database/postgres/testing-row-level-security",
-    "https://supabase.com/docs/guides/database/postgres/testing-row-level-security"
+    "https://supabase.com/docs/guides/database/postgres/row-level-security"
   ],
   "exerciseFormat": "sql"
 }

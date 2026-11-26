@@ -13,7 +13,7 @@
   ],
   "officialReferences": [
     "https://www.postgresql.org/docs/current/using-explain.html",
-    "https://www.postgresql.org/docs/current/using-explain.html"
+    "https://www.postgresql.org/docs/current/sql-explain.html"
   ],
   "evidenceMode": "manual-evidence",
   "securityBoundary": "EXPLAIN ANALYZE executes statements. Only use SELECT against disposable data here; be cautious with DML. On a tiny teaching table PostgreSQL may correctly choose a sequential scan, so no exact plan node is a grading contract."

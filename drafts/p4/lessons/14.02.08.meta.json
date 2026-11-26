@@ -14,7 +14,7 @@
   "estimatedMinutes": 100,
   "officialReferences": [
     "https://supabase.com/docs/guides/auth/server-side",
-    "https://supabase.com/docs/guides/auth/server-side"
+    "https://supabase.com/docs/guides/auth"
   ],
   "exerciseFormat": "ts"
 }

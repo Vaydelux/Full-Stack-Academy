@@ -103,7 +103,7 @@ Design a collaboration UI that uses presence only as an availability hint, while
 5. Evaluate retries, revocation, expiration and cleanup: Presence is ephemeral and not a durable user-status or access-control database. Private Realtime policy joins require real authenticated tests and may have connection-rate costs.
 
 <Misconception claim={"The starter uses a public room with a predictable tenant topic. Unauthorized clients may join, observe presence or receive messages."} correction={"Presence indicates connected participants; Broadcast carries ephemeral messages. Both need private-channel authorization, bounded payloads and clear disconnect lifecycle."} />
-<KnowledgeCheck question={"What does a Presence event prove?"} choices={["Permanent membership in a tenant","A current channel participant as reported by Realtime, not lasting authorization","A signed database migration","The validity of an admin role"]} correctIndex={undefined} explanation={"Use private:true and a trusted membership-based realtime.messages SELECT/INSERT policy. Use verified identity for presence keys and avoid trusting broadcast payloads as authoritative database state."} misconception={"Presence is ephemeral and not a durable user-status or access-control database. Private Realtime policy joins require real authenticated tests and may have connection-rate costs."} lessonId="14.04.06" />
+<KnowledgeCheck question={"What does a Presence event prove?"} choices={["Permanent membership in a tenant","A current channel participant as reported by Realtime, not lasting authorization","A signed database migration","The validity of an admin role"]} correctIndex={1} explanation={"Use private:true and a trusted membership-based realtime.messages SELECT/INSERT policy. Use verified identity for presence keys and avoid trusting broadcast payloads as authoritative database state."} misconception={"Presence is ephemeral and not a durable user-status or access-control database. Private Realtime policy joins require real authenticated tests and may have connection-rate costs."} lessonId="14.04.06" />
 
 ## Capstone extension
 
@@ -114,4 +114,4 @@ Implement a miniature two-tenant document workspace. Seed alpha and beta with se
 ## Official references
 
 - [Supabase reference — Presence and broadcast](https://supabase.com/docs/guides/realtime/authorization)
-- [Supabase Realtime Authorization](https://supabase.com/docs/guides/realtime/authorization)
+- [Supabase Presence](https://supabase.com/docs/guides/realtime/presence)

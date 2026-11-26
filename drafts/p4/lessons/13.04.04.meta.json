@@ -13,7 +13,8 @@
   "reviewStatus": "unreviewed",
   "estimatedMinutes": 70,
   "officialReferences": [
-    "https://www.postgresql.org/docs/current/user-manag.html"
+    "https://www.postgresql.org/docs/current/user-manag.html",
+    "https://supabase.com/docs/guides/api/securing-your-api"
   ],
   "exerciseFormat": "sql"
 }
