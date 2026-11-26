@@ -24,3 +24,7 @@ References: https://www.prisma.io/docs/orm/v7/prisma-client/setup-and-configurat
 
 ## Extended qualification
 The separate `examples/p5-distributed-runtime` workspace now contains SDK-based signed upload, signed download expiry and private Broadcast authorization acceptance source. See its README and run `npm run qualify:p4:supabase-extended` only after completing the documented independent local setup. Not live-qualified here.
+
+## Migration history and session lifecycle
+
+The Prisma qualification now checks the applied migration history against exact checked-out migration SQL SHA-256 bytes, rejects unfinished, duplicate, rolled-back or unexpected rows, repeats migrate deploy and rechecks history. This is intentionally stricter than newline-tolerant comparisons; use consistent checkout line endings and a fresh disposable database. Matching history does not establish full database schema drift detection. The second standalone Supabase SDK session exercise requires the distributed workspace's pinned dependencies, disposable local stack and default multi-session/refresh rotation behavior. Run npm run qualify:p4:supabase-session, or collect a supplemental receipt with npm run qualify:p4:evidence -- --collect supabase-session DIRECTORY. It verifies server identity, refresh rotation, local logout, refusal of the revoked refresh token and independent peer refresh, then signs out remaining synthetic sessions. It does not claim immediate JWT access-token revocation, browser SSR, OAuth or MFA qualification.

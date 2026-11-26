@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
-import {readFileSync,existsSync} from 'node:fs';
+import {readFileSync,existsSync,readdirSync} from 'node:fs';
+import {checksum,verifyHistory} from './migration-history.mjs';
 import {spawnSync} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
 import {pgConfig,preflightPg} from '../guard.mjs';
@@ -15,6 +16,9 @@ const {Client}=await import('pg');const client=new Client({connectionString:url,
 try{await client.connect();await preflightPg(client);}finally{await client.end();}
 function run(args){const p=spawnSync(process.execPath,args,{cwd:root,env:process.env,stdio:'pipe',encoding:'utf8',timeout:120000,maxBuffer:4*1024*1024,windowsHide:true});assert.ok(!p.error&&!p.signal&&p.status===0,'Prisma qualification step failed: '+args[0]+' '+(args[1]??''));return p.stdout;}
 for(const args of [['validate'],['generate'],['migrate','deploy'],['migrate','status']])run(['node_modules/prisma/build/index.js',...args]);
+const expected=readdirSync(new URL('prisma/migrations/',import.meta.url),{withFileTypes:true}).filter(e=>e.isDirectory()).map(e=>({name:e.name,checksum:checksum(readFileSync(new URL('prisma/migrations/'+e.name+'/migration.sql',import.meta.url)))}));
+async function audit(){const db=new Client({connectionString:url,connectionTimeoutMillis:5000,statement_timeout:5000});try{await db.connect();await preflightPg(db);const {rows}=await db.query('SELECT migration_name,checksum,finished_at,rolled_back_at,applied_steps_count FROM public._prisma_migrations');return verifyHistory(expected,rows);}finally{await db.end();}}
+await audit();run(['node_modules/prisma/build/index.js','migrate','deploy']);await audit();
 const output=run(['--experimental-transform-types','--test','--test-reporter=tap','live.test.mjs']);
 for(const [key,value] of [['tests',2],['pass',2],['fail',0],['cancelled',0],['skipped',0],['todo',0]])assert.equal(output.match(new RegExp('^# '+key+' '+value+'\\r?$','gm'))?.length,1,'Missing exact test result '+key);
 console.log('Prisma integration: real generated client/migration/CRUD test passed; module publication NOT approved.');
