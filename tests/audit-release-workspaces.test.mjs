@@ -7,8 +7,10 @@ const report = (levels = [], status = 0) => {
   const vulnerabilities = Object.fromEntries(levels.map((severity, i) => { counts[severity]++; return ['pkg' + i, { severity }]; }));
   return { status, stdout: JSON.stringify({ auditReportVersion: 2, vulnerabilities, metadata: { vulnerabilities: counts } }) };
 };
-const lock = JSON.stringify({ lockfileVersion: 3, packages: { '': {} } });
-const options = { root: resolve('fixture'), npm: resolve('npm-cli.js'), read: () => lock };
+const manifest = { name: 'fixture', version: '1.0.0', dependencies: { example: '^1.0.0' } };
+const lock = JSON.stringify({ lockfileVersion: 3, packages: { '': manifest, 'node_modules/example': { version: '1.0.0', integrity: 'sha512-QUJDRA==' } } });
+const readFixture = path => path.endsWith('package.json') ? JSON.stringify(manifest) : lock;
+const options = { root: resolve('fixture'), npm: resolve('npm-cli.js'), read: readFixture };
 test('zero or moderate findings pass only with successful audit exit', () => {
   assert.equal(inspectWorkspaceAudit(report()).passed, true);
   assert.equal(inspectWorkspaceAudit(report(['low', 'moderate'])).passed, true);
@@ -34,8 +36,24 @@ test('each independent workspace receives runtime and full audits with explicit 
 });
 test('missing lock and execution errors cannot produce successful aggregate', () => {
   let calls = 0;
-  const result = auditWorkspaces({ ...options, read: path => { if (path.includes('nestjs-vertical')) throw Error('missing'); return lock; }, execute: () => { calls++; throw Error('registry unavailable'); } });
+  const result = auditWorkspaces({ ...options, read: path => { if (path.includes('nestjs-vertical')) throw Error('missing'); return readFixture(path); }, execute: () => { calls++; throw Error('registry unavailable'); } });
   assert.equal(calls, 2); assert.equal(result.passed, false);
   assert.ok(result.results.some(r => r.reason === 'missing-or-invalid-lock'));
   assert.throws(() => auditWorkspaces({ ...options, npm: 'npm' }), /npm-cli/);
+});
+
+test('manifest drift or missing direct integrity blocks audit before execution', () => {
+  for (const mutate of [
+    fixture => { fixture.packages[''].dependencies.example = '^2.0.0'; },
+    fixture => { delete fixture.packages['node_modules/example'].integrity; },
+    fixture => { delete fixture.packages['node_modules/example']; },
+  ]) {
+    const invalid = JSON.parse(lock); mutate(invalid);
+    let calls = 0;
+    const result = auditWorkspaces({ ...options, read: path => path.endsWith('package.json') ? JSON.stringify(manifest) : JSON.stringify(invalid), execute: () => { calls++; return report(); } });
+    assert.equal(calls, 0);
+    assert.equal(result.passed, false);
+    assert.equal(result.results.length, WORKSPACES.length);
+    assert.ok(result.results.every(item => item.reason === 'missing-or-invalid-lock'));
+  }
 });

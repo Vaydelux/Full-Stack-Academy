@@ -222,3 +222,7 @@ npm run qualify:forms-query:full
 - The Forms/Query test command was invoked and the chained build completed; individual test output was unavailable in the returned log excerpt.
 - Vercel project paused again; no production promotion or GitHub Actions initiated.
 - Remaining release blockers: genuine NestJS workspace lockfile, root/workspace security audits, complete local release qualification including browser and route census, and required human/publication approvals. Do not infer lab certification from static generation. Do not trigger another deployment without authorization.
+
+## 2026-11-26 — F20.3 release gate consolidation
+
+The successful preview at a3a90d6 audited 353 executable MDX files with zero findings and generated all 889 curriculum and 303 reference routes. The branch subsequently added fail-closed root npm audit validation. The offline release matrix now requires both MDX expression tests and the executable MDX compiler audit. Independent workspace dependency audits first check manifest identity, direct dependency specifications, resolved direct packages and integrity field structure using the existing lock inspector. This does not authenticate npm tarballs or replace npm ci. The genuine NestJS lockfile, live registry audit, full offline matrix, browser/runtime tests and human accessibility/publication review remain outstanding. Do not deploy or publish from source-only evidence. No new deployment or GitHub Actions requested.

@@ -3,6 +3,7 @@ import { spawnSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { dirname, resolve, join, isAbsolute, basename } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { inspectLockManifest } from '../examples/nestjs-vertical/scripts/lock-integrity.mjs';
 
 export const WORKSPACES = Object.freeze(['examples/forms-query-vertical/react-client', 'examples/nestjs-vertical']);
 const severities = ['info', 'low', 'moderate', 'high', 'critical'];
@@ -32,7 +33,9 @@ export function auditWorkspaces({ root, npm, execute = spawnSync, read = readFil
     const cwd = join(root, workspace);
     try {
       const lock = JSON.parse(read(join(cwd, 'package-lock.json'), 'utf8'));
-      if (lock.lockfileVersion !== 3 || !lock.packages?.['']) throw Error('Invalid lock');
+      const manifest = JSON.parse(read(join(cwd, 'package.json'), 'utf8'));
+      const integrity = inspectLockManifest(manifest, lock);
+      if (!integrity.valid) throw Error(integrity.issues.join('; '));
     } catch { results.push({ workspace, passed: false, reason: 'missing-or-invalid-lock' }); continue; }
     for (const scope of ['runtime', 'all']) {
       const args = [npm, 'audit', '--json', '--audit-level=high', ...(scope === 'runtime' ? ['--omit=dev'] : [])];
