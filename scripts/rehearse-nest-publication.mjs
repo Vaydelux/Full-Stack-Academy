@@ -16,10 +16,10 @@ assert.ok(!extra.length&&(!id||MODULES.includes(id)),'Usage: npm run rehearse:ne
 const audit=inspectNestJsDrafts();assert.deepEqual(audit.issues,[]);
 const catalog=json('data/curriculum.json');
 const results=(id?[id]:MODULES).map(moduleId=>{
- const module=audit.modules.find(m=>m.moduleId===moduleId);
- if(module.published===8)return {moduleId,status:'already-published',changesWritten:0};
- assert.equal(module.published,0);
- const pack=json('release-candidates/nestjs/'+moduleId+'/module.json');
+ const courseModule=audit.modules.find(m=>m.moduleId===moduleId);
+ if(courseModule.published===8)return {moduleId,status:'already-published',changesWritten:0};
+ assert.equal(courseModule.published,0);
+ const pack=json('release-candidates/nestjs/'+moduleId+'/courseModule.json');
  const writes=projectNestModule(pack,catalog,read,exists);
  return {moduleId,status:'source-rehearsal',...projectionFingerprint(writes),lessons:8,changesWritten:0};
 });

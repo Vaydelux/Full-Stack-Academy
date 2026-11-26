@@ -73,7 +73,7 @@ export function inspectNestJsDrafts(){
  const nestLock=exists('examples/nestjs-vertical/package-lock.json');
  const byModule=modules.map(id=>({moduleId:id,drafted:topics.filter(t=>t.moduleId===id).length,published:topics.filter(t=>t.moduleId===id&&t.publication==='published').length,
   runtimeQualified:false,blockers:['Nest 12 real module and HTTP tests not run','Human accessibility evidence not recorded',...(nestLock?[]:['Trusted nested npm lockfile not generated'])]}));
- for(const module of byModule)if(![0,8].includes(module.published))problem(module.moduleId,'Nest module publication must be atomic');
+ for(const courseModule of byModule)if(![0,8].includes(courseModule.published))problem(courseModule.moduleId,'Nest module publication must be atomic');
  return {status:issues.length?'source-invalid':'draft-source-ready',publishedUnchanged:checkpoint.publishedLessons,
   drafted:topics.length,modules:byModule,topics,issues,realNestRuntimeExecuted:false,
   hasNpmLockfile:nestLock,canPublish:false,

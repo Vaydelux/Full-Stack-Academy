@@ -154,7 +154,7 @@ export function LearningDashboard() {
         </div>
       </section>
 
-      <p className="mt-5 text-sm text-slate-500">Looking for the course author's publication progress? <Link href="/learn/roadmap" className="font-semibold text-cyan-700 underline underline-offset-4 dark:text-cyan-300">View curriculum roadmap</Link>. Your own completions and notes are tracked separately.</p>
+      <p className="mt-5 text-sm text-slate-500">Looking for the course author&apos;s publication progress? <Link href="/learn/roadmap" className="font-semibold text-cyan-700 underline underline-offset-4 dark:text-cyan-300">View curriculum roadmap</Link>. Your own completions and notes are tracked separately.</p>
       <StudyPlanPanel />
       <SavedLessonShelf catalog={publishedCatalog} />
 

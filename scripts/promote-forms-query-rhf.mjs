@@ -58,9 +58,9 @@ function sourcePlan(){
  if(audited.issues.length||audited.candidateCount!==8)throw new Error('Candidate source audit failed: '+JSON.stringify(audited.issues));
  const promotion=inspectFormsQueryPromotion();
  if(promotion.sourceErrors.length)throw new Error('Draft source errors: '+JSON.stringify(promotion.sourceErrors));
- const module=promotion.modules.find(m=>m.id==='09.02');
- if(!module||![0,8].includes(module.published))throw new Error('RHF publication must be atomic: zero or eight');
- if(module.published===0&&module.staged!==8)throw new Error('Eight source-valid RHF drafts are required');
+ const courseModule=promotion.modules.find(m=>m.id==='09.02');
+ if(!courseModule||![0,8].includes(courseModule.published))throw new Error('RHF publication must be atomic: zero or eight');
+ if(courseModule.published===0&&courseModule.staged!==8)throw new Error('Eight source-valid RHF drafts are required');
  const versions=json('content/stack-versions.json');
  assert.equal(versions.reactHookForm,'7');
  assert.equal(versions.tanstackQuery,'5');
@@ -73,8 +73,8 @@ function sourcePlan(){
   assert.match(lock.packages?.['node_modules/'+dep]?.integrity??'',/^sha512-/);
  }
  return {moduleId:'09.02',publishedBefore:promotion.snapshot.published,
-  targetPublished:promotion.snapshot.published+(8-module.published),
-  alreadyPublished:module.published===8,
+  targetPublished:promotion.snapshot.published+(8-courseModule.published),
+  alreadyPublished:courseModule.published===8,
   sourceCandidates:ids,rootDependenciesUnchanged:true,
   reviewedSourceSha256:rhfReviewFingerprint(),
   requiredCommands:['npm ci','npm ci --prefix examples/forms-query-vertical/react-client',

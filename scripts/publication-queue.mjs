@@ -12,21 +12,21 @@ export const PROGRAM = Object.freeze([
  phase('P7','Platforms, enterprise and capstone',['24','25','26','27'],17,136,['Actual native, data, identity, billing and capstone integration tests']),
 ]);
 const legacy = '15.02.04';
-const phaseFor = module => module.track === '09'
- ? (['09.02','09.03'].includes(module.id) ? PROGRAM[0] : undefined)
- : PROGRAM.find(p=>p.tracks.includes(module.track));
+const phaseFor = courseModule => courseModule.track === '09'
+ ? (['09.02','09.03'].includes(courseModule.id) ? PROGRAM[0] : undefined)
+ : PROGRAM.find(p=>p.tracks.includes(courseModule.track));
 
 export function buildPublicationQueue(curriculum, publishedIds, stagedIds) {
  const published=new Set(publishedIds), staged=new Set(stagedIds);
  const groups=new Map(PROGRAM.map(p=>[p.id,[]]));
  const issues=[];
  let baseline=0;
- for(const module of [...curriculum.modules].sort((a,b)=>a.id.localeCompare(b.id))){
-  const ids=curriculum.lessons.filter(l=>l.moduleId===module.id).map(l=>l.id).sort();
-  const p=phaseFor(module);
+ for(const courseModule of [...curriculum.modules].sort((a,b)=>a.id.localeCompare(b.id))){
+  const ids=curriculum.lessons.filter(l=>l.moduleId===courseModule.id).map(l=>l.id).sort();
+  const p=phaseFor(courseModule);
   if(!p){
    baseline+=ids.length;
-   if(ids.some(id=>!published.has(id)))issues.push('Previously complete module regressed: '+module.id);
+   if(ids.some(id=>!published.has(id)))issues.push('Previously complete module regressed: '+courseModule.id);
    continue;
   }
   const preexisting=ids.filter(id=>id===legacy);
@@ -35,10 +35,10 @@ export function buildPublicationQueue(curriculum, publishedIds, stagedIds) {
   const remaining=planned.filter(id=>!published.has(id));
   const missingSource=remaining.filter(id=>!staged.has(id));
   const complete=remaining.length===0;
-  if(ids.length!==8)issues.push('Unexpected canonical module size: '+module.id);
-  if(remaining.length!==planned.length&&!complete)issues.push('Partial module publication: '+module.id);
-  if(missingSource.length)issues.push('Missing manuscript coverage: '+module.id);
-  groups.get(p.id).push({id:module.id,title:module.title,planned:planned.length,published:planned.length-remaining.length,
+  if(ids.length!==8)issues.push('Unexpected canonical module size: '+courseModule.id);
+  if(remaining.length!==planned.length&&!complete)issues.push('Partial module publication: '+courseModule.id);
+  if(missingSource.length)issues.push('Missing manuscript coverage: '+courseModule.id);
+  groups.get(p.id).push({id:courseModule.id,title:courseModule.title,planned:planned.length,published:planned.length-remaining.length,
    remaining,missingSource,preexisting,complete,qualification:'not-evaluated',publicationApproved:false});
  }
  assert.equal(baseline+1,338,'Historical publication scope changed');
