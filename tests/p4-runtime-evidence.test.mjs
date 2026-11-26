@@ -1,0 +1,11 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {suites,planSuite,createReceipt,validateReceipt} from '../scripts/p4-runtime-evidence.mjs';
+const commit='a'.repeat(40),good=id=>({status:0,stdout:suites[id].success+'\n'});
+test('three suite plans cover related topics without declaring topic completion',()=>{for(const id of Object.keys(suites)){const p=planSuite(id,commit,{nodeVersion:'24.11.1',tracked:()=>true,installed:()=>true});assert.deepEqual(p.blockers,[]);assert.equal(p.topicQualification,false);assert.equal(p.publicationApproved,false);assert.equal(new Set(p.relatedTopics).size,p.relatedTopics.length);}});
+test('Prisma lockfile and Node requirements cannot be bypassed',()=>{const p=planSuite('prisma',commit,{nodeVersion:'22.16.0',tracked:()=>false,installed:()=>false});assert.equal(p.blockers.length,3);});
+test('HTTP-only Supabase suite does not invent a package lock requirement',()=>{assert.deepEqual(planSuite('supabase',commit,{nodeVersion:'24.11.1',tracked:()=>false,installed:()=>false}).blockers,[]);});
+test('successful suites produce exact bounded receipts without stdout or secrets',()=>{for(const id of Object.keys(suites)){const r=createReceipt(id,commit,good(id));assert.equal(validateReceipt(r,id,commit),r);assert.equal(Object.hasOwn(r,'stdout'),false);}});
+test('failure, timeout, skipped or unexpected output cannot issue receipts',()=>{for(const patch of [{status:1},{signal:'SIGTERM'},{error:new Error('timeout')},{stdout:''},{stdout:suites.prisma.success+'\nextra'}])assert.throws(()=>createReceipt('prisma',commit,{...good('prisma'),...patch}));});
+test('receipt validation rejects stale commits, changed topic scope and approval claims',()=>{const r=createReceipt('prisma',commit,good('prisma'));assert.throws(()=>validateReceipt(r,'prisma','b'.repeat(40)));for(const patch of [{topicQualification:true},{publicationApproved:true},{relatedTopics:[]},{outcome:'skipped'},{extra:'data'}])assert.throws(()=>validateReceipt({...r,...patch},'prisma',commit));});
+test('unknown or inherited suites and invalid commits fail closed',()=>{for(const id of ['unknown','__proto__','constructor'])assert.throws(()=>createReceipt(id,commit,{}));assert.throws(()=>createReceipt('prisma','main',good('prisma')));});
