@@ -527,7 +527,7 @@
     "test:p5-postgres-inbox-source": "node --test examples/p5-integrations/postgres-inbox/adapter.test.mjs examples/p5-integrations/postgres-inbox/qualify.test.mjs examples/p5-integrations/postgres-inbox/live.test.mjs",
     "qualify:p5:inbox-sql": "node examples/p5-integrations/postgres-inbox/qualify.mjs --run",
     "qualify:p5:inbox-live": "node examples/p5-integrations/postgres-inbox/live.mjs --run-live",
-    "test:release-gate-coverage": "node scripts/offline-contract.mjs && node --test tests/offline-contract.test.mjs tests/offline-bundle-integrity.test.mjs tests/qualification-coordinator.test.mjs tests/f20-release-wiring.test.mjs tests/audit-release-workspaces.test.mjs tests/release-route-inventory.test.mjs tests/root-audit-report.test.mjs tests/package-validation.test.mjs",
+    "test:release-gate-coverage": "node scripts/offline-contract.mjs && node --test tests/offline-contract.test.mjs tests/offline-bundle-integrity.test.mjs tests/qualification-coordinator.test.mjs tests/f20-release-wiring.test.mjs tests/audit-release-workspaces.test.mjs tests/release-route-inventory.test.mjs tests/root-audit-report.test.mjs tests/package-validation.test.mjs tests/browser-qualification-exit.test.mjs",
     "qualify:academy:local": "node scripts/qualification-coordinator.mjs",
     "qualify:p5:postgres-search": "node examples/p5-integrations/postgres-search/qualify.mjs --run",
     "qualify:nestjs:module": "npm run qualify:module --prefix examples/nestjs-vertical --",

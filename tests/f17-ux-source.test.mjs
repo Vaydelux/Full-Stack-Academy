@@ -34,3 +34,11 @@ test('discovery precedes optional beginner content, and dashboard resume precede
  assert.equal(snapshot.publishedLessons,338);
  assert.equal(snapshot.labFixtures,337);
 });
+
+
+test('curriculum search filters can shrink below intrinsic select option width',()=>{
+ const explorer=read('src/components/course/PublishedLessonExplorer.tsx');
+ assert.match(explorer,/grid min-w-0 grid-cols-1 gap-3 sm:grid-cols-2/);
+ for(const id of ['search','module','level'])assert.ok(explorer.includes('htmlFor="lesson-explorer-'+id+'" className="flex min-w-0 flex-col'));
+ for(const id of ['module','level'])assert.ok(explorer.split('\n').some(line=>line.includes('id="lesson-explorer-'+id+'"')&&line.includes("className={controlClass + ' w-full'}")));
+});

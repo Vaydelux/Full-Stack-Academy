@@ -42,23 +42,23 @@ export function PublishedLessonExplorer({ catalog, edition = 'published' }: { ca
           <option value="all">All topics</option><option value="published">Published</option><option value="reading">Reading · lab pending</option><option value="planned">Planned</option>
         </select>
       </label>}
-      <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(0,1fr)_minmax(0,235px)_minmax(0,165px)]">
-        <label htmlFor="lesson-explorer-search" className="flex flex-col gap-1.5 text-xs font-semibold">
+      <div className="mt-4 grid min-w-0 grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(0,1fr)_minmax(0,235px)_minmax(0,165px)]">
+        <label htmlFor="lesson-explorer-search" className="flex min-w-0 flex-col gap-1.5 text-xs font-semibold">
           Search lessons
-          <span className="relative">
+          <span className="relative min-w-0">
             <Search size={17} aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
             <input id="lesson-explorer-search" type="search" maxLength={160} value={query} onChange={e => updateQuery(e.target.value)}
               placeholder="e.g. React effects, 10.03.01" className={controlClass + ' w-full pl-10'} />
           </span>
         </label>
-        <label htmlFor="lesson-explorer-module" className="flex flex-col gap-1.5 text-xs font-semibold">Module
-          <select id="lesson-explorer-module" value={moduleId} onChange={e => updateModule(e.target.value)} className={controlClass}>
+        <label htmlFor="lesson-explorer-module" className="flex min-w-0 flex-col gap-1.5 text-xs font-semibold">Module
+          <select id="lesson-explorer-module" value={moduleId} onChange={e => updateModule(e.target.value)} className={controlClass + ' w-full'}>
             <option value="">{unified ? 'All modules' : reading ? 'All reading modules' : 'All published modules'}</option>
             {availableModules.map(([id, name]) => <option key={id} value={id}>{id} · {name}</option>)}
           </select>
         </label>
-        <label htmlFor="lesson-explorer-level" className="flex flex-col gap-1.5 text-xs font-semibold">Level
-          <select id="lesson-explorer-level" value={level} onChange={e => updateLevel(e.target.value)} className={controlClass}>
+        <label htmlFor="lesson-explorer-level" className="flex min-w-0 flex-col gap-1.5 text-xs font-semibold">Level
+          <select id="lesson-explorer-level" value={level} onChange={e => updateLevel(e.target.value)} className={controlClass + ' w-full'}>
             <option value="">All levels</option>
             {levels.map(item => <option key={item} value={item}>{item}</option>)}
           </select>
