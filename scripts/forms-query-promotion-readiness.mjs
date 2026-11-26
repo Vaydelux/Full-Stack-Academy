@@ -13,6 +13,21 @@ const exists=p=>fs.existsSync(file(p));
 const read=p=>fs.readFileSync(file(p),'utf8');
 const json=p=>JSON.parse(read(p));
 const fence=new RegExp(String.fromCharCode(96).repeat(3)+'tsx\\s*\\n([\\s\\S]*?)\\n'+String.fromCharCode(96).repeat(3),'g');
+// SSR hydration has its own Next.js fixture, not a Vite lab entry.
+// This verifies source wiring only; actual browser qualification is independent.
+export function hasTopicBrowserSource(moduleId,slug,checks,ssr,launcher,browser){
+ if(moduleId==='09.03'&&slug==='ssr-hydration'){
+  return ssr.includes("export async function verifyStagedSsr(browser, apiOrigin)") &&
+   ssr.includes("drafts/forms-query/labs/ssr-hydration/") &&
+   ssr.includes("for (const variant of ['solution', 'starter'])") &&
+   ssr.includes("Prefetched title missing from server HTML") &&
+   ssr.includes("assert.equal(clientRequests.length, variant === 'solution' ? 0 : 1)") &&
+   launcher.includes("await verifyStagedSsr(browser,apiOrigin)") &&
+   browser.includes("await verifyStagedSsr(browser, apiOrigin)");
+ }
+ return checks[moduleId]?.includes("'"+slug+"': async")===true;
+}
+
 export function inspectFormsQueryPromotion(){
  const catalog=json('data/curriculum.json').lessons;
  const pkg=json('package.json'),nested=json('examples/forms-query-vertical/react-client/package.json');
@@ -20,6 +35,7 @@ export function inspectFormsQueryPromotion(){
  const versions=json('content/stack-versions.json');
  const checks={'09.02':read('scripts/verify-forms-query-staged-rhf.mjs'),'09.03':read('scripts/verify-forms-query-staged-query.mjs')};
  const browser=read('scripts/verify-forms-query-react-browser.mjs');
+ const ssr=read('scripts/verify-forms-query-staged-ssr.mjs'),launcher=read('scripts/verify-query-release-browser.mjs');
  const modules=[],topics=[],sourceErrors=[];
  const fail=(id,detail)=>sourceErrors.push({id,detail});
  for(const moduleId of ['09.02','09.03']){
@@ -68,7 +84,7 @@ export function inspectFormsQueryPromotion(){
    assert(meta.prerequisites?.length>=1&&meta.rubric?.length>=3,'Missing prerequisites/rubric');
    assert((mdx.match(/<LessonStep\b/g)||[]).length>=3&&mdx.includes('<KnowledgeCheck')&&mdx.includes('## Bug Hunt'),'Teaching sections absent');
    assert(blocks.length===2&&blocks[0]===starter&&blocks[1]===solution&&starter!==solution,'Broken starter/instructor MDX parity');
-   assert(checks[moduleId].includes("'"+slug+"': async"),'No topic-specific browser test');
+   assert(hasTopicBrowserSource(moduleId,slug,checks,ssr,launcher,browser),'No topic-specific browser test');
    assert(browser.includes('verifyStagedRHF')&&browser.includes('verifyStagedQuery')&&browser.includes('verifyStagedSsr'),'Missing browser/SSR qualification runner');
    for(const p of problems)fail(id,p);
    const live=[exists('src/content/lessons/'+id+'.mdx'),exists('src/content/lessons/'+id+'.meta.json'),
