@@ -22,3 +22,7 @@ Use a clean checkout, Node 24, genuine lockfiles, and disposable PostgreSQL 17+ 
 4. Complete genuine manual obligations, record observations, attach artifacts and fill the exported evidence.json with actual hashes. Use npm run publish:academy -- --check-review-evidence MODULE_ID DIRECTORY. That check verifies structure, artifact integrity and exact commit/topic bindings and typed results for the supported collected artifacts, not authenticity or release approval.
 
 A separate guarded live projection/apply mechanism for these mixed-evidence modules is still required. The existing manual wrappers deliberately fail. No browser, accessibility, production recovery or deployment approval is implied. Do not commit credentials, synthetic review fixtures or operational logs containing secrets.
+
+## Collector regression follow-up
+
+The collector checks exact canonical topic order and supported obligation per topic, validates the complete serialized artifact using the same typed validator as review checking before writing, and uses exclusive file creation with cleanup on caught write/postflight failures. Eight tests exercise the real temporary filesystem with injected SQL/runtime results (13 synthetic artifacts, not actual database evidence). Collision and checkout-drift failures preserve pre-existing evidence. A symlinked artifact directory is refused. Use a private external directory with one writer; process-crash recovery and hostile concurrent filesystem mutation are not covered. Manual obligations and publication gates remain unchanged.
