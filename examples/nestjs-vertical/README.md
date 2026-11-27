@@ -34,7 +34,7 @@ No full qualification was run in the authoring environment. Do not mark 32/32 gr
 
 Two additional **authored, unexecuted** integration tests are now required before declaring P2 verified:
 
-- `npm run test:integration:pg` — creates a PostgreSQL **temporary** wallets table on a dedicated client, forces a real integer-overflow failure on the second UPDATE, asserts the first debit is rolled back, and checks the success case commits both changes. The test fails unless `PG_TEST_URL` and `ACADEMY_ISOLATED_PG=YES` are supplied. Set the URL to a **disposable isolated database**, never production. It does not alter permanent schemas.
+- `npm run test:integration:pg` — creates a PostgreSQL **temporary** wallets table on a dedicated client, forces a real integer-overflow failure on the second UPDATE, asserts the first debit is rolled back, and checks the success case commits both changes. The test fails unless `PG_TEST_URL` and `ACADEMY_ISOLATED_PG=YES` are supplied. Use a dedicated PostgreSQL 17 test database named `academy_test` or `academy_test_nest`, with an explicit restricted role/password and numeric loopback address (`127.0.0.1` or `::1`). The guard rejects connection overrides, privileged roles and privileged role membership, and checks actual session identity before writing. Never production. It does not alter permanent schemas.
 - `npm run test:integration:sockets` — launches an actual Nest/Fastify/Socket.IO gateway on ephemeral loopback, authenticates two independent clients using **test-only** token-to-tenant middleware, attempts to spoof tenant identity in the client handshake and message, and asserts a tenant's events do not reach the other. The toy credentials are **not** a production authentication design.
 
 The production-like service skeleton remains a teaching sample, not an internet-facing hardened server. These tests establish only their specific behaviors, and still require actual execution and security review.
@@ -47,7 +47,7 @@ Run on an appropriate Node 24 machine:
 cd examples/nestjs-vertical
 npm install --package-lock-only
 export ACADEMY_ISOLATED_PG=YES
-export PG_TEST_URL='postgres://test-user:...@localhost:5432/academy_test'
+export PG_TEST_URL='postgres://test-user:...@127.0.0.1:5432/academy_test_nest'
 npm run qualify:release
 ```
 
