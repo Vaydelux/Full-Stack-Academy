@@ -1,6 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
+import {execFileSync} from 'node:child_process';
+import {fileURLToPath} from 'node:url';
 import {AUTHORED_REFERENCES} from '../src/lib/academy/authored-content.ts';
 import {validateReferenceDrafts,referenceCoverage} from '../scripts/reference-quality.mjs';
 import {buildReferenceLinks,relatedReferences,relatedCurriculum} from '../scripts/reference-links.mjs';
@@ -144,6 +146,9 @@ test('entire encyclopedia retains valid reversible lesson links and draft state'
  }
  const snapshot=json('docs/checkpoint.json').snapshot;
  assert.equal(snapshot.authoredReferenceDrafts,303);
- assert.equal(snapshot.publishedLessons,338);
- assert.equal(snapshot.authoredMdxLessons,337);
+ assert.ok(snapshot.publishedLessons>=338,'Published lesson baseline regressed');
+ assert.ok(snapshot.authoredMdxLessons>=337,'MDX lesson baseline regressed');
+ // Reference authorship cannot fabricate lesson publication. Recompute the
+ // checkpoint from actual lesson metadata, interactive IDs and lab manifests.
+ execFileSync(process.execPath,['scripts/checkpoint-status.mjs','--check'],{cwd:fileURLToPath(new URL('../',import.meta.url)),encoding:'utf8',timeout:30000});
 });

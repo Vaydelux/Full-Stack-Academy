@@ -1,6 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
+import {execFileSync} from 'node:child_process';
+import {fileURLToPath} from 'node:url';
 import {AUTHORED_REFERENCES} from '../src/lib/academy/authored-content.ts';
 import {validateReferenceDrafts,referenceCoverage} from '../scripts/reference-quality.mjs';
 import {buildReferenceLinks,relatedReferences,relatedCurriculum} from '../scripts/reference-links.mjs';
@@ -84,11 +86,14 @@ test('F15 backend references are bidirectionally linked to their real canonical 
   for(const lesson of linked)assert.ok(relatedReferences(graph,entries,lesson.id).some(x=>x.id===ref.id&&x.authored),ref.id+' '+lesson.id);
  }
 });
-test('coverage matches the actual checkpoint and cannot increase published lesson count',()=>{
+test('reference coverage matches checkpoint without fabricating published lesson counts',()=>{
  const coverage=referenceCoverage(entries,AUTHORED_REFERENCES.map(ref=>ref.id));
  const snapshot=json('docs/checkpoint.json').snapshot;
  assert.equal(coverage.reduce((n,row)=>n+row.authored,0),snapshot.authoredReferenceDrafts);
  assert.equal(coverage.reduce((n,row)=>n+row.indexed,0),entries.length);
- assert.equal(snapshot.publishedLessons,338);
- assert.equal(snapshot.authoredMdxLessons,337);
+ assert.ok(snapshot.publishedLessons>=338,'Published lesson baseline regressed');
+ assert.ok(snapshot.authoredMdxLessons>=337,'MDX lesson baseline regressed');
+ // Reference authorship cannot fabricate lesson publication. Recompute the
+ // checkpoint from actual lesson metadata, interactive IDs and lab manifests.
+ execFileSync(process.execPath,['scripts/checkpoint-status.mjs','--check'],{cwd:fileURLToPath(new URL('../',import.meta.url)),encoding:'utf8',timeout:30000});
 });
