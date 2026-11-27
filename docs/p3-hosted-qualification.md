@@ -1,0 +1,3 @@
+# P3 hosted qualification
+
+The earlier 386 rehearsal passed on 780f8de (run 46004962832). This independent hosted workflow invokes the existing PostgreSQL 17 isolated launcher in runtime and 410-fixture modes, in separate runners. Uses major-17 clients, isolated browser verifier and restricted database roles. No production database, publish or deploy. The runtime job attempts 24 semantic pairs, eight concurrency checks, and performance/restore evidence; the rehearsal executes the combined live instructor and browser gates. Client installation, complete runtime, and all lesson-level review remain unverified until run results. Existing P1 workflow remains intact.
