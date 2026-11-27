@@ -5,6 +5,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
+import { sqlLabTimeout } from './pg-lab-policy.mjs';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const labsRoot=path.join(root,'labs');
@@ -27,7 +28,7 @@ for(const entry of fs.readdirSync(labsRoot,{withFileTypes:true}).filter(x=>x.isD
  seen.add(resolved);
  // Real-browser labs must not start dozens of Chromium processes in one test batch.
  if(manifest.runtime==='postgresql-17-local'){
-  if(!/^labs\/postgresql-12-0[12]-0[1-8]\/solution\.test\.mjs$/.test(testFile))throw Error('Invalid published PostgreSQL test path: '+testFile);
+  sqlLabTimeout(testFile);
   sqlFiles.push(testFile);
  }else if(typeof manifest.runtime==='string'&&manifest.runtime==='node-24-nestjs-12-typescript-6')nestFiles.push(testFile);
  else if(typeof manifest.runtime==='string'&&manifest.runtime.includes('browser'))browserFiles.push(testFile);
@@ -77,7 +78,7 @@ if(!process.exitCode){
 if(!process.exitCode){
  for(const file of sqlFiles){
   console.log('\n=== Isolated PostgreSQL local lab: '+file+' ===');
-  const result=spawnSync(process.execPath,['--test',file],{cwd:root,env:process.env,stdio:'inherit',timeout:60000});
+  const result=spawnSync(process.execPath,['--test',file],{cwd:root,env:process.env,stdio:'inherit',timeout:sqlLabTimeout(file)});
   if(result.error||result.status!==0){console.error('PostgreSQL lab failed:',result.error?.message??'exit '+result.status);process.exitCode=1;break;}
  }
 }

@@ -5,6 +5,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { execFileSync } from 'node:child_process';
 import { assertP1Checkout, REVIEW_FIXTURE_STATUS, markP1ReviewFixture } from './p1-publication-review.mjs';
+import { rehearseP3Source } from './p3-source-rehearsal.mjs';
 import { projectNestModule, registryPaths } from './nest-release-projection.mjs';
 import { inspectNestJsDrafts } from './verify-nestjs-drafts.mjs';
 import { nestPromotionOrder, NEST_MODULES } from './nest-promotion-guard.mjs';
@@ -107,6 +108,8 @@ function main(){
  run('run','verify:offline');verify();
  browser();verify();
  for(const id of NEST_MODULES){browser('--nest-module',id);verify();}
+ const p3=rehearseP3Source({checkpoint:json(checkpointPath),catalog,read,exists});verify();
+ console.log(JSON.stringify(p3,null,2));
  console.log(JSON.stringify({status:'disposable-review-fixture',commit:head,publishedLessons:386,modules:results,projection:projectionFingerprint(expected),publicationApproved:false,committed:false,deployed:false},null,2));
 }
 if(process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.url))main();
