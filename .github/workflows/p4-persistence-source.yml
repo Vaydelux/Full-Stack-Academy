@@ -1,0 +1,37 @@
+name: P4 persistence source chain audit
+on:
+  push:
+    branches: [publication/p4-runtime-qualification]
+    paths:
+      - '.github/workflows/p4-persistence-source.yml'
+      - 'scripts/p3-source-rehearsal.mjs'
+      - 'scripts/audit-p4-source-chain.mjs'
+      - 'scripts/persistence-review-projection.mjs'
+      - 'drafts/p4/**'
+permissions:
+  contents: read
+jobs:
+  source-chain:
+    runs-on: ubuntu-24.04
+    if: github.repository == 'Vaydelux/Full-Stack-Academy'
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.11.1'
+      - name: Validate all persistence source projections without writing to checkout
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --test tests/p3-source-rehearsal.test.mjs tests/persistence-review-projection.test.mjs
+          node scripts/audit-p4-source-chain.mjs > "$RUNNER_TEMP/p4-source-chain.json"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: p4-source-chain-${{ github.sha }}
+          path: ${{ runner.temp }}/p4-source-chain.json
+          if-no-files-found: error
+          retention-days: 7

@@ -3,6 +3,10 @@ name: P4 retain qualified Prisma lock
 on:
   push:
     branches: [publication/p4-runtime-qualification]
+    paths:
+      - '.github/workflows/p4-prisma-runtime.yml'
+      - 'scripts/verify-prisma-artifact*.mjs'
+      - 'examples/p4-runtime/prisma/package-lock.json'
 
 permissions:
   contents: read
