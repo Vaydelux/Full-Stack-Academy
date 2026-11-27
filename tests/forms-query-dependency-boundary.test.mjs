@@ -47,10 +47,11 @@ test('root application compiler excludes independent staged teaching labs withou
 });
 
 test('dynamic field array prose renders the React key as literal inline code',()=>{
- const source=read('drafts/forms-query/lessons/09.02.04.mdx');
- const prose=source.split('\n').filter(line=>/^(?:\*\*What breaks|1\. \*\*Reproduce)/.test(line));
- assert.equal(prose.length,2);
- for(const line of prose) assert.ok(line.includes('`key={index}`'));
+ for(const file of ['drafts/forms-query/lessons/09.02.04.mdx','release-candidates/forms-query/09.02/lessons/09.02.04.mdx']){
+  const prose=read(file).split('\n').filter(line=>/^(?:\*\*What breaks|1\. \*\*Reproduce)/.test(line));
+  assert.equal(prose.length,2,file);
+  for(const line of prose) assert.ok(line.includes('`key={index}`'),file);
+ }
 });
 
 test('published standalone lab files remain outside Next but inside strict nested typechecking',()=>{

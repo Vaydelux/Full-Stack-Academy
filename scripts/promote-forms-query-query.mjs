@@ -183,6 +183,7 @@ function applyTransaction(projection,reviewSha){
   exec('npm',['run','checkpoint:write'],30_000);
   // Typecheck copied instructor/starter sources with their real nested libraries.
   exec('npm',['run','typecheck:staged','--prefix','examples/forms-query-vertical/react-client']);
+  exec('npm',['run','audit:mdx:expressions']);
   if(mode==='--review'){
    exec('npm',['run','verify:content']);
    exec('npm',['run','build']);
