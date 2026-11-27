@@ -57,7 +57,7 @@ jobs:
         run: |
           set -o pipefail
           npm run qualify:academy:local -- --run-p1 2>&1 | tee "$RUNNER_TEMP/p1-qualification.log"
-      - name: Rehearse RHF publication in detached disposable worktree
+      - name: Rehearse RHF and Query publication in detached disposable worktree
         shell: bash
         run: |
           set -euo pipefail
@@ -71,6 +71,10 @@ jobs:
             npm run promote:forms-query:query -- --simulate
             npm run promote:forms-query:rhf -- --review
             node -e 'const c=require("./docs/checkpoint.json");if(c.status!=="LOCAL-REVIEW-FIXTURE-DO-NOT-COMMIT"||c.snapshot.publishedLessons!==346)process.exit(1)'
+            npm run verify:offline
+            node scripts/verify-academy-browser.mjs
+            npm run promote:forms-query:query -- --review
+            node -e 'const c=require("./docs/checkpoint.json");if(c.status!=="LOCAL-REVIEW-FIXTURE-DO-NOT-COMMIT"||c.snapshot.publishedLessons!==354)process.exit(1)'
             npm run verify:offline
             node scripts/verify-academy-browser.mjs
           ) 2>&1 | tee "$RUNNER_TEMP/p1-review-rehearsal.log"

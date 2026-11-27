@@ -1,11 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
-import { mkdtempSync, writeFileSync, rmSync, mkdirSync } from 'node:fs';
+import { mkdtempSync, writeFileSync, rmSync, mkdirSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { p1ModuleStates, expectedP1Publication, verifyP1RouteState } from '../scripts/p1-browser-state.mjs';
-import { assertP1Checkout, markP1ReviewFixture, REVIEW_FIXTURE_STATUS } from '../scripts/p1-publication-review.mjs';
+import { assertP1Checkout, assertP1ReviewPredecessor, markP1ReviewFixture, REVIEW_FIXTURE_STATUS } from '../scripts/p1-publication-review.mjs';
 const files=id=>Array.from({length:8},(_,i)=>id+'.'+String(i+1).padStart(2,'0')+'.meta.json');
 test('metadata accepts 338, 346 and 354 transitions',()=>{
   assert.deepEqual(p1ModuleStates([]),{'09.02':false,'09.03':false});
@@ -68,4 +68,21 @@ test('legacy boundary is derived from metadata at all three atomic publication s
  assert.throws(()=>expectedP1Publication('09.02.01',rhf.slice(1)));
  assert.throws(()=>expectedP1Publication('09.03.01',query));
  assert.throws(()=>expectedP1Publication('09.04.01',[]));
+});
+
+test('chained review accepts exact detached RHF fixture and rejects tampering or unrelated edits',t=>{
+ const {root,worktree,git}=fixture(t);
+ git('worktree','add','--detach',worktree);
+ const projection=new Map(Array.from({length:50},(_,i)=>['projected-'+i,'expected-'+i]));
+ for(const [name,body] of projection)writeFileSync(path.join(worktree,name),body);
+ const checkpoint=markP1ReviewFixture({snapshot:{publishedLessons:346,completeModules:['09.02']}},'09.02');
+ const opts={head:git('rev-parse','HEAD'),projection,checkpoint,readActual:name=>readFileSync(path.join(worktree,name),'utf8')};
+ assert.doesNotThrow(()=>assertP1ReviewPredecessor(worktree,opts));
+ assert.throws(()=>assertP1ReviewPredecessor(root,opts),/detached/);
+ assert.throws(()=>assertP1ReviewPredecessor(worktree,{...opts,checkpoint:{...checkpoint,status:'published'}}),/review-only/);
+ writeFileSync(path.join(worktree,'projected-0'),'tampered');
+ assert.throws(()=>assertP1ReviewPredecessor(worktree,opts),/exact reviewed/);
+ writeFileSync(path.join(worktree,'projected-0'),'expected-0');
+ writeFileSync(path.join(worktree,'unrelated'),'unexpected');
+ assert.throws(()=>assertP1ReviewPredecessor(worktree,opts),/Unexpected/);
 });

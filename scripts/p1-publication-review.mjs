@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
 import { lstatSync, realpathSync } from 'node:fs';
+import { verifyProjectionOnDisk } from './forms-query-projection-integrity.mjs';
 import path from 'node:path';
 
 export const REVIEW_FIXTURE_DATE = '2000-01-01';
@@ -29,4 +30,17 @@ export function assertP1Checkout(root, {reviewOnly=false, evidencePath, expected
 /** A review fixture is never a release receipt. */
 export function markP1ReviewFixture(record,id) {
   return {...record,status:REVIEW_FIXTURE_STATUS,development:{...record.development,state:REVIEW_FIXTURE_STATUS,note:'Disposable local review of '+id+' only. Fixture dates are not human evidence.'},nextMilestone:'Conduct real accessibility review, then discard this worktree. Never commit or deploy this fixture.'};
+}
+
+/** A chained review may accept only the exact deterministic RHF projection.
+ * It is never a clean release checkout and must remain detached and uncommitted.
+ */
+export function assertP1ReviewPredecessor(root,{head,projection,checkpoint,readActual}){
+  assert.equal(checkpoint.status,REVIEW_FIXTURE_STATUS,'Expected RHF review-only checkpoint');
+  assert.equal(checkpoint.development?.state,REVIEW_FIXTURE_STATUS,'Missing review-only provenance');
+  assert.equal(checkpoint.snapshot?.publishedLessons,346,'Expected 346-lesson RHF fixture');
+  assert.ok(checkpoint.snapshot.completeModules.includes('09.02')&&!checkpoint.snapshot.completeModules.includes('09.03'),'Invalid prerequisite module state');
+  assert.equal(projection.size,50,'Expected exact RHF fixture inventory');
+  assertP1Checkout(root,{reviewOnly:true,expectedHead:head,allowedChanges:new Set([...projection.keys(),'docs/checkpoint.json'])});
+  verifyProjectionOnDisk(projection,readActual);
 }
