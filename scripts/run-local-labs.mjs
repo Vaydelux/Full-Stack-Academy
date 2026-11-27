@@ -5,7 +5,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
-import { sqlLabTimeout } from './pg-lab-policy.mjs';
+import { sqlLabTimeout, nestLabEnvironment } from './pg-lab-policy.mjs';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const labsRoot=path.join(root,'labs');
@@ -71,7 +71,7 @@ if(!process.exitCode){
 if(!process.exitCode){
  for(const file of nestFiles){
   console.log('\n=== Isolated NestJS local lab: '+file+' ===');
-  const result=spawnSync(process.execPath,['--test',file],{cwd:root,env:process.env,stdio:'inherit',timeout:480000});
+  const result=spawnSync(process.execPath,['--test',file],{cwd:root,env:nestLabEnvironment(process.env,sqlFiles.length>0),stdio:'inherit',timeout:480000});
   if(result.error||result.status!==0){console.error('NestJS lab failed:',result.error?.message??'exit '+result.status);process.exitCode=1;break;}
  }
 }
