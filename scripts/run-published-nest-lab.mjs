@@ -26,6 +26,9 @@ export function verifyTap(result,count){
   assert.equal(Number(matches[0][1]),value,'Unexpected TAP '+key);
  }
 }
+export function independentTestEnvironment(parent=process.env){
+ const env={...parent};delete env.NODE_TEST_CONTEXT;return env;
+}
 export function runPublishedNestLab(id,slug){
  const plan=nestLabPlan(id,slug),p=plan.paths;
  const candidate=JSON.parse(read('release-candidates/nestjs/'+id.slice(0,5)+'/module.json')).candidates.find(c=>c.id===id);
@@ -36,7 +39,7 @@ export function runPublishedNestLab(id,slug){
  fs.mkdirSync(mutex);
  try{
   for(const step of plan.steps){
-   const result=spawnSync(process.execPath,step.args,{cwd:workspace,encoding:'utf8',timeout:90000,maxBuffer:4*1024*1024,windowsHide:true});
+   const result=spawnSync(process.execPath,step.args,{cwd:workspace,env:independentTestEnvironment(),encoding:'utf8',timeout:90000,maxBuffer:4*1024*1024,windowsHide:true});
    if(result.stdout)process.stdout.write(result.stdout);
    if(result.stderr)process.stderr.write(result.stderr);
    verifyTap(result,step.count);

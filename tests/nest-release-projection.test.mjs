@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { candidatePaths } from '../scripts/nest-candidate-contract.mjs';
 import { buildCandidateModule } from '../scripts/nest-candidate-inventory.mjs';
 import { projectNestModule, renderNestArticle, registryPaths } from '../scripts/nest-release-projection.mjs';
-import { nestLabPlan, verifyTap } from '../scripts/run-published-nest-lab.mjs';
+import { nestLabPlan, verifyTap, independentTestEnvironment } from '../scripts/run-published-nest-lab.mjs';
 function fixture(moduleId='11.01'){
  const catalog={lessons:[]},data=new Map([[registryPaths[0],"function lesson(id) {\n switch(id) {\n    default: return null;\n }\n}\n"],[registryPaths[1],"export const MDX_METADATA = new Map([existing]);\nexport const LOCAL_LAB_LESSONS = [existing];\n"],[registryPaths[2],JSON.stringify({scripts:{test:'node --test'}})]]);
  const suite=candidatePaths(moduleId+'.01','lab-one').suite;
@@ -58,4 +58,16 @@ const tap=(n=1)=>`# tests ${n}\n# pass ${n}\n# fail 0\n# cancelled 0\n# skipped 
 test('TAP verifier refuses skipped, empty, failed or interrupted runs',()=>{
  assert.doesNotThrow(()=>verifyTap({status:0,stdout:tap()},1));
  for(const result of [{status:0,stdout:tap(0)},{status:0,stdout:tap().replace('# skipped 0','# skipped 1')},{status:0,stdout:tap()+tap()},{status:1,stdout:tap()},{status:0,signal:'SIGTERM',stdout:tap()},{status:0,error:Error('spawn'),stdout:tap()}])assert.throws(()=>verifyTap(result,1));
+});
+
+test('nested Node test process runs independently and retains exact TAP assertions',async t=>{
+ const {mkdtempSync,writeFileSync,rmSync}=await import('node:fs');
+ const {tmpdir}=await import('node:os');
+ const {join}=await import('node:path');
+ const {spawnSync}=await import('node:child_process');
+ const dir=mkdtempSync(join(tmpdir(),'academy-nested-test-'));t.after(()=>rmSync(dir,{recursive:true,force:true}));
+ const file=join(dir,'acceptance.mjs');writeFileSync(file,"import test from 'node:test'; test('real child',()=>{});\n");
+ const env={...process.env,NODE_TEST_CONTEXT:'child-v8',ACADEMY_TEST_SENTINEL:'preserved'};
+ const child=independentTestEnvironment(env);assert.equal(child.NODE_TEST_CONTEXT,undefined);assert.equal(child.ACADEMY_TEST_SENTINEL,'preserved');assert.equal(env.NODE_TEST_CONTEXT,'child-v8');
+ verifyTap(spawnSync(process.execPath,['--test','--test-reporter=tap',file],{env:child,encoding:'utf8',timeout:15000}),1);
 });
