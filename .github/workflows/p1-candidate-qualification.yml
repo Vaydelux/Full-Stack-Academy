@@ -9,7 +9,8 @@ permissions:
 
 concurrency:
   group: p1-candidate-${{ github.ref }}
-  cancel-in-progress: true
+  # Preserve the active evidence run while a newer candidate is queued.
+  cancel-in-progress: false
 
 jobs:
   p1:

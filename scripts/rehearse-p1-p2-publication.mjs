@@ -56,16 +56,15 @@ function main(){
  run('run','promote:forms-query:query','--','--simulate');
  run('run','promote:forms-query:rhf','--','--review');
  fixture(346,['09.02']);
- run('run','verify:offline');browser();
- run('run','promote:forms-query:query','--','--review');
- fixture(354,['09.02','09.03']);
- run('run','verify:offline');browser();
- // The P1 commands themselves validate their exact deterministic projections.
- // Capture only the outputs of those freshly executed commands in this process.
- const paths=changedPaths();
- assert.equal(paths.length,103,'Unexpected combined P1 file inventory');
- assert.ok(paths.includes(checkpointPath));
- let expected=new Map(paths.filter(p=>p!==checkpointPath).map(p=>[p,read(p)]));
+ // Capture the exact outputs immediately after the guarded RHF command.
+ // Never bless changes made by subsequent regression or browser commands.
+ const capture=count=>{
+  const paths=changedPaths();
+  assert.equal(paths.length,count+1,'Unexpected P1 file inventory');
+  assert.ok(paths.includes(checkpointPath));
+  return new Map(paths.filter(p=>p!==checkpointPath).map(p=>[p,read(p)]));
+ };
+ let expected=capture(50);
  let checkpointBytes=read(checkpointPath);
  const verify=()=>{
   assertP1Checkout(root,{reviewOnly:true,expectedHead:head,allowedChanges:new Set([...expected.keys(),checkpointPath])});
@@ -73,6 +72,15 @@ function main(){
   assert.equal(read(checkpointPath),checkpointBytes,'Checkpoint changed unexpectedly');
  };
  verify();
+ run('run','verify:offline');verify();browser();verify();
+ run('run','promote:forms-query:query','--','--review');
+ fixture(354,['09.02','09.03']);
+ const combined=capture(102);
+ // Query may replace the shared registries only.
+ verifyProjectionOnDisk(new Map([...expected].filter(([file])=>!registryPaths.includes(file))),read);
+ expected=combined;checkpointBytes=read(checkpointPath);
+ verify();
+ run('run','verify:offline');verify();browser();verify();
  run('ci','--prefix','examples/nestjs-vertical');
  verify();
  const catalog=json('data/curriculum.json'),results=[];

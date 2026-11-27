@@ -9,3 +9,5 @@ bash scripts/qualify-nestjs-isolated.sh --rehearse
 ```
 
 The existing P1 qualification workflow runs this rehearsal and preserves the log, while the independent P2 runtime job remains unchanged. Do not merge, deploy, or treat the 386 target as published until actual review and guarded apply have succeeded. A failed rehearsal requires repair and rerun on the exact source; no fixture changes should be committed.
+
+The workflow queues newer candidates without cancelling an active qualification. P1 outputs are captured immediately after each guarded projection and checked again after offline and browser acceptance; later tests cannot silently redefine the expected files.
