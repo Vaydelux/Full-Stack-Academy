@@ -30,6 +30,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          node --test tests/p4-safe-diagnostic.test.mjs
           bash -n scripts/qualify-supabase-local.sh
           mkdir "$RUNNER_TEMP/supabase-evidence"
           bash scripts/qualify-supabase-local.sh "$RUNNER_TEMP/supabase-evidence" 2>&1 | tee "$RUNNER_TEMP/supabase-qualification.log"

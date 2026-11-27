@@ -8,6 +8,7 @@ import {spawnSync} from 'node:child_process';
 import {createClient} from '@supabase/supabase-js';
 import pg from 'pg';
 import {supabaseConfig} from '../p4-runtime/guard.mjs';
+import {failureLocation,safeNestedDiagnostic} from '../../scripts/p4-safe-diagnostic.mjs';
 import {requireInstalled} from './guards.mjs';
 const root=realpathSync(fileURLToPath(new URL('../../',import.meta.url)));
 const [statusFile,output,...extra]=process.argv.slice(2);
@@ -41,10 +42,12 @@ const env={...process.env};
 for(const key of Object.keys(env))if(/^(?:SUPABASE_|ACADEMY_SUPABASE_|PG|DATABASE_URL|DIRECT_URL|SHADOW_DATABASE_URL)/i.test(key))delete env[key];
 Object.assign(env,{ACADEMY_SUPABASE_ISOLATED:'YES',ACADEMY_SUPABASE_URL:api.origin,ACADEMY_SUPABASE_PUBLIC_KEY:publicKey,ACADEMY_SUPABASE_A_EMAIL:users[0].email,ACADEMY_SUPABASE_A_PASSWORD:users[0].password,ACADEMY_SUPABASE_B_EMAIL:users[1].email,ACADEMY_SUPABASE_B_PASSWORD:users[1].password});
 supabaseConfig(env);
+console.log('Disposable stack, two synthetic identities and fixture SQL provisioned successfully.');
 const suites=['supabase','supabase-session','supabase-extended'];
 for(const suite of suites){
  const res=spawnSync(process.execPath,['scripts/qualify-p4-evidence.mjs','--collect',suite,output],{cwd:root,env,encoding:'utf8',timeout:660000,maxBuffer:4*1024*1024});
  // Do not emit raw child logs: they could contain tokens or signed capabilities.
+ if(res.error||res.signal||res.status!==0)console.error(JSON.stringify({suite,collector:failureLocation(res),child:safeNestedDiagnostic(res.stderr)}));
  assert.ok(!res.error&&!res.signal&&res.status===0,'Local acceptance failed: '+suite);
  console.log('Supplemental local Supabase acceptance passed: '+suite);
 }
