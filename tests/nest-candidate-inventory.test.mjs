@@ -25,3 +25,5 @@ test('module manifest rejects missing or repeated topic',()=>{const f=fixture();
 test('shared dependency manifest drift invalidates all bound candidates',()=>{const f=fixture();f.data.set(f.pack.commonSourceBindings[0].path,'changed');assert.throws(()=>check(f),/Shared candidate source changed/);});
 test('module rebind never grants review or runtime approval',()=>{const f=fixture();const next=buildCandidateModule(f.moduleId,f.catalog,f.read,'b'.repeat(40));assert.equal(next.sourceCommit,'b'.repeat(40));assert.ok(next.candidates.every(c=>c.reviewedAt===null&&!c.publicationReady&&!c.runtimeExecuted));});
 test('common source paths cannot be replaced or omitted',()=>{const f=fixture();f.pack.commonSourceBindings.pop();assert.throws(()=>check(f));});
+
+test('shared lock and PostgreSQL safety guard are source-bound',()=>{const f=fixture();for(const path of ['package-lock.json','tests/pg-test-guard.mjs','tests/pg-test-guard.test.mjs']){const full='examples/nestjs-vertical/'+path;assert.ok(f.pack.commonSourceBindings.some(b=>b.path===full));f.data.set(full,'tampered');assert.throws(()=>check(f),/Shared candidate source changed/);f.data.delete(full);}});

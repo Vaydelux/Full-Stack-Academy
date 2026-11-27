@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
   "moduleId": "11.02",
-  "sourceCommit": "4d8f5cc4467ccb56cf09cb8dd2383304f38781a5",
+  "sourceCommit": "1b017a317f307ad1303086affa70c9a4469fe349",
   "publicationReady": false,
   "commonSourceBindings": [
     {
       "path": "examples/nestjs-vertical/package.json",
-      "gitBlob": "b7bf07ea017c8ff637c0a00574463083cd298101"
+      "gitBlob": "511fd1d90bed1676fbc8371a2e7afebb722c8bfa"
     },
     {
       "path": "examples/nestjs-vertical/tsconfig.json",
@@ -31,6 +31,18 @@
     {
       "path": "examples/nestjs-vertical/scripts/verify-runtime-test-coverage.mjs",
       "gitBlob": "abf74d0c22b6abb1b9e21745ccb3a343848339e9"
+    },
+    {
+      "path": "examples/nestjs-vertical/package-lock.json",
+      "gitBlob": "3fefbe7e62544dd7a6c9f19e62019f8c6e51adfc"
+    },
+    {
+      "path": "examples/nestjs-vertical/tests/pg-test-guard.mjs",
+      "gitBlob": "378e96bc62099eecb34828656e75efb2d87cad4c"
+    },
+    {
+      "path": "examples/nestjs-vertical/tests/pg-test-guard.test.mjs",
+      "gitBlob": "136ff4ac89d788f3c9980cf676e3441aca8c62d5"
     }
   ],
   "candidates": [
