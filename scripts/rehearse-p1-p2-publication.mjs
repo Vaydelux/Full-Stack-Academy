@@ -9,6 +9,7 @@ import { buildPersistencePlan } from './persistence-release-plan.mjs';
 import { projectSqlModule } from './f9-publication.mjs';
 import { requireOrder } from './pg-promotion-guard.mjs';
 import { nestLabEnvironment } from './pg-lab-policy.mjs';
+import { prepareAutomatedRelease } from './automated-batch-release.mjs';
 import { rehearseP3Source } from './p3-source-rehearsal.mjs';
 import { projectNestModule, registryPaths } from './nest-release-projection.mjs';
 import { inspectNestJsDrafts } from './verify-nestjs-drafts.mjs';
@@ -50,8 +51,9 @@ export function combineExpected(previous,next){
  return merged;
 }
 function main(){
- const p3Live=process.argv[2]==='--through-p3-sql';
- assert.ok(process.argv.length===2||process.argv.length===3&&p3Live,'Usage: [--through-p3-sql]');
+ const automated=process.argv[2]==='--automated-batch';
+ const p3Live=process.argv[2]==='--through-p3-sql'||automated;
+ assert.ok(process.argv.length===2||process.argv.length===3&&p3Live,'Usage: [--through-p3-sql|--automated-batch]');
  if(p3Live){nestLabEnvironment(process.env,true);assert.equal(process.env.ACADEMY_DISTRIBUTED_PG_ISOLATED,'YES');assert.ok(process.env.ACADEMY_DISTRIBUTED_PG_URL);}
  assert.match(process.version,/^v24\.(?:9|[1-9]\d+)\.\d+$/);
  assert.equal(process.env.ACADEMY_ISOLATED_PG,'YES','Use the isolated PostgreSQL launcher');
@@ -144,6 +146,10 @@ function main(){
   run('run','verify:offline');verify();
   browser();verify();
   for(const id of sqlIds){browser('--postgres-module',id);verify();}
+  if(automated){
+   const released=prepareAutomatedRelease({root,head,expected,checkpoint:json(checkpointPath),read,write,git,run,browser,verify,checkpointPath});
+   console.log(JSON.stringify(released,null,2));
+  }
   console.log(JSON.stringify({status:'disposable-review-fixture',commit:head,publishedLessons:410,modules:sqlResults,projection:projectionFingerprint(expected),publicationApproved:false,committed:false,deployed:false},null,2));
  }
 }

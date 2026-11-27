@@ -2,8 +2,9 @@
 # Independent P3 runtime; only freshly created disposable PostgreSQL resources.
 set -euo pipefail
 mode=runtime
-if [[ $# -eq 1 && "$1" == --rehearse-sql ]]; then mode=rehearse
-elif [[ $# -ne 0 ]]; then echo 'Usage: qualify-p3-isolated.sh [--rehearse-sql]' >&2; exit 2; fi
+if [[ $# -eq 1 && "$1" == --automated-batch ]]; then mode=automated
+elif [[ $# -eq 1 && "$1" == --rehearse-sql ]]; then mode=rehearse
+elif [[ $# -ne 0 ]]; then echo 'Usage: qualify-p3-isolated.sh [--rehearse-sql|--automated-batch]' >&2; exit 2; fi
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
 [[ "$(uname -s)" = Linux && -z "${DOCKER_HOST:-}" && -z "${DOCKER_CONTEXT:-}" ]]
 [[ "$(docker context inspect --format '{{.Endpoints.docker.Host}}')" = unix://* ]]
@@ -66,10 +67,14 @@ export ACADEMY_PG_BACKUP_URL="postgres://academy_restore:${restore_password}@127
 export PG_RESTORE_TEST_URL="postgres://academy_restore:${restore_password}@127.0.0.1:${port}/academy_test_restore"
 export ACADEMY_NEST_PG_TEST_URL="postgres://academy_nest:${nest_password}@127.0.0.1:${port}/academy_test_nest"
 unset sql_password distributed_password restore_password nest_password
-if [[ "$mode" == rehearse ]]; then
+if [[ "$mode" != runtime ]]; then
   review=$(mktemp -d "${TMPDIR:-/tmp}/academy-p3-review.XXXXXXXX")
   git worktree add --detach "$review" "$head"
-  (cd "$review"; node --test tests/p3-source-rehearsal.test.mjs; node scripts/rehearse-p1-p2-publication.mjs --through-p3-sql)
+  if [[ "$mode" == automated ]]; then
+    (cd "$review"; node --test tests/p3-source-rehearsal.test.mjs tests/automated-batch-release.test.mjs; node scripts/rehearse-p1-p2-publication.mjs --automated-batch)
+  else
+    (cd "$review"; node --test tests/p3-source-rehearsal.test.mjs; node scripts/rehearse-p1-p2-publication.mjs --through-p3-sql)
+  fi
   git worktree remove --force "$review"
   review=''
 else

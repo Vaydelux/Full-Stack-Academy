@@ -94,8 +94,9 @@ export default async function LessonPage({ params }: LessonPageProps) {
       ) : mdxMeta ? (
         <div className="mt-6">
           <p className="mb-5 text-xs text-slate-500">
-            {Object.entries(mdxMeta.stack).map(([tech,version])=>`${tech} ${version}`).join(' · ')} · Last reviewed {mdxMeta.reviewedAt} · ~{mdxMeta.estimatedMinutes} min
+            {Object.entries(mdxMeta.stack).map(([tech,version])=>`${tech} ${version}`).join(' · ')} · {mdxMeta.reviewedAt === null ? 'Automated-qualified · Human review pending' : `Last reviewed ${mdxMeta.reviewedAt}`} · ~{mdxMeta.estimatedMinutes} min
           </p>
+          {mdxMeta.reviewedAt === null && <div className="mb-5"><DocNotice><strong>Automated-qualified release.</strong> Instructor runtime, build and browser checks passed for this release candidate. Independent human editorial and accessibility review, including screen-reader review, is pending. Course completion is self-assessed, not a certification.</DocNotice></div>}
           <article aria-label="Guided lesson" className="max-w-none">
             <LessonArticle lessonId={lessonId} />
             {localRubric && <LocalLessonCompletion lessonId={lessonId} rubric={localRubric} /> }

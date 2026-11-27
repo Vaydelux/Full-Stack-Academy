@@ -1,0 +1,85 @@
+name: Automated release batch 01 (72 lessons)
+
+on:
+  push:
+    branches: [publication/automated-release-batch-01]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: automated-batch-01-${{ github.ref }}
+  # Preserve the active evidence run while a newer candidate is queued.
+  cancel-in-progress: false
+
+jobs:
+  qualify:
+    if: github.repository == 'Vaydelux/Full-Stack-Academy' && github.ref == 'refs/heads/publication/automated-release-batch-01'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 240
+    env:
+      NEXT_TELEMETRY_DISABLED: '1'
+      ACADEMY_NATIVE_BROWSER_DRIVER: playwright
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.11.1'
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            examples/forms-query-vertical/react-client/package-lock.json
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify exact candidate and clean checkout
+        env:
+          EXPECTED_HEAD: ${{ github.sha }}
+        run: |
+          test "$(git rev-parse HEAD)" = "$EXPECTED_HEAD"
+          test -z "$(git status --porcelain=v1 --untracked-files=all)"
+          node --version
+          python --version
+      - name: Configure runner-local paths
+        run: |
+          printf 'ACADEMY_BROWSER_ROOT=%s/academy-browser\nTMPDIR=%s\n' "$RUNNER_TEMP" "$RUNNER_TEMP" >> "$GITHUB_ENV"
+      - name: Install isolated browser verifier
+        run: |
+          npm install --prefix "$ACADEMY_BROWSER_ROOT" --no-audit --no-fund --save-exact playwright@1.56.1
+          "$ACADEMY_BROWSER_ROOT/node_modules/.bin/playwright" install --with-deps chromium
+          browser=$(node -e 'const {createRequire}=require("node:module");const r=createRequire(process.env.ACADEMY_BROWSER_ROOT+"/package.json");process.stdout.write(r("playwright").chromium.executablePath())')
+          test -x "$browser"
+          printf 'ACADEMY_CHROME_BIN=%s\n' "$browser" >> "$GITHUB_ENV"
+      - name: Install exact PostgreSQL 17 client major
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash scripts/install-pg17-runner-client.sh
+          echo /usr/lib/postgresql/17/bin >> "$GITHUB_PATH"
+      - name: Qualify and export 72-lesson automated release batch
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash -n scripts/qualify-p3-isolated.sh
+          mkdir "$RUNNER_TEMP/automated-batch"
+          export ACADEMY_AUTOMATED_BATCH=YES ACADEMY_BATCH_OUTPUT="$RUNNER_TEMP/automated-batch"
+          bash scripts/qualify-p3-isolated.sh --automated-batch 2>&1 | tee "$RUNNER_TEMP/automated-batch.log"
+      - name: Retain automated qualification evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: automated-batch-log-${{ github.sha }}
+          path: ${{ runner.temp }}/automated-batch.log
+          if-no-files-found: warn
+          retention-days: 7
+
+      - name: Retain exact qualified release candidate
+        uses: actions/upload-artifact@v4
+        with:
+          name: automated-batch-01-candidate
+          path: ${{ runner.temp }}/automated-batch/
+          if-no-files-found: error
+          retention-days: 7

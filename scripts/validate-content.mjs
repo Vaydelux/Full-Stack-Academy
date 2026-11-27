@@ -27,7 +27,8 @@ const LessonMeta = z.strictObject({
   level: z.enum(['Beginner','Intermediate','Advanced']),
   estimatedMinutes: z.number().int().min(5).max(180),
   status: z.enum(['authored', 'verified']),
-  reviewedAt: z.iso.date(),
+  reviewedAt: z.iso.date().nullable(),
+  automatedQualifiedAt: z.iso.date().optional(),
   stack: z.record(z.string(), z.string().min(1)),
   prerequisites: z.array(z.string()),
   objectives: z.array(z.string().min(15)).min(3).max(8),
@@ -64,6 +65,7 @@ assert.ok(metaFiles.length, 'At least one authored lesson is required');
 for (const name of metaFiles) {
   const source = JSON.parse(fs.readFileSync(path.join(contentDir,name), 'utf8'));
   const meta = LessonMeta.parse(source);
+  assert.ok(meta.reviewedAt === null ? meta.automatedQualifiedAt && meta.automatedQualifiedAt !== '2000-01-01' : meta.automatedQualifiedAt === undefined, 'Review provenance must distinguish automated qualification from human review: '+meta.id);
   assert.ok(!ids.has(meta.id), `Duplicate MDX lesson ID ${meta.id}`);
   ids.add(meta.id);
   const entry = catalogLessons.get(meta.id);
