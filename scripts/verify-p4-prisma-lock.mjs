@@ -1,0 +1,18 @@
+import assert from 'node:assert/strict';
+import {readFileSync,writeFileSync,realpathSync,lstatSync} from 'node:fs';
+import {resolve,relative,sep,isAbsolute,join} from 'node:path';
+import {fileURLToPath} from 'node:url';
+import {execFileSync} from 'node:child_process';
+import {verifyPrismaLock} from './p4-prisma-lock.mjs';
+const root=realpathSync(fileURLToPath(new URL('../',import.meta.url)));
+const [dir,...extra]=process.argv.slice(2);assert.ok(dir&&!extra.length,'Specify one external lock candidate directory');
+const out=realpathSync(resolve(dir)),rel=relative(root,out);assert.ok(isAbsolute(rel)||rel==='..'||rel.startsWith('..'+sep),'Directory must be outside repository');
+assert.ok(lstatSync(resolve(dir)).isDirectory());
+const read=p=>{const st=lstatSync(p);assert.ok(st.isFile()&&st.size>0&&st.size<=16*1024*1024,'Missing or invalid candidate');return readFileSync(p);};
+const git=(...args)=>execFileSync('git',args,{cwd:root,encoding:'utf8',timeout:30000,maxBuffer:32*1024*1024});
+const head=git('rev-parse','HEAD').trim();assert.match(head,/^[a-f0-9]{40}$/);
+assert.equal(git('status','--porcelain=v1','--untracked-files=all'),'','Clean source required');
+const source=read(join(root,'examples/p4-runtime/prisma/package.json')),copy=read(join(out,'package.json'));assert.deepEqual(copy,source,'Source package mismatch');
+const receipt={commit:head,...verifyPrismaLock(source,read(join(out,'package-lock.json'))),registryInstallVerified:false};
+writeFileSync(join(out,'receipt.json'),JSON.stringify(receipt,null,2)+'\n',{flag:'wx',mode:0o600});
+console.log(JSON.stringify(receipt,null,2));
