@@ -1,0 +1,12 @@
+import assert from 'node:assert/strict';
+import {readFileSync,lstatSync,realpathSync} from 'node:fs';
+import {resolve,relative,isAbsolute,sep,join} from 'node:path';
+import {fileURLToPath} from 'node:url';
+import {verifyArtifact} from './verify-prisma-artifact.mjs';
+const root=realpathSync(fileURLToPath(new URL('../',import.meta.url)));
+const [arg,...extra]=process.argv.slice(2);assert.ok(arg&&!extra.length);
+assert.ok(lstatSync(resolve(arg)).isDirectory());
+const dir=realpathSync(resolve(arg)),rel=relative(root,dir);assert.ok(isAbsolute(rel)||rel==='..'||rel.startsWith('..'+sep),'Use external artifact directory');
+const read=p=>{const st=lstatSync(p);assert.ok(st.isFile()&&st.size>0&&st.size<=16*1024*1024);return readFileSync(p);};
+const verified=verifyArtifact({source:read(join(root,'examples/p4-runtime/prisma/package.json')),manifest:read(join(dir,'package.json')),lock:read(join(dir,'package-lock.json')),receipt:JSON.parse(read(join(dir,'receipt.json')))});
+console.log(JSON.stringify(verified));
