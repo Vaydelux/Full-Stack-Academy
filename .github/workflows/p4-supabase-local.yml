@@ -1,0 +1,44 @@
+name: P4 disposable Supabase qualification
+on:
+  push:
+    branches: [publication/p4-runtime-qualification]
+    paths:
+      - '.github/workflows/p4-supabase-local.yml'
+      - 'scripts/qualify-supabase-local.sh'
+      - 'examples/p5-distributed-runtime/qualify-supabase-local.mjs'
+      - 'examples/p4-runtime/supabase/**'
+      - 'examples/p5-distributed-runtime/realtime-fixture.sql'
+permissions:
+  contents: read
+jobs:
+  local-stack:
+    if: github.repository == 'Vaydelux/Full-Stack-Academy' && github.ref == 'refs/heads/publication/p4-runtime-qualification'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.11.1'
+      - uses: supabase/setup-cli@v3
+        with:
+          version: '2.98.2'
+      - name: Qualify disposable local stack
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash -n scripts/qualify-supabase-local.sh
+          mkdir "$RUNNER_TEMP/supabase-evidence"
+          bash scripts/qualify-supabase-local.sh "$RUNNER_TEMP/supabase-evidence" 2>&1 | tee "$RUNNER_TEMP/supabase-qualification.log"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: p4-supabase-local-${{ github.sha }}
+          path: |
+            ${{ runner.temp }}/supabase-evidence/p4-*.json
+            ${{ runner.temp }}/supabase-qualification.log
+          if-no-files-found: warn
+          retention-days: 7
