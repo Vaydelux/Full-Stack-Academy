@@ -13,7 +13,7 @@
   ],
   "officialReferences": [
     "https://www.postgresql.org/docs/current/using-explain.html",
-    "https://www.postgresql.org/docs/current/using-explain.html"
+    "https://www.postgresql.org/docs/current/indexes.html"
   ],
   "evidenceMode": "manual-evidence",
   "securityBoundary": "A nine-row fixture is too small to establish an index advantage. Recreate this comparison on a sufficiently large disposable dataset; consider cache warming and write amplification, and do not force a plan to fabricate a speedup."

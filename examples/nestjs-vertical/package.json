@@ -25,7 +25,7 @@
     "test:offline:lock": "node --test tests/lock-integrity.offline.test.mjs",
     "test:offline": "npm run test:offline:transactions && npm run test:offline:contracts && npm run test:offline:lock && npm run test:offline:qualification",
     "qualify:module": "node scripts/module-qualification.mjs",
-    "test:offline:qualification": "node --test tests/red-green.offline.test.mjs tests/module-qualification.offline.test.mjs"
+    "test:offline:qualification": "node --test tests/red-green.offline.test.mjs tests/module-qualification.offline.test.mjs tests/pg-test-guard.test.mjs"
   },
   "dependencies": {
     "@nestjs/common": "^12.5.1",

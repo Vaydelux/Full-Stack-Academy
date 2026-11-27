@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {renderPublishedRHFArticle} from '../scripts/forms-query-release-article.mjs';
+const id='09.02.01',slug='controlled-uncontrolled',prefix='drafts/forms-query/labs/'+slug+'/',live='labs/forms-query-'+slug+'/';
+const source=['**Scope:** This staged article fixture','Read the preceding canonical module lessons and fixture',...['starter.tsx','solution.tsx','lab.json'].map((file,i)=>'<LessonStep number={'+(i+1)+'} file="'+prefix+file+'" />'),'```tsx','const unchanged = "example";','```','Once the final candidate passes real browser/library and accessibility review, use the registered fixture','<LabGate lessonId="'+id+'" labId="lab.react.forms-query-'+slug+'" />'].join('\n');
+const render=s=>renderPublishedRHFArticle(s,{id,slug});
+const steps=s=>[...s.matchAll(/<LessonStep\b[^>]*?file="([^"]+)"/g)].map(x=>x[1]);
+test('all three projected steps identify actual published assets',()=>{const result=render(source);assert.deepEqual(steps(result),['starter/solution.tsx','solution/solution.tsx','lab.json'].map(p=>live+p));assert.ok(result.includes('```tsx\nconst unchanged = "example";\n```'));assert.ok(!result.includes(prefix));});
+test('missing or duplicate draft file markers fail closed',()=>{assert.throws(()=>render(source.replace(prefix+'starter.tsx',prefix+'missing.tsx')),/step path/);assert.throws(()=>render(source+'\n<LessonStep file="'+prefix+'starter.tsx" />'),/step path/);});
+test('foreign step path is rejected',()=>assert.throws(()=>render(source+'\n<LessonStep file="drafts/forms-query/labs/other/solution.tsx" />'),/step path/));

@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import {readdirSync} from 'node:fs';
 
 /** Determine expected publication state from independent checked-in metadata, not the browser response. */
 export function p1ModuleStates(filenames) {
@@ -13,18 +14,35 @@ export function p1ModuleStates(filenames) {
   return states;
 }
 
+/** Read the independent expected state from the exact candidate checkout. */
+export function expectedP1Publication(id,filenames=readdirSync(new URL('../src/content/lessons/',import.meta.url))) {
+  assert.match(id,/^09\.0[23]\.0[1-8]$/,'Unsupported P1 lesson');
+  return p1ModuleStates(filenames)[id.slice(0,5)];
+}
+
 /** Assert the rendered route, not merely that navigation succeeded. */
 export async function verifyP1RouteState(page,base,id,published) {
   const response=await page.goto(base+'/learn/'+id,{waitUntil:'domcontentloaded'});
   assert.equal(response?.status(),200,'P1 route failed: '+id);
   const robots=await page.locator('meta[name="robots"]').first().getAttribute('content');
   assert.match(robots??'',published?/^index(?:,|\s|$)/:/\bnoindex\b/,'Wrong robots directive: '+id);
-  const planned=page.getByText('Planned lesson — not published.',{exact:true});
+  // Every unpublished P1 topic has an authored reading edition. A bare
+  // planned placeholder is no longer the expected route for these IDs.
+  const reading=page.getByRole('article',{name:'Reading edition article'});
+  const guided=page.getByRole('article',{name:'Guided lesson'});
+  const completion=page.getByRole('region',{name:'Lesson completion'});
+  const noCredit=page.getByText('Editorial review pending · Lab not certified · No completion credit',{exact:true});
   if(published) {
-    await page.getByRole('article',{name:'Guided lesson'}).waitFor();
-    assert.equal(await planned.count(),0,'Published route still displays planned state: '+id);
+    await guided.waitFor({state:'visible'});
+    await completion.waitFor({state:'visible'});
+    assert.equal(await reading.count(),0,'Published route still displays reading edition: '+id);
+    assert.equal(await noCredit.count(),0,'Published route still displays no-credit notice: '+id);
   } else {
-    await planned.waitFor();
-    assert.equal(await page.getByRole('article',{name:'Guided lesson'}).count(),0,'Unpublished route exposes published article: '+id);
+    await reading.waitFor({state:'visible'});
+    await noCredit.waitFor({state:'visible'});
+    assert.equal(await guided.count(),0,'Unpublished route exposes published article: '+id);
+    assert.equal(await completion.count(),0,'Unpublished route exposes completion gate: '+id);
+    assert.equal(await page.getByRole('button',{name:'Mark complete',exact:true}).count(),0,'Unpublished route offers completion: '+id);
+    assert.equal(await reading.locator('iframe, form, script').count(),0,'Reading edition executes interactive content: '+id);
   }
 }

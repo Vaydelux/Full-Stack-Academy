@@ -19,5 +19,71 @@
   ],
   "browser": "",
   "operatingSystem": "",
-  "notes": "EXAMPLE ONLY. Not valid evidence; replace fields only after completing real human accessibility review."
+  "notes": "EXAMPLE ONLY. Not valid evidence; replace fields only after completing real human accessibility review.",
+  "observations": [
+    {
+      "id": "09.02.01",
+      "passed": false,
+      "keyboard": "",
+      "zoom200": "",
+      "screenReader": "",
+      "topicSpecific": ""
+    },
+    {
+      "id": "09.02.02",
+      "passed": false,
+      "keyboard": "",
+      "zoom200": "",
+      "screenReader": "",
+      "topicSpecific": ""
+    },
+    {
+      "id": "09.02.03",
+      "passed": false,
+      "keyboard": "",
+      "zoom200": "",
+      "screenReader": "",
+      "topicSpecific": ""
+    },
+    {
+      "id": "09.02.04",
+      "passed": false,
+      "keyboard": "",
+      "zoom200": "",
+      "screenReader": "",
+      "topicSpecific": ""
+    },
+    {
+      "id": "09.02.05",
+      "passed": false,
+      "keyboard": "",
+      "zoom200": "",
+      "screenReader": "",
+      "topicSpecific": ""
+    },
+    {
+      "id": "09.02.06",
+      "passed": false,
+      "keyboard": "",
+      "zoom200": "",
+      "screenReader": "",
+      "topicSpecific": ""
+    },
+    {
+      "id": "09.02.07",
+      "passed": false,
+      "keyboard": "",
+      "zoom200": "",
+      "screenReader": "",
+      "topicSpecific": ""
+    },
+    {
+      "id": "09.02.08",
+      "passed": false,
+      "keyboard": "",
+      "zoom200": "",
+      "screenReader": "",
+      "topicSpecific": ""
+    }
+  ]
 }

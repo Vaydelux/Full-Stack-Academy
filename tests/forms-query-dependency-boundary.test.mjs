@@ -47,8 +47,29 @@ test('root application compiler excludes independent staged teaching labs withou
 });
 
 test('dynamic field array prose renders the React key as literal inline code',()=>{
- const source=read('drafts/forms-query/lessons/09.02.04.mdx');
- const prose=source.split('\n').filter(line=>/^(?:\*\*What breaks|1\. \*\*Reproduce)/.test(line));
- assert.equal(prose.length,2);
- for(const line of prose) assert.ok(line.includes('`key={index}`'));
+ for(const file of ['drafts/forms-query/lessons/09.02.04.mdx','release-candidates/forms-query/09.02/lessons/09.02.04.mdx']){
+  const prose=read(file).split('\n').filter(line=>/^(?:\*\*What breaks|1\. \*\*Reproduce)/.test(line));
+  assert.equal(prose.length,2,file);
+  for(const line of prose) assert.ok(line.includes('`key={index}`'),file);
+ }
+});
+
+test('published standalone lab files remain outside Next but inside strict nested typechecking',()=>{
+ const app=json('tsconfig.json');
+ const nested=json('examples/forms-query-vertical/react-client/tsconfig.json');
+ const teaching=json('examples/forms-query-vertical/react-client/tsconfig.staged.json');
+ assert.equal(app.compilerOptions.strict,true);
+ assert.equal(nested.compilerOptions.strict,true);
+ assert.equal(teaching.extends,'./tsconfig.json');
+ assert.ok(app.exclude.includes('labs/forms-query-*/**/*'));
+ assert.ok(teaching.include.includes('../../../labs/forms-query-*/**/*.tsx'));
+ assert.ok(teaching.include.includes('../../../drafts/forms-query/labs/**/*.tsx'));
+ for(const dep of ['react-hook-form','@hookform/resolvers/zod','@tanstack/react-query'])assert.ok(teaching.compilerOptions.paths[dep]?.[0].startsWith('./node_modules/'),dep);
+ for(const [file,runner] of [['scripts/promote-forms-query-rhf.mjs','run'],['scripts/promote-forms-query-query.mjs','exec']]){
+  const source=read(file);
+  const checkpoint=source.indexOf(runner+"('npm',['run','checkpoint:write']");
+  const nestedCheck=source.indexOf(runner+"('npm',['run','typecheck:staged','--prefix','examples/forms-query-vertical/react-client'])");
+  const build=source.indexOf(runner+"('npm',['run','build']",checkpoint);
+  assert.ok(checkpoint>=0&&nestedCheck>checkpoint&&build>nestedCheck,'Published sources must be typechecked before build: '+file);
+ }
 });

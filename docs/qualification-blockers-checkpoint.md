@@ -1,0 +1,7 @@
+# Qualification consolidation checkpoint
+
+Current candidate: existing draft PR #74. No publication approved. The canonical P1 review remains the first publication dependency (09.02 then 09.03). Follow docs/P1_HUMAN_REVIEW_WORKSHEET.md on a real workstation; do not fill example evidence with synthetic approvals.
+
+Local verification in this session: seven previously committed Prisma catalog tests reran successfully; three exact catalog/migration blob hashes matched. Eight new PostgreSQL collector regression tests passed on Node 22 against reconstructed exact SQL runner and evidence validator blobs. The tests use actual temporary filesystem writes but injected service results. No real PostgreSQL, Supabase, generated Prisma client, full checkout build or browser run. Direct GitHub DNS, package registry access, Node 24 and local database/Docker services remain unavailable here.
+
+Next release work should execute existing qualification rather than expand unverified content: generate genuine Prisma workspace lockfile on a network-enabled Node 24 workstation, install locked dependencies, run the actual disposable runtime suites, perform the named P1 accessibility review, then use the guarded promotion order. No automatic deployment or workflow trigger. Mixed-evidence PostgreSQL 12.04/12.05 apply and remaining manual P4 exercises still blocked. Published inventory remains 338/889; the draft PR does not publish lessons.

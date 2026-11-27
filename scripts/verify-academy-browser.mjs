@@ -16,7 +16,7 @@ const responsiveOnly = process.argv.length === 3 && process.argv[2] === '--respo
 const releaseBoundaries = process.argv.length === 3 && process.argv[2] === '--release-boundaries';
 const draftOnly = process.argv.length === 3 && process.argv[2] === '--draft-preview';
 const nestModule = process.argv.length === 4 && process.argv[2] === '--nest-module' && /^11\.0[1-4]$/.test(process.argv[3]) ? process.argv[3] : null;
-const pgModule = process.argv.length === 4 && process.argv[2] === '--postgres-module' && /^12\.0[12]$/.test(process.argv[3]) ? process.argv[3] : null;
+const pgModule = process.argv.length === 4 && process.argv[2] === '--postgres-module' && /^12\.0[123]$/.test(process.argv[3]) ? process.argv[3] : null;
 if (process.argv.length > (nestModule || pgModule ? 4 : draftOnly || readingOnly || responsiveOnly || releaseBoundaries ? 3 : 2)) throw new Error('Usage: node scripts/verify-academy-browser.mjs [--reading | --responsive | --release-boundaries | --draft-preview | --nest-module 11.01 | --postgres-module 12.01]');
 
 // Next installs its own uncaught-exception handlers; do not let a failed

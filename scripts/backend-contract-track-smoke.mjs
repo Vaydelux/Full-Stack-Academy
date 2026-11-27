@@ -1,3 +1,4 @@
+import {expectedP1Publication,verifyP1RouteState} from './p1-browser-state.mjs';
 export const backendContractLessonIds = ['03','04'].flatMap(module =>
  Array.from({length:8},(_,i)=>'10.'+module+'.'+String(i+1).padStart(2,'0')));
 
@@ -10,13 +11,12 @@ export async function verifyBackendContractTrack({page,base,assert,wait}){
   await wait(page.getByRole('heading',{name:"The problem we're solving"}));
   assert.equal(await page.locator('meta[name="robots"][content*="noindex"]').count(),0,id+' must be indexed');
  }
- const planned=await page.goto(base+'/learn/09.02.01');
- assert.equal(planned.status(),200);
- assert.equal(await page.locator('meta[name="robots"][content*="noindex"]').count(),1,'RHF unimplemented route noindex');
+ const rhfPublished=expectedP1Publication('09.02.01');
+ await verifyP1RouteState(page,base,'09.02.01',rhfPublished);
  const sitemap=await (await page.request.get(base+'/sitemap.xml')).text();
  if(sitemap.includes('<loc>')){
   for(const id of ids)assert.ok(sitemap.includes('/learn/'+id),'Missing sitemap '+id);
-  assert.ok(!sitemap.includes('/learn/09.02.01'),'RHF planned route must stay out of sitemap');
+  assert.equal(sitemap.includes('/learn/09.02.01'),rhfPublished,'RHF sitemap must match tracked publication state');
  }
  await page.setViewportSize({width:320,height:800});
  await page.goto(base+'/learn/10.04.08');

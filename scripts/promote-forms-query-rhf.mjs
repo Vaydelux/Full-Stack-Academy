@@ -5,6 +5,7 @@
  * Never claim an automated screen-reader review.
  */
 import fs from 'node:fs';
+import {validateP1HumanEvidence} from './p1-human-evidence.mjs';
 import path from 'node:path';
 import assert from 'node:assert/strict';
 import {spawnSync} from 'node:child_process';
@@ -51,7 +52,7 @@ function humanEvidence(){
  assert.match(evidence.date,/^\d{4}-\d{2}-\d{2}$/);
  assert.ok(Number.isFinite(Date.parse(evidence.date)),'Invalid reviewer date');
  assert.deepEqual([...evidence.lessonIds].sort(),ids);
- return evidence;
+ return validateP1HumanEvidence(evidence,{moduleId:'09.02',sourceSha256:rhfReviewFingerprint()});
 }
 function sourcePlan(){
  const audited=inspectRHFPublicationCandidates();
@@ -82,11 +83,11 @@ function sourcePlan(){
    'npm run verify:offline','npm run qualify:forms-query:preview-browser'],
   manualEvidence:evidencePath};
 }
-function preparedWrites(reviewedAt){
+export function preparedWrites(reviewedAt,{registryRead=read,existingProjection=false}={}){
  const writes=new Map();
  const registryPath='src/content/lesson-registry.tsx';
  const publishedPath='src/lib/academy/published.ts';
- let registry=read(registryPath),published=read(publishedPath);
+ let registry=registryRead(registryPath),published=registryRead(publishedPath);
  const articleImports=[],articleCases=[],metadataImports=[],aliases=[];
  for(let i=0;i<ids.length;i++){
   const id=ids[i];
@@ -128,7 +129,7 @@ function preparedWrites(reviewedAt){
   'export const LOCAL_LAB_LESSONS = ['+aliases.join(', ')+', ');
  writes.set(registryPath,registry);
  writes.set(publishedPath,published);
- for(const file of writes.keys())assert.ok(!fs.existsSync(local(file))||file===registryPath||file===publishedPath,
+ if(!existingProjection)for(const file of writes.keys())assert.ok(!fs.existsSync(local(file))||file===registryPath||file===publishedPath,
   'Refusing to overwrite existing published artifact: '+file);
  return writes;
 }
@@ -196,6 +197,9 @@ function applyWrites(writes, expectedReviewedSha){
   }
   verifyProjectionOnDisk(writes,read);
   run('npm',['run','checkpoint:write'],30_000);
+  // Published lab code belongs to the locked teaching project, not the Next app.
+  run('npm',['run','typecheck:staged','--prefix','examples/forms-query-vertical/react-client']);
+  run('npm',['run','audit:mdx:expressions']);
   // The first full test suite before promotion cannot substitute for testing
   // the published Next MDX imports, regenerated routes, new lab manifests,
   // and source-derived checkpoint AFTER promotion.
@@ -241,6 +245,7 @@ function applyWrites(writes, expectedReviewedSha){
 }
 let promotionHead;
 const mode=process.argv[2]??'--plan';
+if(process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.url)){
 if(process.argv.length>3||!['--plan','--simulate','--review','--apply'].includes(mode))throw new Error('Usage: npm run promote:forms-query:rhf -- --plan|--simulate|--review|--apply');
 const plan=sourcePlan();
 if(mode==='--plan'){
@@ -269,4 +274,5 @@ if(mode==='--plan'){
  assertP1Checkout(root,{expectedHead:promotionHead,reviewOnly:mode==='--review',...(mode==='--apply'?{evidencePath}:{})});
  const writes=preparedWrites(reviewer.date);
  applyWrites(writes,reviewer.sourceSha256);
+}
 }

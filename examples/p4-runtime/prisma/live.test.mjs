@@ -32,3 +32,37 @@ test('real Prisma generated client: tenant CRUD, permissions, constraints, rollb
   finally{await db.$disconnect();}
  }
 });
+
+test('real Prisma: repeatable seed, tenant filters, bounded keyset, raw parameters and concurrent writers',{timeout:60000},async()=>{
+ const connect=()=>new PrismaClient({adapter:new PrismaPg({connectionString:pgConfig(),connectionTimeoutMillis:5000})});
+ const a=connect(),b=connect(),prefix=randomUUID(),alpha=prefix+'-alpha',beta=prefix+'-beta';
+ const ids=['01','02','03','04','05'],title="literal ' OR '1'='1";
+ try{
+  const actor=prefix+'-editor',reader=prefix+'-reader',repo=taskRepository(a);
+  await a.membership.createMany({data:[{tenantId:alpha,actorId:actor,role:'editor'},{tenantId:alpha,actorId:reader,role:'reader'}]});
+  const seed=()=>repo.seed(actor,alpha,ids.map(id=>({id,title:id==='03'?title:'Task '+id})));
+  assert.equal((await seed()).count,5);assert.equal((await seed()).count,0);
+  await b.task.create({data:{tenantId:beta,id:'03',title}});
+  assert.equal(await a.task.count({where:{tenantId:alpha}}),5);
+  assert.deepEqual(await a.task.findMany({where:{tenantId:alpha,title},select:{id:true}}),[{id:'03'}]);
+  assert.deepEqual(await a.task.findUnique({where:{tenantId_id:{tenantId:alpha,id:'03'}},select:{title:true}}),{title});
+  await assert.rejects(repo.seed(reader,alpha,[{id:'denied',title:'Denied'}]),AccessDenied);
+  await assert.rejects(repo.page(actor,beta),AccessDenied);
+  await assert.rejects(repo.exactTitle(actor,beta,title),AccessDenied);
+  const first=await repo.page(reader,alpha,{limit:2});assert.deepEqual(first.items.map(r=>r.id),['01','02']);assert.equal(first.next,'02');
+  const second=await repo.page(reader,alpha,{after:first.next,limit:2});assert.deepEqual(second.items.map(r=>r.id),['03','04']);assert.equal(second.next,'04');
+  const third=await repo.page(reader,alpha,{after:second.next,limit:2});assert.deepEqual(third.items.map(r=>r.id),['05']);assert.equal(third.next,null);
+  assert.deepEqual(await repo.page(reader,alpha,{after:'05',limit:2}),{items:[],next:null});
+  const exact=await repo.exactTitle(reader,alpha,title);
+  assert.deepEqual(exact,[{id:'03',title,version:1}]);
+  const absent=await repo.exactTitle(reader,alpha,"missing ' OR 1=1 --");
+  assert.deepEqual(absent,[]);
+  const [left,right]=await Promise.all([a,b].map(db=>db.task.findUniqueOrThrow({where:{tenantId_id:{tenantId:alpha,id:'03'}}})));
+  assert.equal(left.version,1);assert.equal(right.version,1);
+  const results=await Promise.all([a,b].map((db,i)=>db.task.updateMany({where:{tenantId:alpha,id:'03',version:1},data:{title:'Winner '+i,version:{increment:1}}})));
+  assert.deepEqual(results.map(r=>r.count).sort(),[0,1]);
+  const final=await a.task.findUniqueOrThrow({where:{tenantId_id:{tenantId:alpha,id:'03'}}});
+  assert.equal(final.version,2);assert.equal(final.title,'Winner '+results.findIndex(r=>r.count===1));
+  assert.deepEqual(await b.task.findUnique({where:{tenantId_id:{tenantId:beta,id:'03'}},select:{title:true,version:true}}),{title,version:1});
+ }finally{try{await a.task.deleteMany({where:{tenantId:{in:[alpha,beta]}}});await a.membership.deleteMany({where:{tenantId:alpha}});}finally{await Promise.all([a.$disconnect(),b.$disconnect()]);}}
+});

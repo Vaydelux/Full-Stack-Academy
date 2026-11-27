@@ -48,6 +48,7 @@
     "labs/nestjs-*/**/*",
     "drafts/p4/labs",
     "examples/p8-nest-integrity",
-    "release-candidates/forms-query"
+    "release-candidates/forms-query",
+    "labs/forms-query-*/**/*"
   ]
 }

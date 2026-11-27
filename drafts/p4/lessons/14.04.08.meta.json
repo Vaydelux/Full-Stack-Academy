@@ -13,7 +13,8 @@
   "reviewStatus": "unreviewed",
   "estimatedMinutes": 110,
   "officialReferences": [
-    "https://supabase.com/docs/guides/storage/security/access-control"
+    "https://supabase.com/docs/guides/storage/security/access-control",
+    "https://supabase.com/docs/guides/realtime/authorization"
   ],
   "exerciseFormat": "ts"
 }

@@ -1,11 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
-import { mkdtempSync, writeFileSync, rmSync, mkdirSync } from 'node:fs';
+import { mkdtempSync, writeFileSync, rmSync, mkdirSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
-import { p1ModuleStates, verifyP1RouteState } from '../scripts/p1-browser-state.mjs';
-import { assertP1Checkout, markP1ReviewFixture, REVIEW_FIXTURE_STATUS } from '../scripts/p1-publication-review.mjs';
+import { p1ModuleStates, expectedP1Publication, verifyP1RouteState } from '../scripts/p1-browser-state.mjs';
+import { assertP1Checkout, assertP1ReviewPredecessor, markP1ReviewFixture, REVIEW_FIXTURE_STATUS } from '../scripts/p1-publication-review.mjs';
 const files=id=>Array.from({length:8},(_,i)=>id+'.'+String(i+1).padStart(2,'0')+'.meta.json');
 test('metadata accepts 338, 346 and 354 transitions',()=>{
   assert.deepEqual(p1ModuleStates([]),{'09.02':false,'09.03':false});
@@ -15,16 +15,21 @@ test('metadata accepts 338, 346 and 354 transitions',()=>{
 test('partial or reversed module publication is rejected',()=>{
   for(const names of [files('09.02').slice(1),files('09.03'),[...files('09.02'),...files('09.03').slice(1)]]) assert.throws(()=>p1ModuleStates(names));
 });
-function pageFixture({status=200,robots='noindex, nofollow',planned=true,article=false}={}) {
-  const element=present=>({count:async()=>Number(present),waitFor:async()=>assert.ok(present)});
-  return {goto:async()=>({status:()=>status}),locator:()=>({first:()=>({getAttribute:async()=>robots})}),getByText:()=>element(planned),getByRole:()=>element(article)};
+function pageFixture({status=200,robots='noindex, follow',reading=true,guided=false,completion=false,noCredit=true,markComplete=false,activeContent=false}={}) {
+  const element=present=>({count:async()=>Number(present),waitFor:async()=>assert.ok(present),locator:()=>element(activeContent)});
+  const roles={'Reading edition article':reading,'Guided lesson':guided,'Lesson completion':completion,'Mark complete':markComplete};
+  return {goto:async()=>({status:()=>status}),locator:()=>({first:()=>({getAttribute:async()=>robots})}),getByText:()=>element(noCredit),getByRole:(_role,{name})=>element(roles[name])};
 }
-test('route assertion accepts both expected states',async()=>{
+const publishedPage={robots:'index, follow',reading:false,guided:true,completion:true,noCredit:false};
+test('route assertion accepts reading edition and published lesson states',async()=>{
   await verifyP1RouteState(pageFixture(),'http://127.0.0.1:3000','09.02.01',false);
-  await verifyP1RouteState(pageFixture({robots:'index, follow',planned:false,article:true}),'http://127.0.0.1:3000','09.02.01',true);
+  await verifyP1RouteState(pageFixture(publishedPage),'http://127.0.0.1:3000','09.02.01',true);
 });
-test('route assertion rejects wrong robots, status, and contradictory content',async()=>{
-  for(const [overrides,published] of [[{status:404},false],[{robots:'index'},false],[{article:true},false],[{robots:'noindex',planned:false,article:true},true],[{robots:'index',article:true},true],[{robots:'index',planned:false},true]]) await assert.rejects(()=>verifyP1RouteState(pageFixture(overrides),'http://127.0.0.1:3000','09.02.01',published));
+test('route assertion rejects wrong robots, missing reading article, and credit leaks',async()=>{
+  for(const overrides of [{status:404},{robots:'index'},{reading:false},{noCredit:false},{guided:true},{completion:true},{markComplete:true},{activeContent:true}]) await assert.rejects(()=>verifyP1RouteState(pageFixture(overrides),'http://127.0.0.1:3000','09.02.01',false));
+});
+test('published route requires guided lesson and completion without contradictory reading state',async()=>{
+  for(const overrides of [{robots:'noindex'},{guided:false},{completion:false},{reading:true},{noCredit:true}]) await assert.rejects(()=>verifyP1RouteState(pageFixture({...publishedPage,...overrides}),'http://127.0.0.1:3000','09.02.01',true));
 });
 function fixture(t) {
   const dir=mkdtempSync(path.join(tmpdir(),'p1-review-'));t.after(()=>rmSync(dir,{recursive:true,force:true}));
@@ -53,4 +58,31 @@ test('postflight allows only expected changes and rejects changed HEAD',t=>{
 test('fixture checkpoint is explicitly not commit or deploy approval',()=>{
   const record={snapshot:{publishedLessons:346},status:'old',development:{old:true}};const next=markP1ReviewFixture(record,'09.02');
   assert.equal(next.status,REVIEW_FIXTURE_STATUS);assert.equal(next.development.state,REVIEW_FIXTURE_STATUS);assert.match(next.nextMilestone,/Never commit or deploy/);assert.deepEqual(next.snapshot,record.snapshot);assert.equal(record.status,'old');
+});
+
+test('legacy boundary is derived from metadata at all three atomic publication states',()=>{
+ const rhf=files('09.02'),query=files('09.03');
+ for(const [names,expected] of [[[],[false,false]],[rhf,[true,false]],[[...rhf,...query],[true,true]]]){
+  assert.deepEqual(['09.02.01','09.03.01'].map(id=>expectedP1Publication(id,names)),expected);
+ }
+ assert.throws(()=>expectedP1Publication('09.02.01',rhf.slice(1)));
+ assert.throws(()=>expectedP1Publication('09.03.01',query));
+ assert.throws(()=>expectedP1Publication('09.04.01',[]));
+});
+
+test('chained review accepts exact detached RHF fixture and rejects tampering or unrelated edits',t=>{
+ const {root,worktree,git}=fixture(t);
+ git('worktree','add','--detach',worktree);
+ const projection=new Map(Array.from({length:50},(_,i)=>['projected-'+i,'expected-'+i]));
+ for(const [name,body] of projection)writeFileSync(path.join(worktree,name),body);
+ const checkpoint=markP1ReviewFixture({snapshot:{publishedLessons:346,completeModules:['09.02']}},'09.02');
+ const opts={head:git('rev-parse','HEAD'),projection,checkpoint,readActual:name=>readFileSync(path.join(worktree,name),'utf8')};
+ assert.doesNotThrow(()=>assertP1ReviewPredecessor(worktree,opts));
+ assert.throws(()=>assertP1ReviewPredecessor(root,opts),/detached/);
+ assert.throws(()=>assertP1ReviewPredecessor(worktree,{...opts,checkpoint:{...checkpoint,status:'published'}}),/review-only/);
+ writeFileSync(path.join(worktree,'projected-0'),'tampered');
+ assert.throws(()=>assertP1ReviewPredecessor(worktree,opts),/exact reviewed/);
+ writeFileSync(path.join(worktree,'projected-0'),'expected-0');
+ writeFileSync(path.join(worktree,'unrelated'),'unexpected');
+ assert.throws(()=>assertP1ReviewPredecessor(worktree,opts),/Unexpected/);
 });

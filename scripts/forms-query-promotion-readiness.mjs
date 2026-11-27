@@ -3,6 +3,7 @@
  * and an actual human a11y review. Neither option publishes anything.
  */
 import fs from 'node:fs';
+import {validateP1HumanEvidence} from './p1-human-evidence.mjs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {rhfReviewFingerprint} from './forms-query-review-fingerprint.mjs';
@@ -103,7 +104,8 @@ export function inspectFormsQueryPromotion(){
     Array.isArray(e.lessonIds)&&entries.every(x=>e.lessonIds.includes(x.id))&&
     /^[a-f0-9]{64}$/.test(e.sourceSha256??'')&&
     e.sourceSha256===(moduleId==='09.02'?rhfReviewFingerprint():queryReviewFingerprint());
-  }catch{fail(moduleId,'Malformed human review record')}
+   if(a11y)validateP1HumanEvidence(e,{moduleId,sourceSha256:moduleId==='09.02'?rhfReviewFingerprint():queryReviewFingerprint()});
+  }catch{a11y=false;fail(moduleId,'Malformed or incomplete human review record')}
   if(exists(evidence)&&!a11y){
    fail(moduleId,'Accessibility evidence is incomplete or tied to an obsolete Forms/Query lesson/UI fingerprint');
   }

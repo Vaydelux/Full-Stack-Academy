@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { candidatePaths, gitBlobId, inspectCandidate } from './nest-candidate-contract.mjs';
 
 export const MODULES=Object.freeze(['11.01','11.02','11.03','11.04']);
-const common=['package.json','tsconfig.json','scripts/red-green.mjs','scripts/module-qualification.mjs','scripts/require-lock.mjs','scripts/lock-integrity.mjs','scripts/verify-runtime-test-coverage.mjs'].map(p=>'examples/nestjs-vertical/'+p);
+const common=['package.json','tsconfig.json','scripts/red-green.mjs','scripts/module-qualification.mjs','scripts/require-lock.mjs','scripts/lock-integrity.mjs','scripts/verify-runtime-test-coverage.mjs','package-lock.json','tests/pg-test-guard.mjs','tests/pg-test-guard.test.mjs'].map(p=>'examples/nestjs-vertical/'+p);
 const bind=(path,read)=>({path,gitBlob:gitBlobId(read(path).replaceAll('\r\n','\n'))});
 const topicsFor=(catalog,id)=>catalog.lessons.filter(l=>l.moduleId===id).sort((a,b)=>a.id.localeCompare(b.id));
 export function buildCandidateModule(moduleId, catalog, read, sourceCommit) {

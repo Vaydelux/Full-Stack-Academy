@@ -1,6 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
+import {execFileSync} from 'node:child_process';
+import {fileURLToPath} from 'node:url';
 const read=p=>readFileSync(new URL('../'+p,import.meta.url),'utf8');
 test('documentation shell uses current-module navigation, skip link and explicit workspace entry',()=>{
  const shell=read('src/components/course/DocShell.tsx');
@@ -31,8 +33,9 @@ test('discovery precedes optional beginner content, and dashboard resume precede
  assert.ok(dash.indexOf('aria-labelledby="continue-heading"')<dash.indexOf('aria-label="Learning progress"'));
  const snapshot=JSON.parse(read('docs/checkpoint.json')).snapshot;
  assert.equal(snapshot.authoredReferenceDrafts,303);
- assert.equal(snapshot.publishedLessons,338);
- assert.equal(snapshot.labFixtures,337);
+ assert.ok(snapshot.publishedLessons>=338,'Published lesson baseline regressed');
+ assert.ok(snapshot.labFixtures>=337,'Lab fixture baseline regressed');
+ execFileSync(process.execPath,['scripts/checkpoint-status.mjs','--check'],{cwd:fileURLToPath(new URL('../',import.meta.url)),encoding:'utf8',timeout:30000});
 });
 
 

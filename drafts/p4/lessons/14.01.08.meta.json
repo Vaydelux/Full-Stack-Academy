@@ -14,7 +14,7 @@
   "estimatedMinutes": 90,
   "officialReferences": [
     "https://supabase.com/docs/guides/local-development",
-    "https://supabase.com/docs/guides/local-development"
+    "https://supabase.com/docs/guides/local-development/database-migrations"
   ],
   "exerciseFormat": "bash"
 }

@@ -1,0 +1,70 @@
+name: P4 retain qualified Prisma lock
+
+on:
+  push:
+    branches: [publication/p4-runtime-qualification]
+    paths:
+      - '.github/workflows/p4-prisma-runtime.yml'
+      - 'scripts/verify-prisma-artifact*.mjs'
+      - 'examples/p4-runtime/prisma/package-lock.json'
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  prepare-detached-lock:
+    if: github.repository == 'Vaydelux/Full-Stack-Academy' && github.ref == 'refs/heads/publication/p4-runtime-qualification'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.11.1'
+      - uses: actions/download-artifact@v4
+        with:
+          artifact-ids: 15200532522
+          merge-multiple: true
+          path: ${{ runner.temp }}/verified-prisma-lock
+          run-id: 46005862585
+          github-token: ${{ github.token }}
+      - name: Verify exact artifact and prepare detached commit only
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EXPECTED_HEAD: ${{ github.sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$EXPECTED_HEAD"
+          test -z "$(git status --porcelain=v1 --untracked-files=all)"
+          out="$RUNNER_TEMP/verified-prisma-lock/prisma-upgrade"
+          node scripts/verify-prisma-artifact-cli.mjs "$out" "$RUNNER_TEMP/verified-prisma-lock/prisma-upgrade.log"
+          lock=examples/p4-runtime/prisma/package-lock.json
+          if [[ -f "$lock" ]]; then
+            cmp "$lock" "$out/package-lock.json"
+            candidate="$EXPECTED_HEAD"
+          else
+            # This job never runs npm or any downloaded dependency code.
+            blob=$(jq -n --rawfile content "$out/package-lock.json" '{content:$content,encoding:"utf-8"}' | gh api --method POST "repos/$GITHUB_REPOSITORY/git/blobs" --input - --jq .sha)
+            test "$blob" = "$(git hash-object "$out/package-lock.json")"
+            base=$(git rev-parse 'HEAD^{tree}')
+            tree=$(jq -n --arg base "$base" --arg path "$lock" --arg blob "$blob" '{base_tree:$base,tree:[{path:$path,mode:"100644",type:"blob",sha:$blob}]}' | gh api --method POST "repos/$GITHUB_REPOSITORY/git/trees" --input - --jq .sha)
+            candidate=$(jq -n --arg tree "$tree" --arg parent "$EXPECTED_HEAD" '{message:"Retain security and runtime qualified Prisma 7.10.1 lockfile",tree:$tree,parents:[$parent]}' | gh api --method POST "repos/$GITHUB_REPOSITORY/git/commits" --input - --jq .sha)
+            [[ "$candidate" =~ ^[a-f0-9]{40}$ ]]
+          fi
+          # No ref is updated and no merge/deploy is initiated.
+          jq -n --arg parent "$EXPECTED_HEAD" --arg candidate "$candidate" '{parent:$parent,candidate:$candidate,lockSha256:"6224c119f414d23df5ad20ccfe69df33b60022ba331006408e6b36eb4177ee7c",refUpdated:false,publicationApproved:false}' | tee "$RUNNER_TEMP/prisma-detached-lock.json"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: prisma-detached-lock-${{ github.sha }}
+          path: ${{ runner.temp }}/prisma-detached-lock.json
+          if-no-files-found: error
+          retention-days: 7
+

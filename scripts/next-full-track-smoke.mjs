@@ -1,3 +1,4 @@
+import {expectedP1Publication,verifyP1RouteState} from './p1-browser-state.mjs';
 // Contract for an isolated local Next.js 16 + Chromium run. Source only until executed.
 export async function verifyNextFullTrack({page,base,assert,wait}){
  const original=page.viewportSize();
@@ -8,13 +9,12 @@ export async function verifyNextFullTrack({page,base,assert,wait}){
   await wait(page.getByRole('heading',{name:"The problem we're solving"}));
   assert.equal(await page.locator('meta[name="robots"][content*="noindex"]').count(),0,'Authored lesson is indexable '+id);
  }
- const response=await page.goto(base+'/learn/09.02.01');
- assert.equal(response.status(),200);
- assert.equal(await page.locator('meta[name="robots"][content*="noindex"]').count(),1,'Next planned Tailwind topic remains noindex');
+ const rhfPublished=expectedP1Publication('09.02.01');
+ await verifyP1RouteState(page,base,'09.02.01',rhfPublished);
  const sitemap=await (await page.request.get(base+'/sitemap.xml')).text();
  if(sitemap.includes('<loc>')){
   for(const id of ids)assert.ok(sitemap.includes('/learn/'+id),'Missing indexed lesson '+id);
-  assert.ok(!sitemap.includes('/learn/09.02.01'),'Next planned lesson excluded from sitemap');
+  assert.equal(sitemap.includes('/learn/09.02.01'),rhfPublished,'RHF sitemap must match tracked publication state');
  }
  await page.setViewportSize({width:320,height:800});
  await page.goto(base+'/learn/07.05.08');

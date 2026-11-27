@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
+import { execFileSync } from 'node:child_process';
 
 const root = resolve(import.meta.dirname, '..');
 const read = file => readFileSync(resolve(root, file), 'utf8');
@@ -58,11 +59,13 @@ test('new saved session priority respects the existing prerequisite gate', () =>
   assert.match(read('tests/study-plan.test.mjs'), /bookmarked eligible lessons/);
 });
 
-test('new workflow has no dependency lockfile edits or invented published lessons', () => {
+test('learning workflow preserves baseline coverage and the source-derived publication checkpoint', () => {
   const checkpoint = JSON.parse(read('docs/checkpoint.json'));
-  assert.equal(checkpoint.snapshot.publishedLessons, 338);
-  assert.equal(checkpoint.snapshot.authoredMdxLessons, 337);
-  assert.equal(checkpoint.snapshot.labFixtures, 337);
+  assert.ok(checkpoint.snapshot.publishedLessons >= 338, 'Published lesson baseline regressed');
+  assert.ok(checkpoint.snapshot.authoredMdxLessons >= 337, 'MDX lesson baseline regressed');
+  assert.ok(checkpoint.snapshot.labFixtures >= 337, 'Lab fixture baseline regressed');
+  // A higher count is legitimate only when it matches the repository sources.
+  execFileSync(process.execPath, ['scripts/checkpoint-status.mjs', '--check'], {cwd: root, encoding: 'utf8', timeout: 30000});
   assert.doesNotMatch(read('src/app/learn/page.tsx'), /react-hook-form|@tanstack\/react-query/);
 });
 

@@ -10,5 +10,5 @@
       "react/jsx-runtime": ["./node_modules/@types/react/jsx-runtime.d.ts"]
     }
   },
-  "include": ["../../../drafts/forms-query/labs/**/*.tsx"]
+  "include": ["../../../drafts/forms-query/labs/**/*.tsx", "../../../labs/forms-query-*/**/*.tsx"]
 }

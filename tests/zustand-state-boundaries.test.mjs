@@ -1,3 +1,4 @@
+import {p1ModuleStates} from '../scripts/p1-browser-state.mjs';
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import fs from 'node:fs';
@@ -41,7 +42,8 @@ test('Zustand uses actual dependency and planned first React Hook Form lesson re
  assert.ok(cp.snapshot.authoredMdxLessons>=305,'minimum authoredMdxLessons coverage for this milestone');
  assert.ok(cp.snapshot.labFixtures>=305,'minimum labFixtures coverage for this milestone');
  assert.ok(cp.snapshot.completeModules.length>=38,'minimum completeModules.length coverage for this milestone');
- assert.ok(!read('src/lib/academy/published.ts').includes('lessons/09.02.01.meta.json'));
+ const states=p1ModuleStates(fs.readdirSync(path.join(root,'src/content/lessons')));
+ assert.equal(read('src/lib/academy/published.ts').includes('lessons/09.02.01.meta.json'),states['09.02'],'Registry must match complete tracked RHF metadata');
 });
 test('browser lab imports the same real vanilla Zustand store and no remote data cache',()=>{
  const code=read('src/components/course/StateBoundariesLab.tsx');
@@ -58,7 +60,7 @@ test('browser lab imports the same real vanilla Zustand store and no remote data
  assert.ok(page.includes('robots:{index:false'));
  assert.ok(read('src/content/lessons/09.04.08.mdx').includes('/learn/state-boundaries-lab'));
 });
-test('local browser smoke checks 09.02.01 noindex and real Zustand practice',()=>{
+test('local browser smoke checks 09.02.01 publication state and real Zustand practice',()=>{
  assert.ok(read('scripts/zustand-state-smoke.mjs').includes('09.02.01'));
  assert.ok(read('scripts/browser-smoke.mjs').includes('verifyZustandState'));
 });

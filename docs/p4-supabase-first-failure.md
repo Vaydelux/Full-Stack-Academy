@@ -1,0 +1,3 @@
+# Supabase first live qualification failure
+
+Run 46007367050 completed CLI startup, synthetic user provisioning and SQL fixture installation (the launcher reached the first supplemental suite), then failed in the supabase evidence collector. The original secret-safe process boundary suppressed underlying errors, so no exact semantic cause is established. Add allowlisted repository source frames and numeric process exit metadata at both child boundaries, never raw stderr, messages, tokens or values. New regression exercises malicious/secret-bearing diagnostics. Rerun without weakening tests or changing policy behavior. No suite receipt was issued by the failed run.

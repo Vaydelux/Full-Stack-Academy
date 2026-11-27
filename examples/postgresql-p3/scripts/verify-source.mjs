@@ -3,6 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { isSqlContract } from '../../../scripts/persistence-release-plan.mjs';
+import { inspectPublishedSql } from '../../../scripts/pg-promotion-guard.mjs';
 import { readPersistencePublishedCount } from '../../../scripts/persistence-publication-baseline.mjs';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../../..');
@@ -68,8 +69,7 @@ export function inspectExtendedPostgresDrafts(){
       issue(id,'Incomplete guided lesson, quiz, bug hunt or reference');
     if(!meta.officialReferences?.length||!meta.officialReferences.every(url=>url.startsWith('https://www.postgresql.org/docs/')&&article.includes(url)))
       issue(id,'Official PostgreSQL documentation references missing');
-    if(/<LabGate\b|<script\b|dangerouslySetInnerHTML/.test(article)||
-       exists('src/content/lessons/'+id+'.mdx')||exists('src/content/lessons/'+id+'.meta.json'))
+    if(/<LabGate\b|<script\b|dangerouslySetInnerHTML/.test(article)||(mod.id!=='12.03'&&(exists('src/content/lessons/'+id+'.mdx')||exists('src/content/lessons/'+id+'.meta.json'))))
       issue(id,'Draft improperly published or unsafe MDX');
     const kind=lab.qualificationKind;
     if(meta.evidenceMode&&meta.evidenceMode!==kind)issue(id,'Evidence type mismatch');
@@ -86,9 +86,11 @@ export function inspectExtendedPostgresDrafts(){
          read(folder+'/acceptance.md').length<400)
        issue(id,'Missing explicit manual-review evidence boundary');
     }else issue(id,'Unsupported qualification type '+String(kind));
-    items.push({id,slug,kind,sourceStatus:'draft-unverified'});
+    const publication=mod.id==='12.03'?inspectPublishedSql({id,title:row.title,slug},{exists,read}):'draft';
+    items.push({id,slug,kind,sourceStatus:'draft-unverified',publication});
    }catch(error){issue(id,error.message);}
   }
+  const live=items.filter(x=>x.id.startsWith(mod.id+'.')&&x.publication==='published').length;if(live!==0&&live!==8)issue(mod.id,'Partial module publication');
   if(!exists('examples/'+mod.folder+'/fixture.sql'))issue(mod.id,'Missing disposable SQL fixture');
   const matching=fs.readdirSync(path.join(root,'drafts/postgresql/lessons'))
    .filter(x=>x.startsWith(mod.id+'.')&&x.endsWith('.mdx'));

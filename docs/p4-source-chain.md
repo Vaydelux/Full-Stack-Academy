@@ -1,0 +1,5 @@
+# P4 source-chain rehearsal
+
+Extend the existing 386 fixture source-only P3 chain to all 13 persistence modules. Virtual overlays accumulate 104 topics and 731 distinct projected paths (three shared registries, 56 paths per module); the final eight P4 modules add 64 deliberately failing manual wrappers, preserve NOT PUBLISHED warnings, and omit LabGate. Supplemental suite associations are informational only; even passing service evidence never marks an individual topic complete. Two-user obligations are mandatory in 14.03 and 14.04.
+
+The standalone hosted audit starts from the actual 338 baseline and produces a virtual 442 inventory, explicitly not the full 490 target because the preceding 48 P1/P2 lessons are not in that checkout. When the combined 386 fixture invokes rehearseP3Source, the same pure chain projects the 490 roadmap target, without applying any mixed modules. The workflow retains a report and checks unchanged HEAD, Git index and worktree. No DB or dependency installation required. Source qualification does not imply runtime or human acceptance. Hosted execution pending.

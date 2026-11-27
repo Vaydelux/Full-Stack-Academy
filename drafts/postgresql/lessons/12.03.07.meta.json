@@ -13,7 +13,7 @@
   ],
   "officialReferences": [
     "https://www.postgresql.org/docs/current/tutorial-transactions.html",
-    "https://www.postgresql.org/docs/current/tutorial-transactions.html"
+    "https://www.postgresql.org/docs/current/transaction-iso.html"
   ],
   "securityBoundary": "The SQL runner wraps all three statements in one transaction, but does not prove rollback under a simulated write failure. Add deliberate failure injection and verify the audit row and both balances roll back on the same checked-out database connection."
 }

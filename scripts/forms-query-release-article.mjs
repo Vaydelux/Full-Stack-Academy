@@ -20,6 +20,13 @@ export function renderPublishedRHFArticle(candidate,{id,slug}){
   lines[matches[0]]=replacement;
   content=lines.join('\n');
  }
+ const draftPrefix='drafts/forms-query/labs/'+slug+'/';
+ const expected=['starter.tsx','solution.tsx','lab.json'];
+ const targets=['starter/solution.tsx','solution/solution.tsx','lab.json'];
+ const step= /^<LessonStep\b[^\n]*?\bfile="([^"]+)"/gm;
+ const paths=[...content.matchAll(step)].map(match=>match[1]);
+ if(paths.length!==expected.length||paths.some((value,i)=>value!==draftPrefix+expected[i]))throw Error('Unexpected RHF step path for '+id);
+ content=content.replace(step,(match,file)=>match.replace('file="'+file+'"','file="labs/'+lab+'/'+targets[expected.indexOf(file.slice(draftPrefix.length))]+'"'));
  content=content.replaceAll(
   'Error announcements and focus recovery need testing by a real screen-reader user before publication.',
   'When adapting this example for production, test error announcements and focus recovery with a real screen reader and keyboard.'

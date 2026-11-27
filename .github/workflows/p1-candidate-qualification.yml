@@ -1,0 +1,113 @@
+name: P1 candidate qualification
+
+on:
+  push:
+    branches: [publication/p1-review-handoff]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: p1-candidate-${{ github.ref }}
+  # Preserve the active evidence run while a newer candidate is queued.
+  cancel-in-progress: false
+
+jobs:
+  p1:
+    if: github.repository == 'Vaydelux/Full-Stack-Academy' && github.ref == 'refs/heads/publication/p1-review-handoff'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    env:
+      NEXT_TELEMETRY_DISABLED: '1'
+      ACADEMY_NATIVE_BROWSER_DRIVER: playwright
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.11.1'
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            examples/forms-query-vertical/react-client/package-lock.json
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify exact candidate and clean checkout
+        env:
+          EXPECTED_HEAD: ${{ github.sha }}
+        run: |
+          test "$(git rev-parse HEAD)" = "$EXPECTED_HEAD"
+          test -z "$(git status --porcelain=v1 --untracked-files=all)"
+          node --version
+          python --version
+      - name: Configure runner-local paths
+        run: |
+          printf 'ACADEMY_BROWSER_ROOT=%s/academy-browser\nTMPDIR=%s\n' "$RUNNER_TEMP" "$RUNNER_TEMP" >> "$GITHUB_ENV"
+      - name: Install isolated browser verifier
+        run: |
+          npm install --prefix "$ACADEMY_BROWSER_ROOT" --no-audit --no-fund --save-exact playwright@1.56.1
+          "$ACADEMY_BROWSER_ROOT/node_modules/.bin/playwright" install --with-deps chromium
+          browser=$(node -e 'const {createRequire}=require("node:module");const r=createRequire(process.env.ACADEMY_BROWSER_ROOT+"/package.json");process.stdout.write(r("playwright").chromium.executablePath())')
+          test -x "$browser"
+          printf 'ACADEMY_CHROME_BIN=%s\n' "$browser" >> "$GITHUB_ENV"
+      - name: Run P1 qualification only
+        shell: bash
+        run: |
+          set -o pipefail
+          npm run qualify:academy:local -- --run-p1 2>&1 | tee "$RUNNER_TEMP/p1-qualification.log"
+      - name: Rehearse P1 and all four NestJS modules in detached disposable worktree
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash -n scripts/qualify-nestjs-isolated.sh
+          bash scripts/qualify-nestjs-isolated.sh --rehearse 2>&1 | tee "$RUNNER_TEMP/p1-p2-review-rehearsal.log"
+      - name: Retain automated qualification evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: p1-qualification-${{ github.sha }}
+          path: |
+            ${{ runner.temp }}/p1-qualification.log
+            ${{ runner.temp }}/p1-p2-review-rehearsal.log
+            ${{ runner.temp }}/academy-qualification-*/receipt.json
+          if-no-files-found: warn
+          retention-days: 7
+
+  p2-runtime:
+    # Independent live-service qualification; no publication or deployment.
+    if: github.repository == 'Vaydelux/Full-Stack-Academy' && github.ref == 'refs/heads/publication/p1-review-handoff'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.11.1'
+          cache: npm
+          cache-dependency-path: examples/nestjs-vertical/package-lock.json
+      - name: Verify exact candidate and launcher syntax
+        env:
+          EXPECTED_HEAD: ${{ github.sha }}
+        run: |
+          test "$(git rev-parse HEAD)" = "$EXPECTED_HEAD"
+          test -z "$(git status --porcelain=v1 --untracked-files=all)"
+          bash -n scripts/qualify-nestjs-isolated.sh
+      - name: Qualify all four NestJS modules with isolated PostgreSQL 17
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash scripts/qualify-nestjs-isolated.sh 2>&1 | tee "$RUNNER_TEMP/p2-runtime.log"
+      - name: Retain P2 runtime evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: p2-runtime-${{ github.sha }}
+          path: ${{ runner.temp }}/p2-runtime.log
+          if-no-files-found: warn
+          retention-days: 7

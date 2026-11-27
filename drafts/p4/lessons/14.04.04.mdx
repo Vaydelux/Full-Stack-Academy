@@ -105,7 +105,7 @@ Design an exact topic namespace for tenant events and separate read/send permiss
 5. Evaluate retries, revocation, expiration and cleanup: Realtime policies are evaluated for channel joining and refreshed under certain events; membership changes may require reconnect/re-authorization. Broadcast payloads should not contain long-lived secrets.
 
 <Misconception claim={"The starter's read policy allows any signed-in user to receive broadcasts from any other tenant's private channel."} correction={"Supabase Realtime uses RLS on realtime.messages to authorize private Broadcast and Presence channels. A topic name and a valid JWT are not enough; membership must be checked."} />
-<KnowledgeCheck question={"What authorizes a private Realtime topic?"} choices={["The channel topic string alone","A private channel plus realtime.messages RLS tied to actual membership","The browser's tenantId query string","A valid email only"]} correctIndex={undefined} explanation={"Use a membership lookup tied to auth.uid and the channel topic, restrict message extension and join with private:true. Review separate send/receive permissions."} misconception={"Realtime policies are evaluated for channel joining and refreshed under certain events; membership changes may require reconnect/re-authorization. Broadcast payloads should not contain long-lived secrets."} lessonId="14.04.04" />
+<KnowledgeCheck question={"What authorizes a private Realtime topic?"} choices={["The channel topic string alone","A private channel plus realtime.messages RLS tied to actual membership","The browser's tenantId query string","A valid email only"]} correctIndex={1} explanation={"Use a membership lookup tied to auth.uid and the channel topic, restrict message extension and join with private:true. Review separate send/receive permissions."} misconception={"Realtime policies are evaluated for channel joining and refreshed under certain events; membership changes may require reconnect/re-authorization. Broadcast payloads should not contain long-lived secrets."} lessonId="14.04.04" />
 
 ## Capstone extension
 
@@ -116,4 +116,4 @@ Implement a miniature two-tenant document workspace. Seed alpha and beta with se
 ## Official references
 
 - [Supabase reference — Realtime channel authorization](https://supabase.com/docs/guides/realtime/authorization)
-- [Supabase Realtime Authorization](https://supabase.com/docs/guides/realtime/authorization)
+- [Supabase Broadcast](https://supabase.com/docs/guides/realtime/broadcast)

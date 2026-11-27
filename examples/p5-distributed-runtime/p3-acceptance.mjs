@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import {performance} from 'node:perf_hooks';
+import {latencySummary,validatePerformance} from '../../scripts/pg-performance-evidence.mjs';
 import {withDatabase} from './pg-live.mjs';
 import {consumeOnce} from './outbox.mjs';
 const topics=Object.freeze(['12.03.01','12.03.02','12.03.03','12.03.04','12.03.05','12.03.06','12.03.07','12.03.08','12.04.01','12.04.05','12.04.07','12.04.08']);
@@ -20,11 +21,39 @@ export async function transactionCase(id,pool,schema,s){const w=s+'.wallets',job
 }
 export function summarizePlan(raw){assert.ok(Array.isArray(raw)&&raw.length===1);const p=raw[0],n=p.Plan;assert.ok(n&&typeof n['Node Type']==='string');for(const k of ['Plan Rows','Actual Rows','Actual Loops','Shared Hit Blocks','Shared Read Blocks'])assert.ok(Number.isFinite(n[k])&&n[k]>=0,'Missing actual plan field '+k);for(const k of ['Planning Time','Execution Time'])assert.ok(Number.isFinite(p[k])&&p[k]>=0,'Missing timing '+k);return {node:n['Node Type'],estimatedRows:n['Plan Rows'],actualRows:n['Actual Rows'],loops:n['Actual Loops'],sharedHits:n['Shared Hit Blocks'],sharedReads:n['Shared Read Blocks'],planningMs:p['Planning Time'],executionMs:p['Execution Time']};}
 async function explain(c,sql,params=[]){const result=await c.query('EXPLAIN (ANALYZE, BUFFERS, FORMAT JSON) '+sql,params);const raw=result.rows[0]['QUERY PLAN'];return {summary:summarizePlan(raw),raw};}
-export async function performanceCase(id,pool,s){const table=s+'.events';await pool.query('CREATE TABLE '+table+'(id int PRIMARY KEY, tenant int NOT NULL, payload text NOT NULL); INSERT INTO '+table+" SELECT i,i%100,repeat('x',80) FROM generate_series(1,20000) AS i; ANALYZE "+table);const c=await pool.connect();try{
- const dataset=(await c.query('SELECT count(*)::int AS n FROM '+table)).rows[0].n;assert.equal(dataset,20000);const version=(await c.query('SHOW server_version')).rows[0].server_version;
- if(id==='12.04.05'){const parent=(await c.query('SELECT id FROM '+table+' ORDER BY id LIMIT 20')).rows.map(r=>r.id);const many=[];let count=1;const start=performance.now();for(const key of parent){many.push(...(await c.query('SELECT id,tenant FROM '+table+' WHERE id=$1',[key])).rows);count++;}const manyMs=performance.now()-start;const oneStart=performance.now();const batch=(await c.query('SELECT id,tenant FROM '+table+' WHERE id=ANY($1::int[]) ORDER BY id',[parent])).rows;const batchMs=performance.now()-oneStart;assert.deepEqual(many,batch);return {dataset,version,manyQueries:count,batchQueries:2,manyMs,batchMs};}
- if(id==='12.04.07'){await c.query('UPDATE '+table+' SET payload=payload||$1 WHERE id<=1000',['changed']);await c.query('DELETE FROM '+table+' WHERE id<=500');const stats=()=>c.query('SELECT n_live_tup::text,n_dead_tup::text,last_vacuum::text FROM pg_stat_user_tables WHERE schemaname=$1 AND relname=$2',[s.replaceAll('"',''),'events']).then(r=>r.rows[0]);await c.query('SELECT pg_stat_clear_snapshot()');const before=await stats();await c.query('VACUUM (ANALYZE) '+table);await c.query('SELECT pg_stat_clear_snapshot()');const after=await stats();assert.ok(before&&after);assert.equal((await c.query('SELECT count(*)::int AS n FROM '+table)).rows[0].n,19500);return {dataset,version,before,after,remaining:19500,statisticsMayLag:true};}
- assert.ok(['12.04.01','12.04.08'].includes(id));const sql='SELECT id,tenant FROM '+table+' WHERE tenant=$1 ORDER BY id',params=[7];const expected=(await c.query(sql,params)).rows;assert.equal(expected.length,200);const baseline=[];for(let i=0;i<3;i++){const p=await explain(c,sql,params);assert.equal(p.summary.actualRows,200);baseline.push(p);}
- if(id==='12.04.01')return {dataset,version,baseline};await c.query('CREATE INDEX ON '+table+'(tenant,id)');await c.query('ANALYZE '+table);const indexed=[];for(let i=0;i<3;i++){const p=await explain(c,sql,params);assert.equal(p.summary.actualRows,200);indexed.push(p);}assert.deepEqual((await c.query(sql,params)).rows,expected);return {dataset,version,baseline,indexed,resultParity:true,performanceWinAsserted:false};
- }finally{c.release();}}
+export async function performanceCase(id,pool,s){
+ const table=s+'.events';await pool.query('CREATE TABLE '+table+'(id int PRIMARY KEY, tenant int NOT NULL, payload text NOT NULL) WITH (autovacuum_enabled=false); INSERT INTO '+table+" SELECT i,i%100,repeat('x',80) FROM generate_series(1,20000) AS i; ANALYZE "+table);
+ const c=await pool.connect();try{
+ const dataset=(await c.query('SELECT count(*)::int AS n FROM '+table)).rows[0].n;assert.equal(dataset,20000);
+ const version=(await c.query('SHOW server_version')).rows[0].server_version;
+ const settings=Object.fromEntries((await c.query("SELECT name,setting||COALESCE(' '||unit,'') AS value FROM pg_settings WHERE name=ANY($1::text[])",[['work_mem','shared_buffers','effective_cache_size','random_page_cost','max_connections']])).rows.map(r=>[r.name,r.value]));
+ const base={dataset,version,settings},finish=o=>validatePerformance(id,{...base,...o});
+ if(id==='12.04.05'){
+  const tasks=s+'.project_tasks';await c.query('CREATE TABLE '+tasks+'(project_id int REFERENCES '+table+'(id),tenant int NOT NULL,seq int NOT NULL,title text NOT NULL,PRIMARY KEY(project_id,seq)); INSERT INTO '+tasks+' SELECT id,tenant,n,payload FROM '+table+' CROSS JOIN generate_series(1,2) AS n; ANALYZE '+tasks);const scenarios=[];
+  for(const parents of [1,10,100]){
+   const parentSql='SELECT id FROM '+table+' WHERE tenant=7 ORDER BY id LIMIT $1',childSql='SELECT project_id,seq,title FROM '+tasks+' WHERE tenant=7 AND project_id=$1 ORDER BY seq',batchSql='SELECT project_id,seq,title FROM '+tasks+' WHERE tenant=7 AND project_id=ANY($1::int[]) ORDER BY project_id,seq';
+   const measure=async batch=>{let calls=0,bytes=0;const query=async(sql,params)=>{calls++;const r=await c.query(sql,params);bytes+=Buffer.byteLength(JSON.stringify(r.rows));return r.rows;};const start=performance.now(),parent=await query(parentSql,[parents]),keys=parent.map(r=>r.id);const rows=[];if(batch)rows.push(...await query(batchSql,[keys]));else for(const key of keys)rows.push(...await query(childSql,[key]));return {calls,bytes,rows,ms:performance.now()-start,payloadBytes:Buffer.byteLength(JSON.stringify(rows))};};
+   const many=await measure(false),batch=await measure(true);assert.deepEqual(many.rows,batch.rows);assert.equal(many.rows.length,parents*2);const joined=(await c.query('SELECT t.project_id,t.seq,t.title FROM (SELECT id,tenant FROM '+table+' WHERE tenant=7 ORDER BY id LIMIT $1) p JOIN '+tasks+' t ON t.project_id=p.id AND t.tenant=p.tenant ORDER BY t.project_id,t.seq',[parents])).rows;assert.deepEqual(joined,many.rows);
+   scenarios.push({parents,manyQueries:many.calls,batchQueries:batch.calls,rows:many.rows.length,resultParity:true,manyBytes:many.payloadBytes,batchBytes:batch.payloadBytes,manyQueryResultBytes:many.bytes,batchQueryResultBytes:batch.bytes,manyMs:many.ms,batchMs:batch.ms});
+  }
+  return finish({scenarios,bytesScope:'UTF-8 JSON result payload, not network traffic'});
+ }
+ if(id==='12.04.07'){
+  const updated=(await c.query('UPDATE '+table+' SET payload=payload||$1 WHERE id<=1000',['changed'])).rowCount,deleted=(await c.query('DELETE FROM '+table+' WHERE id<=500')).rowCount;
+  const stats=()=>c.query('SELECT n_live_tup::text,n_dead_tup::text,last_vacuum::text FROM pg_stat_user_tables WHERE schemaname=$1 AND relname=$2',[s.replaceAll('"',''),'events']).then(r=>r.rows[0]);
+  await c.query('SELECT pg_stat_clear_snapshot()');const before=await stats();const start=performance.now();await c.query('VACUUM (ANALYZE) '+table);const vacuumMs=performance.now()-start;await c.query('SELECT pg_stat_clear_snapshot()');const after=await stats();const remaining=(await c.query('SELECT count(*)::int AS n FROM '+table)).rows[0].n;
+  return finish({before,after,updated,deleted,remaining,vacuumMs,statisticsMayLag:true});
+ }
+ assert.ok(['12.04.01','12.04.08'].includes(id));const sql='SELECT id,tenant FROM '+table+' WHERE tenant=$1 ORDER BY id',params=[7];const expected=(await c.query(sql,params)).rows;assert.equal(expected.length,200);
+ const estimatedOnly=(await c.query('EXPLAIN (FORMAT JSON) '+sql,params)).rows[0]['QUERY PLAN'];
+ const trials=id==='12.04.01'?3:20,runPlans=async()=>{const result=[];for(let i=0;i<trials;i++)result.push(await explain(c,sql,params));return result;};
+ const size=async()=>Number((await c.query('SELECT pg_indexes_size($1::regclass)::text AS n',[table])).rows[0].n);
+ const indexBytesBefore=await size(),baseline=await runPlans(),latency=rows=>latencySummary(rows.map(p=>p.summary.executionMs));
+ if(id==='12.04.01')return finish({estimatedOnly,baseline,latency:latency(baseline)});
+ await c.query('CREATE INDEX ON '+table+'(tenant,id)');await c.query('ANALYZE '+table);
+ // Warm the indexed path once, as the baseline path was warmed by its result check.
+ assert.deepEqual((await c.query(sql,params)).rows,expected);const indexed=await runPlans(),indexBytesAfter=await size();assert.deepEqual((await c.query(sql,params)).rows,expected);
+ return finish({baseline,indexed,baselineLatency:latency(baseline),indexedLatency:latency(indexed),indexBytesBefore,indexBytesAfter,resultParity:true,performanceWinAsserted:false});
+ }finally{c.release();}
+}
 export async function runTopic(id){assert.ok(topics.includes(id));return withDatabase(async(pool,schema,s)=>{const observations=id.startsWith('12.03')?await transactionCase(id,pool,schema,s):await performanceCase(id,pool,s);return {id,observations,scope:'disposable-real-postgresql',publicationApproved:false};});}

@@ -1,0 +1,11 @@
+import assert from 'node:assert/strict';
+import {supabaseConfig} from '../p4-runtime/guard.mjs';
+import {requireInstalled} from './guards.mjs';
+import {sessionLifecycle} from './session-lifecycle.mjs';
+requireInstalled(new URL('.',import.meta.url));
+const config=supabaseConfig(),{createClient}=await import('@supabase/supabase-js');
+const localFetch=(input,options={})=>{const u=new URL(input instanceof Request?input.url:input);assert.equal(u.origin,config.origin,'Nonlocal Auth request refused');return fetch(input,{...options,redirect:'error',signal:options.signal??AbortSignal.timeout(15000)});};
+const client=()=>createClient(config.origin,config.key,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false},global:{fetch:localFetch}});
+const [current,peer,probe]=[client(),client(),client()];
+await sessionLifecycle({current,peer,probe,user:config.users[0]});
+console.log('Real Supabase SDK: refresh rotation, local sign-out and peer session isolation passed. Publication NOT approved.');

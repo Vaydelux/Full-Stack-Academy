@@ -20,7 +20,7 @@ export async function audit(root,compile){
    else if(entry.isFile()&&entry.name.endsWith('.mdx')) files.push(target);
   }
  }
- for(const dir of ['src/content/lessons','drafts/forms-query/lessons']) walk(path.join(root,dir));
+ for(const dir of ['src/content/lessons','drafts/forms-query/lessons','release-candidates/forms-query/09.02/lessons','release-candidates/forms-query/09.03/lessons']) walk(path.join(root,dir));
  if(!files.length) throw new Error('Empty executable lesson inventory');
  const findings=[];
  for(const file of files.sort()){

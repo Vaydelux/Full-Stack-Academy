@@ -71,9 +71,19 @@ try {
   await button('Create task').click();
   const createResponse = await created;
   assert.equal(createResponse.status(), 201);
-  const record = await createResponse.json();
+  // Chromium may evict a completed POST body before Playwright retrieves it
+  // (Network.getResponseBody). Check the real response status above, then
+  // independently verify the committed record and the rendered Query refresh.
+  await waitForRevision('Qualify React task', 'todo · revision 1');
+  const committedList = await fetch(apiOrigin + '/api/tasks');
+  assert.equal(committedList.status, 200);
+  const { items: committedItems } = await committedList.json();
+  assert.equal(committedItems.length, 1, 'One browser POST must create exactly one task');
+  const record = committedItems[0];
   assert.equal(record.title, 'Qualify React task');
-  await waitForRevision(record.title, 'todo · revision 1');
+  assert.equal(record.status, 'todo');
+  assert.equal(record.revision, 1);
+  assert.match(record.id, /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i);
   assert.equal(await title.inputValue(), '');
   passed.push('RHF resolver, live Vite proxy, API create and Query refresh');
 

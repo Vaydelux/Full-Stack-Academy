@@ -1,0 +1,3 @@
+# Nested Node test isolation repair
+
+Run 45996966174 reached the projected 386-lesson fixture and failed at 11.03.06: Node reported recursive node:test execution and skipped files, so the exact TAP summary was absent. The wrapper now removes inherited NODE_TEST_CONTEXT in a fresh child environment; database settings remain intact. The TAP gate remains strict. A new regression invokes a real child test from a parent test; the minimal reproduction passed locally on Node 22.16.0. Full Node 24 and PostgreSQL/Socket.IO qualification must be rerun; independent P2 runtime previously passed. No publication approval.

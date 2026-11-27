@@ -4,15 +4,17 @@
  * No GitHub Actions, Vercel, deployment or automatic commit/merge.
  */
 import fs from 'node:fs';
+import {validateP1HumanEvidence} from './p1-human-evidence.mjs';
 import path from 'node:path';
 import assert from 'node:assert/strict';
-import {spawnSync} from 'node:child_process';
+import {spawnSync,execFileSync} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
 import {inspectQueryPublicationCandidates} from './verify-forms-query-query-candidates.mjs';
 import {inspectFormsQueryPromotion} from './forms-query-promotion-readiness.mjs';
 import {renderPublishedQueryArticle} from './forms-query-query-release-article.mjs';
 import {queryReviewFingerprint} from './forms-query-query-review-fingerprint.mjs';
-import {assertP1Checkout,markP1ReviewFixture,REVIEW_FIXTURE_DATE} from './p1-publication-review.mjs';
+import {assertP1Checkout,assertP1ReviewPredecessor,markP1ReviewFixture,REVIEW_FIXTURE_DATE,REVIEW_FIXTURE_STATUS} from './p1-publication-review.mjs';
+import {preparedWrites as preparedRHFWrites} from './promote-forms-query-rhf.mjs';
 import {projectionFingerprint,verifyProjectionOnDisk} from './forms-query-projection-integrity.mjs';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const local=p=>path.join(root,p);
@@ -76,7 +78,7 @@ function verifiedReview(){
  assert.match(review.sourceSha256??'',/^[a-f0-9]{64}$/);
  assert.equal(review.sourceSha256,queryReviewFingerprint(),'Human review is stale for the current Query lesson/SSR source');
  assert.deepEqual([...review.lessonIds].sort(),ids);
- return review;
+ return validateP1HumanEvidence(review,{moduleId:'09.03',sourceSha256:queryReviewFingerprint()});
 }
 export function preparedQueryWrites(reviewedAt){
  const files=new Map();
@@ -167,6 +169,11 @@ export function simulateQueryPublication(){
   labFiles:labs,ssrSupportFiles:extras,registries:2,changesWritten:0,
   warning:'This is not real npm, Next SSR, Chromium, human accessibility or publication evidence.'};
 }
+let predecessor=null;
+function verifyPredecessor(){
+ if(!predecessor)throw Error('Missing RHF review projection');
+ assertP1ReviewPredecessor(root,{head:promotionHead,projection:predecessor,checkpoint:json('docs/checkpoint.json'),readActual:read});
+}
 function applyTransaction(projection,reviewSha){
  const previous=new Map(),written=[];
  for(const file of projection.keys())previous.set(file,fs.existsSync(local(file))?read(file):null);
@@ -180,6 +187,9 @@ function applyTransaction(projection,reviewSha){
   }
   verifyProjectionOnDisk(projection,read);
   exec('npm',['run','checkpoint:write'],30_000);
+  // Typecheck copied instructor/starter sources with their real nested libraries.
+  exec('npm',['run','typecheck:staged','--prefix','examples/forms-query-vertical/react-client']);
+  exec('npm',['run','audit:mdx:expressions']);
   if(mode==='--review'){
    exec('npm',['run','verify:content']);
    exec('npm',['run','build']);
@@ -191,7 +201,10 @@ function applyTransaction(projection,reviewSha){
   assert.equal(checkpoint.snapshot.publishedLessons,354);
   assert.ok(checkpoint.snapshot.completeModules.includes('09.02'));
   assert.ok(checkpoint.snapshot.completeModules.includes('09.03'));
-  assertP1Checkout(root,{expectedHead:promotionHead,reviewOnly:mode==='--review',allowedChanges:new Set([...projection.keys(),'docs/checkpoint.json'])});
+  // The Query projection owns the two shared registries; retain every other
+  // predecessor file byte-for-byte, including RHF lab sources and metadata.
+  if(predecessor)verifyProjectionOnDisk(new Map([...predecessor].filter(([file])=>!projection.has(file))),read);
+  assertP1Checkout(root,{expectedHead:promotionHead,reviewOnly:mode==='--review',allowedChanges:new Set([...(predecessor?.keys()??[]),...projection.keys(),'docs/checkpoint.json'])});
   if(mode==='--review'){
    fs.writeFileSync(local('docs/checkpoint.json'),JSON.stringify(markP1ReviewFixture(json('docs/checkpoint.json'),'09.03'),null,2)+'\n');
    console.log(JSON.stringify({moduleId:'09.03',status:'disposable-review-fixture',sourceSha256:queryReviewFingerprint(),publicationApproved:false,committed:false,deployed:false},null,2));
@@ -227,15 +240,30 @@ else{
  if(!plan.rhfPrerequisitePublished)throw Error('RHF 09.02 must be published before Query 09.03');
  if(Number(process.versions.node.split('.')[0])!==24)throw Error('Node 24 required for publication');
  if(!process.env.ACADEMY_BROWSER_ROOT)throw Error('Actual Playwright/Chromium installation required');
- promotionHead=assertP1Checkout(root,{reviewOnly:mode==='--review',...(mode==='--apply'?{evidencePath}:{})});
- if(gitStatus())throw Error('Start publication from a clean Git worktree');
+ const checkpoint=json('docs/checkpoint.json');
+ if(mode==='--review'&&checkpoint.status===REVIEW_FIXTURE_STATUS){
+  // Reconstruct the original RHF projection from the immutable HEAD
+  // registries and candidate source, not an externally supplied allowlist.
+  promotionHead=execFileSync('git',['rev-parse','HEAD'],{cwd:root,encoding:'utf8',timeout:20000}).trim();
+  const registryRead=file=>execFileSync('git',['show',promotionHead+':'+file],{cwd:root,encoding:'utf8',timeout:20000,maxBuffer:16*1024*1024});
+  predecessor=preparedRHFWrites(REVIEW_FIXTURE_DATE,{registryRead,existingProjection:true});
+  verifyPredecessor();
+ }else{
+  assert.notEqual(checkpoint.status,REVIEW_FIXTURE_STATUS,'Review fixtures cannot be applied as real publication');
+  for(let i=1;i<=8;i++)assert.notEqual(json('src/content/lessons/09.02.0'+i+'.meta.json').reviewedAt,REVIEW_FIXTURE_DATE,'Synthetic RHF review date cannot qualify real publication');
+  promotionHead=assertP1Checkout(root,{reviewOnly:mode==='--review',...(mode==='--apply'?{evidencePath}:{})});
+  if(gitStatus())throw Error('Start publication from a clean Git worktree');
+ }
  const review=mode==='--review'?{date:REVIEW_FIXTURE_DATE,sourceSha256:queryReviewFingerprint()}:verifiedReview();
  exec('npm',['ci']);
  exec('npm',['ci','--prefix','examples/forms-query-vertical/react-client']);
  exec('npm',['run','qualify:forms-query:full']);
  exec('npm',['run','qualify:forms-query:query-browser'],600_000);
  assert.equal(queryReviewFingerprint(),review.sourceSha256,'Human-reviewed Query source changed during preflight');
- if(gitStatus())throw Error('Preflight modified the Git worktree; inspect before releasing');
- assertP1Checkout(root,{expectedHead:promotionHead,reviewOnly:mode==='--review',...(mode==='--apply'?{evidencePath}:{})});
+ if(predecessor)verifyPredecessor();
+ else{
+  if(gitStatus())throw Error('Preflight modified the Git worktree; inspect before releasing');
+  assertP1Checkout(root,{expectedHead:promotionHead,reviewOnly:mode==='--review',...(mode==='--apply'?{evidencePath}:{})});
+ }
  applyTransaction(preparedQueryWrites(review.date),review.sourceSha256);
 }

@@ -1,3 +1,4 @@
+import {expectedP1Publication,verifyP1RouteState} from './p1-browser-state.mjs';
 // Local Next.js + Chromium acceptance; source-authored, not executed in this connector session.
 export async function verifyZustandState({page,base,assert,wait}){
  const size=page.viewportSize();
@@ -8,13 +9,12 @@ export async function verifyZustandState({page,base,assert,wait}){
   await wait(page.getByRole('heading',{name:"The problem we're solving"}));
   assert.equal(await page.locator('meta[name="robots"][content*="noindex"]').count(),0,'Published Zustand lesson should index '+id);
  }
- const planned=await page.goto(base+'/learn/09.02.01');
- assert.equal(planned.status(),200);
- assert.equal(await page.locator('meta[name="robots"][content*="noindex"]').count(),1,'RHF remains planned and noindex');
+ const rhfPublished=expectedP1Publication('09.02.01');
+ await verifyP1RouteState(page,base,'09.02.01',rhfPublished);
  const sitemap=await (await page.request.get(base+'/sitemap.xml')).text();
  if(sitemap.includes('<loc>')){
   for(const id of ids)assert.ok(sitemap.includes('/learn/'+id),'Missing Zustand sitemap entry '+id);
-  assert.ok(!sitemap.includes('/learn/09.02.01'),'Unpublished RHF should not enter sitemap');
+  assert.equal(sitemap.includes('/learn/09.02.01'),rhfPublished,'RHF sitemap must match tracked publication state');
  }
  await page.setViewportSize({width:320,height:800});
  const response=await page.goto(base+'/learn/state-boundaries-lab');

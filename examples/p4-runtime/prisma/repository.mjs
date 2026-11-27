@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import {seedTasks,taskPage,exactTitle} from './data-exercises.mjs';
 export class AccessDenied extends Error {constructor(){super('Access denied');this.name='AccessDenied';}}
 export class Conflict extends Error {constructor(){super('Missing task or stale version');this.name='Conflict';}}
 export function taskRepository(db){
@@ -11,6 +12,9 @@ export function taskRepository(db){
   });
  }
  return {
+  seed:(actor,tenant,rows)=>scoped(actor,tenant,true,tx=>seedTasks(tx,tenant,rows)),
+  page:(actor,tenant,opts)=>scoped(actor,tenant,false,tx=>taskPage(tx,tenant,opts)),
+  exactTitle:(actor,tenant,title)=>scoped(actor,tenant,false,tx=>exactTitle(tx,tenant,title)),
   list:(actor,tenant)=>scoped(actor,tenant,false,tx=>tx.task.findMany({where:{tenantId:tenant},orderBy:{id:'asc'},select:{id:true,title:true,version:true}})),
   create:(actor,tenant,id,title)=>scoped(actor,tenant,true,tx=>tx.task.create({data:{tenantId:tenant,id,title}})),
   update:(actor,tenant,id,version,title)=>scoped(actor,tenant,true,async tx=>{

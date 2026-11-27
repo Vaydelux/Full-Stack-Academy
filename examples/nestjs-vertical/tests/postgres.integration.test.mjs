@@ -2,6 +2,7 @@ import 'reflect-metadata';
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { Client } from 'pg';
+import { isolatedPgConfig, verifyIsolatedPg } from './pg-test-guard.mjs';
 
 // Deliberately mandatory: absence of a live isolated PostgreSQL test environment
 // must never be reported as a passing integration qualification.
@@ -10,9 +11,11 @@ test('11.03.06 committed transfer and actual PostgreSQL rollback', { timeout: 30
     throw Error('Real PostgreSQL qualification requires ACADEMY_ISOLATED_PG=YES and PG_TEST_URL for an isolated database');
   }
   const { transfer } = await import('../dist/application-transactions/solution.js');
-  const client = new Client({ connectionString: process.env.PG_TEST_URL, connectionTimeoutMillis: 5000 });
+  const config = isolatedPgConfig(process.env);
+  const client = new Client(config);
   await client.connect();
   try {
+    await verifyIsolatedPg(client, config);
     // A session-private table shadows any public wallets table; no persistent data
     // is created and the test is safe to rerun against a dedicated test database.
     await client.query("SET statement_timeout = '5000ms'");

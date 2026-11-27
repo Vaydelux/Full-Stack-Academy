@@ -1,3 +1,4 @@
+import {expectedP1Publication,verifyP1RouteState} from './p1-browser-state.mjs';
 // Source-authored local Next/Chromium integration gate. Not executed in the connected GitHub-only environment.
 export async function verifyReactAdvanced({page,base,assert,wait}) {
  const previousViewport=page.viewportSize();
@@ -9,12 +10,12 @@ export async function verifyReactAdvanced({page,base,assert,wait}) {
    await wait(page.getByRole('heading',{name:"The problem we're solving"}));
    assert.equal(await page.locator('meta[name="robots"][content*="noindex"]').count(),0,'Authored React advanced lesson must index: '+id);
  }
- await page.goto(base+'/learn/09.02.01');
- assert.equal(await page.locator('meta[name="robots"][content*="noindex"]').count(),1,'Testing Library remains planned until its runnable dependencies are integrated');
+ const rhfPublished=expectedP1Publication('09.02.01');
+ await verifyP1RouteState(page,base,'09.02.01',rhfPublished);
  const sitemap=await (await page.request.get(base+'/sitemap.xml')).text();
  if(sitemap.includes('<loc>')) {
   for(const id of ids)assert.ok(sitemap.includes('/learn/'+id),'Authored React advanced route in sitemap: '+id);
-  assert.ok(!sitemap.includes('/learn/09.02.01'),'Planned topic must not enter sitemap');
+  assert.equal(sitemap.includes('/learn/09.02.01'),rhfPublished,'RHF sitemap must match tracked publication state');
  }
  await page.setViewportSize({width:320,height:800});
  await page.goto(base+'/learn/06.04.08');

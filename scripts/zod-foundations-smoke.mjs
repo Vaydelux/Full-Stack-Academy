@@ -1,3 +1,4 @@
+import {expectedP1Publication,verifyP1RouteState} from './p1-browser-state.mjs';
 // Source-authored acceptance scenario for a locally served Next.js app + Chromium.
 // Not executed by the connected GitHub file authoring environment.
 export async function verifyZodFoundation({page,base,assert,wait}){
@@ -9,13 +10,12 @@ export async function verifyZodFoundation({page,base,assert,wait}){
   await wait(page.getByRole('heading',{name:"The problem we're solving"}));
   assert.equal(await page.locator('meta[name="robots"][content*="noindex"]').count(),0,'Zod MDX lesson should index '+id);
  }
- const planned=await page.goto(base+'/learn/09.02.01');
- assert.equal(planned.status(),200);
- assert.equal(await page.locator('meta[name="robots"][content*="noindex"]').count(),1,'Planned React Hook Form route remains noindex');
+ const rhfPublished=expectedP1Publication('09.02.01');
+ await verifyP1RouteState(page,base,'09.02.01',rhfPublished);
  const sitemap=await (await page.request.get(base+'/sitemap.xml')).text();
  if(sitemap.includes('<loc>')){
   for(const id of ids)assert.ok(sitemap.includes('/learn/'+id),'Missing Zod sitemap entry '+id);
-  assert.ok(!sitemap.includes('/learn/09.02.01'),'Planned route must not enter sitemap');
+  assert.equal(sitemap.includes('/learn/09.02.01'),rhfPublished,'RHF sitemap must match tracked publication state');
  }
  await page.setViewportSize({width:320,height:800});
  const response=await page.goto(base+'/learn/zod-profile-lab');

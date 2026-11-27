@@ -1,0 +1,3 @@
+# Storage denial compatibility
+
+Run 46007921251 failed at live.mjs:35 after verified identities, owner/foreign REST tests and owner Storage download. The strict HTTP-only foreign download assertion rejected the response. The exact status was not retained, so the cause is not yet established. Use the existing bounded Storage rejection envelope validator for both foreign read and signing: success, outage, malformed envelopes and unrelated validation errors remain rejected; legacy 400 with explicit authorization reason is accepted. Existing positive owner read establishes object existence. Re-run to distinguish compatibility from an actual authorization defect. No RLS relaxation or publication approval.
