@@ -531,7 +531,7 @@
     "qualify:academy:local": "node scripts/qualification-coordinator.mjs",
     "qualify:p5:postgres-search": "node examples/p5-integrations/postgres-search/qualify.mjs --run",
     "qualify:nestjs:module": "npm run qualify:module --prefix examples/nestjs-vertical --",
-    "test:nestjs-offline-qualification": "node --test examples/nestjs-vertical/tests/red-green.offline.test.mjs examples/nestjs-vertical/tests/module-qualification.offline.test.mjs",
+    "test:nestjs-offline-qualification": "node --test examples/nestjs-vertical/tests/red-green.offline.test.mjs examples/nestjs-vertical/tests/module-qualification.offline.test.mjs examples/nestjs-vertical/tests/pg-test-guard.test.mjs",
     "status:nestjs-candidates": "node scripts/verify-nest-candidates.mjs --json",
     "test:nestjs-candidates": "node scripts/verify-nest-candidates.mjs --check && node --test tests/nest-candidate-contract.test.mjs tests/nest-candidate-inventory.test.mjs",
     "refresh:nestjs-candidates": "node scripts/verify-nest-candidates.mjs --refresh",

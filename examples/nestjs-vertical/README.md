@@ -79,3 +79,7 @@ The Node22 test run used a temporary isolated reconstruction and passed 26/26. I
 ## Module-specific qualification
 
 From the Academy root, use `npm run qualify:nestjs:module -- --plan 11.01` to inspect the fixed steps, and `npm run qualify:nestjs:module -- --run 11.01` only with Node24.9+, genuine npm lock and approved registry access. Replace the ID with 11.02, 11.03 or 11.04. The domain module retains real disposable PostgreSQL tests; advanced retains real socket tests. `qualify:release` still runs all suites. Runtime success never grants publication or human review approval.
+
+### Disposable four-module runtime launcher
+
+From a clean repository checkout with Node 24.9+, Bash, Docker and approved registry access, run `bash scripts/qualify-nestjs-isolated.sh` from the repository root. The launcher creates a new PostgreSQL 17 container (official `postgres:17` major tag, not a digest pin), binds a random host port to numeric loopback, creates a restricted role in a dedicated database, runs the four existing module qualification plans, verifies the checkout remains unchanged and removes only its own container on exit. It never connects to a configured production database, publishes lessons or deploys. Docker image/package downloads may consume network and storage. Successful runtime checks do not replace human accessibility review or module publication rehearsal.
