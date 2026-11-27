@@ -1,0 +1,5 @@
+# Adopt the exact P4 qualified lock candidate
+
+Run 46005862585 passed all four lock tests, strict lock validation (156 packages), npm audit (zero findings), npm ci, and real Prisma 7.10.1 generated-client migration/history/catalog/CRUD acceptance using disposable PostgreSQL 17. Artifact 15200532522 includes the manifest, lock, preliminary lock receipt and runtime log. The preliminary receipt correctly marks runtimeQualified and registryInstallVerified false because it predates the actual execution. The separate exact runtime receipt and audit/acceptance markers bind later success to the same source commit and lock SHA-256.
+
+The independent branch now imports only these exact successful bytes into a detached commit. It runs no downloaded dependency code under a write token; it does not move refs or publish. Inspect the detached commit's one-file diff before adopting. Artifact expiry: 2026-12-04 UTC. Preserve the previous 7.6.0 lock as historical evidence only. Runtime evidence is supplemental, not topic-level approval. The override remains an explicit compatibility maintenance obligation; zero audit findings do not prove the absence of bundled vulnerabilities.
