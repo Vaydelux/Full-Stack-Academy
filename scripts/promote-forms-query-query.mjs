@@ -181,6 +181,8 @@ function applyTransaction(projection,reviewSha){
   }
   verifyProjectionOnDisk(projection,read);
   exec('npm',['run','checkpoint:write'],30_000);
+  // Typecheck copied instructor/starter sources with their real nested libraries.
+  exec('npm',['run','typecheck:staged','--prefix','examples/forms-query-vertical/react-client']);
   if(mode==='--review'){
    exec('npm',['run','verify:content']);
    exec('npm',['run','build']);

@@ -197,6 +197,8 @@ function applyWrites(writes, expectedReviewedSha){
   }
   verifyProjectionOnDisk(writes,read);
   run('npm',['run','checkpoint:write'],30_000);
+  // Published lab code belongs to the locked teaching project, not the Next app.
+  run('npm',['run','typecheck:staged','--prefix','examples/forms-query-vertical/react-client']);
   // The first full test suite before promotion cannot substitute for testing
   // the published Next MDX imports, regenerated routes, new lab manifests,
   // and source-derived checkpoint AFTER promotion.
