@@ -1,0 +1,39 @@
+generator client {
+  provider = "prisma-client"
+  output = "../generated/topic-data"
+  moduleFormat = "esm"
+  importFileExtension = "ts"
+}
+datasource db {
+  provider = "postgresql"
+}
+model Owner {
+  id Int @id
+  displayName String
+  passwordHash String
+  internalRole String
+  tasks Task[]
+}
+model Task {
+  id Int @id
+  tenantId String
+  title String
+  status String @default("open")
+  createdAt DateTime @default(now())
+  projectId Int
+  ownerId Int
+  owner Owner @relation(fields: [ownerId], references: [id])
+  @@index([tenantId, id])
+  @@index([tenantId, projectId])
+}
+model Project {
+  tenantId String
+  id Int
+  name String
+  @@id([tenantId, id])
+}
+model Wallet {
+  id Int @id
+  tenantId String
+  balance Int
+}

@@ -1,0 +1,38 @@
+name: Batch 02 Prisma data module acceptance
+on:
+  push:
+    branches: [publication/persistence-batch-02]
+    paths:
+      - '.github/workflows/persistence-batch-02.yml'
+      - 'examples/p4-runtime/prisma/topic-data/**'
+      - 'scripts/qualify-prisma-topic-data.sh'
+      - 'drafts/p4/**'
+permissions:
+  contents: read
+jobs:
+  prisma-data:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.11.1'
+      - name: Qualify actual eight lesson snippets
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash -n scripts/qualify-prisma-topic-data.sh
+          node --check examples/p4-runtime/prisma/topic-data/load-pair.mjs
+          node --check examples/p4-runtime/prisma/topic-data/acceptance.test.mjs
+          bash scripts/qualify-prisma-topic-data.sh 2>&1 | tee "$RUNNER_TEMP/prisma-topic-data.log"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: prisma-topic-data-${{ github.sha }}
+          path: ${{ runner.temp }}/prisma-topic-data.log
+          if-no-files-found: warn
+          retention-days: 7
