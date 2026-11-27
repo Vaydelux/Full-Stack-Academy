@@ -108,6 +108,7 @@ function main(){
  run('run','verify:offline');verify();
  browser();verify();
  for(const id of NEST_MODULES){browser('--nest-module',id);verify();}
+ execFileSync(process.execPath,['--test','tests/p3-source-rehearsal.test.mjs'],{cwd:root,stdio:'inherit',timeout:60000});verify();
  const p3=rehearseP3Source({checkpoint:json(checkpointPath),catalog,read,exists});verify();
  console.log(JSON.stringify(p3,null,2));
  console.log(JSON.stringify({status:'disposable-review-fixture',commit:head,publishedLessons:386,modules:results,projection:projectionFingerprint(expected),publicationApproved:false,committed:false,deployed:false},null,2));
