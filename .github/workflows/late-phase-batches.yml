@@ -1,0 +1,74 @@
+name: P5-P7 phase-wide qualification
+on:
+  push:
+    branches: [publication/persistence-batch-02]
+    paths:
+      - '.github/workflows/late-phase-batches.yml'
+      - 'scripts/qualify-late-phase-batch.mjs'
+      - 'tests/late-phase-batch.test.mjs'
+      - 'examples/p6-runtime/**'
+      - 'examples/p7-runtime/**'
+permissions:
+  contents: read
+jobs:
+  phase:
+    strategy:
+      fail-fast: false
+      matrix:
+        phase: [P5, P6, P7]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.11.1'
+      - name: Verify exact source and phase suites
+        shell: bash
+        env:
+          PHASE: ${{ matrix.phase }}
+        run: |
+          set -euo pipefail
+          node --test tests/late-phase-batch.test.mjs
+          mkdir "$RUNNER_TEMP/phase-evidence"
+          node scripts/qualify-late-phase-batch.mjs "$PHASE" "$RUNNER_TEMP/phase-evidence"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: late-phase-${{ matrix.phase }}-${{ github.sha }}
+          path: ${{ runner.temp }}/phase-evidence/
+          if-no-files-found: warn
+          retention-days: 7
+  container:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.11.1'
+      - name: Build and qualify isolated nonroot container
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ -z "${DOCKER_HOST:-}" && -z "${DOCKER_CONTEXT:-}" ]]
+          [[ "$(docker context inspect --format '{{.Endpoints.docker.Host}}')" == unix://* ]]
+          docker pull node:24.11.1-bookworm-slim
+          digest=$(docker image inspect node:24.11.1-bookworm-slim --format '{{index .RepoDigests 0}}')
+          export ACADEMY_DOCKER_ISOLATED=YES
+          export ACADEMY_NODE_IMAGE="node:24.11.1-bookworm-slim@${digest##*@}"
+          printf '%s\n' "$ACADEMY_NODE_IMAGE"
+          npm run qualify:p6:docker 2>&1 | tee "$RUNNER_TEMP/p6-container.log"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: p6-container-${{ github.sha }}
+          path: ${{ runner.temp }}/p6-container.log
+          if-no-files-found: warn
+          retention-days: 7
