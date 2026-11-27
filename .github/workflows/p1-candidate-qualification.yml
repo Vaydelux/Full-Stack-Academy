@@ -15,7 +15,7 @@ jobs:
   p1:
     if: github.repository == 'Vaydelux/Full-Stack-Academy' && github.ref == 'refs/heads/publication/p1-review-handoff'
     runs-on: ubuntu-24.04
-    timeout-minutes: 75
+    timeout-minutes: 120
     env:
       NEXT_TELEMETRY_DISABLED: '1'
       ACADEMY_NATIVE_BROWSER_DRIVER: playwright
@@ -57,28 +57,12 @@ jobs:
         run: |
           set -o pipefail
           npm run qualify:academy:local -- --run-p1 2>&1 | tee "$RUNNER_TEMP/p1-qualification.log"
-      - name: Rehearse RHF and Query publication in detached disposable worktree
+      - name: Rehearse P1 and all four NestJS modules in detached disposable worktree
         shell: bash
         run: |
           set -euo pipefail
-          review="$RUNNER_TEMP/academy-review-rhf"
-          git worktree add --detach "$review" HEAD
-          trap 'git worktree remove --force "$review"' EXIT
-          (
-            cd "$review"
-            npm run promote:forms-query:rhf -- --plan
-            npm run promote:forms-query:rhf -- --simulate
-            npm run promote:forms-query:query -- --simulate
-            npm run promote:forms-query:rhf -- --review
-            node -e 'const c=require("./docs/checkpoint.json");if(c.status!=="LOCAL-REVIEW-FIXTURE-DO-NOT-COMMIT"||c.snapshot.publishedLessons!==346)process.exit(1)'
-            npm run verify:offline
-            node scripts/verify-academy-browser.mjs
-            npm run promote:forms-query:query -- --review
-            node -e 'const c=require("./docs/checkpoint.json");if(c.status!=="LOCAL-REVIEW-FIXTURE-DO-NOT-COMMIT"||c.snapshot.publishedLessons!==354)process.exit(1)'
-            npm run verify:offline
-            node scripts/verify-academy-browser.mjs
-          ) 2>&1 | tee "$RUNNER_TEMP/p1-review-rehearsal.log"
-          test -z "$(git status --porcelain=v1 --untracked-files=all)"
+          bash -n scripts/qualify-nestjs-isolated.sh
+          bash scripts/qualify-nestjs-isolated.sh --rehearse 2>&1 | tee "$RUNNER_TEMP/p1-p2-review-rehearsal.log"
       - name: Retain automated qualification evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -86,7 +70,7 @@ jobs:
           name: p1-qualification-${{ github.sha }}
           path: |
             ${{ runner.temp }}/p1-qualification.log
-            ${{ runner.temp }}/p1-review-rehearsal.log
+            ${{ runner.temp }}/p1-p2-review-rehearsal.log
             ${{ runner.temp }}/academy-qualification-*/receipt.json
           if-no-files-found: warn
           retention-days: 7

@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 # Explicit local/hosted runtime qualification, never publication or deployment.
 set -euo pipefail
-if [[ $# -ne 0 ]]; then echo 'No arguments accepted' >&2; exit 2; fi
+mode=runtime
+if [[ $# -eq 1 && "$1" == --rehearse ]]; then mode=rehearse
+elif [[ $# -ne 0 ]]; then echo 'Usage: qualify-nestjs-isolated.sh [--rehearse]' >&2; exit 2; fi
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
 command -v docker >/dev/null
 command -v node >/dev/null
@@ -14,7 +16,9 @@ node -e 'if(!/^v24\.(?:9|[1-9]\d+)\.\d+$/.test(process.version))throw Error("Nod
 test -z "$(git status --porcelain=v1 --untracked-files=all)"
 head=$(git rev-parse HEAD)
 container=''
+review=''
 cleanup() {
+  if [[ -n "$review" ]]; then git worktree remove --force "$review" || echo "Review worktree cleanup failed" >&2; fi
   if [[ -n "$container" ]]; then docker rm -f "$container" >/dev/null || true; fi
 }
 trap cleanup EXIT
@@ -44,10 +48,18 @@ SQL
 export ACADEMY_ISOLATED_PG=YES
 export PG_TEST_URL="postgres://academy_nest:${test_password}@127.0.0.1:${port}/academy_test_nest"
 unset test_password
-for module in 11.01 11.02 11.03 11.04; do
-  npm run qualify:nestjs:module -- --run "$module"
-done
+if [[ "$mode" == rehearse ]]; then
+  review=$(mktemp -d "${TMPDIR:-/tmp}/academy-p2-review.XXXXXXXX")
+  git worktree add --detach "$review" "$head"
+  (cd "$review"; node --test tests/p1-p2-publication-rehearsal.test.mjs; node scripts/rehearse-p1-p2-publication.mjs)
+  git worktree remove --force "$review"
+  review=''
+else
+  for module in 11.01 11.02 11.03 11.04; do
+    npm run qualify:nestjs:module -- --run "$module"
+  done
+fi
 test "$(git rev-parse HEAD)" = "$head"
 test -z "$(git status --porcelain=v1 --untracked-files=all)"
 unset PG_TEST_URL ACADEMY_ISOLATED_PG
-echo 'NestJS four-module runtime qualification passed; publicationApproved=false'
+echo "NestJS $mode qualification passed; publicationApproved=false"
