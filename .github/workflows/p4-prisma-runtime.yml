@@ -27,6 +27,7 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           artifact-ids: 15197098466
+          merge-multiple: true
           path: ${{ runner.temp }}/verified-prisma-lock
           run-id: 45999662389
           github-token: ${{ github.token }}
@@ -78,6 +79,7 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           artifact-ids: 15197098466
+          merge-multiple: true
           path: ${{ runner.temp }}/verified-prisma-lock
           run-id: 45999662389
           github-token: ${{ github.token }}
