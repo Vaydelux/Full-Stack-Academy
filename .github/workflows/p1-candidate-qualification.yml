@@ -90,3 +90,39 @@ jobs:
             ${{ runner.temp }}/academy-qualification-*/receipt.json
           if-no-files-found: warn
           retention-days: 7
+
+  p2-runtime:
+    # Independent live-service qualification; no publication or deployment.
+    if: github.repository == 'Vaydelux/Full-Stack-Academy' && github.ref == 'refs/heads/publication/p1-review-handoff'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.11.1'
+          cache: npm
+          cache-dependency-path: examples/nestjs-vertical/package-lock.json
+      - name: Verify exact candidate and launcher syntax
+        env:
+          EXPECTED_HEAD: ${{ github.sha }}
+        run: |
+          test "$(git rev-parse HEAD)" = "$EXPECTED_HEAD"
+          test -z "$(git status --porcelain=v1 --untracked-files=all)"
+          bash -n scripts/qualify-nestjs-isolated.sh
+      - name: Qualify all four NestJS modules with isolated PostgreSQL 17
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash scripts/qualify-nestjs-isolated.sh 2>&1 | tee "$RUNNER_TEMP/p2-runtime.log"
+      - name: Retain P2 runtime evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: p2-runtime-${{ github.sha }}
+          path: ${{ runner.temp }}/p2-runtime.log
+          if-no-files-found: warn
+          retention-days: 7

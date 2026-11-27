@@ -30,7 +30,7 @@ container=$(docker run --rm -d --network host -e POSTGRES_PASSWORD postgres:17 -
 unset POSTGRES_PASSWORD
 ready=0
 for ((i=0;i<60;i++)); do
-  if docker exec "$container" pg_isready -h /var/run/postgresql -p "$port" -U postgres >/dev/null 2>&1; then ready=1; break; fi
+  if docker exec "$container" pg_isready -h 127.0.0.1 -p "$port" -U postgres >/dev/null 2>&1; then ready=1; break; fi
   sleep 1
 done
 test "$ready" = 1
