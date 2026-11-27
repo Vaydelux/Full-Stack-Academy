@@ -1,0 +1,35 @@
+name: P5 parallel distributed service qualification
+on:
+  push:
+    branches: [publication/persistence-batch-02]
+    paths:
+      - '.github/workflows/p5-distributed-live.yml'
+      - 'scripts/qualify-p5-distributed-local.sh'
+      - 'examples/p5-distributed-runtime/**'
+permissions:
+  contents: read
+jobs:
+  services:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.11.1'
+      - name: Execute isolated PostgreSQL, Redis and BullMQ acceptance
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash -n scripts/qualify-p5-distributed-local.sh
+          bash scripts/qualify-p5-distributed-local.sh 2>&1 | tee "$RUNNER_TEMP/p5-services.log"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: p5-services-${{ github.sha }}
+          path: ${{ runner.temp }}/p5-services.log
+          if-no-files-found: warn
+          retention-days: 7
