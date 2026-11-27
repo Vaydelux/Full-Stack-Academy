@@ -15,5 +15,10 @@
   },
   "scripts": {
     "qualify": "node qualify.mjs"
+  },
+  "overrides": {
+    "@prisma/config@7.10.1": {
+      "effect": "3.22.1"
+    }
   }
 }
