@@ -6,6 +6,7 @@ on:
     paths:
       - '.github/workflows/p3-postgres-qualification.yml'
       - 'scripts/qualify-p3-*'
+      - 'scripts/install-pg17-runner-client.sh'
       - 'scripts/rehearse-p1-p2-publication.mjs'
       - 'scripts/pg-*'
       - 'drafts/postgresql/**'
@@ -63,8 +64,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          sudo apt-get update
-          sudo apt-get install -y postgresql-client-17
+          bash scripts/install-pg17-runner-client.sh
           echo /usr/lib/postgresql/17/bin >> "$GITHUB_PATH"
       - name: Rehearse through 410 lesson SQL fixture
         shell: bash
@@ -97,8 +97,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          sudo apt-get update
-          sudo apt-get install -y postgresql-client-17
+          bash scripts/install-pg17-runner-client.sh
           echo /usr/lib/postgresql/17/bin >> "$GITHUB_PATH"
       - name: Qualify independent PostgreSQL runtime
         shell: bash

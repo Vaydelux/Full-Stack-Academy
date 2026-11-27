@@ -32,10 +32,10 @@ try{
  assert.ok([200,201].includes(upload.status),'Owner storage upload failed');uploaded=true;
  const own=await api.request(downloadPath,{token:a.token});assert.equal(own.status,200,'Owner download failed');assert.equal(await own.text(),'synthetic academy file');
  // Storage intentionally conceals some inaccessible objects as 404. Positive read proves the object exists.
- const denied=await api.request(downloadPath,{token:b.token});assert.ok([401,403,404].includes(denied.status),'Foreign storage download not denied');
+ const denied=await api.request(downloadPath,{token:b.token});await assertStorageRejection(denied,'authorization');
  const signed=await api.request('/storage/v1/object/sign/'+bucket+'/'+object,{method:'POST',token:a.token,body:{expiresIn:30}});assert.equal(signed.status,200,'Owner signing failed');
  const signData=await signed.json();assert.ok(typeof signData.signedURL==='string','Missing signed URL');
- const foreignSign=await api.request('/storage/v1/object/sign/'+bucket+'/'+object,{method:'POST',token:b.token,body:{expiresIn:30}});assert.ok([401,403,404].includes(foreignSign.status),'Foreign storage signing not denied');
+ const foreignSign=await api.request('/storage/v1/object/sign/'+bucket+'/'+object,{method:'POST',token:b.token,body:{expiresIn:30}});await assertStorageRejection(foreignSign,'authorization');
  const anonymous=await api.request(query(id));assertDenied(anonymous);
  assertDenied(await api.request(query(id),{token:'invalid.synthetic.token'}));
  await assertStorageRejection(await uploadExtra(b,extraPaths[0],'foreign','text/plain'),'authorization');

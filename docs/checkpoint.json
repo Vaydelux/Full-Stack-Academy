@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-11-26",
+  "updatedAt": "2026-11-28",
   "baseline": {
     "branch": "main",
     "sha": "394e6d0f620f4740912b0d50cbcbbf5aecc83e8e",
@@ -9,9 +9,9 @@
     "productionUrl": "https://fullstack-academy-ecru.vercel.app/"
   },
   "development": {
-    "branch": "feature/f11-3-reading-format",
-    "state": "f20-release-candidate-qualification-blocked",
-    "note": "F20 source freeze and nine-stage release profile. 38 connector checks and five exact-coordinator Node fixture checks passed; committed inventory reconciled. Full checkout and Node24 unavailable; Nest lock missing, full audit/build/browser/reviews unexecuted."
+    "branch": "publication/p1-review-handoff",
+    "state": "p1-p4-consolidated-review-candidate",
+    "note": "All 889 topics source-authored (338 published, 551 additional reading manuscripts). Combined 386 fixture passed; 426 source projection passed; Prisma and Supabase supplemental runtime passed on independent branch. Integrated P4 source and lock; P3 hosted client setup repaired. Human review and actual guarded publication remain outstanding."
   },
   "snapshot": {
     "tracks": 28,
@@ -73,6 +73,6 @@
     "devHighFindings": 14,
     "exceptionExpires": "2026-12-02"
   },
-  "nextMilestone": "Generate genuine Nest lockfile on a trusted Node24.9+ checkout; run --plan-release then --run-release, resolve actual blockers, review deployment separately.",
+  "nextMilestone": "Run consolidated P3 runtime and 410 fixture qualification; prepare P1+P2 48-lesson release batch with real review evidence; reconcile P3/P4 topic acceptance. No production deployment.",
   "status": "release-candidate-not-qualified"
 }

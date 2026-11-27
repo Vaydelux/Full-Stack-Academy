@@ -1,0 +1,3 @@
+# P4 Prisma security remediation
+
+The verified 7.6.0 lock was created as detached commit 1c551a4 (single lockfile diff), but runtime run 46003833878 stopped at npm audit: 8 findings, 5 high and 3 moderate. Do not adopt that lock as the qualified release dependency graph. The audit recommended Prisma 7.10.1; pin CLI, client and adapter together to 7.10.1 as a candidate, retain pg 8.16.3. Registry generation, strict lock checks, audit before dependency lifecycle execution, and actual isolated migration/CRUD are required. No audit bypass or forced automatic upgrade. The new independent workflow has read-only permissions; retains candidate for explicit review. Availability, compatibility and remediation of advisories are not yet proven. No publication or deployment.

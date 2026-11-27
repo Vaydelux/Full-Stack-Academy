@@ -22,5 +22,15 @@ export function verifyPrismaLock(packageBytes,lockBytes){
   assert.match(row.integrity,/^sha512-[A-Za-z0-9+/]{86}==$/,'Expected SHA-512 registry integrity');
   assert.ok(typeof row.version==='string'&&row.version.length>0,'Missing version');
  }
+ if(pkg.overrides){
+  assert.deepEqual(pkg.overrides,{'@prisma/config@7.10.1':{effect:'3.22.1'}},'Unreviewed dependency override');
+  assert.equal(pins.prisma,'7.10.1');
+  assert.equal(pins['@prisma/client'],'7.10.1');
+  assert.equal(pins['@prisma/adapter-pg'],'7.10.1');
+  assert.equal(lock.packages['node_modules/@prisma/config']?.version,'7.10.1');
+  const effects=entries.filter(([p])=>/(?:^|\/)node_modules\/effect$/.test(p));
+  assert.ok(effects.length>0,'Missing patched Effect');
+  for(const [p,row] of effects)assert.equal(row.version,'3.22.1','Unexpected Effect resolution '+p);
+ }
  return {packageSha256:sha256(packageBytes),lockSha256:sha256(lockBytes),packages:entries.length,publicationApproved:false,runtimeQualified:false};
 }

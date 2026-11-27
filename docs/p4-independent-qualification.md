@@ -1,0 +1,3 @@
+# Independent P4 runtime qualification branch
+
+The active P1/P2 rehearsal and pending P3 qualification are preserved unchanged. This temporary branch exists solely to run the exact verified Prisma artifact import and real PostgreSQL integration without replacing the pending P1 candidate. Only the dedicated P4 workflow triggers on this branch. No production deployment, merge, or approval. After the run, verify the detached lockfile commit and runtime evidence, then reconcile the candidate into the existing review branch when the queue permits. Artifact 15197098466 is bound to d6afc2c and expires December 4 UTC. The exact supplied lock SHA-256 was independently rechecked in the working environment. No additional live database credentials are required.
