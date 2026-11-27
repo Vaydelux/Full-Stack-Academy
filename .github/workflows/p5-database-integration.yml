@@ -1,0 +1,46 @@
+name: P5 six parallel database integration gates
+on:
+  push:
+    branches: [publication/persistence-batch-02]
+    paths:
+      - '.github/workflows/p5-database-integration.yml'
+      - 'scripts/qualify-p5-database-suite.sh'
+      - 'examples/p5-security/**'
+      - 'examples/p5-integrations/**'
+permissions:
+  contents: read
+jobs:
+  database:
+    strategy:
+      fail-fast: false
+      matrix:
+        suite: [auth-sql, rls, http-db, search, inbox-sql, inbox-live]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.11.1'
+      - name: Install matching PostgreSQL client
+        run: |
+          bash scripts/install-pg17-runner-client.sh
+          echo /usr/lib/postgresql/17/bin >> "$GITHUB_PATH"
+      - name: Execute disposable database acceptance
+        shell: bash
+        env:
+          SUITE: ${{ matrix.suite }}
+        run: |
+          set -euo pipefail
+          bash -n scripts/qualify-p5-database-suite.sh
+          bash scripts/qualify-p5-database-suite.sh "$SUITE" 2>&1 | tee "$RUNNER_TEMP/p5-db.log"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: p5-db-${{ matrix.suite }}-${{ github.sha }}
+          path: ${{ runner.temp }}/p5-db.log
+          if-no-files-found: warn
+          retention-days: 7
