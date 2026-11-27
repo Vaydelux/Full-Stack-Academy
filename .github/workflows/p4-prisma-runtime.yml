@@ -2,11 +2,7 @@ name: P4 verified Prisma artifact integration
 
 on:
   push:
-    branches: [publication/p1-review-handoff]
-    paths:
-      - '.github/workflows/p4-prisma-runtime.yml'
-      - 'scripts/verify-prisma-artifact*.mjs'
-      - 'scripts/qualify-prisma-artifact.sh'
+    branches: [publication/p4-runtime-qualification]
 
 permissions:
   contents: read
@@ -14,7 +10,7 @@ permissions:
 
 jobs:
   prepare-detached-lock:
-    if: github.repository == 'Vaydelux/Full-Stack-Academy' && github.ref == 'refs/heads/publication/p1-review-handoff'
+    if: github.repository == 'Vaydelux/Full-Stack-Academy' && github.ref == 'refs/heads/publication/p4-runtime-qualification'
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     permissions:
@@ -68,7 +64,7 @@ jobs:
           retention-days: 7
 
   runtime:
-    if: github.repository == 'Vaydelux/Full-Stack-Academy' && github.ref == 'refs/heads/publication/p1-review-handoff'
+    if: github.repository == 'Vaydelux/Full-Stack-Academy' && github.ref == 'refs/heads/publication/p4-runtime-qualification'
     runs-on: ubuntu-24.04
     timeout-minutes: 35
     steps:
